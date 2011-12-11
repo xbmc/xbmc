@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/Atomics.h"
 
 #include "PVRManager.h"
@@ -411,9 +412,9 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (bShowProgress)
   {
     pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pDlgProgress->SetLine(0, "");
+    pDlgProgress->SetLine(0, StringUtils::EmptyString);
     pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-    pDlgProgress->SetLine(2, "");
+    pDlgProgress->SetLine(2, StringUtils::EmptyString);
     pDlgProgress->StartModal();
     pDlgProgress->Progress();
   }
@@ -739,14 +740,14 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     if (musictag)
     {
       musictag->SetTitle(bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055));
-      musictag->SetGenre(bHasTagNow ? epgTagNow.Genre() : "");
+      musictag->SetGenre(bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString);
       musictag->SetDuration(bHasTagNow ? epgTagNow.GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());
       musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
+      musictag->SetComment(StringUtils::EmptyString);
+      musictag->SetLyrics(StringUtils::EmptyString);
     }
   }
   else
@@ -755,11 +756,11 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     if (videotag)
     {
       videotag->m_strTitle = bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055);
-      videotag->m_strGenre = bHasTagNow ? epgTagNow.Genre() : "";
+      videotag->m_strGenre = bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString;
       videotag->m_strPath = channelTag->Path();
       videotag->m_strFileNameAndPath = channelTag->Path();
-      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : "";
-      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : "";
+      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : StringUtils::EmptyString;
+      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : StringUtils::EmptyString;
       videotag->m_iEpisode = bHasTagNow ? epgTagNow.EpisodeNum() : 0;
     }
   }

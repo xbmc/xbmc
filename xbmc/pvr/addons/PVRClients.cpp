@@ -36,6 +36,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "utils/StringUtils.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -54,8 +55,7 @@ CPVRClients::CPVRClients(void) :
     m_bIsValidChannelSettings(false),
     m_bIsPlayingLiveTV(false),
     m_bIsPlayingRecording(false),
-    m_scanStart(0),
-    m_strPlayingClientName("")
+    m_scanStart(0)
 {
   ResetQualityData(m_qualityInfo);
 }
@@ -130,7 +130,7 @@ void CPVRClients::Unload(void)
   m_bAllClientsConnected = false;
   m_bIsPlayingLiveTV     = false;
   m_bIsPlayingRecording  = false;
-  m_strPlayingClientName = "";
+  m_strPlayingClientName = StringUtils::EmptyString;
 
   m_clientMap.clear();
 }
@@ -391,7 +391,7 @@ void CPVRClients::CloseStream(void)
 {
   CSingleLock lock(m_critSection);
   CloseLiveStream() || CloseRecordedStream();
-  m_strPlayingClientName = "";
+  m_strPlayingClientName = StringUtils::EmptyString;
 }
 
 PVR_STREAM_PROPERTIES *CPVRClients::GetCurrentStreamProperties(void)
@@ -495,16 +495,16 @@ bool CPVRClients::CloseLiveStream(void)
   return bReturn;
 }
 
-const char *CPVRClients::GetStreamURL(const CPVRChannel &tag)
+CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
-  static CStdString strReturn("");
+  CStdString strReturn;
   boost::shared_ptr<CPVRClient> client;
   if (GetConnectedClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, tag.ClientID());
 
-  return strReturn.c_str();
+  return strReturn;
 }
 
 bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
@@ -1028,7 +1028,7 @@ void CPVRClients::StartChannelScan(void)
 
   /* start the channel scan */
   CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s",
-      __FUNCTION__, scanClient->GetFriendlyName());
+      __FUNCTION__, scanClient->GetFriendlyName().c_str());
   long perfCnt = XbmcThreads::SystemClockMillis();
 
   /* stop the supervisor thread */

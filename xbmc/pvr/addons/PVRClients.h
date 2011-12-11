@@ -281,7 +281,7 @@ namespace PVR
      * @param tag The channel to get the stream url for.
      * @return The requested stream url or an empty string if it wasn't found.
      */
-    const char *GetStreamURL(const CPVRChannel &tag);
+    CStdString GetStreamURL(const CPVRChannel &tag);
 
     /*!
      * @brief Switch an opened live tv stream to another channel.
