@@ -189,7 +189,7 @@ namespace PVR
      * @param channel The channel or NULL if none is playing.
      * @return True if a channel is playing, false otherwise.
      */
-    bool GetCurrentChannel(CPVRChannel *channel) const;
+    bool GetCurrentChannel(CPVRChannel &channel) const;
 
     /*!
      * @brief Return the EPG for the channel that is currently playing.

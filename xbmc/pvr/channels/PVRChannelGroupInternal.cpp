@@ -162,7 +162,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannel &channel)
 
   /* check if this channel is currently playing if we are hiding it */
   CPVRChannel currentChannel;
-  if (g_PVRManager.GetCurrentChannel(&currentChannel) && currentChannel == channel)
+  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel == channel)
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return false;

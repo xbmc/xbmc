@@ -525,7 +525,7 @@ bool CPVRManager::IsPlaying(void) const
   return m_addons && m_addons->IsPlaying();
 }
 
-bool CPVRManager::GetCurrentChannel(CPVRChannel *channel) const
+bool CPVRManager::GetCurrentChannel(CPVRChannel &channel) const
 {
   return m_addons->GetPlayingChannel(channel);
 }
@@ -535,7 +535,7 @@ int CPVRManager::GetCurrentEpg(CFileItemList &results) const
   int iReturn = -1;
 
   CPVRChannel channel;
-  if (m_addons->GetPlayingChannel(&channel))
+  if (m_addons->GetPlayingChannel(channel))
     iReturn = channel.GetEPG(results);
   else
     CLog::Log(LOGDEBUG,"PVRManager - %s - no current channel set", __FUNCTION__);
@@ -555,7 +555,7 @@ int CPVRManager::GetPreviousChannel(void)
   //XXX this must be the craziest way to store the last channel
   int iReturn = -1;
   CPVRChannel channel;
-  if (m_addons->GetPlayingChannel(&channel))
+  if (m_addons->GetPlayingChannel(channel))
   {
     int iLastChannel = channel.ChannelNumber();
 
@@ -574,7 +574,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   bool bReturn = false;
 
   CPVRChannel channel;
-  if (!m_addons->GetPlayingChannel(&channel))
+  if (!m_addons->GetPlayingChannel(channel))
     return bReturn;
 
   if (m_addons->HasTimerSupport(channel.ClientID()))
@@ -686,7 +686,7 @@ void CPVRManager::CloseStream(void)
   if (m_addons->IsReadingLiveStream())
   {
     CPVRChannel channel;
-    if (m_addons->GetPlayingChannel(&channel))
+    if (m_addons->GetPlayingChannel(channel))
     {
       /* store current time in iLastWatched */
       time_t tNow;

@@ -122,7 +122,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   Clear();
 
   CPVRChannel channel;
-  g_PVRManager.GetCurrentChannel(&channel);
+  g_PVRManager.GetCurrentChannel(channel);
   const CPVRChannelGroup *group = g_PVRManager.GetPlayingGroup(channel.IsRadio());
 
   if (group)

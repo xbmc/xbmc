@@ -80,7 +80,7 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 void CPVRRecording::Reset(void)
 {
   m_strRecordingId     = "";
-  m_iClientId          = g_PVRClients->GetFirstConnectedClientID(); // Temporary until we support multiple backends
+  m_iClientId          = 0;
   m_strChannelName     = "";
   m_strDirectory       = "";
   m_strStreamURL       = "";

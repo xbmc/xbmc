@@ -621,7 +621,7 @@ void CPVRGUIInfo::CharInfoPlayingClientName(CStdString &strValue) const
 void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
 {
   CPVRChannel channel;
-  if (g_PVRClients->GetPlayingChannel(&channel))
+  if (g_PVRClients->GetPlayingChannel(channel))
     strValue.Format("%s", channel.EncryptionName());
   else
     strValue = "";
@@ -832,7 +832,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
 {
   CPVRChannel currentChannel;
   CPVRRecording recording;
-  if (g_PVRManager.GetCurrentChannel(&currentChannel))
+  if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
     CEpgInfoTag epgTag;
     bool bHasEpgTag  = GetPlayingTag(epgTag);
@@ -854,7 +854,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
       g_PVRManager.UpdateCurrentFile();
     }
   }
-  else if (g_PVRClients->GetPlayingRecording(&recording))
+  else if (g_PVRClients->GetPlayingRecording(recording))
   {
     ResetPlayingTag();
     m_iDuration = recording.GetDuration() * 1000;
