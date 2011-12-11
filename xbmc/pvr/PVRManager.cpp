@@ -522,13 +522,12 @@ void CPVRManager::ResetEPG(void)
 
 bool CPVRManager::IsPlaying(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_addons && m_addons->IsPlaying();
+  return IsStarted() && m_addons && m_addons->IsPlaying();
 }
 
 bool CPVRManager::GetCurrentChannel(CPVRChannel &channel) const
 {
-  return m_addons->GetPlayingChannel(channel);
+  return IsPlaying() && m_addons && m_addons->GetPlayingChannel(channel);
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const
