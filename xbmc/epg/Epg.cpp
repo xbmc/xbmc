@@ -224,31 +224,25 @@ void CEpg::Cleanup(void)
 void CEpg::Cleanup(const CDateTime &Time)
 {
   bool bTagsChanged(false);
+  CSingleLock lock(m_critSection);
+  for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
   {
-    CSingleLock lock(m_critSection);
-    for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
+    if (at(iPtr)->EndAsUTC() < Time)
     {
-      if (at(iPtr)->EndAsUTC() < Time)
-      {
-        if (m_nowActive && *m_nowActive == *at(iPtr))
-          m_nowActive = NULL;
+      if (m_nowActive && *m_nowActive == *at(iPtr))
+        m_nowActive = NULL;
 
-        delete at(iPtr);
-        erase(begin() + iPtr);
-        m_bTagsChanged = true;
-      }
-    }
-
-    if (m_bTagsChanged)
-    {
+      delete at(iPtr);
+      erase(begin() + iPtr);
       bTagsChanged = true;
-      UpdatePreviousAndNextPointers();
-      UpdateFirstAndLastDates();
     }
   }
 
   if (bTagsChanged)
-    Persist();
+  {
+    UpdatePreviousAndNextPointers();
+    UpdateFirstAndLastDates();
+  }
 }
 
 bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
