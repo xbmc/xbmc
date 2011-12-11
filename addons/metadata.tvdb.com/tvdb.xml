@@ -30,11 +30,8 @@
 	<!-- input:	$1=html $2=search query -->
 	<!-- returns:	results in xml format <results><movie><title>*</title><url>*</url>*#urls<extra>*</extra></movie>*</results> -->
 	<GetSearchResults dest="1">
-		<RegExp output="\1" dest="3">
-			<expression noclean="1">&lt;Data&gt;(.*)&lt;/Data&gt;</expression>
-		</RegExp>
 		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
-			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/\2.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;language&gt;\2&lt;/language&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/\2.zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
 				<expression repeat="yes">&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;[^&lt;]*&lt;language&gt;([^&lt;]*)&lt;/language&gt;[^&lt;]*&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -147,8 +144,8 @@
 	<!-- returns:	results in xml format <episodeguide><episode><title>*</title><url>*</url><season>*</season><epnum>*</epnum><thumb>*</thumb><id>*</id><aired>*</aired></episode>*</episodeguide> !-->
 	<GetEpisodeList dest="3">
 		<RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="3">
-			<RegExp input="$$2" output="\1" dest="10">
-				<expression>http://www.thetvdb.com/api/1D62F2F90030C444/series/([0-9]*)/all/$INFO[language].zip</expression>
+			<RegExp input="$$2" output="\2" dest="10">
+				<expression>http://(?:www\.)thetvdb.com/api/(.+)/series/([0-9]*)/all/(.+).zip</expression>
 			</RegExp>
 			<RegExp conditional="!dvdorder">
 				<!-- Regular episodes (Absolute order) -->
@@ -166,7 +163,7 @@
 			</RegExp>
 			<!-- DVD order -->
 			<RegExp conditional="dvdorder" input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\3&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;aired&gt;\5&lt;/aired&gt;&lt;/episode&gt;" dest="4">
-				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([0-9]+).*?&lt;Combined_season&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;/Episode&gt;</expression>
+				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([^&lt;]*).*?&lt;Combined_season&gt;([^&lt;]*).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;/Episode&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -253,6 +250,9 @@
 			</RegExp>
 			<RegExp input="$$8" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
 				<expression>&lt;Rating&gt;([^&lt;]+)&lt;/Rating&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
+				<expression>&lt;Runtime&gt;([^&lt;]+)&lt;/Runtime&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

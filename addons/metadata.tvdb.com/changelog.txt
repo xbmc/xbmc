@@ -1,3 +1,21 @@
+[B]1.2.3[/B]
+- Fixed: fixed broken scraping under certain circumtaces
+
+[B]1.2.2[/B]
+- Fixed: episodeguide url won't picked up sometimes
+
+[B]1.2.1[/B]
+- Fixed: won't parse longer search results
+
+[B]1.2.0[/B]
+- Added: episode runtime scraping
+
+[B]1.1.1[/B]
+- Fixed: episodeguide url won't picked up sometimes
+
+[B]1.1.0[/B]
+- Added: support decimals in episode numbers for DVD ordering
+
 [B]1.0.8[/B]
 - Fixed: fallback to other image languages if preferred doesn't exist
 

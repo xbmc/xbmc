@@ -1,7 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <strings>
-    <string id="30000">Activar Fanart</string>
+    <string id="30000">Descargar Fanart</string>
     <string id="30001">Activar Trailers de HD-Trailers.net</string>
-    <string id="30002">Idioma preferido</string>
-    <string id="30003">Obtener la puntuación de IMDb</string>
 </strings>
