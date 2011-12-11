@@ -423,7 +423,7 @@ namespace INFO
 
 #define VERSION_MAJOR 11
 #define VERSION_MINOR 0
-#define VERSION_TAG "PRE-"
+#define VERSION_TAG "-PRE"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

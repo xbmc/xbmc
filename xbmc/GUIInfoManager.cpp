@@ -3636,9 +3636,9 @@ CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
 #ifdef GIT_REV
-  tmp.Format("%s%d.%d Git:%s", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR, GIT_REV);
+  tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
 #else
-  tmp.Format("%s%d.%d", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR);
+  tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
 #endif
   return tmp;
 }
