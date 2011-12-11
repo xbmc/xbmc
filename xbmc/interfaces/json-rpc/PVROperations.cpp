@@ -37,29 +37,19 @@ using namespace EPG;
 
 JSON_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int iChannelId = (int) parameterObject["channelid"].asInteger();
-
-  if ( iChannelId > 0 )
+  if (!g_PVRManager.IsStarted())
   {
-    CLog::Log(LOGDEBUG, "JSONRPC: Switch channel: %d", iChannelId);
+    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
+    return FailedToExecute;
+  }
 
-    if ( g_PVRManager.IsStarted() )
-    {
-      const CPVRChannel *channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
-      if ( g_PVRManager.StartPlayback(channel, false) )
-      {
-        return ACK;
-      }
-      else
-      {
-        return InternalError;
-      }
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
-      return FailedToExecute;
-    }
+  int iChannelId = (int)parameterObject["channelid"].asInteger();
+  if (iChannelId > 0)
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: switch to channel '%d'", iChannelId);
+
+    const CPVRChannel *channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
+    return g_PVRManager.StartPlayback(channel) ? ACK : InternalError;
   }
   else
   {
@@ -69,55 +59,74 @@ JSON_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITransportLa
 
 JSON_STATUS CPVROperations::ChannelUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CLog::Log(LOGDEBUG, "JSONRPC: Channel up");
-
-  if ( g_PVRManager.IsStarted() && g_PVRManager.IsPlaying() && g_application.m_pPlayer )
-  {
-    unsigned int iNewChannelNumber(0);
-    g_PVRManager.ChannelUp( &iNewChannelNumber );
-
-    CLog::Log(LOGDEBUG, "JSONRPC: New channel %d", iNewChannelNumber);
-    return ACK;
-  }
-  else
+  if (!g_PVRManager.IsStarted())
   {
     CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
     return FailedToExecute;
   }
+
+  CLog::Log(LOGDEBUG, "JSONRPC: channel up");
+  unsigned int iNewChannelNumber(0);
+  bool bSwitched = g_PVRManager.ChannelUp(&iNewChannelNumber);
+
+  if (bSwitched && iNewChannelNumber > 0)
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: new channel '%d'", iNewChannelNumber);
+    return ACK;
+  }
+
+  CLog::Log(LOGERROR, "JSONRPC: failed to switch channels");
+  return InternalError;
 }
 
 JSON_STATUS CPVROperations::ChannelDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CLog::Log(LOGDEBUG, "JSONRPC: channel down");
-
-  if ( g_PVRManager.IsStarted() && g_PVRManager.IsPlaying() && g_application.m_pPlayer )
-  {
-    unsigned int iNewChannelNumber(0);
-    g_PVRManager.ChannelDown( &iNewChannelNumber );
-
-    CLog::Log(LOGDEBUG, "JSONRPC: ChannelDown new channel %d", iNewChannelNumber);
-    return ACK;
-  }
-  else
+  if (!g_PVRManager.IsStarted())
   {
     CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
     return FailedToExecute;
   }
+
+  CLog::Log(LOGDEBUG, "JSONRPC: channel down");
+  unsigned int iNewChannelNumber(0);
+  bool bSwitched = g_PVRManager.ChannelDown(&iNewChannelNumber);
+
+  if (bSwitched && iNewChannelNumber > 0)
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: new channel '%d'", iNewChannelNumber);
+    return ACK;
+  }
+
+  CLog::Log(LOGERROR, "JSONRPC: failed to switch channels");
+  return InternalError;
 }
 
 JSON_STATUS CPVROperations::RecordCurrentChannel(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  if (!g_PVRManager.IsStarted())
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
+    return FailedToExecute;
+  }
+
   CPVRChannel currentChannel;
   if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
     bool bOnOff = !currentChannel.IsRecording();
-    g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
-    CLog::Log(LOGDEBUG, "JSONRPC: Recording currently paying channel: %s", bOnOff ? "on" : "off" );
-    return ACK;
+    if (g_PVRManager.StartRecordingOnPlayingChannel(bOnOff))
+    {
+      CLog::Log(LOGDEBUG, "JSONRPC: set recording on currently playing channel to '%s'", bOnOff ? "on" : "off" );
+      return ACK;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "JSONRPC: unable to set recording to '%s'", bOnOff ? "on" : "off" );
+      return InternalError;
+    }
   }
   else
   {
-    CLog::Log(LOGDEBUG, "JSONRPC: Faild to recording currently paying Channel");
+    CLog::Log(LOGERROR, "JSONRPC: failed to start recording - no channel is playing");
     return FailedToExecute;
   }
 }
@@ -131,8 +140,11 @@ JSON_STATUS CPVROperations::IsAvailable(const CStdString &method, ITransportLaye
 
 JSON_STATUS CPVROperations::IsScanningChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ( !g_PVRManager.IsStarted() )
+  if (!g_PVRManager.IsStarted())
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
     return FailedToExecute;
+  }
 
   result = g_PVRManager.IsRunningChannelScan();
 
@@ -141,8 +153,11 @@ JSON_STATUS CPVROperations::IsScanningChannels(const CStdString &method, ITransp
 
 JSON_STATUS CPVROperations::IsRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ( !g_PVRManager.IsStarted() )
+  if (!g_PVRManager.IsStarted())
+  {
+    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
     return FailedToExecute;
+  }
 
   result = g_PVRManager.IsRecording();
 
@@ -151,54 +166,55 @@ JSON_STATUS CPVROperations::IsRecording(const CStdString &method, ITransportLaye
 
 JSON_STATUS CPVROperations::ScanChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ( !g_PVRManager.IsStarted() )
-    return FailedToExecute;
-
-  if ( !g_PVRManager.IsRunningChannelScan() )
+  if (!g_PVRManager.IsStarted())
   {
-    g_PVRManager.StartChannelScan();
+    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
+    return FailedToExecute;
   }
+
+  if (!g_PVRManager.IsRunningChannelScan())
+    g_PVRManager.StartChannelScan();
 
   return ACK;
 }
 
 JSON_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ( g_PVRManager.IsStarted() )
-    {
-      int iEpgId = (int) parameterObject["epgid"].asInteger();
-      int iUniqueId = (int) parameterObject["uniqueid"].asInteger();
-      int iStartTime = (int) parameterObject["starttime"].asInteger();
-
-      if ( iEpgId > 0 && iUniqueId > 0 && iStartTime > 0 )
-        {
-          CDateTime *startTime = new CDateTime( iStartTime );
-          CEpgInfoTag *tag = g_EpgContainer.GetById(iEpgId)->GetTag(iUniqueId, *startTime);
-          delete startTime;
-
-          if ( tag )
-            {
-              CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
-              bool bReturn = CPVRTimers::AddTimer(*newTimer);
-
-              CLog::Log(LOGDEBUG, "JSONRPC: Record result %d", bReturn);
-
-              delete newTimer;
-              return ACK;
-            }
-          else
-            {
-              return InternalError;
-            }
-        }
-      else
-        {
-        return InvalidParams;
-        }
-    }
-  else
+  if (!g_PVRManager.IsStarted())
   {
     CLog::Log(LOGDEBUG, "JSONRPC: PVR not started");
     return FailedToExecute;
   }
+
+  int iEpgId     = (int)parameterObject["epgid"].asInteger();
+  int iUniqueId  = (int)parameterObject["uniqueid"].asInteger();
+  int iStartTime = (int)parameterObject["starttime"].asInteger();
+
+  if (iEpgId > 0 && iUniqueId > 0 && iStartTime > 0)
+  {
+    CDateTime startTime(iStartTime);
+    CEpgInfoTag *tag = g_EpgContainer.GetById(iEpgId)->GetTag(iUniqueId, startTime);
+
+    if (tag && tag->ChannelTag())
+    {
+      CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'", tag->ChannelTag()->ChannelName().c_str(), tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(), tag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+
+      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+      bool bCreated = (newTimer != NULL);
+
+      if (bCreated)
+      {
+        CLog::Log(LOGDEBUG, "JSONRPC: recording scheduled");
+        delete newTimer;
+        return ACK;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "JSONRPC: failed to schedule recording");
+        return InternalError;
+      }
+    }
+  }
+
+  return InvalidParams;
 }
