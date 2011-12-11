@@ -291,6 +291,61 @@ void fadeOutDisplay(NSScreen *theScreen, double fadeTime)
   }
 }
 
+// try to find mode that matches the desired size, refreshrate
+// non interlaced, nonstretched, safe for hardware
+CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx)
+{
+  if( screenIdx >= (signed)[[NSScreen screens] count])
+    return NULL;
+    
+  Boolean stretched;
+  Boolean interlaced;
+  Boolean safeForHardware;
+  Boolean televisionoutput;
+  int w, h, bitsperpixel;
+  double rate;
+  RESOLUTION_INFO res;   
+  
+  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
+
+  CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(screenIdx));
+  
+  if (NULL == displayModes)
+  {
+    CLog::Log(LOGERROR, "GetMode - no displaymodes found!");
+    return NULL;
+  }
+
+  for (int i=0; i < CFArrayGetCount(displayModes); ++i)
+  {
+    CFDictionaryRef displayMode = (CFDictionaryRef)CFArrayGetValueAtIndex(displayModes, i);
+
+    stretched = GetDictionaryBoolean(displayMode, kCGDisplayModeIsStretched);
+    interlaced = GetDictionaryBoolean(displayMode, kCGDisplayModeIsInterlaced);
+    bitsperpixel = GetDictionaryInt(displayMode, kCGDisplayBitsPerPixel);
+    safeForHardware = GetDictionaryBoolean(displayMode, kCGDisplayModeIsSafeForHardware);
+    televisionoutput = GetDictionaryBoolean(displayMode, kCGDisplayModeIsTelevisionOutput);
+    w = GetDictionaryInt(displayMode, kCGDisplayWidth);
+    h = GetDictionaryInt(displayMode, kCGDisplayHeight);      
+    rate = GetDictionaryDouble(displayMode, kCGDisplayRefreshRate);
+
+
+    if( (bitsperpixel == 32)      && 
+        (safeForHardware == YES)  && 
+        (stretched == NO)         && 
+        (interlaced == NO)        &&
+        (w == width)              &&
+        (h == height)             &&
+        (rate == refreshrate || rate == 0)      )
+    {
+      CLog::Log(LOGDEBUG, "GetMode found a match!");    
+      return displayMode;
+    }
+  }
+  CLog::Log(LOGERROR, "GetMode - no match found!");  
+  return NULL;
+}
+
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
@@ -362,6 +417,11 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   if (!view)
     return false;
   
+  // if we are not starting up windowed, then hide the initial SDL window
+  // so we do not see it flash before the fade-out and switch to fullscreen.
+  if (g_guiSettings.m_LookAndFeelResolution != RES_WINDOW)
+    ShowHideNSWindow([view window], false);
+
   // disassociate view from context
   [cur_context clearDrawable];
   
@@ -488,9 +548,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
 
-    //switch videomode
-    SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-    
+    // check runtime, we only allow this on 10.5+
+    if (floor(NSAppKitVersionNumber) >= 949)
+    {
+      //switch videomode
+      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+    }
+
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view = [cur_context view];
     last_view_size = [last_view frame].size;
@@ -691,9 +755,13 @@ void CWinSystemOSX::UpdateResolutions()
     g_settings.m_ResInfo.push_back(res);
   }
   
-  //now just fill in the possible reolutions for the attached screens
-  //and push to the m_ResInfo vector
-  FillInVideoModes();  
+  // check runtime, we only allow this on 10.5+
+  if (floor(NSAppKitVersionNumber) >= 949)
+  {
+    //now just fill in the possible reolutions for the attached screens
+    //and push to the m_ResInfo vector
+    FillInVideoModes();
+  }
 }
 
 /*
@@ -862,18 +930,21 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
 
-  // find mode that matches the desired size
-  dispMode = CGDisplayBestModeForParametersAndRefreshRate(
-    display_id, 32, width, height, (CGRefreshRate)(refreshrate), &match);
+  // find mode that matches the desired size, refreshrate
+  // non interlaced, nonstretched, safe for hardware
+  dispMode = GetMode(width, height, refreshrate, screenIdx);
 
-  if (!match)
+  //not found - fallback to bestemdeforparameters
+  if (!dispMode)
+  {
     dispMode = CGDisplayBestModeForParameters(display_id, 32, width, height, &match);
 
-  if (!match)
-    dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
+    if (!match)
+      dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
 
-  if (!match)
-    return false;
+    if (!match)
+      return false;
+  }
 
   // switch mode and return success
   CGDisplayCapture(display_id);
