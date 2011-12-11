@@ -174,7 +174,7 @@ void CPVRManager::SetState(ManagerState state)
 {
   long oldstate = m_managerState;
   while(oldstate != cas((volatile long*)(&m_managerState), oldstate, state))
-    oldstate = m_managerState;
+    oldstate = cas((volatile long*)(&m_managerState), oldstate, state);
   return;
 }
 
