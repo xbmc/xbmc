@@ -28,6 +28,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
 #include "PVRChannelGroupsContainer.h"
@@ -60,8 +61,8 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iChannelId              = -1;
   m_bIsRadio                = bRadio;
   m_bIsHidden               = false;
-  m_strIconPath             = "";
-  m_strChannelName          = "";
+  m_strIconPath             = StringUtils::EmptyString;
+  m_strChannelName          = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
@@ -75,10 +76,10 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iUniqueId               = -1;
   m_iClientId               = -1;
   m_iClientChannelNumber    = -1;
-  m_strClientChannelName    = "";
-  m_strInputFormat          = "";
-  m_strStreamURL            = "";
-  m_strFileNameAndPath      = "";
+  m_strClientChannelName    = StringUtils::EmptyString;
+  m_strInputFormat          = StringUtils::EmptyString;
+  m_strStreamURL            = StringUtils::EmptyString;
+  m_strFileNameAndPath      = StringUtils::EmptyString;
   m_iClientEncryptionSystem = -1;
 }
 
@@ -97,7 +98,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
   m_iCachedChannelNumber    = 0;
   m_iClientId               = iClientId;
-  m_strFileNameAndPath      = "";
+  m_strFileNameAndPath      = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = true;
@@ -711,18 +712,18 @@ bool CPVRChannel::ClearEPG() const
   return true;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNow(void) const
+bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
   CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNow() : NULL;
+  return epg ? epg->InfoTagNow(tag) : false;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNext(void) const
+bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
   CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNext() : NULL;
+  return epg ? epg->InfoTagNext(tag) : false;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)

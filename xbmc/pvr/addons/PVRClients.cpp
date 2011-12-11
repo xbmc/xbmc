@@ -36,6 +36,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "utils/StringUtils.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -52,12 +53,11 @@ CPVRClients::CPVRClients(void) :
     m_bAllClientsConnected(false),
     m_bIsSwitchingChannels(false),
     m_bIsValidChannelSettings(false),
-    m_currentChannel(NULL),
-    m_currentRecording(NULL),
-    m_scanStart(0),
-    m_strPlayingClientName("")
+    m_bIsPlayingLiveTV(false),
+    m_bIsPlayingRecording(false),
+    m_scanStart(0)
 {
-  ResetQualityData();
+  ResetQualityData(m_qualityInfo);
 }
 
 CPVRClients::~CPVRClients(void)
@@ -69,7 +69,7 @@ void CPVRClients::Start(void)
 {
   Stop();
 
-  ResetQualityData();
+  ResetQualityData(m_qualityInfo);
 
   Create();
   SetPriority(-1);
@@ -128,9 +128,9 @@ void CPVRClients::Unload(void)
   /* reset class properties */
   m_bChannelScanRunning  = false;
   m_bAllClientsConnected = false;
-  m_currentChannel       = NULL;
-  m_currentRecording     = NULL;
-  m_strPlayingClientName = "";
+  m_bIsPlayingLiveTV     = false;
+  m_bIsPlayingRecording  = false;
+  m_strPlayingClientName = StringUtils::EmptyString;
 
   m_clientMap.clear();
 }
@@ -290,10 +290,10 @@ int CPVRClients::GetPlayingClientID(void) const
   int iReturn(-1);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
-    iReturn = m_currentChannel->ClientID();
-  else if (m_currentRecording)
-    iReturn = m_currentRecording->m_iClientId;
+  if (m_bIsPlayingLiveTV)
+    iReturn = m_currentChannel.ClientID();
+  else if (m_bIsPlayingRecording)
+    iReturn = m_currentRecording.m_iClientId;
 
   return iReturn;
 }
@@ -314,12 +314,12 @@ PVR_ADDON_CAPABILITIES CPVRClients::GetCurrentAddonCapabilities(void)
 {
   PVR_ADDON_CAPABILITIES props;
   memset(&props, 0, sizeof(PVR_ADDON_CAPABILITIES));
-  CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
-    props = m_clientMap[m_currentChannel->ClientID()]->GetAddonCapabilities();
-  else if (m_currentRecording)
-    props = m_clientMap[m_currentRecording->m_iClientId]->GetAddonCapabilities();
+  CSingleLock lock(m_critSection);
+  if (m_bIsPlayingLiveTV)
+    props = m_clientMap[m_currentChannel.ClientID()]->GetAddonCapabilities();
+  else if (m_bIsPlayingRecording)
+    props = m_clientMap[m_currentRecording.m_iClientId]->GetAddonCapabilities();
 
   return props;
 }
@@ -327,7 +327,7 @@ PVR_ADDON_CAPABILITIES CPVRClients::GetCurrentAddonCapabilities(void)
 bool CPVRClients::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentRecording != NULL || m_currentChannel != NULL;
+  return m_bIsPlayingRecording || m_bIsPlayingLiveTV;
 }
 
 const CStdString CPVRClients::GetPlayingClientName(void) const
@@ -340,10 +340,10 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
-    return m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
-  else if (m_currentRecording)
-    return m_clientMap[m_currentRecording->m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize);
+  if (m_bIsPlayingLiveTV)
+    return m_clientMap[m_currentChannel.ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
+  else if (m_bIsPlayingRecording)
+    return m_clientMap[m_currentRecording.m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize);
 
   return 0;
 }
@@ -353,10 +353,10 @@ int64_t CPVRClients::LengthStream(void)
   int64_t streamLength(0);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
+  if (m_bIsPlayingLiveTV)
     streamLength = 0;
-  else if (m_currentRecording)
-    streamLength = m_clientMap[m_currentRecording->m_iClientId]->LengthRecordedStream();
+  else if (m_bIsPlayingRecording)
+    streamLength = m_clientMap[m_currentRecording.m_iClientId]->LengthRecordedStream();
 
   return streamLength;
 }
@@ -366,10 +366,10 @@ int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   int64_t streamNewPos(0);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
+  if (m_bIsPlayingLiveTV)
     streamNewPos = 0;
-  else if (m_currentRecording)
-    streamNewPos = m_clientMap[m_currentRecording->m_iClientId]->SeekRecordedStream(iFilePosition, iWhence);
+  else if (m_bIsPlayingRecording)
+    streamNewPos = m_clientMap[m_currentRecording.m_iClientId]->SeekRecordedStream(iFilePosition, iWhence);
 
   return streamNewPos;
 }
@@ -379,10 +379,10 @@ int64_t CPVRClients::GetStreamPosition(void)
   int64_t streamPos(0);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
+  if (m_bIsPlayingLiveTV)
     streamPos = 0;
-  else if (m_currentRecording)
-    streamPos = m_clientMap[m_currentRecording->m_iClientId]->PositionRecordedStream();
+  else if (m_bIsPlayingRecording)
+    streamPos = m_clientMap[m_currentRecording.m_iClientId]->PositionRecordedStream();
 
   return streamPos;
 }
@@ -391,7 +391,7 @@ void CPVRClients::CloseStream(void)
 {
   CSingleLock lock(m_critSection);
   CloseLiveStream() || CloseRecordedStream();
-  m_strPlayingClientName = "";
+  m_strPlayingClientName = StringUtils::EmptyString;
 }
 
 PVR_STREAM_PROPERTIES *CPVRClients::GetCurrentStreamProperties(void)
@@ -399,9 +399,9 @@ PVR_STREAM_PROPERTIES *CPVRClients::GetCurrentStreamProperties(void)
   PVR_STREAM_PROPERTIES *props = NULL;
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
+  if (m_bIsPlayingLiveTV)
   {
-    int iChannelId = m_currentChannel->ClientID();
+    int iChannelId = m_currentChannel.ClientID();
     m_clientMap[iChannelId]->GetStreamProperties(&m_streamProps[iChannelId]);
 
     props = &m_streamProps[iChannelId];
@@ -410,39 +410,38 @@ PVR_STREAM_PROPERTIES *CPVRClients::GetCurrentStreamProperties(void)
   return props;
 }
 
-const char *CPVRClients::GetCurrentInputFormat(void) const
+CStdString CPVRClients::GetCurrentInputFormat(void) const
 {
-  static CStdString strReturn("");
-  CSingleLock lock(m_critSection);
+  CStdString strReturn;
+  CPVRChannel currentChannel;
+  if (GetPlayingChannel(currentChannel))
+    strReturn = currentChannel.InputFormat();
 
-  if (m_currentChannel)
-    strReturn = m_currentChannel->InputFormat();
-
-  return strReturn.c_str();
+  return strReturn;
 }
 
 bool CPVRClients::IsReadingLiveStream(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentChannel != NULL;
+  return m_bIsPlayingLiveTV;
 }
 
 bool CPVRClients::IsPlayingTV(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentChannel != NULL && !m_currentChannel->IsRadio();
+  return m_bIsPlayingLiveTV && !m_currentChannel.IsRadio();
 }
 
 bool CPVRClients::IsPlayingRadio(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentChannel != NULL && m_currentChannel->IsRadio();
+  return m_bIsPlayingLiveTV && m_currentChannel.IsRadio();
 }
 
 bool CPVRClients::IsEncrypted(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentChannel != NULL && m_currentChannel->IsEncrypted();
+  return m_bIsPlayingLiveTV && m_currentChannel.IsEncrypted();
 }
 
 bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
@@ -450,18 +449,10 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
-  {
-    delete m_currentChannel;
-    m_currentChannel = NULL;
-  }
-  if (m_currentRecording)
-  {
-    delete m_currentRecording;
-    m_currentRecording = NULL;
-  }
+  m_bIsPlayingLiveTV = false;
+  m_bIsPlayingRecording = false;
 
-  ResetQualityData();
+  ResetQualityData(m_qualityInfo);
 
   /* try to open the stream on the client */
   boost::shared_ptr<CPVRClient> client;
@@ -470,7 +461,8 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
       client->GetAddonCapabilities().bHandlesInputStream &&
       client->OpenLiveStream(tag)))
   {
-    m_currentChannel = &tag;
+    m_currentChannel = tag;
+    m_bIsPlayingLiveTV = true;
     if (tag.ClientID() == XBMC_VIRTUAL_CLIENTID)
       m_strPlayingClientName = g_localizeStrings.Get(19209);
     else if (!tag.IsVirtual())
@@ -488,114 +480,108 @@ bool CPVRClients::CloseLiveStream(void)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
-  ResetQualityData();
+  ResetQualityData(m_qualityInfo);
 
-  if (!m_currentChannel)
+  if (!m_bIsPlayingLiveTV)
     return bReturn;
 
-  if ((m_currentChannel->StreamURL().IsEmpty()) || (m_currentChannel->StreamURL().compare(0,13, "pvr://stream/") == 0))
+  if ((m_currentChannel.StreamURL().IsEmpty()) || (m_currentChannel.StreamURL().compare(0,13, "pvr://stream/") == 0))
   {
-    m_clientMap[m_currentChannel->ClientID()]->CloseLiveStream();
-    m_currentChannel = NULL;
+    m_clientMap[m_currentChannel.ClientID()]->CloseLiveStream();
     bReturn = true;
   }
 
-  delete m_currentChannel;
-  m_currentChannel = NULL;
+  m_bIsPlayingLiveTV = false;
   return bReturn;
 }
 
-const char *CPVRClients::GetStreamURL(const CPVRChannel &tag)
+CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
-  static CStdString strReturn("");
+  CStdString strReturn;
   boost::shared_ptr<CPVRClient> client;
   if (GetConnectedClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, tag.ClientID());
 
-  return strReturn.c_str();
+  return strReturn;
 }
 
 bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
 {
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
-  if (m_bIsSwitchingChannels)
-  {
-    CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete",
-        __FUNCTION__, channel.ChannelName().c_str());
-    return bReturn;
-  }
+  bool bSwitchSuccessful(false);
+  bool bNewStreamOpened(false);
 
-  if (m_currentChannel && (
-      /* different client add-on */
-      m_currentChannel->ClientID() != channel.ClientID() ||
-      /* switch from radio -> tv or tv -> radio */
-      m_currentChannel->IsRadio() != channel.IsRadio()))
   {
-    lock.Leave();
-    CloseStream();
-    return OpenLiveStream(channel);
-  }
-
-  if( (!channel.StreamURL().IsEmpty()) || ((!m_currentChannel->StreamURL().IsEmpty()) && (channel.StreamURL().IsEmpty())))
-  {
-    lock.Leave();
-    // StreamURL should always be opened as a new file
-    CFileItem m_currentFile(channel);
-    g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
-    return true;
-  }
-
-  m_bIsSwitchingChannels = true;
-  lock.Leave();
-
-  boost::shared_ptr<CPVRClient> client;
-  if (GetConnectedClient(channel.ClientID(), client))
-  {
-    if (client->SwitchChannel(channel))
+    CSingleLock lock(m_critSection);
+    if (m_bIsSwitchingChannels)
     {
-      lock.Enter();
-      m_currentChannel = &channel;
-      ResetQualityData();
-      m_bIsValidChannelSettings = false;
-      lock.Leave();
+      CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete", __FUNCTION__, channel.ChannelName().c_str());
+      return false;
+    }
+    m_bIsSwitchingChannels = true;
+  }
 
-      bReturn = true;
+  CPVRChannel currentChannel;
+  bool bGotPlayingChannel = GetPlayingChannel(currentChannel);
+  if (bGotPlayingChannel)
+  {
+    if (currentChannel != channel)
+    {
+      CloseStream();
+      bSwitchSuccessful = OpenLiveStream(channel);
     }
     else
     {
-      CLog::Log(LOGERROR, "PVR - %s - cannot switch channel on client %d",__FUNCTION__, channel.ClientID());
+      bSwitchSuccessful = true;
     }
+  }
+  else if (!channel.StreamURL().IsEmpty() || !currentChannel.StreamURL().IsEmpty())
+  {
+    // StreamURL should always be opened as a new file
+    CFileItem m_currentFile(channel);
+    g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
+    bSwitchSuccessful = true;
+    bNewStreamOpened = true;
   }
   else
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
+    boost::shared_ptr<CPVRClient> client;
+    if (GetConnectedClient(channel.ClientID(), client))
+      bSwitchSuccessful = client->SwitchChannel(channel);
   }
 
-  lock.Enter();
-  m_bIsSwitchingChannels = false;
+  {
+    CSingleLock lock(m_critSection);
+    m_bIsSwitchingChannels = false;
+    if (bSwitchSuccessful && !bNewStreamOpened)
+    {
+      m_currentChannel = channel;
+      m_bIsPlayingLiveTV = true;
+      ResetQualityData(m_qualityInfo);
+      m_bIsValidChannelSettings = false;
+    }
+  }
 
-  return bReturn;
+  if (!bSwitchSuccessful)
+    CLog::Log(LOGERROR, "PVR - %s - cannot switch channel on client %d",__FUNCTION__, channel.ClientID());
+
+  return bSwitchSuccessful;
 }
 
-bool CPVRClients::GetPlayingChannel(CPVRChannel *channel) const
+bool CPVRClients::GetPlayingChannel(CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel != NULL)
-    *channel = *m_currentChannel;
-  else
-    channel = NULL;
-
-  return m_currentChannel != NULL;
+  if (m_bIsPlayingLiveTV)
+    channel = m_currentChannel;
+  return m_bIsPlayingLiveTV;
 }
 
 bool CPVRClients::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_currentRecording != NULL;
+  return m_bIsPlayingRecording;
 }
 
 bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
@@ -603,23 +589,16 @@ bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if (m_currentChannel)
-  {
-    delete m_currentChannel;
-    m_currentChannel = NULL;
-  }
-  if (m_currentRecording)
-  {
-    delete m_currentRecording;
-    m_currentRecording = NULL;
-  }
+  m_bIsPlayingLiveTV = false;
+  m_bIsPlayingRecording = false;
 
   /* try to open the recording stream on the client */
   boost::shared_ptr<CPVRClient> client;
   if (GetConnectedClient(tag.m_iClientId, client) &&
       client->OpenRecordedStream(tag))
   {
-    m_currentRecording = &tag;
+    m_currentRecording = tag;
+    m_bIsPlayingRecording = true;
     m_strPlayingClientName = client->GetFriendlyName();
     bReturn = true;
   }
@@ -632,55 +611,54 @@ bool CPVRClients::CloseRecordedStream(void)
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if (!m_currentRecording)
+  if (!m_bIsPlayingRecording)
     return bReturn;
 
-  if (m_currentRecording->m_iClientId > 0 && m_clientMap[m_currentRecording->m_iClientId])
+  if (m_currentRecording.m_iClientId > 0 && m_clientMap[m_currentRecording.m_iClientId])
   {
-    m_clientMap[m_currentRecording->m_iClientId]->CloseRecordedStream();
+    m_clientMap[m_currentRecording.m_iClientId]->CloseRecordedStream();
     bReturn = true;
   }
 
-  delete m_currentRecording;
-  m_currentRecording = NULL;
+  m_bIsPlayingRecording = false;
   return bReturn;
 }
 
-bool CPVRClients::GetPlayingRecording(CPVRRecording *recording) const
+bool CPVRClients::GetPlayingRecording(CPVRRecording &recording) const
 {
   CSingleLock lock(m_critSection);
-  if (m_currentRecording != NULL)
-    *recording = *m_currentRecording;
+  if (m_bIsPlayingRecording)
+    recording = m_currentRecording;
 
-  return m_currentRecording != NULL;
+  return m_bIsPlayingRecording;
 }
 
 void CPVRClients::DemuxReset(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_currentChannel)
-    m_clientMap[m_currentChannel->ClientID()]->DemuxReset();
+  if (m_bIsPlayingLiveTV)
+    m_clientMap[m_currentChannel.ClientID()]->DemuxReset();
 }
 
 void CPVRClients::DemuxAbort(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_currentChannel)
-    m_clientMap[m_currentChannel->ClientID()]->DemuxAbort();
+  if (m_bIsPlayingLiveTV)
+    m_clientMap[m_currentChannel.ClientID()]->DemuxAbort();
 }
 
 void CPVRClients::DemuxFlush(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_currentChannel)
-    m_clientMap[m_currentChannel->ClientID()]->DemuxFlush();
+  if (m_bIsPlayingLiveTV)
+    m_clientMap[m_currentChannel.ClientID()]->DemuxFlush();
 }
 
 DemuxPacket* CPVRClients::ReadDemuxStream(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  if (m_currentChannel)
-    return m_clientMap[m_currentChannel->ClientID()]->DemuxRead();
+  if (m_bIsPlayingLiveTV)
+    return m_clientMap[m_currentChannel.ClientID()]->DemuxRead();
 
   return NULL;
 }
@@ -832,12 +810,14 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
 
 bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
-  return m_currentChannel && m_currentChannel->IsRecording();
+  CPVRChannel currentChannel;
+  return GetPlayingChannel(currentChannel) && currentChannel.IsRecording();
 }
 
 bool CPVRClients::CanRecordInstantly(void)
 {
-  return m_currentChannel != NULL && HasRecordingsSupport(m_currentChannel->ClientID());
+  CPVRChannel currentChannel;
+  return GetPlayingChannel(currentChannel) && HasRecordingsSupport(currentChannel.ClientID());
 }
 
 bool CPVRClients::HasEPGSupport(int iClientId)
@@ -1048,7 +1028,7 @@ void CPVRClients::StartChannelScan(void)
 
   /* start the channel scan */
   CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s",
-      __FUNCTION__, scanClient->GetFriendlyName());
+      __FUNCTION__, scanClient->GetFriendlyName().c_str());
   long perfCnt = XbmcThreads::SystemClockMillis();
 
   /* stop the supervisor thread */
@@ -1165,37 +1145,37 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   return bReturn;
 }
 
-void CPVRClients::ResetQualityData(void)
+void CPVRClients::ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo)
 {
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
   {
-    strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), 1024);
-    strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), 1024);
   }
   else
   {
-    strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
-    strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
   }
-  m_qualityInfo.iSNR          = 0;
-  m_qualityInfo.iSignal       = 0;
-  m_qualityInfo.iSNR          = 0;
-  m_qualityInfo.iUNC          = 0;
-  m_qualityInfo.dVideoBitrate = 0;
-  m_qualityInfo.dAudioBitrate = 0;
-  m_qualityInfo.dDolbyBitrate = 0;
+  qualityInfo.iSNR          = 0;
+  qualityInfo.iSignal       = 0;
+  qualityInfo.iSNR          = 0;
+  qualityInfo.iUNC          = 0;
+  qualityInfo.dVideoBitrate = 0;
+  qualityInfo.dAudioBitrate = 0;
+  qualityInfo.dDolbyBitrate = 0;
 }
 
 int CPVRClients::ReadLiveStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
-  return m_currentChannel ? m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize) : 0;
+  return m_bIsPlayingLiveTV ? m_clientMap[m_currentChannel.ClientID()]->ReadLiveStream(lpBuf, uiBufSize) : 0;
 }
 
 int CPVRClients::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
-  return m_currentRecording ? m_clientMap[m_currentRecording->m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize) : 0;
+  return m_bIsPlayingRecording ? m_clientMap[m_currentRecording.m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize) : 0;
 }
 
 void CPVRClients::Process(void)
@@ -1235,26 +1215,31 @@ void CPVRClients::ShowDialogNoClientsEnabled(void)
 
 void CPVRClients::UpdateCharInfoSignalStatus(void)
 {
-  CSingleLock lock(m_critSection);
-
+  CPVRChannel currentChannel;
   boost::shared_ptr<CPVRClient> client;
-  if (m_currentChannel && g_guiSettings.GetBool("pvrplayback.signalquality") &&
-      !m_currentChannel->IsVirtual() &&
-      GetConnectedClient(m_currentChannel->ClientID(), client))
+  PVR_SIGNAL_STATUS qualityInfo;
+  ResetQualityData(qualityInfo);
+
+  if (GetPlayingChannel(currentChannel) &&
+      g_guiSettings.GetBool("pvrplayback.signalquality") &&
+      !currentChannel.IsVirtual() &&
+      GetConnectedClient(currentChannel.ClientID(), client))
   {
-    client->SignalQuality(m_qualityInfo);
+    client->SignalQuality(qualityInfo);
   }
-  else
-  {
-    ResetQualityData();
-  }
+
+  CSingleLock lock(m_critSection);
+  m_qualityInfo = qualityInfo;
 }
 
 void CPVRClients::SaveCurrentChannelSettings(void)
 {
-  CSingleLock lock(m_critSection);
-  if (!m_currentChannel || !m_bIsValidChannelSettings)
-    return;
+  CPVRChannel channel;
+  {
+    CSingleLock lock(m_critSection);
+    if (!GetPlayingChannel(channel) || !m_bIsValidChannelSettings)
+      return;
+  }
 
   CPVRDatabase *database = OpenPVRDatabase();
   if (!database)
@@ -1263,14 +1248,14 @@ void CPVRClients::SaveCurrentChannelSettings(void)
   if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
-        __FUNCTION__, m_currentChannel->ChannelName().c_str());
-    database->PersistChannelSettings(*m_currentChannel, g_settings.m_currentVideoSettings);
+        __FUNCTION__, channel.ChannelName().c_str());
+    database->PersistChannelSettings(channel, g_settings.m_currentVideoSettings);
   }
   else
   {
     CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
-        __FUNCTION__, m_currentChannel->ChannelName().c_str());
-    database->DeleteChannelSettings(*m_currentChannel);
+        __FUNCTION__, channel.ChannelName().c_str());
+    database->DeleteChannelSettings(channel);
   }
 
   database->Close();
@@ -1278,9 +1263,12 @@ void CPVRClients::SaveCurrentChannelSettings(void)
 
 void CPVRClients::LoadCurrentChannelSettings(void)
 {
-  CSingleLock lock(m_critSection);
-  if (!m_currentChannel)
-    return;
+  CPVRChannel channel;
+  {
+    CSingleLock lock(m_critSection);
+    if (!GetPlayingChannel(channel))
+      return;
+  }
 
   CPVRDatabase *database = OpenPVRDatabase();
   if (!database)
@@ -1292,7 +1280,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
     CVideoSettings loadedChannelSettings = g_settings.m_defaultVideoSettings;
 
     /* try to load the settings from the database */
-    database->GetChannelSettings(*m_currentChannel, loadedChannelSettings);
+    database->GetChannelSettings(channel, loadedChannelSettings);
     database->Close();
 
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;

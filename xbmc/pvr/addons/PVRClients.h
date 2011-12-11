@@ -24,6 +24,8 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 #include "PVRClient.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecording.h"
 
 #include <vector>
 #include <deque>
@@ -235,7 +237,7 @@ namespace PVR
      * @brief Get the input format name of the current playing stream content.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
-    const char *GetCurrentInputFormat(void) const;
+    CStdString GetCurrentInputFormat(void) const;
     //@}
 
     /*! @name Live TV stream methods */
@@ -279,7 +281,7 @@ namespace PVR
      * @param tag The channel to get the stream url for.
      * @return The requested stream url or an empty string if it wasn't found.
      */
-    const char *GetStreamURL(const CPVRChannel &tag);
+    CStdString GetStreamURL(const CPVRChannel &tag);
 
     /*!
      * @brief Switch an opened live tv stream to another channel.
@@ -293,7 +295,7 @@ namespace PVR
      * @param channel A copy of the channel that is currently playing.
      * @return True if a channel is playing, false otherwise.
      */
-    bool GetPlayingChannel(CPVRChannel *channel) const;
+    bool GetPlayingChannel(CPVRChannel &channel) const;
 
     //@}
 
@@ -323,7 +325,7 @@ namespace PVR
      * @param recording A copy of the recording that is currently playing.
      * @return True if a recording is playing, false otherwise.
      */
-    bool GetPlayingRecording(CPVRRecording *recording) const;
+    bool GetPlayingRecording(CPVRRecording &recording) const;
 
     //@}
 
@@ -614,7 +616,7 @@ namespace PVR
     /*!
      * @brief Reset the signal quality data to the initial values.
      */
-    void ResetQualityData(void);
+    void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
 
     /*!
      * @brief Updates the backend information
@@ -659,8 +661,10 @@ namespace PVR
     bool                  m_bAllClientsConnected;        /*!< true when all clients are loaded, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                  m_bIsValidChannelSettings;  /*!< true if current channel settings are valid and can be saved */
-    const CPVRChannel *   m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
-    const CPVRRecording * m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
+    CPVRChannel           m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
+    bool                  m_bIsPlayingLiveTV;
+    CPVRRecording         m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
+    bool                  m_bIsPlayingRecording;
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     ADDON::VECADDONS      m_addons;

@@ -412,6 +412,7 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 {
   bool bInterrupted(false);
+  bool bDbOpened(false);
   unsigned int iUpdatedTables(0);
 
   /* set start and end time */
@@ -421,17 +422,18 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   end = start + m_iDisplayTime;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
 
-  CSingleLock lock(m_critSection);
-  if (m_bIsUpdating || InterruptUpdate())
+  {
+    CSingleLock lock(m_critSection);
+    if (m_bIsUpdating || InterruptUpdate())
       return false;
-  m_bIsUpdating = true;
-  lock.Leave();
+    m_bIsUpdating = true;
+  }
 
   if (bShowProgress)
     ShowProgressDialog();
 
   /* open the database */
-  if (!m_bIgnoreDbForClient && !m_database.Open())
+  if (!m_bIgnoreDbForClient && !(bDbOpened = m_database.Open()))
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
     return false;
@@ -460,25 +462,22 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   if (!bInterrupted)
   {
-    lock.Enter();
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
-    m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
-    lock.Leave();
-  }
+    CSingleLock lock(m_critSection);
+    m_bIsUpdating = false;
 
-  if (!m_bIgnoreDbForClient)
-    m_database.Close();
-
-  lock.Enter();
-  m_bIsUpdating = false;
-  if (bInterrupted)
-  {
-    /* the update has been interrupted. try again later */
-    time_t iNow;
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
+    if (bInterrupted)
+    {
+      /* the update has been interrupted. try again later */
+      time_t iNow;
+      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+      m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
+    }
+    else
+    {
+      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
+      m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
+    }
   }
-  lock.Leave();
 
   if (bShowProgress)
     CloseProgressDialog();
@@ -486,11 +485,13 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* notify observers */
   if (iUpdatedTables > 0)
   {
-    CheckPlayingEvents();
-    SetChanged();
+    if (CheckPlayingEvents())
+      SetChanged();
     NotifyObservers("epg", true);
   }
 
+  if (bDbOpened)
+    m_database.Close();
   m_updateEvent.Set();
 
   return !bInterrupted;

@@ -99,11 +99,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 void CGUIWindowPVRTimers::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   g_PVRTimers->RegisterObserver(this);
@@ -123,7 +119,6 @@ void CGUIWindowPVRTimers::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)

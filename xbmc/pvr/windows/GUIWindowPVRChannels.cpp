@@ -177,12 +177,8 @@ CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 void CGUIWindowPVRChannels::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",
       __FUNCTION__, GetName(), m_iControlList);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   g_EpgContainer.RegisterObserver(this);
@@ -207,6 +203,9 @@ void CGUIWindowPVRChannels::UpdateData(void)
 
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
+  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
+  if (!SelectPlayingFile())
+    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   /* empty list */
   if (m_parent->m_vecItems->Size() == 0)
@@ -228,16 +227,11 @@ void CGUIWindowPVRChannels::UpdateData(void)
     }
   }
 
-  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  if (!SelectPlayingFile())
-    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
-
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)

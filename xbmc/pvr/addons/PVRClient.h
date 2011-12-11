@@ -111,22 +111,22 @@ namespace PVR
     /*!
      * @return The name reported by the backend.
      */
-    const char *GetBackendName(void);
+    CStdString GetBackendName(void);
 
     /*!
      * @return The version string reported by the backend.
      */
-    const char *GetBackendVersion(void);
+    CStdString GetBackendVersion(void);
 
     /*!
      * @return The connection string reported by the backend.
      */
-    const char *GetConnectionString(void);
+    CStdString GetConnectionString(void);
 
     /*!
      * @return A friendly name for this add-on that can be used in log messages.
      */
-    const char *GetFriendlyName(void);
+    CStdString GetFriendlyName(void);
 
     /*!
      * @brief Get the disk space reported by the server.
@@ -368,7 +368,7 @@ namespace PVR
      * @param channel The channel to get the stream URL for.
      * @return The requested URL.
      */
-    const char *GetLiveStreamURL(const CPVRChannel &channel);
+    CStdString GetLiveStreamURL(const CPVRChannel &channel);
 
     //@}
     /** @name PVR recording stream methods */

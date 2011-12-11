@@ -95,11 +95,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRSearch::UpdateData(void)
 {
-  if (m_bIsFocusing)
-    return;
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRSearch - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
@@ -153,7 +149,6 @@ void CGUIWindowPVRSearch::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(283));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)

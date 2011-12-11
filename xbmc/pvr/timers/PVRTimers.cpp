@@ -27,6 +27,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 #include "PVRTimers.h"
 #include "pvr/PVRManager.h"
@@ -428,9 +429,9 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   if (!channel)
     return NULL;
 
-  const CEpgInfoTag *epgTag = channel->GetEPGNow();
-
-  CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
+  CEpgInfoTag epgTag;
+  bool bHasEpgNow = channel->GetEPGNow(epgTag);
+  CPVRTimerInfoTag *newTimer = bHasEpgNow ? CPVRTimerInfoTag::CreateFromEpg(epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
@@ -447,9 +448,9 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     newTimer->m_strSummary.Format("%s %s %s %s %s",
         newTimer->StartAsLocalTime().GetAsLocalizedDate(),
         g_localizeStrings.Get(19159),
-        newTimer->StartAsLocalTime().GetAsLocalizedTime("", false),
+        newTimer->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
         g_localizeStrings.Get(19160),
-        newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
+        newTimer->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
   }
 
   CDateTime startTime(0);

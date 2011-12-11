@@ -75,8 +75,11 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
+    bool GetPlayingTag(EPG::CEpgInfoTag &tag) const;
+
   private:
     void ResetProperties(void);
+    void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
     void Process(void);
 
     void UpdatePlayingTag(void);

@@ -447,7 +447,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         CPVRChannel channel;
         int iChannelNumber = -1;
-        g_PVRManager.GetCurrentChannel(&channel);
+        g_PVRManager.GetCurrentChannel(channel);
 
         if (action.GetID() == REMOTE_0)
         {
@@ -797,7 +797,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CStdString strLabel = msg.GetLabel();
 
         CPVRChannel playingChannel;
-        if (g_PVRManager.GetCurrentChannel(&playingChannel))
+        if (g_PVRManager.GetCurrentChannel(playingChannel))
         {
           CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
           if (selectedGroup)

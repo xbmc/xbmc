@@ -64,7 +64,6 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
     m_iSortOrder      = m_parent->GetViewState()->GetSortOrder();
     m_iSortMethod     = m_parent->GetViewState()->GetSortMethod();
   }
-  m_bIsFocusing     = false;
 }
 
 bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
@@ -751,13 +750,13 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
   }
   else if (item->IsPVRChannel())
   {
-    const CEpgInfoTag *epgnow = item->GetPVRChannelInfoTag()->GetEPGNow();
-    if (!epgnow)
+    CEpgInfoTag epgnow;
+    if (!item->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
       return;
     }
-    tag = new CFileItem(*epgnow);
+    tag = new CFileItem(epgnow);
   }
 
   if (tag)
@@ -795,11 +794,12 @@ bool CGUIWindowPVRCommon::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
     bReturn = true;
     if (m_parent->m_windowSearch)
     {
+      CEpgInfoTag tag;
       m_parent->m_windowSearch->m_searchfilter.Reset();
       if (item->IsEPG())
         m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
-      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
-        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow(tag))
+        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + tag.Title() + "\"";
       else if (item->IsPVRRecording())
         m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
 

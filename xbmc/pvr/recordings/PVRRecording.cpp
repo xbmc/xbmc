@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
+#include "utils/StringUtils.h"
 
 #include "epg/Epg.h"
 
@@ -79,14 +80,14 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 
 void CPVRRecording::Reset(void)
 {
-  m_strRecordingId     = "";
-  m_iClientId          = g_PVRClients->GetFirstConnectedClientID(); // Temporary until we support multiple backends
-  m_strChannelName     = "";
-  m_strDirectory       = "";
-  m_strStreamURL       = "";
+  m_strRecordingId     = StringUtils::EmptyString;
+  m_iClientId          = 0;
+  m_strChannelName     = StringUtils::EmptyString;
+  m_strDirectory       = StringUtils::EmptyString;
+  m_strStreamURL       = StringUtils::EmptyString;
   m_iPriority          = -1;
   m_iLifetime          = -1;
-  m_strFileNameAndPath = "";
+  m_strFileNameAndPath = StringUtils::EmptyString;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -180,7 +181,7 @@ void CPVRRecording::UpdatePath(void)
   strTitle.Replace('/','-');
   strTitle.Remove('?');
 
-  if (m_strDirectory != "")
+  if (m_strDirectory != StringUtils::EmptyString)
     m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr",
         m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
   else

@@ -176,26 +176,27 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_pictureInfoTag = NULL;
 
   Reset();
-  const CEpgInfoTag *epgNow = channel.GetEPGNow();
+  CEpgInfoTag epgNow;
+  bool bHasEpgNow = channel.GetEPGNow(epgNow);
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = epgNow ? epgNow->Title() : g_localizeStrings.Get(19055);
+  m_strLabel2 = bHasEpgNow ? epgNow.Title() : g_localizeStrings.Get(19055);
   SetMimeType(channel.InputFormat());
 
-  if (channel.IsRadio() && epgNow)
+  if (channel.IsRadio() && bHasEpgNow)
   {
     CMusicInfoTag* musictag = GetMusicInfoTag();
     if (musictag)
     {
       musictag->SetURL(channel.Path());
-      musictag->SetTitle(epgNow ? epgNow->Title() : g_localizeStrings.Get(19055));
+      musictag->SetTitle(bHasEpgNow ? epgNow.Title() : g_localizeStrings.Get(19055));
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
-      musictag->SetGenre(epgNow ? epgNow->Genre() : "");
-      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
+      musictag->SetGenre(bHasEpgNow ? epgNow.Genre() : "");
+      musictag->SetDuration(bHasEpgNow ? epgNow.GetDuration() : 3600);
       musictag->SetLoaded(true);
       musictag->SetComment("");
       musictag->SetLyrics("");
