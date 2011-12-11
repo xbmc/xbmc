@@ -264,11 +264,11 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  CSingleLock lock(m_critSection);
+  SetState(ManagerStateInterrupted);
+
   StopThread();
   m_guiInfo->Stop();
   m_addons->Stop();
-  SetState(ManagerStateInterrupted);
 }
 
 bool CPVRManager::Load(void)
