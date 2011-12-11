@@ -177,12 +177,8 @@ CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 void CGUIWindowPVRChannels::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",
       __FUNCTION__, GetName(), m_iControlList);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   g_EpgContainer.RegisterObserver(this);
@@ -218,7 +214,6 @@ void CGUIWindowPVRChannels::UpdateData(void)
     {
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
-      m_bIsFocusing = false;
       graphicsLock.Leave();
       lock.Leave();
 
@@ -237,7 +232,6 @@ void CGUIWindowPVRChannels::UpdateData(void)
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)

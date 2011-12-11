@@ -234,12 +234,9 @@ bool CGUIWindowPVRGuide::SelectPlayingFile(void)
 void CGUIWindowPVRGuide::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
   g_EpgContainer.RegisterObserver(this);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
@@ -258,8 +255,6 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19222));
   UpdateButtons();
-
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRGuide::IsSelectedButton(CGUIMessage &message) const
