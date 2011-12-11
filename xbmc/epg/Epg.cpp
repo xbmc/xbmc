@@ -31,6 +31,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
+#include "utils/StringUtils.h"
 
 #include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
 
@@ -80,9 +81,49 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
   m_lastDate.SetValid(false);
 }
 
+CEpg::CEpg(void) :
+    m_bChanged(false),
+    m_bTagsChanged(false),
+    m_bInhibitSorting(false),
+    m_bLoaded(false),
+    m_iEpgID(0),
+    m_strName(StringUtils::EmptyString),
+    m_strScraperName(StringUtils::EmptyString),
+    m_nowActive(NULL),
+    m_Channel(NULL)
+{
+  m_lastScanTime.SetValid(false);
+  m_firstDate.SetValid(false);
+  m_lastDate.SetValid(false);
+}
+
 CEpg::~CEpg(void)
 {
   Clear();
+}
+
+CEpg &CEpg::operator =(const CEpg &right)
+{
+  m_bChanged        = right.m_bChanged;
+  m_bTagsChanged    = right.m_bTagsChanged;
+  m_bInhibitSorting = right.m_bInhibitSorting;
+  m_bLoaded         = right.m_bLoaded;
+  m_iEpgID          = right.m_iEpgID;
+  m_strName         = right.m_strName;
+  m_strScraperName  = right.m_strScraperName;
+  m_nowActive       = right.m_nowActive;
+  m_lastScanTime    = right.m_lastScanTime;
+  m_firstDate       = right.m_firstDate;
+  m_lastDate        = right.m_lastDate;
+  m_Channel         = right.m_Channel;
+
+  for (size_t iPtr = 0; iPtr < right.size(); iPtr++)
+  {
+    CEpgInfoTag *tag = new CEpgInfoTag(*right.at(iPtr));
+    push_back(tag);
+  }
+
+  return *this;
 }
 
 /** @name Public methods */
@@ -182,26 +223,32 @@ void CEpg::Cleanup(void)
 
 void CEpg::Cleanup(const CDateTime &Time)
 {
-  CSingleLock lock(m_critSection);
-  for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
+  bool bTagsChanged(false);
   {
-    if (at(iPtr)->EndAsUTC() < Time)
+    CSingleLock lock(m_critSection);
+    for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
     {
-      if (m_nowActive && *m_nowActive == *at(iPtr))
-        m_nowActive = NULL;
+      if (at(iPtr)->EndAsUTC() < Time)
+      {
+        if (m_nowActive && *m_nowActive == *at(iPtr))
+          m_nowActive = NULL;
 
-      delete at(iPtr);
-      erase(begin() + iPtr);
-      m_bTagsChanged = true;
+        delete at(iPtr);
+        erase(begin() + iPtr);
+        m_bTagsChanged = true;
+      }
+    }
+
+    if (m_bTagsChanged)
+    {
+      bTagsChanged = true;
+      UpdatePreviousAndNextPointers();
+      UpdateFirstAndLastDates();
     }
   }
 
-  if (m_bTagsChanged)
-  {
-    UpdatePreviousAndNextPointers();
-    UpdateFirstAndLastDates();
+  if (bTagsChanged)
     Persist();
-  }
 }
 
 bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
@@ -578,46 +625,51 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
   if (g_guiSettings.GetBool("epg.ignoredbforclient"))
     return true;
 
-  bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-    return bReturn;
+    return false;
   }
 
-  CSingleLock lock(m_critSection);
-  if (m_iEpgID <= 0 || m_bChanged)
+  CEpg epgCopy;
   {
-    int iId = database->Persist(*this);
+    CSingleLock lock(m_critSection);
+    epgCopy = *this;
+    m_bChanged     = false;
+    m_bTagsChanged = false;
+  }
+
+  if (epgCopy.m_iEpgID <= 0 || epgCopy.m_bChanged)
+  {
+    int iId = database->Persist(epgCopy);
     if (iId > 0)
     {
-      m_iEpgID = iId;
-      m_bChanged = false;
+      epgCopy.m_iEpgID   = iId;
+      epgCopy.m_bChanged = false;
     }
   }
 
   if (bUpdateLastScanTime)
-    database->PersistLastEpgScanTime(m_iEpgID);
+    database->PersistLastEpgScanTime(epgCopy.m_iEpgID);
 
-  if (m_bTagsChanged)
+  bool bReturn(true);
+  if (epgCopy.m_bTagsChanged)
   {
-    m_bTagsChanged = false;
-    lock.Leave();
-
-    bReturn = PersistTags();
-
-    lock.Enter();
-    if (bReturn)
-      m_bTagsChanged = false;
-  }
-  else
-  {
-    bReturn = true;
+    bReturn = epgCopy.PersistTags();
+    epgCopy.m_bTagsChanged = !bReturn;
   }
 
   database->Close();
+
+  {
+    CSingleLock lock(m_critSection);
+    m_iEpgID        = epgCopy.m_iEpgID;
+    m_bChanged     |= epgCopy.m_bChanged;
+    m_bTagsChanged |= epgCopy.m_bTagsChanged;
+  }
+
   return bReturn;
 }
 

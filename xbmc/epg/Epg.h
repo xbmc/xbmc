@@ -63,6 +63,8 @@ namespace EPG
      */
     virtual ~CEpg(void);
 
+    CEpg &operator =(const CEpg &right);
+
     /*!
      * @brief Update this table's info with the given info. Doesn't change the EpgID.
      * @param epg The new info.
@@ -270,6 +272,8 @@ namespace EPG
     virtual bool IsRadio(void) const;
 
   protected:
+    CEpg(void);
+
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
      * TODO: not implemented yet for non-pvr EPGs
