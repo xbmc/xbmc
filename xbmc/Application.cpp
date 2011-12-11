@@ -1155,7 +1155,12 @@ bool CApplication::Initialize()
   if (g_settings.UsingLoginScreen())
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   else
+  {
+#ifdef HAS_JSONRPC
+    CJSONRPC::Initialize();
+#endif
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+  }
 
   g_sysinfo.Refresh();
 
@@ -1178,7 +1183,7 @@ bool CApplication::Initialize()
   {
     UpdateLibraries();
 #ifdef HAS_PYTHON
-  g_pythonParser.m_bLogin = true;
+    g_pythonParser.m_bLogin = true;
 #endif
   }
 
@@ -1189,10 +1194,6 @@ bool CApplication::Initialize()
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
-#endif
-
-#ifdef HAS_JSONRPC
-  CJSONRPC::Initialize();
 #endif
 
   CAddonMgr::Get().StartServices(false);
