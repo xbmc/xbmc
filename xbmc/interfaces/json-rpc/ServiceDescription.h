@@ -2067,6 +2067,14 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    "\"PVR.RecordCurrentChannel\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Toggles Recording of currently paying channel\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ManageRecordings\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
     "\"PVR.ScheduleRecording\": {"
       "\"type\": \"method\","
       "\"description\": \"Schedule recording\","
