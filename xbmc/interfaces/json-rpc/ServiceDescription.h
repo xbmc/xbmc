@@ -820,7 +820,7 @@ namespace JSONRPC
           "\"RemoveData\": { \"type\": \"boolean\", \"required\": true },"
           "\"Navigate\": { \"type\": \"boolean\", \"required\": true },"
           "\"WriteFile\": { \"type\": \"boolean\", \"required\": true },"
-          "\"ManageRecordings\": { \"type\": \"boolean\", \"required\": true }"
+          "\"ControlPVR\": { \"type\": \"boolean\", \"required\": true }"
         "}"
       "}"
     "}",
@@ -2069,9 +2069,9 @@ namespace JSONRPC
     "}",
     "\"PVR.RecordCurrentChannel\": {"
       "\"type\": \"method\","
-      "\"description\": \"Toggles Recording of currently paying channel\","
+      "\"description\": \"Toggles Recording of currently playing channel\","
       "\"transport\": \"Response\","
-      "\"permission\": \"ManageRecordings\","
+      "\"permission\": \"ControlPVR\","
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
@@ -2079,7 +2079,7 @@ namespace JSONRPC
       "\"type\": \"method\","
       "\"description\": \"Schedule recording\","
       "\"transport\": \"Response\","
-      "\"permission\": \"ManageRecordings\","
+      "\"permission\": \"ControlPVR\","
       "\"params\": ["
         "{ \"name\": \"epgid\", \"type\": \"integer\", \"minimum\": 0, \"required\": true },"
         "{ \"name\": \"uniqueid\", \"type\": \"integer\", \"minimum\": 0, \"required\": true },"
@@ -2115,7 +2115,7 @@ namespace JSONRPC
       "\"type\": \"method\","
       "\"description\": \"Starts a channel scan\","
       "\"transport\": \"Response\","
-      "\"permission\": \"UpdateData\","
+      "\"permission\": \"ControlPVR\","
       "\"params\": [],"
       "\"returns\": \"string\""
     "}"

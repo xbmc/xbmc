@@ -75,12 +75,12 @@ namespace JSONRPC
     RemoveData       =  0x20,
     Navigate         =  0x40,
     WriteFile        =  0x80,
-    ManageRecordings = 0x300
+    ControlPVR       = 0x300
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ManageRecordings);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlPVR);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ManageRecordings);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlPVR);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -220,8 +220,8 @@ namespace JSONRPC
         return "Navigate";
       case WriteFile:
         return "WriteFile";
-      case ManageRecordings:
-        return "ManageRecordings";
+      case ControlPVR:
+        return "ControlPVR";
       default:
         return "Unknown";
       }
@@ -249,8 +249,8 @@ namespace JSONRPC
         return Navigate;
       if (permission.compare("WriteFile") == 0)
         return WriteFile;
-      if (permission.compare("ManageRecordings") == 0)
-        return ManageRecordings;
+      if (permission.compare("ControlPVR") == 0)
+        return ControlPVR;
       return ReadData;
     }
 
