@@ -91,5 +91,6 @@ private:
   SMessages        m_queue;
   SRecordings      m_recordings;
   int              m_iReconnectRetries;
+  bool             m_bDisconnectWarningDisplayed;
 };
 

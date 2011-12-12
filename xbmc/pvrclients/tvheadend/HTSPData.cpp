@@ -42,6 +42,7 @@ using namespace ADDON;
 CHTSPData::CHTSPData()
 {
   m_session = new CHTSPConnection();
+  m_bDisconnectWarningDisplayed = false;
 }
 
 CHTSPData::~CHTSPData()
@@ -84,8 +85,16 @@ bool CHTSPData::CheckConnection(void)
 
   if (!m_session->IsConnected() && m_bCreated)
   {
+    if (!m_bDisconnectWarningDisplayed)
+    {
+      m_bDisconnectWarningDisplayed = true;
+      CStdString strNotification(XBMC->GetLocalizedString(30500));
+      XBMC->QueueNotification(QUEUE_ERROR, strNotification, m_session->GetServerName());
+    }
+
     if ((bReturn = m_session->Connect() && SendEnableAsync()))
     {
+      m_bDisconnectWarningDisplayed = false;
       /* notify the user that the connection has been restored */
       CStdString strNotification(XBMC->GetLocalizedString(30501));
       XBMC->QueueNotification(QUEUE_INFO, strNotification, m_session->GetServerName());
