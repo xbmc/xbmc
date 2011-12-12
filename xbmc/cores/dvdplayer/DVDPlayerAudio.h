@@ -140,6 +140,8 @@ protected:
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
   double m_audioClock;
+  double m_audioError;
+  double m_audioErrorSpeed;
 
   // data for audio decoding
   struct

@@ -47,8 +47,10 @@ void CAdvancedSettings::Initialize()
 {
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
+  m_audioErrorCorrectionSpeed = 10;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
+  m_maxPassthroughBandwidth = 768000;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
@@ -345,6 +347,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   {
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
+    // 0 is used for old behavior
+    XMLUtils::GetFloat(pElement, "errorcorrectionspeed", m_audioErrorCorrectionSpeed, 0.0f, 30.0f);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
@@ -372,6 +376,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
+    XMLUtils::GetInt(pElement, "maxpassthroughbandwidth", m_maxPassthroughBandwidth, 48000, 768000);
     XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);

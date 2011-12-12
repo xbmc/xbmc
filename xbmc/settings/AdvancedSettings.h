@@ -80,7 +80,9 @@ class CAdvancedSettings
     int m_audioHeadRoom;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
+    float m_audioErrorCorrectionSpeed;
     float m_audioPlayCountMinimumPercent;
+    int m_maxPassthroughBandwidth;
     bool m_dvdplayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
