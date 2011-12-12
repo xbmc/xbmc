@@ -113,7 +113,8 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
-  g_PVRTimers->UnregisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->UnregisterObserver(this);
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)

@@ -4787,6 +4787,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       return (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
     else if (condition == LISTITEM_ISRECORDING)
     {
+      if (!g_PVRManager.IsStarted())
+        return false;
+
       if (pItem->HasPVRChannelInfoTag())
       {
         return pItem->GetPVRChannelInfoTag()->IsRecording();

@@ -86,25 +86,25 @@ namespace PVR
      * @brief Get the channel groups container.
      * @return The groups container.
      */
-    CPVRChannelGroupsContainer *ChannelGroups(void) const { return IsStarted() ? m_channelGroups : NULL; }
+    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
 
     /*!
      * @brief Get the recordings container.
      * @return The recordings container.
      */
-    CPVRRecordings *Recordings(void) const { return IsStarted() ? m_recordings : NULL; }
+    CPVRRecordings *Recordings(void) const { return m_recordings; }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRTimers *Timers(void) const { return IsStarted() ? m_timers : NULL; }
+    CPVRTimers *Timers(void) const { return m_timers; }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRClients *Clients(void) const { return IsStarted() ? m_addons : NULL; }
+    CPVRClients *Clients(void) const { return m_addons; }
 
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
