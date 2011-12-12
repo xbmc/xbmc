@@ -26,6 +26,7 @@
 #include "IAudioRenderer.h"
 #include "threads/Event.h"
 #include "threads/LockFree.h"
+#include "guilib/DispResource.h"
 
 struct audio_slice
 {
@@ -118,7 +119,7 @@ private:
   bool m_isValid;
 };
 
-class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource
+class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource, public IDispResource 
 {
 public:
   CCoreAudioRenderer();
@@ -153,6 +154,8 @@ public:
   // AudioUnit Rendering Connection Point (called by down-stream sinks)
   virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
   
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 private:
   OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
   static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
