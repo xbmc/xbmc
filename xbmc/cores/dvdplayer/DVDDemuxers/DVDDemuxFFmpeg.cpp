@@ -765,17 +765,10 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           {
             stream->duration = duration;
             duration = m_dllAvUtil.av_rescale_rnd(stream->duration, (int64_t)stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-            if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0)
+            if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE)
                 ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
               m_pFormatContext->duration = duration;
           }
-        }
-
-        // check if stream seem to have grown since start
-        if(m_pFormatContext->file_size > 0 && m_pFormatContext->pb)
-        {
-          if(m_pFormatContext->pb->pos > m_pFormatContext->file_size)
-            m_pFormatContext->file_size = m_pFormatContext->pb->pos;
         }
 
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
@@ -914,19 +907,6 @@ int CDVDDemuxFFmpeg::GetStreamLength()
 {
   if (!m_pFormatContext)
     return 0;
-
-  /* apperently ffmpeg messes up sometimes, so check for negative value too */
-  if (m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE || m_pFormatContext->duration < 0LL)
-  {
-    // no duration is available for us
-    // try to calculate it
-    int iLength = 0;
-    if (m_iCurrentPts != DVD_NOPTS_VALUE && m_pFormatContext->file_size > 0 && m_pFormatContext->pb && m_pFormatContext->pb->pos > 0)
-    {
-      iLength = (int)(((m_iCurrentPts * m_pFormatContext->file_size) / m_pFormatContext->pb->pos) / 1000) & 0xFFFFFFFF;
-    }
-    return iLength;
-  }
 
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
 }
