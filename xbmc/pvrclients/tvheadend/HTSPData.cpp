@@ -114,10 +114,13 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
   uint32_t seq = mvp_atomic_inc(&g_iPacketSequence);
 
   SMessage &message(m_queue[seq]);
-  message.event = new cCondWait();
+  message.event = new cCondVar;
+  message.mutex = new cMutex;
   message.msg   = NULL;
 
   m_Mutex.Unlock();
+
+  cMutexLock messageLock(message.mutex);
   htsmsg_add_u32(m, "seq", seq);
   if(!m_session->SendMessage(m))
   {
@@ -125,7 +128,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
     return NULL;
   }
 
-  if(!message.event->Wait(g_iResponseTimeout * 1000))
+  if(!message.event->TimedWait(*message.mutex, g_iResponseTimeout * 1000))
   {
     XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
     m_session->Close();
@@ -623,9 +626,13 @@ void CHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "%s - starting", __FUNCTION__);
 
+  bool bInitialised(false);
   htsmsg_t* msg;
   while (Running())
   {
+    if (!bInitialised && !m_session->IsConnected())
+      break;
+
     if (!CheckConnection())
     {
       cCondWait::SleepMs(1000);
@@ -643,7 +650,8 @@ void CHTSPData::Action()
       if(it != m_queue.end())
       {
         it->second.msg = msg;
-        it->second.event->Signal();
+        cMutexLock messageLock(it->second.mutex);
+        it->second.event->Broadcast();
         continue;
       }
     }
@@ -669,7 +677,10 @@ void CHTSPData::Action()
     else if(strstr(method, "tagDelete"))
       CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
+    {
+      bInitialised = true;
       m_started.Broadcast();
+    }
     else if(strstr(method, "dvrEntryAdd"))
       CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryUpdate"))

@@ -69,8 +69,9 @@ protected:
 private:
   struct SMessage
   {
-    cCondWait * event;
-    htsmsg_t  * msg;
+    cCondVar* event;
+    cMutex  * mutex;
+    htsmsg_t* msg;
   };
   typedef std::map<int, SMessage> SMessages;
 
