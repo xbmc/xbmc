@@ -49,7 +49,7 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded encoded)
 {
   enum PCMChannels *outLayout;
 
@@ -67,7 +67,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiDataChannels = iChannels;
   m_remap.Reset();
 
-  if (!bPassthrough && channelMap)
+  if (encoded == ENCODED_NONE && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
@@ -105,7 +105,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+  m_bPassthrough = encoded != ENCODED_NONE;
   m_drc = 0;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;

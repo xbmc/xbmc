@@ -83,7 +83,7 @@ CWin32DirectSound::CWin32DirectSound() :
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   m_uiDataChannels = iChannels;
 

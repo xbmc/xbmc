@@ -383,7 +383,7 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
       m_bitsPerSample[num], //uiBitsPerSample
       false               , //bResample
       true                , //bIsMusic
-      false                 //bPassthrough
+      IAudioRenderer::ENCODED_NONE //bPassthrough
     );
 
     if (!m_pAudioDecoder[num]) return false;
