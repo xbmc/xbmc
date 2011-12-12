@@ -723,7 +723,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
-  if (*m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
+  if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
   g_application.CurrentFileItem() = *m_currentFile;
