@@ -86,25 +86,25 @@ namespace PVR
      * @brief Get the channel groups container.
      * @return The groups container.
      */
-    CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
+    CPVRChannelGroupsContainer *ChannelGroups(void) const { return IsStarted() ? m_channelGroups : NULL; }
 
     /*!
      * @brief Get the recordings container.
      * @return The recordings container.
      */
-    CPVRRecordings *Recordings(void) const { return m_recordings; }
+    CPVRRecordings *Recordings(void) const { return IsStarted() ? m_recordings : NULL; }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRTimers *Timers(void) const { return m_timers; }
+    CPVRTimers *Timers(void) const { return IsStarted() ? m_timers : NULL; }
 
     /*!
      * @brief Get the timers container.
      * @return The timers container.
      */
-    CPVRClients *Clients(void) const { return m_addons; }
+    CPVRClients *Clients(void) const { return IsStarted() ? m_addons : NULL; }
 
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -452,23 +452,6 @@ namespace PVR
      * @brief Update all channel groups and channels in them.
      */
     void UpdateChannelGroups(void);
-
-    /*!
-     * @see CPVRGUIInfo
-     */
-    //!{
-    const char *CharInfoNowRecordingTitle(void);
-    const char *CharInfoNowRecordingChannel(void);
-    const char *CharInfoNowRecordingChannelIcon(void);
-    const char *CharInfoNowRecordingDateTime(void);
-    const char *CharInfoNextRecordingTitle(void);
-    const char *CharInfoNextRecordingChannel(void);
-    const char *CharInfoNextRecordingChannelIcon(void);
-    const char *CharInfoNextRecordingDateTime(void);
-    const char *CharInfoNextTimer(void);
-    const char *CharInfoPlayingDuration(void);
-    const char *CharInfoPlayingTime(void);
-    //!}
 
     /*!
      * @brief Reset all properties.

@@ -911,7 +911,7 @@ bool CPVRManager::IsIdle(void) const
 
 void CPVRManager::ShowPlayerInfo(int iTimeout)
 {
-  if (IsStarted())
+  if (IsStarted() && m_guiInfo)
     m_guiInfo->ShowPlayerInfo(iTimeout);
 }
 
