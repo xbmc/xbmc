@@ -108,7 +108,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   }
 
   /* this is streamed, no file, and ignore the index */
-  muxer.m_pFormat->pb->is_streamed   = 1;
+  muxer.m_pFormat->pb->seekable      = 0;
   muxer.m_pFormat->flags            |= AVFMT_NOFILE | AVFMT_FLAG_IGNIDX;
   muxer.m_pFormat->bit_rate          = hints.bitrate;
 
