@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -403,7 +404,8 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_EnableVolumeControl(true),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
-  m_DoRunout(0)
+  m_DoRunout(0),
+  m_silence(false)
 {
   SInt32 major,  minor;
   Gestalt(gestaltSystemVersionMajor, &major);
@@ -423,10 +425,12 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
+  g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
+  g_Windowing.Unregister(this);
   Deinitialize();
 }
 
@@ -475,16 +479,6 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (bPassthrough)
   {
-    if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-    {
-      int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-      if (delay < 2)
-        delay += 20;
-      CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: "
-        "delay(%d seconds) audio init for adjust refresh rate when passthrough",
-        delay/10);
-      Sleep(delay * 100);
-    }
     m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
     // TODO: wait for audio device startup
     Sleep(200);
@@ -838,7 +832,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
      */
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
-  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
+  if (m_silence || (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM))
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
@@ -1179,6 +1173,33 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   return true;
 }
 
+void CCoreAudioRenderer::OnLostDevice()
+{
+  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+    {
+      m_silence = true;
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnLostDevice");
+    }
+  }
+}
+
+void CCoreAudioRenderer::OnResetDevice()
+{
+  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+    {
+      m_silence = false;
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnResetDevice");
+    }
+  }
+}
 #endif
 #endif
 

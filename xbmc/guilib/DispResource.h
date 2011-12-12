@@ -21,7 +21,7 @@
 
 #pragma once
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || defined(TARGET_DARWIN_OSX)
 class IDispResource
 {
 public:
