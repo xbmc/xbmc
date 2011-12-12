@@ -53,6 +53,7 @@ CHTSPData::~CHTSPData()
 
 bool CHTSPData::Open()
 {
+  CMD_LOCK;
   if(!m_session->Connect())
   {
     /* failed to connect */
@@ -68,7 +69,7 @@ bool CHTSPData::Open()
   SetDescription("HTSP Data Listener");
   Start();
 
-  m_started.Wait(g_iConnectTimeout * 1000);
+  m_started.TimedWait(m_Mutex, g_iConnectTimeout * 1000);
 
   return Running();
 }
@@ -668,7 +669,7 @@ void CHTSPData::Action()
     else if(strstr(method, "tagDelete"))
       CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
-      m_started.Signal();
+      m_started.Broadcast();
     else if(strstr(method, "dvrEntryAdd"))
       CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryUpdate"))
@@ -681,7 +682,8 @@ void CHTSPData::Action()
     htsmsg_destroy(msg);
   }
 
-  m_started.Signal();
+  CMD_LOCK;
+  m_started.Broadcast();
   XBMC->Log(LOG_DEBUG, "%s - exiting", __FUNCTION__);
 }
 

@@ -83,7 +83,7 @@ private:
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
   CHTSPConnection *m_session;
-  cCondWait        m_started;
+  cCondVar         m_started;
   cMutex           m_Mutex;
   SChannels        m_channels;
   STags            m_tags;
