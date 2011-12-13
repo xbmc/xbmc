@@ -264,11 +264,11 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  CSingleLock lock(m_critSection);
+  SetState(ManagerStateInterrupted);
+
   StopThread();
   m_guiInfo->Stop();
   m_addons->Stop();
-  SetState(ManagerStateInterrupted);
 }
 
 bool CPVRManager::Load(void)
@@ -522,13 +522,12 @@ void CPVRManager::ResetEPG(void)
 
 bool CPVRManager::IsPlaying(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_addons && m_addons->IsPlaying();
+  return IsStarted() && m_addons && m_addons->IsPlaying();
 }
 
 bool CPVRManager::GetCurrentChannel(CPVRChannel &channel) const
 {
-  return m_addons->GetPlayingChannel(channel);
+  return IsPlaying() && m_addons && m_addons->GetPlayingChannel(channel);
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const
@@ -724,7 +723,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
-  if ((m_currentFile == NULL) || (*m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag()))
+  if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
   g_application.CurrentFileItem() = *m_currentFile;
@@ -912,7 +911,7 @@ bool CPVRManager::IsIdle(void) const
 
 void CPVRManager::ShowPlayerInfo(int iTimeout)
 {
-  if (IsStarted())
+  if (IsStarted() && m_guiInfo)
     m_guiInfo->ShowPlayerInfo(iTimeout);
 }
 

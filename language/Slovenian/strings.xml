@@ -2817,7 +2817,7 @@
   <string id="36007">Vključi TV ob zagonu XBMC</string>
   <string id="36008">Izključi naprave ob izhodu iz XBMC</string>
   <string id="36009">Postavi naprave v stanje pripravljenosti ob ohranjevalniku zaslona</string>
-  <string id="36010">Nastavi kot neaktiven vir ob izhodu iz XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Ni mogoče zaznati vrat CEC. Nastavite jih ročno.</string>
   <string id="36012">Ni mogoče zaznati adapterja CEC.</string>
   <string id="36013">Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)</string>

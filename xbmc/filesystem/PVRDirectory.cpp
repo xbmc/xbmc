@@ -56,6 +56,9 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
   items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 
+  if (!g_PVRManager.IsStarted())
+    return false;
+
   if (fileName == "")
   {
     CFileItemPtr item;

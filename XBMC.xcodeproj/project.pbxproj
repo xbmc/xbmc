@@ -98,6 +98,8 @@
 		1835C6FB1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */; };
 		1835C6FC1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F61492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp */; };
 		1835C6FD1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */; };
+		1835C8221496A5F200ADD1BA /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C8211496A5F200ADD1BA /* PVROperations.cpp */; };
+		1835C8231496A5F200ADD1BA /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C8211496A5F200ADD1BA /* PVROperations.cpp */; };
 		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
@@ -2106,6 +2108,8 @@
 		1835C6F71492A5D100ADD1BA /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
 		1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
 		1835C6F91492A5D100ADD1BA /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
+		1835C8201496A5F200ADD1BA /* PVROperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVROperations.h; sourceTree = "<group>"; };
+		1835C8211496A5F200ADD1BA /* PVROperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVROperations.cpp; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		18404D9C1396C13500863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
@@ -7461,6 +7465,8 @@
 				F5AE409313415D9E0004BD79 /* PlayerOperations.h */,
 				F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */,
 				F5AE409513415D9E0004BD79 /* PlaylistOperations.h */,
+				1835C8211496A5F200ADD1BA /* PVROperations.cpp */,
+				1835C8201496A5F200ADD1BA /* PVROperations.h */,
 				F5AE409613415D9E0004BD79 /* SystemOperations.cpp */,
 				F5AE409713415D9E0004BD79 /* SystemOperations.h */,
 				F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */,
@@ -8721,6 +8727,7 @@
 				1835C6F21492A5A700ADD1BA /* Peripherals.cpp in Sources */,
 				1835C6FA1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
 				1835C6FB1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
+				1835C8221496A5F200ADD1BA /* PVROperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9691,6 +9698,7 @@
 				1835C6F31492A5A700ADD1BA /* Peripherals.cpp in Sources */,
 				1835C6FC1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
 				1835C6FD1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
+				1835C8231496A5F200ADD1BA /* PVROperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

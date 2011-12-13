@@ -152,9 +152,9 @@ bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelNumber != EPG_SEARCH_UNSET)
+  if (m_iChannelNumber != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
   {
-    const CPVRChannelGroup *group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CPVRManager::Get().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
+    const CPVRChannelGroup *group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
     if (!group)
       group = CPVRManager::Get().ChannelGroups()->GetGroupAllTV();
 
@@ -168,9 +168,9 @@ bool EpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelGroup != EPG_SEARCH_UNSET)
+  if (m_iChannelGroup != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
   {
-    const CPVRChannelGroup *group = CPVRManager::Get().ChannelGroups()->GetByIdFromAll(m_iChannelGroup);
+    const CPVRChannelGroup *group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
     bReturn = (group && group->IsGroupMember(*tag.ChannelTag()));
   }
 
@@ -180,6 +180,9 @@ bool EpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
 int EpgSearchFilter::FilterRecordings(CFileItemList &results)
 {
   int iRemoved(0);
+  if (!g_PVRManager.IsStarted())
+    return iRemoved;
+
   CPVRRecordings *recordings = CPVRManager::Get().Recordings();
 
   // TODO not thread safe and inefficient!
@@ -211,6 +214,9 @@ int EpgSearchFilter::FilterRecordings(CFileItemList &results)
 int EpgSearchFilter::FilterTimers(CFileItemList &results)
 {
   int iRemoved(0);
+  if (!g_PVRManager.IsStarted())
+    return iRemoved;
+
   CPVRTimers *timers = CPVRManager::Get().Timers();
 
   // TODO not thread safe and inefficient!

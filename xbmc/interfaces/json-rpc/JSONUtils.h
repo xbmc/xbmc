@@ -67,19 +67,20 @@ namespace JSONRPC
   */
   enum OperationPermission
   {
-    ReadData        =   0x1,
-    ControlPlayback =   0x2,
-    ControlNotify   =   0x4,
-    ControlPower    =   0x8,
-    UpdateData      =  0x10,
-    RemoveData      =  0x20,
-    Navigate        =  0x40,
-    WriteFile       =  0x80
+    ReadData         =   0x1,
+    ControlPlayback  =   0x2,
+    ControlNotify    =   0x4,
+    ControlPower     =   0x8,
+    UpdateData       =  0x10,
+    RemoveData       =  0x20,
+    Navigate         =  0x40,
+    WriteFile        =  0x80,
+    ControlPVR       = 0x300
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlPVR);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlPVR);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -219,6 +220,8 @@ namespace JSONRPC
         return "Navigate";
       case WriteFile:
         return "WriteFile";
+      case ControlPVR:
+        return "ControlPVR";
       default:
         return "Unknown";
       }
@@ -246,7 +249,8 @@ namespace JSONRPC
         return Navigate;
       if (permission.compare("WriteFile") == 0)
         return WriteFile;
-
+      if (permission.compare("ControlPVR") == 0)
+        return ControlPVR;
       return ReadData;
     }
 

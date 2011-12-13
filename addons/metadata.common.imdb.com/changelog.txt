@@ -1,3 +1,18 @@
+[B]2.1.3[/B]
+- fixed: make sure IMDb rating is geting fetched in every region
+
+[B]2.1.2[/B]
+- fixed: IMDb rating after another site change
+
+[B]2.1.1[/B]
+- fixed: IMDb rating
+
+[B]2.1.0[/B]
+- fixed: actor roles and remove scraping of imdb trailers
+
+[B]2.0.8[/B]
+- fixed: actor images
+
 [B]2.0.7[/B]
 - changed: fix actors due to IMDb changes
 

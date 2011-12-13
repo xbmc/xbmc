@@ -95,11 +95,11 @@ JSON_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property,
     result["revision"] = GIT_REV;
 #endif
     CStdString tag(VERSION_TAG);
-    if (tag.Equals("PRE-"))
+    if (tag.ToLower().Equals("-pre"))
       result["tag"] = "alpha";
-    else if (tag.Equals("BETA-"))
+    else if (tag.ToLower().Left(5).Equals("-beta"))
       result["tag"] = "beta";
-    else if (tag.Left(2).Equals("RC"))
+    else if (tag.ToLower().Left(3).Equals("-rc"))
       result["tag"] = "releasecandidate";
     else if (tag.empty())
       result["tag"] = "stable";

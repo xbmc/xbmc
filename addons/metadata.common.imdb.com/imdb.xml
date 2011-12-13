@@ -62,7 +62,7 @@
 	<ParseIMDBRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
-				<expression>&lt;span class=&quot;rating-rating&quot;&gt;([0-9.]+).*?&gt;([0-9,]+) votes&lt;/a&gt;</expression>
+				<expression>&lt;span itemprop=&quot;ratingValue&quot;&gt;([0-9.]+).*?&gt;.*?title=&quot;([0-9,]+)\s</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -80,11 +80,14 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">&lt;table class=&quot;cast_list&quot;&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\2_SX512_SY512_\3&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*.*?ter&quot;&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\2_SX512_SY512_\3&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;noscript&gt;&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))[^&gt;]*.*?ter"&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="7+">
+				<expression repeat="yes" trim="1,2" noclean="1,2">&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*\.png)&quot; class=&quot;&quot; /&gt;*.*?ter"&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)?&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -94,11 +97,14 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">&lt;table class=&quot;cast_list&quot;&gt;(.*?)&lt;/table&gt;</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\2_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\3&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*.*?ter&quot;&gt;[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)?</expression>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\2_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\3&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" clear="yes" trim="3,4" noclean="1,2">&lt;noscript&gt;&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))[^&gt;]*.*?ter"&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;&lt;/thumb&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="7+">
+				<expression repeat="yes" trim="1,2" noclean="1,2">&lt;img \n[^a]*alt=&quot;([^&quot;]*)&quot;[^&quot;]*&quot;[^&quot;]*&quot;[^s]*src=&quot;(?:[^&quot;]*\.[^&quot;]*\.png)&quot; class=&quot;&quot; /&gt;*.*?ter"&gt;[^&gt;]*&gt;\n\s*(&lt;[^&gt;]*&gt;)?([^&lt;\(]*)?</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
-				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+				<expression repeat="yes" clear="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)?&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -186,20 +192,4 @@
 			<expression noclean="1" />
 		</RegExp>
 	</ParseIMDBThumbs>
-	<GetIMDBTrailerPage dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseIMDBTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>/vi([0-9]*)/</expression>
-		</RegExp>
-	</GetIMDBTrailerPage>
-	<ParseIMDBTrailer dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="\1" dest="2">
-				<expression noclean="1">&quot;file&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="$$2/\1" dest="2">
-				<expression noclean="1">&quot;id&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseIMDBTrailer>
 </scraperfunctions>

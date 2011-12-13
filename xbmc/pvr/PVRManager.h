@@ -454,23 +454,6 @@ namespace PVR
     void UpdateChannelGroups(void);
 
     /*!
-     * @see CPVRGUIInfo
-     */
-    //!{
-    const char *CharInfoNowRecordingTitle(void);
-    const char *CharInfoNowRecordingChannel(void);
-    const char *CharInfoNowRecordingChannelIcon(void);
-    const char *CharInfoNowRecordingDateTime(void);
-    const char *CharInfoNextRecordingTitle(void);
-    const char *CharInfoNextRecordingChannel(void);
-    const char *CharInfoNextRecordingChannelIcon(void);
-    const char *CharInfoNextRecordingDateTime(void);
-    const char *CharInfoNextTimer(void);
-    const char *CharInfoPlayingDuration(void);
-    const char *CharInfoPlayingTime(void);
-    //!}
-
-    /*!
      * @brief Reset all properties.
      */
     void ResetProperties(void);

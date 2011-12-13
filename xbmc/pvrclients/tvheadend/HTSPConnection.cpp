@@ -114,9 +114,6 @@ void CHTSPConnection::Close()
     m_challenge     = NULL;
     m_iChallengeLength = 0;
   }
-
-  CStdString strNotification(XBMC->GetLocalizedString(30500));
-  XBMC->QueueNotification(QUEUE_ERROR, strNotification, m_strServerName.c_str());
 }
 
 void CHTSPConnection::Abort(void)

@@ -42,6 +42,7 @@ using namespace ADDON;
 CHTSPData::CHTSPData()
 {
   m_session = new CHTSPConnection();
+  m_bDisconnectWarningDisplayed = false;
 }
 
 CHTSPData::~CHTSPData()
@@ -52,6 +53,7 @@ CHTSPData::~CHTSPData()
 
 bool CHTSPData::Open()
 {
+  CMD_LOCK;
   if(!m_session->Connect())
   {
     /* failed to connect */
@@ -67,7 +69,7 @@ bool CHTSPData::Open()
   SetDescription("HTSP Data Listener");
   Start();
 
-  m_started.Wait(g_iConnectTimeout * 1000);
+  m_started.TimedWait(m_Mutex, g_iConnectTimeout * 1000);
 
   return Running();
 }
@@ -84,8 +86,16 @@ bool CHTSPData::CheckConnection(void)
 
   if (!m_session->IsConnected() && m_bCreated)
   {
+    if (!m_bDisconnectWarningDisplayed)
+    {
+      m_bDisconnectWarningDisplayed = true;
+      CStdString strNotification(XBMC->GetLocalizedString(30500));
+      XBMC->QueueNotification(QUEUE_ERROR, strNotification, m_session->GetServerName());
+    }
+
     if ((bReturn = m_session->Connect() && SendEnableAsync()))
     {
+      m_bDisconnectWarningDisplayed = false;
       /* notify the user that the connection has been restored */
       CStdString strNotification(XBMC->GetLocalizedString(30501));
       XBMC->QueueNotification(QUEUE_INFO, strNotification, m_session->GetServerName());
@@ -104,10 +114,13 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
   uint32_t seq = mvp_atomic_inc(&g_iPacketSequence);
 
   SMessage &message(m_queue[seq]);
-  message.event = new cCondWait();
+  message.event = new cCondVar;
+  message.mutex = new cMutex;
   message.msg   = NULL;
 
   m_Mutex.Unlock();
+
+  cMutexLock messageLock(message.mutex);
   htsmsg_add_u32(m, "seq", seq);
   if(!m_session->SendMessage(m))
   {
@@ -115,7 +128,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
     return NULL;
   }
 
-  if(!message.event->Wait(g_iResponseTimeout * 1000))
+  if(!message.event->TimedWait(*message.mutex, g_iResponseTimeout * 1000))
   {
     XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
     m_session->Close();
@@ -613,9 +626,13 @@ void CHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "%s - starting", __FUNCTION__);
 
+  bool bInitialised(false);
   htsmsg_t* msg;
   while (Running())
   {
+    if (!bInitialised && !m_session->IsConnected())
+      break;
+
     if (!CheckConnection())
     {
       cCondWait::SleepMs(1000);
@@ -633,7 +650,8 @@ void CHTSPData::Action()
       if(it != m_queue.end())
       {
         it->second.msg = msg;
-        it->second.event->Signal();
+        cMutexLock messageLock(it->second.mutex);
+        it->second.event->Broadcast();
         continue;
       }
     }
@@ -659,7 +677,10 @@ void CHTSPData::Action()
     else if(strstr(method, "tagDelete"))
       CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
-      m_started.Signal();
+    {
+      bInitialised = true;
+      m_started.Broadcast();
+    }
     else if(strstr(method, "dvrEntryAdd"))
       CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryUpdate"))
@@ -672,7 +693,8 @@ void CHTSPData::Action()
     htsmsg_destroy(msg);
   }
 
-  m_started.Signal();
+  CMD_LOCK;
+  m_started.Broadcast();
   XBMC->Log(LOG_DEBUG, "%s - exiting", __FUNCTION__);
 }
 

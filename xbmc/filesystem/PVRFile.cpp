@@ -27,6 +27,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -45,6 +46,9 @@ CPVRFile::~CPVRFile()
 bool CPVRFile::Open(const CURL& url)
 {
   Close();
+
+  if (!g_PVRManager.IsStarted())
+    return false;
 
   CStdString strURL = url.Get();
 
@@ -106,22 +110,22 @@ void CPVRFile::Close()
 
 unsigned int CPVRFile::Read(void* buffer, int64_t size)
 {
-  return g_PVRClients->ReadStream((BYTE*)buffer, size);
+  return g_PVRManager.IsStarted() ? g_PVRClients->ReadStream((BYTE*)buffer, size) : 0;
 }
 
 int64_t CPVRFile::GetLength()
 {
-  return g_PVRClients->LengthStream();
+  return g_PVRManager.IsStarted() ? g_PVRClients->LengthStream() : 0;
 }
 
 int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
-  return g_PVRClients->SeekStream(pos, whence);
+  return g_PVRManager.IsStarted() ? g_PVRClients->SeekStream(pos, whence) : 0;
 }
 
 int64_t CPVRFile::GetPosition()
 {
-  return g_PVRClients->GetStreamPosition();
+  return g_PVRManager.IsStarted() ? g_PVRClients->GetStreamPosition() : 0;
 }
 
 int CPVRFile::GetTotalTime()
@@ -213,8 +217,10 @@ bool CPVRFile::UpdateItem(CFileItem& item)
 
 CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 {
-  CStdString FileName = pathFile;
+  if (!g_PVRManager.IsStarted())
+    return StringUtils::EmptyString;
 
+  CStdString FileName = pathFile;
   if (FileName.substr(0, 14) == "pvr://channels")
   {
     const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(FileName);
@@ -243,17 +249,15 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 
 bool CPVRFile::CanRecord()
 {
-  if (m_isPlayRecording)
-  {
+  if (m_isPlayRecording || !g_PVRManager.IsStarted())
     return false;
-  }
 
   return g_PVRClients->CanRecordInstantly();
 }
 
 bool CPVRFile::IsRecording()
 {
-  return g_PVRClients->IsRecordingOnPlayingChannel();
+  return g_PVRManager.IsStarted() && g_PVRClients->IsRecordingOnPlayingChannel();
 }
 
 bool CPVRFile::Record(bool bOnOff)
@@ -263,8 +267,10 @@ bool CPVRFile::Record(bool bOnOff)
 
 bool CPVRFile::Delete(const CURL& url)
 {
-  CStdString path(url.GetFileName());
+  if (!g_PVRManager.IsStarted())
+    return false;
 
+  CStdString path(url.GetFileName());
   if (path.Left(11) == "recordings/" && path[path.size()-1] != '/')
   {
     CStdString strURL = url.Get();
@@ -277,6 +283,9 @@ bool CPVRFile::Delete(const CURL& url)
 
 bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
 {
+  if (!g_PVRManager.IsStarted())
+    return false;
+
   CStdString path(url.GetFileName());
   CStdString newname(urlnew.GetFileName());
 
@@ -296,14 +305,16 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
 
 bool CPVRFile::Exists(const CURL& url)
 {
-  return g_PVRRecordings->GetByPath(url.Get()) != NULL;
+  return g_PVRManager.IsStarted() && g_PVRRecordings->GetByPath(url.Get()) != NULL;
 }
 
 int CPVRFile::IoControl(EIoControl request, void *param)
 {
   if (request == IOCTRL_SEEK_POSSIBLE)
   {
-    if (g_PVRClients->LengthStream() && g_PVRClients->SeekStream(0, SEEK_CUR) >= 0)
+    if (!g_PVRManager.IsStarted())
+      return 0;
+    else if (g_PVRClients->LengthStream() && g_PVRClients->SeekStream(0, SEEK_CUR) >= 0)
       return 1;
     else
       return 0;

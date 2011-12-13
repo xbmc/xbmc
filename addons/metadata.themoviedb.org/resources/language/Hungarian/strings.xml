@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <strings>
     <string id="30000">Fanartképek engedélyezése</string>
-    <string id="30001">Filmelőzetesek a HD-Trailers.net-ről</string>
+    <string id="30004">Filmelőzetesek engedélyezése</string>
+    <string id="30001">Filmelőzetesek inkább a HD-Trailers.net-ről</string>
     <string id="30002">Preferált nyelv</string>
     <string id="30003">Értékelés az IMDb-ről</string>
+    <string id="30005">Eredeti filmcím megtartása</string>
 </strings>

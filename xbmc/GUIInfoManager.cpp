@@ -401,6 +401,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "channelname",      VIDEOPLAYER_CHANNEL_NAME },
                                   { "channelnumber",    VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
+                                  { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -516,6 +517,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
                                   { "channelnumber",    LISTITEM_CHANNEL_NUMBER },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
+                                  { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "isencrypted",      LISTITEM_ISENCRYPTED },
@@ -2347,6 +2349,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VISUALISATION_ENABLED:
       bReturn = !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty();
     break;
+    case VIDEOPLAYER_HAS_EPG:
+      if (m_currentFile->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTag epgTag;
+        bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
+      }
+    break;
     default: // default, use integer value different from 0 as true
       {
         int val;
@@ -3906,9 +3915,9 @@ CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
 #ifdef GIT_REV
-  tmp.Format("%s%d.%d Git:%s", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR, GIT_REV);
+  tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
 #else
-  tmp.Format("%s%d.%d", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR);
+  tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
 #endif
   return tmp;
 }
@@ -4778,6 +4787,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       return (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
     else if (condition == LISTITEM_ISRECORDING)
     {
+      if (!g_PVRManager.IsStarted())
+        return false;
+
       if (pItem->HasPVRChannelInfoTag())
       {
         return pItem->GetPVRChannelInfoTag()->IsRecording();
@@ -4802,6 +4814,18 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
         if (timer)
           return timer->IsActive();
+      }
+    }
+    else if (condition == LISTITEM_HAS_EPG)
+    {
+      if (pItem->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTag epgTag;
+        return pItem->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
+      }
+      else
+      {
+        return pItem->HasEPGInfoTag();
       }
     }
     else if (condition == LISTITEM_ISENCRYPTED)

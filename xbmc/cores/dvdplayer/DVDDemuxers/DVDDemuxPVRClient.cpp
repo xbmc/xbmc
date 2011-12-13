@@ -107,7 +107,7 @@ void CDVDDemuxPVRClient::Dispose()
 
 void CDVDDemuxPVRClient::Reset()
 {
-  if(m_pInput)
+  if(m_pInput && g_PVRManager.IsStarted())
     g_PVRClients->DemuxReset();
 
   CDVDInputStream* pInputStream = m_pInput;
@@ -123,12 +123,15 @@ void CDVDDemuxPVRClient::Abort()
 
 void CDVDDemuxPVRClient::Flush()
 {
-  if(m_pInput)
+  if(m_pInput && g_PVRManager.IsStarted())
     g_PVRClients->DemuxFlush();
 }
 
 DemuxPacket* CDVDDemuxPVRClient::Read()
 {
+  if (!g_PVRManager.IsStarted())
+    return CDVDDemuxUtils::AllocateDemuxPacket(0);
+
   DemuxPacket* pPacket = g_PVRClients->ReadDemuxStream();
   if (!pPacket)
     return CDVDDemuxUtils::AllocateDemuxPacket(0);
@@ -157,6 +160,9 @@ CDemuxStream* CDVDDemuxPVRClient::GetStream(int iStreamId)
 
 void CDVDDemuxPVRClient::RequestStreams()
 {
+  if (!g_PVRManager.IsStarted())
+    return;
+
   PVR_STREAM_PROPERTIES *props = g_PVRClients->GetCurrentStreamProperties();
 
   for (unsigned int i = 0; i < props->iStreamCount; ++i)
