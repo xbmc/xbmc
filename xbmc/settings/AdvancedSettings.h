@@ -26,8 +26,9 @@
 
 class TiXmlElement;
 
-struct DatabaseSettings
+class DatabaseSettings
 {
+public:
   CStdString type;
   CStdString host;
   CStdString port;
