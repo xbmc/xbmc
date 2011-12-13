@@ -2376,7 +2376,7 @@
   <string id="36007">启动XBMC时开启电视</string>
   <string id="36008">退出XBMC时关闭设备</string>
   <string id="36009">激活屏幕保护程序时设备进入待机状态</string>
-  <string id="36010">退出XBMC时设为禁用资源</string>
+  <string id="36010"></string>
   <string id="36011">未检测到 CEC 端口。需人工设置。</string>
   <string id="36012">未检测到 CEC 适配器。</string>
   <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>

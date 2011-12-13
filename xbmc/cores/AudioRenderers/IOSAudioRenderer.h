@@ -35,7 +35,7 @@ class CIOSAudioRenderer : public IAudioRenderer
     virtual ~CIOSAudioRenderer();
     virtual unsigned int GetChunkLen();
     virtual float GetDelay();
-    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
     virtual bool Deinitialize();
     virtual void Flush();
     virtual unsigned int AddPackets(const void* data, unsigned int len);

@@ -2831,7 +2831,7 @@
   <string id="36007">Power on the TV when starting XBMC</string>
   <string id="36008">Power off devices when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
-  <string id="36010">Set as inactive source when stopping XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Could not detect the CEC port. Set it up manually.</string>
   <string id="36012">Could not detect the CEC adapter.</string>
   <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>

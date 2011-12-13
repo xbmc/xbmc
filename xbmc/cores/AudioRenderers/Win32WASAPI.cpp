@@ -87,7 +87,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
 

@@ -2823,7 +2823,7 @@
   <string id="36007">Käynnistä laitteet kun XBMC käynnistetään</string>
   <string id="36008">Sammuta laitteet kun XBMC sammutetaan</string>
   <string id="36009">Aseta laitteet valmiustilaan näytönsäästäjän aktivoituessa</string>
-  <string id="36010">Aseta laite toimettomaksi lähteeksi kun XBMC sammutetaan</string>
+  <string id="36010"></string>
   <string id="36011">CEC-porttia ei havaittu. Määritä se käsin.</string>
   <string id="36012">CEC-sovitinta ei havaittu.</string>
   <string id="36013">Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC tukee (%d)</string>

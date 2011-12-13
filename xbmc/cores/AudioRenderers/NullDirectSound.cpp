@@ -42,7 +42,7 @@ void CNullDirectSound::DoWork()
 CNullDirectSound::CNullDirectSound()
 {
 }
-bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded encoded)
 {
   CLog::Log(LOGERROR,"Creating a Null Audio Renderer, Check your audio settings as this should not happen");
   if (iChannels == 0)
