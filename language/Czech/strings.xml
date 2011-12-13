@@ -2383,7 +2383,7 @@
   <string id="36007">Zapnout TV při spouštění XBMC</string>
   <string id="36008">Vypnout zařízení při ukončování XBMC</string>
   <string id="36009">Uvést zařízení do pohotovostního režimu při aktivování spořiče obrazovky</string>
-  <string id="36010">Nastavit jako neaktivní zdroj při ukončování XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Nepodařilo se najít CEC port. Nastavte jej ručně.</string>
   <string id="36012">Nepodařilo se najít CEC adaptér.</string>
   <string id="36013">Nepodporovaná verze libcec rozhraní. %d je vyšší než verze podporovaná XBMC (%d)</string>

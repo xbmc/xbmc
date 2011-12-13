@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="30000">Usar orden de DVD</string>
-    <string id="30001">Usar Orden Absoluto (Temporada única)</string>
+    <string id="30001">Usar Orden Absoluto (Temporada �nica)</string>
     <string id="30002">Descargar Fanart</string>
     <string id="30003">Preferir Posters</string>
     <string id="30004">Idioma</string>

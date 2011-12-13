@@ -548,9 +548,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
 
-    //switch videomode
-    SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-    
+    // check runtime, we only allow this on 10.5+
+    if (floor(NSAppKitVersionNumber) >= 949)
+    {
+      //switch videomode
+      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+    }
+
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view = [cur_context view];
     last_view_size = [last_view frame].size;
@@ -751,9 +755,13 @@ void CWinSystemOSX::UpdateResolutions()
     g_settings.m_ResInfo.push_back(res);
   }
   
-  //now just fill in the possible reolutions for the attached screens
-  //and push to the m_ResInfo vector
-  FillInVideoModes();  
+  // check runtime, we only allow this on 10.5+
+  if (floor(NSAppKitVersionNumber) >= 949)
+  {
+    //now just fill in the possible reolutions for the attached screens
+    //and push to the m_ResInfo vector
+    FillInVideoModes();
+  }
 }
 
 /*

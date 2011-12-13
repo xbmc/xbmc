@@ -1,3 +1,49 @@
+[B]2.0.1[/B]
+- fixed: imdb url nfo not resolving tmdb id
+
+[B]2.0.0[/B]
+- complete rewrite to use the json api
+
+[B]1.4.5[/B]
+- added: support for IMDb.xx support for NFO scraping
+
+[B]1.4.4[/B]
+- fixed: actor thumb scraping was broken due to API changes
+
+[B]1.4.3[/B]
+- fixed: use imdb ID from nfo
+- changed: scrape only one studio
+
+[B]1.4.2[/B]
+- fixed: url/mixed nfo scraping
+
+[B]1.4.1[/B]
+- fixed: IMDb rating after site change 
+
+[B]1.4.0[/B]
+- added: trailer scraping from TMDB via youtube plugin
+
+[B]1.3.1[/B]
+- fixed: added year to search string properly
+
+[B]1.3.0[/B]
+- added: year to search string
+
+[B]1.2.5[/B]
+- fixed: mpaa is returning string 'Rated' if there is no rating on tmdb
+
+[B]1.2.4[/B]
+- fixed: not scraping artwork for movies without IMDb id
+
+[B]1.2.3[/B]
+- fixed: can't get full search results list when some have <released> message and some haven't
+
+[B]1.2.2[/B]
+- fixed: real fix for hd-trailers.net
+
+[B]1.2.1[/B]
+- fixed: trailer scraping from hd-trailers.net
+
 [B]1.2.0[/B]
 - Added option to scrape rating from IMDb
 
