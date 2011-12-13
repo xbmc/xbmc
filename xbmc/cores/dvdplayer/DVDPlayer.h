@@ -235,6 +235,8 @@ public:
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
+
+  virtual void DisplayChanging(bool prechange);
 protected:
   friend class CSelectionStreams;
 

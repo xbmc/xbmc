@@ -3865,3 +3865,24 @@ CStdString CDVDPlayer::GetPlayingTitle()
 
   return "";
 }
+
+void CDVDPlayer::DisplayChanging(bool prechange)
+{
+  // a display change was detected. Both pre and post notifications
+  // are handled here. We output audio silence when we get pre-change,
+  // then flush on post-change. The caller is expected to quality details
+  // such as using a hdmi display and passthough enabled.
+  if (prechange)
+  {
+    // pre-change message
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, true), 1);
+    CLog::Log(LOGDEBUG, "CDVDPlayer::DisplayChanging: pre-display change");
+  }
+  else
+  {
+    // post-change message
+    m_dvdPlayerAudio.SendMessage(new CDVDMsgBool(CDVDMsg::AUDIO_SILENCE, false), 1);
+    m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
+    CLog::Log(LOGDEBUG, "CDVDPlayer::DisplayChanging: post-display change");
+  }
+}

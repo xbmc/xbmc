@@ -25,11 +25,13 @@
 #include <CoreServices/CoreServices.h>
 
 #include "CoreAudioRenderer.h"
+#include "Application.h"
 #include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -423,10 +425,12 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
+  g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
+  g_Windowing.Unregister(this);
   Deinitialize();
 }
 
@@ -475,16 +479,6 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (bPassthrough)
   {
-    if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-    {
-      int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-      if (delay < 2)
-        delay += 20;
-      CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: "
-        "delay(%d seconds) audio init for adjust refresh rate when passthrough",
-        delay/10);
-      Sleep(delay * 100);
-    }
     m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
     // TODO: wait for audio device startup
     Sleep(200);
@@ -1179,6 +1173,27 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   return true;
 }
 
+void CCoreAudioRenderer::OnLostDevice()
+{
+  if (g_application.IsPlayingVideo() && g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+      g_application.m_pPlayer->DisplayChanging(true);
+  }
+}
+
+void CCoreAudioRenderer::OnResetDevice()
+{
+  if (g_application.IsPlayingVideo() && g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+      g_application.m_pPlayer->DisplayChanging(false);
+  }
+}
 #endif
 #endif
 
