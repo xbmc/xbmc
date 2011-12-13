@@ -2586,6 +2586,9 @@
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp">
       <Filter>network\websocket</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5191,6 +5194,9 @@
       <Filter>network\websocket</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h">
       <Filter>network\websocket</Filter>
     </ClInclude>
   </ItemGroup>

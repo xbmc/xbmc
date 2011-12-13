@@ -1,6 +1,7 @@
 SRCS=WebSocket.cpp \
      WebSocketManager.cpp \
      WebSocketV8.cpp \
+     WebSocketV13.cpp \
 
 LIB=websocket.a
 
