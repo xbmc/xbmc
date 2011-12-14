@@ -116,6 +116,8 @@ public:
 
   bool isMember(const std::string &key) const;
 
+  static CVariant ConstNullVariant;
+
 private:
   union VariantUnion
   {
@@ -130,6 +132,4 @@ private:
   std::string m_string;
   VariantArray m_array;
   VariantMap m_map;
-
-  static CVariant ConstNullVariant;
 };

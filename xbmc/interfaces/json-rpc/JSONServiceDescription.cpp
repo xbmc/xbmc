@@ -378,6 +378,95 @@ bool CJSONServiceDescription::AddNotification(std::string jsonNotification)
   return true;
 }
 
+bool CJSONServiceDescription::AddEnum(const std::string &name, std::vector<CVariant> values, CVariant::VariantType type /* = CVariant::VariantTypeNull */, CVariant defaultValue /* = CVariant::ConstNullVariant */)
+{
+  if (name.empty() || m_types.find(name) != m_types.end() ||
+      values.size() == 0)
+    return false;
+
+  JSONSchemaTypeDefinition definition;
+  definition.ID = name;
+
+  std::vector<CVariant::VariantType> types;
+  bool autoType = false;
+  if (type == CVariant::VariantTypeNull)
+    autoType = true;
+  else
+    types.push_back(type);
+
+  for (unsigned int index = 0; index < values.size(); index++)
+  {
+    if (autoType)
+      types.push_back(values[index].type());
+    else if (type != CVariant::VariantTypeConstNull && type != values[index].type())
+      return false;
+
+    definition.enums.insert(definition.enums.begin(), values.begin(), values.end());
+  }
+
+  int schemaType;
+  for (unsigned int index = 0; index < types.size(); index++)
+  {
+    JSONSchemaType currentType;
+    switch (type)
+    {
+      case CVariant::VariantTypeString:
+        currentType = StringValue;
+        break;
+      case CVariant::VariantTypeDouble:
+        currentType = NumberValue;
+        break;
+      case CVariant::VariantTypeInteger:
+      case CVariant::VariantTypeUnsignedInteger:
+        currentType = IntegerValue;
+        break;
+      case CVariant::VariantTypeBoolean:
+        currentType = BooleanValue;
+        break;
+      case CVariant::VariantTypeArray:
+        currentType = ArrayValue;
+        break;
+      case CVariant::VariantTypeObject:
+        currentType = ObjectValue;
+        break;
+      case CVariant::VariantTypeConstNull:
+        currentType = AnyValue;
+        break;
+      default:
+      case CVariant::VariantTypeNull:
+        return false;
+    }
+
+    if (index = 0)
+      schemaType = currentType;
+    else
+      schemaType |= (int)currentType;
+  }
+  definition.type = (JSONSchemaType)schemaType;
+
+  addReferenceTypeDefinition(definition);
+
+  return true;
+}
+
+bool CJSONServiceDescription::AddEnum(const std::string &name, std::vector<std::string> values)
+{
+  std::vector<CVariant> enums;
+  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); it++)
+    enums.push_back(CVariant(*it));
+
+  return AddEnum(name, enums, CVariant::VariantTypeString);
+}
+
+bool CJSONServiceDescription::AddEnum(const std::string &name, std::vector<int> values)
+{
+  std::vector<CVariant> enums;
+  for (std::vector<int>::const_iterator it = values.begin(); it != values.end(); it++)
+    enums.push_back(CVariant(*it));
+
+  return AddEnum(name, enums, CVariant::VariantTypeInteger);
+}
+
 int CJSONServiceDescription::GetVersion()
 {
   return JSONRPC_SERVICE_VERSION;

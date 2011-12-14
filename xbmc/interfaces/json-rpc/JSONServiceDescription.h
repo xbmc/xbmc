@@ -319,6 +319,10 @@ namespace JSONRPC
      */
     static bool AddNotification(std::string jsonNotification);
 
+    static bool AddEnum(const std::string &name, std::vector<CVariant> values, CVariant::VariantType type = CVariant::VariantTypeNull, CVariant defaultValue = CVariant::ConstNullVariant);
+    static bool AddEnum(const std::string &name, std::vector<std::string> values);
+    static bool AddEnum(const std::string &name, std::vector<int> values);
+
     /*!
      \brief Gets the version of the json
      schema description
