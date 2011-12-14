@@ -30,7 +30,7 @@ namespace JSONRPC
 {
   /*! 
    \ingroup jsonrpc
-   \brief Structure for a parameter of a
+   \brief Class for a parameter of a
    json rpc method.
    
    Represents a parameter of a defined
@@ -38,15 +38,16 @@ namespace JSONRPC
    and extract the value of the parameter
    in a method call.
    */
-  typedef struct JSONSchemaTypeDefinition
+  class JSONSchemaTypeDefinition : protected CJSONUtils
   {
-    JSONSchemaTypeDefinition()
-      : type(AnyValue), minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
-        exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
-        minLength(-1), maxLength(-1),
-        minItems(0), maxItems(0), uniqueItems(false),
-        hasAdditionalProperties(false), additionalProperties(NULL)
-    { }
+  public:
+    JSONSchemaTypeDefinition();
+    
+    bool Parse(const CVariant &value, bool isParameter = false);
+    JSONRPC_STATUS Check(const CVariant &value, CVariant &outputValue, CVariant &errorData) const;
+    void Print(bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output) const;
+    
+    std::string missingReference;
 
     /*!
      \brief Name of the parameter (for 
@@ -178,7 +179,7 @@ namespace JSONRPC
     public:
       CJsonSchemaPropertiesMap();
 
-      void add(JSONSchemaTypeDefinition &property);
+      void add(const JSONSchemaTypeDefinition &property);
 
       typedef std::map<std::string, JSONSchemaTypeDefinition>::const_iterator JSONSchemaPropertiesIterator;
       JSONSchemaPropertiesIterator begin() const;
@@ -205,7 +206,7 @@ namespace JSONRPC
      \brief Type definition for additional properties
      */
     JSONSchemaTypeDefinition* additionalProperties;
-  } JSONSchemaTypeDefinition;
+  };
 
   /*! 
    \ingroup jsonrpc
@@ -216,8 +217,16 @@ namespace JSONRPC
    and is used to verify an incoming json
    rpc request against a defined method.
    */
-  typedef struct
+  class JsonRpcMethod : protected CJSONUtils
   {
+  public:
+    JsonRpcMethod();
+  
+    bool Parse(const CVariant &value);
+    JSONRPC_STATUS Check(const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters) const;
+    
+    std::string missingReference;    
+    
     /*!
      \brief Name of the represented method
      */
@@ -249,7 +258,12 @@ namespace JSONRPC
      \brief Definition of the return value
      */
     JSONSchemaTypeDefinition returns;
-  } JsonRpcMethod;
+  
+  private:
+    bool parseParameter(const CVariant &value, JSONSchemaTypeDefinition &parameter);
+    bool parseReturn(const CVariant &value);
+    static JSONRPC_STATUS checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
+  };
 
   /*! 
    \ingroup jsonrpc
@@ -285,6 +299,8 @@ namespace JSONRPC
    */
   class CJSONServiceDescription : public CJSONUtils
   {
+    friend class JSONSchemaTypeDefinition;
+    friend class JsonRpcMethod;
   public:
     /*!
      \brief Parses the given json schema description and evaluates
@@ -292,7 +308,7 @@ namespace JSONRPC
      \param jsonType json schema description to parse
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddType(std::string jsonType);
+    static bool AddType(const std::string &jsonType);
 
     /*!
      \brief Parses the given json schema description and evaluates
@@ -301,7 +317,7 @@ namespace JSONRPC
      \param method pointer to the implementation
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddMethod(std::string jsonMethod, MethodCall method);
+    static bool AddMethod(const std::string &jsonMethod, MethodCall method);
 
     /*!
      \brief Parses the given json schema description and evaluates
@@ -309,7 +325,7 @@ namespace JSONRPC
      \param jsonMethod json schema description to parse
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddBuiltinMethod(std::string jsonMethod);
+    static bool AddBuiltinMethod(const std::string &jsonMethod);
 
     /*!
      \brief Parses the given json schema description and evaluates
@@ -317,11 +333,11 @@ namespace JSONRPC
      \param jsonNotification json schema description to parse
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddNotification(std::string jsonNotification);
+    static bool AddNotification(const std::string &jsonNotification);
 
-    static bool AddEnum(const std::string &name, std::vector<CVariant> values, CVariant::VariantType type = CVariant::VariantTypeNull, CVariant defaultValue = CVariant::ConstNullVariant);
-    static bool AddEnum(const std::string &name, std::vector<std::string> values);
-    static bool AddEnum(const std::string &name, std::vector<int> values);
+    static bool AddEnum(const std::string &name, const std::vector<CVariant> &values, CVariant::VariantType type = CVariant::VariantTypeNull, const CVariant &defaultValue = CVariant::ConstNullVariant);
+    static bool AddEnum(const std::string &name, const std::vector<std::string> &values);
+    static bool AddEnum(const std::string &name, const std::vector<int> &values);
 
     /*!
      \brief Gets the version of the json
@@ -339,7 +355,7 @@ namespace JSONRPC
      \param printMetadata Whether to print XBMC specific data or not
      \param filterByTransport Whether to filter by transport or not
      */
-    static JSONRPC_STATUS Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions = true, bool printMetadata = false, bool filterByTransport = true, std::string filterByName = "", std::string filterByType = "", bool printReferences = true);
+    static JSONRPC_STATUS Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions = true, bool printMetadata = false, bool filterByTransport = true, const std::string &filterByName = "", const std::string &filterByType = "", bool printReferences = true);
 
     /*!
      \brief Checks the given parameters from the request against the
@@ -357,21 +373,16 @@ namespace JSONRPC
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSONRPC_STATUS CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
+    static JSONRPC_STATUS CheckCall(const char* method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
+    
+    static JSONSchemaTypeDefinition* GetType(const std::string &identification);
 
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
-    static bool addMethod(std::string &jsonMethod, MethodCall method);
-    static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output);
-    static JSONRPC_STATUS checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
-    static JSONRPC_STATUS checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData);
+    static bool addMethod(const std::string &jsonMethod, MethodCall method);
     static void parseHeader(const CVariant &descriptionObject);
-    static bool parseMethod(const CVariant &value, JsonRpcMethod &method);
-    static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
-    static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
-    static void parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns);
-    static JSONSchemaType parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions);
-    static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
+    static bool parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions, JSONSchemaType &schemaType, std::string &missingReference);
+    static void addReferenceTypeDefinition(const JSONSchemaTypeDefinition &typeDefinition);
 
     static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);
 
@@ -394,5 +405,21 @@ namespace JSONRPC
     static std::map<std::string, JSONSchemaTypeDefinition> m_types;
     static std::map<std::string, CVariant> m_notifications;
     static JsonRpcMethodMap m_methodMaps[];
+
+    typedef enum SchemaDefinition
+    {
+      SchemaDefinitionType,
+      SchemaDefinitionMethod
+    } SchemaDefinition;
+
+    typedef struct IncompleteSchemaDefinition
+    {
+      std::string Schema;
+      SchemaDefinition Type;
+      MethodCall Method;
+    } IncompleteSchemaDefinition;
+
+    typedef std::map<std::string, std::vector<IncompleteSchemaDefinition> > IncompleteSchemaDefinitionMap;
+    static IncompleteSchemaDefinitionMap m_incompleteDefinitions;
   };
 }
