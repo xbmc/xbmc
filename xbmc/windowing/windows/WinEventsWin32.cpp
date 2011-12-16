@@ -599,11 +599,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
-      newEvent.resize.type = XBMC_VIDEORESIZE;
       newEvent.resize.w = GET_X_LPARAM(lParam);
       newEvent.resize.h = GET_Y_LPARAM(lParam);
       if (newEvent.resize.w * newEvent.resize.h)
         m_pEventFunc(newEvent);
+      return(0);
+    case WM_MOVE:
+      newEvent.type = XBMC_VIDEOMOVE;
+      newEvent.move.x = GET_X_LPARAM(lParam);
+      newEvent.move.y = GET_Y_LPARAM(lParam);
+      m_pEventFunc(newEvent);
       return(0);
     case WM_MEDIA_CHANGE:
       {
