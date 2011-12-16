@@ -156,26 +156,29 @@ bool CPVRChannel::Delete(void)
   if (!database)
     return bReturn;
 
-  CSingleLock lock(m_critSection);
-
   /* delete the EPG table */
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (epg)
   {
     g_EpgContainer.DeleteEpg(*epg, true);
+    CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
   }
 
   bReturn = database->Delete(*this);
-
   database->Close();
-
   return bReturn;
 }
 
 CEpg *CPVRChannel::GetEPG(void) const
 {
-  return g_EpgContainer.GetByChannel(*this);
+  CEpg *epg(NULL);
+  {
+    CSingleLock lock(m_critSection);
+    if (!m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0)
+      epg = g_EpgContainer.GetByChannel(*this);
+  }
+  return epg;
 }
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
@@ -691,7 +694,7 @@ bool CPVRChannel::CreateEPG(bool bForce /* = false */)
 
 int CPVRChannel::GetEPG(CFileItemList &results) const
 {
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
@@ -704,8 +707,7 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
 
 bool CPVRChannel::ClearEPG() const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (epg)
     epg->Clear();
 
@@ -714,15 +716,13 @@ bool CPVRChannel::ClearEPG() const
 
 bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
+  CEpg *epg = GetEPG();
   return epg ? epg->InfoTagNow(tag) : false;
 }
 
 bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
+  CEpg *epg = GetEPG();
   return epg ? epg->InfoTagNext(tag) : false;
 }
 
