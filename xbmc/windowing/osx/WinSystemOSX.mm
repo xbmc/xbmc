@@ -26,9 +26,11 @@
 #define BOOL XBMC_BOOL 
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
+#include "guilib/DispResource.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "input/KeyboardStat.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "XBMCHelper.h"
 #include "utils/SystemInfo.h"
@@ -354,6 +356,8 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
   m_glContext = 0;
   m_SDLSurface = NULL;
   m_osx_events = NULL;
+  // check runtime, we only allow this on 10.5+
+  m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
 }
 
 CWinSystemOSX::~CWinSystemOSX()
@@ -373,11 +377,17 @@ bool CWinSystemOSX::InitWindowSystem()
   
   m_osx_events = new CWinEventsOSX();
 
+  if (m_can_display_switch)
+    CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
+
   return true;
 }
 
 bool CWinSystemOSX::DestroyWindowSystem()
 {  
+  if (m_can_display_switch)
+    CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
+
   delete m_osx_events;
   m_osx_events = NULL;
 
@@ -548,10 +558,15 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
 
-    // check runtime, we only allow this on 10.5+
-    if (floor(NSAppKitVersionNumber) >= 949)
+    if (m_can_display_switch)
     {
-      //switch videomode
+      // send pre-configuration change now and do not
+      //  wait for switch videomode callback. This gives just
+      //  a little more advanced notice of the display pre-change.
+      if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
+
+      // switch videomode
       SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
     }
 
@@ -755,8 +770,7 @@ void CWinSystemOSX::UpdateResolutions()
     g_settings.m_ResInfo.push_back(res);
   }
   
-  // check runtime, we only allow this on 10.5+
-  if (floor(NSAppKitVersionNumber) >= 949)
+  if (m_can_display_switch)
   {
     //now just fill in the possible reolutions for the attached screens
     //and push to the m_ResInfo vector
@@ -1092,6 +1106,20 @@ bool CWinSystemOSX::Hide()
   return true;
 }
 
+void CWinSystemOSX::Register(IDispResource *resource)
+{
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
+}
+
+void CWinSystemOSX::Unregister(IDispResource* resource)
+{
+  CSingleLock lock(m_resourceSection);
+  std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+    m_resources.erase(i);
+}
+
 bool CWinSystemOSX::Show(bool raise)
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -1165,6 +1193,50 @@ int CWinSystemOSX::GetNumScreens()
 {
   int numDisplays = [[NSScreen screens] count];
   return(numDisplays);
+}
+
+void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
+{
+  if (flags)
+  {
+    CSingleLock lock(m_resourceSection);
+    // tell any shared resources
+    if (flags & kCGDisplayBeginConfigurationFlag)
+    {
+      for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+        (*i)->OnLostDevice();
+    }
+    if (flags & kCGDisplaySetModeFlag)
+    {
+      for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+        (*i)->OnResetDevice();
+    }
+  }
+}
+
+void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display, 
+  CGDisplayChangeSummaryFlags flags, void* userData)
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
+	if (!winsys)
+    return;
+
+  if (flags & kCGDisplaySetModeFlag || flags & kCGDisplayBeginConfigurationFlag)
+  {
+    // pre/post-reconfiguration changes
+    RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:g_settings.m_ResInfo[res].iScreen];
+    if (pScreen)
+    {
+      CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
+      if (xbmc_display == display)
+      {
+        // we only respond to changes on the display we are running on.
+        CSingleLock lock(winsys->m_resourceSection);
+        winsys->CheckDisplayChanging(flags);
+      }
+    }
+  }
 }
 
 #endif
