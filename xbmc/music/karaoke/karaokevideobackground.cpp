@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
+#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "karaokevideobackground.h"
 
@@ -84,10 +85,12 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   // See http://dranger.com/ffmpeg/tutorial01.html
   closeVideoFile();
 
+  CStdString realPath = CSpecialProtocol::TranslatePath( filename );
+  
   // Open video file
-  if ( m_dllAvFormat.av_open_input_file( &pFormatCtx, filename.c_str(), NULL, 0, NULL ) < 0 )
+  if ( m_dllAvFormat.av_open_input_file( &pFormatCtx, realPath.c_str(), NULL, 0, NULL ) < 0 )
   {
-    CLog::Log( LOGERROR, "Karaoke Video Background: Could not open video file %s", filename.c_str() );
+    CLog::Log( LOGERROR, "Karaoke Video Background: Could not open video file %s (%s)", filename.c_str(), realPath.c_str() );
     return false;
   }
 
