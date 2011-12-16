@@ -82,8 +82,7 @@ private:
   AVCodecContext  *pCodecCtx;
   AVCodec         *pCodec;
   AVFrame         *pFrame;
-  AVFrame         *pFrameRGB;
-  BYTE            *pBuf_rgb32;
+  AVPicture       *pFrameRGB;  
   int              m_width;
   int              m_height;
   

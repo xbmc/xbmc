@@ -35,7 +35,6 @@ KaraokeVideoFFMpeg::KaraokeVideoFFMpeg()
   pCodec = 0;
   pFrame = 0;
   pFrameRGB = 0;
-  pBuf_rgb32 = 0;
   m_timeBase = 0;
   m_texture = 0;
 
@@ -131,7 +130,7 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   
   // Allocate video frames
   pFrame = m_dllAvCodec.avcodec_alloc_frame();
-  pFrameRGB = m_dllAvCodec.avcodec_alloc_frame();
+  pFrameRGB = (AVPicture*)m_dllAvUtil.av_mallocz(sizeof(AVPicture));
 
   if ( !pFrame || !pFrameRGB )
   {
@@ -139,19 +138,13 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
     return false;
   }
   
-  // Allocate memory for the picture
-  int numBytes = m_dllAvCodec.avpicture_get_size( PIX_FMT_RGB32, pCodecCtx->width, pCodecCtx->height );
-  pBuf_rgb32 = new BYTE [numBytes];
-  
-  if ( !pBuf_rgb32 )
+  // Due to a bug in swsscale we need to allocate one extra line of data
+  if ( m_dllAvCodec.avpicture_alloc( pFrameRGB, PIX_FMT_RGB32, pCodecCtx->width, pCodecCtx->height+1 ) < 0 )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not allocate memory for picture buf" );
     return false;
   }
-  
-  // Assign appropriate parts of buffer to image planes in pFrameRGB
-  m_dllAvCodec.avpicture_fill( (AVPicture *) pFrameRGB, (uint8_t*) pBuf_rgb32, PIX_FMT_RGB32, pCodecCtx->width, pCodecCtx->height );
-  
+
   m_width = pCodecCtx->width;
   m_height = pCodecCtx->height;
   m_timeBase = 0;
@@ -170,7 +163,10 @@ void KaraokeVideoFFMpeg::closeVideoFile()
 
   // Free the RGB frame
   if ( pFrameRGB )
+  {
+    m_dllAvCodec.avpicture_free( pFrameRGB );
     m_dllAvUtil.av_free( pFrameRGB );
+  }
 
   // Close the codec
   if ( pCodecCtx )
@@ -180,14 +176,13 @@ void KaraokeVideoFFMpeg::closeVideoFile()
   if ( pFormatCtx )
     m_dllAvFormat.av_close_input_file( pFormatCtx );
 
-  delete[] pBuf_rgb32;
+  //delete[] pBuf_rgb32;
   
   pFormatCtx = 0;
   pCodecCtx = 0;
   pCodec = 0;
   pFrame = 0;
   pFrameRGB = 0;
-  pBuf_rgb32 = 0;
 }
 
 bool KaraokeVideoFFMpeg::readFrame( int frame )
