@@ -52,9 +52,9 @@ typedef enum {
        XBMC_EVENT_RESERVEDA,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVEDB,		/* Reserved for future use.. */
        XBMC_VIDEORESIZE,			/* User resized video mode */
+       XBMC_VIDEOMOVE,        /* User moved the window */
        XBMC_VIDEOEXPOSE,			/* Screen needs to be redrawn */
        XBMC_APPCOMMAND,            /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
-       XBMC_EVENT_RESERVED3,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVED4,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVED5,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVED6,		/* Reserved for future use.. */
@@ -92,6 +92,7 @@ typedef enum {
 	                          XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN)|
 	                          XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
 	XBMC_VIDEORESIZEMASK	= XBMC_EVENTMASK(XBMC_VIDEORESIZE),
+  XBMC_VIDEOMOVEMASK	= XBMC_EVENTMASK(XBMC_VIDEOMOVE),
 	XBMC_VIDEOEXPOSEMASK	= XBMC_EVENTMASK(XBMC_VIDEOEXPOSE),
 	XBMC_QUITMASK		= XBMC_EVENTMASK(XBMC_QUIT),
 	XBMC_SYSWMEVENTMASK	= XBMC_EVENTMASK(XBMC_SYSWMEVENT)
@@ -180,6 +181,12 @@ typedef struct XBMC_ResizeEvent {
 	int h;		/* New height */
 } XBMC_ResizeEvent;
 
+typedef struct XBMC_MoveEvent {
+	unsigned char type;	/* XBMC_VIDEOMOVE */
+	int x;		/* New x position */
+	int y;		/* New y position */
+} XBMC_MoveEvent;
+
 /* The "screen redraw" event */
 typedef struct XBMC_ExposeEvent {
 	unsigned char type;	/* XBMC_VIDEOEXPOSE */
@@ -224,6 +231,7 @@ typedef union XBMC_Event {
 	XBMC_JoyHatEvent jhat;
 	XBMC_JoyButtonEvent jbutton;
 	XBMC_ResizeEvent resize;
+  XBMC_MoveEvent move;
 	XBMC_ExposeEvent expose;
 	XBMC_QuitEvent quit;
 	XBMC_UserEvent user;

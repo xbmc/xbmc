@@ -79,6 +79,9 @@ public:
   virtual bool Hide() { return false; }
   virtual bool Show(bool raise = true) { return false; }
 
+  // notifications
+  virtual void OnMove(int x, int y) {}
+
   // OS System screensaver
   virtual void EnableSystemScreenSaver(bool bEnable) {};
   virtual bool IsSystemScreenSaverEnabled() {return false;}
