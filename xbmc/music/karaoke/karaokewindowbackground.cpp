@@ -183,17 +183,7 @@ void CKaraokeWindowBackground::StartImage( const CStdString& path )
 void CKaraokeWindowBackground::StartVideo( const CStdString& path )
 {
   if ( !m_videoPlayer )
-  {
     m_videoPlayer = new KaraokeVideoFFMpeg();
-
-    if ( !m_videoPlayer->Init() )
-    {
-      delete m_videoPlayer;
-      m_videoPlayer = 0;
-      m_currentMode = BACKGROUND_NONE;
-      return;
-    }
-  }
 
   if ( !m_videoPlayer->Start( path ) )
   {

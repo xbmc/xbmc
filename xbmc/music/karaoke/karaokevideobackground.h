@@ -47,10 +47,6 @@ public:
   KaraokeVideoFFMpeg();
   ~KaraokeVideoFFMpeg();
   
-  // Initialize the object. This function is called only once when the object is created. If it returns false, 
-  // the video rendering is disabled and KaraokeVideoFFMpeg object is deleted
-  bool Init();
-  
   // Start playing the video. It is called each time a new song is being played. Should continue playing existing 
   // video from the position it was paused. If it returns false, the video rendering is disabled and 
   // KaraokeVideoFFMpeg object is deleted. Must write the reason for failure into the log file.
@@ -63,8 +59,15 @@ public:
   // Stops playing the video. It is called once the song is finished and the Render() is not going to be called anymore.
   // The object, however, is kept and should keep its state because it must continue on next Start() call.
   void Stop();
-
+  
 private:
+  // Initialize the object. This function is called only once when the object is created or after it has been dismissed. 
+  // If it returns false, the video rendering is disabled and KaraokeVideoFFMpeg object is deleted
+  bool Init();
+
+  // Dismisses the object, freeing all the memory and unloading the libraries. The object must be inited before using again.
+  void Dismiss();
+
   bool openVideoFile( const CStdString& filename );
   void closeVideoFile();
   bool readFrame( int frame );

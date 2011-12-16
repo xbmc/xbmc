@@ -28,6 +28,9 @@
 #include "settings/AdvancedSettings.h"
 #include "karaokevideobackground.h"
 
+static bool PERSISTENT_OBJECT = 0;
+
+
 KaraokeVideoFFMpeg::KaraokeVideoFFMpeg()
 {
   pFormatCtx = 0;
@@ -44,12 +47,9 @@ KaraokeVideoFFMpeg::KaraokeVideoFFMpeg()
 
 KaraokeVideoFFMpeg::~KaraokeVideoFFMpeg()
 {
-  closeVideoFile();
+  Dismiss();
   
-  m_dllAvCodec.Unload();
-  m_dllAvUtil.Unload();
-  m_dllSwScale.Unload();
-  m_dllAvFormat.Unload();
+  delete m_texture;
 }
 
 bool KaraokeVideoFFMpeg::Init()
@@ -63,7 +63,20 @@ bool KaraokeVideoFFMpeg::Init()
   m_dllAvCodec.avcodec_register_all();
   m_dllAvFormat.av_register_all();
 
+  CLog::Log( LOGDEBUG, "Karaoke Video Background: init succeed" );
   return true;
+}
+
+void KaraokeVideoFFMpeg::Dismiss()
+{
+  closeVideoFile();
+  
+  m_dllAvCodec.Unload();
+  m_dllAvUtil.Unload();
+  m_dllSwScale.Unload();
+  m_dllAvFormat.Unload();
+  
+  CLog::Log( LOGDEBUG, "Karaoke Video Background: dismiss succeed" );
 }
 
 bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
@@ -149,6 +162,7 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   m_height = pCodecCtx->height;
   m_timeBase = 0;
   m_currentFrameNumber = 0;
+  m_maxFrame = 0;
   m_curVideoFile = filename;
   
   CLog::Log( LOGDEBUG, "Karaoke Video Background: Video file %s (%dx%d) opened successfully", filename.c_str(), m_width, m_height );
@@ -176,13 +190,12 @@ void KaraokeVideoFFMpeg::closeVideoFile()
   if ( pFormatCtx )
     m_dllAvFormat.av_close_input_file( pFormatCtx );
 
-  //delete[] pBuf_rgb32;
-  
   pFormatCtx = 0;
   pCodecCtx = 0;
   pCodec = 0;
   pFrame = 0;
   pFrameRGB = 0;
+  m_curVideoFile.clear();
 }
 
 bool KaraokeVideoFFMpeg::readFrame( int frame )
@@ -286,20 +299,34 @@ void KaraokeVideoFFMpeg::Render()
 
 bool KaraokeVideoFFMpeg::Start( const CStdString& filename )
 {
+  if ( !m_dllAvFormat.IsLoaded() )
+  {
+    if ( !Init() )
+      return false;
+  }
+  
   if ( !filename.empty() )
   {
      if ( !openVideoFile( filename ) )
        return false;
 
-     m_timeBase = 0;
+     m_lastTimeFrame = 0;
   }
-  
-  if ( m_curVideoFile.empty() )
+  else
   {
+     // m_currentFrameNumber is set to 0 in openVideoFile
+     unsigned int curframe = m_currentFrameNumber;
+
      if ( !openVideoFile( g_advancedSettings.m_karaokeDefaultBackgroundFilePath ) )
        return false;
 
-     m_timeBase = 0;
+     if ( curframe > 0 && m_dllAvFormat.av_seek_frame( pFormatCtx, videoStream, curframe, 0 ) >= 0 )
+     {
+       m_dllAvCodec.avcodec_flush_buffers( pCodecCtx );
+       m_currentFrameNumber = curframe;
+     }
+	 else
+       m_lastTimeFrame = 0;
   }
   
   m_timeBase = m_lastTimeFrame;
@@ -319,6 +346,15 @@ bool KaraokeVideoFFMpeg::Start( const CStdString& filename )
 
 void KaraokeVideoFFMpeg::Stop()
 {
+  if ( !m_dllAvFormat.IsLoaded() )
+  {
+    CLog::Log( LOGERROR, "KaraokeVideoFFMpeg::Start: internal error, called on unitinialized object" );
+    return;
+  }
+
   delete m_texture;
   m_texture = 0;
+  
+  if ( !PERSISTENT_OBJECT )
+    Dismiss();
 }
