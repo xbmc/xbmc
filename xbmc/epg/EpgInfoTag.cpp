@@ -669,10 +669,15 @@ CStdString CEpgInfoTag::Path(void) const
 
 void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
 {
-  CSingleLock lock(m_critSection);
-  if (g_PVRManager.IsStarted() && m_Timer)
-    m_Timer->SetEpgInfoTag(NULL);
-  m_Timer = newTimer;
+  CPVRTimerInfoTag *oldTimer(NULL);
+  {
+    CSingleLock lock(m_critSection);
+    if (g_PVRManager.IsStarted() && m_Timer)
+      oldTimer = m_Timer;
+    m_Timer = newTimer;
+  }
+  if (oldTimer)
+    oldTimer->SetEpgInfoTag(NULL);
 }
 
 bool CEpgInfoTag::HasTimer(void) const
