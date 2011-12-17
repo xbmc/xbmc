@@ -146,29 +146,79 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   
   // Allocate video frames
   pFrame = m_dllAvCodec.avcodec_alloc_frame();
+
+  if ( !pFrame )
+  {
+    CLog::Log( LOGERROR, "Karaoke Video Background: Could not allocate memory for frame" );
+    return false;
+  }
+  
+  // Init the rest of params
+  m_videoWidth = pCodecCtx->width;
+  m_videoHeight = pCodecCtx->height;
+  m_timeBase = 0;
+  m_currentFrameNumber = 0;
+  m_maxFrame = 0;
+  m_curVideoFile = filename;
+  
+  // Find out the necessary aspect ratio for height (assuming fit by width) and width (assuming fit by height)
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  m_displayLeft = g_settings.m_ResInfo[res].Overscan.left;
+  m_displayRight = g_settings.m_ResInfo[res].Overscan.right;
+  m_displayTop = g_settings.m_ResInfo[res].Overscan.top;
+  m_displayBottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  
+  int screen_width = m_displayRight - m_displayLeft;
+  int screen_height = m_displayBottom - m_displayTop;
+
+  // Do we need to modify the output video size? This could happen in two cases:
+  // 1. Either video dimension is larger than the screen - video needs to be downscaled
+  // 2. Both video dimensions are smaller than the screen - video needs to be upscaled
+  if ( (m_videoWidth > screen_width || m_videoHeight > screen_height )
+  || (  m_videoWidth < screen_width && m_videoHeight < screen_height ) )
+  {
+    // Calculate the scale coefficients for width/height separately
+    double scale_width = (double) screen_width / (double) m_videoWidth;
+    double scale_height = (double) screen_height / (double) m_videoHeight;
+
+    // And apply the smallest
+    double scale = scale_width < scale_height ? scale_width : scale_height;
+    m_videoWidth = (int) ((double) m_videoWidth * scale);
+    m_videoHeight = (int) ((double) m_videoHeight * scale);
+  }
+
+  // Allocate the conversion frame and relevant picture
   pFrameRGB = (AVPicture*)m_dllAvUtil.av_mallocz(sizeof(AVPicture));
 
-  if ( !pFrame || !pFrameRGB )
+  if ( !pFrameRGB )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not allocate memory for frame" );
     return false;
   }
   
   // Due to a bug in swsscale we need to allocate one extra line of data
-  if ( m_dllAvCodec.avpicture_alloc( pFrameRGB, PIX_FMT_RGB32, pCodecCtx->width, pCodecCtx->height+1 ) < 0 )
+  if ( m_dllAvCodec.avpicture_alloc( pFrameRGB, PIX_FMT_RGB32, m_videoWidth, m_videoHeight + 1 ) < 0 )
   {
     CLog::Log( LOGERROR, "Karaoke Video Background: Could not allocate memory for picture buf" );
     return false;
   }
 
-  m_width = pCodecCtx->width;
-  m_height = pCodecCtx->height;
-  m_timeBase = 0;
-  m_currentFrameNumber = 0;
-  m_maxFrame = 0;
-  m_curVideoFile = filename;
+  // Calculate the desktop dimensions to show the video
+  if ( m_videoWidth < screen_width || m_videoHeight < screen_height )
+  {
+    m_displayLeft = (screen_width - m_videoWidth) / 2;
+    m_displayRight -= m_displayLeft;
+
+    m_displayTop = (screen_height - m_videoHeight) / 2;
+    m_displayBottom -= m_displayTop;
+  }
   
-  CLog::Log( LOGDEBUG, "Karaoke Video Background: Video file %s (%dx%d) opened successfully", filename.c_str(), m_width, m_height );
+  CLog::Log( LOGDEBUG, "Karaoke Video Background: Video file %s (%dx%d) opened successfully, will be shown as %dx%d at (%d, %d - %d, %d) rectangle", 
+             filename.c_str(), 
+             pCodecCtx->width, pCodecCtx->height, 
+             m_videoWidth, m_videoHeight, 
+             m_displayLeft, m_displayTop, m_displayRight, m_displayBottom );
+  
   return true;
 }
 
@@ -225,10 +275,10 @@ bool KaraokeVideoFFMpeg::readFrame( int frame )
         if ( m_currentFrameNumber >= frame )
         {
           // convert the picture
-          struct SwsContext * context = m_dllSwScale.sws_getContext( m_width, m_height, pCodecCtx->pix_fmt, 
-                      m_width, m_height, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
+          struct SwsContext * context = m_dllSwScale.sws_getContext( pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, 
+                      m_videoWidth, m_videoHeight, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
 
-          m_dllSwScale.sws_scale( context, pFrame->data, pFrame->linesize, 0, m_height, pFrameRGB->data, pFrameRGB->linesize );
+          m_dllSwScale.sws_scale( context, pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize );
 		  m_dllSwScale.sws_freeContext( context );
         }
 
@@ -288,15 +338,8 @@ void KaraokeVideoFFMpeg::Render()
   }
 
   // We got a frame. Draw it.
-  m_texture->Update( m_width, m_height, m_width * 4, XB_FMT_A8R8G8B8, pFrameRGB->data[0], false );
-  
-  // Get screen coordinates
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  CRect vertCoords((float)g_settings.m_ResInfo[res].Overscan.left,
-                   (float)g_settings.m_ResInfo[res].Overscan.top,
-                   (float)g_settings.m_ResInfo[res].Overscan.right,
-                   (float)g_settings.m_ResInfo[res].Overscan.bottom);
-
+  m_texture->Update( m_videoWidth, m_videoHeight, m_videoWidth * 4, XB_FMT_A8R8G8B8, pFrameRGB->data[0], false );
+  CRect vertCoords((float) m_displayLeft, (float) m_displayTop, (float) m_displayRight, (float) m_displayBottom );
   CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_texture );
 }
 
@@ -336,7 +379,7 @@ bool KaraokeVideoFFMpeg::Start( const CStdString& filename )
   m_lastTimeFrame = 0;
   
   // Allocate the texture
-  m_texture = new CTexture( pCodecCtx->width, pCodecCtx->height, XB_FMT_A8R8G8B8 );
+  m_texture = new CTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
   
   if ( !m_texture )
   {

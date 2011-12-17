@@ -86,8 +86,9 @@ private:
   AVCodec         *pCodec;
   AVFrame         *pFrame;
   AVPicture       *pFrameRGB;  
-  int              m_width;
-  int              m_height;
+  int              m_videoWidth;   // shown video width, i.e. upscaled or downscaled as necessary
+  int              m_videoHeight;  // shown video height, i.e. upscaled or downscaled as necessary
+  int              m_displayLeft, m_displayRight, m_displayTop, m_displayBottom;  // Video as shown at the display
   
   int              m_maxFrame;
   int              m_fps_den;
