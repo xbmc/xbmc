@@ -26,6 +26,7 @@
 #include "IAudioRenderer.h"
 #include "threads/Event.h"
 #include "threads/LockFree.h"
+#include "guilib/DispResource.h"
 
 struct audio_slice
 {
@@ -118,14 +119,14 @@ private:
   bool m_isValid;
 };
 
-class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource
+class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource, public IDispResource 
 {
 public:
   CCoreAudioRenderer();
   virtual ~CCoreAudioRenderer();
   virtual unsigned int GetChunkLen();
   virtual float GetDelay();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
   virtual bool Deinitialize();
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
@@ -153,6 +154,8 @@ public:
   // AudioUnit Rendering Connection Point (called by down-stream sinks)
   virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
   
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 private:
   OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
   static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
@@ -195,6 +198,7 @@ private:
   // Thread synchronization
   CEvent m_RunoutEvent;
   long m_DoRunout;
+  bool m_silence;
 };
 
 #endif

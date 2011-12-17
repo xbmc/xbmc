@@ -127,7 +127,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = iChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough == true)
+  if (bAudioPassthrough)
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;

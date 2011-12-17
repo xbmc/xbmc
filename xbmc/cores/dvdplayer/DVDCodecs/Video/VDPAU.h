@@ -244,6 +244,7 @@ public:
   { VDPAU_OPEN
   , VDPAU_RESET
   , VDPAU_LOST
+  , VDPAU_ERROR
   } m_DisplayState;
   CSharedSection m_DecoderSection;
   CSharedSection m_DisplaySection;
