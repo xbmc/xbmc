@@ -62,7 +62,7 @@ bool CPVRDatabase::CreateTables()
           "idClient integer primary key, "
           "sName    varchar(64), "
           "sUid     varchar(32)"
-        ");"
+        ")"
     );
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channels'", __FUNCTION__);
@@ -87,7 +87,7 @@ bool CPVRDatabase::CreateTables()
           "iEncryptionSystem    integer, "
 
           "idEpg                integer"
-        ");"
+        ")"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
 
@@ -111,7 +111,7 @@ bool CPVRDatabase::CreateTables()
           "idGroup    integer primary key,"
           "bIsRadio   bool, "
           "sName      varchar(64)"
-        ");"
+        ")"
     );
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
 
@@ -121,7 +121,7 @@ bool CPVRDatabase::CreateTables()
           "idChannel      integer, "
           "idGroup        integer, "
           "iChannelNumber integer"
-        ");"
+        ")"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 
@@ -155,7 +155,7 @@ bool CPVRDatabase::CreateTables()
           "bPostProcess         bool, "
           "iScalingMethod       integer, "
           "iDeinterlaceMode     integer "
-        ");"
+        ")"
     );
 
     bReturn = true;
