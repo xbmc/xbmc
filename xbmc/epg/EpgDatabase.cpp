@@ -83,7 +83,7 @@ bool CEpgDatabase::CreateTables(void)
           "iEpisodeId      integer, "
           "iEpisodePart    integer, "
           "sEpisodeName    varchar(128)"
-        ");"
+        ")"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
     m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
