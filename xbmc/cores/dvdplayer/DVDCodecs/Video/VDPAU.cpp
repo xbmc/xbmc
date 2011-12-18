@@ -408,7 +408,7 @@ int CVDPAU::Check(AVCodecContext* avctx)
       state = m_DisplayState;
     }
   }
-  if (state == VDPAU_RESET)
+  if (state == VDPAU_RESET || state == VDPAU_ERROR)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
@@ -420,7 +420,10 @@ int CVDPAU::Check(AVCodecContext* avctx)
 
     InitVDPAUProcs();
 
-    return VC_FLUSHED;
+    if (state == VDPAU_RESET)
+      return VC_FLUSHED;
+    else
+      return VC_ERROR;
   }
   return 0;
 }
@@ -1570,7 +1573,12 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
     CExclusiveLock lock(m_DisplaySection);
 
     if(m_DisplayState == VDPAU_OPEN)
-      m_DisplayState = VDPAU_RESET;
+    {
+      if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
+        m_DisplayState = VDPAU_LOST;
+      else
+        m_DisplayState = VDPAU_ERROR;
+    }
 
     return true;
   }
