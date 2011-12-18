@@ -55,7 +55,7 @@ JSON_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITransportLa
 
   CPVRChannel currentChannel;
   if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->IsRadio())
-    return g_PVRManager.PerformChannelSwitch(channel,false) ? ACK : InternalError;
+    return g_PVRManager.PerformChannelSwitch(*channel,false) ? ACK : InternalError;
   return g_PVRManager.StartPlayback(channel) ? ACK : InternalError;
 
 }
