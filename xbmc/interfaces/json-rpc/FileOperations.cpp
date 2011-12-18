@@ -106,18 +106,31 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         items[i]->SetPath(url.GetWithoutUserDetails());
       }
 
-      if (items[i]->m_bIsFolder)
-        filteredDirectories.Add(items[i]);
-      else if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-               (media == "music" && items[i]->HasMusicInfoTag()))
-        filteredFiles.Add(items[i]);
+      if ((media == "video" && items[i]->HasVideoInfoTag()) ||
+          (media == "music" && items[i]->HasMusicInfoTag()))
+      {
+        if (items[i]->m_bIsFolder)
+          filteredDirectories.Add(items[i]);
+        else 
+          filteredFiles.Add(items[i]);
+      }
       else
       {
         CFileItem fileItem;
         if (FillFileItem(items[i]->GetPath(), fileItem, media))
-          filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
-        else if (media == "files")
-          filteredFiles.Add(items[i]);
+        {
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
+          else
+            filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
+        }
+        else if (media == "files" || items[i]->m_bIsFolder)
+        {
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(items[i]);
+          else
+            filteredFiles.Add(items[i]);
+        }
       }
     }
 
@@ -141,7 +154,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     if (!hasFileField)
       param["properties"].append("file");
 
-    HandleFileItemList(NULL, true, "files", filteredDirectories, param, result);
+    HandleFileItemList("id", true, "files", filteredDirectories, param, result);
     for (unsigned int index = 0; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "directory";
@@ -190,7 +203,7 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
 bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &item, CStdString media /* = "" */)
 {
   bool status = false;
-  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && CFile::Exists(strFilename))
+  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
   {
     if (media.Equals("video"))
       status |= CVideoLibrary::FillFileItem(strFilename, item);
