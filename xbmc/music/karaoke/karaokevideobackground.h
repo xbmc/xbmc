@@ -28,6 +28,15 @@
 #include "DllSwScale.h"
 
 class CBaseTexture;
+class m_dllAvFormat;
+class m_dllAvCodec;
+class m_dllAvUtil;
+class m_dllSwScale;
+
+struct AVFormatContext;
+struct AVCodecContext;
+struct AVCodec;
+struct AVFrame;
 
 // C++ Interface: karaokevideoffmpeg
 // Contact: oldnemesis
@@ -73,10 +82,10 @@ private:
   bool readFrame( int frame );
   
   // FFMpeg objects
-  DllAvFormat     zm_dllAvFormat;
-  DllAvCodec      m_dllAvCodec;
-  DllAvUtil       m_dllAvUtil;
-  DllSwScale      m_dllSwScale;
+  DllAvFormat     *m_dllAvFormat;
+  DllAvCodec      *m_dllAvCodec;
+  DllAvUtil       *m_dllAvUtil;
+  DllSwScale      *m_dllSwScale;
 
   CStdString      m_curVideoFile;
   unsigned int	  skipFrames;
