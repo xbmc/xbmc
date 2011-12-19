@@ -142,30 +142,28 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       param["properties"] = CVariant(CVariant::VariantTypeArray);
 
     bool hasFileField = false;
+    bool hasMimeField = false;
     for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
     {
       if (*itr == CVariant("file"))
       {
         hasFileField = true;
-        break;
+      }
+      if (*itr == CVariant("mimetype"))
+      {
+        hasMimeField = true;
       }
     }
 
     if (!hasFileField)
       param["properties"].append("file");
+    if (!hasMimeField)
+      param["properties"].append("mimetype");
 
     HandleFileItemList("id", true, "files", filteredDirectories, param, result);
-    for (unsigned int index = 0; index < result["files"].size(); index++)
-    {
-      result["files"][index]["filetype"] = "directory";
-    }
     int count = (int)result["limits"]["total"].asInteger();
 
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
-    for (unsigned int index = count; index < result["files"].size(); index++)
-    {
-      result["files"][index]["filetype"] = "file";
-    }
     count += (int)result["limits"]["total"].asInteger();
 
     result["limits"]["end"] = count;

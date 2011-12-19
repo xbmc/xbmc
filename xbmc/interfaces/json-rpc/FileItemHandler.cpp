@@ -117,6 +117,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 {
   CVariant object;
   bool hasFileField = false;
+  bool hasMimeField = false;
   bool hasThumbnailField = false;
 
   if (item.get())
@@ -127,6 +128,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
       if (field == "file")
         hasFileField = true;
+      if (field == "mimetype")
+        hasMimeField = true;
       if (field == "thumbnail")
         hasThumbnailField = true;
     }
@@ -141,6 +144,11 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       if (!object.isMember("file"))
         object["file"] = item->GetPath().c_str();
     }
+
+    if (allowFile && hasMimeField)
+    {
+		object["mimetype"] = item->GetMimeType().c_str();
+	}
 
     if (ID)
     {
