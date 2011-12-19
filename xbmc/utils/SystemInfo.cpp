@@ -534,7 +534,14 @@ CStdString CSysInfo::GetUnameVersion()
   {
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
       result = buffer;
+#if defined(TARGET_DARWIN)
+      result.Trim();
+      result += ", "; 
+      result += GetDarwinVersionString();
+#endif
+    }
     else
       CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
