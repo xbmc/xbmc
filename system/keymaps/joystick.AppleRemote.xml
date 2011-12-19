@@ -89,8 +89,8 @@
   </Home>
   <FullscreenVideo>
     <joystick name="AppleRemote">
-      <button id="1">BigStepForward</button>
-      <button id="2">BigStepBack</button>
+      <button id="1">VolumeUp</button>
+      <button id="2">VolumeDown</button>
       <button id="3">StepBack</button>
       <button id="4">StepForward</button>
       <button id="5">Pause</button>
@@ -99,8 +99,8 @@
       <button id="8">Fullscreen</button>
       <button id="9">Rewind</button>
       <button id="10">FastForward</button>
-      <!-- pageup     -->      <button id="13">VolumeUp</button>
-      <!-- pagedown   -->      <button id="14">VolumeDown</button>
+      <!-- pageup     -->      <button id="13">BigStepForward</button>
+      <!-- pagedown   -->      <button id="14">BigStepBack</button>
       <!-- SwipeLeft  -->      <button id="80">StepBack</button>
       <!-- SwipeRight -->      <button id="81">StepForward</button>
       <!-- SwipeUp    -->      <button id="82">BigStepForward</button>
