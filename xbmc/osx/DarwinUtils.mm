@@ -67,7 +67,7 @@ bool DarwinIsAppleTV2(void)
 
 const char *GetDarwinVersionString(void)
 {
-  result = [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
+  return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
 }
 
 float GetIOSVersion(void)
