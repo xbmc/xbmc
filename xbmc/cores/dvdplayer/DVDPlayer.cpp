@@ -138,7 +138,7 @@ bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, Selectio
   return false;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, int source, int id)
+int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
 {
   CSingleLock lock(m_section);
   int count = -1;
@@ -160,7 +160,7 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id)
     return -1;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, CDVDPlayer& p)
+int CSelectionStreams::IndexOf(StreamType type, CDVDPlayer& p) const
 {
   if (p.m_pInputStream && p.m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -2427,16 +2427,12 @@ bool CDVDPlayer::IsPaused() const
 
 bool CDVDPlayer::HasVideo() const
 {
-  if (m_pInputStream)
-  {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_CurrentVideo.id >= 0) return true;
-  }
-  return false;
+  return m_SelectionStreams.Count(STREAM_VIDEO) > 0 ? true : false;
 }
 
 bool CDVDPlayer::HasAudio() const
 {
-  return (m_CurrentAudio.id >= 0);
+  return m_SelectionStreams.Count(STREAM_AUDIO) > 0 ? true : false;
 }
 
 bool CDVDPlayer::IsPassthrough() const
