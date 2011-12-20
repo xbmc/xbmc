@@ -29,6 +29,7 @@
 #define FTR_REST_MINIMUM_API_VERSION FTR_1_6_0_1
 #define FTR_REST_MAXIMUM_API_VERSION FTR_1_6_1_0
 #define E_FAILED -1
+#define E_EMPTYRESPONSE -2
 
 namespace ForTheRecord
 {
@@ -183,8 +184,15 @@ namespace ForTheRecord
   int DeleteRecording(const std::string recordingfilename);
 
   /**
+   * \brief Fetch the detailed information of a schedule
+   * \param id unique id (guid) of the schedule
+   * \param response Reference to a std::string used to store the json response string
+   */
+  int GetScheduleById(const std::string& id, Json::Value& response);
+
+  /**
    * \brief Fetch the detailed information of a guide program
-   * \param id unique id (guid) of the recording
+   * \param id unique id (guid) of the program
    * \param response Reference to a std::string used to store the json response string
    */
   int GetProgramById(const std::string& id, Json::Value& response);
@@ -204,6 +212,11 @@ namespace ForTheRecord
    * \brief Fetch the list of currently active recordings
    */
   int GetActiveRecordings(Json::Value& response);
+
+  /**
+   * \brief Cancel a currently active recording
+   */
+  int AbortActiveRecording(Json::Value& activeRecording);
 
   /**
    * \brief Cancel an upcoming program
