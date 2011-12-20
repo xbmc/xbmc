@@ -836,6 +836,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
   ||  node == NODE_TYPE_SEASONS
+  ||  node == NODE_TYPE_SETS
   ||  node == NODE_TYPE_TITLE_MOVIES
   ||  node == NODE_TYPE_TITLE_TVSHOWS
   ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
