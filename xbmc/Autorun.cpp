@@ -315,6 +315,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
     if(nAddedToPlaylist > 0)
     {
+      bPlaying = true;
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
       g_playlistPlayer.Play(0);
     }
