@@ -313,6 +313,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
       }
     }
+    if(nAddedToPlaylist > 0)
+    {
+      g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+      g_playlistPlayer.Play(0);
+    }
   }
   /* Probably want this if/when we add some automedia action dialog...
   // and finally pictures
