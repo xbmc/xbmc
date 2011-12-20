@@ -59,6 +59,9 @@ int CChaptersManager::GetChapterCount()
 int CChaptersManager::GetChapter()
 {
   if ( m_chapters.empty())
+    LoadChapters();
+
+  if ( m_chapters.empty())
     return -1;
   else
     return m_currentChapter;
@@ -72,22 +75,44 @@ void CChaptersManager::GetChapterName(CStdString& strChapterName)
   strChapterName = m_chapters[m_currentChapter]->name;
 }
 
-void CChaptersManager::UpdateChapters()
+void CChaptersManager::UpdateChapters(int64_t current_time)
 {
-  if (m_pIAMExtendedSeeking && !m_chapters.empty() && GetChapterCount() > 1)
-    m_pIAMExtendedSeeking->get_CurrentMarker(&m_currentChapter);
+  if ( m_chapters.empty())
+    LoadChapters();
+  int64_t current_converted_time = (int64_t)current_time/10000;
+  for (std::map<long, SChapterInfos *>::iterator it = m_chapters.begin(); it != m_chapters.end(); it++)
+  {
+    //m_currentChapter
+    if (it->second->starttime >= current_converted_time)
+    {
+      m_currentChapter = it->first-1;
+      return;
+    }
+
+  }
+/*if (m_pIAMExtendedSeeking && !m_chapters.empty() && GetChapterCount() > 1)
+    m_pIAMExtendedSeeking->get_CurrentMarker(&m_currentChapter);*/
+}
+
+bool CChaptersManager::LoadInterface()
+{
+  if (! CGraphFilters::Get()->Splitter.pBF)
+    return false;
+  CStdString splitterName = CGraphFilters::Get()->Splitter.osdname;
+
+  CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
+  
+  m_pIAMExtendedSeeking = CGraphFilters::Get()->Splitter.pBF;
+  if (m_pIAMExtendedSeeking)
+    return true;
+  return false;
 }
 
 bool CChaptersManager::LoadChapters()
 {
-  if (! CGraphFilters::Get()->Splitter.pBF)
-    return false;
-
   CStdString splitterName = CGraphFilters::Get()->Splitter.osdname;
-
-  CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
-
-  m_pIAMExtendedSeeking = CGraphFilters::Get()->Splitter.pBF;
+  if (!m_pIAMExtendedSeeking)
+    LoadInterface();
   if (m_pIAMExtendedSeeking)
   {
     long chaptersCount = -1;
@@ -144,7 +169,7 @@ int CChaptersManager::SeekChapter(int iChapter)
       return -1;
 
     // Seek to the chapter.
-    CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
+    CLog::Log(LOGDEBUG, "%s Seeking to chapter %d at %llu", __FUNCTION__, iChapter, m_chapters[iChapter]->starttime);
     g_dsGraph->SeekInMilliSec( m_chapters[iChapter]->starttime );
   }
   else

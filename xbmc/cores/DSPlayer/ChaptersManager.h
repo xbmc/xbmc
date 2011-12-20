@@ -67,13 +67,17 @@ public:
    */
   void GetChapterName(CStdString& strChapterName);
   /** Sync the current chapter with the media file */
-  void UpdateChapters(void);
+  void UpdateChapters(int64_t current_time);
   /** Seek to the specified chapter
    * @param iChapter Chapter to seek to
    * @return Always 0
    */
   int SeekChapter(int iChapter);
   /** Load the chapters from the media file
+   * @return True if succeeded, false otherwise
+   */
+  bool LoadInterface(void);
+  /** Load the IAMExtendedSeeking interface
    * @return True if succeeded, false otherwise
    */
   bool LoadChapters(void);
@@ -108,4 +112,3 @@ private:
   /// Is the manager initialized?
   bool m_init;
 };
-

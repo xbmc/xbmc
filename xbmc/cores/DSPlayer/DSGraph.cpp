@@ -231,7 +231,7 @@ void CDSGraph::UpdateTime()
   if (( m_State.time_total != 0 && m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
-  CChaptersManager::Get()->UpdateChapters();
+  CChaptersManager::Get()->UpdateChapters(m_State.time);
 }
 
 void CDSGraph::UpdateDvdState()
