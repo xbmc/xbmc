@@ -274,7 +274,7 @@ namespace ForTheRecord
       else
       {
         XBMC->Log(LOG_DEBUG, "Empty response");
-        return E_FAILED;
+        return E_EMPTYRESPONSE;
       }
 #ifdef DEBUG
       printValueTree(stdout, json_response);
@@ -664,13 +664,9 @@ namespace ForTheRecord
       Json::StyledWriter writer;
       std::string arguments = writer.write(g_current_livestream);
 
-      Json::Value response;
-      int retval = ForTheRecordJSONRPC("ForTheRecord/Control/StopLiveStream", arguments, response);
+      std::string response;
+      int retval = ForTheRecordRPC("ForTheRecord/Control/StopLiveStream", arguments, response);
 
-      if (retval != E_FAILED)
-      {
-        printValueTree(response);
-      }
       g_current_livestream.clear();
 
       return retval;
@@ -861,12 +857,49 @@ namespace ForTheRecord
     return retval;
   }
 
+  int GetScheduleById(const std::string& id, Json::Value& response)
+  {
+    int retval = E_FAILED;
+    CURL *curl;
+
+    XBMC->Log(LOG_DEBUG, "GetScheduleById");
+
+    curl = curl_easy_init();
+
+    if(curl)
+    {
+      std::string command = "ForTheRecord/Scheduler/ScheduleById/" + id;
+
+      retval = ForTheRecord::ForTheRecordJSONRPC(command, "", response);
+      if(retval >= 0)
+      {           
+        if (response.type() != Json::objectValue)
+        {
+          retval = E_FAILED;
+          XBMC->Log(LOG_NOTICE, "GetScheduleById did not return a Json::objectValue [%d].", response.type());
+        }
+      }
+      else
+      {
+        XBMC->Log(LOG_NOTICE, "GetScheduleById remote call failed.");
+      }
+
+      curl_easy_cleanup(curl);
+    }
+    return retval;
+  }
+
+  /**
+   * \brief Fetch the detailed information of a guide program
+   * \param id unique id (guid) of the program
+   * \param response Reference to a std::string used to store the json response string
+   */
   int GetProgramById(const std::string& id, Json::Value& response)
   {
     int retval = E_FAILED;
     CURL *curl;
 
-    XBMC->Log(LOG_DEBUG, "ProgramById");
+    XBMC->Log(LOG_DEBUG, "GetProgramById");
 
     curl = curl_easy_init();
 
@@ -992,6 +1025,29 @@ namespace ForTheRecord
     else
     {
       XBMC->Log(LOG_DEBUG, "GetActiveRecordings failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
+  /**
+   * \brief Cancel a currently active recording
+   */
+  int AbortActiveRecording(Json::Value& activeRecording)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "AbortActiveRecording");
+
+    Json::StyledWriter writer;
+    std::string arguments = writer.write(activeRecording);
+
+    std::string response;
+    retval = ForTheRecordRPC("ForTheRecord/Control/AbortActiveRecording", arguments, response);
+
+    if(retval != 0)
+    {
+      XBMC->Log(LOG_DEBUG, "AbortActiveRecording failed. Return value: %i\n", retval);
     }
 
     return retval;

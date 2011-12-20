@@ -667,11 +667,17 @@ PVR_ERROR cPVRClientForTheRecord::GetTimers(PVR_HANDLE handle)
 
   // retrieve the currently active recordings
   int retval = ForTheRecord::GetActiveRecordings(activeRecordingsResponse);
+  if (retval < 0) 
+  {
+    XBMC->Log(LOG_ERROR, "Unable to retrieve active recordings from server.");
+    return PVR_ERROR_SERVER_ERROR;
+  }
 
   // pick up the upcoming recordings
   retval = ForTheRecord::GetUpcomingPrograms(upcomingProgramsResponse);
   if (retval < 0) 
   {
+    XBMC->Log(LOG_ERROR, "Unable to retrieve upcoming programs from server.");
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -749,7 +755,10 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
   Json::Value addScheduleResponse;
-  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), timerinfo.startTime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
+  struct tm* convert = localtime(&timerinfo.endTime);
+  time_t starttime = timerinfo.startTime;
+  if (starttime == 0) starttime = time(NULL);
+  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), starttime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
   if (retval < 0) 
   {
     return PVR_ERROR_SERVER_ERROR;
@@ -786,7 +795,7 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
 
 PVR_ERROR cPVRClientForTheRecord::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
 {
-  Json::Value response;
+  Json::Value upcomingProgramsResponse, activeRecordingsResponse;
 
   XBMC->Log(LOG_DEBUG, "DeleteTimer()");
 
@@ -795,19 +804,28 @@ PVR_ERROR cPVRClientForTheRecord::DeleteTimer(const PVR_TIMER &timerinfo, bool f
   time_t stoptime = timerinfo.endTime;
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
-  // pick up the upcoming recordings
-  int retval = ForTheRecord::GetUpcomingPrograms(response);
+  // retrieve the currently active recordings
+  int retval = ForTheRecord::GetActiveRecordings(activeRecordingsResponse);
   if (retval < 0) 
   {
+    XBMC->Log(LOG_ERROR, "Unable to retrieve active recordings from server.");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  // pick up the upcoming recordings
+  retval = ForTheRecord::GetUpcomingPrograms(upcomingProgramsResponse);
+  if (retval < 0) 
+  {
+    XBMC->Log(LOG_ERROR, "Unable to retrieve upcoming programs from server.");
     return PVR_ERROR_SERVER_ERROR;
   }
 
   // try to find the upcoming recording that matches this xbmc timer
-  int numberoftimers = response.size();
+  int numberoftimers = upcomingProgramsResponse.size();
   for (int i = 0; i < numberoftimers; i++)
   {
     cUpcomingRecording upcomingrecording;
-    if (upcomingrecording.Parse(response[i]))
+    if (upcomingrecording.Parse(upcomingProgramsResponse[i]))
     {
       if (upcomingrecording.ChannelId() == pChannel->Guid())
       {
@@ -815,10 +833,50 @@ PVR_ERROR cPVRClientForTheRecord::DeleteTimer(const PVR_TIMER &timerinfo, bool f
         {
           if (upcomingrecording.StopTime() == stoptime)
           {
+            // Okay, we matched the timer to an upcoming program, but is it recording right now?
+            if (activeRecordingsResponse.size() > 0)
+            {
+              // Is the this upcoming program in the list of active recordings?
+              for (Json::Value::UInt j = 0; j < activeRecordingsResponse.size(); j++)
+              {
+                cActiveRecording activerecording;
+                if (activerecording.Parse(activeRecordingsResponse[j]))
+                {
+                  if (upcomingrecording.UpcomingProgramId() == activerecording.UpcomingProgramId())
+                  {
+                    // Abort this recording
+                    retval = ForTheRecord::AbortActiveRecording(activeRecordingsResponse[j]);
+                    if (retval != 0)
+                    {
+                      XBMC->Log(LOG_ERROR, "Unable to cancel the active recording of \"%s\" on the server. Will try to cancel the program.", upcomingrecording.Title().c_str());
+                    }
+                    break;
+                  }
+                }
+              }
+            }
             retval = ForTheRecord::CancelUpcomingProgram(upcomingrecording.ScheduleId(), upcomingrecording.ChannelId(),
               upcomingrecording.StartTime(), upcomingrecording.UpcomingProgramId());
-            if (retval >= 0) return PVR_ERROR_NO_ERROR;
-            else return PVR_ERROR_SERVER_ERROR;
+            if (retval < 0) 
+            {
+              XBMC->Log(LOG_ERROR, "Unable to cancel upcoming program from server.");
+              return PVR_ERROR_SERVER_ERROR;
+            }
+            Json::Value scheduleResponse;
+            retval = ForTheRecord::GetScheduleById(upcomingrecording.ScheduleId(), scheduleResponse);
+            std::string schedulename = scheduleResponse["Name"].asString();
+            if (schedulename.substr(0, 7) == "XBMC - ")
+            {
+              retval = ForTheRecord::DeleteSchedule(upcomingrecording.ScheduleId());
+              if (retval < 0) 
+              {
+                XBMC->Log(LOG_NOTICE, "Unable to cancel schedule %s from server.", schedulename.c_str());
+              }
+            }
+
+            // Trigger an update of the PVR timers
+            PVR->TriggerTimerUpdate();
+            return PVR_ERROR_NO_ERROR;
           }
         }
       }

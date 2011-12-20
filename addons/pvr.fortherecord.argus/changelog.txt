@@ -1,3 +1,10 @@
+v0.0.1.123 (20-12-2011)
+- Pressing 'record' while viewing will schedule the recording of the show watched
+- Delete Timer: will abort an active recording,
+                will remove the upcoming program from the server
+                will remove the corresponding schedule from the server
+                (the schedule name MUST be: "XBMC - " + timer title, this is the case
+                 when the schedule was added by the addon and unchanged by the user)
 v0.0.1.122 (07-12-2011)
 - Signal quality retrieval implemented
 v0.0.1.121 (04-12-2011)
