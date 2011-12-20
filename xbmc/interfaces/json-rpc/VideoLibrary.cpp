@@ -36,7 +36,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
   CFileItemList items;
   JSON_STATUS ret = OK;
-  if (videodatabase.GetMoviesByWhere("videodb://", "", "", items))
+  if (videodatabase.GetMoviesByWhere("videodb://1/", "", "", items))
     ret = GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -115,7 +115,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetTvShowsNav("videodb://", items))
+  if (videodatabase.GetTvShowsNav("videodb://2/", items))
   {
     bool additionalInfo = false;
     for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
@@ -167,8 +167,10 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
   if (!videodatabase.Open())
     return InternalError;
 
+  CStdString strPath;
+  strPath.Format("videodb://2/2/%i/", tvshowID);
   CFileItemList items;
-  if (videodatabase.GetSeasonsNav("videodb://", items, -1, -1, -1, -1, tvshowID))
+  if (videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID))
     HandleFileItemList(NULL, false, "seasons", items, parameterObject, result);
 
   videodatabase.Close();
@@ -184,8 +186,10 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
   if (!videodatabase.Open())
     return InternalError;
 
+  CStdString strPath;
+  strPath.Format("videodb://2/2/%i/%i/", tvshowID, season);
   CFileItemList items;
-  if (videodatabase.GetEpisodesNav("videodb://2/2/-1/-1/", items, -1, -1, -1, -1, tvshowID, season))
+  if (videodatabase.GetEpisodesNav(strPath, items, -1, -1, -1, -1, tvshowID, season))
     GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -231,7 +235,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetMusicVideosNav("videodb://", items, -1, -1, artistID, -1, -1, albumID))
+  if (videodatabase.GetMusicVideosNav("videodb://3/", items, -1, -1, artistID, -1, -1, albumID))
     GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -267,7 +271,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://", items))
+  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://4/", items))
     GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -281,7 +285,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://", items))
+  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://5/", items))
     GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -295,7 +299,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://", items))
+  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://6/", items))
     GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
@@ -308,20 +312,31 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
   media = media.ToLower();
   int idContent = -1;
 
+  CStdString strPath = "videodb://";
   /* select which video content to get genres from*/
   if (media.Equals("movie"))
+  {
     idContent = VIDEODB_CONTENT_MOVIES;
+    strPath += "1";
+  }
   else if (media.Equals("tvshow"))
+  {
     idContent = VIDEODB_CONTENT_TVSHOWS;
+    strPath += "2";
+  }
   else if (media.Equals("musicvideo"))
+  {
     idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    strPath += "3";
+  }
+  strPath += "/1/";
  
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetGenresNav("", items, idContent))
+  if (videodatabase.GetGenresNav(strPath, items, idContent))
   {
     /* need to set strTitle in each item*/
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
