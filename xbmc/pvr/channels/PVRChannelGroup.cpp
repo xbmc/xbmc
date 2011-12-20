@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
 #include "PVRChannelGroupsContainer.h"
@@ -54,7 +55,6 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
     m_bRadio(bRadio),
     m_iGroupId(-1),
-    m_strGroupName(""),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
@@ -199,7 +199,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
+  if (g_guiSettings.GetString("pvrmenu.iconpath").IsEmpty())
     return;
 
   CPVRDatabase *database = OpenPVRDatabase();
@@ -213,7 +213,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     PVRChannelGroupMember groupMember = at(ptr);
 
     /* skip if an icon is already set */
-    if (groupMember.channel->IconPath() != "")
+    if (!groupMember.channel->IconPath().IsEmpty())
       continue;
 
     CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
@@ -1000,12 +1000,12 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || at(iChannelPtr).channel->IsHidden())
       continue;
 
-    const CEpgInfoTag *epgNow = epg->InfoTagNow();
-    if (!epgNow)
+    CEpgInfoTag epgNow;
+    if (!epg->InfoTagNow(epgNow))
       continue;
 
-    CFileItemPtr entry(new CFileItem(*epgNow));
-    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
+    CFileItemPtr entry(new CFileItem(epgNow));
+    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
     entry->SetPath(channel->ChannelName());
     entry->SetThumbnailImage(channel->IconPath());
     results.Add(entry);
@@ -1026,12 +1026,12 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
     if (!epg || !epg->HasValidEntries() || at(iChannelPtr).channel->IsHidden())
       continue;
 
-    const CEpgInfoTag *epgNow = epg->InfoTagNext();
-    if (!epgNow)
+    CEpgInfoTag epgNow;
+    if (!epg->InfoTagNext(epgNow))
       continue;
 
-    CFileItemPtr entry(new CFileItem(*epgNow));
-    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
+    CFileItemPtr entry(new CFileItem(epgNow));
+    entry->SetLabel2(epgNow.StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
     entry->SetPath(channel->ChannelName());
     entry->SetThumbnailImage(channel->IconPath());
     results.Add(entry);

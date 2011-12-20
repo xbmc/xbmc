@@ -447,7 +447,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         CPVRChannel channel;
         int iChannelNumber = -1;
-        g_PVRManager.GetCurrentChannel(&channel);
+        g_PVRManager.GetCurrentChannel(channel);
 
         if (action.GetID() == REMOTE_0)
         {
@@ -789,7 +789,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl = message.GetSenderId();
-      if (iControl == CONTROL_GROUP_CHOOSER)
+      if (iControl == CONTROL_GROUP_CHOOSER && g_PVRManager.IsStarted())
       {
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
@@ -797,7 +797,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CStdString strLabel = msg.GetLabel();
 
         CPVRChannel playingChannel;
-        if (g_PVRManager.GetCurrentChannel(&playingChannel))
+        if (g_PVRManager.GetCurrentChannel(playingChannel))
         {
           CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
           if (selectedGroup)
@@ -1263,6 +1263,9 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
 
 void CGUIWindowFullScreen::FillInTVGroups()
 {
+  if (!g_PVRManager.IsStarted())
+    return;
+
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
@@ -1290,6 +1293,9 @@ void CGUIWindowFullScreen::FillInTVGroups()
 
 void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
 {
+  if (!g_PVRManager.IsStarted())
+    return;
+
   CGUISelectButtonControl* pButton = (CGUISelectButtonControl*)GetControl(CONTROL_GROUP_CHOOSER);
   if (!pButton)
     return;

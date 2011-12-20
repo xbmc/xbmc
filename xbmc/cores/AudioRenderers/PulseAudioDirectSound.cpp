@@ -119,6 +119,7 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 
 struct SinkInfoStruct
 {
+  bool passthrough;
   AudioSinkList *list;
   pa_threaded_mainloop *mainloop;
 };
@@ -126,13 +127,36 @@ struct SinkInfoStruct
 static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+
   if (i && i->name)
   {
-    CStdString descr = i->description + CStdString(" (PulseAudio)");
-    CStdString sink;
-    sink.Format("pulse:%s@default", i->name);
-    sinkStruct->list->push_back(AudioSink(descr, sink));
-    CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", descr.c_str(), sink.c_str());
+    bool       add  = false;
+    if(sinkStruct->passthrough)
+    {
+#if PA_CHECK_VERSION(1,0,0)
+      for(int idx = 0; idx < i->n_formats; ++idx)
+      {
+        if(!pa_format_info_is_pcm(i->formats[idx]))
+        {
+          add = true;
+          break;
+        }
+      }
+#endif
+    }
+    else
+      add = true;
+
+    if(add)
+    {
+      CStdString desc, sink;
+      if(sinkStruct->list->size() == 0)
+        sinkStruct->list->push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
+      desc.Format("%s  (PulseAudio)", i->description);
+      sink.Format("pulse:%s@default", i->name);
+      sinkStruct->list->push_back(AudioSink(desc, sink));
+      CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", desc.c_str(), sink.c_str());
+    }
   }
 
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
@@ -144,13 +168,13 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
 
-bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded encoded)
 {
   m_remap.Reset();
   m_uiDataChannels = iChannels;
   enum PCMChannels* outLayout = NULL;
 
-  if (!bPassthrough && channelMap)
+  if (encoded == ENCODED_NONE && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
@@ -179,7 +203,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBufferSize = 0;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+  m_bPassthrough = encoded == ENCODED_NONE ? false : true;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
   m_drc = 0;
 
@@ -188,12 +212,14 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
 
+#if !PA_CHECK_VERSION(1,0,0)
   /* Open the device */
   if (m_bPassthrough)
   {
     CLog::Log(LOGWARNING, "PulseAudio: Does not support passthrough");
     return false;
   }
+#endif
 
   std::vector<CStdString> hostdevice;
   CUtil::Tokenize(device, hostdevice, "@");
@@ -208,18 +234,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
+
   struct pa_channel_map map;
-
-  m_SampleSpec.channels = iChannels;
-  m_SampleSpec.rate = uiSamplesPerSec;
-  m_SampleSpec.format = PA_SAMPLE_S16NE;
-
-  if (!pa_sample_spec_valid(&m_SampleSpec))
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
-    Deinitialize();
-    return false;
-  }
 
   // Build the channel map, we dont need to remap, but we still need PCMRemap to handle mono to dual mono stereo
   map.channels = iChannels;
@@ -252,11 +268,49 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     }
   }
   else
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
+    pa_channel_map_init_auto(&map, m_uiChannels, PA_CHANNEL_MAP_ALSA);
 
-  pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
+  pa_cvolume_reset(&m_Volume, m_uiChannels);
 
-  if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
+  if(m_bPassthrough)
+  {
+#if PA_CHECK_VERSION(1,0,0)
+    pa_format_info *info[1];
+    info[0] = pa_format_info_new();
+    switch(encoded)
+    {
+      case ENCODED_IEC61937_AC3 : info[0]->encoding = PA_ENCODING_AC3_IEC61937 ; break;
+      case ENCODED_IEC61937_DTS : info[0]->encoding = PA_ENCODING_DTS_IEC61937 ; break;
+      case ENCODED_IEC61937_EAC3: info[0]->encoding = PA_ENCODING_EAC3_IEC61937; break;
+      case ENCODED_IEC61937_MPEG: info[0]->encoding = PA_ENCODING_MPEG_IEC61937; break;
+      default:                    info[0]->encoding = PA_ENCODING_INVALID      ; break;
+    }
+    pa_format_info_set_rate(info[0], m_uiSamplesPerSec);
+    pa_format_info_set_channels(info[0], m_uiChannels);
+    pa_format_info_set_sample_format(info[0], PA_SAMPLE_S16NE);
+    m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
+    pa_format_info_free(info[0]);
+#endif
+  }
+  else
+  {
+
+    pa_sample_spec spec;
+    spec.channels = iChannels;
+    spec.rate     = uiSamplesPerSec;
+    spec.format   = PA_SAMPLE_S16NE;
+
+    if (!pa_sample_spec_valid(&spec))
+    {
+      CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
+      Deinitialize();
+      return false;
+    }
+
+    m_Stream = pa_stream_new(m_Context, "audio stream", &spec, &map);
+  }
+
+  if (m_Stream == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
     pa_threaded_mainloop_unlock(m_MainLoop);
@@ -478,9 +532,9 @@ bool CPulseAudioDirectSound::SetCurrentVolume(long nVolume)
   pa_threaded_mainloop_lock(m_MainLoop);
   pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume*1.5f / 200.0f);
   if ( nVolume <= VOLUME_MINIMUM )
-    pa_cvolume_mute(&m_Volume, m_SampleSpec.channels);
+    pa_cvolume_mute(&m_Volume, m_uiChannels);
   else
-    pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
+    pa_cvolume_set(&m_Volume, m_uiChannels, volume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
@@ -621,18 +675,15 @@ void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, boo
     return;
   }
 
-  if (!passthrough)
-  {
     pa_threaded_mainloop_lock(mainloop);
 
     SinkInfoStruct sinkStruct;
+    sinkStruct.passthrough = passthrough;
     sinkStruct.mainloop = mainloop;
     sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
     WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
     pa_threaded_mainloop_unlock(mainloop);
-  }
 
   if (mainloop)
     pa_threaded_mainloop_stop(mainloop);

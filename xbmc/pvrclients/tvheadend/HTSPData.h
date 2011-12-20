@@ -69,8 +69,9 @@ protected:
 private:
   struct SMessage
   {
-    cCondWait * event;
-    htsmsg_t  * msg;
+    cCondVar* event;
+    cMutex  * mutex;
+    htsmsg_t* msg;
   };
   typedef std::map<int, SMessage> SMessages;
 
@@ -83,7 +84,7 @@ private:
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
   CHTSPConnection *m_session;
-  cCondWait        m_started;
+  cCondVar         m_started;
   cMutex           m_Mutex;
   SChannels        m_channels;
   STags            m_tags;
@@ -91,5 +92,6 @@ private:
   SMessages        m_queue;
   SRecordings      m_recordings;
   int              m_iReconnectRetries;
+  bool             m_bDisconnectWarningDisplayed;
 };
 

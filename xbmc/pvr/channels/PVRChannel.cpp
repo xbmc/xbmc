@@ -28,6 +28,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
 #include "PVRChannelGroupsContainer.h"
@@ -60,8 +61,8 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iChannelId              = -1;
   m_bIsRadio                = bRadio;
   m_bIsHidden               = false;
-  m_strIconPath             = "";
-  m_strChannelName          = "";
+  m_strIconPath             = StringUtils::EmptyString;
+  m_strChannelName          = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
@@ -75,10 +76,10 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iUniqueId               = -1;
   m_iClientId               = -1;
   m_iClientChannelNumber    = -1;
-  m_strClientChannelName    = "";
-  m_strInputFormat          = "";
-  m_strStreamURL            = "";
-  m_strFileNameAndPath      = "";
+  m_strClientChannelName    = StringUtils::EmptyString;
+  m_strInputFormat          = StringUtils::EmptyString;
+  m_strStreamURL            = StringUtils::EmptyString;
+  m_strFileNameAndPath      = StringUtils::EmptyString;
   m_iClientEncryptionSystem = -1;
 }
 
@@ -97,7 +98,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iClientEncryptionSystem = channel.iEncryptionSystem;
   m_iCachedChannelNumber    = 0;
   m_iClientId               = iClientId;
-  m_strFileNameAndPath      = "";
+  m_strFileNameAndPath      = StringUtils::EmptyString;
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bEPGEnabled             = true;
@@ -155,26 +156,29 @@ bool CPVRChannel::Delete(void)
   if (!database)
     return bReturn;
 
-  CSingleLock lock(m_critSection);
-
   /* delete the EPG table */
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (epg)
   {
     g_EpgContainer.DeleteEpg(*epg, true);
+    CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
   }
 
   bReturn = database->Delete(*this);
-
   database->Close();
-
   return bReturn;
 }
 
 CEpg *CPVRChannel::GetEPG(void) const
 {
-  return g_EpgContainer.GetByChannel(*this);
+  CEpg *epg(NULL);
+  {
+    CSingleLock lock(m_critSection);
+    if (!m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0)
+      epg = g_EpgContainer.GetByChannel(*this);
+  }
+  return epg;
 }
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
@@ -690,7 +694,7 @@ bool CPVRChannel::CreateEPG(bool bForce /* = false */)
 
 int CPVRChannel::GetEPG(CFileItemList &results) const
 {
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
@@ -703,26 +707,23 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
 
 bool CPVRChannel::ClearEPG() const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = g_EpgContainer.GetByChannel(*this);
+  CEpg *epg = GetEPG();
   if (epg)
     epg->Clear();
 
   return true;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNow(void) const
+bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNow() : NULL;
+  CEpg *epg = GetEPG();
+  return epg ? epg->InfoTagNow(tag) : false;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNext(void) const
+bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-  CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNext() : NULL;
+  CEpg *epg = GetEPG();
+  return epg ? epg->InfoTagNext(tag) : false;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)

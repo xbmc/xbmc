@@ -135,7 +135,6 @@ namespace PVR
     int              m_iSelected;
     SORT_ORDER       m_iSortOrder;
     SORT_METHOD      m_iSortMethod;
-    bool             m_bIsFocusing;
     CCriticalSection m_critSection;
   };
 }

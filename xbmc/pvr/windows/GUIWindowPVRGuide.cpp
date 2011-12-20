@@ -134,7 +134,7 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 void CGUIWindowPVRGuide::UpdateViewChannel(void)
 {
   CPVRChannel CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
+  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
 
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
@@ -157,7 +157,7 @@ void CGUIWindowPVRGuide::UpdateViewChannel(void)
 void CGUIWindowPVRGuide::UpdateViewNow(void)
 {
   CPVRChannel CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
+  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
   m_parent->m_guideGrid = NULL;
@@ -180,7 +180,7 @@ void CGUIWindowPVRGuide::UpdateViewNow(void)
 void CGUIWindowPVRGuide::UpdateViewNext(void)
 {
   CPVRChannel CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
+  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
   m_parent->m_guideGrid = NULL;
@@ -203,7 +203,7 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
 void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
   CPVRChannel CurrentChannel;
-  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
+  bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
   CDateTime gridStart = CDateTime::GetCurrentDateTime();
   CDateTime firstDate; firstDate.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
@@ -234,12 +234,9 @@ bool CGUIWindowPVRGuide::SelectPlayingFile(void)
 void CGUIWindowPVRGuide::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
   g_EpgContainer.RegisterObserver(this);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
@@ -258,8 +255,6 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19222));
   UpdateButtons();
-
-  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRGuide::IsSelectedButton(CGUIMessage &message) const

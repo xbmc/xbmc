@@ -11,4 +11,12 @@
       <mousemove>mousemove</mousemove>
     </mouse>
   </global>
+  <SlideShow>
+    <mouse>
+      <leftclick>Pause</leftclick>
+      <rightclick>PreviousMenu</rightclick>
+      <wheelup>PreviousPicture</wheelup>
+      <wheeldown>NextPicture</wheeldown>
+    </mouse>
+  </SlideShow>
 </keymap>

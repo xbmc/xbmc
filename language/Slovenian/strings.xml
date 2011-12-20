@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Tadej Novak-->
 <!--Email: tadej@tano.si-->
-<!--Date of translation: 08/10/2011-->
+<!--Date of translation: 20/11/2011-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programi</string>
@@ -2358,8 +2358,9 @@
   <string id="21365">Odstrani multimedijsko skupno rabo</string>
   <string id="21366">Mapa s podnapisi</string>
   <string id="21367">Film &amp; dodatna mapa s podnapisi</string>
-  
-  <string id="21369">Vključi miško</string>
+  <string id="21368">Ponastavi pisave podnapisov ASS/SSA</string>
+
+  <string id="21369">Vključi miško in podporo za zaslone na dotik</string>
   <string id="21370">Vključi navigacijske zvoke med predvajanjem vsebine</string>
   <string id="21371">Sličica</string>
   <string id="21372">Vsiljena DVD regija</string>
@@ -2813,12 +2814,16 @@
   <string id="36004">Pritisni gumb "uporabnik"</string>
   <string id="36005">Vključi ukaz za menjavo strani</string>
   <string id="36006">Ni mogoče odpreti adapterja</string>
-  <string id="36007">Vključi naprave ob zagonu XBMC</string>
+  <string id="36007">Vključi TV ob zagonu XBMC</string>
   <string id="36008">Izključi naprave ob izhodu iz XBMC</string>
   <string id="36009">Postavi naprave v stanje pripravljenosti ob ohranjevalniku zaslona</string>
-  <string id="36010">Nastavi kot neaktiven vir ob izhodu iz XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Ni mogoče zaznati vrat CEC. Nastavite jih ročno.</string>
   <string id="36012">Ni mogoče zaznati adapterja CEC.</string>
   <string id="36013">Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)</string>
   <string id="36014">Postavi računalnik v stanje pripravljenosti, ko se ugasne TV</string>
+  <string id="36015">Št. vrat HDMI</string>
+  <string id="36016">XBMC povezan</string>  <!-- max. 13 characters -->
+  <string id="36017">Vmesnik najden, toda libcec ni na voljo</string>
+  <string id="36018">Uporabi jezikovne nastavitve TV</string>
 </strings>

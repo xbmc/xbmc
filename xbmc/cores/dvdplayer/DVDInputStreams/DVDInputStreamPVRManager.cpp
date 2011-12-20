@@ -26,6 +26,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "pvr/addons/PVRClients.h"
 
 using namespace XFILE;
@@ -236,7 +237,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannel *channel)
+bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannel &channel) const
 {
   return g_PVRManager.GetCurrentChannel(channel);
 }
@@ -288,8 +289,7 @@ bool CDVDInputStreamPVRManager::Record(bool bOnOff)
 
 CStdString CDVDInputStreamPVRManager::GetInputFormat()
 {
-  if (m_pOtherStream)
-    return "";
-  else
+  if (!m_pOtherStream && g_PVRManager.IsStarted())
     return g_PVRClients->GetCurrentInputFormat();
+  return StringUtils::EmptyString;
 }

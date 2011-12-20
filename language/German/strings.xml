@@ -2296,11 +2296,11 @@
   <string id="20383">Ordner enthält ein einziges Video</string>
   <string id="20384">Link zur TV-Serie</string>
   <string id="20385">Link zur TV-Serie entfernen</string>
-  <string id="20386">Kürzlich hinzugefügte Filme</string>
-  <string id="20387">Kürzlich hinzugefügte Episoden</string>
+  <string id="20386">Neu hinzugefügte Filme</string>
+  <string id="20387">Neu hinzugefügte Episoden</string>
   <string id="20388">Studios</string>
   <string id="20389">Musikvideos</string>
-  <string id="20390">Kürzlich hinzugefügte Musikvideos</string>
+  <string id="20390">Neu hinzugefügte Musikvideos</string>
   <string id="20391">Musikvideo</string>
   <string id="20392">Musikvideos aus Datenbank entfernen</string>
   <string id="20393">Musikvideo-Informationen</string>
@@ -2816,7 +2816,7 @@
   <string id="36007">Geräte anschalten wenn XBMC startet</string>
   <string id="36008">Geräte ausschalten wenn XBMC beendet wird</string>
   <string id="36009">Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird</string>
-  <string id="36010">Als inaktiv markieren wenn XBMC beendet wird</string>
+  <string id="36010"></string>
   <string id="36011">Der CEC Port konnte nicht gefunden werden. Manuell einstellen.</string>
   <string id="36012">Der CEC Adapter konnte nicht gefunden werden.</string>
   <string id="36013">Nicht unterstützte libcec Version. %d ist größer als die von XBMC unterstützte Version (%d)</string>

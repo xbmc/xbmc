@@ -26,6 +26,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 
 #include "PVRTimers.h"
 #include "pvr/PVRManager.h"
@@ -40,9 +41,9 @@ using namespace EPG;
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {
-  m_strTitle           = "";
+  m_strTitle           = StringUtils::EmptyString;
   m_strDirectory       = "/";
-  m_strSummary         = "";
+  m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
   m_iClientChannelUid  = -1;
@@ -50,14 +51,14 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iLifetime          = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
   m_bIsRepeating       = false;
   m_iWeekdays          = 0;
-  m_strFileNameAndPath = "";
+  m_strFileNameAndPath = StringUtils::EmptyString;
   m_iChannelNumber     = 0;
   m_bIsRadio           = false;
   m_epgInfo            = NULL;
   m_channel            = NULL;
   m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
   m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
-  m_strGenre           = "";
+  m_strGenre           = StringUtils::EmptyString;
   m_iGenreType         = 0;
   m_iGenreSubType      = 0;
   m_StartTime          = CDateTime::GetUTCDateTime();
@@ -70,7 +71,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
 {
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
-  m_strSummary         = "";
+  m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
@@ -205,9 +206,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
     m_strSummary.Format("%s %s %s %s %s",
         StartAsLocalTime().GetAsLocalizedDate(),
         g_localizeStrings.Get(19159),
-        StartAsLocalTime().GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
         g_localizeStrings.Get(19160),
-        EndAsLocalTime().GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
   }
   else if (m_FirstDay.IsValid())
   {
@@ -222,9 +223,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         g_localizeStrings.Get(19156),
         FirstDayAsLocalTime().GetAsLocalizedDate(false),
         g_localizeStrings.Get(19159),
-        StartAsLocalTime().GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
         g_localizeStrings.Get(19160),
-        EndAsLocalTime().GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
   }
   else
   {
@@ -237,9 +238,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         m_iWeekdays & 0x20 ? g_localizeStrings.Get(19154) : "__",
         m_iWeekdays & 0x40 ? g_localizeStrings.Get(19155) : "__",
         g_localizeStrings.Get(19159),
-        StartAsLocalTime().GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
         g_localizeStrings.Get(19160),
-        EndAsLocalTime().GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
   }
 }
 
@@ -459,7 +460,7 @@ CStdString CPVRTimerInfoTag::ChannelName() const
   if (channeltag)
     return channeltag->ChannelName();
   else
-    return "";
+    return StringUtils::EmptyString;
 }
 
 CStdString CPVRTimerInfoTag::ChannelIcon() const
@@ -469,7 +470,7 @@ CStdString CPVRTimerInfoTag::ChannelIcon() const
   if (channeltag)
     return channeltag->IconPath();
   else
-    return "";
+    return StringUtils::EmptyString;
 }
 
 bool CPVRTimerInfoTag::SetDuration(int iDuration)
@@ -528,9 +529,9 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
     newTag->m_strSummary.Format("%s %s %s %s %s",
         newTag->StartAsLocalTime().GetAsLocalizedDate(),
         g_localizeStrings.Get(19159),
-        newTag->StartAsLocalTime().GetAsLocalizedTime("", false),
+        newTag->StartAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false),
         g_localizeStrings.Get(19160),
-        newTag->EndAsLocalTime().GetAsLocalizedTime("", false));
+        newTag->EndAsLocalTime().GetAsLocalizedTime(StringUtils::EmptyString, false));
   }
   else
   {

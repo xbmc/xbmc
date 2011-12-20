@@ -31,6 +31,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
+#include "utils/StringUtils.h"
 
 #include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
 
@@ -80,9 +81,49 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
   m_lastDate.SetValid(false);
 }
 
+CEpg::CEpg(void) :
+    m_bChanged(false),
+    m_bTagsChanged(false),
+    m_bInhibitSorting(false),
+    m_bLoaded(false),
+    m_iEpgID(0),
+    m_strName(StringUtils::EmptyString),
+    m_strScraperName(StringUtils::EmptyString),
+    m_nowActive(NULL),
+    m_Channel(NULL)
+{
+  m_lastScanTime.SetValid(false);
+  m_firstDate.SetValid(false);
+  m_lastDate.SetValid(false);
+}
+
 CEpg::~CEpg(void)
 {
   Clear();
+}
+
+CEpg &CEpg::operator =(const CEpg &right)
+{
+  m_bChanged        = right.m_bChanged;
+  m_bTagsChanged    = right.m_bTagsChanged;
+  m_bInhibitSorting = right.m_bInhibitSorting;
+  m_bLoaded         = right.m_bLoaded;
+  m_iEpgID          = right.m_iEpgID;
+  m_strName         = right.m_strName;
+  m_strScraperName  = right.m_strScraperName;
+  m_nowActive       = right.m_nowActive;
+  m_lastScanTime    = right.m_lastScanTime;
+  m_firstDate       = right.m_firstDate;
+  m_lastDate        = right.m_lastDate;
+  m_Channel         = right.m_Channel;
+
+  for (size_t iPtr = 0; iPtr < right.size(); iPtr++)
+  {
+    CEpgInfoTag *tag = new CEpgInfoTag(*right.at(iPtr));
+    push_back(tag);
+  }
+
+  return *this;
 }
 
 /** @name Public methods */
@@ -182,6 +223,7 @@ void CEpg::Cleanup(void)
 
 void CEpg::Cleanup(const CDateTime &Time)
 {
+  bool bTagsChanged(false);
   CSingleLock lock(m_critSection);
   for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
   {
@@ -192,22 +234,20 @@ void CEpg::Cleanup(const CDateTime &Time)
 
       delete at(iPtr);
       erase(begin() + iPtr);
-      m_bTagsChanged = true;
+      bTagsChanged = true;
     }
   }
 
-  if (m_bTagsChanged)
+  if (bTagsChanged)
   {
     UpdatePreviousAndNextPointers();
     UpdateFirstAndLastDates();
-    Persist();
   }
 }
 
-const CEpgInfoTag *CEpg::InfoTagNow(void) const
+bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
-
   if (!m_nowActive || !m_nowActive->IsActive())
   {
     CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -223,45 +263,51 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
     }
   }
 
-  return m_nowActive;
+  if (m_nowActive)
+    tag = *m_nowActive;
+  return m_nowActive != NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTagNext(void) const
+bool CEpg::InfoTagNext(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-
-  const CEpgInfoTag *nowTag = InfoTagNow();
-  if (nowTag != NULL)
+  CEpgInfoTag nowTag;
+  if (InfoTagNow(nowTag))
   {
-    return nowTag->GetNextEvent();
+    const CEpgInfoTag *nextTag = nowTag.GetNextEvent();
+    if (nextTag)
+      tag = *nextTag;
+    return nextTag != NULL;
   }
-  else if (size() >  0)
+
+  CSingleLock lock(m_critSection);
+  if (size() >  0)
   {
     CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
     for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
       if (at(iTagPtr)->StartAsUTC() > now)
-        return at(iTagPtr);
+      {
+        tag = *at(iTagPtr);
+        return true;
+      }
     }
   }
 
-  return NULL;
+  return false;
 }
 
 bool CEpg::CheckPlayingEvent(void)
 {
-  bool bChanged(false);
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
-  const CEpgInfoTag *currentEvent = m_nowActive;
-  const CEpgInfoTag *updatedEvent = InfoTagNow();
-
-  if ((!currentEvent && updatedEvent) || (currentEvent && !updatedEvent) || (currentEvent && *currentEvent != *updatedEvent))
+  const CEpgInfoTag *previousTag = m_nowActive;
+  CEpgInfoTag tag;
+  if (InfoTagNow(tag) && (!previousTag || *previousTag != tag))
   {
-    SetChanged();
     NotifyObservers("epg-current-event");
-    bChanged = true;
+    bReturn = true;
   }
-  return bChanged;
+  return bReturn;
 }
 
 CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const
@@ -573,46 +619,51 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
   if (g_guiSettings.GetBool("epg.ignoredbforclient"))
     return true;
 
-  bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-    return bReturn;
+    return false;
   }
 
-  CSingleLock lock(m_critSection);
-  if (m_iEpgID <= 0 || m_bChanged)
+  CEpg epgCopy;
   {
-    int iId = database->Persist(*this);
+    CSingleLock lock(m_critSection);
+    epgCopy = *this;
+    m_bChanged     = false;
+    m_bTagsChanged = false;
+  }
+
+  if (epgCopy.m_iEpgID <= 0 || epgCopy.m_bChanged)
+  {
+    int iId = database->Persist(epgCopy);
     if (iId > 0)
     {
-      m_iEpgID = iId;
-      m_bChanged = false;
+      epgCopy.m_iEpgID   = iId;
+      epgCopy.m_bChanged = false;
     }
   }
 
   if (bUpdateLastScanTime)
-    database->PersistLastEpgScanTime(m_iEpgID);
+    database->PersistLastEpgScanTime(epgCopy.m_iEpgID);
 
-  if (m_bTagsChanged)
+  bool bReturn(true);
+  if (epgCopy.m_bTagsChanged)
   {
-    m_bTagsChanged = false;
-    lock.Leave();
-
-    bReturn = PersistTags();
-
-    lock.Enter();
-    if (bReturn)
-      m_bTagsChanged = false;
-  }
-  else
-  {
-    bReturn = true;
+    bReturn = epgCopy.PersistTags();
+    epgCopy.m_bTagsChanged = !bReturn;
   }
 
   database->Close();
+
+  {
+    CSingleLock lock(m_critSection);
+    m_iEpgID        = epgCopy.m_iEpgID;
+    m_bChanged     |= epgCopy.m_bChanged;
+    m_bTagsChanged |= epgCopy.m_bTagsChanged;
+  }
+
   return bReturn;
 }
 
@@ -700,7 +751,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 
   if (g_PVRManager.IsStarted() && HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (g_PVRClients && g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
+    if (g_PVRManager.IsStarted() && g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());

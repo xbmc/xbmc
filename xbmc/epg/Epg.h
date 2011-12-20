@@ -63,6 +63,8 @@ namespace EPG
      */
     virtual ~CEpg(void);
 
+    CEpg &operator =(const CEpg &right);
+
     /*!
      * @brief Update this table's info with the given info. Doesn't change the EpgID.
      * @param epg The new info.
@@ -152,13 +154,13 @@ namespace EPG
      * @brief Get the event that is occurring now.
      * @return The current event.
      */
-    virtual const CEpgInfoTag *InfoTagNow(void) const;
+    virtual bool InfoTagNow(CEpgInfoTag &tag) const;
 
     /*!
      * @brief Get the event that will occur next.
      * @return The next event.
      */
-    virtual const CEpgInfoTag *InfoTagNext(void) const;
+    virtual bool InfoTagNext(CEpgInfoTag &tag) const;
 
     /*!
      * @brief Get the event that occurs at the given time.
@@ -270,6 +272,8 @@ namespace EPG
     virtual bool IsRadio(void) const;
 
   protected:
+    CEpg(void);
+
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
      * TODO: not implemented yet for non-pvr EPGs

@@ -251,7 +251,7 @@
 				<onclick>ActivateWindow(PVROSDGuide)</onclick>
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
-            <control type="label" id="606">
+			<control type="label" id="606">
 				<posx>290</posx>
 				<posy>0</posy>
 				<width>450</width>

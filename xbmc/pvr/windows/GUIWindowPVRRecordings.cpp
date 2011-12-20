@@ -149,11 +149,7 @@ void CGUIWindowPVRRecordings::OnWindowUnload(void)
 void CGUIWindowPVRRecordings::UpdateData(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_bIsFocusing)
-    return;
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
-  m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
   g_PVRRecordings->RegisterObserver(this);
@@ -174,7 +170,6 @@ void CGUIWindowPVRRecordings::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
-  m_bIsFocusing = false;
 }
 
 void CGUIWindowPVRRecordings::Notify(const Observable &obs, const CStdString& msg)

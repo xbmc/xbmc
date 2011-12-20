@@ -1462,30 +1462,30 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 //********************************************************************************************************************************
 void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("JOIN actorlinkmovie ON actorlinkmovie.idMovie=movieview.idMovie "
-                                "JOIN actors a ON a.idActor=actorlinkmovie.idActor "
-                                "JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
-                                "JOIN actors d ON d.idActor=directorlinkmovie.idDirector "
+  CStdString where = PrepareSQL("LEFT JOIN actorlinkmovie ON actorlinkmovie.idMovie=movieview.idMovie "
+                                "LEFT JOIN actors a ON a.idActor=actorlinkmovie.idActor "
+                                "LEFT JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
+                                "LEFT JOIN actors d ON d.idActor=directorlinkmovie.idDirector "
                                 "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY movieview.idMovie", strActor.c_str(), strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
 void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("JOIN actorlinktvshow ON actorlinktvshow.idShow=tvshowview.idShow "
-                                "JOIN actors a ON a.idActor=actorlinktvshow.idActor "
-                                "JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
-                                "JOIN actors d ON d.idActor=directorlinktvshow.idDirector "
+  CStdString where = PrepareSQL("LEFT JOIN actorlinktvshow ON actorlinktvshow.idShow=tvshowview.idShow "
+                                "LEFT JOIN actors a ON a.idActor=actorlinktvshow.idActor "
+                                "LEFT JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
+                                "LEFT JOIN actors d ON d.idActor=directorlinktvshow.idDirector "
                                 "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY tvshowview.idShow", strActor.c_str(), strActor.c_str());
   GetTvShowsByWhere("videodb://2/2/", where, items);
 }
 
 void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("JOIN actorlinkepisode ON actorlinkepisode.idEpisode=episodeview.idEpisode "
-                                "JOIN actors a ON a.idActor=actorlinkepisode.idActor "
-                                "JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
-                                "JOIN actors d ON d.idActor=directorlinkepisode.idDirector "
+  CStdString where = PrepareSQL("LEFT JOIN actorlinkepisode ON actorlinkepisode.idEpisode=episodeview.idEpisode "
+                                "LEFT JOIN actors a ON a.idActor=actorlinkepisode.idActor "
+                                "LEFT JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
+                                "LEFT JOIN actors d ON d.idActor=directorlinkepisode.idDirector "
                                 "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY episodeview.idEpisode", strActor.c_str(), strActor.c_str());
   GetEpisodesByWhere("videodb://2/2/", where, items);
 }
@@ -6490,6 +6490,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     int total = m_pDS->num_rows();
     int current = 0;
+
+    bool bIsSource;
+    VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+
     while (!m_pDS->eof())
     {
       CStdString path = m_pDS->fv("path.strPath").get_asString();
@@ -6500,10 +6504,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       // get the first stacked file
       if (URIUtils::IsStack(fullPath))
         fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
-
-      // check for deletion
-      bool bIsSource;
-      VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
 
       // check if we have a internet related file that is part of a media source
       if (URIUtils::IsInternetStream(fullPath, true) && CUtil::GetMatchingSource(fullPath, *pShares, bIsSource) > -1)

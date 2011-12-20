@@ -54,6 +54,10 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
+  items.SetCacheToDisc(CFileItemList::CACHE_NEVER);
+
+  if (!g_PVRManager.IsStarted())
+    return false;
 
   if (fileName == "")
   {

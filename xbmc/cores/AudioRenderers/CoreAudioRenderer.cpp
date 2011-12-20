@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -403,7 +404,8 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_EnableVolumeControl(true),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
-  m_DoRunout(0)
+  m_DoRunout(0),
+  m_silence(false)
 {
   SInt32 major,  minor;
   Gestalt(gestaltSystemVersionMajor, &major);
@@ -423,10 +425,12 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
+  g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
+  g_Windowing.Unregister(this);
   Deinitialize();
 }
 
@@ -439,7 +443,7 @@ CCoreAudioRenderer::~CCoreAudioRenderer()
 if (!m_Initialized) \
 return x
 
-bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, bool bPassthrough)
+bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, EEncoded bPassthrough)
 {
   // Have to clean house before we start again.
   // TODO: Should we return failure instead?
@@ -477,7 +481,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   {
     m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
     // TODO: wait for audio device startup
-    Sleep(100);
+    Sleep(200);
   }
   
   // If this is a PCM stream, or we failed to handle a passthrough stream natively,
@@ -828,7 +832,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
      */
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
-  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
+  if (m_silence || (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM))
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
@@ -1169,6 +1173,33 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   return true;
 }
 
+void CCoreAudioRenderer::OnLostDevice()
+{
+  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+    {
+      m_silence = true;
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnLostDevice");
+    }
+  }
+}
+
+void CCoreAudioRenderer::OnResetDevice()
+{
+  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  {
+    CStdString deviceName;
+    m_AudioDevice.GetName(deviceName);
+    if (deviceName.Equals("HDMI"))
+    {
+      m_silence = false;
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnResetDevice");
+    }
+  }
+}
 #endif
 #endif
 

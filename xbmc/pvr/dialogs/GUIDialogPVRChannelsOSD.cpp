@@ -122,7 +122,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   Clear();
 
   CPVRChannel channel;
-  g_PVRManager.GetCurrentChannel(&channel);
+  g_PVRManager.GetCurrentChannel(channel);
   const CPVRChannelGroup *group = g_PVRManager.GetPlayingGroup(channel.IsRadio());
 
   if (group)
@@ -184,10 +184,10 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (pItem && pItem->IsPVRChannel())
   {
     /* Get the current running show on this channel from the EPG storage */
-    const CEpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
-    if (!epgnow)
+    CEpgInfoTag epgnow;
+    if (!pItem->GetPVRChannelInfoTag()->GetEPGNow(epgnow))
       return;
-    CFileItem *itemNow  = new CFileItem(*epgnow);
+    CFileItem *itemNow  = new CFileItem(epgnow);
 
     /* Load programme info dialog */
     CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);

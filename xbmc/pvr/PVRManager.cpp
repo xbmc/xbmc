@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/Atomics.h"
 
 #include "PVRManager.h"
@@ -173,7 +174,7 @@ void CPVRManager::SetState(ManagerState state)
 {
   long oldstate = m_managerState;
   while(oldstate != cas((volatile long*)(&m_managerState), oldstate, state))
-    oldstate = m_managerState;
+    oldstate = cas((volatile long*)(&m_managerState), oldstate, state);
   return;
 }
 
@@ -263,11 +264,11 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  CSingleLock lock(m_critSection);
+  SetState(ManagerStateInterrupted);
+
   StopThread();
   m_guiInfo->Stop();
   m_addons->Stop();
-  SetState(ManagerStateInterrupted);
 }
 
 bool CPVRManager::Load(void)
@@ -411,9 +412,9 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (bShowProgress)
   {
     pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pDlgProgress->SetLine(0, "");
+    pDlgProgress->SetLine(0, StringUtils::EmptyString);
     pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-    pDlgProgress->SetLine(2, "");
+    pDlgProgress->SetLine(2, StringUtils::EmptyString);
     pDlgProgress->StartModal();
     pDlgProgress->Progress();
   }
@@ -521,13 +522,12 @@ void CPVRManager::ResetEPG(void)
 
 bool CPVRManager::IsPlaying(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_addons && m_addons->IsPlaying();
+  return IsStarted() && m_addons && m_addons->IsPlaying();
 }
 
-bool CPVRManager::GetCurrentChannel(CPVRChannel *channel) const
+bool CPVRManager::GetCurrentChannel(CPVRChannel &channel) const
 {
-  return m_addons->GetPlayingChannel(channel);
+  return IsPlaying() && m_addons && m_addons->GetPlayingChannel(channel);
 }
 
 int CPVRManager::GetCurrentEpg(CFileItemList &results) const
@@ -535,7 +535,7 @@ int CPVRManager::GetCurrentEpg(CFileItemList &results) const
   int iReturn = -1;
 
   CPVRChannel channel;
-  if (m_addons->GetPlayingChannel(&channel))
+  if (m_addons->GetPlayingChannel(channel))
     iReturn = channel.GetEPG(results);
   else
     CLog::Log(LOGDEBUG,"PVRManager - %s - no current channel set", __FUNCTION__);
@@ -555,7 +555,7 @@ int CPVRManager::GetPreviousChannel(void)
   //XXX this must be the craziest way to store the last channel
   int iReturn = -1;
   CPVRChannel channel;
-  if (m_addons->GetPlayingChannel(&channel))
+  if (m_addons->GetPlayingChannel(channel))
   {
     int iLastChannel = channel.ChannelNumber();
 
@@ -574,7 +574,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   bool bReturn = false;
 
   CPVRChannel channel;
-  if (!m_addons->GetPlayingChannel(&channel))
+  if (!m_addons->GetPlayingChannel(channel))
     return bReturn;
 
   if (m_addons->HasTimerSupport(channel.ClientID()))
@@ -686,7 +686,7 @@ void CPVRManager::CloseStream(void)
   if (m_addons->IsReadingLiveStream())
   {
     CPVRChannel channel;
-    if (m_addons->GetPlayingChannel(&channel))
+    if (m_addons->GetPlayingChannel(channel))
     {
       /* store current time in iLastWatched */
       time_t tNow;
@@ -723,29 +723,30 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
-  if ((m_currentFile == NULL) || (*m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag()))
+  if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
   g_application.CurrentFileItem() = *m_currentFile;
   g_infoManager.SetCurrentItem(*m_currentFile);
 
   CPVRChannel* channelTag = item.GetPVRChannelInfoTag();
-  const CEpgInfoTag* epgTagNow = channelTag->GetEPGNow();
+  CEpgInfoTag epgTagNow;
+  bool bHasTagNow = channelTag->GetEPGNow(epgTagNow);
 
   if (channelTag->IsRadio())
   {
     CMusicInfoTag* musictag = item.GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetTitle(epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055));
-      musictag->SetGenre(epgTagNow ? epgTagNow->Genre() : "");
-      musictag->SetDuration(epgTagNow ? epgTagNow->GetDuration() : 3600);
+      musictag->SetTitle(bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055));
+      musictag->SetGenre(bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString);
+      musictag->SetDuration(bHasTagNow ? epgTagNow.GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());
       musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
+      musictag->SetComment(StringUtils::EmptyString);
+      musictag->SetLyrics(StringUtils::EmptyString);
     }
   }
   else
@@ -753,13 +754,13 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CVideoInfoTag *videotag = item.GetVideoInfoTag();
     if (videotag)
     {
-      videotag->m_strTitle = epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055);
-      videotag->m_strGenre = epgTagNow ? epgTagNow->Genre() : "";
+      videotag->m_strTitle = bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055);
+      videotag->m_strGenre = bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString;
       videotag->m_strPath = channelTag->Path();
       videotag->m_strFileNameAndPath = channelTag->Path();
-      videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
-      videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
-      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNum() : 0;
+      videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : StringUtils::EmptyString;
+      videotag->m_strPlotOutline = bHasTagNow ? epgTagNow.PlotOutline() : StringUtils::EmptyString;
+      videotag->m_iEpisode = bHasTagNow ? epgTagNow.EpisodeNum() : 0;
     }
   }
 
@@ -910,7 +911,7 @@ bool CPVRManager::IsIdle(void) const
 
 void CPVRManager::ShowPlayerInfo(int iTimeout)
 {
-  if (IsStarted())
+  if (IsStarted() && m_guiInfo)
     m_guiInfo->ShowPlayerInfo(iTimeout);
 }
 

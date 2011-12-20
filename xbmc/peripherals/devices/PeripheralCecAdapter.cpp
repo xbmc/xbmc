@@ -71,7 +71,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bStarted(false),
   m_bHasButton(false),
   m_bIsReady(false),
-  m_strMenuLanguage("???")
+  m_strMenuLanguage("???"),
+  m_lastKeypress(0)
 {
   m_button.iButton = 0;
   m_button.iDuration = 0;
@@ -81,7 +82,7 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   {
     cec_device_type_list typeList;
     typeList.clear();
-    typeList.add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+    typeList.add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
     m_cecAdapter = m_dll->CECInit("XBMC", typeList);
   }
   else
@@ -128,10 +129,9 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
+    m_cecAdapter->SetInactiveView();
     if (GetSettingBool("cec_power_off_shutdown"))
       m_cecAdapter->StandbyDevices();
-    else if (GetSettingBool("cec_mark_inactive_shutdown"))
-      m_cecAdapter->SetInactiveView();
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && GetSettingBool("cec_standby_screensaver") && m_bIsReady)
   {
@@ -245,8 +245,18 @@ void CPeripheralCecAdapter::Process(void)
   if (strPort.empty())
     return;
 
+  // set correct physical address from peripheral settings
+  int iHdmiPort = GetSettingInt("cec_hdmi_port");
+  SetHdmiPort(iHdmiPort);
+  FlushLog();
+
   // open the CEC adapter
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, strPort.c_str());
+
+  // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that we're busy
+  CStdString strMessage;
+  strMessage.Format(g_localizeStrings.Get(21336), g_localizeStrings.Get(36000));
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strMessage);
 
   if (!m_cecAdapter->Open(strPort.c_str(), 10000))
   {
@@ -258,7 +268,6 @@ void CPeripheralCecAdapter::Process(void)
   }
 
   CLog::Log(LOGDEBUG, "%s - connection to the CEC adapter opened", __FUNCTION__);
-
   m_bIsReady = true;
   CAnnouncementManager::AddAnnouncer(this);
 
@@ -268,16 +277,6 @@ void CPeripheralCecAdapter::Process(void)
     FlushLog();
   }
 
-  /* get the vendor id directly after connecting, because the TV might be using a non-standard CEC implementation */
-  m_cecAdapter->GetDeviceVendorId(CECDEVICE_TV);
-
-  // set correct physical address from peripheral settings
-  int iHdmiPort = GetSettingInt("cec_hdmi_port");
-  if (iHdmiPort <= 0 || iHdmiPort > 16)
-    iHdmiPort = 1;
-  m_cecAdapter->SetPhysicalAddress((uint16_t) (iHdmiPort << 12));
-  FlushLog();
-
   if (GetSettingBool("use_tv_menu_language"))
   {
     cec_menu_language language;
@@ -286,6 +285,7 @@ void CPeripheralCecAdapter::Process(void)
   }
 
   m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), g_localizeStrings.Get(36016));
 
   while (!m_bStop)
   {
@@ -308,7 +308,7 @@ bool CPeripheralCecAdapter::PowerOnCecDevices(cec_logical_address iLogicalAddres
 
   if (m_cecAdapter && m_bIsReady)
   {
-    CLog::Log(LOGDEBUG, "%s - powering on CEC capable devices with address %1x", __FUNCTION__, iLogicalAddress);
+    CLog::Log(LOGDEBUG, "%s - powering on CEC capable device with address %1x", __FUNCTION__, iLogicalAddress);
     bReturn = m_cecAdapter->PowerOnDevices(iLogicalAddress);
   }
 
@@ -504,16 +504,18 @@ bool CPeripheralCecAdapter::GetNextCecKey(cec_keypress &key)
 
 bool CPeripheralCecAdapter::GetNextKey(void)
 {
+  bool bHasButton(false);
   CSingleLock lock(m_critSection);
   if (m_bHasButton && m_button.iDuration > 0)
-    return false;
+    return bHasButton;
 
   cec_keypress key;
   if (!m_bIsReady || !GetNextCecKey(key))
-    return false;
+    return bHasButton;
 
   CLog::Log(LOGDEBUG, "%s - received key %2x", __FUNCTION__, key.keycode);
   DWORD iButton = 0;
+  bHasButton = true;
 
   switch (key.keycode)
   {
@@ -681,22 +683,24 @@ bool CPeripheralCecAdapter::GetNextKey(void)
   case CEC_USER_CONTROL_CODE_DATA:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
-    m_bHasButton = false;
-    return false;
+    bHasButton = false;
+    return bHasButton;
   }
 
-  if (!m_bHasButton && iButton == m_button.iButton && m_button.iDuration == 0 && key.duration > 0)
+  if (!m_bHasButton && bHasButton && iButton == m_button.iButton && m_button.iDuration == 0 && key.duration > 0)
   {
     /* released button of the previous keypress */
-    m_bHasButton = false;
-    return false;
+    return m_bHasButton;
   }
 
-  m_bHasButton = true;
-  m_button.iDuration = key.duration;
-  m_button.iButton = iButton;
+  if (bHasButton)
+  {
+    m_bHasButton = true;
+    m_button.iDuration = key.duration;
+    m_button.iButton = iButton;
+  }
 
-  return true;
+  return m_bHasButton;
 }
 
 WORD CPeripheralCecAdapter::GetButton(void)
