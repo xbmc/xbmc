@@ -1081,7 +1081,7 @@
 					<bordersize>8</bordersize>
 				</control>
 				<control type="textbox">
-					<description>Description Value for Item</description>
+					<description>Description Value for Seasons</description>
 					<posx>270</posx>
 					<posy>0</posy>
 					<width>250</width>
@@ -1092,6 +1092,19 @@
 					<label>$INFO[Container.ShowPlot]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>Container.Content(Seasons)</visible>
+				</control>
+				<control type="textbox">
+					<description>Description Value for TVShows</description>
+					<posx>270</posx>
+					<posy>0</posy>
+					<width>250</width>
+					<height>355</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<visible>Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)</visible>
 				</control>
 				<control type="label">
 					<description>Watched Count</description>

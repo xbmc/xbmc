@@ -1557,7 +1557,12 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
     CExclusiveLock lock(m_DisplaySection);
 
     if(m_DisplayState == VDPAU_OPEN)
-      m_DisplayState = VDPAU_ERROR;
+    {
+      if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
+        m_DisplayState = VDPAU_LOST;
+      else
+        m_DisplayState = VDPAU_ERROR;
+    }
 
     return true;
   }

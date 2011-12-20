@@ -266,13 +266,27 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
 {
   CMusicDatabase musicdatabase;
   bool status = false;
-  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && musicdatabase.Open())
+  if (!strFilename.empty() && musicdatabase.Open())
   {
-    CSong song;
-    if (musicdatabase.GetSongByFileName(strFilename, song))
+    if (CDirectory::Exists(strFilename))
     {
-      item = CFileItem(song);
-      status = true;
+      CAlbum album;
+      int albumid = musicdatabase.GetAlbumIdByPath(strFilename);
+      if (musicdatabase.GetAlbumInfo(albumid, album, NULL))
+      {
+        item = CFileItem(strFilename, album);
+        item.SetMusicThumb();
+        status = true;
+      }
+    }
+    else
+    {
+      CSong song;
+      if (musicdatabase.GetSongByFileName(strFilename, song))
+      {
+        item = CFileItem(song);
+        status = true;
+      }
     }
 
     musicdatabase.Close();
