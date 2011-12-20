@@ -595,7 +595,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #ifdef HAS_DS_PLAYER
     else if (strSetting.Equals("dsplayer.audiorenderer"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInDirectShowAudioRenderers(pSetting);
+      continue;
     }
 #endif
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
