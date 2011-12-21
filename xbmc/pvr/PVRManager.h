@@ -459,14 +459,6 @@ namespace PVR
     void ResetProperties(void);
 
     /*!
-     * @brief Switch to the given channel.
-     * @param channel The new channel.
-     * @param bPreview Don't reset quality data if true.
-     * @return True if the switch was successful, false otherwise.
-     */
-    bool PerformChannelSwitch(const CPVRChannel *channel, bool bPreview);
-
-    /*!
      * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
      * @param iNewChannelNumber The new channel number after the switch.
      * @param bPreview Preview window if true.

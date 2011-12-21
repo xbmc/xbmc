@@ -44,17 +44,20 @@ JSON_STATUS CPVROperations::ChannelSwitch(const CStdString &method, ITransportLa
   }
 
   int iChannelId = (int)parameterObject["channelid"].asInteger();
-  if (iChannelId > 0)
-  {
-    CLog::Log(LOGDEBUG, "JSONRPC: switch to channel '%d'", iChannelId);
-
-    const CPVRChannel *channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
-    return g_PVRManager.StartPlayback(channel) ? ACK : InternalError;
-  }
-  else
-  {
+  if (iChannelId <= 0)
     return InvalidParams;
-  }
+
+  CLog::Log(LOGDEBUG, "JSONRPC: switch to channel '%d'", iChannelId);
+
+  const CPVRChannel *channel = g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
+  if (channel == NULL)
+    return InternalError;
+
+  CPVRChannel currentChannel;
+  if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.IsRadio() == channel->IsRadio())
+    return g_PVRManager.PerformChannelSwitch(*channel,false) ? ACK : InternalError;
+  return g_PVRManager.StartPlayback(channel) ? ACK : InternalError;
+
 }
 
 JSON_STATUS CPVROperations::ChannelUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

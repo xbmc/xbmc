@@ -56,6 +56,7 @@ void CVideoInfoTag::Reset()
   m_strPath.clear();
   m_strIMDBNumber.clear();
   m_strMPAARating.clear();
+  m_strFileNameAndPath.clear();
   m_strPremiered.clear();
   m_strStatus.clear();
   m_strProductionCode.clear();

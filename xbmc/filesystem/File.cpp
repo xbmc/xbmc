@@ -80,6 +80,9 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 {
   CFile file;
 
+  if (strFileName.empty() || strDest.empty())
+    return false;
+
   // special case for zips - ignore caching
   CURL url(strFileName);
   if (URIUtils::IsInZIP(strFileName))
