@@ -1101,7 +1101,35 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
       if(i>=0)
         m_ref.Delete(i,m_ref.length()-i);
       m_ref.Trim();
-    }
+    } else {
+		CStdString ext = m_strPath.Right(3);
+		if( ext.Equals("avi") )
+	      m_ref = "video/x-msvideo";
+		else if( ext.Equals("wmv") )
+	      m_ref = "video/x-ms-wmv";
+		else if( ext.Equals("mp4") )
+	      m_ref = "video/mp4";
+		else if( ext.Equals("mkv") )
+	      m_ref = "video/x-matroska";
+		else if( ext.Equals("flv") )
+	      m_ref = "video/x-flv";
+		else if( ext.Equals("mp3") )
+	      m_ref = "audio/mpeg";
+		else if( ext.Equals("wma") )
+	      m_ref = "audio/x-ms-wma";
+		else if( ext.Equals("ogg") )
+	      m_ref = "audio/ogg";
+		else if( m_strPath.Right(4).Equals("flac") )
+	      m_ref = "audio/flac";
+		else if( ext.Equals("jpg") )
+	      m_ref = "image/jpeg";
+		else if( ext.Equals("jpeg") )
+	      m_ref = "image/jpeg";
+		else if( ext.Equals("png") )
+	      m_ref = "image/png";
+		else if( ext.Equals("gif") )
+	      m_ref = "image/gif";
+	}
 
     // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )

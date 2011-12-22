@@ -700,7 +700,7 @@
     "extends": "List.Item.All",
     "properties": {
 			"file": { "type": "string", "required": true },
-			"filetype": { "type": "string", "enum": [ "file", "directory" ], "required": true }
+			"mimetype": { "type": "string", "required": true }
 		}
   },
   "List.Items.Sources": {

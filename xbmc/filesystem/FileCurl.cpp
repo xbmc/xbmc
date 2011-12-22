@@ -1376,9 +1376,13 @@ bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString use
    if (!useragent.IsEmpty())
      file.SetUserAgent(useragent);
 
-   if( file.Stat(url, NULL) == 0 )
+   struct __stat64 buffer;
+   if( file.Stat(url, &buffer) == 0 )
    {
-     content = file.GetMimeType();
+      if (buffer.st_mode == _S_IFDIR)
+         content = "x-directory/normal";
+      else
+         content = file.GetMimeType();
      CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> %s", url.Get().c_str(), content.c_str());
      return true;
    }
