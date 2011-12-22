@@ -1157,9 +1157,7 @@ namespace VIDEO
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, cachedThumb);
 
-    CVariant data;
-    data["id"] = movieDetails.m_iDbId;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*pItem)));
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)
