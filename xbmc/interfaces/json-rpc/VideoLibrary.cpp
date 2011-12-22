@@ -37,7 +37,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
   CFileItemList items;
   JSON_STATUS ret = OK;
   if (videodatabase.GetMoviesByWhere("videodb://", "", "", items))
-    ret = GetAdditionalMovieDetails(parameterObject, items, result);
+    ret = GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return ret;
@@ -102,9 +102,7 @@ JSON_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITranspo
   CFileItemList items;
   JSON_STATUS ret = OK;
   if (videodatabase.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, id))
-  {
-    ret = GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"]["items"]);
-  }
+    ret = GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"]["items"], videodatabase);
 
   videodatabase.Close();
   return ret;
@@ -188,7 +186,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("videodb://2/2/-1/-1/", items, -1, -1, -1, -1, tvshowID, season))
-    GetAdditionalEpisodeDetails(parameterObject, items, result);
+    GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return OK;
@@ -234,7 +232,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("videodb://", items, -1, -1, artistID, -1, -1, albumID))
-    GetAdditionalMusicVideoDetails(parameterObject, items, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return OK;
@@ -270,7 +268,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMoviesNav("videodb://", items))
-    GetAdditionalMovieDetails(parameterObject, items, result);
+    GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return OK;
@@ -284,7 +282,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://", items))
-    GetAdditionalEpisodeDetails(parameterObject, items, result);
+    GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return OK;
@@ -298,7 +296,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://", items))
-    GetAdditionalMusicVideoDetails(parameterObject, items, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
 
   videodatabase.Close();
   return OK;
@@ -437,9 +435,8 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return false;
 }
 
-JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
 {
-  CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
@@ -461,9 +458,8 @@ JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterOb
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
 {
-  CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
@@ -485,9 +481,8 @@ JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameter
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+JSON_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
 {
-  CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
