@@ -4262,7 +4262,7 @@ bool CApplication::WakeUpScreenSaver()
 
     CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
 
-    if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
+    if (m_screenSaver->ID() == "visualization")
     {
       // we can just continue as usual from vis mode
       return false;
@@ -4273,6 +4273,8 @@ bool CApplication::WakeUpScreenSaver()
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
+      if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+        g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
     }
     return true;
   }
