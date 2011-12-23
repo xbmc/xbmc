@@ -204,18 +204,19 @@ JSON_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITranspo
 
       CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
       bool bCreated = (newTimer != NULL);
+      bool bAdded = false;
 
       if (bCreated)
       {
         CLog::Log(LOGDEBUG, "JSONRPC: recording scheduled");
-        delete newTimer;
-        return ACK;
+        bAdded = CPVRTimers::AddTimer(*newTimer);
       }
       else
       {
         CLog::Log(LOGERROR, "JSONRPC: failed to schedule recording");
-        return InternalError;
       }
+      delete newTimer;
+      return bAdded ? ACK : InternalError;
     }
   }
 
