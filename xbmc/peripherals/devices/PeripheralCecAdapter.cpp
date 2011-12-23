@@ -173,21 +173,6 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
       }
     }
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
-  {
-    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_STOP, false);
-    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_STOP);
-  }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPause"))
-  {
-    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_SKIP_FORWARD_WIND, false);
-    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_STILL);
-  }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
-  {
-    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_SKIP_FORWARD_WIND, false);
-    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_PLAY);
-  }
 }
 
 bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)

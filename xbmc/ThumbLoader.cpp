@@ -216,12 +216,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     db.Close();
   }
 
-  CFileItem item(*pItem);
-  CStdString cachedThumb(item.GetCachedVideoThumb());
+  CStdString cachedThumb(pItem->GetCachedVideoThumb());
+
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    if (pItem->CacheLocalFanart())
+      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+  }
 
   if (!pItem->HasThumbnail())
   {
-    item.SetUserVideoThumb();
+    pItem->SetUserVideoThumb();
     if (CFile::Exists(cachedThumb))
       pItem->SetThumbnailImage(cachedThumb);
     else
@@ -245,26 +250,22 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           pItem->SetThumbnailImage(cachedThumb);
         }
       }
-      else if (!item.m_bIsFolder && item.IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
+      else if (!pItem->m_bIsFolder && pItem->IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
                g_guiSettings.GetBool("myvideos.extractflags"))
       {
+        CFileItem item(*pItem);
         CStdString path(item.GetPath());
         if (URIUtils::IsInRAR(item.GetPath()))
           SetupRarOptions(item,path);
 
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, cachedThumb);
         AddJob(extract);
+        return true;
       }
     }
   }
   else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
-
-  if (!pItem->HasProperty("fanart_image"))
-  {
-    if (pItem->CacheLocalFanart())
-      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-  }
 
   if (!pItem->m_bIsFolder &&
        pItem->HasVideoInfoTag() &&
@@ -272,6 +273,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
        (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
          pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
   {
+    CFileItem item(*pItem);
     CStdString path(item.GetPath());
     if (URIUtils::IsInRAR(item.GetPath()))
       SetupRarOptions(item,path);
