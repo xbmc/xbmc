@@ -2883,7 +2883,7 @@
   <string id="36007">Schakel de TV in bij het opstarten van XBMC</string>
   <string id="36008">Schakel apparatuur uit bij het stoppen van XBMC</string>
   <string id="36009">Schakel app. uit zolang de schermbeveiliging actief is</string>
-  <string id="36010">Markeer als inactieve bron bij het stoppen van XBMC</string>
+  <string id="36010"></string>
   <string id="36011">Kon de CEC poort niet detecteren. Stel het manueel in.</string>
   <string id="36012">Kon de CEC adapter niet detecteren.</string>
   <string id="36013">Versie %d van de libcec interface version wordt niet ondersteund door XBMC (> %d)</string>

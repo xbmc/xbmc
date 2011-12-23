@@ -90,6 +90,7 @@ namespace PERIPHERALS
     CDateTime                     m_screensaverLastActivated;
     CecButtonPress                m_button;
     std::queue<CEC::cec_keypress> m_buttonQueue;
+    unsigned int                  m_lastKeypress;
     CCriticalSection              m_critSection;
   };
 }

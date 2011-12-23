@@ -1385,8 +1385,8 @@ namespace VIDEO
       CStdString strPath;
       URIUtils::GetDirectory(item->GetPath(), strPath);
 
-      if (bGrabAny)
-      { // looking up by folder name - movie.nfo takes priority
+      if (bGrabAny && !item->IsStack())
+      { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
         nfoFile = URIUtils::AddFileToFolder(strPath, "movie.nfo");
         if (CFile::Exists(nfoFile))
           return nfoFile;
@@ -1487,7 +1487,13 @@ namespace VIDEO
     movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
     CVideoInfoDownloader imdb(scraper);
-    if ( imdb.GetDetails(url, movieDetails, pDialog) )
+    bool ret = imdb.GetDetails(url, movieDetails, pDialog);
+    if (pItem->m_bIsFolder)
+      movieDetails.m_strPath = pItem->GetPath();
+    else
+      movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+    if (ret)
     {
       if (nfoFile)
         nfoFile->GetDetails(movieDetails,NULL,true);

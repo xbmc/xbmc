@@ -133,10 +133,13 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       CStdString      id = message.GetStringParam(0);
       CStdString value   = message.GetStringParam(1);
       m_settings[id] = value;
-      int iControl = GetFocusedControl()->GetID();
-      CreateControls();
-      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
-      OnMessage(msg);
+      if (GetFocusedControl())
+      {
+        int iControl = GetFocusedControl()->GetID();
+        CreateControls();
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+        OnMessage(msg);
+      }
       return true;
     }
   }

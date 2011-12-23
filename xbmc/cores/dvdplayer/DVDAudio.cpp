@@ -78,7 +78,22 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, audioframe.passthrough);
+
+  IAudioRenderer::EEncoded encoded = IAudioRenderer::ENCODED_NONE;
+  if(audioframe.passthrough)
+  {
+    switch(codec) {
+      case CODEC_ID_AC3 : encoded = IAudioRenderer::ENCODED_IEC61937_AC3;     break;
+      case CODEC_ID_EAC3: encoded = IAudioRenderer::ENCODED_IEC61937_EAC3;    break;
+      case CODEC_ID_DTS : encoded = IAudioRenderer::ENCODED_IEC61937_DTS;     break;
+      case CODEC_ID_MP1 :
+      case CODEC_ID_MP2 :
+      case CODEC_ID_MP3 : encoded = IAudioRenderer::ENCODED_IEC61937_MPEG;    break;
+      default:            encoded = IAudioRenderer::ENCODED_IEC61937_UNKNOWN; break;
+    }
+  }
+
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, encoded);
 
   if (!m_pAudioDecoder) return false;
 

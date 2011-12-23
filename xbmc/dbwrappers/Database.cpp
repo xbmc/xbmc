@@ -401,30 +401,40 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   if (m_pDB->connect(create) != DB_CONNECTION_OK)
     return false;
 
-  // test if db already exists, if not we need to create the tables
-  if (!m_pDB->exists() && create)
+  try
   {
+    // test if db already exists, if not we need to create the tables
+    if (!m_pDB->exists() && create)
+    {
+      if (dbSettings.type.Equals("sqlite3"))
+      {
+        //  Modern file systems have a cluster/block size of 4k.
+        //  To gain better performance when performing write
+        //  operations to the database, set the page size of the
+        //  database file to 4k.
+        //  This needs to be done before any table is created.
+        m_pDS->exec("PRAGMA page_size=4096\n");
+
+        //  Also set the memory cache size to 16k
+        m_pDS->exec("PRAGMA default_cache_size=4096\n");
+      }
+      CreateTables();
+    }
+
+    // sqlite3 post connection operations
     if (dbSettings.type.Equals("sqlite3"))
     {
-      //  Modern file systems have a cluster/block size of 4k.
-      //  To gain better performance when performing write
-      //  operations to the database, set the page size of the
-      //  database file to 4k.
-      //  This needs to be done before any table is created.
-      m_pDS->exec("PRAGMA page_size=4096\n");
-
-      //  Also set the memory cache size to 16k
-      m_pDS->exec("PRAGMA default_cache_size=4096\n");
+      m_pDS->exec("PRAGMA cache_size=4096\n");
+      m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
+      m_pDS->exec("PRAGMA count_changes='OFF'\n");
     }
-    CreateTables();
   }
-
-  // sqlite3 post connection operations
-  if (dbSettings.type.Equals("sqlite3"))
+  catch (DbErrors &error)
   {
-    m_pDS->exec("PRAGMA cache_size=4096\n");
-    m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
-    m_pDS->exec("PRAGMA count_changes='OFF'\n");
+    CLog::Log(LOGERROR, "%s failed with '%s'", __FUNCTION__, error.getMsg());
+    m_openCount = 1; // set to open so we can execute Close()
+    Close();
+    return false;
   }
 
   m_openCount = 1; // our database is open
