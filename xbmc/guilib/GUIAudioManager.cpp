@@ -24,6 +24,7 @@
 #include "Key.h"
 #include "AudioContext.h"
 #include "GUISound.h"
+#include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
@@ -73,6 +74,7 @@ void CGUIAudioManager::Initialize(int iDevice)
     Mix_CloseAudio();
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
        CLog::Log(LOGERROR, "Unable to open audio mixer");
+    Mix_Volume(0, (int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
     m_bInitialized = true;
 #endif
   }

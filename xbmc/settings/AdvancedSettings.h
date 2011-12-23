@@ -26,8 +26,9 @@
 
 class TiXmlElement;
 
-struct DatabaseSettings
+class DatabaseSettings
 {
+public:
   CStdString type;
   CStdString host;
   CStdString port;
@@ -164,7 +165,6 @@ class CAdvancedSettings
     bool m_handleMounting;
 
     bool m_fullScreenOnMovieStart;
-    bool m_noDVDROM;
     CStdString m_cachePath;
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_videoCleanStringRegExps;

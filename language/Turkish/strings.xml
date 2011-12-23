@@ -2389,7 +2389,7 @@
   <string id="36007">XBMC başlatılınca Televizyonu aç</string>
   <string id="36008">XBMC durdurulunca aygıtı kapat</string>
   <string id="36009">Ekran koruyucu devreye girince aygıtı bekleme moduna geçir</string>
-  <string id="36010">XBMC durdurulunca etkin olmayan kaynak olarak ayarla</string>
+  <string id="36010"></string>
   <string id="36011">CEC portu algılanamadı. El ile ayarla.</string>
   <string id="36012">CEC bağdaştırıcısı algılanamadı.</string>
   <string id="36013">Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC supports (%d)</string>
