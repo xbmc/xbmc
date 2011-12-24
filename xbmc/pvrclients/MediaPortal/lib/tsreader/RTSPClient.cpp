@@ -528,11 +528,7 @@ void CRTSPClient::Run()
   XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started: %d", (unsigned long) this->ThreadId());
   while (m_env!=NULL && !ThreadIsStopping(0))
   {
-    for (int i=0; i < 10;++i)
-    {
-      if (m_bRunning==false) break;
-      m_env->taskScheduler().doEventLoop(); 
-    }
+    m_env->taskScheduler().doEventLoop();
     if (m_bRunning==false) break;
   }
 
