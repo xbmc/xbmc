@@ -1,0 +1,11 @@
+tinyxml:
+http://www.grinninglizard.com/tinyxml/
+Used version 2.6.2
+
+tsreader:
+Sources adapted from MediaPortal v1.2.0 tsreader
+https://github.com/MediaPortal/MediaPortal-1/tree/master/DirectShowFilters
+
+live555:
+Sources copied from MediaPortal v1.2.0 tsreader
+https://github.com/MediaPortal/MediaPortal-1/tree/master/DirectShowFilters/LiveMedia555
