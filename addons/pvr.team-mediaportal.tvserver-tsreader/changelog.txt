@@ -1,3 +1,20 @@
+v1.2.2.109:
+- Fixed: rtsp client tread stop
+- Fixed: fix mimetype for tv channels
+- Fixed: fix channel switching for Live555 RTSP streaming
+- Fixed: cleanup the TSReader when it fails to open the stream
+- Fixed: make sure that OpenLiveStream does not return true due to m_iCurrentChannel when the TSReader fails in a later stage
+- Fixed: compilation IOS/OSX/Linux
+- Fixed: compile fixes for API move into ADDON namespace
+- Added: show localized error messages when OpenLiveStream fails
+- Added: signal status support
+- Fixed: Don't return encrypted channels as group members when FTA only option is turned on
+- Added: add more debug log information about the addon settings and status
+- Fixed: check for a changed url/timeshift buffer on channel change.
+- Added: add support for direct recording playback from network shares (smb, Windows only)
+- Added: implement support for recording subdirectories
+- Fixed: don't return radio channels/channelgroup/channelgroup mappings when radio support is disabled
+
 v1.1.3.107:
 - Added: add additional checks for communication errors
 - Fixed: trigger also a recording list update on timer changes
