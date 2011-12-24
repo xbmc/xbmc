@@ -295,13 +295,13 @@ bool KaraokeVideoFFMpeg::readFrame( int frame )
 
           m_dllSwScale->sws_scale( context, pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize );
 		  m_dllSwScale->sws_freeContext( context );
+          m_dllAvCodec->av_free_packet( &packet );
+          return true;
         }
 
-        m_dllAvCodec->av_free_packet( &packet );
       }
-
-      return true;
     }
+    m_dllAvCodec->av_free_packet( &packet );
   }
   
   return false;
