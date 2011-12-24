@@ -1266,19 +1266,21 @@ lib/cmyth/Makefile
 /addons/pvr.fortherecord.argus/XBMC_ForTheRecord.lib
 /addons/pvr.fortherecord.argus/libcurl.dll
 /addons/pvr.fortherecord.argus/libcurld.dll
-/addons/pvr.fortherecord.argus-rtsp/XBMC_ForTheRecord_rtsp.lib
-/addons/pvr.fortherecord.argus-rtsp/libcurl.dll
-/addons/pvr.fortherecord.argus-rtsp/libcurld.dll
 /addons/pvr.hts/XBMC_Tvheadend_win32.lib
 /addons/pvr.vdr.vnsi/XBMC_VDR_vnsi_win32.lib
+/addons/pvr.vdr.xvdr/XBMC_VDR_xvdr_win32.lib
 
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
 
 /xbmc/pvrclients/tvheadend/project/VS2010Express/Debug
 /xbmc/pvrclients/tvheadend/project/VS2010Express/Release
+
 /xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Debug
 /xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Release
+
+/xbmc/pvrclients/xvdr/project/VS2010Express/Debug
+/xbmc/pvrclients/xvdr/project/VS2010Express/Release
 
 /xbmc/pvrclients/MediaPortal/lib/live555/obj
 /xbmc/pvrclients/MediaPortal/lib/live555/shared
