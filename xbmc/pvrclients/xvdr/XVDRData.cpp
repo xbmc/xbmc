@@ -808,8 +808,9 @@ bool cXVDRData::SendPing()
 void cXVDRData::Action()
 {
   uint32_t lastPing = 0;
-
   cResponsePacket* vresp;
+
+  SetPriority(19);
 
   while (Running())
   {

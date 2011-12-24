@@ -67,4 +67,5 @@
     <string id="30063">All receivers busy</string>
     <string id="30064">Error on switching channel</string>
     <string id="30065">Channel '%s' unknown</string>
+    <string id="30066">Encrypted channel</string>
 </strings>
