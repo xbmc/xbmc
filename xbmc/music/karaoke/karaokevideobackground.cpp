@@ -44,11 +44,11 @@ KaraokeVideoFFMpeg::KaraokeVideoFFMpeg()
   pCodec = 0;
   pFrame = 0;
   pFrameRGB = 0;
-  m_timeBase = 0;
   m_texture = 0;
 
   m_maxFrame = 0;
   m_currentFrameNumber = 0;
+  m_frameBase = 0;
   
   m_dllAvFormat = new DllAvFormat();
   m_dllAvCodec = new DllAvCodec();
@@ -171,7 +171,6 @@ bool KaraokeVideoFFMpeg::openVideoFile( const CStdString& filename )
   // Init the rest of params
   m_videoWidth = pCodecCtx->width;
   m_videoHeight = pCodecCtx->height;
-  m_timeBase = 0;
   m_currentFrameNumber = 0;
   m_maxFrame = 0;
   m_curVideoFile = filename;
@@ -294,11 +293,10 @@ bool KaraokeVideoFFMpeg::readFrame( int frame )
                       m_videoWidth, m_videoHeight, PIX_FMT_RGB32, SWS_FAST_BILINEAR, NULL, NULL, NULL );
 
           m_dllSwScale->sws_scale( context, pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize );
-		  m_dllSwScale->sws_freeContext( context );
+          m_dllSwScale->sws_freeContext( context );
           m_dllAvCodec->av_free_packet( &packet );
           return true;
         }
-
       }
     }
     m_dllAvCodec->av_free_packet( &packet );
@@ -316,10 +314,9 @@ void KaraokeVideoFFMpeg::Render()
   // Get the current song timing in ms.
   // This will only fit songs up to 71,000 hours, so if you got a larger one, change to int64
   unsigned int songTime = (unsigned int) MathUtils::round_int( g_application.GetTime() * 1000 );
-  unsigned int videoTime = m_timeBase + songTime;
 
   // Which frame should we show?
-  int frame_for_time = ((videoTime * m_fps_num) / m_fps_den) / 1000;
+  int frame_for_time = m_frameBase + ((songTime * m_fps_num) / m_fps_den) / 1000;
 
   if ( frame_for_time == 0 )
     frame_for_time = 1;
@@ -332,16 +329,12 @@ void KaraokeVideoFFMpeg::Render()
   while ( m_currentFrameNumber < frame_for_time )
   {
     if ( readFrame( frame_for_time ) )
-    {
-      // We have read a new frame.
-      m_lastTimeFrame = videoTime;
       break;
-    }
 
     // End of video; restart
     m_maxFrame = m_currentFrameNumber - 1;
     m_currentFrameNumber = 0;
-    m_timeBase = 0;
+    m_frameBase = 0;
 
     // Reset the frame
     frame_for_time = 0;
@@ -371,27 +364,23 @@ bool KaraokeVideoFFMpeg::Start( const CStdString& filename )
      if ( !openVideoFile( filename ) )
        return false;
 
-     m_lastTimeFrame = 0;
+     m_frameBase = 0;
   }
   else
   {
-     // m_currentFrameNumber is set to 0 in openVideoFile
-     unsigned int curframe = m_currentFrameNumber;
-
      if ( !openVideoFile( g_advancedSettings.m_karaokeDefaultBackgroundFilePath ) )
        return false;
 
-     if ( curframe > 0 && m_dllAvFormat->av_seek_frame( pFormatCtx, videoStream, curframe, 0 ) >= 0 )
+     int64_t timestamp = (m_frameBase * 1000 * m_fps_den) / m_fps_num;
+
+     if ( m_frameBase > 0 && m_dllAvFormat->av_seek_frame( pFormatCtx, videoStream, timestamp, 0 ) >= 0 )
      {
        m_dllAvCodec->avcodec_flush_buffers( pCodecCtx );
-       m_currentFrameNumber = curframe;
+       m_currentFrameNumber = m_frameBase - 1;
      }
-	 else
-       m_lastTimeFrame = 0;
+     else
+       m_frameBase = 0;
   }
-  
-  m_timeBase = m_lastTimeFrame;
-  m_lastTimeFrame = 0;
   
   // Allocate the texture
   m_texture = new CTexture( m_videoWidth, m_videoHeight, XB_FMT_A8R8G8B8 );
@@ -415,6 +404,8 @@ void KaraokeVideoFFMpeg::Stop()
 
   delete m_texture;
   m_texture = 0;
+  
+  m_frameBase = m_currentFrameNumber;
   
   if ( !PERSISTENT_OBJECT )
     Dismiss();

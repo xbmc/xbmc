@@ -103,8 +103,7 @@ private:
   int              m_fps_den;
   int              m_fps_num;
   int              m_currentFrameNumber;
-  unsigned int     m_lastTimeFrame;
-  unsigned int     m_timeBase;
+  int              m_frameBase;    // For video resuming
   
   CBaseTexture    *m_texture;
 };
