@@ -66,6 +66,7 @@ typedef struct _SECURITY_ATTRIBUTES {
     int            bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
+/* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '/'
 
 #ifdef TARGET_LINUX
