@@ -48,8 +48,8 @@ public:
   CAutorun();
   virtual ~CAutorun();
   static bool CanResumePlayDVD(const CStdString& path);
-  static bool PlayDisc(const CStdString& path, bool startFromBeginning);
-  static bool PlayDiscAskResume(const CStdString& path);
+  static bool PlayDisc(const CStdString& path="", bool bypassSettings = false, bool startFromBeginning = false);
+  static bool PlayDiscAskResume(const CStdString& path="");
   bool IsEnabled() const;
   void Enable();
   void Disable();
@@ -57,7 +57,6 @@ public:
   static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying = false, bool startFromBeginning = false);
 protected:
   static bool RunCdda();
-  static void RunMedia(bool bypassSettings, bool startFromBeginning);
   static bool RunDisc(XFILE::IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings, bool startFromBeginning);
   bool m_bEnable;
 };
