@@ -70,6 +70,7 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "WIN32Util.h"
+#include <Winsock2.h>
 #endif
 #if defined(__APPLE__)
 #include "osx/DarwinUtils.h"
@@ -2526,5 +2527,17 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
     }
   }
   return false;
+}
+
+CStdString CUtil::GetLocalHostname()
+{
+  CStdString hostname;
+  char buffer[256];
+  if (gethostname(buffer, sizeof(buffer)) == 0)
+    hostname = buffer;
+  else
+    CLog::Log(LOGERROR, "Couldn't get local hostname");
+
+  return hostname;
 }
 
