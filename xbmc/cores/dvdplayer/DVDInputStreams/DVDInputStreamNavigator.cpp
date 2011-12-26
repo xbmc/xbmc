@@ -77,9 +77,8 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // we strip it here.
   strDVDFile = strdup(strFile);
   if (strncasecmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-  {
     strDVDFile[strlen(strDVDFile) - 13] = '\0';
-  }
+
   if (strncasecmp(strDVDFile + strlen(strDVDFile) - 8, "VIDEO_TS", 8) == 0)
     strDVDFile[strlen(strDVDFile) - 9] = '\0';
 
