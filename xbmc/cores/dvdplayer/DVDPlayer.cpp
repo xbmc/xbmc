@@ -2255,6 +2255,8 @@ bool CDVDPlayer::IsPaused() const
 
 bool CDVDPlayer::HasVideo() const
 {
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) return true;
+
   return m_SelectionStreams.Count(STREAM_VIDEO) > 0 ? true : false;
 }
 
