@@ -447,7 +447,6 @@ bool CDVDPlayer::OpenInputStream()
   // correct the filename if needed
   CStdString filename(m_filename);
   if (filename.Find("dvd://") == 0
-  ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
