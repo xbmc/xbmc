@@ -76,11 +76,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // since libdvdnav automaticly play's the dvd if the directory contains VIDEO_TS.IFO
   // we strip it here.
   strDVDFile = strdup(strFile);
-#ifndef _LINUX
-  if (strnicmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-#else
   if (strncasecmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-#endif
   {
     strDVDFile[strlen(strDVDFile) - 13] = '\0';
   }
