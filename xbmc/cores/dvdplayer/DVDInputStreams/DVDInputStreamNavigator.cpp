@@ -73,8 +73,13 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // load the dvd language codes
   // g_LangCodeExpander.LoadStandardCodes();
 
-  // since libdvdnav automaticly play's the dvd if the directory contains VIDEO_TS.IFO
-  // we strip it here.
+  // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
+  // libdvdnav is still able to play without, so strip them.
+
+  // stripping only works 100% correctly for absolute paths.
+  // relative paths are not expected here and wouldn't make sense, so it's safe to assume we'll have
+  // at least one path separator character.
+
   strDVDFile = strdup(strFile);
   int len = strlen(strDVDFile);
 
