@@ -811,6 +811,10 @@
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
 
+  <!-- weather condition phrases -->
+  <!-- when translating these strings, please check http://www.wunderground.com/weather/api/d/documentation.html -->
+  <!-- for possible combinations and descriptions -->
+
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>
@@ -839,6 +843,30 @@
   <string id="1421">Very High</string>
   <string id="1422">Windy</string>
   <string id="1423">Mist</string>
+  <string id="1424">Chance</string>
+  <string id="1425">of</string>
+  <string id="1426">South</string>
+  <string id="1427">North</string>
+  <string id="1428">West</string>
+  <string id="1429">East</string>
+  <string id="1430">Overcast</string>
+  <string id="1431">Pellets</string>
+  <string id="1432">Hail</string>
+  <string id="1433">Smoke</string>
+  <string id="1434">Volcanic</string>
+  <string id="1435">Ash</string>
+  <string id="1436">Widespread</string>
+  <string id="1437">Dust</string>
+  <string id="1438">Sand</string>
+  <string id="1439">Spray</string>
+  <string id="1440">Whirls</string>
+  <string id="1441">Sandstorm</string>
+  <string id="1442">Blowing</string>
+  <string id="1443">Pellet</string>
+  <string id="1444">Small</string>
+  <string id="1445">and</string>
+  <string id="1446">Sleet</string>
+  <string id="1447">with</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
