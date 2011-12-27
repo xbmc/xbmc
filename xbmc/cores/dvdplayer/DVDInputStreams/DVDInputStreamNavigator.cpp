@@ -76,11 +76,16 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // since libdvdnav automaticly play's the dvd if the directory contains VIDEO_TS.IFO
   // we strip it here.
   strDVDFile = strdup(strFile);
-  if (strncasecmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-    strDVDFile[strlen(strDVDFile) - 13] = '\0';
+  int len = strlen(strDVDFile);
 
-  if (strncasecmp(strDVDFile + strlen(strDVDFile) - 8, "VIDEO_TS", 8) == 0)
-    strDVDFile[strlen(strDVDFile) - 9] = '\0';
+  if(len >= 13  // +1 on purpose, to include a separator char before the searched string
+  && strncasecmp(strDVDFile + len - 12, "VIDEO_TS.IFO", 12) == 0)
+    strDVDFile[len - 13] = '\0';
+
+  len = strlen(strDVDFile);
+  if(len >= 9  // +1 on purpose, to include a separator char before the searched string
+  && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
+    strDVDFile[len - 9] = '\0';
 
 #if defined(__APPLE__) && !defined(__arm__)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
