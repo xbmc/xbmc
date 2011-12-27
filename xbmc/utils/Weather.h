@@ -131,7 +131,7 @@ private:
   };
 
   std::map<CStdString, int, ci_less> m_localizedTokens;
-  typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
+  typedef std::map<CStdString, int, ci_less>::const_iterator ilocalizedTokens;
 
   CWeatherInfo m_info;
   int m_location;
