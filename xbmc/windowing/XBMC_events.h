@@ -35,30 +35,30 @@
 
 /* Event enumerations */
 typedef enum {
-       XBMC_NOEVENT = 0,			/* Unused (do not remove) */
-       XBMC_ACTIVEEVENT,			/* Application loses/gains visibility */
-       XBMC_KEYDOWN,			/* Keys pressed */
-       XBMC_KEYUP,			/* Keys released */
-       XBMC_MOUSEMOTION,			/* Mouse moved */
-       XBMC_MOUSEBUTTONDOWN,		/* Mouse button pressed */
-       XBMC_MOUSEBUTTONUP,		/* Mouse button released */
-       XBMC_JOYAXISMOTION,		/* Joystick axis motion */
-       XBMC_JOYBALLMOTION,		/* Joystick trackball motion */
-       XBMC_JOYHATMOTION,		/* Joystick hat position change */
-       XBMC_JOYBUTTONDOWN,		/* Joystick button pressed */
-       XBMC_JOYBUTTONUP,			/* Joystick button released */
-       XBMC_QUIT,			/* User-requested quit */
-       XBMC_SYSWMEVENT,			/* System specific event */
-       XBMC_EVENT_RESERVEDA,		/* Reserved for future use.. */
-       XBMC_EVENT_RESERVEDB,		/* Reserved for future use.. */
-       XBMC_VIDEORESIZE,			/* User resized video mode */
-       XBMC_VIDEOMOVE,        /* User moved the window */
-       XBMC_VIDEOEXPOSE,			/* Screen needs to be redrawn */
-       XBMC_APPCOMMAND,            /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
-       XBMC_EVENT_RESERVED4,		/* Reserved for future use.. */
-       XBMC_EVENT_RESERVED5,		/* Reserved for future use.. */
-       XBMC_EVENT_RESERVED6,		/* Reserved for future use.. */
-       XBMC_EVENT_RESERVED7,		/* Reserved for future use.. */
+       XBMC_NOEVENT = 0,        /* Unused (do not remove) */
+       XBMC_ACTIVEEVENT,        /* Application loses/gains visibility */
+       XBMC_KEYDOWN,            /* Keys pressed */
+       XBMC_KEYUP,              /* Keys released */
+       XBMC_MOUSEMOTION,        /* Mouse moved */
+       XBMC_MOUSEBUTTONDOWN,    /* Mouse button pressed */
+       XBMC_MOUSEBUTTONUP,      /* Mouse button released */
+       XBMC_JOYAXISMOTION,      /* Joystick axis motion */
+       XBMC_JOYBALLMOTION,      /* Joystick trackball motion */
+       XBMC_JOYHATMOTION,       /* Joystick hat position change */
+       XBMC_JOYBUTTONDOWN,      /* Joystick button pressed */
+       XBMC_JOYBUTTONUP,        /* Joystick button released */
+       XBMC_QUIT,               /* User-requested quit */
+       XBMC_SYSWMEVENT,         /* System specific event */
+       XBMC_EVENT_RESERVEDA,    /* Reserved for future use.. */
+       XBMC_EVENT_RESERVEDB,    /* Reserved for future use.. */
+       XBMC_VIDEORESIZE,        /* User resized video mode */
+       XBMC_VIDEOMOVE,          /* User moved the window */
+       XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
+       XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
+       XBMC_EVENT_RESERVED4,    /* Reserved for future use.. */
+       XBMC_EVENT_RESERVED5,    /* Reserved for future use.. */
+       XBMC_EVENT_RESERVED6,    /* Reserved for future use.. */
+       XBMC_EVENT_RESERVED7,    /* Reserved for future use.. */
        /* Events XBMC_USEREVENT through XBMC_MAXEVENTS-1 are for your use */
        XBMC_USEREVENT = 24,
        /* This last event is only for bounding internal arrays
@@ -70,32 +70,32 @@ typedef enum {
 /* Predefined event masks */
 #define XBMC_EVENTMASK(X)	(1<<(X))
 typedef enum {
-	XBMC_ACTIVEEVENTMASK	= XBMC_EVENTMASK(XBMC_ACTIVEEVENT),
-	XBMC_KEYDOWNMASK		= XBMC_EVENTMASK(XBMC_KEYDOWN),
-	XBMC_KEYUPMASK		= XBMC_EVENTMASK(XBMC_KEYUP),
-	XBMC_KEYEVENTMASK	= XBMC_EVENTMASK(XBMC_KEYDOWN)|
-	                          XBMC_EVENTMASK(XBMC_KEYUP),
-	XBMC_MOUSEMOTIONMASK	= XBMC_EVENTMASK(XBMC_MOUSEMOTION),
-	XBMC_MOUSEBUTTONDOWNMASK	= XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN),
-	XBMC_MOUSEBUTTONUPMASK	= XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
-	XBMC_MOUSEEVENTMASK	= XBMC_EVENTMASK(XBMC_MOUSEMOTION)|
-	                          XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN)|
-	                          XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
-	XBMC_JOYAXISMOTIONMASK	= XBMC_EVENTMASK(XBMC_JOYAXISMOTION),
-	XBMC_JOYBALLMOTIONMASK	= XBMC_EVENTMASK(XBMC_JOYBALLMOTION),
-	XBMC_JOYHATMOTIONMASK	= XBMC_EVENTMASK(XBMC_JOYHATMOTION),
-	XBMC_JOYBUTTONDOWNMASK	= XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN),
-	XBMC_JOYBUTTONUPMASK	= XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
-	XBMC_JOYEVENTMASK	= XBMC_EVENTMASK(XBMC_JOYAXISMOTION)|
-	                          XBMC_EVENTMASK(XBMC_JOYBALLMOTION)|
-	                          XBMC_EVENTMASK(XBMC_JOYHATMOTION)|
-	                          XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN)|
-	                          XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
-	XBMC_VIDEORESIZEMASK	= XBMC_EVENTMASK(XBMC_VIDEORESIZE),
-  XBMC_VIDEOMOVEMASK	= XBMC_EVENTMASK(XBMC_VIDEOMOVE),
-	XBMC_VIDEOEXPOSEMASK	= XBMC_EVENTMASK(XBMC_VIDEOEXPOSE),
-	XBMC_QUITMASK		= XBMC_EVENTMASK(XBMC_QUIT),
-	XBMC_SYSWMEVENTMASK	= XBMC_EVENTMASK(XBMC_SYSWMEVENT)
+  XBMC_ACTIVEEVENTMASK      = XBMC_EVENTMASK(XBMC_ACTIVEEVENT),
+  XBMC_KEYDOWNMASK          = XBMC_EVENTMASK(XBMC_KEYDOWN),
+  XBMC_KEYUPMASK            = XBMC_EVENTMASK(XBMC_KEYUP),
+  XBMC_KEYEVENTMASK         = XBMC_EVENTMASK(XBMC_KEYDOWN)|
+                              XBMC_EVENTMASK(XBMC_KEYUP),
+  XBMC_MOUSEMOTIONMASK      = XBMC_EVENTMASK(XBMC_MOUSEMOTION),
+  XBMC_MOUSEBUTTONDOWNMASK  = XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN),
+  XBMC_MOUSEBUTTONUPMASK    = XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
+  XBMC_MOUSEEVENTMASK       = XBMC_EVENTMASK(XBMC_MOUSEMOTION)|
+                              XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN)|
+                              XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
+  XBMC_JOYAXISMOTIONMASK    = XBMC_EVENTMASK(XBMC_JOYAXISMOTION),
+  XBMC_JOYBALLMOTIONMASK    = XBMC_EVENTMASK(XBMC_JOYBALLMOTION),
+  XBMC_JOYHATMOTIONMASK     = XBMC_EVENTMASK(XBMC_JOYHATMOTION),
+  XBMC_JOYBUTTONDOWNMASK    = XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN),
+  XBMC_JOYBUTTONUPMASK      = XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
+  XBMC_JOYEVENTMASK         = XBMC_EVENTMASK(XBMC_JOYAXISMOTION)|
+                              XBMC_EVENTMASK(XBMC_JOYBALLMOTION)|
+                              XBMC_EVENTMASK(XBMC_JOYHATMOTION)|
+                              XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN)|
+                              XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
+  XBMC_VIDEORESIZEMASK      = XBMC_EVENTMASK(XBMC_VIDEORESIZE),
+  XBMC_VIDEOMOVEMASK        = XBMC_EVENTMASK(XBMC_VIDEOMOVE),
+  XBMC_VIDEOEXPOSEMASK      = XBMC_EVENTMASK(XBMC_VIDEOEXPOSE),
+  XBMC_QUITMASK             = XBMC_EVENTMASK(XBMC_QUIT),
+  XBMC_SYSWMEVENTMASK      = XBMC_EVENTMASK(XBMC_SYSWMEVENT)
 } XBMC_EventMask ;
 #define XBMC_ALLEVENTS		0xFFFFFFFF
 
@@ -221,21 +221,21 @@ typedef struct XBMC_AppCommandEvent {
 
 /* General event structure */
 typedef union XBMC_Event {
-	unsigned char type;
-	XBMC_ActiveEvent active;
-	XBMC_KeyboardEvent key;
-	XBMC_MouseMotionEvent motion;
-	XBMC_MouseButtonEvent button;
-	XBMC_JoyAxisEvent jaxis;
-	XBMC_JoyBallEvent jball;
-	XBMC_JoyHatEvent jhat;
-	XBMC_JoyButtonEvent jbutton;
-	XBMC_ResizeEvent resize;
+  unsigned char type;
+  XBMC_ActiveEvent active;
+  XBMC_KeyboardEvent key;
+  XBMC_MouseMotionEvent motion;
+  XBMC_MouseButtonEvent button;
+  XBMC_JoyAxisEvent jaxis;
+  XBMC_JoyBallEvent jball;
+  XBMC_JoyHatEvent jhat;
+  XBMC_JoyButtonEvent jbutton;
+  XBMC_ResizeEvent resize;
   XBMC_MoveEvent move;
-	XBMC_ExposeEvent expose;
-	XBMC_QuitEvent quit;
-	XBMC_UserEvent user;
-	XBMC_SysWMEvent syswm;
+  XBMC_ExposeEvent expose;
+  XBMC_QuitEvent quit;
+  XBMC_UserEvent user;
+  XBMC_SysWMEvent syswm;
   XBMC_AppCommandEvent appcommand;
 } XBMC_Event;
 
