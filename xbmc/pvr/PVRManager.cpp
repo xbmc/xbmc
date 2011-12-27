@@ -714,7 +714,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 {
   /* Don't update if a recording is played */
   if (item.IsPVRRecording())
-    return true;
+    return false;
 
   if (!item.IsPVRChannel())
   {

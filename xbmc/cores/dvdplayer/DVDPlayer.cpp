@@ -3884,7 +3884,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     }
     else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
-      if(((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime() > 0)
+      if(((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime() > 0 &&
+         ((CDVDInputStreamPVRManager*)m_pInputStream)->GetStartTime() > 0)
       {
         state.time       = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetStartTime();
         state.time_total = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime();
