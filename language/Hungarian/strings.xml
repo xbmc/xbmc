@@ -1034,7 +1034,7 @@
   <string id="13016">Gép kikapcsolása</string>
 
   <string id="13020">Lehet hogy egy másik bejelentkezés aktív (ssh)?</string>
-  <string id="13021">Külsõ meghajtó csatlakoztatva</string>
+  <string id="13021">Külső meghajtó csatlakoztatva</string>
   <string id="13022">Nem biztonságos eltávolítás</string>
   <string id="13023">Eszköz sikeresen eltávolítva</string>
   <string id="13024">Joystick csatlakoztatva</string>
@@ -1126,7 +1126,7 @@
   <string id="13283">Operációs rendszer:</string>
   <string id="13284">CPU sebesség:</string>
 
-  <string id="13286">Videó dekódoló:</string>
+  <string id="13286">Videó kódoló:</string>
   <string id="13287">Képernyő felbontása:</string>
 
   <string id="13292">Hang/Kép kábel:</string>
@@ -1903,8 +1903,8 @@
   <string id="20431">Korábbi fájlok felülírása?</string>
   <string id="20432">Elérési út kihagyása a médiatár-frissítésekor</string>
   <string id="20433">Média információk és bélyegképek kinyerése</string>
-  <string id="20434">Lemeezgyűjtemény</string>
-  <string id="20435">Lemeezgyűjtemény bélyegkép</string>
+  <string id="20434">Lemezgyűjtemény</string>
+  <string id="20435">Lemezgyűjtemény bélyegkép</string>
   <string id="20436">Színész-bélyegképek exportálása?</string>
   <string id="20437">Fanartkép választás</string>
   <string id="20438">Helyi fanartkép</string>
