@@ -84,6 +84,7 @@ JSON_STATUS CPVROperations::ChannelDown(const CStdString &method, ITransportLaye
 
   CLog::Log(LOGDEBUG, "JSONRPC: channel down");
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
+  return ACK;
 }
 
 JSON_STATUS CPVROperations::RecordCurrentChannel(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
