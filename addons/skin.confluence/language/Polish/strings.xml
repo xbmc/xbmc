@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 10/23/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 12/25/2011-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Zmień</string>
@@ -11,7 +11,9 @@
   <string id="31003">Opcje zasilania</string>
   <string id="31004">Pracuję...</string>
   <string id="31005">Ukryj info</string>
+  <string id="31006">Zobacz opcje</string>
   <string id="31007">Wtyczki</string>
+  <string id="31008">Pełny ekran</string>
   <string id="31020">Ostatnio dodane</string>
   <string id="31021">Wideo - pliki</string>
   <string id="31022">Muzyka - pliki</string>
@@ -35,6 +37,8 @@
   <string id="31047">Obecny efekt</string>
   <string id="31048">Efekty wizualizacji</string>
   <string id="31049">Koniec o godzinie</string>
+  <string id="31050">Sortuj: rosnąco</string>
+  <string id="31051">Sortuj: malejąco</string>
   <string id="31055">Otwórz playlistę</string>
   <string id="31056">Zapisz playlistę</string>
   <string id="31057">Zamknij playlistę</string>
@@ -46,9 +50,9 @@
   <string id="31102">Tło</string>
   <string id="31103">Wyświetlaj "Pauza" podczas pokazu slajdów</string>
   <string id="31104">Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">Przycisk "wideo" przenosi zawsze do plików wideo</string>
   <string id="31106">Różne opcje</string>
-  <string id="31107">Ukryj ikony właściwości wideo czytane z nazw plików [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31107">Ukryj ikony właściwości wideo z nazw plików [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ukryj przyciski głównego menu</string>
   <string id="31109">Tła ekranu głównego</string>
   <string id="31110">Edytuj tło dla</string>
@@ -58,20 +62,30 @@
   <string id="31114">Wiele obrazów</string>
   <string id="31115">Modyfikacja</string>
   <string id="31117">Pokazuj ostatnio dodane wideo</string>
-  <string id="31118">Podmenu programów na stronie głównej</string>
-  <string id="31119"></string>
+  <string id="31118">Podmenu programów Ekranu głównego</string>
+  <string id="31119">Ukryj tło fanartu</string>
   <string id="31120">ETYKIETA PRZYCISKU</string>
-  <string id="31121"></string>
+  <string id="31121">
+  </string>
   <string id="31122">Strona pogody</string>
   <string id="31123">Użyj plakatów zamiast banerów dla seriali</string>
   <string id="31124">Pokazuj aktualnie odtwarzane wideo jako tło</string>
   <string id="31125">Pokazuj aktualną wizualizację jako tło</string>
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">Odtwarzaj motyw TV w bibliotece wideo (wtyczka TvTunes)</string>
+  <string id="31127">
+  </string>
   <string id="31128">Teksty piosenek</string>
-  <string id="31129"></string>
-  <string id="31130"></string>
-  <string id="31131"></string>
+  <string id="31129">
+  </string>
+  <string id="31130">
+  </string>
+  <string id="31131">
+  </string>
+  <string id="31132">Wtyczka Teksty piosenek</string>
+  <string id="31133">Wtyczka Napisy do filmów</string>
+  <string id="31134">Podmenu wideo Ekranu głównego</string>
+  <string id="31135">Podmenu muzyki Ekranu głównego</string>
+  <string id="31136">Podmenu zdjęć Ekranu głównego</string>
   <string id="31140">Muzyka - OSD</string>
   <string id="31141">Wideo - OSD</string>
   <string id="31200">Skróty</string>
@@ -83,6 +97,7 @@
   <string id="31300">Temperatura</string>
   <string id="31301">Ostatnia aktualizacja</string>
   <string id="31302">Menu</string>
+  <string id="31303">Dostawca danych</string>
   <string id="31304">Zdjęcia</string>
   <string id="31305">Nie wykryto płyty</string>
   <string id="31306">Wysuń</string>
@@ -90,7 +105,7 @@
   <string id="31308">Szczegóły o filmie</string>
   <string id="31309">Używana pamięć:</string>
   <string id="31310">Numer ścieżki</string>
-  <string id="31311">OBRAZ FANART[CR][CR]NIEDOSTĘPNY[CR][CR] KLIKNIJ PRZYCISK, ABY DODAĆ</string>
+  <string id="31311">Fanart[CR][CR]niedostępny[CR][CR] Kliknij przycisk, aby dodać</string>
   <string id="31312">Bieżący scraper</string>
   <string id="31313">Wybierz scraper</string>
   <string id="31314">Opcje skanowania zawartości</string>
@@ -109,6 +124,7 @@
   <string id="31328">Ostatnio dodane</string>
   <string id="31329">[B]Timer ustawiony![/B] [COLOR=grey2] - Wyłączenie systemu za[/COLOR]</string>
   <string id="31330">Kliknij przycisk, aby[CR][CR]odtworzyć zwiastun</string>
+  <string id="31331">Sczegóły albumu</string>
   <string id="31351">Pauza</string>
   <string id="31352">Stop</string>
   <string id="31353">Przewiń</string>
@@ -128,4 +144,14 @@
   <string id="31407">[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Ustawienia skóry · Pozycje menu głównego[CR]Tła skóry</string>
   <string id="31408">[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzaj wtyczkami · Przeglądaj i instaluj wtyczki[CR]Ustawienia wtyczek</string>
   <string id="31421">Wybierz profil użytkownika</string>
+  <string id="31900">Mapy pogody</string>
+  <string id="31901">Pogoda na 36 godzin</string>
+  <string id="31902">Pogoda godzinna</string>
+  <string id="31903">Pogoda weekendowa</string>
+  <string id="31904">Pogoda na 10 dni</string>
+  <string id="31905">Pogoda</string>
+  <string id="31906">Mapy i wideo</string>
+  <string id="31907">Pogoda wideo [COLOR=grey2](na pełnym ekranie)[/COLOR]</string>
+  <string id="31908">Możliwość opadów</string>
+  <string id="31909">Prognozuję pogodę...</string>
 </strings>
