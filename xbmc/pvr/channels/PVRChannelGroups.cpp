@@ -224,7 +224,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
       {
         CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - user defined group %s with ID '%u' does not exist on the client anymore. deleting",
             __FUNCTION__, existingGroup.GroupName().c_str(), existingGroup.GroupID());
-        DeleteGroup(existingGroup);
+        DeleteGroup(*at(iGroupPtr));
       }
     }
   }
