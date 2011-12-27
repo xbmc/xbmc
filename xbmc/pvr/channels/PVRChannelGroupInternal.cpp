@@ -43,6 +43,12 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_strGroupName    = g_localizeStrings.Get(bRadio ? 19216 : 19217);
 }
 
+CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group) :
+    CPVRChannelGroup(group)
+{
+  m_iHiddenChannels             = group.GetNumHiddenChannels();
+}
+
 int CPVRChannelGroupInternal::Load(void)
 {
   int iChannelCount = CPVRChannelGroup::Load();

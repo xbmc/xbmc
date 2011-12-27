@@ -42,6 +42,8 @@ namespace PVR
      */
     CPVRChannelGroupInternal(bool bRadio);
 
+    CPVRChannelGroupInternal(const CPVRChannelGroup &group);
+
     /**
      * @brief The amount of channels in this container.
      * @return The amount of channels in this container.

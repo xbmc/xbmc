@@ -76,6 +76,8 @@ namespace PVR
      */
     CPVRChannelGroup(const PVR_CHANNEL_GROUP &group);
 
+    CPVRChannelGroup(const CPVRChannelGroup &group);
+
     /*!
      * @brief Destruct this channel group.
      */
