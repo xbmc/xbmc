@@ -206,18 +206,22 @@ bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &ite
   if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
   {
     if (media.Equals("video"))
-      status |= CVideoLibrary::FillFileItem(strFilename, item);
+      status = CVideoLibrary::FillFileItem(strFilename, item);
     else if (media.Equals("music"))
-      status |= CAudioLibrary::FillFileItem(strFilename, item);
+      status = CAudioLibrary::FillFileItem(strFilename, item);
 
     if (!status)
     {
-      item = CFileItem(strFilename, false);
-      if (item.GetLabel().IsEmpty())
-        item.SetLabel(CUtil::GetTitleFromPath(strFilename, false));
-    }
+      bool isDir = CDirectory::Exists(strFilename);
+      CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+      if (!label.empty())
+      {
+        item = CFileItem(strFilename, isDir);
+        item.SetLabel(label);
 
-    status = true;
+        status = true;
+      }
+    }
   }
 
   return status;
@@ -237,23 +241,20 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CStdString extensions = "";
       CStdStringArray regexps;
 
-      if (media.Equals("video") || media.Equals("music") || media.Equals("pictures"))
+      if (media.Equals("video"))
       {
-        if (media.Equals("video"))
-        {
-          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-          extensions = g_settings.m_videoExtensions;
-        }
-        else if (media.Equals("music"))
-        {
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-          extensions = g_settings.m_musicExtensions;
-        }
-        else if (media.Equals("pictures"))
-        {
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-          extensions = g_settings.m_pictureExtensions;
-        }
+        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        extensions = g_settings.m_videoExtensions;
+      }
+      else if (media.Equals("music"))
+      {
+        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        extensions = g_settings.m_musicExtensions;
+      }
+      else if (media.Equals("pictures"))
+      {
+        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+        extensions = g_settings.m_pictureExtensions;
       }
 
       CDirectory directory;
@@ -276,6 +277,8 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
             CFileItem fileItem;
             if (FillFileItem(items[i]->GetPath(), fileItem, media))
               list.Add(CFileItemPtr(new CFileItem(fileItem)));
+            else if (media == "files")
+              list.Add(items[i]);
           }
         }
 
