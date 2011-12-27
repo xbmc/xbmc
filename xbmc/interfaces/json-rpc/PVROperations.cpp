@@ -22,7 +22,6 @@
 #include "PVROperations.h"
 #include "Application.h"
 #include "utils/log.h"
-#include "cores/dvdplayer/DVDMessage.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
