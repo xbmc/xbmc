@@ -364,10 +364,12 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
+  m_Autorun = new CAutorun();
 }
 
 CApplication::~CApplication(void)
 {
+  delete m_Autorun;
   delete m_currentStack;
 
 #ifdef HAS_KARAOKE
@@ -4794,7 +4796,7 @@ void CApplication::ProcessSlow()
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   if (!IsPlayingVideo())
-    m_Autorun.HandleAutorun();
+    m_Autorun->HandleAutorun();
 #endif
 
   // update upnp server/renderer states

@@ -65,6 +65,7 @@
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
+#include "Autorun.h"
 
 using namespace std;
 using namespace XFILE;

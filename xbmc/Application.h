@@ -38,6 +38,11 @@ namespace ADDON
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
 
+namespace MEDIA_DETECT
+{
+  class CAutorun;
+}
+
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
@@ -47,7 +52,6 @@ namespace ADDON
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
-#include "Autorun.h"
 #include "video/Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
@@ -211,7 +215,7 @@ public:
 #endif
 
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun m_Autorun;
+  MEDIA_DETECT::CAutorun* m_Autorun;
 #endif
 
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
