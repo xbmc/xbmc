@@ -69,7 +69,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool sta
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
-  RunMedia(bypassSettings, startFromBeginning);
+  PlayDisc("", bypassSettings, startFromBeginning);
 }
 
 bool CAutorun::RunCdda()
@@ -90,42 +90,47 @@ bool CAutorun::RunCdda()
   return true;
 }
 
-void CAutorun::RunMedia(bool bypassSettings, bool startFromBeginning)
+bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startFromBeginning)
 {
   if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
-    return ;
+    return false;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
+
+  CStdString mediaPath = path;
+
 #ifdef _WIN32
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( g_mediaManager.TranslateDevicePath("") ));
-  bool bPlaying = RunDisc(pDir.get(), g_mediaManager.TranslateDevicePath(""), nAddedToPlaylist, true, bypassSettings, startFromBeginning);
+  if (mediaPath.IsEmpty())
+    mediaPath = g_mediaManager.TranslateDevicePath("");
+
 #else
-  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-
-  if ( pInfo == NULL )
-    return ;
-
-  bool bPlaying;
-  if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+  if (mediaPath.IsEmpty())
   {
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
-  }
-  else
-  {
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+    if ( pInfo == NULL )
+      return false;
+
+    if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+      mediaPath = "iso9660://";
+    else
+      mediaPath = "D:\\"; // Is this XBOX remnant??
   }
 #endif
+
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( mediaPath ));
+  bool bPlaying = RunDisc(pDir.get(), mediaPath, nAddedToPlaylist, true, bypassSettings, startFromBeginning);
+
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
     g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
-    g_playlistPlayer.Play(nSize);
+    return g_playlistPlayer.Play(nSize);
   }
+
+  return bPlaying;
 }
 
 /**
@@ -389,27 +394,9 @@ bool CAutorun::IsEnabled() const
   return m_bEnable;
 }
 
-bool CAutorun::PlayDisc(const CStdString& path, bool startFromBeginning)
-{
-  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-  int nAddedToPlaylist = 0;
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( path ));
-  bool bPlaying = RunDisc(pDir.get(), path, nAddedToPlaylist, true, true, startFromBeginning);
-  if ( !bPlaying && nAddedToPlaylist > 0 )
-  {
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    g_windowManager.SendMessage( msg );
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    // Start playing the items we inserted
-    g_playlistPlayer.Play(nSize);
-	bPlaying = true;
-  }
-  return bPlaying;
-}
-
 bool CAutorun::PlayDiscAskResume(const CStdString& path)
 {
-  return PlayDisc(path, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
 }
 
 bool CAutorun::CanResumePlayDVD(const CStdString& path)
