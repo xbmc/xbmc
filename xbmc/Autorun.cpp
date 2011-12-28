@@ -42,6 +42,7 @@
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -72,24 +73,6 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool sta
   PlayDisc("", bypassSettings, startFromBeginning);
 }
 
-bool CAutorun::RunCdda()
-{
-  CFileItemList vecItems;
-
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
-  if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-    return false;
-
-  if ( vecItems.Size() <= 0 )
-    return false;
-
-  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Play();
-  return true;
-}
-
 bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startFromBeginning)
 {
   if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
@@ -98,24 +81,24 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
 
-  CStdString mediaPath = path;
+  CStdString mediaPath;
+
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
+  if (pInfo == NULL)
+    return false;
+
+  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+    mediaPath = "cdda://local/";
+
+  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+    mediaPath = "iso9660://";
+
+  if (mediaPath.IsEmpty())
+    mediaPath = path;
 
 #ifdef _WIN32
   if (mediaPath.IsEmpty())
     mediaPath = g_mediaManager.TranslateDevicePath("");
-
-#else
-  if (mediaPath.IsEmpty())
-  {
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-    if ( pInfo == NULL )
-      return false;
-
-    if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
-      mediaPath = "iso9660://";
-    else
-      mediaPath = "D:\\"; // Is this XBOX remnant??
-  }
 #endif
 
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( mediaPath ));
@@ -159,21 +142,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // is this a root folder we have to check the content to determine a disc type
   if( bRoot )
   {
-    // check for audio cd first
-    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-
-    if ( pInfo->IsAudio( 1 ) )
-    {
-      if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
-        return false;
-
-      if (!g_passwordManager.IsMasterLockUnlocked(false))
-        if (g_settings.GetCurrentProfile().musicLocked())
-          return false;
-      bPlaying = RunCdda();
-	  return bPlaying;
-    }
-
     // check root folders next, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
