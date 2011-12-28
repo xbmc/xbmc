@@ -33,6 +33,10 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
+#include "video/Bookmark.h"
+#ifdef HAS_WEB_SERVER
+#include "network/WebServer.h"
+#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -275,6 +279,7 @@
 #include "DarwinUtils.h"
 #endif
 
+
 #ifdef HAS_DVD_DRIVE
 #include <cdio/logging.h>
 #endif
@@ -327,6 +332,8 @@ using namespace XbmcThreads;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
+  , m_progressTrackingVideoResumeBookmark(*new CBookmark)
+  , m_WebServer(*new CWebServer)
 {
   m_iPlaySpeed = 1;
   m_pPlayer = NULL;
@@ -369,6 +376,8 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
 CApplication::~CApplication(void)
 {
+  delete &m_WebServer;
+  delete &m_progressTrackingVideoResumeBookmark;
   delete m_Autorun;
   delete m_currentStack;
 

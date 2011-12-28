@@ -52,7 +52,6 @@ namespace MEDIA_DETECT
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
-#include "video/Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "network/Network.h"
@@ -63,15 +62,13 @@ namespace MEDIA_DETECT
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
-#ifdef HAS_WEB_SERVER
-#include "network/WebServer.h"
-#endif
-
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CBookmark;
+class CWebServer;
 
 class CBackgroundPlayer : public CThread
 {
@@ -223,7 +220,7 @@ public:
 #endif
 
 #ifdef HAS_WEB_SERVER
-  CWebServer m_WebServer;
+  CWebServer& m_WebServer;
 #endif
 
   IPlayer* m_pPlayer;
@@ -328,7 +325,7 @@ protected:
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  CBookmark m_progressTrackingVideoResumeBookmark;
+  CBookmark& m_progressTrackingVideoResumeBookmark;
   CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 

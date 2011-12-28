@@ -116,6 +116,10 @@
 #include "network/AirPlayServer.h"
 #endif
 
+#if defined(HAS_WEB_SERVER)
+#include "network/WebServer.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
