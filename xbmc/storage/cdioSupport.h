@@ -99,6 +99,8 @@ typedef struct signature
 }
 signature_t;
 
+typedef std::map<cdtext_field_t, CStdString> xbmc_cdtext_t;
+
 typedef struct TRACKINFO
 {
   int nfsInfo;  // Information of the Tracks Filesystem
@@ -108,7 +110,7 @@ typedef struct TRACKINFO
   int nFrames;  // Can be used for cddb query
   int nMins;   // minutes playtime part of Track
   int nSecs;   // seconds playtime part of Track
-  cdtext_t cdtext; //  CD-Text for this track
+  xbmc_cdtext_t cdtext; //  CD-Text for this track
 }
 trackinfo;
 
@@ -119,21 +121,11 @@ public:
   CCdInfo()
   {
     m_bHasCDDBInfo = true;
-    cdtext_init(&m_cdtext);
-    for (int i = 0; i < 100; i++)
-      cdtext_init(&m_ti[i].cdtext);
-
     m_nLength = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0;
-  }
-  virtual ~CCdInfo()
-  {
-    cdtext_destroy(&m_cdtext);
-    for (int i = 0; i < 100; i++)
-      cdtext_destroy(&m_ti[i].cdtext);
   }
 
 trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
-  cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
+  xbmc_cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
 
   bool HasDataTracks() { return (m_nNumData > 0); }
   bool HasAudioTracks() { return (m_nNumAudio > 0); }
@@ -236,7 +228,7 @@ bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? f
   void SetDataTrackCount( int nCount ) { m_nNumData = nCount; }
   void SetAudioTrackCount( int nCount ) { m_nNumAudio = nCount; }
   void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99 ) m_ti[nTrack - 1] = nInfo; }
-void SetDiscCDTextInformation( cdtext_t cdtext ) { m_cdtext = cdtext; }
+void SetDiscCDTextInformation( xbmc_cdtext_t cdtext ) { m_cdtext = cdtext; }
 
   void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
   void SetDiscLength( int nLength ) { m_nLength = nLength; }
@@ -257,7 +249,7 @@ private:
   int m_nLength;   // Disclength can be used for cddb query, also see trackinfo.nFrames
   bool m_bHasCDDBInfo;
   CStdString m_strDiscLabel;
-  cdtext_t m_cdtext;  //  CD-Text for this disc
+  xbmc_cdtext_t m_cdtext;  //  CD-Text for this disc
 };
 
 class CLibcdio : public CCriticalSection
@@ -309,7 +301,7 @@ public:
   void PrintAnalysis(int fs, int num_audio);
 
   CCdInfo* GetCdInfo(char* cDeviceFileName=NULL);
-  void GetCdTextInfo(trackinfo *pti, int trackNum);
+  void GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum);
 
 protected:
   int ReadBlock(int superblock, uint32_t offset, uint8_t bufnum, track_t track_num);
