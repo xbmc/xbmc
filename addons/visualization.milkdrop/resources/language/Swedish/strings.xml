@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/11/2010-->
+<!--Date of translation: 12/26/2011-->
 <!--$Revision$-->
 <strings>
   <string id="30000">Automatisk bländningstid</string>
@@ -15,4 +15,12 @@
   <string id="30007">Maximal uppdateringsfrekvens</string>
   <string id="30008">Aktivera stereo-3D</string>
   <string id="30009">Förvalspaket</string>
+  <string id="30010">Användarförvalsmapp</string>
+  <string id="30011">Förvalsslumpningsläge</string>
+  <string id="30020">WA51-förval</string>
+  <string id="30021">Winamp-förval</string>
+  <string id="30022">Användardefineradförvalsmapp</string>
+  <string id="30050">%2.0f sek</string>
+  <string id="30051">%2.0f %%</string>
+  <string id="30052">%2.0f fps</string>
 </strings>
