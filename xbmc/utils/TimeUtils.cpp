@@ -22,6 +22,9 @@
 #include "TimeUtils.h"
 #include "XBDateTime.h"
 #include "threads/SystemClock.h"
+#ifdef HAS_DS_PLAYER
+#include "Streams.h"
+#endif
 
 #if   defined(TARGET_DARWIN)
 #include <mach/mach_time.h>
@@ -96,3 +99,22 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
 
   return result;
 }
+#ifdef HAS_DS_PLAYER
+int64_t CTimeUtils::GetPerfCounter()
+{
+  LARGE_INTEGER i64Ticks100ns;
+  LARGE_INTEGER llPerfFrequency;
+
+  QueryPerformanceFrequency (&llPerfFrequency);
+  if (llPerfFrequency.QuadPart != 0)
+  {
+    QueryPerformanceCounter (&i64Ticks100ns);
+    return llMulDiv(i64Ticks100ns.QuadPart, 10000000, llPerfFrequency.QuadPart, 0);
+  }
+  else
+  {
+    // ms to 100ns units
+    return timeGetTime() * 10000; 
+  }
+}
+#endif

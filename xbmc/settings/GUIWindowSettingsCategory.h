@@ -45,6 +45,9 @@ protected:
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl);
   void FillInSubtitleFonts(CSetting *pSetting);
+#ifdef HAS_DS_PLAYER
+  void FillInDSSubtitleFonts( CSetting * pSetting );
+#endif
   void FillInCharSets(CSetting *pSetting);
   void FillInSkinFonts(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
@@ -65,6 +68,9 @@ protected:
   void NetworkInterfaceChanged(void);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
+#ifdef HAS_DS_PLAYER
+  void FillInDirectShowAudioRenderers(CSetting* pSetting);
+#endif
 
   virtual void SetupControls();
   CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);

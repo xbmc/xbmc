@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPlatinum", "libPlatinum.vcxproj", "{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
@@ -54,6 +54,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\lib\libsqui
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\lib\stsound\StSoundLibrary\StSoundLibrary.vcxproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "subtitles", "..\..\xbmc\cores\DSPlayer\Subtitles\subtitles\subtitles.vcxproj", "{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libssf", "..\..\xbmc\cores\DSPlayer\Subtitles\subtitles\libssf\libssf.vcxproj", "{DD9D2D92-2241-408A-859E-B85D444B7E3C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "subpic", "..\..\xbmc\cores\DSPlayer\Subtitles\subpic\subpic.vcxproj", "{D514EA4D-EAFB-47A9-A437-A582CA571251}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsubs_dll", "..\..\xbmc\cores\DSPlayer\Subtitles\libsubs\libsubs.vcxproj", "{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmad_dll", "..\..\lib\libmad\msvc++\libmad.vcxproj", "{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvgmstream_dll", "..\..\lib\vgmstream\win32\win32.vcxproj", "{3600E1C5-FECA-468C-83F3-FE467DBE2A66}"
@@ -71,6 +79,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp3lame_dll", "..\..\lib\liblame\vc_solution\vc10_libmp3lame_dll.vcxproj", "{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\lib\libhdhomerun\hdhomerun\hdhomerun.vcxproj", "{1E2FB608-3DD2-4021-A598-90008FA6DE85}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsutil", "..\..\xbmc\cores\DSPlayer\DSUtil\dsutil.vcxproj", "{FC70988B-1AE5-4381-866D-4F405E28AC42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -292,6 +302,30 @@ Global
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
+		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
+		{DD9D2D92-2241-408A-859E-B85D444B7E3C}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
+		{D514EA4D-EAFB-47A9-A437-A582CA571251}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
@@ -364,6 +398,12 @@ Global
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.ActiveCfg = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (DirectX)|Win32.Build.0 = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Debug (OpenGL)|Win32.ActiveCfg = Debug Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.ActiveCfg = Release Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (DirectX)|Win32.Build.0 = Release Unicode|Win32
+		{FC70988B-1AE5-4381-866D-4F405E28AC42}.Release (OpenGL)|Win32.ActiveCfg = Release Unicode|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

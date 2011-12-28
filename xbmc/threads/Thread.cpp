@@ -151,6 +151,9 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
+#ifdef _DEBUG
+    throw;
+#endif
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
@@ -162,6 +165,9 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, pThread->m_ThreadName.c_str(), pThread->IsAutoDelete());
+#ifdef _DEBUG
+    throw;
+#endif
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
@@ -180,10 +186,16 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
+#ifdef _DEBUG
+    throw;
+#endif
   }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
+#ifdef _DEBUG
+    throw;
+#endif
   }
 #endif
   catch(...)

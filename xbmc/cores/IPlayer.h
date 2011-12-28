@@ -169,7 +169,7 @@ public:
   virtual bool SetPlayerState(CStdString state) { return false;};
   
   virtual CStdString GetPlayingTitle() { return ""; };
-
+  virtual void ResetRenderer()    {};
 protected:
   IPlayerCallback& m_callback;
 };

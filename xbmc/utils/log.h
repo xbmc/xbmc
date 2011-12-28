@@ -24,8 +24,9 @@
 #include <stdio.h>
 #include <string>
 
-#include "threads/CriticalSection.h"
+//#include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
+#include "threads/platform/win/CriticalSection.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -70,6 +71,7 @@ public:
   virtual ~CLog(void);
   static void Close();
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
+  static void DebugLog(const char *format, ...);
   static void MemDump(char *pData, int length);
   static bool Init(const char* path);
   static void SetLogLevel(int level);

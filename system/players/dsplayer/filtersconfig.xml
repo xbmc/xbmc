@@ -1,0 +1,204 @@
+<filtersconfig>
+  <filters>
+    <!-- You dont need a path if your filter is registered -->
+
+    <!-- Video decoders -->
+    <filter name="mpcvideodec" type="videodec">
+      <path>MPCVideoDec.ax</path>
+      <guid>{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}</guid>
+      <osdname>MPC Video Decoder</osdname>
+    </filter>
+    <filter name="ffdvideodec" type="videodec">
+      <guid>{04FE9017-F873-410E-871E-AB91661A4EF7}</guid>
+      <osdname>ffdshow Video Decoder</osdname>
+    </filter>
+    <filter name="ffdvideodxvadec" type="videodec">
+      <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
+      <osdname>ffdshow DXVA Decoder</osdname>
+    </filter>
+    <filter name="coreavcvideodec" type="videodec">
+      <guid>{09571A4B-F1FE-4C60-9760-DE6D310C7C31}</guid>
+      <osdname>CoreAVC Video Decoder</osdname>
+    </filter>
+    <filter name="cyberlinkvideodec" type="videodec">
+      <guid>{BEF49ADB-9EC1-4AF2-8E50-90F226CC4843}</guid>
+      <osdname>CyberLink Video Decoder</osdname>
+    </filter>
+    <filter name="wmvideodecoder" type="videodec">
+      <guid>{82D353DF-90BD-4382-8BC2-3F6192B76E34}</guid>
+      <osdname>WMVideo Decoder</osdname>
+      <isdmo>true</isdmo>
+      <guid_category_dmo>{4a69b442-28be-4991-969c-b500adf5d8a8}</guid_category_dmo>
+    </filter>
+    <filter name="mpeg2videodec" type="videodec">
+      <path>Mpeg2DecFilter.ax</path>
+      <guid>{39F498AF-1A09-4275-B193-673B0BA3D478}</guid>
+      <osdname>mpeg2 Video Decoder</osdname>
+    </filter>
+    <filter name="realvideodec" type="videodec">
+      <guid>{238D0F23-5DC9-45A6-9BE2-666160C324DD}</guid>
+      <osdname>RealAlternative Video Decoder</osdname>
+    </filter>
+    <filter name="broadcomvideodecoder" type="videodec">
+      <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
+      <osdname>Broadcom VideoDecoder</osdname>
+    </filter>
+    <filter name="lavvideodec" type="videodec">
+      <guid>{EE30215D-164F-4A92-A4EB-9D4C13390F9F}</guid>
+      <osdname>LAV Video Decoder</osdname>
+    </filter>
+    
+    <!-- Audio decoders -->
+    <filter name="mpaaudiodec" type="audiodec">
+      <path>MpaDecFilter.ax</path>
+      <guid>{3D446B6F-71DE-4437-BE15-8CE47174340F}</guid>
+      <osdname>Mpa Decoder</osdname>
+    </filter>
+    <filter name="ffdaudiodec" type="audiodec">
+      <guid>{0F40E1E5-4F79-4988-B1A9-CC98794E6B55}</guid>
+      <osdname>ffdshow audio decoder</osdname>
+    </filter>
+    <filter name="wmaudiodecoder" type="audiodec">
+      <guid>{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}</guid>
+      <osdname>WMAudio Decoder</osdname>
+      <isdmo>true</isdmo>
+      <guid_category_dmo>{57f2db8b-e6bb-4513-9d43-dcd2a6593125}</guid_category_dmo>
+    </filter>
+    <filter name="realaudiodec" type="audiodec">
+      <guid>{941A4793-A705-4312-8DFC-C11CA05F397E}</guid>
+      <osdname>RealAlternative Audio Decoder</osdname>
+    </filter>
+    <filter name="lavaudiodec" type="audiodec">
+      <guid>{E8E73B6B-4CB3-44A4-BE99-4F7BCB96E491}</guid>
+      <osdname>LAV Audio Decoder</osdname>
+    </filter>
+    
+    <!-- Audio Stream Switcher-->
+    <filter name="audioswitcher" type="audioswitch">
+      <path>audioswitcher.ax</path>
+      <guid>{18C16B08-6497-420E-AD14-22D21C2CEAB7}</guid>
+      <alwaysload>1</alwaysload>
+    </filter>
+  
+    <!-- Extra filters -->
+    <filter name="dcgraphiceq" type="extra">
+      <path>DCGraphicEQ.ax</path>
+      <guid>{E4DCD60C-F449-4C78-895B-1FE9F85C7EDD}</guid>
+      <osdname>DC-GraphicEQ</osdname>
+    </filter>
+    <filter name="ac3filter" type="extra">
+      <guid>{A753A1EC-973E-4718-AF8E-A3F554D45C44}</guid>
+      <osdname>AC3Filter</osdname>
+    </filter>
+
+    <!-- Source filters -->
+    <filter name="dvdnavigator" type="source">
+      <guid>{9B8C4620-2C1A-11D0-8493-00A02438AD48}</guid>
+      <osdname>DVD Navigator</osdname>
+    </filter>
+    <filter name="wmasfreader" type="source">
+      <guid>{187463A0-5BB7-11D3-ACBE-0080C75E246E}</guid>
+      <osdname>WM ASF Reader</osdname>
+    </filter>
+    <filter name="avisource" type="source">
+      <path>AviSplitter.ax</path>
+      <guid>{CEA8DEFF-0AF7-4DB9-9A38-FB3C3AEFC0DE}</guid>
+      <osdname>AVI Source</osdname>
+    </filter>
+    <filter name="flvsource" type="source">
+      <path>FLVSplitter.ax</path>
+      <guid>{C9ECE7B3-1D8E-41F5-9F24-B255DF16C087}</guid>
+      <osdname>FLV Source</osdname>
+    </filter>
+    <filter name="mp4source" type="source">
+      <path>MP4Splitter.ax</path>
+      <guid>{3CCC052E-BDEE-408A-BEA7-90914EF2964B}</guid>
+      <osdname>MP4 Source</osdname>
+    </filter>
+    <filter name="mkvsource" type="source">
+      <path>MatroskaSplitter.ax</path>
+      <guid>{0A68C3B5-9164-4A54-AFAF-995B2FF0E0D4}</guid>
+      <osdname>MKV Source</osdname>
+    </filter>
+    <filter name="mpegsource" type="source">
+      <path>MpegSplitter.ax</path>
+      <guid>{1365BE7A-C86A-473C-9A41-C0A6E82C9FA3}</guid>
+      <osdname>Mpeg Source</osdname>
+    </filter>
+    <filter name="oggsource" type="source">
+      <path>OggSplitter.ax</path>
+      <guid>{6D3688CE-3E9D-42F4-92CA-8A11119D25CD}</guid>
+      <osdname>Ogg Source</osdname>
+    </filter>
+    <filter name="realsource" type="source">
+      <guid>{765035B3-5944-4A94-806B-20EE3415F26F}</guid>
+      <osdname>RealAlternative Source</osdname>
+    </filter>
+    <filter name="tsfilesource" type="source">
+      <guid>{4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2}</guid>
+      <osdname>TS File Source</osdname>
+    </filter>
+    <filter name="haali" type="source">
+      <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
+      <osdname>Haali Media Splitter</osdname>
+    </filter>
+    <filter name="filesource" type="source">
+      <guid>{E436EBB5-524F-11CE-9F53-0020AF0BA770}</guid>
+      <issplitter>false</issplitter>
+      <osdname>File Source (Async.)</osdname>
+    </filter>
+    <filter name="lavfsplitter" type="source">
+      <path>LAVSplitter.ax</path>
+      <guid>{B98D13E7-55DB-4385-A33D-09FD1BA26338}</guid>
+      <osdname>LAV Splitter Source</osdname>
+    </filter>
+    
+    <!-- Splitters -->
+    <filter name="avisplitter" type="splitter">
+      <path>AviSplitter.ax</path>
+      <guid>{9736D831-9D6C-4E72-B6E7-560EF9181001}</guid>
+      <osdname>AVI Splitter</osdname>
+    </filter>
+    <filter name="flvsplitter" type="splitter">
+      <path>FLVSplitter.ax</path>
+      <guid>{47E792CF-0BBE-4F7A-859C-194B0768650A}</guid>
+      <osdname>FLV Splitter</osdname>
+    </filter>
+    <filter name="mp4splitter" type="splitter">
+      <path>MP4Splitter.ax</path>
+      <guid>{61F47056-E400-43D3-AF1E-AB7DFFD4C4AD}</guid>
+      <osdname>MP4 Splitter</osdname>
+    </filter>
+    <filter name="mkvsplitter" type="splitter">
+      <path>MatroskaSplitter.ax</path>
+      <guid>{149D2E01-C32E-4939-80F6-C07B81015A7A}</guid>
+      <osdname>MKV Splitter</osdname>
+    </filter>
+    <filter name="mpegsplitter" type="splitter">
+      <path>MpegSplitter.ax</path>
+      <guid>{DC257063-045F-4BE2-BD5B-E12279C464F0}</guid>
+      <osdname>Mpeg Splitter</osdname>
+    </filter>
+    <filter name="oggsplitter" type="splitter">
+      <path>OggSplitter.ax</path>
+      <guid>{9FF48807-E133-40AA-826F-9B2959E5232D}</guid>
+      <osdname>Ogg Splitter</osdname>
+    </filter>
+    <filter name="realsplitter" type="splitter">
+      <guid>{E21BE468-5C18-43EB-B0CC-DB93A847D769}</guid>
+      <osdname>RealAlternative Splitter</osdname>
+    </filter>
+    <filter name="mpeg2demultiplexer" type="splitter">
+      <guid>{AFB6C280-2C41-11D3-8A60-0000F81E0E4A}</guid>
+      <osdname>MPEG-2 Demultiplexer</osdname>
+    </filter>
+    <filter name="smm_mkvsplitter" type="splitter">
+      <guid>{5B00F980-F0B1-484B-ADE7-69408D9525F7}</guid>
+      <osdname>SolveigMM Matroska Splitter</osdname>
+    </filter>
+    <filter name="lavf_splitter" type="splitter">
+      <guid>{171252A0-8820-4AFE-9DF8-5C92B2D66B04}</guid>
+      <osdname>LAV Splitter</osdname>
+    </filter>
+  </filters>
+</filtersconfig>

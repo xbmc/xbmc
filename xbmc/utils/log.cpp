@@ -197,6 +197,25 @@ void CLog::SetLogLevel(int level)
   CLog::Log(LOGNOTICE, "Log level changed to %d", m_logLevel);
 }
 
+void CLog::DebugLog(const char *format, ... )
+{
+#ifdef _DEBUG
+  CSingleLock waitLock(critSec);
+
+  CStdString strData;
+  strData.reserve(16384);
+
+  va_list va;
+  va_start(va, format);
+  strData.FormatV(format, va);
+  va_end(va);
+
+  OutputDebugString(strData.c_str());
+  if( strData.Right(1) != "\n" )
+    OutputDebugString("\n");
+#endif
+}
+
 int CLog::GetLogLevel()
 {
   return m_logLevel;
