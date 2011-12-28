@@ -13,6 +13,7 @@
     <minversion>20000</minversion>
     <summary lang="en">TMDb Scraper Library</summary>
     <summary lang="es">Scraper de peliculas de TMDb</summary>
+    <summary lang="fi">TMDb elokuvatietojen lataajan kirjasto</summary>
     <summary lang="fr">Scraper TMDb</summary>
     <summary lang="hu">TMDb leolvasó-könyvtár</summary>
     <summary lang="nl">TMDb-scraperfuncties</summary> 			<!--Dit gaat over de functies, niet over de mediabibliotheek!-->
@@ -24,6 +25,7 @@
     <summary lang="zh">TMDb刮削器代码库</summary>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
     <description lang="es">Descarga posters y fanart de www.themoviedb.org</description>
+    <description lang="fi">Lataa pienoiskuvia ja fanitaidetta www.themoviedb.org -sivustolta</description>
     <description lang="fr">Télécharge vignettes et backdrops depuis www.themoviedb.org</description>
     <description lang="hu">Bélyeg- és fanartképek letöltése a www.themoviedb.org webhelyről</description>
     <description lang="nl">Miniaturen en fanart ophalen van www.themoviedb.org</description>
