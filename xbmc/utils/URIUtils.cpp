@@ -506,6 +506,11 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
+  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+	return true;
+
 #if defined(_WIN32)
   if (strFile.Left(6).Equals("dvd://"))
     return true;
@@ -517,8 +522,6 @@ bool URIUtils::IsDVD(const CStdString& strFile)
   if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
     return true;
 #else
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
   if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
