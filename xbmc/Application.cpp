@@ -331,9 +331,10 @@ using namespace XbmcThreads;
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
+CApplication::CApplication(void) : m_WebServer(*new CWebServer)
+  , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
-  , m_WebServer(*new CWebServer)
+  , m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
   m_pPlayer = NULL;
