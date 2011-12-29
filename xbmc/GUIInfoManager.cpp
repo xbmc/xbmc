@@ -1286,7 +1286,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
+    if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
