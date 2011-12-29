@@ -65,6 +65,7 @@
     <string id="30061">Hoch</string>
     <string id="30062">Aufnahme läuft. Kanal kann nicht wiedergegeben werden</string>
     <string id="30063">Alle Empfänger belegt</string>
-    <string id="30064">Fehler beim wechseln des Kanals</string>
+    <string id="30064">Fehler beim Wechseln des Kanals</string>
     <string id="30065">Kanal '%s' unbekannt</string>
+    <string id="30066">Kanal verschlüsselt</string>
 </strings>

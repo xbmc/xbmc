@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -326,7 +326,7 @@
   <string id="364">- 돌비 디지털 (AC3) 지원 리시버</string>
   <string id="365">정렬: 이름</string>
   <string id="366">정렬: 연도</string>
-  <string id="367">정렬: 등급</string>
+  <string id="367">정렬: 평점</string>
   <string id="368">평점</string>
   <string id="369">제목</string>
   <string id="370">뇌우</string>
@@ -512,7 +512,7 @@
   <string id="560">ID</string>
   <string id="561">파일</string>
   <string id="562">연도</string>
-  <string id="563">등급</string>
+  <string id="563">평점</string>
   <string id="564">형식</string>
   <string id="565">사용량</string>
   <string id="566">앨범 아티스트</string>
@@ -1922,6 +1922,7 @@
   <string id="21365">미디어 공유 제거</string>
   <string id="21366">자막 폴더</string>
   <string id="21367">영화 &amp; 추가 자막 디렉토리</string>
+  <string id="21368">ASS/SSA 자막 글꼴 무시</string>
 
   <string id="21369">마우스 사용</string>
   <string id="21370">미디어 재생중 네비게이션 사운드 사용</string>
@@ -2201,7 +2202,7 @@
   <string id="24045">애드온의 구조가 바르지 않습니다</string>
   <string id="24046">%s 을 설치된 애드온이 사용합니다.</string>
   <string id="24047">이 추가기능은 제거할 수 없습니다</string>
-  <string id="24048">Rollback</string>
+  <string id="24048">되돌리기</string>
 
   <string id="24050">사용가능한 추가기능</string>
   <string id="24051">버전:</string>
@@ -2369,19 +2370,23 @@
   <string id="35503">제조업체</string>
   <string id="35504">하드웨어 ID</string>
   
-  <string id="36000">Pulse-Eight CEC adapter</string>
+  <string id="36000">Pulse-Eight CEC 어댑터</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
-  <string id="36002">Switch to keyboard side command</string>
-  <string id="36003">Switch to remote side command</string>
-  <string id="36004">Press "user" button command</string>
+  <string id="36002">키보드 사이드 명령으로 전환</string>
+  <string id="36003">리모콘 사이드 명령으로 전환</string>
+  <string id="36004">"user" 버튼 명령 누르기</string>
   <string id="36005">Enable switch side commands</string>
-  <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on devices when starting XBMC</string>
-  <string id="36008">Power off devices when stopping XBMC</string>
-  <string id="36009">Put devices in standby mode when activating screensaver</string>
+  <string id="36006">어댑터를 열 수 없습니다</string>
+  <string id="36007">XBMC 시작시 TV 켜기</string>
+  <string id="36008">XBMC 종료시 장치 전원 끄기</string>
+  <string id="36009">화면보호기 작동시 장치를 대기모드로 설정</string>
   <string id="36010"></string>
-  <string id="36011">Could not detect the CEC port. Set it up manually.</string>
-  <string id="36012">Could not detect the CEC adapter.</string>
-  <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
-  <string id="36014">Put this PC in standby mode when the TV is switched off</string>
-  </strings>
+  <string id="36011">CEC 포트를 찾을 수 없습니다. 수동으로 설정하세요.</string>
+  <string id="36012">CEC 어댑터를 찾을 수 없음.</string>
+  <string id="36013">지원하지 않는 libcec 인터페이스 버전입니다. %d 가 XBMC가 지원하는 버전보다 높습니다 (%d)</string>
+  <string id="36014">TV가 꺼지면 PC를 대기모드로 전환</string>
+  <string id="36015">HDMI 포트 번호</string>
+  <string id="36016">연결됨</string>
+  <string id="36017">어댑터가 확인되었으나 libcec를 사용할 수 없습니다</string>
+  <string id="36018">TV의 언어 설정 사용</string>
+</strings>

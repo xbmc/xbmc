@@ -120,6 +120,7 @@
 /** Packet return codes */
 #define XVDR_RET_OK              0
 #define XVDR_RET_RECRUNNING      1
+#define XVDR_RET_ENCRYPTED       994
 #define XVDR_RET_NOTSUPPORTED    995
 #define XVDR_RET_DATAUNKNOWN     996
 #define XVDR_RET_DATALOCKED      997

@@ -34,6 +34,7 @@ typedef DWORD tThreadId;
 #endif
 
 
+/* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '\\'
 
 #endif //TARGET_WINDOWS

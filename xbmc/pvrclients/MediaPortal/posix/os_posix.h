@@ -66,6 +66,7 @@ typedef struct _SECURITY_ATTRIBUTES {
     int            bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
+/* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '/'
 
 #ifdef TARGET_LINUX
@@ -86,7 +87,7 @@ inline unsigned long GetTickCount(void)
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
-  return (unsigned long)( (ts.tv_sec * 1000) + (ts.tv_usec / 1000) );
+  return (unsigned long)( (tv.tv_sec * 1000) + (tv.tv_usec / 1000) );
 };
 #endif /* TARGET_LINUX || TARGET_DARWIN */
 
