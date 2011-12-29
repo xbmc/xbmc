@@ -515,6 +515,7 @@ retry:
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
+  SetGlobalAVDelay(g_graphicsContext.GetVideoResolution(), false);
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Reset();
@@ -2485,14 +2486,28 @@ float CDVDPlayer::GetCachePercentage()
   return min(100.0, GetPercentage() + m_State.cache_offset * 100);
 }
 
+void CDVDPlayer::SetGlobalAVDelay(RESOLUTION res, bool apply)
+{
+  m_GlobalAVDelay = g_advancedSettings.m_videoAVDefaultDelay / 1000.0f;
+  for (int i = 0; i < (int)g_advancedSettings.m_videoRefreshAVDelay.size(); i++)
+  {
+    RefreshAVDelay& avdelay = g_advancedSettings.m_videoRefreshAVDelay[i];
+    if (g_settings.m_ResInfo[res].fRefreshRate >= avdelay.refreshmin && g_settings.m_ResInfo[res].fRefreshRate <= avdelay.refreshmax)
+      m_GlobalAVDelay = avdelay.delay / 1000.0f;
+  }
+  if (apply)
+    SetAVDelay(m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE);
+  CLog::Log(LOGDEBUG, "CDVDPlayer::SetGlobalAVDelay: Global AV delay %s to %.0f msec", apply ? "applied and set" : "set", m_GlobalAVDelay * 1000);
+}
+
 void CDVDPlayer::SetAVDelay(float fValue)
 {
-  m_dvdPlayerVideo.SetDelay( (fValue * DVD_TIME_BASE) ) ;
+  m_dvdPlayerVideo.SetDelay( ((fValue + m_GlobalAVDelay) * DVD_TIME_BASE) ) ;
 }
 
 float CDVDPlayer::GetAVDelay()
 {
-  return m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE;
+  return m_dvdPlayerVideo.GetDelay() / (float)DVD_TIME_BASE - m_GlobalAVDelay;
 }
 
 void CDVDPlayer::SetSubTitleDelay(float fValue)
