@@ -3489,7 +3489,7 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
   
   // In case we stalled, don't output any subs
-  if (m_dvdPlayerVideo.IsStalled() || m_dvdPlayerAudio.IsStalled())
+  if ((m_dvdPlayerVideo.IsStalled() && HasVideo()) || (m_dvdPlayerAudio.IsStalled() && HasAudio()))
     strSubtitle = m_lastSub;
   else
     m_lastSub = strSubtitle;
