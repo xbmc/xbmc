@@ -43,6 +43,21 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
   return ret;
 }
 
+JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["movieid"].asInteger();
+  
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  /* get Item from movieid */
+  /* set the retrieve movie info params and call it */
+  CVideoInfoScanner::RetrieveInfoForMovie(item, false, 
+
+
+}
+
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["movieid"].asInteger();
