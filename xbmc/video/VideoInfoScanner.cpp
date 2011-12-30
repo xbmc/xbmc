@@ -1020,6 +1020,11 @@ namespace VIDEO
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
     movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
+    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+    if (pItem->m_bIsFolder)
+      movieDetails.m_strPath = pItem->GetPath();
+
     CStdString strTitle(movieDetails.m_strTitle);
 
     if (idShow > -1 && content == CONTENT_TVSHOWS)
@@ -1489,14 +1494,9 @@ namespace VIDEO
   bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, CNfoFile *nfoFile, CGUIDialogProgress* pDialog /* = NULL */)
   {
     CVideoInfoTag movieDetails;
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
     CVideoInfoDownloader imdb(scraper);
     bool ret = imdb.GetDetails(url, movieDetails, pDialog);
-    if (pItem->m_bIsFolder)
-      movieDetails.m_strPath = pItem->GetPath();
-    else
-      movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
     if (ret)
     {
