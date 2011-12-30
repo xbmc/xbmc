@@ -44,6 +44,34 @@
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
 
+//------------------------------------------------------------------------------------------
+// special object-c class for handling a delayed display change callback.
+@interface DelayedCheckDisplayChanging : NSObject
+{
+  int m_flags;
+  void *m_userdata;
+}
++ initWith: (int) flags userdata: (void*) userdata;
+- (void) doDelayedCheckDisplayChanging;
+@end
+@implementation DelayedCheckDisplayChanging
++ initWith: (int) flags userdata: (void*) userdata;
+{
+    DelayedCheckDisplayChanging *checkdisplay = [DelayedCheckDisplayChanging new];
+    checkdisplay->m_flags = flags;
+    checkdisplay->m_userdata = userdata;
+    return [checkdisplay autorelease];
+}
+- (void) doDelayedCheckDisplayChanging;
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
+	if (!winsys)
+    return;
+  winsys->CheckDisplayChanging(m_flags);
+}
+@end
+//------------------------------------------------------------------------------------------
+
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
@@ -1203,11 +1231,13 @@ void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
     // tell any shared resources
     if (flags & kCGDisplayBeginConfigurationFlag)
     {
+      CLog::Log(LOGDEBUG, "CWinSystemOSX::CheckDisplayChanging:OnLostDevice");
       for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
         (*i)->OnLostDevice();
     }
     if (flags & kCGDisplaySetModeFlag)
     {
+      CLog::Log(LOGDEBUG, "CWinSystemOSX::CheckDisplayChanging:OnResetDevice");
       for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
         (*i)->OnResetDevice();
     }
@@ -1233,7 +1263,22 @@ void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display,
       {
         // we only respond to changes on the display we are running on.
         CSingleLock lock(winsys->m_resourceSection);
-        winsys->CheckDisplayChanging(flags);
+        if (flags & kCGDisplayBeginConfigurationFlag)
+        {
+          CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured:kCGDisplayBeginConfigurationFlag");
+          winsys->CheckDisplayChanging(flags);
+        }
+        else if (flags & kCGDisplaySetModeFlag)
+        {
+          // spin out a delayed OnResetDevice, this gets complicated
+          // because we need to use a NSTimer.
+          CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured:kCGDisplaySetModeFlag");
+          DelayedCheckDisplayChanging *delayedCheckDisplayChanging;
+          delayedCheckDisplayChanging = [DelayedCheckDisplayChanging initWith: flags userdata:winsys];
+          // delayedCheckDisplayChanging will auto release after nstimer fires.
+          [NSTimer scheduledTimerWithTimeInterval:1.0 target:delayedCheckDisplayChanging 
+            selector:@selector(doDelayedCheckDisplayChanging) userInfo:nil repeats:NO];
+        }
       }
     }
   }

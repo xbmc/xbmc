@@ -62,7 +62,7 @@ public:
   
   virtual int GetNumScreens();
 
-
+  void CheckDisplayChanging(u_int32_t flags);
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
@@ -72,7 +72,6 @@ protected:
   void  FillInVideoModes();
   bool  FlushBuffer(void);
 
-  void  CheckDisplayChanging(u_int32_t flags);
   static void DisplayReconfigured(CGDirectDisplayID display, 
     CGDisplayChangeSummaryFlags flags, void *userData);
   
