@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
+#include "video/VideoInfoScanner.h"
 
 using namespace JSONRPC;
 
@@ -46,15 +47,37 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["movieid"].asInteger();
+  CScraperUrl* pURL;
+  //pURL->m_url.insert = parameterObject["url"].asString();
   
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
   /* get Item from movieid */
-  /* set the retrieve movie info params and call it */
-  CVideoInfoScanner::RetrieveInfoForMovie(item, false, 
+  CVideoInfoTag infos;
+  videodatabase.GetMovieInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
 
+  CFileItemList Item;
+  //Item = CFileItem(infos);
+  
+  /* set the retrieve movie info params*/ 
+  ADDON::ScraperPtr scraper;
+  //scraper = videodatabase.GetScraperForPath(Item->strPath);
+  
+  /*call it */
+  CGUIDialogProgress* pDlgProgress;
+  VIDEO::CVideoInfoScanner myVideo;
+  /*VIDEO::IVideoInfoScannerObserver::RetrieveInfoForMovie(CFileItemPtr(new CFileItem(infos)), false, scraper, false, pURL);*/
+  bool ret = myVideo.RetrieveVideoInfo(Item, false, CONTENT_MOVIES, false, pURL, false, NULL);
+
+  /* check if success and return*/
+  return ACK;
 
 }
 

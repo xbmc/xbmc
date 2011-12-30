@@ -1057,6 +1057,17 @@
       }
     }
   },
+  "VideoLibrary.SetMovieDetailsFromInternet": {
+    "type": "method",
+		"description": "Update specific movie Details from Internet",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "movieid", "$ref": "Library.Id", "required": true },
+      { "name": "url", "type": "string", "required": true, }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.Scan": {
     "type": "method",
     "description": "Scans the video sources for new library items",
