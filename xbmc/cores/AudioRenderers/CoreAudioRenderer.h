@@ -165,6 +165,8 @@ private:
   
   bool CreateMixMap();
   
+  static OSStatus PropertyListenerProc(AudioHardwarePropertyID property, void *data);
+
   bool m_Pause;
   bool m_Initialized; // Prevent multiple init/deinit
   
