@@ -372,14 +372,18 @@ CApplication::CApplication(void) : m_WebServer(*new CWebServer)
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
+#ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
+#endif
 }
 
 CApplication::~CApplication(void)
 {
   delete &m_WebServer;
   delete &m_progressTrackingVideoResumeBookmark;
+#ifdef HAS_DVD_DRIVE
   delete m_Autorun;
+#endif
   delete m_currentStack;
 
 #ifdef HAS_KARAOKE
