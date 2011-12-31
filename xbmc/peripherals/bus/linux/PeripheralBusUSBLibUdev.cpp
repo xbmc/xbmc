@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 #ifndef USB_CLASS_PTP
-#define USB_CLASS_PTP 					6
+#define USB_CLASS_PTP                   6
 #endif
 
 #ifndef USB_CLASS_PRINTER
