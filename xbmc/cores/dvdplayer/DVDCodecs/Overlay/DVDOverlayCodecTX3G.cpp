@@ -111,7 +111,7 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
   int numStyleRecords = 0;
   uint8_t *bgnStyle   = (uint8_t*)calloc(textLength, 1);
   uint8_t *endStyle   = (uint8_t*)calloc(textLength, 1);
-  int bgnColorIndex, endColorIndex;
+  int bgnColorIndex = 0, endColorIndex = 0;
   uint32_t textColorRGBA = m_textColor;
   while (pos < end)
   {
