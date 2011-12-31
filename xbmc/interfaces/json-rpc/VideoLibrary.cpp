@@ -47,8 +47,8 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["movieid"].asInteger();
-  CScraperUrl* pURL;
-  //pURL->m_url.insert = parameterObject["url"].asString();
+  CScraperUrl pURL;
+  pURL.m_xml = parameterObject["url"].asString();
   
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -63,18 +63,18 @@ JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method,
     return InvalidParams;
   }
 
-  CFileItemList Item;
-  //Item = CFileItem(infos);
+  CFileItemList list;
+
+  CFileItemPtr newItem(new CFileItem(infos));
+  list.Add(newItem);
   
   /* set the retrieve movie info params*/ 
-  ADDON::ScraperPtr scraper;
+  /*ADDON::ScraperPtr scraper;*/
   //scraper = videodatabase.GetScraperForPath(Item->strPath);
   
   /*call it */
-  CGUIDialogProgress* pDlgProgress;
   VIDEO::CVideoInfoScanner myVideo;
-  /*VIDEO::IVideoInfoScannerObserver::RetrieveInfoForMovie(CFileItemPtr(new CFileItem(infos)), false, scraper, false, pURL);*/
-  bool ret = myVideo.RetrieveVideoInfo(Item, false, CONTENT_MOVIES, false, pURL, false, NULL);
+  bool ret = myVideo.RetrieveVideoInfo(list, false, CONTENT_MOVIES, false, &pURL, false, NULL);
 
   /* check if success and return*/
   return ACK;

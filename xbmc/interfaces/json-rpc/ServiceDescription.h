@@ -1841,7 +1841,7 @@ namespace JSONRPC
     "\"permission\": \"ReadData\","
     "\"params\": ["
       "{ \"name\": \"movieid\", \"$ref\": \"Library.Id\", \"required\": true },"
-      "{ \"name\": \"url\", \"type\": \"string\", \"required\": true, }"
+      "{ \"name\": \"url\", \"type\": \"string\", \"required\": true }"
     "],"
     "\"returns\": \"string\""
     "}",
