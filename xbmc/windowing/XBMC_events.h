@@ -49,55 +49,14 @@ typedef enum {
        XBMC_JOYBUTTONUP,        /* Joystick button released */
        XBMC_QUIT,               /* User-requested quit */
        XBMC_SYSWMEVENT,         /* System specific event */
-       XBMC_EVENT_RESERVEDA,    /* Reserved for future use.. */
-       XBMC_EVENT_RESERVEDB,    /* Reserved for future use.. */
        XBMC_VIDEORESIZE,        /* User resized video mode */
        XBMC_VIDEOMOVE,          /* User moved the window */
        XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
        XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
-       XBMC_EVENT_RESERVED4,    /* Reserved for future use.. */
-       XBMC_EVENT_RESERVED5,    /* Reserved for future use.. */
-       XBMC_EVENT_RESERVED6,    /* Reserved for future use.. */
-       XBMC_EVENT_RESERVED7,    /* Reserved for future use.. */
-       /* Events XBMC_USEREVENT through XBMC_MAXEVENTS-1 are for your use */
-       XBMC_USEREVENT = 24,
-       /* This last event is only for bounding internal arrays
-	  It is the number of bits in the event mask datatype -- uint32_t
-        */
-       XBMC_NUMEVENTS = 32
-} XBMC_EventType;
+       XBMC_USEREVENT,
 
-/* Predefined event masks */
-#define XBMC_EVENTMASK(X)	(1<<(X))
-typedef enum {
-  XBMC_ACTIVEEVENTMASK      = XBMC_EVENTMASK(XBMC_ACTIVEEVENT),
-  XBMC_KEYDOWNMASK          = XBMC_EVENTMASK(XBMC_KEYDOWN),
-  XBMC_KEYUPMASK            = XBMC_EVENTMASK(XBMC_KEYUP),
-  XBMC_KEYEVENTMASK         = XBMC_EVENTMASK(XBMC_KEYDOWN)|
-                              XBMC_EVENTMASK(XBMC_KEYUP),
-  XBMC_MOUSEMOTIONMASK      = XBMC_EVENTMASK(XBMC_MOUSEMOTION),
-  XBMC_MOUSEBUTTONDOWNMASK  = XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN),
-  XBMC_MOUSEBUTTONUPMASK    = XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
-  XBMC_MOUSEEVENTMASK       = XBMC_EVENTMASK(XBMC_MOUSEMOTION)|
-                              XBMC_EVENTMASK(XBMC_MOUSEBUTTONDOWN)|
-                              XBMC_EVENTMASK(XBMC_MOUSEBUTTONUP),
-  XBMC_JOYAXISMOTIONMASK    = XBMC_EVENTMASK(XBMC_JOYAXISMOTION),
-  XBMC_JOYBALLMOTIONMASK    = XBMC_EVENTMASK(XBMC_JOYBALLMOTION),
-  XBMC_JOYHATMOTIONMASK     = XBMC_EVENTMASK(XBMC_JOYHATMOTION),
-  XBMC_JOYBUTTONDOWNMASK    = XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN),
-  XBMC_JOYBUTTONUPMASK      = XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
-  XBMC_JOYEVENTMASK         = XBMC_EVENTMASK(XBMC_JOYAXISMOTION)|
-                              XBMC_EVENTMASK(XBMC_JOYBALLMOTION)|
-                              XBMC_EVENTMASK(XBMC_JOYHATMOTION)|
-                              XBMC_EVENTMASK(XBMC_JOYBUTTONDOWN)|
-                              XBMC_EVENTMASK(XBMC_JOYBUTTONUP),
-  XBMC_VIDEORESIZEMASK      = XBMC_EVENTMASK(XBMC_VIDEORESIZE),
-  XBMC_VIDEOMOVEMASK        = XBMC_EVENTMASK(XBMC_VIDEOMOVE),
-  XBMC_VIDEOEXPOSEMASK      = XBMC_EVENTMASK(XBMC_VIDEOEXPOSE),
-  XBMC_QUITMASK             = XBMC_EVENTMASK(XBMC_QUIT),
-  XBMC_SYSWMEVENTMASK      = XBMC_EVENTMASK(XBMC_SYSWMEVENT)
-} XBMC_EventMask ;
-#define XBMC_ALLEVENTS		0xFFFFFFFF
+       XBMC_MAXEVENT = 256      /* XBMC_EventType is represented as uchar */
+} XBMC_EventType;
 
 /* Application visibility event structure */
 typedef struct XBMC_ActiveEvent {
@@ -199,7 +158,7 @@ typedef struct XBMC_QuitEvent {
 
 /* A user-defined event type */
 typedef struct XBMC_UserEvent {
-	unsigned char type;	/* XBMC_USEREVENT through XBMC_NUMEVENTS-1 */
+	unsigned char type;	/* XBMC_USEREVENT */
 	int code;	/* User defined event code */
 	void *data1;	/* User defined data pointer */
 	void *data2;	/* User defined data pointer */
