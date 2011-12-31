@@ -504,21 +504,21 @@ void CVideoReferenceClock::RunGLX()
         return;
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detaching glX context");
-      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
-      if (ReturnV != True)
-      {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
-        return;
-      }
-
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
-      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
-      if (ReturnV != True)
-      {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
-        return;
-      }
+//      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detaching glX context");
+//      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
+//      if (ReturnV != True)
+//      {
+//        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+//        return;
+//      }
+//
+//      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
+//      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+//      if (ReturnV != True)
+//      {
+//        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+//        return;
+//      }
 
       m_glXGetVideoSyncSGI(&VblankCount);
 

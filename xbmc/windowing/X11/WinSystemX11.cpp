@@ -333,8 +333,8 @@ bool CWinSystemX11::RefreshGlxContext()
   if(m_glWindow == info.info.x11.window && m_glContext)
   {
     CLog::Log(LOGERROR, "GLX: Same window as before, refreshing context");
-    glXMakeCurrent(m_dpy, None, NULL);
-    glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+//    glXMakeCurrent(m_dpy, None, NULL);
+//    glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
     return true;
   }
 
