@@ -12,22 +12,26 @@
     <summary lang="en">HD-Trailers.net Scraper Library</summary>
     <summary lang="de">Scraper für Trailer von HD-Trailers.net</summary>
     <summary lang="es">Scraper de Trailers de HD-Trailers.net</summary>
+    <summary lang="fi">HD-Trailers.net trailerilataajan kirjasto</summary>
     <summary lang="fr">Scraper HD-Trailers.net pour les bande-annonces</summary>
     <summary lang="hu">HD-Trailers.net leolvasó-könyvtár</summary>
     <summary lang="nl">HD-Trailers.net Scraper Collectie</summary>
     <summary lang="pl">Scraper zwiastunów HD-Trailers.net</summary>
     <summary lang="pt">Scraper de trailers de HD-Trailers.net</summary>
     <summary lang="ru">Обработчик для трейлеров с HD-Trailers.net</summary>
+    <summary lang="se">Skrapa för HD-Trailers.net</summary>
     <summary lang="zh">HD-Trailers.net刮削器代码库</summary>
     <description lang="en">Download Movie Trailers from www.hd-trailers.net</description>
     <description lang="de">Downloade Trailer von www.hd-trailers.net</description>
     <description lang="es">Descarga trailers de www.hd-trailers.net</description>
+    <description lang="fi">Lataa elokuvien trailereita osoitteesta www.hd-trailers.net</description>
     <description lang="fr">Télécharge les bande-annonces de films depuis www.hd-trailers.net</description>
     <description lang="hu">Filmelőzetesek letöltése a www.hd-trailers.net-ről</description>
     <description lang="nl">Download trailers van www.hd-trailers.net</description>
     <description lang="pl">Pobieraj zwiastuny filmowe z www.hd-trailers.net</description>
     <description lang="pt">Descarregar trailers de www.hd-trailers.net</description>
     <description lang="ru">Загружать трейлеры с www.hd-trailers.net</description>
+    <description lang="se">Ladda ner filmtrailers från www.hd-trailers.net</description>
     <description lang="zh">从www.hd-trailers.net下载电影预告片</description>
     <minversion>20000</minversion>
     <platform>all</platform>

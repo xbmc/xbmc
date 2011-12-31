@@ -126,8 +126,7 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
 
 void CWeatherJob::LocalizeOverviewToken(CStdString &token)
 {
-  // NOTE: This routine is case-sensitive.  Reason is std::less<CStdString> uses a case-sensitive
-  //       < operator.  Thus, some tokens may have to be duplicated in strings.xml (see drizzle vs Drizzle).
+  // This routine is case-insensitive. 
   CStdString strLocStr = "";
   if (!token.IsEmpty())
   {

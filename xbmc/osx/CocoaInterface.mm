@@ -265,20 +265,18 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
   return [pngFile UTF8String];
 }
 
-void Cocoa_MountPoint2DeviceName(char* path)
+char* Cocoa_MountPoint2DeviceName(char *path)
 {
   CCocoaAutoPool pool;
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
   strDVDDevice = strdup(path);
-  if (strncasecmp(strDVDDevice + strlen(strDVDDevice) - 8, "VIDEO_TS", 8) == 0)
+  if (strncasecmp(strDVDDevice, "/Volumes/", 9) == 0)
   {
     struct statfs *mntbufp;
     int i, mounts;
     
-    strDVDDevice[strlen(strDVDDevice) - 9] = '\0';
-
     // find a match for /Volumes/<disk name>
     mounts = getmntinfo(&mntbufp, MNT_WAIT);  // NOT THREAD SAFE!
     for (i = 0; i < mounts; i++)
@@ -294,6 +292,7 @@ void Cocoa_MountPoint2DeviceName(char* path)
     }
     free(strDVDDevice);
   }
+  return path;
 }
 
 bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)

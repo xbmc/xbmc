@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 12/10/2011-->
+<!--Date of translation: 12/25/2011-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programy</string>
@@ -330,7 +330,7 @@
   <string id="380">opady</string>
   <string id="381">niewielkie</string>
   <string id="382">sporadyczne</string>
-  <string id="383">wiatr</string>
+  <string id="383">Wiatr</string>
   <string id="384">silny</string>
   <string id="385">pogodnie</string>
   <string id="386">bezchmurnie</string>
@@ -746,7 +746,7 @@
   <string id="1255">Wysyłaj nazwę użytkownika i hasło FTP</string>
   <string id="1256">Interwał pingu</string>
   <string id="1257">Połączyć z wykrytym systemem?</string>
-  <string id="1260">Rozgłoś te usługi do innych systemów poprzez Zeroconf</string>
+  <string id="1260">Rozgłoś usługi do innych systemów poprzez Zeroconf</string>
   <string id="1270">Zezwól XBMC na odbiór treści przez AirPlay</string>
   <string id="1271">Nazwa urządzenia</string>
   <string id="1272">- Użyj ochrony hasłem</string>
@@ -2269,6 +2269,7 @@
   <string id="33027">wschód</string>
   <string id="33028">zachód</string>
   <string id="33029">Szczegóły</string>
+  <string id="33030">Prognoza</string>
   <string id="33032">Przetłumacz tekst</string>
   <string id="33034">36 godzin</string>
   <string id="33035">Mapy</string>
@@ -2339,7 +2340,6 @@
   <string id="36007">Włącz TV, kiedy uruchomiany jest XBMC</string>
   <string id="36008">Wyłącz TV, kiedy wyłączany jest XBMC</string>
   <string id="36009">Włącz tryb czuwania w urządzeniach, kiedy aktywny jest wygaszacz ekranu</string>
-  <string id="36010">Ustaw jako niekatywne źródło, kiedy wyłączany jest XBMC</string>
   <string id="36011">Nie mogę wykryć portu CEC. Ustaw go ręcznie.</string>
   <string id="36012">Nie mogę wykryć adaptera CEC.</string>
   <string id="36013">Nieaktualna wersja interfejsu libcec. %d jest wyższy niż wersja wspierana przez XBMC (%d)</string>

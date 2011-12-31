@@ -2,9 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/19/2010-->
+<!--Date of translation: 12/26/2011-->
 <!--$Revision$-->
-<!--Based on english strings version 35193-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -138,7 +137,6 @@
   <string id="164">Ingen skiva</string>
   <string id="165">Skiva laddad</string>
   <string id="166">Skal</string>
-  <string id="167">Aktivera FTP-server</string>
   <string id="169">Upplösning</string>
   <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
   <string id="172">Utgivningsdatum</string>
@@ -185,6 +183,7 @@
   <string id="221">Det finns inget nätverk</string>
   <string id="222">Avbryt</string>
   <string id="224">Hastighet</string>
+  <string id="225">Vertikal skiftning</string>
   <string id="226">Testmönster...</string>
   <string id="227">Slå upp låtnamn till musikskivor på freedb.org</string>
   <string id="228">Blanda spellistor när de laddas</string>
@@ -506,6 +505,7 @@
   <string id="573">Sökväg</string>
   <string id="574">Land</string>
   <string id="575">Pågår</string>
+  <string id="576">Gånger spelad</string>
   <string id="580">Sorteringsriktning</string>
   <string id="581">Sorteringsmetod</string>
   <string id="582">Visningsläge</string>
@@ -637,7 +637,6 @@
   <string id="766">Ljusgrå</string>
   <string id="767">Grå</string>
   <string id="770">Fel %i: utdelningen inte tillgänglig</string>
-  <string id="771">- Automatisk FATX-begränsare</string>
   <string id="772">Ljudutgång</string>
   <string id="773">Söker</string>
   <string id="774">Mapp för bildspelsskärmsläckare</string>
@@ -667,6 +666,8 @@
   <string id="850">Ogiltigt portnummer angivet</string>
   <string id="851">Giltigt portintervall är 1-65535</string>
   <string id="852">Giltigt portintervall är 1024-65535</string>
+  <string id="998">Lägg till musik...</string>
+  <string id="999">Lägg till video...</string>
   <string id="1000">- Förhandsgranska</string>
   <string id="1001">Kunde inte ansluta</string>
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
@@ -756,6 +757,9 @@
   <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
   <string id="1260">Publicera dessa tjänster till andra system via Zeroconf</string>
+  <string id="1270">Tillåt XBMC att ta emot AirPlay-innehåll</string>
+  <string id="1271">Enhetsnamn</string>
+  <string id="1272">- Använd lösenordsskydd</string>
   <string id="1300">Anpassad ljudenhet</string>
   <string id="1301">Anpassad ljudutgångsenhet för genomströmning</string>
   <string id="1396">Blåsigt</string>
@@ -909,6 +913,7 @@
   <string id="12392">timmar</string>
   <string id="12393">dagar</string>
   <string id="12394">Total driftstid</string>
+  <string id="12395">Batterinivå</string>
   <string id="12600">Väder</string>
   <string id="12900">Skärmsläckare</string>
   <string id="12901">Fullskärms-OSD</string>
@@ -1108,6 +1113,7 @@ den här visualiseringen</string>
   <string id="13409">Topp 250</string>
   <string id="13410">Ställ in på Last.fm</string>
   <string id="13411">Minsta fläkthastighet</string>
+  <string id="13412">Spela från här</string>
   <string id="13413">Laddar ned</string>
   <string id="13414">Inkludera artister som endast är med på samlingsalbum</string>
   <string id="13415">Renderingsmetod</string>
@@ -1127,6 +1133,7 @@ den här visualiseringen</string>
   <string id="13429">Tillåt hårdvaruacceleration (VDADecoder)</string>
   <string id="13430">Tillåt hårdvaruacceleration (OpenMax)</string>
   <string id="13431">Pixelskuggning</string>
+  <string id="13432">Tillåt hårdvaruacceleration (Videoverktyg)</string>
   <string id="13500">A/V-synkmetod</string>
   <string id="13501">Ljudklocka</string>
   <string id="13502">Videoklocka (tappat/dubblerat ljud)</string>
@@ -1187,6 +1194,7 @@ den här visualiseringen</string>
   <string id="14038">Nätverksinställningar ändrade</string>
   <string id="14039">XBMC måste startas om för att slutföra din</string>
   <string id="14040">nätverksinställning. Vill du starta om nu?</string>
+  <string id="14041">Bandbreddsbegränsning för internetanslutning</string>
   <string id="14043">- Stäng av under uppspelning</string>
   <string id="14044">%i min</string>
   <string id="14045">%i sek</string>
@@ -1310,7 +1318,6 @@ den här visualiseringen</string>
   <string id="15283">Nyligen spelade låtar av %name%</string>
   <string id="15284">Lyssna till %name%'s rekommenderade Last.fm radio</string>
   <string id="15285">Topp taggar för användare %name%</string>
-  <string id="15286">Lyssna till %name%'s spellista på Last.fm radio</string>
   <string id="15287">Vill du lägga till detta spår i dina älsklingsspår?</string>
   <string id="15288">Vill du bannlysa detta spår?</string>
   <string id="15289">Tillagt i dina älsklingsspår: '%s'.</string>
@@ -1361,6 +1368,12 @@ den här visualiseringen</string>
   <string id="16033">Kunde inte öppna databasen.</string>
   <string id="16034">Kunde inte hämta låtar från databasen.</string>
   <string id="16035">Partylägespellista</string>
+  <string id="16036">Avflätning (halv)</string>
+  <string id="16037">Avfläta video</string>
+  <string id="16038">Avflätningsmetod</string>
+  <string id="16039">Av</string>
+  <string id="16040">Auto</string>
+  <string id="16041">På</string>
   <string id="16100">Alla filmer</string>
   <string id="16101">Inte visad</string>
   <string id="16102">Visad</string>
@@ -1394,6 +1407,11 @@ den här visualiseringen</string>
   <string id="16317">Temporal (Halv)</string>
   <string id="16318">Temporal/Spatial (Halv)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36-optimerad</string>
+  <string id="16324">Mjukvarublandning</string>
   <string id="16400">Efterbearbetning</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
@@ -2021,6 +2039,9 @@ den här visualiseringen</string>
   <string id="20256">HTS Tvheadend-klient</string>
   <string id="20257">VDR Streamdev-klient</string>
   <string id="20258">MythTV-klient</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Flin Protocol (AFP)</string>
   <string id="20300">Webbserver katalog (HTTP)</string>
   <string id="20301">Webbserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
@@ -2127,6 +2148,7 @@ den här visualiseringen</string>
   <string id="20416">Först sänt</string>
   <string id="20417">Författare</string>
   <string id="20418">Rensa mapp och filnamn</string>
+  <string id="20419">Visa metadata i filläge</string>
   <string id="20420">Aldrig</string>
   <string id="20421">Om endast en säsong</string>
   <string id="20422">Alltid</string>
@@ -2163,6 +2185,8 @@ den här visualiseringen</string>
   <string id="20453">avsnitt</string>
   <string id="20454">Lyssnare</string>
   <string id="20455">Lyssnare</string>
+  <string id="20456">Ange filmsetsfanart</string>
+  <string id="20457">Filmset</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
@@ -2177,6 +2201,7 @@ den här visualiseringen</string>
   <string id="21365">Ta bort mediautdelning</string>
   <string id="21366">Undertextsmapp</string>
   <string id="21367">Film &amp; alternativ undertextmapp</string>
+  <string id="21368">Åsidosätt ASS/SSA undertextstypsnitt</string>
   <string id="21369">Aktivera mus</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
@@ -2262,6 +2287,12 @@ den här visualiseringen</string>
   <string id="21451">Internetuppkoppling krävs.</string>
   <string id="21452">Hämta fler...</string>
   <string id="21453">Rotfilsystem</string>
+  <string id="21460">Undertextsplacering</string>
+  <string id="21461">Fast</string>
+  <string id="21462">Botten av videon</string>
+  <string id="21463">Under videon</string>
+  <string id="21464">Toppen av videon</string>
+  <string id="21465">Över videon</string>
   <string id="21800">Filnamn</string>
   <string id="21801">Filsökväg</string>
   <string id="21802">Filstorlek</string>
@@ -2405,6 +2436,7 @@ den här visualiseringen</string>
   <string id="24015">Musikvideoinformation</string>
   <string id="24016">Albuminformation</string>
   <string id="24017">Artistinformation</string>
+  <string id="24018">Tjänster</string>
   <string id="24020">Konfigurera</string>
   <string id="24021">Inaktivera</string>
   <string id="24022">Aktivera</string>
@@ -2425,6 +2457,11 @@ den här visualiseringen</string>
   <string id="24041">Installera från zipfil</string>
   <string id="24042">Laddar ner %i%%</string>
   <string id="24043">Tillgängliga uppdateringar</string>
+  <string id="24044">Beronden möts inte</string>
+  <string id="24045">Tillägget har inte korrekt stuktur</string>
+  <string id="24046">%s används av följande installerade tillägg</string>
+  <string id="24047">Detta tillägg kan inte avinstalleras</string>
+  <string id="24048">Återladdning</string>
   <string id="24050">Tillgängliga Ttillägg</string>
   <string id="24051">Version:</string>
   <string id="24052">Ansvarsfriskrivning</string>
@@ -2447,13 +2484,18 @@ den här visualiseringen</string>
   <string id="24073">Kan ej ansluta</string>
   <string id="24074">Kräver omstart</string>
   <string id="24075">Inaktivera</string>
+  <string id="24076">Tillägg krävs</string>
   <string id="24080">Prova återanslut?</string>
   <string id="24089">Tillägget startar om</string>
   <string id="24090">Lås tilläggshanteraren</string>
+  <string id="24094">(nuvarande)</string>
+  <string id="24095">(svartlistad)</string>
   <string id="24096">Tillägget har markerats som trasigt i förrådet.</string>
   <string id="24097">Vill du inaktivera det på ditt system?</string>
   <string id="24098">Trasigt</string>
   <string id="24099">Vill du byta till detta skal?</string>
+  <string id="24100">För att använda denna funktion måste du ladda ner ett tillägg:</string>
+  <string id="24101">Vill du ladda ner detta tillägg?</string>
   <string id="25000">Notifieringar</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY-tangentbord</string>
@@ -2530,6 +2572,10 @@ den här visualiseringen</string>
   <string id="33081">Denna fil är sammanslagen, välj den del du vill spela.</string>
   <string id="33082">Sökväg till skript</string>
   <string id="33083">Aktivera egen skriptknapp</string>
+  <string id="33100">Misslyckades att starta</string>
+  <string id="33101">Webbserver</string>
+  <string id="33102">Händelseserver</string>
+  <string id="33103">Fjärrkommunikationsserver</string>
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
@@ -2547,4 +2593,38 @@ den här visualiseringen</string>
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
+  <string id="34201">Kan inte hitta nästa objekt att spela</string>
+  <string id="34202">Kan inte hitta föregående objekt att spela</string>
+  <string id="35000">Kringutrustning</string>
+  <string id="35001">Allmän HID-enhet</string>
+  <string id="35002">Allmän nätverksadapter</string>
+  <string id="35003">Allmän disk</string>
+  <string id="35004">Det finns inga tillgängliga&#10;inställningar för denna kringutrustning</string>
+  <string id="35005">Ny enhet konfigurerad</string>
+  <string id="35006">Enhet borttagen</string>
+  <string id="35007">Tangentmappning att använda för denna enhet</string>
+  <string id="35008">Tangentmappning aktiverad</string>
+  <string id="35500">Plats</string>
+  <string id="35501">Klass</string>
+  <string id="35502">Namn</string>
+  <string id="35503">Tillverkare</string>
+  <string id="35504">Produktid</string>
+  <string id="36000">Pulse-Eight CEC-adapter</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Byt till tangentbordskommando</string>
+  <string id="36003">Byt till fjärrkontrollskomando</string>
+  <string id="36004">Tryck "user"-knappskommando</string>
+  <string id="36005">Aktivera sidbytskommando</string>
+  <string id="36006">Kunde inte öppna adaptern</string>
+  <string id="36007">Slå på TVn när XBMC startas</string>
+  <string id="36008">Slå av enheter när XBMC stängs av</string>
+  <string id="36009">Ställ enheter i standbyläge när skärmsläckaren aktiveras</string>
+  <string id="36011">Kunde inte hitta CEC-porten. Ställ in den manuellt</string>
+  <string id="36012">Kunde inte hitta CEC-adaptern</string>
+  <string id="36013">Ostödd libcec-gränssnittsversion. %d är nyare än versionen XBMC stödjer (%d)</string>
+  <string id="36014">Ställ denna PC i standbyläge när TVn stängs av</string>
+  <string id="36015">HDMI-portnummer</string>
+  <string id="36016">Ansluten</string>
+  <string id="36017">Adapter hittat, men libcec är inte tillgänglig</string>
+  <string id="36018">Använd TV'ns språkinställning</string>
 </strings>

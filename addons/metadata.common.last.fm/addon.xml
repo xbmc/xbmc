@@ -14,6 +14,7 @@
     <summary lang="en">LastFM Scraper Library</summary>
     <summary lang="de">Musik-Scraper für LastFM</summary>
     <summary lang="es">Scraper de música de LastFM</summary>
+    <summary lang="fi">LastFM musiikkitietojen lataaja</summary>
     <summary lang="fr">Scraper LastFM</summary>
     <summary lang="hu">LastFM leolvasó-könyvtár</summary>
     <summary lang="nl">LastFM-scraperfuncties</summary>
@@ -25,6 +26,7 @@
     <description lang="en">Download Music information from www.last.fm</description>
     <description lang="de">Downloade Musik informationen von www.last.fm</description>
     <description lang="es">Descargar información musical de www.last.fm</description>
+    <description lang="fi">Lataa musiikkitietoja osoitteesta www.last.fm</description>
     <description lang="fr">Télécharge les infos musicales depuis www.last.fm</description>
     <description lang="hu">Zene információk letöltése a www.last.fm webhelyről</description>
     <description lang="nl">Muziekinfo ophalen van LastFM</description>
