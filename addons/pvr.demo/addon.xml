@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.demo"
+  version="1.0.0"
+  name="PVR Demo Client"
+  provider-name="Pulse-Eight Ltd.">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.pvrclient"
+    library_linux="XBMC_demo.pvr" />
+  <extension point="xbmc.addon.metadata">
+    <summary>Pulse-Eight Demo PVR Client</summary>
+    <description>Pulse-Eight Demo PVR Client</description>
+    <disclaimer>Just contains stubs</disclaimer>
+    <platform>linux</platform>
+  </extension>
+</addon>
