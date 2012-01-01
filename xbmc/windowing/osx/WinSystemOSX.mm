@@ -964,6 +964,8 @@ void CWinSystemOSX::EnableVSync(bool enable)
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx)
 {
+  // SwitchToVideoMode will not return until the display has actually switched over.
+  // This can take several seconds.
   if( screenIdx >= GetNumScreens())
     return false;
 
