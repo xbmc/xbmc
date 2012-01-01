@@ -106,6 +106,16 @@ namespace ForTheRecord
 {
   CCriticalSection communication_mutex;
 
+  /**
+   * \brief Do some internal housekeeping at the start
+   */
+  void Initialize(void)
+  {
+    // due to lack of static constructors...
+    communication_mutex.Initialize();
+  }
+
+
   // The usable urls:
   //http://localhost:49943/ForTheRecord/Control/help
   //http://localhost:49943/ForTheRecord/Scheduler/help

@@ -1,3 +1,5 @@
+v0.0.1.124 (01-01-2012)
+- Fixed Linux mutex initialisation, caused by C++ not having static constructors
 v0.0.1.123 (20-12-2011)
 - Pressing 'record' while viewing will schedule the recording of the show watched
 - Delete Timer: will abort an active recording,

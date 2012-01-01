@@ -85,6 +85,11 @@ namespace ForTheRecord
   };
 
   /**
+   * \brief Do some internal housekeeping at the start
+   */
+  void Initialize(void);
+
+  /**
    * \brief Send a REST command to 4TR and return the JSON response string
    * \param command       The command string url (starting from "ForTheRecord/")
    * \param json_response Reference to a std::string used to store the json response string

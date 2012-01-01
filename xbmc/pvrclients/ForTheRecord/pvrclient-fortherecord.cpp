@@ -54,6 +54,8 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
   m_channel_id_offset      = 0;
   m_epg_id_offset          = 0;
   m_iCurrentChannel        = 0;
+  // due to lack of static constructors, we initialize manually
+  ForTheRecord::Initialize();
 #if defined(FTR_DUMPTS)
   strncpy(ofn, "/tmp/ftr.XXXXXX", sizeof(ofn));
   ofd = -1;
@@ -755,7 +757,6 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
   Json::Value addScheduleResponse;
-  struct tm* convert = localtime(&timerinfo.endTime);
   time_t starttime = timerinfo.startTime;
   if (starttime == 0) starttime = time(NULL);
   int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), starttime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);

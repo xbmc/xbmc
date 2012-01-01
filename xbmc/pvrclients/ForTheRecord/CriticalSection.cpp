@@ -20,6 +20,13 @@
 
 CCriticalSection::CCriticalSection(void)
 {
+  Initialize();
+
+}
+
+
+void CCriticalSection::Initialize(void)
+{
 #ifdef _WIN32
   InitializeCriticalSection(&m_CriticalSection);
 #else

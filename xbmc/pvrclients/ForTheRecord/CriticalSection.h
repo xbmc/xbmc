@@ -31,6 +31,7 @@ class CCriticalSection
     CCriticalSection();
     virtual ~CCriticalSection();
 
+    void Initialize(void);
     void Lock(void);
     void Unlock(void);
 
