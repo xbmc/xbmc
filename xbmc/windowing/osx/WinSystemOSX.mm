@@ -26,7 +26,9 @@
 #define BOOL XBMC_BOOL 
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
+#include "Application.h"
 #include "guilib/DispResource.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "input/KeyboardStat.h"
@@ -68,6 +70,88 @@
 	if (!winsys)
     return;
   winsys->CheckDisplayChanging(m_flags);
+}
+@end
+//------------------------------------------------------------------------------------------
+// special object-c class for handling the NSWindowDidMoveNotification callback.
+@interface windowDidMoveNoteClass : NSObject
+{
+  void *m_userdata;
+}
++ initWith: (void*) userdata;
+-  (void) windowDidMoveNotification:(NSNotification*) note;
+@end
+
+@implementation windowDidMoveNoteClass
++ initWith: (void*) userdata;
+{
+    windowDidMoveNoteClass *windowDidMove = [windowDidMoveNoteClass new];
+    windowDidMove->m_userdata = userdata;
+    return [windowDidMove autorelease];
+}
+-  (void) windowDidMoveNotification:(NSNotification*) note;
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
+	if (!winsys)
+    return;
+
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    if ([context view])
+    {
+      NSPoint window_origin = [[[context view] window] frame].origin;
+      XBMC_Event newEvent;
+      memset(&newEvent, 0, sizeof(newEvent));
+      newEvent.type = XBMC_VIDEOMOVE;
+      newEvent.move.x = window_origin.x;
+      newEvent.move.y = window_origin.y;
+      g_application.OnEvent(newEvent);
+    }
+  }
+}
+@end
+//------------------------------------------------------------------------------------------
+// special object-c class for handling the NSWindowDidReSizeNotification callback.
+@interface windowDidReSizeNoteClass : NSObject
+{
+  void *m_userdata;
+}
++ initWith: (void*) userdata;
+- (void) windowDidReSizeNotification:(NSNotification*) note;
+@end
+@implementation windowDidReSizeNoteClass
++ initWith: (void*) userdata;
+{
+    windowDidReSizeNoteClass *windowDidReSize = [windowDidReSizeNoteClass new];
+    windowDidReSize->m_userdata = userdata;
+    return [windowDidReSize autorelease];
+}
+- (void) windowDidReSizeNotification:(NSNotification*) note;
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
+	if (!winsys)
+    return;
+  /* placeholder, do not uncomment or you will SDL recurse into death
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    if ([context view])
+    {
+      NSSize view_size = [[context view] frame].size;
+      XBMC_Event newEvent;
+      memset(&newEvent, 0, sizeof(newEvent));
+      newEvent.type = XBMC_VIDEORESIZE;
+      newEvent.resize.w = view_size.width;
+      newEvent.resize.h = view_size.height;
+      if (newEvent.resize.w * newEvent.resize.h)
+      {
+        g_application.OnEvent(newEvent);
+        g_windowManager.MarkDirty();
+      }
+    }
+  }
+  */
 }
 @end
 //------------------------------------------------------------------------------------------
@@ -408,11 +492,31 @@ bool CWinSystemOSX::InitWindowSystem()
   if (m_can_display_switch)
     CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
 
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  windowDidMoveNoteClass *windowDidMove;
+  windowDidMove = [windowDidMoveNoteClass initWith: this];
+  [center addObserver:windowDidMove
+    selector:@selector(windowDidMoveNotification:)
+    name:NSWindowDidMoveNotification object:nil];
+  m_windowDidMove = windowDidMove;
+
+
+  windowDidReSizeNoteClass *windowDidReSize;
+  windowDidReSize = [windowDidReSizeNoteClass initWith: this];
+  [center addObserver:windowDidReSize
+    selector:@selector(windowDidReSizeNotification:)
+    name:NSWindowDidResizeNotification object:nil];
+  m_windowDidReSize = windowDidReSize;
+
   return true;
 }
 
 bool CWinSystemOSX::DestroyWindowSystem()
 {  
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  [center removeObserver:(windowDidMoveNoteClass*)m_windowDidMove name:NSWindowDidMoveNotification object:nil];
+  [center removeObserver:(windowDidReSizeNoteClass*)m_windowDidReSize name:NSWindowDidResizeNotification object:nil];
+
   if (m_can_display_switch)
     CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
 
@@ -1134,6 +1238,11 @@ bool CWinSystemOSX::Hide()
   
   [pool release];
   return true;
+}
+
+void CWinSystemOSX::OnMove(int x, int y)
+{
+  Cocoa_CVDisplayLinkUpdate();
 }
 
 void CWinSystemOSX::Register(IDispResource *resource)
