@@ -108,7 +108,10 @@
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
+      <pause>Pause</pause>
       <play_pause>Pause</play_pause>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <launch_mail></launch_mail>
       <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
       <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
@@ -199,6 +202,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>StepForward</period>
       <comma>StepBack</comma>
       <backspace>Fullscreen</backspace>
@@ -235,6 +240,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>StepForward</period>
       <o>CodecInfo</o>
       <i>Back</i>
@@ -251,6 +258,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <return>ActivateWindow(MusicOSD)</return>
@@ -273,6 +282,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
@@ -287,6 +298,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
@@ -301,6 +314,8 @@
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
       <m>Back</m>
