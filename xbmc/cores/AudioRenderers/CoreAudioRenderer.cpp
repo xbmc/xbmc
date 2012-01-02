@@ -844,9 +844,8 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
   if (m_silence || (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM))
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
-  else
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
+    memset(ioData->mBuffers[m_OutputBufferIndex].mData, 0x00, bytesRead);
+  ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
   
 #ifdef _DEBUG
   // Calculate stats and perform a sanity check
