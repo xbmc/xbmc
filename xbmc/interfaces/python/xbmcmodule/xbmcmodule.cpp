@@ -437,9 +437,10 @@ namespace PYXBMC
 
   PyObject* XBMC_GetFreeMem(PyObject *self, PyObject *args)
   {
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
-    return PyInt_FromLong( stat.dwAvailPhys  / ( 1024 * 1024 ) );
+    MEMORYSTATUSEX stat;
+    stat.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&stat);
+    return PyInt_FromLong( stat.ullAvailPhys  / ( 1024 * 1024 ) );
   }
 
   // getCpuTemp() method

@@ -25,7 +25,9 @@
 #include <CoreServices/CoreServices.h>
 
 #include "CoreAudioRenderer.h"
+#include "Application.h"
 #include "guilib/AudioContext.h"
+#include "osx/CocoaInterface.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -425,11 +427,15 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDevices, PropertyListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDefaultOutputDevice, PropertyListenerProc, this);
   g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDevices, PropertyListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDefaultOutputDevice, PropertyListenerProc);
   g_Windowing.Unregister(this);
   Deinitialize();
 }
@@ -450,6 +456,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   if (m_Initialized)
     Deinitialize();
   
+  // Reset all the devices to a default 'non-hog' and mixable format.
+  // If we don't do this we may be unable to find the Default Output device.
+  // (e.g. if we crashed last time leaving it stuck in AC3/DTS/SPDIF mode)
+  Cocoa_ResetAudioDevices();
+
   if(bPassthrough)
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE_DIGITAL);
   else
@@ -833,9 +844,8 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
   if (m_silence || (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM))
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
-  else
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
+    memset(ioData->mBuffers[m_OutputBufferIndex].mData, 0x00, bytesRead);
+  ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
   
 #ifdef _DEBUG
   // Calculate stats and perform a sanity check
@@ -1171,6 +1181,25 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;
+}
+
+OSStatus CCoreAudioRenderer::PropertyListenerProc(AudioHardwarePropertyID property, void *data)
+{
+  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)data;
+  switch(property)
+  {
+    // the device list changed
+    case kAudioHardwarePropertyDevices:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::PropertyListenerProc:kAudioHardwarePropertyDevices");
+      break;
+    case kAudioHardwarePropertyDefaultOutputDevice:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::PropertyListenerProc:kAudioHardwarePropertyDefaultOutputDevice");
+      break;
+    default:
+      break;
+  }
+
+  return 0;
 }
 
 void CCoreAudioRenderer::OnLostDevice()
