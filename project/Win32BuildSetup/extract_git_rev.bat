@@ -1,4 +1,5 @@
 @ECHO OFF
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 REM Batch file output: %GIT_REV% variable, containing the git revision
 
@@ -24,7 +25,14 @@ GOTO :done
 
 :extract
 
-FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% log --summary --abbrev=7 -n 1 --date=short --pretty=format:"%%cd-%%h""') DO SET GIT_REV=%%A%%B%%C-%%D
+SET /a counter=0
+FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% log --summary --abbrev=7 -n 1 --date=short --pretty=format:"%%cd-%%h""') DO (
+IF "!counter!"=="0" ( SET GIT_REV=%%A%%B%%C-%%D ) ELSE ( goto exitloop )
+SET /a counter+=1
+)
+
+:exitloop
+
 @echo %GIT_REV%
 
 :done
