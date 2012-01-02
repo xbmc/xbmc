@@ -383,12 +383,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             CStdString id = (char*) (*entry)->m_ObjectID;
             CURL::Encode(id);
-            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str() + "/"));
+            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));
 
             // if it's a container, format a string as upnp://uuid/object_id
             if (pItem->m_bIsFolder) {
-                CStdString id = (char*) (*entry)->m_ObjectID;
-                CURL::Encode(id);
                 pItem->SetPath(pItem->GetPath() + "/");
 
                 // look for metadata
