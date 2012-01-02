@@ -46,6 +46,7 @@ JSON_STATUS CInputOperations::sendAction(int actionID)
 {
   if(!handleScreenSaver())
   {
+    g_application.ResetSystemIdleTimer();
     g_audioManager.PlayActionSound(actionID);
     g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_INVALID, false);
   }

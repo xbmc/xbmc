@@ -4183,6 +4183,12 @@ void CApplication::StopPlaying()
   }
 }
 
+void CApplication::ResetSystemIdleTimer()
+{
+  // reset system idle timer
+  m_idleTimer.StartZero();
+}
+
 void CApplication::ResetScreenSaver()
 {
   // reset our timers
