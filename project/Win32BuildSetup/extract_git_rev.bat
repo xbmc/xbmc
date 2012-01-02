@@ -30,12 +30,10 @@ GOTO :extract
 
 :extract
 
-FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% log --summary -n 1 --date=short --pretty=format:"%%cd-%%h""') DO (
+FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% rev-list HEAD -n 1 --date=short --pretty=format:"%%cd-%%h""') DO (
 SET GIT_REV=%%A%%B%%C-%%D
-goto exitloop
 )
 
-:exitloop
 
 echo %GIT_REV%
 
