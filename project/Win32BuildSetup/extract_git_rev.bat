@@ -33,7 +33,7 @@ SET /a counter+=1
 
 :exitloop
 
-@echo %GIT_REV%
+echo %GIT_REV%
 
 :done
 
