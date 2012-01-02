@@ -420,7 +420,7 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
   double rate;
   RESOLUTION_INFO res;   
   
-  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
+  CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
 
   CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(screenIdx));
   
