@@ -237,12 +237,13 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
 {
     NPT_Result res = NPT_FAILURE;
     NPT_Int32  index = start;
+    bool       cache = m_UseCache && metadata && start == 0 && max_results == 0;
 
     // reset output params
     list = NULL;
 
     // look into cache first
-    if (m_UseCache && NPT_SUCCEEDED(m_Cache.Get(device->GetUUID(), object_id, list))) return NPT_SUCCESS;
+    if (cache && NPT_SUCCEEDED(m_Cache.Get(device->GetUUID(), object_id, list))) return NPT_SUCCESS;
 
     do {	
         PLT_BrowseDataReference browse_data(new PLT_BrowseData());
@@ -293,7 +294,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
 
 done:
     // cache the result
-    if (m_UseCache && NPT_SUCCEEDED(res) && !list.IsNull() && list->GetItemCount()) {
+    if (cache && NPT_SUCCEEDED(res) && !list.IsNull() && list->GetItemCount()) {
         m_Cache.Put(device->GetUUID(), object_id, list);
     }
 
