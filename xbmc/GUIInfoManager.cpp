@@ -1708,9 +1708,10 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
       {
-        MEMORYSTATUS stat;
-        GlobalMemoryStatus(&stat);
-        int memPercentUsed = (int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f );
+        MEMORYSTATUSEX stat;
+	stat.dwLength = sizeof(MEMORYSTATUSEX);
+        GlobalMemoryStatusEx(&stat);
+        int memPercentUsed = (int)( 100.0f* (stat.ullTotalPhys - stat.ullAvailPhys)/stat.ullTotalPhys + 0.5f );
         if (info == SYSTEM_FREE_MEMORY)
           value = 100 - memPercentUsed;
         else
