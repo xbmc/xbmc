@@ -14,7 +14,15 @@ GOTO :extract
 REM Fallback on msysgit - must be in the path
 SET GITEXE="git.exe"
 %GITEXE% --help > NUL 2>&1
-IF errorlevel 9009 IF NOT errorlevel 9010 GOTO :nogit
+IF errorlevel 9009 IF NOT errorlevel 9010 GOTO :nomsysgit
+GOTO :extract
+
+:nomsysgit
+
+REM Fallback on wrapped msysgit - must be in the path
+SET GITEXE=git.cmd
+CALL %GITEXE% --help > NUL 2>&1
+IF errorlevel 1 GOTO :nogit
 GOTO :extract
 
 :nogit
