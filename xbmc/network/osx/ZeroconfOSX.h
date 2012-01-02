@@ -52,8 +52,6 @@ protected:
 private:
   static void registerCallback(CFNetServiceRef theService, CFStreamError* error, void* info);
   void cancelRegistration(CFNetServiceRef theService);
-  //returns the string that gets published (a.k.a. add the hostname)
-  std::string assemblePublishedName(const std::string& fcr_given_name);
 
   //CF runloop ref; we're using main-threads runloop
   CFRunLoopRef m_runloop;

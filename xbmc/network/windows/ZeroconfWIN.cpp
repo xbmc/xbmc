@@ -63,7 +63,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     }
   }
 
-  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, assemblePublishedName(fcr_name).c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
+  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
 
   if(err != kDNSServiceErr_ServiceNotRunning)
     DNSServiceProcessResult(netService);
@@ -132,25 +132,4 @@ void DNSSD_API CZeroconfWIN::registerCallback(DNSServiceRef sdref, const DNSServ
   else
     CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s error code %d", name, regtype, domain, errorCode);
 
-}
-
-
-std::string CZeroconfWIN::assemblePublishedName(const std::string& fcr_given_name)
-{
-  std::stringstream ss;
-  ss << fcr_given_name << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfWIN::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
 }
