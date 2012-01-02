@@ -25,6 +25,7 @@
 #include <sstream>
 #include <threads/SingleLock.h>
 #include <utils/log.h>
+#include "dialogs/GUIDialogKaiToast.h"
 
 #pragma comment(lib, "dnssd.lib")
 
@@ -75,7 +76,10 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
 
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
     if(err == kDNSServiceErr_ServiceNotRunning)
+    {
       CLog::Log(LOGERROR, "CZeroconfWIN: Apples Bonjour Service not installed?");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apples Bonjour Service installed?", TOAST_DISPLAY_TIME, true);
+    }
   } 
   else
   {
