@@ -2,6 +2,8 @@
 
 REM Batch file output: %GIT_REV% variable, containing the git revision
 
+SET GIT_REV=unknown
+
 REM Use tgit.exe of TortoiseGit if available
 SET GITEXE=tgit.exe
 %GITEXE% --version > NUL 2>&1
@@ -21,14 +23,9 @@ GOTO :extract
 REM Fallback on wrapped msysgit - must be in the path
 SET GITEXE=git.cmd
 CALL %GITEXE% --help > NUL 2>&1
-IF errorlevel 1 GOTO :nogit
+IF errorlevel 1 GOTO :done
 GOTO :extract
 
-:nogit
-
-REM Failure - no git tool to extract information.
-SET GIT_REV=Unknown
-GOTO :done
 
 :extract
 
