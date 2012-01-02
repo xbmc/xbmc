@@ -77,8 +77,8 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
     if(err == kDNSServiceErr_ServiceNotRunning)
     {
-      CLog::Log(LOGERROR, "CZeroconfWIN: Apples Bonjour Service not installed?");
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apples Bonjour Service installed?", TOAST_DISPLAY_TIME, true);
+      CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
     }
   } 
   else
