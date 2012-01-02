@@ -4,7 +4,7 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 REM Batch file output: %GIT_REV% variable, containing the git revision
 
 REM Use tgit.exe of TortoiseGit if available
-SET GITEXE="tgit.exe"
+SET GITEXE=tgit.exe
 %GITEXE% --version > NUL 2>&1
 IF errorlevel 9009 IF NOT errorlevel 9010 GOTO :notgit
 GOTO :extract
@@ -12,7 +12,7 @@ GOTO :extract
 :notgit
 
 REM Fallback on msysgit - must be in the path
-SET GITEXE="git.exe"
+SET GITEXE=git.exe
 %GITEXE% --help > NUL 2>&1
 IF errorlevel 9009 IF NOT errorlevel 9010 GOTO :nomsysgit
 GOTO :extract
