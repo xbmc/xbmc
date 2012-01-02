@@ -428,8 +428,8 @@ typedef struct _MEMORYSTATUSEX
   DWORD dwLength;
   DWORD dwMemoryLoad;
 
-  uint64_t dwTotalPhys;
-  uint64_t dwAvailPhys;
+  uint64_t ullTotalPhys;
+  uint64_t ullAvailPhys;
   uint64_t ullTotalPageFile;
   uint64_t ullAvailPageFile;
   uint64_t ullTotalVirtual;
