@@ -34,6 +34,8 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBusUSB(CPeripherals *manager);
+    virtual ~CPeripheralBusUSB(void);
+
     virtual void Clear(void);
 
     /*!
