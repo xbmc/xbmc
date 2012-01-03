@@ -72,9 +72,6 @@ void CGUITextureGLES::Begin(color_t color)
 
     m_diffuse.m_textures[0]->BindToUnit(1);
 
-    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
-    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
-    glEnableVertexAttribArray(tex1Loc);
   }
   else
   {
@@ -88,22 +85,6 @@ void CGUITextureGLES::Begin(color_t color)
     }
   }
 
-  GLint posLoc  = g_Windowing.GUIShaderGetPos();
-  GLint colLoc  = g_Windowing.GUIShaderGetCol();
-  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
-  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
-
-  glUniform4f(uniColLoc,(m_col[0][0] / 255.0), (m_col[0][1] / 255.0), (m_col[0][2] / 255.0), (m_col[0][3] / 255.0));
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  if(colLoc >= 0)
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, m_col);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, m_tex0);
-
-  glEnableVertexAttribArray(posLoc);
-  if(colLoc >= 0)
-    glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
   if ( hasAlpha )
   {
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
@@ -113,101 +94,136 @@ void CGUITextureGLES::Begin(color_t color)
   {
     glDisable(GL_BLEND);
   }
+  m_packedVertices.clear();
 }
 
 void CGUITextureGLES::End()
 {
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+  GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
+  GLint uniColLoc = g_Windowing.GUIShaderGetUniCol();
+
+  if(uniColLoc >= 0)
+  {
+    glUniform4f(uniColLoc,(m_col[0][0] / 255.0), (m_col[0][1] / 255.0), (m_col[0][2] / 255.0), (m_col[0][3] / 255.0));
+  }
+
+  if(m_diffuse.size())
+  {
+    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
+    glEnableVertexAttribArray(tex1Loc);
+  }
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
+  glEnableVertexAttribArray(tex0Loc);
+
+  GLushort *idx;
+  idx = new GLushort[m_packedVertices.size()*6 / 4];
+  for (unsigned int i=0, size=0; i < m_packedVertices.size(); i+=4, size+=6)
+  {
+    idx[size+0] = i+0;
+    idx[size+1] = i+1;
+    idx[size+2] = i+2;
+    idx[size+3] = i+2;
+    idx[size+4] = i+3;
+    idx[size+5] = i+0;
+  }
+
+  glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, idx);
+
   if (m_diffuse.size())
   {
-    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord1());
+    glDisableVertexAttribArray(tex1Loc);
     glActiveTexture(GL_TEXTURE0);
   }
 
-  glDisableVertexAttribArray(g_Windowing.GUIShaderGetPos());
-  GLint colLoc  = g_Windowing.GUIShaderGetCol();
-  if(colLoc >= 0)
-    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
-  glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(tex0Loc);
 
   glEnable(GL_BLEND);
   g_Windowing.DisableGUIShader();
+  delete [] idx;
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-
-  // Setup vertex position values
-  for (int i=0; i<4; i++)
-  {
-    m_vert[i][0] = x[i];
-    m_vert[i][1] = y[i];
-    m_vert[i][2] = z[i];
-  }
+  PackedVertex vertices[4];
 
   // Setup texture coordinates
   //TopLeft
-  m_tex0[0][0] = texture.x1;
-  m_tex0[0][1] = texture.y1;
+  vertices[0].u1 = texture.x1;
+  vertices[0].v1 = texture.y1;
   //TopRight
   if (orientation & 4)
   {
-    m_tex0[1][0] = texture.x1;
-    m_tex0[1][1] = texture.y2;
+    vertices[1].u1 = texture.x1;
+    vertices[1].v1 = texture.y2;
   }
   else
   {
-    m_tex0[1][0] = texture.x2;
-    m_tex0[1][1] = texture.y1;
+    vertices[1].u1 = texture.x2;
+    vertices[1].v1 = texture.y1;
   }
   //BottomRight
-  m_tex0[2][0] = texture.x2;
-  m_tex0[2][1] = texture.y2;
+  vertices[2].u1 = texture.x2;
+  vertices[2].v1 = texture.y2;
   //BottomLeft
   if (orientation & 4)
   {
-    m_tex0[3][0] = texture.x2;
-    m_tex0[3][1] = texture.y1;
+    vertices[3].u1 = texture.x2;
+    vertices[3].v1 = texture.y1;
   }
   else
   {
-    m_tex0[3][0] = texture.x1;
-    m_tex0[3][1] = texture.y2;
+    vertices[3].u1 = texture.x1;
+    vertices[3].v1 = texture.y2;
   }
 
   if (m_diffuse.size())
   {
     //TopLeft
-    m_tex1[0][0] = diffuse.x1;
-    m_tex1[0][1] = diffuse.y1;
+    vertices[0].u2 = diffuse.x1;
+    vertices[0].v2 = diffuse.y1;
     //TopRight
     if (m_info.orientation & 4)
     {
-      m_tex1[1][0] = diffuse.x1;
-      m_tex1[1][1] = diffuse.y2;
+      vertices[1].u2 = diffuse.x1;
+      vertices[1].v2 = diffuse.y2;
     }
     else
     {
-      m_tex1[1][0] = diffuse.x2;
-      m_tex1[1][1] = diffuse.y1;
+      vertices[1].u2 = diffuse.x2;
+      vertices[1].v2 = diffuse.y1;
     }
     //BottomRight
-    m_tex1[2][0] = diffuse.x2;
-    m_tex1[2][1] = diffuse.y2;
+    vertices[2].u2 = diffuse.x2;
+    vertices[2].v2 = diffuse.y2;
     //BottomLeft
     if (m_info.orientation & 4)
     {
-      m_tex1[3][0] = diffuse.x2;
-      m_tex1[3][1] = diffuse.y1;
+      vertices[3].u2 = diffuse.x2;
+      vertices[3].v2 = diffuse.y1;
     }
     else
     {
-      m_tex1[3][0] = diffuse.x1;
-      m_tex1[3][1] = diffuse.y2;
+      vertices[3].u2 = diffuse.x1;
+      vertices[3].v2 = diffuse.y2;
     }
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  for (int i=0; i<4; i++)
+  {
+    vertices[i].x = x[i];
+    vertices[i].y = y[i];
+    vertices[i].z = z[i];
+    vertices[i].r = m_col[i][0];
+    vertices[i].g = m_col[i][1];
+    vertices[i].b = m_col[i][2];
+    vertices[i].a = m_col[i][3];
+    m_packedVertices.push_back(vertices[i]);
+  }
 }
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)

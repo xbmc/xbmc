@@ -32,6 +32,15 @@
 
 #include "system_gl.h"
 
+struct PackedVertex
+{
+  float x, y, z;
+  unsigned char r, g, b, a;
+  float u1, v1;
+  float u2, v2;
+};
+typedef std::vector<PackedVertex> PackedVertices;
+
 class CGUITextureGLES : public CGUITextureBase
 {
 public:
@@ -43,9 +52,8 @@ protected:
   void End();
 
   GLubyte m_col [4][4];
-  GLfloat m_vert[4][3];
-  GLfloat m_tex0[4][2];
-  GLfloat m_tex1[4][2];
+
+  PackedVertices m_packedVertices;
 };
 
 #endif
