@@ -331,13 +331,16 @@ using namespace XbmcThreads;
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_WebServer(*new CWebServer)
+CApplication::CApplication(void)
+  : m_pPlayer(NULL)
+#ifdef HAS_WEB_SERVER
+  , m_WebServer(*new CWebServer)
+#endif
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
-  m_pPlayer = NULL;
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
@@ -379,7 +382,9 @@ CApplication::CApplication(void) : m_WebServer(*new CWebServer)
 
 CApplication::~CApplication(void)
 {
+#ifdef HAS_WEB_SERVER
   delete &m_WebServer;
+#endif
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
