@@ -268,6 +268,7 @@ void CPeripheralCecAdapter::Process(void)
   if (GetSettingBool("cec_power_on_startup"))
   {
     PowerOnCecDevices(CECDEVICE_TV);
+    m_cecAdapter->SetActiveSource();
     FlushLog();
   }
 
