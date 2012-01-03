@@ -1260,6 +1260,7 @@ void CCoreAudioRenderer::OnResetDevice()
     m_AudioDevice.GetName(deviceName);
     if (deviceName.Equals("HDMI"))
     {
+      g_application.m_pPlayer->SetAudioStream(g_application.m_pPlayer->GetAudioStream()); 
       m_silence = false;
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnResetDevice");
     }
