@@ -92,7 +92,7 @@ public:
     virtual ~DllImageLibInterface() {}
     virtual bool ReleaseImage(ImageInfo *)=0;
     virtual bool LoadImage(const char *, unsigned int, unsigned int, ImageInfo *)=0;
-    virtual bool CreateThumbnail(const char *, const char *, int, int, bool)=0;
+    virtual bool CreateThumbnail(const char *, const char *, int, int, bool, bool)=0;
     virtual bool CreateThumbnailFromMemory(BYTE *, unsigned int, const char *, const char *, int, int)=0;
     virtual bool CreateFolderThumbnail(const char **, const char *, int, int)=0;
     virtual bool CreateThumbnailFromSurface(BYTE *, unsigned int, unsigned intB, unsigned int, const char *)=0;
@@ -104,7 +104,7 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
   DECLARE_DLL_WRAPPER(DllImageLib, DLL_PATH_IMAGELIB)
   DEFINE_METHOD1(bool, ReleaseImage, (ImageInfo *p1))
   DEFINE_METHOD4(bool, LoadImage, (const char * p1, unsigned int p2, unsigned int p3, ImageInfo * p4))
-  DEFINE_METHOD5(bool, CreateThumbnail, (const char * p1, const char * p2, int p3, int p4, bool p5))
+  DEFINE_METHOD6(bool, CreateThumbnail, (const char * p1, const char * p2, int p3, int p4, bool p5, bool p6))
   DEFINE_METHOD6(bool, CreateThumbnailFromMemory, (BYTE *p1, unsigned int p2, const char * p3, const char * p4, int p5, int p6))
   DEFINE_METHOD4(bool, CreateFolderThumbnail, (const char ** p1, const char * p2, int p3, int p4))
   DEFINE_METHOD5(bool, CreateThumbnailFromSurface, (BYTE * p1, unsigned int p2, unsigned int p3, unsigned int p4, const char * p5))

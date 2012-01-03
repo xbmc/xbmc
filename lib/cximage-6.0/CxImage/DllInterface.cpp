@@ -15,7 +15,6 @@
 #endif
 
 #define RESAMPLE_QUALITY 0
-#undef USE_EXIF_THUMBS
 
 // MS DirectX routines don't like loading .jpg less than 8x8 pixels.
 #define MIN_THUMB_WIDTH 8
@@ -345,7 +344,7 @@ extern "C"
   };
 
 
-  __declspec(dllexport) bool CreateThumbnail(const char *file, const char *thumb, int maxWidth, int maxHeight, bool rotateExif)
+  __declspec(dllexport) bool CreateThumbnail(const char *file, const char *thumb, int maxWidth, int maxHeight, bool rotateExif, bool thumbExif)
   {
     if (!file || !thumb) return false;
 
@@ -359,14 +358,11 @@ extern "C"
     int actualheight = 0;
     try
     {
-      // jpeg's may contain an EXIF preview image
-      // we don't use it though, as the resolution is normally too low
-#ifdef USE_EXIF_THUMBS
-      if ((dwImageType == CXIMAGE_FORMAT_JPG || dwImageType == CXIMAGE_FORMAT_RAW) && image.GetExifThumbnail(file, thumb, dwImageType))
+
+      if (thumbExif && (dwImageType == CXIMAGE_FORMAT_JPG || dwImageType == CXIMAGE_FORMAT_RAW) && image.GetExifThumbnail(file, thumb, dwImageType))
       {
         return true;
       }
-#endif
 
       if (!image.Load(file, dwImageType, actualwidth, actualheight) || !image.IsValid())
       {
