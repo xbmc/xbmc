@@ -337,7 +337,7 @@
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
-		<select>#KEY_OK</select>
+		<select>KEY_OK</select>
 		<pageplus>KEY_CHANNELUP</pageplus>
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<back>KEY_BACKSPACE</back>
