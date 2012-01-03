@@ -128,6 +128,7 @@ public:
   virtual float GetDelay();
   virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
   virtual bool Deinitialize();
+          bool Reinitialize();
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
   virtual float GetCacheTime();
@@ -201,7 +202,23 @@ private:
   // Thread synchronization
   CEvent m_RunoutEvent;
   long m_DoRunout;
-  bool m_silence;
+  // saved Initialize vars
+  struct init_state
+  {
+    bool              reinit;
+    CStdString        device;
+    int               iChannels;
+    enum PCMChannels *channelMap;
+    unsigned int      uiSamplesPerSec;
+    unsigned int      uiBitsPerSample;
+    bool              bResample;
+    bool              bIsMusic;
+    EEncoded          bPassthrough;
+    IAudioCallback   *pCallback;
+  };
+  CCriticalSection m_init_csection;
+  init_state m_init_state;
+
 };
 
 #endif
