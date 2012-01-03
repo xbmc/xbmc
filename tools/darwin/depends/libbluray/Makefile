@@ -1,10 +1,10 @@
 include ../Makefile.include
 
 # lib name, version
-LIBNAME=libblueray
-VERSION=20110213.20739ed
+LIBNAME=libbluray
+VERSION=0.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tgz
+ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
@@ -19,10 +19,9 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 
 $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
-	mkdir $(SOURCE)
-	cd $(SOURCE); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	# libbluray has bored Makefile.am with respect to CFLAGS, remove the offending line
+	# libbluray has borked Makefile.am with respect to CFLAGS, remove the offending line
 	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/Makefile.am
 	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/examples/Makefile.am
 	cd $(SOURCE); ./bootstrap

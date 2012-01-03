@@ -427,15 +427,17 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
-  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDevices, PropertyListenerProc, this);
-  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDefaultOutputDevice, PropertyListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDevices, HardwareListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyIsInitingOrExiting, HardwareListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDefaultOutputDevice, HardwareListenerProc, this);
   g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
-  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDevices, PropertyListenerProc);
-  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDefaultOutputDevice, PropertyListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDevices, HardwareListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyIsInitingOrExiting, HardwareListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDefaultOutputDevice, HardwareListenerProc);
   g_Windowing.Unregister(this);
   Deinitialize();
 }
@@ -482,6 +484,10 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
       return false;
   }
   
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyDeviceIsAlive, DeviceListenerProc, this);
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyDeviceIsRunning, DeviceListenerProc, this);
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyStreamConfiguration, DeviceListenerProc, this);
+
   // TODO: Determine if the device is in-use/locked by another process.
   
   // Attach our output object to the device
@@ -584,14 +590,18 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     "Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).",
     m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
-  
+
   return true;
 }
 
 bool CCoreAudioRenderer::Deinitialize()
 {
   VERIFY_INIT(true); // Not really a failure if we weren't initialized
-  
+
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyDeviceIsAlive, DeviceListenerProc);
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyDeviceIsRunning, DeviceListenerProc);
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyStreamConfiguration, DeviceListenerProc);
+
   // Stop rendering
   Stop();
   // Reset our state
@@ -1183,23 +1193,49 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   return true;
 }
 
-OSStatus CCoreAudioRenderer::PropertyListenerProc(AudioHardwarePropertyID property, void *data)
+OSStatus CCoreAudioRenderer::HardwareListenerProc(AudioHardwarePropertyID property, void *clientref)
 {
-  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)data;
+  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)clientref;
   switch(property)
   {
-    // the device list changed
     case kAudioHardwarePropertyDevices:
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::PropertyListenerProc:kAudioHardwarePropertyDevices");
+      // An audio device has been added/removed to the system
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyDevices");
+      break;
+    case kAudioHardwarePropertyIsInitingOrExiting:
+      // HAL is either initializing or exiting the process.
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyIsInitingOrExiting");
       break;
     case kAudioHardwarePropertyDefaultOutputDevice:
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::PropertyListenerProc:kAudioHardwarePropertyDefaultOutputDevice");
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyDefaultOutputDevice");
       break;
     default:
       break;
   }
 
-  return 0;
+  return noErr;
+}
+
+OSStatus CCoreAudioRenderer::DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref)
+{
+  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)clientref;
+  switch(inPropertyID)
+  {
+    case kAudioDevicePropertyDeviceIsAlive:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyDeviceIsAlive");
+			break;
+    case kAudioDevicePropertyDeviceIsRunning:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyDeviceIsRunning, "
+        "inDevice(0x%x), inChannel(%d), inDevice(%d)", inDevice, inChannel, isInput);
+      break;
+    case kAudioDevicePropertyStreamConfiguration:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyStreamConfiguration, "
+        "inDevice(0x%x), inChannel(%d), inDevice(%d)", inDevice, inChannel, isInput);
+      break;
+    default:
+      break;
+  }
+	return noErr;
 }
 
 void CCoreAudioRenderer::OnLostDevice()
@@ -1224,6 +1260,7 @@ void CCoreAudioRenderer::OnResetDevice()
     m_AudioDevice.GetName(deviceName);
     if (deviceName.Equals("HDMI"))
     {
+      g_application.m_pPlayer->SetAudioStream(g_application.m_pPlayer->GetAudioStream()); 
       m_silence = false;
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnResetDevice");
     }

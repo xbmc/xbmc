@@ -337,7 +337,7 @@
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
-		<select>#KEY_OK</select>
+		<select>KEY_OK</select>
 		<pageplus>KEY_CHANNELUP</pageplus>
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<back>KEY_BACKSPACE</back>
@@ -414,8 +414,10 @@
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
+		<select>KEY_OK</select>
 		<select>KEY_ENTER</select>
 		<start>KEY_SELECT</start>
+		<back>KEY_ESC</back>
 		<back>KEY_EXIT</back>
 		<back>KEY_BACK</back>
 		<back>KEY_CLOSE</back>
@@ -458,6 +460,7 @@
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
 		<menu>KEY_MENU</menu>
+		<info>KEY_INFO</info>
 		<info>KEY_PROPS</info>
 		<start>KEY_HOME</start>
 		<display>KEY_ANGLE</display>
