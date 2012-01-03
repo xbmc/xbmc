@@ -608,11 +608,8 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
         /* since it was not found in the internal group, it was deleted from the backend */
         channel->Delete();
       }
-      else
-      {
-        erase(begin() + iChannelPtr);
-      }
 
+      erase(begin() + iChannelPtr);
       m_bChanged = true;
       bReturn = true;
     }
