@@ -432,7 +432,7 @@ bool CRenderSystemGLES::TestRender()
 
   EnableGUIShader(SM_DEFAULT);
 
-  GLfloat col[3][4];
+  GLfloat col[4] = {1.0f, 0.0f, 0.0f, 1.0f};
   GLfloat ver[3][2];
   GLint   posLoc = GUIShaderGetPos();
   GLint   colLoc = GUIShaderGetCol();
@@ -442,10 +442,6 @@ bool CRenderSystemGLES::TestRender()
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
-
-  // Setup Colour values
-  col[0][0] = col[0][3] = col[1][1] = col[1][3] = col[2][2] = col[2][3] = 1.0f;
-  col[0][1] = col[0][2] = col[1][0] = col[1][2] = col[2][0] = col[2][1] = 0.0f;
 
   // Setup vertex position values
   ver[0][0] =  0.0f;

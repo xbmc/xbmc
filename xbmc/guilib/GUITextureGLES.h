@@ -31,6 +31,15 @@
 #include "GUITexture.h"
 
 #include "system_gl.h"
+#include <vector>
+
+struct PackedVertex
+{
+  float x, y, z;
+  float u1, v1;
+  float u2, v2;
+};
+typedef std::vector<PackedVertex> PackedVertices;
 
 class CGUITextureGLES : public CGUITextureBase
 {
@@ -42,10 +51,10 @@ protected:
   void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation);
   void End();
 
-  GLubyte m_col [4][4];
-  GLfloat m_vert[4][3];
-  GLfloat m_tex0[4][2];
-  GLfloat m_tex1[4][2];
+  GLubyte m_col[4];
+
+  PackedVertices m_packedVertices;
+  std::vector<GLushort> m_idx;
 };
 
 #endif

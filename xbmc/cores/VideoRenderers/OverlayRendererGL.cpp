@@ -544,7 +544,7 @@ void COverlayTextureGL::Render(SRenderState& state)
 #else
   g_Windowing.EnableGUIShader(SM_TEXTURE);
 
-  GLfloat col[4][4];
+  GLfloat col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   GLfloat ver[4][2];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
@@ -562,13 +562,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  for (int i=0; i<4; i++)
-  {
-    // Setup Colours
-    col[i][0] = col[i][1] = col[i][2] = col[i][3] = 1.0f;
-  }
-
-  glUniform4f(uniColLoc,(col[0][0]), (col[0][1]), (col[0][2]), (col[0][3]));
+  glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
   // Setup vertex position values
   ver[0][0] = ver[3][0] = rd.left;
   ver[0][1] = ver[1][1] = rd.top;
