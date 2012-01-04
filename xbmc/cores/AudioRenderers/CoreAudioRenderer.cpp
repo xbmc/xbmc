@@ -471,9 +471,13 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   m_init_state.iChannels = iChannels;
   // save the old and delete after clone incase we are reinit'ing.
   enum PCMChannels *old_channelMap = m_init_state.channelMap;
-  m_init_state.channelMap = new PCMChannels[m_init_state.iChannels];
-  for (int i = 0; i < iChannels; i++)
-    m_init_state.channelMap[i] = channelMap[i];
+  m_init_state.channelMap = NULL;
+  if (channelMap)
+  {
+    m_init_state.channelMap = new PCMChannels[m_init_state.iChannels];
+    for (int i = 0; i < iChannels; i++)
+      m_init_state.channelMap[i] = channelMap[i];
+  }
   delete [] old_channelMap;
   m_init_state.uiSamplesPerSec = uiSamplesPerSec;
   m_init_state.uiBitsPerSample = uiBitsPerSample;
