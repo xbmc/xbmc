@@ -122,6 +122,23 @@ namespace ForTheRecord
   int Ping(int requestedApiVersion);
 
   /**
+   * \brief GetPluginServices Get all configured plugin services. {activeOnly} = Set to true to only receive active plugins. 
+   * \brief Returns an array containing zero or more plugin services.
+   * \param activeonly  set to true to only receive active plugins
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int GetPluginServices(bool activeonly, Json::Value& response);
+
+  /**
+   * \brief AreRecordingSharesAccessible
+   * \param thisplugin the plugin to check
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int AreRecordingSharesAccessible(Json::Value& thisplugin, Json::Value& response);
+
+  /**
    * \brief TuneLiveStream
    * \param channel_id  The ForTheRecord ChannelID of the channel
    * \param stream      Reference to a string that will point to the tsbuffer file/RTSP stream

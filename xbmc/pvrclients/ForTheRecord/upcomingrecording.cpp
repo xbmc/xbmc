@@ -22,6 +22,7 @@
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
+#include "fortherecordrpc.h"
 #include "upcomingrecording.h"
 
 cUpcomingRecording::cUpcomingRecording(void)

@@ -109,6 +109,12 @@ bool cPVRClientForTheRecord::Connect()
     return false;
   }
 
+  // Check the accessibility status of all the shares used by ForTheRecord tuners
+  if (ShareErrorsFound())
+  {
+    XBMC->QueueNotification(QUEUE_ERROR, "4TR share errors: see xbmc.log");
+  }
+
   m_bConnected = true;
   return true;
 }
@@ -125,6 +131,99 @@ void cPVRClientForTheRecord::Disconnect()
   }
 
   m_bConnected = false;
+}
+
+bool cPVRClientForTheRecord::ShareErrorsFound(void)
+{
+  bool bShareErrors = false;
+  Json::Value activeplugins;
+  int rc = ForTheRecord::GetPluginServices(false, activeplugins);
+  if (rc != NOERROR)
+  {
+    XBMC->Log(LOG_ERROR, "Unable to get the ForTheRecord plugin services to check share accessiblity.");
+    return false;
+  }
+ 
+  // parse plugins list
+  int size = activeplugins.size();
+  for ( int index =0; index < size; ++index )
+  {
+    std::string tunerName = activeplugins[index]["Name"].asString();
+    XBMC->Log(LOG_DEBUG, "Checking tuner \"%s\" for accessibility.", tunerName.c_str());
+    Json::Value accesibleshares;
+    rc = ForTheRecord::AreRecordingSharesAccessible(activeplugins[index], accesibleshares);
+    if (rc != NOERROR)
+    {
+      XBMC->Log(LOG_ERROR, "Unable to get the share status for tuner \"%s\".", tunerName.c_str());
+      continue;
+    }
+    int numberofshares = accesibleshares.size();
+    for (int j = 0; j < numberofshares; j++)
+    {
+      Json::Value accesibleshare = accesibleshares[j];
+      tunerName = accesibleshare["RecorderTunerName"].asString();
+      std::string sharename = accesibleshare["Share"].asString();
+      bool isAccessibleByFTR = accesibleshare["ShareAccessible"].asBool();
+      bool isAccessibleByAddon = false;
+      std::string accessMsg = "";
+#if defined(TARGET_WINDOWS)
+      // Try to open the directory
+      HANDLE hFile = ::CreateFile(sharename.c_str(),      // The filename
+        (DWORD) GENERIC_READ,             // File access
+        (DWORD) FILE_SHARE_READ,          // Share access
+        NULL,                             // Security
+        (DWORD) OPEN_EXISTING,            // Open flags
+        (DWORD) FILE_FLAG_BACKUP_SEMANTICS, // More flags
+        NULL);                            // Template
+      if (hFile != INVALID_HANDLE_VALUE)
+      {
+        (void) CloseHandle(hFile);
+        isAccessibleByAddon = true;
+      }
+      else
+      {
+        LPVOID lpMsgBuf;
+        DWORD dwErr = GetLastError();
+        FormatMessage(
+          FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+          FORMAT_MESSAGE_FROM_SYSTEM |
+          FORMAT_MESSAGE_IGNORE_INSERTS,
+          NULL,
+          dwErr,
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+          (LPTSTR) &lpMsgBuf,
+          0, NULL );
+        accessMsg = (char*) lpMsgBuf;
+        LocalFree(lpMsgBuf);
+      }
+//#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+//      std::string tmppath = "/tmp/";
+//XBMC->Log(LOG_INFO, "FileReader::OpenFile() %s %s.", m_pFileName, CFile::Exists(m_pFileName) ? "exists" : "not found");
+#else
+#error implement for your OS!
+#endif
+      // write analysis results to the log
+      if (isAccessibleByFTR)
+      {
+        XBMC->Log(LOG_DEBUG, "  Share \"%s\" is accessible to the ForTheRecord server.", sharename.c_str());
+      }
+      else
+      {
+        bShareErrors = true;
+        XBMC->Log(LOG_ERROR, "  Share \"%s\" is NOT accessible to the ForTheRecord server.", sharename.c_str());
+      }
+      if (isAccessibleByAddon)
+      {
+        XBMC->Log(LOG_DEBUG, "  Share \"%s\" is readable from this client add-on.", sharename.c_str());
+      }
+      else
+      {
+        bShareErrors = true;
+        XBMC->Log(LOG_ERROR, "  Share \"%s\" is NOT readable from this client add-on (\"%s\").", sharename.c_str(), accessMsg.c_str());
+      }
+    }
+  }
+  return bShareErrors;
 }
 
 /************************************************************/

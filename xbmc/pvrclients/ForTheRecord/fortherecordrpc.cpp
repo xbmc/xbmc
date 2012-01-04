@@ -571,6 +571,52 @@ namespace ForTheRecord
     return version;
   }
 
+  /**
+   * \brief GetPluginServices Get all configured plugin services. {activeOnly} = Set to true to only receive active plugins. 
+   * \brief Returns an array containing zero or more plugin services.
+   * \param activeonly  set to true to only receive active plugins
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int GetPluginServices(bool activeonly, Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "GetPluginServices");
+    int retval = E_FAILED;
+
+    std::string args = activeonly ? "?activeOnly=true" : "?activeOnly=false";
+    retval = ForTheRecord::ForTheRecordJSONRPC("ForTheRecord/Control/PluginServices", args, response);
+    if(retval >= 0)
+    {           
+      if (response.type() != Json::arrayValue)
+      {
+        retval = E_FAILED;
+        XBMC->Log(LOG_NOTICE, "GetPluginServices did not return a Json::arrayValue [%d].", response.type());
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_NOTICE, "GetPluginServices remote call failed.");
+    }
+    return retval;
+  }
+
+  /**
+   * \brief AreRecordingSharesAccessible
+   * \param thisplugin the plugin to check
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int AreRecordingSharesAccessible(Json::Value& thisplugin, Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "AreRecordingSharesAccessible");
+    Json::StyledWriter writer;
+    std::string arguments = writer.write(thisplugin);
+
+    int retval = ForTheRecordJSONRPC("ForTheRecord/Control/AreRecordingSharesAccessible", arguments, response);
+
+    return retval;
+  }
+
   int GetLiveStreams()
   {
     Json::Value response;
