@@ -36,6 +36,12 @@
 using namespace std;
 using namespace ADDON;
 
+#if !defined(TARGET_WINDOWS)
+#include "URL.h"
+#include "SMBDirectory.h"
+using namespace XFILE;
+#endif
+
 #define SIGNALQUALITY_INTERVAL 10
 
 /************************************************************/
@@ -198,7 +204,33 @@ bool cPVRClientForTheRecord::ShareErrorsFound(void)
       }
 //#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
 //      std::string tmppath = "/tmp/";
-//XBMC->Log(LOG_INFO, "FileReader::OpenFile() %s %s.", m_pFileName, CFile::Exists(m_pFileName) ? "exists" : "not found");
+#elif defined(TARGET_LINUX)
+      std::string CIFSname = sharename;
+      std::string SMBPrefix = "smb://";
+      if (g_szUser.length() > 0)
+      {
+        SMBPrefix += g_szUser;
+        if (g_szPass.length() > 0)
+        {
+          SMBPrefix += ":" + g_szPass;
+        }
+      }
+      else
+      {
+        SMBPrefix += "Guest";
+      }
+      SMBPrefix += "@";
+      size_t found;
+      while ((found = CIFSname.find("\\")) != std::string::npos)
+      {
+        CIFSname.replace(found, 1, "/");
+      }
+      CIFSname.erase(0,2);
+      CIFSname.insert(0, SMBPrefix);
+      CSMBDirectory smbDir;
+      CURL curl(CIFSname);
+      int iRc = smbDir.Open(curl);
+      isAccessibleByAddon = (iRc > 0);
 #else
 #error implement for your OS!
 #endif
