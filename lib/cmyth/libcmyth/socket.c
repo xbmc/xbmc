@@ -998,7 +998,7 @@ cmyth_rcv_int64(cmyth_conn_t conn, int *err, long long *buf, int count)
 	/*
 	 * Got a result, return it.
 	 */
-	*buf = (long)(sign * val);
+	*buf = (long long)(sign * val);
 
 	return consumed;
 }
