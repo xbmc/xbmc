@@ -815,14 +815,14 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       {
       case TRACK_FORMAT_AUDIO:
         {
-        trackinfo ti;
-        ti.nfsInfo = FS_NO_DATA;
-        m_nFs = FS_NO_DATA;
-        ti.ms_offset = 0;
-        ti.isofs_size = 0;
-        ti.nJolietLevel = 0;
-        ti.nFrames = ::cdio_get_track_lba(cdio, i);
-        info->SetTrackInformation( i + 1, ti );
+          trackinfo ti;
+          ti.nfsInfo = FS_NO_DATA;
+          m_nFs = FS_NO_DATA;
+          ti.ms_offset = 0;
+          ti.isofs_size = 0;
+          ti.nJolietLevel = 0;
+          ti.nFrames = ::cdio_get_track_lba(cdio, i);
+          info->SetTrackInformation( i + 1, ti );
         }
       case TRACK_FORMAT_ERROR:
         break;

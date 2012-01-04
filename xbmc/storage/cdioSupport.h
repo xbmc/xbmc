@@ -124,7 +124,7 @@ public:
     m_nLength = m_nFirstTrack = m_nNumTrack = m_nNumAudio = m_nFirstAudio = m_nNumData = m_nFirstData = 0;
   }
 
-trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
+  trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
   xbmc_cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
 
   bool HasDataTracks() { return (m_nNumData > 0); }
@@ -142,13 +142,13 @@ trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
   // CD-ROM with ISO 9660 filesystem
   bool IsIso9660( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }
   // CD-ROM with joliet extension
-bool IsJoliet( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & JOLIET) ? false : true; }
+  bool IsJoliet( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & JOLIET) ? false : true; }
   // Joliet extension level
   int GetJolietLevel( int nTrack ) { return m_ti[nTrack - 1].nJolietLevel; }
   // ISO filesystem size
   int GetIsoSize( int nTrack ) { return m_ti[nTrack - 1].isofs_size; }
   // CD-ROM with rockridge extensions
-bool IsRockridge( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & ROCKRIDGE) ? false : true; }
+  bool IsRockridge( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & ROCKRIDGE) ? false : true; }
 
   // CD-ROM with CD-RTOS and ISO 9660 filesystem
   bool IsIso9660Interactive( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660_INTERACTIVE); }
@@ -184,33 +184,33 @@ bool IsRockridge( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & ROCKRIDGE) ?
   bool IsMixedMode( int nTrack ) { return (m_nFirstData == 1 && m_nNumAudio > 0); }
 
   // CD-ROM with XA sectors
-bool IsXA( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & XA) ? false : true; }
+  bool IsXA( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & XA) ? false : true; }
 
   // Multisession CD-ROM
-bool IsMultiSession( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & MULTISESSION) ? false : true; }
+  bool IsMultiSession( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & MULTISESSION) ? false : true; }
   // Gets multisession offset
   int GetMultisessionOffset( int nTrack ) { return m_ti[nTrack - 1].ms_offset; }
 
   // Hidden Track on Audio CD
-bool IsHiddenTrack( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & HIDDEN_TRACK) ? false : true; }
+  bool IsHiddenTrack( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & HIDDEN_TRACK) ? false : true; }
 
   // Photo CD, with audiotracks > 0 Portfolio Photo CD
-bool IsPhotoCd( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & PHOTO_CD) ? false : true; }
+  bool IsPhotoCd( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & PHOTO_CD) ? false : true; }
 
   // CD-ROM with Commodore CDTV
-bool IsCdTv( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CDTV) ? false : true; }
+  bool IsCdTv( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CDTV) ? false : true; }
 
   // CD-Plus/Extra
   bool IsCDExtra( int nTrack ) { return (m_nFirstData > 1); }
 
   // Bootable CD
-bool IsBootable( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & BOOTABLE) ? false : true; }
+  bool IsBootable( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & BOOTABLE) ? false : true; }
 
   // Video CD
   bool IsVideoCd( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & VIDEOCDI && m_nNumAudio == 0); }
 
   // Chaoji Video CD
-bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? false : true; }
+  bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? false : true; }
 
   // Audio Track
   bool IsAudio( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_NO_DATA); }
@@ -228,7 +228,7 @@ bool IsChaojiVideoCD( int nTrack ) { return (m_ti[nTrack - 1].nfsInfo & CVD) ? f
   void SetDataTrackCount( int nCount ) { m_nNumData = nCount; }
   void SetAudioTrackCount( int nCount ) { m_nNumAudio = nCount; }
   void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99 ) m_ti[nTrack - 1] = nInfo; }
-void SetDiscCDTextInformation( xbmc_cdtext_t cdtext ) { m_cdtext = cdtext; }
+  void SetDiscCDTextInformation( xbmc_cdtext_t cdtext ) { m_cdtext = cdtext; }
 
   void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
   void SetDiscLength( int nLength ) { m_nLength = nLength; }
