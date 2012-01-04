@@ -1189,8 +1189,9 @@ else
     AC_MSG_NOTICE($libusb_disabled)
   else
     if echo "$ARCH" | grep -q freebsd ; then
-      use_libusb="yes"
-      USB_LIBS="-lusb"
+      AC_CHECK_LIB([usb],[main],
+	  	[use_libusb="yes";USB_LIBS="-lusb"],
+		[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
     elif test "$use_libusb" = "auto"; then
       PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
     elif test "$use_libusb" = "yes"; then
