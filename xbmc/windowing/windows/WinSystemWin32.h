@@ -183,6 +183,7 @@ protected:
   HICON m_hIcon;
   std::vector<MONITOR_DETAILS> m_MonitorsInfo;
   int m_nPrimary;
+  bool m_ValidWindowedPosition;
 };
 
 extern HWND g_hWnd;
