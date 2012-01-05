@@ -129,9 +129,6 @@ static void x_mem_src (j_decompress_ptr cinfo, unsigned char * inbuffer, unsigne
 
 CJpegIO::CJpegIO()
 {
-  m_minx = 0;
-  m_miny = 0;
-  m_imgsize = 0;
   m_width  = 0;
   m_height = 0;
   m_orientation = 0;
@@ -150,34 +147,47 @@ void CJpegIO::Close()
   delete [] m_inputBuff;
 }
 
-bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny)
+bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny, bool read)
 {
   m_texturePath = texturePath;
-  m_minx = minx;
-  m_miny = miny;
+  unsigned int imgsize = 0;
 
   XFILE::CFile file;
   if (file.Open(m_texturePath.c_str(), 0))
   {
-    m_imgsize = (unsigned int)file.GetLength();
-    m_inputBuff = new unsigned char[m_imgsize];
-    m_inputBuffSize = file.Read(m_inputBuff, m_imgsize);
+    imgsize = (unsigned int)file.GetLength();
+    m_inputBuff = new unsigned char[imgsize];
+    m_inputBuffSize = file.Read(m_inputBuff, imgsize);
     file.Close();
 
-    if ((m_imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
+    if ((imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
       return false;
   }
   else
     return false;
 
+  if (!read)
+    return true;
+
+  if (Read(m_inputBuff, m_inputBuffSize, minx, miny))
+    return true;
+  return false;
+}
+
+bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny)
+{
   struct my_error_mgr jerr;
   m_cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.pub.error_exit = jpeg_error_exit;
+
+  if (buffer == NULL || !bufSize )
+    return false;
+
   jpeg_create_decompress(&m_cinfo);
 #if JPEG_LIB_VERSION < 80
-  x_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
+  x_mem_src(&m_cinfo, buffer, bufSize);
 #else
-  jpeg_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
+  jpeg_mem_src(&m_cinfo, buffer, bufSize);
 #endif
 
   if (setjmp(jerr.setjmp_buffer))
@@ -197,10 +207,10 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
     If the res is greater than the one desired, use that one since there's no need
     to decode a bigger one just to squish it back down. If the res is greater than
     the gpu can hold, use the previous one.*/
-    if (m_minx == 0 || m_miny == 0)
+    if (minx == 0 || miny == 0)
     {
-      m_minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-      m_miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+      minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
+      miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
     }
     m_cinfo.scale_denom = 8;
     m_cinfo.out_color_space = JCS_RGB;
@@ -213,13 +223,12 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
         m_cinfo.scale_num--;
         break;
       }
-      if (m_cinfo.output_width >= m_minx && m_cinfo.output_height >= m_miny)
+      if (m_cinfo.output_width >= minx && m_cinfo.output_height >= miny)
         break;
     }
     jpeg_calc_output_dimensions(&m_cinfo);
     m_width  = m_cinfo.output_width;
     m_height = m_cinfo.output_height;
-
 
     if (m_cinfo.marker_list)
       m_orientation = GetExifOrientation(m_cinfo.marker_list->data, m_cinfo.marker_list->data_length);
