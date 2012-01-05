@@ -116,6 +116,7 @@ CVDPAU::CVDPAU()
     outputSurfaces[i] = VDP_INVALID_HANDLE;
 
   videoMixer = VDP_INVALID_HANDLE;
+  m_BlackBar = NULL;
 
   upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
@@ -969,6 +970,11 @@ bool CVDPAU::ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame)
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
 
+  // create 3 pitches of black lines needed for clipping top
+  // and bottom lines when de-interlacing
+  m_BlackBar = new uint32_t[3*OutWidth];
+  memset(m_BlackBar, 0, 3*OutWidth*sizeof(uint32_t));
+
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = presentSurface = VDP_INVALID_HANDLE;
   videoMixer = VDP_INVALID_HANDLE;
@@ -1026,6 +1032,12 @@ bool CVDPAU::FiniOutputMethod()
     vdp_st = vdp_video_mixer_destroy(videoMixer);
     videoMixer = VDP_INVALID_HANDLE;
     if (CheckStatus(vdp_st, __LINE__));
+  }
+
+  if (m_BlackBar)
+  {
+    delete [] m_BlackBar;
+    m_BlackBar = NULL;
   }
 
   while (!m_DVDVideoPics.empty())
@@ -1489,6 +1501,29 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   }
   else
   {
+    // in order to clip top and bottom lines when de-interlacing
+    // we black those lines as a work around for not working
+    // background colour using the mixer
+    // pixel perfect is preferred over overscanning or zooming
+
+    VdpRect clipRect = outRectVid;
+    clipRect.y1 = clipRect.y0 + 2;
+    uint32_t *data[] = {m_BlackBar};
+    uint32_t pitches[] = {outRectVid.x1};
+    vdp_st = vdp_output_surface_put_bits_native(outputSurface,
+                                        (void**)data,
+                                        pitches,
+                                        &clipRect);
+    CheckStatus(vdp_st, __LINE__);
+
+    clipRect = outRectVid;
+    clipRect.y0 = clipRect.y1 - 2;
+    vdp_st = vdp_output_surface_put_bits_native(outputSurface,
+                                        (void**)data,
+                                        pitches,
+                                        &clipRect);
+    CheckStatus(vdp_st, __LINE__);
+
     if(m_mixerstep == 1)
       return VC_PICTURE;
     else

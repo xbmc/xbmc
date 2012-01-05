@@ -208,6 +208,7 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
+  uint32_t *m_BlackBar;
 
 
   VdpVideoMixerPictureStructure m_mixerfield;
