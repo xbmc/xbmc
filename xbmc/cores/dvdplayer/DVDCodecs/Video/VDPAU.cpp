@@ -1562,6 +1562,7 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
     {
       picture->dts = DVD_NOPTS_VALUE;
       picture->pts = DVD_NOPTS_VALUE;
+      picture->iFlags |= DVP_FLAG_IGNORE_PTS;
     }
   }
   return true;
