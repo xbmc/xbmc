@@ -47,8 +47,11 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int id = (int)parameterObject["movieid"].asInteger();
-  CScraperUrl pURL;
-  pURL.m_xml = parameterObject["url"].asString();
+  CScraperUrl pURL(parameterObject["url"].asString());
+
+  pURL.strId = parameterObject["imdb"].asString();
+
+  /*pURL.m_url.push(parameterObject["url"].asString());*/
   
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -65,16 +68,29 @@ JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method,
 
   CFileItemList list;
 
-  CFileItemPtr newItem(new CFileItem(infos));
-  list.Add(newItem);
+  CFileItemPtr item(new CFileItem(infos));
+  list.Add(item);
+  CStdString strPath = item->GetPath();
+ 
+  CStdString path;
+  URIUtils::GetDirectory(strPath, path);
+  list.SetPath(path);
   
-  /* set the retrieve movie info params*/ 
-  /*ADDON::ScraperPtr scraper;*/
-  //scraper = videodatabase.GetScraperForPath(Item->strPath);
+  /*Need to delete item for rescapping */
+  videodatabase.DeleteMovie(item->GetPath());
   
   /*call it */
   VIDEO::CVideoInfoScanner myVideo;
   bool ret = myVideo.RetrieveVideoInfo(list, false, CONTENT_MOVIES, false, &pURL, false, NULL);
+
+  /*CVideoInfoTag movieDetails;
+  videodatabase.GetMovieInfo(item->GetPath(),movieDetails);
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+  *item->GetVideoInfoTag() = movieDetails;*/
+  
+  /* need to get art and cast to be fixed*/
+ /*yVideo.GetArtwork(item.get(), CONTENT_MOVIES, false, false, NULL);*/
+
 
   /* check if success and return*/
   return ACK;
