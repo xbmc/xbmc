@@ -125,6 +125,109 @@ static void x_mem_src (j_decompress_ptr cinfo, unsigned char * inbuffer, unsigne
   src->bytes_in_buffer = (size_t) insize;
   src->next_input_byte = (JOCTET *) inbuffer;
 }
+
+#define OUTPUT_BUF_SIZE  4096
+typedef struct {
+  struct jpeg_destination_mgr pub; /* public fields */
+
+  unsigned char ** outbuffer;   /* target buffer */
+  unsigned long * outsize;
+  unsigned char * newbuffer;    /* newly allocated buffer */
+  JOCTET * buffer;              /* start of buffer */
+  size_t bufsize;
+} x_mem_destination_mgr;
+
+typedef x_mem_destination_mgr * x_mem_dest_ptr;
+
+static void x_init_mem_destination (j_compress_ptr cinfo)
+{
+  /* no work necessary here */
+}
+
+static boolean x_empty_mem_output_buffer (j_compress_ptr cinfo)
+{
+  size_t nextsize;
+  JOCTET * nextbuffer;
+  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
+
+  /* Try to allocate new buffer with double size */
+  nextsize = dest->bufsize * 2;
+  nextbuffer = (JOCTET*) malloc(nextsize);
+
+  if (nextbuffer == NULL)
+  {
+    (cinfo)->err->msg_code = 0;
+    (cinfo)->err->msg_parm.i[0] = 10;
+    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+  }
+
+  memcpy(nextbuffer, dest->buffer, dest->bufsize);
+
+  if (dest->newbuffer != NULL)
+    free(dest->newbuffer);
+
+  dest->newbuffer = nextbuffer;
+
+  dest->pub.next_output_byte = nextbuffer + dest->bufsize;
+  dest->pub.free_in_buffer = dest->bufsize;
+
+  dest->buffer = nextbuffer;
+  dest->bufsize = nextsize;
+
+  return TRUE;
+}
+
+static void x_term_mem_destination (j_compress_ptr cinfo)
+{
+  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
+
+  *dest->outbuffer = dest->buffer;
+  *dest->outsize = dest->bufsize - dest->pub.free_in_buffer;
+}
+
+static void x_jpeg_mem_dest (j_compress_ptr cinfo,
+               unsigned char ** outbuffer, unsigned long * outsize)
+{
+  x_mem_dest_ptr dest;
+
+  if (outbuffer == NULL || outsize == NULL)     /* sanity check */
+  {
+    (cinfo)->err->msg_code = 0;
+    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+  }
+
+  /* The destination object is made permanent so that multiple JPEG images
+   * can be written to the same buffer without re-executing jpeg_mem_dest.
+   */
+  if (cinfo->dest == NULL) {    /* first time for this JPEG object? */
+    cinfo->dest = (struct jpeg_destination_mgr *)
+      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
+                                  sizeof(x_mem_destination_mgr));
+  }
+
+  dest = (x_mem_dest_ptr) cinfo->dest;
+  dest->pub.init_destination = x_init_mem_destination;
+  dest->pub.empty_output_buffer = x_empty_mem_output_buffer;
+  dest->pub.term_destination = x_term_mem_destination;
+  dest->outbuffer = outbuffer;
+  dest->outsize = outsize;
+  dest->newbuffer = NULL;
+
+  if (*outbuffer == NULL || *outsize == 0) {
+    /* Allocate initial buffer */
+    dest->newbuffer = *outbuffer = (unsigned char*)malloc(OUTPUT_BUF_SIZE);
+    if (dest->newbuffer == NULL)
+    {
+      (cinfo)->err->msg_code = 0;
+      (cinfo)->err->msg_parm.i[0] = 10;
+      (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+    }
+    *outsize = OUTPUT_BUF_SIZE;
+  }
+
+  dest->pub.next_output_byte = dest->buffer = *outbuffer;
+  dest->pub.free_in_buffer = dest->bufsize = *outsize;
+}
 #endif
 
 CJpegIO::CJpegIO()
@@ -290,6 +393,127 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
   }
   jpeg_destroy_decompress(&m_cinfo);
   return true;
+}
+
+bool CJpegIO::CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif)
+{
+  //Copy sourceFile to buffer, pass to CreateThumbnailFromMemory for decode+re-encode
+  if (!Open(sourceFile, minx, miny, false))
+    return false;
+
+  return CreateThumbnailFromMemory(m_inputBuff, m_inputBuffSize, destFile, minx, miny);
+}
+
+bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny)
+{
+  //Decode a jpeg residing in buffer, pass to CreateThumbnailFromSurface for re-encode
+  unsigned int pitch = 0;
+  unsigned char *sourceBuf = NULL;
+
+  if (!Read(buffer, bufSize, minx, miny))
+    return false;
+  pitch = Width() * 3;
+  sourceBuf = new unsigned char [Height() * pitch];
+
+  if (!Decode(sourceBuf,pitch,XB_FMT_RGB8))
+  {
+    delete [] sourceBuf;
+    return false;
+  }
+  if (!CreateThumbnailFromSurface(sourceBuf, Width(), Height() , XB_FMT_RGB8, pitch, destFile))
+  {
+    delete [] sourceBuf;
+    return false;
+  }
+  delete [] sourceBuf;
+  return true;
+}
+
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile)
+{
+  //Encode raw data from buffer, save to destFile
+  struct jpeg_compress_struct cinfo;
+  struct my_error_mgr jerr;
+  JSAMPROW row_pointer[1];
+  long unsigned int outBufSize = 0;
+  unsigned char* result = new unsigned char [(width * height)]; //Initial buffer. Grows as-needed.
+  unsigned char* src = buffer;
+  unsigned char* rgbbuf, *src2, *dst2;
+
+  if(format == XB_FMT_RGB8)
+  {
+    rgbbuf = buffer;
+  }
+  else if(format == XB_FMT_A8R8G8B8)
+  {
+    // create a copy for bgra -> rgb.
+    rgbbuf = new unsigned char [(width * height * 3)];
+    unsigned char* dst = rgbbuf;
+    for (unsigned int y = 0; y < height; y++)
+    {
+      dst2 = dst;
+      src2 = src;
+      for (unsigned int x = 0; x < width; x++, src2 += 4)
+      {
+        *dst2++ = src2[2];
+        *dst2++ = src2[1];
+        *dst2++ = src2[0];
+      }
+      dst += width * 3;
+      src += pitch;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "JpegIO::CreateThumbnailFromSurface Unsupported format");
+    return false;
+  }
+
+  cinfo.err = jpeg_std_error(&jerr.pub);
+  jerr.pub.error_exit = jpeg_error_exit;
+  jpeg_create_compress(&cinfo);
+
+  if (setjmp(jerr.setjmp_buffer))
+  {
+    jpeg_destroy_compress(&cinfo);
+    delete [] result;
+    if(format != XB_FMT_RGB8)
+      delete [] rgbbuf;
+    return false;
+  }
+  else
+  {
+    x_jpeg_mem_dest(&cinfo, &result, &outBufSize);
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = 3;
+    cinfo.in_color_space = JCS_RGB;
+    jpeg_set_defaults(&cinfo);
+    jpeg_set_quality(&cinfo, 90, TRUE);
+    jpeg_start_compress(&cinfo, TRUE);
+
+    while (cinfo.next_scanline < cinfo.image_height)
+    {
+      row_pointer[0] = &rgbbuf[cinfo.next_scanline * width * 3];
+      jpeg_write_scanlines(&cinfo, row_pointer, 1);
+    }
+
+    jpeg_finish_compress(&cinfo);
+    jpeg_destroy_compress(&cinfo);
+  }
+  if(format != XB_FMT_RGB8)
+    delete [] rgbbuf;
+
+  XFILE::CFile file;
+  if (file.OpenForWrite(destFile, true))
+  {
+    file.Write(result, outBufSize);
+    file.Close();
+    delete [] result;
+    return true;
+  }
+  delete [] result;
+  return false;
 }
 
 // override libjpeg's error function to avoid an exit() call
