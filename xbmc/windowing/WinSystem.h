@@ -91,6 +91,7 @@ public:
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
   virtual int GetNumScreens() { return 0; }
+  virtual int GetCurrentScreen() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
