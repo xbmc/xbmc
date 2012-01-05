@@ -202,9 +202,7 @@ bool cPVRClientForTheRecord::ShareErrorsFound(void)
         accessMsg = (char*) lpMsgBuf;
         LocalFree(lpMsgBuf);
       }
-//#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
-//      std::string tmppath = "/tmp/";
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
       std::string CIFSname = sharename;
       std::string SMBPrefix = "smb://";
       if (g_szUser.length() > 0)
