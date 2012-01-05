@@ -26,6 +26,13 @@
 #include "threads/CriticalSection.h"
 #include <dns_sd.h>
 
+typedef enum
+{
+  DNSServiceStatus_Unknown,
+  DNSServiceStatus_Down,
+  DNSServiceStatus_Up
+} DNSServiceStatus;
+
 class CZeroconfWIN : public CZeroconf
 {
 public:
@@ -46,7 +53,7 @@ protected:
 private:
 
   static void DNSSD_API registerCallback(DNSServiceRef sdref, const DNSServiceFlags flags, DNSServiceErrorType errorCode, const char *name, const char *regtype, const char *domain, void *context);
-
+  static DNSServiceStatus IsmDNSResponderUp();
 
   //lock + data (accessed from runloop(main thread) + the rest)
   CCriticalSection m_data_guard;
