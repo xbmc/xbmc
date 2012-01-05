@@ -49,7 +49,7 @@ JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method,
   int id = (int)parameterObject["movieid"].asInteger();
   CScraperUrl pURL(parameterObject["url"].asString());
 
-  pURL.strId = parameterObject["imdb"].asString();
+  pURL.strId = parameterObject["imdbnumber"].asString();
 
   /*pURL.m_url.push(parameterObject["url"].asString());*/
   
