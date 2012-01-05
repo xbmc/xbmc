@@ -48,10 +48,7 @@ JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method,
 {
   int id = (int)parameterObject["movieid"].asInteger();
   CScraperUrl pURL(parameterObject["url"].asString());
-
   pURL.strId = parameterObject["imdbnumber"].asString();
-
-  /*pURL.m_url.push(parameterObject["url"].asString());*/
   
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -79,22 +76,14 @@ JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method,
   /*Need to delete item for rescapping */
   videodatabase.DeleteMovie(item->GetPath());
   
-  /*call it */
+  /*Retreive the details */
   VIDEO::CVideoInfoScanner myVideo;
   bool ret = myVideo.RetrieveVideoInfo(list, false, CONTENT_MOVIES, false, &pURL, false, NULL);
 
-  /*CVideoInfoTag movieDetails;
-  videodatabase.GetMovieInfo(item->GetPath(),movieDetails);
-  CUtil::DeleteVideoDatabaseDirectoryCache();
-  *item->GetVideoInfoTag() = movieDetails;*/
-  
-  /* need to get art and cast to be fixed*/
- /*yVideo.GetArtwork(item.get(), CONTENT_MOVIES, false, false, NULL);*/
-
-
-  /* check if success and return*/
-  return ACK;
-
+  if (ret)
+    return ACK;
+  else
+    return FailedToExecute;
 }
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
