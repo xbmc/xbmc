@@ -344,6 +344,16 @@ const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
   return m_MonitorsInfo[m_nPrimary];
 }
 
+int CWinSystemWin32::GetCurrentScreen()
+{
+  HMONITOR hMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY);
+  for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
+    if (m_MonitorsInfo[monitor].hMonitor == hMonitor)
+      return m_MonitorsInfo[monitor].ScreenNumber;
+  // primary as fallback - v. strange if this ever happens
+  return 0;
+}
+
 RECT CWinSystemWin32::ScreenRect(int screen)
 {
   const MONITOR_DETAILS &details = GetMonitor(screen);
