@@ -11,6 +11,7 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <minversion>20000</minversion>
+    <summary lang="bg">Библиотека за сваляне на инф. от IMDB</summary>
     <summary lang="en">IMDB Scraper Library</summary>
     <summary lang="fi">IMDB elokuvatietojen lataaja</summary>
     <summary lang="hu">IMDB leolvasó-könyvtár</summary>
@@ -19,6 +20,7 @@
     <summary lang="pl">Scraper IMDb</summary>
     <summary lang="pt">Scraper de filmes IMDb</summary>
     <summary lang="se">Skrapa för IMDB</summary>
+    <description lang="bg">Сваля информация за филми от www.imdb.com</description>
     <description lang="en">Download Movie information from www.imdb.com</description>
     <description lang="fi">Lataa elokuvatietoja osoitteesta www.imdb.com</description>
     <description lang="hu">Film információk letöltése a www.imdb.com webhelyről</description>

@@ -12,6 +12,7 @@
     library_linux="Euphoria.xbs"
     library_osx="Euphoria.xbs"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Колкото халюциногенен може да бъде един скрийнсейвър</summary>
     <summary lang="en">About as psychedelic as screensavers get</summary>
     <summary lang="es">El más psicodélico de los salvapantallas</summary>
     <summary lang="fi">Mahdollisesti kaikkein psykedeelisin näytönsäästäjä</summary>
@@ -24,6 +25,7 @@
     <summary lang="ru">Настолько психаделично, насколько такой может быть заставка</summary>
     <summary lang="se">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
     <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
+    <description lang="bg">Точно колкото може един скрийнсейвър. mogumbo смяташе, че неговият Plasma saver е върхът, но този е по-смущаващ. Препоръчвам ви да вземете една торбичка за повръщане, преди да зазяпате в скрийнсейвъра по-дълго отколкото трябва.</description>
     <description lang="en">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="es">Este es probablemente el más psicodélico de los salvapantallas. mogumbo (el autor) pensó que su protector 'Plasma' estaba en lo mas alto, pero éste es más repugnante. Será mejor que cogas una bolsa para los mareos si vas a estar mucho tiempo viéndolo.</description>
     <description lang="fi">Tämä on mahdollisesti niin psykedeelinen kuin vain näytönsäästäjä voi olla. mogumbo luuli, että hänen Plasma-näytönäästäjänsä oli asteikon huipulla, mutta tämä ohittaa senkin. Oksennuspussin hakeminen on suositeltavaa ennen pitkäaikaista tuijottamista.</description>
