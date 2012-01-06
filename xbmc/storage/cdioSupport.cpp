@@ -643,23 +643,20 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
   return ret;
 }
 
-void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
+void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 {
   CSingleLock lock(*m_cdio);
 
   // Get the CD-Text , if any
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
 
-  cdtext_init(&pti->cdtext);
-
   if (pcdtext == NULL)
     return ;
 
+  // same ids used in libcdio and for our structure + the ids are consecutive make this copy loop safe.
   for (int i = 0; i < MAX_CDTEXT_FIELDS; i++)
-  {
     if (pcdtext->field[i])
-      pti->cdtext.field[i] = strdup(pcdtext->field[i]);
-  }
+      xcdt[(cdtext_field_t)i] = pcdtext->field[(cdtext_field_t)i];
 }
 
 CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
@@ -720,7 +717,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.isofs_size = 0;
       ti.nJolietLevel = 0;
       ti.nFrames = 0;
-      cdtext_init(&ti.cdtext);
       info->SetTrackInformation( i, ti );
       CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.", i);
       delete info;
@@ -728,9 +724,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       return NULL;
     }
 
-    trackinfo ti_0, ti;
-    cdtext_init(&ti_0.cdtext);
-    cdtext_init(&ti.cdtext);
+    trackinfo ti;
     if (bIsCDRom && TRACK_FORMAT_AUDIO == ::cdio_get_track_format(cdio, i))
     {
       m_nNumAudio++;
@@ -749,12 +743,13 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       // Make sure that we have the Disc related info available
       if (i == 1)
       {
-        GetCdTextInfo(&ti_0, 0);
-        info->SetDiscCDTextInformation( ti_0.cdtext );
+        xbmc_cdtext_t xcdt;
+        GetCdTextInfo(xcdt, 0);
+        info->SetDiscCDTextInformation( xcdt );
       }
 
       // Get this tracks info
-      GetCdTextInfo(&ti, i);
+      GetCdTextInfo(ti.cdtext, i);
     }
     else
     {
@@ -819,15 +814,16 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       switch ( track_format )
       {
       case TRACK_FORMAT_AUDIO:
-        trackinfo ti;
-        ti.nfsInfo = FS_NO_DATA;
-        m_nFs = FS_NO_DATA;
-        ti.ms_offset = 0;
-        ti.isofs_size = 0;
-        ti.nJolietLevel = 0;
-        ti.nFrames = ::cdio_get_track_lba(cdio, i);
-        cdtext_init(&ti.cdtext);
-        info->SetTrackInformation( i + 1, ti );
+        {
+          trackinfo ti;
+          ti.nfsInfo = FS_NO_DATA;
+          m_nFs = FS_NO_DATA;
+          ti.ms_offset = 0;
+          ti.isofs_size = 0;
+          ti.nJolietLevel = 0;
+          ti.nFrames = ::cdio_get_track_lba(cdio, i);
+          info->SetTrackInformation( i + 1, ti );
+        }
       case TRACK_FORMAT_ERROR:
         break;
       case TRACK_FORMAT_CDI:
@@ -849,7 +845,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       m_nFs = GuessFilesystem(m_nStartTrack, i);
       trackinfo ti;
-      cdtext_init(&ti.cdtext);
       ti.nfsInfo = m_nFs;
       // valid UDF version for xbox
       if ((m_nFs & FS_MASK) == FS_UDF)
