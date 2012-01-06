@@ -29,6 +29,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "Application.h"
+#include "Favourites.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
@@ -604,4 +605,13 @@ void CAddonUnInstallJob::OnPostUnInstall()
     database.Open();
     database.DeleteRepository(m_addon->ID());
   }
+
+  CFileItemList items;
+  CFavourites::Load(items);
+  for (int i=0; i < items.Size(); ++i)
+  {
+    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+      items.Remove(items[i].get());
+  }
+  CFavourites::Save(items);
 }
