@@ -150,7 +150,7 @@ void CGUIDialogVideoBookmarks::Update()
   videoDatabase.GetBookMarksForFile(path, m_bookmarks, CBookmark::EPISODE, true);
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(path, resumemark) )
-    m_bookmarks.insert(m_bookmarks.begin(), resumemark);
+    m_bookmarks.push_back(resumemark);
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
