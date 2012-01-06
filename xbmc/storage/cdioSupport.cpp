@@ -675,10 +675,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
-    char buf[1024];
-    sprintf(buf, "%s: Error in automatically selecting driver with input\n",
-            __FUNCTION__);
-    OutputDebugString( buf );
+    CLog::Log(LOGERROR, "%s: Error in automatically selecting driver with input\n", __FUNCTION__);
     return NULL;
   }
 
@@ -717,7 +714,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
     msf_t msf;
     if (bIsCDRom && !::cdio_get_track_msf(cdio, i, &msf))
     {
-      char buf[1024];
       trackinfo ti;
       ti.nfsInfo = FS_UNKNOWN;
       ti.ms_offset = 0;
@@ -726,8 +722,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.nFrames = 0;
       cdtext_init(&ti.cdtext);
       info->SetTrackInformation( i, ti );
-      sprintf( buf, "cdio_track_msf for track %i failed, I give up.\n", i);
-      OutputDebugString( buf );
+      CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.\n", i);
       delete info;
       ::cdio_destroy(cdio);
       return NULL;
@@ -785,7 +780,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   info->SetFirstAudioTrack( m_nFirstAudio );
   info->SetFirstDataTrack( m_nFirstData );
 
-  char buf[1024];
   CLog::Log(LOGINFO, "CD Analysis Report");
   CLog::Log(LOGINFO, STRONG);
 
@@ -807,10 +801,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       else
       {
         m_nFs &= ~FS_MASK; /* del filesystem info */
-        sprintf(buf, "Oops: %i unused sectors at start, "
-                "but hidden track check failed.\n",
-                m_nStartTrack);
-        OutputDebugString( buf );
+        CLog::Log(LOGDEBUG, "Oops: %i unused sectors at start, but hidden track check failed.\n", m_nStartTrack);
       }
     }
     PrintAnalysis(m_nFs, m_nNumAudio);
