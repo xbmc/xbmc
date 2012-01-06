@@ -606,12 +606,18 @@ void CAddonUnInstallJob::OnPostUnInstall()
     database.DeleteRepository(m_addon->ID());
   }
 
+  bool bSave(false);
   CFileItemList items;
   CFavourites::Load(items);
   for (int i=0; i < items.Size(); ++i)
   {
     if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    {
       items.Remove(items[i].get());
+      bSave = true;
+    }
   }
-  CFavourites::Save(items);
+
+  if (bSave)
+    CFavourites::Save(items);
 }
