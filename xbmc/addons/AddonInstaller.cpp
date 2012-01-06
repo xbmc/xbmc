@@ -527,6 +527,13 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     if (service)
       service->Start();
   }
+
+  if (m_addon->Type() == ADDON_REPOSITORY)
+  {
+    VECADDONS addons;
+    addons.push_back(m_addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+  }
 }
 
 void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
