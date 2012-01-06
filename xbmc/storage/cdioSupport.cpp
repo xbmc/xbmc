@@ -675,7 +675,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
-    CLog::Log(LOGERROR, "%s: Error in automatically selecting driver with input\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s: Error in automatically selecting driver with input", __FUNCTION__);
     return NULL;
   }
 
@@ -722,7 +722,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.nFrames = 0;
       cdtext_init(&ti.cdtext);
       info->SetTrackInformation( i, ti );
-      CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.\n", i);
+      CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.", i);
       delete info;
       ::cdio_destroy(cdio);
       return NULL;
@@ -801,7 +801,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       else
       {
         m_nFs &= ~FS_MASK; /* del filesystem info */
-        CLog::Log(LOGDEBUG, "Oops: %i unused sectors at start, but hidden track check failed.\n", m_nStartTrack);
+        CLog::Log(LOGDEBUG, "Oops: %i unused sectors at start, but hidden track check failed.", m_nStartTrack);
       }
     }
     PrintAnalysis(m_nFs, m_nNumAudio);
