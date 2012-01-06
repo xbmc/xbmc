@@ -43,6 +43,8 @@ CWinSystemX11GL::~CWinSystemX11GL()
 
 bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 {
+  X11Lock xlock(*this);
+
   CheckDisplayEvents();
 
   if(m_iVSyncMode == 3)
@@ -124,6 +126,8 @@ bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
+  X11Lock xlock(*this);
+
   /* turn of current setting first */
   if(m_glXSwapIntervalSGI)
     m_glXSwapIntervalSGI(0);
@@ -200,6 +204,8 @@ bool CWinSystemX11GL::IsExtSupported(const char* extension)
 
 bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
+  X11Lock xlock(*this);
+
   if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
 
@@ -246,6 +252,8 @@ bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, R
 
 bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
+  X11Lock xlock(*this);
+
   CWinSystemX11::ResizeWindow(newWidth, newHeight, newLeft, newTop);
   CRenderSystemGL::ResetRenderSystem(newWidth, newHeight, false, 0);
 
@@ -254,6 +262,8 @@ bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
 
 bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  X11Lock xlock(*this);
+
   CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
 

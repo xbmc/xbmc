@@ -412,7 +412,6 @@ int CVDPAU::Check(AVCodecContext* avctx)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
-    CSingleLock gLock(g_graphicsContext);
     CExclusiveLock lock(m_DecoderSection);
 
     FiniVDPAUOutput();
@@ -441,6 +440,8 @@ void CVDPAU::CheckFeatures()
 {
   if (videoMixer == VDP_INVALID_HANDLE)
   {
+    X11Lock xlock(g_Windowing);
+
     CLog::Log(LOGNOTICE, " (VDPAU) Creating the video mixer");
     // Creation of VideoMixer.
     VdpVideoMixerParameter parameters[] = {
@@ -673,6 +674,8 @@ void CVDPAU::SetDeinterlacing()
 
 void CVDPAU::InitVDPAUProcs()
 {
+  X11Lock xlock(g_Windowing);
+
   char* error;
 
   (void)dlerror();
@@ -690,7 +693,6 @@ void CVDPAU::InitVDPAUProcs()
 
   if (dl_vdp_device_create_x11)
   {
-    CSingleLock lock(g_graphicsContext);
     m_Display = g_Windowing.GetDisplay();
   }
 
@@ -779,6 +781,8 @@ void CVDPAU::InitVDPAUProcs()
 
 void CVDPAU::FiniVDPAUProcs()
 {
+  X11Lock xlock(g_Windowing);
+
   while (!m_videoSurfaces.empty())
   {
     vdpau_render_state *render = m_videoSurfaces.back();
@@ -931,6 +935,8 @@ bool CVDPAU::ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame)
 
   FiniOutputMethod();
 
+  X11Lock xlock(g_Windowing);
+
   MakePixmap(avctx->width,avctx->height);
 
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
@@ -979,6 +985,8 @@ bool CVDPAU::ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame)
 
 bool CVDPAU::FiniOutputMethod()
 {
+  X11Lock xlock(g_Windowing);
+
   VdpStatus vdp_st;
 
   if (vdp_flip_queue != VDP_INVALID_HANDLE)

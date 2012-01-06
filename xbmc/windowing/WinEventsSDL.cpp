@@ -216,8 +216,16 @@ bool CWinEventsSDL::MessagePump()
   SDL_Event event;
   bool ret = false;
 
-  while (SDL_PollEvent(&event))
+  while (1)
   {
+    {
+#if defined(HAS_GLX)
+      X11Lock xlock(g_Windowing);
+#endif
+      if (!SDL_PollEvent(&event))
+        break;
+    }
+
     switch(event.type)
     {
       case SDL_QUIT:
@@ -330,7 +338,14 @@ bool CWinEventsSDL::MessagePump()
 
       case SDL_MOUSEMOTION:
       {
-        if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
+        Uint8 state;
+        {
+#if defined(HAS_GLX)
+          X11Lock xlock(g_Windowing);
+#endif
+          state = SDL_GetAppState() & SDL_APPMOUSEFOCUS;
+        }
+        if (0 == state)
         {
           g_Mouse.SetActive(false);
 #if defined(__APPLE__)
