@@ -38,6 +38,20 @@ CZeroconfWIN::~CZeroconfWIN()
   doStop();
 }
 
+bool CZeroconfWIN::IsZCdaemonRunning()
+{
+  uint32_t version;
+  uint32_t size = sizeof(version);
+  DNSServiceErrorType err = DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion, &version, &size);
+  if(err != kDNSServiceErr_NoError)
+  {
+    CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
+    return false;
+  }
+  CLog::Log(LOGDEBUG,"CZeroconfWIN:Bonjour version is %d.%d\n", version / 10000, version / 100 % 100);
+  return true;
+}
 
 //methods to implement for concrete implementations
 bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
@@ -64,9 +78,6 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
   }
 
   DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
-
-  if(err != kDNSServiceErr_ServiceNotRunning)
-    DNSServiceProcessResult(netService);
   
   if (err != kDNSServiceErr_NoError)
   {
@@ -74,15 +85,15 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     if (netService)
       DNSServiceRefDeallocate(netService);
 
-    CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
-    if(err == kDNSServiceErr_ServiceNotRunning)
-    {
-      CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
-    }
+    CLog::Log(LOGERROR, __FUNCTION__  " DNSServiceRegister returned (error = %ld)\n", (int) err);
   } 
   else
   {
+    err = DNSServiceProcessResult(netService);
+
+    if (err != kDNSServiceErr_NoError)
+      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)\n", (int) err);
+
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
   }

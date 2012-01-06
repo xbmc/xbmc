@@ -43,6 +43,8 @@ protected:
 
   virtual void doStop();
 
+  bool IsZCdaemonRunning();
+
 private:
 
   static void DNSSD_API registerCallback(DNSServiceRef sdref, const DNSServiceFlags flags, DNSServiceErrorType errorCode, const char *name, const char *regtype, const char *domain, void *context);
