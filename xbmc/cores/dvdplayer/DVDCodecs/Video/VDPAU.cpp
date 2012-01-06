@@ -207,6 +207,16 @@ void CVDPAU::Close()
   FiniVDPAUOutput();
   FiniVDPAUProcs();
 
+  while (!m_videoSurfaces.empty())
+  {
+    vdpau_render_state *render = m_videoSurfaces.back();
+    m_videoSurfaces.pop_back();
+    if (render->bitstream_buffers_allocated)
+      m_dllAvUtil.av_freep(&render->bitstream_buffers);
+    render->bitstream_buffers_allocated = 0;
+    free(render);
+  }
+
   g_Windowing.Unregister(this);
   m_dllAvUtil.Unload();
 }
@@ -698,10 +708,13 @@ void CVDPAU::InitVDPAUProcs()
   VdpStatus vdp_st;
 
   // Create Device
+  // tested on 64bit Ubuntu 11.10 and it deadlocked without this
+  XLockDisplay(m_Display);
   vdp_st = dl_vdp_device_create_x11(m_Display, //x_display,
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
+  XUnlockDisplay(m_Display);
 
   CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",vdp_device,vdp_st);
   if (vdp_st != VDP_STATUS_OK)
@@ -779,16 +792,6 @@ void CVDPAU::InitVDPAUProcs()
 
 void CVDPAU::FiniVDPAUProcs()
 {
-  while (!m_videoSurfaces.empty())
-  {
-    vdpau_render_state *render = m_videoSurfaces.back();
-    m_videoSurfaces.pop_back();
-    if (render->bitstream_buffers_allocated)
-      m_dllAvUtil.av_freep(&render->bitstream_buffers);
-    render->bitstream_buffers_allocated = 0;
-    free(render);
-  }
-
   if (vdp_device == VDP_INVALID_HANDLE) return;
 
   VdpStatus vdp_st;
@@ -827,16 +830,14 @@ void CVDPAU::FiniVDPAUOutput()
     return;
   decoder = VDP_INVALID_HANDLE;
 
-  while (!m_videoSurfaces.empty())
+  for (unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
   {
-    vdpau_render_state *render = m_videoSurfaces.back();
-    m_videoSurfaces.pop_back();
-    if (render->bitstream_buffers_allocated)
-      m_dllAvUtil.av_freep(&render->bitstream_buffers);
-    render->bitstream_buffers_allocated = 0;
-    vdp_st = vdp_video_surface_destroy(render->surface);
-    render->surface = VDP_INVALID_HANDLE;
-    free(render);
+    vdpau_render_state *render = m_videoSurfaces[i];
+    if (render->surface != VDP_INVALID_HANDLE)
+    {
+      vdp_st = vdp_video_surface_destroy(render->surface);
+      render->surface = VDP_INVALID_HANDLE;
+    }
     if (CheckStatus(vdp_st, __LINE__))
       return;
   }
@@ -999,14 +1000,14 @@ bool CVDPAU::FiniOutputMethod()
   {
     CLog::Log(LOGDEBUG, "GLX: Destroying glPixmap");
     glXDestroyPixmap(m_Display, m_glPixmap);
-    m_glPixmap = NULL;
+    m_glPixmap = None;
   }
 
   if (m_Pixmap)
   {
     CLog::Log(LOGDEBUG, "GLX: Destroying XPixmap");
     XFreePixmap(m_Display, m_Pixmap);
-    m_Pixmap = NULL;
+    m_Pixmap = None;
   }
 
   outputSurface = presentSurface = VDP_INVALID_HANDLE;
@@ -1086,7 +1087,8 @@ bool CVDPAU::IsSurfaceValid(vdpau_render_state *render)
 {
   // find render state in queue
   bool found(false);
-  for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
+  unsigned int i;
+  for(i = 0; i < m_videoSurfaces.size(); ++i)
   {
     if(m_videoSurfaces[i] == render)
     {
@@ -1094,7 +1096,18 @@ bool CVDPAU::IsSurfaceValid(vdpau_render_state *render)
       break;
     }
   }
-  return found;
+  if (!found)
+  {
+    CLog::Log(LOGERROR,"%s - video surface not found", __FUNCTION__);
+    return false;
+  }
+  if (m_videoSurfaces[i]->surface == VDP_INVALID_HANDLE)
+  {
+    m_videoSurfaces[i]->state = 0;
+    return false;
+  }
+
+  return true;
 }
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
@@ -1140,11 +1153,17 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
       CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - calloc failed");
       return -1;
     }
+    render->surface = VDP_INVALID_HANDLE;
+    vdp->m_videoSurfaces.push_back(render);
+  }
+
+  if (render->surface == VDP_INVALID_HANDLE)
+  {
     vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
-                                           vdp->vdp_chroma_type,
-                                           avctx->coded_width,
-                                           avctx->coded_height,
-                                           &render->surface);
+                                         vdp->vdp_chroma_type,
+                                         avctx->coded_width,
+                                         avctx->coded_height,
+                                         &render->surface);
     vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
     {
@@ -1152,7 +1171,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
       CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
       return -1;
     }
-    vdp->m_videoSurfaces.push_back(render);
   }
 
   if (render == NULL)
