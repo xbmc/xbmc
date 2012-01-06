@@ -12,6 +12,7 @@
     library_linux="Solarwinds.xbs"
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Скрийнсейвър с частици, които очароват</summary>
     <summary lang="en">A mesmerizing particle effects screensaver</summary>
     <summary lang="es">Un salvapatallas con unos efectos de partículas fascinantes</summary>
     <summary lang="fi">Lumoava partikkelitehostenäytönsäästäjä</summary>
@@ -24,6 +25,7 @@
     <summary lang="ru">Завораживающий скринсейвер с эффектами частиц</summary>
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
     <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
+    <description lang="bg">Това е скрийнсейвър, който очарова с частиците си. Ще откриете, че можете да направите изключително голям брой различни модели.</description>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="es">Este es un salvapatallas con unos efectos de partículas fascinantes. Verá que puede obtener un número incríble de patrones diferentes.</description>
     <description lang="fi">Erittäin lumoava partikkelitehostenäytönsäästäjä. Tulet huomaamaan uskomattoman määrän erilaisia kuvioita.</description>

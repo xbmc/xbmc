@@ -11,6 +11,7 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <minversion>20000</minversion>
+    <summary lang="bg">Библиотека за сваляне на инф. от TMDb</summary>
     <summary lang="en">TMDb Scraper Library</summary>
     <summary lang="es">Scraper de peliculas de TMDb</summary>
     <summary lang="fi">TMDb elokuvatietojen lataajan kirjasto</summary>
@@ -23,6 +24,7 @@
     <summary lang="ru">Обработчик для TMDb</summary>
     <summary lang="se">Skrapebibliotek för TMDb</summary>
     <summary lang="zh">TMDb刮削器代码库</summary>
+    <description lang="bg">Сваля миниатюри и fanarts от www.themoviedb.org</description>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
     <description lang="es">Descarga posters y fanart de www.themoviedb.org</description>
     <description lang="fi">Lataa pienoiskuvia ja fanitaidetta www.themoviedb.org -sivustolta</description>

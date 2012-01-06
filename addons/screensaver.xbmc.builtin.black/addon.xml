@@ -5,6 +5,7 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="en">Screensaver that turns your screen black</summary>
     <summary lang="es">Un salvapantallas que pone la pantalla en negro</summary>
     <summary lang="de">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
@@ -19,6 +20,7 @@
     <summary lang="ru">Хранитель экрана который делает ваш экран чёрным</summary>
     <summary lang="se">Skärmsläckare som gör din skärm svart</summary>
     <summary lang="zh">黑屏屏幕保护程序</summary>
+    <description lang="bg">Black е просто скрийнсейвър, който ще направи екрана ви черен.</description>
     <description lang="en">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="es">Black es un sencillo salvapantallas que pone la pantalla en negro.</description>
     <description lang="de">Black ist ein einfacher Bildschirmschoner, welcher den Bildschirm schwarz abdunkelt</description>
