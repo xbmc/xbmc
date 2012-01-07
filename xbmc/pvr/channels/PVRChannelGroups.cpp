@@ -59,6 +59,9 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::GetGroupsFromClients(void)
 {
+  if (! g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
+    return true;
+
   /* get new groups from add-ons */
   PVR_ERROR error;
   CPVRChannelGroups groupsTmp(m_bRadio);
