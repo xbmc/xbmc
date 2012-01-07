@@ -184,15 +184,18 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannel &channel)
   {
     realChannel->SetHidden(true, true);
     ++m_iHiddenChannels;
-
-    /* renumber this list */
-    Renumber();
-
-    /* and persist */
-    return Persist();
+  }
+  else
+  {
+    realChannel->SetHidden(false, true);
+    --m_iHiddenChannels;
   }
 
-  return true;
+  /* renumber this list */
+  Renumber();
+
+  /* and persist */
+  return Persist();
 }
 
 bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
