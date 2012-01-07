@@ -1273,7 +1273,7 @@ bool CApplication::StartWebServer()
       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1299,7 +1299,7 @@ void CApplication::StopWebServer()
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("servers.webserver");
-      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
+      CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-http");
       CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
@@ -1370,7 +1370,7 @@ bool CApplication::StartJSONRPCServer()
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
       std::map<std::string, std::string> txt;  
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc-tcp._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
@@ -1385,7 +1385,7 @@ void CApplication::StopJSONRPCServer(bool bWait)
 {
 #ifdef HAS_JSONRPC
   CTCPServer::StopServer(bWait);
-  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
+  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");
 #endif
 }
 
