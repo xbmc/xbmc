@@ -40,6 +40,7 @@
 #include <cdio/cdio.h>
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
+#include <map>
 
 namespace MEDIA_DETECT
 {
