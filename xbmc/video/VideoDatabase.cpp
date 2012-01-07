@@ -2703,7 +2703,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 
   bool retVal = false;
 
-  dbiplus::Dataset *pDS = m_pDB->CreateDataset();
+  auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
   CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
   pDS->query(strSQL);
 
