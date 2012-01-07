@@ -77,7 +77,11 @@ public:
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap)=0;
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,105,0)
+  virtual ByteIOContext *avio_alloc_context(unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
+#else
   virtual int init_put_byte(ByteIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
+#endif
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                             offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
@@ -148,10 +152,18 @@ public:
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap) { return ::av_open_input_file(ic_ptr, filename, fmt, buf_size, ap); }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap) { return ::av_open_input_stream(ic_ptr, pb, filename, fmt, ap); }
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,105,0)
+  // API changed on 2011-02-20, version changed on 2011-04-03
+  virtual ByteIOContext *avio_alloc_context(unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
+                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+                            offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::avio_alloc_context(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
+#else
   virtual int init_put_byte(ByteIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                             offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
+#endif
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,98,0)
@@ -167,6 +179,16 @@ public:
   virtual int url_open_dyn_buf(ByteIOContext **s) { return ::url_open_dyn_buf(s); }
   virtual int url_close_dyn_buf(ByteIOContext *s, uint8_t **pbuffer) { return ::url_close_dyn_buf(s, pbuffer); }
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,105,0)
+  // API changed on 2011-02-20, version changed on 2011-04-03
+  virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::avio_read(s, buf, size); }
+  virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::avio_read(s, buf, size); }
+  virtual void put_byte(ByteIOContext *s, int b) { ::avio_w8(s, b); }
+  virtual void put_buffer(ByteIOContext *s, const unsigned char *buf, int size) { ::avio_write(s, buf, size); }
+  virtual void put_be24(ByteIOContext *s, unsigned int val) { ::avio_wb24(s, val); }
+  virtual void put_be32(ByteIOContext *s, unsigned int val) { ::avio_wb32(s, val); }
+  virtual void put_be16(ByteIOContext *s, unsigned int val) { ::avio_wb16(s, val); }
+#else
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
   virtual void put_byte(ByteIOContext *s, int b) { ::put_byte(s, b); }
@@ -174,6 +196,7 @@ public:
   virtual void put_be24(ByteIOContext *s, unsigned int val) { ::put_be24(s, val); }
   virtual void put_be32(ByteIOContext *s, unsigned int val) { ::put_be32(s, val); }
   virtual void put_be16(ByteIOContext *s, unsigned int val) { ::put_be16(s, val); }
+#endif
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
   virtual AVStream *av_new_stream(AVFormatContext *s, int id) { return ::av_new_stream(s, id); }
 #if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
@@ -241,7 +264,11 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, ByteIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, ByteIOContext*, unsigned int)
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,105,0)
+  DEFINE_METHOD7(ByteIOContext *, avio_alloc_context, (unsigned char *p2, int p3, int p4, void *p5, 
+#else
   DEFINE_METHOD8(int, init_put_byte, (ByteIOContext *p1, unsigned char *p2, int p3, int p4, void *p5, 
+#endif
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p7)(void *opaque, uint8_t *buf, int buf_size),
                   offset_t (*p8)(void *opaque, offset_t offset, int whence)))
@@ -284,7 +311,11 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
     RESOLVE_METHOD(av_open_input_stream)
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,105,0)
+    RESOLVE_METHOD(avio_alloc_context)
+#else
     RESOLVE_METHOD(init_put_byte)
+#endif
     RESOLVE_METHOD(av_probe_input_format)
     RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(av_probe_input_buffer)
