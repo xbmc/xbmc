@@ -150,7 +150,7 @@
     ],
     "returns":  { "$ref": "Player.Property.Value", "required": true }
   },
-	"Player.GetItem": {
+  "Player.GetItem": {
     "type": "method",
     "description": "Retrieves the currently played item",
     "transport": "Response",
@@ -192,7 +192,12 @@
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "speed", "type": [ "integer", "string" ], "enum": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32, "increment", "decrement" ], "required": true }
+      { "name": "speed", "type": [
+          { "type": "integer", "required": true, "enum": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32 ] },
+          { "type": "string", "required": true, "enum": [ "increment", "decrement" ] } 
+        ],
+        "required": true
+      }
     ],
     "returns": { "$ref": "Player.Speed" }
   },
@@ -442,7 +447,7 @@
     "returns": { "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-				"items": { "type": "array", "items": { "$ref": "List.Item.All" }, "required": true }
+        "items": { "type": "array", "items": { "$ref": "List.Item.All" }, "required": true }
       }
     }
   },
@@ -522,7 +527,7 @@
   },
   "Files.PrepareDownload": {
     "type": "method",
-		"description": "Provides a way to download a given file (e.g. providing an URL to the real file location)",
+    "description": "Provides a way to download a given file (e.g. providing an URL to the real file location)",
     "transport": [ "Response", "FileDownloadRedirect" ],
     "permission": "ReadData",
     "params": [
@@ -531,15 +536,15 @@
     "returns": {
       "type": "object",
       "properties": {
-				"protocol": { "type": "string", "enum": [ "http" ], "required": true },
+        "protocol": { "type": "string", "enum": [ "http" ], "required": true },
         "details": { "type": "any", "required": true, "description": "Transport specific details on how/from where to download the given file" },
-				"mode": { "type": "string", "enum": [ "redirect", "direct" ], "required": true, "description": "Direct mode allows using Files.Download whereas redirect mode requires the usage of a different protocol" }
+        "mode": { "type": "string", "enum": [ "redirect", "direct" ], "required": true, "description": "Direct mode allows using Files.Download whereas redirect mode requires the usage of a different protocol" }
       }
     }
   },
   "Files.Download": {
     "type": "method",
-		"description": "Downloads the given file",
+    "description": "Downloads the given file",
     "transport": [ "Response", "FileDownloadDirect" ],
     "permission": "ReadData",
     "params": [
@@ -549,7 +554,7 @@
   },
   "Files.GetDirectory": {
     "type": "method",
-		"description": "Get the directories and files in the given directory",
+    "description": "Get the directories and files in the given directory",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
@@ -562,7 +567,7 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-				"files": { "type": "array", "items": { "$ref": "List.Item.File" }, "required": true }
+        "files": { "type": "array", "items": { "$ref": "List.Item.File" }, "required": true }
       }
     }
   },
@@ -753,20 +758,20 @@
     "transport": "Response",
     "permission": "WriteFile",
     "params": [
-			{ "name": "options", "type": [
-					{ "type": "object", "required": true, "additionalProperties": false,
-						"properties": {
-							"path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
-						}
-					},
-					{ "type": "object", "required": true, "additionalProperties": false,
-						"properties": {
-							"overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
-							"images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" }
-						}
-					}
-				]
-			}
+      { "name": "options", "type": [
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+              "images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" }
+            }
+          }
+        ]
+      }
     ],
     "returns": "string"
   },
@@ -1072,21 +1077,21 @@
     "transport": "Response",
     "permission": "WriteFile",
     "params": [
-			{ "name": "options", "type": [
-					{ "type": "object", "required": true, "additionalProperties": false,
-						"properties": {
-							"path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
-						}
-					},
-					{ "type": "object", "required": true, "additionalProperties": false,
-						"properties": {
-							"overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
-							"images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
-							"actorthumbs": { "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" }
-						}
-					}
-				]
-			}
+      { "name": "options", "type": [
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
+            }
+          },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+              "images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+              "actorthumbs": { "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" }
+            }
+          }
+        ]
+      }
     ],
     "returns": "string"
   },
@@ -1222,12 +1227,12 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-			{ "name": "mute", "required": true, "type": [
-					{ "type": "boolean", "required": true },
-					{ "type": "string", "enum": [ "toggle" ], "required": true }
-				]
-			}
-		],
+      { "name": "mute", "required": true, "type": [
+          { "type": "boolean", "required": true },
+          { "type": "string", "enum": [ "toggle" ], "required": true }
+        ]
+      }
+    ],
     "returns": { "type": "boolean", "description": "Mute state" }
   },
   "Application.Quit": {

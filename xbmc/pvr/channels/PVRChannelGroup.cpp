@@ -90,6 +90,20 @@ bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
   return !(*this == right);
 }
 
+CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
+{
+  m_bRadio                      = group.m_bRadio;
+  m_iGroupId                    = group.m_iGroupId;
+  m_strGroupName                = group.m_strGroupName;
+  m_bLoaded                     = group.m_bLoaded;
+  m_bChanged                    = group.m_bChanged;
+  m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
+  m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
+
+  for (int iPtr = 0; iPtr < group.Size(); iPtr++)
+    push_back(group.at(iPtr));
+}
+
 int CPVRChannelGroup::Load(void)
 {
   /* make sure this container is empty before loading */
@@ -594,11 +608,8 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
         /* since it was not found in the internal group, it was deleted from the backend */
         channel->Delete();
       }
-      else
-      {
-        erase(begin() + iChannelPtr);
-      }
 
+      erase(begin() + iChannelPtr);
       m_bChanged = true;
       bReturn = true;
     }

@@ -24,6 +24,7 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
@@ -61,6 +62,9 @@ typedef struct {
 CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle Decoder")
 {
   m_pOverlay = NULL;
+  // stupid, this comes from a static global in GUIWindowFullScreen.cpp
+  uint32_t colormap[8] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF, 0xFFE5E5E5, 0xFFC0C0C0 };
+  m_textColor = colormap[g_guiSettings.GetInt("subtitles.color")];
 }
 
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
@@ -88,6 +92,8 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
     SAFE_RELEASE(m_pOverlay);
 
   m_pOverlay = new CDVDOverlayText();
+  m_pOverlay->iPTSStartTime = pts;
+  m_pOverlay->iPTSStopTime  = pts + duration;
 
   // do not move this. READ_XXXX macros modify pos.
   uint8_t  *pos = data;
@@ -105,6 +111,8 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
   int numStyleRecords = 0;
   uint8_t *bgnStyle   = (uint8_t*)calloc(textLength, 1);
   uint8_t *endStyle   = (uint8_t*)calloc(textLength, 1);
+  int bgnColorIndex = 0, endColorIndex = 0;
+  uint32_t textColorRGBA = m_textColor;
   while (pos < end)
   {
     // Read TextSampleModifierBox
@@ -117,12 +125,13 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
       break;
     }
     uint32_t type = READ_U32();
-    if (type == FOURCC("uuid")) {
+    if (type == FOURCC("uuid"))
+    {
       CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: TextSampleModifierBox has unsupported extended type" );
       break;
     }
 
-    if (type == FOURCC("styl")) 
+    if (type == FOURCC("styl"))
     {
       // Found a StyleBox. Parse the contained StyleRecords
       if ( numStyleRecords != 0 )
@@ -145,6 +154,9 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
 
         bgnStyle[curRecord.bgnChar] |= curRecord.faceStyleFlags;
         endStyle[curRecord.endChar] |= curRecord.faceStyleFlags;
+        bgnColorIndex = curRecord.bgnChar;
+        endColorIndex = curRecord.endChar;
+        textColorRGBA = curRecord.textColorRGBA;
       }
     }
     else
@@ -181,14 +193,19 @@ int CDVDOverlayCodecTX3G::Decode(BYTE* data, int size, double pts, double durati
     // we do not support underline
     //if (endStyles & UNDERLINE)
     //  strUTF8.append("[/U]");
+    if (endColorIndex == charIndex && textColorRGBA != m_textColor)
+      strUTF8.append("[/COLOR]");
 
-    if (bgnStyles & BOLD)
-      strUTF8.append("[B]");
-    if (bgnStyles & ITALIC)
-      strUTF8.append("[I]");
+    // invert the order from above so we bracket the text correctly.
+    if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
+      strUTF8.AppendFormat("[COLOR %8x]", textColorRGBA);
     // we do not support underline
     //if (bgnStyles & UNDERLINE)
     //  strUTF8.append("[U]");
+    if (bgnStyles & ITALIC)
+      strUTF8.append("[I]");
+    if (bgnStyles & BOLD)
+      strUTF8.append("[B]");
 
     // stuff the UTF8 char
     strUTF8.append((const char*)pos, 1);

@@ -36,6 +36,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
+#include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -512,7 +513,8 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetrieveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
+       (pItem->IsPlayList() && !URIUtils::GetExtension(pItem->GetPath()).Equals(".strm")))
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
@@ -559,7 +561,8 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
+       (pItem->IsPlayList() && !URIUtils::GetExtension(pItem->GetPath()).Equals(".strm")))
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
@@ -1017,6 +1020,11 @@ namespace VIDEO
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
     movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
+    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+    if (pItem->m_bIsFolder)
+      movieDetails.m_strPath = pItem->GetPath();
+
     CStdString strTitle(movieDetails.m_strTitle);
 
     if (idShow > -1 && content == CONTENT_TVSHOWS)
@@ -1155,6 +1163,8 @@ namespace VIDEO
       FetchActorThumbs(movieDetails.m_cast, parentDir);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, cachedThumb);
+
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*pItem)));
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)
@@ -1484,14 +1494,9 @@ namespace VIDEO
   bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, CNfoFile *nfoFile, CGUIDialogProgress* pDialog /* = NULL */)
   {
     CVideoInfoTag movieDetails;
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
     CVideoInfoDownloader imdb(scraper);
     bool ret = imdb.GetDetails(url, movieDetails, pDialog);
-    if (pItem->m_bIsFolder)
-      movieDetails.m_strPath = pItem->GetPath();
-    else
-      movieDetails.m_strFileNameAndPath = pItem->GetPath();
 
     if (ret)
     {

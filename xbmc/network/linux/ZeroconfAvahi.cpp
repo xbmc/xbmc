@@ -344,26 +344,6 @@ void CZeroconfAvahi::shutdownCallback(AvahiTimeout *fp_e, void *fp_data)
   }
 }
 
-std::string CZeroconfAvahi::assemblePublishedName(const std::string& fcr_prefix)
-{
-  std::stringstream ss;
-  ss << fcr_prefix << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfAvahi::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
-}
-
 bool CZeroconfAvahi::createClient()
 {
     if (mp_client)
@@ -407,7 +387,7 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiC
   if (avahi_entry_group_is_empty(fp_service_info->mp_group))
   {
     if ((ret = avahi_entry_group_add_service_strlst(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0),
-                                             assemblePublishedName(fp_service_info->m_name).c_str(),
+                                             fp_service_info->m_name.c_str(),
                                              fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, fp_service_info->mp_txt) < 0))
     {
       if (ret == AVAHI_ERR_COLLISION)

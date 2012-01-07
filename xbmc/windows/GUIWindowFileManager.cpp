@@ -58,6 +58,7 @@
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "Autorun.h"
 
 using namespace std;
 using namespace XFILE;

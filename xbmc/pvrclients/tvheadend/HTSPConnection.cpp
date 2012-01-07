@@ -57,12 +57,20 @@ bool CHTSPConnection::Connect()
   if (m_bIsConnected)
     return true;
 
+  cTimeMs RetryTimeout;
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
 
   XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
 
-  m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
+  m_fd = INVALID_SOCKET;
+  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (uint)m_iConnectTimeout * 1000)
+  {
+    m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen,
+        m_iConnectTimeout * 1000 - RetryTimeout.Elapsed());
+    cCondWait::SleepMs(100);
+  }
+
   if(m_fd == INVALID_SOCKET)
   {
     XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, errbuf);

@@ -121,6 +121,7 @@ protected:
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
   BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat);
+  void OnMove();
 
   LPDIRECT3D9                 m_pD3D;
 

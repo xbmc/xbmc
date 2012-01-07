@@ -45,9 +45,6 @@ protected:
 
 private:
 
-  //returns the string that gets published (a.k.a. add the hostname)
-  std::string assemblePublishedName(const std::string& fcr_given_name);
-
   static void DNSSD_API registerCallback(DNSServiceRef sdref, const DNSServiceFlags flags, DNSServiceErrorType errorCode, const char *name, const char *regtype, const char *domain, void *context);
 
 

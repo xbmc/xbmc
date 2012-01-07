@@ -25,6 +25,7 @@
 #include <sstream>
 #include <threads/SingleLock.h>
 #include <utils/log.h>
+#include "dialogs/GUIDialogKaiToast.h"
 
 #pragma comment(lib, "dnssd.lib")
 
@@ -62,7 +63,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     }
   }
 
-  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, assemblePublishedName(fcr_name).c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
+  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
 
   if(err != kDNSServiceErr_ServiceNotRunning)
     DNSServiceProcessResult(netService);
@@ -75,7 +76,10 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
 
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
     if(err == kDNSServiceErr_ServiceNotRunning)
-      CLog::Log(LOGERROR, "CZeroconfWIN: Apples Bonjour Service not installed?");
+    {
+      CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
+    }
   } 
   else
   {
@@ -128,25 +132,4 @@ void DNSSD_API CZeroconfWIN::registerCallback(DNSServiceRef sdref, const DNSServ
   else
     CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s error code %d", name, regtype, domain, errorCode);
 
-}
-
-
-std::string CZeroconfWIN::assemblePublishedName(const std::string& fcr_given_name)
-{
-  std::stringstream ss;
-  ss << fcr_given_name << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfWIN::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
 }

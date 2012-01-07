@@ -2,11 +2,11 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/11/2010-->
+<!--Date of translation: 12/26/2011-->
 <!--$Revision$-->
 <strings>
-  <string id="30000">Aktivera fanart</string>
+  <string id="30000">Ladda ner fanart från HTBackdrops.com</string>
   <string id="30001">Hämta artistminiatyr från Allmusic.com</string>
   <string id="30002">Hämta artistminiatyr från Last.fm</string>
-  <string id="30003">Hämta artistminiatyr från HTBackdrops</string>
+  <string id="30003">Hämta artistminiatyr från HTBackdrops.com</string>
 </strings>

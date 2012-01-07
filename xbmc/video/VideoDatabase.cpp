@@ -1804,8 +1804,6 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    AnnounceUpdate("movie", idMovie);
-
     return idMovie;
   }
   catch (...)
@@ -1865,8 +1863,6 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     sql += PrepareSQL("where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
-
-    AnnounceUpdate("tvshow", idTvShow);
 
     return idTvShow;
   }
@@ -1943,8 +1939,6 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
-    AnnounceUpdate("episode", idEpisode);
-
     return idEpisode;
   }
   catch (...)
@@ -2016,8 +2010,6 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     sql += PrepareSQL(" where idMVideo=%i", idMVideo);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
-
-    AnnounceUpdate("musicvideo", idMVideo);
 
     return idMVideo;
   }
