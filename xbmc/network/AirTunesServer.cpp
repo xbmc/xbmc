@@ -155,6 +155,7 @@ int CAirTunesServer::AudioOutputFunctions::ao_close(ao_device *device)
   {
     ThreadMessage tMsg = { TMSG_MEDIA_STOP };
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
 
   delete device_xbmc;

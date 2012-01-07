@@ -479,6 +479,7 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
       case EVENT_PAUSED:
       case EVENT_STOPPED:      
         reverseBody.Format(EVENT_INFO, eventStrings[state]);
+        CLog::Log(LOGDEBUG, "AIRPLAY: sending event: %s", eventStrings[state]);
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
@@ -649,6 +650,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       const char* found = strstr(queryString.c_str(), "value=");
       int rate = found ? (int)(atof(found + strlen("value=")) + 0.5f) : 0;
 
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with rate %i", uri.c_str(), rate);
+
       if (needAuth && !checkAuthorization(authorization, method, uri))
       {
         status = AIRPLAY_STATUS_NEED_AUTH;
@@ -685,7 +688,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   {
     CStdString location;
     float position = 0.0;
-    lastEvent = EVENT_NONE;    
+    lastEvent = EVENT_NONE;
+
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
 
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
@@ -783,6 +788,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else if (method == "GET")
     {
+      CLog::Log(LOGDEBUG, "AIRPLAY: got GET request %s", uri.c_str());
+      
       if (g_application.m_pPlayer && g_application.m_pPlayer->GetTotalTime())
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
@@ -807,10 +814,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     else
     {
       const char* found = strstr(queryString.c_str(), "position=");
+      
       if (found && g_application.m_pPlayer)
       {
         __int64 position = (__int64) (atof(found + strlen("position=")) * 1000.0);
         g_application.m_pPlayer->SeekTime(position);
+        CLog::Log(LOGDEBUG, "AIRPLAY: got POST request %s with pos %"PRId64, uri.c_str(), position);
       }
     }
   }
@@ -818,6 +827,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   // Sent when media playback should be stopped
   else if (uri == "/stop")
   {
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
@@ -837,6 +847,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   // RAW JPEG data is contained in the request body
   else if (uri == "/photo")
   {
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
@@ -868,6 +879,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     float duration = 0.0f;
     float cacheDuration = 0.0f;
     bool playing = false;
+
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
 
     if (needAuth && !checkAuthorization(authorization, method, uri))
     {
@@ -917,6 +930,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
   else if (uri == "/server-info")
   {
+    CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
     responseBody.Format(SERVER_INFO, g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress());
     responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
   }
