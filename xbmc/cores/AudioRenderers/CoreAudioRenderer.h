@@ -165,6 +165,9 @@ private:
   
   bool CreateMixMap();
   
+  static OSStatus HardwareListenerProc(AudioHardwarePropertyID property, void *clientref);
+  static OSStatus DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref);
+
   bool m_Pause;
   bool m_Initialized; // Prevent multiple init/deinit
   

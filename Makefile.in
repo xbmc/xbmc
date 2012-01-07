@@ -171,7 +171,8 @@ PVR_DIRS=\
 	xbmc/pvrclients/ForTheRecord \
 	xbmc/pvrclients/mythtv \
 	xbmc/pvrclients/vdr-vnsi \
-	xbmc/pvrclients/tvheadend
+	xbmc/pvrclients/tvheadend \
+	xbmc/pvrclients/pvr-demo
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
@@ -276,6 +277,7 @@ pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/mythtv
 	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
 	$(MAKE) -C xbmc/pvrclients/tvheadend
+	$(MAKE) -C xbmc/pvrclients/pvr-demo
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
 	$(MAKE) -C lib/addons/library.xbmc.gui

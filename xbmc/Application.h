@@ -38,6 +38,11 @@ namespace ADDON
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
 
+namespace MEDIA_DETECT
+{
+  class CAutorun;
+}
+
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
@@ -47,8 +52,6 @@ namespace ADDON
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
-#include "Autorun.h"
-#include "video/Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "network/Network.h"
@@ -59,15 +62,13 @@ namespace ADDON
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
-#ifdef HAS_WEB_SERVER
-#include "network/WebServer.h"
-#endif
-
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CBookmark;
+class CWebServer;
 
 class CBackgroundPlayer : public CThread
 {
@@ -177,6 +178,7 @@ public:
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
+  void ResetSystemIdleTimer();
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
@@ -217,7 +219,7 @@ public:
 #endif
 
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun m_Autorun;
+  MEDIA_DETECT::CAutorun* m_Autorun;
 #endif
 
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
@@ -225,7 +227,7 @@ public:
 #endif
 
 #ifdef HAS_WEB_SERVER
-  CWebServer m_WebServer;
+  CWebServer& m_WebServer;
 #endif
 
   IPlayer* m_pPlayer;
@@ -332,7 +334,7 @@ protected:
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  CBookmark m_progressTrackingVideoResumeBookmark;
+  CBookmark& m_progressTrackingVideoResumeBookmark;
   CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 

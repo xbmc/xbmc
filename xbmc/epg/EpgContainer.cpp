@@ -485,8 +485,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* notify observers */
   if (iUpdatedTables > 0)
   {
-    if (CheckPlayingEvents())
-      SetChanged();
+    SetChanged();
     NotifyObservers("epg", true);
   }
 

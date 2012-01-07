@@ -42,13 +42,10 @@ extern "C" {
   #else
     #include <ffmpeg/avformat.h>
   #endif
-  /* libavformat/riff.h is not a public header, so include it here */
-  #include "ffmpeg/libavformat/riff.h"
   /* av_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
   void av_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
-  #include "libavformat/riff.h"
 #endif
 }
 

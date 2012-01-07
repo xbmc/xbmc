@@ -22,11 +22,18 @@
 #import <unistd.h>
 #import <sys/mount.h>
 
+#define BOOL XBMC_BOOL 
+#include "utils/log.h"
+#undef BOOL
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
+#import <AudioUnit/AudioUnit.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import <CoreServices/CoreServices.h>
 
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
@@ -265,20 +272,18 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
   return [pngFile UTF8String];
 }
 
-void Cocoa_MountPoint2DeviceName(char* path)
+char* Cocoa_MountPoint2DeviceName(char *path)
 {
   CCocoaAutoPool pool;
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
   strDVDDevice = strdup(path);
-  if (strncasecmp(strDVDDevice + strlen(strDVDDevice) - 8, "VIDEO_TS", 8) == 0)
+  if (strncasecmp(strDVDDevice, "/Volumes/", 9) == 0)
   {
     struct statfs *mntbufp;
     int i, mounts;
     
-    strDVDDevice[strlen(strDVDDevice) - 9] = '\0';
-
     // find a match for /Volumes/<disk name>
     mounts = getmntinfo(&mntbufp, MNT_WAIT);  // NOT THREAD SAFE!
     for (i = 0; i < mounts; i++)
@@ -294,6 +299,7 @@ void Cocoa_MountPoint2DeviceName(char* path)
     }
     free(strDVDDevice);
   }
+  return path;
 }
 
 bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)
@@ -663,4 +669,171 @@ OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
 
   return(error); 
 }
+
+// All this just to reset all audio devices to default :)
+static AudioStreamBasicDescription* FormatsAudioList(AudioStreamID s)
+{
+  OSStatus ret;
+  UInt32   listSize;
+  AudioDevicePropertyID p;
+  AudioStreamBasicDescription *list;
+
+  // This is deprecated for kAudioStreamPropertyAvailablePhysicalFormats,
+  // but compiling on 10.3 requires the older constant
+  p = kAudioStreamPropertyPhysicalFormats;
+
+  // Retrieve all the stream formats supported by this output stream
+  ret = AudioStreamGetPropertyInfo(s, 0, p, &listSize, NULL);
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
+      "could not get list size: Error = 0x%08x",
+      (unsigned int)ret);
+    return NULL;
+  }
+
+  // Space for a terminating ID:
+  listSize += sizeof(AudioStreamBasicDescription);
+  list      = (AudioStreamBasicDescription *)malloc(listSize);
+
+  if (list == NULL)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList(): out of memory?");
+    return NULL;
+  }
+
+  ret = AudioStreamGetProperty(s, 0, p, &listSize, list);
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
+      "could not get list: Error = 0x%08x",
+      (unsigned int)ret);
+    free(list);
+    return NULL;
+  }
+
+  // Add a terminating ID:
+  list[listSize/sizeof(AudioStreamID)].mFormatID = 0;
+
+  return list;
+}
+
+static void ResetAudioStream(AudioStreamID s)
+{
+  OSStatus ret;
+  UInt32   paramSize;
+  AudioStreamBasicDescription currentFormat;
+
+  // Find the streams current physical format
+  paramSize = sizeof(currentFormat);
+  AudioStreamGetProperty(s, 0, 
+    kAudioStreamPropertyPhysicalFormat, &paramSize, &currentFormat);
+
+  // If it's currently AC-3/SPDIF then reset it to some mixable format
+  if (currentFormat.mFormatID == 'IAC3' ||
+      currentFormat.mFormatID == kAudioFormat60958AC3)
+  {
+    bool streamReset = false;
+    AudioStreamBasicDescription *formats = FormatsAudioList(s);
+
+    if (!formats)
+      return;
+
+    for (int i = 0; !streamReset && formats[i].mFormatID != 0; i++)
+    {
+      if (formats[i].mFormatID == kAudioFormatLinearPCM)
+      {
+        ret = AudioStreamSetProperty(s, NULL, 0,
+          kAudioStreamPropertyPhysicalFormat, sizeof(formats[i]), &(formats[i]));
+        if (ret != noErr)
+        {
+          CLog::Log(LOGWARNING, "ResetAudioStream: "
+            "could not set physical format: Error = 0x%08x",
+            (unsigned int)ret);
+          continue;
+        }
+        else
+        {
+          streamReset = true;
+          sleep(1);   // For the change to take effect
+        }
+      }
+    }
+    free(formats);
+  }
+}
+
+static AudioStreamID* AudioStreamsList(AudioDeviceID d)
+{
+  OSStatus ret;
+  UInt32   listSize;
+  AudioStreamID *list;
+
+  ret = AudioDeviceGetPropertyInfo(d, 0, FALSE,
+    kAudioDevicePropertyStreams, &listSize, NULL);
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
+      "could not get list size: Error = 0x%08x",
+      (unsigned int)ret);
+    return NULL;
+  }
+
+  // Space for a terminating ID:
+  listSize += sizeof(AudioStreamID);
+  list      = (AudioStreamID *)malloc(listSize);
+
+  if (list == NULL)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList(): out of memory?");
+    return NULL;
+  }
+
+  ret = AudioDeviceGetProperty(d, 0, FALSE,
+    kAudioDevicePropertyStreams, &listSize, list);
+  if (ret != noErr)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
+      "could not get list: Error = 0x%08x",
+      (unsigned int)ret);
+    return NULL;
+  }
+  // Add a terminating ID:
+  list[listSize/sizeof(AudioStreamID)] = kAudioHardwareBadStreamError;
+
+  return list;
+}
+
+void Cocoa_ResetAudioDevices()
+{
+  // Reset any devices with an AC3/DTS/SPDIF stream back to a Linear PCM
+  // so that they can become a default output device
+  UInt32 size;
+  int    numDevices;
+  AudioDeviceID *devices;
+
+  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  devices = (AudioDeviceID*)malloc(size);
+  if (!devices)
+  {
+    CLog::Log(LOGERROR, "ResetAudioDevices: out of memory?");
+    return;
+  }
+  numDevices = size / sizeof(AudioDeviceID);
+  AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, devices);
+
+  for (int i = 0; i < numDevices; i++)
+  {
+    AudioStreamID *streams;
+    streams = AudioStreamsList(devices[i]);
+    if (!streams)
+      continue;
+    for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
+      ResetAudioStream(streams[j]);
+
+    free(streams);
+  }
+  free(devices);
+}
+
 #endif

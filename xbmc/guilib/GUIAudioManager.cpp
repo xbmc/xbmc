@@ -72,9 +72,11 @@ void CGUIAudioManager::Initialize(int iDevice)
     m_bInitialized = true;
 #elif defined(HAS_SDL_AUDIO)
     Mix_CloseAudio();
-    if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
-       CLog::Log(LOGERROR, "Unable to open audio mixer");
-    Mix_Volume(0, (int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+    if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 4096))
+      CLog::Log(LOGERROR, "Unable to open audio mixer");
+    else
+      Mix_Volume(0, (int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+    
     m_bInitialized = true;
 #endif
   }

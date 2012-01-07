@@ -12,13 +12,15 @@
     <platform>all</platform>
     <minversion>20000</minversion>
     <summary lang="en">IMDB Scraper Library</summary>
+    <summary lang="fi">IMDB elokuvatietojen lataaja</summary>
     <summary lang="hu">IMDB leolvasó-könyvtár</summary>
     <summary lang="kr">IMDB 스크래퍼 라이브러리</summary>
     <summary lang="nl">IMDB Scraper Bibliotheek</summary>
     <summary lang="pl">Scraper IMDb</summary>
     <summary lang="pt">Scraper de filmes IMDb</summary>
-    <summary lang="se">IMDB Skrapbibliotek</summary>
+    <summary lang="se">Skrapa för IMDB</summary>
     <description lang="en">Download Movie information from www.imdb.com</description>
+    <description lang="fi">Lataa elokuvatietoja osoitteesta www.imdb.com</description>
     <description lang="hu">Film információk letöltése a www.imdb.com webhelyről</description>
     <description lang="kr">www.imdb.com 에서 영화 정보 다운로드</description>
     <description lang="nl">Download film informatie van www.imdb.com</description>

@@ -952,6 +952,20 @@ int CDVDDemuxFFmpeg::GetNrOfStreams()
   return i;
 }
 
+static double SelectAspect(AVStream* st)
+{
+  /* if stream aspect is 1:1 or 0:0 use codec aspect */
+  if((st->sample_aspect_ratio.den == 1 || st->sample_aspect_ratio.den == 0)
+  && (st->sample_aspect_ratio.num == 1 || st->sample_aspect_ratio.num == 0)
+  && st->codec->sample_aspect_ratio.num != 0)
+    return av_q2d(st->codec->sample_aspect_ratio);
+
+  if(st->sample_aspect_ratio.num != 0)
+    return av_q2d(st->sample_aspect_ratio);
+
+  return 0.0;
+}
+
 void CDVDDemuxFFmpeg::AddStream(int iId)
 {
   AVStream* pStream = m_pFormatContext->streams[iId];
@@ -1017,10 +1031,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        if (pStream->codec->sample_aspect_ratio.num == 0)
-          st->fAspect = 0.0;
-        else
-          st->fAspect = av_q2d(pStream->codec->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+        st->fAspect = SelectAspect(pStream) * pStream->codec->width / pStream->codec->height;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
 

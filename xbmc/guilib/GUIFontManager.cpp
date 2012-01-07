@@ -506,7 +506,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
 
     // If no fontset was loaded
     if (pChild == NULL)
-      CLog::Log(LOGWARNING, "file doesnt have <fontset> with with attibute unicode=\"true\"");
+      CLog::Log(LOGWARNING, "file doesnt have <fontset> with attribute unicode=\"true\"");
   }
   else
   {

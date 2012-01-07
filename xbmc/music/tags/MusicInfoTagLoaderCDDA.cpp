@@ -139,8 +139,10 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
         strAlbum = discCDText.field[CDTEXT_TITLE];
         tag.SetAlbum(strAlbum);
 
-        // Genre
+        // Genre: use track or disc genre
         CStdString strGenre = ti.cdtext.field[CDTEXT_GENRE];
+        if (strGenre.IsEmpty())
+          strGenre = discCDText.field[CDTEXT_GENRE];
         tag.SetGenre( strGenre );
 
         tag.SetLoaded(true);
