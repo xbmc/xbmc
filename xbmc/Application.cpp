@@ -1331,7 +1331,7 @@ void CApplication::StartAirplayServer()
       }
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
-      txt["srcvers"] = "101.28";
+      txt["srcvers"] = AIRPLAY_SERVER_VERSION_STR;
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
     }
   }

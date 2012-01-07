@@ -35,12 +35,16 @@
 
 class DllLibPlist;
 
+#define AIRPLAY_SERVER_VERSION_STR "101.28"
+
 class CAirPlayServer : public CThread
 {
 public:
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
   static bool SetCredentials(bool usePassword, const CStdString& password);
+  static bool IsPlaying(){ return m_isPlaying > 0;}
+  static int m_isPlaying;
 
 protected:
   void Process();
