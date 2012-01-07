@@ -29,6 +29,12 @@
 
 #pragma comment(lib, "dnssd.lib")
 
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
+
+#define MDNS_TCP_SERVERADDR	"127.0.0.1"
+#define MDNS_TCP_SERVERPORT	5354
+
 CZeroconfWIN::CZeroconfWIN()
 {
 }
@@ -38,6 +44,24 @@ CZeroconfWIN::~CZeroconfWIN()
   doStop();
 }
 
+DNSServiceStatus CZeroconfWIN::IsmDNSResponderUp()
+{
+  SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+
+  if (s == INVALID_SOCKET)
+    return DNSServiceStatus_Unknown;
+
+  sockaddr_in saddr;
+  saddr.sin_family      = AF_INET;
+  saddr.sin_addr.s_addr = inet_addr(MDNS_TCP_SERVERADDR);
+  saddr.sin_port        = htons(MDNS_TCP_SERVERPORT);
+
+  int err = connect(s, (struct sockaddr *) &saddr, sizeof(saddr));
+  closesocket(s);
+
+  return (err == 0) ? DNSServiceStatus_Up : DNSServiceStatus_Down;
+  // alternative detection method: the service creates a window of class name "Bonjour Hidden Window %d", with %d the process id
+}
 
 //methods to implement for concrete implementations
 bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
@@ -63,26 +87,29 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     }
   }
 
-  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
-
-  if(err != kDNSServiceErr_ServiceNotRunning)
-    DNSServiceProcessResult(netService);
+  DNSServiceErrorType err = kDNSServiceErr_ServiceNotRunning;
   
-  if (err != kDNSServiceErr_NoError)
+  if (IsmDNSResponderUp() == DNSServiceStatus_Down
+  ||  (err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL)) != kDNSServiceErr_NoError)
   {
     // Something went wrong so lets clean up.
     if (netService)
       DNSServiceRefDeallocate(netService);
 
-    CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
+    CLog::Log(LOGERROR, __FUNCTION__ " CFNetServiceRegister returned (error = %ld)\n", (int) err);
     if(err == kDNSServiceErr_ServiceNotRunning)
     {
-      CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
+      CLog::Log(LOGERROR, "ZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
     }
-  } 
+  }
   else
   {
+    err = DNSServiceProcessResult(netService);
+
+    if (err != kDNSServiceErr_NoError)
+      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)\n", (int) err);
+
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
   }
