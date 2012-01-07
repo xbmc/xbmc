@@ -49,7 +49,7 @@ bool CZeroconfWIN::IsZCdaemonRunning()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
     return false;
   }
-  CLog::Log(LOGDEBUG, "ZeroconfWIN:Bonjour version is %d.%d\n", version / 10000, version / 100 % 100);
+  CLog::Log(LOGDEBUG, "ZeroconfWIN:Bonjour version is %d.%d", version / 10000, version / 100 % 100);
   return true;
 }
 
@@ -85,14 +85,14 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     if (netService)
       DNSServiceRefDeallocate(netService);
 
-    CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceRegister returned (error = %ld)\n", (int) err);
+    CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceRegister returned (error = %ld)", (int) err);
   } 
   else
   {
     err = DNSServiceProcessResult(netService);
 
     if (err != kDNSServiceErr_NoError)
-      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)\n", (int) err);
+      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)", (int) err);
 
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
