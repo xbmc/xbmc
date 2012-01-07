@@ -117,6 +117,7 @@ CVideoReferenceClock::CVideoReferenceClock()
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   m_Dpy = NULL;
+  m_UseNvSettings = true;
 #endif
 }
 
@@ -1101,7 +1102,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     return false;
 
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
-  if (m_UseNvSettings || Forced)
+  if (m_UseNvSettings)
   {
     int NvRefreshRate;
     //if this fails we can't get the refreshrate from nvidia-settings
