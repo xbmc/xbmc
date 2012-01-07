@@ -767,7 +767,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
     if (status != AIRPLAY_STATUS_NEED_AUTH)
     {
-      CFileItem fileToPlay(location, false);
+      CFileItem fileToPlay(location + "|User-Agent=AppleCoreMedia/1.0.0.8F455 (Apple†TV; U; CPU OS 4_3 like Mac OS X; de_de)", false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       g_application.getApplicationMessenger().MediaPlay(fileToPlay);
       if (lastEvent != EVENT_PLAYING)
