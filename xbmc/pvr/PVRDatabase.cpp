@@ -713,7 +713,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
   if (ExecuteQuery(strQuery))
   {
-    if (group.GroupID() == 0)
+    if (group.GroupID() <= 0)
       group.m_iGroupId = (int) m_pDS->lastinsertid();
     lock.Leave();
 
