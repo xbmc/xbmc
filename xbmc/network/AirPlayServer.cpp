@@ -925,6 +925,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     {
       responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cacheDuration, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
+      
+      if (lastEvent != EVENT_STOPPED)
+      {
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
+        lastEvent = EVENT_STOPPED;
+      }
     }
   }
 
