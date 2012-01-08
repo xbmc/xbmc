@@ -328,6 +328,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
   m_pLibPlist = new DllLibPlist();
 
   m_bAuthenticated = false;
+  m_lastEvent = EVENT_NONE;
 }
 
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
@@ -472,6 +473,9 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
                                                       CStdString sessionId,
                                                       int state)
 {
+
+  if ( m_lastEvent != state )
+  { 
     switch(state)
     {
       case EVENT_PLAYING:
@@ -485,6 +489,8 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
     reverseHeader.Format("%sContent-Length: %d",reverseHeader.c_str(),reverseBody.size());
     reverseHeader.Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(),sessionId.c_str());
+    m_lastEvent = state;
+  }
 }
 
 void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody)
@@ -620,7 +626,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   CStdString authorization = m_httpParser->getValue("authorization");
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
-  static int lastEvent = EVENT_STOPPED;  
 
   if (ServerInstance->m_usePassword && !m_bAuthenticated)
   {
@@ -661,11 +666,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
         {
           g_application.getApplicationMessenger().MediaPause();
-          if (lastEvent != EVENT_PAUSED)
-          {
-            ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
-            lastEvent = EVENT_PAUSED;
-          }          
+          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
         }
       }
       else
@@ -673,11 +674,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
         {
           g_application.getApplicationMessenger().MediaPause();
-          if (lastEvent != EVENT_PLAYING)
-          {
-            ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-            lastEvent = EVENT_PLAYING;
-          }          
+          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
         }
       }
   }
@@ -688,7 +685,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   {
     CStdString location;
     float position = 0.0;
-    lastEvent = EVENT_NONE;
+    m_lastEvent = EVENT_NONE;
 
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
 
@@ -770,11 +767,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       CFileItem fileToPlay(location + "|User-Agent=AppleCoreMedia/1.0.0.8F455 (Apple†TV; U; CPU OS 4_3 like Mac OS X; de_de)", false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       g_application.getApplicationMessenger().MediaPlay(fileToPlay);
-      if (lastEvent != EVENT_PLAYING)
-      {
-        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-        lastEvent = EVENT_PLAYING;
-      }        
+      ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
     }
   }
 
@@ -799,11 +792,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
         {
           g_application.getApplicationMessenger().MediaPause();
-          if (lastEvent != EVENT_PLAYING && lastEvent != EVENT_LOADING)
-          {
-            ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-            lastEvent = EVENT_PLAYING;
-          }          
+          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
         }
       }
       else 
@@ -836,11 +825,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     {
       g_application.getApplicationMessenger().MediaStop();
       CAirPlayServer::m_isPlaying--;
-      if (lastEvent != EVENT_STOPPED)
-      {
-        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
-        lastEvent = EVENT_STOPPED;
-      }         
+      ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
   }
 
@@ -901,36 +886,22 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
       if (g_application.m_pPlayer->IsCaching())
       {
-        if(lastEvent != EVENT_LOADING)
-        {
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_LOADING);
-          lastEvent = EVENT_LOADING;
-        }
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_LOADING);
       }
       else if (playing)
       {
-        if (lastEvent != EVENT_PLAYING)
-        {
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-          lastEvent = EVENT_PLAYING;
-        }
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
       }
-      else if (lastEvent != EVENT_PAUSED)
+      else
       {
         ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
-        lastEvent = EVENT_PAUSED;
       }
     }
     else
     {
       responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cacheDuration, position, (playing ? 1 : 0), duration);
-      responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
-      
-      if (lastEvent != EVENT_STOPPED)
-      {
-        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
-        lastEvent = EVENT_STOPPED;
-      }
+      responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";     
+      ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
   }
 

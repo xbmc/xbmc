@@ -90,6 +90,7 @@ private:
     HttpParser* m_httpParser;
     DllLibPlist *m_pLibPlist;//the lib
     bool m_bAuthenticated;
+    int  m_lastEvent;
     CStdString m_authNonce;
   };
 
