@@ -536,27 +536,33 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   {
     if (currentChannel != channel)
     {
-      CloseStream();
-      bSwitchSuccessful = OpenLiveStream(channel);
+      /* different client add-on */
+      if (currentChannel.ClientID() != channel.ClientID() ||
+      /* switch from radio -> tv or tv -> radio */
+      currentChannel.IsRadio() != channel.IsRadio())
+      {
+        CloseStream();
+        bSwitchSuccessful = OpenLiveStream(channel);
+      }
+      else if (!channel.StreamURL().IsEmpty() || !currentChannel.StreamURL().IsEmpty())
+      {
+        // StreamURL should always be opened as a new file
+        CFileItem m_currentFile(channel);
+        g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
+        bSwitchSuccessful = true;
+        bNewStreamOpened = true;
+      }
+      else
+      {
+        boost::shared_ptr<CPVRClient> client;
+        if (GetConnectedClient(channel.ClientID(), client))
+          bSwitchSuccessful = client->SwitchChannel(channel);
+      }
     }
     else
     {
       bSwitchSuccessful = true;
     }
-  }
-  else if (!channel.StreamURL().IsEmpty() || !currentChannel.StreamURL().IsEmpty())
-  {
-    // StreamURL should always be opened as a new file
-    CFileItem m_currentFile(channel);
-    g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
-    bSwitchSuccessful = true;
-    bNewStreamOpened = true;
-  }
-  else
-  {
-    boost::shared_ptr<CPVRClient> client;
-    if (GetConnectedClient(channel.ClientID(), client))
-      bSwitchSuccessful = client->SwitchChannel(channel);
   }
 
   {
