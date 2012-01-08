@@ -606,7 +606,7 @@ void CWinRenderer::UpdateVideoFilter()
 
   m_bFilterInitialized = true;
 
-  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = (ESCALINGMETHOD) g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if (!Supports(m_scalingMethod))

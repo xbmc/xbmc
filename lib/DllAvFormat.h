@@ -71,6 +71,7 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
+  virtual int avformat_seek_file(AVFormatContext *s, int stream_index, int64_t min_ts, int64_t ts, int64_t max_ts, int flags)=0;
 #if (!defined USE_EXTERNAL_FFMPEG)
   virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
 #endif
@@ -110,6 +111,7 @@ public:
   virtual int av_write_trailer(AVFormatContext *s)=0;
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt)=0;
   virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags)=0;
+  virtual int av_codec_get_tag(const struct AVCodecTag * const *tags, enum CodecID id)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -227,6 +229,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext *p1))
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
+  DEFINE_FUNC_ALIGNED6(int, __cdecl, avformat_seek_file, AVFormatContext*, int, int64_t, int64_t, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
@@ -267,7 +270,9 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(int, av_write_header , (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_write_trailer, (AVFormatContext *p1))
   DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
-  DEFINE_METHOD4(int, av_metadata_set2, (AVMetadata **p1, const char *p2, const char *p3, int p4));
+  DEFINE_METHOD4(int, av_metadata_set2, (AVMetadata **p1, const char *p2, const char *p3, int p4))
+  DEFINE_METHOD2(int, av_codec_get_tag, (const struct AVCodecTag * const *p1, enum CodecID p2))
+  DEFINE_METHOD2(enum CodecID, av_codec_get_id, (const struct AVCodecTag * const *p1, unsigned int p2));
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
@@ -280,6 +285,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD_RENAME(ff_read_frame_flush, av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
+    RESOLVE_METHOD(avformat_seek_file)
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
@@ -315,6 +321,8 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_write_trailer)
     RESOLVE_METHOD(av_write_frame)
     RESOLVE_METHOD(av_metadata_set2)
+    RESOLVE_METHOD(av_codec_get_tag)
+    RESOLVE_METHOD(av_codec_get_id)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavformat */

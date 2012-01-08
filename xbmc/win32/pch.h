@@ -14,7 +14,6 @@
 #include <comdef.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
-#include "DSound.h"
 #ifdef HAS_DX
 #include "D3D9.h"
 #include "D3DX9.h"

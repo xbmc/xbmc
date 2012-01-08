@@ -96,6 +96,18 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
 };
 
+#ifdef HAS_DS_PLAYER
+enum EDSSCALINGMETHOD
+{
+  DS_SCALINGMETHOD_NEAREST_NEIGHBOR = 0,
+  DS_SCALINGMETHOD_BILINEAR,
+  DS_SCALINGMETHOD_BILINEAR_2,
+  DS_SCALINGMETHOD_BILINEAR_2_60,
+  DS_SCALINGMETHOD_BILINEAR_2_75,
+  DS_SCALINGMETHOD_BILINEAR_2_100
+};
+#endif
+
 class CVideoSettings
 {
 public:
@@ -104,9 +116,27 @@ public:
 
   bool operator!=(const CVideoSettings &right) const;
 
+  static inline int GetScalingMethodMax()
+  {
+    return (DS_SCALINGMETHOD_BILINEAR_2_100 << 16) + VS_SCALINGMETHOD_AUTO;
+  }
+
+  static int inline GetDefaultScalingMethod()
+  {
+    return (DS_SCALINGMETHOD_BILINEAR << 16) + VS_SCALINGMETHOD_LINEAR;
+  }
+  
+  void SetDVDPlayerScalingMethod(ESCALINGMETHOD method);
+  ESCALINGMETHOD GetDVDPlayerScalingMethod();
+
+#ifdef HAS_DS_PLAYER
+  void SetDSPlayerScalingMethod(EDSSCALINGMETHOD method);
+  EDSSCALINGMETHOD GetDSPlayerScalingMethod();
+#endif
+
   EDEINTERLACEMODE m_DeinterlaceMode;
   EINTERLACEMETHOD m_InterlaceMethod;
-  ESCALINGMETHOD   m_ScalingMethod;
+  int m_ScalingMethod; // 16 bits for dvdplayer, 16 bits for dsplayer
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio

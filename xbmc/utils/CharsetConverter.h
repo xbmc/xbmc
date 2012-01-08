@@ -72,6 +72,7 @@ public:
   std::vector<CStdString> getCharsetLabels();
   CStdString getCharsetLabelByName(const CStdString& charsetName);
   CStdString getCharsetNameByLabel(const CStdString& charsetLabel);
+  int getCharsetIdByName(const CStdString& charsetName);
   bool isBidiCharset(const CStdString& charset);
 
   void unknownToUTF8(CStdStringA &sourceDest);
