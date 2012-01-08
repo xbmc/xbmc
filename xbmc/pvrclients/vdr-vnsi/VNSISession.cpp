@@ -73,10 +73,10 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
   cTimeMs RetryTimeout;
   char errbuf[128];
   m_fd = INVALID_SOCKET;
-  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (uint)g_iConnectTimeout * 1000)
+  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) g_iConnectTimeout * 1000)
   {
     m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf),
-        g_iConnectTimeout * 1000 - RetryTimeout.Elapsed());
+        g_iConnectTimeout * 1000 - (int) RetryTimeout.Elapsed());
     SleepMs(100);
   }
 
