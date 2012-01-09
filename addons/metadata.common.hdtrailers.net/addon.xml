@@ -9,6 +9,7 @@
   <extension point="xbmc.metadata.scraper.library"
              library="hdtrailers.xml"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Библиотека за сваляне на инф. от HD-Trailers.net</summary>
     <summary lang="en">HD-Trailers.net Scraper Library</summary>
     <summary lang="de">Scraper für Trailer von HD-Trailers.net</summary>
     <summary lang="es">Scraper de Trailers de HD-Trailers.net</summary>
@@ -21,6 +22,7 @@
     <summary lang="ru">Обработчик для трейлеров с HD-Trailers.net</summary>
     <summary lang="se">Skrapa för HD-Trailers.net</summary>
     <summary lang="zh">HD-Trailers.net刮削器代码库</summary>
+    <description lang="bg">Сваля трейлъри на филми от www.hd-trailers.net</description>
     <description lang="en">Download Movie Trailers from www.hd-trailers.net</description>
     <description lang="de">Downloade Trailer von www.hd-trailers.net</description>
     <description lang="es">Descarga trailers de www.hd-trailers.net</description>

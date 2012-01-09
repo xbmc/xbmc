@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: tonywoolf-->
 <!--Email: tonywoolf@gmail.com-->
-<!--Date of translation: 03/24/2010-->
+<!--Date of translation: 01/07/2012-->
 
 <strings>
   <!-- Misc labels -->
@@ -11,8 +11,9 @@
   <string id="31003">Опции на захранването</string>
   <string id="31004">Работя...</string>
   <string id="31005">Скрий ИНФО</string>
-
+  <string id="31006">Изглед</string>
   <string id="31007">Добавки</string>
+  <string id="31008">Цял екран</string>
 
   <string id="31020">Наскоро Добавени</string>
   <string id="31021">Видео - Файлове</string>
@@ -22,7 +23,7 @@
   <string id="31025">Позиции</string>
   <string id="31026">Разни Опции</string>
   <string id="31027">Място</string>
- 
+
   <!-- View Type labels -->
   <string id="31028">Плакати въртене</string>
   <string id="31029">Плакати</string>
@@ -42,6 +43,8 @@
   <string id="31047">Текущо Настроени</string>
   <string id="31048">Настроени Визуализации</string>
   <string id="31049">Крайно Време</string>
+  <string id="31050">Сортиране: Възходящ</string>
+  <string id="31051">Сортиране: Низходящ</string>
 
 
   <!-- Playlist Editor labels -->
@@ -52,7 +55,7 @@
   <string id="31059">Текущ плейлист</string>
   <string id="31060">Изберете място, от което искате да възпроизвеждате.</string>
   <string id="31061">Текущо избрани</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Настройки на начален екран</string>
@@ -81,11 +84,18 @@
   <string id="31124">Покажи фон "Възпроизвеждам" Видео</string>
   <string id="31125">Покажи фон "Възпроизвеждам" Визуализация</string>
 
-  <string id="31126">Включи текст на песен в музиката OSD</string>
-  <string id="31127">ПЪТ ДО ТЕСКТ НА ПЕСЕН ДОБАВКА</string>
-  <string id="31128">ТЕСКТ НА ПЕСЕН</string>
-  <string id="31129">Включи сваляне на субтитри във Видео OSD</string>
-  <string id="31130">ПЪТ ДО ДОБАВКА СУБТИТРИ</string>
+  <string id="31126">Пусни тв музика във видео библиотеката (TvTunes добавка)</string>
+  <string id="31127">TvTunes</string>
+  <string id="31128">Текст</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+
+<string id="31131"></string> <!-- blanked 2010-12-23 -->
+  <string id="31132">Добавка за текст</string>
+  <string id="31133">Добавка субтитри</string>
+  <string id="31134">Начална страница подменю Видео</string>
+  <string id="31135">Начална страница подменю Музика</string>
+  <string id="31136">Начална страница подменю Снимки</string>
 
   <string id="31140">Музика OSD</string>
   <string id="31141">Видео OSD</string>
@@ -130,6 +140,7 @@
   <string id="31328">Наскоро Добавени</string>
   <string id="31329">[B]ТАЙМЕР УСТАНОВЕН![/B] [COLOR=grey2] - АВТОМАТИЧНО ИЗКЛЮЧВАНЕ[/COLOR]</string>
   <string id="31330">Натисни бутон за възпроизвеждане[CR][CR]Трейлър</string>
+  <string id="31331">Албум детайли</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Пауза</string>
@@ -139,7 +150,7 @@
   <string id="31355">Меню филм</string>
   <string id="31356">Свали субтитри</string>
   <string id="31357"></string>
-  
+
    <!-- Skin Fontsets -->
   <string id="31390">Кожа подразбиране</string>
   <string id="31391">Кожа подразбиране без главни букви</string>
@@ -157,4 +168,17 @@
   <string id="31408">[B]КОНФИГУРИРАНЕ ДОБАВКИ[/B][CR][CR]Управление на инсталираните добавки · Разглеждане и инсталиране на добавки от xbmc.org · Промяна на настройките на добавките</string>
 
   <string id="31421">Изберете XBMC потребителски профил[CR]за вход и продължаване</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Карта на времето</string>
+  <string id="31901">36 часова прогноза</string>
+  <string id="31902">Часова прогноза</string>
+  <string id="31903">Уикенд прогноза</string>
+  <string id="31904">10 дневна прогноза</string>
+  <string id="31905">Прогноза</string>
+  <string id="31906">Карти &amp; Видео</string>
+  <string id="31907">Видео Прогноза [COLOR=grey2](Fullscreen Playback)[/COLOR]</string>
+  <string id="31908">Възможност от превалявания</string>
+  <string id="31909">Извличане информация за прогноза...</string>
+
 </strings>

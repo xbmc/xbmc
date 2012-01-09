@@ -2060,8 +2060,12 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   // find TTF fonts
   {
     CFileItemList items;
+    CFileItemList items2;
+    CDirectory::GetDirectory("special://home/media/Fonts/", items2);
+
     if (CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
     {
+      items.Append(items2);
       for (int i = 0; i < items.Size(); ++i)
       {
         CFileItemPtr pItem = items[i];

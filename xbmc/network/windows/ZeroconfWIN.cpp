@@ -38,6 +38,20 @@ CZeroconfWIN::~CZeroconfWIN()
   doStop();
 }
 
+bool CZeroconfWIN::IsZCdaemonRunning()
+{
+  uint32_t version;
+  uint32_t size = sizeof(version);
+  DNSServiceErrorType err = DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion, &version, &size);
+  if(err != kDNSServiceErr_NoError)
+  {
+    CLog::Log(LOGERROR, "ZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "ZeroconfWIN:Bonjour version is %d.%d", version / 10000, version / 100 % 100);
+  return true;
+}
 
 //methods to implement for concrete implementations
 bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
@@ -50,23 +64,20 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
   TXTRecordRef txtRecord;
   TXTRecordCreate(&txtRecord, 0, NULL);
 
-  CLog::Log(LOGDEBUG, "CZeroconfWIN::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
+  CLog::Log(LOGDEBUG, __FUNCTION__ " identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   //add txt records
   if(!txt.empty())
   {
     for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
-      CLog::Log(LOGDEBUG, "CZeroconfWIN: key:%s, value:%s",it->first.c_str(),it->second.c_str());
+      CLog::Log(LOGDEBUG, "ZeroconfWIN: key:%s, value:%s",it->first.c_str(),it->second.c_str());
       uint8_t txtLen = (uint8_t)strlen(it->second.c_str());
       TXTRecordSetValue(&txtRecord, it->first.c_str(), txtLen, it->second.c_str());
     }
   }
 
   DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
-
-  if(err != kDNSServiceErr_ServiceNotRunning)
-    DNSServiceProcessResult(netService);
   
   if (err != kDNSServiceErr_NoError)
   {
@@ -74,15 +85,15 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     if (netService)
       DNSServiceRefDeallocate(netService);
 
-    CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
-    if(err == kDNSServiceErr_ServiceNotRunning)
-    {
-      CLog::Log(LOGERROR, "CZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
-    }
+    CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceRegister returned (error = %ld)", (int) err);
   } 
   else
   {
+    err = DNSServiceProcessResult(netService);
+
+    if (err != kDNSServiceErr_NoError)
+      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)", (int) err);
+
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
   }
@@ -123,13 +134,13 @@ void DNSSD_API CZeroconfWIN::registerCallback(DNSServiceRef sdref, const DNSServ
   if (errorCode == kDNSServiceErr_NoError)
   {
     if (flags & kDNSServiceFlagsAdd)
-      CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s now registered and active", name, regtype, domain);
+      CLog::Log(LOGDEBUG, "ZeroconfWIN: %s.%s%s now registered and active", name, regtype, domain);
     else
-      CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s registration removed", name, regtype, domain);
+      CLog::Log(LOGDEBUG, "ZeroconfWIN: %s.%s%s registration removed", name, regtype, domain);
   }
   else if (errorCode == kDNSServiceErr_NameConflict)
-     CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s Name in use, please choose another", name, regtype, domain);
+     CLog::Log(LOGDEBUG, "ZeroconfWIN: %s.%s%s Name in use, please choose another", name, regtype, domain);
   else
-    CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s error code %d", name, regtype, domain, errorCode);
+    CLog::Log(LOGDEBUG, "ZeroconfWIN: %s.%s%s error code %d", name, regtype, domain, errorCode);
 
 }

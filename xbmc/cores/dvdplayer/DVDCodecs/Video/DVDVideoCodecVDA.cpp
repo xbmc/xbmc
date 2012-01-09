@@ -669,13 +669,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
     
-    if (hints.profile == 77 && hints.level == 32)
-    {
-      // Main@L3.2, VDA cannot handle it
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VDA cannot decode.", __FUNCTION__);
-      return false;
-    }
- 
     if (Cocoa_GPUForDisplayIsNvidiaPureVideo3() && !CDVDCodecUtils::IsVP3CompatibleWidth(width))
     {
       CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
@@ -781,6 +774,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         m_max_ref_frames = 2;
     }
 
+    if (hints.profile == 77 && hints.level == 32 && (m_max_ref_frames > 4))
+    {
+      // Main@L3.2, VDA cannot handle greater than 4 reference frames
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VDA cannot decode.", __FUNCTION__);
+      return false;
+    }
+ 
     // input stream is qualified, now we can load dlls.
     m_dllSwScale = new DllSwScale;
     if (!m_dllSwScale->Load())

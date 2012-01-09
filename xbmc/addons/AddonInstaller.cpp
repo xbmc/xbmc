@@ -29,6 +29,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "Application.h"
+#include "Favourites.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
@@ -527,6 +528,13 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     if (service)
       service->Start();
   }
+
+  if (m_addon->Type() == ADDON_REPOSITORY)
+  {
+    VECADDONS addons;
+    addons.push_back(m_addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+  }
 }
 
 void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
@@ -597,4 +605,19 @@ void CAddonUnInstallJob::OnPostUnInstall()
     database.Open();
     database.DeleteRepository(m_addon->ID());
   }
+
+  bool bSave(false);
+  CFileItemList items;
+  CFavourites::Load(items);
+  for (int i=0; i < items.Size(); ++i)
+  {
+    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    {
+      items.Remove(items[i].get());
+      bSave = true;
+    }
+  }
+
+  if (bSave)
+    CFavourites::Save(items);
 }

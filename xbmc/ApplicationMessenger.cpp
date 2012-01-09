@@ -398,6 +398,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         else
         {
           CFileItem item(pMsg->strParam, false);
+          pSlideShow->Reset();
           pSlideShow->Add(&item);
           pSlideShow->Select(pMsg->strParam);
         }
