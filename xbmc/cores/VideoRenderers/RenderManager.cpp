@@ -543,6 +543,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     EINTERLACEMETHOD interlacemethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     if (interlacemethod == VS_INTERLACEMETHOD_AUTO)
       interlacemethod = m_pRenderer->AutoInterlaceMethod();
+    else if(!m_pRenderer->Supports(interlacemethod))
+      interlacemethod = VS_INTERLACEMETHOD_NONE;
 
     bool invert = false;
 
