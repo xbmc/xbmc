@@ -864,14 +864,14 @@ void CWinSystemOSX::UpdateResolutions()
   GetScreenResolution(&w, &h, &fps, 0);  
   UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
   
-  //all other screens need new resolution_info objects and have to
-  //sit on the start of the m_ResInfo vector
-  //because CGUIWindowSettingsCategory::FillInScreens expects this
-  //for enumerating the available displays
+  //see resolution.h enum RESOLUTION for how the resolutions
+  //have to appear in the g_settings.m_ResInfo vector
+  //add the desktop resolutions of the other screens
   for(int i = 1; i < GetNumScreens(); i++)
   {
     RESOLUTION_INFO res;      
     //get current resolution of screen i
+    GetScreenResolution(&w, &h, &fps, i);      
     UpdateDesktopResolution(res, i, w, h, fps);
     g_settings.m_ResInfo.push_back(res);
   }
@@ -1132,7 +1132,7 @@ void CWinSystemOSX::FillInVideoModes()
         
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
         g_graphicsContext.ResetOverscan(res);
-        g_settings.m_ResInfo.push_back(res);        
+        g_settings.m_ResInfo.push_back(res);
       }
     }
   }
