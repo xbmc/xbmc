@@ -58,10 +58,11 @@ public:
     m_strDateOfRelease.Empty();
     iRating=-1;
     iYear=-1;
+    idArtist = -1;
     songs.clear();
   }
 
-  bool Load(const TiXmlElement *movie, bool chained=false);
+  bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   long idAlbum;
@@ -78,6 +79,7 @@ public:
   CStdString m_strDateOfRelease;
   int iRating;
   int iYear;
+  int idArtist;
   VECSONGS songs;
 };
 

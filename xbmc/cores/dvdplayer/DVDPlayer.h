@@ -119,9 +119,9 @@ public:
   }
   std::vector<SelectionStream> m_Streams;
 
-  int              IndexOf (StreamType type, int source, int id);
-  int              IndexOf (StreamType type, CDVDPlayer& p);
-  int              Count   (StreamType type) { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
+  int              IndexOf (StreamType type, int source, int id) const;
+  int              IndexOf (StreamType type, CDVDPlayer& p) const;
+  int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 
@@ -291,6 +291,7 @@ protected:
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
   bool CheckStartCaching(CCurrentStream& current);
+  void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);

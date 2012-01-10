@@ -1464,7 +1464,7 @@ static void implicit_weight_table(H264Context *h, int field){
  */
 static void idr(H264Context *h){
     ff_h264_remove_all_refs(h);
-    h->prev_frame_num= 0;
+    h->prev_frame_num= -1;
     h->prev_frame_num_offset= 0;
     h->prev_poc_msb=
     h->prev_poc_lsb= 0;
@@ -1479,6 +1479,7 @@ static void flush_dpb(AVCodecContext *avctx){
             h->delayed_pic[i]->reference= 0;
         h->delayed_pic[i]= NULL;
     }
+    h->got_first_iframe = 0;
     h->outputed_poc= INT_MIN;
     h->prev_interlaced_frame = 1;
     idr(h);
@@ -1796,15 +1797,11 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     s->mb_height= h->sps.mb_height * (2 - h->sps.frame_mbs_only_flag);
 
     h->b_stride=  s->mb_width*4;
-
-    s->width = 16*s->mb_width - 2*FFMIN(h->sps.crop_right, 7);
-    if(h->sps.frame_mbs_only_flag)
-        s->height= 16*s->mb_height - 2*FFMIN(h->sps.crop_bottom, 7);
-    else
-        s->height= 16*s->mb_height - 4*FFMIN(h->sps.crop_bottom, 7);
+    s->width = 16*s->mb_width;
+    s->height= 16*s->mb_height;
 
     if (s->context_initialized
-        && (   s->width != s->avctx->width || s->height != s->avctx->height
+        && (   s->width != s->avctx->coded_width || s->height != s->avctx->coded_height
             || av_cmp_q(h->sps.sar, s->avctx->sample_aspect_ratio))) {
         if(h != h0)
             return -1;   // width / height changed during parallelized decoding
@@ -1817,6 +1814,13 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             return -1;  // we cant (re-)initialize context during parallel decoding
 
         avcodec_set_dimensions(s->avctx, s->width, s->height);
+
+        s->avctx->width -= 2*FFMIN(h->sps.crop_right, 7);
+        if(h->sps.frame_mbs_only_flag)
+            s->avctx->height-=2*FFMIN(h->sps.crop_bottom, 7);
+        else
+            s->avctx->height-=4*FFMIN(h->sps.crop_bottom, 7);
+
         s->avctx->sample_aspect_ratio= h->sps.sar;
         av_assert0(s->avctx->sample_aspect_ratio.den);
 
@@ -1848,6 +1852,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             return -1;
         s->first_field = 0;
         h->prev_interlaced_frame = 1;
+        h->got_first_iframe = 0;
 
         init_scan_tables(h);
         ff_h264_alloc_tables(h);
@@ -1887,7 +1892,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
 
     if(h0->current_slice == 0){
-        while(h->frame_num !=  h->prev_frame_num &&
+        while(h->frame_num !=  h->prev_frame_num && h->prev_frame_num >= 0 &&
               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
             Picture *prev = h->short_ref_count ? h->short_ref[0] : NULL;
             av_log(h->s.avctx, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
@@ -1931,11 +1936,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
                 s0->first_field = FIELD_PICTURE;
 
             } else {
-                if (h->nal_ref_idc &&
-                        s0->current_picture_ptr->reference &&
-                        s0->current_picture_ptr->frame_num != h->frame_num) {
+                if (s0->current_picture_ptr->frame_num != h->frame_num) {
                     /*
-                     * This and previous field were reference, but had
+                     * This and previous field had
                      * different frame_nums. Consider this field first in
                      * pair. Throw away previous field except for reference
                      * purposes.
@@ -2566,7 +2569,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
                 return 0;
             }
             if( ret < 0 || h->cabac.bytestream > h->cabac.bytestream_end + 2) {
-                av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding MB %d %d, bytestream (%td)\n", s->mb_x, s->mb_y, h->cabac.bytestream_end - h->cabac.bytestream);
+                av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding MB %d %d, bytestream (%u)\n", s->mb_x, s->mb_y, h->cabac.bytestream_end - h->cabac.bytestream);
                 ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, (AC_ERROR|DC_ERROR|MV_ERROR)&part_mask);
                 return -1;
             }

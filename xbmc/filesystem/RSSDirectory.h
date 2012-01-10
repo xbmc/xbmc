@@ -36,10 +36,11 @@ namespace XFILE
     virtual bool Exists(const char* strPath);
     virtual bool IsAllowed(const CStdString &strFile) const { return true; };
     virtual bool ContainsFiles(const CStdString& strPath);
-    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
-
-    CFileItemList m_items;
-    CStdString    m_path;
+    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+  protected:
+    // key is path, value is cache invalidation date
+    static std::map<CStdString,CDateTime> m_cache;
+    static CCriticalSection m_section;
   };
 }
 

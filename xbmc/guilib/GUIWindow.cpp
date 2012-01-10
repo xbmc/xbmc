@@ -41,6 +41,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "utils/Variant.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -142,9 +143,9 @@ bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
   // now load in the skin file
   SetDefaults();
 
-  CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground, GetID());
+  CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -339,21 +340,23 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
 
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
-  if (forceClose)
+  if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-    OnMessage(msg);
-    m_closing = false;
+    if (!m_closing)
+    {
+      if (enableSound && IsSoundEnabled())
+        g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+
+      // Perform the window out effect
+      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+      m_closing = true;
+    }
+    return;
   }
-  else if (m_active && !m_closing)
-  {
-    if (enableSound && IsSoundEnabled())
-      g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
-    
-    // Perform the window out effect
-    QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-    m_closing = true;
-  }
+
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  OnMessage(msg);
+  m_closing = false;
 }
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
@@ -389,10 +392,8 @@ bool CGUIWindow::OnAction(const CAction &action)
 
   // default implementations
   if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
+    return OnBack(action.GetID());
+
   return false;
 }
 
@@ -481,7 +482,6 @@ void CGUIWindow::OnInitWindow()
 }
 
 // Called on window close.
-//  * Executes the window close animation(s)
 //  * Saves control state(s)
 // Override this function and call the base class before doing any dynamic memory freeing
 void CGUIWindow::OnDeinitWindow(int nextWindowID)
@@ -636,7 +636,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   start = CurrentHostCounter();
 #endif
   // load skin xml fil
-  CStdString xmlFile = GetProperty("xmlfile");
+  CStdString xmlFile = GetProperty("xmlfile").asString();
   bool bHasPath=false;
   if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
     bHasPath = true;
@@ -685,7 +685,7 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile"));
+  return Load(GetProperty("xmlfile").asString());
 }
 
 void CGUIWindow::SetInitialVisibility()
@@ -789,6 +789,12 @@ void CGUIWindow::ResetControlStates()
   m_lastControlID = 0;
   m_focusedControl = 0;
   m_controlStates.clear();
+}
+
+bool CGUIWindow::OnBack(int actionID)
+{
+  g_windowManager.PreviousWindow();
+  return true;
 }
 
 bool CGUIWindow::OnMove(int fromControl, int moveAction)
@@ -895,79 +901,26 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
-void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
+void CGUIWindow::SetProperty(const CStdString &strKey, const CVariant &value)
 {
   CSingleLock lock(*this);
-  m_mapProperties[key] = value;
+  m_mapProperties[strKey] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &key, const char *value)
+CVariant CGUIWindow::GetProperty(const CStdString &strKey) const
 {
   CSingleLock lock(*this);
-  m_mapProperties[key] = value;
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, int value)
-{
-  CStdString strVal;
-  strVal.Format("%d", value);
-  SetProperty(key, strVal);
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, bool value)
-{
-  SetProperty(key, value ? "1" : "0");
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, double value)
-{
-  CStdString strVal;
-  strVal.Format("%f", value);
-  SetProperty(key, strVal);
-}
-
-CStdString CGUIWindow::GetProperty(const CStdString &key) const
-{
-  CSingleLock lock(*this);
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
+  std::map<CStdString, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
-    return "";
+    return CVariant(CVariant::VariantTypeNull);
 
   return iter->second;
-}
-
-int CGUIWindow::GetPropertyInt(const CStdString &key) const
-{
-  return atoi(GetProperty(key).c_str());
-}
-
-bool CGUIWindow::GetPropertyBool(const CStdString &key) const
-{
-  return GetProperty(key) == "1";
-}
-
-double CGUIWindow::GetPropertyDouble(const CStdString &key) const
-{
-  return atof(GetProperty(key).c_str());
 }
 
 void CGUIWindow::ClearProperties()
 {
   CSingleLock lock(*this);
   m_mapProperties.clear();
-}
-
-void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
-{
-  vector<CGUIActionDescriptor> tempActions = actions;
-
-  // and execute our actions
-  for (unsigned int i = 0; i < tempActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-    message.SetAction(tempActions[i]);
-    g_windowManager.SendMessage(message);
-  }
 }
 
 void CGUIWindow::SetRunActionsManually()
@@ -977,12 +930,12 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  RunActions(m_loadActions);
+  m_loadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::RunUnloadActions()
 {
-  RunActions(m_unloadActions);
+  m_unloadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::ClearBackground()

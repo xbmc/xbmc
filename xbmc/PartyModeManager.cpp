@@ -433,7 +433,7 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   playlist.Add(pItem);
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->m_strPath.c_str());
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->GetPath().c_str());
   m_iMatchingSongsPicked++;
 }
 

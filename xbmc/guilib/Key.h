@@ -287,7 +287,7 @@
 
 #define ACTION_GESTURE_NOTIFY         221
 #define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
@@ -300,6 +300,10 @@
 // useful in user keyboard.xml etc to disable actions specified in the
 // system mappings.
 #define ACTION_NOOP                   999
+
+#define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in DVDPlayer
+#define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
+#define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
@@ -377,6 +381,8 @@
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
 #define WINDOW_DIALOG_PLAY_EJECT          10148
+#define WINDOW_DIALOG_PERIPHERAL_MANAGER  10149
+#define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

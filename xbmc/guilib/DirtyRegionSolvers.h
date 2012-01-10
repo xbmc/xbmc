@@ -28,7 +28,13 @@ public:
   virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
 };
 
-class CFillViewportRegionSolver : public IDirtyRegionSolver
+class CFillViewportAlwaysRegionSolver : public IDirtyRegionSolver
+{
+public:
+  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);
+};
+
+class CFillViewportOnChangeRegionSolver : public IDirtyRegionSolver
 {
 public:
   virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output);

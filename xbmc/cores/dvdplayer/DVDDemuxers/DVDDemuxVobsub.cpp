@@ -75,7 +75,7 @@ bool CDVDDemuxVobsub::Open(const string& filename, const string& subfilename)
   hints.codec = CODEC_ID_DVD_SUBTITLE;
 
   char line[2048];
-  bool res;
+  DECLARE_UNUSED(bool,res)
 
   SState state;
   state.delay = 0;
@@ -177,6 +177,20 @@ bool CDVDDemuxVobsub::ParseLangIdx(SState& state, char* line)
 
 bool CDVDDemuxVobsub::ParseDelay(SState& state, char* line)
 {
+  int h,m,s,ms;
+  bool negative = false;
+
+  while(*line == ' ') line++;
+  if(*line == '-')
+  {
+	  line++;
+	  negative = true;
+  }
+  if(sscanf(line, "%d:%d:%d:%d", &h, &m, &s, &ms) != 4)
+    return false;
+  state.delay = h*3600.0 + m*60.0 + s + ms*0.001;
+  if(negative)
+	  state.delay *= -1;
   return true;
 }
 

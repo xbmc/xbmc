@@ -61,8 +61,13 @@ public:
   virtual int setErr(int err_code,const char * qry);
 /* func. returns error message if error occurs */
   virtual const char *getErrorMsg();
-  
+/* sets a new host name */
+  virtual void setHostName(const char *newHost);
+/* sets a database name */
+  virtual void setDatabase(const char *newDb);
+
 /* func. connects to database-server */
+
   virtual int connect(bool create);
 /* func. disconnects from database-server */
   virtual void disconnect();
@@ -72,6 +77,9 @@ public:
   virtual int drop();
 /* check if database exists (ie has tables/views defined) */
   virtual bool exists();
+
+/* \brief copy database */
+  virtual int copy(const char *backup_name);
 
   virtual long nextid(const char* seq_name);
 
@@ -103,7 +111,7 @@ protected:
   result_set exec_res;
   bool autorefresh;
   char* errmsg;
-  
+
   sqlite3* handle();
 
 /* Makes direct queries to database */

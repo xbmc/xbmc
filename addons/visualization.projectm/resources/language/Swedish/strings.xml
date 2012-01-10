@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/11/2010-->
+<!--Date of translation: 12/26/2011-->
 <!--$Revision$-->
 <strings>
   <string id="30000">Renderingskvalitet</string>
@@ -14,4 +14,10 @@
   <string id="30006">Mjukt förvalslängd</string>
   <string id="30007">Förvalslängd</string>
   <string id="30008">Taktkänslighet</string>
+  <string id="30009">Förvalspaket</string>
+  <string id="30010">Standardpaket</string>
+  <string id="30011">Användardefineradförvalsmapp</string>
+  <string id="30012">Användarförvalsmapp</string>
+  <string id="30050">%2.0f sek</string>
+  <string id="30051">%2.0f %%</string>
 </strings>

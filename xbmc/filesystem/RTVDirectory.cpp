@@ -86,7 +86,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CFileItemPtr pItem(new CFileItem(rtv[i].friendlyName));
         // This will keep the /Video or / and allow one to set up an auto ReplayTV
         // share of either type--simple file listing or ReplayGuide listing.
-        pItem->m_strPath = strRoot + rtv[i].hostname;
+        pItem->SetPath(strRoot + rtv[i].hostname);
         pItem->m_bIsFolder = true;
         pItem->SetLabelPreformated(true);
         items.Add(pItem);
@@ -157,10 +157,10 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if ( !strcmpi(strTagName.c_str(), "ITEM") )
       {
         const TiXmlNode *nameNode = pChild->FirstChild("DISPLAYNAME");
-        const TiXmlNode *qualityNode = pChild->FirstChild("QUALITY");
+//        const TiXmlNode *qualityNode = pChild->FirstChild("QUALITY");
         const TiXmlNode *recordedNode = pChild->FirstChild("RECORDED");
         const TiXmlNode *pathNode = pChild->FirstChild("PATH");
-        const TiXmlNode *durationNode = pChild->FirstChild("DURATION");
+//        const TiXmlNode *durationNode = pChild->FirstChild("DURATION");
         const TiXmlNode *sizeNode = pChild->FirstChild("SIZE");
         const TiXmlNode *atrbNode = pChild->FirstChild("ATTRIB");
 
@@ -182,11 +182,11 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         }
 
         // QUALITY
-        const char* szQuality = NULL;
-        if (qualityNode)
-        {
-          szQuality = qualityNode->FirstChild()->Value() ;
-        }
+//        const char* szQuality = NULL;
+//        if (qualityNode)
+//        {
+//          szQuality = qualityNode->FirstChild()->Value() ;
+//        }
 
         // RECORDED
         if (recordedNode)
@@ -224,11 +224,11 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         }
 
         // DURATION
-        const char* szDuration = NULL;
-        if (durationNode)
-        {
-          szDuration = durationNode->FirstChild()->Value() ;
-        }
+//        const char* szDuration = NULL;
+//        if (durationNode)
+//        {
+//          szDuration = durationNode->FirstChild()->Value() ;
+//        }
 
         // SIZE
         // NOTE: Size here is actually just duration in minutes because
@@ -254,7 +254,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         CFileItemPtr pItem(new CFileItem(szName));
         pItem->m_dateTime=dtDateTime;
-        pItem->m_strPath = strRoot + szPath;
+        pItem->SetPath(strRoot + szPath);
         // Hack to show duration of show in minutes as KB in XMBC because
         // it doesn't currently permit showing duration in minutes.
         // E.g., a 30 minute show will show as 29.3 KB in XBMC.
@@ -306,7 +306,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           if (strstr(p, ".mpg") && !strstr(p, "circular"))
           {
             CFileItemPtr pItem(new CFileItem(p));
-            pItem->m_strPath = strRoot + p;
+            pItem->SetPath(strRoot + p);
             pItem->m_bIsFolder = false;
             // The list returned by the RTV doesn't include file sizes, unfortunately
             //pItem->m_dwSize = atol(szSize);

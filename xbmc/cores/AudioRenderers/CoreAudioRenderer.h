@@ -26,6 +26,7 @@
 #include "IAudioRenderer.h"
 #include "threads/Event.h"
 #include "threads/LockFree.h"
+#include "guilib/DispResource.h"
 
 struct audio_slice
 {
@@ -118,15 +119,16 @@ private:
   bool m_isValid;
 };
 
-class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource
+class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource, public IDispResource 
 {
 public:
   CCoreAudioRenderer();
   virtual ~CCoreAudioRenderer();
   virtual unsigned int GetChunkLen();
   virtual float GetDelay();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
   virtual bool Deinitialize();
+          bool Reinitialize();
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
   virtual float GetCacheTime();
@@ -140,6 +142,8 @@ public:
   virtual bool SetCurrentVolume(long nVolume);
   virtual void WaitCompletion();
   
+  virtual void SetDynamicRangeCompression(long drc);
+  
   // Unimplemented IAudioRenderer methods
   virtual int SetPlaySpeed(int iSpeed) {return 0;};
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) {};
@@ -151,6 +155,8 @@ public:
   // AudioUnit Rendering Connection Point (called by down-stream sinks)
   virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
   
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 private:
   OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
   static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
@@ -160,6 +166,9 @@ private:
   
   bool CreateMixMap();
   
+  static OSStatus HardwareListenerProc(AudioHardwarePropertyID property, void *clientref);
+  static OSStatus DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref);
+
   bool m_Pause;
   bool m_Initialized; // Prevent multiple init/deinit
   
@@ -176,6 +185,7 @@ private:
   UInt32 m_OutputBufferIndex;
   
   CAUGenericSource m_AUConverter;
+  CAUDynamicsProcessor m_AUCompressor;
   
   bool m_Passthrough;
   bool m_EnableVolumeControl;
@@ -192,6 +202,23 @@ private:
   // Thread synchronization
   CEvent m_RunoutEvent;
   long m_DoRunout;
+  // saved Initialize vars
+  struct init_state
+  {
+    bool              reinit;
+    CStdString        device;
+    int               iChannels;
+    enum PCMChannels *channelMap;
+    unsigned int      uiSamplesPerSec;
+    unsigned int      uiBitsPerSample;
+    bool              bResample;
+    bool              bIsMusic;
+    EEncoded          bPassthrough;
+    IAudioCallback   *pCallback;
+  };
+  CCriticalSection m_init_csection;
+  init_state m_init_state;
+
 };
 
 #endif

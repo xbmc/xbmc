@@ -24,6 +24,7 @@ SRCS=action.cpp \
      listitem.cpp \
      player.cpp \
      pyplaylist.cpp \
+     pyrendercapture.cpp \
      PythonAddon.cpp \
      PythonPlayer.cpp \
      pyutil.cpp \

@@ -28,12 +28,31 @@
 #include "threads/CriticalSection.h"
 #include <list>
 #include "SectionLoader.h"
+#include <map>
+
+#ifdef TARGET_WINDOWS
+#define S_IRGRP 0
+#define S_IROTH 0
+#define S_IWUSR _S_IWRITE
+#define S_IRUSR _S_IREAD
+#define	S_IFLNK 0120000
+
+#define S_ISBLK(m) (0)
+#define S_ISSOCK(m) (0)
+#define S_ISLNK(m) ((m & S_IFLNK) != 0)
+#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
 
 class DllLibNfs;
 
 class CNfsConnection : public CCriticalSection
 {     
 public:
+  typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
+  typedef std::map<std::string, struct nfs_context *> tOpenContextMap;    
   
   CNfsConnection();
   ~CNfsConnection();
@@ -46,13 +65,24 @@ public:
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
   bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath);
+  
+  //special stat which uses its own context
+  //needed for getting intervolume symlinks to work
+  int stat(const CURL &url, struct stat *statbuff);
 
   void AddActiveConnection();
   void AddIdleConnection();
   void CheckIfIdle();
-  void SetActivityTime();
   void Deinit();
   bool HandleDyLoad();//loads the lib if needed
+  //adds the filehandle to the keep alive list or resets
+  //the timeout for this filehandle if already in list
+  void resetKeepAlive(struct nfsfh  *_pFileHandle);
+  //removes file handle from keep alive list
+  void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);  
+  
+  const CStdString& GetConnectedIp() const {return m_resolvedHostName;}
+  const CStdString& GetConnectedExport() const {return m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context
@@ -63,12 +93,18 @@ private:
   size_t m_writeChunkSize;//current write chunksize of connected server
   int m_OpenConnections;//number of open connections
   unsigned int m_IdleTimeout;//timeout for idle connection close and dyunload
+  tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
+  tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
-  
+  CCriticalSection keepAliveLock;
+ 
   void clearMembers();
-  bool resetContext();//clear old nfs context and init new context
+  struct nfs_context *getContextFromMap(const CStdString &exportname);
+  int  getContextForExport(const CStdString &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
+  void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
+  void keepAlive(struct nfsfh  *_pFileHandle);
 };
 
 extern CNfsConnection gNfsConnection;
@@ -103,7 +139,9 @@ namespace XFILE
     bool IsValidFile(const CStdString& strFileName);
     int64_t m_fileSize;
     struct nfsfh  *m_pFileHandle;
+    struct nfs_context *m_pNfsContext;//current nfs context    
   };
 }
 #endif // FILENFS_H_
+
 

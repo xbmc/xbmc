@@ -203,14 +203,14 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'F': // filename
-    value = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder && !item->IsFileFolder());
+    value = CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder && !item->IsFileFolder());
     break;
   case 'L':
     value = item->GetLabel();
     // is the label the actual file or folder name?
-    if (value == URIUtils::GetFileName(item->m_strPath))
+    if (value == URIUtils::GetFileName(item->GetPath()))
     { // label is the same as filename, clean it up as appropriate
-      value = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder && !item->IsFileFolder());
+      value = CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder && !item->IsFileFolder());
     }
     break;
   case 'D':

@@ -1,4 +1,3 @@
-#ifndef __APPLE__
 /*
 * XBMC Media Center
 * Copyright (c) 2002 d7o3g4q and RUNTiME
@@ -50,7 +49,7 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded encoded)
 {
   enum PCMChannels *outLayout;
 
@@ -68,10 +67,10 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiDataChannels = iChannels;
   m_remap.Reset();
 
-  if (!bPassthrough && channelMap)
+  if (encoded == ENCODED_NONE && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
     unsigned int outChannels = 0;
     unsigned int ch = 0, map;
     while(outLayout[ch] != PCM_INVALID)
@@ -106,7 +105,8 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+  m_bPassthrough = encoded != ENCODED_NONE;
+  m_drc = 0;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   if (!m_bPassthrough)
@@ -508,10 +508,6 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     return 0;
   }
 
-  // handle volume de-amp
-  if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)data, framesToWrite * m_uiDataChannels);
-
   int writeResult;
   if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
   {
@@ -525,11 +521,17 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     {
       /* remap the data to the correct channels */
       uint8_t outData[bytesToWrite];
-      m_remap.Remap((void *)data, outData, framesToWrite);
+      m_remap.Remap((void *)data, outData, framesToWrite, m_drc);
+      m_amp.DeAmplify((short *)outData, bytesToWrite / 2);
       writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
     }
     else
+    {
+      if (!m_bPassthrough)
+        m_amp.DeAmplify((short *)data, framesToWrite * m_uiDataChannels);
+
       writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+    }
   }
   if (  writeResult == -EPIPE  )
   {
@@ -718,4 +720,3 @@ void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink
     vAudioSinks.push_back(AudioSink(label, finalSink));
   }
 }
-#endif

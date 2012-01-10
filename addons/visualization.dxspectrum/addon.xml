@@ -8,6 +8,7 @@
     point="xbmc.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Визуализация представяща ротиращ се 3D спектрален анализатор</summary>
     <summary lang="en">Visualisation showing a rotating 3D Spectrum Analyzer</summary>
     <summary lang="es">Visualización que muestra un analizador de espectro en 3D girando</summary>
     <summary lang="fi">Pyörivä 3D-spektrianalysaattori</summary>
@@ -20,6 +21,8 @@
     <summary lang="ro">Vizualizare care afișează un analizator de spectre 3D rotativ</summary>
     <summary lang="se">Visualisering som visar en roterande 3D-spektrumanalysator</summary>
     <summary lang="zh">显示旋转三维频谱分析图像的可视化效果</summary>
+    <description lang="bg">DirectX Spectrum е визуализация изобразяваща ротиращ се 3D спектрален анализатор (рендването се извършва от DirectX). Ротацията е според ритъма на музиката и предизвиква вълнови ефект по спектралната решетка.
+Можете да настройвате височината на спектралната лента, скоростта и рендването (solid, points, wire frame). Характеризира се с отличен вид, като същевременно почти не натоварва процесора.</description>
     <description lang="en">DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
    <description lang="es">DirectX Spectrum es una visualización que muestra un analizador de espectro en 3D girando renderizado con DirectX que se mueve al ritmo de la música creando un efecto de onda en la rejilla del espectro.

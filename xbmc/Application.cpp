@@ -33,6 +33,10 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
+#include "video/Bookmark.h"
+#ifdef HAS_WEB_SERVER
+#include "network/WebServer.h"
+#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -52,7 +56,7 @@
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
-#include "InertialScrollingHandler.h"
+#include "input/InertialScrollingHandler.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
@@ -89,6 +93,7 @@
 #include "utils/CPUInfo.h"
 
 #include "input/KeyboardStat.h"
+#include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
@@ -103,6 +108,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/FileNFS.h"
+#endif
+#ifdef HAS_FILESYSTEM_AFP
+#include "filesystem/FileAFP.h"
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "filesystem/FileSFTP.h"
@@ -128,8 +136,8 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
-#ifdef HAS_DBUS_SERVER
-#include "interfaces/DbusServer.h"
+#ifdef HAS_DBUS
+#include <dbus/dbus.h>
 #endif
 #ifdef HAS_HTTPAPI
 #include "interfaces/http-api/XBMChttp.h"
@@ -138,10 +146,22 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/TCPServer.h"
 #endif
+#ifdef HAS_AIRPLAY
+#include "network/AirPlayServer.h"
+#endif
+#ifdef HAS_AIRTUNES
+#include "network/AirTunesServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 #include "interfaces/AnnouncementManager.h"
+#include "peripherals/Peripherals.h"
+#ifdef HAVE_LIBCEC
+#include "peripherals/devices/PeripheralCecAdapter.h"
+#endif
+#include "peripherals/dialogs/GUIDialogPeripheralManager.h"
+#include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -246,17 +266,19 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
-#include "win32/WIN32USBScan.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
 #endif
-#ifdef __APPLE__
-#if !defined(__arm__)
+
+#ifdef TARGET_DARWIN_OSX
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
+#ifdef TARGET_DARWIN
+#include "DarwinUtils.h"
 #endif
+
 
 #ifdef HAS_DVD_DRIVE
 #include <cdio/logging.h>
@@ -294,13 +316,11 @@ using namespace MUSIC_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
 #endif
-#ifdef HAS_DBUS_SERVER
-using namespace DBUSSERVER;
-#endif
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
+using namespace PERIPHERALS;
 
 using namespace XbmcThreads;
 
@@ -311,10 +331,16 @@ using namespace XbmcThreads;
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
+CApplication::CApplication(void)
+  : m_pPlayer(NULL)
+#ifdef HAS_WEB_SERVER
+  , m_WebServer(*new CWebServer)
+#endif
+  , m_itemCurrentFile(new CFileItem)
+  , m_progressTrackingVideoResumeBookmark(*new CBookmark)
+  , m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
-  m_pPlayer = NULL;
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
@@ -349,10 +375,20 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
+#ifdef HAS_DVD_DRIVE
+  m_Autorun = new CAutorun();
+#endif
 }
 
 CApplication::~CApplication(void)
 {
+#ifdef HAS_WEB_SERVER
+  delete &m_WebServer;
+#endif
+  delete &m_progressTrackingVideoResumeBookmark;
+#ifdef HAS_DVD_DRIVE
+  delete m_Autorun;
+#endif
   delete m_currentStack;
 
 #ifdef HAS_KARAOKE
@@ -392,6 +428,24 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_guiSettings.SetInt("window.width", newEvent.resize.w);
         g_guiSettings.SetInt("window.height", newEvent.resize.h);
         g_settings.Save();
+      }
+      break;
+    case XBMC_VIDEOMOVE:
+#ifdef TARGET_WINDOWS
+      if (g_advancedSettings.m_fullScreen)
+      {
+        // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
+        RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+        if (newRes != g_graphicsContext.GetVideoResolution())
+        {
+          g_guiSettings.SetResolution(newRes);
+          g_graphicsContext.SetVideoResolution(newRes);
+        }
+      }
+      else
+#endif
+      {
+        g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
       }
       break;
     case XBMC_USEREVENT:
@@ -495,14 +549,16 @@ bool CApplication::Create()
   g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-#if defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
+#if defined(TARGET_DARWIN_OSX)
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Darwin OSX (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
+#elif defined(TARGET_DARWIN_IOS)
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Darwin iOS (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
 #elif defined(__FreeBSD__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: FreeBSD (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: FreeBSD (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
 #elif defined(_LINUX)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Linux (%s, %s). Built on %s (Git:%s)", g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Linux (%s, %s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
 #elif defined(_WIN32)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s. Built on %s (Git:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, GIT_REV, _MSC_VER);
+  CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: %s. Built on %s (compiler %i)", g_infoManager.GetVersion().c_str(), g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
@@ -512,6 +568,7 @@ bool CApplication::Create()
 
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
+  CLog::Log(LOGNOTICE, "Local hostname: %s", m_network.GetHostName().c_str());
   CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_settings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
@@ -527,7 +584,7 @@ bool CApplication::Create()
       CFileItemList items;
       CUtil::GetRecursiveListing("special://xbmc/userdata",items,"");
       for (int i=0;i<items.Size();++i)
-          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+URIUtils::GetFileName(items[i]->m_strPath));
+          CFile::Cache(items[i]->GetPath(),"special://masterprofile/"+URIUtils::GetFileName(items[i]->GetPath()));
     }
     g_settings.m_logFolder = "special://masterprofile/";
   }
@@ -582,6 +639,10 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
+  #if defined(TARGET_DARWIN)
+  // SDL_Init will install a handler for segfaults, restore the default handler.
+  signal(SIGSEGV, SIG_DFL);
+  #endif
 #endif
 
   // for python scripts that check the OS
@@ -603,10 +664,6 @@ bool CApplication::Create()
   }
 
   g_powerManager.Initialize();
-
-#ifdef _WIN32
-  CWIN32USBScan();
-#endif
 
   CLog::Log(LOGNOTICE, "load settings...");
 
@@ -652,6 +709,8 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     FatalErrorHandler(true, true, true);
   }
+
+  g_peripherals.Initialise();
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -727,9 +786,10 @@ bool CApplication::Create()
     m_splash->Show();
   }
 
+  // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
-    FatalErrorHandler(false, false, true);
+      FatalErrorHandler(false, false, true);
 
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
@@ -944,45 +1004,16 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetXBMCBinPath(xbmcPath);
   CSpecialProtocol::SetXBMCPath(xbmcPath);
 
-  if (m_bPlatformDirectories)
-  {
+  CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
 
-    CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
+  g_settings.m_logFolder = strWin32UserFolder;
+  CSpecialProtocol::SetHomePath(strWin32UserFolder);
+  CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
+  CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-    // create user/app data/XBMC
-    CStdString homePath = URIUtils::AddFileToFolder(strWin32UserFolder, "XBMC");
+  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
 
-    // move log to platform dirs
-    g_settings.m_logFolder = homePath;
-    URIUtils::AddSlashAtEnd(g_settings.m_logFolder);
-
-    // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-    CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(homePath);
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(homePath, "userdata"));
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
-
-    CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(homePath,"cache"));
-
-    CreateUserDirs();
-
-  }
-  else
-  {
-    URIUtils::AddSlashAtEnd(xbmcPath);
-    g_settings.m_logFolder = xbmcPath;
-
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(xbmcPath, "portable_data/userdata"));
-
-    CStdString strTempPath = URIUtils::AddFileToFolder(xbmcPath, "portable_data/temp");
-    CSpecialProtocol::SetTempPath(strTempPath);
-
-    CreateUserDirs();
-
-    SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
-  }
+  CreateUserDirs();
 
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
@@ -1113,6 +1144,9 @@ bool CApplication::Initialize()
 
   g_windowManager.Add(new CGUIDialogPlayEject);
 
+  g_windowManager.Add(new CGUIDialogPeripheralManager);
+  g_windowManager.Add(new CGUIDialogPeripheralSettings);
+
   g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
@@ -1161,7 +1195,12 @@ bool CApplication::Initialize()
   if (g_settings.UsingLoginScreen())
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   else
+  {
+#ifdef HAS_JSONRPC
+    CJSONRPC::Initialize();
+#endif
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+  }
 
   g_sysinfo.Refresh();
 
@@ -1184,7 +1223,7 @@ bool CApplication::Initialize()
   {
     UpdateLibraries();
 #ifdef HAS_PYTHON
-  g_pythonParser.m_bLogin = true;
+    g_pythonParser.m_bLogin = true;
 #endif
   }
 
@@ -1226,16 +1265,17 @@ bool CApplication::StartWebServer()
     bool started = false;
     if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
     {
+      std::map<std::string, std::string> txt; 
       started = true;
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
 #ifdef HAS_HTTPAPI
-      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1260,12 +1300,67 @@ void CApplication::StopWebServer()
     if(! m_WebServer.IsStarted() )
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-      CZeroconf::GetInstance()->RemoveService("services.webserver");
-      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
-      CZeroconf::GetInstance()->RemoveService("services.webapi");
+      CZeroconf::GetInstance()->RemoveService("servers.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-http");
+      CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
+#endif
+}
+
+void CApplication::StartAirplayServer()
+{
+#ifdef HAS_AIRPLAY
+  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
+  {
+    int listenPort = g_advancedSettings.m_airPlayPort;
+    CStdString password = g_guiSettings.GetString("services.airplaypassword");
+    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+    
+    if (CAirPlayServer::StartServer(listenPort, true))
+    {
+      CAirPlayServer::SetCredentials(usePassword, password);
+      std::map<std::string, std::string> txt;
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if (iface)
+      {
+        txt["deviceid"] = iface->GetMacAddress();
+      }
+      else
+      {
+        txt["deviceid"] = "FF:FF:FF:FF:FF:F2";
+      }
+      txt["features"] = "0x77";
+      txt["model"] = "AppleTV2,1";
+      txt["srcvers"] = AIRPLAY_SERVER_VERSION_STR;
+      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
+    }
+  }
+#endif
+#ifdef HAS_AIRTUNES
+  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
+  {   
+    int listenPort = g_advancedSettings.m_airTunesPort;  
+    CStdString password = g_guiSettings.GetString("services.airplaypassword");
+    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+      
+    if (!CAirTunesServer::StartServer(listenPort, true, usePassword, password))
+    {
+      CLog::Log(LOGERROR, "Failed to start AirTunes Server");
+    }
+  }
+#endif
+}
+
+void CApplication::StopAirplayServer(bool bWait)
+{
+#ifdef HAS_AIRPLAY
+  CAirPlayServer::StopServer(bWait);
+  CZeroconf::GetInstance()->RemoveService("servers.airplay");
+#endif
+#ifdef HAS_AIRTUNES
+  CAirTunesServer::StopServer(bWait);
 #endif
 }
 
@@ -1274,11 +1369,10 @@ bool CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    CJSONRPC::Initialize();
-
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
+      std::map<std::string, std::string> txt;  
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc-tcp._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
@@ -1293,7 +1387,7 @@ void CApplication::StopJSONRPCServer(bool bWait)
 {
 #ifdef HAS_JSONRPC
   CTCPServer::StopServer(bWait);
-  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
+  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");
 #endif
 }
 
@@ -1381,34 +1475,6 @@ void CApplication::RefreshEventServer()
     CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
-}
-
-void CApplication::StartDbusServer()
-{
-#ifdef HAS_DBUS_SERVER
-  CDbusServer* serverDbus = CDbusServer::GetInstance();
-  if (!serverDbus)
-  {
-    CLog::Log(LOGERROR, "DS: Out of memory");
-    return;
-  }
-  CLog::Log(LOGNOTICE, "DS: Starting dbus server");
-  serverDbus->StartServer( this );
-#endif
-}
-
-bool CApplication::StopDbusServer(bool bWait)
-{
-#ifdef HAS_DBUS_SERVER
-  CDbusServer* serverDbus = CDbusServer::GetInstance();
-  if (!serverDbus)
-  {
-    CLog::Log(LOGERROR, "DS: Out of memory");
-    return false;
-  }
-  CDbusServer::GetInstance()->StopServer(bWait);
-#endif
-  return true;
 }
 
 void CApplication::StartUPnPRenderer()
@@ -1524,6 +1590,8 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
+
+  g_peripherals.Clear();
 }
 
 void CApplication::ReloadSkin()
@@ -1632,6 +1700,8 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
 
+  g_SkinInfo->LoadIncludes();
+
   int64_t start;
   start = CurrentHostCounter();
 
@@ -1671,6 +1741,13 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     g_windowManager.Add(new CGUIDialogFullScreenInfo);
+
+  { // we can't register visible condition in dialog's ctor because infomanager is cleared when unloading skin
+    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OVERLAY);
+    if (overlay) overlay->SetVisibleCondition("skin.hasvideooverlay");
+    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OVERLAY);
+    if (overlay) overlay->SetVisibleCondition("skin.hasmusicoverlay");
+  }
 
   CLog::Log(LOGINFO, "  skin loaded...");
 
@@ -1738,13 +1815,13 @@ bool CApplication::LoadUserWindows()
       {
         if (items[i]->m_bIsFolder)
           continue;
-        CStdString skinFile = URIUtils::GetFileName(items[i]->m_strPath);
+        CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
           CXBMCTinyXML xmlDoc;
-          if (!xmlDoc.LoadFile(items[i]->m_strPath))
+          if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
-            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1979,6 +2056,7 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
+  CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
     hasRendered = true;
 
@@ -2018,7 +2096,7 @@ void CApplication::Render()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
-    g_graphicsContext.Flip(g_windowManager.GetDirty());
+    g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
@@ -2115,8 +2193,14 @@ bool CApplication::OnKey(const CKey& key)
       CGUIControl *control = window->GetFocusedControl();
       if (control)
       {
-        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-           (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT)) // shift and no other modifiers
+        // If this is an edit control set usekeyboard to true. This causes the
+        // keypress to be processed directly not through the key mappings.
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+          useKeyboard = true;
+
+        // If the key pressed is shift-A to shift-Z set usekeyboard to true.
+        // This causes the keypress to be used for list navigation.
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
           useKeyboard = true;
       }
     }
@@ -2334,7 +2418,7 @@ bool CApplication::OnAction(const CAction &action)
         CMusicDatabase db;
         if (db.Open())      // OpenForWrite() ?
         {
-          db.SetSongRating(m_itemCurrentFile->m_strPath, m_itemCurrentFile->GetMusicInfoTag()->GetRating());
+          db.SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
           db.Close();
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
@@ -2610,6 +2694,7 @@ void CApplication::FrameMove(bool processEvents)
     ProcessRemote(frameTime);
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
+    ProcessPeripherals(frameTime);
     m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
   }
   if (!m_bStop)
@@ -2728,6 +2813,28 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
+  return false;
+}
+
+bool CApplication::ProcessPeripherals(float frameTime)
+{
+#ifdef HAVE_LIBCEC
+  vector<CPeripheral *> peripherals;
+  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->GetButton())
+      {
+        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        cecDevice->ResetButton();
+        return OnKey(key);
+      }
+    }
+  }
+#endif
+
   return false;
 }
 
@@ -3116,9 +3223,6 @@ bool CApplication::Cleanup()
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
-#ifdef HAS_DBUS_SERVER
-    CDbusServer::RemoveInstance();
-#endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
     g_settings.Clear();
@@ -3294,6 +3398,14 @@ void CApplication::Stop(int exitCode)
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+  //If item is a plugin, expand out now and run ourselves again
+  if (item.IsPlugin())
+  {
+    CFileItem item_new(item);
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
+      return PlayMedia(item_new, iPlaylist);
+    return false;
+  }
   if (item.IsLastFM())
   {
     g_partyModeManager.Disable();
@@ -3301,13 +3413,13 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   if (item.IsSmartPlayList())
   {
-    CDirectory dir;
     CFileItemList items;
-    if (dir.GetDirectory(item.m_strPath, items) && items.Size())
+    CUtil::GetRecursiveListing(item.GetPath(), items, "");
+    if (items.Size())
     {
       CSmartPlaylist smartpl;
       //get name and type of smartplaylist, this will always succeed as GetDirectory also did this.
-      smartpl.OpenAndReadName(item.m_strPath);
+      smartpl.OpenAndReadName(item.GetPath());
       CPlayList playlist;
       playlist.Add(items);
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, (smartpl.GetType() == "songs" || smartpl.GetType() == "albums") ? PLAYLIST_MUSIC:PLAYLIST_VIDEO);
@@ -3319,7 +3431,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
+    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.GetPath()));
 
     if (dlgCache)
     {
@@ -3332,10 +3444,15 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     {
 
       if (iPlaylist != PLAYLIST_NONE)
-        return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
+      {
+        int track=0;
+        if (item.HasProperty("playlist_starting_track"))
+          track = item.GetProperty("playlist_starting_track").asInteger();
+        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
+      }
       else
       {
-        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.m_strPath.c_str());
+        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
         if(pPlayList->size())
           return PlayFile(*(*pPlayList)[0], false);
       }
@@ -3368,15 +3485,15 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    dbs.GetVideoSettings(item.m_strPath, g_settings.m_currentVideoSettings);
-    haveTimes = dbs.GetStackTimes(item.m_strPath, times);
+    dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
+    haveTimes = dbs.GetStackTimes(item.GetPath(), times);
     dbs.Close();
   }
 
 
   // calculate the total time of the stack
   CStackDirectory dir;
-  dir.GetDirectory(item.m_strPath, *m_currentStack);
+  dir.GetDirectory(item.GetPath(), *m_currentStack);
   long totalTime = 0;
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
@@ -3385,7 +3502,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     else
     {
       int duration;
-      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->m_strPath, duration))
+      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
       {
         m_currentStack->Clear();
         return false;
@@ -3403,13 +3520,13 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     if (dbs.Open())
     {
       if( !haveTimes )
-        dbs.SetStackTimes(item.m_strPath, times);
+        dbs.SetStackTimes(item.GetPath(), times);
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
         // can only resume seek here, not dvdstate
         CBookmark bookmark;
-        if( dbs.GetResumeBookMark(item.m_strPath, bookmark) )
+        if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
           seconds = bookmark.timeInSeconds;
         else
           seconds = 0.0f;
@@ -3467,7 +3584,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
     if (CGUIDialogPlayEject::ShowAndGetInput(item))
-      return MEDIA_DETECT::CAutorun::PlayDisc();
+      // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
+      // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
+      return MEDIA_DETECT::CAutorun::PlayDiscAskResume(); 
 #endif
     return true;
   }
@@ -3478,15 +3597,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
     return false;
   }
 
-  if (URIUtils::IsUPnP(item.m_strPath))
+  if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
-    if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
+    if (XFILE::CUPnPDirectory::GetResource(item.GetPath(), item_new))
       return PlayFile(item_new, false);
     return false;
   }
@@ -3500,7 +3619,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   //Is TuxBox, this should probably be moved to CFileTuxBox
   if(item.IsTuxBox())
   {
-    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.GetPath().c_str());
 
     if(g_tuxboxService.IsRunning())
       g_tuxboxService.Stop();
@@ -3526,6 +3645,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
+  
+  if( item.HasProperty("StartPercent") )
+  {
+    options.startpercent = item.GetProperty("StartPercent").asDouble();
+  }
+  
   PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
@@ -3550,15 +3675,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
       dbs.Open();
-      dbs.GetVideoSettings(item.m_strPath, g_settings.m_currentVideoSettings);
+      dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
         options.starttime = 0.0f;
         CBookmark bookmark;
-        CStdString path = item.m_strPath;
-        if (item.IsDVD()) 
+        CStdString path = item.GetPath();
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_strFileNameAndPath.Find("removable://") == 0) 
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+        else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          path = item.GetProperty("original_listitem_url").asString();
         if(dbs.GetResumeBookMark(path, bookmark))
         {
           options.starttime = bookmark.timeInSeconds;
@@ -3590,7 +3717,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
-  if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
+  if (item.IsVideo() && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
@@ -3656,7 +3783,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
   else
   {
-    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
+    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath().c_str());
     bResult = false;
   }
 
@@ -3844,7 +3971,10 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile);
+  CVariant param;
+  param["player"]["speed"] = 0;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3860,7 +3990,8 @@ void CApplication::OnPlayBackResumed()
 #endif
 
   CVariant param;
-  param["speed"] = 1;
+  param["player"]["speed"] = 1;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 }
 
@@ -3881,8 +4012,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 #endif
 
   CVariant param;
-  param["speed"] = iSpeed;
-  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+  param["player"]["speed"] = iSpeed;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -3902,9 +4034,11 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 #endif
 
   CVariant param;
-  param["time"] = iTime;
-  param["seekoffset"] = seekOffset;
-  CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", param);
+  CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
+  CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  param["player"]["speed"] = GetPlaySpeed();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -3986,7 +4120,7 @@ void CApplication::SaveFileState()
 void CApplication::UpdateFileState()
 {
   // Did the file change?
-  if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
+  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
   {
     SaveFileState();
 
@@ -3997,7 +4131,7 @@ void CApplication::UpdateFileState()
   {
     if (IsPlayingVideo() || IsPlayingAudio())
     {
-      if (m_progressTrackingItem->m_strPath == "")
+      if (m_progressTrackingItem->GetPath() == "")
       {
         // Init some stuff
         *m_progressTrackingItem = CurrentFileItem();
@@ -4067,6 +4201,12 @@ void CApplication::StopPlaying()
 
     g_partyModeManager.Disable();
   }
+}
+
+void CApplication::ResetSystemIdleTimer()
+{
+  // reset system idle timer
+  m_idleTimer.StartZero();
 }
 
 void CApplication::ResetScreenSaver()
@@ -4171,7 +4311,7 @@ bool CApplication::WakeUpScreenSaver()
 
     CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
 
-    if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
+    if (m_screenSaver->ID() == "visualization")
     {
       // we can just continue as usual from vis mode
       return false;
@@ -4182,6 +4322,8 @@ bool CApplication::WakeUpScreenSaver()
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
+      if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+        g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
     }
     return true;
   }
@@ -4214,7 +4356,8 @@ void CApplication::CheckScreenSaverAndDPMS()
   // * Are we playing a video and it is not paused?
   if ((IsPlayingVideo() && !m_pPlayer->IsPaused())
       // * Are we playing some music in fullscreen vis?
-      || (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION))
+      || (IsPlayingAudio() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION 
+          && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty()))
   {
     ResetScreenSaverTimer();
     return;
@@ -4304,7 +4447,7 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlaying()) // is something playing?
+  if (IsPlaying() || IsPaused()) // is something playing?
     resetTimer = true;
 
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
@@ -4356,6 +4499,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STARTED:
     {
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
       { // we've started a previously queued item
@@ -4373,7 +4519,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_partyModeManager.OnSongChange(true);
 
       CVariant param;
-      param["speed"] = 1;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
       CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       DimLCDOnPlayback(true);
@@ -4389,14 +4536,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           {
             if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
             {
-              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->m_strPath);
-              tagloader->Load(m_itemCurrentFile->m_strPath,*m_itemCurrentFile->GetMusicInfoTag());
+              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->GetPath());
+              tagloader->Load(m_itemCurrentFile->GetPath(),*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
             m_pKaraokeMgr->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
           }
           else
-            m_pKaraokeMgr->Start(m_itemCurrentFile->m_strPath);
+            m_pKaraokeMgr->Start(m_itemCurrentFile->GetPath());
         }
 #endif
         // Let scrobbler know about the track
@@ -4442,7 +4589,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
-
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4478,6 +4627,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
         delete m_pPlayer;
         m_pPlayer = 0;
+
+        // Reset playspeed
+        m_iPlaySpeed = 1;
       }
 
       if (!IsPlaying())
@@ -4527,13 +4679,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_EXECUTE:
     if (message.GetNumStringParams())
       return ExecuteXBMCAction(message.GetStringParam());
-    else
-    {
-      CGUIActionDescriptor action = message.GetAction();
-      action.m_sourceWindowId = message.GetControlId(); // set source window id,
-      return ExecuteAction(action);
-    }
-
     break;
   }
   return false;
@@ -4563,7 +4708,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 #ifdef HAS_PYTHON
         if (item.IsPythonScript())
         { // a python script
-          g_pythonParser.evalFile(item.m_strPath.c_str(),ADDON::AddonPtr());
+          g_pythonParser.evalFile(item.GetPath().c_str(),ADDON::AddonPtr());
         }
         else
 #endif
@@ -4576,26 +4721,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       }
       return true;
     }
-
-bool CApplication::ExecuteAction(CGUIActionDescriptor action)
-{
-  if (action.m_lang == CGUIActionDescriptor::LANG_XBMC)
-  {
-    return ExecuteXBMCAction(action.m_action);
-  }
-  else if (action.m_lang == CGUIActionDescriptor::LANG_PYTHON)
-  {
-#ifdef HAS_PYTHON
-    // Determine the context of the action, if possible
-    vector<CStdString> argv;
-    g_pythonParser.evalString(action.m_action, argv);
-    return true;
-#else
-    return false;
-#endif
-  }
-  return false;
-}
 
 void CApplication::Process()
 {
@@ -4715,7 +4840,7 @@ void CApplication::ProcessSlow()
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   if (!IsPlayingVideo())
-    m_Autorun.HandleAutorun();
+    m_Autorun->HandleAutorun();
 #endif
 
   // update upnp server/renderer states
@@ -4731,6 +4856,10 @@ void CApplication::ProcessSlow()
   
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
+#endif
+
+#ifdef HAS_FILESYSTEM_AFP
+  gAfpConnection.CheckIfIdle();
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP
@@ -4836,7 +4965,7 @@ void CApplication::Restart(bool bSamePosition)
 
 const CStdString& CApplication::CurrentFile()
 {
-  return m_itemCurrentFile->m_strPath;
+  return m_itemCurrentFile->GetPath();
 }
 
 CFileItem& CApplication::CurrentFileItem()
@@ -4853,6 +4982,11 @@ void CApplication::ShowVolumeBar(const CAction *action)
     if (action)
       volumeBar->OnAction(*action);
   }
+}
+
+bool CApplication::IsMuted() const
+{
+  return g_settings.m_bMute;
 }
 
 void CApplication::ToggleMute(void)
@@ -5215,7 +5349,7 @@ void CApplication::CheckPlayingProgress()
   }
 }
 
-bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
+bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
 
@@ -5244,7 +5378,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     // start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(track);
     return true;
   }
   return false;
@@ -5259,7 +5393,7 @@ void CApplication::SaveCurrentFileSettings()
     {
       CVideoDatabase dbs;
       dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_settings.m_currentVideoSettings);
+      dbs.SetVideoSettings(m_itemCurrentFile->GetPath(), g_settings.m_currentVideoSettings);
       dbs.Close();
     }
   }

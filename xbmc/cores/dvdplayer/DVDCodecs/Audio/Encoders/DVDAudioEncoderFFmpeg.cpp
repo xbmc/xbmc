@@ -37,9 +37,16 @@ CDVDAudioEncoderFFmpeg::CDVDAudioEncoderFFmpeg():
 CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
 {
   Reset();
-  m_dllAvUtil.av_freep(&m_CodecCtx);
-  if (m_AudioConvert)
-    m_dllAvCodec.av_audio_convert_free(m_AudioConvert);
+  if(m_dllAvUtil.IsLoaded())
+  {
+    m_dllAvUtil.av_freep(&m_CodecCtx);
+  }
+
+  if(m_dllAvCodec.IsLoaded())
+  {
+    if (m_AudioConvert)
+      m_dllAvCodec.av_audio_convert_free(m_AudioConvert);
+  }
   delete[] m_Buffer;
   delete[] m_TmpBuffer;
   delete[] m_TmpBuffer2;
@@ -124,7 +131,7 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
   if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_CENTER      ) m_ChannelMap[index++] = PCM_TOP_BACK_CENTER      ;
   if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_RIGHT       ) m_ChannelMap[index++] = PCM_TOP_BACK_RIGHT       ;
 
-  m_Remap.SetInputFormat (channels, channelMap, bitsPerSample / 8);
+  m_Remap.SetInputFormat (channels, channelMap, bitsPerSample / 8, sampleRate);
   m_Remap.SetOutputFormat(index, m_ChannelMap, true);
 
   if (!m_Remap.CanRemap())

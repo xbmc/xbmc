@@ -53,6 +53,7 @@
 #include "utils/FileUtils.h"
 #include "pythreadstate.h"
 #include "utils/log.h"
+#include "pyrendercapture.h"
 
 // include for constants
 #include "pyutil.h"
@@ -126,8 +127,8 @@ namespace PYXBMC
 
   // output() method
   PyDoc_STRVAR(output__doc__,
-               "'xbmc.output()' is depreciated and will be removed in future releases,\n"
-               "please use 'xbmc.log()' instead");
+    "'xbmc.output()' is depreciated and will be removed in future releases,\n"
+    "please use 'xbmc.log()' instead");
   
   PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
   {
@@ -194,6 +195,7 @@ namespace PYXBMC
     "executebuiltin(function) -- Execute a built in XBMC function.\n"
     "\n"
     "function       : string - builtin function to execute.\n"
+    "wait           : [opt] bool - True=Wait for end of execution, False=don't wait (Default)\n"
     "\n"
     "List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n"
     "\n"
@@ -205,9 +207,10 @@ namespace PYXBMC
   PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+    bool bWait = false;
+    if (!PyArg_ParseTuple(args, (char*)"s|b", &cLine, &bWait)) return NULL;
 
-    g_application.getApplicationMessenger().ExecBuiltIn(cLine);
+    g_application.getApplicationMessenger().ExecBuiltIn(cLine, bWait);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -229,6 +232,9 @@ namespace PYXBMC
   {
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+
+    CPyThreadState pyLock;
+
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
     CStdString method = cLine;
@@ -248,12 +254,17 @@ namespace PYXBMC
         execute = cmd.Left(open);
       }
       else //open bracket but no close
+      {
+        pyLock.Restore();
         return PyString_FromString("");
+      }
     }
     else //no parameters
       execute = cmd;
 
     CURL::Decode(parameter);
+
+    pyLock.Restore();
     return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
   }
 #endif
@@ -423,9 +434,10 @@ namespace PYXBMC
 
   PyObject* XBMC_GetFreeMem(PyObject *self, PyObject *args)
   {
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
-    return PyInt_FromLong( stat.dwAvailPhys  / ( 1024 * 1024 ) );
+    MEMORYSTATUSEX stat;
+    stat.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&stat);
+    return PyInt_FromLong( stat.ullAvailPhys  / ( 1024 * 1024 ) );
   }
 
   // getCpuTemp() method
@@ -474,11 +486,18 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
   {
+    std::string cret;
+
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"s", g_infoManager.GetLabel(ret).c_str());
+    {
+      CPyThreadState gilRelease;
+
+      int ret = g_infoManager.TranslateString(cLine);
+      cret = g_infoManager.GetLabel(ret);
+    }
+    return Py_BuildValue((char*)"s", cret.c_str());
   }
 
   // getInfoImage() method
@@ -495,11 +514,19 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
   {
+    std::string cret;
+
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
+    {
+      CPyThreadState gilRelease;
+
+      int ret = g_infoManager.TranslateString(cLine);
+      cret = g_infoManager.GetImage(ret, WINDOW_INVALID);
+    }
+
+    return Py_BuildValue((char*)"s", cret.c_str());
   }
 
   // playSFX() method
@@ -517,9 +544,13 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"s", &cFile)) return NULL;
 
-    if (CFile::Exists(cFile))
     {
-      g_audioManager.PlayPythonSound(cFile);
+      CPyThreadState gilRelease;
+
+      if (CFile::Exists(cFile))
+      {
+        g_audioManager.PlayPythonSound(cFile);
+      }
     }
 
     Py_INCREF(Py_None);
@@ -898,7 +929,7 @@ namespace PYXBMC
     "file        : file to calculate subtitle hash and size for\n"
     "\n"
     "example:\n"
-    " - size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+    " - size,hash = xbmc.subHashAndFileSize(file)\n"); 
   PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
   {
     PyObject *f_line;
@@ -986,12 +1017,21 @@ namespace PYXBMC
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
 
+#ifdef HAS_PYRENDERCAPTURE
+    initRenderCapture_Type();
+#endif
+
     if (PyType_Ready(&Keyboard_Type) < 0 ||
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
         PyType_Ready(&InfoTagVideo_Type) < 0) return;
+
+#ifdef HAS_PYRENDERCAPTURE
+    if (PyType_Ready(&RenderCapture_Type) < 0)
+      return;
+#endif
   }
 
   PyMODINIT_FUNC
@@ -1013,6 +1053,10 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
+
+#ifdef HAS_PYRENDERCAPTURE
+    Py_INCREF(&RenderCapture_Type);
+#endif
 
     pXbmcModule = Py_InitModule((char*)"xbmc", xbmcMethods);
     if (pXbmcModule == NULL) return;
@@ -1059,6 +1103,19 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
     PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
+
+#ifdef HAS_PYRENDERCAPTURE
+    PyModule_AddObject(pXbmcModule, (char*)"RenderCapture", (PyObject*)&RenderCapture_Type);
+#endif
+
+    // render capture user states
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_WORKING", (int)CAPTURESTATE_WORKING);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_DONE", (int)CAPTURESTATE_DONE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_FAILED", (int)CAPTURESTATE_FAILED);
+
+    // render capture flags
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_CONTINUOUS", (int)CAPTUREFLAG_CONTINUOUS);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_IMMEDIATELY", (int)CAPTUREFLAG_IMMEDIATELY);
   }
 }
 

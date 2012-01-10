@@ -25,6 +25,7 @@
 				<height>600</height>
 				<onleft>9000</onleft>
 				<onright>50</onright>
+				<onback>50</onback>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<itemgap>0</itemgap>

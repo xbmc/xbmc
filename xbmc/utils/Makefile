@@ -7,6 +7,7 @@ SRCS=AlarmClock.cpp \
      CharsetConverter.cpp \
      CPUInfo.cpp \
      Crc32.cpp \
+     CryptThreading.cpp \
      DownloadQueue.cpp \
      DownloadQueueManager.cpp \
      Fanart.cpp \
@@ -20,6 +21,7 @@ SRCS=AlarmClock.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
+     HttpParser.cpp \
      InfoLoader.cpp \
      JobManager.cpp \
      JSONVariantParser.cpp \

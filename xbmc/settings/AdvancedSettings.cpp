@@ -50,6 +50,10 @@ void CAdvancedSettings::Initialize()
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
 
+  //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
+  m_limiterHold = 0.025f;
+  m_limiterRelease = 0.1f;
+
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
   m_karaokeChangeGenreForKaraokeSongs = false;
@@ -86,11 +90,14 @@ void CAdvancedSettings::Initialize()
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = false;
   m_videoNonLinStretchRatio = 0.5f;
-  m_videoAllowLanczos3 = false;
+  m_videoEnableHighQualityHwScalers = false;
   m_videoAutoScaleMaxFps = 30.0f;
   m_videoAllowMpeg4VDPAU = false;
+  m_videoDisableBackgroundDeinterlace = false;
+  m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
+  m_DXVAForceProcessorRenderer = true;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -128,7 +135,6 @@ void CAdvancedSettings::Initialize()
   m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
-  m_noDVDROM = false;
   m_cachePath = "special://temp/";
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
@@ -137,8 +143,10 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
+  m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+
+  m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -281,6 +289,9 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 0;
   m_guiDirtyRegionNoFlipTimeout = -1;
+  m_logEnableAirtunes = false;
+  m_airTunesPort = 36666;
+  m_airPlayPort = 36667;
 }
 
 bool CAdvancedSettings::Load()
@@ -361,6 +372,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
     XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
+
+    XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
+    XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -437,9 +451,11 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
-    XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
+    XMLUtils::GetBoolean(pElement,"enablehighqualityhwscalers", m_videoEnableHighQualityHwScalers);
     XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+    XMLUtils::GetBoolean(pElement, "disablebackgrounddeinterlace", m_videoDisableBackgroundDeinterlace);
+    XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
@@ -524,6 +540,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
+    XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -638,11 +655,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
+     
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
+
+  //airtunes + airplay
+  XMLUtils::GetBoolean(pRootElement, "enableairtunesdebuglog", m_logEnableAirtunes);
+  XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
+  XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  
+  
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
-  XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
@@ -748,10 +771,15 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
                                         m_trailerMatchRegExps.begin(),
                                         m_trailerMatchRegExps.end());
 
-  // stacking regexps
+  // video stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
     GetCustomRegexps(pVideoStacking, m_videoStackRegExps);
+
+  // folder stacking regexps
+  TiXmlElement* pFolderStacking = pRootElement->FirstChildElement("folderstacking");
+  if (pFolderStacking)
+    GetCustomRegexps(pFolderStacking, m_folderStackRegExps);
 
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
@@ -911,6 +939,7 @@ void CAdvancedSettings::Clear()
   m_tvshowExcludeFromScanRegExps.clear();
   m_videoExcludeFromListingRegExps.clear();
   m_videoStackRegExps.clear();
+  m_folderStackRegExps.clear();
   m_audioExcludeFromScanRegExps.clear();
   m_audioExcludeFromListingRegExps.clear();
   m_pictureExcludeFromListingRegExps.clear();

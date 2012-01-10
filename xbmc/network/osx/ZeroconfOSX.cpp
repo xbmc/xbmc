@@ -47,13 +47,14 @@ CZeroconfOSX::~CZeroconfOSX()
 bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
                       const std::string& fcr_name,
-                      unsigned int f_port)
+                      unsigned int f_port,
+                      std::map<std::string, std::string> txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfOSX::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(),
             fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   CFStringRef name = CFStringCreateWithCString (NULL,
-                                                assemblePublishedName(fcr_name).c_str(),
+                                                fcr_name.c_str(),
                                                 kCFStringEncodingUTF8
                                                 );
   CFStringRef type = CFStringCreateWithCString (NULL,
@@ -70,6 +71,33 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
   CFStreamError error;
   CFNetServiceSetClient(netService, registerCallback, &clientContext);
   CFNetServiceScheduleWithRunLoop(netService, m_runloop, kCFRunLoopCommonModes);
+
+  //add txt records
+  if(!txt.empty())
+  {
+    //txt map to dictionary
+    CFDataRef txtData = NULL;
+    CFMutableDictionaryRef txtDict = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);    
+    for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
+    {
+      CFStringRef key = CFStringCreateWithCString (NULL,
+                                                   it->first.c_str(),
+                                                   kCFStringEncodingUTF8
+                                                  );
+      CFDataRef value = CFDataCreate              ( NULL,
+                                                    (UInt8 *)it->second.c_str(),
+                                                    strlen(it->second.c_str())
+                                                  );
+                                                  
+      CFDictionaryAddValue(txtDict,key, value);
+    }    
+    
+    //add txt records to service
+    txtData = CFNetServiceCreateTXTDataWithDictionary(NULL, txtDict);
+    CFNetServiceSetTXTData(netService, txtData);
+    CFRelease(txtData);
+    CFRelease(txtDict);
+  }
 
   Boolean result = CFNetServiceRegisterWithOptions (netService, 0, &error);
   if (result == false)
@@ -142,25 +170,4 @@ void CZeroconfOSX::cancelRegistration(CFNetServiceRef theService)
   CFNetServiceSetClient(theService, NULL, NULL);
   CFNetServiceCancel(theService);
   CFRelease(theService);
-}
-
-
-std::string CZeroconfOSX::assemblePublishedName(const std::string& fcr_given_name)
-{
-  std::stringstream ss;
-  ss << fcr_given_name << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfAvahi::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
 }

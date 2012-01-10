@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Kakovost</string>
+    <string id="30001">Nizka</string>
+    <string id="30002">Srednja</string>
+    <string id="30003">Visoka</string>
+    <string id="30004">Najvišja</string>
+    <string id="30005">Način mešanja</string>
+    <string id="30006">Trajanje prelivanja med predlogami</string>
+    <string id="30007">Trajanje predlog</string>
+    <string id="30008">Občutljivost</string>
+    <string id="30009">Paket predlog</string>
+    <string id="30010">Privzet paket</string>
+    <string id="30011">Uporabniško določena mapa s predlogami</string>
+    <string id="30012">Uporabniško določena mapa</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f sekund</string>
+    <string id="30051">%2.0f %%</string>
+</strings>

@@ -195,12 +195,16 @@ bool CRepositoryUpdateJob::DoWork()
   database.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
+    // manager told us to feck off
+    if (ShouldCancel(0,0))
+      break;
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
       addons[i]->Props().broken = g_localizeStrings.Get(24044);
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
-    if (addon && addons[i]->Version() > addon->Version())
+    if (addon && addons[i]->Version() > addon->Version() &&
+        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()))
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {

@@ -28,7 +28,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined dynamic_lookup \
 		-o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS)
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu -lGL -lX11 -lGLU
 endif
 
 $(PLASMA-OUT): $(PLASMA-DEP)
@@ -36,7 +36,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined dynamic_lookup \
 		-o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS)
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu -lGL -lX11 -lGLU
 endif
 
 $(EUPHORIA-OUT): $(EUPHORIA-DEP)
@@ -44,7 +44,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -flat_namespace -undefined dynamic_lookup \
 		-o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS)/src/pngimage.o $(RSXS-OBJS) -lpng
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS)/src/pngimage.o $(RSXS-OBJS) -lXmu -lpng
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS)/src/pngimage.o $(RSXS-OBJS) -lXmu -lpng -lGL -lX11 -lGLU
 endif
 
 $(SOLARWINDS-DEP) : $(RSXS)

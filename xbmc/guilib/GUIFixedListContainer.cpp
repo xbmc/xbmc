@@ -23,8 +23,8 @@
 #include "GUIListItem.h"
 #include "Key.h"
 
-CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition, int cursorRange)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   ControlType = GUICONTAINER_FIXEDLIST;
   m_type = VIEW_TYPE_LIST;
@@ -125,12 +125,20 @@ void CGUIFixedListContainer::Scroll(int amount)
     offset = -minCursor;
     SetCursor(minCursor);
   }
-  if (offset > (int)m_items.size() - maxCursor)
+  if (offset > (int)m_items.size() - 1 - maxCursor)
   {
-    offset = m_items.size() - maxCursor;
+    offset = m_items.size() - 1 - maxCursor;
     SetCursor(maxCursor);
   }
   ScrollToOffset(offset);
+}
+
+bool CGUIFixedListContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
+{
+  GetCursorRange(minOffset, maxOffset);
+  minOffset = -minOffset;
+  maxOffset = m_items.size() - maxOffset - 1;
+  return true;
 }
 
 void CGUIFixedListContainer::ValidateOffset()
@@ -147,16 +155,19 @@ void CGUIFixedListContainer::ValidateOffset()
   // assure our cursor is between these limits
   SetCursor(std::max(GetCursor(), minCursor));
   SetCursor(std::min(GetCursor(), maxCursor));
+  int minOffset, maxOffset;
+  GetOffsetRange(minOffset, maxOffset);
   // and finally ensure our offset is valid
-  if (GetOffset() + maxCursor >= (int)m_items.size() || m_scrollOffset > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation))
+  // don't validate offset if we are scrolling in case the tween image exceed <0, 1> range
+  if (GetOffset() > maxOffset || (!m_scroller.IsScrolling() && m_scroller.GetValue() > maxOffset * m_layout->Size(m_orientation)))
   {
-    SetOffset(std::max(-minCursor, (int)m_items.size() - maxCursor - 1));
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    SetOffset(std::max(-minCursor, maxOffset));
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < -minCursor || m_scrollOffset < -minCursor * m_layout->Size(m_orientation))
+  if (GetOffset() < minOffset || (!m_scroller.IsScrolling() && m_scroller.GetValue() < minOffset * m_layout->Size(m_orientation)))
   {
-    SetOffset(-minCursor);
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    SetOffset(minOffset);
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
 }
 

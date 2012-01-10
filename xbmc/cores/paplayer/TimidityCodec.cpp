@@ -25,6 +25,7 @@
 #include "../DllLoader/DllLoader.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "filesystem/SpecialProtocol.h"
 #ifdef _WIN32
 #include "../DllLoader/Win32DllLoader.h"
 #endif
@@ -104,7 +105,16 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  m_mid = m_dll.LoadMID(strFile.c_str());
+  CStdString file = strFile;
+  CURL url(strFile);
+  if (!url.IsLocal())
+  {
+    CStdString file = CUtil::GetNextFilename("special://temp/midi%03d.mid",999);
+    XFILE::CFile::Cache(strFile,file);
+    url.Parse(file);
+  }
+
+  m_mid = m_dll.LoadMID(_P(url.Get()).c_str());
   if (!m_mid)
   {
     CLog::Log(LOGERROR,"TimidityCodec: error opening file %s: %s",strFile.c_str(), m_dll.ErrorMsg());

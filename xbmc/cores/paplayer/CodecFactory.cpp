@@ -41,6 +41,7 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
+#include "BXAcodec.h" 
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -53,6 +54,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
+    return new DVDPlayerCodec();
+  else if (strFileType.Equals("mka"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
@@ -69,15 +72,14 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
            strFileType.Equals("dsm")  ||  strFileType.Equals("far") ||
            strFileType.Equals("it")   ||  strFileType.Equals("j2b") ||
            strFileType.Equals("mdl")  ||  strFileType.Equals("med") ||
-           strFileType.Equals("mid")  ||  strFileType.Equals("mod") ||
+           strFileType.Equals("mod")  ||  strFileType.Equals("itgz")||
            strFileType.Equals("mt2")  ||  strFileType.Equals("mtm") ||
            strFileType.Equals("okt")  ||  strFileType.Equals("pat") ||
            strFileType.Equals("psm")  ||  strFileType.Equals("ptm") ||
            strFileType.Equals("s3m")  ||  strFileType.Equals("stm") ||
            strFileType.Equals("ult")  ||  strFileType.Equals("umx") ||
            strFileType.Equals("xm")   || strFileType.Equals("mdgz") ||
-           strFileType.Equals("s3gz") || strFileType.Equals("xmgz") ||
-           strFileType.Equals("itgz"))
+           strFileType.Equals("s3gz") || strFileType.Equals("xmgz"))
     return new ModplugCodec();
   else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
     return new NSFCodec();
@@ -127,6 +129,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
+  else if (strContent.Equals("audio/x-xbmc-pcm"))
+    return (ICodec*)new BXACodec();  
+   else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
+     return new FLACCodec();
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {

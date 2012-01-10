@@ -20,6 +20,7 @@
  */
 
 #include "AddonInstaller.h"
+#include "Service.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
@@ -28,6 +29,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "Application.h"
+#include "Favourites.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
@@ -231,7 +233,7 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   }
 
   // TODO: possibly add support for github generated zips here?
-  CStdString archive = URIUtils::AddFileToFolder(items[0]->m_strPath, "addon.xml");
+  CStdString archive = URIUtils::AddFileToFolder(items[0]->GetPath(), "addon.xml");
 
   CXBMCTinyXML xml;
   AddonPtr addon;
@@ -324,6 +326,12 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
   }
 }
 
+bool CAddonInstaller::HasJob(const CStdString& ID) const
+{
+  CSingleLock lock(m_critSection);
+  return m_downloadJobs.find(ID) != m_downloadJobs.end();
+}
+
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
 : m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
 {
@@ -379,7 +387,7 @@ bool CAddonInstallJob::DoWork()
       CFile::Delete(package);
       return false;
     }
-    installFrom = archivedFiles[0]->m_strPath;
+    installFrom = archivedFiles[0]->GetPath();
   }
 
   // run any pre-install functions
@@ -411,6 +419,14 @@ bool CAddonInstallJob::OnPreInstall()
   if (g_guiSettings.GetString("lookandfeel.skin") == m_addon->ID())
   {
     g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
+    return true;
+  }
+
+  if (m_addon->Type() == ADDON_SERVICE)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    if (service)
+      service->Stop();
     return true;
   }
   return false;
@@ -459,8 +475,18 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
     AddonPtr dependency;
     if (!CAddonMgr::Get().GetAddon(it->first,dependency) || dependency->Version() < it->second.first)
     {
+      bool force=(dependency != NULL);
+      // dependency is already queued up for install - ::Install will fail
+      // instead we wait until the Job has finished. note that we
+      // recall install on purpose in case prior installation failed
+      if (CAddonInstaller::Get().HasJob(it->first))
+      {
+        while (CAddonInstaller::Get().HasJob(it->first))
+          Sleep(50);
+        force = false;
+      }
       // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(it->first, dependency != NULL, referer, false))
+      if (!CAddonInstaller::Get().Install(it->first, force, referer, false))
       {
         DeleteAddon(addonFolder);
         return false;
@@ -494,6 +520,20 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
       }
       g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
     }
+  }
+
+  if (m_addon->Type() == ADDON_SERVICE)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    if (service)
+      service->Start();
+  }
+
+  if (m_addon->Type() == ADDON_REPOSITORY)
+  {
+    VECADDONS addons;
+    addons.push_back(m_addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
   }
 }
 
@@ -565,4 +605,19 @@ void CAddonUnInstallJob::OnPostUnInstall()
     database.Open();
     database.DeleteRepository(m_addon->ID());
   }
+
+  bool bSave(false);
+  CFileItemList items;
+  CFavourites::Load(items);
+  for (int i=0; i < items.Size(); ++i)
+  {
+    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    {
+      items.Remove(items[i].get());
+      bSave = true;
+    }
+  }
+
+  if (bSave)
+    CFavourites::Save(items);
 }

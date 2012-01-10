@@ -36,6 +36,7 @@ public:
   virtual ~CGUIPythonWindowXML(void);
   virtual bool      OnMessage(CGUIMessage& message);
   virtual bool      OnAction(const CAction &action);
+  virtual bool      OnBack(int actionID);
   virtual void      AllocResources(bool forceLoad = false);
   virtual void      FreeResources(bool forceUnLoad = false);
   void              Process(unsigned int currentTime, CDirtyRegionList &regions);
@@ -51,8 +52,10 @@ public:
   void              SetCallbackWindow(void* state, void* object);
   virtual bool      OnClick(int iItem);
   void              SetProperty(const CStdString &strProperty, const CStdString &strValue);
+  void              SetDestroyAfterDeinit(bool destroy = true);
 
 protected:
+  virtual void     OnDeinitWindow(int nextWindowID = 0);
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
   unsigned int     LoadScriptStrings();
@@ -65,5 +68,6 @@ protected:
   bool             m_bRunning;
   CStdString       m_scriptPath;
   CStdString       m_mediaDir;
+  bool             m_destroyAfterDeinit;
 };
 

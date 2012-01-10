@@ -32,6 +32,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
+#include "interfaces/info/SkinVariable.h"
 
 #include <list>
 #include <map>
@@ -175,12 +176,14 @@ namespace INFO
 #define LCD_TIME_44                 179
 #define SYSTEM_ALARM_LESS_OR_EQUAL  180
 #define SYSTEM_PROFILECOUNT         181
+#define SYSTEM_ISFULLSCREEN         182
+#define SYSTEM_ISSTANDALONE         183
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
 #define NETWORK_IS_DHCP             192
 #define NETWORK_LINK_STATE          193
-#define NETWORK_SUBNET_ADDRESS      194
+#define NETWORK_SUBNET_MASK         194
 #define NETWORK_GATEWAY_ADDRESS     195
 #define NETWORK_DNS1_ADDRESS        196
 #define NETWORK_DNS2_ADDRESS        197
@@ -327,6 +330,8 @@ namespace INFO
 #define STRING_COMPARE              411
 #define STRING_STR                  412
 #define INTEGER_GREATER_THAN        413
+#define STRING_STR_LEFT             414
+#define STRING_STR_RIGHT            415
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
@@ -366,6 +371,7 @@ namespace INFO
 #define SYSTEM_ADDON_ICON           713
 #define SYSTEM_BATTERY_LEVEL        714
 #define SYSTEM_IDLE_TIME            715
+#define SYSTEM_FRIENDLY_NAME        716
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -380,11 +386,18 @@ namespace INFO
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_OSX         743
+#define SYSTEM_PLATFORM_DARWIN_OSX  744
+#define SYSTEM_PLATFORM_DARWIN_IOS  745
+#define SYSTEM_PLATFORM_DARWIN_ATV2 746
 
 #define SYSTEM_CAN_POWERDOWN        750
 #define SYSTEM_CAN_SUSPEND          751
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
+
+#define SLIDESHOW_ISPAUSED          800
+#define SLIDESHOW_ISRANDOM          801
+#define SLIDESHOW_ISACTIVE          802
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -408,9 +421,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-// Version string MUST NOT contain spaces.  It is used
-// in the HTTP request user agent.
-#define VERSION_STRING "PRE-11.0"
+#define VERSION_MAJOR 11
+#define VERSION_MINOR 0
+#define VERSION_TAG "-PRE"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -474,12 +487,17 @@ namespace INFO
 #define LISTITEM_FOLDERPATH         (LISTITEM_START + 58)
 #define LISTITEM_DISC_NUMBER        (LISTITEM_START + 59)
 #define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 60)
+#define LISTITEM_IS_RESUMABLE       (LISTITEM_START + 61)
+#define LISTITEM_PERCENT_PLAYED     (LISTITEM_START + 62)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
 #define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
+
+#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
+#define CONDITIONAL_LABEL_END         37000
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -565,7 +583,16 @@ public:
   bool EvaluateBool(const CStdString &expression, int context = 0);
 
   int TranslateString(const CStdString &strCondition);
-  int GetInt(int info, int contextWindow = 0) const;
+
+  /*! \brief Get integer value of info.
+   \param value int reference to pass value of given info
+   \param info id of info
+   \param context the context in which to evaluate the expression (currently windows)
+   \param item optional listitem if want to get listitem related int
+   \return true if given info was handled
+   \sa GetItemInt, GetMultiInfoInt
+   */
+  bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
   CStdString GetImage(int info, int contextWindow);
@@ -592,12 +619,12 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
-  CStdString GetMusicTagLabel(int info, const CFileItem *item) const;
+  CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
-  const CStdString GetMusicPlaylistInfo(const GUIInfo& info) const;
-  CStdString GetPictureLabel(int item) const;
+  const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
+  CStdString GetPictureLabel(int item);
 
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
@@ -627,9 +654,9 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-
-  CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemImage(const CFileItem *item, int info) const;
+  bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
+  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -652,6 +679,9 @@ public:
 
   int TranslateSingleString(const CStdString &strCondition);
 
+  int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
+  int TranslateSkinVariableString(const CStdString& name, int context);
+  CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -676,7 +706,8 @@ protected:
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
+  bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
@@ -696,7 +727,7 @@ protected:
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
-  int ConditionalStringParameter(const CStdString &strParameter);
+  int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const CStdString &str, int offset=0);
 
@@ -742,6 +773,7 @@ protected:
   int m_prevWindowID;
 
   std::vector<INFO::InfoBool*> m_bools;
+  std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
   unsigned int m_updateTime;
 
   int m_libraryHasMusic;

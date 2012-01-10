@@ -29,6 +29,7 @@
 #include "Socket.h"
 #include "threads/CriticalSection.h"
 #include "Application.h"
+#include "GUIInfoManager.h"
 #include "interfaces/Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
@@ -155,6 +156,7 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
+  std::map<std::string, std::string> txt;  
 
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
@@ -191,8 +193,9 @@ void CEventServer::Run()
   // publish service
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
-                               "XBMC Event Server",
-                               m_iPort);
+                               g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
+                               m_iPort,
+                               txt);
 
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);

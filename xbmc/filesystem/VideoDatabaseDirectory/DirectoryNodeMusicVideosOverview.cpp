@@ -65,7 +65,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items) const
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(MusicVideoChildren[i].label)));
     CStdString strDir;
     strDir.Format("%ld/", MusicVideoChildren[i].id);
-    pItem->m_strPath = BuildPath() + strDir;
+    pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);
     items.Add(pItem);

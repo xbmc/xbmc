@@ -31,7 +31,7 @@ class CDVDSubtitlesLibass : public IDVDResourceCounted<CDVDSubtitlesLibass>
 {
 public:
   CDVDSubtitlesLibass();
-  ~CDVDSubtitlesLibass();
+  virtual ~CDVDSubtitlesLibass();
 
   ASS_Image* RenderImage(int imageWidth, int imageHeight, double pts);
   ASS_Event* GetEvents();

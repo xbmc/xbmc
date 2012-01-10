@@ -117,10 +117,10 @@ void CGUIButtonControl::ProcessText(unsigned int currentTime)
 
   // render the second label if it exists
   CStdString label2(m_info2.GetLabel(m_parentID));
+  changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  changed |= m_label2.SetText(label2);
   if (!label2.IsEmpty())
   {
-    changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
-    changed |= m_label2.SetText(label2);
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
     changed |= m_label2.SetScrolling(HasFocus());
 
@@ -159,11 +159,15 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_SELECTED)
     {
+      if (!m_bSelected)
+        SetInvalid();
       m_bSelected = true;
       return true;
     }
     if (message.GetMessage() == GUI_MSG_DESELECTED)
     {
+      if (m_bSelected)
+        SetInvalid();
       m_bSelected = false;
       return true;
     }
@@ -209,13 +213,13 @@ void CGUIButtonControl::SetInvalid()
 
 void CGUIButtonControl::SetLabel(const string &label)
 { // NOTE: No fallback for buttons at this point
-  m_info.SetLabel(label, "");
+  m_info.SetLabel(label, "", GetParentID());
   SetInvalid();
 }
 
 void CGUIButtonControl::SetLabel2(const string &label2)
 { // NOTE: No fallback for buttons at this point
-  m_info2.SetLabel(label2, "");
+  m_info2.SetLabel(label2, "", GetParentID());
   SetInvalid();
 }
 
@@ -297,39 +301,23 @@ void CGUIButtonControl::OnClick()
   // Save values, as the click message may deactivate the window
   int controlID = GetID();
   int parentID = GetParentID();
-  vector<CGUIActionDescriptor> clickActions = m_clickActions;
+  CGUIAction clickActions = m_clickActions;
 
   // button selected, send a message
   CGUIMessage msg(GUI_MSG_CLICKED, controlID, parentID, 0);
   SendWindowMessage(msg);
 
-  // and execute our actions
-  for (unsigned int i = 0; i < clickActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
-    message.SetAction(clickActions[i]);
-    g_windowManager.SendMessage(message);
-  }
+  clickActions.Execute(controlID, parentID);
 }
 
 void CGUIButtonControl::OnFocus()
 {
-  for (unsigned int i = 0; i < m_focusActions.size(); i++)
-  { // send using a thread message to ensure the UI is updated prior to message firing.
-    CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
-    message.SetAction(m_focusActions[i]);
-    g_windowManager.SendThreadMessage(message);
-  }
+  m_focusActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIButtonControl::OnUnFocus()
 {
-  for (unsigned int i = 0; i < m_unfocusActions.size(); i++)
-  { // send using a thread message to ensure the UI is updated prior to message firing.
-    CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
-    message.SetAction(m_unfocusActions[i]);
-    g_windowManager.SendThreadMessage(message);
-  }
+  m_unfocusActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIButtonControl::SetSelected(bool bSelected)

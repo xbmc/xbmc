@@ -47,7 +47,8 @@ protected:
   virtual bool doPublishService(const std::string& fcr_identifier,
                                 const std::string& fcr_type,
                                 const std::string& fcr_name,
-                                unsigned int f_port);
+                                unsigned int f_port,
+                                std::map<std::string, std::string> txt);
 
   virtual bool doRemoveService(const std::string& fcr_ident);
 
@@ -60,9 +61,6 @@ private:
   static void groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupState f_state, void *);
   //shutdown callback; works around a problem in avahi < 0.6.24 see destructor for details
   static void shutdownCallback(AvahiTimeout *fp_e, void *);
-
-  ///helper to assemble the announced name
-  std::string assemblePublishedName(const std::string& fcr_prefix);
 
   ///creates the avahi client;
   ///@return true on success
@@ -95,3 +93,4 @@ private:
 };
 
 #endif // HAS_AVAHI
+

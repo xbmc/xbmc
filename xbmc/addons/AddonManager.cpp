@@ -79,11 +79,23 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CPluginSource(props));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_SCRIPT_MODULE:
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(props));
+    case ADDON_SCRIPT_WEATHER:
+      {
+        // Eden (API v2.0) broke old weather add-ons
+        AddonPtr result(new CAddon(props));
+        AddonVersion ver1 = AddonVersion(GetXbmcApiVersionDependency(result));
+        AddonVersion ver2 = AddonVersion("2.0");
+        if (ver1 < ver2)
+        {
+          CLog::Log(LOGINFO,"%s: Weather add-ons for api < 2.0 unsupported (%s)",__FUNCTION__,result->ID().c_str());
+          return AddonPtr();
+        }
+        return result;
+      }
     case ADDON_SERVICE:
       return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
@@ -285,6 +297,49 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool al
   return !addons.empty();
 }
 
+void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  m_updateableAddons.push_back(pAddon);
+}
+
+void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
+  
+  if(it != m_updateableAddons.end())
+  {
+    m_updateableAddons.erase(it);
+  }
+}
+
+struct AddonIdFinder 
+{ 
+    AddonIdFinder(const CStdString& id)
+      : m_id(id)
+    {}
+    
+    bool operator()(const AddonPtr& addon) 
+    { 
+      return m_id.Equals(addon->ID()); 
+    }
+    private:
+    CStdString m_id;
+};
+
+bool CAddonMgr::ReloadSettings(const CStdString &id)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
+  
+  if( it != m_updateableAddons.end())
+  {
+    return (*it)->ReloadSettings();
+  }
+  return false;
+}
+
 bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   CSingleLock lock(m_critSection);
@@ -299,7 +354,9 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
         if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
           continue;
 
-        if (temp[j]->Version() < repoAddon->Version())
+        if (temp[j]->Version() < repoAddon->Version() &&
+            !m_database.IsAddonBlacklisted(temp[j]->ID(),
+                                           repoAddon->Version().c_str()))
           addons.push_back(repoAddon);
       }
     }
@@ -528,8 +585,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (platforms[i] == "wingl")
 #elif defined(_WIN32) && defined(HAS_DX)
       if (platforms[i] == "windx")
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN_OSX)
       if (platforms[i] == "osx")
+#elif defined(TARGET_DARWIN_IOS)
+      if (platforms[i] == "ios")
 #endif
         return true;
     }

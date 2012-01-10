@@ -98,11 +98,10 @@ bool CPlayListB4S::LoadData(istream& stream)
       if (pNodeInfo)
       {
         CStdString strInfo = pNodeInfo->FirstChild()->Value();
-        if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
-          strFileName = CUtil::SubstitutePath(strFileName);
+        strFileName = URIUtils::SubstitutePath(strFileName);
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));
-        newItem->m_strPath = strFileName;
+        newItem->SetPath(strFileName);
         newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
       }
@@ -130,7 +129,7 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     const CFileItemPtr item = m_vecItems[i];
-    write.AppendFormat("    <entry Playstring=%cfile:%s%c>\n", 34, item->m_strPath.c_str(), 34 );
+    write.AppendFormat("    <entry Playstring=%cfile:%s%c>\n", 34, item->GetPath().c_str(), 34 );
     write.AppendFormat("      <Name>%s</Name>\n", item->GetLabel().c_str());
     write.AppendFormat("      <Length>%u</Length>\n", item->GetMusicInfoTag()->GetDuration());
   }

@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/05/2011-->
+<!--Date of translation: 12/09/2011-->
 <!--$Revision$-->
-<!--Based on english strings version ....-->
 <strings>
   <string id="0">程式</string>
   <string id="1">圖片</string>
@@ -14,7 +13,6 @@
   <string id="7">檔案總管</string>
   <string id="8">氣象</string>
   <string id="9">xbmc 媒體中心</string>
-  
   <string id="11">星期一</string>
   <string id="12">星期二</string>
   <string id="13">星期三</string>
@@ -22,7 +20,6 @@
   <string id="15">星期五</string>
   <string id="16">星期六</string>
   <string id="17">星期日</string>
-  
   <string id="21">一月</string>
   <string id="22">二月</string>
   <string id="23">三月</string>
@@ -35,7 +32,6 @@
   <string id="30">十月</string>
   <string id="31">十一月</string>
   <string id="32">十二月</string>
-  
   <string id="41">周一</string>
   <string id="42">周二</string>
   <string id="43">周三</string>
@@ -43,7 +39,6 @@
   <string id="45">周五</string>
   <string id="46">周六</string>
   <string id="47">周日</string>
-  
   <string id="51">1月</string>
   <string id="52">2月</string>
   <string id="53">3月</string>
@@ -56,7 +51,6 @@
   <string id="60">10月</string>
   <string id="61">11月</string>
   <string id="62">12月</string>
-  
   <string id="71">北</string>
   <string id="72">北北東</string>
   <string id="73">東北</string>
@@ -74,7 +68,6 @@
   <string id="85">西北</string>
   <string id="86">北北西</string>
   <string id="87">多方向</string>
-  
   <string id="98">顯示：自動</string>
   <string id="99">顯示：自動大圖示</string>
   <string id="100">顯示：圖示</string>
@@ -90,6 +83,8 @@
   <string id="110">建立縮略圖</string>
   <string id="111">捷徑</string>
   <string id="112">暫停</string>
+  <string id="113">更新失敗</string>
+  <string id="114">安裝失敗</string>
   <string id="115">複製</string>
   <string id="116">移動</string>
   <string id="117">刪除</string>
@@ -142,16 +137,12 @@
   <string id="164">無光碟</string>
   <string id="165">光碟介紹</string>
   <string id="166">佈景主題</string>
-  
   <string id="169">解析度</string>
   <string id="170">調整視訊更新頻率以符合視訊</string>
- 
   <string id="172">發行日期</string>
   <string id="173">播放4:3影片的方式</string>
-  
   <string id="175">主題</string>
   <string id="176">風格</string>
-  
   <string id="179">歌曲</string>
   <string id="180">持續時間</string>
   <string id="181">選擇專輯</string>
@@ -173,10 +164,8 @@
   <string id="197">讀取 %s 資訊</string>
   <string id="198">載入影片詳細資料</string>
   <string id="199">Web 介面</string>
-  
   <string id="202">標題</string>
   <string id="203">大綱</string>
-  
   <string id="205">得票：</string>
   <string id="206">演員表</string>
   <string id="207">簡介</string>
@@ -194,6 +183,7 @@
   <string id="221">網路未連線</string>
   <string id="222">取消</string>
   <string id="224">速度</string>
+  <string id="225">垂直位移</string>
   <string id="226">測試圖案…</string>
   <string id="227">在 freedb 查詢音樂 CD 資訊</string>
   <string id="228">隨機播放列表</string>
@@ -214,7 +204,6 @@
   <string id="243">更新頻率</string>
   <string id="244">全螢幕</string>
   <string id="245">縮放中：(%i,%i)-&gt;(%i,%i) (縮放 x%2.2f) AR:%2.2f:1 (像素: %2.2f:1)</string>
-  
   <string id="247">腳本</string>
   <string id="248">語言</string>
   <string id="249">音樂</string>
@@ -253,7 +242,6 @@
   <string id="282">找到 %i 條</string>
   <string id="283">搜尋結果</string>
   <string id="284">無結果</string>
-  
   <string id="287">字幕設定</string>
   <string id="288">字型</string>
   <string id="289">- 大小</string>
@@ -273,7 +261,6 @@
   <string id="304">語言</string>
   <string id="305">啟用</string>
   <string id="306">非交錯掃描</string>
-  
   <string id="312">(0=自動)</string>
   <string id="313">正在清除資料庫</string>
   <string id="314">準備中…</string>
@@ -366,7 +353,6 @@
   <string id="404">風</string>
   <string id="405">露點</string>
   <string id="406">濕度</string>
-  
   <string id="409">預設值</string>
   <string id="410">前往氣象伺服器</string>
   <string id="411">取得氣象資料：</string>
@@ -379,7 +365,6 @@
   <string id="418">低溫</string>
   <string id="419">高溫</string>
   <string id="420">HDMI</string>
-  
   <string id="422">刪除專輯資訊</string>
   <string id="423">刪除 CD 資訊</string>
   <string id="424">選擇</string>
@@ -392,8 +377,7 @@
   <string id="431">無緩衝區</string>
   <string id="432">從資料庫中移除影片</string>
   <string id="433">確定移除 '%s' 嗎？</string>
-  <string id="434">方向方位%s、風速%i %s</string> <!--From <wind dir.> at <speed> <unit>-->
- 
+  <string id="434">方向方位%s、風速%i %s</string>
   <string id="437">隨身碟</string>
   <string id="438">打開檔案</string>
   <string id="439">快取</string>
@@ -437,7 +421,6 @@
   <string id="480">外觀主題</string>
   <string id="481">音效設定</string>
   <string id="482">關於 XBMC</string>
-  
   <string id="485">刪除專輯</string>
   <string id="486">重複</string>
   <string id="487">重複一次</string>
@@ -465,11 +448,9 @@
   <string id="513">主界面</string>
   <string id="514">設定界面</string>
   <string id="515">類別</string>
-  
   <string id="517">最近播放的專輯</string>
   <string id="518">執行</string>
   <string id="519">執行方式…</string>
-  
   <string id="521">編輯</string>
   <string id="522">移除來源</string>
   <string id="523">切換媒體</string>
@@ -498,7 +479,6 @@
   <string id="546">通過輸出裝置</string>
   <string id="547">此藝人沒有傳記</string>
   <string id="548">混合多聲道輸出為雙聲道</string>
-  
   <string id="550">排序：%s</string>
   <string id="551">名稱</string>
   <string id="552">日期</string>
@@ -524,9 +504,8 @@
   <string id="572">製作公司</string>
   <string id="573">路徑</string>
   <string id="574">國家</string>
-  <string id="575">進度</string> 
+  <string id="575">進度</string>
   <string id="576">已播放時間</string>
- 
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
   <string id="582">顯示模式</string>
@@ -545,14 +524,12 @@
   <string id="595">重複：關閉</string>
   <string id="596">重複：單首</string>
   <string id="597">重複：全部</string>
-  
   <string id="600">擷取音樂 CD</string>
   <string id="601">中等</string>
   <string id="602">標準</string>
   <string id="603">最高</string>
   <string id="604">指定頻率</string>
   <string id="605">擷取中…</string>
-  
   <string id="607">儲存到：</string>
   <string id="608">無法擷取 CD 或音軌</string>
   <string id="609">CD 擷取路徑未設定。</string>
@@ -560,7 +537,6 @@
   <string id="611">輸入數字</string>
   <string id="612">Bits/取樣</string>
   <string id="613">取樣頻率</string>
-  
   <string id="620">音樂 CD 擷取</string>
   <string id="621">編碼</string>
   <string id="622">品質</string>
@@ -598,30 +574,24 @@
   <string id="657">瀏覽資料夾</string>
   <string id="658">歌曲資訊</string>
   <string id="659">非線性延伸</string>
-  
   <string id="660">音量放大</string>
   <string id="661">選擇匯出資料夾</string>
   <string id="662">這個檔案已經無法使用。</string>
   <string id="663">你要將它從資料庫移除嗎？</string>
   <string id="664">流覽腳本</string>
   <string id="665">壓縮等級</string>
-  
   <string id="700">清除音樂資料庫</string>
   <string id="701">移除音樂資料庫舊歌曲</string>
   <string id="702">目前路徑曾經搜尋過</string>
   <string id="705">網路設定</string>
   <string id="706">- 伺服器</string>
-  
   <string id="708">啟用 HTTP 代理伺服器</string>
-  
   <string id="711">網路位址(IP)</string>
   <string id="712">無效的連接埠，數值必須是 1 至 65535。</string>
   <string id="713">HTTP 代理伺服器</string>
-  
   <string id="715">- 分配</string>
   <string id="716">自動(動態分配)</string>
   <string id="717">手動(靜態分配)</string>
-  
   <string id="719">- IP 位址</string>
   <string id="720">- 子網路遮罩</string>
   <string id="721">- 預設閘道</string>
@@ -632,9 +602,7 @@
   <string id="726">改變未儲存. 不儲存就離開嗎？</string>
   <string id="727">Web 伺服器</string>
   <string id="728">FTP 伺服器</string>
-  
   <string id="730">- 連接埠</string>
-  
   <string id="732">儲存 &amp; 套用</string>
   <string id="733">- 密碼</string>
   <string id="734">無密碼</string>
@@ -655,12 +623,10 @@
   <string id="749">映像</string>
   <string id="750">您確定嗎？</string>
   <string id="751">移除來源</string>
-  
   <string id="754">新增程式連結</string>
   <string id="755">編輯程式路徑</string>
   <string id="756">編輯程式名稱</string>
   <string id="757">編輯路徑深度</string>
-  
   <string id="759">顯示：大列表</string>
   <string id="760">黃色</string>
   <string id="761">白色</string>
@@ -670,10 +636,7 @@
   <string id="765">青色</string>
   <string id="766">保留</string>
   <string id="767">保留</string>
-  <!-- strings 768 and 769 reserved for more subtitle colors -->
-  
   <string id="770">錯誤 %i：無法共享</string>
-  
   <string id="772">音效輸出</string>
   <string id="773">搜尋中</string>
   <string id="774">圖片資料夾</string>
@@ -692,7 +655,6 @@
   <string id="787">關閉網路界面</string>
   <string id="788">順利關閉網路界面。</string>
   <string id="789">無線網路帳號(ESSID)</string>
-  
   <string id="791">允許這個系統的程式控制XBMC</string>
   <string id="792">遠端伺服器埠號</string>
   <string id="793">遠端伺服器埠號範圍</string>
@@ -701,17 +663,16 @@
   <string id="796">連續重複延遲(毫秒)</string>
   <string id="797">最大客戶端數</string>
   <string id="798">網際網路訪問</string>
-  
   <string id="850">輸入不合法的連接埠</string>
   <string id="851">合法的連接埠範圍是 1-65535</string>
   <string id="852">合法的連接埠範圍是 1024-65535</string>
-  
+  <string id="998">新增音樂...</string>
+  <string id="999">新增影片...</string>
   <string id="1000">- 預覽</string>
   <string id="1001">無法連線</string>
   <string id="1002">XBMC 無法連線到網路。</string>
   <string id="1003">這可能是由於網路沒有連線。</string>
   <string id="1004">可以用其他方式來新增它嗎？</string>
-  
   <string id="1006">IP 位址</string>
   <string id="1007">新增網路位置</string>
   <string id="1008">協定</string>
@@ -758,15 +719,12 @@
   <string id="1049">腳本設定</string>
   <string id="1050">單曲</string>
   <string id="1051">輸入網路位址</string>
-  
   <string id="1200">SMB 共享設定</string>
   <string id="1202">工作群組</string>
   <string id="1203">預設帳號</string>
   <string id="1204">預設密碼</string>
-  
   <string id="1207">WINS 伺服器</string>
   <string id="1208">掛載 SMB 分享</string>
-  
   <string id="1210">移除</string>
   <string id="1211">音樂</string>
   <string id="1212">視訊</string>
@@ -791,21 +749,19 @@
   <string id="1233">程式 &amp; 視訊 &amp; 音樂</string>
   <string id="1234">程式 &amp; 圖片 &amp; 音樂</string>
   <string id="1235">程式 &amp; 圖片 &amp; 視訊</string>
-  
   <string id="1250">自動偵測</string>
   <string id="1251">自動偵測系統</string>
   <string id="1252">暱稱</string>
-  
   <string id="1254">詢問連線</string>
   <string id="1255">發送 FTP 帳號和密碼</string>
   <string id="1256">連線品質</string>
   <string id="1257">是否連線到自動偵測到的系統？</string>
-  
   <string id="1260">自動網路設定</string>
-  
+  <string id="1270">允許XBMC接收AirPlay內容</string>
+  <string id="1271">裝置名稱</string>
+  <string id="1272">- 使用密碼保護</string>
   <string id="1300">自訂音效設備</string>
   <string id="1301">自訂直通輸出設備</string>
-  
   <string id="1396">移動</string>
   <string id="1397">有</string>
   <string id="1398">結冰</string>
@@ -834,19 +790,11 @@
   <string id="1421">非常高</string>
   <string id="1422">風</string>
   <string id="1423">靄</string>
-  
-  <!-- strings through to 1450 reserved for weather translation -->
- 
   <string id="1450">閒置時顯示器休眠</string>
-  <!-- strings through to 1470 reserved for power-saving -->
-  
   <string id="2050">視訊時間</string>
-  
   <string id="2100">腳本錯誤！：%s</string>
   <string id="2101">需要更新的版本 - 看記錄</string>
-  
   <string id="4501">啟用 LCD/VFD</string>
-  
   <string id="10000">首頁</string>
   <string id="10001">程式</string>
   <string id="10002">圖片</string>
@@ -869,19 +817,15 @@
   <string id="10019">設定 - 佈景主題</string>
   <string id="10020">腳本</string>
   <string id="10021">網路瀏覽器</string>
-  
   <string id="10028">視訊/播放列表</string>
   <string id="10034">設定 - 使用者設定檔</string>
-  
   <string id="10100">確認對話框</string>
   <string id="10101">進度對話框</string>
-  
   <string id="10210">正在尋找字幕…</string>
   <string id="10211">正在尋找或者快取字幕…</string>
   <string id="10212">結束中</string>
   <string id="10213">緩衝中</string>
   <string id="10214">打開串流媒體</string>
-  
   <string id="10500">音樂/播放列表</string>
   <string id="10501">音樂/檔案</string>
   <string id="10502">音樂/資料庫</string>
@@ -894,14 +838,11 @@
   <string id="10509">網路遊戲</string>
   <string id="10510">擴充功能</string>
   <string id="10511">系統資訊</string>
-  
   <string id="10516">音樂 - 資料庫</string>
   <string id="10517">現正播放 - 音樂</string>
-  
   <string id="10522">現在播放 - 視訊</string>
   <string id="10523">專輯資訊</string>
   <string id="10524">電影資訊</string>
-  
   <string id="12000">選擇對話</string>
   <string id="12001">音樂/資訊</string>
   <string id="12002">確認</string>
@@ -909,15 +850,12 @@
   <string id="12004">腳本/資訊</string>
   <string id="12005">全螢幕視訊</string>
   <string id="12006">音效視覺效果</string>
-  
   <string id="12008">檔案堆疊對話框</string>
   <string id="12009">重建目錄索引…</string>
   <string id="12010">返回音樂視窗</string>
   <string id="12011">返回視訊視窗</string>
-  
   <string id="12021">從頭開始播放</string>
   <string id="12022">從 %s 開始播放</string>
-  
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -967,30 +905,25 @@
   <string id="12377">將重設之前的設定</string>
   <string id="12378">顯示各個圖像</string>
   <string id="12379">使用移動和縮放特效</string>
-  
   <string id="12383">12小時制</string>
   <string id="12384">24小時制</string>
   <string id="12385">日/月</string>
   <string id="12386">月/日</string>
-  
   <string id="12390">系統已運作時間</string>
   <string id="12391">分鐘</string>
   <string id="12392">小時</string>
   <string id="12393">天</string>
   <string id="12394">累計運作時間</string>
-  
+  <string id="12395">電池狀態</string>
   <string id="12600">氣象</string>
-  
   <string id="12900">螢幕保護</string>
   <string id="12901">全螢幕畫面調整</string>
-  
   <string id="13000">系統設定</string>
   <string id="13001">立即關閉硬碟</string>
   <string id="13002">只有視訊</string>
   <string id="13003">- 延遲</string>
   <string id="13004">- 最小媒體檔案長度</string>
   <string id="13005">關機</string>
-  
   <string id="13008">預設關機模式</string>
   <string id="13009">退出</string>
   <string id="13010">休眠</string>
@@ -1000,16 +933,13 @@
   <string id="13014">最小化</string>
   <string id="13015">電源按鈕作用</string>
   <string id="13016">關閉系統</string>
-  
   <string id="13020">是否有透過 ssh 連接的會話存在？</string>
   <string id="13021">掛載行動碟</string>
   <string id="13022">不安全的移除裝置</string>
   <string id="13023">順利的移除裝置</string>
   <string id="13024">手把連接</string>
   <string id="13025">手把沒有連接</string>
-  
   <string id="13050">電池電量不足</string>
-  
   <string id="13100">閃爍過濾</string>
   <string id="13101">讓驅動選擇(必須重新啟動)</string>
   <string id="13105">垂直空白同步</string>
@@ -1019,12 +949,10 @@
   <string id="13109">測試解析度</string>
   <string id="13110">儲存此解析度？</string>
   <string id="13111">是否儲存此解析度？</string>
-  
   <string id="13112">高品質軟體升頻</string>
   <string id="13113">停用</string>
   <string id="13114">在480解析度時啟用</string>
   <string id="13115">始終啟用</string>
-  
   <string id="13116">升頻方式</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
@@ -1032,31 +960,25 @@
   <string id="13120">VDPAU 硬體解碼</string>
   <string id="13121">VDPAU 高品質倍線等級</string>
   <string id="13122">VDPAU 視聽室等級色彩轉換</string>
-  
   <string id="13130">顯示空白</string>
   <string id="13131">停用</string>
   <string id="13132">空白顯示</string>
-  
   <string id="13140">主動偵測連接！</string>
   <string id="13141">如果你繼續，你也許會不能控制 XBMC</string>
   <string id="13142">更長的時間，你是否確定停止事件伺服器？</string>
-  
   <string id="13144">更改 Apple 遙控器模式？</string>
   <string id="13145">如果你正使用 Apple 遙控器來控制</string>
   <string id="13146">XBMC，更改此設定可能會影響到你</string>
   <string id="13147">繼續控制它，你要繼續嗎？</string>
-  
   <string id="13159">子網路遮罩</string>
   <string id="13160">閘道位址</string>
   <string id="13161">主要的 DNS 位址</string>
   <string id="13162">初始化失敗</string>
-  
   <string id="13170">從不</string>
   <string id="13171">立即</string>
   <string id="13172">隔 %i 秒之後</string>
   <string id="13173">硬碟安裝日期：</string>
   <string id="13174">硬碟運轉週期：</string>
-  
   <string id="13200">設定檔</string>
   <string id="13201">要刪除設定檔 '%s' 嗎？</string>
   <string id="13204">最近載入的設定檔：</string>
@@ -1069,16 +991,13 @@
   <string id="13212">鬧鈴取消，剩下 %i 分 %i 秒</string>
   <string id="13213">%2.0f分</string>
   <string id="13214">%2.0f秒</string>
-  
   <string id="13249">掃瞄 RAR 檔案中的字幕</string>
   <string id="13250">瀏覽字幕…</string>
   <string id="13251">移動該項目</string>
   <string id="13252">將項目移動至此</string>
   <string id="13253">取消移動</string>
-  
   <string id="13270">硬體：</string>
   <string id="13271">CPU 使用率：</string>
-  
   <string id="13274">已連線，但是 DNS 無法使用。</string>
   <string id="13275">硬碟</string>
   <string id="13276">光碟機</string>
@@ -1087,20 +1006,15 @@
   <string id="13279">網路</string>
   <string id="13280">視訊</string>
   <string id="13281">硬體</string>
-  
   <string id="13283">作業系統：</string>
   <string id="13284">CPU 速度：</string>
-  
   <string id="13286">視訊晶片：</string>
   <string id="13287">螢幕解析度：</string>
-  
   <string id="13292">影音端子：</string>
-  
   <string id="13294">DVD 區碼：</string>
   <string id="13295">網際網路：</string>
   <string id="13296">已連線</string>
   <string id="13297">無法連線，請檢查網路設定。</string>
-  
   <string id="13299">目標溫度</string>
   <string id="13300">風扇轉速</string>
   <string id="13301">自動控溫</string>
@@ -1139,7 +1053,6 @@
   <string id="13334">編輯標籤</string>
   <string id="13335">設為預設值</string>
   <string id="13336">移除按鍵</string>
-  
   <string id="13340">讓它為</string>
   <string id="13341">綠色</string>
   <string id="13342">橙色</string>
@@ -1201,6 +1114,7 @@
   <string id="13409">排名前250</string>
   <string id="13410">收聽 Last.FM</string>
   <string id="13411">最低風扇轉速</string>
+  <string id="13412">從這裡開始播放</string>
   <string id="13413">下載中</string>
   <string id="13414">隱藏只在編輯出現的藝人</string>
   <string id="13415">渲染模式</string>
@@ -1221,7 +1135,6 @@
   <string id="13430">允許硬體加速 (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
   <string id="13432">允許硬體加速（VideoToolbox）</string>
-  
   <string id="13500">影音同步方式</string>
   <string id="13501">音效為主</string>
   <string id="13502">視訊為主(放棄/重複音效)</string>
@@ -1233,25 +1146,19 @@
   <string id="13508">高</string>
   <string id="13509">極高(慢!)</string>
   <string id="13510">同步重播顯示</string>
- 
   <string id="13550">當變更更新率時暫停</string>
   <string id="13551">關閉</string>
   <string id="13552">%.1f秒</string>
   <string id="13553">%.1f秒</string>
-
   <string id="13600">Apple 遙控器</string>
-  
   <string id="13602">允許用遙控器啟動 XBMC</string>
   <string id="13603">序列延遲時間</string>
-  
   <string id="13610">關閉</string>
   <string id="13611">標準</string>
   <string id="13612">通用遙控器</string>
   <string id="13613">萬能遙控器(Harmony)</string>
-  
   <string id="13620">Apple 遙控器錯誤</string>
   <string id="13621">Apple 遙控器支援啟用。</string>
-  
   <string id="14000">堆疊開啟</string>
   <string id="14001">堆疊關閉</string>
   <string id="14003">下載播放列表檔案…</string>
@@ -1259,7 +1166,6 @@
   <string id="14005">分析串流媒體列表…</string>
   <string id="14006">下載串流媒體列表失敗</string>
   <string id="14007">下載播放列表檔案失敗</string>
-  
   <string id="14009">遊戲目錄</string>
   <string id="14010">自動切換為縮圖顯示</string>
   <string id="14011">啟用 自動切換為縮圖顯示</string>
@@ -1286,12 +1192,10 @@
   <string id="14034">光碟緩衝區 - 光碟機</string>
   <string id="14035">光碟緩衝區 - 區域網路</string>
   <string id="14036">服務</string>
-  
   <string id="14038">網路設定已改變</string>
   <string id="14039">XBMC 需要重新啟動以改變您的</string>
   <string id="14040">網路設定。 你要現在重新啟動嗎？</string>
   <string id="14041">網際網路連線頻寬限制</string>
-  
   <string id="14043">- 播放時關機</string>
   <string id="14044">%i 分</string>
   <string id="14045">%i 秒</string>
@@ -1303,7 +1207,6 @@
   <string id="14051">時間格式</string>
   <string id="14052">日期格式</string>
   <string id="14053">畫面濾鏡</string>
-  
   <string id="14055">使用背景搜尋</string>
   <string id="14056">停止搜尋</string>
   <string id="14057">無法搜尋媒體資訊</string>
@@ -1321,7 +1224,6 @@
   <string id="14069">現在套用這些設定嗎？</string>
   <string id="14070">現在套用改變</string>
   <string id="14071">允許重新命名和刪除檔案</string>
-  
   <string id="14074">設定時區</string>
   <string id="14075">使用日光節約時間</string>
   <string id="14076">加入我的最愛</string>
@@ -1344,27 +1246,21 @@
   <string id="14093">安全</string>
   <string id="14094">輸入裝置</string>
   <string id="14095">省電模式</string>
-  
   <string id="15015">移除</string>
   <string id="15016">遊戲</string>
-  
   <string id="15019">新增</string>
-  
   <string id="15052">密碼</string>
-  
   <string id="15100">瀏覽</string>
   <string id="15101">資料庫</string>
   <string id="15102">* 所有專輯</string>
   <string id="15103">* 所有藝人</string>
   <string id="15104">* 所有歌曲</string>
   <string id="15105">* 所有類別</string>
-  
   <string id="15107">緩衝中…</string>
   <string id="15108">按鍵音效</string>
   <string id="15109">佈景主題預設</string>
   <string id="15111">- 主題</string>
   <string id="15112">預設主題</string>
-  
   <string id="15200">Last.fm</string>
   <string id="15201">提交歌曲資訊到 Last.fm</string>
   <string id="15202">Last.fm 帳號</string>
@@ -1387,7 +1283,6 @@
   <string id="15219">Libre.fm 密碼</string>
   <string id="15220">Libre.fm</string>
   <string id="15221">提交歌曲</string>
-  
   <string id="15250">上傳電台到 Last.fm</string>
   <string id="15251">連線到 Last.fm…</string>
   <string id="15252">選擇電台…</string>
@@ -1424,8 +1319,6 @@
   <string id="15283">%name% 最近聽過的歌曲</string>
   <string id="15284">收聽 %name% 的推薦在 Last.fm 廣播</string>
   <string id="15285">%name% 的排行</string>
-  
-  <string id="15286">收聽 %name% 的播放列表在 Last.fm 廣播</string>
   <string id="15287">你想把目前歌曲加入你的最愛嗎？</string>
   <string id="15288">你想封鎖目前的歌曲嗎？</string>
   <string id="15289">已加入你的最愛歌曲： '%s'</string>
@@ -1438,21 +1331,16 @@
   <string id="15296">解除封鎖</string>
   <string id="15297">你想從你的最愛移除這首歌曲嗎？</string>
   <string id="15298">你想解除封鎖這首歌曲嗎？</string>
-  
   <string id="15300">路徑錯誤或無效</string>
   <string id="15301">無法連線到網路伺服器</string>
   <string id="15302">找不到伺服器</string>
   <string id="15303">找不到工作群組</string>
-  
   <string id="15310">打開多個來源路徑</string>
   <string id="15311">路徑：</string>
-  
   <string id="16000">一般設定</string>
-  
   <string id="16002">網路查詢</string>
   <string id="16003">播放設定</string>
   <string id="16004">播放光碟</string>
-  
   <string id="16008">輸入新標題</string>
   <string id="16009">輸入影片名稱</string>
   <string id="16010">輸入設定檔名稱</string>
@@ -1481,14 +1369,15 @@
   <string id="16033">無法打開資料庫。</string>
   <string id="16034">無法從資料庫取得歌曲檔案。</string>
   <string id="16035">派對模式播放列表</string>
-  
+  <string id="16039">關閉</string>
+  <string id="16040">自動</string>
+  <string id="16041">開啟</string>
   <string id="16100">所有視訊</string>
   <string id="16101">未看過的</string>
   <string id="16102">已看過的</string>
   <string id="16103">標記成已看過</string>
   <string id="16104">標記成未看過</string>
   <string id="16105">編輯標題</string>
-  
   <string id="16200">操作被取消</string>
   <string id="16201">無法複製</string>
   <string id="16202">至少一個檔案無法複製</string>
@@ -1496,7 +1385,6 @@
   <string id="16204">至少一個檔案無法搬移</string>
   <string id="16205">無法刪除</string>
   <string id="16206">至少一個檔案無法刪除</string>
-  
   <string id="16300">視訊縮放方式</string>
   <string id="16301">Nearest neighbour</string>
   <string id="16302">二元直線</string>
@@ -1517,24 +1405,18 @@
   <string id="16317">時間平滑 (不完全)</string>
   <string id="16318">時間/空間平滑（不完全）</string>
   <string id="16319">DXVA</string>
-  
   <string id="16400">視訊後處理</string>
-  
   <string id="17500">顯示休眠逾時</string>
-  
   <string id="19000">切換到頻道</string>
-  
   <string id="20000">音樂 CD 擷取資料夾</string>
   <string id="20001">使用其他 DVD 播放程式</string>
   <string id="20002">其他 DVD 播放程式</string>
   <string id="20003">金手指資料夾</string>
   <string id="20004">螢幕擷圖資料夾</string>
-  
   <string id="20006">播放列表資料夾</string>
   <string id="20007">錄音</string>
   <string id="20008">螢幕擷圖</string>
   <string id="20009">使用 XBMC</string>
-  
   <string id="20011">音樂播放列表</string>
   <string id="20012">視訊播放列表</string>
   <string id="20013">你要執行該遊戲？</string>
@@ -1544,17 +1426,12 @@
   <string id="20017">本地縮圖</string>
   <string id="20018">無縮圖</string>
   <string id="20019">選擇縮略圖</string>
-  
-  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022">
   </string>
   <string id="20023">衝突</string>
   <string id="20024">掃描新加入</string>
   <string id="20025">掃描全部</string>
   <string id="20026">區域</string>
-  
- <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
- 
   <string id="20037">摘要</string>
   <string id="20038">鎖定音樂視窗</string>
   <string id="20039">鎖定視訊視窗</string>
@@ -1574,7 +1451,6 @@
   <string id="20053">已離開管理員模式</string>
   <string id="20054">已進入管理員模式</string>
   <string id="20055">Allmusic.com 縮圖</string>
-  
   <string id="20057">移除縮略圖</string>
   <string id="20058">新增設定檔…</string>
   <string id="20059">查詢所有專輯的資訊</string>
@@ -1704,7 +1580,6 @@
   <string id="20184">根據 EXIF 資訊旋轉圖片</string>
   <string id="20185">使用海報模式顯示電視節目</string>
   <string id="20186">請稍候</string>
-  
   <string id="20189">啟用 劇情和評論自動捲動</string>
   <string id="20190">自訂</string>
   <string id="20191">啟用 除錯記錄</string>
@@ -1716,9 +1591,6 @@
   <string id="20197">匯入音樂資料庫</string>
   <string id="20198">找不到藝人！</string>
   <string id="20199">下載藝人資訊失敗</string>
-
-  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
-  
   <string id="20250">派對模式！(視訊)</string>
   <string id="20251">Mixing drinks (視訊)</string>
   <string id="20252">Filling glasses (視訊)</string>
@@ -1730,30 +1602,24 @@
   <string id="20258">MythTV 客戶端</string>
   <string id="20259">網路檔案系統（NFS）</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
-
   <string id="20300">Web 伺服器目錄(HTTP)</string>
   <string id="20301">Web 伺服器目錄(HTTPS)</string>
   <string id="20302">無法寫入資料夾：</string>
   <string id="20303">你要跳過並繼續嗎？</string>
   <string id="20304">RSS Feed</string>
-  
   <string id="20307">次要的 DNS 位址</string>
   <string id="20308">DHCP 伺服器：</string>
   <string id="20309">新建資料夾</string>
   <string id="20310">播放時關閉液晶螢幕背光</string>
   <string id="20311">未知或內建(寫入保護)</string>
   <string id="20312">暫停時關閉液晶螢幕背光</string>
-  
   <string id="20314">視訊 - 資料庫</string>
-  
   <string id="20316">排序：標籤</string>
-  
   <string id="20324">播放部分的…</string>
   <string id="20325">重設螢幕校正</string>
   <string id="20326">重設螢幕校正值為 %s</string>
   <string id="20327">還原為預設值</string>
   <string id="20328">瀏覽目的</string>
-  
   <string id="20330">以資料夾名稱搜尋</string>
   <string id="20331">檔案</string>
   <string id="20332">以檔案或資料夾名稱來搜尋？</string>
@@ -1800,6 +1666,7 @@
   <string id="20373">季</string>
   <string id="20374">載入電影資訊</string>
   <string id="20375">不指定內容</string>
+  <string id="20376">原始標題</string>
   <string id="20377">重新整理電視節目資訊</string>
   <string id="20378">重新整理所有影集資訊？</string>
   <string id="20379">選擇的資料夾包含一個電視節目</string>
@@ -1827,7 +1694,6 @@
   <string id="20401">播放音樂影片</string>
   <string id="20402">自動擷取演員的縮圖</string>
   <string id="20403">設定演員縮圖</string>
-  
   <string id="20405">移除影集書籤</string>
   <string id="20406">設定影集書籤</string>
   <string id="20407">站台設定</string>
@@ -1842,7 +1708,7 @@
   <string id="20416">首播</string>
   <string id="20417">編劇</string>
   <string id="20418">清理檔案名稱</string>
-  
+  <string id="20419">在檔案檢視中顯示媒體資訊</string>
   <string id="20420">從不</string>
   <string id="20421">如果只有一季</string>
   <string id="20422">總是</string>
@@ -1880,10 +1746,8 @@
   <string id="20454">電台</string>
   <string id="20455">電台</string>
   <string id="20456">設定電影劇照</string>
-  <!-- up to 21329 is reserved for the video db !! !-->
-  
+  <string id="20457">電影集</string>
   <string id="21330">顯示隱藏檔案和目錄</string>
-  
   <string id="21331">TuxBox 客戶端</string>
   <string id="21332">警告：目標 TuxBox 裝置在錄影模式！</string>
   <string id="21333">串流即將停止！</string>
@@ -1891,16 +1755,13 @@
   <string id="21335">你確定要開始串流？</string>
   <string id="21336">連線到：%s</string>
   <string id="21337">TuxBox 裝置</string>
-  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
   <string id="21359">加入媒體共享…</string>
   <string id="21360">啟用 UPnP 伺服器</string>
-  
   <string id="21364">編輯媒體共享</string>
   <string id="21365">移除媒體共享</string>
   <string id="21366">自訂字幕資料夾</string>
   <string id="21367">電影和替代字幕資料夾</string>
-  
+  <string id="21368">覆蓋 ASS/SSA 字幕的字型</string>
   <string id="21369">啟用滑鼠</string>
   <string id="21370">媒體播放時使用瀏覽音效</string>
   <string id="21371">縮略圖</string>
@@ -1986,7 +1847,12 @@
   <string id="21451">需要網際網路連線。</string>
   <string id="21452">取得更多...</string>
   <string id="21453">檔案系統 Root Filesystem</string>
-  
+  <string id="21460">字幕位置</string>
+  <string id="21461">固定</string>
+  <string id="21462">影片底部</string>
+  <string id="21463">影片之下</string>
+  <string id="21464">影片上方</string>
+  <string id="21465">影片之上</string>
   <string id="21800">檔案名稱</string>
   <string id="21801">檔案路徑</string>
   <string id="21802">檔案大小</string>
@@ -1996,7 +1862,6 @@
   <string id="21806">評論</string>
   <string id="21807">彩色/黑白</string>
   <string id="21808">JPEG 影像處理</string>
-  
   <string id="21820">日期/時間</string>
   <string id="21821">描述</string>
   <string id="21822">製造廠商</string>
@@ -2021,7 +1886,6 @@
   <string id="21841">GPS 經度</string>
   <string id="21842">GPS 高度</string>
   <string id="21843">方位</string>
-  
   <string id="21860">補充類別</string>
   <string id="21861">關鍵字</string>
   <string id="21862">說明</string>
@@ -2063,13 +1927,9 @@
   <string id="21898">活躍</string>
   <string id="21899">標籤</string>
   <string id="21900">出生/出道</string>
-  
- <!-- strings 21900 thru 21999 reserved for slideshow info -->
- 
   <string id="22000">在啟動時更新資料庫</string>
   <string id="22001">總是在幕後更新資料庫</string>
   <string id="22002">- DNS 的尾碼</string>
-  
   <string id="22003">%2.3f秒</string>
   <string id="22004">延遲：%2.3fs</string>
   <string id="22005">提前：%2.3fs</string>
@@ -2092,8 +1952,6 @@
   <string id="22022">在清單中顯示視訊檔</string>
   <string id="22023">DirectX 廠商：</string>
   <string id="22024">Direct3D 版本：</string>
-  
-  <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">字型</string>
   <string id="22031">- 大小</string>
   <string id="22032">- 顏色</string>
@@ -2108,32 +1966,24 @@
   <string id="22041">白/紅</string>
   <string id="22042">白/藍</string>
   <string id="22043">黑/白</string>
-  
   <string id="22079">預設選擇動作</string>
   <string id="22080">選擇</string>
   <string id="22081">顯示詳細資訊</string>
   <string id="22082">更多...</string>
   <string id="22083">播放全部</string>
-  
   <string id="23049">只不到 Teletext</string>
   <string id="23050">開啟電傳視訊</string>
   <string id="23051">片段 %i</string>
   <string id="23052">已緩衝 %i Bytes</string>
   <string id="23053">正在停止</string>
   <string id="23054">正在執行</string>
-  
-  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">外部播放機啟動</string>
   <string id="23101">點選 OK 關閉播放機</string>
-  
   <string id="23104">播放完畢時點選 OK</string>
-  
-  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">附加元件</string>
   <string id="24001">附加元件</string>
   <string id="24002">附加元件選項</string>
   <string id="24003">附加元件資訊</string>
-
   <string id="24005">媒體來源</string>
   <string id="24007">電影資訊</string>
   <string id="24008">螢幕保護程式</string>
@@ -2147,7 +1997,6 @@
   <string id="24016">專輯資訊</string>
   <string id="24017">藝術家資訊</string>
   <string id="24018">服務</string>
-  
   <string id="24020">設定</string>
   <string id="24021">停用</string>
   <string id="24022">啟用</string>
@@ -2168,9 +2017,11 @@
   <string id="24041">從 zip 檔案安裝</string>
   <string id="24042">已下載 %i%%</string>
   <string id="24043">可取得的更新</string>
-   <string id="24044">Dependencies 不相符</string>
+  <string id="24044">Dependencies 不相符</string>
   <string id="24045">附加元件未包含正確結構</string>
- 
+  <string id="24046">%s 正被下列已安裝的附加元件使用中</string>
+  <string id="24047">這個附加元件不能解除安裝</string>
+  <string id="24048">回復舊版</string>
   <string id="24050">可取得的附加元件</string>
   <string id="24051">版本：</string>
   <string id="24052">免責聲明</string>
@@ -2187,34 +2038,28 @@
   <string id="24067">正在下載的附加元件</string>
   <string id="24068">有新的更新</string>
   <string id="24069">更新</string>
-  
   <string id="24070">附加元件無法被載入。</string>
   <string id="24071">發生未知的錯誤。</string>
   <string id="24072">需要的設定</string>
   <string id="24073">無法建立連線</string>
   <string id="24074">需要重新啟動</string>
   <string id="24075">停用</string>
+  <string id="24076">需要的附加元件</string>
   <string id="24080">要重新連線嗎？</string>
   <string id="24089">重啟附加元件</string>
   <string id="24090">鎖定附加元件管理員</string>
-  
+  <string id="24094">〈目前版本〉</string>
+  <string id="24095">〈黑名單〉</string>
   <string id="24096">附加元件已經被標記為"已損壞"。</string>
   <string id="24097">您想要在您的系統上停用嗎？</string>
   <string id="24098">已損壞</string>
   <string id="24099">是否要切換至此主題？</string>
+  <string id="24100">要使用這項功能你必須下載一個附加元件：</string>
+  <string id="24101">你要下載這個附加元件嗎？</string>
   <string id="25000">通知</string>
-
-  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">資料庫模式</string>
   <string id="29801">QWERTY 鍵盤</string>
   <string id="29802">音效直通輸出啟用中</string>
-  
-  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
-  <!-- strings 31000 thru 31999 reserved for skins -->
-  <!-- strings 32000 thru 32999 reserved for scripts -->
-  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
-  <string id="29999">遊戲套用閃爍過濾</string>
-  <string id="30011">搜尋持續時間</string>
   <string id="33001">預告片品質</string>
   <string id="33002">媒體流</string>
   <string id="33003">下載</string>
@@ -2286,20 +2131,16 @@
   <string id="33081">這是一個堆疊檔，請選擇要播放的片段。</string>
   <string id="33082">腳本路徑</string>
   <string id="33083">啟用自訂腳本按鈕</string>
-  
   <string id="33100">起始失敗</string>
   <string id="33101">網站伺服器</string>
   <string id="33102">事件伺服器</string>
   <string id="33103">遠端通訊伺服器</string>
-
-  <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
   <string id="34005">Flac</string>
- 
   <string id="34100">喇叭設定</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
@@ -2311,6 +2152,33 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
-  <!-- 34112-34200 reserved for future use -->
-  
+  <string id="34201">找不到下一個播放項目</string>
+  <string id="34202">找不到前一個播放項目</string>
+  <string id="35000">周邊裝置</string>
+  <string id="35001">通用 HID 裝置</string>
+  <string id="35002">通用網路配接器</string>
+  <string id="35003">通用磁碟機</string>
+  <string id="35004">找不到這台周邊裝置
+的可用設定</string>
+  <string id="35005">新的裝置已設定</string>
+  <string id="35006">裝置已移除</string>
+  <string id="35007">給這個裝置的快速鍵</string>
+  <string id="35008">快速鍵已啟用</string>
+  <string id="35500">位置</string>
+  <string id="35501">分類</string>
+  <string id="35502">名稱</string>
+  <string id="35503">供應商</string>
+  <string id="35504">產品 ID</string>
+  <string id="36000">Pulse-Eight CEC 配接器</string>
+  <string id="36006">無法開啟配接器</string>
+  <string id="36007">開啟 XBMC 時打開這台電視</string>
+  <string id="36008">當停止 XBMC 時關閉裝置</string>
+  <string id="36009">螢幕保護啟動時讓裝置進入待機模式</string>
+  <string id="36011">無法偵測CEC連接埠。請手動設定。</string>
+  <string id="36012">無法偵測CEC配接器</string>
+  <string id="36013">不支援的 libcec 介面版本。 %d 大於XBMC支援的版本 (%d)</string>
+  <string id="36014">如果關掉這台電視，讓這台電腦進入待機模式</string>
+  <string id="36015">HDMI連接埠編號</string>
+  <string id="36016">已連接</string>
+  <string id="36018">使用這個電視的語言設定</string>
 </strings>

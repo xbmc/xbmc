@@ -74,6 +74,5 @@ void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
 void CGUIPythonWindowDialog::OnDeinitWindow(int nextWindowID)
 {
   g_windowManager.RemoveDialog(GetID());
-  CGUIWindow::OnDeinitWindow(nextWindowID);
-  g_windowManager.Delete(GetID());
+  CGUIPythonWindow::OnDeinitWindow(nextWindowID);
 }

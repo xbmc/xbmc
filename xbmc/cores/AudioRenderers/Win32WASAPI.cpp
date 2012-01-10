@@ -87,7 +87,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
 
@@ -113,7 +113,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     if(!channelMap)
       channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
         ++layoutChannels;
@@ -144,6 +144,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
+  m_drc = 0;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -152,7 +153,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = layoutChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough == true) 
+  if (bAudioPassthrough) 
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
@@ -670,7 +671,7 @@ void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsig
 {
   // Remap the data to the correct channels
   if(m_remap.CanRemap() && !m_bPassthrough)
-    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame);
+    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame, m_drc);
   else
     memcpy(pOut, pData, len);
 }

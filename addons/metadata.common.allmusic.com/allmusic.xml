@@ -15,7 +15,7 @@
 	</GetAMGDiscography>
 	<GetAMGBiography dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;biography&gt;Fetching artist biography from allmusic.com is not possible due to copyright reasons.&lt;/biography&gt;" dest="2">
 				<expression clear="yes">Biography&lt;/h2&gt;.*?&lt;/p&gt;(.*?)&lt;/p&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -23,7 +23,7 @@
 	</GetAMGBiography>
 	<GetAMGReview dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
+			<RegExp input="$$1" output="&lt;review&gt;Fetching album review from allmusic.com is not possible due to copyright reasons.&lt;/review&gt;" dest="2">
 				<expression>&lt;h2 class=&quot;title&quot;&gt;Review&lt;/h2&gt;.*?&lt;/p&gt;(.*?)&lt;/p&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -36,6 +36,9 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
 				<expression>&lt;h3&gt;Born[^&gt;]*&gt;[^&gt;]*&gt;(.*?)&lt;/p&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
+				<expression>&lt;h3&gt;Birth[^&gt;]*&gt;[^&gt;]*&gt;(.*?)&lt;/p&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="5+">
 				<expression>&lt;h3&gt;Died[^&gt;]*&gt;[^&gt;]*&gt;(.*?)&lt;/p&gt;</expression>

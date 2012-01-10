@@ -520,7 +520,7 @@ namespace XFILE
         item->SetLabel2(desc.info);
       item->SetLabelPreformated(true);
 
-      item->m_strPath = it->path;
+      item->SetPath(it->path);
       items.Add(item);
     }
 

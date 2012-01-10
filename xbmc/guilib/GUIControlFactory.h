@@ -35,6 +35,7 @@ class CTextureInfo; // forward
 class CAspectRatio;
 class CGUIInfoLabel;
 class TiXmlNode;
+class CGUIAction;
 
 /*!
  \ingroup controls
@@ -73,7 +74,7 @@ public:
    */
   static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
-  static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);
+  static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID);
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
@@ -89,20 +90,19 @@ public:
    \param infoLabel returned infoLabel
    \return true if a valid info label was read, false otherwise
    */
-  static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel);
-  static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
-  static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
+  static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel, int parentID);
+  static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel, int parentID);
+  static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels, int parentID);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, color_t &value);
-  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
+  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value, int parentID);
   static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition);
-  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CGUIActionDescriptor>& vecStringValue);
+  static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
   static void GetRectFromString(const CStdString &string, CRect &rect);
-  static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
+  static bool GetScroller(const TiXmlNode *pControlNode, const CStdString &scrollerTag, CScroller& scroller);
 private:
   static CStdString GetType(const TiXmlElement *pControlNode);
-  bool GetNavigation(const TiXmlElement *node, const char *tag, int &direction, std::vector<CGUIActionDescriptor> &actions);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);

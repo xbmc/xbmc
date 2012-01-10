@@ -58,6 +58,49 @@
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
 		<teletext>Teletext</teletext>
+
+		<!-- new kernel-based lirc button names -->
+		<left>KEY_LEFT</left>
+		<right>KEY_RIGHT</right>
+		<up>KEY_UP</up>
+		<down>KEY_DOWN</down>
+		<select>KEY_OK</select>
+		<start>KEY_HOME</start>
+		<back>KEY_BACK</back>
+		<record>KEY_RECORD</record>
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+		<forward>KEY_FORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
+		<skipplus>KEY_NEXT</skipplus>
+		<skipminus>KEY_AGAIN</skipminus>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<myvideo>KEY_VIDEO</myvideo>
+		<mymusic>KEY_AUDIO</mymusic>
+		<mytv>LiveTV</mytv>
+		<one>KEY_1</one>
+		<two>KEY_2</two>
+		<three>KEY_3</three>
+		<four>KEY_4</four>
+		<five>KEY_5</five>
+		<six>KEY_6</six>
+		<seven>KEY_7</seven>
+		<eight>KEY_8</eight>
+		<nine>KEY_9</nine>
+		<zero>KEY_0</zero>
+		<red>KEY_RED</red>
+		<green>KEY_GREEN</green>
+		<yellow>KEY_YELLOW</yellow>
+		<blue>KEY_BLUE</blue>
+		<menu>KEY_DVD</menu>
+		<clear>KEY_CLEAR</clear>
+		<enter>KEY_ENTER</enter>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
@@ -294,7 +337,7 @@
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
-		<select>#KEY_OK</select>
+		<select>KEY_OK</select>
 		<pageplus>KEY_CHANNELUP</pageplus>
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<back>KEY_BACKSPACE</back>
@@ -371,13 +414,20 @@
 		<right>KEY_RIGHT</right>
 		<up>KEY_UP</up>
 		<down>KEY_DOWN</down>
+		<select>KEY_OK</select>
 		<select>KEY_ENTER</select>
 		<start>KEY_SELECT</start>
+		<back>KEY_ESC</back>
 		<back>KEY_EXIT</back>
+		<back>KEY_BACK</back>
+		<back>KEY_CLOSE</back>
 		<record>KEY_RECORD</record>
 		<play>KEY_PLAY</play>
+		<play>KEY_PLAYPAUSE</play>
 		<pause>KEY_PAUSE</pause>
+		<pause>KEY_PLAYPAUSE</pause>
 		<stop>KEY_STOP</stop>
+		<stop>KEY_STOPCD</stop>
 		<forward>KEY_FASTFORWARD</forward>
 		<reverse>KEY_REWIND</reverse>
 		<volumeplus>KEY_VOLUMEUP</volumeplus>
@@ -388,6 +438,7 @@
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
 		<title>KEY_TEXT</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
+		<language>KEY_LANGUAGE</language>
 		<mute>KEY_MUTE</mute>
 		<power>KEY_POWER</power>
 		<myvideo>KEY_VIDEO</myvideo>
@@ -408,5 +459,11 @@
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
+		<menu>KEY_MENU</menu>
+		<info>KEY_INFO</info>
+		<info>KEY_PROPS</info>
+		<start>KEY_HOME</start>
+		<display>KEY_ANGLE</display>
+		<teletext>KEY_TEXT</teletext>
 	</remote>
 </lircmap>

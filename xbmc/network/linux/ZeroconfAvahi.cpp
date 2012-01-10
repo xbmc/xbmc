@@ -58,15 +58,15 @@ private:
 struct CZeroconfAvahi::ServiceInfo
 {
   ServiceInfo(const std::string& fcr_type, const std::string& fcr_name,
-              unsigned int f_port, AvahiEntryGroup* fp_group = 0):
-    m_type(fcr_type), m_name(fcr_name), m_port(f_port), mp_group(fp_group)
+              unsigned int f_port, AvahiStringList *txt, AvahiEntryGroup* fp_group = 0):
+    m_type(fcr_type), m_name(fcr_name), m_port(f_port), mp_txt(txt), mp_group(fp_group)
   {
   }
 
   std::string m_type;
   std::string m_name;
   unsigned int m_port;
-
+  AvahiStringList* mp_txt;
   AvahiEntryGroup* mp_group;
 };
 
@@ -131,7 +131,8 @@ CZeroconfAvahi::~CZeroconfAvahi()
 bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
                               const std::string& fcr_type,
                               const std::string& fcr_name,
-                              unsigned int f_port)
+                              unsigned int f_port,
+                              std::map<std::string, std::string> txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
@@ -143,8 +144,15 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
     return false;
   }
 
+  //txt records to AvahiStringList
+  AvahiStringList *txtList = NULL;
+  for(std::map<std::string, std::string>::iterator it=txt.begin(); it!=txt.end(); it++)
+  {
+    txtList = avahi_string_list_add_pair(txtList, it->first.c_str(), it->second.c_str());
+  }
+
   //create service info and add it to service map
-  tServiceMap::mapped_type p_service_info(new CZeroconfAvahi::ServiceInfo(fcr_type, fcr_name, f_port));
+  tServiceMap::mapped_type p_service_info(new CZeroconfAvahi::ServiceInfo(fcr_type, fcr_name, f_port, txtList));
   it = m_services.insert(it, std::make_pair(fcr_identifier, p_service_info));
 
   //if client is already running, directly try to add the new service
@@ -169,11 +177,19 @@ bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident)
   {
     return false;
   }
+  
   if (it->second->mp_group)
   {
     avahi_entry_group_free(it->second->mp_group);
     it->second->mp_group = 0;
   }
+  
+  if(it->second->mp_txt)
+  {
+    avahi_string_list_free(it->second->mp_txt);
+    it->second->mp_txt = NULL;
+  }
+  
   m_services.erase(it);
   return true;
 }
@@ -187,6 +203,12 @@ void CZeroconfAvahi::doStop()
     {
       avahi_entry_group_free(it->second->mp_group);
       it->second->mp_group = 0;
+    }
+    
+    if(it->second->mp_txt)
+    {
+      avahi_string_list_free(it->second->mp_txt);
+      it->second->mp_txt = NULL;
     }
   }
   m_services.clear();
@@ -294,6 +316,11 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
         {
           avahi_entry_group_free(it->second->mp_group);
           it->second->mp_group = 0;
+          if (it->second->mp_txt)
+          {
+            avahi_string_list_free(it->second->mp_txt);
+            it->second->mp_txt = NULL;
+          }
           break;
         }
       }
@@ -315,26 +342,6 @@ void CZeroconfAvahi::shutdownCallback(AvahiTimeout *fp_e, void *fp_data)
   {
     avahi_threaded_poll_quit(p_instance->mp_poll);
   }
-}
-
-std::string CZeroconfAvahi::assemblePublishedName(const std::string& fcr_prefix)
-{
-  std::stringstream ss;
-  ss << fcr_prefix << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfAvahi::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
 }
 
 bool CZeroconfAvahi::createClient()
@@ -379,9 +386,9 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiC
   int ret;
   if (avahi_entry_group_is_empty(fp_service_info->mp_group))
   {
-    if ((ret = avahi_entry_group_add_service(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0),
-                                             assemblePublishedName(fp_service_info->m_name).c_str(),
-                                             fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, NULL) < 0))
+    if ((ret = avahi_entry_group_add_service_strlst(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0),
+                                             fp_service_info->m_name.c_str(),
+                                             fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, fp_service_info->mp_txt) < 0))
     {
       if (ret == AVAHI_ERR_COLLISION)
       {
@@ -407,3 +414,4 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiC
 }
 
 #endif // HAS_AVAHI
+

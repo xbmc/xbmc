@@ -116,7 +116,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
       trackinfo ti = pCdInfo->GetTrackInformation(iTrack);
 
       // Fill the fileitems music tag with CD-Text information, if available
-      CStdString strTitle = ti.cdtext.field[CDTEXT_TITLE];
+      CStdString strTitle = ti.cdtext[CDTEXT_TITLE];
       if (strTitle.size() > 0)
       {
         // Tracknumber
@@ -126,21 +126,23 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
         tag.SetTitle(strTitle);
 
         // Get info for track zero, as we may have and need CD-Text Album info
-        cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
+        xbmc_cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
 
         // Artist: Use track artist or disc artist
-        CStdString strArtist = ti.cdtext.field[CDTEXT_PERFORMER];
+        CStdString strArtist = ti.cdtext[CDTEXT_PERFORMER];
         if (strArtist.IsEmpty())
-          strArtist = discCDText.field[CDTEXT_PERFORMER];
+          strArtist = discCDText[CDTEXT_PERFORMER];
         tag.SetArtist(strArtist);
 
         // Album
         CStdString strAlbum;
-        strAlbum = discCDText.field[CDTEXT_TITLE];
+        strAlbum = discCDText[CDTEXT_TITLE];
         tag.SetAlbum(strAlbum);
 
-        // Genre
-        CStdString strGenre = ti.cdtext.field[CDTEXT_GENRE];
+        // Genre: use track or disc genre
+        CStdString strGenre = ti.cdtext[CDTEXT_GENRE];
+        if (strGenre.IsEmpty())
+          strGenre = discCDText[CDTEXT_GENRE];
         tag.SetGenre( strGenre );
 
         tag.SetLoaded(true);

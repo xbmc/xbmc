@@ -86,7 +86,10 @@ bool CID3Tag::Read(const CStdString& strFile)
 
   m_tag = m_dll.id3_file_tag(id3file);
   if (!m_tag)
+  {
+    m_dll.id3_file_close(id3file);
     return false;
+  }
 
   m_musicInfoTag.SetURL(strFile);
 
@@ -210,7 +213,10 @@ bool CID3Tag::Write(const CStdString& strFile)
 
   m_tag = m_dll.id3_file_tag(id3file);
   if (!m_tag)
+  {
+    m_dll.id3_file_close(id3file);
     return false;
+  }
 
   SetTitle(m_musicInfoTag.GetTitle());
   SetArtist(m_musicInfoTag.GetArtist());

@@ -12,14 +12,14 @@ ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-shared \
-  --disable-toolbox-glue
+  --disable-toolbox-glue --disable-framework
 
 CONFIGURE_NATIVE= CFLAGS="" CXXFLAGS="" LDFLAGS="" CPPFLAGS="" \
   CPP="/usr/bin/cpp" \
   CC="gcc-4.2" \
   CXX="g++-4.2" \
   LD="ld" \
-  ./configure
+  ./configure --prefix=$(TOOLCHAIN) --enable-shared --disable-toolbox-glue --disable-framework
 
 LIBDYLIB=$(SOURCE)/libpython2.6.dylib
 
@@ -39,6 +39,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); mv python.exe hostpython
 	cd $(SOURCE); mv Parser/pgen Parser/hostpgen
 	cd $(SOURCE); mv libpython2.6.a hostlibpython2.6.a
+	cd $(SOURCE); make install HOSTPYTHON=./hostpython
 	cd $(SOURCE); make distclean
 	cd $(SOURCE); patch -p1 <../Python-2.6.5-xcompile.patch
 	cd $(SOURCE); $(CONFIGURE)

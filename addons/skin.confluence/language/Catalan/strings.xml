@@ -35,7 +35,7 @@
   <string id="31043">EN PAUSA</string>
   <string id="31044">AVANÇA RÀPID</string>
   <string id="31045">REBOBINA</string>
-  <string id="31046">Propietats d'àudio</string>
+  <string id="31046">Propietats de l'àudio</string>
   <string id="31047">Predefinit actual</string>
   <string id="31048">Visualitzacions predefinides</string>
   <string id="31049">Hora de finalització</string>
@@ -80,8 +80,8 @@
   <string id="31124">Mostra el vídeo en reproducció en el fons</string>
   <string id="31125">Mostra la visualització en reproducció en el fons</string>
 
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31126">Play TV theme songs in video library (TvTunes add-on)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Lletres</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
@@ -108,7 +108,7 @@
   <string id="31300">Temperatura actual</string>
   <string id="31301">Actualització més recent</string>
   <string id="31302">Menú</string>
-  <string id="31303"></string>
+  <string id="31303">Proveïdor de dades</string>
   <string id="31304">Imatge</string>
   <string id="31305">No s'ha detectat cap disc amb continguts multimèdia</string>
   <string id="31306">Expulsa</string>
@@ -143,7 +143,7 @@
   <string id="31352">Atura</string>
   <string id="31353">Avança ràpid</string>
   <string id="31354">Rebobina</string>
-  <string id="31355">Menú de pel·lícules</string>
+  <string id="31355">Menú de la pel·lícula</string>
   <string id="31356">Descarrega els subtítols</string>
   <string id="31357"></string>
 

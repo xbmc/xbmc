@@ -589,7 +589,7 @@
 						<onclick>ActivateWindow(Weather)</onclick>
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton)</visible>
+						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
 					</item>
 					<item id="4">
 						<label>1</label>
@@ -600,18 +600,11 @@
 					</item>
 					<item id="2">
 						<label>3</label>
-						<onclick>ActivateWindow(Videos)</onclick>
+						<onclick condition="!Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos)</onclick>
+						<onclick condition="Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos,Files,Return)</onclick>
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
-						<visible>!Skin.HasSetting(HomeVideostoFiles)</visible>
-					</item>
-					<item id="2">
-						<label>3</label>
-						<onclick>ActivateWindow(Videos,Files,Return)</onclick>
-						<icon>special://skin/backgrounds/videos.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
-						<visible>Skin.HasSetting(HomeVideostoFiles)</visible>
 					</item>
 					<item id="10">
 						<label>20342</label>
@@ -780,35 +773,35 @@
 					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton1)])</onclick>
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton1))]</icon>
 					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton1))</visible>
+					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton1))</visible>
 				</item>
 				<item>
 					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton2))]</label>
 					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton2)])</onclick>
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton2))]</icon>
 					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton2))</visible>
+					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton2))</visible>
 				</item>
 				<item>
 					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton3))]</label>
 					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton3)])</onclick>
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton3))]</icon>
 					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton3))</visible>
+					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton3))</visible>
 				</item>
 				<item>
 					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton4))]</label>
 					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton4)])</onclick>
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton4))]</icon>
 					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton4))</visible>
+					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton4))</visible>
 				</item>
 				<item>
 					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton5))]</label>
 					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton5)])</onclick>
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton5))]</icon>
 					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton5))</visible>
+					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton5))</visible>
 				</item>
 
 				<item>

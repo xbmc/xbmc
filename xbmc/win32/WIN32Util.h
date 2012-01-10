@@ -28,6 +28,7 @@
 #endif
 #include "MediaSource.h"
 #include "utils/Stopwatch.h"
+#include "guilib/Geometry.h"
 
 enum Drive_Types
 {
@@ -80,6 +81,9 @@ public:
   static bool GetCrystalHDLibraryPath(CStdString &strPath);
   
   static bool GetFocussedProcess(CStdString &strProcessFile);
+  static void CropSource(CRect& src, CRect& dst, CRect target);
+
+  static bool IsUsbDevice(const CStdStringW &strWdrive);
 
 private:
 #if _MSC_VER > 1400

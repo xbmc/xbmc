@@ -137,19 +137,14 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIDialogProgress::OnAction(const CAction &action)
+bool CGUIDialogProgress::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
+  if (m_bCanCancel)
   {
-    if (m_bCanCancel)
-    {
-      m_bCanceled = true;
-      return true;
-    }
-    else
-      return false;
+    m_bCanceled = true;
+    return true;
   }
-  return CGUIDialog::OnAction(action);
+  return false;
 }
 
 void CGUIDialogProgress::OnWindowLoaded()

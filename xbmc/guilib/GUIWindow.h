@@ -56,6 +56,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class TiXmlNode;
 class TiXmlElement;
 class CXBMCTinyXML;
+class CVariant;
 
 class COrigin
 {
@@ -113,6 +114,8 @@ public:
   // on to the currently focused control.  Returns true if the action has been handled
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
+  
+  virtual bool OnBack(int actionID);
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */
@@ -169,39 +172,13 @@ public:
    \param value value to set, may be a string, integer, boolean or double.
    \sa GetProperty
    */
-  void SetProperty(const CStdString &key, const CStdString &value);
-  void SetProperty(const CStdString &key, const char *value);
-  void SetProperty(const CStdString &key, int value);
-  void SetProperty(const CStdString &key, bool value);
-  void SetProperty(const CStdString &key, double value);
+  void SetProperty(const CStdString &key, const CVariant &value);
 
   /*! \brief Retreive a property
    \param key name of the property to retrieve
    \return value of the property, empty if it doesn't exist
-   \sa SetProperty, GetPropertyInt, GetPropertyBool, GetPropertyDouble
    */
-  CStdString GetProperty(const CStdString &key) const;
-
-  /*! \brief Retreive an integer property
-   \param key name of the property to retrieve
-   \return value of the property, 0 if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  int        GetPropertyInt(const CStdString &key) const;
-
-  /*! \brief Retreive a boolean property
-   \param key name of the property to retrieve
-   \return value of the property, false if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  bool       GetPropertyBool(const CStdString &key) const;
-
-  /*! \brief Retreive a double precision property
-   \param key name of the property to retrieve
-   \return value of the property, 0 if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  double     GetPropertyDouble(const CStdString &key) const;
+  CVariant GetProperty(const CStdString &key) const;
 
   /*! \brief Clear a all the window's properties
    \sa SetProperty, HasProperty, GetProperty
@@ -254,8 +231,6 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  void RunActions(std::vector<CGUIActionDescriptor>& actions);
-
   int m_idRange;
   OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
@@ -292,15 +267,15 @@ protected:
     }
   };
 
-  std::vector<CGUIActionDescriptor> m_loadActions;
-  std::vector<CGUIActionDescriptor> m_unloadActions;
+  CGUIAction m_loadActions;
+  CGUIAction m_unloadActions;
 
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
 private:
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
+  std::map<CStdString, CVariant, icompare> m_mapProperties;
 
 };
 

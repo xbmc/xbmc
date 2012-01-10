@@ -97,7 +97,7 @@ void CTuxBoxService::Process()
 
   while(!CThread::m_bStop && g_application.IsPlaying())
   {
-    strURL = g_application.CurrentFileItem().m_strPath;
+    strURL = g_application.CurrentFileItem().GetPath();
     if(!URIUtils::IsTuxBox(strURL))
       break;
 
@@ -135,10 +135,10 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
 {
   //Build new Item
   item_new.SetLabel(item.GetLabel());
-  item_new.m_strPath = item.m_strPath;
+  item_new.SetPath(item.GetPath());
   item_new.SetThumbnailImage(item.GetThumbnailImage());
 
-  if(g_tuxbox.GetZapUrl(item.m_strPath, item_new))
+  if(g_tuxbox.GetZapUrl(item.GetPath(), item_new))
   {
     if(vVideoSubChannel.mode)
       vVideoSubChannel.current_name = item_new.GetLabel()+" ("+vVideoSubChannel.current_name+")";
@@ -202,11 +202,11 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
             pItem->m_bIsFolder = true;
             pItem->SetLabel(strItemName);
             url.SetOptions("/"+strOptions+"&reference="+strItemPath);
-            pItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+url.GetOptions();
+            pItem->SetPath("tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+url.GetOptions());
             items.Add(pItem);
             //DEBUG Log
             CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
-            CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pItem->m_strPath.c_str());
+            CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pItem->GetPath().c_str());
           }
         }
         pNode = pNode->NextSibling(strChild.c_str());
@@ -250,7 +250,7 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
       CStdString strItemName = pIt->FirstChild()->Value();
       pItem->m_bIsFolder = true;
       pItem->SetLabel(strItemName);
-      pItem->m_strPath = "tuxbox://"+url.GetHostName()+strPort+"/"+strItemName+"/";
+      pItem->SetPath("tuxbox://"+url.GetHostName()+strPort+"/"+strItemName+"/");
       items.Add(pItem);
       pNode = pNode->NextSiblingElement("e2bouquet");
     }
@@ -317,12 +317,12 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
                     pbItem->SetLabelPreformated(true);
-                    pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";
+                    pbItem->SetPath("tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts");
                     pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
                     CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
-                    CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
+                    CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->GetPath().c_str());
 
                     //add to the list
                     items.Add(pbItem);
@@ -378,11 +378,11 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
           CFileItemPtr pbItem(new CFileItem);
           pbItem->m_bIsFolder = false;
           pbItem->SetLabel(strItemName);
-          pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
+          pbItem->SetPath("http://"+url.GetHostName()+":8001/"+strItemPath);
           pbItem->SetMimeType("video/mpeg2");
           items.Add(pbItem);
           CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
-          CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
+          CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->GetPath().c_str());
         }
         pIta = pIta->NextSiblingElement("e2service");
       }
@@ -594,7 +594,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
       items.GetVideoInfoTag()->m_strRuntime = StringUtils::SecondsToTimeString(iDuration); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
 
-      items.m_strPath = strStreamURL;
+      items.SetPath(strStreamURL);
       items.m_iDriveType = url.GetPort(); // Dirty Hack! But i need to hold the Port ;)
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)

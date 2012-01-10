@@ -359,8 +359,8 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
         newEvent.resize.h = event.resize.h;
-        newEvent.resize.type = event.resize.type;
         ret |= g_application.OnEvent(newEvent);
+        g_windowManager.MarkDirty();
         break;
       }
       case SDL_USEREVENT:
@@ -394,7 +394,6 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     switch(event.key.keysym.sym)
     {
     case SDLK_q:  // CMD-q to quit
-    case SDLK_w:  // CMD-w to quit
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       return true;

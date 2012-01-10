@@ -331,7 +331,7 @@ bool CLastFmManager::RequestRadioTracks()
       {
         CStdString url = child->Value();
         url.Replace("http:", "lastfm:");
-        newItem->m_strPath = url;
+        newItem->SetPath(url);
       }
     }
     pElement = pTrackElement->FirstChildElement("title");
@@ -874,7 +874,7 @@ bool CLastFmManager::Love(const CMusicInfoTag& musicinfotag)
   if (m_CurrentSong.CurrentSong && !m_CurrentSong.CurrentSong->IsLastFM())
   {
     //path to update the rating for
-    strFilePath = m_CurrentSong.CurrentSong->m_strPath;
+    strFilePath = m_CurrentSong.CurrentSong->GetPath();
   }
   if (CallXmlRpc("loveTrack",strArtist, strTitle))
   {

@@ -45,8 +45,6 @@
 typedef void* pthread_mutex_t;
 extern pthread_mutex_t mutex;
 #define mutex __cmyth_mutex
-#define ECANCELED -1
-#define ETIMEDOUT -1
 #define SHUT_RDWR SD_BOTH
 typedef SOCKET cmyth_socket_t;
 typedef int socklen_t;

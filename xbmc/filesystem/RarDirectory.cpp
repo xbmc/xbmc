@@ -64,14 +64,17 @@ namespace XFILE
       {
         if (items[iEntry]->IsParentFolder())
           continue;
-        URIUtils::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
+        items[iEntry]->SetPath(URIUtils::AddFileToFolder(strSlashPath,items[iEntry]->GetPath()+strOptions));
         items[iEntry]->m_iDriveType = 0;
         //CLog::Log(LOGDEBUG, "RarXFILE::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
       }
       return( true);
     }
     else
+    {
+      CLog::Log(LOGWARNING,"%s: rar lib returned no files in archive %s, likely corrupt",__FUNCTION__,strArchive.c_str());
       return( false );
+    }
   }
 
   bool CRarDirectory::Exists(const char* strPath)

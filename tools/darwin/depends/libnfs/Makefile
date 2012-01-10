@@ -3,7 +3,7 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=48593f5
+VERSION=0804e67
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -27,6 +27,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	mkdir -p $(PREFIX)/include/rpc
 	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
+	cd $(SOURCE); patch -p0 < ../001_fix_hanewin.patch
 	cd $(SOURCE); ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 

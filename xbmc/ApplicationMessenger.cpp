@@ -42,6 +42,8 @@
 #include "guilib/GUIDialog.h"
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/Splash.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -231,6 +233,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           case POWERSTATE_MINIMIZE:
             Minimize();
             break;
+
+          case TMSG_RENDERER_FLUSH:
+            g_renderManager.Flush();
+            break;
         }
       }
       break;
@@ -315,12 +321,26 @@ case TMSG_POWERDOWN:
             }
 
             g_playlistPlayer.ClearPlaylist(playlist);
-            g_playlistPlayer.Add(playlist, (*list));
             g_playlistPlayer.SetCurrentPlaylist(playlist);
-            g_playlistPlayer.Play(pMsg->dwParam1);
+            //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
+            //It will fall through to PlayFile
+            if (list->Size() == 1 && !(*list)[0]->IsPlayList())
+              g_application.PlayMedia(*((*list)[0]), playlist);
+            else
+            {
+              g_playlistPlayer.Add(playlist, (*list));
+              g_playlistPlayer.Play(pMsg->dwParam1);
+            }
           }
 
           delete list;
+        }
+        else if (pMsg->dwParam1 == PLAYLIST_MUSIC || pMsg->dwParam1 == PLAYLIST_VIDEO)
+        {
+          if (g_playlistPlayer.GetCurrentPlaylist() != (int)pMsg->dwParam1)
+            g_playlistPlayer.SetCurrentPlaylist(pMsg->dwParam1);
+
+          PlayListPlayerPlay(pMsg->dwParam2);
         }
       }
       break;
@@ -364,12 +384,13 @@ case TMSG_POWERDOWN:
             {
               pSlideShow->Add(items[i].get());
             }
-            pSlideShow->Select(items[0]->m_strPath);
+            pSlideShow->Select(items[0]->GetPath());
           }
         }
         else
         {
           CFileItem item(pMsg->strParam, false);
+          pSlideShow->Reset();
           pSlideShow->Add(&item);
           pSlideShow->Select(pMsg->strParam);
         }
@@ -420,6 +441,9 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_SETLANGUAGE:
+      g_guiSettings.SetLanguage(pMsg->strParam);
+      break;
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
@@ -705,8 +729,9 @@ case TMSG_POWERDOWN:
     case TMSG_OPTICAL_MOUNT:
       {
         CMediaSource share;
-        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
         share.strPath = pMsg->strParam;
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
         if(g_mediaManager.IsAudio(share.strPath))
           share.strStatus = "Audio-CD";
         else if(share.strStatus == "")
@@ -736,6 +761,11 @@ case TMSG_POWERDOWN:
       {
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
+      }
+    case TMSG_SPLASH_MESSAGE:
+      {
+        if (g_application.m_splash)
+          g_application.m_splash->Show(pMsg->strParam);
       }
   }
 }
@@ -798,9 +828,7 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 
 void CApplicationMessenger::MediaPlay(string filename)
 {
-  CFileItem item;
-  item.m_strPath = filename;
-  item.m_bIsFolder = false;
+  CFileItem item(filename, false);
   if (item.IsAudio())
     item.SetMusicThumb();
   else
@@ -826,6 +854,15 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  tMsg.lpVoid = NULL;
+  tMsg.dwParam1 = playlistid;
+  tMsg.dwParam2 = song;
   SendMessage(tMsg, true);
 }
 
@@ -989,6 +1026,13 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   tMsg.dwParam1 = addTBN ? 1 : 0;
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SetGUILanguage(const std::string &strLanguage)
+{
+  ThreadMessage tMsg = {TMSG_SETLANGUAGE};
+  tMsg.strParam = strLanguage;
   SendMessage(tMsg);
 }
 
@@ -1156,4 +1200,16 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
   tMsg.dwParam1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+{
+  ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
+  tMsg.strParam = message;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::SetSplashMessage(int stringID)
+{
+  SetSplashMessage(g_localizeStrings.Get(stringID));
 }

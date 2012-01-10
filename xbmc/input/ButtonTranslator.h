@@ -64,8 +64,12 @@ public:
   ///access to singleton
   static CButtonTranslator& GetInstance();
 
+  // Add/remove a HID device with custom mappings
+  void AddDevice(CStdString& strDevice);
+  void RemoveDevice(CStdString& strDevice);
+
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load();
+  bool Load(void);
   /// clears the maps
   void Clear();
 
@@ -96,9 +100,14 @@ public:
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
-  
-  std::map<CStdString, std::map<int, buttonMap> > deviceMappings;
-  const std::map<int, buttonMap> &GetDeviceMap() const;
+
+  // m_baseMap contains all the standard mappings
+  std::map<int, buttonMap> m_baseMap;
+  // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
+  std::map<int, buttonMap> m_translatorMap;
+  // m_deviceList contains the list of connected HID devices
+  std::list<CStdString> m_deviceList;
+
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
 
   static uint32_t TranslateGamepadString(const char *szButton);
@@ -120,7 +129,7 @@ private:
   bool LoadLircMap(const CStdString &lircmapPath);
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
   typedef std::map<CStdString, CStdString> lircButtonMap;
-  std::map<CStdString, lircButtonMap> lircRemotesMap;
+  std::map<CStdString, lircButtonMap*> lircRemotesMap;
 #endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
@@ -131,6 +140,8 @@ private:
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
   std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
 #endif
+
+  bool m_Loaded;
 };
 
 #endif

@@ -195,7 +195,7 @@ CStdString CThumbnailCache::GetEpisodeThumb(const CVideoInfoTag* videoInfo)
 CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
 {
   if (item.IsStack())
-    return GetThumb(CStackDirectory::GetFirstStackedFile(item.m_strPath), g_settings.GetVideoThumbFolder(), true);
+    return GetThumb(CStackDirectory::GetFirstStackedFile(item.GetPath()), g_settings.GetVideoThumbFolder(), true);
   else if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
     if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
@@ -203,13 +203,13 @@ CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
     else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
       return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
   }
-  return GetThumb(item.m_strPath, g_settings.GetVideoThumbFolder(), true);
+  return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
 }
 
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
 {
   // get the locally cached thumb
-  if (item.IsVideoDb())
+  if (item.IsVideoDb() || item.HasVideoInfoTag())
   {
     if (!item.HasVideoInfoTag())
       return "";
@@ -217,19 +217,30 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       return GetThumb(item.GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
     if (!item.m_bIsFolder && !item.GetVideoInfoTag()->m_strShowTitle.IsEmpty())
     {
-      CVideoDatabase database;
-      database.Open();
-      int iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
       CStdString showPath;
-      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      if (!item.GetVideoInfoTag()->m_strShowPath.IsEmpty())
+        showPath = item.GetVideoInfoTag()->m_strShowPath;
+      else
+      {
+        CVideoDatabase database;
+        database.Open();
+        int iShowId = item.GetVideoInfoTag()->m_iIdShow;
+        if (iShowId <= 0)
+          iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
+        CStdString showPath;
+        database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
-    return GetThumb(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
+    CStdString path = item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (path.empty())
+      return "";
+    return GetThumb(path,g_settings.GetVideoFanartFolder());
   }
   if (item.HasMusicInfoTag())
     return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
 
-  return GetThumb(item.m_strPath,g_settings.GetVideoFanartFolder());
+  return GetThumb(item.GetPath(),g_settings.GetVideoFanartFolder());
 }
 
 CStdString CThumbnailCache::GetThumb(const CStdString &path, const CStdString &path2, bool split /* = false */)

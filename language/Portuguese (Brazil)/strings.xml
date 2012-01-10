@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator[wm] -->
-<!--Translator: bugre (wm), Fabiano Santiago (fabianosan) -->
-<!--Email: wxxx333-nospam-at-gmail.com, fabianosan@hotmail.com -->
+<!--Translator: Fabiano Santiago (fabianosan), bugre (wm) -->
+<!--Email: fabianosan@hotmail.com, wxxx333-nospam-at-gmail.com -->
 <!--Date of translation: 12/21/2009 -->
-<!--Updated on 29/07/2010 by fabianosan -->
+<!--Updated on 28/08/2011 by fabianosan -->
 <!--Updated on 15/11/2010 by bugre -->
 <!--$Revision$-->
 <!--Based on english strings version 35193-->
@@ -172,7 +172,7 @@
   <string id="199">Interface web</string>
   <string id="202">Título:</string>
   <string id="203">Sinopse:</string>
-  <string id="205">Votos:</string>
+  <string id="205">Votos</string>
   <string id="206">Elenco</string>
   <string id="207">Enredo</string>
   <string id="208">Tocar</string>
@@ -287,8 +287,8 @@
   <string id="330">Isto pode demorar um pouco...</string>
   <string id="331">Compactando o banco de dados...</string>
   <string id="332">Erro ao compactar o banco de dados</string>
-  <string id="333">Deseja excluir a coleção?</string>
-  <string id="334">Apagar a coleção...</string>
+  <string id="333">Deseja limpar a coleção?</string>
+  <string id="334">Limpar a coleção...</string>
   <string id="335">Iniciar</string>
   <string id="336">Conversão de quadros/seg.</string>
   <string id="337">Saída de áudio</string>
@@ -510,6 +510,8 @@
   <string id="573">Caminho</string>
   <string id="574">País</string>
   <string id="575">Em progresso</string>
+  <string id="576">Quantidade de vezes tocado</string>
+
   <string id="580">Direção de ordenação</string>
   <string id="581">Método de ordenação</string>
   <string id="582">Modo de exibição</string>
@@ -1129,6 +1131,7 @@
   <string id="13429">Permitir aceleração por hardware (VDADecoder)</string>
   <string id="13430">Permitir aceleração por hardware (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Permitir aceleração por hardware (VideoToolbox)</string>
   <string id="13500">Método de syncronização de A/V</string>
   <string id="13501">Relógio de áudio</string>
   <string id="13502">Relógio de vídeo (cortar/ignorar áudio)</string>
@@ -1189,6 +1192,7 @@
   <string id="14038">Configurações de rede modificadas</string>
   <string id="14039">O XBMC precisa reiniciar para aplicar as suas</string>
   <string id="14040">configurações de rede.  Deseja reiniciar agora?</string>
+  <string id="14041">Limitação de banda de Internet</string>
   <string id="14043">- Desligar durante a execução</string>
   <string id="14044">%i mins</string>
   <string id="14045">%i segs</string>
@@ -1363,6 +1367,7 @@
   <string id="16033">Não pôde abrir banco de dados.</string>
   <string id="16034">Não pôde obter músicas do banco de dados.</string>
   <string id="16035">Lista de execução em modo-festa</string>
+  <string id="16036">De-interlace (Half)</string>
   <string id="16100">Todos os vídeos</string>
   <string id="16101">Não-vistos </string>
   <string id="16102">Vistos</string>
@@ -1804,7 +1809,7 @@
   <string id="21421">Regra de lista de reprodução inteligente</string>
   <string id="21422">Encontrar músicas onde</string>
   <string id="21423">Nova regra...</string>
-  <string id="21424">Músicas devem conter</string>
+  <string id="21424">Itens devem conter</string>
   <string id="21425">todas as regras</string>
   <string id="21426">uma regra ou mais</string>
   <string id="21427">Limitar em</string>
@@ -1834,6 +1839,14 @@
   <string id="21451">Necessário conexão com a Internet.</string>
   <string id="21452">Obter Mais</string>
   <string id="21453">Raiz</string>
+
+  <string id="21460">Local da Legenda</string>
+  <string id="21461">Fixado</string>
+  <string id="21462">Rodapé do vídeo</string>
+  <string id="21463">Na barra abaixo do vídeo</string>
+  <string id="21464">No topo do vídeo</string>
+  <string id="21465">Na barra acima do vídeo</string>
+
   <string id="21800">Nome do arquivo</string>
   <string id="21801">Caminho do arquivo</string>
   <string id="21802">Tamanho do arquivo</string>
@@ -1977,6 +1990,8 @@
   <string id="24015">Informação de Video Musical (clipe)</string>
   <string id="24016">Informação de Album</string>
   <string id="24017">Informação de Artista</string>
+  <string id="24018">Serviços</string>
+
   <string id="24020">Configurar</string>
   <string id="24021">Desativar</string>
   <string id="24022">Ativar</string>
@@ -1997,6 +2012,12 @@
   <string id="24041">Instalar a partir de um arquivo ZIP</string>
   <string id="24042">Baixando %i%%</string>
   <string id="24043">Atualizações Disponíveis</string>
+  <string id="24044">Dependencias não conhecidas</string>
+  <string id="24045">Add-on não possui uma estrutura válida</string>
+  <string id="24046">%s é usado pelo seguinte add-on(s) instalado(s)</string>
+  <string id="24047">Este add-on não pode ser desinstalado</string>
+  <string id="24048">Desfazer</string>
+
   <string id="24050">Add-ons Disponíveis</string>
   <string id="24051">Versão:</string>
   <string id="24052">Declaração</string>
@@ -2107,5 +2128,11 @@
   <string id="33081">Este arquivo está empilhado, selecione a parte que quer tocar.</string>
   <string id="33082">Caminho para o script</string>
   <string id="33083">Habilitar botão de script personalizado</string>
+
+  <string id="33100">Falha ao Iniciar</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Servidor de Eventos</string>
+  <string id="33103">Servidor de Comunicação Remota</string>
+
   <string id="34100">Configurar alto-falantes</string>
 </strings>

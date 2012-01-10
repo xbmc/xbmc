@@ -24,8 +24,8 @@
 #include "Key.h"
 #include "utils/log.h"
 
-CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   SetCursor(fixedPosition);
   ControlType = GUICONTAINER_WRAPLIST;
@@ -41,7 +41,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 {
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, GetCursor()));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, GetNumItems() ? CorrectOffset(offset, GetCursor()) % GetNumItems() : 0);
     SendWindowMessage(msg);
   }
 }
@@ -120,9 +120,16 @@ void CGUIWrappingListContainer::Scroll(int amount)
   ScrollToOffset(GetOffset() + amount);
 }
 
+bool CGUIWrappingListContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
+{
+  return false;
+}
+
 void CGUIWrappingListContainer::ValidateOffset()
 {
-  if (m_itemsPerPage <= (int)m_items.size())
+  // our minimal amount of items - we need to take into acount extra items to display wrapped items when scrolling
+  unsigned int minItems = (unsigned int)m_itemsPerPage + ScrollCorrectionRange() + GetCacheCount() / 2;
+  if (minItems <= m_items.size())
     return;
 
   // no need to check the range here, but we need to check we have
@@ -131,7 +138,7 @@ void CGUIWrappingListContainer::ValidateOffset()
   if (m_items.size())
   {
     unsigned int numItems = m_items.size();
-    while (m_items.size() < (unsigned int)m_itemsPerPage)
+    while (m_items.size() < minItems)
     {
       // add additional copies of items, as we require extras at render time
       for (unsigned int i = 0; i < numItems; i++)
@@ -240,7 +247,7 @@ void CGUIWrappingListContainer::SetPageControlRange()
 {
   if (m_pageControl)
   {
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size() + m_itemsPerPage - 1);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetNumItems());
     SendWindowMessage(msg);
   }
 }

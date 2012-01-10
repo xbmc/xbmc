@@ -132,7 +132,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -140,6 +140,7 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual void         Flush();
 
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(CVDPAU* vdpau);
@@ -153,8 +154,11 @@ public:
   // Feature support
   virtual bool SupportsMultiPassRendering();
   virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(EDEINTERLACEMODE mode);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
+
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);

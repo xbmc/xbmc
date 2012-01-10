@@ -150,7 +150,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;  
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -500,7 +500,9 @@ unsigned int CLinuxRendererGLES::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -724,19 +726,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (flags & RENDER_FLAG_BOT)
     m_currentField = FIELD_BOT;
 
-  else if (flags & RENDER_FLAG_LAST)
-  {
-    switch(m_currentField)
-    {
-    case FIELD_TOP:
-      flags = RENDER_FLAG_TOP;
-      break;
-
-    case FIELD_BOT:
-      flags = RENDER_FLAG_BOT;
-      break;
-    }
-  }
   else
     m_currentField = FIELD_FULL;
 
@@ -1270,9 +1259,6 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   if (!m_bValidated)
     return false;
 
-  // get our screen rect
-  const CRect rv = g_graphicsContext.GetViewWindow();
-
   // save current video rect
   CRect saveSize = m_destRect;
 
@@ -1291,7 +1277,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
@@ -1299,12 +1285,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
   for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
   {
-    if (pixels[0] != pixels[2])
-    {
-      pixels[0] ^= pixels[2];
-      pixels[2] ^= pixels[0];
-      pixels[0] ^= pixels[2];
-    }
+    std::swap(pixels[0], pixels[2]);
   }
 
   capture->EndRender();
@@ -1813,6 +1794,24 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return false;
 }
 
+bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
+{
+  if (mode == VS_DEINTERLACEMODE_OFF)
+    return true;
+
+  if(m_renderMethod & RENDER_OMXEGL)
+    return false;
+
+  if(m_renderMethod & RENDER_CVREF)
+    return false;
+
+  if(mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
+    return true;
+
+  return false;
+}
+
 bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 {
   if(m_renderMethod & RENDER_OMXEGL)
@@ -1821,11 +1820,12 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
-  if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO)
+  if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
+  || method == VS_INTERLACEMETHOD_SW_BLEND)
     return true;
 
   return false;
@@ -1838,6 +1838,21 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     return true;
 
   return false;
+}
+
+EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
+{
+  if(m_renderMethod & RENDER_OMXEGL)
+    return VS_INTERLACEMETHOD_NONE;
+
+  if(m_renderMethod & RENDER_CVREF)
+    return VS_INTERLACEMETHOD_NONE;
+
+#if defined(__i386__) || defined(__x86_64__)
+  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#else
+  return VS_INTERLACEMETHOD_SW_BLEND;
+#endif
 }
 
 #ifdef HAVE_LIBOPENMAX
@@ -1854,9 +1869,8 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoP
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
   buf.cvBufferRef = picture->cvBufferRef;
-  // unhook corevideo buffer reference so it does not get released
-  picture->iFlags |= ~DVP_FLAG_ALLOCATED;
-  picture->cvBufferRef = NULL;
+  // retain another reference, this way dvdplayer and renderer can issue releases.
+  CVBufferRetain(buf.cvBufferRef);
 }
 #endif
 

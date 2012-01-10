@@ -102,6 +102,11 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR\sounds"
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"
+  
+  ; delete system/python if its there
+  IfFileExists $INSTDIR\system\python 0 +2
+    RMDir /r $INSTDIR\system\python
+  
   File /r /x *.so /x mplayer /x *_d.* /x tcl85g.dll /x tclpip85g.dll /x tk85g.dll "${xbmc_root}\Xbmc\system\*.*"
   
   ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later

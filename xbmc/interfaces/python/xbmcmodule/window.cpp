@@ -73,9 +73,6 @@ namespace PYXBMC
         PyErr_SetString(PyExc_ValueError, "Window id does not exist");
         return false;
       }
-      pWindow->iOldWindowId = 0;
-      pWindow->bModal = false;
-      pWindow->iCurrentControlId = 3000;
       pWindow->bIsPythonWindow = false;
     }
     else
@@ -92,8 +89,6 @@ namespace PYXBMC
       while(id < WINDOW_PYTHON_END && g_windowManager.GetWindow(id) != NULL) id++;
 
       pWindow->iWindowId = id;
-      pWindow->iOldWindowId = 0;
-      pWindow->bModal = false;
       pWindow->bIsPythonWindow = true;
 
       if (pWindow->bUsingXML)
@@ -115,6 +110,9 @@ namespace PYXBMC
 
       g_windowManager.Add(pWindow->pWindow);
     }
+    pWindow->iOldWindowId = 0;
+    pWindow->bModal = false;
+    pWindow->iCurrentControlId = 3000;
     return true;
   }
 
@@ -383,8 +381,21 @@ namespace PYXBMC
       ++it;
     }
 
-    if (self->bIsPythonWindow && !self->pWindow->IsDialog())
-      g_windowManager.Delete(self->pWindow->GetID());
+    if (self->bIsPythonWindow)
+    {
+      if (self->pWindow && g_windowManager.IsWindowVisible(self->iWindowId))
+      {
+        // if window isn't closed - mark it to delete itself after deiniting
+        // and trigger window closing
+        if (self->bUsingXML)
+          ((CGUIPythonWindowXML*)self->pWindow)->SetDestroyAfterDeinit();
+        else
+          ((CGUIPythonWindow*)self->pWindow)->SetDestroyAfterDeinit();
+        Window_Close(self, NULL);
+      }
+      else
+        g_windowManager.Delete(self->iWindowId);
+    }
 
     lock.Leave();
     self->vecControls.clear();
@@ -958,7 +969,7 @@ namespace PYXBMC
 
     GilSafeSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
-    string value = self->pWindow->GetProperty(lowerKey.ToLower());
+    string value = self->pWindow->GetProperty(lowerKey.ToLower()).asString();
 
     return Py_BuildValue((char*)"s", value.c_str());
   }

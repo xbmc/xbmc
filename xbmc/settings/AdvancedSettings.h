@@ -26,8 +26,9 @@
 
 class TiXmlElement;
 
-struct DatabaseSettings
+class DatabaseSettings
 {
+public:
   CStdString type;
   CStdString host;
   CStdString port;
@@ -82,6 +83,8 @@ class CAdvancedSettings
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
+    float m_limiterHold;
+    float m_limiterRelease;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -117,12 +120,15 @@ class CAdvancedSettings
 
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
-    bool  m_videoAllowLanczos3;
+    bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
+    bool m_videoDisableBackgroundDeinterlace;
+    int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
+    bool m_DXVAForceProcessorRenderer;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -150,11 +156,15 @@ class CAdvancedSettings
     int m_logLevel;
     int m_logLevelHint;
     CStdString m_cddbAddress;
+    
+    //airtunes + airplay
+    bool m_logEnableAirtunes;
+    int m_airTunesPort;
+    int m_airPlayPort;    
 
     bool m_handleMounting;
 
     bool m_fullScreenOnMovieStart;
-    bool m_noDVDROM;
     CStdString m_cachePath;
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_videoCleanStringRegExps;
@@ -165,6 +175,7 @@ class CAdvancedSettings
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
+    CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;

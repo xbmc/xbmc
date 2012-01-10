@@ -29,6 +29,9 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/JSONRPC.h"
+#endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
 #include "network/Network.h"
@@ -133,13 +136,19 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    if (action.GetName().Find("shutdown") != 1)
+    CStdString actionName = action.GetName();
+    actionName.ToLower();
+    if (actionName.Find("shutdown") != -1)
       CBuiltins::Execute(action.GetName());
     return true;
   }
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-    return false; // no escape from the login window
   return CGUIWindow::OnAction(action);
+}
+
+bool CGUIWindowLoginScreen::OnBack(int actionID)
+{
+  // no escape from the login window
+  return false;
 }
 
 void CGUIWindowLoginScreen::FrameMove()
@@ -200,14 +209,6 @@ void CGUIWindowLoginScreen::Update()
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_BIG_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
 
   bool bSelect = m_vecItems->Get(iItem)->IsSelected();
   // mark the item
@@ -290,6 +291,11 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
+
+#ifdef HAS_JSONRPC
+  JSONRPC::CJSONRPC::Initialize();
+#endif
+
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();

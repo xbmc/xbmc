@@ -201,7 +201,7 @@ extern void cmyth_dbg(int level, char *fmt, ...);
  * Define a callback to use to send messages rather than using stderr
  * \param msgcb function pointer to pass a string to
  */
-extern void cmyth_set_dbg_msgcallback(void (*msgcb)(char *));
+extern void cmyth_set_dbg_msgcallback(void (*msgcb)(int level,char *));
 
 /*
  * -----------------------------------------------------------------
@@ -839,6 +839,14 @@ extern cmyth_timestamp_t cmyth_proginfo_originalairdate(cmyth_proginfo_t prog);
  */
 extern cmyth_proginfo_rec_status_t cmyth_proginfo_rec_status(
 	cmyth_proginfo_t prog);
+
+/**
+ * Retrieve the flags associated with a program.
+ * \param prog proginfo handle
+ * \return flags
+ */
+extern unsigned long cmyth_proginfo_flags(
+  cmyth_proginfo_t prog);
 
 /**
  * Retrieve the size, in bytes, of a program.

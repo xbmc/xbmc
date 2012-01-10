@@ -6,7 +6,7 @@
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=48593f5
+VERSION=0804e67
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
@@ -16,10 +16,11 @@ RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
-
+PREFIX ?= /usr
+LIBNFS_CONFIGOPTS ?= --prefix=$(PREFIX)
 # configuration settings
-#FIX THE PREFIX TO SOMETHING LOCAL IN XBMC - CONFIGURE HAS TO FIND IT!
-CONFIGURE=./configure CFLAGS=-D_FILE_OFFSET_BITS=64 --prefix=/usr
+
+CONFIGURE=./configure CFLAGS=-D_FILE_OFFSET_BITS=64 $(LIBNFS_CONFIGOPTS)
 
 SO_NAME=$(SOURCE)/lib/libnfs.so
 
@@ -34,6 +35,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p0 < ../001_fix_hanewin.patch
 	cd $(SOURCE);./bootstrap;$(CONFIGURE)
 
 $(SO_NAME): $(SOURCE)

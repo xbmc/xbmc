@@ -63,14 +63,8 @@ void CGUIDialogBusy::Render()
   CGUIDialog::Render();
 }
 
-bool CGUIDialogBusy::OnAction(const CAction &action)
+bool CGUIDialogBusy::OnBack(int actionID)
 {
-  if(action.GetID() == ACTION_NAV_BACK 
-  || action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    m_bCanceled = true;
-    return true;
-  }
-  else
-    return CGUIDialog::OnAction(action);
+  m_bCanceled = true;
+  return true;
 }

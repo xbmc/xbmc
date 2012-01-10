@@ -295,19 +295,16 @@ CStdString CSysInfo::GetXBVerInfo()
 bool CSysInfo::IsAeroDisabled()
 {
 #ifdef _WIN32
-  OSVERSIONINFOEX osvi;
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
-
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  if (IsVistaOrHigher())
   {
-    if (osvi.dwMajorVersion == 5)
-      return true; // windows XP -> no Aero
-
     BOOL aeroEnabled = FALSE;
     HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
     if (SUCCEEDED(res))
       return !aeroEnabled;
+  }
+  else
+  {
+    return true;
   }
 #endif
   return false;
@@ -395,10 +392,16 @@ CStdString CSysInfo::GetKernelVersion()
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
     {
-      if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-      {
-        strKernel.append("XP Professional x64 Edition");
-      }
+      if( GetSystemMetrics(SM_SERVERR2) )
+        strKernel.append("Windows Server 2003 R2");
+      else if ( osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER )
+        strKernel.append("Windows Storage Server 2003");
+      else if ( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
+        strKernel.append("Windows Home Server");
+      else if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
+        strKernel.append("Windows XP Professional x64 Edition");
+      else
+        strKernel.append("Windows Server 2003");
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
     {
@@ -537,7 +540,14 @@ CStdString CSysInfo::GetUnameVersion()
   {
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
       result = buffer;
+#if defined(TARGET_DARWIN)
+      result.Trim();
+      result += ", "; 
+      result += GetDarwinVersionString();
+#endif
+    }
     else
       CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
@@ -547,13 +557,48 @@ CStdString CSysInfo::GetUnameVersion()
 }
 #endif
 
+#if defined(TARGET_WINDOWS)
+CStdString CSysInfo::GetUAWindowsVersion()
+{
+  OSVERSIONINFOEX osvi = {};
+
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  CStdString strVersion = "Windows NT";
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    strVersion.AppendFormat(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+  }
+
+  SYSTEM_INFO si = {};
+  GetSystemInfo(&si);
+
+  BOOL bIsWow = FALSE;
+  if (IsWow64Process(GetCurrentProcess(), &bIsWow))
+  {
+    if (bIsWow)
+    {
+      strVersion.append(";WOW64");
+      GetNativeSystemInfo(&si);     // different function to read the info under Wow
+    }
+  }
+
+  if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
+    strVersion.append(";Win64;x64");
+  else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
+    strVersion.append(";Win64;IA64");
+
+  return strVersion;
+}
+#endif
+
+
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
 #if defined(_WIN32)
-  result += "Windows; ";
-  result += GetKernelVersion();
+  result += GetUAWindowsVersion();
 #elif defined(__APPLE__)
 #if defined(__arm__)
   result += "iOS; ";

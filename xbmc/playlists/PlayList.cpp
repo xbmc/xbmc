@@ -27,6 +27,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 //using namespace std;
 using namespace MUSIC_INFO;
@@ -58,7 +59,7 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
 
   // videodb files are not supported by the filesystem as yet
   if (item->IsVideoDb())
-    item->m_strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+    item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
 
   // increment the playable counter
   item->ClearProperty("unplayable");
@@ -67,7 +68,10 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
-  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->m_strPath.c_str());
+  // set 'IsPlayable' property - needed for properly handling plugin:// URLs
+  item->SetProperty("IsPlayable", true);
+
+  //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->GetPath().c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);
   else
@@ -265,7 +269,7 @@ void CPlayList::Remove(const CStdString& strFileName)
   while (it != m_vecItems.end() )
   {
     CFileItemPtr item = *it;
-    if (item->m_strPath == strFileName)
+    if (item->GetPath() == strFileName)
     {
       iOrder = item->m_iprogramCount;
       it = m_vecItems.erase(it);
@@ -311,7 +315,7 @@ int CPlayList::RemoveDVDItems()
     CFileItemPtr item = *it;
     if ( item->IsCDDA() || item->IsOnDVD() )
     {
-      vecFilenames.push_back( item->m_strPath );
+      vecFilenames.push_back( item->GetPath() );
     }
     it++;
   }
@@ -366,7 +370,7 @@ void CPlayList::SetUnPlayable(int iItem)
   }
 
   CFileItemPtr item = m_vecItems[iItem];
-  if (!item->GetPropertyBOOL("unplayable"))
+  if (!item->GetProperty("unplayable").asBoolean())
   {
     item->SetProperty("unplayable", true);
     m_iPlayableItems--;
@@ -418,13 +422,13 @@ bool CPlayList::Expand(int position)
   if ( NULL == playlist.get())
     return false;
 
-  if(!playlist->Load(item->m_strPath))
+  if(!playlist->Load(item->GetPath()))
     return false;
 
   // remove any item that points back to itself
   for(int i = 0;i<playlist->size();i++)
   {
-    if( (*playlist)[i]->m_strPath.Equals( item->m_strPath ) )
+    if( (*playlist)[i]->GetPath().Equals( item->GetPath() ) )
     {
       playlist->Remove(i);
       i--;
@@ -446,7 +450,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
   for (ivecItems it = m_vecItems.begin(); it != m_vecItems.end(); ++it)
   {
     CFileItemPtr playlistItem = *it;
-    if (playlistItem->m_strPath == item->m_strPath)
+    if (playlistItem->GetPath() == item->GetPath())
     {
       *playlistItem = *item;
       break;
@@ -459,5 +463,5 @@ const CStdString& CPlayList::ResolveURL(const CFileItemPtr &item ) const
   if (item->IsMusicDb() && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();
   else
-    return item->m_strPath;
+    return item->GetPath();
 }

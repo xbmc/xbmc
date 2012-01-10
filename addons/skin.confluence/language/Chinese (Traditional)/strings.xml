@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated by koalahong-->
+<!--Language file translated with Team XBMC Translator-->
+<!--Date of translation: 12/09/2011-->
+<!--$Revision$-->
 <strings>
-  <!-- Misc labels -->
   <string id="31000">修改您的</string>
   <string id="31001">喜歡</string>
   <string id="31002">討厭</string>
   <string id="31003">電源選項</string>
   <string id="31004">工作中...</string>
   <string id="31005">隱藏資訊</string>
-
+  <string id="31006">檢視選項</string>
   <string id="31007">外掛</string>
-
+  <string id="31008">全螢幕</string>
   <string id="31020">最近新增</string>
   <string id="31021">視訊 - 檔案</string>
   <string id="31022">音樂 - 檔案</string>
@@ -19,18 +20,13 @@
   <string id="31025">個項目</string>
   <string id="31026">其他選項</string>
   <string id="31027">位置</string>
-
-  <!-- View Type labels -->
   <string id="31028">海報捲動</string>
   <string id="31029">劇照</string>
   <string id="31030">全部清單</string>
   <string id="31031">圖片縮圖</string>
   <string id="31032">圖片捲動</string>
   <string id="31033">資訊</string>
-
-  <!-- Extra labels -->
   <string id="31040">正在播放</string>
-
   <string id="31042">正在播方</string>
   <string id="31043">暫停</string>
   <string id="31044">快轉</string>
@@ -39,9 +35,8 @@
   <string id="31047">目前設定</string>
   <string id="31048">視覺效果設定</string>
   <string id="31049">結束時間</string>
-
-
-  <!-- Playlist Editor labels -->
+  <string id="31050">排序：遞增</string>
+  <string id="31051">排序：遞減</string>
   <string id="31055">開啟播放清單</string>
   <string id="31056">儲存播放清單</string>
   <string id="31057">關閉播放清單</string>
@@ -49,14 +44,13 @@
   <string id="31059">目前的播放清單</string>
   <string id="31060">這個檔案已堆疊，請選擇您要從哪個部分開始播放。</string>
   <string id="31061">目前的選擇</string>
-
-  <!-- Skin Settings labels -->
-  <string id="31100"></string>
+  <string id="31100">
+  </string>
   <string id="31101">主介面選項</string>
   <string id="31102">背景</string>
   <string id="31103">在圖片幻燈片秀中顯示"已暫停"狀態</string>
   <string id="31104">在視窗中播放預告片[COLOR=grey3](只在視訊資訊對話框中)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"視訊" 按鈕永遠連到視訊 "檔案"</string>
   <string id="31106">其他選項</string>
   <string id="31107">隱藏視訊檔案名稱的媒體標示 [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">隱藏主選單按鈕</string>
@@ -67,39 +61,45 @@
   <string id="31113">單一圖片</string>
   <string id="31114">多張圖片</string>
   <string id="31115">自訂</string>
-  <string id="31116"></string>
+  <string id="31116">
+  </string>
   <string id="31117">顯示最近新增的視訊</string>
   <string id="31118">首頁程式子選單</string>
-  <string id="31119"></string>
+  <string id="31119">隱藏背景劇照</string>
   <string id="31120">按鈕標籤</string>
-  <string id="31121"></string>
+  <string id="31121">
+  </string>
   <string id="31122">氣象頁面</string>
   <string id="31123">以電視節目的海報取代橫幅圖片</string>
   <string id="31124">在背景顯示正在播放的視訊</string>
   <string id="31125">在背景顯示正在播放的視覺效果</string>
-
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">
+  </string>
+  <string id="31127">
+  </string>
   <string id="31128">歌詞</string>
-  <string id="31129"></string>
-  <string id="31130"></string>
-
+  <string id="31129">
+  </string>
+  <string id="31130">
+  </string>
+  <string id="31132">歌詞附加元件</string>
+  <string id="31133">字幕附加元件</string>
+  <string id="31134">首頁影片子選單</string>
+  <string id="31135">首頁音樂子選單</string>
+  <string id="31136">首頁圖片子選單</string>
   <string id="31140">音樂播放工具列</string>
   <string id="31141">視訊播放工具列</string>
-
-  <!-- Script labels -->
   <string id="31200">捷徑</string>
   <string id="31201">分類</string>
   <string id="31202">顯示演員</string>
   <string id="31203">選擇您的歌曲</string>
   <string id="31204">段落連結</string>
   <string id="31205">歌詞來源</string>
-
-  <!-- Extra labels -->
   <string id="31300">現在溫度</string>
   <string id="31301">最後更新</string>
   <string id="31302">選單</string>
-  <string id="31303"></string>
+  <string id="31303">
+  </string>
   <string id="31304">圖片</string>
   <string id="31305">沒有偵測到光碟媒體</string>
   <string id="31306">退出</string>
@@ -112,7 +112,8 @@
   <string id="31313">選擇一個站台</string>
   <string id="31314">內容掃描選項</string>
   <string id="31315">基本</string>
-  <string id="31316"></string>
+  <string id="31316">
+  </string>
   <string id="31317">設定劇照路徑</string>
   <string id="31318">小劇照</string>
   <string id="31319">選擇的設定檔</string>
@@ -127,17 +128,16 @@
   <string id="31328">最近新增</string>
   <string id="31329">[B]計時器啟動！[/B] [COLOR=grey2] - 系統將自動關機於：[/COLOR]</string>
   <string id="31330">點擊按鈕播放[CR][CR]電影預告片</string>
-
-  <!-- Video and Music OSD Labels  -->
+  <string id="31331">專輯詳細資訊</string>
   <string id="31351">暫停</string>
   <string id="31352">停止</string>
   <string id="31353">快轉</string>
   <string id="31354">倒轉</string>
   <string id="31355">電影選單</string>
   <string id="31356">下載字幕</string>
-  <string id="31357"></string>
-
-  <!-- Description Labels  -->
+  <string id="31357">
+  </string>
+  <string id="31390">主題預設</string>
   <string id="31400">[B]設定介面外觀[/B][CR][CR]修改佈景主題 · 選擇語言和地區 · 修改檔案清單選項[CR]設定螢幕保護程式</string>
   <string id="31401">[B]設定視訊參數[/B][CR][CR]管理您的音樂資料庫 · 設定視訊播放選項 · 修改視訊清單選項[CR]設定字幕字型</string>
   <string id="31402">[B]設定音樂參數[/B][CR][CR]管理您的音樂資料庫 · 設定音樂播放選項 · 修改音樂清單選項[CR]設定歌曲提交 · 設定卡拉OK選項</string>
@@ -147,6 +147,15 @@
   <string id="31406">[B]設定系統參數[/B][CR][CR]設定和校正顯示輸出 · 設定音效輸出 · 設定遙控器[CR]設定節能選項 · 啟用除錯 · 設定鎖定密碼</string>
   <string id="31407">[B]設定佈景主題[/B][CR][CR]設定 Confluence 佈景主題 · 新增或移除首頁選單項目[CR]修改佈景主題背景</string>
   <string id="31408">[B]設定附加元件[/B][CR][CR]管理已安裝的附加元件 · 從 xbmc.org 瀏覽並安裝附加元件[CR]修改附加元件設定</string>
-
   <string id="31421">選擇您的 XBMC 使用者設定檔[CR]登入並繼續</string>
+  <string id="31900">天氣地圖</string>
+  <string id="31901">36小時預報</string>
+  <string id="31902">每小時預報</string>
+  <string id="31903">一週預報</string>
+  <string id="31904">10天預報</string>
+  <string id="31905">預報</string>
+  <string id="31906">地圖 &amp; 影片</string>
+  <string id="31907">影片預報 [COLOR=grey2]〈全螢幕播放〉[/COLOR]</string>
+  <string id="31908">降雨機率</string>
+  <string id="31909">正在擷取預報資訊...</string>
 </strings>

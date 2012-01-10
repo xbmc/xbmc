@@ -81,6 +81,7 @@ bool CGUIToggleButtonControl::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
+    SetInvalid();
   }
   return CGUIButtonControl::OnAction(action);
 }
@@ -155,7 +156,7 @@ CStdString CGUIToggleButtonControl::GetDescription() const
   return CGUIButtonControl::GetDescription();
 }
 
-void CGUIToggleButtonControl::SetAltClickActions(const vector<CGUIActionDescriptor> &clickActions)
+void CGUIToggleButtonControl::SetAltClickActions(const CGUIAction &clickActions)
 {
   m_selectButton.SetClickActions(clickActions);
 }

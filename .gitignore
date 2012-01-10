@@ -49,6 +49,7 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+._*
 /tools/darwin/depends/config.site
 /tools/darwin/depends/config.site.mk
 /tools/darwin/depends/Makefile
@@ -57,11 +58,6 @@ config.log
 /tools/darwin/depends/python26/Makefile
 /tools/darwin/depends/**/.gitignore
 /tools/darwin/depends/**/.installed
-/tools/osx/osx-depends/**/.gitignore
-/tools/osx/osx-depends/**/.installed
-/tools/osx/ios-depends/**/.gitignore
-/tools/osx/ios-depends/**/.installed
-/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
@@ -129,6 +125,10 @@ config.log
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/peripherals/
+/xbmc/peripherals/bus/Makefile
+/xbmc/peripherals/devices/Makefile
+
 # /lib/
 /lib/Makefile
 
@@ -174,6 +174,9 @@ lib/cmyth/Makefile
 /lib/cpluff/libcpluff/cpluffdef.h
 /lib/cpluff/libcpluff/win32/Debug
 /lib/cpluff/libcpluff/win32/Release
+
+# /lib/libcec
+/lib/libcec/libcec
 
 # /lib/enca
 /lib/enca/libenca_win32/Debug
@@ -298,7 +301,7 @@ lib/cmyth/Makefile
 /project/output
 
 # /project/Win32BuildSetup/
-/project/Win32BuildSetup/BuildLog.htm
+/project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
@@ -346,6 +349,7 @@ lib/cmyth/Makefile
 /system/libcmyth.dll
 /system/libcurl.dll
 /system/libeay32.dll
+/system/librtmp.dll
 /system/libexif.dll
 /system/libexpat.dll
 /system/libid3tag.dll
@@ -356,6 +360,10 @@ lib/cmyth/Makefile
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libsamplerate-0.dll
+/system/libnfs.dll
+/system/dnssd.dll
+/system/libcec.dll
+/system/pthreadVC2.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -405,6 +413,8 @@ lib/cmyth/Makefile
 
 # /system/webserver
 /system/webserver
+
+/system/airplay
 
 # /system
 /system/zlib1.dll
@@ -1175,6 +1185,19 @@ lib/cmyth/Makefile
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
 
 /xbmc/visualizations/Goom/Makefile
+/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
+/xbmc/visualizations/Goom/goom2k4-0/configure
+/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/config.guess
+/xbmc/visualizations/Goom/goom2k4-0/config.sub
+/xbmc/visualizations/Goom/goom2k4-0/depcomp
+/xbmc/visualizations/Goom/goom2k4-0/install-sh
+/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
+/xbmc/visualizations/Goom/goom2k4-0/missing
+/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/ylwrap
 
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release

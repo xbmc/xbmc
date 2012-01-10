@@ -267,6 +267,14 @@ bool StringUtils::IsNaturalNumber(const CStdString& str)
   return true;
 }
 
+bool StringUtils::IsInteger(const CStdString& str)
+{
+  if (str.size() > 0 && str[0] == '-')
+    return IsNaturalNumber(str.Mid(1));
+  else
+    return IsNaturalNumber(str);
+}
+
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )

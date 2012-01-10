@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Anssi Hannula-->
 <!--Email: anssi@xbmc.org-->
-<!--Based on English strings from git-77215a4-->
+<!--Based on English strings from git-ba852bb-->
 <!--$Revision$-->
 <strings>
   <string id="0">Ohjelmat</string>
@@ -58,21 +58,21 @@
   <string id="62">joulu</string>
 
   <string id="71">Pohjoisesta</string>
-  <string id="72">Pohjoisen ja koillisen välistä</string>
+  <string id="72">Pohjoiskoillisesta</string>
   <string id="73">Koillisesta</string>
-  <string id="74">Idän ja koillisen välistä</string>
+  <string id="74">Itäkoillisesta</string>
   <string id="75">Idästä</string>
-  <string id="76">Idän ja kaakon välistä</string>
+  <string id="76">Itäkaakosta</string>
   <string id="77">Kaakosta</string>
-  <string id="78">Etelän ja kaakon välistä</string>
+  <string id="78">Eteläkaakosta</string>
   <string id="79">Etelästä</string>
-  <string id="80">Etelän ja lounaan välistä</string>
+  <string id="80">Etelälounaasta</string>
   <string id="81">Lounaasta</string>
-  <string id="82">Lännen ja lounaan välistä</string>
+  <string id="82">Länsilounaasta</string>
   <string id="83">Lännestä</string>
-  <string id="84">Lännen ja luoteen välistä</string>
+  <string id="84">Länsiluoteesta</string>
   <string id="85">Luoteesta</string>
-  <string id="86">Pohjoisen ja luoteen välistä</string>
+  <string id="86">Pohjoisluoteesta</string>
   <string id="87">Vaihteleva</string>
 
   <string id="98">Näytä: Autom.</string>
@@ -179,7 +179,7 @@
   <string id="202">Iskulause</string>
   <string id="203">Juoni</string>
 
-  <string id="205">Ääniä:</string>
+  <string id="205">Ääniä</string>
   <string id="206">Näyttelijät</string>
   <string id="207">Juoni</string>
   <string id="208">Toista</string>
@@ -807,6 +807,9 @@
   <string id="1257">Yhdistetäänkö havaittuun järjestelmään?</string>
 
   <string id="1260">Julkista nämä palvelut toisiin järjestelmiin Zeroconf publishing:in kautta</string>
+  <string id="1270">Salli XBMC:n vastaanottaa AirPlay sisältöä</string>
+  <string id="1271">Laitteen nimi</string>
+  <string id="1272">- Käytä salasanaa</string>
 
   <string id="1300">Valinnainen äänilaite</string>
   <string id="1301">Valinnainen äänen ulostulon laite</string>
@@ -1476,7 +1479,7 @@
   <string id="16020">Lomituksenpoisto</string>
   <string id="16021">Synk. parittomat</string>
   <string id="16022">Synk. parilliset</string>
-  <string id="16023">Lomituksen käsittely</string>
+  <string id="16023"></string>
   <string id="16024">Peruutetaan...</string>
   <string id="16025">Anna esittäjän nimi</string>
   <string id="16026">Toisto ei onnistu</string>
@@ -1489,7 +1492,12 @@
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
   <string id="16035">Jukeboksi toistolista</string>
-  <string id="16036">Lomituksenpoisto (Half)</string>
+  <string id="16036">Lomituksenpoisto (puolinopeus)</string>
+  <string id="16037">Videon lomituksenpoisto</string>
+  <string id="16038">Lomituksenpoistomenetelmä</string>
+  <string id="16039">Pois päältä</string>
+  <string id="16040">Automaattinen</string>
+  <string id="16041">Päällä</string>
 
   <string id="16100">Kaikki videot</string>
   <string id="16101">katsomatonta</string>
@@ -1521,11 +1529,16 @@
   <string id="16312">(VDPAU)Kohinanvähennys</string>
   <string id="16313">(VDPAU)Terävyys</string>
   <string id="16314">Inverse Telecine</string>
-  <string id="16315">Lanczos3 optimized</string>
+  <string id="16315">Lanczos3 optimoitu</string>
   <string id="16316">Automaattinen</string>
-  <string id="16317">Temporal (Half)</string>
-  <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16317">Temporal (puolinopeus)</string>
+  <string id="16318">Temporal/Spatial (puolinopeus)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Synk. parittomat</string>
+  <string id="16321">DXVA Paras</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimoitu</string>
+  <string id="16324">Ohjelmistopohjainen sekoitus</string>
 
   <string id="16400">Videon jälkikäsittely</string>
 
@@ -1651,8 +1664,8 @@
   <string id="20122">Nyt voit rentoutua</string>
   <string id="20123">Arvotaan kuunneltavia kappaleita</string>
   <string id="20124">Valmiina nauttimaan musiikista</string>
-  <string id="20125">Kirjautuneena :</string>
-  <string id="20126">Kirjaudu ulos :</string>
+  <string id="20125">Kirjautuneena:</string>
+  <string id="20126">Kirjaudu ulos:</string>
   <string id="20128">Siirry päähakemistoon</string>
   <string id="20129">Liitä</string>
   <string id="20130">Liitä (käänteisesti)</string>
@@ -1733,11 +1746,12 @@
   <string id="20253">WebDAV palvelin (HTTP)</string>
   <string id="20254">WebDAV palvelin (HTTPS)</string>
   <string id="20255">Ensimmäinen kirjautuminen, muokkaa profiiliasi</string>
-  <string id="20256">HTS Tvheadend-asiakas</string>
-  <string id="20257">VDR Streamdev-asiakas</string>
-  <string id="20258">MythTV-asiakas</string>
+  <string id="20256">HTS Tvheadend -asiakas</string>
+  <string id="20257">VDR Streamdev -asiakas</string>
+  <string id="20258">MythTV -asiakas</string>
   <string id="20259">Verkkotiedostojärjestelmä (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Web-palvelimen hakemisto (HTTP)</string>
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
@@ -1850,7 +1864,8 @@
   <string id="20415">Etsitään uutta sisältöä</string>
   <string id="20416">Ensiesitys</string>
   <string id="20417">Käsikirjoittaja</string>
-  <string id="20418">Siisti tiedostojen ja kansioiden nimet</string>
+  <string id="20418"></string>
+  <string id="20419">Näytä metatiedot "Tiedostot"-näkymässä</string>
 
   <string id="20420">Ei koskaan</string>
   <string id="20421">Jos samalta tuotantokaudelta</string>
@@ -1889,6 +1904,7 @@
   <string id="20454">Kuuntelija</string>
   <string id="20455">Kuuntelijat</string>
   <string id="20456">Aseta elokuvasetin fanitaide</string>
+  <string id="20457">Elokuvasetti</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1909,8 +1925,9 @@
   <string id="21365">Poista sijainti</string>
   <string id="21366">Tekstityskansio</string>
   <string id="21367">Elokuvien ja vaihtoehtoisten tekstitysten hakemisto</string>
+  <string id="21368">Älä käytä ASS/SSA -tekstitysten kirjasinta</string>
 
-  <string id="21369">Hiiri käytössä</string>
+  <string id="21369">Hiiri- ja kosketusnäyttötuki käytössä</string>
   <string id="21370">Ohjauspainikkeiden äänitehosteet käytössä</string>
   <string id="21371">Pienoiskuva</string>
   <string id="21372">Pakotettu DVD-aluekoodi</string>
@@ -1995,6 +2012,13 @@
   <string id="21451">Internet-yhteys vaaditaan.</string>
   <string id="21452">Nouda lisää...</string>
   <string id="21453">Juurikansio</string>
+
+  <string id="21460">Tekstityksen sijainti</string>
+  <string id="21461">Kiinteä</string>
+  <string id="21462">Videon alalaidassa</string>
+  <string id="21463">Videon alapuolella</string>
+  <string id="21464">Videon ylälaidassa</string>
+  <string id="21465">Videon yläpuolella</string>
 
   <string id="21800">Tiedoston nimi</string>
   <string id="21801">Tiedoston polku</string>
@@ -2181,6 +2205,7 @@
   <string id="24045">Lisäosan rakenne on väärä</string>
   <string id="24046">Seuraavat asennetut lisäosat tarvitsevat lisäosaa %s</string>
   <string id="24047">Tätä lisäosaa ei voi poistaa</string>
+  <string id="24048">Palauta</string>
 
   <string id="24050">Saatavilla olevat lisäosat</string>
   <string id="24051">Versio:</string>
@@ -2205,14 +2230,19 @@
   <string id="24073">Ei voida yhdistää</string>
   <string id="24074">Uudelleenkäynnistys vaaditaan</string>
   <string id="24075">Poista käytöstä</string>
+  <string id="24076">Tarvitaan lisäosa</string>
   <string id="24080">Yritetäänkö yhdistää uudelleen?</string>
   <string id="24089">Lisäosa käynnistyy uudelleen</string>
   <string id="24090">Lukitse lisäosien asennus</string>
 
+  <string id="24094">(nykyinen)</string>
+  <string id="24095">(estetty)</string>
   <string id="24096">Ohjelmavarasto on merkinnyt lisäosan vialliseksi.</string>
   <string id="24097">Poistetaanko lisäosa käytöstä?</string>
   <string id="24098">Viallinen</string>
   <string id="24099">Haluatko vaihtaa tähän ulkoasuun?</string>
+  <string id="24100">Tämä toiminto tarvitsee seuraavan lisäosan:</string>
+  <string id="24101">Haluatko ladata tämän lisäosan?</string>
   <string id="25000">Ilmoitukset</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2300,7 +2330,7 @@
   <string id="33100">Käynnistys epäonnistui:</string>
   <string id="33101">WWW-palvelin</string>
   <string id="33102">Tapahtumapalvelin</string>
-  <string id="33103">Etäyhteyspalvelin</string>
+  <string id="33103">Etäviestipalvelin</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
@@ -2325,4 +2355,41 @@
 
   <string id="34201">Seuraavaa kohdetta ei löydy</string>
   <string id="34202">Edellistä kohdetta ei löydy</string>
+
+  <string id="35000">Oheislaitteet</string>
+
+  <string id="35001">Yleinen HID-laite</string>
+  <string id="35002">Yleinen verkkosovitin</string>
+  <string id="35003">Yleinen levy</string>
+  <string id="35004">Asetuksia ei ole saatavilla&#10;tälle oheislaitteelle.</string>
+  <string id="35005">Uusi laite määritetty</string>
+  <string id="35006">Laite poistettu</string>
+  <string id="35007">Tämän laitteen näppäimistöasettelu</string>
+  <string id="35008">Näppäimistöasettelu käytössä</string>
+
+  <string id="35500">Sijainti</string>
+  <string id="35501">Luokka</string>
+  <string id="35502">Nimi</string>
+  <string id="35503">Valmistaja</string>
+  <string id="35504">Tuotetunnus</string>
+
+  <string id="36000">Pulse-Eight CEC-sovitin</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Vaihda hallinta näppäimistöpuolelle</string>
+  <string id="36003">Vaihda kallinta kaukosäädinpuolelle</string>
+  <string id="36004">Paina "user"-painikkeen komento</string>
+  <string id="36005">Käytä puolen vaihtokomentoja</string>
+  <string id="36006">Sovitinta ei voitu avata</string>
+  <string id="36007">Käynnistä TV kun XBMC käynnistetään</string>
+  <string id="36008">Sammuta laitteet kun XBMC sammutetaan</string>
+  <string id="36009">Aseta laitteet valmiustilaan näytönsäästäjän aktivoituessa</string>
+  <string id="36010"></string>
+  <string id="36011">CEC-porttia ei havaittu. Määritä se käsin.</string>
+  <string id="36012">CEC-sovitinta ei havaittu.</string>
+  <string id="36013">Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC tukee (%d)</string>
+  <string id="36014">Aseta tämä tietokone valmiustilaan kun TV sammutetaan</string>
+  <string id="36015">HDMI-liitin</string>
+  <string id="36016">Yhdistetty</string>
+  <string id="36017">Sovitin löytyi, mutta libcec ei ole saatavilla</string>
+  <string id="36018">Käytä TV:n kieliasetusta</string>
 </strings>

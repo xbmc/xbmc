@@ -47,6 +47,8 @@ public:
   bool Stop();
   bool IsStarted();
   void SetCredentials(const CStdString &username, const CStdString &password);
+
+  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
   virtual bool Download(const char *path, CVariant &result);
   virtual int GetCapabilities();
 private:

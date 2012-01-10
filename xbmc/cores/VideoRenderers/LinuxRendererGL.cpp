@@ -252,7 +252,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -554,6 +554,20 @@ void CLinuxRendererGL::Reset()
   }
 }
 
+void CLinuxRendererGL::Flush()
+{
+  if (!m_bValidated)
+    return;
+
+  glFinish();
+
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    (this->*m_textureDelete)(i);
+
+  glFinish();
+  m_bValidated = false;
+}
+
 void CLinuxRendererGL::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
@@ -717,7 +731,9 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -812,7 +828,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
     return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
     if (m_renderMethod & RENDER_GLSL)
@@ -1031,6 +1049,8 @@ void CLinuxRendererGL::UnInit()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
+  glFinish();
+
   if (m_rgbPbo)
   {
     glDeleteBuffersARB(1, &m_rgbPbo);
@@ -1070,19 +1090,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (flags & RENDER_FLAG_BOT)
     m_currentField = FIELD_BOT;
 
-  else if (flags & RENDER_FLAG_LAST)
-  {
-    switch(m_currentField)
-    {
-    case FIELD_TOP:
-      flags = RENDER_FLAG_TOP;
-      break;
-
-    case FIELD_BOT:
-      flags = RENDER_FLAG_BOT;
-      break;
-    }
-  }
   else
     m_currentField = FIELD_FULL;
 
@@ -1504,7 +1511,7 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderVAAPI(int index, int field)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE       &plane = m_buffers[index].fields[field][0];
+  YUVPLANE       &plane = m_buffers[index].fields[0][0];
   VAAPI::CHolder &va    = m_buffers[index].vaapi;
 
   if(!va.surface)
@@ -1628,9 +1635,6 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
   if (!m_bValidated)
     return false;
 
-  // get our screen rect
-  const CRect rv = g_graphicsContext.GetViewWindow();
-
   // save current video rect
   CRect saveSize = m_destRect;
 
@@ -1649,7 +1653,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   capture->EndRender();
@@ -2978,10 +2982,19 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
 
+bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
+{
+  if(mode == VS_DEINTERLACEMODE_OFF
+  || mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
+    return true;
+
+  return false;
+}
+
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
-  if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO)
+  if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
   if(m_renderMethod & RENDER_VDPAU)
@@ -2995,10 +3008,27 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   }
 
   if(m_renderMethod & RENDER_VAAPI)
+  {
+#ifdef HAVE_LIBVA
+    VAAPI::CDisplayPtr disp = m_buffers[m_iYV12RenderBuffer].vaapi.display;
+    if(disp)
+    {
+      CSingleLock lock(*disp);
+
+      if(disp->support_deinterlace())
+      {
+        if( method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+        ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
+          return true;
+      }
+    }
+#endif
     return false;
+  }
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
+  || method == VS_INTERLACEMETHOD_SW_BLEND)
     return true;
 
   if((method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -3025,22 +3055,43 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
   if(method == VS_SCALINGMETHOD_CUBIC
   || method == VS_SCALINGMETHOD_LANCZOS2
+  || method == VS_SCALINGMETHOD_SPLINE36_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+  || method == VS_SCALINGMETHOD_SPLINE36
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
     if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) ||
         (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
     {
-      //lanczos3 is only allowed through advancedsettings.xml because it's very slow
-      if ((g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3) ||
-          method != VS_SCALINGMETHOD_LANCZOS3)
+      // spline36 and lanczos3 are only allowed through advancedsettings.xml
+      if(method != VS_SCALINGMETHOD_SPLINE36
+      && method != VS_SCALINGMETHOD_LANCZOS3)
         return true;
+      else
+        return g_advancedSettings.m_videoEnableHighQualityHwScalers;
     }
   }
  
   return false;
 }
 
+EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
+{
+  if(m_renderMethod & RENDER_VDPAU)
+  {
+#ifdef HAVE_LIBVDPAU
+    CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+    if(vdpau)
+      return vdpau->AutoInterlaceMethod();
+#endif
+    return VS_INTERLACEMETHOD_NONE;
+  }
+
+  if(Supports(VS_INTERLACEMETHOD_RENDER_BOB))
+    return VS_INTERLACEMETHOD_RENDER_BOB;
+
+  return VS_INTERLACEMETHOD_NONE;
+}
 
 void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
 {

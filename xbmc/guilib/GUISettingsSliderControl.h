@@ -70,7 +70,8 @@ public:
 
 protected:
   virtual bool UpdateColors();
-  
+  virtual void ProcessText();
+
 private:
   CGUIButtonControl m_buttonControl;
   CGUILabel m_label;

@@ -244,7 +244,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
       m_scrollOffset = 0;
       ResetAutoScrolling();
       CGUITextLayout::Reset();
-      m_info.SetLabel(message.GetLabel(), "");
+      m_info.SetLabel(message.GetLabel(), "", GetParentID());
     }
 
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)

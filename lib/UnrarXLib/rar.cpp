@@ -202,8 +202,10 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
           if (bShowProgress)
           {
-            // temporary workaround to avoid deadlocks caused by dvdplayer halting app thread
-            pExtract->GetDataIO().m_pDlgProgress = NULL;//(CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            pExtract->GetDataIO().m_pDlgProgress->SetHeading(fileToExtract);
+            pExtract->GetDataIO().m_pDlgProgress->SetCanCancel(false);
+            pExtract->GetDataIO().m_pDlgProgress->StartModal();
           }
 
           int64_t iOff=0;
@@ -232,6 +234,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
             
             if (pExtract->GetDataIO().bQuit) 
             {
+              pExtract->GetDataIO().m_pDlgProgress->Close();
               bRes = 2;
               break;
             }
@@ -265,6 +268,8 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           if (pExtract->GetDataIO().m_pDlgProgress)
             pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(false);
         }
+        if (bShowProgress)
+          pExtract->GetDataIO().m_pDlgProgress->Close();
       }
     }
   }
@@ -340,6 +345,13 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
               if (!*ppList)
                 *ppList = pCurr;
               pCurr->item.NameSize = strlen(pArc->NewLhd.FileName);
+              // sanity check - if it fails the archive is likely corrupt
+              if (pCurr->item.NameSize > NM)
+              {
+                File::RemoveCreated();
+                return 0;
+              }
+
               pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
               strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
               pCurr->item.NameW = (wchar *)malloc((pCurr->item.NameSize + 1)*sizeof(wchar));
@@ -360,6 +372,11 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
                 break;
             }
             iOffset = pArc->NextBlockPos;
+            if (iOffset > pArc->FileLength())
+            {
+              File::RemoveCreated();
+              return 0;
+            }
             pArc->SeekToNext();
           }
           if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || (pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0)))

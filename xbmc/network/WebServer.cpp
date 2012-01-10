@@ -72,7 +72,8 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
   if (!response)
     return MHD_NO;
 
-  ret = MHD_add_response_header (response, "WWW-Authenticate", "Basic realm=XBMC");
+  ret = MHD_add_response_header(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  ret |= MHD_add_response_header(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     MHD_destroy_response (response);
@@ -310,9 +311,13 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
                                                      &CWebServer::ContentReaderCallback, file,
                                                      &CWebServer::ContentReaderFreeCallback); 
     } else {
+      CStdString contentLength;
+      contentLength.Format("%I64d", file->GetLength());
       file->Close();
       delete file;
+
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
     CStdString ext = URIUtils::GetExtension(strURL);
@@ -516,7 +521,7 @@ void CWebServer::SetCredentials(const CStdString &username, const CStdString &pa
   m_needcredentials = !password.IsEmpty();
 }
 
-bool CWebServer::Download(const char *path, CVariant &result)
+bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
   bool exists = false;
   CFile *file = new CFile();
@@ -530,17 +535,25 @@ bool CWebServer::Download(const char *path, CVariant &result)
 
   if (exists)
   {
-    string str = "vfs/";
-    str += path;
-    result["path"] = str;
+    protocol = "http";
+    string url = "vfs/";
+    CStdString strPath = path;
+    CURL::Encode(strPath);
+    url += strPath;
+    details["path"] = url;
   }
 
   return exists;
 }
 
+bool CWebServer::Download(const char *path, CVariant &result)
+{
+  return false;
+}
+
 int CWebServer::GetCapabilities()
 {
-  return Response | FileDownload;
+  return Response | FileDownloadRedirect;
 }
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)

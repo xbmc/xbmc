@@ -33,6 +33,7 @@
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -507,8 +508,11 @@ void CGUIWindowManager::Process(unsigned int currentTime)
       pWindow->DoProcess(currentTime, dirtyregions);
   }
 
-  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
-    m_tracker.MarkDirtyRegion(*itr);
+  if (g_application.m_AppActive)
+  {
+    for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
+      m_tracker.MarkDirtyRegion(*itr);
+  }
 }
 
 void CGUIWindowManager::MarkDirty()
@@ -545,10 +549,18 @@ bool CGUIWindowManager::Render()
 
   bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
-  if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_NONE)
+  if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
   {
     RenderPass();
     hasRendered = true;
+  }
+  else if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
+  {
+    if (dirtyRegions.size() > 0)
+    {
+      RenderPass();
+      hasRendered = true;
+    }
   }
   else
   {
@@ -720,13 +732,13 @@ bool CGUIWindowManager::HasDialogOnScreen() const
 
 /// \brief Get the ID of the top most routed window
 /// \return id ID of the window or WINDOW_INVALID if no routed window available
-int CGUIWindowManager::GetTopMostModalDialogID() const
+int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) const
 {
   CSingleLock lock(g_graphicsContext);
   for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
     CGUIWindow *dialog = *it;
-    if (dialog->IsModalDialog())
+    if (dialog->IsModalDialog() && (!ignoreClosing || !dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
     { // have a modal window
       return dialog->GetID();
     }
@@ -789,7 +801,7 @@ int CGUIWindowManager::GetActiveWindow() const
 // same as GetActiveWindow() except it first grabs dialogs
 int CGUIWindowManager::GetFocusedWindow() const
 {
-  int dialog = GetTopMostModalDialogID();
+  int dialog = GetTopMostModalDialogID(true);
   if (dialog != WINDOW_INVALID)
     return dialog;
 
@@ -816,12 +828,12 @@ bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClo
 {
   CSingleLock lock(g_graphicsContext);
   CGUIWindow *window = GetWindow(GetActiveWindow());
-  if (window && URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(xmlFile)) return true;
+  if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(xmlFile)) return true;
   // run through the dialogs
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
-    if (URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if (URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
@@ -943,7 +955,7 @@ bool CGUIWindowManager::IsWindowTopMost(int id) const
 bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
-  if (topMost && URIUtils::GetFileName(topMost->GetProperty("xmlfile")).Equals(xmlFile))
+  if (topMost && URIUtils::GetFileName(topMost->GetProperty("xmlfile").asString()).Equals(xmlFile))
     return true;
   return false;
 }

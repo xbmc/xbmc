@@ -108,14 +108,8 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
   CURL::Encode(m_CurrentTrack.strMusicBrainzID);
 
   m_bNotified = false;
-  if (lastfmradio)
-    m_bSubmitted = !g_guiSettings.GetBool("scrobbler.lastfmsubmitradio");
-  else
-  {
-    if ((m_CurrentTrack.length > SCROBBLER_MIN_DURATION) ||
-        !m_CurrentTrack.strMusicBrainzID.IsEmpty())
-      m_bSubmitted = false;
-  }
+  m_bSubmitted = !((lastfmradio && g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")) ||
+      (!lastfmradio && g_guiSettings.GetBool("scrobbler.lastfmsubmit") && (m_CurrentTrack.length > SCROBBLER_MIN_DURATION || !m_CurrentTrack.strMusicBrainzID.IsEmpty())));
 }
 
 void CScrobbler::UpdateStatus()

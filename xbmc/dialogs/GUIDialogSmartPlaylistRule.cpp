@@ -51,12 +51,10 @@ CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
 {
 }
 
-bool CGUIDialogSmartPlaylistRule::OnAction(const CAction &action)
+bool CGUIDialogSmartPlaylistRule::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-    m_cancelled = true;
-  return CGUIDialog::OnAction(action);
+  m_cancelled = true;
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
@@ -204,6 +202,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CGUIDialogFileBrowser::ShowAndGetDirectory(sources,g_localizeStrings.Get(657),m_rule.m_parameter,false);
     UpdateButtons();
     return;
+  }
+  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_SET)
+  {
+    videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES);
+    iLabel = 20434;
   }
   else
   { // TODO: Add browseability in here.

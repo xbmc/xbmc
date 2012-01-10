@@ -40,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
+#include "utils/URIUtils.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -438,10 +439,20 @@ CStdString CWIN32Util::GetSystemPath()
 
 CStdString CWIN32Util::GetProfilePath()
 {
-  CStdString strProfilePath = GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE);
+  CStdString strProfilePath;
+  CStdString strHomePath;
+
+  CUtil::GetHomePath(strHomePath);
+  
+  if(g_application.PlatformDirectoriesEnabled())
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
+  else
+    strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
   
   if (strProfilePath.length() == 0)
-    CUtil::GetHomePath(strProfilePath);
+    strProfilePath = strHomePath;
+
+  URIUtils::AddSlashAtEnd(strProfilePath);
 
   return strProfilePath;
 }
@@ -787,6 +798,15 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
         iPos += (wcslen( pcBuffer + iPos) + 1 );
         continue;
       }
+
+      // usb hard drives are reported as DRIVE_FIXED and won't be returned by queries with REMOVABLE_DRIVES set
+      // so test for usb hard drives
+      /*if(uDriveType == DRIVE_FIXED)
+      {
+        if(IsUsbDevice(strWdrive))
+          uDriveType = DRIVE_REMOVABLE;
+      }*/
+
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
@@ -1421,6 +1441,48 @@ bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
   return true;
 }
 
+// Adjust the src rectangle so that the dst is always contained in the target rectangle.
+void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
+{
+  if(dst.x1 < target.x1)
+  {
+    src.x1 -= (dst.x1 - target.x1)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x1  = target.x1;
+  }
+  if(dst.y1 < target.y1)
+  {
+    src.y1 -= (dst.y1 - target.y1)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y1  = target.y1;
+  }
+  if(dst.x2 > target.x2)
+  {
+    src.x2 -= (dst.x2 - target.x2)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x2  = target.x2;
+  }
+  if(dst.y2 > target.y2)
+  {
+    src.y2 -= (dst.y2 - target.y2)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y2  = target.y2;
+  }
+  // Callers expect integer coordinates.
+  src.x1 = floor(src.x1);
+  src.y1 = floor(src.y1);
+  src.x2 = ceil(src.x2);
+  src.y2 = ceil(src.y2);
+  dst.x1 = floor(dst.x1);
+  dst.y1 = floor(dst.y1);
+  dst.x2 = ceil(dst.x2);
+  dst.y2 = ceil(dst.y2);
+}
+
 void CWinIdleTimer::StartZero()
 {
   SetThreadExecutionState(ES_SYSTEM_REQUIRED);
@@ -1452,3 +1514,49 @@ extern "C"
     return NULL;
   }
 }
+
+// detect if a drive is a usb device
+// code taken from http://banderlogi.blogspot.com/2011/06/enum-drive-letters-attached-for-usb.html
+
+bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
+{
+  CStdStringW strWDevicePath;
+  strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
+ 
+  HANDLE deviceHandle = CreateFileW(
+    strWDevicePath.c_str(),
+   0,                // no access to the drive
+   FILE_SHARE_READ | // share mode
+   FILE_SHARE_WRITE,
+   NULL,             // default security attributes
+   OPEN_EXISTING,    // disposition
+   0,                // file attributes
+   NULL);            // do not copy file attributes
+
+  if(deviceHandle == INVALID_HANDLE_VALUE)
+    return false;
+ 
+  // setup query
+  STORAGE_PROPERTY_QUERY query;
+  memset(&query, 0, sizeof(query));
+  query.PropertyId = StorageDeviceProperty;
+  query.QueryType = PropertyStandardQuery;
+   
+  // issue query
+  DWORD bytes;
+  STORAGE_DEVICE_DESCRIPTOR devd;
+  STORAGE_BUS_TYPE busType = BusTypeUnknown;
+ 
+  if (DeviceIoControl(deviceHandle,
+   IOCTL_STORAGE_QUERY_PROPERTY,
+   &query, sizeof(query),
+   &devd, sizeof(devd),
+   &bytes, NULL))
+  {
+   busType = devd.BusType;
+  }
+   
+  CloseHandle(deviceHandle);
+ 
+  return BusTypeUsb == busType;
+ }

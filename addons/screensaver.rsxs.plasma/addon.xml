@@ -12,6 +12,7 @@
     library_linux="Plasma.xbs"
     library_osx="Plasma.xbs"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Вероятно вторият най-халюциногенен скрийнсейвър</summary>
     <summary lang="en">Probably the second most psychedelic screensaver ever</summary>
     <summary lang="es">Probablemente el segundo salvapantallas más psicodélico jamás creado</summary>
     <summary lang="fi">Todennäköisesti toiseksi psykedeelisin näytönsäästäjä koskaan</summary>
@@ -23,6 +24,7 @@
     <summary lang="pt">Provavelmente a segunda mais psicadélica protecção de ecrã</summary>
     <summary lang="se">Förmodligen den näst psykedeliska skärmsläckaren</summary>
     <summary lang="zh">也许是排名第二的迷幻效果屏幕保护程序</summary>
+    <description lang="bg">Вероятно вторият по сила халюциногенен скрийнсейвър създаван някога. Просто се опитайте да съзрете всички тези цветове.</description>
     <description lang="en">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="es">Probablemente el segundo salvapantallas más psicodélico que existe. Intente imaginarse todos esos colores moviéndose.</description>
     <description lang="fi">Todennäköisesti toiseksi psykedeelisin olemassa oleva näytönsäästäjä. Kuvittelepa vain kaikki nuo värit lentelemässä ympäriinsä.</description>

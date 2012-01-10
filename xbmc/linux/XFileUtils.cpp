@@ -275,7 +275,7 @@ if (errno == 20)
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#ifdef HAS_DVD_DRIVE
+#if defined(TARGET_LINUX) && defined(HAS_DVD_DRIVE) 
   // special case for opening the cdrom device
   if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
@@ -598,16 +598,10 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 
   memset(lpTimeZoneInformation, 0, sizeof(TIME_ZONE_INFORMATION));
 
-#ifdef __APPLE__
-  struct timezone tz;
-  gettimeofday(NULL, &tz);
-  lpTimeZoneInformation->Bias = tz.tz_minuteswest;
-#else
   struct tm t;
   time_t tt = time(NULL);
   if(localtime_r(&tt, &t))
     lpTimeZoneInformation->Bias = -t.tm_gmtoff / 60;
-#endif
 
   swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
   swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);

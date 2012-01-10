@@ -61,6 +61,7 @@ CGUIPythonWindow::CGUIPythonWindow(int id)
   pCallbackWindow = NULL;
   m_threadState = NULL;
   m_loadOnDemand = false;
+  m_destroyAfterDeinit = false;
 }
 
 CGUIPythonWindow::~CGUIPythonWindow(void)
@@ -69,13 +70,9 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 
 bool CGUIPythonWindow::OnAction(const CAction &action)
 {
-  bool ret = false;
-  // if we don't have callback window or we don't want to close window
-  // do the base class window first, and the call to python after this
-  if (!pCallbackWindow || !(action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU))
-    ret = CGUIWindow::OnAction(action);
-  else
-    ret = true;
+  // call the base class first, then call python
+  bool ret = CGUIWindow::OnAction(action);
+
   // workaround - for scripts which try to access the active control (focused) when there is none.
   // for example - the case when the mouse enters the screen.
   CGUIControl *pControl = GetFocusedControl();
@@ -92,6 +89,14 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindow::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
@@ -156,6 +161,18 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   }
 
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIPythonWindow::OnDeinitWindow(int nextWindowID /*= 0*/)
+{
+  CGUIWindow::OnDeinitWindow(nextWindowID);
+  if (m_destroyAfterDeinit)
+    g_windowManager.Delete(GetID());
+}
+
+void CGUIPythonWindow::SetDestroyAfterDeinit(bool destroy /*= true*/)
+{
+  m_destroyAfterDeinit = destroy;
 }
 
 void CGUIPythonWindow::SetCallbackWindow(void *state, void *object)

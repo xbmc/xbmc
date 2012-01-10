@@ -59,10 +59,18 @@
   </dvd>
 
   <regions>
-    <region name="USA" locale="US">
+    <region name="USA (12h)" locale="US">
       <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+      <tempunit>F</tempunit>
+      <speedunit>mph</speedunit>
+    </region>
+
+    <region name="USA (24h)" locale="US">
+      <dateshort>MM/DD/YYYY</dateshort>
+      <datelong>DDDD, MMMM D, YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>F</tempunit>
       <speedunit>mph</speedunit>
     </region>
@@ -112,7 +120,7 @@
     </region>
     
     <region name="Central Europe" locale="DE">
-	  <dateshort>YYYY-MM-DD</dateshort>
+      <dateshort>DD-MM-YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>

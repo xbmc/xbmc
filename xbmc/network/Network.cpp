@@ -120,6 +120,16 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    return len;
 }
 
+CStdString CNetwork::GetHostName(void)
+{
+  char hostName[128];
+  if (gethostname(hostName, sizeof(hostName)))
+    return CStdString("unknown");
+  else
+    return CStdString(hostName);
+}
+
+
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
    vector<CNetworkInterface*>& ifaces = GetInterfaceList();
@@ -284,15 +294,15 @@ void CNetwork::StartServices()
   if (!g_application.StartEventServer())
     CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 #endif
-#ifdef HAS_DBUS_SERVER
-  g_application.StartDbusServer();
-#endif
 #ifdef HAS_JSONRPC
   if (!g_application.StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
 #endif
 #ifdef HAS_ZEROCONF
   g_application.StartZeroconf();
+#endif
+#ifdef HAS_AIRPLAY
+  g_application.StartAirplayServer();
 #endif
   CLastfmScrobbler::GetInstance()->Init();
   CLibrefmScrobbler::GetInstance()->Init();
@@ -325,10 +335,10 @@ void CNetwork::StopServices(bool bWait)
 #ifdef HAS_EVENT_SERVER
   g_application.StopEventServer(bWait, false);
 #endif
-#ifdef HAS_DBUS_SERVER
-  g_application.StopDbusServer(bWait);
-#endif
 #ifdef HAS_JSONRPC
     g_application.StopJSONRPCServer(bWait);
+#endif
+#if defined(HAS_AIRPLAY) || defined(HAS_AIRTUNES)
+    g_application.StopAirplayServer(bWait);
 #endif
 }

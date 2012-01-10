@@ -31,7 +31,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/CharsetConverter.h"
 
+#ifdef HAS_DX
 #pragma comment(lib, "dxguid.lib")
+#endif
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
@@ -81,7 +83,7 @@ CWin32DirectSound::CWin32DirectSound() :
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   m_uiDataChannels = iChannels;
 
@@ -91,7 +93,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
     if(!channelMap)
       channelMap = (PCMChannels *)dsound_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(iChannels = 0; outLayout[iChannels] != PCM_INVALID;) ++iChannels;
 
@@ -116,6 +118,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_Passthrough = bAudioPassthrough;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  m_drc = 0;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -124,7 +127,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = iChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough == true)
+  if (bAudioPassthrough)
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
@@ -346,7 +349,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
 
     // Remap the data to the correct channels into the buffer
     if (m_remap.CanRemap())
-      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame);
+      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame, m_drc);
     else
       memcpy(start, pBuffer, size);
 
@@ -358,7 +361,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
     {
       // Remap the data to the correct channels into the buffer
       if (m_remap.CanRemap())
-        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame);
+        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame, m_drc);
       else
         memcpy(startWrap, pBuffer, sizeWrap);
       m_BufferOffset = sizeWrap;

@@ -7,12 +7,7 @@ CALL dlextract.bat boost %FILES%
 
 cd %TMP_PATH%
 
-xcopy boost_1_46_1-headers-win32\* "%CUR_PATH%\include\" /E /Q /I /Y
-
-copy boost_1_46_1-debug-libs-win32\lib\libboost_thread-vc100-mt-gd.lib "%CUR_PATH%\lib\libboost_thread-vc100-mt-sgd-1_46_1.lib"/Y
-copy boost_1_46_1-libs-win32\lib\libboost_thread-vc100-mt.lib "%CUR_PATH%\lib\libboost_thread-vc100-mt-s-1_46_1.lib" /Y
-
-copy boost_1_46_1-debug-libs-win32\lib\libboost_date_time-vc100-mt-gd.lib "%CUR_PATH%\lib\libboost_date_time-vc100-mt-sgd-1_46_1.lib"/Y
-copy boost_1_46_1-libs-win32\lib\libboost_date_time-vc100-mt.lib "%CUR_PATH%\lib\libboost_date_time-vc100-mt-s-1_46_1.lib" /Y
+xcopy boost-1_46_1-xbmc-win32\include\* "%CUR_PATH%\include\" /E /Q /I /Y
+xcopy boost-1_46_1-xbmc-win32\lib\* "%CUR_PATH%\lib\" /E /Q /I /Y
 
 cd %LOC_PATH%

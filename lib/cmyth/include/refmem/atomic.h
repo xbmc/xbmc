@@ -63,7 +63,7 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 /**
  * Atomically decrement a reference count variable.
  * \param valp address of atomic variable
- * \return incremented reference count
+ * \return decremented reference count
  */
 static inline unsigned
 __mvp_atomic_decrement(mvp_atomic_t *valp)
@@ -72,7 +72,7 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 #if defined __i486__ || defined __i586__ || defined __i686__
 	__asm__ __volatile__(
 		"lock xaddl %0, (%1);"
-		"     inc   %0;"
+		"     dec   %0;"
 		: "=r" (__val)
 		: "r" (valp), "0" (0x1)
 		: "cc", "memory"
@@ -113,7 +113,7 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 	 * Don't know how to atomic decrement for a generic architecture
 	 * so punt and just decrement the value.
 	 */
-//#warning unknown architecture, atomic deccrement is not...
+//#warning unknown architecture, atomic decrement is not...
 	__val = --(*valp);
 #endif
 	return __val;

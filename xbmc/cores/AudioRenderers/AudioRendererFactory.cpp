@@ -39,13 +39,13 @@
 #else
   #include "CoreAudioRenderer.h"
 #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
 #include "ALSADirectSound.h"
 #endif
 
 #define ReturnOnValidInitialize(rendererName)    \
 {                                                \
-  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
+  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, encoded)) \
   {                                              \
     CLog::Log(LOGDEBUG, "%s::Initialize"         \
       " - Channels: %i"                          \
@@ -53,7 +53,7 @@
       " - SampleBit: %i"                         \
       " - Resample %s"                           \
       " - IsMusic %s"                            \
-      " - IsPassthrough %s"                      \
+      " - IsPassthrough %d"                      \
       " - audioDevice: %s",                      \
       rendererName,                              \
       iChannels,                                 \
@@ -61,7 +61,7 @@
       uiBitsPerSample,                           \
       bResample ? "true" : "false",              \
       bIsMusic ? "true" : "false",               \
-      bPassthrough ? "true" : "false",           \
+      encoded,                                   \
       device.c_str()                             \
     ); \
     return audioSink;                      \
@@ -86,13 +86,13 @@
   return new rendererClass(); \
 }
 
-IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, IAudioRenderer::EEncoded encoded)
 {
   IAudioRenderer* audioSink = NULL;
   CStdString renderer;
 
   CStdString deviceString, device;
-  if (bPassthrough)
+  if (encoded)
   {
 #if defined(_LINUX) && !defined(__APPLE__)
     deviceString = g_guiSettings.GetString("audiooutput.passthroughdevice");
@@ -151,7 +151,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   #else
     CreateAndReturnOnValidInitialize(CCoreAudioRenderer);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   CreateAndReturnOnValidInitialize(CALSADirectSound);
 #endif
 
@@ -176,7 +176,7 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
   #if !defined(__arm__)
     CCoreAudioRenderer::EnumerateAudioSinks(vAudioSinks, passthrough);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   CALSADirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
 #endif
 }
@@ -203,7 +203,7 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
     if (soundsystem.Equals("coreaudio"))
       ReturnNewRenderer(CCoreAudioRenderer);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   if (soundsystem.Equals("alsa"))
     ReturnNewRenderer(CALSADirectSound);
 #endif

@@ -40,7 +40,7 @@ public:
     public:
              IHardwareDecoder() {}
     virtual ~IHardwareDecoder() {};
-    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
+    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
@@ -66,6 +66,7 @@ public:
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
   void               SetHardware(IHardwareDecoder* hardware) 
   {
+    SAFE_RELEASE(m_pHardware);
     m_pHardware = hardware;
     m_name += "-";
     m_name += m_pHardware->Name();
@@ -94,6 +95,8 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
+
+  unsigned int m_uSurfacesCount;
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;

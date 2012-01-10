@@ -1,3 +1,16 @@
+[B]2.1.0[/B]
+
+- Changed the home menu to Horizontal Layout instead of Vertical
+- Added support for the TvTunes Addon enable it in skin settings\General (if you have it installed)
+- Added support for the Weather+ script (install it and select it in weather settings)
+- Updated translation files
+- Added some more codec flagging images (eg: pcm_bluray, wav files, etc)
+- Added Visual notification in Add-on Thumbnail view if an add-on is broken
+
+[B]2.0.0[/B]
+
+- Bumped the skin version up for the major change to eden branch
+
 [B]1.2.0[/B]
 
 - All media views now follow a similar layout off File List on the Left hand side and icons/data on the right

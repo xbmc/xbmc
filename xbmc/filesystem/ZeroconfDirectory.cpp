@@ -56,6 +56,8 @@ namespace
       return "WebDAV";   
     else if(fcr_service_type == "_nfs._tcp.")
       return "NFS";   
+    else if(fcr_service_type == "_afpovertcp._tcp.")
+      return "AFP";   
     else if(fcr_service_type == "_sftp-ssh._tcp.")
       return "SFTP";
     //fallback, just return the received type
@@ -75,6 +77,8 @@ namespace
       fr_protocol = "dav";
     else if(fcr_service_type == "_nfs._tcp.")
       fr_protocol = "nfs";      
+    else if(fcr_service_type == "_afpovertcp._tcp.")
+      fr_protocol = "afp";      
     else if(fcr_service_type == "_sftp-ssh._tcp.")
       fr_protocol = "sftp";
     else
@@ -146,7 +150,7 @@ bool GetDirectoryFromTxtRecords(CZeroconfBrowser::ZeroconfService zeroconf_servi
       //add slash at end of path since it has to be a folder
       URIUtils::AddSlashAtEnd(path);
       //this is the full path includeing remote stuff (e.x. nfs://ip/path
-      item->m_strPath=urlStr + path;
+      item->SetPath(urlStr + path);
       //remove the slash at the end of the path or GetFileName will not give the last dir
       URIUtils::RemoveSlashAtEnd(path);
       //set the label to the last directory in path
@@ -186,7 +190,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         CStdString service_path = CZeroconfBrowser::ZeroconfService::toPath(*it);
         CURL::Encode(service_path);
         url.SetFileName(service_path);
-        item->m_strPath = url.Get();
+        item->SetPath(url.Get());
 
         //now do the formatting
         CStdString protocol = GetHumanReadableProtocol(it->GetType());

@@ -36,7 +36,6 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
-#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -67,7 +66,7 @@ private:
   public:
     virtual bool DoWork()
     {
-      m_result->m_list.m_strPath = m_result->m_dir;
+      m_result->m_list.SetPath(m_result->m_dir);
       m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
       m_result->m_event.Set();
       return m_result->m_result;
@@ -123,14 +122,14 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     boost::shared_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (!pDirectory.get())
       return false;
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
-      items.m_strPath = strPath;
+      items.SetPath(strPath);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
@@ -174,7 +173,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         }
         else
         {
-          items.m_strPath = strPath;
+          items.SetPath(strPath);
           result = pDirectory->GetDirectory(realPath, items);
         }
 
@@ -199,8 +198,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       CFileItemPtr item = items[i];
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
-      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
-          (item->GetPropertyBOOL("file:hidden") && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
+      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
+          (item->GetProperty("file:hidden").asBoolean() && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
         i--; // don't confuse loop
@@ -232,7 +231,7 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Create(realPath.c_str()))
@@ -256,7 +255,7 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       return pDirectory->Exists(realPath.c_str());
@@ -279,7 +278,7 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Remove(realPath.c_str()))
@@ -306,7 +305,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
     CFileItemPtr pItem=items[i];
     if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
     {
-      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),mask));
+      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->GetPath(),pItem.get(),mask));
       if (pDirectory.get())
         pItem->m_bIsFolder = true;
       else
@@ -317,15 +316,4 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
         }
     }
   }
-}
-
-CStdString CDirectory::Translate(const CStdString &path)
-{
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
-      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
-  {
-    if (strncmp(path.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, path.Mid(i->first.size()));
-  }
-  return path;
 }

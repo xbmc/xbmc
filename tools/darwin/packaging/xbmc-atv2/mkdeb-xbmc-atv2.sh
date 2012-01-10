@@ -3,24 +3,37 @@
 # Allows us to run mkdeb-xbmc-atv2.sh from anywhere in the three, rather than the tools/darwin/packaging/xbmc-atv2 folder only
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
+DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+DSYM_FILENAME=XBMC.frappliance.dSYM
 
 if [ ${SWITCH:-""} = "debug" ]; then
   echo "Packaging Debug target for ATV2"
   XBMC="$DIRNAME/../../../../build/Debug-iphoneos/XBMC.frappliance"
+  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"
 elif [ ${SWITCH:-""} = "release" ]; then
   echo "Packaging Release target for ATV2"
   XBMC="$DIRNAME/../../../../build/Release-iphoneos/XBMC.frappliance"
+  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"  
   echo $XBMC
 else
   echo "You need to specify the build target"
   exit 1 
 fi 
 
+#copy bzip2 of dsym to xbmc-depends install dir
+if [ -d $DSYM ]; then
+  if [ -d $DSYM_TARGET_DIR ]; then
+    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`$DIRNAME/../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
+  fi
+fi
+
 if [ ! -d $XBMC ]; then
   echo "XBMC.frappliance not found! are you sure you built $1 target?"
   exit 1
 fi
-if [ -f "/usr/bin/sudo" ]; then
+if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
+  export DYLD_INSERT_LIBRARIES=/usr/libexec/fauxsu/libfauxsu.dylib
+elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
 if [ -f "/Users/Shared/xbmc-depends/toolchain/bin/dpkg-deb" ]; then
@@ -44,7 +57,7 @@ mkdir -p $DIRNAME/$PACKAGE/DEBIAN
 echo "Package: $PACKAGE"                          >  $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Name: XBMC-ATV2"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Depends: curl, org.awkwardtv.whitelist, org.xbmc.xbmc-seatbeltunlock" >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Depends: curl, org.awkwardtv.whitelist, com.nito.updatebegone, org.xbmc.xbmc-seatbeltunlock" >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Description: XBMC Multimedia Center for AppleTV 2" >> $DIRNAME/$PACKAGE/DEBIAN/control
@@ -55,22 +68,28 @@ echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/co
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.frappliance"      >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/Lowtide.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/AppleTV.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: symlink XBMC.frappliance into correct location and reload Lowtide/AppleTV.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "chown -R mobile:mobile /Applications/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall Lowtide"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall AppleTV"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "FILE=/var/mobile/Media/Photos/seas0nTV.png" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "if [ -f \$FILE ]; then"                     >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "   echo \"File \$FILE exists. removing...\"" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "   rm \$FILE"                               >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 

@@ -74,9 +74,9 @@ public:
 
   void SetInputType(INPUT_TYPE type, int heading);
 
-  void SetTextChangeActions(const std::vector<CGUIActionDescriptor>& textChangeActions) { m_textChangeActions = textChangeActions; };
+  void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
 
-  bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
+  bool HasTextChangeActions() { return m_textChangeActions.HasActionsMeetingCondition(); };
 
 protected:
   virtual void ProcessText(unsigned int currentTime);
@@ -108,8 +108,7 @@ protected:
   INPUT_TYPE m_inputType;
   bool m_isMD5;
 
-  std::vector<CGUIActionDescriptor> m_textChangeActions;
-
+  CGUIAction m_textChangeActions;
 
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;

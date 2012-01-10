@@ -30,7 +30,7 @@ namespace dbiplus {
 
 #include <memory>
 
-struct DatabaseSettings; // forward
+class DatabaseSettings; // forward
 
 class CDatabase
 {
@@ -112,6 +112,7 @@ protected:
 
   virtual bool Open();
   virtual bool CreateTables();
+  virtual void CreateViews() {};
   virtual bool UpdateOldVersion(int version) { return true; };
 
   virtual int GetMinVersion() const=0;

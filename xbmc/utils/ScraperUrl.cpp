@@ -73,7 +73,8 @@ bool CScraperUrl::Parse()
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
-  if (!element || !element->FirstChild()) return false;
+  if (!element || !element->FirstChild() ||
+      !element->FirstChild()->Value()) return false;
 
   stringstream stream;
   stream << *element;

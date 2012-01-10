@@ -1,0 +1,3 @@
+; filename                        source of the file
+
+libcec1.2.zip                     http://packages.pulse-eight.net/windows/

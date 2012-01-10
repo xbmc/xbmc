@@ -71,11 +71,16 @@ public:
   virtual void NotifyAppActiveChange(bool bActivated) {}
   virtual void ShowOSMouse(bool show) {};
   virtual bool HasCursor(){ return true; }
+  //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
+  virtual bool HasInertialGestures(){ return false; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
   virtual bool Hide() { return false; }
   virtual bool Show(bool raise = true) { return false; }
+
+  // notifications
+  virtual void OnMove(int x, int y) {}
 
   // OS System screensaver
   virtual void EnableSystemScreenSaver(bool bEnable) {};
@@ -86,6 +91,7 @@ public:
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
   virtual int GetNumScreens() { return 0; }
+  virtual int GetCurrentScreen() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);

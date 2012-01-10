@@ -37,18 +37,21 @@ typedef boost::shared_ptr<VASurfaceID const> VASurfacePtr;
 struct CDisplay
   : CCriticalSection
 {
-  CDisplay(VADisplay display)
+  CDisplay(VADisplay display, bool deinterlace)
     : m_display(display)
     , m_lost(false)
+    , m_deinterlace(deinterlace)
   {}
  ~CDisplay();
 
   VADisplay get() { return m_display; }
   bool      lost()          { return m_lost; }
   void      lost(bool lost) { m_lost = lost; }
+  bool      support_deinterlace() { return m_deinterlace; };
 private:
   VADisplay m_display;
   bool      m_lost;
+  bool      m_deinterlace;
 };
 
 typedef boost::shared_ptr<CDisplay> CDisplayPtr;
@@ -101,7 +104,7 @@ class CDecoder
 public:
   CDecoder();
  ~CDecoder();
-  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
+  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual int  Check     (AVCodecContext* avctx);

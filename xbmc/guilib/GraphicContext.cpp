@@ -696,15 +696,19 @@ CRect CGraphicContext::generateAABB(const CRect &rect) const
 
   float z = 0.0f;
   ScaleFinalCoords(x1, y1, z);
+  g_Windowing.Project(x1, y1, z);
 
   z = 0.0f;
   ScaleFinalCoords(x2, y2, z);
+  g_Windowing.Project(x2, y2, z);
 
   z = 0.0f;
   ScaleFinalCoords(x3, y3, z);
+  g_Windowing.Project(x3, y3, z);
 
   z = 0.0f;
   ScaleFinalCoords(x4, y4, z);
+  g_Windowing.Project(x4, y4, z);
 
   return CRect( min(min(min(x1, x2), x3), x4),
                 min(min(min(y1, y2), y3), y4),
@@ -775,7 +779,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
-      newRes = RES_DESKTOP;
+      newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
     uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)

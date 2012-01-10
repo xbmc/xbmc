@@ -50,6 +50,8 @@ CMatrixGLES::~CMatrixGLES()
   {
     while (!m_matrices[i].empty())
     {
+      GLfloat *matrix = m_matrices[i].back();
+      delete [] matrix;
       m_matrices[i].pop_back();
     }
   }
@@ -99,7 +101,11 @@ void CMatrixGLES::PopMatrix()
   if (MODE_WITHIN_RANGE(m_matrixMode))
   {
     if (m_matrices[m_matrixMode].size() > 1)
+    { 
+      GLfloat *matrix = m_matrices[m_matrixMode].back();
+      delete [] matrix;
       m_matrices[m_matrixMode].pop_back();
+    }
     m_pMatrix = m_matrices[m_matrixMode].back();
   }
 }
@@ -205,68 +211,43 @@ void CMatrixGLES::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 }
 
 #if defined(__ARM_NEON__)
-// Sets length and stride to 0.
-#define VFP_VECTOR_LENGTH_ZERO \
-  "fmrx    r0, fpscr            \n\t" \
-  "bic     r0, r0, #0x00370000  \n\t" \
-  "fmxr    fpscr, r0            \n\t" 
   
-// Set vector length. VEC_LENGTH has to be bitween 0 for length 1 and 3 for length 4.
-#define VFP_VECTOR_LENGTH(VEC_LENGTH) \
-  "fmrx    r0, fpscr                         \n\t" \
-  "bic     r0, r0, #0x00370000               \n\t" \
-  "orr     r0, r0, #0x000" #VEC_LENGTH "0000 \n\t" \
-  "fmxr    fpscr, r0                         \n\t"
-
-#define VFP_CLOBBER_S0_S31 \
-  "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8",   \
-  "s9", "s10", "s11", "s12", "s13", "s14", "s15", "s16",  \
-  "s17", "s18", "s19", "s20", "s21", "s22", "s23", "s24", \
-  "s25", "s26", "s27", "s28", "s29", "s30", "s31"
-
 inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
 {
-  asm volatile (VFP_VECTOR_LENGTH(3)
+  asm volatile (
+    // Store A & B leaving room at top of registers for result (q0-q3)
+    "vldmia %1, { q4-q7 }  \n\t"
+    "vldmia %2, { q8-q11 } \n\t"
 
-	// Let A:=src_ptr_1, B:=src_ptr_2, then
-	// function computes A*B as (B^T * A^T)^T.
+    // result = first column of B x first row of A
+    "vmul.f32 q0, q8, d8[0]\n\t"
+    "vmul.f32 q1, q8, d10[0]\n\t"
+    "vmul.f32 q2, q8, d12[0]\n\t"
+    "vmul.f32 q3, q8, d14[0]\n\t"
 
-	// Load first two columns to scalar bank.
-	"fldmias %1!, {s0-s7} \n\t"
-	// Load the whole matrix into memory.
-	"fldmias %2, {s16-s31} \n\t"
+    // result += second column of B x second row of A
+    "vmla.f32 q0, q9, d8[1]\n\t"
+    "vmla.f32 q1, q9, d10[1]\n\t"
+    "vmla.f32 q2, q9, d12[1]\n\t"
+    "vmla.f32 q3, q9, d14[1]\n\t"
 
-	// First column times matrix.
-	"fmuls s8, s16, s0 \n\t"
-	"fmuls s12, s16, s4 \n\t"
-	"fmacs s8, s20, s1 \n\t"
-	"fmacs s12, s20, s5 \n\t"
-	"fmacs s8, s24, s2 \n\t"
-	"fmacs s12, s24, s6 \n\t"
-	"fmacs s8, s28, s3 \n\t"
-	"fmacs s12, s28, s7 \n\t"
+    // result += third column of B x third row of A
+    "vmla.f32 q0, q10, d9[0]\n\t"
+    "vmla.f32 q1, q10, d11[0]\n\t"
+    "vmla.f32 q2, q10, d13[0]\n\t"
+    "vmla.f32 q3, q10, d15[0]\n\t"
 
-	// Load next two column to scalar bank.
-	"fldmias %1!, {s0-s7} \n\t"
+    // result += last column of B x last row of A
+    "vmla.f32 q0, q11, d9[1]\n\t"
+    "vmla.f32 q1, q11, d11[1]\n\t"
+    "vmla.f32 q2, q11, d13[1]\n\t"
+    "vmla.f32 q3, q11, d15[1]\n\t"
 
-	// Save first column.
-	"fstmias %2!, {s8-s15} \n\t"
-
-	"fmuls s8, s16, s0 \n\t"
-	"fmuls s12, s16, s4 \n\t"
-	"fmacs s8, s20, s1 \n\t"
-	"fmacs s12, s20, s5 \n\t"
-	"fmacs s8, s24, s2 \n\t"
-	"fmacs s12, s24, s6 \n\t"
-	"fmacs s8, s28, s3 \n\t"
-	"fmacs s12, s28, s7 \n\t"
-
-	"fstmias %2!, {s8-s15} \n\t"
-
-	VFP_VECTOR_LENGTH_ZERO
-	: "=r" (dst_mat), "=r" (src_mat_2)
-	: "r" (src_mat_1), "0" (dst_mat), "1" (src_mat_2)
-	: "r0", "cc", "memory", VFP_CLOBBER_S0_S31
+    // output = result registers
+    "vstmia %2, { q0-q3 }"
+    : //no output 
+    : "r" (dst_mat), "r" (src_mat_2), "r" (src_mat_1)       // input - note *value* of pointer doesn't change
+    : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
     );
 }
 void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
@@ -364,6 +345,51 @@ void CMatrixGLES::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat cente
 
   MultMatrixf(&m[0][0]);
   Translatef(-eyex, -eyey, -eyez);
+}
+
+static void __gluMultMatrixVecf(const GLfloat matrix[16], const GLfloat in[4], GLfloat out[4])
+{
+  int i;
+
+  for (i=0; i<4; i++)
+  {
+    out[i] = in[0] * matrix[0*4+i] +
+             in[1] * matrix[1*4+i] +
+             in[2] * matrix[2*4+i] +
+             in[3] * matrix[3*4+i];
+  }
+}
+
+// gluProject implementation taken from Mesa3D
+bool CMatrixGLES::Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz)
+{
+  GLfloat in[4];
+  GLfloat out[4];
+
+  in[0]=objx;
+  in[1]=objy;
+  in[2]=objz;
+  in[3]=1.0;
+  __gluMultMatrixVecf(modelMatrix, in, out);
+  __gluMultMatrixVecf(projMatrix, out, in);
+  if (in[3] == 0.0)
+    return false;
+  in[0] /= in[3];
+  in[1] /= in[3];
+  in[2] /= in[3];
+  /* Map x, y and z to range 0-1 */
+  in[0] = in[0] * 0.5 + 0.5;
+  in[1] = in[1] * 0.5 + 0.5;
+  in[2] = in[2] * 0.5 + 0.5;
+
+  /* Map x,y to viewport */
+  in[0] = in[0] * viewport[2] + viewport[0];
+  in[1] = in[1] * viewport[3] + viewport[1];
+
+  *winx=in[0];
+  *winy=in[1];
+  *winz=in[2];
+  return true;
 }
 
 void CMatrixGLES::PrintMatrix(void)

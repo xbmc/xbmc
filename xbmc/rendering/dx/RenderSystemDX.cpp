@@ -172,6 +172,10 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
 
 bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
 {
+  HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+  if (hMonitor)
+    SetMonitor(hMonitor);
+
   SetRenderParams(width, height, fullScreen, refreshRate);
 
   CRect rc;
@@ -190,6 +194,18 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   
   return true;
 }
+
+void CRenderSystemDX::OnMove()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  HMONITOR currentMonitor = m_pD3D->GetAdapterMonitor(m_adapter);
+  HMONITOR newMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+  if (newMonitor != NULL && currentMonitor != newMonitor)
+    ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
+}
+
 
 bool CRenderSystemDX::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage)
 {
@@ -806,6 +822,22 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   D3DXMATRIX mtxProjection;
   D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+  m_world = mtxWorld;
+  m_view = mtxView;
+  m_projection = mtxProjection;
+  m_viewPort = viewport;
+}
+
+void CRenderSystemDX::Project(float &x, float &y, float &z)
+{
+  D3DXVECTOR3 vScreenCoord;
+  D3DXVECTOR3 vLocation(x, y, z);
+
+  D3DXVec3Project(&vScreenCoord, &vLocation, &m_viewPort, &m_projection, &m_view, &m_world);
+  x = vScreenCoord.x;
+  y = vScreenCoord.y;
+  z = 0;
 }
 
 bool CRenderSystemDX::TestRender()
