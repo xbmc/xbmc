@@ -150,3 +150,31 @@ bool cRecording::Parse(const Json::Value& data)
 
   return true;
 }
+
+// Ok, this recording is part of a group of recordings, we do some 
+// title etc. juggling to make the listing more attractive
+void cRecording::Transform(bool isgroupmember)
+{
+  std::string _title = title;
+  std::string _subtitle = subtitle;
+
+  if (isgroupmember)
+  {
+    if (subtitle.size() > 0)
+    {
+      title = _title + " - " + _subtitle;
+      subtitle = channeldisplayname;
+    }
+    else
+    {
+      title = _title + " - " + channeldisplayname;
+    }
+  }
+  else
+  {
+    if (subtitle.size() == 0)
+    {
+      subtitle = channeldisplayname;
+    }
+  }
+}

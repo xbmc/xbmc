@@ -74,6 +74,8 @@ public:
 
   bool Parse(const Json::Value& data);
 
+  void Transform(bool isgroupmember);
+
   const char *Actors(void) const { return actors.c_str(); }
   const char *Category(void) const { return category.c_str(); }
   const char *ChannelDisplayName(void) const { return channeldisplayname.c_str(); }

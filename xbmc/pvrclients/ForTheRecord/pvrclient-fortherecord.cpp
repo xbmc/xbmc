@@ -667,17 +667,19 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               tag.iPriority      = 0; //TODO? recording.Priority();
               tag.recordingTime  = recording.RecordingStartTime();
               tag.iDuration      = recording.RecordingStopTime() - recording.RecordingStartTime();
-              tag.strPlot        = recording.Description();;
-              tag.strTitle       = recording.Title();
-              tag.strPlotOutline = recording.SubTitle();
+              tag.strPlot        = recording.Description();
               if (nrOfRecordings > 1)
               {
+                recording.Transform(true);
                 tag.strDirectory = recordinggroup.ProgramTitle().c_str(); //used in XBMC as directory structure below "Server X - hostname"
               }
               else
               {
+                recording.Transform(false);
                 tag.strDirectory = "";
               }
+              tag.strTitle       = recording.Title();
+              tag.strPlotOutline = recording.SubTitle();
 #ifdef _WIN32
               tag.strStreamURL   = recording.RecordingFileName();
 #else
