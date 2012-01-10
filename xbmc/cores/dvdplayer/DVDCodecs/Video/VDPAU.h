@@ -208,6 +208,7 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
+  uint32_t *m_BlackBar;
 
 
   VdpVideoMixerPictureStructure m_mixerfield;
@@ -244,6 +245,7 @@ public:
   { VDPAU_OPEN
   , VDPAU_RESET
   , VDPAU_LOST
+  , VDPAU_ERROR
   } m_DisplayState;
   CSharedSection m_DecoderSection;
   CSharedSection m_DisplaySection;

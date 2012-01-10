@@ -42,6 +42,7 @@
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -56,12 +57,12 @@ CAutorun::CAutorun()
 CAutorun::~CAutorun()
 {}
 
-void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
+void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
 {
   if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
-  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
 
   if ( pInfo == NULL )
     return ;
@@ -69,76 +70,50 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool sta
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
-  if ( pInfo->IsAudio( 1 ) )
-  {
-    if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
-      return;
-
-    if (!g_passwordManager.IsMasterLockUnlocked(false))
-      if (g_settings.GetCurrentProfile().musicLocked())
-        return ;
-
-    RunCdda();
-  }
-  else
-  {
-    RunMedia(bypassSettings, startFromBeginning);
-  }
+  PlayDisc(path, bypassSettings, startFromBeginning);
 }
 
-void CAutorun::RunCdda()
-{
-  CFileItemList vecItems;
-
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
-  if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-    return ;
-
-  if ( vecItems.Size() <= 0 )
-    return ;
-
-  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Play();
-}
-
-void CAutorun::RunMedia(bool bypassSettings, bool startFromBeginning)
+bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startFromBeginning)
 {
   if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
-    return ;
+    return false;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
+
+  CStdString mediaPath;
+
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
+  if (pInfo == NULL)
+    return false;
+
+  if (mediaPath.IsEmpty() && pInfo->IsAudio(1))
+    mediaPath = "cdda://local/";
+
+  if (mediaPath.IsEmpty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+    mediaPath = "iso9660://";
+
+  if (mediaPath.IsEmpty())
+    mediaPath = path;
+
 #ifdef _WIN32
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( g_mediaManager.TranslateDevicePath("") ));
-  bool bPlaying = RunDisc(pDir.get(), g_mediaManager.TranslateDevicePath(""), nAddedToPlaylist, true, bypassSettings, startFromBeginning);
-#else
-  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
-
-  if ( pInfo == NULL )
-    return ;
-
-  bool bPlaying;
-  if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
-  {
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
-  }
-  else
-  {
-    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
-  }
+  if (mediaPath.IsEmpty() || mediaPath.CompareNoCase("iso9660://") == 0)
+    mediaPath = g_mediaManager.TranslateDevicePath("");
 #endif
+
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( mediaPath ));
+  bool bPlaying = RunDisc(pDir.get(), mediaPath, nAddedToPlaylist, true, bypassSettings, startFromBeginning);
+
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
     g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
-    g_playlistPlayer.Play(nSize);
+    return g_playlistPlayer.Play(nSize);
   }
+
+  return bPlaying;
 }
 
 /**
@@ -167,8 +142,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // is this a root folder we have to check the content to determine a disc type
   if( bRoot )
   {
-
-    // check root folders first, for normal structured dvd's
+    // check root folders next, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr pItem = vecItems[i];
@@ -388,16 +362,9 @@ bool CAutorun::IsEnabled() const
   return m_bEnable;
 }
 
-bool CAutorun::PlayDisc(const CStdString& path, bool startFromBeginning)
-{
-  int nAddedToPlaylist = 0;
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( path ));
-  return RunDisc(pDir.get(), path, nAddedToPlaylist, true, true, startFromBeginning);
-}
-
 bool CAutorun::PlayDiscAskResume(const CStdString& path)
 {
-  return PlayDisc(path, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+  return PlayDisc(path, true, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
 }
 
 bool CAutorun::CanResumePlayDVD(const CStdString& path)

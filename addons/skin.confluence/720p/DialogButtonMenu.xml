@@ -97,6 +97,7 @@
 				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
 				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
 				<onclick>XBMC.Powerdown()</onclick>
+				<visible>System.CanPowerDown</visible>
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>13016</label>
@@ -116,6 +117,7 @@
 				<font>font13</font>
 				<label>20150</label>
 				<visible>!System.HasAlarm(shutdowntimer)</visible>
+				<visible>System.CanPowerDown</visible>
 			</control>
 			<control type="button" id="5">
 				<description>Cancel Shutdown Timer</description>
@@ -144,11 +146,28 @@
 				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
 				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
 				<onclick>XBMC.Suspend()</onclick>
+				<visible>System.CanSuspend</visible>
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>13011</label>
 			</control>
 			<control type="button" id="7">
+				<description>Hibernate button</description>
+				<width>340</width>
+				<height>40</height>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+				<textwidth>290</textwidth>
+				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
+				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
+				<onclick>XBMC.Hibernate()</onclick>
+				<visible>System.CanHibernate</visible>
+				<pulseonselect>no</pulseonselect>
+				<font>font13</font>
+				<label>13010</label>
+			</control>
+			<control type="button" id="8">
 				<description>Reboot button</description>
 				<width>340</width>
 				<height>40</height>
@@ -159,11 +178,12 @@
 				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
 				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
 				<onclick>XBMC.Reset()</onclick>
+				<visible>System.CanReboot</visible>
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>13013</label>
 			</control>
-			<control type="button" id="8">
+			<control type="button" id="9">
 				<description>Logoff button</description>
 				<width>340</width>
 				<height>40</height>
@@ -181,7 +201,7 @@
 				<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
 				<visible>System.Loggedon</visible>
 			</control>
-			<control type="togglebutton" id="9">
+			<control type="togglebutton" id="10">
 				<description>Master mode button</description>
 				<width>340</width>
 				<height>40</height>

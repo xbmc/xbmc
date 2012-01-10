@@ -501,6 +501,8 @@ void CDVDPlayerVideo::Process()
       EINTERLACEMETHOD mInt     = g_settings.m_currentVideoSettings.m_InterlaceMethod;
       if (mInt == VS_INTERLACEMETHOD_AUTO)
         mInt = g_renderManager.AutoInterlaceMethod();
+      else if(!g_renderManager.Supports(mInt))
+        mInt = VS_INTERLACEMETHOD_NONE;
 
       unsigned int     mFilters = 0;
 
@@ -733,6 +735,9 @@ void CDVDPlayerVideo::Process()
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
   }
+
+  // we need to let decoder release any picture retained resources.
+  m_pVideoCodec->ClearPicture(&picture);
 }
 
 void CDVDPlayerVideo::OnExit()

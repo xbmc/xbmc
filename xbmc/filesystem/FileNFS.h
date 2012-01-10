@@ -52,7 +52,7 @@ class CNfsConnection : public CCriticalSection
 {     
 public:
   typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
-  typedef std::map<struct nfs_context *, unsigned int> tOpenContextMap;    
+  typedef std::map<std::string, struct nfs_context *> tOpenContextMap;    
   
   CNfsConnection();
   ~CNfsConnection();
@@ -100,7 +100,8 @@ private:
   CCriticalSection keepAliveLock;
  
   void clearMembers();
-  bool getNewContext();//init new context and add to open contexts map
+  struct nfs_context *getContextFromMap(const CStdString &exportname);
+  int  getContextForExport(const CStdString &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
   void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(struct nfsfh  *_pFileHandle);
@@ -142,4 +143,5 @@ namespace XFILE
   };
 }
 #endif // FILENFS_H_
+
 

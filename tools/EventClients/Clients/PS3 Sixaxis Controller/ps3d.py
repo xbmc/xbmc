@@ -253,11 +253,11 @@ class SixWatch(threading.Thread):
         self.daemon = True
         self.start()
     def run(self):
+      while True:
         try:
             sixwatch.main(self.mac)
         except Exception, e:
-            print "Exception caught in sixwatch, aborting: " + str(e)
-            pass
+            print "Exception caught in sixwatch, restarting: " + str(e)
 
 class ZeroconfThread ( threading.Thread ):
     """

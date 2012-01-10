@@ -36,7 +36,7 @@
 #define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 #define WAIT_ABANDONED_0       ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 
-void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
+void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer);
 
 #endif
 

@@ -56,6 +56,7 @@ void CVideoInfoTag::Reset()
   m_strPath.clear();
   m_strIMDBNumber.clear();
   m_strMPAARating.clear();
+  m_strFileNameAndPath.clear();
   m_strPremiered.clear();
   m_strStatus.clear();
   m_strProductionCode.clear();
@@ -612,8 +613,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     node = node->NextSiblingElement("actor");
   }
 
-  m_set.clear();
-  m_setId.clear();
   node = movie->FirstChildElement("set");
   while (node)
   {
@@ -645,7 +644,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     node = node->NextSiblingElement("artist");
   }
 
-  m_streamDetails.Reset();
   node = movie->FirstChildElement("fileinfo");
   if (node)
   {

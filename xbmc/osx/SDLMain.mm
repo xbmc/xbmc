@@ -233,9 +233,6 @@ static void setupWindowMenu(void)
 
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-  [center removeObserver:self name:NSWindowDidMoveNotification object:nil];
-  [center removeObserver:self name:NSWindowDidResizeNotification object:nil];
-
   [center removeObserver:self name:MediaKeyPower object:nil];
   [center removeObserver:self name:MediaKeySoundMute object:nil];
   [center removeObserver:self name:MediaKeySoundUp object:nil];
@@ -294,14 +291,6 @@ static void setupWindowMenu(void)
     object:nil];
 
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-
-  [center addObserver:self
-    selector:@selector(windowDidMoveNotification:)
-    name:NSWindowDidMoveNotification object:nil];
-
-  [center addObserver:self
-    selector:@selector(windowDidReSizeNotification:)
-    name:NSWindowDidResizeNotification object:nil];
 
   // create media key handler singlton
   [[HotKeyController sharedController] enableTap];
@@ -426,33 +415,6 @@ static void setupWindowMenu(void)
 
   CDarwinStorageProvider::SetEvent();
   [pool release];
-}
-
-- (void) windowDidMoveNotification:(NSNotification*) note
-{
-  Cocoa_CVDisplayLinkUpdate();
-}
-
-- (void) windowDidReSizeNotification:(NSNotification*) note
-{
-  /* 
-  // SDL_PushEvent is not working but
-  // this is how one would pass update events in response to grow events.
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  if (context)
-  {
-    NSView *view = [context view];
-    if (view)
-    {
-      XBMC_Event event;
-      memset(&event, 0, sizeof(event));
-      event.resize.type = XBMC_VIDEORESIZE;
-      event.resize.w = [view frame].size.width;
-      event.resize.h = [view frame].size.height;
-      SDL_PushEvent(&event);
-    }
-  }
-  */
 }
 
 #define VK_SLEEP            0x5F
@@ -611,10 +573,11 @@ int main(int argc, char *argv[])
   // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
   int status;
   status = SDL_main(gArgc, gArgv);
+  SDL_Quit();
 
   [xbmc_delegate applicationWillTerminate:NULL];
   [xbmc_delegate release];
-  [pool drain];
+  [pool release];
 
   return status;
 }

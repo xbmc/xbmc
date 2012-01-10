@@ -136,7 +136,6 @@ void CAdvancedSettings::Initialize()
   m_serverMode = g_application.IsServerMode();
 
   m_fullScreenOnMovieStart = true;
-  m_noDVDROM = false;
   m_cachePath = "special://temp/";
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
@@ -669,7 +668,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
   XMLUtils::GetBoolean(pRootElement, "servermode", m_serverMode);
 
-  XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif

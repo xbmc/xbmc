@@ -40,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
+#include "utils/URIUtils.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -438,10 +439,20 @@ CStdString CWIN32Util::GetSystemPath()
 
 CStdString CWIN32Util::GetProfilePath()
 {
-  CStdString strProfilePath = GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE);
+  CStdString strProfilePath;
+  CStdString strHomePath;
+
+  CUtil::GetHomePath(strHomePath);
+  
+  if(g_application.PlatformDirectoriesEnabled())
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
+  else
+    strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
   
   if (strProfilePath.length() == 0)
-    CUtil::GetHomePath(strProfilePath);
+    strProfilePath = strHomePath;
+
+  URIUtils::AddSlashAtEnd(strProfilePath);
 
   return strProfilePath;
 }

@@ -61,6 +61,7 @@ FIXME'S
 */
 
 #define WEATHER_BASE_PATH "special://temp/weather/"
+#define WEATHER_ICON_PATH "special://temp/weather/128x128/"
 #define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
 
 bool CWeatherJob::m_imagesOkay = false;
@@ -125,8 +126,7 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
 
 void CWeatherJob::LocalizeOverviewToken(CStdString &token)
 {
-  // NOTE: This routine is case-sensitive.  Reason is std::less<CStdString> uses a case-sensitive
-  //       < operator.  Thus, some tokens may have to be duplicated in strings.xml (see drizzle vs Drizzle).
+  // This routine is case-insensitive. 
   CStdString strLocStr = "";
   if (!token.IsEmpty())
   {
@@ -275,6 +275,16 @@ void CWeatherJob::LoadLocalizedToken()
   }
 }
 
+static CStdString ConstructPath(std::string in) // copy intended
+{
+  if (in.find("/") != std::string::npos || in.find("\\") != std::string::npos)
+    return in;
+  if (in.empty() || in == "N/A")
+    in = "na.png";
+
+  return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,in);
+}
+
 void CWeatherJob::SetFromProperties()
 {
   // Load in our tokens if necessary
@@ -285,8 +295,7 @@ void CWeatherJob::SetFromProperties()
   CDateTime time=CDateTime::GetCurrentDateTime();
   m_info.lastUpdateTime     = time.GetAsLocalizedDateTime(false, false);
   m_info.currentConditions  = window->GetProperty("Current.Condition").asString();
-  m_info.currentIcon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,
-                              "128x128/"+window->GetProperty("Current.OutlookIcon").asString());
+  m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
   LocalizeOverview(m_info.currentConditions);
   FormatTemperature(m_info.currentTemperature,
       strtol(window->GetProperty("Current.Temperature").asString().c_str(),0,10));
@@ -327,11 +336,7 @@ void CWeatherJob::SetFromProperties()
     FormatTemperature(m_info.forecast[i].m_low,
                   strtol(window->GetProperty(strDay).asString().c_str(),0,10));
     strDay.Format("Day%i.OutlookIcon",i);
-    if (window->GetProperty(strDay).asString() == "N/A")
-      m_info.forecast[i].m_icon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,"128x128/na.png");
-    else
-      m_info.forecast[i].m_icon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,
-                                                 "128x128/"+window->GetProperty(strDay).asString());
+    m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
     strDay.Format("Day%i.Outlook",i);
     m_info.forecast[i].m_overview = window->GetProperty(strDay).asString();
     LocalizeOverview(m_info.forecast[i].m_overview);
@@ -350,11 +355,8 @@ CWeather::~CWeather(void)
 CStdString CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
-  {
-    CStdString busy;
-    busy.Format("%s128x128/na.png", WEATHER_BASE_PATH);
-    return busy;
-  }
+    return URIUtils::AddFileToFolder(WEATHER_ICON_PATH,"na.png");
+
   return CInfoLoader::BusyInfo(info);
 }
 

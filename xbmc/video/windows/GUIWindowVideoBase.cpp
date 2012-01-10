@@ -65,6 +65,7 @@
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
+#include "Autorun.h"
 
 using namespace std;
 using namespace XFILE;
@@ -261,7 +262,8 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (!pItem)
     return;
 
-  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add"))
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add") ||
+     (pItem->IsPlayList() && !URIUtils::GetExtension(pItem->GetPath()).Equals(".strm")))
     return;
 
   // ShowIMDB can kill the item as this window can be closed while we do it,
@@ -372,21 +374,13 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
     if (info->Content() == CONTENT_MOVIES)
     {
-      if (m_database.HasMovieInfo(item->GetPath()))
-      {
-        bHasInfo = true;
-        m_database.GetMovieInfo(item->GetPath(), movieDetails);
-      }
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
       if (item->m_bIsFolder)
       {
-        if (m_database.HasTvShowInfo(item->GetPath()))
-        {
-          bHasInfo = true;
-          m_database.GetTvShowInfo(item->GetPath(), movieDetails);
-        }
+        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails);
       }
       else
       {
@@ -421,11 +415,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     }
     if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      if (m_database.HasMusicVideoInfo(item->GetPath()))
-      {
-        bHasInfo = true;
-        m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
-      }
+      bHasInfo = m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
     }
     m_database.Close();
   }
@@ -892,6 +882,10 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+
+  // Reset the current start offset. The actual resume
+  // option is set in the switch, based on the action passed.
+  item->m_lStartOffset = 0;
   
   switch (action)
   {
@@ -948,7 +942,8 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->GetPath().Equals("add") || item->IsParentFolder())
+  if (item->GetPath().Equals("add") || item->IsParentFolder() ||
+     (item->IsPlayList() && !URIUtils::GetExtension(item->GetPath()).Equals(".strm")))
     return false;
 
   ADDON::ScraperPtr scraper;

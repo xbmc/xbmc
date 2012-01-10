@@ -33,6 +33,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace std;
 
@@ -350,7 +351,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   }
   // set the label control correctly
   CStdString strText;
-  if (g_settings.m_ResInfo[m_Res[m_iCurRes]].bFullScreen)
+  if (g_Windowing.IsFullScreen())
     strText.Format("%ix%i@%.2f - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth,
       g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight, g_settings.m_ResInfo[m_Res[m_iCurRes]].fRefreshRate,
       g_localizeStrings.Get(244).c_str(), strStatus.c_str());

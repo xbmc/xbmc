@@ -172,6 +172,10 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
 
 bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
 {
+  HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+  if (hMonitor)
+    SetMonitor(hMonitor);
+
   SetRenderParams(width, height, fullScreen, refreshRate);
 
   CRect rc;
@@ -190,6 +194,18 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   
   return true;
 }
+
+void CRenderSystemDX::OnMove()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  HMONITOR currentMonitor = m_pD3D->GetAdapterMonitor(m_adapter);
+  HMONITOR newMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+  if (newMonitor != NULL && currentMonitor != newMonitor)
+    ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
+}
+
 
 bool CRenderSystemDX::IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage)
 {

@@ -2039,6 +2039,7 @@ void CFileItemList::StackFolders()
         || item->IsAfp()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
+        || URIUtils::IsOnLAN(item->GetPath())
         )
       {
         // stack cd# folders if contains only a single video file

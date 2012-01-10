@@ -26,6 +26,7 @@
 
 #include <pthread.h>
 #include <sys/time.h>
+#include <assert.h>
 
 namespace XbmcThreads
 {
@@ -64,7 +65,11 @@ namespace XbmcThreads
       gettimeofday(&tv,NULL);
 
       milliseconds += tv.tv_usec / 1000; // move the usecs onto milliseconds
-      ts.tv_sec = tv.tv_sec + (time_t)(milliseconds/1000);
+
+      time_t tsecs = (time_t)(milliseconds/1000); // temporary used for assert
+      assert(tsecs >= (time_t)0);
+
+      ts.tv_sec = tv.tv_sec + tsecs;
       ts.tv_nsec = (long)((milliseconds % (unsigned long)1000) * (unsigned long)1000000);
       return (pthread_cond_timedwait(&cond,&lock.get_underlying().mutex,&ts) == 0);
     }

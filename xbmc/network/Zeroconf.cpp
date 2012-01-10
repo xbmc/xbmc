@@ -21,6 +21,7 @@
 #include "system.h" //HAS_ZEROCONF define
 #include "Zeroconf.h"
 #include "settings/Settings.h"
+#include "settings/GUISettings.h"
 
 #ifdef _LINUX
 #ifndef __APPLE__
@@ -101,6 +102,13 @@ bool CZeroconf::HasService(const std::string& fcr_identifier) const
 void CZeroconf::Start()
 {
   CSingleLock lock(*mp_crit_sec);
+  if(!IsZCdaemonRunning())
+  {
+    g_guiSettings.SetBool("services.zeroconf", false);
+    if (g_guiSettings.GetBool("services.airplay"))
+      g_guiSettings.SetBool("services.airplay", false);
+    return;
+  }
   if(m_started)
     return;
   m_started = true;

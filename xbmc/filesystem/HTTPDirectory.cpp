@@ -29,6 +29,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/HTMLUtil.h"
 #include "climits"
 
 using namespace XFILE;
@@ -76,18 +77,26 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       if (strNameTemp == strLinkTemp)
       {
+        CStdStringW wName, wLink, wConverted;
+
         g_charsetConverter.unknownToUTF8(strName);
+        g_charsetConverter.utf8ToW(strName, wName, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strName);
         URIUtils::RemoveSlashAtEnd(strName);
 
+        g_charsetConverter.unknownToUTF8(strLink);
+        g_charsetConverter.utf8ToW(strLink, wLink, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strLink);
+
         CFileItemPtr pItem(new CFileItem(strName));
-        pItem->SetPath(strBasePath + strLink);
         pItem->SetProperty("IsHTTPDirectory", true);
+        url.SetFileName(strBasePath + strLink);
+        pItem->SetPath(url.Get());
 
         if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
           pItem->m_bIsFolder = true;
-
-        url.SetFileName(pItem->GetPath());
-        pItem->SetPath(url.Get());
 
         if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {
@@ -100,18 +109,20 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
         {
           CRegExp reSize;
-          reSize.RegComp(">([0-9.]+)(K|M|G)</td>");
+          reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSize.GetReplaceString("\\1"));
             CStdString strUnit = reSize.GetReplaceString("\\2");
 
-            if (strUnit == "M")
+            if (strUnit == "K")
               Size = Size * 1024;
+            else if (strUnit == "M")
+              Size = Size * 1024 * 1024;
             else if (strUnit == "G")
-              Size = Size * 1000 * 1024;
+              Size = Size * 1000 * 1024 * 1024;
 
-            pItem->m_dwSize = (int64_t)(Size * 1024);
+            pItem->m_dwSize = (int64_t)Size;
           }
         }
 
@@ -120,6 +131,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     }
   }
   http.Close();
+
+  items.SetProperty("IsHTTPDirectory", true);
 
   return true;
 }

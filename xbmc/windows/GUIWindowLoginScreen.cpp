@@ -29,6 +29,9 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/JSONRPC.h"
+#endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
 #include "network/Network.h"
@@ -133,7 +136,9 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    if (action.GetName().Find("shutdown") != 1)
+    CStdString actionName = action.GetName();
+    actionName.ToLower();
+    if (actionName.Find("shutdown") != -1)
       CBuiltins::Execute(action.GetName());
     return true;
   }
@@ -286,6 +291,11 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
+
+#ifdef HAS_JSONRPC
+  JSONRPC::CJSONRPC::Initialize();
+#endif
+
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();

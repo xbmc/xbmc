@@ -21,9 +21,6 @@
 
 #include "system.h"
 #include "RarManager.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "UnrarXLib/rar.hpp"
-#endif
 #include "Util.h"
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"

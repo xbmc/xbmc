@@ -47,13 +47,12 @@ using namespace XbmcThreads;
 static FILE* procMeminfoFP = NULL;
 #endif
 
-void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
+void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
 {
   if (!lpBuffer)
     return;
 
-  memset(lpBuffer, 0, sizeof(MEMORYSTATUS));
-  lpBuffer->dwLength = sizeof(MEMORYSTATUS);
+  memset(lpBuffer, 0, sizeof(MEMORYSTATUSEX));
 
 #ifdef __APPLE__
   uint64_t physmem;
@@ -63,7 +62,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 
   // Total physical memory.
   if (sysctl(mib, miblen, &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
-      lpBuffer->dwTotalPhys = physmem;
+      lpBuffer->ullTotalPhys = physmem;
 
   // Virtual memory.
   mib[0] = CTL_VM; mib[1] = VM_SWAPUSAGE;
@@ -71,8 +70,8 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   len = sizeof(struct xsw_usage);
   if (sysctl(mib, miblen, &swap, &len, NULL, 0) == 0)
   {
-      lpBuffer->dwAvailPageFile = swap.xsu_avail;
-      lpBuffer->dwTotalVirtual = lpBuffer->dwTotalPhys + swap.xsu_total;
+      lpBuffer->ullAvailPageFile = swap.xsu_avail;
+      lpBuffer->ullTotalVirtual = lpBuffer->ullTotalPhys + swap.xsu_total;
   }
 
   // In use.
@@ -89,8 +88,8 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
       {
           uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
 
-          lpBuffer->dwAvailPhys = lpBuffer->dwTotalPhys - used;
-          lpBuffer->dwAvailVirtual  = lpBuffer->dwAvailPhys; // FIXME.
+          lpBuffer->ullAvailPhys = lpBuffer->ullTotalPhys - used;
+          lpBuffer->ullAvailVirtual  = lpBuffer->ullAvailPhys; // FIXME.
       }
   }
 #elif defined(__FreeBSD__)                                                                                                                                                                   
@@ -101,8 +100,8 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   /* physmem */                                                                                                                                                                              
   len = sizeof(physmem);                                                                                                                                                                     
   if (sysctlbyname("hw.physmem", &physmem, &len, NULL, 0) == 0) {                                                                                                                            
-    lpBuffer->dwTotalPhys = physmem;                                                                                                                                                         
-    lpBuffer->dwTotalVirtual = physmem;                                                                                                                                                      
+    lpBuffer->ullTotalPhys = physmem;                                                                                                                                                         
+    lpBuffer->ullTotalVirtual = physmem;                                                                                                                                                      
   }                                                                                                                                                                                          
   /* pagesize */                                                                                                                                                                             
   len = sizeof(pagesize);                                                                                                                                                                    
@@ -122,11 +121,11 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
     mem_free *= pagesize;
 
   /* mem_avail = mem_inactive + mem_cache + mem_free */
-  lpBuffer->dwAvailPhys = mem_inactive + mem_cache + mem_free;
-  lpBuffer->dwAvailVirtual = mem_inactive + mem_cache + mem_free;
+  lpBuffer->ullAvailPhys = mem_inactive + mem_cache + mem_free;
+  lpBuffer->ullAvailVirtual = mem_inactive + mem_cache + mem_free;
 
   if (sysctlbyname("vm.stats.vm.v_swappgsout", &swap_free, &len, NULL, 0) == 0)
-    lpBuffer->dwAvailPageFile = swap_free * pagesize;
+    lpBuffer->ullAvailPageFile = swap_free * pagesize;
 #else
   struct sysinfo info;
   char name[32];
@@ -159,12 +158,11 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
     rewind(procMeminfoFP);
     fflush(procMeminfoFP);
   }
-  lpBuffer->dwLength        = sizeof(MEMORYSTATUS);
-  lpBuffer->dwAvailPageFile = (info.freeswap * info.mem_unit);
-  lpBuffer->dwAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->dwAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->dwTotalPhys     = (info.totalram * info.mem_unit);
-  lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
+  lpBuffer->ullAvailPageFile = (info.freeswap * info.mem_unit);
+  lpBuffer->ullAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullTotalPhys     = (info.totalram * info.mem_unit);
+  lpBuffer->ullTotalVirtual  = (info.totalram * info.mem_unit);
 #endif
 }
 
