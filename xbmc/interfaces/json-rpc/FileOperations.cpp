@@ -124,7 +124,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
           else
             filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
         }
-        else if (media == "files" || items[i]->m_bIsFolder)
+        else
         {
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(items[i]);
