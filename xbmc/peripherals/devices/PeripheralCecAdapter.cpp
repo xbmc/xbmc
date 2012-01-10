@@ -261,9 +261,8 @@ void CPeripheralCecAdapter::Process(void)
     return;
   }
 
+  CAnnouncementManager::AddAnnouncer(m_cecAdapter);
   CLog::Log(LOGDEBUG, "%s - connection to the CEC adapter opened", __FUNCTION__);
-  m_bIsReady = true;
-  CAnnouncementManager::AddAnnouncer(this);
 
   if (GetSettingBool("cec_power_on_startup"))
   {
@@ -272,31 +271,8 @@ void CPeripheralCecAdapter::Process(void)
     FlushLog();
   }
 
-  if (GetSettingBool("use_tv_menu_language"))
-  {
-    cec_menu_language language;
-    if (m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
-      SetMenuLanguage(language.language);
-  }
-
-  CStdString strNotification;
-  cec_osd_name tvName = m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
-  strNotification.Format("%s: %s", g_localizeStrings.Get(36016), tvName.name);
-
-  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
-     set PCM output to 100% */
-  if (HasConnectedAudioSystem())
-  {
-    cec_osd_name ampName = m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
-    CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
-    strNotification.AppendFormat(" - %s", ampName.name);
-
-    g_settings.m_bMute = false;
-    g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
-  }
-
-  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strNotification);
+  m_queryThread = new CPeripheralCecAdapterQueryThread(this);
+  m_queryThread->Create(false);
 
   while (!m_bStop)
   {
@@ -305,10 +281,12 @@ void CPeripheralCecAdapter::Process(void)
       ProcessNextCommand();
     if (!m_bStop)
       ProcessVolumeChange();
+
     if (!m_bStop)
       Sleep(5);
   }
 
+  delete m_queryThread;
   m_cecAdapter->Close();
 
   CLog::Log(LOGDEBUG, "%s - CEC adapter processor thread ended", __FUNCTION__);
@@ -608,6 +586,15 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
           key.keycode = CEC_USER_CONTROL_CODE_PAUSE;
           m_buttonQueue.push(key);
         }
+      }
+      break;
+    case CEC_OPCODE_REPORT_POWER_STATUS:
+      if (command.initiator == CECDEVICE_TV &&
+          command.parameters.size == 1 &&
+          command.parameters[0] == CEC_POWER_STATUS_ON &&
+          m_queryThread)
+      {
+        m_queryThread->Signal();
       }
       break;
     default:
@@ -917,4 +904,62 @@ bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 
   return false;
 }
+
+CPeripheralCecAdapterQueryThread::CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter) :
+    CThread("CEC Adapter Query Thread"),
+    m_adapter(adapter)
+{
+  m_event.Reset();
+}
+
+CPeripheralCecAdapterQueryThread::~CPeripheralCecAdapterQueryThread(void)
+{
+  m_event.Set();
+  StopThread(true);
+}
+
+void CPeripheralCecAdapterQueryThread::Signal(void)
+{
+  m_event.Set();
+}
+
+void CPeripheralCecAdapterQueryThread::Process(void)
+{
+  /* wait until the TV reports to be powered on */
+  do
+  {
+    m_event.WaitMSec(2000);
+    if (m_adapter->m_bStop)
+      return;
+  }while (m_adapter->m_cecAdapter->GetDevicePowerStatus(CECDEVICE_TV) != CEC_POWER_STATUS_ON);
+
+  if (m_adapter->GetSettingBool("use_tv_menu_language"))
+  {
+    cec_menu_language language;
+    if (m_adapter->m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
+      m_adapter->SetMenuLanguage(language.language);
+  }
+
+  CStdString strNotification;
+  cec_osd_name tvName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
+  strNotification.Format("%s: %s", g_localizeStrings.Get(36016), tvName.name);
+
+  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
+     set PCM output to 100% */
+  if (m_adapter->HasConnectedAudioSystem())
+  {
+    cec_osd_name ampName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
+    CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
+    strNotification.AppendFormat(" - %s", ampName.name);
+
+    g_settings.m_bMute = false;
+    g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
+  }
+
+  m_adapter->m_bIsReady = true;
+
+  m_adapter->m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strNotification);
+}
+
 #endif

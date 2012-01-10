@@ -43,6 +43,8 @@ namespace CEC
 
 namespace PERIPHERALS
 {
+  class CPeripheralCecAdapterQueryThread;
+
   typedef struct
   {
     WORD         iButton;
@@ -59,6 +61,8 @@ namespace PERIPHERALS
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
+    friend class CPeripheralCecAdapterQueryThread;
+
   public:
     CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
     virtual ~CPeripheralCecAdapter(void);
@@ -96,19 +100,35 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
-    DllLibCEC*                    m_dll;
-    CEC::ICECAdapter*             m_cecAdapter;
-    bool                          m_bStarted;
-    bool                          m_bHasButton;
-    bool                          m_bIsReady;
-    CStdString                    m_strMenuLanguage;
-    CDateTime                     m_screensaverLastActivated;
-    CecButtonPress                m_button;
-    std::queue<CEC::cec_keypress> m_buttonQueue;
-    std::queue<CecVolumeChange>   m_volumeChangeQueue;
-    unsigned int                  m_lastKeypress;
-    CecVolumeChange               m_lastChange;
-    CCriticalSection              m_critSection;
+    DllLibCEC*                        m_dll;
+    CEC::ICECAdapter*                 m_cecAdapter;
+    bool                              m_bStarted;
+    bool                              m_bHasButton;
+    bool                              m_bIsReady;
+    CStdString                        m_strMenuLanguage;
+    CDateTime                         m_screensaverLastActivated;
+    CecButtonPress                    m_button;
+    std::queue<CEC::cec_keypress>     m_buttonQueue;
+    std::queue<CecVolumeChange>       m_volumeChangeQueue;
+    unsigned int                      m_lastKeypress;
+    CecVolumeChange                   m_lastChange;
+    CPeripheralCecAdapterQueryThread *m_queryThread;
+    CCriticalSection                  m_critSection;
+  };
+
+  class CPeripheralCecAdapterQueryThread : public CThread
+  {
+  public:
+    CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter);
+    virtual ~CPeripheralCecAdapterQueryThread(void);
+
+    virtual void Signal(void);
+
+  protected:
+    virtual void Process(void);
+
+    CPeripheralCecAdapter *m_adapter;
+    CEvent                 m_event;
   };
 }
 
