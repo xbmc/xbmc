@@ -2050,7 +2050,7 @@
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								</control>	
+								</control>
 								<control type="image">
 									<posx>36</posx>
 									<posy>184</posy>
@@ -2115,7 +2115,20 @@
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								</control>								
+								</control>
+								<!-- dimming mask when list not selected -->
+								<control type="image">
+									<posx>37</posx>
+									<posy>39</posy>
+									<width>116</width>
+									<height>110</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="episodeMaskSmall.png" background="true">episodeMaskSmall.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<visible>ControlGroup(7005).HasFocus</visible>
+									<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
+									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
+								</control>							
 								<control type="image">
 									<posx>36</posx>
 									<posy>184</posy>
@@ -2611,6 +2624,19 @@
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+								</control>
+								<!-- dimming mask when list not selected -->
+								<control type="image">
+									<posx>37</posx>
+									<posy>39</posy>
+									<width>116</width>
+									<height>110</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="episodeMaskSmall.png" background="true">episodeMaskSmall.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<visible>ControlGroup(7003).HasFocus</visible>
+									<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
+									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
 									<posx>36</posx>
