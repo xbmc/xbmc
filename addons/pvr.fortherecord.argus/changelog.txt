@@ -1,3 +1,5 @@
+v0.0.1.126 (10-01-2012)
+- Added: titles of recordings changed to be more descriptive
 v0.0.1.125 (04-01-2012)
 - Added: validation of the shares for all ForTheRecord tuners at startup
 v0.0.1.124 (01-01-2012)
