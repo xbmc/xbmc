@@ -638,10 +638,9 @@ bool CCoreAudioRenderer::Deinitialize()
 
   // Stop rendering
   Stop();
-  // Reset our state
+  // Reset our state but do not diddle internal vars if we are re-init'ing
   if (!m_init_state.reinit)
   {
-    // do not diddle internal vars if we are re-init'ing
     m_ChunkLen = 0;
     m_MaxCacheLen = 0;
     m_AvgBytesPerSec = 0;
