@@ -65,9 +65,11 @@ static void LoadTexture(GLenum target
   int bytesPerPixel;
   switch (externalFormat)
   {
+  case GL_BGRA:
   case GL_RGBA:
     bytesPerPixel = 4;
     break;
+  case GL_BGR:
   case GL_RGB:
     bytesPerPixel = 3;
     break;
