@@ -59,7 +59,7 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     if (parser.m_document)
     {
       m_scraper = parser.m_scraper;
-      m_document = new TiXmlDocument(*parser.m_document);
+      m_document = new CXBMCTinyXML(*parser.m_document);
       LoadFromXML();
     }
   }
@@ -84,7 +84,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 {
   Clear();
 
-  m_document = new TiXmlDocument(strXMLFile);
+  m_document = new CXBMCTinyXML(strXMLFile);
 
   if (!m_document)
     return false;
@@ -549,7 +549,7 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
   }
 }
 
-void CScraperParser::AddDocument(const TiXmlDocument* doc)
+void CScraperParser::AddDocument(const CXBMCTinyXML* doc)
 {
   const TiXmlNode* node = doc->RootElement()->FirstChild();
   while (node)

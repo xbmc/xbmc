@@ -25,7 +25,7 @@
 #include "addons/Skin.h" // for the effect time adjustments
 #include "utils/StringUtils.h"
 #include "Tween.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 

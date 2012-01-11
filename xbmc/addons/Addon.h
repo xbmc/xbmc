@@ -22,7 +22,7 @@
 
 #include "IAddon.h"
 #include "addons/AddonVersion.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "Util.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
@@ -195,15 +195,15 @@ protected:
    \return true if settings are loaded, false otherwise
    \sa SettingsToXML
    */
-  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false);
+  bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false);
 
   /*! \brief Parse settings into an XML document
    \param doc XML document to receive the settings
    \sa SettingsFromXML
    */
-  void SettingsToXML(TiXmlDocument &doc) const;
+  void SettingsToXML(CXBMCTinyXML &doc) const;
 
-  TiXmlDocument     m_addonXmlDoc;
+  CXBMCTinyXML      m_addonXmlDoc;
   CStdString        m_strLibName;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;

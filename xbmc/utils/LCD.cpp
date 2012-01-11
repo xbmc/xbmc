@@ -406,7 +406,7 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
 
   bool condensed = TiXmlBase::IsWhiteSpaceCondensed();
   TiXmlBase::SetCondenseWhiteSpace(false);
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (!doc.LoadFile(xmlFile.c_str()))
   {
     CLog::Log(LOGERROR, "Unable to load LCD skin file %s", xmlFile.c_str());

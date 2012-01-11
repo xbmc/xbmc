@@ -821,6 +821,18 @@ else
     [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"; use_dbus=yes]; \
     AC_DEFINE([HAVE_DBUS],[1],["Define to 1 if dbus is installed"]),
     AC_MSG_NOTICE($missing_library); use_dbus=no)
+  PKG_CHECK_MODULES([TINYXML],   [tinyxml],
+    [INCLUDES="$INCLUDES $TINYXML_CFLAGS"; LIBS="$LIBS $TINYXML_LIBS"],
+    AC_MSG_ERROR($missing_library))
+
+  # Also need to determine element names in TiXmlNode
+  AC_LANG_PUSH([C++])
+  AC_COMPILE_IFELSE(
+    [#include <tinyxml.h>
+     int foo(){return TiXmlNode::TINYXML_ELEMENT;}],
+    [AC_DEFINE([USE_RENAMED_TIXMLNODE_ELEMENTS], [1],
+    [Whether TiXmlNode element names are prepended with TINYXML_.])],)
+  AC_LANG_POP([C++])
 
   if test "x$use_sdl" != "xno"; then
     PKG_CHECK_MODULES([SDL],   [sdl],

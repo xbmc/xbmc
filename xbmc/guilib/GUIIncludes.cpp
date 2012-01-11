@@ -23,7 +23,7 @@
 #include "addons/Skin.h"
 #include "GUIInfoManager.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 #include "interfaces/info/SkinVariable.h"
 
@@ -95,7 +95,7 @@ bool CGUIIncludes::LoadIncludes(const CStdString &includeFile)
   if (HasIncludeFile(includeFile))
     return true;
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (!doc.LoadFile(includeFile))
   {
     CLog::Log(LOGINFO, "Error loading includes.xml file (%s): %s (row=%i, col=%i)", includeFile.c_str(), doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
@@ -260,7 +260,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
   TiXmlAttribute *attribute = node->FirstAttribute();
   while (attribute)
   { // check the attribute against our set
-    if (m_constantAttributes.count(attribute->NameStr()))
+    if (m_constantAttributes.count(attribute->Name()))
       attribute->SetValue(ResolveConstant(attribute->ValueStr()));
     attribute = attribute->Next();
   }

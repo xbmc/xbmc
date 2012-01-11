@@ -32,7 +32,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
 using namespace std;
@@ -518,7 +518,7 @@ bool CButtonTranslator::Load(void)
 
 bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", keymapPath.c_str());
   if (!xmlDoc.LoadFile(keymapPath))
@@ -565,7 +565,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 #define REMOTEMAPTAG "irssmap"
 #endif
   // load our xml file, and fill up our mapping tables
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   // Load the config file
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());

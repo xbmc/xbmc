@@ -114,7 +114,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
   {
     CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -125,7 +125,7 @@ bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPa
   return Load(xmlDoc);
 }
 
-bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
+bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
 {
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "window"))

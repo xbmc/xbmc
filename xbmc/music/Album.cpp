@@ -143,7 +143,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   XMLUtils::SetString(album,        "type", strType);
   if (!thumbURL.m_xml.empty())
   {
-    TiXmlDocument doc;
+    CXBMCTinyXML doc;
     doc.Parse(thumbURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
