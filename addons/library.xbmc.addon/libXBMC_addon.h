@@ -26,31 +26,41 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifndef _LINUX
+#ifdef _WIN32                   // windows
 #include "dlfcn-win32.h"
-#define ADDON_DLL "\\library.xbmc.addon\\libXBMC_addon.dll"
+#define ADDON_DLL               "\\library.xbmc.addon\\libXBMC_addon" ADDON_HELPER_EXT
+#define ADDON_HELPER_PLATFORM   "win32"
+#define ADDON_HELPER_EXT        ".dll"
 #else
-#include <dlfcn.h>
-#if defined(__APPLE__)
+#if defined(__APPLE__)          // osx
+#define ADDON_HELPER_PLATFORM   "osx"
 #if defined(__POWERPC__)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-osx.so"
+#define ADDON_HELPER_ARCH       "powerpc"
 #elif defined(__arm__)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-arm-osx.so"
+#define ADDON_HELPER_ARCH       "arm"
 #else
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-x86-osx.so"
+#define ADDON_HELPER_ARCH       "x86"
 #endif
-#elif defined(__x86_64__)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-x86_64-linux.so"
+#else                           // linux
+#define ADDON_HELPER_PLATFORM   "linux"
+#if defined(__x86_64__)
+#define ADDON_HELPER_ARCH       "x86_64"
 #elif defined(_POWERPC)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-linux.so"
+#define ADDON_HELPER_ARCH       "powerpc"
 #elif defined(_POWERPC64)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc64-linux.so"
+#define ADDON_HELPER_ARCH       "powerpc64"
 #elif defined(_ARMEL)
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-arm.so"
-#else /* !__x86_64__ && !__powerpc__ */
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-i486-linux.so"
-#endif /* __x86_64__ */
-#endif /* _LINUX */
+#define ADDON_HELPER_ARCH       "arm"
+#elif defined(_MIPSEL)
+#define ADDON_HELPER_ARCH       "mipsel"
+#else
+#define ADDON_HELPER_ARCH       "i486"
+#endif
+#endif
+#include <dlfcn.h>              // linux+osx
+#define ADDON_HELPER_EXT        ".so"
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-" ADDON_HELPER_ARCH "-" ADDON_HELPER_PLATFORM ADDON_HELPER_EXT
+#endif
 
 #ifdef LOG_DEBUG
 #undef LOG_DEBUG

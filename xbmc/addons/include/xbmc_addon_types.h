@@ -26,6 +26,38 @@
 extern "C" {
 #endif
 
+#ifdef _WIN32                   // windows
+#define ADDON_HELPER_PLATFORM   "win32"
+#define ADDON_HELPER_EXT        ".dll"
+#else                           // linux+osx
+#define ADDON_HELPER_EXT        ".so"
+#if defined(__APPLE__)          // osx
+#define ADDON_HELPER_PLATFORM   "osx"
+#if defined(__POWERPC__)
+#define ADDON_HELPER_ARCH       "powerpc"
+#elif defined(__arm__)
+#define ADDON_HELPER_ARCH       "arm"
+#else
+#define ADDON_HELPER_ARCH       "x86"
+#endif
+#else                           // linux
+#define ADDON_HELPER_PLATFORM   "linux"
+#if defined(__x86_64__)
+#define ADDON_HELPER_ARCH       "x86_64"
+#elif defined(_POWERPC)
+#define ADDON_HELPER_ARCH       "powerpc"
+#elif defined(_POWERPC64)
+#define ADDON_HELPER_ARCH       "powerpc64"
+#elif defined(_ARMEL)
+#define ADDON_HELPER_ARCH       "arm"
+#elif defined(_MIPSEL)
+#define ADDON_HELPER_ARCH       "mipsel"
+#else
+#define ADDON_HELPER_ARCH       "i486"
+#endif
+#endif
+#endif
+
 enum ADDON_STATUS
 {
   ADDON_STATUS_OK,
