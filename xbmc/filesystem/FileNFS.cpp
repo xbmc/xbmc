@@ -339,7 +339,7 @@ void CNfsConnection::resetKeepAlive(struct nfsfh  *_pFileHandle)
 //we were before
 void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
 {
-  off_t offset = 0;
+  off64_t offset = 0;
   char buffer[32];
   CLog::Log(LOGNOTICE, "NFS: sending keep alive after %i s.",KEEP_ALIVE_TIMEOUT/2);
   CSingleLock lock(*this);
@@ -425,7 +425,7 @@ CFileNFS::~CFileNFS()
 int64_t CFileNFS::GetPosition()
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
   CSingleLock lock(gNfsConnection);
   
   if (gNfsConnection.GetNfsContext() == NULL || m_pFileHandle == NULL) return 0;
@@ -569,7 +569,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
 int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
 
   CSingleLock lock(gNfsConnection);  
   if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
