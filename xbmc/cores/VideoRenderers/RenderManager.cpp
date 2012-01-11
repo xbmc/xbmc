@@ -540,11 +540,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_presentstep  = PRESENT_FLIP;
     m_presentsource = source;
     EDEINTERLACEMODE deinterlacemode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    EINTERLACEMETHOD interlacemethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
-    if (interlacemethod == VS_INTERLACEMETHOD_AUTO)
-      interlacemethod = m_pRenderer->AutoInterlaceMethod();
-    else if(!m_pRenderer->Supports(interlacemethod))
-      interlacemethod = VS_INTERLACEMETHOD_NONE;
+    EINTERLACEMETHOD interlacemethod = AutoInterlaceMethodInternal(g_settings.m_currentVideoSettings.m_InterlaceMethod);
 
     bool invert = false;
 
@@ -784,4 +780,18 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   m_pRenderer->ReleaseImage(index, false);
 
   return index;
+}
+
+EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt)
+{
+  if (mInt == VS_INTERLACEMETHOD_NONE)
+    return VS_INTERLACEMETHOD_NONE;
+
+  if(!m_pRenderer->Supports(mInt))
+    mInt = VS_INTERLACEMETHOD_AUTO;
+
+  if (mInt == VS_INTERLACEMETHOD_AUTO)
+    return m_pRenderer->AutoInterlaceMethod();
+
+  return mInt;
 }
