@@ -136,6 +136,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/InputOperations.h"
+#endif
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
 #endif
@@ -2691,6 +2694,7 @@ void CApplication::FrameMove(bool processEvents)
     // process input actions
     CWinEvents::MessagePump();
     ProcessHTTPApiButtons();
+    ProcessJsonRpcButtons();
     ProcessRemote(frameTime);
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
@@ -2962,8 +2966,18 @@ bool CApplication::ProcessHTTPApiButtons()
       return true;
     }
   }
-  return false;
 #endif
+  return false;
+}
+
+bool CApplication::ProcessJsonRpcButtons()
+{
+#ifdef HAS_JSONRPC
+  CKey tempKey(JSONRPC::CInputOperations::GetKey());
+  if (tempKey.GetButtonCode() != KEY_INVALID)
+    return OnKey(tempKey);
+#endif
+  return false;
 }
 
 bool CApplication::ProcessEventServer(float frameTime)

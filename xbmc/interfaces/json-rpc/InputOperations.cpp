@@ -22,8 +22,21 @@
 #include "InputOperations.h"
 #include "Application.h"
 #include "guilib/GUIAudioManager.h"
+#include "input/XBMC_vkeys.h"
+#include "threads/SingleLock.h"
 
 using namespace JSONRPC;
+
+CCriticalSection CInputOperations::m_critSection;
+uint32_t CInputOperations::m_key = KEY_INVALID;
+
+uint32_t CInputOperations::GetKey()
+{
+  CSingleLock lock(m_critSection);
+  uint32_t currentKey = m_key;
+  m_key = KEY_INVALID;
+  return currentKey;
+}
 
 //TODO the breakage of the screensaver should be refactored
 //to one central super duper place for getting rid of
@@ -42,6 +55,16 @@ bool CInputOperations::handleScreenSaver()
   return screenSaverBroken;
 }
 
+JSON_STATUS CInputOperations::sendKey(uint32_t keyCode)
+{
+  if (keyCode == KEY_INVALID)
+    return InternalError;
+
+  CSingleLock lock(m_critSection);
+  m_key = keyCode | KEY_VKEY;
+  return ACK;
+}
+
 JSON_STATUS CInputOperations::sendAction(int actionID)
 {
   if(!handleScreenSaver())
@@ -56,40 +79,39 @@ JSON_STATUS CInputOperations::sendAction(int actionID)
 JSON_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-  {
     g_application.getApplicationMessenger().ActivateWindow(windowID, std::vector<CStdString>(), false);
-  }
+
   return ACK;
 }
 
 JSON_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_MOVE_LEFT);
+  return sendKey(XBMCVK_LEFT);
 }
 
 JSON_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_MOVE_RIGHT);  
+  return sendKey(XBMCVK_RIGHT);
 }
 
 JSON_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_MOVE_DOWN);  
+  return sendKey(XBMCVK_DOWN);
 }
 
 JSON_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_MOVE_UP);  
+  return sendKey(XBMCVK_UP);
 }
 
 JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_SELECT_ITEM);  
+  return sendKey(XBMCVK_RETURN);
 }
 
 JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_NAV_BACK);  
+  return sendKey(XBMCVK_BACK);
 }
 
 JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
