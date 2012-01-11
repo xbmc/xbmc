@@ -1132,7 +1132,10 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
     g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
     g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
-    g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
+  }
+  g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
+  if (!g_application.IsServerMode())
+  {
     g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
     g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
   #ifdef HAS_KARAOKE
@@ -1149,7 +1152,10 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
     g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
     g_windowManager.Add(new CGUIDialogProfileSettings); // window id = 130
-    g_windowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+  }
+  g_windowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+  if (!g_application.IsServerMode())
+  {
     g_windowManager.Add(new CGUIDialogFavourites);     // window id = 134
     g_windowManager.Add(new CGUIDialogSongInfo);       // window id = 135
     g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
