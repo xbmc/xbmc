@@ -669,7 +669,7 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
         CStdString strCardName = snd_ctl_card_info_get_id( info );
 
         if (!passthrough)
-          GenSoundLabel(vAudioSinks, g_localizeStrings.Get(409), strCardName, strReadableCardName);
+          GenSoundLabel(vAudioSinks, "default", strCardName, strReadableCardName);
         GenSoundLabel(vAudioSinks, "iec958", strCardName, strReadableCardName);
         GenSoundLabel(vAudioSinks, "hdmi", strCardName, strReadableCardName);
       }
@@ -712,7 +712,7 @@ void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink
 {
   CStdString deviceString;
   deviceString.Format("%s:CARD=%s", sink, card.c_str());
-  if (sink.Equals(g_localizeStrings.Get(409)) || SoundDeviceExists(deviceString.c_str()))
+  if (sink.Equals("default") || SoundDeviceExists(deviceString.c_str()))
   {
     CStdString finalSink;
     finalSink.Format("alsa:%s", deviceString.c_str());
