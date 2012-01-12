@@ -540,7 +540,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 
   if (m_pConvertFrame)
   {
-    delete[] m_pConvertFrame->data[0];
+    m_dllAvCodec.avpicture_free(m_pConvertFrame);
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
