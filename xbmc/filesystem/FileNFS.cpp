@@ -551,7 +551,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   
   if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
 
-  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);  
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, (size_t)uiBufSize, (char *)lpBuf);  
 
   lock.Leave();//no need to keep the connection lock after that
   
@@ -612,9 +612,9 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
 {
   int numberOfBytesWritten = 0;
   int writtenBytes = 0;
-  int leftBytes = uiBufSize;
+  int64_t leftBytes = uiBufSize;
   //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
-  int chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
+  int64_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
   
   CSingleLock lock(gNfsConnection);
   
