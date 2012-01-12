@@ -432,7 +432,8 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
   while (!resp->end()) 
   {
     uint32_t index = resp->extract_U32();
-    for (unsigned int i = 0; i < m_Streams.iStreamCount; i++)
+    unsigned int i;
+    for (i = 0; i < m_Streams.iStreamCount; i++)
     {
       if (index == m_Streams.stream[i].iPhysicalId)
       {
@@ -474,7 +475,13 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
           
           delete[] language;
         }
+        break;
       }
+    }
+    if (i >= m_Streams.iStreamCount)
+    {
+      XBMC->Log(LOG_ERROR, "%s - unknown stream id", __FUNCTION__);
+      break;
     }
   }
   return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);
