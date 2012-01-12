@@ -89,12 +89,15 @@ namespace PERIPHERALS
     virtual CStdString GetComPort(void);
 
   protected:
-    virtual void FlushLog(void);
-    virtual bool GetNextCecKey(CEC::cec_keypress &key);
+    virtual void EnableCallbacks(void);
+    static int CecKeyPress(void *cbParam, const CEC::cec_keypress &key);
+    static int CecLogMessage(void *cbParam, const CEC::cec_log_message &message);
+    static int CecCommand(void *cbParam, const CEC::cec_command &command);
+
     virtual bool GetNextKey(void);
+    virtual bool GetNextCecKey(CEC::cec_keypress &key);
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
-    virtual void ProcessNextCommand(void);
     virtual void ProcessVolumeChange(void);
     virtual void SetMenuLanguage(const char *strLanguage);
     static bool FindConfigLocation(CStdString &strString);
@@ -113,6 +116,7 @@ namespace PERIPHERALS
     unsigned int                      m_lastKeypress;
     CecVolumeChange                   m_lastChange;
     CPeripheralCecAdapterQueryThread *m_queryThread;
+    CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
   };
 
