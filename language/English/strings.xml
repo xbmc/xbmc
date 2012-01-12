@@ -2407,4 +2407,5 @@
   <string id="36016">Connected</string> <!-- max. 13 characters -->
   <string id="36017">Adapter found, but libcec is not available</string>
   <string id="36018">Use the TV's language setting</string>
+  <string id="36019">Connected to HDMI device</string>
 </strings>

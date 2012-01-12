@@ -75,7 +75,7 @@ namespace PERIPHERALS
     virtual void Mute(void);
 
     virtual bool SendPing(void);
-    virtual bool SetHdmiPort(int iHdmiPort);
+    virtual bool SetHdmiPort(int iDevice, int iHdmiPort);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 

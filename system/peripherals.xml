@@ -18,5 +18,6 @@
     <setting key="standby_pc_on_tv_standby" type="bool" value="1" label="36014" />
     <setting key="cec_debug_logging" type="bool" value="0" label="20191" />
     <setting key="use_tv_menu_language" type="bool" value="1" label="36018" />
+    <setting key="connected_device" type="int" label="36019" value="0" min="0" max="15" step="1" />
   </peripheral>
 </peripherals>

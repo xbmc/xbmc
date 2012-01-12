@@ -2403,4 +2403,5 @@
   <string id="36016">Verbonden</string> <!-- max. 13 characters -->
   <string id="36017">Adapter gevonden, maar libcec is niet beschikbaar</string>
   <string id="36018">Gebruik de taalinstelling van de TV</string>
+  <string id="36019">Verbonden met HDMI apparaat</string>
 </strings>
