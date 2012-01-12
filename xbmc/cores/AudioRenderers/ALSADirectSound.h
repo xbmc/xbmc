@@ -72,8 +72,7 @@ public:
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
   unsigned int GetSpaceFrames();
-  static bool SoundDeviceExists(const CStdString& device);
-  static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard);
+  static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, int dev, CStdString readableCard);
   snd_pcm_t 		*m_pPlayHandle;
 
   IAudioCallback* m_pCallback;
