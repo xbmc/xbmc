@@ -49,6 +49,13 @@ namespace PERIPHERALS
     unsigned int iDuration;
   } CecButtonPress;
 
+  typedef enum
+  {
+    VOLUME_CHANGE_NONE,
+    VOLUME_CHANGE_UP,
+    VOLUME_CHANGE_DOWN,
+    VOLUME_CHANGE_MUTE
+  } CecVolumeChange;
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
@@ -59,6 +66,13 @@ namespace PERIPHERALS
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
     virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
     virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
+    virtual bool HasConnectedAudioSystem(void);
+    virtual void ScheduleVolumeUp(void);
+    virtual void VolumeUp(void);
+    virtual void ScheduleVolumeDown(void);
+    virtual void VolumeDown(void);
+    virtual void ScheduleMute(void);
+    virtual void Mute(void);
 
     virtual bool SendPing(void);
     virtual bool SetHdmiPort(int iHdmiPort);
@@ -77,6 +91,7 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
     virtual void ProcessNextCommand(void);
+    virtual void ProcessVolumeChange(void);
     virtual void SetMenuLanguage(const char *strLanguage);
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
@@ -90,7 +105,9 @@ namespace PERIPHERALS
     CDateTime                     m_screensaverLastActivated;
     CecButtonPress                m_button;
     std::queue<CEC::cec_keypress> m_buttonQueue;
+    std::queue<CecVolumeChange>   m_volumeChangeQueue;
     unsigned int                  m_lastKeypress;
+    CecVolumeChange               m_lastChange;
     CCriticalSection              m_critSection;
   };
 }
