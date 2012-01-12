@@ -19,6 +19,10 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_MYSQL
+
 #include "MythDirectory.h"
 #include "MythSession.h"
 #include "utils/URIUtils.h"
@@ -658,3 +662,4 @@ bool CMythDirectory::IsLiveTV(const CStdString& strPath)
   CURL url(strPath);
   return url.GetFileName().Left(9) == "channels/";
 }
+#endif
