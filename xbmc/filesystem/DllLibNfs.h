@@ -78,7 +78,7 @@ public:
   virtual int nfs_creat(struct nfs_context *nfs,     const char *path,     int mode,     struct nfsfh **nfsfh)=0;  
   virtual int nfs_pread(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off_t offset, size_t count, char *buf)=0;
   virtual int nfs_pwrite(struct nfs_context *nfs,    struct nfsfh *nfsfh,  off_t offset, size_t count, char *buf)=0;
-  virtual int nfs_lseek(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off_t offset, int whence,   off_t *current_offset)=0;
+  virtual int nfs_lseek(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off64_t offset, int whence,   off64_t *current_offset)=0;
 };
 
 class DllLibNfs : public DllDynamic, DllLibNfsInterface
@@ -124,7 +124,7 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD4(int, nfs_fchown,    (struct nfs_context *p1, struct nfsfh *p2,  int p3,     int p4))
   DEFINE_METHOD5(int, nfs_pread,     (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   size_t p4,  char *p5))
   DEFINE_METHOD5(int, nfs_pwrite,    (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   size_t p4,  char *p5))
-  DEFINE_METHOD5(int, nfs_lseek,     (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   int p4,     off_t *p5))
+  DEFINE_METHOD5(int, nfs_lseek,     (struct nfs_context *p1, struct nfsfh *p2,  off64_t p3,   int p4,     off64_t *p5))
 
 
 
