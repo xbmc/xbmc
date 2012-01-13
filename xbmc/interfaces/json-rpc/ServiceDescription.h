@@ -904,6 +904,7 @@ namespace JSONRPC
             "\"System\": { \"$ref\": \"Optional.Boolean\" },"
             "\"AudioLibrary\": { \"$ref\": \"Optional.Boolean\" },"
             "\"VideoLibrary\": { \"$ref\": \"Optional.Boolean\" },"
+            "\"Application\": { \"$ref\": \"Optional.Boolean\" },"
             "\"Other\": { \"$ref\": \"Optional.Boolean\" }"
           "}"
         "}"
