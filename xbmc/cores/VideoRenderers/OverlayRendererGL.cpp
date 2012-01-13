@@ -69,7 +69,9 @@ static void LoadTexture(GLenum target
   case GL_RGBA:
     bytesPerPixel = 4;
     break;
+#ifndef HAS_GLES
   case GL_BGR:
+#endif
   case GL_RGB:
     bytesPerPixel = 3;
     break;
