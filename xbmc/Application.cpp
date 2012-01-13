@@ -545,7 +545,8 @@ bool CApplication::Create()
 
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
+      _P(g_settings.m_logFolder).c_str());
     return false;
   }
 
