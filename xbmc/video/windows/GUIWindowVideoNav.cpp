@@ -339,7 +339,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           // grab the season thumb as the folder thumb
           CStdString strLabel;
           CStdString strPath;
-          if (params.GetSeason() == -1 && items.Size() > 0)
+          if (params.GetSeason() <= -1 && items.Size() > 0)
           {
             CQueryParams params2;
             dir.GetQueryParams(items[0]->GetPath(),params2);
@@ -655,7 +655,7 @@ bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
   if (params.GetMovieId()   != -1 ||
       params.GetEpisodeId() != -1 ||
       params.GetMVideoId()  != -1 ||
-      (params.GetTvShowId() != -1 && params.GetSeason() == -1
+      (params.GetTvShowId() != -1 && params.GetSeason() <= -1
               && !CVideoDatabaseDirectory::IsAllItem(strPath)))
     return true;
 
