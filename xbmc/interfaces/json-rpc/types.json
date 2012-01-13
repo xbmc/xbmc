@@ -782,7 +782,7 @@
   "Application.Property.Value": {
     "type": "object",
     "properties": {
-      "volume": { "type": "integer" },
+      "volume": { "type": "integer", "minimum": 0, "maximum": 100 },
       "muted": { "type": "boolean" },
       "name": { "type": "string", "minLength": 1 },
       "version": { "type": "object",
