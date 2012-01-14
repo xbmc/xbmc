@@ -57,6 +57,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
 #include "guilib/Key.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1095,8 +1096,15 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
-    // Always sort by label
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    // The sort method can be set in the advanced settings
+    if (g_advancedSettings.m_upnpServerSort == "label")
+      items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    else if (g_advancedSettings.m_upnpServerSort == "fullpath")
+      items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
+    else if (g_advancedSettings.m_upnpServerSort == "none")
+      ; // no sorting 
+    else // If the sort method is unre
+      CLog::Log(LOGERROR, "%s - Unknown sort order: %s", __FUNCTION__, g_advancedSettings.m_upnpServerSort);
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one

@@ -114,6 +114,8 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
+  m_upnpServerSort = "label";
+
   m_lcdRows = 4;
   m_lcdColumns = 20;
   m_lcdAddress1 = 0;
@@ -588,6 +590,13 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetFloat(pElement, "panamount", m_slideshowPanAmount, 0.0f, 20.0f);
     XMLUtils::GetFloat(pElement, "zoomamount", m_slideshowZoomAmount, 0.0f, 20.0f);
     XMLUtils::GetFloat(pElement, "blackbarcompensation", m_slideshowBlackBarCompensation, 0.0f, 50.0f);
+  }
+
+  pElement = pRootElement->FirstChildElement("upnpserver");
+  if (pElement)
+  {
+    XMLUtils::GetString(pElement,  "sort",   m_upnpServerSort);
+    m_upnpServerSort.ToLower();
   }
 
   pElement = pRootElement->FirstChildElement("lcd");

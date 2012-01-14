@@ -138,6 +138,8 @@ class CAdvancedSettings
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
 
+    CStdString m_upnpServerSort;
+
     int m_lcdRows;
     int m_lcdColumns;
     int m_lcdAddress1;
