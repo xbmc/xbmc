@@ -6,8 +6,10 @@
 	</requires>
 	<extension point="xbmc.python.weather" library="default.py"/>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="bg">Синоптична прогноза от wunderground.com</summary>
 		<summary lang="en">Weather forecast from wunderground.com</summary>
 		<summary lang="se">Väderprognos från wunderground.com</summary>
+		<description lang="bg">Прогноза за времето осигурена от Weather Underground (http://www.wunderground.com/)</description>
 		<description lang="en">Weather forecast provided by Weather Underground (http://www.wunderground.com/)</description>
 		<description lang="se">Väderprognos tillhandahållen av Weather Underground (http://www.wunderground.com/)</description>
 		<disclaimer lang="en">Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html</disclaimer>

@@ -352,13 +352,16 @@ using namespace XbmcThreads;
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_WebServer(*new CWebServer)
+CApplication::CApplication(void)
+  : m_pPlayer(NULL)
+#ifdef HAS_WEB_SERVER
+  , m_WebServer(*new CWebServer)
+#endif
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
-  m_pPlayer = NULL;
   m_bInhibitIdleShutdown = false;
   m_bScreenSave = false;
   m_dpms = NULL;
@@ -401,7 +404,9 @@ CApplication::CApplication(void) : m_WebServer(*new CWebServer)
 
 CApplication::~CApplication(void)
 {
+#ifdef HAS_WEB_SERVER
   delete &m_WebServer;
+#endif
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
   delete m_Autorun;
@@ -448,7 +453,20 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_VIDEOMOVE:
-      g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
+      if (g_advancedSettings.m_fullScreen)
+      {
+        // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
+        RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
+        if (newRes != g_graphicsContext.GetVideoResolution())
+        {
+          g_guiSettings.SetResolution(newRes);
+          g_graphicsContext.SetVideoResolution(newRes);
+        }
+      }
+      else
+      {
+        g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
+      }
       break;
     case XBMC_USEREVENT:
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
@@ -1293,7 +1311,7 @@ bool CApplication::StartWebServer()
       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1319,7 +1337,7 @@ void CApplication::StopWebServer()
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("servers.webserver");
-      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
+      CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-http");
       CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
@@ -1351,7 +1369,7 @@ void CApplication::StartAirplayServer()
       }
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
-      txt["srcvers"] = "101.28";
+      txt["srcvers"] = AIRPLAY_SERVER_VERSION_STR;
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
     }
   }
@@ -1390,7 +1408,7 @@ bool CApplication::StartJSONRPCServer()
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
       std::map<std::string, std::string> txt;  
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc-tcp._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
@@ -1405,7 +1423,7 @@ void CApplication::StopJSONRPCServer(bool bWait)
 {
 #ifdef HAS_JSONRPC
   CTCPServer::StopServer(bWait);
-  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
+  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");
 #endif
 }
 

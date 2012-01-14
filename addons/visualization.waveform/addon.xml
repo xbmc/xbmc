@@ -10,6 +10,7 @@
     library_windx="Waveform_win32.vis"
     library_osx="Waveform.vis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Визуализация представяща графика на две осцилиращи вълни на екрана</summary>
     <summary lang="en">Visualization showing 2 Waveform Graphs on the screen</summary>
     <summary lang="es">Visualización mostrando 2 gráficos de ondas en la pantalla</summary>
     <summary lang="de">Eine Visualisierung, welche 2 wellenförmige Grafiken auf dem Bildschirm zeigt</summary>
@@ -23,6 +24,7 @@
     <summary lang="ro">Vizualizare care arată 2 grafice Waveform pe ecran</summary>
     <summary lang="se">Visualisering som visar 2 vågformsgrafer på skärmen</summary>
     <summary lang="zh">在屏幕上显示两个波形图的可视化效果</summary>
+    <description lang="bg">Waveform представя графика на две осцилиращи вълни на екрана, по една за всеки канал (ляв и десен), който реагират на ритъма на музиката.</description>
     <description lang="en">Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
     <description lang="es">Waveform es un sencillo visualizador que muestra 2 gráficos de ondas en la pantalla, uno para cada canal, derecho e izquierdo, que se mueven al ritmo de la música.</description>
     <description lang="de">Waveform  ist eine einfache Visualisierung, welche 2 wellenförmige Grafiken zeigt. Je eine Grafik für den linken und rechten Kanal, welche sich im Takt der Musik bewegen</description>

@@ -11,6 +11,7 @@
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="bg">Инсталира добавки от XBMC.org</summary>
 		<summary lang="en">Install Add-ons from XBMC.org</summary>
 		<summary lang="de">Installiere Add-ons von XBMC.org</summary>
 		<summary lang="es">Instalar Add-ons de XBMC.org</summary>
@@ -25,6 +26,7 @@
 		<summary lang="ru">Установить Дополнения с XBMC.org</summary>
 		<summary lang="se">Installera tillägg från XBMC.org</summary>
 		<summary lang="zh">从XBMC.org安装扩展功能</summary>
+		<description lang="bg">Сваля и инсталира добавки от официалното хранилище за добавки на XBMC.org.[CR]  Чрез него ще можете да се възползвате от системата ни от огледални сървъри, която ще ви помогне да сваляте с висока скорост, от район близо до вас.[CR]  Добавките от хранилището са преминали през няколко основни теста, но въпреки това ако се натъкнете на неработеща или проблемна добавка, молим да уведомите екипа на XBMC, за да бъдат предприети необходимите действия.</description>
 		<description lang="en">Download and install add-ons from the Official XBMC.org addon repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All addons on this repository have under gone basic testing, if you find a broken or not working addon please report it to Team XBMC so we can take any action needed.</description>
 		<description lang="de">Download und installiere Add-Ons aus dem offiziellen XBMC.org Add-On Repository.[CR]  Durch die Nutzung des offiziellen Repository hat man Zugriff auf das große Datei Mirror System welches schnelle Downloads aus der Nähe bereit stellt.[CR]  Alle Add-Ons im Repository wurden getestet, sollte dennoch ein Add-On Fehler haben oder gar nicht funktionieren, sollte dieser Fehler an das Team XBMC gemeldet werden, damit die nötigen Schritte getroffen werden können</description>
 		<description lang="es">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR]  Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a tí.[CR]  Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>

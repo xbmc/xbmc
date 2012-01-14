@@ -57,12 +57,12 @@ CAutorun::CAutorun()
 CAutorun::~CAutorun()
 {}
 
-void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
+void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
 {
   if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
-  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
 
   if ( pInfo == NULL )
     return ;
@@ -70,7 +70,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool sta
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
-  PlayDisc("", bypassSettings, startFromBeginning);
+  PlayDisc(path, bypassSettings, startFromBeginning);
 }
 
 bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startFromBeginning)

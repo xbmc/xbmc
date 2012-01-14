@@ -13,6 +13,7 @@
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Информация за албуми от AllMusic.com</summary>
     <summary lang="en">AllMusic album information</summary>
     <summary lang="de">Alben Scraper für AllMusic.com</summary>
     <summary lang="es">Scraper de Álbums de AllMusic</summary>
@@ -26,6 +27,10 @@
     <summary lang="ru">Информация об альбоме из AllMusic</summary>
     <summary lang="se">AllMusic albuminformation</summary>
     <summary lang="zh">AllMusic音乐专辑信息</summary>
+    <description lang="bg">Попълнете метаинформацията в библиотеката си от AllMusic.com.
+Уебсайтът allmusic.com е създаден през 19995, като място за страстни музикални фенове.
+Редакторският колектив AMG заедно със стотици експерти (и малко фанатици на тема allmusic.com) са направили сайта един от най-подробните (и най-често ползваните) източници на информация на музикална тема. Всички те са се посветили на създаването и поддържането на базата от данни, на разпространяването на съдържание от AMG, което се очаква от любителите на музика и професионалисти в музикалния отрасъл.
+Засегнати са всички жанрове и стилове музика. От най-комерсиалните и популярни до най-невъзприетите. Критиката към артисти и албуми се прави в контекста на съответните им жанрове - от опера до гаражен рок. Така се осигури актуална информация за почитателите на всеки стил, за любимите им артисти и се представят нови творби.</description>
     <description lang="en">Use AllMusic.com to fill your library metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.

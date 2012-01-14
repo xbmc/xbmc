@@ -40,6 +40,7 @@
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -140,13 +141,16 @@ void CGUIDialogVideoBookmarks::Update()
   CBookmark resumemark;
 
   // open the d/b and retrieve the bookmarks for the current movie
+  CStdString path = g_application.CurrentFile();
+  if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks);
-  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks, CBookmark::EPISODE, true);
+  videoDatabase.GetBookMarksForFile(path, m_bookmarks);
+  videoDatabase.GetBookMarksForFile(path, m_bookmarks, CBookmark::EPISODE, true);
   /* push in the resume mark first */
-  if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
-    m_bookmarks.insert(m_bookmarks.begin(), resumemark);
+  if( videoDatabase.GetResumeBookMark(path, resumemark) )
+    m_bookmarks.push_back(resumemark);
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
@@ -215,9 +219,12 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::STANDARD);
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::RESUME);
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::EPISODE);
+  CStdString path = g_application.CurrentFile();
+  if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::STANDARD);
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::RESUME);
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::EPISODE);
   videoDatabase.Close();
   Update();
 }
@@ -273,7 +280,12 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   if (tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
   else
-    videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
+  {
+    CStdString path = g_application.CurrentFile();
+    if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+      path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+    videoDatabase.AddBookMarkToFile(path, bookmark, CBookmark::STANDARD);
+  }
   videoDatabase.Close();
   Update();
 }

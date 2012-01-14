@@ -68,6 +68,9 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   else
     m_iPlayableItems++;
 
+  // set 'IsPlayable' property - needed for properly handling plugin:// URLs
+  item->SetProperty("IsPlayable", true);
+
   //CLog::Log(LOGDEBUG,"%s item:(%02i/%02i)[%s]", __FUNCTION__, iPosition, item->m_iprogramCount, item->GetPath().c_str());
   if (iPosition == iOldSize)
     m_vecItems.push_back(item);

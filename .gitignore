@@ -374,6 +374,7 @@ lib/cmyth/Makefile
 /system/libcmyth.dll
 /system/libcurl.dll
 /system/libeay32.dll
+/system/librtmp.dll
 /system/libexif.dll
 /system/libexpat.dll
 /system/libid3tag.dll

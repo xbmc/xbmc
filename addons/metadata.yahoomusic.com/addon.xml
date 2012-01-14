@@ -10,6 +10,7 @@
              language="en"
              library="yahoomusic.xml"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Сваля инф. за музикални клипове от Yahoo!</summary>
     <summary lang="en">Yahoo! Music Video Scraper</summary>
     <summary lang="fi">Yahoo! musiikkivideotietojen lataaja</summary>
     <summary lang="hu">Yahoo! videóklip leolvasó</summary>
@@ -17,6 +18,7 @@
     <summary lang="pl">Scraper teledysków Yahoo!</summary>
     <summary lang="pt">Scraper de música Yahoo!</summary>
     <summary lang="se">Skrapa för Yahoo! musik</summary>
+    <description lang="bg">Сваля информация за музикални клипове</description>
     <description lang="en">Download Music Video information</description>
     <description lang="fi">Lataa musiikkivideoiden tiedot</description>
     <description lang="hu">Videóklip információk letöltése a Yahoo! webhelyről</description>

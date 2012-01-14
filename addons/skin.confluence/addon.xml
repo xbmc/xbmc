@@ -15,6 +15,7 @@
     <res width="1280" height="720" aspect="16:9" default="true" folder="720p" />
   </extension>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Облик Confluence от Jezz_X. (стандартния облик на XBMC)</summary>
     <summary lang="ca">Aparença Confluence, per Jezz_X. (Aparença per defecte de l'XBMC)</summary>
     <summary lang="en">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="es">Confluence skin por Jezz_X. (skin por defecto)</summary>
@@ -28,6 +29,7 @@
     <summary lang="ro">Costum Confluence de Jezz_X. (costum implicit)</summary>
     <summary lang="se">Confluence-skalet av Jezz_X. (XBMC standardskal)s</summary>
     <summary lang="zh">Jezz_X开发的Confluence皮肤</summary>
+    <description lang="bg">Confluence е стандартният облик на XBMC 9.11 и по-новите версии. Представлява смесица от концепциите на много от популярните облици. Целта е да се интегрират тези добри идеи в подходящ и удобен вид за хора, които се сблъскват за първи път с XBMC.</description>
     <description lang="ca">Confluence és l'aparença per defecte de l'XBMC 9.11 i superior. És una combinació de conceptes de moltes aparences populars, i intenta adoptar i integrar les seves bones idees en una aparença que sigui senzilla d'entendre i utilitzar per els nous usuaris d'XBMC.</description>
     <description lang="en">Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
     <description lang="es">Confluence es la skin por defecto de XBMC 9.11 y posteriores. Es una combinación de conceptos de muchas skins populares, e intenta abarcare e integrar lo mejor de ellas en una skin que sea sencilla de entender y utilizar para los nuevos usuarios de XBMC.</description>

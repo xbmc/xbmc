@@ -16,6 +16,7 @@
     </settings>
   </extension>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">projectM ще ви отведе на пътешествие между звуковите вълни, които чувате</summary>
     <summary lang="en">projectM takes you flying through the soundwaves you're hearing</summary>
     <summary lang="es">projectM te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="fi">projectM lennättää sinut ääniaaltojen läpi</summary>
@@ -27,6 +28,9 @@
     <summary lang="pt">O projectM leva-o a voar nas ondas sonoras que está a ouvir</summary>
     <summary lang="se">projectM tar dig flygande genom ljudvågorna du hör</summary>
     <summary lang="zh">projectM带你与声波一起飞翔</summary>
+    <description lang="bg">projectM е страхотна визуализация, плод на упорит труд от страна на общността. В света на Unix не съществува нищо по-добро. Потребители, като вас, създават предварително комбинации от настройки, които ползват като модел за визуализацията и така свързват звука с невероятни визуални ефекти. Пробвайте!
+Визуализацията projectM е преработка на Milkdrop под лиценза LGPL, основана на OpenGL.
+Всичко необходимо на projectM е видео карта с 3D и любимата ви музика.</description>
     <description lang="en">projectM is an awesome music visualizer. There is nothing better in the world of Unix. projectM's greatness comes from the hard work of the community. Users like you can create presets that connect music with incredible visuals. Try it!
 projectM Visualization is an LGPL'ed reimplementation of Milkdrop under OpenGL
 All projectM requires is a video card with 3D acceleration and your favorite music.</description>
