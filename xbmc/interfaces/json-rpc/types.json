@@ -21,6 +21,10 @@
     },
     "additionalProperties": false
   },
+  "Global.IncrementDecrement": {
+    "type": "string",
+    "enum": [ "increment", "decrement" ]
+  },
   "Configuration.Notifications": {
     "type": "object",
     "properties": {

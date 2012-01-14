@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -48,6 +48,10 @@ namespace JSONRPC
         "\"milliseconds\": { \"type\": \"integer\", \"required\": true, \"minimum\": 0, \"maximum\": 999 }"
       "},"
       "\"additionalProperties\": false"
+    "}",
+    "\"Global.IncrementDecrement\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"increment\", \"decrement\" ]"
     "}",
     "\"Configuration.Notifications\": {"
       "\"type\": \"object\","
@@ -726,7 +730,7 @@ namespace JSONRPC
         "\"albumid\": { \"$ref\": \"Library.Id\" },"
         "\"setid\": { \"$ref\": \"Array.Integer\" },"
         "\"tvshowid\": { \"$ref\": \"Library.Id\" },"
-        "\"watchedepisodes\": { \"type\": \"integer\" },"
+        "\"watchedepisodes\": { \"type\": \"integer\" }"
       "}"
     "}",
     "\"List.Fields.Files\": {"
@@ -1023,7 +1027,7 @@ namespace JSONRPC
         "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true },"
         "{ \"name\": \"speed\", \"type\": ["
             "{ \"type\": \"integer\", \"required\": true, \"enum\": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32 ] },"
-            "{ \"type\": \"string\", \"required\": true, \"enum\": [ \"increment\", \"decrement\" ] } "
+            "{ \"$ref\": \"Global.IncrementDecrement\", \"required\": true }"
           "],"
           "\"required\": true"
         "}"
@@ -2151,7 +2155,12 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
-        "{ \"name\": \"volume\", \"type\": \"integer\", \"minimum\": 0, \"maximum\": 100, \"required\": true }"
+        "{ \"name\": \"volume\", \"type\": ["
+            "{ \"type\": \"integer\", \"minimum\": 0, \"maximum\": 100, \"required\": true },"
+            "{ \"$ref\": \"Global.IncrementDecrement\", \"required\": true }"
+          "],"
+          "\"required\": true"
+        "}"
       "],"
       "\"returns\": \"integer\""
     "}",

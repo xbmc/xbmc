@@ -196,7 +196,7 @@
       { "name": "playerid", "$ref": "Player.Id", "required": true },
       { "name": "speed", "type": [
           { "type": "integer", "required": true, "enum": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32 ] },
-          { "type": "string", "required": true, "enum": [ "increment", "decrement" ] } 
+          { "$ref": "Global.IncrementDecrement", "required": true }
         ],
         "required": true
       }
@@ -1324,7 +1324,12 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "volume", "type": "integer", "minimum": 0, "maximum": 100, "required": true }
+      { "name": "volume", "type": [
+          { "type": "integer", "minimum": 0, "maximum": 100, "required": true },
+          { "$ref": "Global.IncrementDecrement", "required": true }
+        ],
+        "required": true
+      }
     ],
     "returns": "integer"
   },
