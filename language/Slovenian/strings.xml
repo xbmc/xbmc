@@ -1010,6 +1010,8 @@
   <string id="13014">Pomanjšaj</string>
   <string id="13015">Ukaz gumba za izklop</string>
   <string id="13016">Izključi sistem</string>
+  <string id="13017">Spodbudi izklop ob nedejavnosti</string>
+  <string id="13018">Omogoči izklop ob nedejavnosti</string>
 
   <string id="13020">Je druga seja aktivna, ssh?</string>
   <string id="13021">Priključen zunanji trdi disk</string>
@@ -1551,14 +1553,14 @@
   <string id="17999">%i dni</string>
 
   <!-- strings 19000 thru 19999 used for tv interface -->
-  <string id="19000">Preklopi na kanal</string>
+  <string id="19000">Preklopi na program</string>
   <string id="19001">Ločite iskalne besede z AND (in), OR (ali) in/ali NOT (brez).</string>
   <string id="19002">ali uporabite celotne fraze, kot je "Čarovnik iz Oza".</string>
-  <string id="19003">Poišči podobne programe</string>
+  <string id="19003">Poišči podobne oddaje</string>
   <string id="19004">Uvažam EPG iz odjemalcev</string>
   <string id="19005">Informacija o pretoku PVR</string>
-  <string id="19006">Prejemam napravo</string>
-  <string id="19007">Prejemam status naprave</string>
+  <string id="19006">Naprava zajema</string>
+  <string id="19007">Status naprave</string>
   <string id="19008">Kakovost signala</string>
   <string id="19009">SNR</string>
   <string id="19010">BER</string>
@@ -1567,7 +1569,7 @@
   <string id="19013">Brezplačno</string>
   <string id="19014">Fiksno</string>
   <string id="19015">Enkripcija</string>
-  <string id="19016">Hrbtenice PVR %i - %s</string>
+  <string id="19016">Hrbtenica PVR %i - %s</string>
   <string id="19017">Posnetki TV</string>
   <string id="19018">Privzeta mapa za sličice PVR</string>
   <string id="19019">Programi</string>
@@ -1583,7 +1585,7 @@
   <string id="19029">Program</string>
   <string id="19030">Trenutno</string>
   <string id="19031">Naslednje</string>
-  <string id="19032">Timeline</string>
+  <string id="19032">Časovni trak</string>
   <string id="19033">Informacije</string>
   <string id="19034">Snemanje na tem programu se je že pričelo</string>
   <string id="19035">Tega programa ni mogoče predvajati. Preverite zapisnik za podrobnosti.</string>
@@ -1594,12 +1596,12 @@
   <string id="19040">Časovnik</string>
   <string id="19041">Ste prepričani, da želite preimenovati ta posnetek?</string>
   <string id="19042">Ste prepričani, da želite preimenovati ta posnetek?</string>
-  <string id="19043">Posnetek!</string>
+  <string id="19043">Snemanje</string>
   <string id="19044">Preverite svoje nastavitve ali pa poiščite več informacij v zapisniku.</string>
   <string id="19045">Noben odjemalec PVR še ni bil zagnan. Počakajte na odjemalce PVR ali pa poiščite več informacij v zapisniku.</string>
   <string id="19046">Nov program</string>
   <string id="19047">Informacija o oddaji</string>
-  <string id="19048">Upravljanje skup</string>
+  <string id="19048">Upravljanje skupin</string>
   <string id="19049">Prikaži program</string>
   <string id="19050">Prikaži vidne programe</string>
   <string id="19051">Prikaži skrite programe</string>
@@ -1684,7 +1686,7 @@
   <string id="19130">Najmanjše trajanje</string>
   <string id="19131">Največje trajanje</string>
   <string id="19132">Vključi neznane žanre</string>
-  <string id="19133">Iskalno geslo</string>
+  <string id="19133">Ključne besede</string>
   <string id="19134">Vključi opis</string>
   <string id="19135">Občutljivo na velikosti črk</string>
   <string id="19136">Program ni na voljo</string>
@@ -1720,7 +1722,7 @@
   <string id="19167">Poišči manjkajoče ikone</string>
   <string id="19168">Preklopi programe brez pritiska na OK</string>
   <string id="19169">Skrij informacijo o videu</string>
-  <string id="19170">Čas pričenjanja predvajanja</string>
+  <string id="19170">Zamik pri začetku predvajanja</string>
   <string id="19171">Predvajanje prični pomanjšano</string>
   <string id="19172">Takošnje trajanje snemanja</string>
   <string id="19173">Privzeta prioriteta snemanja</string>
@@ -1731,8 +1733,8 @@
   <string id="19178">Prikažite informacijo o programu, ko prekljapljate med njimi</string>
   <string id="19179">Samodejno skrij informacijo o programu</string>
   <string id="19180">TV</string>
-  <string id="19181">Menu/OSD</string>
-  <string id="19182">Količina prikazanih dni EPG</string>
+  <string id="19181">Meni/OSD</string>
+  <string id="19182">Količina prikazanih dni v EPG</string>
   <string id="19184">Trajanje informacij o programu</string>
   <string id="19185">Ponastavi bazo PVR</string>
   <string id="19186">Vsi podatki v bazi PVR bodo izbrisani</string>
@@ -1784,6 +1786,21 @@
   <string id="19232">Počisti rezultate iskanja</string>
   <string id="19233">Prikaži obvestila o spremembah časovnikov</string>
   <string id="19234">Uporabi številke programov s hrbtenice (samo pri enem vključenem dodatku PVR)</string>
+  <string id="19235">Upravljalec PVR se zaganja</string>
+  <string id="19236">uvažanje programov</string>
+  <string id="19237">uvažanje časovnikov</string>
+  <string id="19238">uvažanje posnetkov</string>
+  <string id="19239">zaganjanje niti v ozadju</string>
+  <string id="19240">Noben dodatek PVR ni omogočen</string>
+  <string id="19241">Upravljalec PVR je bil omogočen brez</string>
+  <string id="19242">omogočenih dodatkov. Omogočite vsaj enega</string>
+  <string id="19243">za uporabo funkcionalnosti PVR.</string>
+
+  <string id="19244">Čas nedejavnosti hrbtenice</string>
+  <string id="19245">Nastavi ukaz za zbujanje (cmd [timestamp])</string>
+  <string id="19246">Zbudi se pred snemanjem</string>
+  <string id="19247">Dnevno zbujanje</string>
+  <string id="19248">Čas dnevnega zbujanja (HH:MM:SS)</string>
 
   <string id="19499">Drugo/Neznano</string>
   <string id="19500">Film/Drama</string>
