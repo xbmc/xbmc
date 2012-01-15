@@ -11,6 +11,7 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <minversion>20000</minversion>
+    <summary lang="bg">Библиотека за сваляне на инф. от LastFM</summary>
     <summary lang="en">LastFM Scraper Library</summary>
     <summary lang="de">Musik-Scraper für LastFM</summary>
     <summary lang="es">Scraper de música de LastFM</summary>
@@ -23,6 +24,7 @@
     <summary lang="ru">Обработчик для LastFM</summary>
     <summary lang="se">Skrapebibliotek för LastFM</summary>
     <summary lang="zh">LastFM刮削器代码库</summary>
+    <description lang="bg">Извлича инф. за музикални файлове от www.last.fm</description>
     <description lang="en">Download Music information from www.last.fm</description>
     <description lang="de">Downloade Musik informationen von www.last.fm</description>
     <description lang="es">Descargar información musical de www.last.fm</description>

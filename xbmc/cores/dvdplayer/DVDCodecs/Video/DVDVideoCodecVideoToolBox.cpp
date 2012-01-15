@@ -1185,9 +1185,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    if (profile == 77 && level == 32 && m_max_ref_frames != 4)
+    if (profile == 77 && level == 32 && m_max_ref_frames > 4)
     {
-      // Main@L3.2, VTB cannot handle it if not 4 ref frames (ie. flash video)
+      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
       CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
         __FUNCTION__, m_max_ref_frames);
       return false;

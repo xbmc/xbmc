@@ -136,6 +136,7 @@ public:
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
   virtual int  GetNumScreens() { return m_MonitorsInfo.size(); };
+  virtual int  GetCurrentScreen();
   virtual void ShowOSMouse(bool show);
   virtual bool WindowedMode() { return true; }
   virtual bool HasInertialGestures(){ return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling 
@@ -182,6 +183,7 @@ protected:
   HICON m_hIcon;
   std::vector<MONITOR_DETAILS> m_MonitorsInfo;
   int m_nPrimary;
+  bool m_ValidWindowedPosition;
 };
 
 extern HWND g_hWnd;

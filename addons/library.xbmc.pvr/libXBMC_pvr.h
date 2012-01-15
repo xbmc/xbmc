@@ -26,32 +26,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "xbmc_pvr_types.h"
+#include "../library.xbmc.addon/libXBMC_addon.h"
 
-#ifndef _LINUX
-#include "../library.xbmc.addon/dlfcn-win32.h"
-#define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr.dll"
+#ifdef _WIN32
+#define PVR_HELPER_DLL "\\library.xbmc.pvr\\libXBMC_pvr" ADDON_HELPER_EXT
 #else
-#include <dlfcn.h>
-#if defined(__APPLE__)
-#if defined(__POWERPC__)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-osx.so"
-#elif defined(__arm__)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-arm-osx.so"
-#else
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-x86-osx.so"
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-" ADDON_HELPER_ARCH "-" ADDON_HELPER_PLATFORM ADDON_HELPER_EXT
 #endif
-#elif defined(__x86_64__)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-x86_64-linux.so"
-#elif defined(_POWERPC)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-linux.so"
-#elif defined(_POWERPC64)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc64-linux.so"
-#elif defined(_ARMEL)
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-arm.so"
-#else /* !__x86_64__ && !__powerpc__ */
-#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-i486-linux.so"
-#endif /* __x86_64__ */
-#endif /* _LINUX */
 
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64

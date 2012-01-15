@@ -428,52 +428,62 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
   PVR_STREAM_PROPERTIES old = m_Streams;
 
-  for (unsigned int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
+
+  while (!resp->end()) 
   {
     uint32_t index = resp->extract_U32();
-    if (index == m_Streams.stream[i].iPhysicalId)
+    unsigned int i;
+    for (i = 0; i < m_Streams.iStreamCount; i++)
     {
-      if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
+      if (index == m_Streams.stream[i].iPhysicalId)
       {
-        const char *language = resp->extract_String();
-
-        m_Streams.stream[i].iChannels          = resp->extract_U32();
-        m_Streams.stream[i].iSampleRate        = resp->extract_U32();
-        m_Streams.stream[i].iBlockAlign        = resp->extract_U32();
-        m_Streams.stream[i].iBitRate           = resp->extract_U32();
-        m_Streams.stream[i].iBitsPerSample   = resp->extract_U32();
-        m_Streams.stream[i].strLanguage[0]       = language[0];
-        m_Streams.stream[i].strLanguage[1]       = language[1];
-        m_Streams.stream[i].strLanguage[2]       = language[2];
-        m_Streams.stream[i].strLanguage[3]       = 0;
-
-        delete[] language;
-      }
-      else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
-      {
-        m_Streams.stream[i].iFPSScale         = resp->extract_U32();
-        m_Streams.stream[i].iFPSRate          = resp->extract_U32();
-        m_Streams.stream[i].iHeight           = resp->extract_U32();
-        m_Streams.stream[i].iWidth            = resp->extract_U32();
-        m_Streams.stream[i].fAspect           = resp->extract_Double();
-      }
-      else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
-      {
-        const char *language    = resp->extract_String();
-        uint32_t composition_id = resp->extract_U32();
-        uint32_t ancillary_id   = resp->extract_U32();
-
-        m_Streams.stream[i].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
-        m_Streams.stream[i].strLanguage[0]= language[0];
-        m_Streams.stream[i].strLanguage[1]= language[1];
-        m_Streams.stream[i].strLanguage[2]= language[2];
-        m_Streams.stream[i].strLanguage[3]= 0;
-
-        delete[] language;
+        if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
+        {
+          const char *language = resp->extract_String();
+          
+          m_Streams.stream[i].iChannels          = resp->extract_U32();
+          m_Streams.stream[i].iSampleRate        = resp->extract_U32();
+          m_Streams.stream[i].iBlockAlign        = resp->extract_U32();
+          m_Streams.stream[i].iBitRate           = resp->extract_U32();
+          m_Streams.stream[i].iBitsPerSample   = resp->extract_U32();
+          m_Streams.stream[i].strLanguage[0]       = language[0];
+          m_Streams.stream[i].strLanguage[1]       = language[1];
+          m_Streams.stream[i].strLanguage[2]       = language[2];
+          m_Streams.stream[i].strLanguage[3]       = 0;
+          
+          delete[] language;
+        }
+        else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
+        {
+          m_Streams.stream[i].iFPSScale         = resp->extract_U32();
+          m_Streams.stream[i].iFPSRate          = resp->extract_U32();
+          m_Streams.stream[i].iHeight           = resp->extract_U32();
+          m_Streams.stream[i].iWidth            = resp->extract_U32();
+          m_Streams.stream[i].fAspect           = resp->extract_Double();
+        }
+        else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
+        {
+          const char *language    = resp->extract_String();
+          uint32_t composition_id = resp->extract_U32();
+          uint32_t ancillary_id   = resp->extract_U32();
+          
+          m_Streams.stream[i].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
+          m_Streams.stream[i].strLanguage[0]= language[0];
+          m_Streams.stream[i].strLanguage[1]= language[1];
+          m_Streams.stream[i].strLanguage[2]= language[2];
+          m_Streams.stream[i].strLanguage[3]= 0;
+          
+          delete[] language;
+        }
+        break;
       }
     }
+    if (i >= m_Streams.iStreamCount)
+    {
+      XBMC->Log(LOG_ERROR, "%s - unknown stream id", __FUNCTION__);
+      break;
+    }
   }
-
   return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);
 }
 
