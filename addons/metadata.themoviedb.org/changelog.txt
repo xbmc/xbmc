@@ -1,3 +1,6 @@
+[B]2.0.2[/B]
+- changed: made the youtube addon (trailers) an optional dependency
+
 [B]2.0.1[/B]
 - fixed: imdb url nfo not resolving tmdb id
 
