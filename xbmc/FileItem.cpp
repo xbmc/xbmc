@@ -56,6 +56,7 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "ThumbnailCache.h"
+#include "utils/Mime.h"
 
 using namespace std;
 using namespace XFILE;
@@ -438,7 +439,7 @@ void CFileItem::Serialize(CVariant& value)
   value["size"] = (int) m_dwSize / 1000;
   value["DVDLabel"] = m_strDVDLabel;
   value["title"] = m_strTitle;
-  value["mimetype"] = m_mimetype;
+  value["mimetype"] = GetMimeType();
   value["extrainfo"] = m_extrainfo;
 
   if (m_musicInfoTag)
@@ -1102,6 +1103,8 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
         m_ref.Delete(i,m_ref.length()-i);
       m_ref.Trim();
     }
+    else
+      m_ref = CMime::GetMimeType(*this);
 
     // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )

@@ -847,6 +847,7 @@
     <ClCompile Include="..\..\xbmc\utils\LCD.cpp" />
     <ClCompile Include="..\..\xbmc\utils\log.cpp" />
     <ClCompile Include="..\..\xbmc\utils\md5.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\Mime.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PCMAmplifier.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceSample.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceStats.cpp" />
@@ -1758,6 +1759,7 @@
     <ClInclude Include="..\..\xbmc\utils\log.h" />
     <ClInclude Include="..\..\xbmc\utils\MathUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\md5.h" />
+    <ClInclude Include="..\..\xbmc\utils\Mime.h" />
     <ClInclude Include="..\..\xbmc\utils\PCMAmplifier.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceSample.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceStats.h" />
