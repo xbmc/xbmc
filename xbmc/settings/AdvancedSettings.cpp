@@ -114,7 +114,8 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_upnpServerSort = "label";
+  m_upnpVideoServerSort = "default";
+  m_upnpMusicServerSort = "default";
 
   m_lcdRows = 4;
   m_lcdColumns = 20;
@@ -595,8 +596,10 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("upnpserver");
   if (pElement)
   {
-    XMLUtils::GetString(pElement,  "sort",   m_upnpServerSort);
-    m_upnpServerSort.ToLower();
+    XMLUtils::GetString(pElement,  "videosort",   m_upnpVideoServerSort);
+    m_upnpVideoServerSort.ToLower();
+    XMLUtils::GetString(pElement,  "musicsort",   m_upnpMusicServerSort);
+    m_upnpMusicServerSort.ToLower();
   }
 
   pElement = pRootElement->FirstChildElement("lcd");

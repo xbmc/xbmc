@@ -1096,15 +1096,32 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
-    // The sort method can be set in the advanced settings
-    if (g_advancedSettings.m_upnpServerSort == "label")
-      items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-    else if (g_advancedSettings.m_upnpServerSort == "fullpath")
-      items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
-    else if (g_advancedSettings.m_upnpServerSort == "none")
+    // Get the sort order
+    CStdString sortorder;
+    if (parent_id.Left(5) == "video")
+    {
+      sortorder = g_advancedSettings.m_upnpVideoServerSort;
+      if (sortorder == "default") sortorder = "title";
+    }
+    else
+    {
+      sortorder = g_advancedSettings.m_upnpMusicServerSort;
+      if (sortorder == "default") sortorder = "track";
+    }
+
+    // Sort the list
+    if (sortorder == "title")
+      items.Sort(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_ORDER_ASC);
+    else if (sortorder == "track")
+      items.Sort(SORT_METHOD_TRACKNUM, SORT_ORDER_ASC);
+    else if (sortorder == "none")
       ; // no sorting 
+    else if (sortorder == "label")
+      items.Sort(SORT_METHOD_LABEL_IGNORE_THE, SORT_ORDER_ASC);
+    else if (sortorder == "fullpath")
+      items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
     else // If the sort method is unre
-      CLog::Log(LOGERROR, "%s - Unknown sort order: %s", __FUNCTION__, g_advancedSettings.m_upnpServerSort);
+      CLog::Log(LOGERROR, "%s - Unknown sort order: %s", __FUNCTION__, sortorder);
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
