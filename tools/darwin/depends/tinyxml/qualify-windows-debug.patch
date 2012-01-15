@@ -1,0 +1,10 @@
+--- a/include/tinyxml.h	2012-01-15 16:19:30.000000000 -0500
++++ b/include/tinyxml.h	2012-01-15 16:23:05.000000000 -0500
+@@ -43,7 +43,7 @@ distribution.
+ #include <assert.h>
+ 
+ // Help out windows:
+-#if defined( _DEBUG ) && !defined( DEBUG )
++#if !defined(__APPLE__) && defined( _DEBUG ) && !defined( DEBUG )
+ #define DEBUG
+ #endif
