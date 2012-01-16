@@ -971,6 +971,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   bool bCompare = true;
   bool bControlDependend = false;//flag if the condition depends on another control
   vector<CStdString> conditionVec;
+
   if (condition.Find("+") >= 0)
     CUtil::Tokenize(condition, conditionVec, "+");
   else
@@ -1042,11 +1043,7 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
   
   if (!bControlDependend)//if condition doesn't depend on another control - try if its an infobool expression
   {
-    int conditionId = g_infoManager.Register(condition, GetID());      
-    if (conditionId > 0)
-    {
-      bCondition = g_infoManager.GetBoolValue(conditionId);
-    }
+    bCondition = g_infoManager.EvaluateBool(condition);
   }
   
   return bCondition;
