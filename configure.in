@@ -821,6 +821,7 @@ if test "$host_vendor" = "apple" ; then
 else
   case $host_os in
     linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
+    freebsd*) AC_CHECK_LIB([iconv], [main],, AC_MSG_ERROR($missing_library)) ;;
   esac
   case $host_os in
     freebsd*) ;;
