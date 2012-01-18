@@ -561,7 +561,7 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
     }
     else 
     {
-      Zoom(m_iZoomFactor - event.m_offsetX);
+      Zoom((int)(m_iZoomFactor - event.m_offsetX));
     }
     return EVENT_RESULT_HANDLED;    
   }

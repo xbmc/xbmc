@@ -499,7 +499,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return bHasButton;
 
   CLog::Log(LOGDEBUG, "%s - received key %2x", __FUNCTION__, key.keycode);
-  DWORD iButton = 0;
+  WORD iButton = 0;
   bHasButton = true;
 
   switch (key.keycode)
