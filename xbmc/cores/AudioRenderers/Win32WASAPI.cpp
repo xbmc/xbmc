@@ -140,7 +140,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_bMuting = false;
   m_uiChannels = iChannels;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bAudioPassthrough;
+  m_bPassthrough = (bAudioPassthrough != ENCODED_NONE);
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
