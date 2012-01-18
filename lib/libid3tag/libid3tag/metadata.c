@@ -309,7 +309,11 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
     if (frame && frame->nfields == 4)
     {
       //get short description
-      ucs4 = id3_field_getstring(id3_frame_field(frame, 2));
+      field = id3_frame_field(frame, 2);
+      if (field == 0)
+        continue;
+      
+      ucs4 = id3_field_getstring(field);
 
       // Multiple values are allowed per comment field, but storing different comment
       // frames requires a different description for each frame. The first COMM frame
@@ -318,7 +322,12 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
       if (ucs4 && *ucs4 == 0)//if short description on this frame is empty - consider this the wanted comment frame
       {
         //fetch encoding of the frame
-        *encoding = id3_field_gettextencoding(id3_frame_field(frame, 0));
+        field = id3_frame_field(frame, 0);
+        
+        if(field == 0)
+          continue;
+          
+        *encoding = id3_field_gettextencoding(field);
 
         //finally fetch the comment
         field = id3_frame_field(frame, 3);

@@ -1,80 +1,80 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>XBMC</title>
-		<meta http-equiv="Content-Language" content="EN" />
-		<meta http-equiv="Content-Type" content="UTF-8" />
-		<!-- <link rel="search" href="/provider.xml" type="application/opensearchdescription+xml" title="XBMC Library" /> -->
-		<link rel="icon" href="/favicon.ico" type="image/x-icon">
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"> 
-		<!-- <link href="/images/logo.png" rel="image_src" /> -->
-		<meta name="robots" content="NOINDEX, NOFOLLOW">
-		<link href="/css/core.css?1.3.57" rel="stylesheet" type="text/css">
-		<link href="/css/ipad.css?1.0.5" rel="stylesheet" media="only screen and (max-device-width: 1024px)" type="text/css">
-		<script type="text/javascript" src="/js/jquery-1.5.2.js"></script>
-		<script type="text/javascript" src="/js/Launcher.js?1.0.0"></script>
-	</head>
-	<body>
-		<div id="header">
-			<div id="commsErrorPanel" style="display: none;"></div>
-			<div id="navigation">
-				<ul>
-					<li id="remoteControl">Remote</li>
-					<li id="movieLibrary">Movies</li>
-					<li id="tvshowLibrary">TV Shows</li>
-					<li id="musicLibrary">Music</li>
-					<!-- <li id="pictureLibrary">Pictures</li> TODO: needs pagination -->
-					<!-- <li id="settingsPanel">Settings</li> -->
-				</ul>
-			</div>
-			<img src="/images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
-		</div>
-		<div id="body">
-			<div id="topScrollFade" style="display: none;"></div>
-			<div id="content"></div>
-			<div id="overlay" style="display: none;"></div>
-		</div>
-		<div id="footerPopover">
-			<div id="nowPlayingPanel" style="display: none;">
-				<div id="nowPlayingContent">
-					<div id="audioDescription">
-						<div id="audioCoverArt"></div>
-						<div id="audioTrackWrap">
-							<div id="audioArtistTitle"></div>
-							<div id="audioAlbumTitle"></div>
-						</div>
-						<div id="audioTrackTitle"></div>
-						<div id="audioDuration"></div>
-					</div>
-					<div id="videoDescription">
-						<div id="videoCoverArt"></div>
-						<div id="videoTrackWrap">
-							<div id="videoShowTitle"></div>
-						</div>
-						<div id="videoTitle"></div>
-						<div id="videoDuration"></div>
-					</div>
-				</div>
-				<div id="playbackControls">
-					<span id="pbPrev" title="Previous"></span>
-					<span id="pbPause" title="Pause"></span>
-					<span id="pbPlay" title="Play"></span>
-					<span id="pbStop" title="Stop"></span>
-					<span id="pbNext" title="Next"></span>
-					<div id="progressBar">
-						<div class="elapsedTime" style="width: 0%"></div>
-						<span class="progressIndicator"></span>
-					</div>
-				</div>
-				<span id="nextText">Next:</span>
-				<div id="nextTrack" style="display: none;"></div>
-				<div id="nowPlayingPlaylist" style="display: none;"></div>
-			</div>
-		</div>
-		<script type="text/javascript">
-			var mediaLibrary = new MediaLibrary();
-			var nowPlayingManager = new NowPlayingManager();
-			applyDeviceFixes();
-		</script>
-	</body>
+  <head>
+    <title>XBMC</title>
+    <meta http-equiv="Content-Language" content="EN" />
+    <meta http-equiv="Content-Type" content="UTF-8" />
+    <!-- <link rel="search" href="/provider.xml" type="application/opensearchdescription+xml" title="XBMC Library" /> -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <!-- <link href="/images/logo.png" rel="image_src" /> -->
+    <meta name="robots" content="NOINDEX, NOFOLLOW">
+    <link href="/css/core.css?1.3.57" rel="stylesheet" type="text/css">
+    <link href="/css/ipad.css?1.0.5" rel="stylesheet" media="only screen and (max-device-width: 1024px)" type="text/css">
+    <script type="text/javascript" src="/js/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/js/Launcher.js?1.0.0"></script>
+  </head>
+  <body>
+    <div id="header">
+      <div id="commsErrorPanel" style="display: none;"></div>
+      <div id="navigation">
+        <ul>
+          <li id="remoteControl">Remote</li>
+          <li id="movieLibrary">Movies</li>
+          <li id="tvshowLibrary">TV Shows</li>
+          <li id="musicLibrary">Music</li>
+          <!-- <li id="pictureLibrary">Pictures</li> TODO: needs pagination -->
+          <!-- <li id="settingsPanel">Settings</li> -->
+        </ul>
+      </div>
+      <img src="/images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
+    </div>
+    <div id="body">
+      <div id="topScrollFade" style="display: none;"></div>
+      <div id="content"></div>
+      <div id="overlay" style="display: none;"></div>
+    </div>
+    <div id="footerPopover">
+      <div id="nowPlayingPanel" style="display: none;">
+        <div id="nowPlayingContent">
+          <div id="audioDescription">
+            <div id="audioCoverArt"></div>
+            <div id="audioTrackWrap">
+              <div id="audioArtistTitle"></div>
+              <div id="audioAlbumTitle"></div>
+            </div>
+            <div id="audioTrackTitle"></div>
+            <div id="audioDuration"></div>
+          </div>
+          <div id="videoDescription">
+            <div id="videoCoverArt"></div>
+            <div id="videoTrackWrap">
+              <div id="videoShowTitle"></div>
+            </div>
+            <div id="videoTitle"></div>
+            <div id="videoDuration"></div>
+          </div>
+        </div>
+        <div id="playbackControls">
+          <span id="pbPrev" title="Previous"></span>
+          <span id="pbPause" title="Pause"></span>
+          <span id="pbPlay" title="Play"></span>
+          <span id="pbStop" title="Stop"></span>
+          <span id="pbNext" title="Next"></span>
+          <div id="progressBar">
+            <div class="elapsedTime" style="width: 0%"></div>
+            <span class="progressIndicator"></span>
+          </div>
+        </div>
+        <span id="nextText">Next:</span>
+        <div id="nextTrack" style="display: none;"></div>
+        <div id="nowPlayingPlaylist" style="display: none;"></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      var mediaLibrary = new MediaLibrary();
+      var nowPlayingManager = new NowPlayingManager();
+      applyDeviceFixes();
+    </script>
+  </body>
 </html>

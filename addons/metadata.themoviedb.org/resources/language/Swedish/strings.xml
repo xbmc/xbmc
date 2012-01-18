@@ -6,9 +6,9 @@
 <!--$Revision$-->
 <strings>
   <string id="30000">Aktivera fanart</string>
-  <string id="30001">Aktivera trailers från HD-Trailers.net</string>
+  <string id="30001">Aktivera trailers (HD-Trailers.net)</string>
   <string id="30002">Föredraget språk</string>
   <string id="30003">Hämta betyg från IMDb</string>
-  <string id="30004">Aktivera trailers</string>
+  <string id="30004">Aktivera trailers (YouTube)</string>
   <string id="30005">Behåll originaltitel</string>
 </strings>

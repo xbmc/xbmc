@@ -638,10 +638,13 @@ bool CCoreAudioRenderer::Deinitialize()
 
   // Stop rendering
   Stop();
-  // Reset our state
-  m_ChunkLen = 0;
-  m_MaxCacheLen = 0;
-  m_AvgBytesPerSec = 0;
+  // Reset our state but do not diddle internal vars if we are re-init'ing
+  if (!m_init_state.reinit)
+  {
+    m_ChunkLen = 0;
+    m_MaxCacheLen = 0;
+    m_AvgBytesPerSec = 0;
+  }
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AUCompressor.Close();

@@ -136,6 +136,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/InputOperations.h"
+#endif
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
 #endif
@@ -545,7 +548,8 @@ bool CApplication::Create()
 
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
-    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
+      _P(g_settings.m_logFolder).c_str());
     return false;
   }
 
@@ -1314,7 +1318,7 @@ bool CApplication::StartWebServer()
       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-http._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1411,7 +1415,7 @@ bool CApplication::StartJSONRPCServer()
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
       std::map<std::string, std::string> txt;  
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc-tcp._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
@@ -2741,6 +2745,7 @@ void CApplication::FrameMove(bool processEvents)
     // process input actions
     CWinEvents::MessagePump();
     ProcessHTTPApiButtons();
+    ProcessJsonRpcButtons();
     ProcessRemote(frameTime);
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
@@ -3015,8 +3020,18 @@ bool CApplication::ProcessHTTPApiButtons()
       return true;
     }
   }
-  return false;
 #endif
+  return false;
+}
+
+bool CApplication::ProcessJsonRpcButtons()
+{
+#ifdef HAS_JSONRPC
+  CKey tempKey(JSONRPC::CInputOperations::GetKey());
+  if (tempKey.GetButtonCode() != KEY_INVALID)
+    return OnKey(tempKey);
+#endif
+  return false;
 }
 
 bool CApplication::ProcessEventServer(float frameTime)

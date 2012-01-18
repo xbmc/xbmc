@@ -498,11 +498,7 @@ void CDVDPlayerVideo::Process()
 
       // ask codec to do deinterlacing if possible
       EDEINTERLACEMODE mDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt     = g_settings.m_currentVideoSettings.m_InterlaceMethod;
-      if (mInt == VS_INTERLACEMETHOD_AUTO)
-        mInt = g_renderManager.AutoInterlaceMethod();
-      else if(!g_renderManager.Supports(mInt))
-        mInt = VS_INTERLACEMETHOD_NONE;
+      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);
 
       unsigned int     mFilters = 0;
 

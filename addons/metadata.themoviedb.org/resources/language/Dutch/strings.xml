@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <strings>
     <string id="30000">Fanart inschakelen</string>
-    <string id="30001">Trailers van HD-Trailers.net inschakelen</string>
+    <string id="30001">Trailer inschakelen (HD-Trailers.net)</string>
     <string id="30002">Voorkeurstaal</string>
+    <string id="30003">Verkrijg waardering van IMDb</string>
+    <string id="30004">Trailer inschakelen (YouTube)</string>
+    <string id="30005">Behoud originele titel</string>
 </strings>

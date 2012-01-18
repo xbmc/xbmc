@@ -154,7 +154,6 @@ protected:
   unsigned         m_max_back_refs;
   unsigned         m_max_fwd_refs;
   EDEINTERLACEMODE m_deinterlace_mode;
-  EINTERLACEMETHOD m_interlace_methodGUI;
   EINTERLACEMETHOD m_interlace_method;
   bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
   unsigned         m_index;

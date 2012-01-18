@@ -59,6 +59,26 @@ CGUIWindowPictures::CGUIWindowPictures(void)
     : CGUIMediaWindow(WINDOW_PICTURES, "MyPics.xml")
 {
   m_thumbLoader.SetObserver(this);
+  m_slideShowStarted = false;
+}
+
+void CGUIWindowPictures::OnInitWindow()
+{
+  CGUIMediaWindow::OnInitWindow();
+  if (m_slideShowStarted)
+  {
+    CGUIWindowSlideShow* wndw = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CStdString path;
+    if (wndw && wndw->GetCurrentSlide())
+      URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath(),path);
+    if (path.Equals(m_vecItems->GetPath()))
+    {
+      if (wndw && wndw->GetCurrentSlide())
+        m_viewControl.SetSelectedItem(wndw->GetCurrentSlide()->GetPath());
+      m_iSelectedItem = m_viewControl.GetSelectedItem();
+    }
+    m_slideShowStarted = false;
+  }
 }
 
 CGUIWindowPictures::~CGUIWindowPictures(void)
@@ -335,6 +355,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   if (startSlideShow)
     pSlideShow->StartSlideShow(false);
 
+  m_slideShowStarted = true;
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 
   return true;
@@ -352,7 +373,10 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
                             m_guiState->GetSortMethod(),
                             m_guiState->GetSortOrder());
     if (pSlideShow->NumSlides())
+    {
+      m_slideShowStarted = true;
       g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    }
   }
 }
 
@@ -369,6 +393,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
       strExtensions = viewState->GetExtensions();
       delete viewState;
     }
+    m_slideShowStarted = true;
     pSlideShow->RunSlideShow(strPicture, true,
                              g_guiSettings.GetBool("slideshow.shuffle"),false,
                              m_guiState->GetSortMethod(),
@@ -401,6 +426,7 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
       strExtensions = viewState->GetExtensions();
       delete viewState;
     }
+    m_slideShowStarted = true;
     pSlideShow->RunSlideShow(strPicture, false ,false, false,
                              m_guiState->GetSortMethod(),
                              m_guiState->GetSortOrder(),

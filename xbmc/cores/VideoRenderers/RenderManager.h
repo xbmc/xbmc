@@ -145,13 +145,10 @@ public:
       return false;
   }
 
-  EINTERLACEMETHOD AutoInterlaceMethod()
+  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt)
   {
     CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->AutoInterlaceMethod();
-    else
-      return VS_INTERLACEMETHOD_NONE;
+    return AutoInterlaceMethodInternal(mInt);
   }
 
   double GetPresentTime();
@@ -191,6 +188,8 @@ protected:
   void PresentWeave(bool clear, DWORD flags, DWORD alpha);
   void PresentBob(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
+
+  EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
 
   bool m_bPauseDrawing;   // true if we should pause rendering
 

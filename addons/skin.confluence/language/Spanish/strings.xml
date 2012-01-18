@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Juanjo-->
+<!--Date of translation: 01/14/2012-->
+<!--$Revision$-->
 <strings>
-  <!-- Misc labels -->
   <string id="31000">Cambiar tus</string>
   <string id="31001">Me gusta</string>
   <string id="31002">No me gusta</string>
   <string id="31003">Opciones de energía</string>
   <string id="31004">Cargando...</string>
   <string id="31005">Ocultar INFO</string>
-
+  <string id="31006">Opciones de vista</string>
   <string id="31007">Plugins</string>
-
+  <string id="31008">Pantalla completa</string>
   <string id="31020">Añadido recientemente</string>
   <string id="31021">Archivos - vídeo</string>
   <string id="31022">Archivos - música</string>
@@ -18,18 +21,13 @@
   <string id="31025">Elementos</string>
   <string id="31026">Opciones varias</string>
   <string id="31027">Ubicación</string>
-
-  <!-- View Type labels -->
   <string id="31028">Flujo de póster</string>
   <string id="31029">Fanart</string>
   <string id="31030">Lista completa</string>
   <string id="31031">Miniaturas</string>
   <string id="31032">Flujo de imagen</string>
   <string id="31033">Info</string>
-
-  <!-- Extra labels -->
   <string id="31040">Reproduciendo ahora</string>
-
   <string id="31042">REPRODUCIENDO</string>
   <string id="31043">PAUSA</string>
   <string id="31044">AVANCE RAPIDO</string>
@@ -38,9 +36,8 @@
   <string id="31047">Opciones preestablecidas actuales</string>
   <string id="31048">Visualización preestablecida</string>
   <string id="31049">Hora de finalización</string>
-
-
-  <!-- Playlist Editor labels -->
+  <string id="31050">Ordenar: Ascendente</string>
+  <string id="31051">Ordenar: Descendente</string>
   <string id="31055">Abrir lista de reproducción</string>
   <string id="31056">Guardar lista de reproducción</string>
   <string id="31057">Cerrar lista de reproducción</string>
@@ -48,8 +45,6 @@
   <string id="31059">Lista de reproducción actual</string>
   <string id="31060">Este archivo está agrupado, seleccione la parte que desee reproducir.</string>
   <string id="31061">Seleccionado</string>
-
-  <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Opciones de la pantalla principal</string>
   <string id="31102">Fondo</string>
@@ -71,49 +66,42 @@
   <string id="31118">Submenús de programas de la pantalla principal</string>
   <string id="31119">Ocultar el Fanart del fondo</string>
   <string id="31120">ETIQUETA DEL BOTON</string>
-  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31122">El Tiempo</string>
+  <string id="31121"></string>
+  <string id="31122">El Clima</string>
   <string id="31123">Usar "Posters" en lugar de "Banners" para las Series de TV</string>
   <string id="31124">Mostrar vídeo en reproducción en el fondo</string>
   <string id="31125">Mostrar visualización en el fondo</string>
-
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31126"></string>
+  <string id="31127"></string>
   <string id="31128">Letras</string>
-  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
-  
+  <string id="31129"></string>
+  <string id="31130"></string>
   <string id="31131"></string>
   <string id="31132">Add-on para letras</string>
   <string id="31133">Add-on para subtitulos</string>
   <string id="31134">Submenú de vídeos de la pantalla principal</string>
   <string id="31135">Submenú de música de la pantalla principal</string>
   <string id="31136">Submenú de imágenes de la pantalla principal</string>
-
   <string id="31140">OSD de música</string>
   <string id="31141">OSD de vídeo</string>
-
-  <!-- Script labels -->
   <string id="31200">Accesos directos</string>
   <string id="31201">Categorías</string>
   <string id="31202">Mostrar reparto</string>
   <string id="31203">Elige tu canción</string>
   <string id="31204">Sección de links</string>
   <string id="31205">Fuente para letras</string>
-
-  <!-- Extra labels -->
   <string id="31300">Temperatura</string>
   <string id="31301">Última actualización</string>
   <string id="31302">Menú</string>
-  <string id="31303"></string>
+  <string id="31303">Proveedor de Datos</string>
   <string id="31304">Imagen</string>
   <string id="31305">Ningún disco detectado</string>
   <string id="31306">Expulsar</string>
   <string id="31307">Ocultar fanarts</string>
   <string id="31308">Detalles de la película</string>
   <string id="31309">Memoria usada:</string>
-  <string id="31310">Número canción</string>
-  <string id="31311">Imagen fanart[CR]no disponible[CR][CR]Click para elegir</string>
+  <string id="31310">Pista número</string>
+  <string id="31311">Imagen fanart[CR][CR]no disponible[CR][CR]Click para elegir</string>
   <string id="31312">Scraper actual</string>
   <string id="31313">Elige un scraper</string>
   <string id="31314">Opciones de escanéo de contenido</string>
@@ -133,22 +121,17 @@
   <string id="31328">Recientes</string>
   <string id="31329">[B]Temporizador[/B] [COLOR=grey2] - El sistema se apagará en[/COLOR]</string>
   <string id="31330">Click para reproducir[CR][CR]trailer de película</string>
-
-  <!-- Video and Music OSD Labels  -->
-  <string id="31351">Pausa</string>
+  <string id="31331">Detalles del Album</string>
+  <string id="31351">Pausar</string>
   <string id="31352">Detener</string>
   <string id="31353">Avance rápido</string>
-  <string id="31354">Retroceso</string>
+  <string id="31354">Retroceder</string>
   <string id="31355">Menú película</string>
   <string id="31356">Descargar subtítulos</string>
   <string id="31357"></string>
-
-  <!-- Skin Fontsets -->
   <string id="31390">Por defecto</string>
-  <string id="31391">Por defecto sin Maysuculas</string>
+  <string id="31391">Por defecto sin Mayúsculas</string>
   <string id="31392">Basada en Arial</string>
-
-  <!-- Description Labels  -->
   <string id="31400">[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin - Cambia el idioma y la configuración regional - Cambia opciones de listas de archivos[CR]Establece un salvapantallas</string>
   <string id="31401">[B]Configura las opciones de VIDEO[/B][CR][CR]Administra su videoteca - Ajusta reproducción de vídeol - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos</string>
   <string id="31402">[B]Configura las opciones de MUSICA[/B][CR][CR]Administra tu biblioteca musical - Ajusta reproducción de música - Cambia opciones de listas de música[CR[Configura sumisión de canciones - Configura el karaoke</string>
@@ -158,6 +141,15 @@
   <string id="31406">[B]Configura las opciones de SISTEMA[/B][CR][CR]Configura y calibra la pantalla - Configura salida de audio - Configura mandos a distancia[CR]Establece las opciones de ahorro de energía - Habilita depuración de errores - Configura bloqueo maestro</string>
   <string id="31407">[B]Configura las opciones de la SKIN[/B][CR][CR]Configura Confluence - Añade y elimina elementos del menú Inicio[CR]Cambia los fondos de la skin</string>
   <string id="31408">[B]Configura los ADD-ONS[/B][CR][CR]Administra tus addons instalados · Busca e instala addons desde xbmc.org[CR]Modifica la configuración de los addons</string>
-
   <string id="31421">Seleccione su perfil de usuario de XBMC[CR]para ingresar y continuar</string>
+  <string id="31900">Mapas de clima</string>
+  <string id="31901">Pronóstico de 36 hs</string>
+  <string id="31902">Pronóstico por hora</string>
+  <string id="31903">Pronóstico semanal</string>
+  <string id="31904">Pronóstico de 10 días</string>
+  <string id="31905">Pronóstico</string>
+  <string id="31906">Mapas y video</string>
+  <string id="31907">Pronóstico de video [COLOR=grey2](A pantalla completa)[/COLOR]</string>
+  <string id="31908">Probabilidada de precipitación</string>
+  <string id="31909">Obteniendo información</string>
 </strings>
