@@ -156,6 +156,27 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
   return false;
 }
 
+bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addon)
+{
+  // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
+  if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+    return false; // addon is installed but disabled, and the user has specifically activated something that needs
+                  // the addon - should we enable it?
+
+  // check we have it available
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(addonID, addon))
+  { // yes - ask user if they want it installed
+    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
+                                          addon->Name().c_str(), g_localizeStrings.Get(24101)))
+      return false;
+    if (Install(addonID, true, "", false))
+      return CAddonMgr::Get().GetAddon(addonID, addon);
+  }
+  return false;
+}
+
 bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
   AddonPtr addon;
