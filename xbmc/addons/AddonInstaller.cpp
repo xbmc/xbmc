@@ -261,7 +261,8 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
 {
-  assert(addon.get());
+  if (!addon.get())
+    return true; // a NULL addon has no dependencies
   ADDONDEPS deps = addon->GetDeps();
   CAddonDatabase database;
   database.Open();
@@ -280,9 +281,9 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
         return false;
       }
     }
-    // at this point we have our dep, so check that it's OK as well
+    // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
-    if (!CheckDependencies(dep))
+    if (dep && !CheckDependencies(dep))
       return false;
   }
   return true;
