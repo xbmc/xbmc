@@ -38,6 +38,7 @@
 #include "GUIUserMessages.h"              // for callback
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogProgress.h"
 
 using namespace std;
 using namespace XFILE;
@@ -171,8 +172,34 @@ bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addo
     if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
                                           addon->Name().c_str(), g_localizeStrings.Get(24101)))
       return false;
-    if (Install(addonID, true, "", false))
+    if (Install(addonID, true))
+    {
+      CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (progress)
+      {
+        progress->SetHeading(13413); // Downloading
+        progress->SetLine(0, "");
+        progress->SetLine(1, addon->Name());
+        progress->SetLine(2, "");
+        progress->SetPercentage(0);
+        progress->StartModal();
+        while (true)
+        {
+          progress->Progress();
+          unsigned int percent;
+          if (progress->IsCanceled())
+          {
+            Cancel(addonID);
+            break;
+          }
+          if (!GetProgress(addonID, percent))
+            break;
+          progress->SetPercentage(percent);
+        }
+        progress->Close();
+      }
       return CAddonMgr::Get().GetAddon(addonID, addon);
+    }
   }
   return false;
 }
