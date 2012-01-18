@@ -69,6 +69,9 @@ CAddonInstaller &CAddonInstaller::Get()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  if (success)
+    CAddonMgr::Get().FindAddons();
+
   CSingleLock lock(m_critSection);
   if (strncmp(job->GetType(), "repoupdate", 10) == 0)
   { // repo job finished
@@ -80,11 +83,8 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
     if (i != m_downloadJobs.end())
       m_downloadJobs.erase(i);
-    lock.Leave();
   }
-
-  if (success)
-    CAddonMgr::Get().FindAddons();
+  lock.Leave();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
