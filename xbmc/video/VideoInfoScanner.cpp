@@ -1445,17 +1445,10 @@ namespace VIDEO
         }
       }
 
-      if (!nfoFile.IsEmpty() && item->IsOpticalMediaFile())
+      if (nfoFile.IsEmpty() && item->IsOpticalMediaFile())
       {
-        CStdString parent(URIUtils::GetParentPath(item->GetPath()));
-        CStdString parentFolder(parent);
-        URIUtils::RemoveSlashAtEnd(parentFolder);
-        if (parentFolder == "VIDEO_TS" || parentFolder == "BDMV")
-        { // check for movie.nfo in the parent folder
-          parent = URIUtils::GetParentPath(parent);
-          CFileItem parentDirectory(parent, true);
-          nfoFile = GetnfoFile(&parentDirectory, true);
-        }
+        CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
+        nfoFile = GetnfoFile(&parentDirectory, true);
       }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
