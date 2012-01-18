@@ -5150,6 +5150,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h">
       <Filter>filesystem</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

@@ -239,11 +239,11 @@ bool CVariant::asBoolean(bool fallback) const
     case VariantTypeBoolean:
       return m_data.boolean;
     case VariantTypeInteger:
-      return (bool)m_data.integer;
+      return (m_data.integer != 0);
     case VariantTypeUnsignedInteger:
-      return (bool)m_data.unsignedinteger;
+      return (m_data.unsignedinteger != 0);
     case VariantTypeDouble:
-      return (bool)m_data.dvalue;
+      return (m_data.dvalue != 0);
     case VariantTypeString:
       if (m_string.empty() || m_string.compare("0") == 0 || m_string.compare("false") == 0)
         return false;
