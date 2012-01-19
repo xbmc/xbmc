@@ -88,7 +88,7 @@ protected:
   AVFilterGraph*   m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
-  AVFilterLink*    m_pFilterLink;
+  AVFilterBufferRef* m_pBufferRef;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
