@@ -43,11 +43,14 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVFILTER_AVFILTER_H)
     #include <libavfilter/avfiltergraph.h>
+    #include <libavfilter/buffersink.h>
   #elif (defined HAVE_FFMPEG_AVFILTER_H)
     #include <ffmpeg/avfiltergraph.h>
+    #include <ffmpeg/buffersink.h>
   #endif
 #else
   #include "libavfilter/avfiltergraph.h"
+  #include "libavfilter/buffersink.h"
 #endif
 }
 
@@ -73,6 +76,9 @@ public:
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)=0;
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
+  virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags)=0;
+  virtual AVBufferSinkParams *av_buffersink_params_alloc()=0;
+  virtual int av_buffersink_poll_frame(AVFilterContext *ctx)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -129,6 +135,9 @@ public:
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
+  virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags) { return ::av_buffersink_get_buffer_ref(buffer_sink, bufref, flags); }
+  virtual AVBufferSinkParams *av_buffersink_params_alloc() { return ::av_buffersink_params_alloc(); }
+  virtual int av_buffersink_poll_frame(AVFilterContext *ctx) { return av_buffersink_poll_frame(ctx); }
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
@@ -153,14 +162,17 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD0(AVFilterGraph*, avfilter_graph_alloc)
   DEFINE_METHOD0(AVFilterInOut*, avfilter_inout_alloc_dont_call)
   DEFINE_METHOD1(void, avfilter_inout_free_dont_call, (AVFilterInOut **p1))
-  DEFINE_METHOD5(int, avfilter_graph_parse_dont_call, (AVFilterGraph *p1, const char *p2, AVFilterInOut **p3, AVFilterInOut **p4, void *p5))
-  DEFINE_METHOD2(int, avfilter_graph_config_dont_call, (AVFilterGraph *p1, void *p2))
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
+  DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_poll_frame, AVFilterLink *)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_request_frame, AVFilterLink*)
   DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
   DEFINE_METHOD4(AVFilterBufferRef*, avfilter_get_video_buffer, (AVFilterLink *p1, int p2, int p3, int p4))
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
+  DEFINE_FUNC_ALIGNED3(int                , __cdecl, av_buffersink_get_buffer_ref, AVFilterContext *, AVFilterBufferRef **, int);
+  DEFINE_FUNC_ALIGNED0(AVBufferSinkParams*, __cdecl, av_buffersink_params_alloc);
+  DEFINE_FUNC_ALIGNED1(int                , __cdecl, av_buffersink_poll_frame, AVFilterContext *);
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(avfilter_open, avfilter_open_dont_call)
@@ -180,6 +192,9 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD(avfilter_get_video_buffer)
     RESOLVE_METHOD(avfilter_unref_buffer)
     RESOLVE_METHOD(avfilter_link)
+    RESOLVE_METHOD(av_buffersink_get_buffer_ref)
+    RESOLVE_METHOD(av_buffersink_params_alloc)
+    RESOLVE_METHOD(av_buffersink_poll_frame)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavfilter */
