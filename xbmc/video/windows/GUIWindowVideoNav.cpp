@@ -127,8 +127,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       //  base class has opened the database, do our check
       m_database.Open();
 
-      if (!m_database.HasContent() && m_vecItems->IsVideoDb())
-      { // no library - make sure we default to the root.
+      if ((!m_database.HasContent() && m_vecItems->IsVideoDb()) || (m_vecItems->GetPath().Left(10).Equals("sources://") && !m_vecItems->Size()))
+      { // no library or no sources available - make sure we default to the root.
         m_vecItems->SetPath("");
         SetHistoryForPath("");
         Update("");
