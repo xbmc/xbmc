@@ -159,7 +159,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
   XFILE::CFile file;
   if (file.Open(m_texturePath.c_str(), 0))
   {
-    m_imgsize = file.GetLength();
+    m_imgsize = (unsigned int)file.GetLength();
     m_inputBuff = new unsigned char[m_imgsize];
     m_inputBuffSize = file.Read(m_inputBuff, m_imgsize);
     file.Close();
