@@ -44,6 +44,8 @@ CWinSystemWin32::CWinSystemWin32()
   PtrCloseGestureInfoHandle = NULL;
   PtrSetGestureConfig = NULL;
   PtrGetGestureInfo = NULL;
+  m_ValidWindowedPosition = false;
+  m_IsAlteringWindow = false;
 }
 
 CWinSystemWin32::~CWinSystemWin32()
@@ -285,6 +287,8 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  m_IsAlteringWindow = true;
+
   CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceResize = false;
@@ -302,6 +306,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     GetWindowInfo(m_hWnd, &wi);
     m_nLeft = wi.rcClient.left;
     m_nTop = wi.rcClient.top;
+    m_ValidWindowedPosition = true;
   }
 
   m_bFullScreen = fullScreen;
@@ -316,6 +321,8 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   ResizeInternal(forceResize);
 
   BlankNonActiveMonitors(m_bBlankOtherDisplay);
+
+  m_IsAlteringWindow = false;
 
   return true;
 }
@@ -342,6 +349,16 @@ const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
 
   // What to do if monitor is not found? Not sure... use the primary screen as a default value.
   return m_MonitorsInfo[m_nPrimary];
+}
+
+int CWinSystemWin32::GetCurrentScreen()
+{
+  HMONITOR hMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY);
+  for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
+    if (m_MonitorsInfo[monitor].hMonitor == hMonitor)
+      return m_MonitorsInfo[monitor].ScreenNumber;
+  // primary as fallback - v. strange if this ever happens
+  return 0;
 }
 
 RECT CWinSystemWin32::ScreenRect(int screen)
@@ -379,13 +396,25 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     dwStyle |= WS_OVERLAPPEDWINDOW;
     windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
 
-    if(m_nTop <= 0 || m_nLeft <= 0)
-      CenterWindow();
-
     rc.left = m_nLeft;
     rc.right = m_nLeft + m_nWidth;
     rc.top = m_nTop;
     rc.bottom = m_nTop + m_nHeight;
+    
+    HMONITOR hMon = MonitorFromRect(&rc, MONITOR_DEFAULTTONULL);
+    HMONITOR hMon2 = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTOPRIMARY);
+
+    // hasn't been windowed yet, or windowed position would not fullscreen to the same screen we were fullscreen on?
+    // -> center on the screen that we were fullscreen on
+    if(!m_ValidWindowedPosition || hMon == NULL || hMon != hMon2)
+    {
+      RECT newScreenRect = ScreenRect(GetCurrentScreen());
+      rc.left = m_nLeft = newScreenRect.left + ((newScreenRect.right - newScreenRect.left) / 2) - (m_nWidth / 2);
+      rc.top  = m_nTop  =  newScreenRect.top + ((newScreenRect.bottom - newScreenRect.top) / 2) - (m_nHeight / 2);
+      rc.right = m_nLeft + m_nWidth;
+      rc.bottom = m_nTop + m_nHeight;
+    }
+
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
   }
 

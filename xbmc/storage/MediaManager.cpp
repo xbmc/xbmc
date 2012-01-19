@@ -246,7 +246,7 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 #ifdef HAS_DVD_DRIVE
   if(bAutorun)
-    MEDIA_DETECT::CAutorun::ExecuteAutorun();
+    MEDIA_DETECT::CAutorun::ExecuteAutorun(share.strPath);
 #endif
 }
 

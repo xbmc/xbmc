@@ -65,6 +65,7 @@
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
+#include "Autorun.h"
 
 using namespace std;
 using namespace XFILE;
@@ -261,7 +262,8 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (!pItem)
     return;
 
-  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add"))
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->GetPath().Equals("add") ||
+     (pItem->IsPlayList() && !URIUtils::GetExtension(pItem->GetPath()).Equals(".strm")))
     return;
 
   // ShowIMDB can kill the item as this window can be closed while we do it,
@@ -871,7 +873,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder && item->GetPath() != "add")
+  if (!item->m_bIsFolder && item->GetPath() != "add" && item->GetPath() != "addons://more/video")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -940,7 +942,8 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->GetPath().Equals("add") || item->IsParentFolder())
+  if (item->GetPath().Equals("add") || item->IsParentFolder() ||
+     (item->IsPlayList() && !URIUtils::GetExtension(item->GetPath()).Equals(".strm")))
     return false;
 
   ADDON::ScraperPtr scraper;

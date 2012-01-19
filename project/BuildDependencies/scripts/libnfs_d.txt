@@ -1,2 +1,2 @@
 ; filename                          source of the file
-libnfs-20111208-win32.7z            http://mirrors.xbmc.org/build-deps/win32/
+libnfs-20120112-win32.7z            http://mirrors.xbmc.org/build-deps/win32/

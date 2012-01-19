@@ -165,6 +165,22 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   pCodec = NULL;
 
+  if (hints.codec == CODEC_ID_H264)
+  {
+    switch(hints.profile)
+    {
+      case FF_PROFILE_H264_HIGH_10:
+      case FF_PROFILE_H264_HIGH_10_INTRA:
+      case FF_PROFILE_H264_HIGH_422:
+      case FF_PROFILE_H264_HIGH_422_INTRA:
+      case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+      case FF_PROFILE_H264_HIGH_444_INTRA:
+      case FF_PROFILE_H264_CAVLC_444:
+      m_bSoftware = true;
+      break;
+    }
+  }
+
 #ifdef HAVE_LIBVDPAU
   if(g_guiSettings.GetBool("videoplayer.usevdpau") && !m_bSoftware)
   {
@@ -540,7 +556,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 
   if (m_pConvertFrame)
   {
-    delete[] m_pConvertFrame->data[0];
+    m_dllAvCodec.avpicture_free(m_pConvertFrame);
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }

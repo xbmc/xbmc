@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Based on English 52a14da027966458c44b1e7899f6c9f155ee1c44 (09.08.2011)-->
+<!--Based on English 72696c450cb789e240194a0595bed6e291e3a158 (14.11.2011)-->
 <strings>
   <!-- Vegyes feliratok -->
   <string id="31000">Választható</string>
@@ -32,7 +32,7 @@
   <string id="31033">Infó</string>
 
   <!-- Extra feliratok -->
-  <string id="31040">Most játszott</string>
+  <string id="31040">Most játszva</string>
 
   <string id="31042">LEJÁTSZÁS</string>
   <string id="31043">MEGÁLLÍTVA</string>
@@ -47,7 +47,7 @@
 
 
   <!-- Lejátszáslista szerkesztő feliratai -->
-  <string id="31055">Játszáslista nyitása</string>
+  <string id="31055">Játszáslista megnyitása</string>
   <string id="31056">Játszáslista mentése</string>
   <string id="31057">Játszáslista zárása</string>
   <string id="31058">Rendszer zene fájlok</string>
@@ -55,7 +55,7 @@
   <string id="31060">Ez a fájl egyesített. Válaszd azt a részt, amelyiket játszani akarod.</string>
   <string id="31061">Jelenleg kiválasztott</string>
 
-  <!-- Arculat beállítások feliratai -->
+  <!-- Felszín beállítások feliratai -->
   <string id="31100"></string>
   <string id="31101">Sajátképernyő lehetőségei</string>
   <string id="31102">Háttér</string>
@@ -79,7 +79,7 @@
   <string id="31120">GOMBFELIRAT</string>
   <string id="31121"></string>
   <string id="31122">Időjárás oldal</string>
-  <string id="31123">Poszterek használata keskeny szalagcímek helyett a TV műsoroknál</string>
+  <string id="31123">Poszterek használata keskeny szalagcímek helyett a sorozatoknál</string>
   <string id="31124">A háttérben az éppen játszott videó megjelenítése</string>
   <string id="31125">A háttérben az éppen futó vizualizáció megjelenítése</string>
 
@@ -111,7 +111,7 @@
   <string id="31300">Hőmérséklet most</string>
   <string id="31301">Utoljára frissítve</string>
   <string id="31302">Menü</string>
-  <string id="31303"></string>
+  <string id="31303">Adatszolgáltató</string>
   <string id="31304">Kép</string>
   <string id="31305">Lemez média nem található</string>
   <string id="31306">Nyitás</string>
@@ -125,7 +125,7 @@
   <string id="31314">Tartalomkeresési lehetőségek</string>
   <string id="31315">Alap</string>
   <string id="31316"></string>
-  <string id="31317">Fanart elérési útvonal</string>
+  <string id="31317">Fanart elérési helye</string>
   <string id="31318">Kis fanart</string>
   <string id="31319">Választott profil</string>
   <string id="31320">Utoljára bejelentkezve</string>
@@ -151,19 +151,19 @@
   <string id="31357"></string>
 
   <!-- Betűtípus készletek -->
-  <string id="31390">Arculat alapértelmezése</string>
+  <string id="31390">Felszín alapértelmezése</string>
   <string id="31391">Alapértelmezett, nagybetűsítés nélkül</string>
   <string id="31392">Arial betűkészlet</string>
 
   <!-- Magyarázó feliratok  -->
-  <string id="31400">[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Arculat váltása · Nyelv, régió váltása · Fájl listázás módjának beállítása[CR]Képernyővédő beállítása</string>
+  <string id="31400">[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Felszín váltása · Nyelv, régió váltása · Fájl listázás módjának beállítása[CR]Képernyővédő beállítása</string>
   <string id="31401">[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videólejátszás beállítása · Videólistázás módjának beállítása[CR]Feliratok karaktertípusának váltása</string>
   <string id="31402">[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejátszás beállítása · Zenelistázás módjának beállítása[CR]Zene lejátszási szabályok felállítása · Karaoke lehetőségek</string>
   <string id="31403">[B]FÉNYKÉP BEÁLLÍTÁSOK[/B][CR][CR]Fényképek listázási módjának beállítása · Diavetítés beállítása</string>
   <string id="31404">[B]IDŐJÁRÁS BEÁLLÍTÁSOK[/B][CR][CR]Három város megadása, melyekről időjárás információk fognak megjelenni</string>
   <string id="31405">[B]HÁLÓZATI BEÁLLÍTÁSOK[/B][CR][CR]XBMC távoli vezérlésének beállítása HTTP-n keresztül · Fájlmegosztás beállítása[CR]Internet elérési lehetőségek</string>
   <string id="31406">[B]RENDSZERBEÁLLÍTÁSOK[/B][CR][CR]Kijelzők beállítása, kalibrálása · Hangkimenet konfigurálása · Távkapcsoló beállítása[CR]Energiagazdálkodási lehetőségek beállítása · Hibakeresés bekapcsolása[CR]Mesterzár felállítása</string>
-  <string id="31407">[B]ARCULAT BEÁLLÍTÁSOK[/B][CR][CR]A Confluence arculat beállítása · Sajátképernyő elemek hozzáadása/elvétele[CR]Arculat hátterek megváltoztatása</string>
+  <string id="31407">[B]FELSZÍN BEÁLLÍTÁSOK[/B][CR][CR]A Confluence felszín beállítása · Sajátképernyő elemek hozzáadása/elvétele[CR]Felszín hátterek megváltoztatása</string>
   <string id="31408">[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az xbmc.org[CR]webhelyről · Kiegészítők beállításainak módosítása</string>
   
   <string id="31421">Válaszd ki az XBMC felhasználói profilod[CR]a belépéshez</string>

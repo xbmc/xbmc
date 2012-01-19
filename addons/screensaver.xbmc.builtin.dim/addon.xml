@@ -5,6 +5,7 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Скрийнсейвър, който затъмнява екрана</summary>
     <summary lang="en">Screensaver that dims your screen</summary>
     <summary lang="de">Bildschirmschoner zum Abdunkeln des Bildschirmes</summary>
     <summary lang="es">Un salvapantallas que oscurece tu pantalla</summary>
@@ -19,6 +20,7 @@
     <summary lang="ru">Хранитель экрана затемняющий изображение</summary>
     <summary lang="se">Skärmsläckare som dimmar din skärm</summary>
     <summary lang="zh">淡出屏幕保护程序</summary>
+    <description lang="bg">Скрийнсейвърът Dim ще затъмни екрана ви, до стойност, която вие можете да определите предварително (между 20 и 100%).</description>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="de">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
     <description lang="es">Dim es un sencillo salvapantallas que oscurece tu pantalla. El valor es configurable entre el 20 y el 100%.</description>

@@ -25,7 +25,9 @@
 #include <CoreServices/CoreServices.h>
 
 #include "CoreAudioRenderer.h"
+#include "Application.h"
 #include "guilib/AudioContext.h"
+#include "osx/CocoaInterface.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -404,9 +406,11 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_EnableVolumeControl(true),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
-  m_DoRunout(0),
-  m_silence(false)
+  m_DoRunout(0)
 {
+  m_init_state.reinit = false;
+  m_init_state.channelMap = NULL;
+
   SInt32 major,  minor;
   Gestalt(gestaltSystemVersionMajor, &major);
   Gestalt(gestaltSystemVersionMinor, &minor);
@@ -425,13 +429,24 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
       CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
+#ifdef VERBOSE_DEBUG
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDevices, HardwareListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyIsInitingOrExiting, HardwareListenerProc, this);
+  AudioHardwareAddPropertyListener(kAudioHardwarePropertyDefaultOutputDevice, HardwareListenerProc, this);
+#endif
   g_Windowing.Register(this);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
+#ifdef VERBOSE_DEBUG
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDevices, HardwareListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyIsInitingOrExiting, HardwareListenerProc);
+  AudioHardwareRemovePropertyListener(kAudioHardwarePropertyDefaultOutputDevice, HardwareListenerProc);
+#endif
   g_Windowing.Unregister(this);
   Deinitialize();
+  delete m_init_state.channelMap;
 }
 
 //***********************************************************************************************
@@ -445,12 +460,38 @@ return x
 
 bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, EEncoded bPassthrough)
 {
+  CSingleLock lock(m_init_csection);
+
   // Have to clean house before we start again.
   // TODO: Should we return failure instead?
   if (m_Initialized)
     Deinitialize();
   
-  if(bPassthrough)
+  m_init_state.device = device;
+  m_init_state.iChannels = iChannels;
+  // save the old and delete after clone incase we are reinit'ing.
+  enum PCMChannels *old_channelMap = m_init_state.channelMap;
+  m_init_state.channelMap = NULL;
+  if (channelMap)
+  {
+    m_init_state.channelMap = new PCMChannels[m_init_state.iChannels];
+    for (int i = 0; i < iChannels; i++)
+      m_init_state.channelMap[i] = channelMap[i];
+  }
+  delete [] old_channelMap;
+  m_init_state.uiSamplesPerSec = uiSamplesPerSec;
+  m_init_state.uiBitsPerSample = uiBitsPerSample;
+  m_init_state.bResample       = bResample;
+  m_init_state.bIsMusic        = bIsMusic;
+  m_init_state.bPassthrough    = bPassthrough;
+  m_init_state.pCallback       = pCallback;
+
+  // Reset all the devices to a default 'non-hog' and mixable format.
+  // If we don't do this we may be unable to find the Default Output device.
+  // (e.g. if we crashed last time leaving it stuck in AC3/DTS/SPDIF mode)
+  Cocoa_ResetAudioDevices();
+
+  if(m_init_state.bPassthrough)
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE_DIGITAL);
   else
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
@@ -471,15 +512,21 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
       return false;
   }
   
+#ifdef VERBOSE_DEBUG
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyDeviceIsAlive, DeviceListenerProc, this);
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyDeviceIsRunning, DeviceListenerProc, this);
+  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyStreamConfiguration, DeviceListenerProc, this);
+#endif
+
   // TODO: Determine if the device is in-use/locked by another process.
   
   // Attach our output object to the device
   m_AudioDevice.Open(outputDevice);
   
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
-  if (bPassthrough)
+  if (m_init_state.bPassthrough)
   {
-    m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
+    m_Passthrough = InitializeEncoded(outputDevice, m_init_state.uiSamplesPerSec);
     // TODO: wait for audio device startup
     Sleep(200);
   }
@@ -499,18 +546,18 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     // If we are here and this is a passthrough stream, native handling failed.
     // Try to handle it as IEC61937 data over straight PCM (DD-Wav)
     bool configured = false;
-    if (bPassthrough)
+    if (m_init_state.bPassthrough)
     {
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: "
         "No suitable AC3 output format found. Attempting DD-Wav.");
-      configured = InitializePCMEncoded(uiSamplesPerSec);
+      configured = InitializePCMEncoded(m_init_state.uiSamplesPerSec);
       // TODO: wait for audio device startup
       Sleep(100);
     }
     else
     {
       // Standard PCM data
-      configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample, channelMap);
+      configured = InitializePCM(m_init_state.iChannels, m_init_state.uiSamplesPerSec, m_init_state.uiBitsPerSample, m_init_state.channelMap);
       // TODO: wait for audio device startup
       Sleep(100);
     }
@@ -557,13 +604,15 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   // Suspend rendering. We will start once we have some data.
   m_Pause = true;
   // Initialize our incoming data cache
-  m_pCache = new CSliceQueue(m_ChunkLen);
+  if (!m_pCache)
+    m_pCache = new CSliceQueue(m_ChunkLen);
 #ifdef _DEBUG
   // Set up the performance monitor
   m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault);
   // Disable underrun detection for the first 2 seconds (after start and after resume)
   m_PerfMon.SetPreroll(2.0f);
 #endif
+  m_init_state.reinit = false;
   m_Initialized = true;
   m_DoRunout = 0;
   
@@ -573,20 +622,29 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     "Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).",
     m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
-  
+
   return true;
 }
 
 bool CCoreAudioRenderer::Deinitialize()
 {
   VERIFY_INIT(true); // Not really a failure if we weren't initialized
-  
+
+#ifdef VERBOSE_DEBUG
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyDeviceIsAlive, DeviceListenerProc);
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyDeviceIsRunning, DeviceListenerProc);
+  AudioDeviceRemovePropertyListener(m_AudioDevice.GetId(), 0, false, kAudioDevicePropertyStreamConfiguration, DeviceListenerProc);
+#endif
+
   // Stop rendering
   Stop();
-  // Reset our state
-  m_ChunkLen = 0;
-  m_MaxCacheLen = 0;
-  m_AvgBytesPerSec = 0;
+  // Reset our state but do not diddle internal vars if we are re-init'ing
+  if (!m_init_state.reinit)
+  {
+    m_ChunkLen = 0;
+    m_MaxCacheLen = 0;
+    m_AvgBytesPerSec = 0;
+  }
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AUCompressor.Close();
@@ -596,19 +654,40 @@ bool CCoreAudioRenderer::Deinitialize()
   m_OutputStream.Close();
   Sleep(10);
   m_AudioDevice.Close();
-  delete m_pCache;
-  m_pCache = NULL;
+  if (!m_init_state.reinit)
+  {
+    // do not blow the cache if we are just re-init'ing
+    delete m_pCache;
+    m_pCache = NULL;
+  }
   m_Initialized = false;
   m_DoRunout = 0;
   m_EnableVolumeControl = true;
   
-  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  // do not diddle with active device if we are re-init'ing
+  if (!m_init_state.reinit)
+    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
   
   return true;
 }
 
+bool CCoreAudioRenderer::Reinitialize()
+{
+  CSingleLock lock(m_init_csection);
+
+  m_init_state.reinit = true;
+  return Initialize(m_init_state.pCallback,
+    m_init_state.device,
+    m_init_state.iChannels,
+    m_init_state.channelMap,
+    m_init_state.uiSamplesPerSec,
+    m_init_state.uiBitsPerSample,
+    m_init_state.bResample,
+    m_init_state.bIsMusic,
+    m_init_state.bPassthrough);
+}
 //***********************************************************************************************
 // Transport control methods
 //***********************************************************************************************
@@ -718,8 +797,9 @@ unsigned int CCoreAudioRenderer::GetSpace()
 
 unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
 {
-  VERIFY_INIT(0);
-  
+  if (!m_pCache)
+    return 0;
+
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
   if (len < m_ChunkLen || m_pCache->GetTotalBytes() >= m_MaxCacheLen)
     return 0;
@@ -734,9 +814,13 @@ unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
 #endif
-  Resume();  // We have some data. Attmept to resume playback
+
+  //We have some data. Attempt to resume playback only if not trying to reinit.
+  if (!m_init_state.reinit)
+    Resume();  
   
-  return bytesUsed; // Number of bytes added to cache;
+  // Number of bytes added to cache;
+  return bytesUsed;
 }
 
 float CCoreAudioRenderer::GetDelay()
@@ -807,7 +891,10 @@ OSStatus CCoreAudioRenderer::Render(AudioUnitRenderActionFlags* actionFlags, con
 OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   if (!m_Initialized)
+  {
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
+    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+  }
   
   // Process the request
   // Data length requested, based on the input data format
@@ -832,10 +919,9 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
      */
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
-  if (m_silence || (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM))
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
-  else
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
+  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
+    memset(ioData->mBuffers[m_OutputBufferIndex].mData, 0x00, bytesRead);
+  ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
   
 #ifdef _DEBUG
   // Calculate stats and perform a sanity check
@@ -1173,6 +1259,51 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   return true;
 }
 
+OSStatus CCoreAudioRenderer::HardwareListenerProc(AudioHardwarePropertyID property, void *clientref)
+{
+  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)clientref;
+  switch(property)
+  {
+    case kAudioHardwarePropertyDevices:
+      // An audio device has been added/removed to the system
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyDevices");
+      break;
+    case kAudioHardwarePropertyIsInitingOrExiting:
+      // HAL is either initializing or exiting the process.
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyIsInitingOrExiting");
+      break;
+    case kAudioHardwarePropertyDefaultOutputDevice:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::HardwareListenerProc:kAudioHardwarePropertyDefaultOutputDevice");
+      break;
+    default:
+      break;
+  }
+
+  return noErr;
+}
+
+OSStatus CCoreAudioRenderer::DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref)
+{
+  //CCoreAudioRenderer *m = (CCoreAudioRenderer*)clientref;
+  switch(inPropertyID)
+  {
+    case kAudioDevicePropertyDeviceIsAlive:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyDeviceIsAlive");
+			break;
+    case kAudioDevicePropertyDeviceIsRunning:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyDeviceIsRunning, "
+        "inDevice(0x%x), inChannel(%d), inDevice(%d)", inDevice, inChannel, isInput);
+      break;
+    case kAudioDevicePropertyStreamConfiguration:
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::DeviceListenerProc:kAudioDevicePropertyStreamConfiguration, "
+        "inDevice(0x%x), inChannel(%d), inDevice(%d)", inDevice, inChannel, isInput);
+      break;
+    default:
+      break;
+  }
+	return noErr;
+}
+
 void CCoreAudioRenderer::OnLostDevice()
 {
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
@@ -1180,10 +1311,7 @@ void CCoreAudioRenderer::OnLostDevice()
     CStdString deviceName;
     m_AudioDevice.GetName(deviceName);
     if (deviceName.Equals("HDMI"))
-    {
-      m_silence = true;
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnLostDevice");
-    }
   }
 }
 
@@ -1195,7 +1323,7 @@ void CCoreAudioRenderer::OnResetDevice()
     m_AudioDevice.GetName(deviceName);
     if (deviceName.Equals("HDMI"))
     {
-      m_silence = false;
+      Reinitialize();
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnResetDevice");
     }
   }

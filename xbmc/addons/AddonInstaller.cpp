@@ -20,6 +20,7 @@
  */
 
 #include "AddonInstaller.h"
+#include "Service.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
@@ -28,6 +29,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "Application.h"
+#include "Favourites.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
@@ -36,6 +38,7 @@
 #include "GUIUserMessages.h"              // for callback
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogProgress.h"
 
 using namespace std;
 using namespace XFILE;
@@ -67,6 +70,9 @@ CAddonInstaller &CAddonInstaller::Get()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  if (success)
+    CAddonMgr::Get().FindAddons();
+
   CSingleLock lock(m_critSection);
   if (strncmp(job->GetType(), "repoupdate", 10) == 0)
   { // repo job finished
@@ -78,11 +84,8 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
     if (i != m_downloadJobs.end())
       m_downloadJobs.erase(i);
-    lock.Leave();
   }
-
-  if (success)
-    CAddonMgr::Get().FindAddons();
+  lock.Leave();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
@@ -150,6 +153,53 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
     CJobManager::GetInstance().CancelJob(i->second.jobID);
     m_downloadJobs.erase(i);
     return true;
+  }
+  return false;
+}
+
+bool CAddonInstaller::PromptForInstall(const CStdString &addonID, AddonPtr &addon)
+{
+  // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
+  if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+    return false; // addon is installed but disabled, and the user has specifically activated something that needs
+                  // the addon - should we enable it?
+
+  // check we have it available
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(addonID, addon))
+  { // yes - ask user if they want it installed
+    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
+                                          addon->Name().c_str(), g_localizeStrings.Get(24101)))
+      return false;
+    if (Install(addonID, true))
+    {
+      CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (progress)
+      {
+        progress->SetHeading(13413); // Downloading
+        progress->SetLine(0, "");
+        progress->SetLine(1, addon->Name());
+        progress->SetLine(2, "");
+        progress->SetPercentage(0);
+        progress->StartModal();
+        while (true)
+        {
+          progress->Progress();
+          unsigned int percent;
+          if (progress->IsCanceled())
+          {
+            Cancel(addonID);
+            break;
+          }
+          if (!GetProgress(addonID, percent))
+            break;
+          progress->SetPercentage(percent);
+        }
+        progress->Close();
+      }
+      return CAddonMgr::Get().GetAddon(addonID, addon);
+    }
   }
   return false;
 }
@@ -259,7 +309,8 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
 {
-  assert(addon.get());
+  if (!addon.get())
+    return true; // a NULL addon has no dependencies
   ADDONDEPS deps = addon->GetDeps();
   CAddonDatabase database;
   database.Open();
@@ -278,9 +329,9 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
         return false;
       }
     }
-    // at this point we have our dep, so check that it's OK as well
+    // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
-    if (!CheckDependencies(dep))
+    if (dep && !CheckDependencies(dep))
       return false;
   }
   return true;
@@ -419,6 +470,14 @@ bool CAddonInstallJob::OnPreInstall()
     g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
     return true;
   }
+
+  if (m_addon->Type() == ADDON_SERVICE)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    if (service)
+      service->Stop();
+    return true;
+  }
   return false;
 }
 
@@ -511,6 +570,20 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
       g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
     }
   }
+
+  if (m_addon->Type() == ADDON_SERVICE)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    if (service)
+      service->Start();
+  }
+
+  if (m_addon->Type() == ADDON_REPOSITORY)
+  {
+    VECADDONS addons;
+    addons.push_back(m_addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+  }
 }
 
 void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
@@ -581,4 +654,19 @@ void CAddonUnInstallJob::OnPostUnInstall()
     database.Open();
     database.DeleteRepository(m_addon->ID());
   }
+
+  bool bSave(false);
+  CFileItemList items;
+  CFavourites::Load(items);
+  for (int i=0; i < items.Size(); ++i)
+  {
+    if (items[i]->GetPath().Find(m_addon->ID()) > -1)
+    {
+      items.Remove(items[i].get());
+      bSave = true;
+    }
+  }
+
+  if (bSave)
+    CFavourites::Save(items);
 }

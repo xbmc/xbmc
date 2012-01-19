@@ -20,6 +20,7 @@
  *
  */
 
+#include "ThumbLoader.h"
 #include "Job.h"
 
 enum ERecentlyAddedFlag
@@ -37,6 +38,8 @@ public:
   bool UpdateMusic();
   bool UpdateTotal();
   virtual bool DoWork();
+protected:
+  CVideoThumbLoader m_thumbLoader;
 private:
   int m_flag;
 };

@@ -1,3 +1,6 @@
+[B]1.2.4[/B]
+- Added: support for imdb url nfo's
+
 [B]1.2.3[/B]
 - Fixed: fixed broken scraping under certain circumtaces
 

@@ -1926,6 +1926,7 @@
   <string id="21365">Elimina recurs compartit</string>
   <string id="21366">Carpeta del subtítol</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
+  <string id="21368">Substitueix les fonts dels subtítols ASS/SSA</string>
   
   <string id="21369">Activa el suport de ratolí i pantalla tàctil</string>
   <string id="21370">Reprodueix els sons de navegació durant la reproducció</string>
@@ -2388,6 +2389,7 @@
   <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">Número de port HDMI</string>
-  <string id="36016">XBMC connectat</string>
+  <string id="36016">Connectat</string> <!-- max. 13 characters -->
   <string id="36017">S'ha trobat un adaptador, però la libcec no està disponible</string>
+  <string id="36018">Use the TV's language setting</string>
 </strings>

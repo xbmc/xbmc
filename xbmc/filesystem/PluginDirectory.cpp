@@ -25,6 +25,7 @@
 #include "PluginDirectory.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "addons/IAddon.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -77,7 +78,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
 {
   CURL url(strPath);
 
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -408,7 +409,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;

@@ -1409,15 +1409,13 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
 {
   CSingleLock lock(m_section);
 
-  if(m_interlace_methodGUI != g_settings.m_currentVideoSettings.m_InterlaceMethod
-  || (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO && m_interlace_method != g_renderManager.AutoInterlaceMethod())
+  EINTERLACEMETHOD method = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);
+  if(m_interlace_method != method
   || m_deinterlace_mode != g_settings.m_currentVideoSettings.m_DeinterlaceMode
   || !m_process)
   {
     m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    m_interlace_method = m_interlace_methodGUI = g_settings.m_currentVideoSettings.m_InterlaceMethod;
-    if (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO)
-      m_interlace_method = g_renderManager.AutoInterlaceMethod();
+    m_interlace_method = method;
 
     if (!OpenProcessor())
       return false;

@@ -145,7 +145,11 @@ void CGUIDialogContextMenu::SetupButtons()
       if (pGroupList)
       {
         pButton->SetPosition(pButtonTemplate->GetXPosition(), pButtonTemplate->GetYPosition());
-        pGroupList->AddControl(pButton);
+        // try inserting context buttons at position specified by template
+        // button, if template button is not in grouplist fallback to adding
+        // new buttons at the end of grouplist
+        if (!pGroupList->InsertControl(pButton, pButtonTemplate))
+          pGroupList->AddControl(pButton);
       }
 #if PRE_SKIN_VERSION_11_COMPATIBILITY
       else
@@ -393,10 +397,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
 #ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true); // restart
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true); // restart
 
   case CONTEXT_BUTTON_RESUME_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), false);// resume
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32

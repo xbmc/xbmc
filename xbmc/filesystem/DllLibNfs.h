@@ -57,8 +57,8 @@ public:
   virtual int nfs_mount(struct nfs_context *nfs,     const char *server,   const char *exportname)=0;
   virtual int nfs_stat(struct nfs_context *nfs,      const char *path,     struct stat *st)=0;
   virtual int nfs_fstat(struct nfs_context *nfs,     struct nfsfh *nfsfh,  struct stat *st)=0;
-  virtual int nfs_truncate(struct nfs_context *nfs,  const char *path,     off_t length)=0;
-  virtual int nfs_ftruncate(struct nfs_context *nfs, struct nfsfh *nfsfh,  off_t length)=0;
+  virtual int nfs_truncate(struct nfs_context *nfs,  const char *path,     off64_t length)=0;
+  virtual int nfs_ftruncate(struct nfs_context *nfs, struct nfsfh *nfsfh,  off64_t length)=0;
   virtual int nfs_opendir(struct nfs_context *nfs,   const char *path,     struct nfsdir **nfsdir)=0;
   virtual int nfs_statvfs(struct nfs_context *nfs,   const char *path,     struct statvfs *svfs)=0;
   virtual int nfs_chmod(struct nfs_context *nfs,     const char *path,     int mode)=0;
@@ -76,9 +76,9 @@ public:
   virtual int nfs_read(struct nfs_context *nfs,      struct nfsfh *nfsfh,  size_t count, char *buf)=0;  
   virtual int nfs_write(struct nfs_context *nfs,     struct nfsfh *nfsfh,  size_t count, char *buf)=0;
   virtual int nfs_creat(struct nfs_context *nfs,     const char *path,     int mode,     struct nfsfh **nfsfh)=0;  
-  virtual int nfs_pread(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off_t offset, size_t count, char *buf)=0;
-  virtual int nfs_pwrite(struct nfs_context *nfs,    struct nfsfh *nfsfh,  off_t offset, size_t count, char *buf)=0;
-  virtual int nfs_lseek(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off_t offset, int whence,   off_t *current_offset)=0;
+  virtual int nfs_pread(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off64_t offset, size_t count, char *buf)=0;
+  virtual int nfs_pwrite(struct nfs_context *nfs,    struct nfsfh *nfsfh,  off64_t offset, size_t count, char *buf)=0;
+  virtual int nfs_lseek(struct nfs_context *nfs,     struct nfsfh *nfsfh,  off64_t offset, int whence,   off64_t *current_offset)=0;
 };
 
 class DllLibNfs : public DllDynamic, DllLibNfsInterface
@@ -103,8 +103,8 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD3(int, nfs_mount,     (struct nfs_context *p1, const char *p2,    const char *p3))
   DEFINE_METHOD3(int, nfs_stat,      (struct nfs_context *p1, const char *p2,    struct stat *p3))
   DEFINE_METHOD3(int, nfs_fstat,     (struct nfs_context *p1, struct nfsfh *p2,  struct stat *p3))
-  DEFINE_METHOD3(int, nfs_truncate,  (struct nfs_context *p1, const char *p2,    off_t p3))
-  DEFINE_METHOD3(int, nfs_ftruncate, (struct nfs_context *p1, struct nfsfh *p2,  off_t p3))
+  DEFINE_METHOD3(int, nfs_truncate,  (struct nfs_context *p1, const char *p2,    off64_t p3))
+  DEFINE_METHOD3(int, nfs_ftruncate, (struct nfs_context *p1, struct nfsfh *p2,  off64_t p3))
   DEFINE_METHOD3(int, nfs_opendir,   (struct nfs_context *p1, const char *p2,    struct nfsdir **p3))
   DEFINE_METHOD3(int, nfs_statvfs,   (struct nfs_context *p1, const char *p2,    struct statvfs *p3))
   DEFINE_METHOD3(int, nfs_chmod,     (struct nfs_context *p1, const char *p2,    int p3))
@@ -122,9 +122,9 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD4(int, nfs_readlink,  (struct nfs_context *p1, const char *p2,    char *p3,   int p4))
   DEFINE_METHOD4(int, nfs_chown,     (struct nfs_context *p1, const char *p2,    int p3,     int p4))
   DEFINE_METHOD4(int, nfs_fchown,    (struct nfs_context *p1, struct nfsfh *p2,  int p3,     int p4))
-  DEFINE_METHOD5(int, nfs_pread,     (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   size_t p4,  char *p5))
-  DEFINE_METHOD5(int, nfs_pwrite,    (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   size_t p4,  char *p5))
-  DEFINE_METHOD5(int, nfs_lseek,     (struct nfs_context *p1, struct nfsfh *p2,  off_t p3,   int p4,     off_t *p5))
+  DEFINE_METHOD5(int, nfs_pread,     (struct nfs_context *p1, struct nfsfh *p2,  off64_t p3,   size_t p4,  char *p5))
+  DEFINE_METHOD5(int, nfs_pwrite,    (struct nfs_context *p1, struct nfsfh *p2,  off64_t p3,   size_t p4,  char *p5))
+  DEFINE_METHOD5(int, nfs_lseek,     (struct nfs_context *p1, struct nfsfh *p2,  off64_t p3,   int p4,     off64_t *p5))
 
 
 

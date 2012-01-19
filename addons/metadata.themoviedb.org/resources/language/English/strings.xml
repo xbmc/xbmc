@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <strings>
     <string id="30000">Enable Fanart</string>
-    <string id="30004">Enable Trailer</string>
-    <string id="30001">Prefer Trailer from HD-Trailers.net</string>
+    <string id="30004">Enable Trailer (YouTube)</string>
+    <string id="30001">Enable Trailer (HD-Trailers.net)</string>
     <string id="30002">Preferred language</string>
     <string id="30003">Get rating from IMDb</string>
     <string id="30005">Keep Original Title</string>

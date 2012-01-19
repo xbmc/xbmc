@@ -154,7 +154,21 @@ def smooth(arr, val):
     arr.pop(cnt)
     return average(arr)    
 
+def set_l2cap_mtu2(sock, mtu):
+  SOL_L2CAP = 6
+  L2CAP_OPTIONS = 1
+  
+  s = sock.getsockopt (SOL_L2CAP, L2CAP_OPTIONS, 12)
+  o = list( struct.unpack ("HHHBBBH", s) )
+  o[0] = o[1] = mtu
+  s = struct.pack ("HHHBBBH", *o)
+  try:
+    sock.setsockopt (SOL_L2CAP, L2CAP_OPTIONS, s)
+  except:
+    print "Warning: Unable to set mtu"
+
 class sixaxis():
+    
   def __init__(self, xbmc, control_sock, interrupt_sock):
 
     self.xbmc = xbmc
@@ -172,8 +186,8 @@ class sixaxis():
     self.psdown   = 0
     self.mouse_enabled = 0
     
-    set_l2cap_mtu(control_sock, 64)
-    set_l2cap_mtu(interrupt_sock, 64)
+    set_l2cap_mtu2(control_sock, 64)
+    set_l2cap_mtu2(interrupt_sock, 64)
     time.sleep(0.25) # If we ask to quickly here, it sometimes doesn't start
 
     # sixaxis needs this to enable it

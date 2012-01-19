@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "settings/GUISettings.h"
 #include "climits"
+#include "threads/SingleLock.h"
 
 using namespace XFILE;
 using namespace std;
@@ -64,6 +65,9 @@ namespace {
   typedef std::vector<SResource> SResources;
 
 }
+
+std::map<CStdString,CDateTime> CRSSDirectory::m_cache;
+CCriticalSection CRSSDirectory::m_section;
 
 CRSSDirectory::CRSSDirectory()
 {
@@ -585,17 +589,17 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
 {
   CStdString strPath(path);
   URIUtils::RemoveSlashAtEnd(strPath);
-
-  /* check cache */
-  if(m_path == strPath)
+  std::map<CStdString,CDateTime>::iterator it;
+  items.SetPath(strPath);
+  CSingleLock lock(m_section);
+  if ((it=m_cache.find(strPath)) != m_cache.end())
   {
-    items.Copy(m_items);
-    return true;
+    if (it->second > CDateTime::GetCurrentDateTime() && 
+        items.Load())
+      return true;
+    m_cache.erase(it);
   }
-
-  /* clear cache */
-  m_items.Clear();
-  m_path == "";
+  lock.Leave();
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -639,8 +643,16 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
   items.AddSortMethod(SORT_METHOD_SIZE     , 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
   items.AddSortMethod(SORT_METHOD_DATE     , 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
 
-  m_items.Copy(items);
-  m_path  = strPath;
+  CDateTime time = CDateTime::GetCurrentDateTime();
+  int mins = 60;
+  TiXmlElement* ttl = docHandle.FirstChild("rss").FirstChild("ttl").Element();
+  if (ttl)
+    mins = strtol(ttl->FirstChild()->Value(),NULL,10);
+  time += CDateTimeSpan(0,0,mins,0);
+  items.SetPath(strPath);
+  items.Save();
+  CSingleLock lock2(m_section);
+  m_cache.insert(make_pair(strPath,time));
 
   return true;
 }

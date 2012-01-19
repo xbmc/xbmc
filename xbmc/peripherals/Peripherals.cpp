@@ -105,7 +105,12 @@ void CPeripherals::Clear(void)
 
   /* delete mappings */
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
+  {
+    map<CStdString, CSetting *> settings = m_mappings.at(iMappingPtr).m_settings;
+    for (map<CStdString, CSetting *>::iterator itr = settings.begin(); itr != settings.end(); itr++)
+      delete itr->second;
     m_mappings.at(iMappingPtr).m_settings.clear();
+  }
   m_mappings.clear();
 
   /* reset class state */

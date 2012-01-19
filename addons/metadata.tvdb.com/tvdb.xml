@@ -5,7 +5,19 @@
 		<RegExp input="$$1" output="&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
 			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
 		</RegExp>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTVDBId&quot;&gt;http://www.thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
+			<expression>imdb....?/title/tt([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTVDBId&quot;&gt;http://www.thetvdb.com/api/GetSeriesByRemoteID.php?imdbid=tt\1&amp;amp;language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3+">
+			<expression>imdb....?/Title\?([0-9]*)</expression>
+		</RegExp>
 	</NfoUrl>
+
+	<GetTVDBId dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
+			<expression>&lt;seriesid&gt;([0-9]*)&lt;/seriesid&gt;</expression>
+		</RegExp>
+	</GetTVDBId>
 
 	<EpisodeGuideUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
