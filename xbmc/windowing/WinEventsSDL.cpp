@@ -78,7 +78,7 @@ static uint16_t SymMappingsEvdev[][2] =
 , { 172, XBMCK_MEDIA_PLAY_PAUSE }    // Play_Pause
 , { 173, XBMCK_MEDIA_PREV_TRACK }    // Prev track
 , { 174, XBMCK_MEDIA_STOP }          // Stop
-, { 176, 0x52 /* 'r' */}             // Rewind
+, { 176, 0x72 /* 'r' */}             // Rewind
 , { 179, XBMCK_LAUNCH_MEDIA_SELECT } // Launch media select
 , { 180, XBMCK_BROWSER_HOME }        // Browser home
 , { 181, XBMCK_BROWSER_REFRESH }     // Browser refresh
