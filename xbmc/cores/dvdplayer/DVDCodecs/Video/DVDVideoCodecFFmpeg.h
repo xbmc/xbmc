@@ -75,14 +75,13 @@ public:
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
 
-  int  FilterOpen(const CStdString& filters);
+  int  FilterOpen(const CStdString& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  AVPicture* m_pConvertFrame;
   CStdString       m_filters;
   CStdString       m_filters_next;
   AVFilterGraph*   m_pFilterGraph;
@@ -109,4 +108,5 @@ protected:
   int m_iLastKeyframe;
   double m_dts;
   bool   m_started;
+  std::vector<PixelFormat> m_formats;
 };

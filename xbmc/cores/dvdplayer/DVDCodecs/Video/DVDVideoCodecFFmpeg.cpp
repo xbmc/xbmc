@@ -123,7 +123,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
-  m_pConvertFrame = NULL;
   m_pFrame = NULL;
   m_pFilterGraph  = NULL;
   m_pFilterIn     = NULL;
@@ -163,6 +162,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dllAvFilter.avfilter_register_all();
 
   m_bSoftware     = hints.software;
+
+  m_formats.push_back(PIX_FMT_YUV420P);
+  m_formats.push_back(PIX_FMT_YUVJ420P);
+  m_formats.push_back(PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
 
   pCodec = NULL;
   m_pCodecContext = NULL;
@@ -307,13 +310,6 @@ void CDVDVideoCodecFFmpeg::Dispose()
 {
   if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
   m_pFrame = NULL;
-
-  if (m_pConvertFrame)
-  {
-    m_dllAvCodec.avpicture_free(m_pConvertFrame);
-    m_dllAvUtil.av_free(m_pConvertFrame);
-  }
-  m_pConvertFrame = NULL;
 
   if (m_pCodecContext)
   {
@@ -477,67 +473,32 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if(m_pCodecContext->codec_id == CODEC_ID_H264)
     m_started = true;
 
-  if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
-  && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
-  && m_pHardware == NULL)
+  if(m_pHardware == NULL)
   {
-    if (!m_dllSwScale.IsLoaded() && !m_dllSwScale.Load())
-        return VC_ERROR;
+    bool need_scale = std::find( m_formats.begin()
+                               , m_formats.end()
+                               , m_pCodecContext->pix_fmt) == m_formats.end();
 
-    if (!m_pConvertFrame)
+    bool need_reopen  = false;
+    if(!m_filters.Equals(m_filters_next))
+      need_reopen = true;
+
+    if(m_pFilterIn)
     {
-      // Allocate an AVFrame structure
-      m_pConvertFrame = (AVPicture*)m_dllAvUtil.av_mallocz(sizeof(AVPicture));
-      // Due to a bug in swsscale we need to allocate one extra line of data
-      if(m_dllAvCodec.avpicture_alloc( m_pConvertFrame
-                                     , PIX_FMT_YUV420P
-                                     , m_pCodecContext->width
-                                     , m_pCodecContext->height+1) < 0)
-      {
-        m_dllAvUtil.av_free(m_pConvertFrame);
-        m_pConvertFrame = NULL;
-        return VC_ERROR;
-      }
+      if(m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt
+      || m_pFilterIn->outputs[0]->w      != m_pCodecContext->width
+      || m_pFilterIn->outputs[0]->h      != m_pCodecContext->height)
+        need_reopen = true;
     }
 
-    // convert the picture
-    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height,
-                                         m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
-                                         PIX_FMT_YUV420P, SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
-
-    if(context == NULL)
+    // try to setup new filters
+    if (need_reopen || (need_scale && m_pFilterGraph == NULL))
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::Decode - unable to obtain sws context for w:%i, h:%i, pixfmt: %i", m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt);
-      return VC_ERROR;
+      m_filters = m_filters_next;
+
+      if(FilterOpen(m_filters, need_scale) < 0)
+        FilterClose();
     }
-
-    m_dllSwScale.sws_scale(context
-                          , m_pFrame->data
-                          , m_pFrame->linesize
-                          , 0
-                          , m_pCodecContext->height
-                          , m_pConvertFrame->data
-                          , m_pConvertFrame->linesize);
-
-    m_dllSwScale.sws_freeContext(context);
-  }
-  else
-  {
-    // no need to convert, just free any existing convert buffers
-    if (m_pConvertFrame)
-    {
-      m_dllAvCodec.avpicture_free(m_pConvertFrame);
-      m_dllAvUtil.av_free(m_pConvertFrame);
-      m_pConvertFrame = NULL;
-    }
-  }
-
-  // try to setup new filters
-  if (!m_filters.Equals(m_filters_next))
-  {
-    m_filters = m_filters_next;
-    if(FilterOpen(m_filters) < 0)
-      FilterClose();
   }
 
   int result;
@@ -563,12 +524,6 @@ void CDVDVideoCodecFFmpeg::Reset()
   if (m_pHardware)
     m_pHardware->Reset();
 
-  if (m_pConvertFrame)
-  {
-    m_dllAvCodec.avpicture_free(m_pConvertFrame);
-    m_dllAvUtil.av_free(m_pConvertFrame);
-    m_pConvertFrame = NULL;
-  }
   m_filters = "";
   FilterClose();
 }
@@ -670,14 +625,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(!GetPictureCommon(pDvdVideoPicture))
     return false;
 
-  if(m_pConvertFrame)
-  {
-    for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->data[i]      = m_pConvertFrame->data[i];
-    for (int i = 0; i < 4; i++)
-      pDvdVideoPicture->iLineSize[i] = m_pConvertFrame->linesize[i];
-  }
-  else
   {
     for (int i = 0; i < 4; i++)
       pDvdVideoPicture->data[i]      = m_pFrame->data[i];
@@ -692,8 +639,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   PixelFormat pix_fmt;
   if(m_pBufferRef)
     pix_fmt = (PixelFormat)m_pBufferRef->format;
-  else if(m_pConvertFrame)
-    pix_fmt = PIX_FMT_YUV420P;
   else
     pix_fmt = m_pCodecContext->pix_fmt;
 
@@ -711,7 +656,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return true;
 }
 
-int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
+int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
 {
   int result;
   AVBufferSinkParams *buffersink_params;
@@ -719,7 +664,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
   if (m_pFilterGraph)
     FilterClose();
 
-  if (filters.IsEmpty())
+  if (filters.IsEmpty() && !scale)
     return 0;
 
   if (!(m_pFilterGraph = m_dllAvFilter.avfilter_graph_alloc()))
@@ -748,9 +693,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     return result;
   }
 
-  enum PixelFormat pix_fmts[] = { PIX_FMT_YUV420P, PIX_FMT_YUVJ420P, PIX_FMT_NONE };
   buffersink_params = m_dllAvFilter.av_buffersink_params_alloc();
-  buffersink_params->pixel_fmts = pix_fmts;
+  buffersink_params->pixel_fmts = &m_formats[0];
 #ifdef FF_API_OLD_VSINK_API
   if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, (void*)buffersink_params->pixel_fmts, m_pFilterGraph)) < 0)
 #else
