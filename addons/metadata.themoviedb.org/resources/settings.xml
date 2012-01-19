@@ -5,5 +5,5 @@
     <setting label="30004" type="bool" id="trailer" default="true"/>
     <setting label="30001" type="labelenum" values="No|480p|720p|1080p" id="TrailerQ" default="No"/>
     <setting label="30002" type="labelenum" values="da|fi|nl|de|it|es|fr|pl|hu|el|tr|ru|he|ja|pt|zh|cs|sl|hr|ko|en|sv|no" id="language" default="en"/>
-    <setting label="30003" type="bool" id="imdbrating" default="false"/>
+    <setting label="30003" type="labelenum" values="TMDb|IMDb" id="RatingS" default="TMDb"/>
 </settings>
