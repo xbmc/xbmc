@@ -62,6 +62,8 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Job.h"
+#include "utils/JobManager.h"
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
 #include "storage/MediaManager.h"
@@ -1286,14 +1288,10 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       MarkWatched(item,true);
       m_viewControl.SetSelectedItem(newSelection);
 
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-      Update(m_vecItems->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     MarkWatched(item,false);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->GetPath());
     return true;
   case CONTEXT_BUTTON_PLAY_AND_QUEUE:
     return OnPlayAndQueueMedia(item);
@@ -1487,53 +1485,83 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
     CFileUtils::DeleteItem(item);
 }
 
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
+class CMarkWatchedJob : public CJob
 {
-  if (!g_settings.GetCurrentProfile().canWriteDatabases())
-    return;
-  // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
+public:
+  CMarkWatchedJob(const CFileItemPtr& item, bool bMark)
+    : m_item(item), m_bMark(bMark)
   {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
   }
 
-  CVideoDatabase database;
-  if (database.Open())
+  virtual bool DoWork()
   {
-    CFileItemList items;
-    if (item->m_bIsFolder)
+    if (!g_settings.GetCurrentProfile().canWriteDatabases())
+      return false;
+    // dont allow update while scanning
+    CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (pDialogScan && pDialogScan->IsScanning())
     {
-      CStdString strPath = item->GetPath();
-      CDirectory::GetDirectory(strPath, items);
+      CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+      return false;
     }
-    else
-      items.Add(item);
 
-    for (int i=0;i<items.Size();++i)
+    MarkWatched(m_item, m_bMark);
+
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_windowManager.SendThreadMessage(msg);
+
+    return true;
+  }
+
+  virtual const char *GetType() const { return "markwatched"; };
+
+private:
+  void MarkWatched(const CFileItemPtr &item, bool bMark)
+  {
+    CVideoDatabase database;
+    if (database.Open())
     {
-      CFileItemPtr pItem=items[i];
-      if (pItem->m_bIsFolder)
+      CFileItemList items;
+      if (item->m_bIsFolder)
       {
-        MarkWatched(pItem, bMark);
-        continue;
+        CStdString strPath = item->GetPath();
+        XFILE::CDirectory::GetDirectory(strPath, items);
+      }
+      else
+        items.Add(item);
+
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItemPtr pItem = items[i];
+        if (pItem->m_bIsFolder)
+        {
+          MarkWatched(pItem, bMark);
+          continue;
+        }
+
+        if (pItem->HasVideoInfoTag() &&
+            (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
+             (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
+          continue;
+
+        // Clear resume bookmark
+        if (bMark)
+          database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+
+        database.SetPlayCount(*pItem, bMark ? 1 : 0);
       }
 
-      if (pItem->HasVideoInfoTag() &&
-          (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-           (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-        continue;
-
-      // Clear resume bookmark
-      if (bMark)
-        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-
-      database.SetPlayCount(*pItem, bMark ? 1 : 0);
+      database.Close();
     }
-    
-    database.Close(); 
   }
+
+  const CFileItemPtr &m_item;
+  bool m_bMark;
+};
+
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
+{
+  CJobManager::GetInstance().AddJob(new CMarkWatchedJob(item, bMark), 0);
 }
 
 //Add change a title's name
