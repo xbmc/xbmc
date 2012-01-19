@@ -53,9 +53,9 @@
   </charsets>
 
   <dvd>
-    <menu>bg</menu>
-    <audio>bg</audio>
-    <subtitle>bg</subtitle>
+    <menu>bul</menu>
+    <audio>bul</audio>
+    <subtitle>bul</subtitle>
   </dvd>
 
   <regions>
@@ -64,7 +64,8 @@
       <datelong>DDDD, D MMMM YYYY 'г.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>kph</speedunit>
+      <speedunit>kmh</speedunit>
+      <timezone>EET</timezone>
     </region>
   </regions>
 </language>
