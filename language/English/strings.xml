@@ -2362,7 +2362,8 @@
   
   <string id="34400">Video Rendering</string>
   <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
-  <string id="34402"></string>
+  <string id="34402">Failed to initialize audio device</string>
+  <string id="34403">Check your audiosettings</string>
 
   <string id="35000">Peripherals</string>
 
