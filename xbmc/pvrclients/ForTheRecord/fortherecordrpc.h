@@ -122,6 +122,11 @@ namespace ForTheRecord
   int Ping(int requestedApiVersion);
 
   /**
+   * \brief Returns information (free disk space) from all recording disks.
+   */
+  int GetRecordingDisksInfo(Json::Value& response);
+
+  /**
    * \brief GetPluginServices Get all configured plugin services. {activeOnly} = Set to true to only receive active plugins. 
    * \brief Returns an array containing zero or more plugin services.
    * \param activeonly  set to true to only receive active plugins

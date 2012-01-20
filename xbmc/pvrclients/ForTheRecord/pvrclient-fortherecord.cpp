@@ -289,8 +289,21 @@ const char* cPVRClientForTheRecord::GetConnectionString(void)
 
 PVR_ERROR cPVRClientForTheRecord::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-  *iTotal = 0;
-  *iUsed = 0;
+  XBMC->Log(LOG_DEBUG, "->GetDriveSpace");
+  *iTotal = *iUsed = 0;
+  Json::Value response;
+  int retval;
+
+  retval = ForTheRecord::GetRecordingDisksInfo(response);
+
+  if (retval != E_FAILED)
+  {
+    double _totalSize = response["TotalSizeBytes"].asDouble();
+    double _freeSize = response["FreeSpaceBytes"].asDouble();
+    *iTotal = (long long) _totalSize;
+    *iUsed = (long long) (_totalSize - _freeSize);
+    XBMC->Log(LOG_DEBUG, "GetDriveSpace, %lld used bytes of %lld total bytes.", *iUsed, *iTotal);
+  }
 
   return PVR_ERROR_NO_ERROR;
 }
