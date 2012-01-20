@@ -65,8 +65,8 @@ static uint16_t SymMappingsEvdev[][2] =
 , { 127, XBMCK_SPACE }               // Pause
 , { 135, XBMCK_MENU }                // Right click
 , { 136, XBMCK_MEDIA_STOP }          // Stop
-, { 138, 0x49 /* 'I' */}             // Info
-, { 147, 0x4d /* 'M' */}             // Menu
+, { 138, 0x69 /* 'i' */}             // Info
+, { 147, 0x6d /* 'm' */}             // Menu
 , { 148, XBMCK_LAUNCH_APP2 }         // Launch app 2
 , { 150, 0x9f }                      // Sleep
 , { 152, XBMCK_LAUNCH_APP1 }         // Launch app 1
@@ -78,13 +78,13 @@ static uint16_t SymMappingsEvdev[][2] =
 , { 172, XBMCK_MEDIA_PLAY_PAUSE }    // Play_Pause
 , { 173, XBMCK_MEDIA_PREV_TRACK }    // Prev track
 , { 174, XBMCK_MEDIA_STOP }          // Stop
-, { 176, 0x52 /* 'R' */}             // Rewind
+, { 176, 0x72 /* 'r' */}             // Rewind
 , { 179, XBMCK_LAUNCH_MEDIA_SELECT } // Launch media select
 , { 180, XBMCK_BROWSER_HOME }        // Browser home
 , { 181, XBMCK_BROWSER_REFRESH }     // Browser refresh
 , { 214, XBMCK_ESCAPE }              // Close
 , { 215, XBMCK_MEDIA_PLAY_PAUSE }    // Play_Pause
-, { 216, 0x46 /* 'F' */}             // Forward
+, { 216, 0x66 /* 'f' */}             // Forward
 //, {167, 0xb3 } // Record
 };
 

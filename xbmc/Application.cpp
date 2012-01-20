@@ -1247,7 +1247,7 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  CAddonMgr::Get().StartServices(false);
+  CAddonMgr::Get().StartServices(true);
 
   CLog::Log(LOGNOTICE, "initialize done");
 
