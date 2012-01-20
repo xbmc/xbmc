@@ -39,4 +39,5 @@ public:
 
 private:
   CDVDOverlayText* m_pOverlay;
+  uint32_t         m_textColor;
 };

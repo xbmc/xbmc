@@ -74,6 +74,7 @@ void CWinSystemBase::UpdateResolutions()
 {
   // add the window res - defaults are fine.
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
+  window.bFullScreen = false;
   if (window.iWidth == 0)
     window.iWidth = 720;
   if (window.iHeight == 0)

@@ -448,7 +448,7 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
 {
   m_inChannels   = channels;
   m_inSampleSize = sampleSize;
-  m_sampleRate   = sampleRate;
+  m_sampleRate   = (float)sampleRate;
   m_inSet        = channelMap != NULL;
   if (channelMap)
     memcpy(m_inMap, channelMap, sizeof(enum PCMChannels) * channels);

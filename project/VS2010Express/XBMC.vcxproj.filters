@@ -5478,6 +5478,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

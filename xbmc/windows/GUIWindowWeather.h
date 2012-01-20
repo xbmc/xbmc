@@ -38,6 +38,7 @@ protected:
   void UpdateButtons();
   void UpdateLocations();
   void SetProperties();
+  void ClearProperties();
   void SetLocation(int loc);
 
   unsigned int m_maxLocation;

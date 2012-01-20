@@ -969,7 +969,12 @@ namespace JSONRPC
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
         "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true },"
-        "{ \"name\": \"speed\", \"type\": [ \"integer\", \"string\" ], \"enum\": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32, \"increment\", \"decrement\" ], \"required\": true }"
+        "{ \"name\": \"speed\", \"type\": ["
+            "{ \"type\": \"integer\", \"required\": true, \"enum\": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32 ] },"
+            "{ \"type\": \"string\", \"required\": true, \"enum\": [ \"increment\", \"decrement\" ] } "
+          "],"
+          "\"required\": true"
+        "}"
       "],"
       "\"returns\": { \"$ref\": \"Player.Speed\" }"
     "}",

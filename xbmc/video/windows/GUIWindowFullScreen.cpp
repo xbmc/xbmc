@@ -55,6 +55,7 @@
 #include "input/ButtonTranslator.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "windowing/WindowingFactory.h"
 
 #include <stdio.h>
 
@@ -983,7 +984,7 @@ void CGUIWindowFullScreen::FrameMove()
     int iResolution = g_graphicsContext.GetVideoResolution();
     {
       CStdString strStatus;
-      if (g_settings.m_ResInfo[iResolution].bFullScreen)
+      if (g_Windowing.IsFullScreen())
         strStatus.Format("%s %ix%i@%.2fHz - %s",
           g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
           g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,

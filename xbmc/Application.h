@@ -38,6 +38,11 @@ namespace ADDON
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
 
+namespace MEDIA_DETECT
+{
+  class CAutorun;
+}
+
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
@@ -47,8 +52,6 @@ namespace ADDON
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
-#include "Autorun.h"
-#include "video/Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "network/Network.h"
@@ -59,15 +62,13 @@ namespace ADDON
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
-#ifdef HAS_WEB_SERVER
-#include "network/WebServer.h"
-#endif
-
 class CKaraokeLyricsManager;
 class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
+class CBookmark;
+class CWebServer;
 
 class CBackgroundPlayer : public CThread
 {
@@ -177,6 +178,7 @@ public:
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
+  void ResetSystemIdleTimer();
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
@@ -217,18 +219,18 @@ public:
 #endif
 
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun m_Autorun;
+  MEDIA_DETECT::CAutorun* m_Autorun;
 #endif
 
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-#ifdef HAS_WEB_SERVER
-  CWebServer m_WebServer;
-#endif
-
   IPlayer* m_pPlayer;
+
+#ifdef HAS_WEB_SERVER
+  CWebServer& m_WebServer;
+#endif
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
@@ -332,7 +334,7 @@ protected:
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  CBookmark m_progressTrackingVideoResumeBookmark;
+  CBookmark& m_progressTrackingVideoResumeBookmark;
   CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
 
@@ -368,6 +370,7 @@ protected:
   bool ProcessEventServer(float frameTime);
   bool ProcessPeripherals(float frameTime);
   bool ProcessHTTPApiButtons();
+  bool ProcessJsonRpcButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
   float NavigationIdleTime();

@@ -353,28 +353,24 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>20</posx>
+			<posx>60</posx>
 			<posy>0</posy>
-			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home) | Window.Next(1111) | Window.Next(AddonBrowser)">WindowClose</animation>
+			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home) | Window.Previous(1111) | Window.Previous(AddonBrowser)">WindowOpen</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>80</width>
+				<width>250</width>
 				<height>35</height>
 				<texture border="0,0,32,0">header.png</texture>
 			</control>
-			<control type="button">
-				<posx>20</posx>
-				<posy>5</posy>
-				<width>25</width>
-				<height>20</height>
-				<texturenofocus>HomeIcon.png</texturenofocus>
-				<texturefocus>HomeIcon-Focus.png</texturefocus>
-				<label>-</label>
-				<onclick>ActivateWindow(Home)</onclick>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>220</posx>
+				<label>$LOCALIZE[130]</label>
 			</control>
 		</control>
+		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

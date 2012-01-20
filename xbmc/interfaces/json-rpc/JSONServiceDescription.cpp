@@ -1666,6 +1666,10 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinition 
   // If the current type extends others type we need to check those types
   for (unsigned int index = 0; index < type.extends.size(); index++)
     getReferencedTypes(type.extends.at(index), referencedTypes);
+
+  // If the current type is a union type we need to check those types
+  for (unsigned int index = 0; index < type.unionTypes.size(); index++)
+    getReferencedTypes(type.unionTypes.at(index), referencedTypes);
 }
 
 CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()

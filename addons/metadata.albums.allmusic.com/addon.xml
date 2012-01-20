@@ -13,10 +13,12 @@
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Информация за албуми от AllMusic.com</summary>
     <summary lang="en">AllMusic album information</summary>
     <summary lang="de">Alben Scraper für AllMusic.com</summary>
     <summary lang="es">Scraper de Álbums de AllMusic</summary>
     <summary lang="fr">Scraper d'albums musicaux AllMusic</summary>
+    <summary lang="fi">AllMusic.com -albumitietojen lataaja</summary>
     <summary lang="hu">AllMusic.com album információk</summary>
     <summary lang="nl">AllMusic-albuminfo</summary>
     <summary lang="pl">Informacje o albumach z AllMusic</summary>
@@ -25,6 +27,10 @@
     <summary lang="ru">Информация об альбоме из AllMusic</summary>
     <summary lang="se">AllMusic albuminformation</summary>
     <summary lang="zh">AllMusic音乐专辑信息</summary>
+    <description lang="bg">Попълнете метаинформацията в библиотеката си от AllMusic.com.
+Уебсайтът allmusic.com е създаден през 19995, като място за страстни музикални фенове.
+Редакторският колектив AMG заедно със стотици експерти (и малко фанатици на тема allmusic.com) са направили сайта един от най-подробните (и най-често ползваните) източници на информация на музикална тема. Всички те са се посветили на създаването и поддържането на базата от данни, на разпространяването на съдържание от AMG, което се очаква от любителите на музика и професионалисти в музикалния отрасъл.
+Засегнати са всички жанрове и стилове музика. От най-комерсиалните и популярни до най-невъзприетите. Критиката към артисти и албуми се прави в контекста на съответните им жанрове - от опера до гаражен рок. Така се осигури актуална информация за почитателите на всеки стил, за любимите им артисти и се представят нови творби.</description>
     <description lang="en">Use AllMusic.com to fill your library metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.
@@ -37,6 +43,10 @@ Alle Genres und Stile der Musik werden hier abgedeckt, reichend von Mainstream b
 La página web allmusic fue creada en el 1995 cómo un sitio donde los fans podíaan compartir su pasión por la música.
 El equipo de AMG, junto con cuentos de colaboradores expertos (todos ellos fans de la música) han hecho de allmusic uno de los sitios más extensos del planeta. Todos ellos intentan crear y mantener unos contenidos que los amantes de la música y los profesionales del sector obtienen de AMG.
 Todos los géneros y estilos musicales tienen cabida, desde los más comerciales hasta los más oscuros. En allmusic se critican los álbumes y los artistas en el entorno que les corresponde - desde opera, pasando por rock hasta country tradicional. Así se asegura que los fans de cualquier estilo de música puedan depender de nosotros para mantenerse al día de las novedades de sus artistas favoritos y descubrir nuevos sonidos.</description>
+    <description lang="fi">Käytä AllMusic.com -sivustoa täyttämään kirjastosi metatiedot.
+AllMusic.com -sivusto luotiin vuonna 1995 paikaksi, jossa musiikkifanit voivat tyydyttää intohimonsa musiikkiin.
+AMG-toimituksen henkilökunta, satojen asiansa tuntevien lahjoittajien kanssa (kaikki musiikkifanaatikot), ovat tehneet AllMusic.com -sivustosta koko planeetan kattavimman musiikkitietolähteen. He ovat kaikki sitoutuneita luomaan ja ylläpitämään asioista perillä olevaa henkevää sisältöä, jota musiikista pitävät ja musiikkialan ammattilaiset odottavat AMG:ltä.
+Kaikki musiikin lajityypit ja tyylisuunnat ovat edustettuina täällä, vaihdellen kaupallisesti suosituimmista kaikista huomaamattomimpiin. Me arvostelemme albumit ja esittäjät heidän oman lajityyppinsä sisällä - oopperasta ja autotallirokista aina perinteiseen country-musiikkiin. Tämä varmistaa, että minkä tahansa tyylisuunnan fanit voivat luottaa, että samalla kun pidämme heidät ajan tasalla heidän lempiartististansa, niin esittelemme myös heille uusia äänimaailmoita.</description>
     <description lang="fr">Utiliser AllMusic.com pour la récupération des méta-données.
 Le site web AllMusic a été créé en 1995 afin que les fans de musique puissent assouvir leur passion.
 L'équipe rédactionnelle d'AMG, forte de ses centaines de contributeurs avisés (tous passionnés de musique à part entière), a fait de AllMusic la source de référence la plus complète de toute la planète. Chacun s'investissant dans la construction et la maintenance d'un contenu aussi passionné et judicieux que tout amoureux de musique ou tout professionnel de l'industrie serait en droit d'attendre d'AMG.

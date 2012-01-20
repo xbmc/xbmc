@@ -29,6 +29,7 @@
 #include "Socket.h"
 #include "threads/CriticalSection.h"
 #include "Application.h"
+#include "GUIInfoManager.h"
 #include "interfaces/Builtins.h"
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
@@ -192,7 +193,7 @@ void CEventServer::Run()
   // publish service
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
-                               "XBMC Event Server",
+                               g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
                                m_iPort,
                                txt);
 

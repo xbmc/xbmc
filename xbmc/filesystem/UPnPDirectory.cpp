@@ -168,6 +168,9 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     if (NPT_FAILED(upnp->m_MediaBrowser->BrowseSync(device, object.c_str(), list, true)))
         return false;
 
+    if (list.IsNull() || !list->GetItemCount())
+      return false;
+
     PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
     if (entry == 0)
         return false;
@@ -383,12 +386,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             CStdString id = (char*) (*entry)->m_ObjectID;
             CURL::Encode(id);
-            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str() + "/"));
+            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str()));
 
             // if it's a container, format a string as upnp://uuid/object_id
             if (pItem->m_bIsFolder) {
-                CStdString id = (char*) (*entry)->m_ObjectID;
-                CURL::Encode(id);
                 pItem->SetPath(pItem->GetPath() + "/");
 
                 // look for metadata

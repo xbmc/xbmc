@@ -392,10 +392,16 @@ CStdString CSysInfo::GetKernelVersion()
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
     {
-      if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-      {
-        strKernel.append("XP Professional x64 Edition");
-      }
+      if( GetSystemMetrics(SM_SERVERR2) )
+        strKernel.append("Windows Server 2003 R2");
+      else if ( osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER )
+        strKernel.append("Windows Storage Server 2003");
+      else if ( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
+        strKernel.append("Windows Home Server");
+      else if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
+        strKernel.append("Windows XP Professional x64 Edition");
+      else
+        strKernel.append("Windows Server 2003");
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
     {

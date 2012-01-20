@@ -60,6 +60,7 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
   setlocale(LC_NUMERIC, currentLocale.c_str());
 
   yajl_gen_clear(g);
+  yajl_gen_free(g);
 
   return output;
 }

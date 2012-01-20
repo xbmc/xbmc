@@ -1,3 +1,6 @@
+[B]3.0.0[/B]
+- major rewrite: utilize TMDb API v3, scraping set information, prioritize posters on the selected language
+
 [B]2.0.1[/B]
 - fixed: imdb url nfo not resolving tmdb id
 

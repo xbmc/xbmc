@@ -187,7 +187,7 @@ void CGUIDialogAddonInfo::OnUninstall()
       deps.push_back((*it)->Name());
   }
 
-  if (deps.size())
+  if (!CAddonInstaller::Get().CheckDependencies(m_localAddon) && deps.size())
   {
     CStdString strLine0, strLine1;
     StringUtils::JoinString(deps, ", ", strLine1);

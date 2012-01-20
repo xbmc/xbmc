@@ -72,7 +72,6 @@ protected:
   CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);
   void CreateSettings();
   void UpdateSettings();
-  void UpdateRealTimeSettings();
   void CheckForUpdates();
   void FreeSettingsControls();
   virtual void FreeControls();
@@ -93,12 +92,6 @@ protected:
   CGUIButtonControl *m_pOriginalButton;
   CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
-  // Network settings
-  int m_iNetworkAssignment;
-  CStdString m_strNetworkIPAddress;
-  CStdString m_strNetworkSubnet;
-  CStdString m_strNetworkGateway;
-  CStdString m_strNetworkDNS;
 
   CStdString m_strErrorMessage;
 

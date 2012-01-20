@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2010-10-11">
+<scraper framework="1.1" date="2012-01-16">
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://api.themoviedb.org/2.1/Movie.search/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\1$$4&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://api.themoviedb.org/3/search/movie?api_key=57983e31fb435df4df77afb854740ea9&amp;query=\1$$4&amp;language=$INFO[language]&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="+\1" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>
@@ -9,31 +9,28 @@
 		</RegExp>
 	</CreateSearchUrl>
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/2.1/Movie.getInfo/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;id&gt;\2&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/3/movie/\2?api_key=57983e31fb435df4df77afb854740ea9&amp;$INFO[language]&lt;/url&gt;&lt;id&gt;\2&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression clear="yes" noclean="1">(themoviedb.org/movie/)([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.1/Movie.imdbLookup/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;&lt;/details&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>imdb....?/title/tt([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.1/Movie.imdbLookup/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;&lt;/details&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>imdb....?/Title\?([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
 	<GetTMDBId dest="3">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3+">
 			<expression>&quot;movie&quot;,&quot;id&quot;:([0-9]*),</expression>
 		</RegExp>
 	</GetTMDBId>
 	<GetSearchResults dest="8">
 		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\2.json&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3">
-				<expression repeat="yes">&quot;name&quot;:&quot;([^&quot;]*).*?&quot;id&quot;:([^,]*).*?&quot;released&quot;:&quot;([0-9]*)</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\4&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3">
+				<expression repeat="yes">&quot;id&quot;:([0-9]*),&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;release_date&quot;:&quot;([0-9]+)-.*?&quot;title&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\2.json&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3+">
-				<expression repeat="yes">&quot;original_name&quot;:&quot;([^&quot;]*).*?&quot;id&quot;:([^,]*).*?&quot;released&quot;:&quot;([0-9]*)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\2.json&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/$INFO[language]/json/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3+">
-				<expression repeat="yes">&quot;alternative_name&quot;:&quot;([^&quot;]*).*?&quot;id&quot;:([^,]*).*?&quot;released&quot;:&quot;([0-9]*)</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;id&gt;\1&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;language=$INFO[language]&lt;/url&gt;&lt;/entity&gt;" dest="3+">
+				<expression repeat="yes">&quot;id&quot;:([0-9]*),&quot;original_title&quot;:&quot;([^&quot;]*)&quot;,&quot;release_date&quot;:&quot;([0-9]+)-</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -41,54 +38,81 @@
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="5">
-				<expression noclean="1">&quot;movie&quot;,&quot;id&quot;:([0-9]*),</expression>
+				<expression noclean="1">&quot;id&quot;:([0-9]*),&quot;imdb</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="5+">
-				<expression clear="yes" noclean="1">&quot;movie&quot;,&quot;id&quot;:[0-9]*,&quot;imdb_id&quot;:&quot;([^&quot;]*)</expression>
+				<expression clear="yes" noclean="1">&quot;id&quot;:[0-9]*,&quot;imdb_id&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp conditional="keeporiginaltitle" input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
-				<expression fixchars="1">&quot;original_name&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression fixchars="1">&quot;original_title&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
-				<expression fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression fixchars="1">&quot;title&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
-				<expression fixchars="1">&quot;original_name&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$10" output="&lt;url function=&quot;ParseFallbackTMDBTitle&quot; cache=&quot;tmdb-en-$$2.json&quot;&gt;http://api.themoviedb.org/3/movie/$$2?api_key=57983e31fb435df4df77afb854740ea9&amp;language=en&lt;/url&gt;" dest="5+">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression>(.+)</expression>
+			</RegExp>
+			<RegExp conditional="keeporiginaltitle" input="$$9" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
-				<expression noclean="1">&quot;released&quot;:&quot;([0-9]+)-</expression>
+				<expression noclean="1">&quot;release_date&quot;:&quot;([0-9]+)-</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
-				<expression noclean="1">&quot;runtime&quot;:([0-9]+)</expression>
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression clear="yes" noclean="1">&quot;runtime&quot;:([0-9]+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
-				<expression fixchars="1">&quot;tagline&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$10" output="&lt;url function=&quot;ParseFallbackTMDBRuntime&quot; cache=&quot;tmdb-en-$$2.json&quot;&gt;http://api.themoviedb.org/3/movie/$$2?api_key=57983e31fb435df4df77afb854740ea9&amp;language=en&lt;/url&gt;" dest="5+">
+				<expression>^$</expression>
 			</RegExp>
-			<RegExp input="$$1" output="\1" dest="6">
-				<expression>&quot;certification&quot;:&quot;([^&quot;]*)</expression>
+			<RegExp input="$$10" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>(.+)</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;mpaa&gt;Rated \1&lt;/mpaa&gt;" dest="5+">
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression clear="yes" fixchars="1">&quot;tagline&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;url function=&quot;ParseFallbackTMDBTagline&quot; cache=&quot;tmdb-en-$$2.json&quot;&gt;http://api.themoviedb.org/3/movie/$$2?api_key=57983e31fb435df4df77afb854740ea9&amp;language=en&lt;/url&gt;" dest="5+">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
 				<expression>(.+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression clear="yes" noclean="1">&quot;studios&quot;:\[([^\]]*)</expression>
+				<expression clear="yes" noclean="1">&quot;production_companies&quot;:\[([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
 				<expression trim="1" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression clear="yes" noclean="1">&quot;countries&quot;:\[([^\]]*)</expression>
+				<expression clear="yes" noclean="1">&quot;production_countries&quot;:\[([^\]]*)</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;country&gt;\1&lt;/country&gt;" dest="5+">
 				<expression trim="1" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;job&quot;:&quot;Director&quot;</expression>
+			<RegExp input="$INFO[RatingS]" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression noclean="1">&quot;id&quot;:[0-9]*,&quot;imdb_id&quot;:&quot;([^&quot;]*)</expression>
+				</RegExp>
+				<expression>IMDb</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
-				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;job&quot;:&quot;[^&quot;]*&quot;,&quot;department&quot;:&quot;Writing&quot;</expression>
+			<RegExp input="$INFO[RatingS]" output="&lt;chain function=&quot;GetTMDBRatingByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+				<expression>TMDb</expression>
 			</RegExp>
-			<RegExp conditional="!imdbrating" input="$$2" output="&lt;chain function=&quot;GetTMDBRatingByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBDirectorsByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+				<expression />
+			</RegExp>
+			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBWitersByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+				<expression />
+			</RegExp>
+			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBCertificationsByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
+				<expression />
+			</RegExp>
+			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBSetByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression />
 			</RegExp>
 			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBPlotByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
@@ -99,9 +123,6 @@
 			</RegExp>
 			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBGenresByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression />
-			</RegExp>
-			<RegExp conditional="imdbrating" input="$$1" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;\1&lt;/chain&gt;" dest="5+">
-				<expression noclean="1">&quot;movie&quot;,&quot;id&quot;:[0-9]*,&quot;imdb_id&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;chain function=&quot;GetTMDBThumbsByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression />
@@ -114,23 +135,47 @@
 			</RegExp>
 			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet480p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
 				<RegExp input="$$1" output="\1" dest="6">
-					<expression noclean="1">&quot;original_name&quot;:&quot;([^&quot;]*)</expression>
+					<expression clear="yes" noclean="1">&quot;original_title&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<expression>480p</expression>
 			</RegExp>
 			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet720p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
 				<RegExp input="$$1" output="\1" dest="6">
-					<expression noclean="1">&quot;original_name&quot;:&quot;([^&quot;]*)</expression>
+					<expression clear="yes" noclean="1">&quot;original_title&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<expression>720p</expression>
 			</RegExp>
 			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet1080p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
 				<RegExp input="$$1" output="\1" dest="6">
-					<expression noclean="1">&quot;original_name&quot;:&quot;([^&quot;]*)</expression>
+					<expression clear="yes" noclean="1">&quot;original_title&quot;:&quot;([^&quot;]*)</expression>
 				</RegExp>
 				<expression>1080p</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</GetDetails>
+	<ParseFallbackTMDBTitle dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="2">
+				<expression fixchars="1">&quot;title&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFallbackTMDBTitle>
+	<ParseFallbackTMDBRuntime dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="2">
+				<expression noclean="1">&quot;runtime&quot;:([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFallbackTMDBRuntime>
+	<ParseFallbackTMDBTagline dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="2">
+				<expression fixchars="1">&quot;tagline&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFallbackTMDBTagline>
 </scraper>

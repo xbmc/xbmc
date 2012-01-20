@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Anssi Hannula-->
 <!--Email: anssi@xbmc.org-->
-<!--Based on English strings from git-77215a4-->
+<!--Based on English strings from git-ba852bb-->
 <!--$Revision$-->
 <strings>
   <string id="0">Ohjelmat</string>
@@ -58,21 +58,21 @@
   <string id="62">joulu</string>
 
   <string id="71">Pohjoisesta</string>
-  <string id="72">Pohjoisen ja koillisen välistä</string>
+  <string id="72">Pohjoiskoillisesta</string>
   <string id="73">Koillisesta</string>
-  <string id="74">Idän ja koillisen välistä</string>
+  <string id="74">Itäkoillisesta</string>
   <string id="75">Idästä</string>
-  <string id="76">Idän ja kaakon välistä</string>
+  <string id="76">Itäkaakosta</string>
   <string id="77">Kaakosta</string>
-  <string id="78">Etelän ja kaakon välistä</string>
+  <string id="78">Eteläkaakosta</string>
   <string id="79">Etelästä</string>
-  <string id="80">Etelän ja lounaan välistä</string>
+  <string id="80">Etelälounaasta</string>
   <string id="81">Lounaasta</string>
-  <string id="82">Lännen ja lounaan välistä</string>
+  <string id="82">Länsilounaasta</string>
   <string id="83">Lännestä</string>
-  <string id="84">Lännen ja luoteen välistä</string>
+  <string id="84">Länsiluoteesta</string>
   <string id="85">Luoteesta</string>
-  <string id="86">Pohjoisen ja luoteen välistä</string>
+  <string id="86">Pohjoisluoteesta</string>
   <string id="87">Vaihteleva</string>
 
   <string id="98">Näytä: Autom.</string>
@@ -1479,7 +1479,7 @@
   <string id="16020">Lomituksenpoisto</string>
   <string id="16021">Synk. parittomat</string>
   <string id="16022">Synk. parilliset</string>
-  <string id="16023">Lomituksen käsittely</string>
+  <string id="16023"></string>
   <string id="16024">Peruutetaan...</string>
   <string id="16025">Anna esittäjän nimi</string>
   <string id="16026">Toisto ei onnistu</string>
@@ -1492,7 +1492,7 @@
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
   <string id="16035">Jukeboksi toistolista</string>
-  <string id="16036">Lomituksenpoisto (Half)</string>
+  <string id="16036">Lomituksenpoisto (puolinopeus)</string>
   <string id="16037">Videon lomituksenpoisto</string>
   <string id="16038">Lomituksenpoistomenetelmä</string>
   <string id="16039">Pois päältä</string>
@@ -1529,15 +1529,15 @@
   <string id="16312">(VDPAU)Kohinanvähennys</string>
   <string id="16313">(VDPAU)Terävyys</string>
   <string id="16314">Inverse Telecine</string>
-  <string id="16315">Lanczos3 optimized</string>
+  <string id="16315">Lanczos3 optimoitu</string>
   <string id="16316">Automaattinen</string>
-  <string id="16317">Temporal (Half)</string>
-  <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16317">Temporal (puolinopeus)</string>
+  <string id="16318">Temporal/Spatial (puolinopeus)</string>
   <string id="16319">DXVA</string>
   <string id="16320">DXVA Synk. parittomat</string>
   <string id="16321">DXVA Paras</string>
   <string id="16322">Spline36</string>
-  <string id="16323">Spline36 optimized</string>
+  <string id="16323">Spline36 optimoitu</string>
   <string id="16324">Ohjelmistopohjainen sekoitus</string>
 
   <string id="16400">Videon jälkikäsittely</string>
@@ -2186,12 +2186,12 @@
   <string id="20253">WebDAV palvelin (HTTP)</string>
   <string id="20254">WebDAV palvelin (HTTPS)</string>
   <string id="20255">Ensimmäinen kirjautuminen, muokkaa profiiliasi</string>
-  <string id="20256">HTS Tvheadend-asiakas</string>
-  <string id="20257">VDR Streamdev-asiakas</string>
-  <string id="20258">MythTV-asiakas</string>
+  <string id="20256">HTS Tvheadend -asiakas</string>
+  <string id="20257">VDR Streamdev -asiakas</string>
+  <string id="20258">MythTV -asiakas</string>
   <string id="20259">Verkkotiedostojärjestelmä (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
-  <string id="20261">Apple File Protocol (AFP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Web-palvelimen hakemisto (HTTP)</string>
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
@@ -2365,8 +2365,9 @@
   <string id="21365">Poista sijainti</string>
   <string id="21366">Tekstityskansio</string>
   <string id="21367">Elokuvien ja vaihtoehtoisten tekstitysten hakemisto</string>
+  <string id="21368">Älä käytä ASS/SSA -tekstitysten kirjasinta</string>
 
-  <string id="21369">Hiiri käytössä</string>
+  <string id="21369">Hiiri- ja kosketusnäyttötuki käytössä</string>
   <string id="21370">Ohjauspainikkeiden äänitehosteet käytössä</string>
   <string id="21371">Pienoiskuva</string>
   <string id="21372">Pakotettu DVD-aluekoodi</string>
@@ -2820,7 +2821,7 @@
   <string id="36004">Paina "user"-painikkeen komento</string>
   <string id="36005">Käytä puolen vaihtokomentoja</string>
   <string id="36006">Sovitinta ei voitu avata</string>
-  <string id="36007">Käynnistä laitteet kun XBMC käynnistetään</string>
+  <string id="36007">Käynnistä TV kun XBMC käynnistetään</string>
   <string id="36008">Sammuta laitteet kun XBMC sammutetaan</string>
   <string id="36009">Aseta laitteet valmiustilaan näytönsäästäjän aktivoituessa</string>
   <string id="36010"></string>
@@ -2828,4 +2829,8 @@
   <string id="36012">CEC-sovitinta ei havaittu.</string>
   <string id="36013">Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC tukee (%d)</string>
   <string id="36014">Aseta tämä tietokone valmiustilaan kun TV sammutetaan</string>
+  <string id="36015">HDMI-liitin</string>
+  <string id="36016">Yhdistetty</string>
+  <string id="36017">Sovitin löytyi, mutta libcec ei ole saatavilla</string>
+  <string id="36018">Käytä TV:n kieliasetusta</string>
 </strings>

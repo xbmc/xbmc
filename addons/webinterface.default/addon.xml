@@ -12,6 +12,7 @@
     point="xbmc.gui.webinterface"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="de">Team XBMC Webinterface. (XBMC's standard Webinterface)</summary>
+    <summary lang="bg">Уебинтерфейс на Team XBMC. (стандартният уебинтерфейс на XBMC)</summary>
     <summary lang="en">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="es">Interface web de XBMC. (Interface web por defecto de XBMC)</summary>
     <summary lang="nl">Team XBMC Webinterface. (XBMC's standaard webinterface)</summary>
@@ -21,6 +22,7 @@
     <summary lang="se">Team XBMC webbgränssnitt. (XBMC's standardwebbgränssnitt)</summary>
     <summary lang="zh">Team XBMC Web 界面。（XBMC 的默认 web 界面）</summary>
     <description lang="de">Standard XBMC Webinterface; Für alle Geräte und Auflösungen geeignet</description>
+    <description lang="bg">Стандартния уебинтерфейс на XBMC; Направен е за устройства с най-различни резолюции</description>
     <description lang="en">Default web interface for XBMC; Designed for devices of all resolutions</description>
     <description lang="es">Interface web por defecto de XBMC. Diseñada para dispositivos de cualquier resolución</description>
     <description lang="nl">Standaard XBMC-webinterface; geschikt voor alle resoluties</description>

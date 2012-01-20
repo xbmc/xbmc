@@ -1,2 +1,2 @@
 ; filename                        mirror                                      source of the file
-curl-7.21.1-devel-mingw32.zip     http://mirrors.xbmc.org/build-deps/win32/   http://www.gknw.de/mirror/curl/win32/old_releases/
+curl-7.21.6-devel-mingw32.zip     http://mirrors.xbmc.org/build-deps/win32/   http://www.gknw.de/mirror/curl/win32/old_releases/

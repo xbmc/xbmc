@@ -359,8 +359,8 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
         newEvent.resize.h = event.resize.h;
-        newEvent.resize.type = event.resize.type;
         ret |= g_application.OnEvent(newEvent);
+        g_windowManager.MarkDirty();
         break;
       }
       case SDL_USEREVENT:

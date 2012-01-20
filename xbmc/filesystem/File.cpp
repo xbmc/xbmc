@@ -361,7 +361,6 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
     }
 
     url = URIUtils::SubstitutePath(strFileName);
-
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
       return false;

@@ -65,13 +65,17 @@ bool CRecentlyAddedJob::UpdateVideo()
       strRating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       
       home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
-      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
       home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
       home->SetProperty("LatestMovie." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
+
+      if (!item->HasThumbnail())
+        m_thumbLoader.LoadItem(item.get());
+
+      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
       home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
     }
   } 
@@ -115,6 +119,10 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
+
+      if (!item->HasThumbnail())
+        m_thumbLoader.LoadItem(item.get());
+
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
@@ -147,12 +155,16 @@ bool CRecentlyAddedJob::UpdateVideo()
       value.Format("%i", i + 1);
 
       home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
-      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
       home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMusicVideo." + value + ".Artist"      , item->GetVideoInfoTag()->m_strArtist);
+
+      if (!item->HasThumbnail())
+        m_thumbLoader.LoadItem(item.get());
+
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
       home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetCachedFanart());
     }
   }

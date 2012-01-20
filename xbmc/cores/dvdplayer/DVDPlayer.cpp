@@ -138,7 +138,7 @@ bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, Selectio
   return false;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, int source, int id)
+int CSelectionStreams::IndexOf(StreamType type, int source, int id) const
 {
   CSingleLock lock(m_section);
   int count = -1;
@@ -160,7 +160,7 @@ int CSelectionStreams::IndexOf(StreamType type, int source, int id)
     return -1;
 }
 
-int CSelectionStreams::IndexOf(StreamType type, CDVDPlayer& p)
+int CSelectionStreams::IndexOf(StreamType type, CDVDPlayer& p) const
 {
   if (p.m_pInputStream && p.m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -455,7 +455,6 @@ bool CDVDPlayer::OpenInputStream()
   // correct the filename if needed
   CStdString filename(m_filename);
   if (filename.Find("dvd://") == 0
-  ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
@@ -2427,16 +2426,14 @@ bool CDVDPlayer::IsPaused() const
 
 bool CDVDPlayer::HasVideo() const
 {
-  if (m_pInputStream)
-  {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_CurrentVideo.id >= 0) return true;
-  }
-  return false;
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)) return true;
+
+  return m_SelectionStreams.Count(STREAM_VIDEO) > 0 ? true : false;
 }
 
 bool CDVDPlayer::HasAudio() const
 {
-  return (m_CurrentAudio.id >= 0);
+  return m_SelectionStreams.Count(STREAM_AUDIO) > 0 ? true : false;
 }
 
 bool CDVDPlayer::IsPassthrough() const
@@ -3684,7 +3681,7 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
   
   // In case we stalled, don't output any subs
-  if (m_dvdPlayerVideo.IsStalled() || m_dvdPlayerAudio.IsStalled())
+  if ((m_dvdPlayerVideo.IsStalled() && HasVideo()) || (m_dvdPlayerAudio.IsStalled() && HasAudio()))
     strSubtitle = m_lastSub;
   else
     m_lastSub = strSubtitle;
