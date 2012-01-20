@@ -2328,6 +2328,8 @@
   <string id="33101">Webserver</string>
   <string id="33102">Event Server</string>
   <string id="33103">Remote communication server</string>
+  
+  <string id="33200">Detected New Connection</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
