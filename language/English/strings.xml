@@ -2356,6 +2356,9 @@
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>
+  
+  <string id="34300">Failed to start zeroconf</string>
+  <string id="34301">Is Apple's Bonjour Service installed? See log for more info.</string>
 
   <string id="35000">Peripherals</string>
 
