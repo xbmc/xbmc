@@ -2009,7 +2009,9 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
-
+  <string id="21454">Cache full</string>
+  <string id="21455">Cache filled before reaching required amount for continous playback</string>
+  
   <string id="21460">Subtitle location</string>
   <string id="21461">Fixed</string>
   <string id="21462">Bottom of video</string>
