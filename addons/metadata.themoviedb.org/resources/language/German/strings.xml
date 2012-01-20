@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <strings>
     <string id="30000">Aktiviere Fanart</string>
-    <string id="30001">Aktiviere Trailer von HD-Trailers.net</string>
+    <string id="30001">Aktiviere Trailer (HD-Trailers.net)</string>
     <string id="30002">Bevorzugte Sprache</string>
     <string id="30003">Bewertung von IMDb nutzen</string>
-	<string id="30004">Aktiviere Trailer</string>
-	<string id="30005">Behalte original Filmtitel bei</string>	
+    <string id="30004">Aktiviere Trailer (YouTube)</string>
+    <string id="30005">Behalte original Filmtitel bei</string>
 </strings>

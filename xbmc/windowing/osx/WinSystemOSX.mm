@@ -864,14 +864,14 @@ void CWinSystemOSX::UpdateResolutions()
   GetScreenResolution(&w, &h, &fps, 0);  
   UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
   
-  //all other screens need new resolution_info objects and have to
-  //sit on the start of the m_ResInfo vector
-  //because CGUIWindowSettingsCategory::FillInScreens expects this
-  //for enumerating the available displays
+  //see resolution.h enum RESOLUTION for how the resolutions
+  //have to appear in the g_settings.m_ResInfo vector
+  //add the desktop resolutions of the other screens
   for(int i = 1; i < GetNumScreens(); i++)
   {
     RESOLUTION_INFO res;      
     //get current resolution of screen i
+    GetScreenResolution(&w, &h, &fps, i);      
     UpdateDesktopResolution(res, i, w, h, fps);
     g_settings.m_ResInfo.push_back(res);
   }
@@ -1131,8 +1131,20 @@ void CWinSystemOSX::FillInVideoModes()
         CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
         
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
+
+        //overwrite the mode str because  UpdateDesktopResolution adds a
+        //"Full Screen". Since the current resolution is there twice
+        //this would lead to 2 identical resolution entrys in the guisettings.xml.
+        //That would cause problems with saving screen overscan calibration
+        //because the wrong entry is picked on load.
+        //So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
+        //in UpdateResolutions. And on all othere resolutions make a unique
+        //mode str by doing it without appending "Full Screen".
+        //this is what linux does - though it feels that there shouldn't be
+        //the same resolution twice... - thats why i add a FIXME here.
+        res.strMode.Format("%dx%d @ %.2f", w, h, refreshrate);
         g_graphicsContext.ResetOverscan(res);
-        g_settings.m_ResInfo.push_back(res);        
+        g_settings.m_ResInfo.push_back(res);
       }
     }
   }

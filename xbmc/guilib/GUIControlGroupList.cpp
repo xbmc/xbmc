@@ -289,8 +289,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);
-    m_totalSize += (m_children.size() > 0 ? m_itemGap : 0) + Size(control);
     CGUIControlGroup::AddControl(control, position);
+    m_totalSize = GetTotalSize();
   }
 }
 

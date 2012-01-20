@@ -561,7 +561,7 @@ int CBuiltins::Execute(const CStdString& execString)
         askToResume = false;
       }
       else if (params[i].Left(11).Equals("playoffset="))
-        item.SetProperty("playlist_starting_track", params[i].Mid(11) - 1);
+        item.SetProperty("playlist_starting_track", atoi(params[i].Mid(11)) - 1);
     }
 
     if (!item.m_bIsFolder && item.IsPlugin())

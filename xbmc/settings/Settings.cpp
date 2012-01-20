@@ -728,7 +728,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "mute", m_bMute);
     GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    GetInteger(pElement, "premutevolumelevel", m_iPreMuteVolumeLevel, 0, 0, 100);
     GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
   }
 
@@ -904,7 +906,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement volumeNode("audio");
   pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
+  XMLUtils::SetBoolean(pNode, "mute", m_bMute);
   XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
+  XMLUtils::SetInt(pNode, "premutevolumelevel", m_iPreMuteVolumeLevel);
   XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
 
   SaveCalibration(pRoot);

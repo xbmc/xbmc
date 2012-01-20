@@ -35,6 +35,14 @@ public:
   bool GetProgress(const CStdString &addonID, unsigned int &percent) const;
   bool Cancel(const CStdString &addonID);
 
+  /*! \brief Prompt the user as to whether they wish to install an addon.
+   \param addonID the addon ID of the item to install.
+   \param addon [out] the installed addon for later use.
+   \return true on successful install, false otherwise.
+   \sa Install
+   */
+  bool PromptForInstall(const CStdString &addonID, ADDON::AddonPtr &addon);
+
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
    \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.

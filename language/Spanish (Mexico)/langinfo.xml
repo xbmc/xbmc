@@ -14,7 +14,7 @@
   <regions>
     <region name="Mexico" locale="MX">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D de MMMM de YYYY</datelong>
+      <datelong>DDDD, DD' de 'MMMM' de 'YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>

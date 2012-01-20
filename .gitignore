@@ -317,6 +317,7 @@ lib/cmyth/Makefile
 # /lib/libapetag
 /lib/libapetag/Makefile
 /lib/libapetag/config.h
+/lib/libapetag/install-sh
 /lib/libapetag/libtool
 /lib/libapetag/m4/lt~obsolete.m4
 /lib/libapetag/stamp-h1
@@ -1223,6 +1224,7 @@ lib/cmyth/Makefile
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
 /xbmc/visualizations/Goom/goom2k4-0/configure
+/xbmc/visualizations/Goom/goom2k4-0/INSTALL
 /xbmc/visualizations/Goom/goom2k4-0/Makefile.in
 /xbmc/visualizations/Goom/goom2k4-0/config.guess
 /xbmc/visualizations/Goom/goom2k4-0/config.sub

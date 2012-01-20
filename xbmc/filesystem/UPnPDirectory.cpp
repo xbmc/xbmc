@@ -168,6 +168,9 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     if (NPT_FAILED(upnp->m_MediaBrowser->BrowseSync(device, object.c_str(), list, true)))
         return false;
 
+    if (list.IsNull() || !list->GetItemCount())
+      return false;
+
     PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
     if (entry == 0)
         return false;

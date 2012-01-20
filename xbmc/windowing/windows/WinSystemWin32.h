@@ -152,6 +152,7 @@ public:
 
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
+  bool IsAlteringWindow() { return m_IsAlteringWindow; }
 
   // touchscreen support
   typedef BOOL (WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
@@ -184,6 +185,7 @@ protected:
   std::vector<MONITOR_DETAILS> m_MonitorsInfo;
   int m_nPrimary;
   bool m_ValidWindowedPosition;
+  bool m_IsAlteringWindow;
 };
 
 extern HWND g_hWnd;
