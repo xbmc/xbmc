@@ -2359,6 +2359,10 @@
   
   <string id="34300">Failed to start zeroconf</string>
   <string id="34301">Is Apple's Bonjour Service installed? See log for more info.</string>
+  
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
+  <string id="34402"></string>
 
   <string id="35000">Peripherals</string>
 
