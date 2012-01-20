@@ -952,7 +952,7 @@ bool CSettings::LoadProfile(unsigned int index)
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-    CButtonTranslator::GetInstance().Load();
+    CButtonTranslator::GetInstance().Load(true);
     g_localizeStrings.Load(strLanguagePath);
 
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
