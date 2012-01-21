@@ -1203,6 +1203,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
 #endif
+    ADDON::CAddonMgr::Get().StartServices(false);
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
