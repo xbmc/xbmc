@@ -277,7 +277,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   // set any special options
-  for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
+  for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); it++)
   {
     if (it->m_name == "surfaces")
       m_uSurfacesCount = std::atoi(it->m_value.c_str());

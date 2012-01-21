@@ -65,4 +65,9 @@ public:
   std::string m_name;
   std::string m_value;
 };
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+
+class CDVDCodecOptions
+{
+public:
+  std::vector<CDVDCodecOption> m_keys;
+};

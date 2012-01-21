@@ -30,7 +30,7 @@ class CDVDOverlayCodec;
 class CDemuxStreamVideo;
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 class CDVDFactoryCodec
 {
