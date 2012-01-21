@@ -1,3 +1,6 @@
+[B]3.0.1[/B]
+- changed: also fallback to original_title to make sure a valid title gets scraped
+
 [B]3.0.0[/B]
 - major rewrite: utilize TMDb API v3, scraping set information, prioritize posters on the selected language
 
