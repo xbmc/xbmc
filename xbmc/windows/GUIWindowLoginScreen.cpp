@@ -45,6 +45,7 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "addons/AddonManager.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -295,6 +296,8 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
 #endif
+
+  ADDON::CAddonMgr::Get().StartServices(false);
 
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 

@@ -57,7 +57,6 @@
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
-#include "addons/AddonManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -982,8 +981,6 @@ bool CSettings::LoadProfile(unsigned int index)
 
     CUtil::DeleteMusicDatabaseDirectoryCache();
     CUtil::DeleteVideoDatabaseDirectoryCache();
-
-    ADDON::CAddonMgr::Get().StartServices(false);
 
     return true;
   }

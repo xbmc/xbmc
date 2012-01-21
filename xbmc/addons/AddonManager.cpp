@@ -760,7 +760,7 @@ bool CAddonMgr::StartServices(const bool beforelogin)
     if (service)
     {
       if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
-        || (service->GetStartOption() == CService::LOGIN) )
+        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
         ret &= service->Start();
     }
   }
