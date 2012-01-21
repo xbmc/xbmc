@@ -36,6 +36,12 @@
 using namespace std;
 using namespace ADDON;
 
+#if !defined(TARGET_WINDOWS)
+#include "URL.h"
+#include "SMBDirectory.h"
+using namespace XFILE;
+#endif
+
 #define SIGNALQUALITY_INTERVAL 10
 
 /************************************************************/
@@ -54,6 +60,8 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
   m_channel_id_offset      = 0;
   m_epg_id_offset          = 0;
   m_iCurrentChannel        = 0;
+  // due to lack of static constructors, we initialize manually
+  ForTheRecord::Initialize();
 #if defined(FTR_DUMPTS)
   strncpy(ofn, "/tmp/ftr.XXXXXX", sizeof(ofn));
   ofd = -1;
@@ -107,6 +115,12 @@ bool cPVRClientForTheRecord::Connect()
     return false;
   }
 
+  // Check the accessibility status of all the shares used by ForTheRecord tuners
+  if (ShareErrorsFound())
+  {
+    XBMC->QueueNotification(QUEUE_ERROR, "4TR share errors: see xbmc.log");
+  }
+
   m_bConnected = true;
   return true;
 }
@@ -123,6 +137,123 @@ void cPVRClientForTheRecord::Disconnect()
   }
 
   m_bConnected = false;
+}
+
+bool cPVRClientForTheRecord::ShareErrorsFound(void)
+{
+  bool bShareErrors = false;
+  Json::Value activeplugins;
+  int rc = ForTheRecord::GetPluginServices(false, activeplugins);
+  if (rc != NOERROR)
+  {
+    XBMC->Log(LOG_ERROR, "Unable to get the ForTheRecord plugin services to check share accessiblity.");
+    return false;
+  }
+ 
+  // parse plugins list
+  int size = activeplugins.size();
+  for ( int index =0; index < size; ++index )
+  {
+    std::string tunerName = activeplugins[index]["Name"].asString();
+    XBMC->Log(LOG_DEBUG, "Checking tuner \"%s\" for accessibility.", tunerName.c_str());
+    Json::Value accesibleshares;
+    rc = ForTheRecord::AreRecordingSharesAccessible(activeplugins[index], accesibleshares);
+    if (rc != NOERROR)
+    {
+      XBMC->Log(LOG_ERROR, "Unable to get the share status for tuner \"%s\".", tunerName.c_str());
+      continue;
+    }
+    int numberofshares = accesibleshares.size();
+    for (int j = 0; j < numberofshares; j++)
+    {
+      Json::Value accesibleshare = accesibleshares[j];
+      tunerName = accesibleshare["RecorderTunerName"].asString();
+      std::string sharename = accesibleshare["Share"].asString();
+      bool isAccessibleByFTR = accesibleshare["ShareAccessible"].asBool();
+      bool isAccessibleByAddon = false;
+      std::string accessMsg = "";
+#if defined(TARGET_WINDOWS)
+      // Try to open the directory
+      HANDLE hFile = ::CreateFile(sharename.c_str(),      // The filename
+        (DWORD) GENERIC_READ,             // File access
+        (DWORD) FILE_SHARE_READ,          // Share access
+        NULL,                             // Security
+        (DWORD) OPEN_EXISTING,            // Open flags
+        (DWORD) FILE_FLAG_BACKUP_SEMANTICS, // More flags
+        NULL);                            // Template
+      if (hFile != INVALID_HANDLE_VALUE)
+      {
+        (void) CloseHandle(hFile);
+        isAccessibleByAddon = true;
+      }
+      else
+      {
+        LPVOID lpMsgBuf;
+        DWORD dwErr = GetLastError();
+        FormatMessage(
+          FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+          FORMAT_MESSAGE_FROM_SYSTEM |
+          FORMAT_MESSAGE_IGNORE_INSERTS,
+          NULL,
+          dwErr,
+          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+          (LPTSTR) &lpMsgBuf,
+          0, NULL );
+        accessMsg = (char*) lpMsgBuf;
+        LocalFree(lpMsgBuf);
+      }
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+      std::string CIFSname = sharename;
+      std::string SMBPrefix = "smb://";
+      if (g_szUser.length() > 0)
+      {
+        SMBPrefix += g_szUser;
+        if (g_szPass.length() > 0)
+        {
+          SMBPrefix += ":" + g_szPass;
+        }
+      }
+      else
+      {
+        SMBPrefix += "Guest";
+      }
+      SMBPrefix += "@";
+      size_t found;
+      while ((found = CIFSname.find("\\")) != std::string::npos)
+      {
+        CIFSname.replace(found, 1, "/");
+      }
+      CIFSname.erase(0,2);
+      CIFSname.insert(0, SMBPrefix);
+      CSMBDirectory smbDir;
+      CURL curl(CIFSname);
+      int iRc = smbDir.Open(curl);
+      isAccessibleByAddon = (iRc > 0);
+#else
+#error implement for your OS!
+#endif
+      // write analysis results to the log
+      if (isAccessibleByFTR)
+      {
+        XBMC->Log(LOG_DEBUG, "  Share \"%s\" is accessible to the ForTheRecord server.", sharename.c_str());
+      }
+      else
+      {
+        bShareErrors = true;
+        XBMC->Log(LOG_ERROR, "  Share \"%s\" is NOT accessible to the ForTheRecord server.", sharename.c_str());
+      }
+      if (isAccessibleByAddon)
+      {
+        XBMC->Log(LOG_DEBUG, "  Share \"%s\" is readable from this client add-on.", sharename.c_str());
+      }
+      else
+      {
+        bShareErrors = true;
+        XBMC->Log(LOG_ERROR, "  Share \"%s\" is NOT readable from this client add-on (\"%s\").", sharename.c_str(), accessMsg.c_str());
+      }
+    }
+  }
+  return bShareErrors;
 }
 
 /************************************************************/
@@ -158,8 +289,21 @@ const char* cPVRClientForTheRecord::GetConnectionString(void)
 
 PVR_ERROR cPVRClientForTheRecord::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-  *iTotal = 0;
-  *iUsed = 0;
+  XBMC->Log(LOG_DEBUG, "->GetDriveSpace");
+  *iTotal = *iUsed = 0;
+  Json::Value response;
+  int retval;
+
+  retval = ForTheRecord::GetRecordingDisksInfo(response);
+
+  if (retval != E_FAILED)
+  {
+    double _totalSize = response["TotalSizeBytes"].asDouble();
+    double _freeSize = response["FreeSpaceBytes"].asDouble();
+    *iTotal = (long long) _totalSize;
+    *iUsed = (long long) (_totalSize - _freeSize);
+    XBMC->Log(LOG_DEBUG, "GetDriveSpace, %lld used bytes of %lld total bytes.", *iUsed, *iTotal);
+  }
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -566,17 +710,19 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               tag.iPriority      = 0; //TODO? recording.Priority();
               tag.recordingTime  = recording.RecordingStartTime();
               tag.iDuration      = recording.RecordingStopTime() - recording.RecordingStartTime();
-              tag.strPlot        = recording.Description();;
-              tag.strTitle       = recording.Title();
-              tag.strPlotOutline = recording.SubTitle();
+              tag.strPlot        = recording.Description();
               if (nrOfRecordings > 1)
               {
+                recording.Transform(true);
                 tag.strDirectory = recordinggroup.ProgramTitle().c_str(); //used in XBMC as directory structure below "Server X - hostname"
               }
               else
               {
+                recording.Transform(false);
                 tag.strDirectory = "";
               }
+              tag.strTitle       = recording.Title();
+              tag.strPlotOutline = recording.SubTitle();
 #ifdef _WIN32
               tag.strStreamURL   = recording.RecordingFileName();
 #else
@@ -755,7 +901,6 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
   Json::Value addScheduleResponse;
-  struct tm* convert = localtime(&timerinfo.endTime);
   time_t starttime = timerinfo.startTime;
   if (starttime == 0) starttime = time(NULL);
   int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), starttime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);

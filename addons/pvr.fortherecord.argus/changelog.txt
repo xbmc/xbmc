@@ -1,3 +1,11 @@
+v0.0.1.127 (20-01-2012)
+- Added: System Info - PVR Information now shows total and used disk sizes
+v0.0.1.126 (10-01-2012)
+- Added: titles of recordings changed to be more descriptive
+v0.0.1.125 (04-01-2012)
+- Added: validation of the shares for all ForTheRecord tuners at startup
+v0.0.1.124 (01-01-2012)
+- Fixed Linux mutex initialisation, caused by C++ not having static constructors
 v0.0.1.123 (20-12-2011)
 - Pressing 'record' while viewing will schedule the recording of the show watched
 - Delete Timer: will abort an active recording,

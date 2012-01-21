@@ -85,6 +85,11 @@ namespace ForTheRecord
   };
 
   /**
+   * \brief Do some internal housekeeping at the start
+   */
+  void Initialize(void);
+
+  /**
    * \brief Send a REST command to 4TR and return the JSON response string
    * \param command       The command string url (starting from "ForTheRecord/")
    * \param json_response Reference to a std::string used to store the json response string
@@ -115,6 +120,28 @@ namespace ForTheRecord
    * \return  0 if client and server are compatible, -1 if the client is too old, +1 if the client is newer than the server and -2 if the connection failed (server down?)
    */
   int Ping(int requestedApiVersion);
+
+  /**
+   * \brief Returns information (free disk space) from all recording disks.
+   */
+  int GetRecordingDisksInfo(Json::Value& response);
+
+  /**
+   * \brief GetPluginServices Get all configured plugin services. {activeOnly} = Set to true to only receive active plugins. 
+   * \brief Returns an array containing zero or more plugin services.
+   * \param activeonly  set to true to only receive active plugins
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int GetPluginServices(bool activeonly, Json::Value& response);
+
+  /**
+   * \brief AreRecordingSharesAccessible
+   * \param thisplugin the plugin to check
+   * \param response Reference to a std::string used to store the json response string
+   * \return  0 when successful
+   */
+  int AreRecordingSharesAccessible(Json::Value& thisplugin, Json::Value& response);
 
   /**
    * \brief TuneLiveStream

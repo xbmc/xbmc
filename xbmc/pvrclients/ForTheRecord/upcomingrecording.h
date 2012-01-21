@@ -22,7 +22,6 @@
 #include "libXBMC_pvr.h"
 #include <string>
 #include <json/json.h>
-#include "fortherecordrpc.h"
 
 class cUpcomingRecording
 {

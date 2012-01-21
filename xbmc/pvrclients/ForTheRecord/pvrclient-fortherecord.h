@@ -51,6 +51,7 @@ public:
   bool Connect();
   void Disconnect();
   bool IsUp();
+  bool ShareErrorsFound(void);
 
   /* General handling */
   const char* GetBackendName(void);
