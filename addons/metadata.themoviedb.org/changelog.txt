@@ -1,3 +1,6 @@
+[B]3.0.2[/B]
+- fixed: imdb IDs not properly handled
+
 [B]3.0.1[/B]
 - changed: also fallback to original_title to make sure a valid title gets scraped
 
