@@ -265,6 +265,9 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
+  // stop service addons and give it some time before we start it again
+  ADDON::CAddonMgr::Get().StopServices(true);
+
   if (profile != 0 || !g_settings.IsMasterUser())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -297,6 +300,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   JSONRPC::CJSONRPC::Initialize();
 #endif
 
+  // start services which should run on login 
   ADDON::CAddonMgr::Get().StartServices(false);
 
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
