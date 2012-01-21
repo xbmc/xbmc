@@ -217,7 +217,33 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
 
   DefinesMap defines;
 
-  if (fmt == RENDER_FMT_YUV420P)
+  if (fmt == RENDER_FMT_YUV420P16)
+  {
+    defines["XBMC_YV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 16 bit YV12 planes.");
+      return false;
+    }
+  }
+  else if (fmt == RENDER_FMT_YUV420P10)
+  {
+    defines["XBMC_YV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L16, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit YV12 planes.");
+      return false;
+    }
+  }
+  else if (fmt == RENDER_FMT_YUV420P)
   {
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;

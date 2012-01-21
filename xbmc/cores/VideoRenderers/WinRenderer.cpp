@@ -94,6 +94,8 @@ CWinRenderer::~CWinRenderer()
 static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
 {
   if      (format == RENDER_FMT_YUV420P)   return PIX_FMT_YUV420P;
+  else if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P10;
+  else if (format == RENDER_FMT_YUV420P10) return PIX_FMT_YUV420P16;
   else if (format == RENDER_FMT_NV12)      return PIX_FMT_NV12;
   else if (format == RENDER_FMT_UYVY422)   return PIX_FMT_UYVY422;
   else if (format == RENDER_FMT_YUYV422)   return PIX_FMT_YUYV422;
@@ -283,7 +285,11 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->height = m_sourceHeight;
   image->width = m_sourceWidth;
   image->flags = 0;
-  image->bpp = 1;
+  if(m_format == RENDER_FMT_YUV420P10
+  || m_format == RENDER_FMT_YUV420P16)
+    image->bpp = 2;
+  else
+    image->bpp = 1;
 
   for(int i=0;i<3;i++)
   {
@@ -374,6 +380,11 @@ unsigned int CWinRenderer::PreInit()
     CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
 
   m_formats.push_back(RENDER_FMT_YUV420P);
+  if(g_Windowing.IsTextureFormatOk(D3DFMT_L16, 0))
+  {
+    m_formats.push_back(RENDER_FMT_YUV420P10);
+    m_formats.push_back(RENDER_FMT_YUV420P16);
+  }
   m_formats.push_back(RENDER_FMT_NV12);
   m_formats.push_back(RENDER_FMT_YUYV422);
   m_formats.push_back(RENDER_FMT_UYVY422);
@@ -1092,6 +1103,16 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
   // - this is what D3D9 does behind the scenes anyway
   switch(m_format)
   {
+  case RENDER_FMT_YUV420P10:
+  case RENDER_FMT_YUV420P16:
+    {
+      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM)
+        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM)
+        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L16, D3DPOOL_SYSTEMMEM))
+        return false;
+      m_activeplanes = 3;
+      break;
+    }
   case RENDER_FMT_YUV420P:
     {
       if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
@@ -1170,6 +1191,20 @@ void YUVBuffer::Clear()
 
   switch(m_format)
   {
+  case RENDER_FMT_YUV420P16:
+    {
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0,     planes[PLANE_Y].rect.Pitch *  m_height    / 2);
+      wmemset((wchar_t*)planes[PLANE_U].rect.pBits, 32768, planes[PLANE_U].rect.Pitch * (m_height/2) / 2);
+      wmemset((wchar_t*)planes[PLANE_V].rect.pBits, 32768, planes[PLANE_V].rect.Pitch * (m_height/2) / 2);
+      break;
+    }
+  case RENDER_FMT_YUV420P10:
+    {
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height    / 2);
+      wmemset((wchar_t*)planes[PLANE_U].rect.pBits, 512, planes[PLANE_U].rect.Pitch * (m_height/2) / 2);
+      wmemset((wchar_t*)planes[PLANE_V].rect.pBits, 512, planes[PLANE_V].rect.Pitch * (m_height/2) / 2);
+      break;
+    }
   case RENDER_FMT_YUV420P:
     {
       memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
