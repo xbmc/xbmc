@@ -26,6 +26,7 @@
 #include <threads/SingleLock.h>
 #include <utils/log.h>
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 #pragma comment(lib, "dnssd.lib")
 
@@ -46,7 +47,7 @@ bool CZeroconfWIN::IsZCdaemonRunning()
   if(err != kDNSServiceErr_NoError)
   {
     CLog::Log(LOGERROR, "ZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34300), g_localizeStrings.Get(34301), 10000, true);
     return false;
   }
   CLog::Log(LOGDEBUG, "ZeroconfWIN:Bonjour version is %d.%d", version / 10000, version / 100 % 100);
