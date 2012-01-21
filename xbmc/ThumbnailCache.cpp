@@ -120,7 +120,7 @@ CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
   if (!musicInfo)
     return CStdString();
 
-  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetArtist().empty() ? musicInfo->GetArtist() : musicInfo->GetAlbumArtist());
+  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : musicInfo->GetArtist());
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)
