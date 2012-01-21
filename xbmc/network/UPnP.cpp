@@ -57,6 +57,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
 #include "guilib/Key.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1095,8 +1096,36 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
-    // Always sort by label
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    // Get the sort order
+    CStdString sortorder;
+    if (parent_id.Left(5) == "video")
+    {
+      sortorder = g_advancedSettings.m_upnpVideoServerSort;
+      if (sortorder == "default") sortorder = "title";
+    }
+    else
+    {
+      sortorder = g_advancedSettings.m_upnpMusicServerSort;
+      if (sortorder == "default") sortorder = "album";
+    }
+
+    // Sort the list
+    if (sortorder == "title")
+      items.Sort(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_ORDER_ASC);
+    else if (sortorder == "album")
+      items.Sort(SORT_METHOD_ALBUM_IGNORE_THE, SORT_ORDER_ASC);
+    else if (sortorder == "none")
+      ; // no sorting 
+    else if (sortorder == "label")
+      items.Sort(SORT_METHOD_LABEL_IGNORE_THE, SORT_ORDER_ASC);
+    else if (sortorder == "file")
+      items.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+    else if (sortorder == "fullpath")
+      items.Sort(SORT_METHOD_FULLPATH, SORT_ORDER_ASC);
+    else if (sortorder == "track")
+      items.Sort(SORT_METHOD_TRACKNUM, SORT_ORDER_ASC);
+    else // If the sort method is unrecognised
+      CLog::Log(LOGERROR, "%s - Unknown sort order: %s", __FUNCTION__, sortorder);
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
