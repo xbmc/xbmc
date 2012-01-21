@@ -45,6 +45,7 @@ CWinSystemWin32::CWinSystemWin32()
   PtrSetGestureConfig = NULL;
   PtrGetGestureInfo = NULL;
   m_ValidWindowedPosition = false;
+  m_IsAlteringWindow = false;
 }
 
 CWinSystemWin32::~CWinSystemWin32()
@@ -286,6 +287,8 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  m_IsAlteringWindow = true;
+
   CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceResize = false;
@@ -318,6 +321,8 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   ResizeInternal(forceResize);
 
   BlankNonActiveMonitors(m_bBlankOtherDisplay);
+
+  m_IsAlteringWindow = false;
 
   return true;
 }

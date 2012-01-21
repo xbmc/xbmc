@@ -1006,7 +1006,7 @@
 
   <string id="13008">Standaard afsluitmethode</string>
   <string id="13009">XBMC afsluiten</string>
-  <string id="13010">Winterslaap (S4)</string>
+  <string id="13010">Sluimerstand</string>
   <string id="13011">Slaapstand</string>
   <string id="13012">Stoppen</string>
   <string id="13013">Opnieuw opstarten</string>
@@ -2079,11 +2079,6 @@
   <string id="19691">
   </string>
   
-=======
-
-  <string id="19000">Kanaal wijzigen</string>
-
->>>>>>> upstream-ro/master
   <string id="20000">Opgeslagen muziek map...</string>
   <string id="20001">Andere DVD-speler gebruiken</string>
   <string id="20002">- Locatie van de DVD-speler</string>
@@ -2719,7 +2714,7 @@
   <string id="24017">Artiestinformatie</string>
   <string id="24018">Processen</string>
   <string id="24019">PVR clients</string>
-  
+
   <string id="24020">Configureren</string>
   <string id="24021">Uitschakelen</string>
   <string id="24022">Inschakelen</string>
@@ -2931,3 +2926,4 @@
   <string id="36017">Adapter gevonden, maar libcec is niet beschikbaar</string>
   <string id="36018">Gebruik de taalinstelling van de TV</string>
 </strings>
+

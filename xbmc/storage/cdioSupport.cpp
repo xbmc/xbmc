@@ -846,31 +846,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       m_nFs = GuessFilesystem(m_nStartTrack, i);
       trackinfo ti;
       ti.nfsInfo = m_nFs;
-      // valid UDF version for xbox
-      if ((m_nFs & FS_MASK) == FS_UDF)
-      {
-        // Is UDF 1.02
-        if (m_nUDFVerMajor > 0x1)
-        {
-          ti.nfsInfo = FS_UNKNOWN;
-          m_strDiscLabel.Empty();
-        }
-        else if (m_nUDFVerMinor > 0x2)
-        {
-          ti.nfsInfo = FS_UNKNOWN;
-          m_strDiscLabel.Empty();
-        }
-      }
-
-      if ((m_nFs & FS_MASK) == FS_ISO_UDF)
-      {
-        // fallback to iso9660 if not udf 1.02
-        if (m_nUDFVerMajor > 0x1)
-          ti.nfsInfo = FS_ISO_9660;
-        else if (m_nUDFVerMinor > 0x2)
-          ti.nfsInfo = FS_ISO_9660;
-      }
-
       ti.ms_offset = m_nMsOffset;
       ti.isofs_size = m_nIsofsSize;
       ti.nJolietLevel = m_nJolietLevel;
@@ -899,12 +874,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       info->SetTrackInformation( i, ti );
 
-      // xbox does not support multisession cd's
-      if (!(((m_nFs & FS_MASK) == FS_ISO_9660 ||
-             (m_nFs & FS_MASK) == FS_ISO_HFS ||
-             /* (fs & FS_MASK) == FS_ISO_9660_INTERACTIVE) && (fs & XA))) */
-             (m_nFs & FS_MASK) == FS_ISO_9660_INTERACTIVE)))
-        break; /* no method for non-iso9660 multisessions */
     }
   }
   ::cdio_destroy( cdio );

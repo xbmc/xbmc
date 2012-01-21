@@ -91,11 +91,12 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 // these need to be put somewhere that are compiled, we should have some better place for it
 
 CCriticalSection DllAvCodec::m_critSection;
+static CCriticalSection m_logSection;
 std::map<uintptr_t, CStdString> g_logbuffer;
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  CSingleLock lock(DllAvCodec::m_critSection);
+  CSingleLock lock(m_logSection);
   uintptr_t threadId = (uintptr_t)CThread::GetCurrentThreadId();
   CStdString &buffer = g_logbuffer[threadId];
 

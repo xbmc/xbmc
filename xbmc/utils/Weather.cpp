@@ -323,7 +323,7 @@ void CWeatherJob::SetFromProperties()
   else
     m_info.currentHumidity.Format("%s%%",window->GetProperty("Current.Humidity").asString().c_str());
   m_info.location           = window->GetProperty("Current.Location").asString();
-  for (int i=0;i<4;++i)
+  for (int i=0;i<NUM_DAYS;++i)
   {
     CStdString strDay;
     strDay.Format("Day%i.Title",i);

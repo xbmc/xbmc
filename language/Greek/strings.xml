@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 08/21/2011-->
+<!--Date of translation: 12/25/2011-->
 <!--$Revision$-->
 <!--Based on english strings version 1E+42-->
 <strings>
@@ -2139,4 +2139,37 @@
   <string id="34110">7.1</string>
   <string id="34201">Αδυναμία εύρεσης επόμενου αντικειμένου για αναπαραγωγή</string>
   <string id="34202">Αδυναμία εύρεσης προηγούμενου αντικειμένου για αναπαραγωγή</string>
+  <string id="35000">Περιφερειακά</string>
+  <string id="35001">Γενική συσκευή HID</string>
+  <string id="35002">Γενικός προσαρμογέας δικτύου</string>
+  <string id="35003">Γενικός δίσκος</string>
+  <string id="35004">Δεν υπάρχουν διαθέσιμες ρυθμίσεις για αυτό το περιφερικό.</string>
+  <string id="35005">Η νέα συσκευή έχει ρυθμιστεί</string>
+  <string id="35006">Η συσκευή έχει αφαιρεθεί</string>
+  <string id="35007">Το Keymap να χρησιμοποιήθει για τη συγκεκριμένη συσκευή</string>
+  <string id="35008">Ενεργοποιημένο Keymap</string>
+  <string id="35500">Τοποθεσία</string>
+  <string id="35501">Κλάση</string>
+  <string id="35502">Όνομα</string>
+  <string id="35503">Προμηθευτής</string>
+  <string id="35504">Αναγνωριστικό προϊόντος</string>
+  <string id="36000">Προσαρμογέας Pulse-Eight CEC</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Μετάβαση στο πληκτρολόγιο εντολών</string>
+  <string id="36003">Ενεργοποίηση διακόπτη εντολών</string>
+  <string id="36004">Πατήστε το "user" ως πλήκτρο εντολών</string>
+  <string id="36005">Ενεργοποίηση διακόπτη εντολών</string>
+  <string id="36006">Αδυναμία εκκίνησης του προσαρμογέα</string>
+  <string id="36007">Ενεργοποιήστε την τηλεόραση κατά την εκκίνηση του XBMC</string>
+  <string id="36008">Απενεργοποίηση συσκευών κατά τη διακοπή λειτουργίας του XBMC</string>
+  <string id="36009">Βάλτε συσκευές σε κατάσταση αναμονής κατά την ενεργοποίηση της προφύλαξης οθόνης</string>
+  <string id="36010"></string>
+  <string id="36011">Δεν ήταν δυνατή η ανίχνευση της θύρας CEC. Ρυθμίστε την χειροκίνητα.</string>
+  <string id="36012">Δεν ήταν δυνατή η ανίχνευση του προσαρμογέα CEC.</string>
+  <string id="36013">Μη υποστηριζόμενη έκδοση διεπαφής libcec. %d είναι μεγαλύτερη από την έκδοση που το XBMC υποστηρίζει (%d)</string>
+  <string id="36014">Βάλτε αυτόν τον υπολογιστή σε κατάσταση αναμονής όταν η τηλεόραση είναι απενεργοποιημένη</string>
+  <string id="36015">Αριθμός θύρας HDMI</string>
+  <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
+  <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
+  <string id="36018">Χρησιμοποιήστε τη γλώσσα της τηλεόρασης</string>
 </strings>

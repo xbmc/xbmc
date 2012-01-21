@@ -99,7 +99,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (intSetting)
             {
               m_intSettings.insert(make_pair(CStdString(intSetting->GetSetting()), (float) intSetting->GetData()));
-              AddSlider(iIndex++, intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], intSetting->m_iMin, intSetting->m_iStep, intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
+              AddSlider(iIndex++, intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
             }
           }
           break;

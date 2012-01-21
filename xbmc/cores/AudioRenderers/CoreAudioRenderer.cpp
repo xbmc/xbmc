@@ -638,10 +638,13 @@ bool CCoreAudioRenderer::Deinitialize()
 
   // Stop rendering
   Stop();
-  // Reset our state
-  m_ChunkLen = 0;
-  m_MaxCacheLen = 0;
-  m_AvgBytesPerSec = 0;
+  // Reset our state but do not diddle internal vars if we are re-init'ing
+  if (!m_init_state.reinit)
+  {
+    m_ChunkLen = 0;
+    m_MaxCacheLen = 0;
+    m_AvgBytesPerSec = 0;
+  }
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AUCompressor.Close();
@@ -672,6 +675,8 @@ bool CCoreAudioRenderer::Deinitialize()
 
 bool CCoreAudioRenderer::Reinitialize()
 {
+  CSingleLock lock(m_init_csection);
+
   m_init_state.reinit = true;
   return Initialize(m_init_state.pCallback,
     m_init_state.device,
@@ -792,9 +797,7 @@ unsigned int CCoreAudioRenderer::GetSpace()
 
 unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
 {
-  VERIFY_INIT(0);
-
-  if (m_init_state.reinit)
+  if (!m_pCache)
     return 0;
 
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
@@ -811,9 +814,13 @@ unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
 #endif
-  Resume();  // We have some data. Attmept to resume playback
+
+  //We have some data. Attempt to resume playback only if not trying to reinit.
+  if (!m_init_state.reinit)
+    Resume();  
   
-  return bytesUsed; // Number of bytes added to cache;
+  // Number of bytes added to cache;
+  return bytesUsed;
 }
 
 float CCoreAudioRenderer::GetDelay()
