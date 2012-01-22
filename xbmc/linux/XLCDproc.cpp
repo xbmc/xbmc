@@ -40,6 +40,8 @@ XLCDproc::XLCDproc()
   m_iActualpos   = 0;
   m_iBackLight   = 32;
   m_iLCDContrast = 50;
+  m_iColumns     = 0;
+  m_iRows        = 0;
   m_bStop        = true;
   m_sockfd       = -1;
   m_lastInitAttempt = 0;

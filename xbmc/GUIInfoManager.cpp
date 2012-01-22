@@ -1519,7 +1519,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
-    if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
+    if (g_lcd && g_lcd->IsConnected()) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
     break;
 #endif
   case NETWORK_IP_ADDRESS:
