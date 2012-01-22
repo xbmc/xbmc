@@ -68,6 +68,9 @@
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
+#include "utils/JobManager.h"
+#include "storage/DetectDVDType.h"
+
 using namespace std;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
@@ -728,18 +731,8 @@ case TMSG_POWERDOWN:
 #ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
-        CMediaSource share;
-        share.strPath = pMsg->strParam;
-        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
-        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
-        if(g_mediaManager.IsAudio(share.strPath))
-          share.strStatus = "Audio-CD";
-        else if(share.strStatus == "")
-          share.strStatus = g_localizeStrings.Get(446);
-        share.strName = share.strPath;
-        share.m_ignore = true;
-        share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
+        CDetectDisc* discdetection = new CDetectDisc(pMsg->strParam, pMsg->dwParam1 != 0);
+        CJobManager::GetInstance().AddJob(discdetection, NULL);
       }
       break;
 
