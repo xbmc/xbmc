@@ -291,6 +291,16 @@ void XLCDproc::Resume()
   }
 }
 
+int XLCDproc::GetColumns()
+{
+  return m_iColumns;
+}
+
+int XLCDproc::GetRows()
+{
+  return m_iRows;
+}
+
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 {
   if (m_bStop || m_sockfd == -1)

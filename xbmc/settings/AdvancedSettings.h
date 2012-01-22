@@ -139,8 +139,6 @@ class CAdvancedSettings
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
 
-    int m_lcdRows;
-    int m_lcdColumns;
     bool m_lcdHeartbeat;
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
