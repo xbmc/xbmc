@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2011-06-08-->
-<!--$Revision$-->
-<!--Based on english strings version 35672-->
+<!--Date of translation: 2012-01-22-->
+<!--Based on English 72696c450cb789e240194a0595bed6e291e3a158 (14.11.2011)-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Breyta -</string>
@@ -11,9 +10,10 @@
   <string id="31002">Hatri</string>
   <string id="31003">Orkukostir</string>
   <string id="31004">Vinnsla...</string>
-  <string id="31005">Fela UPPLÝSINGAR</string>
-
+  <string id="31005">Fela upplýsingar</string>
+  <string id="31006">Stillingar sjónarhorns</string>
   <string id="31007">Tengiforrit</string>
+  <string id="31008">Allur skjárinn</string>
 
   <string id="31020">Nýlega bætt við</string>
   <string id="31021">Myndefni - Skrár</string>
@@ -23,7 +23,7 @@
   <string id="31025">Hlutir</string>
   <string id="31026">Ýmsir valkostir</string>
   <string id="31027">Staðsetning</string>
- 
+
   <!-- View Type labels -->
   <string id="31028">Veggspjaldafletting</string>
   <string id="31029">Aðdáendamyndir</string>
@@ -43,7 +43,8 @@
   <string id="31047">Gildandi forstilling</string>
   <string id="31048">Forstillingar myndskreytinga</string>
   <string id="31049">Lokatími</string>
-
+  <string id="31050">Raða: Hækkandi</string>
+  <string id="31051">Raða: Lækkandi</string>
 
   <!-- Playlist Editor labels -->
   <string id="31055">Opna lagalista</string>
@@ -53,14 +54,14 @@
   <string id="31059">Núgildandi lagalisti</string>
   <string id="31060">Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá.</string>
   <string id="31061">Núverandi val</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100"/>
   <string id="31101">Stillingar heimaskjás</string>
   <string id="31102">Bakgrunnur</string>
   <string id="31103">Sýna "Í bið" í myndasýningu</string>
   <string id="31104">Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">Myndbandahnappur fer alltaf í myndbandaskrár</string>
   <string id="31106">Ýmsir valkostir</string>
   <string id="31107">Fela flagg lesið frá skráarnöfnum [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Fela hnapp í aðalvalmynd</string>
@@ -74,7 +75,7 @@
   <string id="31116"/>
   <string id="31117">Sýna myndbönd sem var nýlega bætt við</string>
   <string id="31118">Undirvalmynd heimasíðu</string>
-  <string id="31119"/>  <!-- blanked 2010-11-12 -->
+  <string id="31119">Fela aðdáendamyndir í bakgrunni</string>
   <string id="31120">HNAPPAHEITI</string>
   <string id="31121"/>  <!-- blanked 2010-11-12 -->
   <string id="31122">Veðursíða</string>
@@ -82,12 +83,12 @@
   <string id="31124">Sýna "Í spilun" myndband í bakgrunni</string>
   <string id="31125">Sýna "Í spilun" myndskreytingu í bakgrunni</string>
 
-  <string id="31126"/>  <!-- blanked 2010-11-12 -->
-  <string id="31127"/>  <!-- blanked 2010-11-12 -->
+  <string id="31126">Spila þema lög í myndbandasafni (TvTunes viðbót)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Lagatextar</string>
   <string id="31129"/>  <!-- blanked 2010-11-12 -->
   <string id="31130"/>  <!-- blanked 2010-11-12 -->
-  
+
   <string id="31131"/> <!-- blanked 2010-12-23 -->
   <string id="31132">Viðbót fyrir lagatexta</string>
   <string id="31133">Viðbót fyrir þýðingartexta</string>
@@ -110,7 +111,7 @@
   <string id="31300">Núverandi hiti</string>
   <string id="31301">Síðast uppfært</string>
   <string id="31302">Valmynd</string>
-  <string id="31303"/>
+  <string id="31303">Gagnaveita</string>
   <string id="31304">Mynd</string>
   <string id="31305">Enginn diskur með myndefni fannst</string>
   <string id="31306">Ýta út</string>
@@ -138,6 +139,7 @@
   <string id="31328">Nýlega bætt við</string>
   <string id="31329">[B]Tímamælir virkur![/B] [COLOR=grey2] - Sjálfvirkt Slökkt eftir[/COLOR]</string>
   <string id="31330">Smelltu á takka til að spila[CR][CR]Kvikmyndasýnishorn</string>
+  <string id="31331">Hljómplötuupplýsingar</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Bið</string>
@@ -165,4 +167,16 @@
   <string id="31408">[B]BREYTA VIÐBÓTUM[/B][CR][CR]Breyttu uppsettum viðbótum · Leitaðu að og settu upp viðbætur frá xbmc.org[CR]Breyta stillingum viðbóta</string>
 
   <string id="31421">Veldu XBMC notanda[CR]til að skrá þig inn og halda áfram</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Veðurkort</string>
+  <string id="31901">36 klst veðurspá</string>
+  <string id="31902">Klukkustunda veðurspá</string>
+  <string id="31903">Veðurspá helgarinnar</string>
+  <string id="31904">10 daga veðurspá</string>
+  <string id="31905">Veðurspá</string>
+  <string id="31906">Kort og Myndbönd</string>
+  <string id="31907">Myndbandaveðurspá [COLOR=grey2](Spila á öllum skjánum)[/COLOR]</string>
+  <string id="31908">Líkur á úrkomu</string>
+  <string id="31909">Næ í veðurspá...</string>
 </strings>
