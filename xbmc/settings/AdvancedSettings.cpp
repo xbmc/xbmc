@@ -972,9 +972,15 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
   {
     if (pRegExp->FirstChild())
     {
+      int iDefaultSeason = -1;
       bool bByDate = false;
       if (pRegExp->ToElement())
       {
+        CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultSeason");
+        if(defaultSeason)
+        {
+          iDefaultSeason = atoi(defaultSeason.c_str());
+        }
         CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
         if(byDate && stricmp(byDate, "true") == 0)
         {
@@ -984,9 +990,9 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
       CStdString regExp = pRegExp->FirstChild()->Value();
       regExp.MakeLower();
       if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp));
+        settings.insert(settings.begin() + i++, 1, TVShowRegexp(iDefaultSeason,bByDate,regExp));
       else
-        settings.push_back(TVShowRegexp(bByDate,regExp));
+        settings.push_back(TVShowRegexp(iDefaultSeason,bByDate,regExp));
     }
     pRegExp = pRegExp->NextSibling("regexp");
   }
