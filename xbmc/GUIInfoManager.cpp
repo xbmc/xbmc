@@ -218,6 +218,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
+                                  { "screensaveractive",SYSTEM_SCREENSAVER_ACTIV },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
                                   { "cpuusage",         SYSTEM_CPU_USAGE },
                                   { "gputemperature",   SYSTEM_GPU_TEMPERATURE },
@@ -1904,6 +1905,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_powerManager.CanHibernate();
   else if (condition == SYSTEM_CAN_REBOOT)
     bReturn = g_powerManager.CanReboot();
+  else if (condition == SYSTEM_SCREENSAVER_ACTIV)
+    bReturn = g_application.IsInScreenSaver();
 
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
