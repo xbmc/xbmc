@@ -579,9 +579,24 @@ namespace ForTheRecord
     XBMC->Log(LOG_DEBUG, "GetRecordingDisksInfo");
     int retval = ForTheRecordJSONRPC("ForTheRecord/Control/GetRecordingDisksInfo", "", response);
 
-    if (response < 0)
+    if (retval < 0)
     {
       XBMC->Log(LOG_ERROR, "GetRecordingDisksInfo failed");
+    }
+    return retval;
+  }
+
+  /**
+   * \brief Returns version information (for display only)
+   */
+  int GetDisplayVersion(Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "GetDisplayVersion");
+    int retval = ForTheRecordJSONRPC("ForTheRecord/Core/Version", "", response);
+
+    if (retval < 0)
+    {
+      XBMC->Log(LOG_ERROR, "GetDisplayVersion failed");
     }
     return retval;
   }

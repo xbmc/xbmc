@@ -117,7 +117,8 @@ private:
   bool                    m_bTimeShiftStarted;
   std::string             m_PlaybackURL;
   std::string             m_BackendName;
-  int                     m_BackendVersion;
+  int                     m_iBackendVersion;
+  std::string             m_sBackendVersion;
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
 

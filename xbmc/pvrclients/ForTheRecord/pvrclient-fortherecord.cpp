@@ -97,12 +97,12 @@ bool cPVRClientForTheRecord::Connect()
     rc = ForTheRecord::Ping(backendversion);
   }
 
-  m_BackendVersion = backendversion;
+  m_iBackendVersion = backendversion;
 
   switch (rc)
   {
   case 0:
-    XBMC->Log(LOG_INFO, "Ping Ok. The client and server are compatible, API version %d.\n", m_BackendVersion);
+    XBMC->Log(LOG_INFO, "Ping Ok. The client and server are compatible, API version %d.\n", m_iBackendVersion);
     break;
   case -1:
     XBMC->Log(LOG_NOTICE, "Ping Ok. The client is too old for the server.\n");
@@ -276,8 +276,20 @@ const char* cPVRClientForTheRecord::GetBackendName(void)
 
 const char* cPVRClientForTheRecord::GetBackendVersion(void)
 {
-  // Don't know how to fetch this from ForTheRecord
-  return "0.0";
+  XBMC->Log(LOG_DEBUG, "->GetBackendVersion");
+  m_sBackendVersion = "unknown";
+  Json::Value response;
+  int retval;
+
+  retval = ForTheRecord::GetDisplayVersion(response);
+
+  if (retval != E_FAILED)
+  {
+    m_sBackendVersion = response.asString();
+    XBMC->Log(LOG_DEBUG, "GetDisplayVersion: \"%s\".", m_sBackendVersion.c_str());
+  }
+
+  return m_sBackendVersion.c_str();
 }
 
 const char* cPVRClientForTheRecord::GetConnectionString(void)
@@ -332,7 +344,7 @@ PVR_ERROR cPVRClientForTheRecord::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &c
     Json::Value response;
     int retval;
 
-    retval = ForTheRecord::GetEPGData(m_BackendVersion, ftrchannel->GuideChannelID(), tm_start, tm_end, response);
+    retval = ForTheRecord::GetEPGData(m_iBackendVersion, ftrchannel->GuideChannelID(), tm_start, tm_end, response);
 
     if (retval != E_FAILED)
     {
@@ -1316,7 +1328,7 @@ PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
   static PVR_SIGNAL_STATUS tag;
 
   // Does the FTR version support this?
-  if (m_BackendVersion < FTR_1_6_1_0) return PVR_ERROR_NO_ERROR;
+  if (m_iBackendVersion < FTR_1_6_1_0) return PVR_ERROR_NO_ERROR;
 
   // Only do the REST call once out of N
   if (m_signalqualityInterval-- <= 0)
