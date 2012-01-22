@@ -32,7 +32,9 @@ using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
-//static unsigned int g_curlTimeout = 0;
+#if(0)
+static unsigned int g_curlTimeout = 0;
+#endif
 
 bool DllLibCurlGlobal::Load()
 {
@@ -76,8 +78,10 @@ void DllLibCurlGlobal::Unload()
   }
 
   /* CheckIdle will clear this one up */
+#if(0)
   if(g_curlReferences == 1)
     g_curlTimeout = XbmcThreads::SystemClockMillis();
+#endif
 }
 
 void DllLibCurlGlobal::CheckIdle()
