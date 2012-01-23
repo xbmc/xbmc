@@ -877,7 +877,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder && item->GetPath() != "add")
+  if (!item->m_bIsFolder && item->GetPath() != "add" && item->GetPath() != "addons://more/video")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);

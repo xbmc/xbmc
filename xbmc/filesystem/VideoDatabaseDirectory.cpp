@@ -204,6 +204,10 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20389); break;
     case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Music Videos
       strLabel = g_localizeStrings.Get(20390); break;
+    case NODE_TYPE_SEASONS: // Seasons
+      strLabel = g_localizeStrings.Get(33054); break;
+    case NODE_TYPE_EPISODES: // Episodes
+      strLabel = g_localizeStrings.Get(20360); break;
     default:
       CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %d", __FUNCTION__, pNode->GetChildType());
       return false;

@@ -339,7 +339,7 @@ void CNfsConnection::resetKeepAlive(struct nfsfh  *_pFileHandle)
 //we were before
 void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
 {
-  off_t offset = 0;
+  off64_t offset = 0;
   char buffer[32];
   CLog::Log(LOGNOTICE, "NFS: sending keep alive after %i s.",KEEP_ALIVE_TIMEOUT/2);
   CSingleLock lock(*this);
@@ -425,7 +425,7 @@ CFileNFS::~CFileNFS()
 int64_t CFileNFS::GetPosition()
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
   CSingleLock lock(gNfsConnection);
   
   if (gNfsConnection.GetNfsContext() == NULL || m_pFileHandle == NULL) return 0;
@@ -551,7 +551,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   
   if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
 
-  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);  
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, (size_t)uiBufSize, (char *)lpBuf);  
 
   lock.Leave();//no need to keep the connection lock after that
   
@@ -569,7 +569,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
 int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
 
   CSingleLock lock(gNfsConnection);  
   if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
@@ -612,9 +612,9 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
 {
   int numberOfBytesWritten = 0;
   int writtenBytes = 0;
-  int leftBytes = uiBufSize;
+  int64_t leftBytes = uiBufSize;
   //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
-  int chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
+  int64_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
   
   CSingleLock lock(gNfsConnection);
   

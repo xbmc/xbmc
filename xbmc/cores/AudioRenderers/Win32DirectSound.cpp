@@ -115,7 +115,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_Passthrough = bAudioPassthrough;
+  m_Passthrough = (bAudioPassthrough != ENCODED_NONE);
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_drc = 0;

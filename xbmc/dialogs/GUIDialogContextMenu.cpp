@@ -145,7 +145,11 @@ void CGUIDialogContextMenu::SetupButtons()
       if (pGroupList)
       {
         pButton->SetPosition(pButtonTemplate->GetXPosition(), pButtonTemplate->GetYPosition());
-        pGroupList->AddControl(pButton);
+        // try inserting context buttons at position specified by template
+        // button, if template button is not in grouplist fallback to adding
+        // new buttons at the end of grouplist
+        if (!pGroupList->InsertControl(pButton, pButtonTemplate))
+          pGroupList->AddControl(pButton);
       }
 #if PRE_SKIN_VERSION_11_COMPATIBILITY
       else

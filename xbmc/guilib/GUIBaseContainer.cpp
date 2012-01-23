@@ -813,8 +813,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
 
-  if (!IsVisible())
-    return; // no need to update the content if we're not visible
+  if (!IsVisible() && !CGUIControl::CanFocus())
+    return; // no need to update the content if we're not visible and we can't focus
 
   // check whether we need to update our layouts
   if ((m_layout && !m_layout->CheckCondition()) ||

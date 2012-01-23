@@ -5,14 +5,14 @@ BUILDTOOLS = gas-preprocessor help2man m4 autoconf automake libtool pkg-config y
 SUBDIRS := \
 	Backrow pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
-	openssl libssh libssh2 curl \
+	openssl libssh libssh2 librtmp curl \
 	libjpeg-turbo tiff libpng libogg \
 	libvorbis libflac libmad fribidi libmpeg2 \
-	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
+	libass libcdio libsamplerate libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl \
 	libgpg-error libgcrypt afpfs-ng \
-	libplist libshairport libcec \
+	libplist libshairport libcec tinyxml \
         samba python26 distribute distutilscross \
 	mysqlclient boost \
 

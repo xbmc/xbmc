@@ -23,6 +23,11 @@
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 #define PRE_SKIN_VERSION_11_COMPATIBILITY 1
 
+//FIXME - after eden - make that one nicer somehow...
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#include "system.h" //for HAS_SKIN_TOUCHED
+#endif
+
 #if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #define DEFAULT_SKIN          "skin.touched"
 #else

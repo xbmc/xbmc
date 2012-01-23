@@ -408,12 +408,12 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   if (!plItemUrl.GetProtocol().IsEmpty())
     return;
 
-  // If the filename starts "x:" or "/" it's already fully qualified so return
+  // If the filename starts "x:", "\\" or "/" it's already fully qualified so return
   if (strFilename.size() > 1)
 #ifdef _LINUX
     if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
-    if ( strFilename[1] == ':' )
+    if ( strFilename[1] == ':' || (strFilename[0] == '\\' && strFilename[1] == '\\'))
 #endif
       return;
 

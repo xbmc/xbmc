@@ -440,7 +440,7 @@ namespace PYXBMC
     MEMORYSTATUSEX stat;
     stat.dwLength = sizeof(MEMORYSTATUSEX);
     GlobalMemoryStatusEx(&stat);
-    return PyInt_FromLong( stat.ullAvailPhys  / ( 1024 * 1024 ) );
+    return PyInt_FromLong( (long)(stat.ullAvailPhys  / ( 1024 * 1024 )) );
   }
 
   // getCpuTemp() method

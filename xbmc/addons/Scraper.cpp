@@ -356,14 +356,23 @@ bool CScraper::Load()
         continue;
       }  
       AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+
+      bool bOptional = itr->second.second;
+
+      if (CAddonMgr::Get().GetAddon((*itr).first, dep))
       {
-        result = false;
-        break;
+        TiXmlDocument doc;
+        if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
+          m_parser.AddDocument(&doc);
       }
-      TiXmlDocument doc;
-      if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
-        m_parser.AddDocument(&doc);
+      else
+      {
+        if (!bOptional)
+        {
+          result = false;
+          break;
+        }
+      }
       itr++;
     }
   }

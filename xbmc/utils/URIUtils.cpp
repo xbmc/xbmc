@@ -444,7 +444,7 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if(IsInArchive(strPath))
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
     return IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))

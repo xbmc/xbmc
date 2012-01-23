@@ -800,7 +800,7 @@ bool CAddonMgr::StartServices(const bool beforelogin)
     if (service)
     {
       if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
-        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
+        || (service->GetStartOption() == CService::LOGIN) )
         ret &= service->Start();
     }
   }
