@@ -521,21 +521,26 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
   {
     if (it->first.Equals("xbmc.metadata"))
       continue;
+
+    const CStdString &addonID = it->first;
+    const AddonVersion &version = it->second.first;
+    bool optional = it->second.second;
     AddonPtr dependency;
-    if (!CAddonMgr::Get().GetAddon(it->first,dependency) || dependency->Version() < it->second.first)
-    {
+    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dependency);
+    if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
+    { // we have it but our version isn't good enough, or we don't have it and we need it
       bool force=(dependency != NULL);
       // dependency is already queued up for install - ::Install will fail
       // instead we wait until the Job has finished. note that we
       // recall install on purpose in case prior installation failed
-      if (CAddonInstaller::Get().HasJob(it->first))
+      if (CAddonInstaller::Get().HasJob(addonID))
       {
-        while (CAddonInstaller::Get().HasJob(it->first))
+        while (CAddonInstaller::Get().HasJob(addonID))
           Sleep(50);
         force = false;
       }
       // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(it->first, force, referer, false))
+      if (!CAddonInstaller::Get().Install(addonID, force, referer, false))
       {
         DeleteAddon(addonFolder);
         return false;
