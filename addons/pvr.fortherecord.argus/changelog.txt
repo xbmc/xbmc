@@ -1,6 +1,8 @@
+v0.0.1.128 (23-01-2012)
+- Added: System Info - PVR Information now shows FTR version info
+  Timers do no longer retrieve the cancelled 'upcomingprograms' from ForTheRecord
 v0.0.1.127 (20-01-2012)
 - Added: System Info - PVR Information now shows total and used disk sizes
-                     - PVR Information now shows FTR version info
 v0.0.1.126 (10-01-2012)
 - Added: titles of recordings changed to be more descriptive
 v0.0.1.125 (04-01-2012)

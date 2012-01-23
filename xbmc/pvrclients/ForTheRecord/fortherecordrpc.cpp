@@ -1061,7 +1061,7 @@ namespace ForTheRecord
     XBMC->Log(LOG_DEBUG, "GetUpcomingPrograms");
 
     // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true
-    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true", "", response);
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false", "", response);
 
     if(retval >= 0)
     {
