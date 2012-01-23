@@ -376,7 +376,8 @@ void CVideoDatabase::CreateViews()
                                     "  LEFT JOIN files ON"
                                     "    files.idFile=movie.idFile"
                                     "  LEFT JOIN path ON"
-                                    "    path.idPath=files.idPath");
+                                    "    path.idPath=files.idPath "
+                                    "GROUP BY movie.idMovie");
   m_pDS->exec(movieview.c_str());
 }
 
