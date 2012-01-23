@@ -729,21 +729,6 @@ case TMSG_POWERDOWN:
       break;
 
 #ifdef HAS_DVD_DRIVE
-    case TMSG_OPTICAL_MOUNT:
-      {
-        CDetectDisc* discdetection = new CDetectDisc(pMsg->strParam, pMsg->dwParam1 != 0);
-        CJobManager::GetInstance().AddJob(discdetection, NULL);
-      }
-      break;
-
-    case TMSG_OPTICAL_UNMOUNT:
-      {
-        CMediaSource share;
-        share.strPath = pMsg->strParam;
-        share.strName = share.strPath;
-        g_mediaManager.RemoveAutoSource(share);
-      }
-      break;
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
@@ -1171,21 +1156,6 @@ vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &pr
   tMsg.lpVoid = (void*)&infoLabels;
   SendMessage(tMsg, true);
   return infoLabels;
-}
-
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
-{
-  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
-  tMsg.strParam = device;
-  tMsg.dwParam1 = (DWORD)bautorun;
-  SendMessage(tMsg, false);
-}
-
-void CApplicationMessenger::OpticalUnMount(CStdString device)
-{
-  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
-  tMsg.strParam = device;
-  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::ShowVolumeBar(bool up)
