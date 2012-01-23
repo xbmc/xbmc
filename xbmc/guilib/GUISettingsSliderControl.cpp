@@ -39,7 +39,7 @@ void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionLi
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
-  m_buttonControl.Process(currentTime, dirtyregions);
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
   ProcessText();
   CGUISliderControl::Process(currentTime, dirtyregions);
 }

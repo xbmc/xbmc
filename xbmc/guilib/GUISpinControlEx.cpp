@@ -71,7 +71,7 @@ void CGUISpinControlEx::Process(unsigned int currentTime, CDirtyRegionList &dirt
   if (m_bInvalidated)
     SetPosition(GetXPosition(), GetYPosition());
 
-  m_buttonControl.Process(currentTime, dirtyregions);
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
   CGUISpinControl::Process(currentTime, dirtyregions);
 }
 
