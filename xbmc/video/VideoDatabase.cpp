@@ -7335,7 +7335,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
         if (images && !bSkip)
         {
-          CStdString cachedThumb(GetCachedThumb(item));
+          CStdString cachedThumb(GetCachedThumb(CFileItem(episode)));
           CStdString savedThumb(saveItem.GetTBNFile());
           if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
             if (!CFile::Cache(cachedThumb, savedThumb))
@@ -7423,6 +7423,10 @@ void CVideoDatabase::ExportActorThumbs(const CStdString &strDir, const CVideoInf
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
 {
   CStdString cachedThumb(item.GetCachedVideoThumb());
+  if (item.HasVideoInfoTag() && !item.m_bIsFolder  &&
+      item.GetVideoInfoTag()->m_iEpisode > -1 &&
+      CFile::Exists(item.GetCachedEpisodeThumb()))
+    cachedThumb = item.GetCachedEpisodeThumb();
   if (!CFile::Exists(cachedThumb) && g_advancedSettings.m_bVideoLibraryExportAutoThumbs)
   {
     CStdString strPath, strFileName;
