@@ -250,16 +250,13 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   return true;
 }
 
-bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */,
-                         bool prefix /* = false */)
+bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioritise)
 {
-  if (!movie) return false;
-
-  // reset our details if we aren't chained.
-  if (!chained) Reset();
-
-  ParseNative(movie,prefix);
-
+  if (!element)
+    return false;
+  if (!append)
+    Reset();
+  ParseNative(element, prioritise);
   return true;
 }
 
@@ -508,7 +505,7 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   return strLabel.TrimRight("\n");
 }
 
-void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
+void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 {
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
@@ -563,7 +560,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
   while (thumb)
   {
     m_strPictureURL.ParseElement(thumb);
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *thumb;
@@ -572,8 +569,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     thumb = thumb->NextSiblingElement("thumb");
   }
 
-  // prefix thumbs from nfos
-  if (prefix && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
+  // prioritise thumbs from nfos
+  if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
   {
     rotate(m_strPictureURL.m_url.begin(),
            m_strPictureURL.m_url.begin()+iThumbCount, 
@@ -581,14 +578,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     m_strPictureURL.m_xml = xmlAdd;
   }
 
-  XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
-  XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.m_videoItemSeparator,m_strCountry);
-  XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
-  XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
-  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
+  XMLUtils::GetAdditiveString(movie, "genre", g_advancedSettings.m_videoItemSeparator, m_strGenre, prioritise);
+  XMLUtils::GetAdditiveString(movie, "country", g_advancedSettings.m_videoItemSeparator, m_strCountry, prioritise);
+  XMLUtils::GetAdditiveString(movie, "credits", g_advancedSettings.m_videoItemSeparator, m_strWritingCredits, prioritise);
+  XMLUtils::GetAdditiveString(movie, "director", g_advancedSettings.m_videoItemSeparator, m_strDirector, prioritise);
+  XMLUtils::GetAdditiveString(movie, "showlink", g_advancedSettings.m_videoItemSeparator, m_strShowLink, prioritise);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
+  if (node && node->FirstChild() && prioritise)
+    m_cast.clear();
   while (node)
   {
     const TiXmlNode *actor = node->FirstChild("name");
@@ -614,6 +613,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
   }
 
   node = movie->FirstChildElement("set");
+  if (node && node->FirstChild() && prioritise)
+    m_set.clear();
   while (node)
   {
     if (node->FirstChild())
@@ -622,9 +623,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     node = node->NextSiblingElement("set");
   }
 
-  XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
+  XMLUtils::GetAdditiveString(movie, "studio", g_advancedSettings.m_videoItemSeparator, m_strStudio, prioritise);
   // artists
   node = movie->FirstChildElement("artist");
+  if (node && node->FirstChild() && prioritise)
+    m_strArtist.clear();
   while (node)
   {
     const TiXmlNode* pNode = node->FirstChild("name");
@@ -637,7 +640,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     {
       const char* clear=node->Attribute("clear");
       if (m_strArtist.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strArtist += pValue;
+        m_strArtist = pValue;
       else
         m_strArtist += g_advancedSettings.m_videoItemSeparator + pValue;
     }
@@ -704,8 +707,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
-    // we prefix to handle mixed-mode nfo's with fanart set
-    if (prefix)
+    // we prioritise mixed-mode nfo's with fanart set
+    if (prioritise)
     {
       CStdString temp;
       temp << *fanart;
