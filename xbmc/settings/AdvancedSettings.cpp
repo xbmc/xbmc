@@ -151,19 +151,19 @@ void CAdvancedSettings::Initialize()
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+)([^\\\\/]*)$",false));
   // foo.ep01, foo.EP_01
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$",false));
   // foo.yyyy.mm.dd.* (byDate=true)
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})",true));
   // foo.mm.dd.yyyy.* (byDate=true)
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})",true));
   // foo.1x09* or just /1x09*
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$",false));
   // foo.103*, 103 foo
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$",false));
   // Part I, Pt.VI
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp("[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$",false));
 
   m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
 
@@ -965,7 +965,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
       if (pRegExp->ToElement())
       {
         CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultSeason");
-        if(defaultSeason)
+        if(!defaultSeason.empty())
         {
           iDefaultSeason = atoi(defaultSeason.c_str());
         }
@@ -978,9 +978,9 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
       CStdString regExp = pRegExp->FirstChild()->Value();
       regExp.MakeLower();
       if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, TVShowRegexp(iDefaultSeason,bByDate,regExp));
+        settings.insert(settings.begin() + i++, 1, TVShowRegexp(regExp,bByDate,iDefaultSeason));
       else
-        settings.push_back(TVShowRegexp(iDefaultSeason,bByDate,regExp));
+        settings.push_back(TVShowRegexp(regExp,bByDate,iDefaultSeason));
     }
     pRegExp = pRegExp->NextSibling("regexp");
   }

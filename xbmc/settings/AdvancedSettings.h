@@ -42,17 +42,11 @@ struct TVShowRegexp
   int defaultSeason;
   bool byDate;
   CStdString regexp;
-  TVShowRegexp(int s, bool d, const CStdString& r)
+  TVShowRegexp(const CStdString& r, bool d = false, int s = 1)
   {
+    regexp = r;
+    byDate = d;
     defaultSeason = s;
-    byDate = d;
-    regexp = r;
-  }
-  TVShowRegexp(bool d, const CStdString& r)
-  {
-    defaultSeason = -1;
-    byDate = d;
-    regexp = r;
   }
 };
 

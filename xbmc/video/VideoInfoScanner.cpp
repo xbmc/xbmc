@@ -958,14 +958,14 @@ namespace VIDEO
     if (season && episode)
     {
       if (strlen(season) == 0 && strlen(episode) > 0)
-      { // no season specified -> assume season 1 unless specified
-        episodeInfo.iSeason = (defaultSeason >= 0) ? defaultSeason : 1;
+      { // no season specified -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
           episodeInfo.iEpisode = atoi(episode);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
-      { // no episode specification -> assume season 1 unless specified
-        episodeInfo.iSeason = (defaultSeason >= 0) ? defaultSeason : 1;
+      { // no episode specification -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
           episodeInfo.iEpisode = atoi(season);
       }
