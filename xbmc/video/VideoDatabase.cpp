@@ -4715,7 +4715,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
       strSQL += where;
     else
     {
-      if (fetchSets && !g_guiSettings.GetBool("videolibrary.flattenmoviesets"))
+      if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
       {
         GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, "");
         strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
