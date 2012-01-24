@@ -58,7 +58,7 @@ void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
     m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
-    m_selectButton.Process(currentTime, dirtyregions);
+    m_selectButton.DoProcess(currentTime, dirtyregions);
   }
   CGUIButtonControl::Process(currentTime, dirtyregions);
 }

@@ -36,10 +36,16 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 
 void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  if (m_bInvalidated)
+  {
+    float sliderPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - m_width - m_buttonControl.GetLabelInfo().offsetX;
+    float sliderPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - m_height) * 0.5f;
+    CGUISliderControl::SetPosition(sliderPosX, sliderPosY);
+  }
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
-  m_buttonControl.Process(currentTime, dirtyregions);
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
   ProcessText();
   CGUISliderControl::Process(currentTime, dirtyregions);
 }
@@ -100,21 +106,19 @@ void CGUISettingsSliderControl::SetInvalid()
 void CGUISettingsSliderControl::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
-  float sliderPosX = posX + m_buttonControl.GetWidth() - m_width - m_buttonControl.GetLabelInfo().offsetX;
-  float sliderPosY = posY + (m_buttonControl.GetHeight() - m_height) * 0.5f;
-  CGUISliderControl::SetPosition(sliderPosX, sliderPosY);
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetWidth(float width)
 {
   m_buttonControl.SetWidth(width);
-  SetPosition(GetXPosition(), GetYPosition());
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetHeight(float height)
 {
   m_buttonControl.SetHeight(height);
-  SetPosition(GetXPosition(), GetYPosition());
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetEnabled(bool bEnable)

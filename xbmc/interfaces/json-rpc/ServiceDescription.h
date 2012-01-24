@@ -190,7 +190,7 @@ namespace JSONRPC
         "\"canshuffle\": { \"type\": \"boolean\" },"
         "\"canrepeat\": { \"type\": \"boolean\" },"
         "\"currentaudiostream\": { \"$ref\": \"Player.Audio.Stream.Extended\" },"
-        "\"audiostreams\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Audio.Stream.Extended\" } },"
+        "\"audiostreams\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Audio.Stream\" } },"
         "\"subtitleenabled\": { \"type\": \"boolean\" },"
         "\"currentsubtitle\": { \"$ref\": \"Player.Subtitle\" },"
         "\"subtitles\": { \"type\": \"array\", \"items\": { \"$ref\": \"Player.Subtitle\" } }"

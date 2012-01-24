@@ -115,12 +115,6 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_lcdRows = 4;
-  m_lcdColumns = 20;
-  m_lcdAddress1 = 0;
-  m_lcdAddress2 = 0x40;
-  m_lcdAddress3 = 0x14;
-  m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
@@ -595,12 +589,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "rows", m_lcdRows, 1, 4);
-    XMLUtils::GetInt(pElement, "columns", m_lcdColumns, 1, 40);
-    XMLUtils::GetInt(pElement, "address1", m_lcdAddress1, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address2", m_lcdAddress2, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);

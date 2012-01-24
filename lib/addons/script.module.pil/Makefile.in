@@ -43,6 +43,7 @@ $(SOURCE): $(ARCHIVE)
 	patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch; \
 	patch -p1 < ../Imaging-1.1.7-access.patch; \
 	sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"; \
+	sed -ie "s|ZLIB_ROOT = None|ZLIB_ROOT = libinclude(\"${platform_sdk_path}/usr\")|" "setup.py"; \
 	fi
 
 $(DESTDIR): $(SOURCE)

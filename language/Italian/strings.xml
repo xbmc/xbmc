@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Succo, updated by Gulp-->
 <!--Email: succo69@libero.it, http://forum.xbmc.org/member.php?u=42290-->
-<!--Based on English 4c45436d4c19274fca2d478373326688c5682e55 (11.12.2011)-->
+<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -2011,6 +2011,8 @@
   <string id="21451">Richiesta connessione Internet.</string>
   <string id="21452">Altro...</string>
   <string id="21453">Root filesystem</string>
+  <string id="21454">Cache piena</string>
+  <string id="21455">Cache saturata prima di raggiungere il livello richiesto per una riproduzione fluida</string>
 
   <string id="21460">Cartella dei sottotitoli</string>
   <string id="21461">Fissa</string>
@@ -2331,6 +2333,8 @@
   <string id="33102">Server Eventi</string>
   <string id="33103">Server comunicazione remota</string>
 
+  <string id="33200">Rilevata una nuova connessione</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2355,8 +2359,15 @@
   <string id="34201">Non trovo il successivo elemento da riprodurre</string>
   <string id="34202">Non trovo il precedente elemento da riprodurre</string>
 
-  <string id="35000">Periferiche</string>
+  <string id="34300">Avvio di zeroconf fallito</string>
+  <string id="34301">Il servizio Apple Bonjour è installato? Controllare i log per maggiori informazioni.</string>
 
+  <string id="34400">Rendering Video</string>
+  <string id="34401">Fallita l'inizializzazione dei filtri/scalers video, ritorno al bilinear scaling</string>
+  <string id="34402">Fallita l'inizializzazione dei dispositivi audio</string>
+  <string id="34403">Controlla le impostazioni audio</string>
+
+  <string id="35000">Periferiche</string>
   <string id="35001">Periferica HID generica</string>
   <string id="35002">Adattatore di rete generico</string>
   <string id="35003">Disco generico</string>
