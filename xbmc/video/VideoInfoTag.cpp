@@ -581,14 +581,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     m_strPictureURL.m_xml = xmlAdd;
   }
 
-  XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
-  XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.m_videoItemSeparator,m_strCountry);
-  XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
-  XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
-  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
+  XMLUtils::GetAdditiveString(movie, "genre", g_advancedSettings.m_videoItemSeparator, m_strGenre, prefix);
+  XMLUtils::GetAdditiveString(movie, "country", g_advancedSettings.m_videoItemSeparator, m_strCountry, prefix);
+  XMLUtils::GetAdditiveString(movie, "credits", g_advancedSettings.m_videoItemSeparator, m_strWritingCredits, prefix);
+  XMLUtils::GetAdditiveString(movie, "director", g_advancedSettings.m_videoItemSeparator, m_strDirector, prefix);
+  XMLUtils::GetAdditiveString(movie, "showlink", g_advancedSettings.m_videoItemSeparator, m_strShowLink, prefix);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
+  if (node && node->FirstChild() && prefix)
+    m_cast.clear();
   while (node)
   {
     const TiXmlNode *actor = node->FirstChild("name");
@@ -614,6 +616,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
   }
 
   node = movie->FirstChildElement("set");
+  if (node && node->FirstChild() && prefix)
+    m_set.clear();
   while (node)
   {
     if (node->FirstChild())
@@ -622,9 +626,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     node = node->NextSiblingElement("set");
   }
 
-  XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
+  XMLUtils::GetAdditiveString(movie, "studio", g_advancedSettings.m_videoItemSeparator, m_strStudio, prefix);
   // artists
   node = movie->FirstChildElement("artist");
+  if (node && node->FirstChild() && prefix)
+    m_strArtist.clear();
   while (node)
   {
     const TiXmlNode* pNode = node->FirstChild("name");

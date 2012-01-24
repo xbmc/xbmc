@@ -32,11 +32,11 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetAdditiveString(artist,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(artist,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(artist,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(artist,"yearsactive",g_advancedSettings.m_musicItemSeparator,strYearsActive);
-  XMLUtils::GetAdditiveString(artist,"instruments",g_advancedSettings.m_musicItemSeparator,strInstruments);
+  XMLUtils::GetAdditiveString(artist, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prefix);
+  XMLUtils::GetAdditiveString(artist, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prefix);
+  XMLUtils::GetAdditiveString(artist, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prefix);
+  XMLUtils::GetAdditiveString(artist, "yearsactive", g_advancedSettings.m_musicItemSeparator, strYearsActive, prefix);
+  XMLUtils::GetAdditiveString(artist, "instruments", g_advancedSettings.m_musicItemSeparator, strInstruments, prefix);
 
   XMLUtils::GetString(artist,"born",strBorn);
   XMLUtils::GetString(artist,"formed",strFormed);

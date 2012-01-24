@@ -36,11 +36,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained, bool prefix)
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetAdditiveString(album,"artist",g_advancedSettings.m_musicItemSeparator,strArtist);
-  XMLUtils::GetAdditiveString(album,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(album,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(album,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(album,"theme",g_advancedSettings.m_musicItemSeparator,strThemes);
+  XMLUtils::GetAdditiveString(album, "artist", g_advancedSettings.m_musicItemSeparator, strArtist, prefix);
+  XMLUtils::GetAdditiveString(album, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prefix);
+  XMLUtils::GetAdditiveString(album, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prefix);
+  XMLUtils::GetAdditiveString(album, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prefix);
+  XMLUtils::GetAdditiveString(album, "theme", g_advancedSettings.m_musicItemSeparator, strThemes, prefix);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
