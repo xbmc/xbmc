@@ -554,7 +554,7 @@ void CGUISettings::Initialize()
   flattenTVShowOptions.insert(make_pair(20422, 2));
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
 
-  AddBool(NULL, "videolibrary.flattenmoviesets", 22002, false);
+  AddBool(vdl, "videolibrary.groupmoviesets", 20458, false);
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(vdl, "videolibrary.sep3");
