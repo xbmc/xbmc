@@ -643,7 +643,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
     {
       const char* clear=node->Attribute("clear");
       if (m_strArtist.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strArtist += pValue;
+        m_strArtist = pValue;
       else
         m_strArtist += g_advancedSettings.m_videoItemSeparator + pValue;
     }
