@@ -2,8 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Idan Bushari-->
 <!--Email: bushari2003@hotmail.com-->
-<!--Date of translation: 12/24/2011-->
-<!--$Revision$-->
+<!--Date of translation: 01/25/2012-->
+<!--Based on English cd69c7030b0caec990b6143fac65ca8168dccf71 (23.01.2012)-->
 <strings>
   <string id="0">תוכנות</string>
   <string id="1">תמונות</string>
@@ -253,6 +253,10 @@
   <string id="296">נקה סימניות</string>
   <string id="297">השהיית קול הנומתו</string>
   <string id="298">סימניות</string>
+  <string id="299">- AAC רסיבר נתמך</string>
+  <string id="300">- MP1 רסיבר נתמך</string>
+  <string id="301">- MP2 רסיבר נתמך</string>
+  <string id="302">- MP3 רסיבר נתמך</string>
   <string id="303">השהייה</string>
   <string id="304">שפה</string>
   <string id="305">זמין</string>
@@ -360,6 +364,7 @@
   <string id="417">תצוגה : צלמיות גדולות</string>
   <string id="418">נמוך</string>
   <string id="419">גבוה</string>
+  <string id="420">HDMI</string>
   <string id="422">מחק פרטי אלבום</string>
   <string id="423">מחק פרטי CDDB</string>
   <string id="424">בחר</string>
@@ -943,6 +948,7 @@
   <string id="13115">אפשר תמיד</string>
   <string id="13130">החשך צגים אחרים</string>
   <string id="13131">מנוטרל</string>
+  <string id="13132">צגים ריקים</string>
   <string id="13140">חיבורים פעילים זוהו!</string>
   <string id="13141">אם תמשיך, ייתכן שלא תוכל לשלוט ב-XBMC יותר</string>
   <string id="13142">אתה בטוח שברצונך להפסיק את EventServer?</string>
@@ -950,11 +956,14 @@
   <string id="13145">אם אתה משתמש כרגע בשלט Apple כדי לשלוט</string>
   <string id="13146">ב- XBMC. שינוי הגדרות אלה כנראה ישפיעו על היכולות שלך</string>
   <string id="13147">כדי להמשיך לשלוט בזה. האם ברצונך להמשיך?</string>
+  <string id="13160">שער</string>
+  <string id="13161">DNS ראשי</string>
   <string id="13162">אתחול נכשל</string>
   <string id="13170">אף פעם</string>
   <string id="13171">מיידי</string>
   <string id="13172">לאחר %i שניות</string>
   <string id="13173">תאריך התקנת כונן קשיח:</string>
+  <string id="13174">HDD ספירת מחזור האנרגיה:</string>
   <string id="13200">פרופילים</string>
   <string id="13201">למחוק פרופיל '%s'?</string>
   <string id="13204">פרופיל אחרון בשימוש:</string>
@@ -1541,6 +1550,8 @@
   <string id="20302">לא יכול לרשום לתיקייה:</string>
   <string id="20303">האם תרצה לדלג ולהמשיך?</string>
   <string id="20304">הזנת RSS</string>
+  <string id="20307">DNS משני</string>
+  <string id="20308">DHCP שרת:</string>
   <string id="20309">צור תיקיה חדשה</string>
   <string id="20310">עמעם LCD בזמן ניגון</string>
   <string id="20311">לא ידוע או על הלוח (מוגן)</string>
@@ -1678,6 +1689,7 @@
   <string id="20455">מאזינים</string>
   <string id="20456">הגדר פאנארט למארז סרטים</string>
   <string id="20457">מארז סרטים</string>
+  <string id="20458">קבוצות סרטים במארזים</string>
   <string id="21330">הצג קבצים וספריות מוחבאים</string>
   <string id="21331">קליינט TuxBox</string>
   <string id="21332">אזהרה: הצב את מכשיר ה TuxBox במצב הקלטה</string>
@@ -1776,6 +1788,9 @@
   <string id="21450">- עריכה</string>
   <string id="21451">נחוץ חיבור לאינטרנט.</string>
   <string id="21452">קבל עוד...</string>
+  <string id="21453">שורש מערכת הקבצים</string>
+  <string id="21454">מטמון מלא</string>
+  <string id="21455">המטמון התמלא לפני שהגיע לכמות הנחוצה לניגון רציף</string>
   <string id="21460">מיקום הכתובית</string>
   <string id="21461">מקובע</string>
   <string id="21462">תחתית הוידאו</string>
@@ -1786,6 +1801,7 @@
   <string id="21801">נתיב קובץ</string>
   <string id="21802">גודל קובץ</string>
   <string id="21803">תאריך/שעה קובץ</string>
+  <string id="21804">שקופית אינדקס</string>
   <string id="21805">רזולוציה</string>
   <string id="21806">הערות</string>
   <string id="21807">צבעוני/שחור-לבן</string>
@@ -1855,6 +1871,7 @@
   <string id="21900">נולד / הוקם</string>
   <string id="22000">עדכן את הספריה בהפעלה</string>
   <string id="22001">תמיד עדכן ספרייה ברקע</string>
+  <string id="22002">- DNS סיומת</string>
   <string id="22004">%2.3f שניות עוכבו</string>
   <string id="22005">%2.3f שניות הוקדמו</string>
   <string id="22006">השהיית כתוביות</string>
@@ -1925,6 +1942,7 @@
   <string id="24022">הפעל</string>
   <string id="24023">תוסף מנוטרל</string>
   <string id="24027">מזג אויר</string>
+  <string id="24028">Weather.com (רגיל)</string>
   <string id="24030">הרחבה זו אינה ניתנת להגדרה</string>
   <string id="24031">תקלה בעת טעינת הגדרות</string>
   <string id="24032">כל ההרחבות</string>
@@ -1955,7 +1973,7 @@
   <string id="24062">הרחבות מופעלות</string>
   <string id="24063">עדכון אוטומטי</string>
   <string id="24064">הרחבה מופעלת</string>
-  <string id="24065">החרבה מעודכנת</string>
+  <string id="24065">הרחבה עודכנה</string>
   <string id="24066">בטל הורדת הרחבה?</string>
   <string id="24067">בתהליך הורדת הרחבות</string>
   <string id="24068">קיים עדכון</string>
@@ -2058,9 +2076,15 @@
   <string id="33101">שרת</string>
   <string id="33102">Event Server</string>
   <string id="33103">שרת התחברות מרחוק</string>
+  <string id="33200">זוהה חיבור חדש</string>
   <string id="34100">תצורת רמקול</string>
   <string id="34201">לא נמצא פריט הבא לניגון</string>
   <string id="34202">לא נמצא הפריט הקודם לניגון</string>
+  <string id="34300">נכשל בהפעלת zeroconf</string>
+  <string id="34301">האם שירות Apple's Bonjour מותקן? ראה לוג למידע נוסף</string>
+  <string id="34400">עיבוד וידאו</string>
+  <string id="34402">נכשל בהפעלת התקן האודיו</string>
+  <string id="34403">בדוק הגדרות אודיו</string>
   <string id="35000">ציוד היקפי</string>
   <string id="35001">התקן HID כללי</string>
   <string id="35002">מתאם רשת כללי</string>
@@ -2079,6 +2103,7 @@
   <string id="36009">הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך</string>
   <string id="36011">אין אפשרות לזהות פורט CEC. הגדר זאת ידנית.</string>
   <string id="36012">אין אפשרות לזהות מתאם CEC.</string>
+  <string id="36013">ממשק libcec  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)</string>
   <string id="36014">הכנס את המחשב למצב המתנה כאשר הטלוויזיה נכבית</string>
   <string id="36015">מספר פורט HDMI</string>
   <string id="36016">מחובר</string>
