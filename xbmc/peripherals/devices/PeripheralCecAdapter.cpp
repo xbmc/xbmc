@@ -132,9 +132,10 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
-    m_cecAdapter->SetInactiveView();
     if (GetSettingBool("cec_power_off_shutdown"))
       m_cecAdapter->StandbyDevices();
+    else
+      m_cecAdapter->SetInactiveView();
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && GetSettingBool("cec_standby_screensaver") && m_bIsReady)
   {
