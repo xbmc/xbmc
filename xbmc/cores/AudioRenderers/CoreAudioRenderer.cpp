@@ -36,8 +36,6 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-#define VERBOSE_DEBUG 1
-
 const AudioChannelLabel g_LabelMap[] =
 {
   kAudioChannelLabel_Left, // PCM_FRONT_LEFT,
