@@ -39,6 +39,8 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "peripherals/Peripherals.h"
+#include "storage/DetectDVDType.h"
+#include "utils/JobManager.h"
 
 #ifdef _WIN32
 
@@ -640,7 +642,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAINSERTED:
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
               if (GetDriveType(drivePath) == DRIVE_CDROM)
-                g_application.getApplicationMessenger().OpticalMount(drivePath, true);
+              {
+                CDetectDisc* discdetection = new CDetectDisc(drivePath, true);
+                CJobManager::GetInstance().AddJob(discdetection, NULL);
+              }
               else
                 CWin32StorageProvider::SetEvent();
               break;
@@ -649,7 +654,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAREMOVED:
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
               if (GetDriveType(drivePath) == DRIVE_CDROM)
-                g_application.getApplicationMessenger().OpticalUnMount(drivePath);
+              {
+                CMediaSource share;
+                share.strPath = drivePath;
+                share.strName = share.strPath;
+                g_mediaManager.RemoveAutoSource(share);
+              }
               else
                 CWin32StorageProvider::SetEvent();
               break;

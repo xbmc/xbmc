@@ -266,9 +266,10 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
+#include "storage/DetectDVDType.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -1032,7 +1033,10 @@ bool CApplication::InitDirectoriesWin32()
   VECSOURCES::const_iterator it;
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
+    {
+      CDetectDisc* discdetection = new CDetectDisc(it->strPath, false);
+      CJobManager::GetInstance().AddJob(discdetection, NULL);
+    }
   // remove end
 
   return true;
