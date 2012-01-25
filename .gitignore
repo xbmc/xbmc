@@ -143,6 +143,7 @@ config.log
 /lib/asap/win32/xbmc_asap.dll
 /lib/asap/win32/xbmc_asap.lib
 /lib/asap/xbmc/xbmc_asap.res
+/lib/asap/win32/1
 
 
 # /lib/cmyth/
@@ -390,6 +391,9 @@ lib/cmyth/Makefile
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
 /system/players/dvdplayer/libmad.dll
+/system/players/dvdplayer/libgcrypt*.dll
+/system/players/dvdplayer/libgnutls*.dll
+/system/players/dvdplayer/libtasn*.dll
 
 # /system/players/paplayer
 /system/players/paplayer/libmodplug.dll
@@ -405,6 +409,7 @@ lib/cmyth/Makefile
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
+/system/players/dsplayer/*.ax
 
 # /system
 /system/profiles.xml
@@ -534,6 +539,7 @@ lib/cmyth/Makefile
 /lib/ffmpeg/libavutil/avconfig.h
 /lib/ffmpeg/doc/ffmpeg.pod
 /lib/ffmpeg/doc/ffplay.pod
+/lib/ffmpeg/1
 
 # /lib/ffmpeg/doc/
 /lib/ffmpeg/doc/*.html
@@ -541,6 +547,7 @@ lib/cmyth/Makefile
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
+/lib/libdvd/1
 
 # /lib/libdvd/includes/
 /lib/libdvd/includes/dv
@@ -662,6 +669,7 @@ lib/cmyth/Makefile
 /lib/libmpeg2/configure.lineno
 /lib/libmpeg2/Makefile
 /lib/libmpeg2/src/*.exe
+/lib/libmpeg2/1
 
 # /lib/libmpeg2/doc/
 /lib/libmpeg2/doc/Makefile

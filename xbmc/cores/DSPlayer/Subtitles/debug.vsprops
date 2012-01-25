@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="debug"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		Optimization="0"
+		BasicRuntimeChecks="3"
+		RuntimeLibrary="1"
+		DebugInformationFormat="4"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		LinkIncremental="2"
+		GenerateDebugInformation="true"
+	/>
+</VisualStudioPropertySheet>

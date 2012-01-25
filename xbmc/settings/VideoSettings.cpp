@@ -33,7 +33,7 @@ CVideoSettings::CVideoSettings()
 {
   m_DeinterlaceMode = VS_DEINTERLACEMODE_OFF;
   m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
-  m_ScalingMethod = VS_SCALINGMETHOD_LINEAR;
+  m_ScalingMethod = GetDefaultScalingMethod();
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
   m_CustomPixelRatio = 1.0f;
@@ -60,6 +60,33 @@ CVideoSettings::CVideoSettings()
   m_CropLeft = 0;
   m_CropRight = 0;
 }
+
+void CVideoSettings::SetDVDPlayerScalingMethod(ESCALINGMETHOD method)
+{
+  m_ScalingMethod &= 0xFFFF0000; // Clear dvdplayer scaling method
+  m_ScalingMethod += method & 0xFFFF;
+}
+
+ESCALINGMETHOD CVideoSettings::GetDVDPlayerScalingMethod()
+{
+  return (ESCALINGMETHOD) (m_ScalingMethod & 0xFFFF);
+}
+
+#ifdef HAS_DS_PLAYER
+void CVideoSettings::SetDSPlayerScalingMethod(EDSSCALINGMETHOD method)
+{
+  m_ScalingMethod &= 0xFFFF0000; // Clear dsplayer scaling method
+  m_ScalingMethod += method & 0xFFFF;
+  //m_ScalingMethod += (method << 16) & 0xFFFF0000; <----- why this
+}
+
+EDSSCALINGMETHOD CVideoSettings::GetDSPlayerScalingMethod()
+{
+  if (m_ScalingMethod > DS_SCALINGMETHOD_BILINEAR_2_100)
+    m_ScalingMethod = DS_SCALINGMETHOD_BILINEAR_2_100;
+  return (EDSSCALINGMETHOD) (m_ScalingMethod & 0xFFFF);
+}
+#endif
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
 {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="common"
+	OutputDirectory="$(ConfigurationName)"
+	IntermediateDirectory="$(OutDir)"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		EnableFunctionLevelLinking="true"
+		WarningLevel="3"
+		DisableSpecificWarnings="4996"
+		PreprocessorDefinitions="WINVER=0x0600"
+	/>
+</VisualStudioPropertySheet>

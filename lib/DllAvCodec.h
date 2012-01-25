@@ -108,10 +108,12 @@ public:
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
+  virtual AVCodec *avcodec_find_decoder_by_name(const char *name)=0;
   virtual AVCodec *avcodec_find_encoder(enum CodecID id)=0;
   virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height)=0;
+  virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, AVPacket *avpkt)=0;
   virtual int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, AVPacket *avpkt)=0;
   virtual int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, AVPacket *avpkt)=0;
@@ -139,6 +141,7 @@ public:
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
   virtual AVCodec *av_codec_next(AVCodec *c)=0;
+  virtual int av_get_bits_per_sample_format(enum SampleFormat sample_fmt)=0;
   virtual AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
                                                  enum AVSampleFormat in_fmt , int in_channels,
                                                  const float *matrix        , int flags)=0;
@@ -148,7 +151,30 @@ public:
                                const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
+  virtual int av_new_packet(AVPacket *pkt, int size)=0;
   virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
+  virtual int av_get_bits_per_sample(enum CodecID codec_id)=0;
+  virtual const char *avcodec_get_pix_fmt_name(enum PixelFormat pix_fmt)=0;
+  virtual void avcodec_get_channel_layout_string(char *buf, int buf_size, int nb_channels, int64_t channel_layout)=0;
+  virtual const char *avcodec_get_sample_fmt_name(int sample_fmt)=0;
+  virtual size_t av_get_codec_tag_string(char *buf, size_t buf_size, unsigned int codec_tag)=0;
+#if 0 /*HAS_DS_PLAYER*/
+  //H264
+  virtual void FFH264DecodeBuffer (AVCodecContext* pAVCtx, BYTE* pBuffer, UINT nSize, int* pFramePOC, int* pOutPOC, int64_t* pOutrtStart)=0;
+  virtual int FFH264BuildPicParams (DXVA_PicParams_H264* pDXVAPicParams, DXVA_Qmatrix_H264* pDXVAScalingMatrix, int* nFieldType, int* nSliceType, AVCodecContext* pAVCtx, int nPCIVendor)=0;
+  virtual int FFH264CheckCompatibility(int nWidth, int nHeight, AVCodecContext* pAVCtx, BYTE* pBuffer, UINT nSize, int nPCIVendor, int nPCIDevice, LARGE_INTEGER VideoDriverVersion)=0;
+  virtual void FFH264SetCurrentPicture (int nIndex, DXVA_PicParams_H264* pDXVAPicParams, AVCodecContext* pAVCtx)=0;
+  virtual void FFH264UpdateRefFramesList (DXVA_PicParams_H264* pDXVAPicParams, AVCodecContext* pAVCtx)=0;
+  virtual BOOL FFH264IsRefFrameInUse (int nFrameNum, AVCodecContext* pAVCtx)=0;
+  virtual void FF264UpdateRefFrameSliceLong(DXVA_PicParams_H264* pDXVAPicParams, DXVA_Slice_H264_Long* pSlice, AVCodecContext* pAVCtx)=0;
+  virtual void FFH264SetDxvaSliceLong (AVCodecContext* pAVCtx, void* pSliceLong)=0;
+  //VC1
+  virtual int FFVC1UpdatePictureParam (DXVA_PictureParameters* pPicParams, struct AVCodecContext* pAVCtx, int* nFieldType, int* nSliceType, BYTE* pBuffer, UINT nSize)=0;
+  virtual int FFIsSkipped(struct AVCodecContext* pAVCtx)=0;
+  //Mpeg2
+  virtual int FFMpeg2DecodeFrame (DXVA_PictureParameters *pPicParams, DXVA_QmatrixData *m_QMatrixData, DXVA_SliceInfo *pSliceInfo, int *nSliceCount,
+                                     struct AVCodecContext *pAVCtx, struct AVFrame *pFrame, int *nNextCodecIndex, int *nFieldType, int *nSliceType, BYTE *pBuffer, UINT nSize)=0;
+#endif
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -182,6 +208,7 @@ public:
   }
   virtual AVFrame *avcodec_alloc_frame() { return ::avcodec_alloc_frame(); }
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height) { return ::avpicture_fill(picture, ptr, pix_fmt, width, height); }
+  virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size); }
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,23,0)
   // API added on: 2009-04-07
   virtual int avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, AVPacket *avpkt) { return ::avcodec_decode_video2(avctx, picture, got_picture_ptr, avpkt); }
@@ -227,6 +254,8 @@ public:
   virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt) { return ::avcodec_default_get_format(s, fmt); }
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count) { return ::avcodec_thread_init(s, thread_count); }
   virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
+  virtual int av_get_bits_per_sample_format(enum SampleFormat sample_fmt)
+          { return ::av_get_bits_per_sample_format(sample_fmt); }
   virtual AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
                                                  enum AVSampleFormat in_fmt , int in_channels,
                                                  const float *matrix        , int flags)
@@ -257,6 +286,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DECLARE_DLL_WRAPPER(DllAvCodec, DLL_PATH_LIBAVCODEC)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open_dont_call, AVCodecContext*, AVCodec *)
+  DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_video2, AVCodecContext*, AVFrame*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_audio3, AVCodecContext*, int16_t*, int*, AVPacket*)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_decode_subtitle2, AVCodecContext*, AVSubtitle*, int*, AVPacket*)
@@ -266,12 +296,31 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED9(int, __cdecl, av_parser_parse2, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t, int64_t)
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
+  DEFINE_METHOD2(int, av_new_packet, (AVPacket *p1, int p2))
   DEFINE_METHOD3(int64_t, avcodec_guess_channel_layout, (int p1, enum CodecID p2, const char *p3))
-
+  DEFINE_METHOD1(const char*,avcodec_get_pix_fmt_name, (enum PixelFormat p1))
+  DEFINE_METHOD4(void, avcodec_get_channel_layout_string, (char *p1, int p2, int p3, int64_t p4))
+  DEFINE_METHOD1(const char*,avcodec_get_sample_fmt_name, (int p1))
+  DEFINE_METHOD1(int, av_get_bits_per_sample, (enum CodecID p1))
+  DEFINE_METHOD3(size_t, av_get_codec_tag_string, (char *p1, size_t p2, unsigned int p3))
+#if 0 /*HAS_DS_PLAYER*/
+  DEFINE_METHOD6(void, FFH264DecodeBuffer, (AVCodecContext *p1, BYTE *p2, UINT p3, int *p4, int *p5, int64_t *p6))
+  DEFINE_METHOD6(int, FFH264BuildPicParams, (DXVA_PicParams_H264 *p1, DXVA_Qmatrix_H264 *p2, int *p3, int *p4, AVCodecContext *p5, int p6))
+  DEFINE_METHOD8(int, FFH264CheckCompatibility, (int p1, int p2, AVCodecContext *p3, BYTE *p4, UINT p5, int p6, int p7, LARGE_INTEGER p8))
+  DEFINE_METHOD3(void, FFH264SetCurrentPicture, (int p1, DXVA_PicParams_H264 *p2, AVCodecContext *p3))
+  DEFINE_METHOD2(void, FFH264UpdateRefFramesList, (DXVA_PicParams_H264 *p1, AVCodecContext *p2))
+  DEFINE_METHOD2(BOOL, FFH264IsRefFrameInUse, (int p1, AVCodecContext *p2))
+  DEFINE_METHOD3(void, FF264UpdateRefFrameSliceLong, (DXVA_PicParams_H264 *p1, DXVA_Slice_H264_Long *p2, AVCodecContext *p3))
+  DEFINE_METHOD2(void, FFH264SetDxvaSliceLong, (AVCodecContext *p1, void *p2))
+  DEFINE_METHOD6(int, FFVC1UpdatePictureParam, (DXVA_PictureParameters *p1, AVCodecContext *p2, int *p3, int *p4, BYTE *p5, UINT p6))
+  DEFINE_METHOD1(int, FFIsSkipped, (AVCodecContext *p1))
+  DEFINE_METHOD11(int, FFMpeg2DecodeFrame, (DXVA_PictureParameters *p1, DXVA_QmatrixData *p2, DXVA_SliceInfo *p3, int *p4, AVCodecContext *p5, AVFrame *p6, int *p7, int *p8, int *p9, BYTE *p10, UINT p11))
+#endif
   LOAD_SYMBOLS();
 
   DEFINE_METHOD0(void, avcodec_register_all_dont_call)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
+  DEFINE_METHOD1(AVCodec*, avcodec_find_decoder_by_name, (const char *p1))
   DEFINE_METHOD1(AVCodec*, avcodec_find_encoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
@@ -292,6 +341,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
+  DEFINE_METHOD1(int, av_get_bits_per_sample_format, (enum SampleFormat p1))
   DEFINE_METHOD6(AVAudioConvert*, av_audio_convert_alloc, (enum AVSampleFormat p1, int p2,
                                                            enum AVSampleFormat p3, int p4,
                                                            const float *p5, int p6))
@@ -304,10 +354,12 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
     RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
+    RESOLVE_METHOD(avcodec_find_decoder_by_name)
     RESOLVE_METHOD(avcodec_find_encoder)
     RESOLVE_METHOD(avcodec_alloc_frame)
     RESOLVE_METHOD_RENAME(avcodec_register_all, avcodec_register_all_dont_call)
     RESOLVE_METHOD(avpicture_fill)
+    RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_video2)
     RESOLVE_METHOD(avcodec_decode_audio3)
     RESOLVE_METHOD(avcodec_decode_subtitle2)
@@ -330,12 +382,19 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_default_get_format)
     RESOLVE_METHOD(avcodec_thread_init)
     RESOLVE_METHOD(av_codec_next)
+    RESOLVE_METHOD(av_get_bits_per_sample_format)
     RESOLVE_METHOD(av_audio_convert_alloc)
     RESOLVE_METHOD(av_audio_convert_free)
     RESOLVE_METHOD(av_audio_convert)
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
+    RESOLVE_METHOD(av_new_packet)
     RESOLVE_METHOD(avcodec_guess_channel_layout)
+    RESOLVE_METHOD(avcodec_get_pix_fmt_name)
+    RESOLVE_METHOD(avcodec_get_channel_layout_string)
+    RESOLVE_METHOD(avcodec_get_sample_fmt_name)
+    RESOLVE_METHOD(av_get_bits_per_sample)
+    RESOLVE_METHOD(av_get_codec_tag_string)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */

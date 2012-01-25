@@ -103,6 +103,9 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentmethod = PRESENT_METHOD_SINGLE;
   m_bReconfigured = false;
   m_hasCaptures = false;
+#ifdef HAS_DS_PLAYER
+  m_pRendererType = RENDERER_UNINIT;
+#endif
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -114,7 +117,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock(false) / CDVDClock::GetTimeBase();
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -137,7 +140,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(fps <= 0)
   {
     /* smooth video not enabled */
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase());
     return;
   }
 
@@ -149,7 +152,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if (ismaster)
     presenttime += m_presentcorr * frametime;
 
-  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase()) / CDVDClock::GetTimeBase();
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 
@@ -296,7 +299,11 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   m_presentevent.Set();
 }
 
+#ifdef HAS_DS_PLAYER
+unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
+#else
 unsigned int CXBMCRenderManager::PreInit()
+#endif
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -307,6 +314,10 @@ unsigned int CXBMCRenderManager::PreInit()
 
   m_bIsStarted = false;
   m_bPauseDrawing = false;
+  m_pRenderer = NULL;
+#ifdef HAS_DS_PLAYER
+  m_pRendererType = RENDERER_NORMAL;
+#endif
   if (!m_pRenderer)
   {
 #if defined(HAS_GL)
@@ -314,7 +325,16 @@ unsigned int CXBMCRenderManager::PreInit()
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)
+#ifdef HAS_DS_PLAYER
+    if (rendtype == RENDERER_NORMAL)
+      m_pRenderer = new CWinRenderer();
+    else
+      m_pRenderer = new CWinDsRenderer();
+
+    m_pRendererType = rendtype;
+#else
     m_pRenderer = new CWinRenderer();
+#endif
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif
@@ -641,7 +661,12 @@ void CXBMCRenderManager::Present()
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
+#ifdef HAS_DS_PLAYER
+    if (m_pRendererType == RENDERER_NORMAL)
     WaitPresentTime(m_presenttime);
+#else
+    WaitPresentTime(m_presenttime);
+#endif
 
   m_presentevent.Set();
 }

@@ -33,6 +33,9 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/AutoPtrHandle.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
@@ -280,6 +283,12 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
 
+#ifdef HAS_DS_PLAYER
+    CPlayerCoreConfig* dsplayer = new CPlayerCoreConfig("DSPlayer", EPC_DSPLAYER, NULL);
+    dsplayer->m_bPlaysAudio = dsplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(dsplayer);
+#endif
+
     for(std::vector<CPlayerSelectionRule *>::iterator it = s_vecCoreSelectionRules.begin(); it != s_vecCoreSelectionRules.end(); it++)
       delete *it;
     s_vecCoreSelectionRules.clear();
@@ -306,6 +315,9 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
+#ifdef HAS_DS_PLAYER
+      if (type == "dsplayer" ) eCore = EPC_DSPLAYER;
+#endif
 
       if (eCore != EPC_NONE)
       {

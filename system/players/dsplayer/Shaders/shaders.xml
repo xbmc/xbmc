@@ -1,0 +1,86 @@
+<shaders>
+  <shader name="BT.601 -&gt; BT.709" id="1">
+    <path>BT601BT709.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Deinterlace (blend)" id="2">
+    <path>deinterlace (blend).psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Contour" id="3">
+    <path>contour.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Denoise" id="4">
+    <path>denoise.psh</path>
+    <profile>ps_3_0</profile>
+  </shader>
+  <shader name="Edge sharpen" id="5">
+    <path>EdgeSharpen.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Emboss" id="6">
+    <path>emboss.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Spotlight" id="7">
+    <path>spotlight.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Grayscale" id="8">
+    <path>grayscale.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Invert" id="9">
+    <path>invert.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Letterbox" id="10">
+    <path>letterbox.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="0-255 -&gt; 16-235" id="11">
+    <path>levels3.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="16-235 -&gt; 0-255 [SD][HD]" id="12">
+    <path>levels.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="16-235 -&gt; 0-255 [SD]" id="13">
+    <path>levels2.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Nightvision" id="14">
+    <path>nightvision.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Procamp" id="15">
+    <path>procamp.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Sharpen" id="16">
+    <path>sharpen.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Sharpen complex" id="17">
+    <path>sharpencomplex.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Sharpen complex 2" id="18">
+    <path>sharpencomplex2.psh</path>
+    <profile>ps_2_a</profile>
+  </shader>
+  <shader name="Sphere" id="19">
+    <path>sphere.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="Wave" id="20">
+    <path>wave.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+  <shader name="YV12 Chroma Upsampling" id="21">
+    <path>YV12ChromaUpsampling.psh</path>
+    <profile>ps_2_0</profile>
+  </shader>
+</shaders>

@@ -33,6 +33,7 @@ extern "C"
 {
   int track_open(const char* sFileName, int iMode);
   int track_close(int fd);
+  FILE* track_wfopen(const wchar_t* swFileName, const wchar_t* wmode);
   FILE* track_fopen(const char* sFileName, const char* mode);
   int track_fclose(FILE* stream);
   FILE* track_freopen(const char *path, const char *mode, FILE *stream);

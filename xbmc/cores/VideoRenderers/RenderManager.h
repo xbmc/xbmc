@@ -29,6 +29,10 @@
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
+ #ifdef HAS_DS_PLAYER
+  #include "WinDsRenderer.h"
+  #include "../Dsplayer/IPaintCallback.h"
+ #endif
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -46,6 +50,9 @@ class CVDPAU;
 struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
+#ifdef HAS_DS_PLAYER
+  class IPaintCallback;
+#endif
 
 class CXBMCRenderManager
 {
@@ -71,10 +78,34 @@ public:
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   bool IsConfigured();
 
+#ifdef HAS_DS_PLAYER
+  inline void RegisterCallback(IPaintCallback *callback)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->RegisterCallback(callback);
+  }
+  inline void UnregisterCallback()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->UnregisterCallback();
+  }
+  inline void OnAfterPresent()
+  {
+    if (m_pRenderer)
+      m_pRenderer->OnAfterPresent();
+  }
+#endif
+  
   int AddVideoPicture(DVDVideoPicture& picture);
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+#ifdef HAS_DS_PLAYER
+  unsigned int PreInit(RENDERERTYPE rendtype = RENDERER_NORMAL);
+#else
   unsigned int PreInit();
+#endif
   void UnInit();
   bool Flush();
 
@@ -104,6 +135,10 @@ public:
     else
       return RES_INVALID;
   }
+
+#ifdef HAS_DS_PLAYER
+  RENDERERTYPE GetRendererType() { return m_pRendererType; }
+#endif
 
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
@@ -171,7 +206,11 @@ public:
 #elif HAS_GLES == 2
   CLinuxRendererGLES *m_pRenderer;
 #elif defined(HAS_DX)
+#ifdef HAS_DS_PLAYER
+  CWinBaseRenderer *m_pRenderer;
+#else
   CWinRenderer *m_pRenderer;
+#endif
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
 #endif
@@ -199,6 +238,10 @@ protected:
   bool m_bReconfigured;
 
   int m_rendermethod;
+
+#ifdef HAS_DS_PLAYER
+  RENDERERTYPE m_pRendererType;
+#endif
 
   enum EPRESENTSTEP
   {

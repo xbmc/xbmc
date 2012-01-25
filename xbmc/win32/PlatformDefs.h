@@ -47,6 +47,13 @@ typedef unsigned long ThreadIdentifier;
 #define strncasecmp strnicmp
 #endif
 
+#ifndef INT16_MAX
+#define INT16_MAX SHRT_MAX
+#endif
+#ifndef INT16_MIN
+#define INT16_MIN SHRT_MIN
+#endif
+
 #ifndef PRIdS
 #define PRIdS "Id"
 #endif

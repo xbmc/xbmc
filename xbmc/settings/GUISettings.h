@@ -54,6 +54,12 @@ class TiXmlElement;
 #define SUBTITLE_COLOR_START  0
 #define SUBTITLE_COLOR_END    7
 
+#ifdef HAS_DS_PLAYER
+// DSPlayer subtitles
+#define SUBTITLE_BORDER_OUTLINE 0
+#define SUBTITLE_BORDER_OPAQUE 1
+#endif
+
 // Karaoke colours
 
 // If you want to add more colors, it should be done the following way:

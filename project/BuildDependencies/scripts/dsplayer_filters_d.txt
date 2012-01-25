@@ -1,0 +1,2 @@
+; filename                        		      source of the file
+standalone_filters-1.5.3.3757_x86.7z  http://xbmcdspdeps.googlecode.com/files

@@ -2402,4 +2402,36 @@
   <string id="36016">Connected</string> <!-- max. 13 characters -->
   <string id="36017">Adapter found, but libcec is not available</string>
   <string id="36018">Use the TV's language setting</string>
+
+    <!-- 55000-55100 reserved for DSPlayer-->
+  <string id="55000">DSPlayer</string>
+  <string id="55001">Use VMR9 instead of EVR Renderer</string>
+  <string id="55002">Use EVR instead of VMR9 Renderer</string>
+  <string id="55003">Audio Renderer</string>
+  <string id="55004">Set all stable formats to libavcodec (ffdshow)</string>
+  <string id="55005">Nearest neighbor</string>
+  <string id="55006">Bilinear</string>
+  <string id="55007">Bilinear (PS 2.0)</string>
+  <string id="55008">Bicubic A=-0.60 (PS 2.0)</string>
+  <string id="55009">Bicubic A=-0.75 (PS 2.0)</string>
+  <string id="55010">Bicubic A=-1.00 (PS 2.0)</string>
+  <string id="55011">Stats hidden</string>
+  <string id="55012">Stats minimal</string>
+  <string id="55013">Stats medium</string>
+  <string id="55014">Stats large</string>
+  <string id="55015">Renderer stats</string>
+  <string id="55016">Shaders</string>
+  <string id="52017">Shaders list</string>
+  <string id="52018">There is no shader loaded</string>
+  <string id="55020">Force internal filters</string>
+
+  <!--  55050-55100 Directshow Subtitles -->
+  <string id="55050">- Border line</string>
+  <string id="55051">Outline</string>
+  <string id="55052">Opaque</string>
+  <string id="55053">- Outline width</string>
+  <string id="55054">- Shadow depth</string>
+  <string id="55055">- Alpha</string>
+  <string id="55056">Font to use for text subtitles (dsplayer only) : %s</string>
+  <string id="55057">Choose a font</string>
 </strings>

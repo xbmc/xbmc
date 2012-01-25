@@ -90,6 +90,7 @@ Export win32_exports[] =
   { "feof",                       -1, (void*)dll_feof,                      NULL },
   { "fgets",                      -1, (void*)dll_fgets,                     NULL },
   { "fopen",                      -1, (void*)dll_fopen,                     (void*)track_fopen},
+  { "_wfopen",                    -1, (void*)dll_wfopen,                    (void*)track_wfopen},
   { "putc",                       -1, (void*)dll_putc,                      NULL },
   { "fputc",                      -1, (void*)dll_fputc,                     NULL },
   { "fputs",                      -1, (void*)dll_fputs,                     NULL },

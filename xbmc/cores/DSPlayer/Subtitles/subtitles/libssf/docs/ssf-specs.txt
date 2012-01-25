@@ -1,0 +1,613 @@
+Structured Subtitle Format 1.0 (boring name, need a better one)
+------------------------------
+
+The encoding must be utf-8/16le/16be with the BOM at the beginning. 
+
+Parsing is prefered to be stream oriented, which means: 
+- new-line characters in text do not differ from the rest of the white-space characters
+- forward references are not allowed 
+
+Comments
+--------
+
+// a comment, ends at the end of the line
+/* this is a comment, too */
+
+Syntax
+------
+
+Fortunatelly, there is only one general way to define something. The elements are broken 
+into lines for better understanding, but they can be compressed into one single line as well, 
+whichever suits your preference. The term "type" could be read as "attribute" or "member of 
+a structure" too. 
+
+[!]
+[type[.type[..]]]
+[#name]
+[: | =]
+[refs | quoted string | num | bool | raw]
+;
+
+As you can see nearly everything is optional, even the terminating semi-colon is not required 
+when a closing bracket ends the definition anyway. However, either type or #name must be given,
+otherwise there would be no meaning of the expression.
+
+"!":
+- gives the definition high priority, normal priority types of the same kind cannot override it:
+	#a {!t: 123;};
+	#b {t: 234;};
+	#c a b; // t of c equals to 123
+	- works on references too:
+	!#a {t: 123;};
+	#b {t: 234;};
+	#ab a b;
+	#c ab; // t of c still equals to 123
+
+"type" and "name":
+- alphanumeric or underscore characters only, without spaces
+- cannot start with a number
+- case-sensitive
+
+"type":
+- type is optional but can be inherited through referencing other names which happen to have a type already
+	color#c1 {a: 0x80;};
+	#c2: c1; // c2 also has the type of color now
+	#c3: c2; // c3 too
+- if there is a type already additional references cannot change it
+- when mixing different types (not recommended) the first one decides
+- there is one special type which have an important but a limited use: @ (see 'subtitle' for an example usage)
+	- it is not parsed for references or nested definitions
+	- the content of the following block {...} is saved as-is for the application
+	- cannot be global or named and therefore referenced
+	- { and } have to be escaped with \ inside the block (other block specific characters may as well)
+- type.type.type.... is equal to writing: type {type {type {...};};};
+
+"name":
+- every name is globally visible
+- redefining a name is forbidden, unless it was predefined by the application
+- using the type as the name (type#type) can change the type's default values
+	- however, the scope is important:
+	
+	subtitle#subtitle {style.font.size: 20;};
+	style#style {font.size: 30;};
+	style#s1 {font.face: "Arial";};
+	style#s2 : s1 {font.color: red;};
+	subtitle#a {style: s2 {font.weight: "normal";};}; 
+
+	Here font.size equals to 20, because it inherits from subtitle#subtitle.style instead of the 
+	global style#style, additionally it gets the properties of s2-s1 and the inline def. If it also 
+	inherited properties from style#style through s2-s1 indirectly, there would be two default base 
+	definitions and the order of overriding eachother would not be clear.
+	
+	subtitle#a.style
+		<- subtitle#subtitle.style 
+		<- s2 <- s1 <-NOT- style#style
+		<- {font.weight: "normal";}
+
+"refs":
+- combination of any names or nested definitions separated by spaces
+- forward references are not allowed
+- referencing a value type directly is not allowed: (TODO: this may change)
+	OK:
+	color#c1: {a: 12;};
+	color#c2: c1;
+	BAD:
+	#twelve: 12;
+	color#c2: {a: twelve;};
+- 'name' must have been defined by a parent node
+	OK:
+	#c1: {a: 12;};
+	style#s1 {color: c1;};
+	style#s2 {color: c1;};
+	BAD:
+	style#s1 {color#c1: {a: 12;};};
+	style#s2 {color: c1;}; // c1 cannot be accessed here
+
+"quoted string" or 'quoted string':
+- \ escapes characters, including " and '
+- cannot contain any new-line characters
+
+"num":
+- decimal, hexadecimal (prefixed with: 0x), float [+ unit (optional, see 'time' below for an example)]
+- there are numbers with restricted range or special formatting:
+	- degrees: <num> mod 360
+	- percent: must be between 0 and 1
+	- time: [+] [<num>:[<num>:[<num>.]]]<num> | <num>h | <num>m | <num>s | <num>ms
+
+"bool":
+- "true" | "false" | "on" | "off" | "yes" | "no" | 1 | 0
+- unrecognizable values will result in unpredictable behaviour, since there can't be a default fallback value
+
+Recognized types and attributes
+-------------------------------
+
+file
+{
+	format: <string>; // identifies the file format ("ssf")
+	version: <num>; // file format version (1)
+	language: <string>; // iso6392
+	title: <string>;
+	year: <num>;
+	author: <string>;
+};
+
+color
+{
+	// a, r, g, b: 0 - 255 or 0x00 - 0xff
+
+	a: <num>;
+	r: <num>;
+	g: <num>;
+	b: <num>;
+};
+
+point
+{
+	x: <num>;
+	y: <num>;
+};
+
+size
+{
+	cx: <num>;
+	cy: <num>;
+};
+
+rect
+{
+	t: <num>;
+	r: <num>;
+	b: <num>;
+	l: <num>;
+};
+
+align
+{
+	// when given in percent, 0 means top/left, 1 bottom/right, 0.5 middle/center
+	
+	v: ["top" | "middle" | "bottom" | <percent>];
+	h: ["left" | "center" | "right" | <percent>];
+};
+
+angle
+{
+	x: <degrees>;
+	y: <degrees>;
+	z: <degrees>;
+};
+
+frame
+{
+	reference: ["video" | "window"];
+	resolution: <size>;
+};
+
+direction
+{
+	primary: ["right" | "left" | "down" | "up"];
+	secondary: ["right" | "left" | "down" | "up"]; // must be perpendicular to primary
+};
+
+placement
+{
+	clip: ["none" | "frame" | <rect>]; // anything drawn outside this rectangle is clipped, negative or larger than 'resolution' values are not allowed for rect
+	margin: <rect>; // "top" "right" "bottom" "left" are also valid values for the rect members, they refer to the values of the "frame" rect (0, 0, frame.resolution.cx, frame.resolution.cy)
+	align: <align>;
+	pos: ["auto" | <point>]; // absolute values, pos.x or pos.y can be animated only when both the source and destination style defined it
+	offset: <point>; // relative to pos, unlike pos this can be applied to fragments of the text as an override
+	angle: <angle>; // origin of rotation is the alignment point, unless it is overriden
+	org: ["auto" | <point>]; // override for the origin
+	path: <string>; // a series of x y coord pairs (at least two points)
+};
+
+font
+{
+	face: <string>;
+	size: <num>;
+	weight: ["normal" | "bold" | "thin" | <num>];
+	color: <color>;
+	underline: <bool>;
+	strikethrough: <bool>;
+	italic: <bool>;
+	spacing: <num>;
+	scale: <size>;
+	kerning: <bool>;
+};
+
+background
+{
+	color: <color>;
+	size: <num>;
+	type: ["outline" | "enlarge" | "box"];
+	blur: <num>; // number of passes
+
+	// "enlarge" can be computed faster, but because it follows the path of the original outline it is 
+	// not rounded and size > 1 can make it look pretty bad if it intersects with itself.
+};
+
+shadow
+{
+	color: <color>;
+	depth: <num>;
+	angle: <degrees>;
+	blur: <num>; // number of passes
+};
+
+fill
+{
+	color: <color>;
+	width: <percent>;
+	
+	// It cannot be applied to the same text multiple times as an override.
+	//
+	// #k1 {fill.width:1; time {start: +0; stop: +1s;}};
+	// #k2 {fill.width:1; time {start: 0; stop: 2s;}};
+	//
+	// OK: 
+	// [k1] {Hello} 
+	//
+	// BAD: 
+	// [k1] {Wo[k2]{r}ld!}
+	//
+};
+
+time
+{
+	id: [<string> | <num>];
+	start: <time>; // inclusive
+	stop: <time>; // exclusive
+	scale: <num>; // if the time was set WITHOUT a unit, then start and stop are measured in [scale * seconds]
+};
+
+style
+{
+	linebreak: ["word" | "char" | "none"]; // ignored if subtitle.wrap: "manual"
+	placement: <placement>;
+	font: <font>;
+	background: <background>;
+	shadow: <shadow>;
+	fill: <fill>;
+};
+
+animation
+{
+	time: <time>; // before start: previous style, after stop: this style, animation is done between start and stop according to transition
+	transition: ["linear" | "start" | "stop" | <num>]; // <num> is the same as the acceleration parameter of advanced ssa (see the "ass-specs"), "start" or "stop" sets num to 0 and inf, "linear" sets it to 1.0
+	loop: <num>; // the number of times the effect should repeat, e.g. loop set to 2 makes the style turn from src to dst twice, between start => (start+stop)/2 and (start+stop)/2 => stop 
+	direction: ["fw" | "bw" | "fwbw" | "bwfw"]; // "bwfw" and "fwbw" makes the value of loop multiplied by two internally
+};
+
+subtitle
+{
+	frame: <frame>;
+	direction: <direction>;
+	wrap: ["normal" | "even" | "manual"];
+	layer: <num>;
+	time: <time>; 
+	style: <style>;
+	@: {... dialog lines ...};
+	
+	To have a subtitle displayed the minimal set of fields required are:
+	- time.start
+	- time.stop 
+	- @
+	
+	About dialog lines
+	------------------
+	
+	All white-space will be compressed into one space character.
+	
+	Special characters can be enforced:
+	- new-line: \n
+	- non-breaking space: \h
+	
+	Empty space will be completly removed at these places:
+	- before and after outermost text block brackets: 
+		@ { --> here <-- Hello World! --> here <-- }
+	- between the inner closing and opening brackets of overrides:
+		[s1] --> here <-- {Hello World!}
+	- around forced new-lines:
+		Hello --> here <-- \n --> here <-- World!
+		
+	When neighboring spaces have different styles, the style of the trailing space is used:
+		#u {font.underline: "true"};
+		#s {font.strikethrough: "true"};
+		[u] { Hello } 
+		[s] { World! } 
+		=> 
+		Hello_World!-
+		______-------
+
+	These special characters have to be escaped with a backslash: 
+		{ } [ ] \
+	
+	Style overrides
+	---------------
+
+	[refs] {... more dialog text ...}
+	
+	"name" as in type#name ... is unimportant and ignored.
+	
+	If there is a text block right after an override, the new style will be used only inside 
+	that block.
+	
+	Style and time offsets are restored at the end of text blocks.
+	
+	Examples:
+
+	[s1] {s1 applies only to this block.}
+
+	[s2] s2 applies till the end of the container block.
+	
+	[s1 s2 {color: red;} s3] {Multiple styles are valid just like in a normal ref list}
+
+	{
+		Nesting text blocks. Some may have overrides, others may not.
+
+		[s1]
+		{
+			Every text block will be trimmed and white-space compressed, 
+			so we can use the space freely to make it a bit more readable.
+
+			{Yet another nested block}
+		}
+	}
+	
+	Animation:
+	
+	The override is style + animation mixed.
+	
+	[{time.stop: +00:00:01.000; transition: "linear"; font.size: 20;}]
+	{
+		Here the size of the font gradually becomes 20 after one second.
+	}
+	
+	[{font.color: white;}]
+	{
+		[{time.stop: +00:00:10.000; font.color: black;}]
+		{Text turns from white to black in the first 10 seconds}
+
+		[a1]
+		{This one does whatever a1 tells to do}
+	}
+	
+	[{time.start: "start"; time.stop: "stop"; font.size: 20}]
+	{
+		This is a way to refer to the subtitle's own start and stop values.
+		
+		You can predefine it for easier use:
+		
+		#a1 {time.start: "start"; time.stop: "stop";};
+		[a1 {font.size: 20}] {...}
+	}
+	
+	Karaoke effect using animation:
+
+	[{background.size: 0;}]
+	{
+		[{time.start: 0s; time.stop: +1s; background.size: 10;}]
+		{Ka}
+		[{time.start: 1s; time.stop: +1s; background.size: 10;}]
+		{ra}
+		[{time.start: 2s; time.stop: +1s; background.size: 10;}]
+		{o}
+		[{time.start: 3s; time.stop: +1s; background.size: 10;}]
+		{ke!}
+	}
+
+	To simplify the above, we can predefine the common parameters:
+
+	#s1 {background.size: 0;};
+	#a1 {time.start: +0s; time.stop: +1s; background.size: 10;};
+
+	[s1]
+	{
+		[a1]{Ka}[a1]{ra}[a1]{o}[a1 {font.color: red;}]{ke!}
+
+		// That last piece has even turned into a red in the end :)
+
+		// And to make sure s1 has not been red already, we could derive it 
+		// from "whitefont" (defined somewhere else as: #whitefont {font.color: white;};)
+
+		[a1]{Ka}[a1]{ra}[a1]{o}[a1 whitefont {font.color: red;};}]{ke!} 
+	}
+	
+	When specifying multiple style references watch out for the start/stop values
+	of time. Since they override eachother you should only set them once.
+
+	#a2 {font.color.a: 0;};
+	#a3 {placement.angle.x: 360;};
+
+	[s1] [a1 a2 a3]{Ka}[a1 a2 a3]{ra}[a1 a2 a3]{o}[a1 a2 a3]{ke!}
+
+	If you want to be even lazier:
+
+	#a4: a1 a2 a3;
+
+	[s1] [a4]{Ka}[a4]{ra}[a4]{o}[a4]{ke!}	
+	
+	To avoid the times overriding eachother use either nested text blocks ...
+	
+	#a2 {time.start: +0.5s; time.stop: +1s; font.color.a: 0;};
+	#a3 {time.start: +1s; time.stop: +1s; placement.angle.x: 360;};
+	
+	[s1] [a1]{[a2]{[a3]Ka}}[a1]{[a2]{[a3]ra}}[a1]{[a2]{[a3]o}}[a1]{[a2]{[a3]ke}}
+	
+	... or a list of references were each has a different time.id ...
+
+	#a1 {time {id: 1; start: +0s; stop: +1s;}; background.size: 10;};
+	#a2 {time {id: 2; start: +0.5s; stop: +1s;}; font.color.a: 0;};
+	#a3 {time {id: 3; start: +1s; stop: +1s;}; placement.angle.x: 360;};
+	
+	[s1] [a1,a2,a3]{Ka}[a1,a2,a3]{ra}[a1,a2,a3]{o}[a1,a2,a3]{ke!}
+	
+	... or just let it auto-number the ids, each timer id becomes the actual position 
+	in the comma separated list (a1 id => 1, a2 id => 2, a3 id => 3).
+
+	#a1 {time {start: +0s; stop: +1s;}; background.size: 10;};
+	#a2 {time {start: +0.5s; stop: +1s;}; font.color.a: 0;};
+	#a3 {time {start: +1s; stop: +1s;}; placement.angle.x: 360;};
+	
+	[s1] [a1,a2,a3]{Ka}[a1,a2,a3]{ra}[a1,a2,a3]{o}[a1,a2,a3]{ke!}
+
+	It is also possible to leave some of the ref list slots empty.
+
+	[s1] [a1,a2,a3]{Ka}[,a2,a3]{ra}[a1,,a3]{o}[a1,a2,]{ke!}
+	
+	Text includes
+	-------------
+
+	Text blocks can also be defined outside subtitles and included later. 
+	
+	#hw { @ {[{font.italic: "true"}]Hello World!}; };
+	subtitle { @ {[hw]}; };
+	
+	When mixing style overrides and text includes, the new style applies to the text too.
+	
+	#hw { @ {Hello World!}; };
+	subtitle { @ {[hw {font.italic: "true"}]}; };
+	
+	Multiple levels of recursion:
+	
+	#dblspace { @ {[{font.scale.cx: 2;}]             }; }; // note: there is still only one space character here because of white space compression
+	#hw { @ {Hello[dblspace]World!}; };
+	subtitle { @ {[hw]}; };
+};
+
+Defaults and predefined names
+-----------------------------
+
+These must be predefined by the application and always assumed to be there for ssf version 1.
+
+color#white {a: 255; r: 255; g: 255; b: 255;};
+color#black {a: 255; r: 0; g: 0; b: 0;};
+color#gray {a: 255; r: 128; g: 128; b: 128;}; 
+color#red {a: 255; r: 255; g: 0; b: 0;};
+color#green {a: 255; r: 0; g: 255; b: 0;};
+color#blue {a: 255; r: 0; g: 0; b: 255;};
+color#cyan {a: 255; r: 0; g: 255; b: 255;};
+color#yellow {a: 255; r: 255; g: 255; b: 0;};
+color#magenta {a: 255; r: 255; g: 0; b: 255;};
+
+align#topleft {v: "top"; h: "left";};
+align#topcenter {v: "top"; h: "center";};
+align#topright {v: "top"; h: "right";};
+align#middleleft {v: "middle"; h: "left";};
+align#middlecenter {v: "middle"; h: "center";};
+align#middleright {v: "middle"; h: "right";};
+align#bottomleft {v: "bottom"; h: "left";};
+align#bottomcenter {v: "bottom"; h: "center";};
+align#bottomright {v: "bottom"; h: "right";};
+
+time#time {scale: 1;};
+time#startstop {start: "start"; stop: "stop";};
+
+#b {font.weight: "bold"};
+#i {font.italic: "true"};
+#u {font.underline: "true"};
+#s {font.strikethrough: "true"};
+
+#nobr {linebreak: "none"};
+
+subtitle#subtitle
+{
+	frame
+	{
+		reference: "video"; 
+		resolution: {cx: 640; cy: 480;};
+	};
+	
+	direction
+	{
+		primary: "right";
+		secondary: "down";
+	};
+
+	wrap: "normal";
+	
+	layer: 0;
+	
+	style
+	{
+		linebreak: "word";
+	
+		placement
+		{
+			clip: "none";
+			margin: {t: 0; r: 0; b: 0; l: 0;};
+			align: bottomcenter;
+			pos: "auto";
+			offset: {x: 0; y: 0;};
+			angle: {x: 0; y: 0; z: 0;};
+		};
+		
+		font
+		{
+			face: "Arial"; 
+			size: 20; 
+			weight: "bold"; 
+			color: white; 
+			underline: "false"; 
+			strikethrough: "false"; 
+			italic: "false"; 
+			spacing: 0; 
+			scale: {cx: 1; cy: 1;};
+			kerning: "true";
+		};
+
+		background
+		{
+			color: black; 
+			size: 2;
+			type: "outline";
+		};
+
+		shadow
+		{
+			color: black {a: 128;}; 
+			depth: 2;
+			angle: -45;
+			blur: 0;
+		};
+		
+		fill
+		{
+			color: yellow;
+			width: 0;
+		};
+	};
+};
+
+Streaming
+---------
+
+Correct packetization is important when a subtitle file has to be embeded into a media 
+file. Putting everything into the header would be trivial, but sending the whole track 
+data ahead cannot be called streaming really, and it also makes editing impossible 
+unless the application learns how to parse and resave our format. 
+
+The recommended way of segmenting ssf into media samples:
+- Search top level definitions which do not satisfy the requirements of a displayable 
+subtitle (one of start/stop/@ is absent) and save them into the file header of the media 
+file as the initializer data for playback.
+- Multiplex the rest of the top level definitions as media samples, their timestamps 
+shall be used for interleaving with other streams.
+
+Example:
+
+#mystyle {font.face: "Times New Roman";};
+subtitle#s1 {time.start: 2s;};
+subtitle#s2 : s1 {style: mystyle; time.stop: +1s; @ {2s -> 3s};};
+subtitle#s3 {style: mystyle; time.start: 5s; @ {5s -> 7s};};
+subtitle#s4 : s3 {time.stop: +2s;};
+
+File header:
+
+#mystyle {font.face: "Times New Roman";};
+subtitle#s1 {time.start: 2s;};
+subtitle#s3 {style: mystyle; time.start: 5s; @ {5s -> 7s};};
+
+Media samples:
+
+subtitle#s2 : s1 {style: mystyle; time.stop: +1s; @ {2s -> 3s};};
+subtitle#s4 : s3 {time.stop: +2s;};

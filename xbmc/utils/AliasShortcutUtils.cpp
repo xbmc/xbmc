@@ -92,14 +92,14 @@ void TranslateAliasShortcut(CStdString &path)
 
 #elif defined(WIN32)
 /* Needs testing under Windows platform so ignore shortcuts for now
-  CComPtr<IShellLink> ipShellLink;
+  Com::SmartPtr<IShellLink> ipShellLink;
 
   // Get a pointer to the IShellLink interface
   if (NOERROR == CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&ipShellLink))
     WCHAR wszTemp[MAX_PATH];
 
     // Get a pointer to the IPersistFile interface
-    CComQIPtr<IPersistFile> ipPersistFile(ipShellLink);
+    Com::SmartQIPtr<IPersistFile> ipPersistFile(ipShellLink);
 
     // IPersistFile is using LPCOLESTR so make sure that the string is Unicode
 #if !defined _UNICODE
