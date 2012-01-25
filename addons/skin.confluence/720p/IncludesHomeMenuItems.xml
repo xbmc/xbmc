@@ -32,7 +32,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>14022</label>
 			<onclick>ActivateWindow(Videos,Root)</onclick>
-			<visible>Library.HasContent(Videos)</visible>
+			<visible>Library.HasContent(Video)</visible>
 		</control>
 		<control type="button" id="90107">
 			<include>ButtonHomeSubCommonValues</include>
