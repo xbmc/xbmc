@@ -282,7 +282,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  m_rootDir.SetCacheDirectory(DIR_CACHE_ONCE);
   items.ClearProperties();
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
@@ -684,7 +683,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
-      CDirectory::GetDirectory(pItem->GetPath(),items,"",false,false,DIR_CACHE_ONCE,true,true);
+      CDirectory::GetDirectory(pItem->GetPath(),items,"",DIR_FLAG_NO_FILE_DIRS,true);
       for (int i=0;i<items.Size();++i)
         OnDeleteItem(items[i]);
 

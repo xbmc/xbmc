@@ -150,7 +150,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #else
         struct stat info = {0};
 #endif
-        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
+        if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strAuth + smb.URLEncode(strFile);
@@ -305,7 +305,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
       if (errno == EACCES)
 #endif
       {
-        if (m_allowPrompting)
+        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
           RequireAuthentication(urlIn.Get());
         break;
       }
@@ -324,7 +324,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
           cError = strerror(errno);
 #endif
 
-        if (m_allowPrompting)
+        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
           SetErrorDialog(257, cError.c_str());
         break;
       }

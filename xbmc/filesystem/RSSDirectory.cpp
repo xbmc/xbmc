@@ -72,7 +72,6 @@ CCriticalSection CRSSDirectory::m_section;
 
 CRSSDirectory::CRSSDirectory()
 {
-  SetCacheDirectory(DIR_CACHE_ONCE);
 }
 
 CRSSDirectory::~CRSSDirectory()

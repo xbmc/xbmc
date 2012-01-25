@@ -740,7 +740,7 @@ int CMusicInfoScanner::CountFilesRecursively(const CStdString& strPath)
   // load subfolder
   CFileItemList items;
 //  CLog::Log(LOGDEBUG, __FUNCTION__" - processing dir: %s", strPath.c_str());
-  CDirectory::GetDirectory(strPath, items, g_settings.m_musicExtensions, false);
+  CDirectory::GetDirectory(strPath, items, g_settings.m_musicExtensions, DIR_FLAG_NO_FILE_DIRS);
 
   if (m_bStop)
     return 0;

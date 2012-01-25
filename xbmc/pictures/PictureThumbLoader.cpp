@@ -174,7 +174,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
       CFileItemList items;
 
-      CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, false, false);
+      CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
       
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
@@ -193,7 +193,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       {
         if (pItem->IsCBZ() || pItem->IsCBR())
         {
-          CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, false, false);
+          CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS);
           for (int i=0;i<items.Size();++i)
           {
             CFileItemPtr item = items[i];
