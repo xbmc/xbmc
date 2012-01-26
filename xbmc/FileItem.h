@@ -293,8 +293,9 @@ public:
    Properties are appended, and labels, thumbnail and icon are updated if non-empty
    in the given item.
    \param item the item used to supplement information
+   \param replaceLabels whether to replace labels (defaults to true)
    */
-  void UpdateInfo(const CFileItem &item);
+  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
 
   bool IsSamePath(const CFileItem *item) const;
 

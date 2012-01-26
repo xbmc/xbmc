@@ -1158,7 +1158,7 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
-void CFileItem::UpdateInfo(const CFileItem &item)
+void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 {
   if (item.HasVideoInfoTag())
   { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
@@ -1170,9 +1170,9 @@ void CFileItem::UpdateInfo(const CFileItem &item)
   if (item.HasPictureInfoTag())
     *GetPictureInfoTag() = *item.GetPictureInfoTag();
 
-  if (!item.GetLabel().IsEmpty())
+  if (replaceLabels && !item.GetLabel().IsEmpty())
     SetLabel(item.GetLabel());
-  if (!item.GetLabel2().IsEmpty())
+  if (replaceLabels && !item.GetLabel2().IsEmpty())
     SetLabel2(item.GetLabel2());
   if (!item.GetThumbnailImage().IsEmpty())
     SetThumbnailImage(item.GetThumbnailImage());
