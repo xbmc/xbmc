@@ -37,6 +37,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
+#include "utils/JobManager.h"
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present
@@ -76,7 +77,10 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
   if(!ret.second) //identifier exists
     return false;
   if(m_started)
-    return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port, txt);
+  {
+    CPublish* publish = new CPublish(fcr_identifier, info);
+    CJobManager::GetInstance().AddJob(publish, NULL);
+  }
   //not yet started, so its just queued
   return true;
 }
@@ -112,9 +116,9 @@ void CZeroconf::Start()
   if(m_started)
     return;
   m_started = true;
-  for(tServiceMap::const_iterator it = m_service_map.begin(); it != m_service_map.end(); ++it){
-    doPublishService(it->first, it->second.type, it->second.name, it->second.port, it->second.txt);
-  }
+
+  CPublish* publish = new CPublish(m_service_map);
+  CJobManager::GetInstance().AddJob(publish, NULL);
 }
 
 void CZeroconf::Stop()
@@ -154,3 +158,20 @@ void CZeroconf::ReleaseInstance()
   smp_instance = 0;
 }
 
+CZeroconf::CPublish::CPublish(const std::string& fcr_identifier, PublishInfo& pubinfo)
+{
+  m_servmap.insert(std::make_pair(fcr_identifier, pubinfo));
+}
+
+CZeroconf::CPublish::CPublish(tServiceMap& servmap)
+{
+  m_servmap = servmap;
+}
+
+bool CZeroconf::CPublish::DoWork()
+{
+  for(tServiceMap::const_iterator it = m_servmap.begin(); it != m_servmap.end(); ++it)
+    CZeroconf::GetInstance()->doPublishService(it->first, it->second.type, it->second.name, it->second.port, it->second.txt);
+
+  return true;
+}
