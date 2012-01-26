@@ -2149,9 +2149,6 @@ void CFileItemList::StackFiles()
   {
     CFileItemPtr item1 = Get(i);
 
-    // set property
-    item1->SetProperty("isstacked", true);
-
     // skip folders, nfo files, playlists
     if (item1->m_bIsFolder
       || item1->IsParentFolder()
