@@ -4717,10 +4717,11 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
       if (where.size())
         setsWhere = " where movie.idMovie in (select movieview.idMovie from movieview " + where + ")";
       GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, setsWhere);
+      CStdString movieSetsWhere = "movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)";
       if (where.size())
-        strSQL += where + PrepareSQL(" and movieview.idMovie NOT in (SELECT idMovie FROM setlinkmovie GROUP BY idSet HAVING COUNT(idMovie) > 1)");
+        strSQL += where + PrepareSQL(" and " + movieSetsWhere);
       else
-        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
+        strSQL += PrepareSQL(" WHERE " + movieSetsWhere);
     }
     else
       strSQL += where;
