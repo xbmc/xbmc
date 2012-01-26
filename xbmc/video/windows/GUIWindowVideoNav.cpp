@@ -469,11 +469,6 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
           pItem->m_bIsFolder = match->m_bIsFolder;
         }
       }
-      else
-      {
-        if (CFile::Exists(match->GetCachedFanart()))
-          pItem->SetProperty("fanart_image", match->GetCachedFanart());
-      }
     }
     else
     {
