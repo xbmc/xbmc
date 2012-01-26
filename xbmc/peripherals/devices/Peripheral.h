@@ -87,11 +87,6 @@ namespace PERIPHERALS
     virtual void OnSettingChanged(const CStdString &strChangedSetting) {};
 
     /*!
-     * @brief Called when one or more settings changed. Calls OnSettingChanged for every setting.
-     */
-    virtual void OnSettingsChanged(void);
-
-    /*!
      * @brief Get all subdevices if this device is multifunctional.
      * @param subDevices The subdevices.
      */
@@ -143,7 +138,7 @@ namespace PERIPHERALS
     virtual float GetSettingFloat(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, float fValue);
 
-    virtual void PersistSettings(void) const;
+    virtual void PersistSettings(bool bExiting = false);
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
 
@@ -168,5 +163,6 @@ namespace PERIPHERALS
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;
+    std::vector<CStdString>          m_changedSettings;
   };
 }
