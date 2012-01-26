@@ -142,6 +142,8 @@ namespace PERIPHERALS
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
 
+    virtual std::vector<CSetting *> GetSettings(void) const;
+
     virtual bool ErrorOccured(void) const { return m_bError; }
 
   protected:

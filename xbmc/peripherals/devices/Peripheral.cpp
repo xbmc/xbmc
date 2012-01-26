@@ -30,6 +30,14 @@
 using namespace PERIPHERALS;
 using namespace std;
 
+struct SortBySettingsOrder
+{
+  bool operator()(const CSetting *left, const CSetting *right)
+  {
+    return left->GetOrder() < right->GetOrder();
+  }
+};
+
 CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
   m_type(type),
   m_busType(busType),
@@ -168,6 +176,15 @@ bool CPeripheral::IsMultiFunctional(void) const
   return m_subDevices.size() > 0;
 }
 
+vector<CSetting *> CPeripheral::GetSettings(void) const
+{
+  vector<CSetting *> settings;
+  for (map<CStdString, CSetting *>::const_iterator it = m_settings.begin(); it != m_settings.end(); it++)
+    settings.push_back(it->second);
+  sort(settings.begin(), settings.end(), SortBySettingsOrder());
+  return settings;
+}
+
 void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
 {
   if (!setting)
@@ -183,7 +200,7 @@ void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
     case SETTINGS_TYPE_BOOL:
       {
         const CSettingBool *mappedSetting = (const CSettingBool *) setting;
-        CSettingBool *boolSetting = new CSettingBool(0, strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->GetControlType());
+        CSettingBool *boolSetting = new CSettingBool(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->GetControlType());
         if (boolSetting)
         {
           boolSetting->SetVisible(mappedSetting->IsVisible());
@@ -194,7 +211,7 @@ void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
     case SETTINGS_TYPE_INT:
       {
         const CSettingInt *mappedSetting = (const CSettingInt *) setting;
-        CSettingInt *intSetting = new CSettingInt(0, strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_iMin, mappedSetting->m_iStep, mappedSetting->m_iMax, mappedSetting->GetControlType(), mappedSetting->m_strFormat);
+        CSettingInt *intSetting = new CSettingInt(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_iMin, mappedSetting->m_iStep, mappedSetting->m_iMax, mappedSetting->GetControlType(), mappedSetting->m_strFormat);
         if (intSetting)
         {
           intSetting->SetVisible(mappedSetting->IsVisible());
@@ -205,7 +222,7 @@ void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
     case SETTINGS_TYPE_FLOAT:
       {
         const CSettingFloat *mappedSetting = (const CSettingFloat *) setting;
-        CSettingFloat *floatSetting = new CSettingFloat(0, strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_fMin, mappedSetting->m_fStep, mappedSetting->m_fMax, mappedSetting->GetControlType());
+        CSettingFloat *floatSetting = new CSettingFloat(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_fMin, mappedSetting->m_fStep, mappedSetting->m_fMax, mappedSetting->GetControlType());
         if (floatSetting)
         {
           floatSetting->SetVisible(mappedSetting->IsVisible());
@@ -216,7 +233,7 @@ void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
     case SETTINGS_TYPE_STRING:
       {
         const CSettingString *mappedSetting = (const CSettingString *) setting;
-        CSettingString *stringSetting = new CSettingString(0, strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData().c_str(), mappedSetting->GetControlType(), mappedSetting->m_bAllowEmpty, mappedSetting->m_iHeadingString);
+        CSettingString *stringSetting = new CSettingString(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData().c_str(), mappedSetting->GetControlType(), mappedSetting->m_bAllowEmpty, mappedSetting->m_iHeadingString);
         if (stringSetting)
         {
           stringSetting->SetVisible(mappedSetting->IsVisible());
