@@ -400,7 +400,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         items.SetContent("");
     }
-    else
+    else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
       if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
