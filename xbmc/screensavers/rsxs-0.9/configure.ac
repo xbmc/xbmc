@@ -36,6 +36,7 @@ AC_DEFUN([MAC_LIB_LTDL], [
 	# aclocal doesn't resolve those automatically, so we need to call
 	# LT_PATH_LD and LTSUGAR_VERSION to pull in libtool.m4 and ltsugar.m4
 	# where the required dependencies are m4_defun'd.
+	AC_REQUIRE([_LT_PROG_ECHO_BACKSLASH])dnl
 	AC_REQUIRE([LT_PATH_LD])dnl
 	AC_REQUIRE([LTSUGAR_VERSION])dnl
 	AC_REQUIRE([AC_PROG_CC])dnl

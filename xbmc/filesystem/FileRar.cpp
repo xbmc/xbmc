@@ -31,6 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "UnrarXLib/rar.hpp"
 
 #ifndef _LINUX
 #include <process.h>
@@ -42,27 +43,20 @@ using namespace std;
 #define SEEKTIMOUT 30000
 
 #ifdef HAS_FILESYSTEM_RAR
-CFileRarExtractThread::CFileRarExtractThread()
+CFileRarExtractThread::CFileRarExtractThread() : hRunning(true), hQuit(true)
 {
   m_pArc = NULL;
   m_pCmd = NULL;
   m_pExtract = NULL;
-  hRunning = CreateEvent(NULL,true,false,NULL);
-  hRestart = CreateEvent(NULL,false,false,NULL);
-  hQuit = CreateEvent(NULL,true,false,NULL);
   StopThread();
   Create();
 }
 
 CFileRarExtractThread::~CFileRarExtractThread()
 {
-  SetEvent(hQuit);
-  WaitForSingleObject(hRestart,INFINITE);
+  hQuit.Set();
+  AbortableWait(hRestart);
   StopThread();
-
-  CloseHandle(hRunning);
-  CloseHandle(hQuit);
-  CloseHandle(hRestart);
 }
 
 void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* pExtract, int iSize)
@@ -72,14 +66,14 @@ void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* 
   m_pExtract = pExtract;
   m_iSize = iSize;
 
-  m_pExtract->GetDataIO().hBufferFilled = CreateEvent(NULL,false,false,NULL);
-  m_pExtract->GetDataIO().hBufferEmpty = CreateEvent(NULL,false,false,NULL);
-  m_pExtract->GetDataIO().hSeek = CreateEvent(NULL,true,false,NULL);
-  m_pExtract->GetDataIO().hSeekDone = CreateEvent(NULL,false,false,NULL);
-  m_pExtract->GetDataIO().hQuit = CreateEvent(NULL,true,false,NULL);
+  m_pExtract->GetDataIO().hBufferFilled = new CEvent;
+  m_pExtract->GetDataIO().hBufferEmpty = new CEvent;
+  m_pExtract->GetDataIO().hSeek = new CEvent(true);
+  m_pExtract->GetDataIO().hSeekDone = new CEvent;
+  m_pExtract->GetDataIO().hQuit = new CEvent(true);
 
-  SetEvent(hRunning);
-  SetEvent(hRestart);
+  hRunning.Set();
+  hRestart.Set();
 }
 
 void CFileRarExtractThread::OnStartup()
@@ -92,16 +86,28 @@ void CFileRarExtractThread::OnExit()
 
 void CFileRarExtractThread::Process()
 {
-  while (WaitForSingleObject(hQuit,1) != WAIT_OBJECT_0)
+  while (AbortableWait(hQuit,1) != WAIT_SIGNALED)
   {
-    if (WaitForSingleObject(hRestart,1) == WAIT_OBJECT_0)
+    if (AbortableWait(hRestart,1) == WAIT_SIGNALED)
     {
       bool Repeat = false;
-      m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
-      ResetEvent(hRunning);
+      try
+      {
+        m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
+      }
+      catch (int rarErrCode)
+      {
+        CLog::Log(LOGERROR,"filerar CFileRarExtractThread::Process failed. CmdExtract::ExtractCurrentFile threw a UnrarXLib error code of %d",rarErrCode);
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR,"filerar CFileRarExtractThread::Process failed. CmdExtract::ExtractCurrentFile threw an Unknown exception");
+      }
+
+      hRunning.Reset();
     }
   }
-  SetEvent(hRestart);
+  hRestart.Set();
 }
 #endif
 
@@ -190,6 +196,9 @@ bool CFileRar::Open(const CURL& url)
     }
     else
     {
+      CFileInfo* info = g_RarManager.GetFileInRar(m_strRarPath,m_strPathInRar);
+      if ((!info || !CFile::Exists(info->m_strCachedPath)) && m_bFileOptions & EXFILE_NOCACHE)
+        return false;
       m_bUseFile = true;
       CStdString strPathInCache;
 
@@ -264,7 +273,7 @@ unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
   if (m_iFilePosition >= GetLength()) // we are done
     return 0;
 
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
+  if( !m_pExtract->GetDataIO().hBufferEmpty->WaitMSec(5000) )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return 0;
@@ -293,8 +302,8 @@ unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
       m_iBufferStart = m_iFilePosition;
     }
 
-    SetEvent(m_pExtract->GetDataIO().hBufferFilled);
-    WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,INFINITE);
+    m_pExtract->GetDataIO().hBufferFilled->Set();
+    m_pExtract->GetDataIO().hBufferEmpty->Wait();
 
     if (m_pExtract->GetDataIO().NextVolumeMissing)
       break;
@@ -324,7 +333,7 @@ unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
     }
   }
 
-  SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+  m_pExtract->GetDataIO().hBufferEmpty->Set();
 
   return static_cast<unsigned int>(uiBufSize-uicBufSize);
 #else
@@ -374,13 +383,13 @@ int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
   if (m_bUseFile)
     return m_File.Seek(iFilePosition,iWhence);
 
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
+  if( !m_pExtract->GetDataIO().hBufferEmpty->WaitMSec(SEEKTIMOUT) )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
   }
 
-  SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+  m_pExtract->GetDataIO().hBufferEmpty->Set();
 
   switch (iWhence)
   {
@@ -429,21 +438,21 @@ int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
     if (!OpenInArchive())
       return -1;
 
-    if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
+    if( !m_pExtract->GetDataIO().hBufferEmpty->WaitMSec(SEEKTIMOUT) )
     {
       CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
       return -1;
     }
-    SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
+    m_pExtract->GetDataIO().hBufferEmpty->Set();
     m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;
   }
   else
     m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;
 
   m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,MAXWINMEMSIZE);
-  SetEvent(m_pExtract->GetDataIO().hSeek);
-  SetEvent(m_pExtract->GetDataIO().hBufferFilled);
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hSeekDone,SEEKTIMOUT) == WAIT_TIMEOUT )
+  m_pExtract->GetDataIO().hSeek->Set();
+  m_pExtract->GetDataIO().hBufferFilled->Set();
+  if( !m_pExtract->GetDataIO().hSeekDone->WaitMSec(SEEKTIMOUT))
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for seek to finish", __FUNCTION__);
     return -1;
@@ -455,7 +464,7 @@ int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
     return -1;
   }
 
-  if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
+  if( !m_pExtract->GetDataIO().hBufferEmpty->WaitMSec(SEEKTIMOUT) )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
     return -1;
@@ -537,41 +546,51 @@ void CFileRar::InitFromUrl(const CURL& url)
 void CFileRar::CleanUp()
 {
 #ifdef HAS_FILESYSTEM_RAR
-  if (m_pExtractThread)
+  try
   {
-    if (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
+    if (m_pExtractThread)
     {
-      SetEvent(m_pExtract->GetDataIO().hQuit);
-      while (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
-        Sleep(1);
-
+      if (m_pExtractThread->hRunning.WaitMSec(1))
+      {
+        m_pExtract->GetDataIO().hQuit->Set();
+        while (m_pExtractThread->hRunning.WaitMSec(1))
+          Sleep(1);
+      }
+      delete m_pExtract->GetDataIO().hBufferFilled;
+      delete m_pExtract->GetDataIO().hBufferEmpty;
+      delete m_pExtract->GetDataIO().hSeek;
+      delete m_pExtract->GetDataIO().hSeekDone;
+      delete m_pExtract->GetDataIO().hQuit;
     }
-    CloseHandle(m_pExtract->GetDataIO().hBufferFilled);
-    CloseHandle(m_pExtract->GetDataIO().hBufferEmpty);
-    CloseHandle(m_pExtract->GetDataIO().hSeek);
-    CloseHandle(m_pExtract->GetDataIO().hSeekDone);
-    CloseHandle(m_pExtract->GetDataIO().hQuit);
+    if (m_pExtract)
+    {
+      delete m_pExtract;
+      m_pExtract = NULL;
+    }
+    if (m_pArc)
+    {
+      delete m_pArc;
+      m_pArc = NULL;
+    }
+    if (m_pCmd)
+    {
+      delete m_pCmd;
+      m_pCmd = NULL;
+    }
+    if (m_szBuffer)
+    {
+      delete[] m_szBuffer;
+      m_szBuffer = NULL;
+      m_szStartOfBuffer = NULL;
+    }
   }
-  if (m_pExtract)
+  catch (int rarErrCode)
   {
-    delete m_pExtract;
-    m_pExtract = NULL;
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while deleting CFileRar with an UnrarXLib error code of %d",rarErrCode);
   }
-  if (m_pArc)
+  catch (...)
   {
-    delete m_pArc;
-    m_pArc = NULL;
-  }
-  if (m_pCmd)
-  {
-    delete m_pCmd;
-    m_pCmd = NULL;
-  }
-  if (m_szBuffer)
-  {
-    delete[] m_szBuffer;
-    m_szBuffer = NULL;
-    m_szStartOfBuffer = NULL;
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while deleting CFileRar with an Unknown exception");
   }
 #endif
 }
@@ -579,112 +598,125 @@ void CFileRar::CleanUp()
 bool CFileRar::OpenInArchive()
 {
 #ifdef HAS_FILESYSTEM_RAR
-  int iHeaderSize;
-
-  InitCRC();
-
-  m_pCmd = new CommandData;
-  if (!m_pCmd)
+  try
   {
-    CleanUp();
-    return false;
-  }
+    int iHeaderSize;
 
-  // Set the arguments for the extract command
-  strcpy(m_pCmd->Command, "X");
+    InitCRC();
 
-  m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
-
-  strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof (m_pCmd->ExtrPath) - 2);
-  m_pCmd->ExtrPath[sizeof (m_pCmd->ExtrPath) - 2] = 0;
-  AddEndSlash(m_pCmd->ExtrPath);
-
-  // Set password for encrypted archives
-  if ((m_strPassword.size() > 0) &&
-      (m_strPassword.size() < sizeof (m_pCmd->Password)))
-  {
-    strcpy(m_pCmd->Password, m_strPassword.c_str());
-  }
-
-  m_pCmd->ParseDone();
-
-  // Open the archive
-  m_pArc = new Archive(m_pCmd);
-  if (!m_pArc)
-  {
-    CleanUp();
-    return false;
-  }
-  if (!m_pArc->WOpen(m_strRarPath.c_str(),NULL))
-  {
-    CleanUp();
-    return false;
-  }
-  if (!(m_pArc->IsOpened() && m_pArc->IsArchive(true)))
-  {
-    CleanUp();
-    return false;
-  }
-
-  m_pExtract = new CmdExtract;
-  if (!m_pExtract)
-  {
-    CleanUp();
-    return false;
-  }
-  m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
-  m_pExtract->GetDataIO().SetCurrentCommand(*(m_pCmd->Command));
-  struct FindData FD;
-  if (FindFile::FastFind(m_strRarPath.c_str(),NULL,&FD))
-    m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
-  m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
-
-  while (true)
-  {
-    if ((iHeaderSize = m_pArc->ReadHeader()) <= 0)
+    m_pCmd = new CommandData;
+    if (!m_pCmd)
     {
       CleanUp();
       return false;
     }
 
-    if (m_pArc->GetHeaderType() == FILE_HEAD)
+    // Set the arguments for the extract command
+    strcpy(m_pCmd->Command, "X");
+
+    m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
+
+    strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof (m_pCmd->ExtrPath) - 2);
+    m_pCmd->ExtrPath[sizeof (m_pCmd->ExtrPath) - 2] = 0;
+    AddEndSlash(m_pCmd->ExtrPath);
+
+    // Set password for encrypted archives
+    if ((m_strPassword.size() > 0) &&
+        (m_strPassword.size() < sizeof (m_pCmd->Password)))
     {
-      CStdString strFileName;
-
-      if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
-      {
-        g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
-      }
-      else
-      {
-        g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
-      }
-
-      /* replace back slashes into forward slashes */
-      /* this could get us into troubles, file could two different files, one with / and one with \ */
-      strFileName.Replace('\\', '/');
-
-      if (strFileName == m_strPathInRar)
-      {
-        break;
-      }
+      strcpy(m_pCmd->Password, m_strPassword.c_str());
     }
 
-    m_pArc->SeekToNext();
+    m_pCmd->ParseDone();
+
+    // Open the archive
+    m_pArc = new Archive(m_pCmd);
+    if (!m_pArc)
+    {
+      CleanUp();
+      return false;
+    }
+    if (!m_pArc->WOpen(m_strRarPath.c_str(),NULL))
+    {
+      CleanUp();
+      return false;
+    }
+    if (!(m_pArc->IsOpened() && m_pArc->IsArchive(true)))
+    {
+      CleanUp();
+      return false;
+    }
+
+    m_pExtract = new CmdExtract;
+    if (!m_pExtract)
+    {
+      CleanUp();
+      return false;
+    }
+    m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
+    m_pExtract->GetDataIO().SetCurrentCommand(*(m_pCmd->Command));
+    struct FindData FD;
+    if (FindFile::FastFind(m_strRarPath.c_str(),NULL,&FD))
+      m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
+    m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
+
+    while (true)
+    {
+      if ((iHeaderSize = m_pArc->ReadHeader()) <= 0)
+      {
+        CleanUp();
+        return false;
+      }
+
+      if (m_pArc->GetHeaderType() == FILE_HEAD)
+      {
+        CStdString strFileName;
+
+        if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
+        {
+          g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
+        }
+        else
+        {
+          g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
+        }
+
+        /* replace back slashes into forward slashes */
+        /* this could get us into troubles, file could two different files, one with / and one with \ */
+        strFileName.Replace('\\', '/');
+
+        if (strFileName == m_strPathInRar)
+        {
+          break;
+        }
+      }
+
+      m_pArc->SeekToNext();
+    }
+
+    m_szBuffer = new byte[MAXWINMEMSIZE];
+    m_szStartOfBuffer = m_szBuffer;
+    m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
+    m_iDataInBuffer = -1;
+    m_iFilePosition = 0;
+    m_iBufferStart = 0;
+
+    delete m_pExtractThread;
+    m_pExtractThread = new CFileRarExtractThread();
+    m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,iHeaderSize);
+
+    return true;
   }
-
-  m_szBuffer = new byte[MAXWINMEMSIZE];
-  m_szStartOfBuffer = m_szBuffer;
-  m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
-  m_iDataInBuffer = -1;
-  m_iFilePosition = 0;
-  m_iBufferStart = 0;
-
-  delete m_pExtractThread;
-  m_pExtractThread = new CFileRarExtractThread();
-  m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,iHeaderSize);
-
-  return true;
+  catch (int rarErrCode)
+  {
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while CFileRar::OpenInArchive with an UnrarXLib error code of %d",rarErrCode);
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while CFileRar::OpenInArchive with an Unknown exception");
+    return false;
+  }
 #else
   return false;
 #endif

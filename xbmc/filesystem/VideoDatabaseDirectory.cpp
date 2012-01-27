@@ -56,11 +56,12 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     CFileItemPtr item = items[i];
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
     {
-      CStdString strImage = GetIcon(item->m_strPath);
+      CStdString strImage = GetIcon(item->GetPath());
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
   }
+  items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }
@@ -113,11 +114,11 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
 
 void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
-  CFileItem directory(strDirectory, true);
-  URIUtils::RemoveSlashAtEnd(directory.m_strPath);
+  CStdString path(strDirectory);
+  URIUtils::RemoveSlashAtEnd(path);
 
   Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
+  crc.ComputeFromLowerCase(path);
 
   CStdString strFileName;
   strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
@@ -148,30 +149,21 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     return false;
 
   // get genre
-  CStdString strTemp;
   if (params.GetGenreId() != -1)
-  {
-    videodatabase.GetGenreById(params.GetGenreId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetGenreById(params.GetGenreId());
 
   // get country
   if (params.GetCountryId() != -1)
-  {
-    videodatabase.GetCountryById(params.GetCountryId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetCountryById(params.GetCountryId());
 
   // get set
   if (params.GetSetId() != -1)
-  {
-    videodatabase.GetSetById(params.GetSetId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetSetById(params.GetSetId());
 
   // get year
   if (params.GetYear() != -1)
   {
+    CStdString strTemp;
     strTemp.Format("%i",params.GetYear());
     if (!strLabel.IsEmpty())
       strLabel += " / ";
@@ -212,6 +204,10 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20389); break;
     case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Music Videos
       strLabel = g_localizeStrings.Get(20390); break;
+    case NODE_TYPE_SEASONS: // Seasons
+      strLabel = g_localizeStrings.Get(33054); break;
+    case NODE_TYPE_EPISODES: // Episodes
+      strLabel = g_localizeStrings.Get(20360); break;
     default:
       CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %d", __FUNCTION__, pNode->GetChildType());
       return false;
@@ -275,6 +271,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultStudios.png";
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
     return "DefaultMusicVideos.png";
+  case NODE_TYPE_MUSICVIDEOS_ALBUM: // Music Videos - Albums
+    return "DefaultMusicAlbums.png";
   default:
     CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
     break;

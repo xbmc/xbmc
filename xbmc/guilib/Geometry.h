@@ -27,7 +27,7 @@
 #else
 #define XBMC_FORCE_INLINE
 #endif
-
+#include <algorithm>
 
 class CPoint
 {
@@ -111,12 +111,26 @@ public:
 
   const CRect &Intersect(const CRect &rect)
   {
-    if (rect.x2 < x2) x2 = rect.x2;
-    if (rect.y2 < y2) y2 = rect.y2;
-    if (rect.x1 > x1) x1 = rect.x1;
-    if (rect.y1 > y1) y1 = rect.y1;
-    if (x1 > x2) x1 = x2;
-    if (y1 > y2) y1 = y2;
+    x1 = clamp_range(x1, rect.x1, rect.x2);
+    x2 = clamp_range(x2, rect.x1, rect.x2);
+    y1 = clamp_range(y1, rect.y1, rect.y2);
+    y2 = clamp_range(y2, rect.y1, rect.y2);
+    return *this;
+  };
+
+  const CRect &Union(const CRect &rect)
+  {
+    if (IsEmpty())
+      *this = rect;
+    else if (!rect.IsEmpty())
+    {
+      x1 = std::min(x1,rect.x1);
+      y1 = std::min(y1,rect.y1);
+
+      x2 = std::max(x2,rect.x2);
+      y2 = std::max(y2,rect.y2);
+    }
+
     return *this;
   };
 
@@ -135,6 +149,11 @@ public:
     return y2 - y1;
   };
 
+  inline float Area() const XBMC_FORCE_INLINE
+  {
+    return Width() * Height();
+  };
+
   bool operator !=(const CRect &rect) const
   {
     if (x1 != rect.x1) return true;
@@ -145,5 +164,10 @@ public:
   };
 
   float x1, y1, x2, y2;
+private:
+  inline static float clamp_range(float x, float l, float h) XBMC_FORCE_INLINE
+  {
+    return (x > h) ? h : ((x < l) ? l : x);
+  }
 };
 

@@ -31,7 +31,7 @@ CDirectoryNodeSingles::CDirectoryNodeSingles(const CStdString& strName, CDirecto
 
 }
 
-bool CDirectoryNodeSingles::GetContent(CFileItemList& items)
+bool CDirectoryNodeSingles::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

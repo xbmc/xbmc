@@ -37,24 +37,9 @@
 
 #include <vector>
 
-using namespace XFILE;
 using namespace std;
+using namespace XFILE;
 using namespace ADDON;
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CNfoFile::CNfoFile()
-{
-  m_doc = NULL;
-  m_headofdoc = NULL;
-}
-
-CNfoFile::~CNfoFile()
-{
-  Close();
-}
 
 CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode, const CStdString& strPath2)
 {
@@ -68,9 +53,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get().GetDefault(m_type, addon))
-    return NO_NFO;
-  else
+  if (CAddonMgr::Get().GetDefault(m_type, addon))
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
   if (m_type == ADDON_SCRAPER_ALBUMS)
@@ -93,7 +76,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       int infos=0;
       while (m_headofdoc && details.m_iEpisode != episode)
       {
-        m_headofdoc = strstr(m_headofdoc+1,"<episodedetails>");
+        m_headofdoc = strstr(m_headofdoc+1,"<episodedetails");
         bNfo  = GetDetails(details);
         infos++;
       }
@@ -121,7 +104,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     AddScrapers(addons,vecScrapers);
 
   // add default scraper
-  if ((m_info && m_info->ID() != defaultScraper->ID()) || !m_info)
+  if (defaultScraper && m_info && m_info->ID() != defaultScraper->ID())
     vecScrapers.push_back(defaultScraper);
 
   // search ..
@@ -133,90 +116,31 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   if (res == 2)
     return ERROR_NFO;
   if (bNfo)
-    return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
-
-  return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
+    return m_scurl.m_url.empty() ? FULL_NFO : COMBINED_NFO;
+  return m_scurl.m_url.empty() ? NO_NFO : URL_NFO;
 }
 
-bool CNfoFile::DoScrape(ScraperPtr& scraper)
-{
-  vector<CStdString> extras;
-  extras.push_back(m_doc);
-  
-  CScraperUrl url;
-  CFileCurl http;
-  vector<CStdString> xml;
-  if (scraper->GetParser().HasFunction("NfoUrl"))
-    xml = scraper->Run("NfoUrl",url,http,&extras);
-
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    TiXmlDocument doc;
-    doc.Parse(it->c_str());
-
-    if (doc.RootElement())
-    {
-      if (stricmp(doc.RootElement()->Value(),"error")==0)
-      {
-        CVideoInfoDownloader::ShowErrorDialog(doc.RootElement());
-        return false;
-      }
-
-      TiXmlElement* pId = doc.FirstChildElement("id");
-      if (pId && pId->FirstChild())
-        m_strImDbNr = pId->FirstChild()->Value();
-
-      TiXmlElement* url = doc.FirstChildElement("url");
-      if (url)
-      {
-        stringstream str;
-        str << *url;
-        m_strImDbUrl = str.str();
-        SetScraperInfo(scraper);
-      }
-      else if (strcmp(doc.RootElement()->Value(),"url")==0)
-      {
-        SetScraperInfo(scraper);
-        m_strImDbUrl = *it;
-      }
-    }
-  }
-  return true;
-}
-
-int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
+// return value: 0 - success; 1 - no result; skip; 2 - error
+int CNfoFile::Scrape(ScraperPtr& scraper)
 {
   if (scraper->Type() != m_type)
-  {
     return 1;
-  }
-  if (!scraper->Load())
-    return 0;
-
-  // init and clear cache
   scraper->ClearCache();
 
-  vector<CStdString> extras;
-  CScraperUrl url;
-  CFileCurl http;
-  if (strURL.IsEmpty())
+  try
   {
-    if (!DoScrape(scraper))
+    m_scurl = scraper->NfoUrl(m_doc);
+  }
+  catch (const CScraperError &sce)
+  {
+    CVideoInfoDownloader::ShowErrorDialog(sce);
+    if (!sce.FAborted())
       return 2;
-    if (m_strImDbUrl.size() > 0)
-      return 0;
-    else
-      return 1;
   }
-  else // we check to identify the episodeguide url
-  {
-    extras.push_back(strURL);
-    vector<CStdString> result = scraper->Run("EpisodeGuideUrl",url,http,&extras);
-    if (result.empty() || result[0].IsEmpty())
-      return 1;
-    return 0;
-  }
+
+  if (!m_scurl.m_url.empty())
+    SetScraperInfo(scraper);
+  return m_scurl.m_url.empty() ? 1 : 0;
 }
 
 int CNfoFile::Load(const CStdString& strFile)
@@ -225,10 +149,10 @@ int CNfoFile::Load(const CStdString& strFile)
   XFILE::CFile file;
   if (file.Open(strFile))
   {
-    m_size = (int)file.GetLength();
+    int size = (int)file.GetLength();
     try
     {
-      m_doc = new char[m_size+1];
+      m_doc = new char[size+1];
       m_headofdoc = m_doc;
     }
     catch (...)
@@ -241,8 +165,8 @@ int CNfoFile::Load(const CStdString& strFile)
       file.Close();
       return 1;
     }
-    file.Read(m_doc, m_size);
-    m_doc[m_size] = 0;
+    file.Read(m_doc, size);
+    m_doc[size] = 0;
     file.Close();
     return 0;
   }
@@ -251,15 +175,9 @@ int CNfoFile::Load(const CStdString& strFile)
 
 void CNfoFile::Close()
 {
-  if (m_doc != NULL)
-  {
-    delete m_doc;
-    m_doc = 0;
-  }
-
-  m_strImDbUrl = "";
-  m_strImDbNr = "";
-  m_size = 0;
+  delete m_doc;
+  m_doc = NULL;
+  m_scurl.Clear();
 }
 
 void CNfoFile::AddScrapers(VECADDONS& addons,

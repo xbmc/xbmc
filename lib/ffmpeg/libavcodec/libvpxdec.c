@@ -27,6 +27,7 @@
 #include <vpx/vpx_decoder.h>
 #include <vpx/vp8dx.h>
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 
 typedef struct VP8DecoderContext {
@@ -86,7 +87,7 @@ static int vp8_decode(AVCodecContext *avctx,
         if ((int) img->d_w != avctx->width || (int) img->d_h != avctx->height) {
             av_log(avctx, AV_LOG_INFO, "dimension change! %dx%d -> %dx%d\n",
                    avctx->width, avctx->height, img->d_w, img->d_h);
-            if (avcodec_check_dimensions(avctx, img->d_w, img->d_h))
+            if (av_image_check_size(img->d_w, img->d_h, 0, avctx))
                 return AVERROR_INVALIDDATA;
             avcodec_set_dimensions(avctx, img->d_w, img->d_h);
         }
@@ -110,7 +111,7 @@ static av_cold int vp8_free(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec libvpx_decoder = {
+AVCodec ff_libvpx_decoder = {
     "libvpx",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_VP8,

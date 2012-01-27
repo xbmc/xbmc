@@ -15,12 +15,12 @@
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>10</posx>
-			<posy>10</posy>
-			<width>300</width>
-			<height>70</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>240</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
 		</control>
 		<control type="image">
 			<posx>30</posx>
@@ -48,33 +48,24 @@
 			<width>240</width>
 			<height>30</height>
 			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="1">
 			<description>dialog Heading</description>
 			<posx>20</posx>
 			<posy>20</posy>
 			<width>280</width>
-			<height>40</height>
-			<font>font13_title</font>
-			<textcolor>white</textcolor>
+			<height>35</height>
+			<font>font12_title</font>
+			<textcolor>selected</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<align>center</align>
 			<aligny>center</aligny>
 			<wrapmultiline>true</wrapmultiline>
 		</control>
-		<control type="image">
-			<posx>40</posx>
-			<posy>380</posy>
-			<width>240</width>
-			<height>40</height>
-			<aspectratio>stretch</aspectratio>
-			<colordiffuse>AAFFFFFF</colordiffuse>
-			<texture flipy="true">GlassTitleBar.png</texture>
-		</control>
 		<control type="group">
 			<posx>40</posx>
-			<posy>150</posy>
+			<posy>155</posy>
 			<control type="button" id="11">
 				<description>1 button</description>
 				<posx>0</posx>

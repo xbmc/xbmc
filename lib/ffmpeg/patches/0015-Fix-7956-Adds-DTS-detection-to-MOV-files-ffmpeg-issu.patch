@@ -1,0 +1,24 @@
+From ead553179b4b145c4fd10af1bc9f827877bc559f Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 22:33:07 -0400
+Subject: [PATCH 15/36] Fix #7956 - Adds DTS detection to MOV files (ffmpeg issue 1726)
+
+---
+ libavformat/isom.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/libavformat/isom.c b/libavformat/isom.c
+index 23ef82a..013cca7 100644
+--- a/libavformat/isom.c
++++ b/libavformat/isom.c
+@@ -230,6 +230,7 @@ const AVCodecTag codec_movaudio_tags[] = {
+     { CODEC_ID_AAC, MKTAG('m', 'p', '4', 'a') }, /* MPEG-4 AAC */
+     { CODEC_ID_AC3, MKTAG('a', 'c', '-', '3') }, /* ETSI TS 102 366 Annex F */
+     { CODEC_ID_AC3, MKTAG('s', 'a', 'c', '3') }, /* Nero Recode */
++    { CODEC_ID_DTS, MKTAG('D', 'T', 'S', ' ') }, /* DTS */
+ 
+     { CODEC_ID_AMR_NB, MKTAG('s', 'a', 'm', 'r') }, /* AMR-NB 3gp */
+     { CODEC_ID_AMR_WB, MKTAG('s', 'a', 'w', 'b') }, /* AMR-WB 3gp */
+-- 
+1.7.3
+

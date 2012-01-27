@@ -283,7 +283,8 @@ ref_realloc(void *p, size_t len)
 	refmem_dbg(REF_DBG_DEBUG, "%s(%d, ret = %p, ref = %p) {\n",
 		   __FUNCTION__, len, ret, ref);
 #ifdef DEBUG
-	assert(ref->magic == ALLOC_MAGIC);
+  if(p)
+	  assert(ref->magic == ALLOC_MAGIC);
 #endif /* DEBUG */
 	if (p && ret) {
 		memcpy(ret, p, ref->length);

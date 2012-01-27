@@ -1,0 +1,436 @@
+<includes>
+	<include name="Weather+MapsVideo">
+		<control type="group">
+			<visible>StringCompare(Window.Property(Weather.CurrentView),maps)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="label">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<width>610</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>31906</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="group">
+				<posx>20</posx>
+				<posy>50</posy>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="label">
+				<posx>45</posx>
+				<posy>50</posy>
+				<width>560</width>
+				<height>20</height>
+				<font>font12_title</font>
+				<textcolor>grey</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(Weather.CurrentMap)]</label>
+			</control>
+			<control type="image">
+				<description>Background image</description>
+				<posx>40</posx>
+				<posy>75</posy>
+				<width>570</width>
+				<height>365</height>
+				<texture border="5">button-nofocus.png</texture>
+			</control>
+			<control type="group">
+				<visible>StringCompare(Window.Property(MapPath),weather.com plus/loading)</visible>
+				<control type="multiimage">
+					<description>Empty Maps image</description>
+					<posx>45</posx>
+					<posy>80</posy>
+					<width>560</width>
+					<height>350</height>
+					<imagepath fallback="special://skin/backgrounds/weather.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</imagepath>
+					<timeperimage>500</timeperimage>
+					<pauseatend>1000</pauseatend>
+					<fadetime>0</fadetime>
+					<randomize>false</randomize>
+					<loop>yes</loop>
+					<aspectratio>scale</aspectratio>
+					<aligny>center</aligny>
+				</control>
+				<control type="label">
+					<posx>45</posx>
+					<posy>200</posy>
+					<width>560</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>[B]$LOCALIZE[31909][/B]</label>
+				</control>
+			</control>
+			<control type="multiimage">
+				<description>maps multiimage</description>
+				<posx>45</posx>
+				<posy>80</posy>
+				<width>560</width>
+				<height>350</height>
+				<imagepath>$INFO[Window.Property(MapPath)]</imagepath>
+				<timeperimage>500</timeperimage>
+				<pauseatend>1000</pauseatend>
+				<fadetime>0</fadetime>
+				<randomize>false</randomize>
+				<loop>yes</loop>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<description>legend image</description>
+				<posx>45</posx>
+				<posy>80</posy>
+				<width>560</width>
+				<height>50</height>
+				<texture>$INFO[Window.Property(LegendPath)]</texture>
+				<aspectratio aligny="top">keep</aspectratio>
+			</control>
+			<control type="list" id="53">
+				<posx>30</posx>
+				<posy>445</posy>
+				<width>585</width>
+				<height>160</height>
+				<onleft>9000</onleft>
+				<onright>63</onright>
+				<onup>53</onup>
+				<ondown>53</ondown>
+				<viewtype label="$LOCALIZE[4]">list</viewtype>
+				<pagecontrol>63</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="40" width="585">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>585</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>30</width>
+						<height>30</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>40</posx>
+						<posy>0</posy>
+						<width>540</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40" width="585">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>585</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(53)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>585</width>
+						<height>41</height>
+						<texture border="0,2,0,2">MenuItemFO.png</texture>
+						<visible>Control.HasFocus(53)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>30</width>
+						<height>30</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>40</posx>
+						<posy>0</posy>
+						<width>540</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>$INFO[Window.Property(Video.1.title)]</label>
+						<icon>icon-video.png</icon>
+						<onclick>PlayMedia($INFO[Window.Property(Video.1)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.1))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Video.2.title)]</label>
+						<icon>icon-video.png</icon>
+						<onclick>PlayMedia($INFO[Window.Property(Video.2)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.2))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Video.3.title)]</label>
+						<icon>icon-video.png</icon>
+						<onclick>PlayMedia($INFO[Window.Property(Video.3)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.3))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.1)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.1)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.1)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.1))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.2)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.2)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.2)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.2))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.3)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.3)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.3)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.3))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.4)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.4)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.4)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.4))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.5)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.5)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.5)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.5))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.6)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.6)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.6)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.6))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.7)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.7)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.7)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.7))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.8)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.8)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.8)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.8))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.9)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.9)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.9)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.9))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.10)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.10)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.10)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.10))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.11)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.11)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.11)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.11))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.12)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.12)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.12)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.12))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.13)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.13)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.13)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.13))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.14)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.14)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.14)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.14))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.15)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.15)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.15)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.15))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.16)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.16)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.16)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.16))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.17)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.17)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.17)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.17))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.18)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.18)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.18)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.18))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.19)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.19)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.19)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.19))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.20)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.20)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.20)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.20))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.21)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.21)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.21)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.21))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.22)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.22)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.22)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.22))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.23)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.23)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.23)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.23))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.24)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.24)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.24)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.24))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.25)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.25)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.25)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.25))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.26)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.26)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.26)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.26))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.27)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.27)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.27)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.27))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.28)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.28)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.28)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.28))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.29)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.29)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.29)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.29))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(MapList.1.MapLabel.30)]</label>
+						<icon>icon-weather.png</icon>
+						<onclick>SetProperty(Weather.CurrentMap,$INFO[Window.Property(MapList.1.MapLabel.30)])</onclick>
+						<onclick>$INFO[Window.Property(MapList.1.MapOnclick.30)]</onclick>
+						<visible>!IsEmpty(Window.Property(MapList.1.MapLabel.30))</visible>
+					</item>
+				</content>
+			</control>
+			<control type="scrollbar" id="63">
+				<posx>610</posx>
+				<posy>445</posy>
+				<width>25</width>
+				<height>160</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>53</onleft>
+				<onright>9000</onright>
+				<showonepage>true</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(50)</visible>
+			</control>
+			<control type="label">
+				<description>number of files/pages</description>
+				<posx>660</posx>
+				<posy>627</posy>
+				<width>570</width>
+				<font>font12</font>
+				<align>right</align>
+				<scroll>true</scroll>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>([COLOR=blue]$INFO[Container(53).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(53).CurrentPage]/$INFO[Container(53).NumPages][/COLOR])</label>
+			</control>
+		</control>
+	</include>
+</includes>

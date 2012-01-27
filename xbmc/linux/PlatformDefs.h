@@ -24,6 +24,8 @@
 
 #ifdef _LINUX
 
+#define LINE_ENDING "\n"
+
 #ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
 #endif
@@ -48,12 +50,12 @@
 #include <time.h>
 #endif
 
+// do not move this, it will break osx build bad"
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
-#include <SDL/SDL_mutex.h>
-#include <SDL/SDL_endian.h>
+#endif
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
 #define PIXEL_GSHIFT 16
@@ -62,7 +64,6 @@
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
-
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
@@ -72,7 +73,6 @@
 #define RMASK 0x00ff0000
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
-#endif
 #endif
 
 #include <stdint.h>
@@ -189,15 +189,6 @@ typedef CXHandle* HANDLE;
 
 typedef void* HINSTANCE;
 typedef void* HMODULE;
-
-#ifdef __APPLE__
-#include <AvailabilityMacros.h>
-typedef int64_t   off64_t;
-typedef off_t     __off_t;
-typedef off64_t   __off64_t;
-typedef fpos_t fpos64_t;
-#include <sched.h>
-#endif
 
 typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
@@ -342,10 +333,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 
 typedef int SOCKET;
 
-class CCriticalSection;
-#define CRITICAL_SECTION     XCriticalSection
-#define LPCRITICAL_SECTION   XCriticalSection*
-
 // Thread
 typedef int (*LPTHREAD_START_ROUTINE)(void *);
 
@@ -357,11 +344,26 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+#if defined(__APPLE__)
+#include <sched.h>
+#include <AvailabilityMacros.h>
+typedef int64_t   off64_t;
+typedef off_t     __off_t;
+typedef off64_t   __off64_t;
+typedef fpos_t fpos64_t;
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs
 #define fstat64 fstat
+#elif defined(__arm__) 
+#define __stat64 stat
+#define stat64 stat
+#define statfs64 statfs
+#define fstat64 fstat
+#else
+#define fstat64 fstat
+#endif
 #else
 #define __stat64 stat64
 #endif
@@ -421,26 +423,32 @@ typedef struct _SECURITY_ATTRIBUTES {
 #define _stat stat
 
 // Memory
-typedef struct _MEMORYSTATUS
+typedef struct _MEMORYSTATUSEX
 {
   DWORD dwLength;
   DWORD dwMemoryLoad;
 
-  uint64_t dwTotalPhys;
-  uint64_t dwAvailPhys;
-  uint64_t dwTotalPageFile;
-  uint64_t dwAvailPageFile;
-  uint64_t dwTotalVirtual;
-  uint64_t dwAvailVirtual;
-} MEMORYSTATUS, *LPMEMORYSTATUS;
+  uint64_t ullTotalPhys;
+  uint64_t ullAvailPhys;
+  uint64_t ullTotalPageFile;
+  uint64_t ullAvailPageFile;
+  uint64_t ullTotalVirtual;
+  uint64_t ullAvailVirtual;
+} MEMORYSTATUSEX, *LPMEMORYSTATUSEX;
 
 // Common HRESULT values
 #ifndef NOERROR
 #define NOERROR           (0L)
 #endif
+#ifndef S_OK
 #define S_OK            (0L)
+#endif
+#ifndef E_FAIL
 #define E_FAIL            (0x80004005L)
+#endif
+#ifndef E_OUTOFMEMORY
 #define E_OUTOFMEMORY         (0x8007000EL)
+#endif
 #define FAILED(Status)            ((HRESULT)(Status)<0)
 
 // Basic D3D stuff

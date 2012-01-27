@@ -1,0 +1,71 @@
+From bfe8e8f0cd2f2f808c211d831c29f5d06239b1c8 Mon Sep 17 00:00:00 2001
+From: Volker Lendecke <vl@samba.org>
+Date: Mon, 22 Aug 2011 14:16:26 +0200
+Subject: [PATCH] s3: Fix bug 8385
+
+Poll and select behave differently regarding error handling. When doing the
+connect(2), we can not rely on poll telling us both readability and writability
+upon error. Just always try a second connect(2). At least on Linux it returns 0
+when it succeeded.
+---
+ lib/async_req/async_sock.c |   40 ++++++++++++++--------------------------
+ 1 files changed, 14 insertions(+), 26 deletions(-)
+
+diff --git a/lib/async_req/async_sock.c b/lib/async_req/async_sock.c
+index 43de837..f6fcf3b 100644
+--- a/lib/async_req/async_sock.c
++++ b/lib/async_req/async_sock.c
+@@ -325,36 +325,24 @@ static void async_connect_connected(struct tevent_context *ev,
+ 		priv, struct tevent_req);
+ 	struct async_connect_state *state =
+ 		tevent_req_data(req, struct async_connect_state);
++	int ret;
+ 
+-	/*
+-	 * Stevens, Network Programming says that if there's a
+-	 * successful connect, the socket is only writable. Upon an
+-	 * error, it's both readable and writable.
+-	 */
+-	if ((flags & (TEVENT_FD_READ|TEVENT_FD_WRITE))
+-	    == (TEVENT_FD_READ|TEVENT_FD_WRITE)) {
+-		int ret;
+-
+-		ret = connect(state->fd,
+-			      (struct sockaddr *)(void *)&state->address,
+-			      state->address_len);
+-		if (ret == 0) {
+-			TALLOC_FREE(fde);
+-			tevent_req_done(req);
+-			return;
+-		}
+-
+-		if (errno == EINPROGRESS) {
+-			/* Try again later, leave the fde around */
+-			return;
+-		}
++	ret = connect(state->fd, (struct sockaddr *)(void *)&state->address,
++		      state->address_len);
++	if (ret == 0) {
++		state->sys_errno = 0;
+ 		TALLOC_FREE(fde);
+-		tevent_req_error(req, errno);
++		tevent_req_done(req);
+ 		return;
+ 	}
+-
+-	state->sys_errno = 0;
+-	tevent_req_done(req);
++	if (errno == EINPROGRESS) {
++		/* Try again later, leave the fde around */
++		return;
++	}
++	state->sys_errno = errno;
++	TALLOC_FREE(fde);
++	tevent_req_error(req, errno);
++	return;
+ }
+ 
+ int async_connect_recv(struct tevent_req *req, int *perrno)
+-- 
+1.7.1
+

@@ -20,7 +20,7 @@
  */
 
 #include "PictureInfoTag.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "Util.h"
 #include "utils/Variant.h"
 

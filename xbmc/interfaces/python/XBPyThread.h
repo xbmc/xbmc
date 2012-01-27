@@ -22,23 +22,8 @@
 #ifndef XBPYTHREAD_H_
 #define XBPYTHREAD_H_
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
 #include "threads/Thread.h"
+#include "addons/IAddon.h"
 
 class XBPython;
 
@@ -53,9 +38,11 @@ public:
   bool isStopping();
   void stop();
 
+  void setAddon(ADDON::AddonPtr _addon) { addon = _addon; }
+
 protected:
-  XBPython      *m_pExecuter;
-  PyThreadState *m_threadState;
+  XBPython *m_pExecuter;
+  void *m_threadState;
 
   char m_type;
   char *m_source;
@@ -63,8 +50,10 @@ protected:
   unsigned int  m_argc;
   bool m_stopping;
   int  m_id;
+  ADDON::AddonPtr addon;
 
-  virtual void OnStartup();
+  void setSource(const CStdString &src);
+
   virtual void Process();
   virtual void OnExit();
   virtual void OnException();

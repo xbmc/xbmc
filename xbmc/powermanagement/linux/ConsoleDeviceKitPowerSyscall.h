@@ -39,6 +39,7 @@ public:
   virtual bool CanSuspend();
   virtual bool CanHibernate();
   virtual bool CanReboot();
+  virtual int  BatteryLevel();
 
   static bool HasDeviceConsoleKit();
 private:

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 
 #ifdef HAS_CDDA_RIPPER
@@ -94,6 +95,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
   m_pEncoder->SetGenre(infoTag.GetGenre().c_str());
   m_pEncoder->SetTrack(strTrack.c_str());
+  m_pEncoder->SetTrackLength(m_cdReader.GetTrackLength());
   m_pEncoder->SetYear(infoTag.GetYearString().c_str());
 
   // init encoder
@@ -254,7 +256,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
   // don't rip non cdda items
   CStdString strExt;
-  URIUtils::GetExtension(pItem->m_strPath, strExt);
+  URIUtils::GetExtension(pItem->GetPath(), strExt);
   if (strExt.CompareNoCase(".cdda") != 0) 
   {
     CLog::Log(LOGDEBUG, "cddaripper: file is not a cdda track");
@@ -269,7 +271,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 
   CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(pItem), legalType));
 
-  return Rip(pItem->m_strPath, strFile.c_str(), *pItem->GetMusicInfoTag());
+  return Rip(pItem->GetPath(), strFile.c_str(), *pItem->GetMusicInfoTag());
 }
 
 bool CCDDARipper::RipCD()
@@ -292,10 +294,10 @@ bool CCDDARipper::RipCD()
   {
     CFileItemPtr pItem = vecItems[i];
     CMusicInfoTagLoaderFactory factory;
-    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(pItem->GetPath()));
     if (NULL != pLoader.get())
     {
-      pLoader->Load(pItem->m_strPath, *pItem->GetMusicInfoTag()); // get tag from file
+      pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag()); // get tag from file
       if (!pItem->GetMusicInfoTag()->Loaded())
         break;  //  No CDDB info available
     }
@@ -315,17 +317,17 @@ bool CCDDARipper::RipCD()
     // construct filename
     CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
-    unsigned int tick = CTimeUtils::GetTimeMS();
+    unsigned int tick = XbmcThreads::SystemClockMillis();
 
     // don't rip non cdda items
-    if (item->m_strPath.Find(".cdda") < 0)
+    if (item->GetPath().Find(".cdda") < 0)
       continue;
 
     // return false if Rip returned false (this means an error or the user cancelled
-    if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag()))
+    if (!Rip(item->GetPath(), strFile.c_str(), *item->GetMusicInfoTag()))
       return false;
 
-    tick = CTimeUtils::GetTimeMS() - tick;
+    tick = XbmcThreads::SystemClockMillis() - tick;
     CLog::Log(LOGINFO, "Ripping Track %d took %s", i, StringUtils::SecondsToTimeString(tick / 1000).c_str());
   }
 
@@ -373,7 +375,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, CStdS
     URIUtils::AddSlashAtEnd(strDirectory);
   }
 
-  CUtil::MakeLegalPath(strDirectory, legalType);
+  strDirectory = CUtil::MakeLegalPath(strDirectory, legalType);
 
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))
@@ -451,7 +453,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
 CStdString CCDDARipper::GetTrackName(CFileItem *item)
 {
   // get track number from "cdda://local/01.cdda"
-  int trackNumber = atoi(item->m_strPath.substr(13, item->m_strPath.size() - 13 - 5).c_str());
+  int trackNumber = atoi(item->GetPath().substr(13, item->GetPath().size() - 13 - 5).c_str());
 
   // Format up our ripped file label
   CFileItem destItem(*item);

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES needed for the WASAPI stuff below
 
 #include <mmdeviceapi.h>
@@ -31,10 +32,10 @@
 #include "guilib/AudioContext.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 #pragma comment(lib, "Avrt.lib")
 
@@ -86,7 +87,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
 
@@ -112,7 +113,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     if(!channelMap)
       channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
         ++layoutChannels;
@@ -139,10 +140,11 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_bMuting = false;
   m_uiChannels = iChannels;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bAudioPassthrough;
+  m_bPassthrough = (bAudioPassthrough != ENCODED_NONE);
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
+  m_drc = 0;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -151,7 +153,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = layoutChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough == true) 
+  if (bAudioPassthrough) 
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
@@ -276,7 +278,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_bIsAllocated = true;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   
   return m_bIsAllocated;
 
@@ -309,9 +311,9 @@ bool CWin32WASAPI::Deinitialize()
 
     m_pAudioClient->Stop();
 
-    SAFE_RELEASE(m_pRenderClient)
-    SAFE_RELEASE(m_pAudioClient)
-    SAFE_RELEASE(m_pDevice)
+    SAFE_RELEASE(m_pRenderClient);
+    SAFE_RELEASE(m_pAudioClient);
+    SAFE_RELEASE(m_pDevice);
 
     m_CacheLen = 0;
     m_uiChunkSize = 0;
@@ -464,7 +466,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
 void CWin32WASAPI::UpdateCacheStatus()
 {
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
@@ -602,7 +604,7 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.");
-      SAFE_RELEASE(pDevice)
+      SAFE_RELEASE(pDevice);
 
       goto failed;
     }
@@ -611,8 +613,8 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint device name failed.");
-      SAFE_RELEASE(pDevice)
-      SAFE_RELEASE(pProperty)
+      SAFE_RELEASE(pDevice);
+      SAFE_RELEASE(pProperty);
 
       goto failed;
     }
@@ -624,10 +626,10 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     CLog::Log(LOGDEBUG, __FUNCTION__": found endpoint device: %s", strDevName.c_str());
     vAudioSinks.push_back(AudioSink(CStdString("WASAPI: ").append(strDevName), CStdString("wasapi:").append(strDevName)));
 
-    SAFE_RELEASE(pDevice)
+    SAFE_RELEASE(pDevice);
 
     PropVariantClear(&varName);
-    SAFE_RELEASE(pProperty)
+    SAFE_RELEASE(pProperty);
   }
 
 failed:
@@ -669,7 +671,7 @@ void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsig
 {
   // Remap the data to the correct channels
   if(m_remap.CanRemap() && !m_bPassthrough)
-    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame);
+    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame, m_drc);
   else
     memcpy(pOut, pData, len);
 }

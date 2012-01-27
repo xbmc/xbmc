@@ -23,7 +23,7 @@
 #define AVCODEC_RA144_H
 
 #include <stdint.h>
-#include "dsputil.h"
+#include "lpc.h"
 
 #define NBLOCKS         4       ///< number of subblocks within a block
 #define BLOCKSIZE       40      ///< subblock size in 16-bit words
@@ -34,7 +34,7 @@
 
 typedef struct {
     AVCodecContext *avctx;
-    DSPContext dsp;
+    LPCContext lpc_ctx;
 
     unsigned int     old_energy;        ///< previous frame energy
 
@@ -56,8 +56,6 @@ typedef struct {
     uint16_t adapt_cb[146+2];
 } RA144Context;
 
-void ff_add_wav(int16_t *dest, int n, int skip_first, int *m, const int16_t *s1,
-                const int8_t *s2, const int8_t *s3);
 void ff_copy_and_dup(int16_t *target, const int16_t *source, int offset);
 int ff_eval_refl(int *refl, const int16_t *coefs, AVCodecContext *avctx);
 void ff_eval_coefs(int *coefs, const int *refl);

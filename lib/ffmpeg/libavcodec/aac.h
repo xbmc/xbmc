@@ -35,6 +35,7 @@
 #include "fft.h"
 #include "mpeg4audio.h"
 #include "sbr.h"
+#include "fmtconvert.h"
 
 #include <stdint.h>
 
@@ -251,7 +252,6 @@ typedef struct {
                                                    */
     ChannelElement          *che[4][MAX_ELEM_ID];
     ChannelElement  *tag_che_map[4][MAX_ELEM_ID];
-    uint8_t tags_seen_this_frame[4][MAX_ELEM_ID];
     int tags_mapped;
     /** @} */
 
@@ -269,6 +269,7 @@ typedef struct {
     FFTContext mdct;
     FFTContext mdct_small;
     DSPContext dsp;
+    FmtConvertContext fmt_conv;
     int random_state;
     /** @} */
 
@@ -277,7 +278,6 @@ typedef struct {
      * @{
      */
     float *output_data[MAX_CHANNELS];                 ///< Points to each element's 'ret' buffer (PCM output).
-    float add_bias;                                   ///< offset for dsp.float_to_int16
     float sf_scale;                                   ///< Pre-scale for correct IMDCT and dsp.float_to_int16.
     int sf_offset;                                    ///< offset into pow2sf_tab as appropriate for dsp.float_to_int16
     /** @} */

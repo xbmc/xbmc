@@ -20,11 +20,13 @@
  */
 
 #include "settings/AdvancedSettings.h"
+#include "settings/AppParamParser.h"
+#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
 #include "dbghelp.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "Application.h"
 
@@ -41,7 +43,7 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
   CStdString errorMsg;
   CStdString dumpFile;
   CDateTime now(CDateTime::GetCurrentDateTime());
-  dumpFile.Format("%s\\XBMC\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
+  dumpFile.Format("%s\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
   HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
 
   // Call MiniDumpWriteDump api with the dump file
@@ -112,6 +114,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
+  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
@@ -142,43 +145,39 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   //Initialize COM
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-  // parse the command line
-  CStdStringW strcl(commandLine);
-  LPWSTR *szArglist;
-  int nArgs;
-
+  // Handle numeric values using the default/POSIX standard
   setlocale(LC_NUMERIC, "C");
+
+  // If the command line passed to WinMain, commandLine, is not "" we need 
+  // to process the command line arguments.
+  // Note that commandLine does not include the program name and can be 
+  // equal to "" if no arguments were supplied. By contrast GetCommandLineW()
+  // does include the program name and is never equal to "".
   g_advancedSettings.Initialize();
-  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
-  if(szArglist != NULL)
+  if (strlen(commandLine) != 0)
   {
-    for(int i=0;i<nArgs;i++)
+    int argc;
+    LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+    CStdString* strargvA = new CStdString[argc];
+    const char** argv = (const char**) LocalAlloc(LMEM_FIXED, argc*sizeof(char*));
+    for (int i = 0; i < argc; i++)
     {
-      CStdStringW strArgW(szArglist[i]);
-      if(strArgW.Equals(L"-fs"))
-        g_advancedSettings.m_startFullScreen = true;
-      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
-        g_application.EnablePlatformDirectories(false);
-      else if(strArgW.Equals(L"-d"))
-      {
-        if(++i < nArgs)
-        {
-          int iSleep = _wtoi(szArglist[i]);
-          if(iSleep > 0 && iSleep < 360)
-            Sleep(iSleep*1000);
-          else
-            --i;
-        }
-      }
-      else if(strArgW.Equals(L"--debug"))
-      {
-        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-      }
+      g_charsetConverter.wToUTF8(argvW[i], strargvA[i]);
+      argv[i] = strargvA[i].c_str();
     }
-    LocalFree(szArglist);
+
+    // Parse the arguments
+    CAppParamParser appParamParser;
+    appParamParser.Parse(argv, argc);
+
+    // Clean up the storage we've used
+    LocalFree(argvW);
+    LocalFree(argv);
+    delete [] strargvA;
   }
 
+  // Initialise Winsock
   WSADATA wd;
   WSAStartup(MAKEWORD(2,2), &wd);
 

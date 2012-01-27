@@ -19,9 +19,7 @@
  *
  */
 #include "system.h"
-#include "windowing/WindowingFactory.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "guilib/GraphicContext.h"
 #include "input/MouseStat.h"
 #include "Application.h"
 #include "GUILargeTextureManager.h"
@@ -29,8 +27,6 @@
 #include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/CharsetConverter.h"
 #include "utils/AlarmClock.h"
 #include "utils/DownloadQueueManager.h"
 #include "GUIInfoManager.h"
@@ -48,34 +44,15 @@
 #endif
 
   CGUISettings       g_guiSettings;
-  CAdvancedSettings  g_advancedSettings;
   CSettings          g_settings;
-
-#if defined(_WIN32) && defined(HAS_GL)
-  CWinSystemWin32GL  g_Windowing;
-#endif
-
-#if defined(_WIN32) && defined(HAS_DX)
-  CWinSystemWin32DX  g_Windowing;
-#endif
-
-#if defined(__APPLE__)
-  CWinSystemOSXGL    g_Windowing;
-#endif
-
-#if defined(HAS_GLX)
-  CWinSystemX11GL    g_Windowing;
-#endif
 
   CXBMCRenderManager g_renderManager;
   CAudioContext      g_audioContext;
-  CCharsetConverter  g_charsetConverter;
   CLangInfo          g_langInfo;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;
 
-  CGraphicContext    g_graphicsContext;
   CGUIWindowManager  g_windowManager;
   XFILE::CDirectoryCache g_directoryCache;
 

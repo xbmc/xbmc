@@ -35,6 +35,7 @@ class TiXmlElement;
 #define RENDER_METHOD_GLSL      2
 #define RENDER_METHOD_SOFTWARE  3
 #define RENDER_METHOD_D3D_PS    4
+#define RENDER_METHOD_DXVA      5
 #define RENDER_OVERLAYS         99   // to retain compatibility
 
 // Scaling options.
@@ -163,8 +164,8 @@ class TiXmlElement;
 #define RESAMPLE_HIGH 2
 #define RESAMPLE_REALLYHIGH 3
 
-//0.5 second increments
-#define MAXREFRESHCHANGEDELAY 20
+//0.1 second increments
+#define MAXREFRESHCHANGEDELAY 200
 
 enum PowerState
 {
@@ -186,6 +187,15 @@ enum VideoSelectAction
   SELECT_ACTION_INFO,
   SELECT_ACTION_MORE,
   SELECT_ACTION_PLAY
+};
+
+enum SubtitleAlign
+{
+  SUBTITLE_ALIGN_MANUAL = 0,
+  SUBTITLE_ALIGN_BOTTOM_INSIDE,
+  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
+  SUBTITLE_ALIGN_TOP_INSIDE,
+  SUBTITLE_ALIGN_TOP_OUTSIDE
 };
 
 // replay gain settings struct for quick access by the player multiple
@@ -211,19 +221,20 @@ public:
     m_visible = true;
   };
   virtual ~CSetting() {};
-  virtual int GetType() { return 0; };
-  int GetControlType() { return m_iControlType; };
+  virtual int GetType() const { return 0; };
+  int GetControlType() const { return m_iControlType; };
   virtual void FromString(const CStdString &strValue) {};
-  virtual CStdString ToString() { return ""; };
-  const char *GetSetting() { return m_strSetting.c_str(); };
-  int GetLabel() { return m_iLabel; };
+  virtual CStdString ToString() const { return ""; };
+  const char *GetSetting() const { return m_strSetting.c_str(); };
+  int GetLabel() const { return m_iLabel; };
   int GetOrder() const { return m_iOrder; };
+  void SetOrder(int iOrder) { m_iOrder = iOrder; };
   void SetAdvanced() { m_advanced = true; };
-  bool IsAdvanced() { return m_advanced; };
+  bool IsAdvanced() const { return m_advanced; };
   // A setting might be invisible in the current session, yet carried over
   // in the config file.
   void SetVisible(bool visible) { m_visible = visible; }
-  bool IsVisible() { return m_visible; }
+  bool IsVisible() const { return m_visible; }
 private:
   int m_iControlType;
   int m_iLabel;
@@ -239,9 +250,9 @@ public:
   CSettingBool(int iOrder, const char *strSetting, int iLabel, bool bData, int iControlType): CSetting(iOrder, strSetting, iLabel, iControlType) { m_bData = bData; };
   virtual ~CSettingBool() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_BOOL; };
+  virtual int GetType() const { return SETTINGS_TYPE_BOOL; };
   virtual void FromString(const CStdString &strValue);
-  virtual CStdString ToString();
+  virtual CStdString ToString() const;
 
   void SetData(bool bData) { m_bData = bData; };
   bool GetData() const { return m_bData; };
@@ -256,12 +267,12 @@ public:
   CSettingFloat(int iOrder, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType);
   virtual ~CSettingFloat() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_FLOAT; };
+  virtual int GetType() const { return SETTINGS_TYPE_FLOAT; };
   virtual void FromString(const CStdString &strValue);
-  virtual CStdString ToString();
+  virtual CStdString ToString() const;
 
   void SetData(float fData) { m_fData = fData; if (m_fData < m_fMin) m_fData = m_fMin; if (m_fData > m_fMax) m_fData = m_fMax;};
-float GetData() const { return m_fData; };
+  float GetData() const { return m_fData; };
 
   float m_fMin;
   float m_fStep;
@@ -279,9 +290,9 @@ public:
   CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, const std::map<int,int>& entries, int iControlType);
   virtual ~CSettingInt() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_INT; };
+  virtual int GetType() const { return SETTINGS_TYPE_INT; };
   virtual void FromString(const CStdString &strValue);
-  virtual CStdString ToString();
+  virtual CStdString ToString() const;
 
   void SetData(int iData)
   { 
@@ -325,8 +336,8 @@ public:
       : CSettingInt(iOrder, strSetting, iLabel, iData, iMin, iStep, iMax, iControlType, strFormat) {};
   virtual ~CSettingHex() {};
   virtual void FromString(const CStdString &strValue);
-  virtual CStdString ToString();
-  virtual int GetType() { return SETTINGS_TYPE_HEX; };
+  virtual CStdString ToString() const;
+  virtual int GetType() const { return SETTINGS_TYPE_HEX; };
 };
 
 class CSettingString : public CSetting
@@ -335,9 +346,9 @@ public:
   CSettingString(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString);
   virtual ~CSettingString() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_STRING; };
+  virtual int GetType() const { return SETTINGS_TYPE_STRING; };
   virtual void FromString(const CStdString &strValue);
-  virtual CStdString ToString();
+  virtual CStdString ToString() const;
 
   void SetData(const char *strData) { m_strData = strData; };
   const CStdString &GetData() const { return m_strData; };
@@ -354,7 +365,7 @@ public:
   CSettingPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString);
   virtual ~CSettingPath() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_PATH; };
+  virtual int GetType() const { return SETTINGS_TYPE_PATH; };
 };
 
 class CSettingAddon : public CSettingString
@@ -362,7 +373,7 @@ class CSettingAddon : public CSettingString
 public:
   CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const ADDON::TYPE type);
   virtual ~CSettingAddon() {};
-  virtual int GetType() { return SETTINGS_TYPE_ADDON; };
+  virtual int GetType() const { return SETTINGS_TYPE_ADDON; };
 
   const ADDON::TYPE m_type;
 };
@@ -373,7 +384,7 @@ public:
   CSettingSeparator(int iOrder, const char *strSetting);
   virtual ~CSettingSeparator() {};
 
-  virtual int GetType() { return SETTINGS_TYPE_SEPARATOR; };
+  virtual int GetType() const { return SETTINGS_TYPE_SEPARATOR; };
 };
 
 class CSettingsCategory
@@ -477,6 +488,7 @@ public:
   RESOLUTION GetResolution() const;
   static RESOLUTION GetResFromString(const CStdString &res);
   void SetResolution(RESOLUTION res);
+  bool SetLanguage(const CStdString &strLanguage);
 
   //m_LookAndFeelResolution holds the real gui resolution
   RESOLUTION m_LookAndFeelResolution;

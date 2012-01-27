@@ -32,20 +32,6 @@
 #include <pthread.h>
 #include <limits.h>
 
-// a variable which is defined __thread will be defined in thread local storage
-// which means it will be different for each thread that accesses it.
-#define TLS_INDEXES 16
-#define TLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
-
-#ifdef __APPLE__
-// FIXME, this needs to be converted to use pthread_once.
-static LPVOID tls[TLS_INDEXES] = { NULL };
-#else
-static LPVOID __thread tls[TLS_INDEXES] = { NULL };
-#endif
-
-static BOOL tls_used[TLS_INDEXES];
-
 HANDLE WINAPI CreateThread(
       LPSECURITY_ATTRIBUTES lpThreadAttributes,
         SIZE_T dwStackSize,
@@ -219,38 +205,6 @@ int GetThreadPriority(HANDLE hThread)
 {
   return 0;
 }
-
-// thread local storage -
-// we use different method than in windows. TlsAlloc has no meaning since
-// we always take the __thread variable "tls".
-// so we return static answer in TlsAlloc and do nothing in TlsFree.
-LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex) {
-   return tls[dwTlsIndex];
-}
-
-BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue) {
-   tls[dwTlsIndex]=lpTlsValue;
-   return true;
-}
-
-BOOL WINAPI TlsFree(DWORD dwTlsIndex) {
-   tls_used[dwTlsIndex] = false;
-   return true;
-}
-
-DWORD WINAPI TlsAlloc() {
-  for (int i = 0; i < TLS_INDEXES; i++)
-  {
-    if (!tls_used[i])
-    {
-      tls_used[i] = TRUE;
-      return i;
-    }
-  }
-
-  return TLS_OUT_OF_INDEXES;
-}
-
 
 #endif
 

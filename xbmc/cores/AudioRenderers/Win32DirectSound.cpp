@@ -18,6 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES needed for the directsound stuff below
 #include "Win32DirectSound.h"
 #include "guilib/AudioContext.h"
@@ -25,12 +26,14 @@
 #include <initguid.h>
 #include <Mmreg.h>
 #include "threads/SingleLock.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
+#ifdef HAS_DX
 #pragma comment(lib, "dxguid.lib")
+#endif
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
@@ -80,7 +83,7 @@ CWin32DirectSound::CWin32DirectSound() :
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
   m_uiDataChannels = iChannels;
 
@@ -90,7 +93,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
     if(!channelMap)
       channelMap = (PCMChannels *)dsound_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(iChannels = 0; outLayout[iChannels] != PCM_INVALID;) ++iChannels;
 
@@ -112,9 +115,10 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_Passthrough = bAudioPassthrough;
+  m_Passthrough = (bAudioPassthrough != ENCODED_NONE);
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  m_drc = 0;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -123,7 +127,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = iChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough == true)
+  if (bAudioPassthrough)
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
@@ -212,7 +216,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_bIsAllocated = true;
   m_BufferOffset = 0;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
 
   return m_bIsAllocated;
 }
@@ -345,7 +349,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
 
     // Remap the data to the correct channels into the buffer
     if (m_remap.CanRemap())
-      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame);
+      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame, m_drc);
     else
       memcpy(start, pBuffer, size);
 
@@ -357,7 +361,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
     {
       // Remap the data to the correct channels into the buffer
       if (m_remap.CanRemap())
-        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame);
+        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame, m_drc);
       else
         memcpy(startWrap, pBuffer, sizeWrap);
       m_BufferOffset = sizeWrap;
@@ -379,7 +383,7 @@ void CWin32DirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_critSection);
   // TODO: Check to see if we may have cycled around since last time
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
@@ -510,7 +514,8 @@ void CWin32DirectSound::UnRegisterAudioCallback()
 void CWin32DirectSound::WaitCompletion()
 {
   CSingleLock lock (m_critSection);
-  DWORD status, timeout;
+  DWORD status;
+  unsigned int timeout;
   unsigned char* silence;
 
   if (!m_pBuffer)
@@ -520,8 +525,8 @@ void CWin32DirectSound::WaitCompletion()
     return; // We weren't playing anyway
 
   // The drain should complete in the time occupied by the cache
-  timeout  = (DWORD)(1000 * GetDelay());
-  timeout += CTimeUtils::GetTimeMS();
+  timeout  = (unsigned int)(1000 * GetDelay());
+  unsigned int startTime = XbmcThreads::SystemClockMillis();
   silence  = (unsigned char*)calloc(1,m_dwChunkSize); // Initialize 'silence' to zero...
 
   while(AddPackets(silence, m_dwChunkSize) == 0)
@@ -529,7 +534,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < CTimeUtils::GetTimeMS())
+    if((XbmcThreads::SystemClockMillis() - startTime) > timeout)
     {
       CLog::Log(LOGWARNING, __FUNCTION__ ": timeout adding silence to buffer");
       break;
@@ -542,7 +547,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < CTimeUtils::GetTimeMS())
+    if((XbmcThreads::SystemClockMillis() - startTime) > timeout)
     {
       CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - timeout waiting for silence");
       break;

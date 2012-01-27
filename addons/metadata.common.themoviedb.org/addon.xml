@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.themoviedb.org"
        name="The MovieDB common scraper functions"
-       version="1.0.7"
+       version="2.1.0"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -11,8 +11,10 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <minversion>20000</minversion>
+    <summary lang="bg">Библиотека за сваляне на инф. от TMDb</summary>
     <summary lang="en">TMDb Scraper Library</summary>
     <summary lang="es">Scraper de peliculas de TMDb</summary>
+    <summary lang="fi">TMDb elokuvatietojen lataajan kirjasto</summary>
     <summary lang="fr">Scraper TMDb</summary>
     <summary lang="hu">TMDb leolvasó-könyvtár</summary>
     <summary lang="nl">TMDb-scraperfuncties</summary> 			<!--Dit gaat over de functies, niet over de mediabibliotheek!-->
@@ -22,8 +24,10 @@
     <summary lang="ru">Обработчик для TMDb</summary>
     <summary lang="se">Skrapebibliotek för TMDb</summary>
     <summary lang="zh">TMDb刮削器代码库</summary>
+    <description lang="bg">Сваля миниатюри и fanarts от www.themoviedb.org</description>
     <description lang="en">Download thumbs and fanarts from www.themoviedb.org</description>
     <description lang="es">Descarga posters y fanart de www.themoviedb.org</description>
+    <description lang="fi">Lataa pienoiskuvia ja fanitaidetta www.themoviedb.org -sivustolta</description>
     <description lang="fr">Télécharge vignettes et backdrops depuis www.themoviedb.org</description>
     <description lang="hu">Bélyeg- és fanartképek letöltése a www.themoviedb.org webhelyről</description>
     <description lang="nl">Miniaturen en fanart ophalen van www.themoviedb.org</description>

@@ -25,6 +25,13 @@
 #include "utils/URIUtils.h"
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
+#include "filesystem/SpecialProtocol.h"
+#include "JpegIO.h"
+#if defined(__APPLE__) && defined(__arm__)
+#include <ImageIO/ImageIO.h>
+#include "filesystem/File.h"
+#include "osx/DarwinUtils.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -33,7 +40,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
  : m_hasAlpha( true )
 {
 #ifndef HAS_DX 
-  m_texture = NULL; 
+  m_texture = 0; 
 #endif
   m_pixels = NULL;
   m_loadedToGPU = false;
@@ -76,7 +83,6 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_textureHeight, g_Windowing.GetMaxTextureSize());
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
-
   delete[] m_pixels;
   m_pixels = new unsigned char[GetPitch() * GetRows()];
 }
@@ -164,6 +170,26 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+  //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
+  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || URIUtils::GetExtension(texturePath).Equals(".tbn"))
+  {
+    CJpegIO jpegfile;
+    if (jpegfile.Open(texturePath))
+    {
+      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      {
+        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
+        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        {
+          if (autoRotate && jpegfile.Orientation())
+            m_orientation = jpegfile.Orientation() - 1;
+          m_hasAlpha=false;
+          return true;
+        }
+      }
+    }
+  }
+
   DllImageLib dll;
   if (!dll.Load())
     return false;
@@ -190,23 +216,43 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (originalHeight)
     *originalHeight = image.originalheight;
 
-  unsigned int destPitch = GetPitch();
+  unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
+
+  unsigned char *dst = m_pixels;
+  unsigned char *src = image.texture + (m_imageHeight - 1) * srcPitch;
 
   for (unsigned int y = 0; y < m_imageHeight; y++)
   {
-    unsigned char *dst = m_pixels + y * destPitch;
-    unsigned char *src = image.texture + (m_imageHeight - 1 - y) * srcPitch;
-    unsigned char *alpha = image.alpha + (m_imageHeight - 1 - y) * m_imageWidth;
-    for (unsigned int x = 0; x < m_imageWidth; x++)
+    unsigned char *dst2 = dst;
+    unsigned char *src2 = src;
+    for (unsigned int x = 0; x < m_imageWidth; x++, dst2 += 4, src2 += 3)
     {
-      *dst++ = *src++;
-      *dst++ = *src++;
-      *dst++ = *src++;
-      *dst++ = (image.alpha) ? *alpha++ : 0xff;
+      dst2[0] = src2[0];
+      dst2[1] = src2[1];
+      dst2[2] = src2[2];
+      dst2[3] = 0xff;
     }
+    src -= srcPitch;
+    dst += dstPitch;
   }
 
+  if(image.alpha)
+  {
+    dst = m_pixels + 3;
+    src = image.alpha + (m_imageHeight - 1) * m_imageWidth;
+
+    for (unsigned int y = 0; y < m_imageHeight; y++)
+    {
+      unsigned char *dst2 = dst;
+      unsigned char *src2 = src;
+
+      for (unsigned int x = 0; x < m_imageWidth; x++,  dst2+=4, src2++)
+        *dst2 = *src2;
+      src -= m_imageWidth;
+      dst += dstPitch;
+    }
+  }
   dll.ReleaseImage(&image);
 
   ClampToEdge();
@@ -214,11 +260,12 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   return true;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);
   return true;
 }
@@ -258,6 +305,19 @@ unsigned int CBaseTexture::PadPow2(unsigned int x)
   return ++x;
 }
 
+bool CBaseTexture::SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements, unsigned int offset)
+{
+  if (!pixels) return false;
+  unsigned char *dst = pixels;
+  for (unsigned int y = 0; y < height; y++)
+  {
+    dst = pixels + (y * pitch);
+    for (unsigned int x = 0; x < pitch; x+=elements)
+      std::swap(dst[x+offset], dst[x+2+offset]);
+  }
+  return true;
+}
+
 unsigned int CBaseTexture::GetPitch(unsigned int width) const
 {
   switch (m_format)
@@ -270,6 +330,9 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_RGB8:
+    return (((width + 1)* 3 / 4) * 4);
+  case XB_FMT_RGBA8:
   case XB_FMT_A8R8G8B8:
   default:
     return width*4;

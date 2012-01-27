@@ -31,14 +31,10 @@
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
 #include "XBTF.h"
-#ifndef _LINUX
-#include "lib/win32/liblzo/LZO1X.H"
-#else
 #include <lzo/lzo1x.h>
-#endif
 
-#if !defined(__GNUC__)
-#pragma comment(lib,"../../lib/win32/liblzo/lzo.lib")
+#ifdef _WIN32
+#pragma comment(lib,"liblzo2.lib")
 #endif
 
 CTextureBundleXBT::CTextureBundleXBT(void)
@@ -86,6 +82,8 @@ bool CTextureBundleXBT::OpenBundle()
   {
     return false;
   }
+
+  CLog::Log(LOGDEBUG, "%s - Opened bundle %s", __FUNCTION__, strPath.c_str());
 
   m_TimeStamp = m_XBTFReader.GetLastModificationTimestamp();
 
@@ -236,7 +234,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
 
   // create an xbmc texture
   *ppTexture = new CTexture();
-  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), buffer);
+  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), frame.HasAlpha(), buffer);
 
   delete[] buffer;
 
@@ -248,6 +246,7 @@ void CTextureBundleXBT::Cleanup()
   if (m_XBTFReader.IsOpen())
   {
     m_XBTFReader.Close();
+    CLog::Log(LOGDEBUG, "%s - Closed %sbundle", __FUNCTION__, m_themeBundle ? "theme " : "");
   }
 }
 

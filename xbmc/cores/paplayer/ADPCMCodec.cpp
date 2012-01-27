@@ -25,7 +25,7 @@
 ADPCMCodec::ADPCMCodec()
 {
   m_CodecName = "ADPCM";
-  m_adpcm = 0;
+  m_adpcm = NULL;
   m_bIsPlaying = false;
 }
 
@@ -62,7 +62,7 @@ void ADPCMCodec::DeInit()
   if (m_adpcm)
     m_dll.FreeXWAV(m_adpcm);
 
-  m_adpcm = 0;
+  m_adpcm = NULL;
   m_bIsPlaying = false;
 }
 

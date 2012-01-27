@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "PosixMountProvider.h"
 
 CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI)
 {
@@ -72,7 +73,7 @@ void CUDiskDevice::Update()
   m_isOptical = properties["DeviceIsOpticalDisc"].asBoolean();
   if (m_isPartition)
   {
-    CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.UDisks", properties["PartitionSlave"].asString(), "org.freedesktop.UDisks.Device", "DeviceIsRemovable");
+    CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.UDisks", properties["PartitionSlave"].asString().c_str(), "org.freedesktop.UDisks.Device", "DeviceIsRemovable");
 
     if ( !isRemovable.isNull() )
       m_isRemovable = isRemovable.asBoolean();
@@ -218,7 +219,7 @@ CUDisksProvider::~CUDisksProvider()
 void CUDisksProvider::Initialize()
 {
   CLog::Log(LOGDEBUG, "Selected UDisks as storage provider");
-  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "DaemonVersion").asString());
+  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "DaemonVersion").asString().c_str());
   CLog::Log(LOGDEBUG, "UDisks: DaemonVersion %i", m_DaemonVersion);
 
   CLog::Log(LOGDEBUG, "UDisks: Querying available devices");
@@ -245,21 +246,8 @@ bool CUDisksProvider::Eject(CStdString mountpath)
 
 std::vector<CStdString> CUDisksProvider::GetDiskUsage()
 {
-  std::vector<CStdString> devices;
-  DeviceMap::iterator itr;
-
-  for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-  {
-    CUDiskDevice *device = itr->second;
-    if (device->m_isMounted)
-    {
-      CStdString str;
-      str.Format("%s %.1f GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
-      devices.push_back(str);
-    }
-  }
-
-  return devices;
+  CPosixMountProvider legacy;
+  return legacy.GetDiskUsage();
 }
 
 bool CUDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)

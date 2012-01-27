@@ -22,6 +22,7 @@
  * MMX optimization by Nick Kurshev <nickols_k@mail.ru>
  */
 
+#include "libavutil/cpu.h"
 #include "libavutil/x86_cpu.h"
 #include "libavcodec/dsputil.h"
 #include "libavcodec/mpegvideo.h"
@@ -34,7 +35,7 @@ static void get_pixels_mmx(DCTELEM *block, const uint8_t *pixels, int line_size)
     __asm__ volatile(
         "mov $-128, %%"REG_a"           \n\t"
         "pxor %%mm7, %%mm7              \n\t"
-        ASMALIGN(4)
+        ".p2align 4                     \n\t"
         "1:                             \n\t"
         "movq (%0), %%mm0               \n\t"
         "movq (%0, %2), %%mm2           \n\t"
@@ -60,16 +61,16 @@ static void get_pixels_mmx(DCTELEM *block, const uint8_t *pixels, int line_size)
 static void get_pixels_sse2(DCTELEM *block, const uint8_t *pixels, int line_size)
 {
     __asm__ volatile(
-        "pxor %%xmm7,      %%xmm7         \n\t"
+        "pxor %%xmm4,      %%xmm4         \n\t"
         "movq (%0),        %%xmm0         \n\t"
         "movq (%0, %2),    %%xmm1         \n\t"
         "movq (%0, %2,2),  %%xmm2         \n\t"
         "movq (%0, %3),    %%xmm3         \n\t"
         "lea (%0,%2,4), %0                \n\t"
-        "punpcklbw %%xmm7, %%xmm0         \n\t"
-        "punpcklbw %%xmm7, %%xmm1         \n\t"
-        "punpcklbw %%xmm7, %%xmm2         \n\t"
-        "punpcklbw %%xmm7, %%xmm3         \n\t"
+        "punpcklbw %%xmm4, %%xmm0         \n\t"
+        "punpcklbw %%xmm4, %%xmm1         \n\t"
+        "punpcklbw %%xmm4, %%xmm2         \n\t"
+        "punpcklbw %%xmm4, %%xmm3         \n\t"
         "movdqa %%xmm0,      (%1)         \n\t"
         "movdqa %%xmm1,    16(%1)         \n\t"
         "movdqa %%xmm2,    32(%1)         \n\t"
@@ -78,10 +79,10 @@ static void get_pixels_sse2(DCTELEM *block, const uint8_t *pixels, int line_size
         "movq (%0, %2),    %%xmm1         \n\t"
         "movq (%0, %2,2),  %%xmm2         \n\t"
         "movq (%0, %3),    %%xmm3         \n\t"
-        "punpcklbw %%xmm7, %%xmm0         \n\t"
-        "punpcklbw %%xmm7, %%xmm1         \n\t"
-        "punpcklbw %%xmm7, %%xmm2         \n\t"
-        "punpcklbw %%xmm7, %%xmm3         \n\t"
+        "punpcklbw %%xmm4, %%xmm0         \n\t"
+        "punpcklbw %%xmm4, %%xmm1         \n\t"
+        "punpcklbw %%xmm4, %%xmm2         \n\t"
+        "punpcklbw %%xmm4, %%xmm3         \n\t"
         "movdqa %%xmm0,    64(%1)         \n\t"
         "movdqa %%xmm1,    80(%1)         \n\t"
         "movdqa %%xmm2,    96(%1)         \n\t"
@@ -96,7 +97,7 @@ static inline void diff_pixels_mmx(DCTELEM *block, const uint8_t *s1, const uint
     __asm__ volatile(
         "pxor %%mm7, %%mm7              \n\t"
         "mov $-128, %%"REG_a"           \n\t"
-        ASMALIGN(4)
+        ".p2align 4                     \n\t"
         "1:                             \n\t"
         "movq (%0), %%mm0               \n\t"
         "movq (%1), %%mm2               \n\t"
@@ -322,67 +323,7 @@ static int sse16_mmx(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int
     return tmp;
 }
 
-static int sse16_sse2(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h) {
-    int tmp;
-  __asm__ volatile (
-      "shr $1,%2\n"
-      "pxor %%xmm0,%%xmm0\n"    /* mm0 = 0 */
-      "pxor %%xmm7,%%xmm7\n"    /* mm7 holds the sum */
-      "1:\n"
-      "movdqu (%0),%%xmm1\n"    /* mm1 = pix1[0][0-15] */
-      "movdqu (%1),%%xmm2\n"    /* mm2 = pix2[0][0-15] */
-      "movdqu (%0,%4),%%xmm3\n" /* mm3 = pix1[1][0-15] */
-      "movdqu (%1,%4),%%xmm4\n" /* mm4 = pix2[1][0-15] */
-
-      /* todo: mm1-mm2, mm3-mm4 */
-      /* algo: subtract mm1 from mm2 with saturation and vice versa */
-      /*       OR the results to get absolute difference */
-      "movdqa %%xmm1,%%xmm5\n"
-      "movdqa %%xmm3,%%xmm6\n"
-      "psubusb %%xmm2,%%xmm1\n"
-      "psubusb %%xmm4,%%xmm3\n"
-      "psubusb %%xmm5,%%xmm2\n"
-      "psubusb %%xmm6,%%xmm4\n"
-
-      "por %%xmm1,%%xmm2\n"
-      "por %%xmm3,%%xmm4\n"
-
-      /* now convert to 16-bit vectors so we can square them */
-      "movdqa %%xmm2,%%xmm1\n"
-      "movdqa %%xmm4,%%xmm3\n"
-
-      "punpckhbw %%xmm0,%%xmm2\n"
-      "punpckhbw %%xmm0,%%xmm4\n"
-      "punpcklbw %%xmm0,%%xmm1\n"  /* mm1 now spread over (mm1,mm2) */
-      "punpcklbw %%xmm0,%%xmm3\n"  /* mm4 now spread over (mm3,mm4) */
-
-      "pmaddwd %%xmm2,%%xmm2\n"
-      "pmaddwd %%xmm4,%%xmm4\n"
-      "pmaddwd %%xmm1,%%xmm1\n"
-      "pmaddwd %%xmm3,%%xmm3\n"
-
-      "lea (%0,%4,2), %0\n"        /* pix1 += 2*line_size */
-      "lea (%1,%4,2), %1\n"        /* pix2 += 2*line_size */
-
-      "paddd %%xmm2,%%xmm1\n"
-      "paddd %%xmm4,%%xmm3\n"
-      "paddd %%xmm1,%%xmm7\n"
-      "paddd %%xmm3,%%xmm7\n"
-
-      "decl %2\n"
-      "jnz 1b\n"
-
-      "movdqa %%xmm7,%%xmm1\n"
-      "psrldq $8, %%xmm7\n"        /* shift hi qword to lo */
-      "paddd %%xmm1,%%xmm7\n"
-      "movdqa %%xmm7,%%xmm1\n"
-      "psrldq $4, %%xmm7\n"        /* shift hi dword to lo */
-      "paddd %%xmm1,%%xmm7\n"
-      "movd %%xmm7,%3\n"
-      : "+r" (pix1), "+r" (pix2), "+r"(h), "=r"(tmp)
-      : "r" ((x86_reg)line_size));
-    return tmp;
-}
+int ff_sse16_sse2(void *v, uint8_t * pix1, uint8_t * pix2, int line_size, int h);
 
 static int hf_noise8_mmx(uint8_t * pix1, int line_size, int h) {
     int tmp;
@@ -938,55 +879,6 @@ static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *src1, c
     *left    = src2[w-1];
 }
 
-#define DIFF_PIXELS_1(m,a,t,p1,p2)\
-    "mov"#m" "#p1", "#a"              \n\t"\
-    "mov"#m" "#p2", "#t"              \n\t"\
-    "punpcklbw "#a", "#t"             \n\t"\
-    "punpcklbw "#a", "#a"             \n\t"\
-    "psubw     "#t", "#a"             \n\t"\
-
-#define DIFF_PIXELS_8(m0,m1,mm,p1,p2,stride,temp) {\
-    uint8_t *p1b=p1, *p2b=p2;\
-    __asm__ volatile(\
-        DIFF_PIXELS_1(m0, mm##0, mm##7, (%1), (%2))\
-        DIFF_PIXELS_1(m0, mm##1, mm##7, (%1,%3), (%2,%3))\
-        DIFF_PIXELS_1(m0, mm##2, mm##7, (%1,%3,2), (%2,%3,2))\
-        "add %4, %1                   \n\t"\
-        "add %4, %2                   \n\t"\
-        DIFF_PIXELS_1(m0, mm##3, mm##7, (%1), (%2))\
-        DIFF_PIXELS_1(m0, mm##4, mm##7, (%1,%3), (%2,%3))\
-        DIFF_PIXELS_1(m0, mm##5, mm##7, (%1,%3,2), (%2,%3,2))\
-        DIFF_PIXELS_1(m0, mm##6, mm##7, (%1,%4), (%2,%4))\
-        "mov"#m1" "#mm"0, %0          \n\t"\
-        DIFF_PIXELS_1(m0, mm##7, mm##0, (%1,%3,4), (%2,%3,4))\
-        "mov"#m1" %0, "#mm"0          \n\t"\
-        : "+m"(temp), "+r"(p1b), "+r"(p2b)\
-        : "r"((x86_reg)stride), "r"((x86_reg)stride*3)\
-    );\
-}
-    //the "+m"(temp) is needed as gcc 2.95 sometimes fails to compile "=m"(temp)
-
-#define DIFF_PIXELS_4x8(p1,p2,stride,temp) DIFF_PIXELS_8(d, q,   %%mm,  p1, p2, stride, temp)
-#define DIFF_PIXELS_8x8(p1,p2,stride,temp) DIFF_PIXELS_8(q, dqa, %%xmm, p1, p2, stride, temp)
-
-#define LBUTTERFLY2(a1,b1,a2,b2)\
-    "paddw " #b1 ", " #a1 "           \n\t"\
-    "paddw " #b2 ", " #a2 "           \n\t"\
-    "paddw " #b1 ", " #b1 "           \n\t"\
-    "paddw " #b2 ", " #b2 "           \n\t"\
-    "psubw " #a1 ", " #b1 "           \n\t"\
-    "psubw " #a2 ", " #b2 "           \n\t"
-
-#define HADAMARD8(m0, m1, m2, m3, m4, m5, m6, m7)\
-        LBUTTERFLY2(m0, m1, m2, m3)\
-        LBUTTERFLY2(m4, m5, m6, m7)\
-        LBUTTERFLY2(m0, m2, m1, m3)\
-        LBUTTERFLY2(m4, m6, m5, m7)\
-        LBUTTERFLY2(m0, m4, m1, m5)\
-        LBUTTERFLY2(m2, m6, m3, m7)\
-
-#define HADAMARD48 HADAMARD8(%%mm0, %%mm1, %%mm2, %%mm3, %%mm4, %%mm5, %%mm6, %%mm7)
-
 #define MMABS_MMX(a,z)\
     "pxor " #z ", " #z "              \n\t"\
     "pcmpgtw " #a ", " #z "           \n\t"\
@@ -1004,34 +896,6 @@ static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *src1, c
 #define MMABS_SUM(a,z, sum)\
     MMABS(a,z)\
     "paddusw " #a ", " #sum "         \n\t"
-
-#define MMABS_SUM_8x8_NOSPILL\
-    MMABS(%%xmm0, %%xmm8)\
-    MMABS(%%xmm1, %%xmm9)\
-    MMABS_SUM(%%xmm2, %%xmm8, %%xmm0)\
-    MMABS_SUM(%%xmm3, %%xmm9, %%xmm1)\
-    MMABS_SUM(%%xmm4, %%xmm8, %%xmm0)\
-    MMABS_SUM(%%xmm5, %%xmm9, %%xmm1)\
-    MMABS_SUM(%%xmm6, %%xmm8, %%xmm0)\
-    MMABS_SUM(%%xmm7, %%xmm9, %%xmm1)\
-    "paddusw %%xmm1, %%xmm0           \n\t"
-
-#if ARCH_X86_64
-#define MMABS_SUM_8x8_SSE2 MMABS_SUM_8x8_NOSPILL
-#else
-#define MMABS_SUM_8x8_SSE2\
-    "movdqa %%xmm7, (%1)              \n\t"\
-    MMABS(%%xmm0, %%xmm7)\
-    MMABS(%%xmm1, %%xmm7)\
-    MMABS_SUM(%%xmm2, %%xmm7, %%xmm0)\
-    MMABS_SUM(%%xmm3, %%xmm7, %%xmm1)\
-    MMABS_SUM(%%xmm4, %%xmm7, %%xmm0)\
-    MMABS_SUM(%%xmm5, %%xmm7, %%xmm1)\
-    MMABS_SUM(%%xmm6, %%xmm7, %%xmm0)\
-    "movdqa (%1), %%xmm2              \n\t"\
-    MMABS_SUM(%%xmm2, %%xmm7, %%xmm1)\
-    "paddusw %%xmm1, %%xmm0           \n\t"
-#endif
 
 /* FIXME: HSUM_* saturates at 64k, while an 8x8 hadamard or dct block can get up to
  * about 100k on extreme inputs. But that's very unlikely to occur in natural video,
@@ -1061,133 +925,16 @@ static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *src1, c
     "paddusw "#t", "#a"               \n\t"\
     "movd "#a", "#dst"                \n\t"\
 
-#define HADAMARD8_DIFF_MMX(cpu) \
-static int hadamard8_diff_##cpu(void *s, uint8_t *src1, uint8_t *src2, int stride, int h){\
-    DECLARE_ALIGNED(8, uint64_t, temp)[13];\
-    int sum;\
-\
-    assert(h==8);\
-\
-    DIFF_PIXELS_4x8(src1, src2, stride, temp[0]);\
-\
-    __asm__ volatile(\
-        HADAMARD48\
-\
-        "movq %%mm7, 96(%1)             \n\t"\
-\
-        TRANSPOSE4(%%mm0, %%mm1, %%mm2, %%mm3, %%mm7)\
-        STORE4(8,  0(%1), %%mm0, %%mm3, %%mm7, %%mm2)\
-\
-        "movq 96(%1), %%mm7             \n\t"\
-        TRANSPOSE4(%%mm4, %%mm5, %%mm6, %%mm7, %%mm0)\
-        STORE4(8, 64(%1), %%mm4, %%mm7, %%mm0, %%mm6)\
-\
-        : "=r" (sum)\
-        : "r"(temp)\
-    );\
-\
-    DIFF_PIXELS_4x8(src1+4, src2+4, stride, temp[4]);\
-\
-    __asm__ volatile(\
-        HADAMARD48\
-\
-        "movq %%mm7, 96(%1)             \n\t"\
-\
-        TRANSPOSE4(%%mm0, %%mm1, %%mm2, %%mm3, %%mm7)\
-        STORE4(8, 32(%1), %%mm0, %%mm3, %%mm7, %%mm2)\
-\
-        "movq 96(%1), %%mm7             \n\t"\
-        TRANSPOSE4(%%mm4, %%mm5, %%mm6, %%mm7, %%mm0)\
-        "movq %%mm7, %%mm5              \n\t"/*FIXME remove*/\
-        "movq %%mm6, %%mm7              \n\t"\
-        "movq %%mm0, %%mm6              \n\t"\
-\
-        LOAD4(8, 64(%1), %%mm0, %%mm1, %%mm2, %%mm3)\
-\
-        HADAMARD48\
-        "movq %%mm7, 64(%1)             \n\t"\
-        MMABS(%%mm0, %%mm7)\
-        MMABS(%%mm1, %%mm7)\
-        MMABS_SUM(%%mm2, %%mm7, %%mm0)\
-        MMABS_SUM(%%mm3, %%mm7, %%mm1)\
-        MMABS_SUM(%%mm4, %%mm7, %%mm0)\
-        MMABS_SUM(%%mm5, %%mm7, %%mm1)\
-        MMABS_SUM(%%mm6, %%mm7, %%mm0)\
-        "movq 64(%1), %%mm2             \n\t"\
-        MMABS_SUM(%%mm2, %%mm7, %%mm1)\
-        "paddusw %%mm1, %%mm0           \n\t"\
-        "movq %%mm0, 64(%1)             \n\t"\
-\
-        LOAD4(8,  0(%1), %%mm0, %%mm1, %%mm2, %%mm3)\
-        LOAD4(8, 32(%1), %%mm4, %%mm5, %%mm6, %%mm7)\
-\
-        HADAMARD48\
-        "movq %%mm7, (%1)               \n\t"\
-        MMABS(%%mm0, %%mm7)\
-        MMABS(%%mm1, %%mm7)\
-        MMABS_SUM(%%mm2, %%mm7, %%mm0)\
-        MMABS_SUM(%%mm3, %%mm7, %%mm1)\
-        MMABS_SUM(%%mm4, %%mm7, %%mm0)\
-        MMABS_SUM(%%mm5, %%mm7, %%mm1)\
-        MMABS_SUM(%%mm6, %%mm7, %%mm0)\
-        "movq (%1), %%mm2               \n\t"\
-        MMABS_SUM(%%mm2, %%mm7, %%mm1)\
-        "paddusw 64(%1), %%mm0          \n\t"\
-        "paddusw %%mm1, %%mm0           \n\t"\
-\
-        HSUM(%%mm0, %%mm1, %0)\
-\
-        : "=r" (sum)\
-        : "r"(temp)\
-    );\
-    return sum&0xFFFF;\
-}\
-WRAPPER8_16_SQ(hadamard8_diff_##cpu, hadamard8_diff16_##cpu)
+#define hadamard_func(cpu) \
+int ff_hadamard8_diff_##cpu  (void *s, uint8_t *src1, uint8_t *src2, \
+                              int stride, int h); \
+int ff_hadamard8_diff16_##cpu(void *s, uint8_t *src1, uint8_t *src2, \
+                              int stride, int h);
 
-#define HADAMARD8_DIFF_SSE2(cpu) \
-static int hadamard8_diff_##cpu(void *s, uint8_t *src1, uint8_t *src2, int stride, int h){\
-    DECLARE_ALIGNED(16, uint64_t, temp)[4];\
-    int sum;\
-\
-    assert(h==8);\
-\
-    DIFF_PIXELS_8x8(src1, src2, stride, temp[0]);\
-\
-    __asm__ volatile(\
-        HADAMARD8(%%xmm0, %%xmm1, %%xmm2, %%xmm3, %%xmm4, %%xmm5, %%xmm6, %%xmm7)\
-        TRANSPOSE8(%%xmm0, %%xmm1, %%xmm2, %%xmm3, %%xmm4, %%xmm5, %%xmm6, %%xmm7, (%1))\
-        HADAMARD8(%%xmm0, %%xmm5, %%xmm7, %%xmm3, %%xmm6, %%xmm4, %%xmm2, %%xmm1)\
-        MMABS_SUM_8x8\
-        HSUM_SSE2(%%xmm0, %%xmm1, %0)\
-        : "=r" (sum)\
-        : "r"(temp)\
-    );\
-    return sum&0xFFFF;\
-}\
-WRAPPER8_16_SQ(hadamard8_diff_##cpu, hadamard8_diff16_##cpu)
-
-#define MMABS(a,z)         MMABS_MMX(a,z)
-#define HSUM(a,t,dst)      HSUM_MMX(a,t,dst)
-HADAMARD8_DIFF_MMX(mmx)
-#undef MMABS
-#undef HSUM
-
-#define MMABS(a,z)         MMABS_MMX2(a,z)
-#define MMABS_SUM_8x8      MMABS_SUM_8x8_SSE2
-#define HSUM(a,t,dst)      HSUM_MMX2(a,t,dst)
-HADAMARD8_DIFF_MMX(mmx2)
-HADAMARD8_DIFF_SSE2(sse2)
-#undef MMABS
-#undef MMABS_SUM_8x8
-#undef HSUM
-
-#if HAVE_SSSE3
-#define MMABS(a,z)         MMABS_SSSE3(a,z)
-#define MMABS_SUM_8x8      MMABS_SUM_8x8_NOSPILL
-HADAMARD8_DIFF_SSE2(ssse3)
-#undef MMABS
-#undef MMABS_SUM_8x8
-#endif
+hadamard_func(mmx)
+hadamard_func(mmx2)
+hadamard_func(sse2)
+hadamard_func(ssse3)
 
 #define DCT_SAD4(m,mm,o)\
     "mov"#m" "#o"+ 0(%1), "#mm"2      \n\t"\
@@ -1350,12 +1097,14 @@ static int ssd_int8_vs_int16_mmx(const int8_t *pix1, const int16_t *pix2, int si
 
 void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
 {
-    if (mm_flags & FF_MM_MMX) {
+    int mm_flags = av_get_cpu_flags();
+
+    if (mm_flags & AV_CPU_FLAG_MMX) {
         const int dct_algo = avctx->dct_algo;
         if(dct_algo==FF_DCT_AUTO || dct_algo==FF_DCT_MMX){
-            if(mm_flags & FF_MM_SSE2){
+            if(mm_flags & AV_CPU_FLAG_SSE2){
                 c->fdct = ff_fdct_sse2;
-            }else if(mm_flags & FF_MM_MMX2){
+            }else if(mm_flags & AV_CPU_FLAG_MMX2){
                 c->fdct = ff_fdct_mmx2;
             }else{
                 c->fdct = ff_fdct_mmx;
@@ -1369,11 +1118,13 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->diff_bytes= diff_bytes_mmx;
         c->sum_abs_dctelem= sum_abs_dctelem_mmx;
 
-        c->hadamard8_diff[0]= hadamard8_diff16_mmx;
-        c->hadamard8_diff[1]= hadamard8_diff_mmx;
+#if HAVE_YASM
+        c->hadamard8_diff[0]= ff_hadamard8_diff16_mmx;
+        c->hadamard8_diff[1]= ff_hadamard8_diff_mmx;
+#endif
 
         c->pix_norm1 = pix_norm1_mmx;
-        c->sse[0] = (mm_flags & FF_MM_SSE2) ? sse16_sse2 : sse16_mmx;
+        c->sse[0] = (HAVE_YASM && mm_flags & AV_CPU_FLAG_SSE2) ? ff_sse16_sse2 : sse16_mmx;
           c->sse[1] = sse8_mmx;
         c->vsad[4]= vsad_intra16_mmx;
 
@@ -1391,10 +1142,12 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->ssd_int8_vs_int16 = ssd_int8_vs_int16_mmx;
 
 
-        if (mm_flags & FF_MM_MMX2) {
+        if (mm_flags & AV_CPU_FLAG_MMX2) {
             c->sum_abs_dctelem= sum_abs_dctelem_mmx2;
-            c->hadamard8_diff[0]= hadamard8_diff16_mmx2;
-            c->hadamard8_diff[1]= hadamard8_diff_mmx2;
+#if HAVE_YASM
+            c->hadamard8_diff[0]= ff_hadamard8_diff16_mmx2;
+            c->hadamard8_diff[1]= ff_hadamard8_diff_mmx2;
+#endif
             c->vsad[4]= vsad_intra16_mmx2;
 
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
@@ -1404,29 +1157,30 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->sub_hfyu_median_prediction= sub_hfyu_median_prediction_mmx2;
         }
 
-        if(mm_flags & FF_MM_SSE2){
+        if(mm_flags & AV_CPU_FLAG_SSE2){
             c->get_pixels = get_pixels_sse2;
             c->sum_abs_dctelem= sum_abs_dctelem_sse2;
-            c->hadamard8_diff[0]= hadamard8_diff16_sse2;
-            c->hadamard8_diff[1]= hadamard8_diff_sse2;
-#if CONFIG_LPC
-            c->lpc_compute_autocorr = ff_lpc_compute_autocorr_sse2;
+#if HAVE_YASM && HAVE_ALIGNED_STACK
+            c->hadamard8_diff[0]= ff_hadamard8_diff16_sse2;
+            c->hadamard8_diff[1]= ff_hadamard8_diff_sse2;
 #endif
         }
 
 #if HAVE_SSSE3
-        if(mm_flags & FF_MM_SSSE3){
+        if(mm_flags & AV_CPU_FLAG_SSSE3){
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
                 c->try_8x8basis= try_8x8basis_ssse3;
             }
             c->add_8x8basis= add_8x8basis_ssse3;
             c->sum_abs_dctelem= sum_abs_dctelem_ssse3;
-            c->hadamard8_diff[0]= hadamard8_diff16_ssse3;
-            c->hadamard8_diff[1]= hadamard8_diff_ssse3;
+#if HAVE_YASM && HAVE_ALIGNED_STACK
+            c->hadamard8_diff[0]= ff_hadamard8_diff16_ssse3;
+            c->hadamard8_diff[1]= ff_hadamard8_diff_ssse3;
+#endif
         }
 #endif
 
-        if(mm_flags & FF_MM_3DNOW){
+        if(mm_flags & AV_CPU_FLAG_3DNOW){
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
                 c->try_8x8basis= try_8x8basis_3dnow;
             }

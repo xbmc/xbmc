@@ -58,7 +58,7 @@ void CMusicInfoLoader::OnLoaderStart()
     LoadCache(m_strCacheFileName, *m_mapFileItems);
   else
   {
-    m_mapFileItems->m_strPath=m_pVecItems->m_strPath;
+    m_mapFileItems->SetPath(m_pVecItems->GetPath());
     m_mapFileItems->Load();
     m_mapFileItems->SetFastLookup(true);
   }
@@ -84,12 +84,12 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   if (pItem->GetProperty("hasfullmusictag") == "true")
     return false; // already have the information
 
-  CStdString path(pItem->m_strPath);
+  CStdString path(pItem->GetPath());
   if (pItem->IsMusicDb())
   {
     // set the artist / album properties
     XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
-    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
     CArtist artist;
     CMusicDatabase database;
     database.Open();
@@ -131,7 +131,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     return true;
 
   // first check the cached item
-  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->m_strPath];
+  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
   if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
   { // Query map if we previously cached the file on HD
     *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
@@ -140,7 +140,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   }
 
   CStdString strPath;
-  URIUtils::GetDirectory(pItem->m_strPath, strPath);
+  URIUtils::GetDirectory(pItem->GetPath(), strPath);
   URIUtils::AddSlashAtEnd(strPath);
   if (strPath!=m_strPrevPath)
   {
@@ -152,7 +152,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   CSong *song=NULL;
 
-  if ((song=m_songsMap.Find(pItem->m_strPath))!=NULL)
+  if ((song=m_songsMap.Find(pItem->GetPath()))!=NULL)
   {  // Have we loaded this item from database before
     pItem->GetMusicInfoTag()->SetSong(*song);
     pItem->SetThumbnailImage(song->strThumb);
@@ -160,7 +160,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   else if (pItem->IsMusicDb())
   { // a music db item that doesn't have tag loaded - grab details from the database
     XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
-    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
     CSong song;
     if (m_musicDatabase.GetSongById(param.GetSongId(), song))
     {
@@ -172,10 +172,10 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   { // Nothing found, load tag from file,
     // always try to load cddb info
     // get correct tag parser
-    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
     if (NULL != pLoader.get())
       // get tag
-      pLoader->Load(pItem->m_strPath, *pItem->GetMusicInfoTag());
+      pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());
     m_tagReads++;
   }
 

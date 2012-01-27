@@ -72,10 +72,10 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
 
 void CGUIDialogPictureInfo::FrameMove()
 {
-  if (g_infoManager.GetCurrentSlide().m_strPath != m_currentPicture)
+  if (g_infoManager.GetCurrentSlide().GetPath() != m_currentPicture)
   {
     UpdatePictureInfo();
-    m_currentPicture = g_infoManager.GetCurrentSlide().m_strPath;
+    m_currentPicture = g_infoManager.GetCurrentSlide().GetPath();
   }
   CGUIDialog::FrameMove();
 }

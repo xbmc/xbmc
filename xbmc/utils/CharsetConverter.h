@@ -24,10 +24,11 @@
 
 #include "threads/CriticalSection.h"
 #include "StdString.h"
+#include "utils/GlobalsHandling.h"
 
 #include <vector>
 
-class CCharsetConverter
+class CCharsetConverter 
 {
 public:
   CCharsetConverter();
@@ -45,6 +46,7 @@ public:
   void utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest);
 
   void utf8ToStringCharset(CStdStringA& strSourceDest);
+  void utf8ToSystem(CStdStringA& strSourceDest);
 
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString16& strDest);
@@ -79,7 +81,7 @@ public:
   void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
 };
 
-extern CCharsetConverter g_charsetConverter;
+XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
 
 size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
 

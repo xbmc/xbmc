@@ -1,6 +1,0 @@
-Open Visual Studio 2008 Command Prompt
-1) >DUMPBIN /EXPORTS libmicrohttpd.dll.a > def.txt
-2) change def.txt into libmicrohttpd.dll.def with the following contents:
-EXPORTS
-	all symbols from def.txt, remove first underscores from symbols
-3) >LIB /machine:X86 /def:libmicrohttpd.dll.def /name:libmicrohttpd-5.dll

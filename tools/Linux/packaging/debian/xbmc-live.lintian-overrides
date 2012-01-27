@@ -1,4 +1,0 @@
-# xbmc-live postinst and postrm has some hacks to fix upstart issue in Ubuntu
-# karmic, hence the reason for this lintian error
-xbmc-live: duplicate-updaterc.d-calls-in-postinst xbmc-live
-xbmc-live: duplicate-updaterc.d-calls-in-postrm xbmc-live

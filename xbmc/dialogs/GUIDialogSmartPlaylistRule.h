@@ -31,7 +31,7 @@ public:
   CGUIDialogSmartPlaylistRule(void);
   virtual ~CGUIDialogSmartPlaylistRule(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnInitWindow();
 
   static bool EditRule(CSmartPlaylistRule &rule, const CStdString& type="songs");

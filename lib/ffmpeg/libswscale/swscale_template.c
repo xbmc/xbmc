@@ -55,7 +55,7 @@
         "movq                             %%mm3, %%mm4      \n\t"\
         "lea                     " offset "(%0), %%"REG_d"  \n\t"\
         "mov                        (%%"REG_d"), %%"REG_S"  \n\t"\
-        ASMALIGN(4) /* FIXME Unroll? */\
+        ".p2align                             4             \n\t" /* FIXME Unroll? */\
         "1:                                                 \n\t"\
         "movq                      8(%%"REG_d"), %%mm0      \n\t" /* filterCoeff */\
         "movq   "  x "(%%"REG_S", %%"REG_a", 2), %%mm2      \n\t" /* srcData */\
@@ -80,7 +80,7 @@
         "mov                        (%%"REG_d"), %%"REG_S"  \n\t"\
         "jb                                  1b             \n\t"\
         :: "r" (&c->redDither),\
-        "r" (dest), "g" (width)\
+        "r" (dest), "g" ((x86_reg)width)\
         : "%"REG_a, "%"REG_d, "%"REG_S\
     );
 
@@ -93,7 +93,7 @@
         "pxor                             %%mm6, %%mm6      \n\t"\
         "pxor                             %%mm7, %%mm7      \n\t"\
         "mov                        (%%"REG_d"), %%"REG_S"  \n\t"\
-        ASMALIGN(4) \
+        ".p2align                             4             \n\t"\
         "1:                                                 \n\t"\
         "movq   "  x "(%%"REG_S", %%"REG_a", 2), %%mm0      \n\t" /* srcData */\
         "movq 8+"  x "(%%"REG_S", %%"REG_a", 2), %%mm2      \n\t" /* srcData */\
@@ -142,13 +142,13 @@
         "mov                        (%%"REG_d"), %%"REG_S"  \n\t"\
         "jb                                  1b             \n\t"\
         :: "r" (&c->redDither),\
-        "r" (dest), "g" (width)\
+        "r" (dest), "g" ((x86_reg)width)\
         : "%"REG_a, "%"REG_d, "%"REG_S\
     );
 
 #define YSCALEYUV2YV121 \
     "mov %2, %%"REG_a"                    \n\t"\
-    ASMALIGN(4) /* FIXME Unroll? */\
+    ".p2align               4             \n\t" /* FIXME Unroll? */\
     "1:                                   \n\t"\
     "movq  (%0, %%"REG_a", 2), %%mm0      \n\t"\
     "movq 8(%0, %%"REG_a", 2), %%mm1      \n\t"\
@@ -164,7 +164,7 @@
     "pcmpeqw %%mm7, %%mm7                 \n\t"\
     "psrlw                 $15, %%mm7     \n\t"\
     "psllw                  $6, %%mm7     \n\t"\
-    ASMALIGN(4) /* FIXME Unroll? */\
+    ".p2align                4            \n\t" /* FIXME Unroll? */\
     "1:                                   \n\t"\
     "movq  (%0, %%"REG_a", 2), %%mm0      \n\t"\
     "movq 8(%0, %%"REG_a", 2), %%mm1      \n\t"\
@@ -180,21 +180,21 @@
 /*
     :: "m" (-lumFilterSize), "m" (-chrFilterSize),
        "m" (lumMmxFilter+lumFilterSize*4), "m" (chrMmxFilter+chrFilterSize*4),
-       "r" (dest), "m" (dstW),
+       "r" (dest), "m" (dstW_reg),
        "m" (lumSrc+lumFilterSize), "m" (chrSrc+chrFilterSize)
     : "%eax", "%ebx", "%ecx", "%edx", "%esi"
 */
 #define YSCALEYUV2PACKEDX_UV \
     __asm__ volatile(\
         "xor                   %%"REG_a", %%"REG_a"     \n\t"\
-        ASMALIGN(4)\
+        ".p2align                      4                \n\t"\
         "nop                                            \n\t"\
         "1:                                             \n\t"\
         "lea "CHR_MMX_FILTER_OFFSET"(%0), %%"REG_d"     \n\t"\
         "mov                 (%%"REG_d"), %%"REG_S"     \n\t"\
         "movq      "VROUNDER_OFFSET"(%0), %%mm3         \n\t"\
         "movq                      %%mm3, %%mm4         \n\t"\
-        ASMALIGN(4)\
+        ".p2align                      4                \n\t"\
         "2:                                             \n\t"\
         "movq               8(%%"REG_d"), %%mm0         \n\t" /* filterCoeff */\
         "movq     (%%"REG_S", %%"REG_a"), %%mm2         \n\t" /* UsrcData */\
@@ -213,7 +213,7 @@
     "mov                 (%%"REG_d"), %%"REG_S"     \n\t"\
     "movq      "VROUNDER_OFFSET"(%0), "#dst1"       \n\t"\
     "movq                    "#dst1", "#dst2"       \n\t"\
-    ASMALIGN(4)\
+    ".p2align                      4                \n\t"\
     "2:                                             \n\t"\
     "movq               8(%%"REG_d"), "#coeff"      \n\t" /* filterCoeff */\
     "movq  (%%"REG_S", %%"REG_a", 2), "#src1"       \n\t" /* Y1srcData */\
@@ -234,14 +234,14 @@
 #define YSCALEYUV2PACKEDX_END                     \
         :: "r" (&c->redDither),                   \
             "m" (dummy), "m" (dummy), "m" (dummy),\
-            "r" (dest), "m" (dstW)                \
+            "r" (dest), "m" (dstW_reg)            \
         : "%"REG_a, "%"REG_d, "%"REG_S            \
     );
 
 #define YSCALEYUV2PACKEDX_ACCURATE_UV \
     __asm__ volatile(\
         "xor %%"REG_a", %%"REG_a"                       \n\t"\
-        ASMALIGN(4)\
+        ".p2align                      4                \n\t"\
         "nop                                            \n\t"\
         "1:                                             \n\t"\
         "lea "CHR_MMX_FILTER_OFFSET"(%0), %%"REG_d"     \n\t"\
@@ -250,7 +250,7 @@
         "pxor                      %%mm5, %%mm5         \n\t"\
         "pxor                      %%mm6, %%mm6         \n\t"\
         "pxor                      %%mm7, %%mm7         \n\t"\
-        ASMALIGN(4)\
+        ".p2align                      4                \n\t"\
         "2:                                             \n\t"\
         "movq     (%%"REG_S", %%"REG_a"), %%mm0         \n\t" /* UsrcData */\
         "movq "AV_STRINGIFY(VOF)"(%%"REG_S", %%"REG_a"), %%mm2         \n\t" /* VsrcData */\
@@ -295,7 +295,7 @@
     "pxor                      %%mm5, %%mm5         \n\t"\
     "pxor                      %%mm7, %%mm7         \n\t"\
     "pxor                      %%mm6, %%mm6         \n\t"\
-    ASMALIGN(4)\
+    ".p2align                      4                \n\t"\
     "2:                                             \n\t"\
     "movq  (%%"REG_S", %%"REG_a", 2), %%mm0         \n\t" /* Y1srcData */\
     "movq 8(%%"REG_S", %%"REG_a", 2), %%mm2         \n\t" /* Y2srcData */\
@@ -381,7 +381,7 @@
     "movq              %%mm0, "CHR_MMX_FILTER_OFFSET"+8("#c") \n\t"\
     "movq              %%mm1, "LUM_MMX_FILTER_OFFSET"+8("#c") \n\t"\
     "xor            "#index", "#index"                        \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm2     \n\t" /* uvbuf0[eax]*/\
     "movq     (%3, "#index"), %%mm3     \n\t" /* uvbuf1[eax]*/\
@@ -413,7 +413,7 @@
 
 #define REAL_YSCALEYUV2RGB_UV(index, c) \
     "xor            "#index", "#index"  \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm2     \n\t" /* uvbuf0[eax]*/\
     "movq     (%3, "#index"), %%mm3     \n\t" /* uvbuf1[eax]*/\
@@ -488,7 +488,7 @@
 
 #define REAL_YSCALEYUV2PACKED1(index, c) \
     "xor            "#index", "#index"  \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm3     \n\t" /* uvbuf0[eax]*/\
     "movq "AV_STRINGIFY(VOF)"(%2, "#index"), %%mm4     \n\t" /* uvbuf0[eax+2048]*/\
@@ -503,7 +503,7 @@
 
 #define REAL_YSCALEYUV2RGB1(index, c) \
     "xor            "#index", "#index"  \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm3     \n\t" /* uvbuf0[eax]*/\
     "movq "AV_STRINGIFY(VOF)"(%2, "#index"), %%mm4     \n\t" /* uvbuf0[eax+2048]*/\
@@ -552,7 +552,7 @@
 
 #define REAL_YSCALEYUV2PACKED1b(index, c) \
     "xor "#index", "#index"             \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm2     \n\t" /* uvbuf0[eax]*/\
     "movq     (%3, "#index"), %%mm3     \n\t" /* uvbuf1[eax]*/\
@@ -571,7 +571,7 @@
 // do vertical chrominance interpolation
 #define REAL_YSCALEYUV2RGB1b(index, c) \
     "xor            "#index", "#index"  \n\t"\
-    ASMALIGN(4)\
+    ".p2align              4            \n\t"\
     "1:                                 \n\t"\
     "movq     (%2, "#index"), %%mm2     \n\t" /* uvbuf0[eax]*/\
     "movq     (%3, "#index"), %%mm3     \n\t" /* uvbuf1[eax]*/\
@@ -1025,6 +1025,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, const int16_t *lumFilter, 
 {
 #if COMPILE_TEMPLATE_MMX
     x86_reg dummy=0;
+    x86_reg dstW_reg = dstW;
     if(!(c->flags & SWS_BITEXACT)) {
         if (c->flags & SWS_ACCURATE_RND) {
             switch(c->dstFormat) {
@@ -1063,7 +1064,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, const int16_t *lumFilter, 
 
                 :: "r" (&c->redDither),
                 "m" (dummy), "m" (dummy), "m" (dummy),
-                "r" (dest), "m" (dstW)
+                "r" (dest), "m" (dstW_reg)
                 : "%"REG_a, "%"REG_c, "%"REG_d, "%"REG_S
                 );
                 return;
@@ -1137,7 +1138,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, const int16_t *lumFilter, 
 
                 :: "r" (&c->redDither),
                 "m" (dummy), "m" (dummy), "m" (dummy),
-                "r" (dest),  "m" (dstW)
+                "r" (dest),  "m" (dstW_reg)
                 : "%"REG_a, "%"REG_c, "%"REG_d, "%"REG_S
                 );
                 return;
@@ -2054,7 +2055,7 @@ static inline void RENAME(hScale)(int16_t *dst, int dstW, const uint8_t *src, in
             "pxor                %%mm7, %%mm7       \n\t"
             "push           %%"REG_BP"              \n\t" // we use 7 regs here ...
             "mov             %%"REG_a", %%"REG_BP"  \n\t"
-            ASMALIGN(4)
+            ".p2align                4              \n\t"
             "1:                                     \n\t"
             "movzwl   (%2, %%"REG_BP"), %%eax       \n\t"
             "movzwl  2(%2, %%"REG_BP"), %%ebx       \n\t"
@@ -2098,7 +2099,7 @@ static inline void RENAME(hScale)(int16_t *dst, int dstW, const uint8_t *src, in
             "pxor                 %%mm7, %%mm7      \n\t"
             "push            %%"REG_BP"             \n\t" // we use 7 regs here ...
             "mov              %%"REG_a", %%"REG_BP" \n\t"
-            ASMALIGN(4)
+            ".p2align                 4             \n\t"
             "1:                                     \n\t"
             "movzwl    (%2, %%"REG_BP"), %%eax      \n\t"
             "movzwl   2(%2, %%"REG_BP"), %%ebx      \n\t"
@@ -2149,7 +2150,7 @@ static inline void RENAME(hScale)(int16_t *dst, int dstW, const uint8_t *src, in
         dst-= counter/2;
         __asm__ volatile(
             "pxor                  %%mm7, %%mm7     \n\t"
-            ASMALIGN(4)
+            ".p2align                  4            \n\t"
             "1:                                     \n\t"
             "mov                      %2, %%"REG_c" \n\t"
             "movzwl      (%%"REG_c", %0), %%eax     \n\t"
@@ -2328,12 +2329,13 @@ static inline void RENAME(hyscale_fast)(SwsContext *c, int16_t *dst,
 #endif /* COMPILE_TEMPLATE_MMX2 */
     x86_reg xInc_shr16 = xInc >> 16;
     uint16_t xInc_mask = xInc & 0xffff;
+    x86_reg dstWidth_reg = dstWidth;
     //NO MMX just normal asm ...
     __asm__ volatile(
         "xor %%"REG_a", %%"REG_a"            \n\t" // i
         "xor %%"REG_d", %%"REG_d"            \n\t" // xx
         "xorl    %%ecx, %%ecx                \n\t" // xalpha
-        ASMALIGN(4)
+        ".p2align    4                       \n\t"
         "1:                                  \n\t"
         "movzbl    (%0, %%"REG_d"), %%edi    \n\t" //src[xx]
         "movzbl   1(%0, %%"REG_d"), %%esi    \n\t" //src[xx+1]
@@ -2355,7 +2357,7 @@ static inline void RENAME(hyscale_fast)(SwsContext *c, int16_t *dst,
         " jb        1b                       \n\t"
 
 
-        :: "r" (src), "m" (dst), "m" (dstWidth), "m" (xInc_shr16), "m" (xInc_mask)
+        :: "r" (src), "m" (dst), "m" (dstWidth_reg), "m" (xInc_shr16), "m" (xInc_mask)
         : "%"REG_a, "%"REG_d, "%ecx", "%"REG_D, "%esi"
     );
 #if COMPILE_TEMPLATE_MMX2
@@ -2468,11 +2470,12 @@ static inline void RENAME(hcscale_fast)(SwsContext *c, int16_t *dst,
 #endif /* COMPILE_TEMPLATE_MMX2 */
         x86_reg xInc_shr16 = (x86_reg) (xInc >> 16);
         uint16_t xInc_mask = xInc & 0xffff;
+        x86_reg dstWidth_reg = dstWidth;
         __asm__ volatile(
             "xor %%"REG_a", %%"REG_a"               \n\t" // i
             "xor %%"REG_d", %%"REG_d"               \n\t" // xx
             "xorl    %%ecx, %%ecx                   \n\t" // xalpha
-            ASMALIGN(4)
+            ".p2align    4                          \n\t"
             "1:                                     \n\t"
             "mov        %0, %%"REG_S"               \n\t"
             "movzbl  (%%"REG_S", %%"REG_d"), %%edi  \n\t" //src[xx]
@@ -2494,9 +2497,9 @@ static inline void RENAME(hcscale_fast)(SwsContext *c, int16_t *dst,
 /* GCC 3.3 makes MPlayer crash on IA-32 machines when using "g" operand here,
 which is needed to support GCC 4.0. */
 #if ARCH_X86_64 && AV_GCC_VERSION_AT_LEAST(3,4)
-            :: "m" (src1), "m" (dst), "g" (dstWidth), "m" (xInc_shr16), "m" (xInc_mask),
+            :: "m" (src1), "m" (dst), "g" (dstWidth_reg), "m" (xInc_shr16), "m" (xInc_mask),
 #else
-            :: "m" (src1), "m" (dst), "m" (dstWidth), "m" (xInc_shr16), "m" (xInc_mask),
+            :: "m" (src1), "m" (dst), "m" (dstWidth_reg), "m" (xInc_shr16), "m" (xInc_mask),
 #endif
             "r" (src2)
             : "%"REG_a, "%"REG_d, "%ecx", "%"REG_D, "%esi"
@@ -2963,13 +2966,13 @@ static void RENAME(sws_init_swScale)(SwsContext *c)
         switch(srcFormat) {
         case PIX_FMT_RGB48BE:
         case PIX_FMT_RGB48LE: c->chrToYV12 = rgb48ToUV_half; break;
-        case PIX_FMT_RGB32  :
-        case PIX_FMT_RGB32_1: c->chrToYV12 = bgr32ToUV_half; break;
+        case PIX_FMT_RGB32  : c->chrToYV12 = bgr32ToUV_half;  break;
+        case PIX_FMT_RGB32_1: c->chrToYV12 = bgr321ToUV_half; break;
         case PIX_FMT_BGR24  : c->chrToYV12 = RENAME(bgr24ToUV_half); break;
         case PIX_FMT_BGR565 : c->chrToYV12 = bgr16ToUV_half; break;
         case PIX_FMT_BGR555 : c->chrToYV12 = bgr15ToUV_half; break;
-        case PIX_FMT_BGR32  :
-        case PIX_FMT_BGR32_1: c->chrToYV12 = rgb32ToUV_half; break;
+        case PIX_FMT_BGR32  : c->chrToYV12 = rgb32ToUV_half;  break;
+        case PIX_FMT_BGR32_1: c->chrToYV12 = rgb321ToUV_half; break;
         case PIX_FMT_RGB24  : c->chrToYV12 = RENAME(rgb24ToUV_half); break;
         case PIX_FMT_RGB565 : c->chrToYV12 = rgb16ToUV_half; break;
         case PIX_FMT_RGB555 : c->chrToYV12 = rgb15ToUV_half; break;
@@ -2978,13 +2981,13 @@ static void RENAME(sws_init_swScale)(SwsContext *c)
         switch(srcFormat) {
         case PIX_FMT_RGB48BE:
         case PIX_FMT_RGB48LE: c->chrToYV12 = rgb48ToUV; break;
-        case PIX_FMT_RGB32  :
-        case PIX_FMT_RGB32_1: c->chrToYV12 = bgr32ToUV; break;
+        case PIX_FMT_RGB32  : c->chrToYV12 = bgr32ToUV;  break;
+        case PIX_FMT_RGB32_1: c->chrToYV12 = bgr321ToUV; break;
         case PIX_FMT_BGR24  : c->chrToYV12 = RENAME(bgr24ToUV); break;
         case PIX_FMT_BGR565 : c->chrToYV12 = bgr16ToUV; break;
         case PIX_FMT_BGR555 : c->chrToYV12 = bgr15ToUV; break;
-        case PIX_FMT_BGR32  :
-        case PIX_FMT_BGR32_1: c->chrToYV12 = rgb32ToUV; break;
+        case PIX_FMT_BGR32  : c->chrToYV12 = rgb32ToUV;  break;
+        case PIX_FMT_BGR32_1: c->chrToYV12 = rgb321ToUV; break;
         case PIX_FMT_RGB24  : c->chrToYV12 = RENAME(rgb24ToUV); break;
         case PIX_FMT_RGB565 : c->chrToYV12 = rgb16ToUV; break;
         case PIX_FMT_RGB555 : c->chrToYV12 = rgb15ToUV; break;
@@ -2998,6 +3001,7 @@ static void RENAME(sws_init_swScale)(SwsContext *c)
     case PIX_FMT_YUV420P16BE:
     case PIX_FMT_YUV422P16BE:
     case PIX_FMT_YUV444P16BE:
+    case PIX_FMT_Y400A    :
     case PIX_FMT_GRAY16BE : c->lumToYV12 = RENAME(yuy2ToY); break;
     case PIX_FMT_UYVY422  :
     case PIX_FMT_YUV420P16LE:
@@ -3017,10 +3021,10 @@ static void RENAME(sws_init_swScale)(SwsContext *c)
     case PIX_FMT_RGB4_BYTE: c->lumToYV12 = palToY; break;
     case PIX_FMT_MONOBLACK: c->lumToYV12 = monoblack2Y; break;
     case PIX_FMT_MONOWHITE: c->lumToYV12 = monowhite2Y; break;
-    case PIX_FMT_RGB32  :
-    case PIX_FMT_RGB32_1: c->lumToYV12 = bgr32ToY; break;
-    case PIX_FMT_BGR32  :
-    case PIX_FMT_BGR32_1: c->lumToYV12 = rgb32ToY; break;
+    case PIX_FMT_RGB32  : c->lumToYV12 = bgr32ToY;  break;
+    case PIX_FMT_RGB32_1: c->lumToYV12 = bgr321ToY; break;
+    case PIX_FMT_BGR32  : c->lumToYV12 = rgb32ToY;  break;
+    case PIX_FMT_BGR32_1: c->lumToYV12 = rgb321ToY; break;
     case PIX_FMT_RGB48BE:
     case PIX_FMT_RGB48LE: c->lumToYV12 = rgb48ToY; break;
     }
@@ -3030,18 +3034,17 @@ static void RENAME(sws_init_swScale)(SwsContext *c)
         case PIX_FMT_RGB32_1:
         case PIX_FMT_BGR32  :
         case PIX_FMT_BGR32_1: c->alpToYV12 = abgrToA; break;
+        case PIX_FMT_Y400A  : c->alpToYV12 = RENAME(yuy2ToY); break;
         }
     }
 
     switch (srcFormat) {
+    case PIX_FMT_Y400A  :
+        c->alpSrcOffset = 1;
+        break;
     case PIX_FMT_RGB32  :
     case PIX_FMT_BGR32  :
         c->alpSrcOffset = 3;
-        break;
-    case PIX_FMT_RGB32_1:
-    case PIX_FMT_BGR32_1:
-        c->lumSrcOffset = ALT32_CORR;
-        c->chrSrcOffset = ALT32_CORR;
         break;
     case PIX_FMT_RGB48LE:
         c->lumSrcOffset = 1;

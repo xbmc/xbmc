@@ -40,7 +40,7 @@ do_image_formats()
 do_audio_only()
 {
     file=${outfile}lavf.$1
-    do_ffmpeg $file -t 1 -qscale 10 -f s16le -i $pcm_src
+    do_ffmpeg $file -t 1 -qscale 10 $2 -f s16le -i $pcm_src $3
     do_ffmpeg_crc $file -i $target_path/$file
 }
 
@@ -57,7 +57,7 @@ fi
 
 if [ -n "$do_rm" ] ; then
 file=${outfile}lavf.rm
-do_ffmpeg $file -t 1 -qscale 10 -f image2 -vcodec pgmyuv -i $raw_src -f s16le -i $pcm_src
+do_ffmpeg $file -t 1 -qscale 10 -f image2 -vcodec pgmyuv -i $raw_src -f s16le -i $pcm_src -acodec ac3_fixed
 # broken
 #do_ffmpeg_crc $file -i $target_path/$file
 fi
@@ -129,7 +129,7 @@ fi
 if [ -n "$do_gif" ] ; then
 file=${outfile}lavf.gif
 do_ffmpeg $file -t 1 -qscale 10 -f image2 -vcodec pgmyuv -i $raw_src -pix_fmt rgb24
-#do_ffmpeg_crc $file -i $target_path/$file
+do_ffmpeg_crc $file -i $target_path/$file -pix_fmt rgb24
 fi
 
 if [ -n "$do_yuv4mpeg" ] ; then
@@ -146,6 +146,10 @@ fi
 
 if [ -n "$do_ppm" ] ; then
 do_image_formats ppm
+fi
+
+if [ -n "$do_png" ] ; then
+do_image_formats png
 fi
 
 if [ -n "$do_bmp" ] ; then
@@ -202,8 +206,16 @@ if [ -n "$do_voc" ] ; then
 do_audio_only voc
 fi
 
+if [ -n "$do_voc_s16" ] ; then
+do_audio_only s16.voc "-ac 2" "-acodec pcm_s16le"
+fi
+
 if [ -n "$do_ogg" ] ; then
 do_audio_only ogg
+fi
+
+if [ -n "$do_rso" ] ; then
+do_audio_only rso
 fi
 
 # pix_fmt conversions
@@ -222,5 +234,3 @@ for pix_fmt in $conversions ; do
                     -f rawvideo -s 352x288 -pix_fmt yuv444p
 done
 fi
-
-rm -f "$bench" "$bench2"

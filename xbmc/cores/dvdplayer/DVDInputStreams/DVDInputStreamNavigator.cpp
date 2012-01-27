@@ -73,21 +73,29 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // load the dvd language codes
   // g_LangCodeExpander.LoadStandardCodes();
 
-  // since libdvdnav automaticly play's the dvd if the directory contains VIDEO_TS.IFO
-  // we strip it here.
+  // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
+  // libdvdnav is still able to play without, so strip them.
+
+  // stripping only works 100% correctly for absolute paths.
+  // relative paths are not expected here and wouldn't make sense, so it's safe to assume we'll have
+  // at least one path separator character.
+
   strDVDFile = strdup(strFile);
-#ifndef _LINUX
-  if (strnicmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-#else
-  if (strncasecmp(strDVDFile + strlen(strDVDFile) - 12, "VIDEO_TS.IFO", 12) == 0)
-#endif
-  {
-    strDVDFile[strlen(strDVDFile) - 13] = '\0';
-  }
-#if defined(__APPLE__)
+  int len = strlen(strDVDFile);
+
+  if(len >= 13  // +1 on purpose, to include a separator char before the searched string
+  && strncasecmp(strDVDFile + len - 12, "VIDEO_TS.IFO", 12) == 0)
+    strDVDFile[len - 13] = '\0';
+
+  len = strlen(strDVDFile);
+  if(len >= 9  // +1 on purpose, to include a separator char before the searched string
+  && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
+    strDVDFile[len - 9] = '\0';
+
+#if defined(__APPLE__) && !defined(__arm__)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
-  Cocoa_MountPoint2DeviceName(strDVDFile);
+  strDVDFile = Cocoa_MountPoint2DeviceName(strDVDFile);
 #endif
 
   // open up the DVD device
@@ -267,28 +275,14 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if(m_holdmode == HOLDMODE_HELD)
     return NAVRESULT_HOLD;
 
-  try
-  {
-    // the main reading function
-    if(m_holdmode == HOLDMODE_SKIP)
-    { /* we where holding data, return the data held */
-      m_holdmode = HOLDMODE_DATA;
-      result = DVDNAV_STATUS_OK;
-    }
-    else
-      result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);
-
+  // the main reading function
+  if(m_holdmode == HOLDMODE_SKIP)
+  { /* we where holding data, return the data held */
+    m_holdmode = HOLDMODE_DATA;
+    result = DVDNAV_STATUS_OK;
   }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "CDVDInputStreamNavigator::ProcessBlock - exception thrown in dvdnav_get_next_cache_block.");
-
-    // okey, we are probably holding a vm_lock here so leave it.. this could potentialy cause problems if we aren't holding it
-    // but it's more likely that we do
-    LeaveCriticalSection((LPCRITICAL_SECTION)&(m_dvdnav->vm_lock));
-    m_bEOF = true;
-    return NAVRESULT_ERROR;
-  }
+  else
+    result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);
 
   if (result == DVDNAV_STATUS_ERR)
   {
@@ -764,7 +758,7 @@ void CDVDInputStreamNavigator::OnBack()
 // we don't allow skipping in menu's cause it will remove menu overlays
 void CDVDInputStreamNavigator::OnNext()
 {
-  if (m_dvdnav && !IsInMenu())
+  if (m_dvdnav && !(IsInMenu() && GetTotalButtons() > 0))
   {
     m_dll.dvdnav_next_pg_search(m_dvdnav);
   }
@@ -773,7 +767,7 @@ void CDVDInputStreamNavigator::OnNext()
 // we don't allow skipping in menu's cause it will remove menu overlays
 void CDVDInputStreamNavigator::OnPrevious()
 {
-  if (m_dvdnav && !IsInMenu())
+  if (m_dvdnav && !(IsInMenu() && GetTotalButtons() > 0))
   {
     m_dll.dvdnav_prev_pg_search(m_dvdnav);
   }
@@ -1054,6 +1048,17 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
 {
+  if (!m_dvdnav)
+    return false;
+
+  // cannot allow to return true in case of buttons (overlays) because otherwise back in DVDPlayer FlushBuffers will remove menu overlays
+  // therefore we just skip the request in case there are buttons and return false
+  if (IsInMenu() && GetTotalButtons() > 0)
+  {
+    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons", __FUNCTION__);
+    return false;
+  }
+
   bool enabled = IsSubtitleStreamEnabled();
   int audio    = GetActiveAudioStream();
   int subtitle = GetActiveSubtitleStream();

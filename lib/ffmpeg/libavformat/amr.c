@@ -100,12 +100,14 @@ static int amr_read_header(AVFormatContext *s,
         st->codec->codec_tag = MKTAG('s', 'a', 'w', 'b');
         st->codec->codec_id = CODEC_ID_AMR_WB;
         st->codec->sample_rate = 16000;
+        st->codec->frame_size = 320;
     }
     else
     {
         st->codec->codec_tag = MKTAG('s', 'a', 'm', 'r');
         st->codec->codec_id = CODEC_ID_AMR_NB;
         st->codec->sample_rate = 8000;
+        st->codec->frame_size = 160;
     }
     st->codec->channels = 1;
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -167,7 +169,7 @@ static int amr_read_packet(AVFormatContext *s,
 }
 
 #if CONFIG_AMR_DEMUXER
-AVInputFormat amr_demuxer = {
+AVInputFormat ff_amr_demuxer = {
     "amr",
     NULL_IF_CONFIG_SMALL("3GPP AMR file format"),
     0, /*priv_data_size*/
@@ -179,7 +181,7 @@ AVInputFormat amr_demuxer = {
 #endif
 
 #if CONFIG_AMR_MUXER
-AVOutputFormat amr_muxer = {
+AVOutputFormat ff_amr_muxer = {
     "amr",
     NULL_IF_CONFIG_SMALL("3GPP AMR file format"),
     "audio/amr",

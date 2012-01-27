@@ -24,6 +24,7 @@
  * Pictor/PC Paint decoder
  */
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "cga_data.h"
@@ -135,7 +136,7 @@ static int decode_frame(AVCodecContext *avctx,
     avctx->pix_fmt = PIX_FMT_PAL8;
 
     if (s->width != avctx->width && s->height != avctx->height) {
-        if (avcodec_check_dimensions(avctx, s->width, s->height) < 0)
+        if (av_image_check_size(s->width, s->height, 0, avctx) < 0)
             return -1;
         avcodec_set_dimensions(avctx, s->width, s->height);
         if (s->frame.data[0])
@@ -236,9 +237,9 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec pictor_decoder = {
+AVCodec ff_pictor_decoder = {
     "pictor",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_PICTOR,
     sizeof(PicContext),
     NULL,

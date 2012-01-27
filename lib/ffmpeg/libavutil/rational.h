@@ -29,6 +29,7 @@
 #define AVUTIL_RATIONAL_H
 
 #include <stdint.h>
+#include <limits.h>
 #include "attributes.h"
 
 /**
@@ -43,13 +44,16 @@ typedef struct AVRational{
  * Compare two rationals.
  * @param a first rational
  * @param b second rational
- * @return 0 if a==b, 1 if a>b and -1 if a<b
+ * @return 0 if a==b, 1 if a>b, -1 if a<b, and INT_MIN if one of the
+ * values is of the form 0/0
  */
 static inline int av_cmp_q(AVRational a, AVRational b){
     const int64_t tmp= a.num * (int64_t)b.den - b.num * (int64_t)a.den;
 
-    if(tmp) return (tmp>>63)|1;
-    else    return 0;
+    if(tmp) return ((tmp ^ a.den ^ b.den)>>63)|1;
+    else if(b.den && a.den) return 0;
+    else if(a.num && b.num) return (a.num>>31) - (b.num>>31);
+    else                    return INT_MIN;
 }
 
 /**
@@ -107,6 +111,8 @@ AVRational av_sub_q(AVRational b, AVRational c) av_const;
 
 /**
  * Convert a double precision floating point number to a rational.
+ * inf is expressed as {1,0} or {-1,0} depending on the sign.
+ *
  * @param d double to convert
  * @param max the maximum allowed numerator and denominator
  * @return (AVRational) d

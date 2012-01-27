@@ -19,26 +19,13 @@
  *
  */
 
-#include "system.h"
+#include <Python.h>
+
+#include "pyutil.h"
 #include "PlayListPlayer.h"
 #include "utils/URIUtils.h"
 #include "pyplaylist.h"
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/structmember.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/structmember.h"
-#endif
-#include "../XBPythonDll.h"
 #include "playlists/PlayListFactory.h"
-#include "pyutil.h"
 #include "listitem.h"
 #include "playlists/PlayList.h"
 #include "video/VideoInfoTag.h"
@@ -47,12 +34,6 @@
 using namespace std;
 using namespace PLAYLIST;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -107,7 +88,7 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetFileName(PlayListItem *self, PyObject *key)
   {
-    return Py_BuildValue((char*)"s", self->item->m_strPath.c_str());
+    return Py_BuildValue((char*)"s", self->item->GetPath().c_str());
   }
 
 /* PlayList Fucntions */
@@ -199,7 +180,7 @@ namespace PYXBMC
       pListItem = (ListItem*)pObjectListItem;
 
       // set m_strPath to the passed url
-      pListItem->item->m_strPath = strUrl;
+      pListItem->item->SetPath(strUrl);
 
       items.Add(pListItem->item);
     }
@@ -222,7 +203,7 @@ namespace PYXBMC
     "\n"
     "clear current playlist and copy items from the file to this Playlist\n"
     "filename can be like .pls or .m3u ...\n"
-    "returns False if unable to load playlist");
+    "returns False if unable to load playlist, True otherwise.");
 
   PyObject* PlayList_Load(PlayList *self, PyObject *args)
   {
@@ -231,7 +212,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cFileName)) return NULL;
 
     CFileItem item(cFileName);
-    item.m_strPath=cFileName;
+    item.SetPath(cFileName);
 
     if (item.IsPlayList())
     {
@@ -243,7 +224,7 @@ namespace PYXBMC
       if ( NULL != pPlayList.get())
       {
         // load it
-        if (!pPlayList->Load(item.m_strPath))
+        if (!pPlayList->Load(item.GetPath()))
         {
           //hmmm unable to load playlist?
           return Py_BuildValue((char*)"b", false);
@@ -257,7 +238,7 @@ namespace PYXBMC
         {
           CFileItemPtr playListItem =(*pPlayList)[i];
           if (playListItem->GetLabel().IsEmpty())
-            playListItem->SetLabel(URIUtils::GetFileName(playListItem->m_strPath));
+            playListItem->SetLabel(URIUtils::GetFileName(playListItem->GetPath()));
 
           self->pPlayList->Add(playListItem);
         }
@@ -270,8 +251,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    return Py_BuildValue((char*)"b", true);
   }
 
   PyDoc_STRVAR(remove__doc__,
@@ -424,12 +404,6 @@ namespace PYXBMC
     "Use PlayList[int position] or __getitem__(int position) to get a PlayListItem.");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject PlayListItem_Type;
 

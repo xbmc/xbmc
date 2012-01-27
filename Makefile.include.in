@@ -1,9 +1,10 @@
 AR=ar
 ARFLAGS=crus
 RM=rm -rf
-SHELL=/bin/bash
+SHELL=@SHELL@
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
+rel_top_srcdir=$(subst $(abspath $(abs_top_srcdir))/,,$(abspath $(CURDIR))/)
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
@@ -34,16 +35,18 @@ LDFLAGS+=@LDFLAGS@
 INCLUDES+=$(sort @INCLUDES@)
 INCLUDES+=-I@abs_top_srcdir@/lib
 INCLUDES+=-I@abs_top_srcdir@/xbmc
-INCLUDES+=-I@abs_top_srcdir@/lib/ffmpeg
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+	INCLUDES+=-I@abs_top_srcdir@/lib/ffmpeg
+endif
 INCLUDES+=-I@abs_top_srcdir@/xbmc/linux
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 DEFINES+= \
-	-D_LINUX \
+	@ARCH_DEFINES@ \
 	-D_FILE_DEFINED \
 	-D__STDC_CONSTANT_MACROS \
 	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \
-	@ARCH_DEFINES@ \
 	@DEFS@ \
 
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -55,60 +58,15 @@ ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o
 endif
 
-.cpp.o:
-	@rm -f ${<:.cpp=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
-
-.cc.o:
-	@rm -f ${<:.cc=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
-
-.c.o:
-	@rm -f ${<:.c=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
-
-.C.o:
-	@rm -f ${<:.C=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.C=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
-
-.S.o:
-	rm -f ${<:.S=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.S=.o}
-
-%.h.gch : %.h
-	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
-
-.m.o:
-	@rm -f ${<:.m=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
-
-.mm.o:
-	@rm -f ${<:.mm=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
-	@cp $*.d $*.P; \
-	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
-	  rm -f $*.d
+ifneq ($(V), 1)
+	SILENT_CPP=@echo "CPP     $(rel_top_srcdir)$@";
+	SILENT_CC =@echo "CC      $(rel_top_srcdir)$@";
+	SILENT_S  =@echo "S       $(rel_top_srcdir)$@";
+	SILENT_GCH=@echo "GCH     $(rel_top_srcdir)$@";
+	SILENT_MM =@echo "MM      $(rel_top_srcdir)$@";
+	SILENT_AR =@echo "AR      $(rel_top_srcdir)$@";
+	SILENT_LD =@echo "LD      $(rel_top_srcdir)$@";
+endif
 
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
@@ -116,20 +74,68 @@ OBJS+=$(filter %.o,$(SRCS:.S=.o))
 OBJS+=$(filter %.o,$(SRCS:.mm=.o))
 OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
+DEPS+=$(filter %.P,$(OBJS:.o=.P))
+
+GEN_DEPS=\
+  cp $*.d $*.P \
+  && sed -e 's/\#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+         -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P \
+  && rm -f $*.d \
+  || ( rm -f $*.P $@ && exit 1 )
+
+%.o: %.cpp
+	@rm -f $@
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+%.o: %.cc
+	@rm -f $@
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+%.o: %.c
+	@rm -f $@
+	$(SILENT_CC) $(CC) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+%.o: %.C
+	@rm -f $@
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+%.o: %.S
+	@rm -f $@
+	$(SILENT_CC) $(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+
+
+%.h.gch : %.h
+	$(SILENT_GCH) $(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+
+%.o: %.m
+	@rm -f $@
+	$(SILENT_MM) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+%.o: %.mm
+	@rm -f $@
+	$(SILENT_MM) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	&& $(GEN_DEPS)
+
+
 .PHONY : lib pch clean distclean distclean_evil
 
 $(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
+	$(SILENT_AR) $(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd "$$d"; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(DEPS)
 	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
 
 distclean:
-	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(STATICLIB) $(CLEAN_FILES) $(DISTCLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(STATICLIB) $(CLEAN_FILES) $(DISTCLEAN_FILES) $(PCH:.h=.h.gch) $(DEPS)
 	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" distclean || $(MAKE) -C "$$d" clean); fi ); done
 	if [ "$(shell pwd -P)" = "$(abs_top_srcdir)" ] || \
 	   [ "$(shell pwd)" = "$(abs_top_srcdir)" ]; then rm -f $(AUTOGENERATED_MAKEFILES) Makefile.include Makefile; fi

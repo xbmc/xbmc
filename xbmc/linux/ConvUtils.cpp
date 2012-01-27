@@ -27,8 +27,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <utils/log.h>
-
 
 /*
  ** The following two functions together make up an itoa()
@@ -62,7 +60,6 @@ char *itoa(int i, char *a, int r)
 
 void OutputDebugString(LPCTSTR lpOuputString)
 {
-  CLog::Log(LOGDEBUG, "%s", lpOuputString);
 }
 
 void strlwr( char* string )

@@ -71,8 +71,9 @@ public:
 #ifdef HAS_DVD_DRIVE
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
-#endif
   CStdString GetDiskLabel(const CStdString& devicePath="");
+  CStdString GetDiskUniqueId(const CStdString& devicePath="");
+#endif
   CStdString GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
 
@@ -93,6 +94,7 @@ protected:
   CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
 #ifdef HAS_DVD_DRIVE
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
+  bool HashDVD(const CStdString& dvdpath, uint32_t& crc);
 #endif
   bool m_bhasoptical;
 

@@ -18,7 +18,10 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-XBMC="xbmc --standalone \"$@\""
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+bindir="@bindir@"
+XBMC="${bindir}/xbmc --standalone $@"
 
 @XBMC_STANDALONE_SH_PULSE@
 
@@ -42,7 +45,8 @@ do
       CRASHCOUNT=$((CRASHCOUNT+1))
       if [ $(($CRASHCOUNT >= 3)) = "1" ]; then # Too many, bail out
         LOOP=0
-        echo "XBMC has exited uncleanly 3 times in the ${DIFF}s. Something is probably wrong"
+        echo "XBMC has exited uncleanly 3 times in the last ${DIFF} seconds."
+        echo "Something is probably wrong"
       fi
     fi
   fi

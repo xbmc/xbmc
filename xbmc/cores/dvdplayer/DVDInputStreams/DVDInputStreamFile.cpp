@@ -20,8 +20,9 @@
  */
 
 #include "DVDInputStreamFile.h"
-#include "FileItem.h"
 #include "filesystem/File.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace XFILE;
 
@@ -45,14 +46,12 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-  CStdString stdFile = strFile;
-
   m_pFile = new CFile();
   if (!m_pFile) return false;
 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
 
-  if( CFileItem(strFile, false).IsInternetStream() )
+  if ( URIUtils::IsInternetStream( CStdString(strFile) ) )
     flags |= READ_CACHED;
 
   // open file in binary mode
@@ -99,6 +98,10 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
 {
   if(!m_pFile) return -1;
+
+  if(whence == SEEK_POSSIBLE)
+    return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+
   __int64 ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
@@ -112,6 +115,29 @@ __int64 CDVDInputStreamFile::GetLength()
   if (m_pFile)
     return m_pFile->GetLength();
   return 0;
+}
+
+__int64 CDVDInputStreamFile::GetCachedBytes()
+{
+  SCacheStatus status;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
+    return status.forward;
+  else
+    return -1;
+}
+
+unsigned CDVDInputStreamFile::GetReadRate()
+{
+  SCacheStatus status;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
+  {
+    if(status.full)
+      return (unsigned)-1;
+    else
+      return status.currate;
+  }
+  else
+    return (unsigned)-1;
 }
 
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
@@ -133,3 +159,9 @@ int CDVDInputStreamFile::GetBlockSize()
     return 0;
 }
 
+void CDVDInputStreamFile::SetReadRate(unsigned rate)
+{
+  unsigned maxrate = rate + 1024 * 1024 / 8;
+  if(m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
+    CLog::Log(LOGDEBUG, "CDVDInputStreamFile::SetReadRate - set cache throttle rate to %u bytes per second", maxrate);
+}

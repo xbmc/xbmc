@@ -66,7 +66,7 @@ class CKaraokeLyricsManager
     bool        m_karaokeSongPlayed;
 
     //! Stores the last time the song was still played
-    DWORD       m_lastPlayedTime;
+    unsigned int m_lastPlayedTime;
 };
 
 

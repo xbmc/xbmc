@@ -141,7 +141,7 @@ static int at1_imdct_block(AT1SUCtx* su, AT1Ctx *q)
 
             /* overlap and window */
             q->dsp.vector_fmul_window(&q->bands[band_num][start_pos], prev_buf,
-                                      &su->spectrum[0][ref_pos + start_pos], ff_sine_32, 0, 16);
+                                      &su->spectrum[0][ref_pos + start_pos], ff_sine_32, 16);
 
             prev_buf = &su->spectrum[0][ref_pos+start_pos + 16];
             start_pos += block_size;
@@ -223,7 +223,7 @@ static int at1_unpack_dequant(GetBitContext* gb, AT1SUCtx* su,
 
             int num_specs = specs_per_bfu[bfu_num];
             int word_len  = !!idwls[bfu_num] + idwls[bfu_num];
-            float scale_factor = sf_table[idsfs[bfu_num]];
+            float scale_factor = ff_atrac_sf_table[idsfs[bfu_num]];
             bits_used += word_len * num_specs; /* add number of bits consumed by current BFU */
 
             /* check for bitstream overflow */
@@ -326,7 +326,7 @@ static av_cold int atrac1_decode_init(AVCodecContext *avctx)
 {
     AT1Ctx *q = avctx->priv_data;
 
-    avctx->sample_fmt = SAMPLE_FMT_FLT;
+    avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
 
     q->channels = avctx->channels;
 
@@ -365,7 +365,7 @@ static av_cold int atrac1_decode_end(AVCodecContext * avctx) {
 }
 
 
-AVCodec atrac1_decoder = {
+AVCodec ff_atrac1_decoder = {
     .name = "atrac1",
     .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_ATRAC1,

@@ -28,19 +28,19 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-bool CAlbum::Load(const TiXmlElement *album, bool chained)
+bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 {
   if (!album) return false;
-  if (!chained)
+  if (!append)
     Reset();
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetAdditiveString(album,"artist",g_advancedSettings.m_musicItemSeparator,strArtist);
-  XMLUtils::GetAdditiveString(album,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(album,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(album,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(album,"theme",g_advancedSettings.m_musicItemSeparator,strThemes);
+  XMLUtils::GetAdditiveString(album, "artist", g_advancedSettings.m_musicItemSeparator, strArtist, prioritise);
+  XMLUtils::GetAdditiveString(album, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prioritise);
+  XMLUtils::GetAdditiveString(album, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
+  XMLUtils::GetAdditiveString(album, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
+  XMLUtils::GetAdditiveString(album, "theme", g_advancedSettings.m_musicItemSeparator, strThemes, prioritise);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
@@ -58,11 +58,28 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
       rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
     iRating = MathUtils::round_int(rating);
   }
+
+  size_t iThumbCount = thumbURL.m_url.size();
+  CStdString xmlAdd = thumbURL.m_xml;
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
+    if (prioritise)
+    {
+      CStdString temp;
+      temp << *thumb;
+      xmlAdd = temp+xmlAdd;
+    }
     thumb = thumb->NextSiblingElement("thumb");
+  }
+  // prioritise thumbs from nfos
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  {
+    rotate(thumbURL.m_url.begin(),
+           thumbURL.m_url.begin()+iThumbCount, 
+           thumbURL.m_url.end());
+    thumbURL.m_xml = xmlAdd;
   }
 
   const TiXmlElement* node = album->FirstChildElement("track");

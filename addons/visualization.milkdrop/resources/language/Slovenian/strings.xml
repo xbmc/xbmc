@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Samodejen čas prelivanja</string>
+    <string id="30001">Čas med predlogami</string>
+    <string id="30002">Dodaten naključen čas</string>
+    <string id="30003">Vključi anisotropično filtriranje</string>
+    <string id="30004">Vključi ostre prehode</string>
+    <string id="30005">Glasnost za ostre prehode</string>
+    <string id="30006">Povprečen čas med ostrimi prehodi</string>
+    <string id="30007">Največja frekvenca osveževanja</string>
+    <string id="30008">Vključi stereo 3D</string>
+    <string id="30009">Paket predlog</string>
+    <string id="30010">Uporabniška mapa s predlogami        </string>
+    <string id="30011">Način mešanja predlog</string>
+
+    <string id="30020">WA51 predloge</string>
+    <string id="30021">Winamp predloge</string>
+    <string id="30022">Uporabniško določena mapa s predlogami</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f sekund</string>
+    <string id="30051">%2.0f %%</string>
+    <string id="30052">%2.0f fps</string>
+</strings>

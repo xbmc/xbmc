@@ -34,26 +34,44 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 {
 }
 
-
-void CGUISettingsSliderControl::Render()
+void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  // make sure the button has focus if it should have...
+  if (m_bInvalidated)
+  {
+    float sliderPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - m_width - m_buttonControl.GetLabelInfo().offsetX;
+    float sliderPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - m_height) * 0.5f;
+    CGUISliderControl::SetPosition(sliderPosX, sliderPosY);
+  }
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
+  ProcessText();
+  CGUISliderControl::Process(currentTime, dirtyregions);
+}
+
+void CGUISettingsSliderControl::Render()
+{
   m_buttonControl.Render();
   CGUISliderControl::Render();
-
-  // now render our text
-  m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
-  m_label.SetText(CGUISliderControl::GetDescription());
-  if (IsDisabled())
-    m_label.SetColor(CGUILabel::COLOR_DISABLED);
-  else if (HasFocus())
-    m_label.SetColor(CGUILabel::COLOR_FOCUSED);
-  else
-    m_label.SetColor(CGUILabel::COLOR_TEXT);
   m_label.Render();
+}
+
+void CGUISettingsSliderControl::ProcessText()
+{
+  bool changed = false;
+
+  changed |= m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
+  changed |= m_label.SetText(CGUISliderControl::GetDescription());
+  if (IsDisabled())
+    changed |= m_label.SetColor(CGUILabel::COLOR_DISABLED);
+  else if (HasFocus())
+    changed |= m_label.SetColor(CGUILabel::COLOR_FOCUSED);
+  else
+    changed |= m_label.SetColor(CGUILabel::COLOR_TEXT);
+
+  if (changed)
+    MarkDirtyRegion();
 }
 
 bool CGUISettingsSliderControl::OnAction(const CAction &action)
@@ -88,21 +106,19 @@ void CGUISettingsSliderControl::SetInvalid()
 void CGUISettingsSliderControl::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
-  float sliderPosX = posX + m_buttonControl.GetWidth() - m_width - m_buttonControl.GetLabelInfo().offsetX;
-  float sliderPosY = posY + (m_buttonControl.GetHeight() - m_height) * 0.5f;
-  CGUISliderControl::SetPosition(sliderPosX, sliderPosY);
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetWidth(float width)
 {
   m_buttonControl.SetWidth(width);
-  SetPosition(GetXPosition(), GetYPosition());
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetHeight(float height)
 {
   m_buttonControl.SetHeight(height);
-  SetPosition(GetXPosition(), GetYPosition());
+  CGUISliderControl::SetInvalid();
 }
 
 void CGUISettingsSliderControl::SetEnabled(bool bEnable)
@@ -116,8 +132,10 @@ CStdString CGUISettingsSliderControl::GetDescription() const
   return m_buttonControl.GetDescription() + " " + CGUISliderControl::GetDescription();
 }
 
-void CGUISettingsSliderControl::UpdateColors()
+bool CGUISettingsSliderControl::UpdateColors()
 {
-  m_buttonControl.UpdateColors();
-  CGUISliderControl::UpdateColors();
+  bool changed = CGUISliderControl::UpdateColors();
+  changed |= m_buttonControl.UpdateColors();
+
+  return changed;
 }

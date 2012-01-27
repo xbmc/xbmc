@@ -26,7 +26,6 @@
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"
-#include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
 #include "FactoryFileDirectory.h"
@@ -35,6 +34,7 @@
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
 #include "AddonsDirectory.h"
+#include "SourcesDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
@@ -50,9 +50,6 @@
 #else
 #include "SMBDirectory.h"
 #endif
-#endif
-#if defined(HAS_FILESYSTEM_CCX)
-#include "XBMSDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
@@ -85,6 +82,7 @@
 #endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
+#include "Slingbox.h"
 #include "MythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
@@ -94,6 +92,12 @@
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "NFSDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_AFP
+#include "AFPDirectory.h"
 #endif
 
 using namespace XFILE;
@@ -117,6 +121,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
+  if (strProtocol == "sources") return new CSourcesDirectory();
   if (strProtocol == "addons") return new CAddonsDirectory();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   if (strProtocol == "cdda") return new CCDDADirectory();
@@ -130,7 +135,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
 #endif
-  if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
@@ -158,9 +162,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
 #endif
-#ifdef HAS_FILESYSTEM_CCX
-    if (strProtocol == "xbms") return new CXBMSDirectory();
-#endif
 #ifdef HAS_FILESYSTEM
 #ifdef HAS_FILESYSTEM_DAAP
     if (strProtocol == "daap") return new CDAAPDirectory();
@@ -173,6 +174,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
+    if (strProtocol == "sling") return new CSlingboxDirectory();
     if (strProtocol == "myth") return new CMythDirectory();
     if (strProtocol == "cmyth") return new CMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
@@ -187,6 +189,12 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_NFS
+    if (strProtocol == "nfs") return new CNFSDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_AFP
+      if (strProtocol == "afp") return new CAFPDirectory();
 #endif
   }
 

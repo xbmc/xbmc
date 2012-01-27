@@ -22,10 +22,10 @@
 precision mediump   float;
 uniform   sampler2D m_samp0;
 varying   vec4      m_cord0;
-varying   vec4      m_colour;
+varying   lowp vec4 m_colour;
 
 // SM_TEXTURE shader
 void main ()
 {
-  gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).bgra * m_colour);
+  gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).rgba * m_colour);
 }

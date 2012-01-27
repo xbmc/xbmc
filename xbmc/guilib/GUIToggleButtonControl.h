@@ -42,6 +42,7 @@ public:
   virtual ~CGUIToggleButtonControl(void);
   virtual CGUIToggleButtonControl *Clone() const { return new CGUIToggleButtonControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void AllocResources();
@@ -54,13 +55,13 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual CStdString GetDescription() const;
-  void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
-  void SetAltClickActions(const std::vector<CGUIActionDescriptor> &clickActions);
+  void SetToggleSelect(const CStdString &toggleSelect);
+  void SetAltClickActions(const CGUIAction &clickActions);
 
 protected:
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   virtual void OnClick();
   CGUIButtonControl m_selectButton;
-  int m_toggleSelect;
+  unsigned int m_toggleSelect;
 };
 #endif

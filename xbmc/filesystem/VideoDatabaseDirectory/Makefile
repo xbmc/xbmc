@@ -5,6 +5,7 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeEpisodes.cpp \
      DirectoryNodeGenre.cpp \
      DirectoryNodeMoviesOverview.cpp \
+     DirectoryNodeMusicVideoAlbum.cpp \
      DirectoryNodeMusicVideosOverview.cpp \
      DirectoryNodeOverview.cpp \
      DirectoryNodeRecentlyAddedEpisodes.cpp \
@@ -15,7 +16,6 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeSets.cpp \
      DirectoryNodeStudio.cpp \
      DirectoryNodeTitleMovies.cpp \
-     DirectoryNodeMusicVideoAlbum.cpp \
      DirectoryNodeTitleMusicVideos.cpp \
      DirectoryNodeTitleTvShows.cpp \
      DirectoryNodeTvShowsOverview.cpp \

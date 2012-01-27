@@ -1,2 +1,0 @@
-#undef gettext
-#define gettext

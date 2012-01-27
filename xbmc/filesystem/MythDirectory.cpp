@@ -320,6 +320,7 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
       m_dll->ref_release(program);
     }
   }
+  m_dll->ref_release(list);
 
   /*
    * Don't sort by name for TV_SHOWS as they all have the same name, so only date sort is useful.
@@ -392,6 +393,7 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
     }
 
   }
+  m_dll->ref_release(list);
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
@@ -582,12 +584,20 @@ bool CMythDirectory::Exists(const char* strPath)
 bool CMythDirectory::IsVisible(const cmyth_proginfo_t program)
 {
   CStdString group = GetValue(m_dll->proginfo_recgroup(program));
+  unsigned long flags = m_dll->proginfo_flags(program);
+
   /*
    * Ignore programs that were recorded using "LiveTV" or that have been deleted via the
    * "Auto Expire Instead of Delete Recording" option, which places the recording in the
    * "Deleted" recording group for x days rather than deleting straight away.
+   *
+   * As of 0.24, when a recording is deleted using the Myth Protocol it is marked as "pending delete"
+   * using the program flags mask. It is then scheduled to be physically deleted in a detached
+   * thread. This means that a deleted recording can still appear in the list of all recordings.
+   * Recordings that are "pending delete" will have a program flag mask that matches
+   * FL_DELETEPENDING = 0x00000080.
    */
-  return !(group.Equals("LiveTV") || group.Equals("Deleted"));
+  return !(group.Equals("LiveTV") || group.Equals("Deleted") || flags & 0x00000080);
 }
 
 bool CMythDirectory::IsMovie(const cmyth_proginfo_t program)

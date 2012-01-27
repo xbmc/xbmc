@@ -19,103 +19,40 @@
  *
  */
 
-#include "XSyncUtils.h"
-#include "XTimeUtils.h"
-#include "PlatformDefs.h"
-#include "XHandle.h"
-#include "XEventUtils.h"
+#ifndef _WIN32
 
-#ifdef __APPLE__
-#include <mach/mach.h>
-#include <SDL/SDL.h>
-#else
-#include <SDL.h>
-#endif
-
-#ifdef _LINUX
 
 #include <semaphore.h>
 #include <time.h>
 #include <errno.h>
 #include <stack>
 #include <functional>
+#ifdef __APPLE__
+#include <mach/mach.h>
+#endif
+
+#include "XSyncUtils.h"
+#include "XTimeUtils.h"
+#include "PlatformDefs.h"
+#include "XHandle.h"
+#include "XEventUtils.h"
 
 using namespace std;
+using namespace XbmcThreads;
 
 #include "../utils/log.h"
 #include "../utils/TimeUtils.h"
 
-static SDL_mutex *g_mutex = SDL_CreateMutex();
-
-bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
-  if (!hMutex)
-    return false;
-
-  // we use semaphores instead of the mutex because in SDL we CANT wait for a mutex
-  // to lock with timeout.
-  hMutex->m_pSem    = new CSemaphore(bInitialOwner?0:1);
-  hMutex->m_hMutex  = SDL_CreateMutex();
-  hMutex->ChangeType(CXHandle::HND_MUTEX);
-
-  if (bInitialOwner) {
-    hMutex->OwningThread  = pthread_self();
-    hMutex->RecursionCount  = 1;
-  }
-
-  return true;
-}
-
-bool  DestroyRecursiveMutex(HANDLE hMutex) {
-  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_pSem == NULL)
-    return false;
-
-  delete hMutex->m_pSem;
-  SDL_DestroyMutex(hMutex->m_hMutex);
-
-  hMutex->m_hMutex = NULL;
-  hMutex->m_pSem = NULL;
-
-  return true;
-}
-
-HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName ) {
-  HANDLE hMutex = new CXHandle(CXHandle::HND_MUTEX);
-
-  InitializeRecursiveMutex(hMutex,bInitialOwner);
-
-  return hMutex;
-}
-
-bool WINAPI ReleaseMutex( HANDLE hMutex ) {
-  if (hMutex == NULL || hMutex->m_pSem == NULL || hMutex->m_hMutex == NULL)
-    return false;
-
-  BOOL bOk = false;
-
-  SDL_mutexP(hMutex->m_hMutex);
-  if (hMutex->OwningThread == pthread_self() && hMutex->RecursionCount > 0) {
-    bOk = true;
-    if (--hMutex->RecursionCount == 0) {
-      hMutex->OwningThread = 0;
-      hMutex->m_pSem->Post();
-    }
-  }
-  SDL_mutexV(hMutex->m_hMutex);
-
-  return bOk;
-}
-
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
 static FILE* procMeminfoFP = NULL;
 #endif
 
-void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
+void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer)
 {
   if (!lpBuffer)
     return;
 
-  memset(lpBuffer, 0, sizeof(MEMORYSTATUS));
-  lpBuffer->dwLength = sizeof(MEMORYSTATUS);
+  memset(lpBuffer, 0, sizeof(MEMORYSTATUSEX));
 
 #ifdef __APPLE__
   uint64_t physmem;
@@ -125,7 +62,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 
   // Total physical memory.
   if (sysctl(mib, miblen, &physmem, &len, NULL, 0) == 0 && len == sizeof (physmem))
-      lpBuffer->dwTotalPhys = physmem;
+      lpBuffer->ullTotalPhys = physmem;
 
   // Virtual memory.
   mib[0] = CTL_VM; mib[1] = VM_SWAPUSAGE;
@@ -133,8 +70,8 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   len = sizeof(struct xsw_usage);
   if (sysctl(mib, miblen, &swap, &len, NULL, 0) == 0)
   {
-      lpBuffer->dwAvailPageFile = swap.xsu_avail;
-      lpBuffer->dwTotalVirtual = lpBuffer->dwTotalPhys + swap.xsu_total;
+      lpBuffer->ullAvailPageFile = swap.xsu_avail;
+      lpBuffer->ullTotalVirtual = lpBuffer->ullTotalPhys + swap.xsu_total;
   }
 
   // In use.
@@ -151,10 +88,44 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
       {
           uint64_t used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pageSize;
 
-          lpBuffer->dwAvailPhys = lpBuffer->dwTotalPhys - used;
-          lpBuffer->dwAvailVirtual  = lpBuffer->dwAvailPhys; // FIXME.
+          lpBuffer->ullAvailPhys = lpBuffer->ullTotalPhys - used;
+          lpBuffer->ullAvailVirtual  = lpBuffer->ullAvailPhys; // FIXME.
       }
   }
+#elif defined(__FreeBSD__)                                                                                                                                                                   
+  /* sysctl hw.physmem */                                                                                                                                                                    
+  size_t physmem = 0, mem_free = 0, pagesize = 0, swap_free = 0;                                                                                                                             
+  size_t mem_avail = 0, mem_inactive = 0, mem_cache = 0, len = 0;                                                                                                                            
+                                                                                                                                                                                             
+  /* physmem */                                                                                                                                                                              
+  len = sizeof(physmem);                                                                                                                                                                     
+  if (sysctlbyname("hw.physmem", &physmem, &len, NULL, 0) == 0) {                                                                                                                            
+    lpBuffer->ullTotalPhys = physmem;                                                                                                                                                         
+    lpBuffer->ullTotalVirtual = physmem;                                                                                                                                                      
+  }                                                                                                                                                                                          
+  /* pagesize */                                                                                                                                                                             
+  len = sizeof(pagesize);                                                                                                                                                                    
+  if (sysctlbyname("hw.pagesize", &pagesize, &len, NULL, 0) != 0)                                                                                                                            
+    pagesize = 4096;                                                                                                                                                                          
+  /* mem_inactive */                                                                                                                                                                         
+  len = sizeof(mem_inactive);                                                                                                                                                                
+  if (sysctlbyname("vm.stats.vm.v_inactive_count", &mem_inactive, &len, NULL, 0) == 0)                                                                                                       
+    mem_inactive *= pagesize;                                                                                                                                                                 
+  /* mem_cache */                                                                                                                                                                            
+  len = sizeof(mem_cache);                                                                                                                                                                   
+  if (sysctlbyname("vm.stats.vm.v_cache_count", &mem_cache, &len, NULL, 0) == 0)
+    mem_cache *= pagesize;
+  /* mem_free */
+  len = sizeof(mem_free);
+  if (sysctlbyname("vm.stats.vm.v_free_count", &mem_free, &len, NULL, 0) == 0)
+    mem_free *= pagesize;
+
+  /* mem_avail = mem_inactive + mem_cache + mem_free */
+  lpBuffer->ullAvailPhys = mem_inactive + mem_cache + mem_free;
+  lpBuffer->ullAvailVirtual = mem_inactive + mem_cache + mem_free;
+
+  if (sysctlbyname("vm.stats.vm.v_swappgsout", &swap_free, &len, NULL, 0) == 0)
+    lpBuffer->ullAvailPageFile = swap_free * pagesize;
 #else
   struct sysinfo info;
   char name[32];
@@ -187,261 +158,12 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
     rewind(procMeminfoFP);
     fflush(procMeminfoFP);
   }
-  lpBuffer->dwLength        = sizeof(MEMORYSTATUS);
-  lpBuffer->dwAvailPageFile = (info.freeswap * info.mem_unit);
-  lpBuffer->dwAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->dwAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
-  lpBuffer->dwTotalPhys     = (info.totalram * info.mem_unit);
-  lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
+  lpBuffer->ullAvailPageFile = (info.freeswap * info.mem_unit);
+  lpBuffer->ullAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->ullTotalPhys     = (info.totalram * info.mem_unit);
+  lpBuffer->ullTotalVirtual  = (info.totalram * info.mem_unit);
 #endif
-}
-
-//////////////////////////////////////////////////////////////////////////////
-static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
-{
-  DWORD dwRet = 0;
-  int   nRet = 0;
-  // something like the following would be nice,
-  // but I can't figure a wait to check if a mutex is locked:
-  // assert(hHandle->m_hMutex.IsLocked());
-  if (hHandle->m_bEventSet == false)
-  {
-    if (dwMilliseconds == 0)
-    {
-      nRet = SDL_MUTEX_TIMEDOUT;
-    }
-    else if (dwMilliseconds == INFINITE)
-    {
-      //wait until event is set
-      while( hHandle->m_bEventSet == false )
-      {
-        nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-      }
-    }
-    else
-    {
-      //wait until event is set, but modify remaining time
-      DWORD dwStartTime = CTimeUtils::GetTimeMS();
-      DWORD dwRemainingTime = dwMilliseconds;
-      while( hHandle->m_bEventSet == false )
-      {
-        nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwRemainingTime);
-        if(hHandle->m_bEventSet)
-          break;
-
-        //fix time to wait because of spurious wakeups
-        DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-        if(dwElapsed < dwMilliseconds)
-        {
-          dwRemainingTime = dwMilliseconds - dwElapsed;
-        }
-        else
-        {
-          //ran out of time
-          nRet = SDL_MUTEX_TIMEDOUT;
-          break;
-        }
-      }
-    }
-  }
-
-  if (hHandle->m_bManualEvent == false && nRet == 0)
-    hHandle->m_bEventSet = false;
-
-  // Translate return code.
-  if (nRet == 0)
-    dwRet = WAIT_OBJECT_0;
-  else if (nRet == SDL_MUTEX_TIMEDOUT)
-    dwRet = WAIT_TIMEOUT;
-  else
-    dwRet = WAIT_FAILED;
-
-  return dwRet;
-}
-
-DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
-  if (hHandle == NULL ||  hHandle == (HANDLE)-1)
-    return WAIT_FAILED;
-
-  DWORD dwRet = WAIT_FAILED;
-
-  switch (hHandle->GetType()) {
-    case CXHandle::HND_EVENT:
-    case CXHandle::HND_THREAD:
-
-      SDL_mutexP(hHandle->m_hMutex);
-
-      // Perform the wait.
-      dwRet = WaitForEvent(hHandle, dwMilliseconds);
-
-      SDL_mutexV(hHandle->m_hMutex);
-      break;
-
-    case CXHandle::HND_MUTEX:
-
-      SDL_mutexP(hHandle->m_hMutex);
-      if (hHandle->OwningThread == pthread_self() &&
-        hHandle->RecursionCount > 0) {
-        hHandle->RecursionCount++;
-        dwRet = WAIT_OBJECT_0;
-        SDL_mutexV(hHandle->m_hMutex);
-        break;
-      }
-
-      // Perform the wait.
-      dwRet = WaitForEvent(hHandle, dwMilliseconds);
-
-      if (dwRet == WAIT_OBJECT_0)
-      {
-        hHandle->OwningThread = pthread_self();
-        hHandle->RecursionCount = 1;
-      }
-
-      SDL_mutexV(hHandle->m_hMutex);
-
-      break;
-    default:
-      XXLog(ERROR, "cant wait for this type of object");
-  }
-
-  return dwRet;
-}
-
-DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds) {
-  DWORD dwRet = WAIT_FAILED;
-
-  if (nCount < 1 || lpHandles == NULL)
-    return dwRet;
-
-  BOOL bWaitEnded    = FALSE;
-  DWORD dwStartTime   = CTimeUtils::GetTimeMS();
-  BOOL *bDone = new BOOL[nCount];
-  CXHandle* multi = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-  for (unsigned int i=0; i < nCount; i++)
-  {
-    bDone[i] = FALSE;
-    SDL_mutexP(lpHandles[i]->m_hMutex);
-    lpHandles[i]->m_hParents.push_back(multi);
-    SDL_mutexV(lpHandles[i]->m_hMutex);
-  }
-
-  DWORD nSignalled = 0;
-  while (!bWaitEnded) {
-
-    for (unsigned int i=0; i < nCount; i++) {
-
-      if (!bDone[i]) {
-        DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 0);
-        if (dwWaitRC == WAIT_OBJECT_0) {
-          dwRet = WAIT_OBJECT_0 + i;
-
-          nSignalled++;
-
-          bDone[i] = TRUE;
-
-          if ( (bWaitAll && nSignalled == nCount) || !bWaitAll ) {
-            bWaitEnded = TRUE;
-            break;
-          }
-        }
-        else if (dwWaitRC == WAIT_FAILED) {
-          dwRet = WAIT_FAILED;
-          bWaitEnded = TRUE;
-          break;
-        }
-      }
-
-    }
-
-    if (bWaitEnded)
-      break;
-
-    DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-    if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
-      dwRet = WAIT_TIMEOUT;
-      bWaitEnded = TRUE;
-      break;
-    }
-
-    SDL_mutexP(multi->m_hMutex);
-    DWORD dwWaitRC = WaitForEvent(multi, 200);
-    SDL_mutexV(multi->m_hMutex);
-
-    if(dwWaitRC == WAIT_FAILED)
-    {
-      dwRet = WAIT_FAILED;
-      bWaitEnded = TRUE;
-      break;
-    }
-  }
-
-  for (unsigned int i=0; i < nCount; i++)
-  {
-    SDL_mutexP(lpHandles[i]->m_hMutex);
-    lpHandles[i]->m_hParents.remove_if(bind2nd(equal_to<CXHandle*>(), multi));
-    SDL_mutexV(lpHandles[i]->m_hMutex);
-  }
-
-  delete [] bDone;
-  CloseHandle(multi);
-  return dwRet;
-}
-
-LONG InterlockedIncrement(  LONG * Addend ) {
-  if (Addend == NULL)
-    return 0;
-
-  SDL_mutexP(g_mutex);
-  (* Addend)++;
-  LONG nKeep = *Addend;
-  SDL_mutexV(g_mutex);
-
-  return nKeep;
-}
-
-LONG InterlockedDecrement(  LONG * Addend ) {
-  if (Addend == NULL)
-    return 0;
-
-  SDL_mutexP(g_mutex);
-  (* Addend)--;
-  LONG nKeep = *Addend;
-  SDL_mutexV(g_mutex);
-
-  return nKeep;
-}
-
-LONG InterlockedCompareExchange(
-  LONG * Destination,
-  LONG Exchange,
-  LONG Comparand
-) {
-  if (Destination == NULL)
-    return 0;
-  SDL_mutexP(g_mutex);
-  LONG nKeep = *Destination;
-  if (*Destination == Comparand)
-    *Destination = Exchange;
-  SDL_mutexV(g_mutex);
-
-  return nKeep;
-}
-
-LONG InterlockedExchange(
-  LONG volatile* Target,
-  LONG Value
-)
-{
-  if (Target == NULL)
-    return 0;
-
-  SDL_mutexP(g_mutex);
-  LONG nKeep = *Target;
-  *Target = Value;
-  SDL_mutexV(g_mutex);
-
-  return nKeep;
 }
 
 #endif

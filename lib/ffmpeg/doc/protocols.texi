@@ -1,0 +1,447 @@
+@chapter Protocols
+@c man begin PROTOCOLS
+
+Protocols are configured elements in FFmpeg which allow to access
+resources which require the use of a particular protocol.
+
+When you configure your FFmpeg build, all the supported protocols are
+enabled by default. You can list all available ones using the
+configure option "--list-protocols".
+
+You can disable all the protocols using the configure option
+"--disable-protocols", and selectively enable a protocol using the
+option "--enable-protocol=@var{PROTOCOL}", or you can disable a
+particular protocol using the option
+"--disable-protocol=@var{PROTOCOL}".
+
+The option "-protocols" of the ff* tools will display the list of
+supported protocols.
+
+A description of the currently available protocols follows.
+
+@section concat
+
+Physical concatenation protocol.
+
+Allow to read and seek from many resource in sequence as if they were
+a unique resource.
+
+A URL accepted by this protocol has the syntax:
+@example
+concat:@var{URL1}|@var{URL2}|...|@var{URLN}
+@end example
+
+where @var{URL1}, @var{URL2}, ..., @var{URLN} are the urls of the
+resource to be concatenated, each one possibly specifying a distinct
+protocol.
+
+For example to read a sequence of files @file{split1.mpeg},
+@file{split2.mpeg}, @file{split3.mpeg} with @file{ffplay} use the
+command:
+@example
+ffplay concat:split1.mpeg\|split2.mpeg\|split3.mpeg
+@end example
+
+Note that you may need to escape the character "|" which is special for
+many shells.
+
+@section file
+
+File access protocol.
+
+Allow to read from or read to a file.
+
+For example to read from a file @file{input.mpeg} with @file{ffmpeg}
+use the command:
+@example
+ffmpeg -i file:input.mpeg output.mpeg
+@end example
+
+The ff* tools default to the file protocol, that is a resource
+specified with the name "FILE.mpeg" is interpreted as the URL
+"file:FILE.mpeg".
+
+@section gopher
+
+Gopher protocol.
+
+@section http
+
+HTTP (Hyper Text Transfer Protocol).
+
+@section mmst
+
+MMS (Microsoft Media Server) protocol over TCP.
+
+@section mmsh
+
+MMS (Microsoft Media Server) protocol over HTTP.
+
+The required syntax is:
+@example
+mmsh://@var{server}[:@var{port}][/@var{app}][/@var{playpath}]
+@end example
+
+@section md5
+
+MD5 output protocol.
+
+Computes the MD5 hash of the data to be written, and on close writes
+this to the designated output or stdout if none is specified. It can
+be used to test muxers without writing an actual file.
+
+Some examples follow.
+@example
+# Write the MD5 hash of the encoded AVI file to the file output.avi.md5.
+ffmpeg -i input.flv -f avi -y md5:output.avi.md5
+
+# Write the MD5 hash of the encoded AVI file to stdout.
+ffmpeg -i input.flv -f avi -y md5:
+@end example
+
+Note that some formats (typically MOV) require the output protocol to
+be seekable, so they will fail with the MD5 output protocol.
+
+@section pipe
+
+UNIX pipe access protocol.
+
+Allow to read and write from UNIX pipes.
+
+The accepted syntax is:
+@example
+pipe:[@var{number}]
+@end example
+
+@var{number} is the number corresponding to the file descriptor of the
+pipe (e.g. 0 for stdin, 1 for stdout, 2 for stderr).  If @var{number}
+is not specified, by default the stdout file descriptor will be used
+for writing, stdin for reading.
+
+For example to read from stdin with @file{ffmpeg}:
+@example
+cat test.wav | ffmpeg -i pipe:0
+# ...this is the same as...
+cat test.wav | ffmpeg -i pipe:
+@end example
+
+For writing to stdout with @file{ffmpeg}:
+@example
+ffmpeg -i test.wav -f avi pipe:1 | cat > test.avi
+# ...this is the same as...
+ffmpeg -i test.wav -f avi pipe: | cat > test.avi
+@end example
+
+Note that some formats (typically MOV), require the output protocol to
+be seekable, so they will fail with the pipe output protocol.
+
+@section rtmp
+
+Real-Time Messaging Protocol.
+
+The Real-Time Messaging Protocol (RTMP) is used for streaming multime‐
+dia content across a TCP/IP network.
+
+The required syntax is:
+@example
+rtmp://@var{server}[:@var{port}][/@var{app}][/@var{playpath}]
+@end example
+
+The accepted parameters are:
+@table @option
+
+@item server
+The address of the RTMP server.
+
+@item port
+The number of the TCP port to use (by default is 1935).
+
+@item app
+It is the name of the application to access. It usually corresponds to
+the path where the application is installed on the RTMP server
+(e.g. @file{/ondemand/}, @file{/flash/live/}, etc.).
+
+@item playpath
+It is the path or name of the resource to play with reference to the
+application specified in @var{app}, may be prefixed by "mp4:".
+
+@end table
+
+For example to read with @file{ffplay} a multimedia resource named
+"sample" from the application "vod" from an RTMP server "myserver":
+@example
+ffplay rtmp://myserver/vod/sample
+@end example
+
+@section rtmp, rtmpe, rtmps, rtmpt, rtmpte
+
+Real-Time Messaging Protocol and its variants supported through
+librtmp.
+
+Requires the presence of the librtmp headers and library during
+configuration. You need to explicitely configure the build with
+"--enable-librtmp". If enabled this will replace the native RTMP
+protocol.
+
+This protocol provides most client functions and a few server
+functions needed to support RTMP, RTMP tunneled in HTTP (RTMPT),
+encrypted RTMP (RTMPE), RTMP over SSL/TLS (RTMPS) and tunneled
+variants of these encrypted types (RTMPTE, RTMPTS).
+
+The required syntax is:
+@example
+@var{rtmp_proto}://@var{server}[:@var{port}][/@var{app}][/@var{playpath}] @var{options}
+@end example
+
+where @var{rtmp_proto} is one of the strings "rtmp", "rtmpt", "rtmpe",
+"rtmps", "rtmpte", "rtmpts" corresponding to each RTMP variant, and
+@var{server}, @var{port}, @var{app} and @var{playpath} have the same
+meaning as specified for the RTMP native protocol.
+@var{options} contains a list of space-separated options of the form
+@var{key}=@var{val}.
+
+See the librtmp manual page (man 3 librtmp) for more information.
+
+For example, to stream a file in real-time to an RTMP server using
+@file{ffmpeg}:
+@example
+ffmpeg -re -i myfile -f flv rtmp://myserver/live/mystream
+@end example
+
+To play the same stream using @file{ffplay}:
+@example
+ffplay "rtmp://myserver/live/mystream live=1"
+@end example
+
+@section rtp
+
+Real-Time Protocol.
+
+@section rtsp
+
+RTSP is not technically a protocol handler in libavformat, it is a demuxer
+and muxer. The demuxer supports both normal RTSP (with data transferred
+over RTP; this is used by e.g. Apple and Microsoft) and Real-RTSP (with
+data transferred over RDT).
+
+The muxer can be used to send a stream using RTSP ANNOUNCE to a server
+supporting it (currently Darwin Streaming Server and Mischa Spiegelmock's
+RTSP server, @url{http://github.com/revmischa/rtsp-server}).
+
+The required syntax for a RTSP url is:
+@example
+rtsp://@var{hostname}[:@var{port}]/@var{path}[?@var{options}]
+@end example
+
+@var{options} is a @code{&}-separated list. The following options
+are supported:
+
+@table @option
+
+@item udp
+Use UDP as lower transport protocol.
+
+@item tcp
+Use TCP (interleaving within the RTSP control channel) as lower
+transport protocol.
+
+@item multicast
+Use UDP multicast as lower transport protocol.
+
+@item http
+Use HTTP tunneling as lower transport protocol, which is useful for
+passing proxies.
+
+@item filter_src
+Accept packets only from negotiated peer address and port.
+@end table
+
+Multiple lower transport protocols may be specified, in that case they are
+tried one at a time (if the setup of one fails, the next one is tried).
+For the muxer, only the @code{tcp} and @code{udp} options are supported.
+
+When receiving data over UDP, the demuxer tries to reorder received packets
+(since they may arrive out of order, or packets may get lost totally). In
+order for this to be enabled, a maximum delay must be specified in the
+@code{max_delay} field of AVFormatContext.
+
+When watching multi-bitrate Real-RTSP streams with @file{ffplay}, the
+streams to display can be chosen with @code{-vst} @var{n} and
+@code{-ast} @var{n} for video and audio respectively, and can be switched
+on the fly by pressing @code{v} and @code{a}.
+
+Example command lines:
+
+To watch a stream over UDP, with a max reordering delay of 0.5 seconds:
+
+@example
+ffplay -max_delay 500000 rtsp://server/video.mp4?udp
+@end example
+
+To watch a stream tunneled over HTTP:
+
+@example
+ffplay rtsp://server/video.mp4?http
+@end example
+
+To send a stream in realtime to a RTSP server, for others to watch:
+
+@example
+ffmpeg -re -i @var{input} -f rtsp -muxdelay 0.1 rtsp://server/live.sdp
+@end example
+
+@section sap
+
+Session Announcement Protocol (RFC 2974). This is not technically a
+protocol handler in libavformat, it is a muxer and demuxer.
+It is used for signalling of RTP streams, by announcing the SDP for the
+streams regularly on a separate port.
+
+@subsection Muxer
+
+The syntax for a SAP url given to the muxer is:
+@example
+sap://@var{destination}[:@var{port}][?@var{options}]
+@end example
+
+The RTP packets are sent to @var{destination} on port @var{port},
+or to port 5004 if no port is specified.
+@var{options} is a @code{&}-separated list. The following options
+are supported:
+
+@table @option
+
+@item announce_addr=@var{address}
+Specify the destination IP address for sending the announcements to.
+If omitted, the announcements are sent to the commonly used SAP
+announcement multicast address 224.2.127.254 (sap.mcast.net), or
+ff0e::2:7ffe if @var{destination} is an IPv6 address.
+
+@item announce_port=@var{port}
+Specify the port to send the announcements on, defaults to
+9875 if not specified.
+
+@item ttl=@var{ttl}
+Specify the time to live value for the announcements and RTP packets,
+defaults to 255.
+
+@item same_port=@var{0|1}
+If set to 1, send all RTP streams on the same port pair. If zero (the
+default), all streams are sent on unique ports, with each stream on a
+port 2 numbers higher than the previous.
+VLC/Live555 requires this to be set to 1, to be able to receive the stream.
+The RTP stack in libavformat for receiving requires all streams to be sent
+on unique ports.
+@end table
+
+Example command lines follow.
+
+To broadcast a stream on the local subnet, for watching in VLC:
+
+@example
+ffmpeg -re -i @var{input} -f sap sap://224.0.0.255?same_port=1
+@end example
+
+Similarly, for watching in ffplay:
+
+@example
+ffmpeg -re -i @var{input} -f sap sap://224.0.0.255
+@end example
+
+And for watching in ffplay, over IPv6:
+
+@example
+ffmpeg -re -i @var{input} -f sap sap://[ff0e::1:2:3:4]
+@end example
+
+@subsection Demuxer
+
+The syntax for a SAP url given to the demuxer is:
+@example
+sap://[@var{address}][:@var{port}]
+@end example
+
+@var{address} is the multicast address to listen for announcements on,
+if omitted, the default 224.2.127.254 (sap.mcast.net) is used. @var{port}
+is the port that is listened on, 9875 if omitted.
+
+The demuxers listens for announcements on the given address and port.
+Once an announcement is received, it tries to receive that particular stream.
+
+Example command lines follow.
+
+To play back the first stream announced on the normal SAP multicast address:
+
+@example
+ffplay sap://
+@end example
+
+To play back the first stream announced on one the default IPv6 SAP multicast address:
+
+@example
+ffplay sap://[ff0e::2:7ffe]
+@end example
+
+@section tcp
+
+Trasmission Control Protocol.
+
+@section udp
+
+User Datagram Protocol.
+
+The required syntax for a UDP url is:
+@example
+udp://@var{hostname}:@var{port}[?@var{options}]
+@end example
+
+@var{options} contains a list of &-seperated options of the form @var{key}=@var{val}.
+Follow the list of supported options.
+
+@table @option
+
+@item buffer_size=@var{size}
+set the UDP buffer size in bytes
+
+@item localport=@var{port}
+override the local UDP port to bind with
+
+@item pkt_size=@var{size}
+set the size in bytes of UDP packets
+
+@item reuse=@var{1|0}
+explicitly allow or disallow reusing UDP sockets
+
+@item ttl=@var{ttl}
+set the time to live value (for multicast only)
+
+@item connect=@var{1|0}
+Initialize the UDP socket with @code{connect()}. In this case, the
+destination address can't be changed with udp_set_remote_url later.
+If the destination address isn't known at the start, this option can
+be specified in udp_set_remote_url, too.
+This allows finding out the source address for the packets with getsockname,
+and makes writes return with AVERROR(ECONNREFUSED) if "destination
+unreachable" is received.
+For receiving, this gives the benefit of only receiving packets from
+the specified peer address/port.
+@end table
+
+Some usage examples of the udp protocol with @file{ffmpeg} follow.
+
+To stream over UDP to a remote endpoint:
+@example
+ffmpeg -i @var{input} -f @var{format} udp://@var{hostname}:@var{port}
+@end example
+
+To stream in mpegts format over UDP using 188 sized UDP packets, using a large input buffer:
+@example
+ffmpeg -i @var{input} -f mpegts udp://@var{hostname}:@var{port}?pkt_size=188&buffer_size=65535
+@end example
+
+To receive over UDP from a remote endpoint:
+@example
+ffmpeg -i udp://[@var{multicast-address}]:@var{port}
+@end example
+
+@c man end PROTOCOLS

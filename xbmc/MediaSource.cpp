@@ -47,10 +47,7 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
   }
   else
   { // multiple valid paths?
-    if (g_advancedSettings.m_useMultipaths) // use new multipath:// protocol
-      strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
-    else // use older virtualpath:// protocol
-      strPath.Format("virtualpath://%s/%s/", category.c_str(), name.c_str());
+    strPath = CMultiPathDirectory::ConstructMultiPath(vecPaths);
   }
 
   strName = name;
@@ -59,7 +56,7 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
 
-  if (URIUtils::IsVirtualPath(strPath) || URIUtils::IsMultiPath(strPath))
+  if (URIUtils::IsMultiPath(strPath))
     m_iDriveType = SOURCE_TYPE_VPATH;
   else if (strPath.Left(4).Equals("udf:"))
   {

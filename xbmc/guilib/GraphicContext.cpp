@@ -41,17 +41,26 @@ extern bool g_fullScreen;
 /* quick access to a skin setting, fine unless we starts clearing video settings */
 static CSettingInt* g_guiSkinzoom = NULL;
 
-CGraphicContext::CGraphicContext(void)
+CGraphicContext::CGraphicContext(void) :
+  m_iScreenHeight(576), 
+  m_iScreenWidth(720), 
+  m_iScreenId(0), 
+  m_strMediaDir(""), 
+  /*m_videoRect,*/ 
+  m_bFullScreenRoot(false), 
+  m_bFullScreenVideo(false),
+  m_bCalibrating(false), 
+  m_Resolution(RES_INVALID), 
+  /*m_windowResolution,*/
+  m_guiScaleX(1.0f), 
+  m_guiScaleY(1.0f) 
+  /*,m_cameras, */ 
+  /*m_origins, */
+  /*m_clipRegions,*/
+  /*m_guiTransform,*/
+  /*m_finalTransform, */
+  /*m_groupTransform*/
 {
-  m_iScreenWidth = 720;
-  m_iScreenHeight = 576;
-  m_iScreenId = 0;
-  m_strMediaDir = "";
-  m_bCalibrating = false;
-  m_Resolution = RES_INVALID;
-  m_guiScaleX = m_guiScaleY = 1.0f;
-  m_windowResolution = RES_INVALID;
-  m_bFullScreenRoot = false;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -227,6 +236,19 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
+void CGraphicContext::SetScissors(const CRect &rect)
+{
+  m_scissors = rect;
+  m_scissors.Intersect(CRect(0,0,(float)m_iScreenWidth, (float)m_iScreenHeight));
+  g_Windowing.SetScissors(m_scissors);
+}
+
+void CGraphicContext::ResetScissors()
+{
+  m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
+  g_Windowing.ResetScissors(); // SetScissors(m_scissors) instead?
+}
+
 const CRect CGraphicContext::GetViewWindow() const
 {
   if (m_bCalibrating || m_bFullScreenVideo)
@@ -312,14 +334,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     return;
   }
 
-  //pause the player during the refreshrate change
-  int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-  if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+  //only pause when switching monitor resolution/refreshrate,
+  //not when switching between fullscreen and windowed or when resizing the window
+  if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
   {
-    g_application.m_pPlayer->Pause();
-    ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
-    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
-    pauseMessage->Create(true);
+    //pause the player during the refreshrate change
+    int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
+    if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+    {
+      g_application.m_pPlayer->Pause();
+      ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
+      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
+      pauseMessage->Create(true);
+    }
   }
 
   if (res >= RES_DESKTOP)
@@ -338,6 +365,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
+  m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
   m_Resolution    = res;
 
   //tell the videoreferenceclock that we're about to change the refreshrate
@@ -529,7 +557,12 @@ void CGraphicContext::ApplyStateBlock()
   g_Windowing.ApplyStateBlock();
 }
 
-void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
+const RESOLUTION_INFO &CGraphicContext::GetResInfo() const
+{
+  return g_settings.m_ResInfo[m_Resolution];
+}
+
+void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
@@ -544,8 +577,8 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
     float fToHeight;
 
     {
-      fFromWidth = (float)g_settings.m_ResInfo[res].iWidth;
-      fFromHeight = (float)g_settings.m_ResInfo[res].iHeight;
+      fFromWidth = (float)res.iWidth;
+      fFromHeight = (float)res.iHeight;
       fToPosX = (float)g_settings.m_ResInfo[m_Resolution].Overscan.left;
       fToPosY = (float)g_settings.m_ResInfo[m_Resolution].Overscan.top;
       fToWidth = (float)g_settings.m_ResInfo[m_Resolution].Overscan.right - fToPosX;
@@ -594,7 +627,7 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
   Unlock();
 }
 
-void CGraphicContext::SetRenderingResolution(RESOLUTION res, bool needsScaling)
+void CGraphicContext::SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling)
 {
   Lock();
   SetScalingResolution(res, needsScaling);
@@ -617,16 +650,10 @@ void CGraphicContext::InvertFinalCoords(float &x, float &y) const
 
 float CGraphicContext::GetScalingPixelRatio() const
 {
-  if (m_Resolution == m_windowResolution)
-    return GetPixelRatio(m_windowResolution);
-
-  RESOLUTION checkRes = m_windowResolution;
-  if (checkRes == RES_INVALID)
-    checkRes = m_Resolution;
-  // resolutions are different - we want to return the aspect ratio of the video resolution
+  // assume the resolutions are different - we want to return the aspect ratio of the video resolution
   // but only once it's been corrected for the skin -> screen coordinates scaling
-  float winWidth = (float)g_settings.m_ResInfo[checkRes].iWidth;
-  float winHeight = (float)g_settings.m_ResInfo[checkRes].iHeight;
+  float winWidth = (float)m_windowResolution.iWidth;
+  float winHeight = (float)m_windowResolution.iHeight;
   float outWidth = (float)g_settings.m_ResInfo[m_Resolution].iWidth;
   float outHeight = (float)g_settings.m_ResInfo[m_Resolution].iHeight;
   float outPR = GetPixelRatio(m_Resolution);
@@ -642,9 +669,8 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
   if (m_origins.size())
     cam += m_origins.top();
 
-  RESOLUTION windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
-  cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
-  cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
+  cam.x *= (float)m_iScreenWidth / m_windowResolution.iWidth;
+  cam.y *= (float)m_iScreenHeight / m_windowResolution.iHeight;
 
   m_cameras.push(cam);
   UpdateCameraPosition(m_cameras.top());
@@ -655,6 +681,39 @@ void CGraphicContext::RestoreCameraPosition()
   ASSERT(m_cameras.size());
   m_cameras.pop();
   UpdateCameraPosition(m_cameras.top());
+}
+
+CRect CGraphicContext::generateAABB(const CRect &rect) const
+{
+// ------------------------
+// |(x1, y1)      (x2, y2)|
+// |                      |
+// |(x3, y3)      (x4, y4)|
+// ------------------------
+
+  float x1 = rect.x1, x2 = rect.x2, x3 = rect.x1, x4 = rect.x2;
+  float y1 = rect.y1, y2 = rect.y1, y3 = rect.y2, y4 = rect.y2;
+
+  float z = 0.0f;
+  ScaleFinalCoords(x1, y1, z);
+  g_Windowing.Project(x1, y1, z);
+
+  z = 0.0f;
+  ScaleFinalCoords(x2, y2, z);
+  g_Windowing.Project(x2, y2, z);
+
+  z = 0.0f;
+  ScaleFinalCoords(x3, y3, z);
+  g_Windowing.Project(x3, y3, z);
+
+  z = 0.0f;
+  ScaleFinalCoords(x4, y4, z);
+  g_Windowing.Project(x4, y4, z);
+
+  return CRect( min(min(min(x1, x2), x3), x4),
+                min(min(min(y1, y2), y3), y4),
+                max(max(max(x1, x2), x3), x4),
+                max(max(max(y1, y2), y3), y4));
 }
 
 // NOTE: This routine is currently called (twice) every time there is a <camera>
@@ -720,7 +779,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
-      newRes = RES_DESKTOP;
+      newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
     uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)
@@ -746,9 +805,9 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
   m_strMediaDir = strMediaDir;
 }
 
-void CGraphicContext::Flip()
+void CGraphicContext::Flip(const CDirtyRegionList& dirty)
 {
-  g_Windowing.PresentRender();
+  g_Windowing.PresentRender(dirty);
 }
 
 void CGraphicContext::ApplyHardwareTransform()

@@ -107,7 +107,7 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
 
   // Get length (Motorola format)
   unsigned long length = CExifParse::Get32(pos);
-  pos += sizeof(long);                        // move data pointer to the next field
+  pos += 4;                                   // move data pointer to the next field
 
   // Now read IPTC data
   while (pos < (char*)(Data + itemlen-5))

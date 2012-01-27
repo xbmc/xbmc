@@ -33,6 +33,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_bStop = false;
   m_AppActive = true;
   m_AppFocused = true;
+  m_ExitCode = EXITCODE_QUIT;
 }
 
 CXBApplicationEx::~CXBApplicationEx()
@@ -42,6 +43,12 @@ CXBApplicationEx::~CXBApplicationEx()
 /* Create the app */
 bool CXBApplicationEx::Create()
 {
+  // Variables to perform app timing
+  m_bStop = false;
+  m_AppActive = true;
+  m_AppFocused = true;
+  m_ExitCode = EXITCODE_QUIT;
+
   // Initialize the app's device-dependent objects
   if (!Initialize())
   {
@@ -110,7 +117,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (!m_bStop) FrameMove();
+      if (!m_bStop) FrameMove(true);
       //reset exception count
       frameMoveExceptionCount = 0;
 
@@ -158,5 +165,5 @@ INT CXBApplicationEx::Run()
   Destroy();
 
   CLog::Log(LOGNOTICE, "application stopped..." );
-  return 0;
+  return m_ExitCode;
 }

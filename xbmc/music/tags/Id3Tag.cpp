@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "ThumbnailCache.h"
 
 #include <set>
 
@@ -85,7 +86,10 @@ bool CID3Tag::Read(const CStdString& strFile)
 
   m_tag = m_dll.id3_file_tag(id3file);
   if (!m_tag)
+  {
+    m_dll.id3_file_close(id3file);
     return false;
+  }
 
   m_musicInfoTag.SetURL(strFile);
 
@@ -167,9 +171,9 @@ bool CID3Tag::Parse()
   // other non-tagged files don't get this album image
   CStdString strCoverArt;
   if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
-    strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
+    strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
   else
-    strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
+    strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
   if (bFound && !CUtil::ThumbExists(strCoverArt))
   {
     CStdString strExtension=GetPictureMimeType(pictype);
@@ -209,7 +213,10 @@ bool CID3Tag::Write(const CStdString& strFile)
 
   m_tag = m_dll.id3_file_tag(id3file);
   if (!m_tag)
+  {
+    m_dll.id3_file_close(id3file);
     return false;
+  }
 
   SetTitle(m_musicInfoTag.GetTitle());
   SetArtist(m_musicInfoTag.GetArtist());

@@ -19,11 +19,12 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "DllLibCMyth.h"
 #include "MythSession.h"
 #include "video/VideoInfoTag.h"
 #include "settings/AdvancedSettings.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
@@ -59,7 +60,7 @@ void CMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CMythSession* session = *it;
-    if (session->m_timestamp + (MYTH_IDLE_TIMEOUT * 1000) < CTimeUtils::GetTimeMS())
+    if ((XbmcThreads::SystemClockMillis() - session->m_timestamp) > (MYTH_IDLE_TIMEOUT * 1000) )
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
@@ -97,7 +98,7 @@ void CMythSession::ReleaseSession(CMythSession* session)
 {
   CLog::Log(LOGDEBUG, "%s - Releasing MythTV session: %p", __FUNCTION__, session);
   session->SetListener(NULL);
-  session->m_timestamp = CTimeUtils::GetTimeMS();
+  session->m_timestamp = XbmcThreads::SystemClockMillis();
   CSingleLock lock(m_section_session);
   m_sessions.push_back(session);
 }
@@ -192,7 +193,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   /*
    * Set further FileItem and VideoInfoTag meta-data based on whether it is LiveTV or not.
    */
-  CURL url(item.m_strPath);
+  CURL url(item.GetPath());
   if (url.GetFileName().Left(9) == "channels/")
   {
     /*
@@ -229,7 +230,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (!number.IsEmpty())
     {
       url.SetFileName("channels/" + number + ".ts"); // e.g. channels/3.ts
-      item.m_strPath = url.Get();
+      item.SetPath(url.Get());
     }
     CStdString chanicon = GetValue(m_dll->proginfo_chanicon(program));
     if (!chanicon.IsEmpty())
@@ -367,7 +368,7 @@ CMythSession::CMythSession(const CURL& url)
   m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
   m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
   m_port      = url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT;
-  m_timestamp = CTimeUtils::GetTimeMS();
+  m_timestamp = XbmcThreads::SystemClockMillis();
   m_dll = new DllLibCMyth;
   m_dll->Load();
   if (m_dll->IsLoaded())
@@ -434,19 +435,19 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_ADD:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_ADD: %s", __FUNCTION__, buf);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_UPDATE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_UPDATE", __FUNCTION__);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_DELETE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_DELETE: %s", __FUNCTION__, buf);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_SCHEDULE_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
@@ -565,11 +566,14 @@ DllLibCMyth* CMythSession::GetLibrary()
   return NULL;
 }
 
-cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
+/*
+ * The caller must call m_dll->ref_release() when finished.
+ */
+cmyth_proglist_t CMythSession::GetAllRecordedPrograms()
 {
-  if (!m_all_recorded || force)
+  CSingleLock lock(m_section);
+  if (!m_all_recorded)
   {
-    CSingleLock lock(m_section);
     if (m_all_recorded)
     {
       m_dll->ref_release(m_all_recorded);
@@ -581,7 +585,24 @@ cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
 
     m_all_recorded = m_dll->proglist_get_all_recorded(control);
   }
+  /*
+   * An extra reference is needed to prevent a race condition while resetting the proglist from
+   * the Process() thread while it is being read.
+   */
+  m_dll->ref_hold(m_all_recorded);
+
   return m_all_recorded;
+}
+
+void CMythSession::ResetAllRecordedPrograms()
+{
+  CSingleLock lock(m_section);
+  if (m_all_recorded)
+  {
+    m_dll->ref_release(m_all_recorded);
+    m_all_recorded = NULL;
+  }
+  return;
 }
 
 void CMythSession::LogCMyth(int level, char *msg)

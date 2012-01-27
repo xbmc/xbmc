@@ -32,7 +32,8 @@
 #endif
 
 
-#define MYSQL_OK        0
+#define MYSQL_OK          0
+#define ER_BAD_DB_ERROR   1049
 
 using namespace std;
 
@@ -52,6 +53,7 @@ MysqlDatabase::MysqlDatabase() {
   login = "root";
   passwd = "null";
   conn = NULL;
+  default_charset = "";
 }
 
 MysqlDatabase::~MysqlDatabase() {
@@ -103,36 +105,64 @@ const char *MysqlDatabase::getErrorMsg() {
    return error.c_str();
 }
 
-int MysqlDatabase::connect() {
+int MysqlDatabase::connect(bool create_new) {
+  if (host.empty() || db.empty())
+    return DB_CONNECTION_NONE;
+
+  //CLog::Log(LOGDEBUG, "Connecting to mysql:%s:%s", host.c_str(), db.c_str());
+
   try
   {
-    // don't reconnect if ping is ok
-    if (conn != NULL && mysql_ping(conn) == 0)
-    {
-      return DB_CONNECTION_OK;
-    }
     disconnect();
 
     if (conn == NULL)
-    {
       conn = mysql_init(conn);
+
+    // establish connection with just user credentials
+    if (mysql_real_connect(conn, host.c_str(),login.c_str(),passwd.c_str(), NULL, atoi(port.c_str()),NULL,0) != NULL)
+    {
+      // disable mysql autocommit since we handle it
+      //mysql_autocommit(conn, false);
+
+      // enforce utf8 charset usage
+      default_charset = mysql_character_set_name(conn);
+      if(mysql_set_character_set(conn, "utf8")) // returns 0 on success
+      {
+        CLog::Log(LOGERROR, "Unable to set utf8 charset: %s [%d](%s)",
+                  db.c_str(), mysql_errno(conn), mysql_error(conn));
+      }
+
+      // check existence
+      if (exists())
+      {
+        // nothing to see here
+      }
+      else if (create_new)
+      {
+        char sqlcmd[512];
+        int ret;
+
+        sprintf(sqlcmd, "CREATE DATABASE `%s`", db.c_str());
+        if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
+        {
+          throw DbErrors("Can't create new database: '%s' (%d)", db.c_str(), ret);
+        }
+      }
+
+      if (mysql_select_db(conn, db.c_str()) == 0)
+      {
+        active = true;
+        return DB_CONNECTION_OK;
+      }
     }
 
-    // TODO block to avoid multiple connect on db
-    if (mysql_real_connect(conn,host.c_str(),login.c_str(),passwd.c_str(),db.c_str(),atoi(port.c_str()),NULL,0) != NULL)
+    // if we failed above, either credentials were incorrect or the database didn't exist
+    if (mysql_errno(conn) == ER_BAD_DB_ERROR && create_new)
     {
-      active = true;
-      return DB_CONNECTION_OK;
-    }
-    // Database doesn't exists
-    if (mysql_errno(conn) == 1049)
-    {
+
       if (create() == MYSQL_OK)
       {
         active = true;
-
-        // disable mysql autocommit since we handle it
-        mysql_autocommit(conn, false);
 
         return DB_CONNECTION_OK;
       }
@@ -140,6 +170,7 @@ int MysqlDatabase::connect() {
 
     CLog::Log(LOGERROR, "Unable to open database: %s [%d](%s)",
               db.c_str(), mysql_errno(conn), mysql_error(conn));
+
     return DB_CONNECTION_NONE;
   }
   catch(...)
@@ -151,69 +182,103 @@ int MysqlDatabase::connect() {
 }
 
 void MysqlDatabase::disconnect(void) {
-  if (active == false) return;
-  if (conn == NULL) return;
-  mysql_close(conn);
-  conn = NULL;
+  if (conn != NULL)
+  {
+    mysql_close(conn);
+    conn = NULL;
+  }
+
   active = false;
 }
 
 int MysqlDatabase::create() {
-  const char* seq_table = "sys_seq";
-  if (mysql_real_connect(conn, host.c_str(), login.c_str(), passwd.c_str(), NULL, atoi(port.c_str()),NULL,0) == NULL)
-  {
-    throw DbErrors("Can't create database: '%s'\nCan't connect to server",db.c_str());
-  }
-  char sqlcmd[512];
-  sprintf(sqlcmd, "CREATE DATABASE `%s`", db.c_str());
-  if ( query_with_reconnect(sqlcmd) )
-  {
-    throw DbErrors("Can't create database: '%s'\nError: %s", db.c_str(), strerror(errno));
-  }
-  // Reconnect to the server
-  if (mysql_real_connect(conn, host.c_str(), login.c_str(), passwd.c_str(), db.c_str(), atoi(port.c_str()), NULL, 0) == NULL)
-  {
-    throw DbErrors("Can't create database: '%s'\nCan't reconnect to server",db.c_str());
-  }
-  // Create the sequence table
-  sprintf(sqlcmd,"CREATE TABLE `%s` (`seq_name` VARCHAR( 64 ) NOT NULL, `nextid` INT NOT NULL, PRIMARY KEY ( `seq_name` ))", seq_table);
-  if ( query_with_reconnect(sqlcmd) )
-  {
-    throw DbErrors("Can't create sequence table in '%s'\nError: %s", db.c_str(), strerror(errno));
-  }
-  return MYSQL_OK;
+  return connect(true);
 }
 
 int MysqlDatabase::drop() {
-  if (active == false) throw DbErrors("Can't drop database: no active connection...");
+  if (!active)
+    throw DbErrors("Can't drop database: no active connection...");
   char sqlcmd[512];
+  int ret;
   sprintf(sqlcmd,"DROP DATABASE `%s`", db.c_str());
-  if ( query_with_reconnect(sqlcmd) )
+  if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
   {
-    throw DbErrors("Can't drop database: '%s'\nError: %s", db.c_str(), strerror(errno));
+    throw DbErrors("Can't drop database: '%s' (%d)", db.c_str(), ret);
   }
   disconnect();
   return DB_COMMAND_OK;
+}
+
+int MysqlDatabase::copy(const char *backup_name) {
+  if ( !active || conn == NULL)
+    throw DbErrors("Can't copy database: no active connection...");
+
+  char sql[512];
+  int ret;
+
+  // ensure we're connected to the db we are about to copy
+  if ( (ret=mysql_select_db(conn, db.c_str())) != MYSQL_OK )
+    throw DbErrors("Can't connect to source database: '%s'",db.c_str());
+
+  // grab a list of base tables only (no views)
+  sprintf(sql, "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'");
+  if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+    throw DbErrors("Can't determine base tables for copy.");
+
+  // get list of all tables from old DB
+  MYSQL_RES* res = mysql_store_result(conn);
+
+  if (res)
+  {
+    if (mysql_num_rows(res) == 0)
+    {
+      mysql_free_result(res);
+      throw DbErrors("The source database was unexpectedly empty.");
+    }
+
+    // create the new database
+    sprintf(sql, "CREATE DATABASE `%s`", backup_name);
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't create database for copy: '%s' (%d)", db.c_str(), ret);
+
+    MYSQL_ROW row;
+
+    // duplicate each table from old db to new db
+    while ( (row=mysql_fetch_row(res)) != NULL )
+    {
+      // copy the table definition
+      sprintf(sql, "CREATE TABLE %s.%s LIKE %s",
+              backup_name, row[0], row[0]);
+
+      if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), ret);
+
+      // copy the table data
+      sprintf(sql, "INSERT INTO %s.%s SELECT * FROM %s",
+              backup_name, row[0], row[0]);
+
+      if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), ret);
+    }
+  }
+
+  return 1;
 }
 
 int MysqlDatabase::query_with_reconnect(const char* query) {
   int attempts = 5;
   int result;
 
-  // try to reconnect if server is gone (up to 3 times)
-  while ( ((result = mysql_real_query(conn, query, strlen(query))) == CR_SERVER_GONE_ERROR) &&
+  // try to reconnect if server is gone
+  while ( ((result = mysql_real_query(conn, query, strlen(query))) != MYSQL_OK) &&
+          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR) && 
           (attempts-- > 0) )
   {
     CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
     active = false;
-    connect();
+    connect(true);
   }
 
-  // grab the latest error if not ok
-  if (result != MYSQL_OK)
-    result = mysql_errno(conn);
-
-  // set the error return string and return
   return result;
 }
 
@@ -282,33 +347,36 @@ void MysqlDatabase::rollback_transaction() {
   }
 }
 
-bool MysqlDatabase::exists() {
-  // Uncorrect name, check if tables are present inside the db
-  connect();
-  if (active && conn != NULL)
-  {
-    MYSQL_RES* res = mysql_list_dbs(conn, db.c_str());
-    if (res == NULL)
-    {
-      CLog::Log(LOGERROR,"Database is not present, does the user has CREATE DATABASE permission");
-      return false;
-    }
+bool MysqlDatabase::exists(void) {
+  bool ret = false;
 
-    bool result = (mysql_num_rows(res) > 0); // Avoid counting the sequence table
-    mysql_free_result(res);
-    // Check if there is some tables ( to permit user with no create database rights
-    if (result == true)
-    {
-      res = mysql_list_tables(conn, NULL);
-      if (res != NULL)
-      {
-        result = (mysql_num_rows(res) > 1);
-      }
-      mysql_free_result(res);
-    }
-    return result;
+  if ( conn == NULL || mysql_ping(conn) )
+  {
+    CLog::Log(LOGERROR, "Not connected to database, test of existence is not possible.");
+    return ret;
   }
-  return false;
+
+  MYSQL_RES* result = mysql_list_dbs(conn, db.c_str());
+  if (result == NULL)
+  {
+    CLog::Log(LOGERROR,"Database is not present, does the user has CREATE DATABASE permission");
+    return false;
+  }
+
+  ret = (mysql_num_rows(result) > 0);
+  mysql_free_result(result);
+
+  // Check if there is some tables ( to permit user with no create database rights
+  if (ret)
+  {
+    result = mysql_list_tables(conn, NULL);
+    if (result != NULL)
+      ret = (mysql_num_rows(result) > 0);
+
+    mysql_free_result(result);
+  }
+
+  return ret;
 }
 
 // methods for formatting
@@ -778,11 +846,11 @@ void MysqlDatabase::mysqlVXPrintf(
           while( realvalue<1.0 ){ realvalue *= 10.0; exp--; }
           if( exp>350 ){
             if( prefix=='-' ){
-              bufpt = "-Inf";
+              bufpt = (char *)"-Inf";
             }else if( prefix=='+' ){
-              bufpt = "+Inf";
+              bufpt = (char *)"+Inf";
             }else{
-              bufpt = "Inf";
+              bufpt = (char *)"Inf";
             }
             length = strlen(bufpt);
             break;
@@ -914,7 +982,7 @@ void MysqlDatabase::mysqlVXPrintf(
       case etDYNSTRING:
         bufpt = va_arg(ap,char*);
         if( bufpt==0 ){
-          bufpt = "";
+          bufpt = (char *)"";
         }else if( xtype==etDYNSTRING ){
           zExtra = bufpt;
         }
@@ -1206,7 +1274,29 @@ void MysqlDataset::fill_fields() {
 
 
 //------------- public functions implementation -----------------//
-//FILE* file;
+bool MysqlDataset::dropIndex(const char *table, const char *index)
+{
+  string sql;
+  string sql_prepared;
+
+  sql = "SELECT * FROM information_schema.statistics WHERE TABLE_SCHEMA=DATABASE() AND table_name='%s' AND index_name='%s'";
+  sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
+
+  if (!query(sql_prepared))
+    return false;
+
+  if (num_rows())
+  {
+    sql = "ALTER TABLE %s DROP INDEX %s";
+    sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
+
+    if (exec(sql_prepared) != MYSQL_OK)
+      return false;
+  }
+
+  return true;
+}
+
 int MysqlDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   string qry = sql;
@@ -1215,13 +1305,19 @@ int MysqlDataset::exec(const string &sql) {
 
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
+
   if ( (loc=qry.find("integer primary key")) != string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
+  // force the charset and collation to UTF-8
+  if ( qry.find("CREATE TABLE") != string::npos )
+  {
+    qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+  }
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  if ( qry.find("CREATE TRIGGER") != string::npos )
+  else if ( qry.find("CREATE TRIGGER") != string::npos )
   {
     if ( (loc=qry.find("BEGIN ")) != string::npos )
     {
@@ -1243,8 +1339,6 @@ int MysqlDataset::exec(const string &sql) {
   else
   {
     // TODO: collect results and store in exec_res
-
-
     return res;
   }
 }
@@ -1294,48 +1388,50 @@ bool MysqlDataset::query(const char *query) {
       field_value &v = res->at(i);
       switch (fields[i].type)
       {
-      case MYSQL_TYPE_LONGLONG:
-      case MYSQL_TYPE_DECIMAL:
-      case MYSQL_TYPE_TINY:
-      case MYSQL_TYPE_SHORT:
-      case MYSQL_TYPE_INT24:
-      case MYSQL_TYPE_LONG:
-        if (row[i] != NULL)
-        {
-          v.set_asInt(atoi(row[i]));
-        }
-        else
-        {
-          v.set_asInt(0);
-        }
-        break;
-      case MYSQL_TYPE_FLOAT:
-      case MYSQL_TYPE_DOUBLE:
-        if (row[i] != NULL)
-        {
-          v.set_asDouble(atof(row[i]));
-        }
-        else
-        {
-          v.set_asDouble(0);
-        }
-        break;
-      case MYSQL_TYPE_STRING:
-      case MYSQL_TYPE_VAR_STRING:
-      case MYSQL_TYPE_VARCHAR:
-        if (row[i] != NULL) v.set_asString((const char *)row[i] );
-        break;
-      case MYSQL_TYPE_TINY_BLOB:
-      case MYSQL_TYPE_MEDIUM_BLOB:
-      case MYSQL_TYPE_LONG_BLOB:
-      case MYSQL_TYPE_BLOB:
-        if (row[i] != NULL) v.set_asString((const char *)row[i]);
-        break;
-      case MYSQL_TYPE_NULL:
-      default:
-        v.set_asString("");
-        v.set_isNull();
-        break;
+        case MYSQL_TYPE_LONGLONG:
+        case MYSQL_TYPE_DECIMAL:
+        case MYSQL_TYPE_NEWDECIMAL:
+        case MYSQL_TYPE_TINY:
+        case MYSQL_TYPE_SHORT:
+        case MYSQL_TYPE_INT24:
+        case MYSQL_TYPE_LONG:
+          if (row[i] != NULL)
+          {
+            v.set_asInt(atoi(row[i]));
+          }
+          else
+          {
+            v.set_asInt(0);
+          }
+          break;
+        case MYSQL_TYPE_FLOAT:
+        case MYSQL_TYPE_DOUBLE:
+          if (row[i] != NULL)
+          {
+            v.set_asDouble(atof(row[i]));
+          }
+          else
+          {
+            v.set_asDouble(0);
+          }
+          break;
+        case MYSQL_TYPE_STRING:
+        case MYSQL_TYPE_VAR_STRING:
+        case MYSQL_TYPE_VARCHAR:
+          if (row[i] != NULL) v.set_asString((const char *)row[i] );
+          break;
+        case MYSQL_TYPE_TINY_BLOB:
+        case MYSQL_TYPE_MEDIUM_BLOB:
+        case MYSQL_TYPE_LONG_BLOB:
+        case MYSQL_TYPE_BLOB:
+          if (row[i] != NULL) v.set_asString((const char *)row[i]);
+          break;
+        case MYSQL_TYPE_NULL:
+        default:
+          CLog::Log(LOGDEBUG,"MYSQL: Unknown field type: %u", fields[i].type);
+          v.set_asString("");
+          v.set_isNull();
+          break;
       }
     }
     result.records.push_back(res);
@@ -1419,9 +1515,6 @@ void MysqlDataset::prev(void) {
 }
 
 void MysqlDataset::next(void) {
-#ifdef _XBOX
-  free_row();
-#endif
   Dataset::next();
   if (!eof())
       fill_fields();

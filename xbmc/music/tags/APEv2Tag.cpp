@@ -21,6 +21,7 @@
 
 #include "APEv2Tag.h"
 #include "filesystem/File.h"
+#include <climits>
 
 using namespace XFILE;
 
@@ -49,7 +50,11 @@ int CAPEv2Tag::fseek_callback(void *fp, long int offset, int whence)
 long CAPEv2Tag::ftell_callback(void *fp)
 {
   CFile *file = (CFile *)fp;
-  return file->GetPosition();
+  int64_t pos = file->GetPosition();
+  if(pos > LONG_MAX)
+    return -1;
+  else
+    return (long)pos;
 }
 
 CAPEv2Tag::CAPEv2Tag()

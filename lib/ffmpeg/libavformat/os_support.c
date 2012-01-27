@@ -234,9 +234,7 @@ int ff_socket_nonblock(int socket, int enable)
       return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) & ~O_NONBLOCK);
 #endif
 }
-#endif /* CONFIG_NETWORK */
 
-#if CONFIG_FFSERVER
 #if !HAVE_POLL_H
 int poll(struct pollfd *fds, nfds_t numfds, int timeout)
 {
@@ -294,7 +292,7 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
     if (rc < 0)
         return rc;
 
-    for(i = 0; i < (nfds_t) n; i++) {
+    for(i = 0; i < numfds; i++) {
         fds[i].revents = 0;
 
         if (FD_ISSET(fds[i].fd, &read_set))      fds[i].revents |= POLLIN;
@@ -305,5 +303,4 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
     return rc;
 }
 #endif /* HAVE_POLL_H */
-#endif /* CONFIG_FFSERVER */
-
+#endif /* CONFIG_NETWORK */

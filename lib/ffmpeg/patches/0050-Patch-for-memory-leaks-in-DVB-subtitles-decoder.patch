@@ -1,0 +1,25 @@
+From 078e7b14d4a44073dddebc6a0a544f648e69a9cb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jernej=20Fija=C4=8Dko?= <jernej@jernej-ThinkCentre-M91p.(none)>
+Date: Mon, 11 Jul 2011 10:11:04 +0200
+Subject: [PATCH] Patch for memory leaks in DVB subtitles decoder
+
+Signed-off-by: Joakim Plate <elupus@ecce.se>
+---
+ lib/ffmpeg/libavcodec/dvbsubdec.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/dvbsubdec.c b/lib/ffmpeg/libavcodec/dvbsubdec.c
+index e68a0b3..7c37915 100644
+--- a/lib/ffmpeg/libavcodec/dvbsubdec.c
++++ b/lib/ffmpeg/libavcodec/dvbsubdec.c
+@@ -1457,6 +1457,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
+                 break;
+             case DVBSUB_DISPLAYDEFINITION_SEGMENT:
+                 dvbsub_parse_display_definition_segment(avctx, p, segment_length);
++                break;
+             case DVBSUB_DISPLAY_SEGMENT:
+                 *data_size = dvbsub_display_end_segment(avctx, p, segment_length, sub);
+                 break;
+-- 
+1.7.4.msysgit.0
+

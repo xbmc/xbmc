@@ -24,11 +24,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if defined(_LINUX) && !defined(__APPLE__) || defined(WIN32)
-  #include <FLAC/stream_decoder.h>
-#else
-  #include "libflac/flac-1.2.1/include/FLAC/stream_decoder.h"
-#endif
+#include <FLAC/stream_decoder.h>
 #include "DynamicDll.h"
 #include "utils/log.h"
 

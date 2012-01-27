@@ -35,10 +35,15 @@
 class CGUIControlGroupList : public CGUIControlGroup
 {
 public:
-  CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, unsigned int scrollTime);
+  CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller);
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
+  virtual float Size() const;
+
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -49,29 +54,35 @@ public:
   virtual void ClearAll();
 
   virtual bool GetCondition(int condition, int data) const;
+  /**
+   * Calculate total size of child controls area (including gaps between controls)
+   */
+  float GetTotalSize() const;
+  ORIENTATION GetOrientation() const { return m_orientation; }
+
+  // based on grouplist orientation pick one value as minSize;
+  void SetMinSize(float minWidth, float minHeight);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
-  inline float Size() const;
   void ScrollTo(float offset);
   float GetAlignOffset() const;
 
   float m_itemGap;
   int m_pageControl;
 
-  float m_offset; // measurement in pixels of our origin
   float m_totalSize;
 
-  float m_scrollSpeed;
-  float m_scrollOffset;
-  unsigned int m_scrollLastTime;
-  unsigned int m_scrollTime;
+  CScroller m_scroller;
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;
   uint32_t m_alignment;
+
+  // for autosizing
+  float m_minSize;
 };
 

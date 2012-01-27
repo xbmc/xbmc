@@ -19,18 +19,18 @@
  *
  */
 
+// Get rid of 'dereferencing type-punned pointer will break strict-aliasing rules'
+// warnings caused by Py_RETURN_TRUE/FALSE.
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2))
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
+
 #include "action.h"
 #include "guilib/Key.h"
 #include "pyutil.h"
 
 using namespace std;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -176,12 +176,6 @@ namespace PYXBMC
     "");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Action_Type;
 

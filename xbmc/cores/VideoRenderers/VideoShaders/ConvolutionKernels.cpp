@@ -38,11 +38,15 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
 
   if (method == VS_SCALINGMETHOD_LANCZOS2)
     Lanczos2();
+  else if (method == VS_SCALINGMETHOD_SPLINE36_FAST)
+    Spline36Fast();
   else if (method == VS_SCALINGMETHOD_LANCZOS3_FAST)
     Lanczos3Fast();
+  else if (method == VS_SCALINGMETHOD_SPLINE36)
+    Spline36();
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3();
-  else if (method == VS_SCALINGMETHOD_CUBIC) 
+  else if (method == VS_SCALINGMETHOD_CUBIC)
     Bicubic(1.0 / 3.0, 1.0 / 3.0);
 
   ToIntFract();
@@ -144,6 +148,56 @@ void CConvolutionKernel::Lanczos3()
   }
 }
 
+void CConvolutionKernel::Spline36Fast()
+{
+  for (int i = 0; i < m_size; i++)
+  {
+    double x = (double)i / (double)m_size;
+
+    //generate taps
+    m_floatpixels[i * 4 + 0] = (float)(Spline36Weight(x - 2.0) + Spline36Weight(x - 3.0));
+    m_floatpixels[i * 4 + 1] = (float) Spline36Weight(x - 1.0);
+    m_floatpixels[i * 4 + 2] = (float) Spline36Weight(x      );
+    m_floatpixels[i * 4 + 3] = (float)(Spline36Weight(x + 1.0) + Spline36Weight(x + 2.0));
+
+    float weight = 0.0;
+    for (int j = 0; j < 4; j++)
+      weight += m_floatpixels[i * 4 + j];
+
+    for (int j = 0; j < 4; j++)
+      m_floatpixels[i * 4 + j] /= weight;
+  }
+}
+
+void CConvolutionKernel::Spline36()
+{
+  for (int i = 0; i < m_size; i++)
+  {
+    double x = (double)i / (double)m_size;
+
+    //generate taps
+    for (int j = 0; j < 3; j++)
+      m_floatpixels[i * 4 + j] = (float)Spline36Weight(x * 2.0 + (double)(j * 2 - 3));
+
+    m_floatpixels[i * 4 + 3] = 0.0;
+  }
+
+  for (int i = 0; i < m_size / 2; i++)
+  {
+    float weight = 0.0;
+    for (int j = 0; j < 3; j++)
+    {
+      weight += m_floatpixels[i * 4 + j];
+      weight += m_floatpixels[(i + m_size / 2) * 4 + j];
+    }
+    for (int j = 0; j < 3; j++)
+    {
+      m_floatpixels[i * 4 + j] /= weight;
+      m_floatpixels[(i + m_size / 2) * 4 + j] /= weight;
+    }
+  }
+}
+
 //generate a bicubic kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
 void CConvolutionKernel::Bicubic(double B, double C)
@@ -182,8 +236,8 @@ double CConvolutionKernel::BicubicWeight(double x, double B, double C)
   }
   else if (ax<2.0)
   {
-    return ((-B - 6*C) * ax * ax * ax + 
-            (6*B + 30*C) * ax * ax + (-12*B - 48*C) * 
+    return ((-B - 6*C) * ax * ax * ax +
+            (6*B + 30*C) * ax * ax + (-12*B - 48*C) *
              ax + (8*B + 24*C)) / 6;
   }
   else
@@ -192,6 +246,18 @@ double CConvolutionKernel::BicubicWeight(double x, double B, double C)
   }
 }
 
+double CConvolutionKernel::Spline36Weight(double x)
+{
+  double ax = fabs(x);
+
+  if      ( ax < 1.0 )
+    return ( ( 13.0 / 11.0 * (ax      ) - 453.0 / 209.0 ) * (ax      ) -   3.0 / 209.0 ) * (ax      ) + 1.0;
+  else if ( ax < 2.0 )
+    return ( ( -6.0 / 11.0 * (ax - 1.0) + 270.0 / 209.0 ) * (ax - 1.0) - 156.0 / 209.0 ) * (ax - 1.0);
+  else if ( ax < 3.0 )
+    return ( (  1.0 / 11.0 * (ax - 2.0) -  45.0 / 209.0 ) * (ax - 2.0) +  26.0 / 209.0 ) * (ax - 2.0);
+  return 0.0;
+}
 
 //convert float to high byte/low byte, so the kernel can be loaded into an 8 bit texture
 //with height 2 and converted back to real float in the shader
@@ -208,7 +274,7 @@ void CConvolutionKernel::ToIntFract()
       value = 0;
     else if (value > 65535)
       value = 65535;
-    
+
     int integer = value / 256;
     int fract   = value % 256;
 

@@ -1,0 +1,41 @@
+From f35c0b93a336edb04149c76105480fb1076a5f6c Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Sun, 6 Feb 2011 07:42:55 +0200
+Subject: [PATCH] configure: check yasm/nasm for working pextrd opcode
+
+NASM versions older than 2.08 fail to build ffmpeg with several
+"error: operation size not specified" errors but this is not caught in
+configure.
+
+Fix that by checking if "pextrd [eax], xmm0, 1" works in configure.
+
+---
+
+For the record, here are (some of?) the errors:
+libavcodec/x86/vc1dsp_yasm.asm:329: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:967: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:968: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:969: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:1629: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:2854: error: operation size not specified
+libavcodec/x86/vp8dsp.asm:2858: error: operation size not specified
+---
+ configure |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/configure b/configure
+index 83d9b87..a62e131 100755
+--- a/configure
++++ b/configure
+@@ -2672,7 +2672,7 @@ EOF
+             elf*) enabled debug && append YASMFLAGS $yasm_debug ;;
+         esac
+ 
+-        check_yasm "pabsw xmm0, xmm0" && enable yasm ||
++        check_yasm "pextrd [eax], xmm0, 1" && enable yasm ||
+             die "yasm not found, use --disable-yasm for a crippled build"
+     fi
+ 
+-- 
+1.7.3
+

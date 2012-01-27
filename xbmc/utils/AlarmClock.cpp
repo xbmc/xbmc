@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "log.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
-void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */)
+void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */, bool bLoop /* false */)
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
@@ -44,6 +45,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
   SAlarmClockEvent event;
   event.m_fSecs = n_secs;
   event.m_strCommand = strCommand;
+  event.m_loop = bLoop;
   if (!m_bIsRunning)
   {
     StopThread();
@@ -53,7 +55,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strAlarmClock;
   CStdString strStarted;
-  if (event.m_strCommand.Equals("xbmc.shutdown") || event.m_strCommand.Equals("xbmc.shutdown()"))
+  if (strName.CompareNoCase("shutdowntimer") == 0)
   {
     strAlarmClock = g_localizeStrings.Get(20144);
     strStarted = g_localizeStrings.Get(20146);
@@ -66,10 +68,10 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strMessage;
 
-  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
+  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60,static_cast<int>(event.m_fSecs)%60);
 
   if(!bSilent)
-     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
+     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
 
   event.watch.StartZero();
   CSingleLock lock(m_events);
@@ -108,10 +110,17 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
   {
     if(!bSilent)
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
   }
   else
+  {
     g_application.getApplicationMessenger().ExecBuiltIn(iter->second.m_strCommand);
+    if (iter->second.m_loop)
+    {
+      iter->second.watch.Reset();
+      return;
+    }
+  }
 
   iter->second.watch.Stop();
   m_event.erase(iter);

@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "addons/Visualisation.h"
 #include "threads/SingleLock.h"
+#include "utils/GLUtils.h"
 
 using namespace std;
 using namespace ADDON;
@@ -76,6 +77,16 @@ void CGUIRenderingControl::UpdateVisibility(const CGUIListItem *item)
   CGUIControl::UpdateVisibility(item);
   if (!IsVisible() && m_addon)
     FreeResources();
+}
+
+void CGUIRenderingControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // TODO Add processing to the addon so it could mark when actually changing
+  CSingleLock lock(m_rendering);
+  if (m_addon)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIRenderingControl::Render()

@@ -39,13 +39,13 @@ public:
     virtual ~CacheMemBuffer();
 
     virtual int Open() ;
-    virtual int Close();
+    virtual void Close();
 
     virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
     virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
     virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
-    virtual int64_t Seek(int64_t iFilePosition, int iWhence) ;
+    virtual int64_t Seek(int64_t iFilePosition) ;
     virtual void Reset(int64_t iSourcePosition) ;
 
 protected:

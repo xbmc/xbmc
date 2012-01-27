@@ -28,7 +28,7 @@
 #include "WindowHelper.h"
 #include "Application.h"
 #include <shlobj.h>
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #if _MSC_VER > 1400
 #include "Setupapi.h"
@@ -36,10 +36,11 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
-#include "log.h"
-#include "StringUtils.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
+#include "utils/URIUtils.h"
 
 // default Broadcom registy bits (setup when installing a CrystalHD card)
 #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
@@ -47,15 +48,12 @@
 #define BC_BCM_DLL        "bcmDIL.dll"
 #define BC_REG_INST_PATH  "InstallPath"
 
-#define DLL_ENV_PATH "special://xbmcbin/system/;" \
-                     "special://xbmcbin/system/players/dvdplayer/;" \
-                     "special://xbmcbin/system/players/paplayer/;" \
-                     "special://xbmcbin/system/python/;" \
-                     "special://xbmcbin/;" \
-                     "special://xbmc/system/;" \
+#define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \
+                     "special://xbmc/system/cdrip/;" \
                      "special://xbmc/system/python/;" \
+                     "special://xbmc/system/webserver/;" \
                      "special://xbmc/"
 
 extern HWND g_hWnd;
@@ -283,6 +281,16 @@ bool CWIN32Util::PowerManagement(PowerState State)
 #endif
 }
 
+int CWIN32Util::BatteryLevel()
+{
+  SYSTEM_POWER_STATUS SystemPowerStatus;
+
+  if (GetSystemPowerStatus(&SystemPowerStatus) && SystemPowerStatus.BatteryLifePercent != 255)
+      return SystemPowerStatus.BatteryLifePercent;
+
+  return 0;
+}
+
 bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit)
 {
   CStdString strCommand = strPath;
@@ -431,10 +439,20 @@ CStdString CWIN32Util::GetSystemPath()
 
 CStdString CWIN32Util::GetProfilePath()
 {
-  CStdString strProfilePath = GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE);
+  CStdString strProfilePath;
+  CStdString strHomePath;
+
+  CUtil::GetHomePath(strHomePath);
+  
+  if(g_application.PlatformDirectoriesEnabled())
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
+  else
+    strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
   
   if (strProfilePath.length() == 0)
-    CUtil::GetHomePath(strProfilePath);
+    strProfilePath = strHomePath;
+
+  URIUtils::AddSlashAtEnd(strProfilePath);
 
   return strProfilePath;
 }
@@ -504,7 +522,10 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
     strRootFormat.Format( _T("%c:"), cDL);
-    g_application.getApplicationMessenger().OpticalUnMount(strRootFormat);
+    CMediaSource share;
+    share.strPath = strRootFormat;
+    share.strName = share.strPath;
+    g_mediaManager.RemoveAutoSource(share);
   }
   return bRet? S_OK : S_FALSE;
 }
@@ -780,6 +801,15 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
         iPos += (wcslen( pcBuffer + iPos) + 1 );
         continue;
       }
+
+      // usb hard drives are reported as DRIVE_FIXED and won't be returned by queries with REMOVABLE_DRIVES set
+      // so test for usb hard drives
+      /*if(uDriveType == DRIVE_FIXED)
+      {
+        if(IsUsbDevice(strWdrive))
+          uDriveType = DRIVE_REMOVABLE;
+      }*/
+
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
@@ -1355,6 +1385,107 @@ bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
     return false;
 }
 
+// Retrieve the filename of the process that currently has the focus.
+// Typically this will be some process using the system tray grabbing
+// the focus and causing XBMC to minimise. Logging the offending
+// process name can help the user fix the problem.
+bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
+{
+  strProcessFile = "";
+
+  // Get the window that has the focus
+  HWND hfocus = GetForegroundWindow();
+  if (!hfocus)
+    return false;
+
+  // Get the process ID from the window handle
+  DWORD pid = 0;
+  GetWindowThreadProcessId(hfocus, &pid);
+
+  // Use OpenProcess to get the process handle from the process ID
+  HANDLE hproc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, pid);
+  if (!hproc)
+    return false;
+
+  // Load QueryFullProcessImageName dynamically because it isn't available
+  // in all versions of Windows.
+  char procfile[MAX_PATH+1];
+  DWORD procfilelen = MAX_PATH;
+
+  HINSTANCE hkernel32 = LoadLibrary("kernel32.dll");
+  if (hkernel32)
+  {
+    DWORD (WINAPI *pQueryFullProcessImageNameA)(HANDLE,DWORD,LPTSTR,PDWORD);
+    pQueryFullProcessImageNameA = (DWORD (WINAPI *)(HANDLE,DWORD,LPTSTR,PDWORD)) GetProcAddress(hkernel32, "QueryFullProcessImageNameA");
+    if (pQueryFullProcessImageNameA)
+      if (pQueryFullProcessImageNameA(hproc, 0, procfile, &procfilelen))
+        strProcessFile = procfile;
+    FreeLibrary(hkernel32);
+  }
+
+  // If QueryFullProcessImageName failed fall back to GetModuleFileNameEx.
+  // Note this does not work across x86-x64 boundaries.
+  if (strProcessFile == "")
+  {
+    HINSTANCE hpsapi = LoadLibrary("psapi.dll");
+    if (hpsapi)
+    {
+      DWORD (WINAPI *pGetModuleFileNameExA)(HANDLE,HMODULE,LPTSTR,DWORD); 
+      pGetModuleFileNameExA = (DWORD (WINAPI*)(HANDLE,HMODULE,LPTSTR,DWORD)) GetProcAddress(hpsapi, "GetModuleFileNameExA");
+      if (pGetModuleFileNameExA)
+        if (pGetModuleFileNameExA(hproc, NULL, procfile, MAX_PATH))
+          strProcessFile = procfile;
+      FreeLibrary(hpsapi);
+    }
+  }
+
+  CloseHandle(hproc);
+
+  return true;
+}
+
+// Adjust the src rectangle so that the dst is always contained in the target rectangle.
+void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
+{
+  if(dst.x1 < target.x1)
+  {
+    src.x1 -= (dst.x1 - target.x1)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x1  = target.x1;
+  }
+  if(dst.y1 < target.y1)
+  {
+    src.y1 -= (dst.y1 - target.y1)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y1  = target.y1;
+  }
+  if(dst.x2 > target.x2)
+  {
+    src.x2 -= (dst.x2 - target.x2)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x2  = target.x2;
+  }
+  if(dst.y2 > target.y2)
+  {
+    src.y2 -= (dst.y2 - target.y2)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y2  = target.y2;
+  }
+  // Callers expect integer coordinates.
+  src.x1 = floor(src.x1);
+  src.y1 = floor(src.y1);
+  src.x2 = ceil(src.x2);
+  src.y2 = ceil(src.y2);
+  dst.x1 = floor(dst.x1);
+  dst.y1 = floor(dst.y1);
+  dst.x2 = ceil(dst.x2);
+  dst.y2 = ceil(dst.y2);
+}
+
 void CWinIdleTimer::StartZero()
 {
   SetThreadExecutionState(ES_SYSTEM_REQUIRED);
@@ -1386,3 +1517,49 @@ extern "C"
     return NULL;
   }
 }
+
+// detect if a drive is a usb device
+// code taken from http://banderlogi.blogspot.com/2011/06/enum-drive-letters-attached-for-usb.html
+
+bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
+{
+  CStdStringW strWDevicePath;
+  strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
+ 
+  HANDLE deviceHandle = CreateFileW(
+    strWDevicePath.c_str(),
+   0,                // no access to the drive
+   FILE_SHARE_READ | // share mode
+   FILE_SHARE_WRITE,
+   NULL,             // default security attributes
+   OPEN_EXISTING,    // disposition
+   0,                // file attributes
+   NULL);            // do not copy file attributes
+
+  if(deviceHandle == INVALID_HANDLE_VALUE)
+    return false;
+ 
+  // setup query
+  STORAGE_PROPERTY_QUERY query;
+  memset(&query, 0, sizeof(query));
+  query.PropertyId = StorageDeviceProperty;
+  query.QueryType = PropertyStandardQuery;
+   
+  // issue query
+  DWORD bytes;
+  STORAGE_DEVICE_DESCRIPTOR devd;
+  STORAGE_BUS_TYPE busType = BusTypeUnknown;
+ 
+  if (DeviceIoControl(deviceHandle,
+   IOCTL_STORAGE_QUERY_PROPERTY,
+   &query, sizeof(query),
+   &devd, sizeof(devd),
+   &bytes, NULL))
+  {
+   busType = devd.BusType;
+  }
+   
+  CloseHandle(deviceHandle);
+ 
+  return BusTypeUsb == busType;
+ }

@@ -1,0 +1,13 @@
+<!-- Mappings for the Motorola Nyxboard remote -->
+<keymap>
+  <global>
+    <keyboard>
+      <home>XBMC.ActivateWindow(Home)</home>
+      <f3>OSD</f3>         <!-- EPG: same as Guide (ctrl-G) on MCE remote -->
+      <f3 mod="shift">ActivateWindow(video)</f3>    <!-- Red -->
+      <f4 mod="shift">ActivateWindow(music)</f4>    <!-- Green -->
+      <f5 mod="shift">ActivateWindow(pictures)</f5> <!-- Yellow -->
+      <f6 mod="shift">ActivateWindow(programs)</f6> <!-- Blue -->
+    </keyboard>
+  </global>
+</keymap>

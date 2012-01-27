@@ -45,7 +45,7 @@
 
 #include "avformat.h"
 #include "libavutil/intreadwrite.h"
-#include "raw.h"
+#include "pcm.h"
 #include "riff.h"
 #include "id3v2.h"
 
@@ -189,7 +189,7 @@ static int oma_read_probe(AVProbeData *p)
 }
 
 
-AVInputFormat oma_demuxer = {
+AVInputFormat ff_oma_demuxer = {
     "oma",
     NULL_IF_CONFIG_SMALL("Sony OpenMG audio"),
     0,
@@ -201,6 +201,5 @@ AVInputFormat oma_demuxer = {
     .flags= AVFMT_GENERIC_INDEX,
     .extensions = "oma,aa3",
     .codec_tag= (const AVCodecTag* const []){codec_oma_tags, 0},
-    .metadata_conv = ff_id3v2_metadata_conv,
 };
 

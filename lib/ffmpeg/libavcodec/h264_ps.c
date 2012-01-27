@@ -25,6 +25,7 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
+#include "libavcore/imgutils.h"
 #include "internal.h"
 #include "dsputil.h"
 #include "avcodec.h"
@@ -266,16 +267,16 @@ static void decode_scaling_matrices(H264Context *h, SPS *sps, PPS *pps, int is_s
 
 int ff_h264_decode_seq_parameter_set(H264Context *h){
     MpegEncContext * const s = &h->s;
-    int profile_idc, level_idc;
+    int profile_idc, level_idc, constraint_set_flags = 0;
     unsigned int sps_id;
     int i;
     SPS *sps;
 
     profile_idc= get_bits(&s->gb, 8);
-    get_bits1(&s->gb);   //constraint_set0_flag
-    get_bits1(&s->gb);   //constraint_set1_flag
-    get_bits1(&s->gb);   //constraint_set2_flag
-    get_bits1(&s->gb);   //constraint_set3_flag
+    constraint_set_flags |= get_bits1(&s->gb) << 0;   //constraint_set0_flag
+    constraint_set_flags |= get_bits1(&s->gb) << 1;   //constraint_set1_flag
+    constraint_set_flags |= get_bits1(&s->gb) << 2;   //constraint_set2_flag
+    constraint_set_flags |= get_bits1(&s->gb) << 3;   //constraint_set3_flag
     get_bits(&s->gb, 4); // reserved
     level_idc= get_bits(&s->gb, 8);
     sps_id= get_ue_golomb_31(&s->gb);
@@ -288,7 +289,9 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     if(sps == NULL)
         return -1;
 
+    sps->time_offset_length = 24;
     sps->profile_idc= profile_idc;
+    sps->constraint_set_flags = constraint_set_flags;
     sps->level_idc= level_idc;
 
     memset(sps->scaling_matrix4, 16, sizeof(sps->scaling_matrix4));
@@ -341,7 +344,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     sps->mb_width = get_ue_golomb(&s->gb) + 1;
     sps->mb_height= get_ue_golomb(&s->gb) + 1;
     if((unsigned)sps->mb_width >= INT_MAX/16 || (unsigned)sps->mb_height >= INT_MAX/16 ||
-       avcodec_check_dimensions(NULL, 16*sps->mb_width, 16*sps->mb_height)){
+       av_image_check_size(16*sps->mb_width, 16*sps->mb_height, 0, h->s.avctx)){
         av_log(h->s.avctx, AV_LOG_ERROR, "mb_width/height overflow\n");
         goto fail;
     }
@@ -371,7 +374,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         if(sps->crop_left || sps->crop_top){
             av_log(h->s.avctx, AV_LOG_ERROR, "insane cropping not completely supported, this could look slightly wrong ...\n");
         }
-        if(sps->crop_right >= 8 || sps->crop_bottom >= (8>> !sps->frame_mbs_only_flag)){
+        if(sps->crop_right >= 8 || sps->crop_bottom >= 8){
             av_log(h->s.avctx, AV_LOG_ERROR, "brainfart cropping not supported, this could look slightly wrong ...\n");
         }
     }else{
@@ -385,6 +388,9 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     if( sps->vui_parameters_present_flag )
         if (decode_vui_parameters(h, sps) < 0)
             goto fail;
+
+    if(!sps->sar.den)
+        sps->sar.den= 1;
 
     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
         av_log(h->s.avctx, AV_LOG_DEBUG, "sps:%u profile:%d/%d poc:%d ref:%d %dx%d %s %s crop:%d/%d/%d/%d %s %s %d/%d\n",

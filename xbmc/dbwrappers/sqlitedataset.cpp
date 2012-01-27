@@ -32,6 +32,11 @@
 #include "sqlitedataset.h"
 #include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
+#include "utils/URIUtils.h"
+
+#ifdef _WIN32
+#pragma comment(lib, "sqlite3.lib")
+#endif
 
 using namespace std;
 
@@ -105,6 +110,40 @@ Dataset* SqliteDatabase::CreateDataset() const {
 	return new SqliteDataset((SqliteDatabase*)this); 
 }
 
+void SqliteDatabase::setHostName(const char *newHost) {
+  host = newHost;
+
+  // hostname is the relative folder to the database, ensure it's slash terminated
+  if (host[host.length()-1] != '/' && host[host.length()-1] != '\\')
+    host += "/";
+
+  // ensure the fully qualified path has slashes in the correct direction
+  if ( (host[1] == ':') && isalpha(host[0]))
+  {
+    size_t pos = 0;
+    while ( (pos = host.find("/", pos)) != string::npos )
+      host.replace(pos++, 1, "\\");
+  }
+  else
+  {
+    size_t pos = 0;
+    while ( (pos = host.find("\\", pos)) != string::npos )
+      host.replace(pos++, 1, "/");
+  }
+}
+
+void SqliteDatabase::setDatabase(const char *newDb) {
+  db = newDb;
+
+  // db is the filename for the database, ensure it's not slash prefixed
+  if (newDb[0] == '/' || newDb[0] == '\\')
+    db = db.substr(1);
+
+  // ensure the ".db" extension is appended to the end
+  if ( db.find(".db") != (db.length()-3) )
+    db += ".db";
+}
+
 int SqliteDatabase::status(void) {
   if (active == false) return DB_CONNECTION_NONE;
   return DB_CONNECTION_OK;
@@ -166,46 +205,22 @@ const char *SqliteDatabase::getErrorMsg() {
    return error.c_str();
 }
 
-int SqliteDatabase::connect() {
+int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
-  
-  string db_fullpath;
-  // hostname is the relative folder to the database, ensure it's slash terminated
-  if (host[host.length()-1] != '/' && host[host.length()-1] != '\\')
-    db_fullpath = host + "/";
-  else
-    db_fullpath = host;
 
-  // db is the filename for the database, ensure it's not slash prefixed
-  if (db[0] == '/' || db[0] == '\\')
-    db_fullpath += db.substr(1);
-  else
-    db_fullpath += db;
+  //CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
-  // ensure the fully qualified path has slashes in the correct direction
-  if ( (db_fullpath[1] == ':') && isalpha(db_fullpath[0]))
-  {
-    size_t pos = 0;
-    while ( (pos = db_fullpath.find("/", pos)) != string::npos )
-      db_fullpath.replace(pos++, 1, "\\");
-  }
-  else
-  {
-    size_t pos = 0;
-    while ( (pos = db_fullpath.find("\\", pos)) != string::npos )
-      db_fullpath.replace(pos++, 1, "/");
-  }
-
-  // ensure the ".db" extension is appended to the end
-  if ( db_fullpath.find(".db") != (db_fullpath.length()-3) )
-    db_fullpath += ".db";
+  CStdString db_fullpath;
+  URIUtils::AddFileToFolder(host, db, db_fullpath);
 
   try
   {
-
     disconnect();
-    if (sqlite3_open(db_fullpath.c_str(), &conn)==SQLITE_OK)
+    int flags = SQLITE_OPEN_READWRITE;
+    if (create)
+      flags |= SQLITE_OPEN_CREATE;
+    if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
     {
       sqlite3_busy_handler(conn, busy_callback, NULL);
       char* err=NULL;
@@ -217,13 +232,10 @@ int SqliteDatabase::connect() {
       return DB_CONNECTION_OK;
     }
 
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)", db_fullpath.c_str(), GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
-              db_fullpath.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;
 }
@@ -253,7 +265,53 @@ void SqliteDatabase::disconnect(void) {
 }
 
 int SqliteDatabase::create() {
-  return connect();
+  return connect(true);
+}
+
+int SqliteDatabase::copy(const char *backup_name) {
+  if (active == false)
+    throw DbErrors("Can't copy database: no active connection...");
+
+  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", backup_name, db.c_str(), host.c_str());
+
+  int rc;
+  string backup_db = backup_name;
+
+  sqlite3 *pFile;           /* Database connection opened on zFilename */
+  sqlite3_backup *pBackup;  /* Backup object used to copy data */
+
+  //
+  if (backup_name[0] == '/' || backup_name[0] == '\\')
+    backup_db = backup_db.substr(1);
+
+  // ensure the ".db" extension is appended to the end
+  if ( backup_db.find(".db") != (backup_db.length()-3) )
+    backup_db += ".db";
+
+  string backup_path = host + backup_db;
+
+  /* Open the database file identified by zFilename. Exit early if this fails
+  ** for any reason. */
+  rc = sqlite3_open(backup_path.c_str(), &pFile);
+  if( rc==SQLITE_OK )
+  {
+    pBackup = sqlite3_backup_init(pFile, "main", getHandle(), "main");
+
+    if( pBackup )
+    {
+      (void)sqlite3_backup_step(pBackup, -1);
+      (void)sqlite3_backup_finish(pBackup);
+    }
+
+    rc = sqlite3_errcode(pFile);
+  }
+
+  (void)sqlite3_close(pFile);
+
+  if( rc != SQLITE_OK )
+    throw DbErrors("Can't copy database. (%d)", rc);
+
+  return rc;
 }
 
 int SqliteDatabase::drop() {
@@ -468,6 +526,15 @@ void SqliteDataset::fill_fields() {
 
 
 //------------- public functions implementation -----------------//
+bool SqliteDataset::dropIndex(const char *table, const char *index)
+{
+  string sql;
+
+  sql = static_cast<SqliteDatabase*>(db)->prepare("DROP INDEX IF EXISTS %s", index);
+
+  return (exec(sql) == SQLITE_OK);
+}
+
 
 int SqliteDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
@@ -482,7 +549,8 @@ int SqliteDataset::exec(const string &sql) {
   //   after:  CREATE UNIQUE INDEX ixPath ON path ( strPath )
   //
   // NOTE: unexpected results occur if brackets are not matched
-  if ( qry.find("CREATE UNIQUE INDEX") != string::npos )
+  if ( qry.find("CREATE UNIQUE INDEX") != string::npos ||
+      (qry.find("CREATE INDEX") != string::npos))
   {
     size_t pos = 0;
     size_t pos2 = 0;
@@ -499,6 +567,17 @@ int SqliteDataset::exec(const string &sql) {
         }
       }
     }
+  }
+  // Strip ON table from DROP INDEX statements:
+  // before: DROP INDEX foo ON table
+  // after:  DROP INDEX foo
+  size_t pos = qry.find("DROP INDEX ");
+  if ( pos != string::npos )
+  {
+    pos = qry.find(" ON ", pos+1);
+
+    if ( pos != string::npos )
+      qry = qry.substr(0, pos);
   }
 
   if((res = db->setErr(sqlite3_exec(handle(),qry.c_str(),&callback,&exec_res,&errmsg),qry.c_str())) == SQLITE_OK)
@@ -656,9 +735,6 @@ void SqliteDataset::prev(void) {
 }
 
 void SqliteDataset::next(void) {
-#ifdef _XBOX
-  free_row();
-#endif
   Dataset::next();
   if (!eof()) 
       fill_fields();

@@ -26,7 +26,6 @@
 #include "linux/PlatformInclude.h"
 #endif
 
-#include <SDL/SDL.h>
 #include "Application.h"
 #include "log.h"
 #include "TimeUtils.h"
@@ -97,7 +96,7 @@ double CPerformanceSample::GetEstimatedError()
 
   for (int i=0; i<100000;i++)
   {
-    int64_t tmDummy;
+    DECLARE_UNUSED(int64_t,tmDummy);
     tmDummy = CurrentHostCounter();
   }
 

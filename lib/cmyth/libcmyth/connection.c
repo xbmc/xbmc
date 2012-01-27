@@ -43,6 +43,8 @@
 #include <signal.h>
 #include <cmyth_local.h>
 
+static char * cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting);
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
@@ -365,7 +367,13 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 		tmp_ver = conn->conn_version;
 	conn->conn_version = tmp_ver;
 
-	if (tmp_ver >= 62) {
+	/*
+	 * Myth 0.23.1 (Myth 0.23 + fixes) introduced an out of sequence protocol version number (23056)
+	 * due to the next protocol version number having already been bumped in trunk.
+	 *
+	 * http://www.mythtv.org/wiki/Myth_Protocol
+	 */
+	if (tmp_ver >= 62 && tmp_ver != 23056) { // Treat protocol version number 23056 the same as protocol 56
 		myth_protomap_t *map = protomap;
 		while (map->version != 0 && map->version != tmp_ver)
 			map++;
@@ -420,6 +428,19 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 			  __FUNCTION__);
 		goto shut;
 	}
+
+	/*
+	 * All of the downstream code in libcmyth assumes a monotonically increasing version number.
+	 * This was not the case for Myth 0.23.1 (0.23 + fixes) where protocol version number 23056
+	 * was used since 57 had already been used in trunk.
+	 *
+	 * Convert from protocol version number 23056 to version number 56 so subsequent code within
+	 * libcmyth uses the same logic for the 23056 protocol as would be used for protocol version 56.
+	 */
+	if (conn->conn_version == 23056) {
+		conn->conn_version = 56;
+	}
+
 	return conn;
 
     shut:
@@ -532,7 +553,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting data connection\n",
 		  __FUNCTION__);
 	if (control->conn_version >= 17) {
-		myth_host = cmyth_conn_get_setting(control, prog->proginfo_host,
+		myth_host = cmyth_conn_get_setting_unlocked(control, prog->proginfo_host,
 		                                   "BackendServerIP");
 	}
 	if (!myth_host) {
@@ -1317,6 +1338,18 @@ cmyth_conn_get_free_recorder_count(cmyth_conn_t conn)
 char *
 cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
 {
+	char* result = NULL;
+
+	pthread_mutex_lock(&mutex);
+	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
+	pthread_mutex_unlock(&mutex);
+
+	return result;
+}
+
+static char *
+cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting)
+{
 	char msg[256];
 	int count, err;
 	char* result = NULL;
@@ -1332,8 +1365,6 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 			  __FUNCTION__);
 		return NULL;
 	}
-
-	pthread_mutex_lock(&mutex);
 
 	snprintf(msg, sizeof(msg), "QUERY_SETTING %s %s", hostname, setting);
 	if ((err = cmyth_send_message(conn, msg)) < 0) {
@@ -1367,12 +1398,11 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: odd left over data %s\n", __FUNCTION__, buffer);
 	}
 
-	pthread_mutex_unlock(&mutex);
 	return result;
 err:
 	if(result)
 		ref_release(result);
-	pthread_mutex_unlock(&mutex);
+
 	return NULL;
 }
 

@@ -38,7 +38,7 @@ CPictureInfoLoader::~CPictureInfoLoader()
 void CPictureInfoLoader::OnLoaderStart()
 {
   // Load previously cached items from HD
-  m_mapFileItems->m_strPath=m_pVecItems->m_strPath;
+  m_mapFileItems->SetPath(m_pVecItems->GetPath());
   m_mapFileItems->Load();
   m_mapFileItems->SetFastLookup(true);
 
@@ -61,7 +61,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
     return true;
 
   // first check the cached item
-  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->m_strPath];
+  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
   if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasPictureInfoTag())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
@@ -71,7 +71,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 
   if (m_loadTags)
   { // Nothing found, load tag from file
-    pItem->GetPictureInfoTag()->Load(pItem->m_strPath);
+    pItem->GetPictureInfoTag()->Load(pItem->GetPath());
     m_tagReads++;
   }
 

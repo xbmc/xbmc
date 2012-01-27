@@ -553,8 +553,8 @@ static int h261_decode_frame(AVCodecContext *avctx,
     int ret;
     AVFrame *pict = data;
 
-    dprintf(avctx, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
-    dprintf(avctx, "bytes=%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
+    av_dlog(avctx, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
+    av_dlog(avctx, "bytes=%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 
@@ -641,7 +641,7 @@ static av_cold int h261_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec h261_decoder = {
+AVCodec ff_h261_decoder = {
     "h261",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_H261,

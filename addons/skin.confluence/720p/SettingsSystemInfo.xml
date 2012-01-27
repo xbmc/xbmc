@@ -4,9 +4,18 @@
 	<controls>
 		<include>CommonSettingsBackground</include>
 		<include>CommonMediaPlayingBackground</include>
+		<control type="image">
+			<posx>0</posx>
+			<posy>100r</posy>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<animation effect="slide" start="0,10" end="0,0" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
 		<control type="group">
 			<posx>90</posx>
-			<posy>50</posy>
+			<posy>30</posy>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
 				<effect type="fade" start="0" end="100" time="300" />
@@ -14,13 +23,37 @@
 			<animation type="WindowClose" reversible="false">
 				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
 				<effect type="fade" start="100" end="0" time="300" />
-			</animation>			
+			</animation>
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1100</width>
-				<height>640</height>
-				<texture border="20">DialogBack.png</texture>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>1090</width>
+				<height>630</height>
+				<texture border="15">ContentPanel.png</texture>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>625</posy>
+				<width>1090</width>
+				<height>64</height>
+				<texture border="15">ContentPanelMirror.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>980</posx>
+				<posy>11</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>1</onleft>
+				<onright>1</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="image">
 				<description>LOGO</description>
@@ -68,38 +101,6 @@
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
 					<label>13277</label>
-				</control>
-				<control type="button" id="92">
-					<description>Button HDD</description>
-					<height>60</height>
-					<width>241</width>
-					<textoffsetx>0</textoffsetx>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>13275</label>
-					<visible>System.Platform.Xbox</visible>
-				</control>
-				<control type="button" id="93">
-					<description>Button DVD</description>
-					<height>60</height>
-					<width>241</width>
-					<textoffsetx>0</textoffsetx>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>13276</label>
-					<visible>System.Platform.Xbox</visible>
 				</control>
 				<control type="button" id="96">
 					<description>Button Network</description>
@@ -263,10 +264,10 @@
 					<font>font13</font>
 				</control>
 				<control type="label" id="52">
-					<description>XBMC XBE BUILD Version</description>
+					<description>XBMC BUILD Version</description>
 					<posx>750</posx>
 					<posy>400</posy>
-					<width>700</width>
+					<width>730</width>
 					<label>144</label>
 					<align>right</align>
 					<textcolor>blue</textcolor>
@@ -317,6 +318,7 @@
 				</control>
 			</control>
 		</control>
+		<include>CommonNowPlaying</include>
 		<control type="group">
 			<posx>60</posx>
 			<posy>0</posy>
@@ -336,28 +338,24 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>20</posx>
+			<posx>60</posx>
 			<posy>0</posy>
-			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home) | Window.Next(1111) | Window.Next(AddonBrowser)">WindowClose</animation>
+			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home) | Window.Previous(1111) | Window.Previous(AddonBrowser)">WindowOpen</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>80</width>
+				<width>250</width>
 				<height>35</height>
 				<texture border="0,0,32,0">header.png</texture>
 			</control>
-			<control type="button">
-				<posx>20</posx>
-				<posy>5</posy>
-				<width>25</width>
-				<height>20</height>
-				<texturenofocus>HomeIcon.png</texturenofocus>
-				<texturefocus>HomeIcon-Focus.png</texturefocus>
-				<label>-</label>
-				<onclick>ActivateWindow(Home)</onclick>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>220</posx>
+				<label>$LOCALIZE[130]</label>
 			</control>
 		</control>
+		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

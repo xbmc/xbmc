@@ -36,8 +36,15 @@
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "Shlobj.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "peripherals/Peripherals.h"
+#include "storage/DetectDVDType.h"
+#include "utils/JobManager.h"
 
 #ifdef _WIN32
+
+using namespace PERIPHERALS;
 
 #define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
 
@@ -48,7 +55,8 @@
 
 static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
-static XBMCKey Arrows_keymap[4];
+
+static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
 
 uint32_t g_uQueryCancelAutoPlay = 0;
 
@@ -105,7 +113,7 @@ void DIB_InitOSKeymap()
   VK_keymap[VK_EQUALS] = XBMCK_EQUALS;
   VK_keymap[VK_LBRACKET] = XBMCK_LEFTBRACKET;
   VK_keymap[VK_BACKSLASH] = XBMCK_BACKSLASH;
-  VK_keymap[VK_OEM_102] = XBMCK_LESS;
+  VK_keymap[VK_OEM_102] = XBMCK_BACKSLASH;
   VK_keymap[VK_RBRACKET] = XBMCK_RIGHTBRACKET;
   VK_keymap[VK_GRAVE] = XBMCK_BACKQUOTE;
   VK_keymap[VK_BACKTICK] = XBMCK_BACKQUOTE;
@@ -199,15 +207,38 @@ void DIB_InitOSKeymap()
   VK_keymap[VK_CANCEL] = XBMCK_BREAK;
   VK_keymap[VK_APPS] = XBMCK_MENU;
 
-  Arrows_keymap[3] = (XBMCKey)0x25;
-  Arrows_keymap[2] = (XBMCKey)0x26;
-  Arrows_keymap[1] = (XBMCKey)0x27;
-  Arrows_keymap[0] = (XBMCKey)0x28;
+  // Only include the multimedia keys if they have been enabled in the
+  // advanced settings
+  if (g_advancedSettings.m_enableMultimediaKeys)
+  {
+    VK_keymap[VK_BROWSER_BACK]        = XBMCK_BROWSER_BACK;
+    VK_keymap[VK_BROWSER_FORWARD]     = XBMCK_BROWSER_FORWARD;
+    VK_keymap[VK_BROWSER_REFRESH]     = XBMCK_BROWSER_REFRESH;
+    VK_keymap[VK_BROWSER_STOP]        = XBMCK_BROWSER_STOP;
+    VK_keymap[VK_BROWSER_SEARCH]      = XBMCK_BROWSER_SEARCH;
+    VK_keymap[VK_BROWSER_FAVORITES]   = XBMCK_BROWSER_FAVORITES;
+    VK_keymap[VK_BROWSER_HOME]        = XBMCK_BROWSER_HOME;
+    VK_keymap[VK_VOLUME_MUTE]         = XBMCK_VOLUME_MUTE;
+    VK_keymap[VK_VOLUME_DOWN]         = XBMCK_VOLUME_DOWN;
+    VK_keymap[VK_VOLUME_UP]           = XBMCK_VOLUME_UP;
+    VK_keymap[VK_MEDIA_NEXT_TRACK]    = XBMCK_MEDIA_NEXT_TRACK;
+    VK_keymap[VK_MEDIA_PREV_TRACK]    = XBMCK_MEDIA_PREV_TRACK;
+    VK_keymap[VK_MEDIA_STOP]          = XBMCK_MEDIA_STOP;
+    VK_keymap[VK_MEDIA_PLAY_PAUSE]    = XBMCK_MEDIA_PLAY_PAUSE;
+    VK_keymap[VK_LAUNCH_MAIL]         = XBMCK_LAUNCH_MAIL;
+    VK_keymap[VK_LAUNCH_MEDIA_SELECT] = XBMCK_LAUNCH_MEDIA_SELECT;
+    VK_keymap[VK_LAUNCH_APP1]         = XBMCK_LAUNCH_APP1;
+    VK_keymap[VK_LAUNCH_APP2]         = XBMCK_LAUNCH_APP2;
+  }
 }
 
 static int XBMC_MapVirtualKey(int scancode, int vkey)
 {
-  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+// It isn't clear why the US keyboard layout was being used. This causes
+// problems with e.g. the \ key. I have provisionally switched the code
+// to use the Windows layout.
+// int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, NULL);
 
   switch(vkey)
   { /* These are always correct */
@@ -285,23 +316,27 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   // Set the modifier bitmap
 
   mod = (uint16_t) XBMCKMOD_NONE;
+
+  // If left control and right alt are down this usually means that
+  // AltGr is down
+  if ((keystate[VK_LCONTROL] & 0x80) && (keystate[VK_RMENU] & 0x80))
+  {
+    mod |= XBMCKMOD_MODE;
+  }
+  else
+  {
+    if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
+    if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
+  }
+
+  // Check the remaining modifiers
   if (keystate[VK_LSHIFT]   & 0x80) mod |= XBMCKMOD_LSHIFT;
   if (keystate[VK_RSHIFT]   & 0x80) mod |= XBMCKMOD_RSHIFT;
-  if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
   if (keystate[VK_RCONTROL] & 0x80) mod |= XBMCKMOD_RCTRL;
   if (keystate[VK_LMENU]    & 0x80) mod |= XBMCKMOD_LALT;
-  if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
   if (keystate[VK_LWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
   if (keystate[VK_RWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
   keysym->mod = (XBMCMod) mod;
-
-/* Ignore these modifiers for now; we may handle these in the future.
-	XBMCKMOD_LMETA = 0x0400
-	XBMCKMOD_RMETA = 0x0800
-	XBMCKMOD_NUM   = 0x1000
-	XBMCKMOD_CAPS  = 0x2000
-	XBMCKMOD_MODE  = 0x4000
-*/  
 
   // Return the updated keysym
   return(keysym);
@@ -322,6 +357,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 {
   XBMC_Event newEvent;
   ZeroMemory(&newEvent, sizeof(newEvent));
+  static HDEVNOTIFY hDeviceNotify;
 
   if (uMsg == WM_CREATE)
   {
@@ -332,6 +368,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     shcne.fRecursive = TRUE;
     long fEvents = SHCNE_DRIVEADD | SHCNE_DRIVEREMOVED | SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED;
     SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, fEvents, WM_MEDIA_CHANGE, 1, &shcne);
+    RegisterDeviceInterfaceToHwnd(USB_HID_GUID, hWnd, &hDeviceNotify);
     return 0;
   }
 
@@ -370,9 +407,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         {
           WINDOWPLACEMENT lpwndpl;
           lpwndpl.length = sizeof(lpwndpl);
-          if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+          if (LOWORD(wParam) != WA_INACTIVE)
           {
-            g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+            if (GetWindowPlacement(hWnd, &lpwndpl))
+              g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          }
+          else
+          {
+            g_application.m_AppActive = g_Windowing.WindowedMode();
           }
         }
         if (g_application.m_AppActive != active)
@@ -383,8 +425,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+      if (uMsg == WM_KILLFOCUS)
+      {
+        CStdString procfile;
+        if (CWIN32Util::GetFocussedProcess(procfile))
+          CLog::Log(LOGDEBUG, __FUNCTION__": Focus switched to process %s", procfile.c_str());
+      }
       break;
     case WM_SYSKEYDOWN:
       switch (wParam)
@@ -474,47 +521,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
       newEvent.appcommand.type = XBMC_APPCOMMAND;
-      newEvent.appcommand.action = 0;
-
-      switch (GET_APPCOMMAND_LPARAM(lParam))
-      {
-        case APPCOMMAND_MEDIA_PLAY:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-          break;
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-          break;
-        case APPCOMMAND_MEDIA_PAUSE:
-          newEvent.appcommand.action = ACTION_PAUSE;
-          break;
-        case APPCOMMAND_BROWSER_BACKWARD:
-          newEvent.appcommand.action = ACTION_PARENT_DIR;
-          break;
-        case APPCOMMAND_MEDIA_STOP:
-          newEvent.appcommand.action = ACTION_STOP;
-          break;
-        case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-          newEvent.appcommand.action = ACTION_PREV_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_NEXTTRACK:
-          newEvent.appcommand.action = ACTION_NEXT_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_REWIND:
-          newEvent.appcommand.action = ACTION_PLAYER_REWIND;
-          break;
-        case APPCOMMAND_MEDIA_FAST_FORWARD:
-          newEvent.appcommand.action = ACTION_PLAYER_FORWARD;
-          break;
-        case APPCOMMAND_LAUNCH_MEDIA_SELECT:
-          // disable launch of external media players
-          return 1;
-      }
-      if (newEvent.appcommand.action != 0)
-      {
-        m_pEventFunc(newEvent);
-        return 1; // should return TRUE if application handled the event
-      }
-      break;
+      newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
+      if (m_pEventFunc(newEvent))
+        return TRUE;
+      else
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
     {
@@ -590,11 +601,25 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
-      newEvent.resize.type = XBMC_VIDEORESIZE;
       newEvent.resize.w = GET_X_LPARAM(lParam);
       newEvent.resize.h = GET_Y_LPARAM(lParam);
-      if (newEvent.resize.w * newEvent.resize.h)
+
+      CLog::Log(LOGDEBUG, __FUNCTION__": window resize event");
+
+      if (!g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
         m_pEventFunc(newEvent);
+
+      return(0);
+    case WM_MOVE:
+      newEvent.type = XBMC_VIDEOMOVE;
+      newEvent.move.x = GET_X_LPARAM(lParam);
+      newEvent.move.y = GET_Y_LPARAM(lParam);
+
+      CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
+
+      if (!g_Windowing.IsAlteringWindow())
+        m_pEventFunc(newEvent);
+
       return(0);
     case WM_MEDIA_CHANGE:
       {
@@ -617,7 +642,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAINSERTED:
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
               if (GetDriveType(drivePath) == DRIVE_CDROM)
-                g_application.getApplicationMessenger().OpticalMount(drivePath, true);
+              {
+                CDetectDisc* discdetection = new CDetectDisc(drivePath, true);
+                CJobManager::GetInstance().AddJob(discdetection, NULL);
+              }
               else
                 CWin32StorageProvider::SetEvent();
               break;
@@ -626,7 +654,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             case SHCNE_MEDIAREMOVED:
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
               if (GetDriveType(drivePath) == DRIVE_CDROM)
-                g_application.getApplicationMessenger().OpticalUnMount(drivePath);
+              {
+                CMediaSource share;
+                share.strPath = drivePath;
+                share.strName = share.strPath;
+                g_mediaManager.RemoveAutoSource(share);
+              }
               else
                 CWin32StorageProvider::SetEvent();
               break;
@@ -647,9 +680,41 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         CWin32PowerSyscall::SetOnResume();
       }
       break;
-
+    case WM_DEVICECHANGE:
+      {
+        PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+        switch (wParam)
+        {
+          case DBT_DEVICEARRIVAL:
+          case DBT_DEVICEREMOVECOMPLETE:
+          case DBT_DEVNODES_CHANGED:
+            g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
+            break;
+        }
+        break;
+      }
+    case WM_PAINT:
+      //some other app has painted over our window, mark everything as dirty
+      g_windowManager.MarkDirty();
+      break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+
+void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify)
+{
+  DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
+
+  ZeroMemory( &NotificationFilter, sizeof(NotificationFilter) );
+  NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+  NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+  NotificationFilter.dbcc_classguid = InterfaceClassGuid;
+
+  *hDeviceNotify = RegisterDeviceNotification( 
+      hWnd,                       // events recipient
+      &NotificationFilter,        // type of device
+      DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
+      );
 }
 
 void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
@@ -690,8 +755,12 @@ void CWinEventsWin32::OnGestureNotify(HWND hWnd, LPARAM lParam)
       gc[1].dwWant |= GC_ROTATE;
     if (gestures == EVENT_RESULT_PAN_VERTICAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY;
     if (gestures == EVENT_RESULT_PAN_HORIZONTAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY;
     gc[0].dwBlock = gc[0].dwWant ^ 1;
     gc[1].dwBlock = gc[1].dwWant ^ 1;
     gc[2].dwBlock = gc[2].dwWant ^ 30;

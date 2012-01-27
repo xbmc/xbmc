@@ -19,8 +19,8 @@
  *
  */
 
-#include "GUIPythonWindowXML.h"
 #include "pyutil.h"
+#include "GUIPythonWindowXML.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
@@ -45,19 +45,17 @@ using namespace std;
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(id, strXML)
+  : CGUIMediaWindow(id, strXML), m_actionEvent(true)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
-  m_coordsRes = RES_PAL_4x3;
   m_scriptPath = strFallBackPath;
+  m_destroyAfterDeinit = false;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIPythonWindowXML::Update(const CStdString &strPath)
@@ -67,18 +65,26 @@ bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
-  // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
+  // call the base class first, then call python
+  bool ret = CGUIWindow::OnAction(action);
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
     inf->pObject = Action_FromAction(action);
 
     // aquire lock?
-    PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
+    PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnAction, inf);
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindowXML::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindowXML::OnClick(int iItem) {
@@ -115,7 +121,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
       CGUIMediaWindow::OnMessage(message);
       if(pCallbackWindow)
       {
-        PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
+        PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
         PulseActionEvent();
       }
       return true;
@@ -136,7 +142,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
           inf->controlId = iControl;
           // aquire lock?
-          PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnFocus, inf);
+          PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnFocus, inf);
           PulseActionEvent();
         }
     }
@@ -179,7 +185,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->controlId = iControl;
             // aquire lock?
-            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnClick, inf);
+            PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnClick, inf);
             PulseActionEvent();
             return true;
           }
@@ -189,7 +195,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
 
             // aquire lock?
-            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
+            PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
             return true;
           }
@@ -200,6 +206,18 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
   }
 
   return CGUIMediaWindow::OnMessage(message);
+}
+
+void CGUIPythonWindowXML::OnDeinitWindow(int nextWindowID /*= 0*/)
+{
+  CGUIMediaWindow::OnDeinitWindow(nextWindowID);
+  if (m_destroyAfterDeinit)
+    g_windowManager.Delete(GetID());
+}
+
+void CGUIPythonWindowXML::SetDestroyAfterDeinit(bool destroy /*= true*/)
+{
+  m_destroyAfterDeinit = destroy;
 }
 
 void CGUIPythonWindowXML::AddItem(CFileItemPtr fileItem, int itemPosition)
@@ -264,18 +282,18 @@ void CGUIPythonWindowXML::ClearList()
 void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.Reset();
 }
 
 void CGUIPythonWindowXML::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  URIUtils::GetDirectory(GetProperty("xmlfile"), tmpDir);
+  URIUtils::GetDirectory(GetProperty("xmlfile").asString(), tmpDir);
   CStdString fallbackMediaPath;
   URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
@@ -345,10 +363,10 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
   CGUIMediaWindow::FreeResources(forceUnLoad);
 }
 
-void CGUIPythonWindowXML::Render()
+void CGUIPythonWindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIMediaWindow::Render();
+  CGUIMediaWindow::Process(currentTime, regions);
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 
@@ -360,7 +378,7 @@ int Py_XBMC_Event_OnClick(void* arg)
   PyXBMCAction* action = (PyXBMCAction*)arg;
   if (action->pCallbackWindow)
   {
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod((PyObject*)action->pCallbackWindow, (char*)"onClick", (char*)"(i)", action->controlId);
     if (ret)
     {
       Py_DECREF(ret);
@@ -378,7 +396,7 @@ int Py_XBMC_Event_OnFocus(void* arg)
   PyXBMCAction* action = (PyXBMCAction*)arg;
   if (action->pCallbackWindow)
   {
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onFocus", (char*)"(i)", action->controlId);
+    PyObject *ret = PyObject_CallMethod((PyObject*)action->pCallbackWindow, (char*)"onFocus", (char*)"(i)", action->controlId);
     if (ret)
     {
       Py_DECREF(ret);
@@ -396,7 +414,7 @@ int Py_XBMC_Event_OnInit(void* arg)
   PyXBMCAction* action = (PyXBMCAction*)arg;
   if (action->pCallbackWindow)
   {
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onInit", (char*)"()"); //, (char*)"O", &self);
+    PyObject *ret = PyObject_CallMethod((PyObject*)action->pCallbackWindow, (char*)"onInit", (char*)"()"); //, (char*)"O", &self);
     if (ret)
     {
       Py_XDECREF(ret);
@@ -406,7 +424,7 @@ int Py_XBMC_Event_OnInit(void* arg)
   return 0;
 }
 
-void CGUIPythonWindowXML::SetCallbackWindow(PyThreadState *state, PyObject *object)
+void CGUIPythonWindowXML::SetCallbackWindow(void *state, void *object)
 {
   pCallbackWindow = object;
   m_threadState   = state;

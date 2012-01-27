@@ -31,6 +31,4 @@ public:
   virtual ~CGUIDialogMusicOSD(void);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void FrameMove();
-protected:
-  virtual void OnInitWindow();
 };

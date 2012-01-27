@@ -35,15 +35,26 @@ public:
   static PHANDLE_EVENT_FUNC m_pEventFunc;
 };
 
-#ifdef _WIN32
+#if   defined(TARGET_WINDOWS)
 #include "windows/WinEventsWin32.h"
 #define CWinEvents CWinEventsWin32
-#endif
 
-#ifdef _LINUX
+#elif defined(TARGET_DARWIN_OSX)
+#include "osx/WinEventsOSX.h"
+#define CWinEvents CWinEventsOSX
+
+#elif defined(TARGET_DARWIN_IOS)
+#include "osx/WinEventsIOS.h"
+#define CWinEvents CWinEventsIOS
+
+#elif defined(TARGET_LINUX) && defined(HAS_SDL_WIN_EVENTS)
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL
-#endif
 
+#elif defined(TARGET_LINUX) && defined(HAS_LINUX_EVENTS)
+#include "WinEventsLinux.h"
+#define CWinEvents CWinEventsLinux
+
+#endif
 
 #endif // WINDOW_EVENTS_H

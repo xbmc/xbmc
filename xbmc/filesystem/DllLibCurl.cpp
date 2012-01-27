@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "DllLibCurl.h"
 #include "threads/SingleLock.h"
@@ -31,7 +32,9 @@ using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
+#if(0)
 static unsigned int g_curlTimeout = 0;
+#endif
 
 bool DllLibCurlGlobal::Load()
 {
@@ -75,8 +78,10 @@ void DllLibCurlGlobal::Unload()
   }
 
   /* CheckIdle will clear this one up */
+#if(0)
   if(g_curlReferences == 1)
-    g_curlTimeout = CTimeUtils::GetTimeMS();
+    g_curlTimeout = XbmcThreads::SystemClockMillis();
+#endif
 }
 
 void DllLibCurlGlobal::CheckIdle()
@@ -92,7 +97,7 @@ void DllLibCurlGlobal::CheckIdle()
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
-    if( !it->m_busy && it->m_idletimestamp + idletime < CTimeUtils::GetTimeMS())
+    if( !it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime )
     {
       CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
@@ -112,8 +117,10 @@ void DllLibCurlGlobal::CheckIdle()
   }
 
   /* check if we should unload the dll */
-  if(g_curlReferences == 1 && CTimeUtils::GetTimeMS() > g_curlTimeout + idletime)
+#if(0) // we never unload libcurl, since libssl can break when python unloads then
+  if(g_curlReferences == 1 && XbmcThreads::SystemClockMillis() - g_curlTimeout > idletime)
     Unload();
+#endif
 }
 
 void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)
@@ -210,7 +217,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
       easy_reset(easy);
       it->m_busy = false;
-      it->m_idletimestamp = CTimeUtils::GetTimeMS();
+      it->m_idletimestamp = XbmcThreads::SystemClockMillis();
       return;
     }
   }

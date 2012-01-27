@@ -83,6 +83,7 @@ protected:
   static VECSOURCES m_sources;
 
   int m_currentViewAsControl;
+  int m_playlist;
 
   std::vector<SORT_METHOD_DETAILS> m_sortMethods;
   int m_currentSortMethod;

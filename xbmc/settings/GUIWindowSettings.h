@@ -29,6 +29,4 @@ class CGUIWindowSettings :
 public:
   CGUIWindowSettings(void);
   virtual ~CGUIWindowSettings(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 };

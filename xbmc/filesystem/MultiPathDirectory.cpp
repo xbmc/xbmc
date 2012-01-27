@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
 #include "Util.h"
@@ -55,14 +56,14 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  unsigned int progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
+  XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
-    if (CTimeUtils::GetTimeMS() > progressTime && !dlgProgress)
+    if (progressTime.IsTimePast() && !dlgProgress)
     {
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
@@ -214,7 +215,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
   CStdString newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   for (unsigned int i = 0; i < stack.size(); ++i)
-    AddToMultiPath(newPath, items[stack[i]]->m_strPath);
+    AddToMultiPath(newPath, items[stack[i]]->GetPath());
 
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
@@ -246,7 +247,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (items.Size() == 0)
     return;
   // sort items by label
@@ -267,7 +268,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
     vector<int> stack;
     stack.push_back(i);
-    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->GetPath().c_str());
 
     int j = i + 1;
     do
@@ -281,7 +282,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       if (!pItem2->IsFileFolder())
       {
         stack.push_back(j);
-        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->m_strPath.c_str());
+        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->GetPath().c_str());
       }
       j++;
     }
@@ -294,8 +295,8 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       CStdString newPath = ConstructMultiPath(items, stack);
       for (unsigned int k = stack.size() - 1; k > 0; --k)
         items.Remove(stack[k]);
-      pItem1->m_strPath = newPath;
-      CLog::Log(LOGDEBUG,"  New path: %s", pItem1->m_strPath.c_str());
+      pItem1->SetPath(newPath);
+      CLog::Log(LOGDEBUG,"  New path: %s", pItem1->GetPath().c_str());
     }
 
     i++;
@@ -303,7 +304,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
   CLog::Log(LOGDEBUG,
             "CMultiPathDirectory::MergeItems, items = %i,  took %d ms",
-            items.Size(), CTimeUtils::GetTimeMS() - time);
+            items.Size(), XbmcThreads::SystemClockMillis() - time);
 }
 
 bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)

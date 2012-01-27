@@ -8,8 +8,9 @@
   <string id="31003">电源选项</string>
   <string id="31004">工作中...</string>
   <string id="31005">隐藏信息</string>
-
+  <string id="31006">视图选项</string>
   <string id="31007">插件</string>
+  <string id="31008">全屏</string>
 
   <string id="31020">最新增加</string>
   <string id="31021">视频 - 文件</string>
@@ -39,6 +40,8 @@
   <string id="31047">当前预设</string>
   <string id="31048">可视化效果设置</string>
   <string id="31049">结束时间</string>
+  <string id="31050">排序：升序</string>
+  <string id="31051">排序：降序</string>
 
 
   <!-- Playlist Editor labels -->
@@ -56,7 +59,7 @@
   <string id="31102">背景</string>
   <string id="31103">图片幻灯片播放时显示“暂停”状态</string>
   <string id="31104">窗口播放预告片[COLOR=grey3]（仅在视频信息显示画面）[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">主菜单“视频”进入视频“文件”模式</string>
   <string id="31106">其他选项</string>
   <string id="31107">隐藏视频文件名的媒体标识[COLOR=grey3]（Blu-ray, HD-DVD）[/COLOR]</string>
   <string id="31108">隐藏主菜单按钮</string>
@@ -78,8 +81,8 @@
   <string id="31124">在背景显示“正在播放”视频</string>
   <string id="31125">在背景显示“正在播放”可视效果</string>
 
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">视频资料库模式播放电视主题曲（TvTunes扩展功能）</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">歌词</string>
   <string id="31129"></string>
   <string id="31130"></string>
@@ -106,7 +109,7 @@
   <string id="31300">当前温度</string>
   <string id="31301">最近修改</string>
   <string id="31302">菜单</string>
-  <string id="31303"></string>
+  <string id="31303">数据来源</string>
   <string id="31304">图片</string>
   <string id="31305">未检测到光盘</string>
   <string id="31306">弹出</string>
@@ -134,6 +137,7 @@
   <string id="31328">最新增加</string>
   <string id="31329">[B]时钟设置！[/B] [COLOR=grey2] - 系统自动关闭于[/COLOR]</string>
   <string id="31330">点此按钮播放预告片</string>
+  <string id="31331">专辑详情</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">暂停</string>
@@ -161,4 +165,16 @@
   <string id="31408">[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置</string>
 
   <string id="31421">选择您的用户配置文件[CR]登录并继续</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">气象图</string>
+  <string id="31901">36小时预报</string>
+  <string id="31902">每小时预报</string>
+  <string id="31903">一周预报</string>
+  <string id="31904">10日预报</string>
+  <string id="31905">天气预报</string>
+  <string id="31906">图像 &amp; 视频</string>
+  <string id="31907">视频预报 [COLOR=grey2]（全屏播放）[/COLOR]</string>
+  <string id="31908">降雨概率</string>
+  <string id="31909">获取天气信息...</string>
 </strings>

@@ -29,7 +29,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
 #include <sys/vfs.h>
 #else
 #include <sys/param.h>
@@ -60,7 +60,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strPath.Replace("\\","/");
 
   // if the file name is a directory then we add a * to look for all files in this directory
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   DIR *testDir = opendir(strPath.c_str());
 #else
   DIR *testDir = opendir(szPath);
@@ -275,7 +275,7 @@ if (errno == 20)
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#ifdef HAS_DVD_DRIVE
+#if defined(TARGET_LINUX) && defined(HAS_DVD_DRIVE) 
   // special case for opening the cdrom device
   if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
@@ -552,7 +552,7 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     nMode = SEEK_END;
 
   off64_t currOff;
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   currOff = lseek(hFile->fd, offset, nMode);
 #else
   currOff = lseek64(hFile->fd, offset, nMode);
@@ -598,16 +598,10 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 
   memset(lpTimeZoneInformation, 0, sizeof(TIME_ZONE_INFORMATION));
 
-#ifdef __APPLE__
-  struct timezone tz;
-  gettimeofday(NULL, &tz);
-  lpTimeZoneInformation->Bias = tz.tz_minuteswest;
-#else
   struct tm t;
   time_t tt = time(NULL);
   if(localtime_r(&tt, &t))
     lpTimeZoneInformation->Bias = -t.tm_gmtoff / 60;
-#endif
 
   swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
   swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);
@@ -621,7 +615,7 @@ BOOL SetEndOfFile(HANDLE hFile)
     return false;
 
   // get the current offset
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   off64_t currOff = lseek(hFile->fd, 0, SEEK_CUR);
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
@@ -649,7 +643,7 @@ BOOL SetFilePointerEx(  HANDLE hFile,
 
   off64_t toMove = liDistanceToMove.QuadPart;
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   off64_t currOff = lseek(hFile->fd, toMove, nMode);
 #else
   off64_t currOff = lseek64(hFile->fd, toMove, nMode);

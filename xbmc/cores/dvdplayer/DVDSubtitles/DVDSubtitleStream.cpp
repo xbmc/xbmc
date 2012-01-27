@@ -103,7 +103,7 @@ bool CDVDSubtitleStream::Open(const string& strFile)
 
 int CDVDSubtitleStream::Read(char* buf, int buf_size)
 {
-  return m_stringstream.readsome(buf, buf_size);
+  return (int)m_stringstream.readsome(buf, buf_size);
 }
 
 long CDVDSubtitleStream::Seek(long offset, int whence)
@@ -126,7 +126,7 @@ long CDVDSubtitleStream::Seek(long offset, int whence)
       break;
     }
   }
-  return m_stringstream.tellg();
+  return (int)m_stringstream.tellg();
 }
 
 char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)

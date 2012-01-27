@@ -22,6 +22,8 @@
 #ifndef RENDER_SYSTEM_DX_H
 #define RENDER_SYSTEM_DX_H
 
+#ifdef HAS_DX
+
 #pragma once
 
 #include <vector>
@@ -50,7 +52,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender();
+  virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
   virtual bool IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
@@ -60,6 +62,9 @@ public:
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
+
+  virtual void SetScissors(const CRect &rect);
+  virtual void ResetScissors();
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
@@ -71,6 +76,8 @@ public:
 
   virtual bool TestRender();
 
+  virtual void Project(float &x, float &y, float &z);
+
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
 
@@ -78,7 +85,6 @@ public:
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
   D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
   D3DADAPTER_IDENTIFIER9 GetAIdentifier() { return m_AIdentifier; }
-
   bool    Interlaced()      { return m_interlaced; }
 
   /*!
@@ -106,7 +112,7 @@ protected:
   void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
-  bool PresentRenderImpl();
+  bool PresentRenderImpl(const CDirtyRegionList &dirty);
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
@@ -115,6 +121,7 @@ protected:
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
   BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT RenderTargetFormat);
+  void OnMove();
 
   LPDIRECT3D9                 m_pD3D;
 
@@ -147,6 +154,13 @@ protected:
   std::vector<ID3DResource*>  m_resources;
 
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
+
+  D3DVIEWPORT9                m_viewPort;
+  D3DXMATRIX                  m_projection;
+  D3DXMATRIX                  m_view;
+  D3DXMATRIX                  m_world;
 };
+
+#endif
 
 #endif // RENDER_SYSTEM_DX

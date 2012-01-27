@@ -38,7 +38,7 @@
   <global>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="1">Select</button> <!-- A -->
-      <button id="2">ParentDir</button> <!-- B -->
+      <button id="2">Back</button> <!-- B -->
       <button id="3"></button> <!-- X -->
       <button id="4"></button> <!-- Y -->
       <button id="5"></button> <!-- LB -->
@@ -74,9 +74,7 @@
   </MyFiles>
   <MyMusicPlaylist>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Playlist</button>
-      <button id="3">Playlist</button>
-      <button id="17">Playlist</button>
+      <button id="3">Back</button>
       <button id="5">Delete</button>
     </joystick>
   </MyMusicPlaylist>
@@ -111,9 +109,8 @@
   </FullscreenVideo>
   <FullscreenInfo>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
       <button id="3">CodecInfo</button>
-      <button id="6">Close</button>
+      <button id="6">Back</button>
       <button id="9">OSD</button>
       <axis limit="0" id="3">AnalogRewind</axis>
       <axis limit="0" id="6">AnalogFastForward</axis>
@@ -121,8 +118,7 @@
   </FullscreenInfo>
   <PlayerControls>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Close</button>
-      <button id="17">Close</button>
+      <button id="9">Back</button>
     </joystick>
   </PlayerControls>
   <Visualisation>
@@ -143,25 +139,22 @@
   </Visualisation>
   <MusicOSD>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="17">Close</button>
-      <button id="19">Close</button>
+      <button id="19">Back</button>
       <button id="3">CodecInfo</button>
       <button id="6">Info</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-      <button id="3">Close</button>
-      <button id="9">Close</button>
+      <button id="3">Back</button>
+      <button id="9">Back</button>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-      <button id="3">Close</button>
-      <button id="5">Close</button>
-      <button id="9">Close</button>
+      <button id="3">Back</button>
+      <button id="5">Back</button>
+      <button id="9">Back</button>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
@@ -184,7 +177,6 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
@@ -192,19 +184,11 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
     </joystick>
   </GUICalibration>
-  <SelectDialog>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="17">Close</button>
-    </joystick>
-  </SelectDialog>
   <VideoOSD>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Close</button>
-      <button id="17">PreviousMenu</button>
-      <button id="2">PreviousMenu</button>
+      <button id="9">Back</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -212,7 +196,6 @@
       <button id="5">AspectRatio</button>
       <button id="2">Stop</button>
       <button id="9">OSD</button>
-      <button id="17">PreviousMenu</button>
       <button id="6">Info</button>
       <button id="3">CodecInfo</button>
     </joystick>
@@ -221,27 +204,21 @@
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="4"/>
       <button id="5">AspectRatio</button>
-      <button id="2">Close</button>
-      <button id="17">Close</button>
-      <button id="19">Close</button>
+      <button id="19">Back</button>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="4"/>
       <button id="5">AspectRatio</button>
-      <button id="2">Close</button>
-      <button id="17">Close</button>
-      <button id="19">Close</button>
+      <button id="19">Back</button>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="4"/>
       <button id="5">Delete</button>
-      <button id="2">Close</button>
-      <button id="17">Close</button>
-      <button id="19">Close</button>
+      <button id="19">Back</button>
     </joystick>
   </VideoBookmarks>
   <MyVideoLibrary>
@@ -258,9 +235,7 @@
   <MyVideoPlaylist>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="5">Delete</button>
-      <button id="3">Playlist</button>
-      <button id="17">Playlist</button>
-      <button id="2">Playlist</button>
+      <button id="3">Back</button>
     </joystick>
   </MyVideoPlaylist>
   <VirtualKeyboard>
@@ -273,8 +248,7 @@
   </VirtualKeyboard>
   <ContextMenu>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="6">Close</button>
-      <button id="2">Close</button>
+      <button id="6">Back</button>
     </joystick>
   </ContextMenu>
   <Scripts>
@@ -293,113 +267,14 @@
       <button id="9">Stop</button>      <!-- Enter Password -->
     </joystick>
   </GamepadInput>
-  <Weather>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </Weather>
-  <Settings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </Settings>
-  <AddonInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-    </joystick>
-  </AddonInformation>
-  <AddonSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-    </joystick>
-  </AddonSettings>
-  <TextViewer>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-    </joystick>
-  </TextViewer>
-  <MyPicturesSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </MyMusicSettings>
-  <SystemSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </SystemSettings>
-  <MyVideosSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </AppearanceSettings>
-  <Profiles>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </Profiles>
-  <systeminfo>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </systeminfo>
-  <shutdownmenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </shutdownmenu>
-  <submenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
-    </joystick>
-  </submenu>
-  <MusicInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-    </joystick>
-  </MusicInformation>
-  <MovieInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">Close</button>
-    </joystick>
-  </MovieInformation>
   <LockSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="9">Back</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="9">Back</button>
     </joystick>
   </ProfileSettings>
 </keymap>

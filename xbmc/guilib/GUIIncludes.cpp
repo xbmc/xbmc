@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/StringUtils.h"
+#include "interfaces/info/SkinVariable.h"
 
 using namespace std;
 
@@ -84,6 +85,7 @@ void CGUIIncludes::ClearIncludes()
   m_includes.clear();
   m_defaults.clear();
   m_constants.clear();
+  m_skinvariables.clear();
   m_files.clear();
 }
 
@@ -151,6 +153,18 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     }
     node = node->NextSiblingElement("constant");
   }
+
+  node = root->FirstChildElement("variable");
+  while (node)
+  {
+    if (node->Attribute("name") && node->FirstChild())
+    {
+      CStdString tagName = node->Attribute("name");
+      m_skinvariables.insert(make_pair(tagName, *node));
+    }
+    node = node->NextSiblingElement("variable");
+  }
+
   return true;
 }
 
@@ -212,7 +226,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
     const char *condition = include->Attribute("condition");
     if (condition)
     { // check this condition
-      if (!g_infoManager.GetBool(g_infoManager.TranslateString(condition)))
+      if (!g_infoManager.EvaluateBool(condition))
       {
         include = include->NextSiblingElement("include");
         continue;
@@ -268,4 +282,12 @@ CStdString CGUIIncludes::ResolveConstant(const CStdString &constant) const
   CStdString value;
   StringUtils::JoinString(values, ",", value);
   return value;
+}
+
+const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const CStdString& name, int context)
+{
+  map<CStdString, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  if (it != m_skinvariables.end())
+    return INFO::CSkinVariable::CreateFromXML(it->second, context);
+  return NULL;
 }

@@ -19,12 +19,18 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
 #include "../utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 #define SCROLL_SPEED_IN_MSEC 250
 
@@ -34,6 +40,8 @@ XLCDproc::XLCDproc()
   m_iActualpos   = 0;
   m_iBackLight   = 32;
   m_iLCDContrast = 50;
+  m_iColumns     = 0;
+  m_iRows        = 0;
   m_bStop        = true;
   m_sockfd       = -1;
   m_lastInitAttempt = 0;
@@ -51,8 +59,8 @@ void XLCDproc::Initialize()
     return ;//nothing to do
 
   // don't try to initialize too often
-  int now = CTimeUtils::GetTimeMS();
-  if (now < m_lastInitAttempt + m_initRetryInterval)
+  int now = XbmcThreads::SystemClockMillis();
+  if ((now - m_lastInitAttempt) < m_initRetryInterval)
     return;
   m_lastInitAttempt = now;
 
@@ -283,6 +291,16 @@ void XLCDproc::Resume()
     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
     CloseSocket();
   }
+}
+
+int XLCDproc::GetColumns()
+{
+  return m_iColumns;
+}
+
+int XLCDproc::GetRows()
+{
+  return m_iRows;
 }
 
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)

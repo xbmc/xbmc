@@ -96,7 +96,7 @@ const CStdString& CGUIListItem::GetLabel2() const
 
 void CGUIListItem::SetSortLabel(const CStdString &label)
 {
-  g_charsetConverter.utf8ToW(label, m_sortLabel);
+  g_charsetConverter.utf8ToW(label, m_sortLabel, false);
   // no need to invalidate - this is never shown in the UI
 }
 
@@ -221,7 +221,7 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_bSelected;
     ar << m_overlayIcon;
     ar << (int)m_mapProperties.size();
-    for (std::map<CStdString, CStdString, icompare>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+    for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
     {
       ar << it->first;
       ar << it->second;
@@ -245,7 +245,8 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> mapSize;
     for (int i = 0; i < mapSize; i++)
     {
-      CStdString key, value;
+      CStdString key;
+      CVariant value;
       ar >> key;
       ar >> value;
       SetProperty(key, value);
@@ -262,7 +263,7 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
-  for (std::map<CStdString, CStdString, icompare>::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
+  for (PropertyMap::const_iterator it = m_mapProperties.begin(); it != m_mapProperties.end(); it++)
   {
     value["properties"][it->first] = it->second;
   }
@@ -320,21 +321,16 @@ void CGUIListItem::SetInvalid()
   if (m_focusedLayout) m_focusedLayout->SetInvalid();
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, const char *strValue)
+void CGUIListItem::SetProperty(const CStdString &strKey, const CVariant &value)
 {
-  m_mapProperties[strKey] = strValue;
+  m_mapProperties[strKey] = value;
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, const CStdString &strValue)
-{
-  m_mapProperties[strKey] = strValue;
-}
-
-CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
+CVariant CGUIListItem::GetProperty(const CStdString &strKey) const
 {
   PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
-    return "";
+    return CVariant(CVariant::VariantTypeNull);
 
   return iter->second;
 }
@@ -360,52 +356,22 @@ void CGUIListItem::ClearProperties()
   m_mapProperties.clear();
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, int nVal)
-{
-  CStdString strVal;
-  strVal.Format("%d",nVal);
-  SetProperty(strKey, strVal);
-}
-
 void CGUIListItem::IncrementProperty(const CStdString &strKey, int nVal)
 {
-  int i = GetPropertyInt(strKey);
+  int64_t i = GetProperty(strKey).asInteger();
   i += nVal;
   SetProperty(strKey, i);
 }
 
-void CGUIListItem::SetProperty(const CStdString &strKey, bool bVal)
-{
-  SetProperty(strKey, bVal?"1":"0");
-}
-
-void CGUIListItem::SetProperty(const CStdString &strKey, double dVal)
-{
-  CStdString strVal;
-  strVal.Format("%f",dVal);
-  SetProperty(strKey, strVal);
-}
-
 void CGUIListItem::IncrementProperty(const CStdString &strKey, double dVal)
 {
-  double d = GetPropertyDouble(strKey);
+  double d = GetProperty(strKey).asDouble();
   d += dVal;
   SetProperty(strKey, d);
 }
 
-bool CGUIListItem::GetPropertyBOOL(const CStdString &strKey) const
+void CGUIListItem::AppendProperties(const CGUIListItem &item)
 {
-  return GetProperty(strKey) == "1";
+  for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
+    SetProperty(i->first, i->second);
 }
-
-int CGUIListItem::GetPropertyInt(const CStdString &strKey) const
-{
-  return atoi(GetProperty(strKey).c_str()) ;
-}
-
-double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
-{
-  return atof(GetProperty(strKey).c_str()) ;
-}
-
-

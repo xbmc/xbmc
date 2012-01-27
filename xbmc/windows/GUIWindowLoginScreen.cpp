@@ -29,17 +29,23 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/JSONRPC.h"
+#endif
 #include "interfaces/Builtins.h"
 #include "utils/Weather.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "settings/Profile.h"
+#include "guilib/GUIMessage.h"
+#include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "addons/AddonManager.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -65,6 +71,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_viewControl.Reset();
+      m_vecItems->Clear();
     }
     break;
 
@@ -89,8 +96,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           return bResult;
         }
-        else if (iAction == ACTION_PREVIOUS_MENU) // oh no u don't
-          return false;
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -132,11 +137,19 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    if (action.GetName().Find("shutdown") != 1)
+    CStdString actionName = action.GetName();
+    actionName.ToLower();
+    if (actionName.Find("shutdown") != -1)
       CBuiltins::Execute(action.GetName());
     return true;
   }
   return CGUIWindow::OnAction(action);
+}
+
+bool CGUIWindowLoginScreen::OnBack(int actionID)
+{
+  // no escape from the login window
+  return false;
 }
 
 void CGUIWindowLoginScreen::FrameMove()
@@ -197,14 +210,6 @@ void CGUIWindowLoginScreen::Update()
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_BIG_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
 
   bool bSelect = m_vecItems->Get(iItem)->IsSelected();
   // mark the item
@@ -260,6 +265,9 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
+  // stop service addons and give it some time before we start it again
+  ADDON::CAddonMgr::Get().StopServices(true);
+
   if (profile != 0 || !g_settings.IsMasterUser())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -287,6 +295,14 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
+
+#ifdef HAS_JSONRPC
+  JSONRPC::CJSONRPC::Initialize();
+#endif
+
+  // start services which should run on login 
+  ADDON::CAddonMgr::Get().StartServices(false);
+
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();

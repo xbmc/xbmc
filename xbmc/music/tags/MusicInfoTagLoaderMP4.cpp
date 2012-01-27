@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
+#include "ThumbnailCache.h"
 
 using namespace XFILE;
 using namespace AUTOPTR;
@@ -270,16 +271,27 @@ int CMusicInfoTagLoaderMP4::ParseAtom( int64_t startOffset, int64_t stopOffset, 
   int           atomSize;
   unsigned int  atomName;
   char          atomHeader[ 10 ];
+  int64_t       ret = 0;
 
   currentOffset = startOffset;
   while ( currentOffset < stopOffset)
   {
     // Seek to the atom header
-    m_file.Seek( currentOffset, SEEK_SET );
+    ret = m_file.Seek( currentOffset, SEEK_SET );
+    if(ret != currentOffset || ret == -1) 
+    {
+      CLog::Log(LOGDEBUG, "%s unable to Seek.", __FUNCTION__);
+      return 0;
+    }
 
     // Read it in.. we only want the atom name & size.. they're always there..
-    m_file.Read( atomHeader, 8 );
-
+    ret = m_file.Read( atomHeader, 8 );
+    if(ret < 8 || ret == -1) 
+    {
+      CLog::Log(LOGDEBUG, "%s unable to Read.", __FUNCTION__);
+      return 0;
+    }
+    
     // Now pull out the bits we need..
     atomSize = ReadUnsignedInt( &atomHeader[ 0 ] );
     atomName = ReadUnsignedInt( &atomHeader[ 4 ] );
@@ -385,9 +397,9 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
       // other non-tagged files don't get this album image
       CStdString strCoverArt;
       if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
-        strCoverArt = CUtil::GetCachedAlbumThumb(tag.GetAlbum(), tag.GetAlbumArtist().IsEmpty() ? tag.GetArtist() : tag.GetAlbumArtist());
+        strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
       else
-        strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
+        strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
       if (!CUtil::ThumbExists(strCoverArt))
       {
         if (CPicture::CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )

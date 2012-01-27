@@ -69,7 +69,7 @@ public:
   virtual float Tween(float time, float start, float change, float duration)=0;
   void Free() { _ref--; if (_ref==0) delete this; }
   void IncRef() { _ref++; }
-
+  virtual bool HasResumePoint() const { return m_tweenerType == EASE_INOUT; }
 protected:
   int _ref;
   TweenerType m_tweenerType;
@@ -83,6 +83,7 @@ public:
   {
     return change * time / duration + start;
   }
+  virtual bool HasResumePoint() const { return false; }
 };
 
 
@@ -213,7 +214,6 @@ public:
       }
     return change * ((time-1) * time * ((s + 1) * time + s) + 1) + start;
   }
-
 private:
   float _s;
 
@@ -270,7 +270,6 @@ public:
 
     return easeOut(time, start, change, duration);
   }
-
 protected:
   float easeOut(float time, float start, float change, float duration)
   {
@@ -314,7 +313,6 @@ public:
       }
     return easeOut(time, start, change, duration);
   }
-
 protected:
   float _a;
   float _p;

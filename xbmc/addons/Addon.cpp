@@ -32,6 +32,7 @@
 #include "utils/URIUtils.h"
 #include <vector>
 #include <string.h>
+#include <ostream>
 
 using XFILE::CDirectory;
 using XFILE::CFile;
@@ -39,81 +40,6 @@ using namespace std;
 
 namespace ADDON
 {
-
-// BACKWARDCOMPATIBILITY: These can be removed post-Dharma
-typedef struct
-{
-  const char* old;
-  const char* id;
-} ScraperUpdate;
-
-static const ScraperUpdate music[] =
-    {{"allmusic_merlin_lastfm.xml", "metadata.merlin.pl"},
-    {"daum.xml",                   "metadata.music.daum.net"},
-    {"israel-music.xml",           "metadata.he.israel-music.co.il"},
-    {"freebase.xml",               "metadata.freebase.com"},
-    {"1ting.xml",                  "metadata.1ting.com"},
-    {"allmusic.xml",               "metadata.allmusic.com"},
-    {"lastfm.xml",                 "metadata.last.fm"}};
-
-static const ScraperUpdate videos[] =
-   {{"7176.xml",                   "metadata.7176.com"},
-    {"amazonuk.xml",               "metadata.amazon.co.uk"},
-    {"amazonus.xml",               "metadata.amazon.com"},
-    {"asiandb.xml",                "metadata.asiandb.com"},
-    {"cine-passion.xml",           "metadata.cine-passion.fr"},
-    {"cinefacts.xml",              "metadata.cinefacts.de"},
-    {"daum-tv.xml",                "metadata.tv.daum.net"},
-    {"daum.xml",                   "metadata.movie.daum.net"},
-    {"fdbpl.xml",                  "metadata.fdb.pl"},
-    {"filmaffinity.xml",           "metadata.filmaffinity.com"},
-    {"filmbasen.xml",              "metadata.filmbasen.dagbladet.no"},
-    {"filmdelta.xml",              "metadata.filmdelta.se"},
-    {"filmstarts.xml",             "metadata.filmstarts.de"},
-    {"filmweb.xml",                "metadata.filmweb.pl"},
-    {"getlib.xml",                 "metadata.getlib.com"},
-    {"imdb.xml",                   "metadata.imdb.com"},
-    {"kino-de.xml",                "metadata.kino.de"},
-    {"KinoPoisk.xml",              "metadata.kinopoisk.ru"},
-    {"M1905.xml",                  "metadata.m1905.com"},
-    {"moviemaze.xml",              "metadata.moviemaze.de"},
-    {"moviemeter.xml",             "metadata.moviemeter.nl"},
-    {"movieplayer-it-film.xml",    "metadata.movieplayer.it"},
-    {"movieplayer-it-tv.xml",      "metadata.tv.movieplayer.it"},
-    {"mtime.xml",                  "metadata.mtime.com"},
-    {"mtv.xml",                    "metadata.mtv.com"},
-    {"myMovies.xml",               "metadata.mymovies.it"},
-    {"mymoviesdk.xml",             "metadata.mymovies.dk"},
-    {"naver.xml",                  "metadata.movie.naver.com"},
-    {"ofdb.xml",                   "metadata.ofdb.de"},
-    {"ptgate.xml",                 "metadata.ptgate.pt"},
-    {"rottentomatoes.xml",         "metadata.rottentomatoes.com"},
-    {"sratim.xml",                 "metadata.sratim.co.il"},
-    {"tmdb.xml",                   "metadata.themoviedb.org"},
-    {"tvdb.xml",                   "metadata.tvdb.com"},
-    {"videobuster.xml",            "metadata.videobuster.de"},
-    {"worldart.xml",               "metadata.worldart.ru"},
-    {"yahoomusic.xml",             "metadata.yahoomusic.com"}};
-
-const CStdString UpdateVideoScraper(const CStdString &old)
-{
-  for (unsigned int index=0; index < sizeof(videos)/sizeof(videos[0]); ++index)
-  {
-    if (old == videos[index].old)
-      return videos[index].id;
-  }
-  return "";
-}
-
-const CStdString UpdateMusicScraper(const CStdString &old)
-{
-  for (unsigned int index=0; index < sizeof(music)/sizeof(music[0]); ++index)
-  {
-    if (old == music[index].old)
-      return music[index].id;
-  }
-  return "";
-}
 
 /**
  * helper functions 
@@ -194,48 +120,6 @@ const CStdString GetIcon(const ADDON::TYPE& type)
   return "";
 }
 
-/**
- * AddonVersion
- *
- */
-
-bool AddonVersion::operator==(const AddonVersion &rhs) const
-{
-  return str.Equals(rhs.str);
-}
-
-bool AddonVersion::operator!=(const AddonVersion &rhs) const
-{
-  return !(*this == rhs);
-}
-
-bool AddonVersion::operator>(const AddonVersion &rhs) const
-{
-  return (strverscmp(str.c_str(), rhs.str.c_str()) > 0);
-}
-
-bool AddonVersion::operator>=(const AddonVersion &rhs) const
-{
-  return (*this == rhs) || (*this > rhs);
-}
-
-bool AddonVersion::operator<(const AddonVersion &rhs) const
-{
-  return (strverscmp(str.c_str(), rhs.str.c_str()) < 0);
-}
-
-bool AddonVersion::operator<=(const AddonVersion &rhs) const
-{
-  return (*this == rhs) || !(*this > rhs);
-}
-
-CStdString AddonVersion::Print() const
-{
-  CStdString out;
-  out.Format("%s %s", g_localizeStrings.Get(24051), str); // "Version <str>"
-  return CStdString(out);
-}
-
 #define EMPTY_IF(x,y) \
   { \
     CStdString fan=CAddonMgr::Get().GetExtValue(metadata->configuration, x); \
@@ -246,6 +130,7 @@ CStdString AddonVersion::Print() const
 AddonProps::AddonProps(const cp_extension_t *ext)
   : id(ext->plugin->identifier)
   , version(ext->plugin->version)
+  , minversion(ext->plugin->abi_bw_compatibility)
   , name(ext->plugin->name)
   , path(ext->plugin->plugin_path)
   , author(ext->plugin->provider_name)
@@ -270,6 +155,28 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+  BuildDependencies(ext->plugin);
+}
+
+AddonProps::AddonProps(const cp_plugin_info_t *plugin)
+  : id(plugin->identifier)
+  , version(plugin->version)
+  , minversion(plugin->abi_bw_compatibility)
+  , name(plugin->name)
+  , path(plugin->plugin_path)
+  , author(plugin->provider_name)
+  , stars(0)
+{
+  BuildDependencies(plugin);
+}
+
+void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
+{
+  if (!plugin)
+    return;
+  for (unsigned int i = 0; i < plugin->num_imports; ++i)
+    dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
+                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
 }
 
 /**
@@ -285,8 +192,21 @@ CAddon::CAddon(const cp_extension_t *ext)
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
+  m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
+  m_settingsLoaded = false;
+  m_userSettingsLoaded = false;
+}
+
+CAddon::CAddon(const cp_plugin_info_t *plugin)
+  : m_props(plugin)
+  , m_parent(AddonPtr())
+{
+  m_enabled = true;
+  m_hasSettings = false;
+  m_hasStrings = false;
+  m_checkedStrings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }
@@ -300,6 +220,7 @@ CAddon::CAddon(const AddonProps &props)
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
+  m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
   m_settingsLoaded = false;
@@ -314,6 +235,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_addonXmlDoc = rhs.m_addonXmlDoc;
   m_settingsLoaded = rhs.m_settingsLoaded;
   m_userSettingsLoaded = rhs.m_userSettingsLoaded;
+  m_hasSettings = rhs.m_hasSettings;
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.m_strLibName;
@@ -327,9 +249,9 @@ AddonPtr CAddon::Clone(const AddonPtr &self) const
   return AddonPtr(new CAddon(*this, self));
 }
 
-const AddonVersion CAddon::Version()
+bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_props.version;
+  return m_props.minversion <= version && version <= m_props.version;
 }
 
 //TODO platform/path crap should be negotiated between the addon and
@@ -446,17 +368,19 @@ bool CAddon::HasSettings()
   return LoadSettings();
 }
 
-bool CAddon::LoadSettings()
+bool CAddon::LoadSettings(bool bForce /* = false*/)
 {
-  if (m_settingsLoaded)
+  if (m_settingsLoaded && !bForce)
     return true;
-
+  if (!m_hasSettings)
+    return false;
   CStdString addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
     if (CFile::Exists(addonFileName))
       CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    m_hasSettings = false;
     return false;
   }
 
@@ -479,6 +403,11 @@ bool CAddon::HasUserSettings()
     return false;
 
   return m_userSettingsLoaded;
+}
+
+bool CAddon::ReloadSettings()
+{
+  return LoadSettings(true);
 }
 
 bool CAddon::LoadUserSettings()
@@ -512,6 +441,8 @@ void CAddon::SaveSettings(void)
   TiXmlDocument doc;
   SettingsToXML(doc);
   doc.SaveFile(m_userSettingsPath);
+  
+  CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)
@@ -600,11 +531,6 @@ const CStdString CAddon::LibPath() const
   return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
 }
 
-ADDONDEPS CAddon::GetDeps()
-{
-  return CAddonMgr::Get().GetDeps(ID());
-}
-
 /**
  * CAddonLibrary
  *
@@ -629,6 +555,26 @@ TYPE CAddonLibrary::SetAddonType()
   else
     return ADDON_UNKNOWN;
 }
+
+CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
+{
+  CStdString version("1.0");
+  if (addon.get() != NULL)
+  {
+    const ADDON::ADDONDEPS &deps = addon->GetDeps();
+    ADDON::ADDONDEPS::const_iterator it;
+    CStdString key("xbmc.python");
+    it = deps.find(key);
+    if (!(it == deps.end()))
+    {
+      const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
+      version = xbmcApiVersion->c_str();
+    }
+  }
+
+  return version;
+}
+
 
 } /* namespace ADDON */
 

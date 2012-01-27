@@ -27,6 +27,7 @@
 * (http://dirac.sourceforge.net/specification.html).
 */
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "libdirac_libschro.h"
 #include "libschroedinger.h"
@@ -169,8 +170,8 @@ static void libschroedinger_handle_first_access_unit(AVCodecContext *avccontext)
     p_schro_params->format = schro_decoder_get_video_format(decoder);
 
     /* Tell FFmpeg about sequence details. */
-    if (avcodec_check_dimensions(avccontext, p_schro_params->format->width,
-                                 p_schro_params->format->height) < 0) {
+    if (av_image_check_size(p_schro_params->format->width, p_schro_params->format->height,
+                            0, avccontext) < 0) {
         av_log(avccontext, AV_LOG_ERROR, "invalid dimensions (%dx%d)\n",
                p_schro_params->format->width, p_schro_params->format->height);
         avccontext->height = avccontext->width = 0;
@@ -345,7 +346,7 @@ static void libschroedinger_flush(AVCodecContext *avccontext)
     p_schro_params->eos_signalled = 0;
 }
 
-AVCodec libschroedinger_decoder = {
+AVCodec ff_libschroedinger_decoder = {
     "libschroedinger",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DIRAC,

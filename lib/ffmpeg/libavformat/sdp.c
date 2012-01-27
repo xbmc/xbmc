@@ -21,6 +21,7 @@
 #include <string.h>
 #include "libavutil/avstring.h"
 #include "libavutil/base64.h"
+#include "libavcodec/xiph.h"
 #include "avformat.h"
 #include "internal.h"
 #include "avc.h"
@@ -43,17 +44,24 @@ struct sdp_session_level {
     int ttl;              /**< TTL, in case of multicast stream */
     const char *user;     /**< username of the session's creator */
     const char *src_addr; /**< IP address of the machine from which the session was created */
+    const char *src_type; /**< address type of src_addr */
     const char *dst_addr; /**< destination IP address (can be multicast) */
+    const char *dst_type; /**< destination IP address type */
     const char *name;     /**< session name (can be an empty string) */
 };
 
-static void sdp_write_address(char *buff, int size, const char *dest_addr, int ttl)
+static void sdp_write_address(char *buff, int size, const char *dest_addr,
+                              const char *dest_type, int ttl)
 {
     if (dest_addr) {
-        if (ttl > 0) {
-            av_strlcatf(buff, size, "c=IN IP4 %s/%d\r\n", dest_addr, ttl);
+        if (!dest_type)
+            dest_type = "IP4";
+        if (ttl > 0 && !strcmp(dest_type, "IP4")) {
+            /* The TTL should only be specified for IPv4 multicast addresses,
+             * not for IPv6. */
+            av_strlcatf(buff, size, "c=IN %s %s/%d\r\n", dest_type, dest_addr, ttl);
         } else {
-            av_strlcatf(buff, size, "c=IN IP4 %s\r\n", dest_addr);
+            av_strlcatf(buff, size, "c=IN %s %s\r\n", dest_type, dest_addr);
         }
     }
 }
@@ -61,45 +69,49 @@ static void sdp_write_address(char *buff, int size, const char *dest_addr, int t
 static void sdp_write_header(char *buff, int size, struct sdp_session_level *s)
 {
     av_strlcatf(buff, size, "v=%d\r\n"
-                            "o=- %d %d IN IP4 %s\r\n"
+                            "o=- %d %d IN %s %s\r\n"
                             "s=%s\r\n",
                             s->sdp_version,
-                            s->id, s->version, s->src_addr,
+                            s->id, s->version, s->src_type, s->src_addr,
                             s->name);
-    sdp_write_address(buff, size, s->dst_addr, s->ttl);
+    sdp_write_address(buff, size, s->dst_addr, s->dst_type, s->ttl);
     av_strlcatf(buff, size, "t=%d %d\r\n"
                             "a=tool:libavformat " AV_STRINGIFY(LIBAVFORMAT_VERSION) "\r\n",
                             s->start_time, s->end_time);
 }
 
 #if CONFIG_NETWORK
-static void resolve_destination(char *dest_addr, int size)
+static int resolve_destination(char *dest_addr, int size, char *type,
+                               int type_size)
 {
-    struct addrinfo hints, *ai, *cur;
+    struct addrinfo hints, *ai;
+    int is_multicast;
 
+    av_strlcpy(type, "IP4", type_size);
     if (!dest_addr[0])
-        return;
+        return 0;
 
     /* Resolve the destination, since it must be written
      * as a numeric IP address in the SDP. */
 
     memset(&hints, 0, sizeof(hints));
-    /* We only support IPv4 addresses in the SDP at the moment. */
-    hints.ai_family = AF_INET;
     if (getaddrinfo(dest_addr, NULL, &hints, &ai))
-        return;
-    for (cur = ai; cur; cur = cur->ai_next) {
-        if (cur->ai_family == AF_INET) {
-            getnameinfo(cur->ai_addr, cur->ai_addrlen, dest_addr, size,
-                        NULL, 0, NI_NUMERICHOST);
-            break;
-        }
-    }
+        return 0;
+    getnameinfo(ai->ai_addr, ai->ai_addrlen, dest_addr, size,
+                NULL, 0, NI_NUMERICHOST);
+#ifdef AF_INET6
+    if (ai->ai_family == AF_INET6)
+        av_strlcpy(type, "IP6", type_size);
+#endif
+    is_multicast = ff_is_multicast_address(ai->ai_addr);
     freeaddrinfo(ai);
+    return is_multicast;
 }
 #else
-static void resolve_destination(char *dest_addr, int size)
+static int resolve_destination(char *dest_addr, int size, char *type,
+                               int type_size)
 {
+    return 0;
 }
 #endif
 
@@ -123,14 +135,11 @@ static int sdp_get_address(char *dest_addr, int size, int *ttl, const char *url)
     p = strchr(url, '?');
     if (p) {
         char buff[64];
-        int is_multicast = find_info_tag(buff, sizeof(buff), "multicast", p);
 
-        if (is_multicast) {
-            if (find_info_tag(buff, sizeof(buff), "ttl", p)) {
-                *ttl = strtol(buff, NULL, 10);
-            } else {
-                *ttl = 5;
-            }
+        if (find_info_tag(buff, sizeof(buff), "ttl", p)) {
+            *ttl = strtol(buff, NULL, 10);
+        } else {
+            *ttl = 5;
         }
     }
 
@@ -220,6 +229,75 @@ static char *extradata2config(AVCodecContext *c)
     return config;
 }
 
+static char *xiph_extradata2config(AVCodecContext *c)
+{
+    char *config, *encoded_config;
+    uint8_t *header_start[3];
+    int headers_len, header_len[3], config_len;
+    int first_header_size;
+
+    switch (c->codec_id) {
+    case CODEC_ID_THEORA:
+        first_header_size = 42;
+        break;
+    case CODEC_ID_VORBIS:
+        first_header_size = 30;
+        break;
+    default:
+        av_log(c, AV_LOG_ERROR, "Unsupported Xiph codec ID\n");
+        return NULL;
+    }
+
+    if (ff_split_xiph_headers(c->extradata, c->extradata_size,
+                              first_header_size, header_start,
+                              header_len) < 0) {
+        av_log(c, AV_LOG_ERROR, "Extradata corrupt.\n");
+        return NULL;
+    }
+
+    headers_len = header_len[0] + header_len[2];
+    config_len = 4 +          // count
+                 3 +          // ident
+                 2 +          // packet size
+                 1 +          // header count
+                 2 +          // header size
+                 headers_len; // and the rest
+
+    config = av_malloc(config_len);
+    if (!config)
+        goto xiph_fail;
+
+    encoded_config = av_malloc(AV_BASE64_SIZE(config_len));
+    if (!encoded_config) {
+        av_free(config);
+        goto xiph_fail;
+    }
+
+    config[0] = config[1] = config[2] = 0;
+    config[3] = 1;
+    config[4] = (RTP_XIPH_IDENT >> 16) & 0xff;
+    config[5] = (RTP_XIPH_IDENT >>  8) & 0xff;
+    config[6] = (RTP_XIPH_IDENT      ) & 0xff;
+    config[7] = (headers_len >> 8) & 0xff;
+    config[8] = headers_len & 0xff;
+    config[9] = 2;
+    config[10] = header_len[0];
+    config[11] = 0; // size of comment header; nonexistent
+    memcpy(config + 12, header_start[0], header_len[0]);
+    memcpy(config + 12 + header_len[0], header_start[2], header_len[2]);
+
+    av_base64_encode(encoded_config, AV_BASE64_SIZE(config_len),
+                     config, config_len);
+    av_free(config);
+
+    return encoded_config;
+
+xiph_fail:
+    av_log(c, AV_LOG_ERROR,
+           "Not enough memory for configuration string\n");
+    return NULL;
+}
+
 static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c, int payload_type)
 {
     char *config = NULL;
@@ -236,7 +314,14 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
             break;
         case CODEC_ID_H263:
         case CODEC_ID_H263P:
-            av_strlcatf(buff, size, "a=rtpmap:%d H263-2000/90000\r\n", payload_type);
+            /* a=framesize is required by 3GPP TS 26.234 (PSS). It
+             * actually specifies the maximum video size, but we only know
+             * the current size. This is required for playback on Android
+             * stagefright and on Samsung bada. */
+            av_strlcatf(buff, size, "a=rtpmap:%d H263-2000/90000\r\n"
+                                    "a=framesize:%d %d-%d\r\n",
+                                    payload_type,
+                                    payload_type, c->width, c->height);
             break;
         case CODEC_ID_MPEG4:
             if (c->extradata_size) {
@@ -297,6 +382,61 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                                      payload_type, c->sample_rate, c->channels,
                                      payload_type);
             break;
+        case CODEC_ID_VORBIS:
+            if (c->extradata_size)
+                config = xiph_extradata2config(c);
+            else
+                av_log(c, AV_LOG_ERROR, "Vorbis configuration info missing\n");
+            if (!config)
+                return NULL;
+
+            av_strlcatf(buff, size, "a=rtpmap:%d vorbis/%d/%d\r\n"
+                                    "a=fmtp:%d configuration=%s\r\n",
+                                    payload_type, c->sample_rate, c->channels,
+                                    payload_type, config);
+            break;
+        case CODEC_ID_THEORA: {
+            const char *pix_fmt;
+            if (c->extradata_size)
+                config = xiph_extradata2config(c);
+            else
+                av_log(c, AV_LOG_ERROR, "Theora configuation info missing\n");
+            if (!config)
+                return NULL;
+
+            switch (c->pix_fmt) {
+            case PIX_FMT_YUV420P:
+                pix_fmt = "YCbCr-4:2:0";
+                break;
+            case PIX_FMT_YUV422P:
+                pix_fmt = "YCbCr-4:2:2";
+                break;
+            case PIX_FMT_YUV444P:
+                pix_fmt = "YCbCr-4:4:4";
+                break;
+            default:
+                av_log(c, AV_LOG_ERROR, "Unsupported pixel format.\n");
+                return NULL;
+            }
+
+            av_strlcatf(buff, size, "a=rtpmap:%d theora/90000\r\n"
+                                    "a=fmtp:%d delivery-method=inline; "
+                                    "width=%d; height=%d; sampling=%s; "
+                                    "configuration=%s\r\n",
+                                    payload_type, payload_type,
+                                    c->width, c->height, pix_fmt, config);
+            break;
+        }
+        case CODEC_ID_VP8:
+            av_strlcatf(buff, size, "a=rtpmap:%d VP8/90000\r\n",
+                                     payload_type);
+            break;
+        case CODEC_ID_ADPCM_G722:
+            if (payload_type >= RTP_PT_PRIVATE)
+                av_strlcatf(buff, size, "a=rtpmap:%d G722/%d/%d\r\n",
+                                         payload_type,
+                                         8000, c->channels);
+            break;
         default:
             /* Nothing special to do here... */
             break;
@@ -307,7 +447,7 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
     return buff;
 }
 
-void ff_sdp_write_media(char *buff, int size, AVCodecContext *c, const char *dest_addr, int port, int ttl)
+void ff_sdp_write_media(char *buff, int size, AVCodecContext *c, const char *dest_addr, const char *dest_type, int port, int ttl)
 {
     const char *type;
     int payload_type;
@@ -325,7 +465,7 @@ void ff_sdp_write_media(char *buff, int size, AVCodecContext *c, const char *des
     }
 
     av_strlcatf(buff, size, "m=%s %d RTP/AVP %d\r\n", type, port, payload_type);
-    sdp_write_address(buff, size, dest_addr, ttl);
+    sdp_write_address(buff, size, dest_addr, dest_type, ttl);
     if (c->bit_rate) {
         av_strlcatf(buff, size, "b=AS:%d\r\n", c->bit_rate / 1000);
     }
@@ -337,23 +477,32 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
 {
     AVMetadataTag *title = av_metadata_get(ac[0]->metadata, "title", NULL, 0);
     struct sdp_session_level s;
-    int i, j, port, ttl;
-    char dst[32];
+    int i, j, port, ttl, is_multicast;
+    char dst[32], dst_type[5];
 
     memset(buff, 0, size);
     memset(&s, 0, sizeof(struct sdp_session_level));
     s.user = "-";
     s.src_addr = "127.0.0.1";    /* FIXME: Properly set this */
+    s.src_type = "IP4";
     s.name = title ? title->value : "No Name";
 
     port = 0;
     ttl = 0;
     if (n_files == 1) {
         port = sdp_get_address(dst, sizeof(dst), &ttl, ac[0]->filename);
-        resolve_destination(dst, sizeof(dst));
+        is_multicast = resolve_destination(dst, sizeof(dst), dst_type,
+                                           sizeof(dst_type));
+        if (!is_multicast)
+            ttl = 0;
         if (dst[0]) {
             s.dst_addr = dst;
+            s.dst_type = dst_type;
             s.ttl = ttl;
+            if (!strcmp(dst_type, "IP6")) {
+                s.src_addr = "::1";
+                s.src_type = "IP6";
+            }
         }
     }
     sdp_write_header(buff, size, &s);
@@ -362,12 +511,15 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     for (i = 0; i < n_files; i++) {
         if (n_files != 1) {
             port = sdp_get_address(dst, sizeof(dst), &ttl, ac[i]->filename);
-            resolve_destination(dst, sizeof(dst));
+            is_multicast = resolve_destination(dst, sizeof(dst), dst_type,
+                                               sizeof(dst_type));
+            if (!is_multicast)
+                ttl = 0;
         }
         for (j = 0; j < ac[i]->nb_streams; j++) {
             ff_sdp_write_media(buff, size,
                                   ac[i]->streams[j]->codec, dst[0] ? dst : NULL,
-                                  (port > 0) ? port + j * 2 : 0, ttl);
+                                  dst_type, (port > 0) ? port + j * 2 : 0, ttl);
             if (port <= 0) {
                 av_strlcatf(buff, size,
                                    "a=control:streamid=%d\r\n", i + j);
@@ -383,8 +535,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     return AVERROR(ENOSYS);
 }
 
-void ff_sdp_write_media(char *buff, int size, AVCodecContext *c,
-                        const char *dest_addr, int port, int ttl)
+void ff_sdp_write_media(char *buff, int size, AVCodecContext *c, const char *dest_addr, const char *dest_type, int port, int ttl)
 {
 }
 #endif

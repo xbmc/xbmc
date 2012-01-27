@@ -39,11 +39,17 @@ CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 {
 }
 
-void CGUIToggleButtonControl::Render()
+void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // ask our infoManager whether we are selected or not...
+  bool selected = m_bSelected;
   if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+    selected = g_infoManager.GetBoolValue(m_toggleSelect);
+  if (selected != m_bSelected)
+  {
+    MarkDirtyRegion();
+    m_bSelected = selected;
+  }
 
   if (m_bSelected)
   {
@@ -52,6 +58,15 @@ void CGUIToggleButtonControl::Render()
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
     m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
+    m_selectButton.DoProcess(currentTime, dirtyregions);
+  }
+  CGUIButtonControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIToggleButtonControl::Render()
+{
+  if (m_bSelected)
+  {
     m_selectButton.Render();
     CGUIControl::Render();
   }
@@ -66,6 +81,7 @@ bool CGUIToggleButtonControl::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
+    SetInvalid();
   }
   return CGUIButtonControl::OnAction(action);
 }
@@ -112,11 +128,13 @@ void CGUIToggleButtonControl::SetHeight(float height)
   m_selectButton.SetHeight(height);
 }
 
-void CGUIToggleButtonControl::UpdateColors()
+bool CGUIToggleButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateColors();
-  m_selectButton.SetColorDiffuse(m_diffuseColor);
-  m_selectButton.UpdateColors();
+  bool changed = CGUIButtonControl::UpdateColors();
+  changed |= m_selectButton.SetColorDiffuse(m_diffuseColor);
+  changed |= m_selectButton.UpdateColors();
+
+  return changed;
 }
 
 void CGUIToggleButtonControl::SetLabel(const string &strLabel)
@@ -138,7 +156,7 @@ CStdString CGUIToggleButtonControl::GetDescription() const
   return CGUIButtonControl::GetDescription();
 }
 
-void CGUIToggleButtonControl::SetAltClickActions(const vector<CGUIActionDescriptor> &clickActions)
+void CGUIToggleButtonControl::SetAltClickActions(const CGUIAction &clickActions)
 {
   m_selectButton.SetClickActions(clickActions);
 }
@@ -150,4 +168,9 @@ void CGUIToggleButtonControl::OnClick()
     m_selectButton.OnClick();
   else
     CGUIButtonControl::OnClick();
+}
+
+void CGUIToggleButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+{
+  m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }

@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2007 Bobby Bingham
+ * Copyright (c) 2007 Bobby Bingham
  *
  * This file is part of FFmpeg.
  *
@@ -39,15 +39,17 @@ static int config_input(AVFilterLink *link)
     return 0;
 }
 
-static AVFilterPicRef *get_video_buffer(AVFilterLink *link, int perms,
+static AVFilterBufferRef *get_video_buffer(AVFilterLink *link, int perms,
                                         int w, int h)
 {
     FlipContext *flip = link->dst->priv;
+    AVFilterBufferRef *picref;
     int i;
 
-    AVFilterPicRef *picref = avfilter_get_video_buffer(link->dst->outputs[0],
-                                                       perms, w, h);
+    if (!(perms & AV_PERM_NEG_LINESIZES))
+        return avfilter_default_get_video_buffer(link, perms, w, h);
 
+    picref = avfilter_get_video_buffer(link->dst->outputs[0], perms, w, h);
     for (i = 0; i < 4; i ++) {
         int vsub = i == 1 || i == 2 ? flip->vsub : 0;
 
@@ -60,21 +62,22 @@ static AVFilterPicRef *get_video_buffer(AVFilterLink *link, int perms,
     return picref;
 }
 
-static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
+static void start_frame(AVFilterLink *link, AVFilterBufferRef *inpicref)
 {
     FlipContext *flip = link->dst->priv;
+    AVFilterBufferRef *outpicref = avfilter_ref_buffer(inpicref, ~0);
     int i;
 
     for (i = 0; i < 4; i ++) {
         int vsub = i == 1 || i == 2 ? flip->vsub : 0;
 
-        if (picref->data[i]) {
-            picref->data[i] += ((link->h >> vsub)-1) * picref->linesize[i];
-            picref->linesize[i] = -picref->linesize[i];
+        if (outpicref->data[i]) {
+            outpicref->data[i] += ((link->h >> vsub)-1) * outpicref->linesize[i];
+            outpicref->linesize[i] = -outpicref->linesize[i];
         }
     }
 
-    avfilter_start_frame(link->dst->outputs[0], picref);
+    avfilter_start_frame(link->dst->outputs[0], outpicref);
 }
 
 static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
@@ -95,7 +98,6 @@ AVFilter avfilter_vf_vflip = {
                                     .get_video_buffer = get_video_buffer,
                                     .start_frame      = start_frame,
                                     .draw_slice       = draw_slice,
-                                    .end_frame        = avfilter_null_end_frame,
                                     .config_props     = config_input, },
                                   { .name = NULL}},
     .outputs   = (AVFilterPad[]) {{ .name             = "default",

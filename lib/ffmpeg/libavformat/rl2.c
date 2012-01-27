@@ -96,7 +96,7 @@ static av_cold int rl2_read_header(AVFormatContext *s,
     int ret = 0;
 
     url_fskip(pb,4);          /* skip FORM tag */
-    back_size = get_le32(pb); /** get size of the background frame */
+    back_size = get_le32(pb); /**< get size of the background frame */
     signature = get_be32(pb);
     data_size = get_be32(pb);
     frame_count = get_le32(pb);
@@ -287,7 +287,7 @@ static int rl2_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     return 0;
 }
 
-AVInputFormat rl2_demuxer = {
+AVInputFormat ff_rl2_demuxer = {
     "rl2",
     NULL_IF_CONFIG_SMALL("RL2 format"),
     sizeof(Rl2DemuxContext),

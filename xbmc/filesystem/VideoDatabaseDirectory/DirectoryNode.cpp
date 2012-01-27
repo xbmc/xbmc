@@ -50,6 +50,7 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -160,19 +161,29 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
 }
 
 //  Current node name
-const CStdString& CDirectoryNode::GetName()
+const CStdString& CDirectoryNode::GetName() const
 {
   return m_strName;
 }
 
+int CDirectoryNode::GetID() const
+{
+  return atoi(m_strName.c_str());
+}
+
+CStdString CDirectoryNode::GetLocalizedName() const
+{
+  return "";
+}
+
 //  Current node type
-NODE_TYPE CDirectoryNode::GetType()
+NODE_TYPE CDirectoryNode::GetType() const
 {
   return m_Type;
 }
 
 //  Return the parent directory node or NULL, if there is no
-CDirectoryNode* CDirectoryNode::GetParent()
+CDirectoryNode* CDirectoryNode::GetParent() const
 {
   return m_pParent;
 }
@@ -185,13 +196,13 @@ void CDirectoryNode::RemoveParent()
 //  should be overloaded by a derived class
 //  to get the content of a node. Will be called
 //  by GetChilds() of a parent node
-bool CDirectoryNode::GetContent(CFileItemList& items)
+bool CDirectoryNode::GetContent(CFileItemList& items) const
 {
   return false;
 }
 
 //  Creates a videodb url
-CStdString CDirectoryNode::BuildPath()
+CStdString CDirectoryNode::BuildPath() const
 {
   CStdStringArray array;
 
@@ -218,7 +229,7 @@ CStdString CDirectoryNode::BuildPath()
 //  Collects Query params from this and all parent nodes. If a NODE_TYPE can
 //  be used as a database parameter, it will be added to the
 //  params object.
-void CDirectoryNode::CollectQueryParams(CQueryParams& params)
+void CDirectoryNode::CollectQueryParams(CQueryParams& params) const
 {
   params.SetQueryParam(m_Type, m_strName);
 
@@ -232,7 +243,7 @@ void CDirectoryNode::CollectQueryParams(CQueryParams& params)
 
 //  Should be overloaded by a derived class.
 //  Returns the NODE_TYPE of the child nodes.
-NODE_TYPE CDirectoryNode::GetChildType()
+NODE_TYPE CDirectoryNode::GetChildType() const
 {
   return NODE_TYPE_NONE;
 }
@@ -266,7 +277,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
 
 //  Add an "* All ..." folder to the CFileItemList
 //  depending on the child node
-void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
+void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
 {
   CFileItemPtr pItem;
 
@@ -279,7 +290,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     return;
 
   // hack - as the season node might return episodes
-  auto_ptr<CDirectoryNode> pNode(ParseURL(items.m_strPath));
+  auto_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
   switch (pNode->GetChildType())
   {
@@ -287,15 +298,15 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
       {
         CStdString strLabel = g_localizeStrings.Get(20366);
         pItem.reset(new CFileItem(strLabel));  // "All Seasons"
-        pItem->m_strPath = BuildPath() + "-1/";
+        pItem->SetPath(BuildPath() + "-1/");
         // set the number of watched and unwatched items accordingly
         int watched = 0;
         int unwatched = 0;
         for (int i = 0; i < items.Size(); i++)
         {
           CFileItemPtr item = items[i];
-          watched += item->GetPropertyInt("watchedepisodes");
-          unwatched += item->GetPropertyInt("unwatchedepisodes");
+          watched += (int)item->GetProperty("watchedepisodes").asInteger();
+          unwatched += (int)item->GetProperty("unwatchedepisodes").asInteger();
         }
         pItem->SetProperty("totalepisodes", watched + unwatched);
         pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
@@ -326,7 +337,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   }
 }
 
-bool CDirectoryNode::CanCache()
+bool CDirectoryNode::CanCache() const
 {
   //  Only cache the directorys in the root
   //NODE_TYPE childnode=GetChildType();

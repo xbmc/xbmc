@@ -340,7 +340,7 @@ static int64_t nuv_read_dts(AVFormatContext *s, int stream_index,
 }
 
 
-AVInputFormat nuv_demuxer = {
+AVInputFormat ff_nuv_demuxer = {
     "nuv",
     NULL_IF_CONFIG_SMALL("NuppelVideo format"),
     sizeof(NUVContext),

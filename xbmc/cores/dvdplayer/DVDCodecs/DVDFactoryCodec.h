@@ -35,7 +35,7 @@ typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint );
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces = 0);
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, bool passthrough = true );
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 

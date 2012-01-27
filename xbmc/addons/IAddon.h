@@ -21,6 +21,9 @@
 */
 #include "boost/shared_ptr.hpp"
 #include "utils/StdString.h"
+
+#include <boost/enable_shared_from_this.hpp>
+
 #include <set>
 #include <map>
 
@@ -69,11 +72,11 @@ namespace ADDON
 
   class CAddonMgr;
   class AddonVersion;
-  typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
+  typedef std::map<CStdString, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<CStdString, CStdString> InfoMap;
   class AddonProps;
 
-  class IAddon
+  class IAddon : public boost::enable_shared_from_this<IAddon>
   {
   public:
     virtual ~IAddon() {};
@@ -86,7 +89,8 @@ namespace ADDON
     virtual const CStdString Name() const =0;
     virtual bool Enabled() const =0;
     virtual bool IsInUse() const =0;
-    virtual const AddonVersion Version() =0;
+    virtual const AddonVersion Version() const =0;
+    virtual const AddonVersion MinVersion() const =0;
     virtual const CStdString Summary() const =0;
     virtual const CStdString Description() const =0;
     virtual const CStdString Path() const =0;
@@ -105,11 +109,13 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
-    virtual ADDONDEPS GetDeps() =0;
+    virtual const ADDONDEPS &GetDeps() const =0;
+    virtual bool MeetsVersion(const AddonVersion &version) const =0;
+    virtual bool ReloadSettings() =0;
 
   protected:
     virtual const AddonPtr Parent() const =0;
-    virtual bool LoadSettings() =0;
+    virtual bool LoadSettings(bool bForce = false) =0;
 
   private:
     friend class CAddonMgr;
@@ -119,5 +125,15 @@ namespace ADDON
     virtual bool LoadStrings() =0;
     virtual void ClearStrings() =0;
   };
+
+  // some utilitiy methods
+
+  /**
+   * This function will extract the Addon's currently assigned xbmc.python
+   * API version. If addon is NULL, or there is no xbmc.python dependency defined,
+   * then the version is assumed to be "1.0"
+   */
+  CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon);
+
 };
 

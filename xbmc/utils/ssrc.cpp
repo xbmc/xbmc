@@ -24,10 +24,12 @@
 //-------------------------------------------------------------------------------------
 
 #include <math.h>
+#include <algorithm>
 #include <string.h>
 
 #include "ssrc.h" 
 #include "system.h"
+#include "utils/MathUtils.h"
 //#include "SRand.h"
 
 //--------------------------------------------------------------------------------------
@@ -2844,7 +2846,7 @@ bool Cssrc::InitFilters(void)
   if (UpSampling)
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     double guard = 2;
 
     frqgcd = gcd(sfrq, dfrq);
@@ -2860,7 +2862,6 @@ bool Cssrc::InitFilters(void)
     df = (dfrq * osf / 2 - sfrq / 2) * 2 / guard;
     lpf = sfrq / 2 + (dfrq * osf / 2 - sfrq / 2) / guard;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     n1 = (int)(fs1 / df * d + 1);
@@ -2903,7 +2904,7 @@ bool Cssrc::InitFilters(void)
   else
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     int ipsize, wsize;
 
     frqgcd = gcd(sfrq, dfrq);
@@ -2916,7 +2917,6 @@ bool Cssrc::InitFilters(void)
 
     fs1 = sfrq * osf;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     n1 = filter1len;
@@ -2959,10 +2959,9 @@ bool Cssrc::InitFilters(void)
   if (UpSampling)
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     int ipsize, wsize;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     fs2 = dfrq * osf;
@@ -3018,7 +3017,7 @@ bool Cssrc::InitFilters(void)
     else
     {
       double aa = AA; // stop band attenuation(dB)
-      double lpf, delta, d, df, alp, iza;
+      double lpf, d, df, alp, iza;
       double guard = 2;
 
       fs2 = sfrq / frqgcd * dfrq ;
@@ -3026,7 +3025,6 @@ bool Cssrc::InitFilters(void)
       df = (fs1 / 2 - sfrq / 2) * 2 / guard;
       lpf = sfrq / 2 + (fs1 / 2 - sfrq / 2) / guard;
 
-      delta = pow(10.0, -aa / 20);
       if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
       n2 = (int)(fs2 / df * d + 1);
@@ -4140,15 +4138,8 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
       short *pShort = (short *)m_pResampleBuffer;
       float *pInput = (float *)pInData;
       for (int i = 0; i < numSamples; i++)
-      {
-        float result = 32767.0f * pInput[i] + 0.5f;
-        if (result > 32767.0f)
-          *pShort++ = 32767;
-        else if (result < -32768.0f)
-          *pShort++ = -32768;
-        else
-          *pShort++ = (short)result;
-      }
+        *(pShort++) = MathUtils::round_int(std::max(std::min(32767.0f * *(pInput++), 32767.0f), -32768.0f));
+
       m_iResampleBufferPos += numSamples * dbps;
     }
     else  // unimplemented

@@ -66,6 +66,11 @@ bool CXBTFFrame::IsPacked() const
   return m_unpackedSize != m_packedSize;
 }
 
+bool CXBTFFrame::HasAlpha() const
+{
+  return (m_format & XB_FMT_OPAQUE) == 0;
+}
+
 uint64_t CXBTFFrame::GetUnpackedSize() const
 {
   return m_unpackedSize;
@@ -81,9 +86,9 @@ void CXBTFFrame::SetFormat(uint32_t format)
   m_format = format;
 }
 
-uint32_t CXBTFFrame::GetFormat() const
+uint32_t CXBTFFrame::GetFormat(bool raw) const
 {
-  return m_format;
+  return raw ? m_format : (m_format & XB_FMT_MASK);
 }
 
 uint64_t CXBTFFrame::GetOffset() const

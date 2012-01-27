@@ -21,6 +21,8 @@
  *
  */
 
+#include <list>
+
 #if defined (HAS_GL)
   #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
@@ -36,9 +38,12 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+class CRenderCapture;
+
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
+struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
 
@@ -55,76 +60,23 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+  CRenderCapture* AllocRenderCapture();
+  void ReleaseRenderCapture(CRenderCapture* capture);
+  void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
+  void ManageCaptures();
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   bool IsConfigured();
 
-  // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
-  // failure to do so will result in deadlock
-  inline int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetImage(image, source, readonly);
-    return -1;
-  }
-  inline void ReleaseImage(int source = AUTOSOURCE, bool preserve = false)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->ReleaseImage(source, preserve);
-  }
-  inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
-    return 0;
-  }
+  int AddVideoPicture(DVDVideoPicture& picture);
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
-
-#ifdef HAS_DX
-  void AddProcessor(DXVA::CProcessor* processor, int64_t id)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(processor, id);
-  }
-#endif
-
-#ifdef HAVE_LIBVDPAU
-  void AddProcessor(CVDPAU* vdpau)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(vdpau);
-  }
-#endif
-
-#ifdef HAVE_LIBOPENMAX
-  void AddProcessor(COpenMax *openmax, DVDVideoPicture *picture)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(openmax, picture);
-  }
-#endif
-
-#ifdef HAVE_LIBVA
-  void AddProcessor(VAAPI::CHolder& holder)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(holder);
-  }
-#endif
+  bool Flush();
 
   void AddOverlay(CDVDOverlay* o, double pts)
   {
@@ -166,6 +118,15 @@ public:
       return false;
   }
 
+  bool Supports(EDEINTERLACEMODE method)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(method);
+    else
+      return false;
+  }
+
   bool Supports(EINTERLACEMETHOD method)
   {
     CSharedLock lock(m_sharedSection);
@@ -184,12 +145,26 @@ public:
       return false;
   }
 
+  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt)
+  {
+    CSharedLock lock(m_sharedSection);
+    return AutoInterlaceMethodInternal(mInt);
+  }
+
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
 
   void UpdateResolution();
+
+  unsigned int GetProcessorSize()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->GetProcessorSize();
+    return 0;
+  }
 
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
@@ -207,11 +182,14 @@ public:
   CSharedSection& GetSection() { return m_sharedSection; };
 
 protected:
+  void Render(bool clear, DWORD flags, DWORD alpha);
 
-  void PresentSingle();
-  void PresentWeave();
-  void PresentBob();
-  void PresentBlend();
+  void PresentSingle(bool clear, DWORD flags, DWORD alpha);
+  void PresentWeave(bool clear, DWORD flags, DWORD alpha);
+  void PresentBob(bool clear, DWORD flags, DWORD alpha);
+  void PresentBlend(bool clear, DWORD flags, DWORD alpha);
+
+  EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);
 
   bool m_bPauseDrawing;   // true if we should pause rendering
 
@@ -230,19 +208,37 @@ protected:
   , PRESENT_FRAME2
   };
 
+  enum EPRESENTMETHOD
+  {
+    PRESENT_METHOD_SINGLE = 0,
+    PRESENT_METHOD_BLEND,
+    PRESENT_METHOD_WEAVE,
+    PRESENT_METHOD_BOB,
+  };
+
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
   double     m_errorbuff[ERRORBUFFSIZE];
   int        m_errorindex;
   EFIELDSYNC m_presentfield;
-  EINTERLACEMETHOD m_presentmethod;
+  EPRESENTMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
+  CEvent     m_flushEvent;
 
 
   OVERLAY::CRenderer m_overlays;
+
+  void RenderCapture(CRenderCapture* capture);
+  void RemoveCapture(CRenderCapture* capture);
+  CCriticalSection           m_captCritSect;
+  std::list<CRenderCapture*> m_captures;
+  //set to true when adding something to m_captures, set to false when m_captures is made empty
+  //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
+  bool                       m_hasCaptures; 
 };
 
 extern CXBMCRenderManager g_renderManager;

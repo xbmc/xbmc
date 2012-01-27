@@ -25,6 +25,7 @@
 #include "Encoder.h"
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"
+#include "DllAvUtil.h"
 
 class CEncoderFFmpeg : public CEncoder
 {

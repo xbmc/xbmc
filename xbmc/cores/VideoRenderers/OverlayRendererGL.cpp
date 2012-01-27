@@ -28,7 +28,7 @@
 #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
 #include "LinuxRendererGLES.h"
-#include "MatrixGLES.h"
+#include "guilib/MatrixGLES.h"
 #endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
@@ -37,6 +37,9 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 #include "utils/MathUtils.h"
+#include "utils/log.h"
+#include "utils/GLUtils.h"
+#include "RenderManager.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -56,30 +59,38 @@ static void LoadTexture(GLenum target
 {
   int width2  = NP2(width);
   int height2 = NP2(height);
+  char *pixelVector = NULL;
+  const GLvoid *pixelData = pixels;
+
+  int bytesPerPixel;
+  switch (externalFormat)
+  {
+#ifndef HAS_GLES
+  case GL_BGRA:
+#endif
+  case GL_RGBA:
+    bytesPerPixel = 4;
+    break;
+#ifndef HAS_GLES
+  case GL_BGR:
+#endif
+  case GL_RGB:
+    bytesPerPixel = 3;
+    break;
+  default:
+    bytesPerPixel = 1;
+  }
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  const GLvoid *pixelData = pixels;
   if (stride != width)
   {
-    int bytesPerPixel;
-    switch (externalFormat)
-    {
-    case GL_RGBA:
-      bytesPerPixel = 4;
-      break;
-    case GL_RGB:
-      bytesPerPixel = 3;
-      break;
-    default:
-      bytesPerPixel = 1;
-    }
-
     int bytesPerLine = bytesPerPixel * width;
 
-    std::vector<char> pixelVector( width * height * bytesPerLine ); // reserve temporary memory for unstrided image
-    const char *src = reinterpret_cast<const char *>(pixels);
-    char *dst = &pixelVector[0];
+    pixelVector = (char *)malloc(bytesPerLine * height);
+
+    const char *src = (const char*)pixels;
+    char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
       memcpy(dst, src, bytesPerLine);
@@ -87,22 +98,14 @@ static void LoadTexture(GLenum target
       dst += bytesPerLine;
     }
 
-    pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    pixelData = pixelVector;
     stride = width;
   }
 #else
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  if(externalFormat == GL_RGBA
-  || externalFormat == GL_BGRA)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
-  else if(externalFormat == GL_RGB
-       || externalFormat == GL_BGR)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
-  else
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-
-  const GLvoid *pixelData = pixels;
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bytesPerPixel);
 #endif
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
@@ -123,12 +126,14 @@ static void LoadTexture(GLenum target
     glTexSubImage2D( target, 0
                    , width, 0, 1, height
                    , externalFormat, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixelData + stride - 1);
+                   , (unsigned char*)pixelData + bytesPerPixel * (width-1));
 
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
 
+  free(pixelVector);
+  
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
 }
@@ -260,26 +265,21 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 {
-  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
-
-  int width  = res.iWidth;
-  int height = res.iHeight;
-
-  m_width  = (float)width;
-  m_height = (float)height;
-
-  if     (res.fPixelRatio > 1.0)
-    width  = MathUtils::round_int(width  * res.fPixelRatio);
-  else if(res.fPixelRatio < 1.0)
-    height = MathUtils::round_int(height / res.fPixelRatio);
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
 
   m_vertex = NULL;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)0.0f;
-  m_y      = (float)0.0f;
+  m_width  = 1.0;
+  m_height = 1.0;
+  m_align  = ALIGN_VIDEO;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
 
-  m_texture = ~(GLuint)0;
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
+
+  m_texture = 0;
 
   SQuads quads;
   if(!convert_quad(o, pts, width, height, quads))
@@ -389,7 +389,7 @@ COverlayGlyphGL::~COverlayGlyphGL()
 
 void COverlayGlyphGL::Render(SRenderState& state)
 {
-  if (m_texture == ~GLuint(0))
+  if (m_texture == 0)
     return;
 
   glEnable(GL_TEXTURE_2D);
@@ -412,7 +412,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(state.x    , state.y     , 0.0);
+  glTranslatef(state.x    , state.y     , 0.0f);
   glScalef    (state.width, state.height, 1.0f);
 
   VerifyGLState();
@@ -430,21 +430,21 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glPopMatrix();
 #else
-  g_Windowing.EnableGUIShader(SM_FONTS);
-
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(state.x, state.y, 0.0);
+  g_matrices.Translatef(state.x, state.y, 0.0f);
   g_matrices.Scalef(state.width, state.height, 1.0f);
-
   VerifyGLState();
+
+  g_Windowing.EnableGUIShader(SM_FONTS);
+
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);

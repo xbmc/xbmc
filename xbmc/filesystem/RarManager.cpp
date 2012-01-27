@@ -21,9 +21,6 @@
 
 #include "system.h"
 #include "RarManager.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "UnrarXLib/rar.hpp"
-#endif
 #include "Util.h"
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -33,6 +30,10 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "filesystem/File.h"
+
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIWindowManager.h"
 
 #include <set>
 
@@ -98,9 +99,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   }
 
   int iRes = 0;
-#if 0 // temporary workaround. disable dialogs as they cause deadlocks since we cannot render
-      // from spawned threads and dvdplayer stalls the app thread during startup
-  //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -115,7 +113,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         iRes = 2; // pretend to be canceled
     }
   }
-#endif
   if (CheckFreeSpace(strDir) < iSize && iRes != 2)
   {
     ClearCache();
@@ -126,9 +123,8 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
       while (items.Size() && CheckFreeSpace(strDir) < iSize)
       {
-        CStdString strPath = items[0]->m_strPath;
         if (!items[0]->m_bIsFolder)
-          if (!CFile::Delete(items[0]->m_strPath))
+          if (!CFile::Delete(items[0]->GetPath()))
             break;
 
         items.Remove(0);
@@ -302,8 +298,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       {
         dirSet.insert(vec[iDepth]);
         pFileItem.reset(new CFileItem(vec[iDepth]));
-        pFileItem->m_strPath = vec[iDepth];
-        pFileItem->m_strPath += '/';
+        pFileItem->SetPath(vec[iDepth] + '/');
         pFileItem->m_bIsFolder = true;
         pFileItem->m_idepth = pIterator->item.Method;
         pFileItem->m_iDriveType = pIterator->item.HostOS;
@@ -318,7 +313,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
           pFileItem.reset(new CFileItem(strName));
         else
           pFileItem.reset(new CFileItem(vec[iDepth]));
-        pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
+        pFileItem->SetPath(strName.c_str()+strPathInRar.size());
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
         pFileItem->m_iDriveType = pIterator->item.HostOS;
@@ -385,7 +380,7 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
   int it;
   for (it=0;it<ItemList.Size();++it)
   {
-    if (strPathInRar.compare(ItemList[it]->m_strPath) == 0)
+    if (strPathInRar.compare(ItemList[it]->GetPath()) == 0)
       break;
   }
   if (it != ItemList.Size())

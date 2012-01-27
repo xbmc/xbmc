@@ -965,6 +965,7 @@ static av_always_inline int get_cabac_cbf_ctx( H264Context *h, int cat, int idx,
             nza = h->left_cbp&0x100;
             nzb = h-> top_cbp&0x100;
         } else {
+            idx -= CHROMA_DC_BLOCK_INDEX;
             nza = (h->left_cbp>>(6+idx))&0x01;
             nzb = (h-> top_cbp>>(6+idx))&0x01;
         }
@@ -1048,30 +1049,6 @@ static av_always_inline void decode_cabac_residual_internal( H264Context *h, DCT
 #define CC &h->cabac
 #endif
 
-
-    /* cat: 0-> DC 16x16  n = 0
-     *      1-> AC 16x16  n = luma4x4idx
-     *      2-> Luma4x4   n = luma4x4idx
-     *      3-> DC Chroma n = iCbCr
-     *      4-> AC Chroma n = 16 + 4 * iCbCr + chroma4x4idx
-     *      5-> Luma8x8   n = 4 * luma8x8idx
-     */
-
-    /* read coded block flag */
-    if( is_dc || cat != 5 ) {
-        if( get_cabac( CC, &h->cabac_state[85 + get_cabac_cbf_ctx( h, cat, n, is_dc ) ] ) == 0 ) {
-            if( !is_dc )
-                h->non_zero_count_cache[scan8[n]] = 0;
-
-#ifdef CABAC_ON_STACK
-            h->cabac.range     = cc.range     ;
-            h->cabac.low       = cc.low       ;
-            h->cabac.bytestream= cc.bytestream;
-#endif
-            return;
-        }
-    }
-
     significant_coeff_ctx_base = h->cabac_state
         + significant_coeff_flag_offset[MB_FIELD][cat];
     last_coeff_ctx_base = h->cabac_state
@@ -1112,7 +1089,8 @@ static av_always_inline void decode_cabac_residual_internal( H264Context *h, DCT
         if( cat == 0 )
             h->cbp_table[h->mb_xy] |= 0x100;
         else
-            h->cbp_table[h->mb_xy] |= 0x40 << n;
+            h->cbp_table[h->mb_xy] |= 0x40 << (n - CHROMA_DC_BLOCK_INDEX);
+        h->non_zero_count_cache[scan8[n]] = coeff_count;
     } else {
         if( cat == 5 )
             fill_rectangle(&h->non_zero_count_cache[scan8[n]], 2, 2, 8, coeff_count, 1);
@@ -1171,12 +1149,42 @@ static av_always_inline void decode_cabac_residual_internal( H264Context *h, DCT
 
 }
 
-static void decode_cabac_residual_dc( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, int max_coeff ) {
+static void decode_cabac_residual_dc_internal( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, int max_coeff ) {
     decode_cabac_residual_internal(h, block, cat, n, scantable, NULL, max_coeff, 1);
 }
 
-static void decode_cabac_residual_nondc( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, const uint32_t *qmul, int max_coeff ) {
+static void decode_cabac_residual_nondc_internal( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, const uint32_t *qmul, int max_coeff ) {
     decode_cabac_residual_internal(h, block, cat, n, scantable, qmul, max_coeff, 0);
+}
+
+/* cat: 0-> DC 16x16  n = 0
+ *      1-> AC 16x16  n = luma4x4idx
+ *      2-> Luma4x4   n = luma4x4idx
+ *      3-> DC Chroma n = iCbCr
+ *      4-> AC Chroma n = 16 + 4 * iCbCr + chroma4x4idx
+ *      5-> Luma8x8   n = 4 * luma8x8idx */
+
+/* Partially inline the CABAC residual decode: inline the coded block flag.
+ * This has very little impact on binary size and improves performance
+ * because it allows improved constant propagation into get_cabac_cbf_ctx,
+ * as well as because most blocks have zero CBFs. */
+
+static av_always_inline void decode_cabac_residual_dc( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, int max_coeff ) {
+    /* read coded block flag */
+    if( get_cabac( &h->cabac, &h->cabac_state[85 + get_cabac_cbf_ctx( h, cat, n, 1 ) ] ) == 0 ) {
+        h->non_zero_count_cache[scan8[n]] = 0;
+        return;
+    }
+    decode_cabac_residual_dc_internal( h, block, cat, n, scantable, max_coeff );
+}
+
+static av_always_inline void decode_cabac_residual_nondc( H264Context *h, DCTELEM *block, int cat, int n, const uint8_t *scantable, const uint32_t *qmul, int max_coeff ) {
+    /* read coded block flag */
+    if( cat != 5 && get_cabac( &h->cabac, &h->cabac_state[85 + get_cabac_cbf_ctx( h, cat, n, 0 ) ] ) == 0 ) {
+        h->non_zero_count_cache[scan8[n]] = 0;
+        return;
+    }
+    decode_cabac_residual_nondc_internal( h, block, cat, n, scantable, qmul, max_coeff );
 }
 
 /**
@@ -1365,6 +1373,8 @@ decode_intra_mb:
             pred_mode= ff_h264_check_intra_pred_mode( h, pred_mode );
             if( pred_mode < 0 ) return -1;
             h->chroma_pred_mode= pred_mode;
+        } else {
+            h->chroma_pred_mode= DC_128_PRED8x8;
         }
     } else if( partition_count == 4 ) {
         int i, j, sub_partition_count[4], list, ref[2][4];
@@ -1597,17 +1607,15 @@ decode_intra_mb:
     s->current_picture.mb_type[mb_xy]= mb_type;
 
     if( cbp || IS_INTRA16x16( mb_type ) ) {
-        const uint8_t *scan, *scan8x8, *dc_scan;
+        const uint8_t *scan, *scan8x8;
         const uint32_t *qmul;
 
         if(IS_INTERLACED(mb_type)){
             scan8x8= s->qscale ? h->field_scan8x8 : h->field_scan8x8_q0;
             scan= s->qscale ? h->field_scan : h->field_scan_q0;
-            dc_scan= luma_dc_field_scan;
         }else{
             scan8x8= s->qscale ? h->zigzag_scan8x8 : h->zigzag_scan8x8_q0;
             scan= s->qscale ? h->zigzag_scan : h->zigzag_scan_q0;
-            dc_scan= luma_dc_zigzag_scan;
         }
 
         // decode_cabac_mb_dqp
@@ -1642,7 +1650,9 @@ decode_intra_mb:
         if( IS_INTRA16x16( mb_type ) ) {
             int i;
             //av_log( s->avctx, AV_LOG_ERROR, "INTRA16x16 DC\n" );
-            decode_cabac_residual_dc( h, h->mb, 0, 0, dc_scan, 16);
+            AV_ZERO128(h->mb_luma_dc+0);
+            AV_ZERO128(h->mb_luma_dc+8);
+            decode_cabac_residual_dc( h, h->mb_luma_dc, 0, LUMA_DC_BLOCK_INDEX, scan, 16);
 
             if( cbp&15 ) {
                 qmul = h->dequant4_coeff[0][s->qscale];
@@ -1681,7 +1691,7 @@ decode_intra_mb:
             int c;
             for( c = 0; c < 2; c++ ) {
                 //av_log( s->avctx, AV_LOG_ERROR, "INTRA C%d-DC\n",c );
-                decode_cabac_residual_dc(h, h->mb + 256 + 16*4*c, 3, c, chroma_dc_scan, 4);
+                decode_cabac_residual_dc(h, h->mb + 256 + 16*4*c, 3, CHROMA_DC_BLOCK_INDEX+c, chroma_dc_scan, 4);
             }
         }
 

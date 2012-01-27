@@ -49,6 +49,17 @@ using namespace std;
 using namespace boost;
 using namespace VAAPI;
 
+static int compare_version(int major_l, int minor_l, int micro_l, int major_r, int minor_r, int micro_r)
+{
+  if(major_l < major_r) return -1;
+  if(major_l > major_r) return  1;
+  if(minor_l < minor_r) return -1;
+  if(minor_l > minor_r) return  1;
+  if(micro_l < micro_r) return -1;
+  if(micro_l > micro_r) return  1;
+  return 0;
+}
+
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
 
@@ -79,14 +90,30 @@ static CDisplayPtr GetGlobalDisplay()
   int major_version, minor_version;
   VAStatus res = vaInitialize(disp, &major_version, &minor_version);
 
+  CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
+
   if(res != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "VAAPI - unable to initialize display %d - %s", res, vaErrorStr(res));
     return display;
   }
 
-  CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
-  display = CDisplayPtr(new CDisplay(disp));
+  const char* vendor = vaQueryVendorString(disp);
+  CLog::Log(LOGDEBUG, "VAAPI - vendor: %s", vendor);
+
+  bool deinterlace = true;
+  int major, minor, micro;
+  if(sscanf(vendor,  "Intel i965 driver - %d.%d.%d", &major, &minor, &micro) == 3)
+  {
+    /* older version will crash and burn */
+    if(compare_version(major, minor, micro, 1, 0, 17) < 0)
+    {
+      CLog::Log(LOGDEBUG, "VAAPI - deinterlace not support on this intel driver version");
+      deinterlace = false;
+    }
+  }
+
+  display = CDisplayPtr(new CDisplay(disp, deinterlace));
   display_global = display;
   return display;
 }
@@ -115,8 +142,8 @@ CDecoder::CDecoder()
 {
   m_refs            = 0;
   m_surfaces_count  = 0;
-  m_config          = NULL;
-  m_context         = NULL;
+  m_config          = 0;
+  m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
 }
 
@@ -149,10 +176,10 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
   CSurface*   wrapper = NULL;
+  std::list<CSurfacePtr>::iterator it = m_surfaces_free.begin();
   if(surface)
   {
     /* reget call */
-    std::list<CSurfacePtr>::iterator it = m_surfaces_free.begin();
     for(; it != m_surfaces_free.end(); it++)
     {    
       if((*it)->m_id == surface)
@@ -171,20 +198,28 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
   else
   {
-    if(m_surfaces_free.empty())
+    // To avoid stutter, we scan the free surface pool (provided by decoder) for surfaces
+    // that are 100% not in use by renderer. The pointers to these surfaces have a use_count of 1.
+    for (; it != m_surfaces_free.end() && it->use_count() > 1; it++) {}
+
+    // If we have zero free surface from decoder OR all free surfaces are in use by renderer, we allocate a new surface
+    if (it == m_surfaces_free.end())
     {
+      if (!m_surfaces_free.empty()) CLog::Log(LOGERROR, "VAAPI - renderer still using all freed up surfaces by decoder");
       CLog::Log(LOGERROR, "VAAPI - unable to find free surface, trying to allocate a new one");
       if(!EnsureSurfaces(avctx, m_surfaces_count+1) || m_surfaces_free.empty())
       {
         CLog::Log(LOGERROR, "VAAPI - unable to find free surface");
         return -1;
       }
+      // Set itarator position to the newly allocated surface (end-1)
+      it = m_surfaces_free.end(); it--;
     }
     /* getbuffer call */
-    wrapper = m_surfaces_free.front().get();
+    wrapper = it->get();
     surface = wrapper->m_id;
-    m_surfaces_used.push_back(m_surfaces_free.front());
-    m_surfaces_free.pop_front();
+    m_surfaces_used.push_back(*it);
+    m_surfaces_free.erase(it);
   }
 
   pic->type           = FF_BUFFER_TYPE_USER;
@@ -197,6 +232,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->linesize[1]    = 0;
   pic->linesize[2]    = 0;
   pic->linesize[3]    = 0;
+  pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
 }
 
@@ -204,11 +240,11 @@ void CDecoder::Close()
 { 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   if(m_config)
     WARN(vaDestroyConfig(m_display->get(), m_config))
-  m_config = NULL;
+  m_config = 0;
   
   m_surfaces_free.clear();
   m_surfaces_used.clear();
@@ -220,7 +256,7 @@ void CDecoder::Close()
   m_holder.surface.reset();
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
+bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;
@@ -349,7 +385,7 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
     else
       m_refs = 2;
   }
-  return EnsureSurfaces(avctx, m_refs + 1 + 1);
+  return EnsureSurfaces(avctx, m_refs + 3);
 }
 
 bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
@@ -376,7 +412,7 @@ bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   CHECK(vaCreateContext(m_display->get()
                       , m_config

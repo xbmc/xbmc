@@ -27,145 +27,65 @@
 
 #include "libavutil/avstring.h"
 #include "libavutil/libm.h"
+#include "libavcore/samplefmt.h"
 #include "avcodec.h"
 #include "audioconvert.h"
 
-typedef struct SampleFmtInfo {
-    const char *name;
-    int bits;
-} SampleFmtInfo;
-
-/** this table gives more information about formats */
-static const SampleFmtInfo sample_fmt_info[SAMPLE_FMT_NB] = {
-    [SAMPLE_FMT_U8]  = { .name = "u8",  .bits = 8 },
-    [SAMPLE_FMT_S16] = { .name = "s16", .bits = 16 },
-    [SAMPLE_FMT_S32] = { .name = "s32", .bits = 32 },
-    [SAMPLE_FMT_FLT] = { .name = "flt", .bits = 32 },
-    [SAMPLE_FMT_DBL] = { .name = "dbl", .bits = 64 },
-};
-
+#if FF_API_OLD_SAMPLE_FMT
 const char *avcodec_get_sample_fmt_name(int sample_fmt)
 {
-    if (sample_fmt < 0 || sample_fmt >= SAMPLE_FMT_NB)
-        return NULL;
-    return sample_fmt_info[sample_fmt].name;
+    return av_get_sample_fmt_name(sample_fmt);
 }
 
-enum SampleFormat avcodec_get_sample_fmt(const char* name)
+enum AVSampleFormat avcodec_get_sample_fmt(const char* name)
 {
-    int i;
-
-    for (i=0; i < SAMPLE_FMT_NB; i++)
-        if (!strcmp(sample_fmt_info[i].name, name))
-            return i;
-    return SAMPLE_FMT_NONE;
+    return av_get_sample_fmt(name);
 }
 
 void avcodec_sample_fmt_string (char *buf, int buf_size, int sample_fmt)
 {
-    /* print header */
-    if (sample_fmt < 0)
-        snprintf (buf, buf_size, "name  " " depth");
-    else if (sample_fmt < SAMPLE_FMT_NB) {
-        SampleFmtInfo info= sample_fmt_info[sample_fmt];
-        snprintf (buf, buf_size, "%-6s" "   %2d ", info.name, info.bits);
-    }
+    av_get_sample_fmt_string(buf, buf_size, sample_fmt);
 }
-
-static const char* const channel_names[]={
-    "FL", "FR", "FC", "LFE", "BL",  "BR",  "FLC", "FRC",
-    "BC", "SL", "SR", "TC",  "TFL", "TFC", "TFR", "TBL",
-    "TBC", "TBR",
-    [29] = "DL",
-    [30] = "DR",
-};
-
-static const char *get_channel_name(int channel_id)
-{
-    if (channel_id<0 || channel_id>=FF_ARRAY_ELEMS(channel_names))
-        return NULL;
-    return channel_names[channel_id];
-}
+#endif
 
 int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)
 {
     switch(nb_channels) {
-    case 1: return CH_LAYOUT_MONO;
-    case 2: return CH_LAYOUT_STEREO;
-    case 3: return CH_LAYOUT_SURROUND;
-    case 4: return CH_LAYOUT_QUAD;
-    case 5: return CH_LAYOUT_5POINT0;
-    case 6: return CH_LAYOUT_5POINT1;
-    case 8: return CH_LAYOUT_7POINT1;
+    case 1: return AV_CH_LAYOUT_MONO;
+    case 2: return AV_CH_LAYOUT_STEREO;
+    case 3: return AV_CH_LAYOUT_SURROUND;
+    case 4: return AV_CH_LAYOUT_QUAD;
+    case 5: return AV_CH_LAYOUT_5POINT0;
+    case 6: return AV_CH_LAYOUT_5POINT1;
+    case 8: return AV_CH_LAYOUT_7POINT1;
     default: return 0;
     }
 }
 
-static const struct {
-    const char *name;
-    int         nb_channels;
-    int64_t     layout;
-} channel_layout_map[] = {
-    { "mono",        1,  CH_LAYOUT_MONO },
-    { "stereo",      2,  CH_LAYOUT_STEREO },
-    { "4.0",         4,  CH_LAYOUT_4POINT0 },
-    { "quad",        4,  CH_LAYOUT_QUAD },
-    { "5.0",         5,  CH_LAYOUT_5POINT0 },
-    { "5.0",         5,  CH_LAYOUT_5POINT0_BACK },
-    { "5.1",         6,  CH_LAYOUT_5POINT1 },
-    { "5.1",         6,  CH_LAYOUT_5POINT1_BACK },
-    { "5.1+downmix", 8,  CH_LAYOUT_5POINT1|CH_LAYOUT_STEREO_DOWNMIX, },
-    { "7.1",         8,  CH_LAYOUT_7POINT1 },
-    { "7.1(wide)",   8,  CH_LAYOUT_7POINT1_WIDE },
-    { "7.1+downmix", 10, CH_LAYOUT_7POINT1|CH_LAYOUT_STEREO_DOWNMIX, },
-    { 0 }
-};
+#if FF_API_OLD_AUDIOCONVERT
+int64_t avcodec_get_channel_layout(const char *name)
+{
+    return av_get_channel_layout(name);
+}
 
 void avcodec_get_channel_layout_string(char *buf, int buf_size, int nb_channels, int64_t channel_layout)
 {
-    int i;
-
-    for (i=0; channel_layout_map[i].name; i++)
-        if (nb_channels    == channel_layout_map[i].nb_channels &&
-            channel_layout == channel_layout_map[i].layout) {
-            av_strlcpy(buf, channel_layout_map[i].name, buf_size);
-            return;
-        }
-
-    snprintf(buf, buf_size, "%d channels", nb_channels);
-    if (channel_layout) {
-        int i,ch;
-        av_strlcat(buf, " (", buf_size);
-        for(i=0,ch=0; i<64; i++) {
-            if ((channel_layout & (1L<<i))) {
-                const char *name = get_channel_name(i);
-                if (name) {
-                    if (ch>0) av_strlcat(buf, "|", buf_size);
-                    av_strlcat(buf, name, buf_size);
-                }
-                ch++;
-            }
-        }
-        av_strlcat(buf, ")", buf_size);
-    }
+    av_get_channel_layout_string(buf, buf_size, nb_channels, channel_layout);
 }
 
 int avcodec_channel_layout_num_channels(int64_t channel_layout)
 {
-    int count;
-    uint64_t x = channel_layout;
-    for (count = 0; x; count++)
-        x &= x-1; // unset lowest set bit
-    return count;
+    return av_get_channel_layout_nb_channels(channel_layout);
 }
+#endif
 
 struct AVAudioConvert {
     int in_channels, out_channels;
     int fmt_pair;
 };
 
-AVAudioConvert *av_audio_convert_alloc(enum SampleFormat out_fmt, int out_channels,
-                                       enum SampleFormat in_fmt, int in_channels,
+AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
+                                       enum AVSampleFormat in_fmt, int in_channels,
                                        const float *matrix, int flags)
 {
     AVAudioConvert *ctx;
@@ -176,7 +96,7 @@ AVAudioConvert *av_audio_convert_alloc(enum SampleFormat out_fmt, int out_channe
         return NULL;
     ctx->in_channels = in_channels;
     ctx->out_channels = out_channels;
-    ctx->fmt_pair = out_fmt + SAMPLE_FMT_NB*in_fmt;
+    ctx->fmt_pair = out_fmt + AV_SAMPLE_FMT_NB*in_fmt;
     return ctx;
 }
 
@@ -203,7 +123,7 @@ int av_audio_convert(AVAudioConvert *ctx,
             continue;
 
 #define CONV(ofmt, otype, ifmt, expr)\
-if(ctx->fmt_pair == ofmt + SAMPLE_FMT_NB*ifmt){\
+if(ctx->fmt_pair == ofmt + AV_SAMPLE_FMT_NB*ifmt){\
     do{\
         *(otype*)po = expr; pi += is; po += os;\
     }while(po < end);\
@@ -212,31 +132,31 @@ if(ctx->fmt_pair == ofmt + SAMPLE_FMT_NB*ifmt){\
 //FIXME put things below under ifdefs so we do not waste space for cases no codec will need
 //FIXME rounding ?
 
-             CONV(SAMPLE_FMT_U8 , uint8_t, SAMPLE_FMT_U8 ,  *(const uint8_t*)pi)
-        else CONV(SAMPLE_FMT_S16, int16_t, SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)<<8)
-        else CONV(SAMPLE_FMT_S32, int32_t, SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)<<24)
-        else CONV(SAMPLE_FMT_FLT, float  , SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
-        else CONV(SAMPLE_FMT_DBL, double , SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
-        else CONV(SAMPLE_FMT_U8 , uint8_t, SAMPLE_FMT_S16, (*(const int16_t*)pi>>8) + 0x80)
-        else CONV(SAMPLE_FMT_S16, int16_t, SAMPLE_FMT_S16,  *(const int16_t*)pi)
-        else CONV(SAMPLE_FMT_S32, int32_t, SAMPLE_FMT_S16,  *(const int16_t*)pi<<16)
-        else CONV(SAMPLE_FMT_FLT, float  , SAMPLE_FMT_S16,  *(const int16_t*)pi*(1.0 / (1<<15)))
-        else CONV(SAMPLE_FMT_DBL, double , SAMPLE_FMT_S16,  *(const int16_t*)pi*(1.0 / (1<<15)))
-        else CONV(SAMPLE_FMT_U8 , uint8_t, SAMPLE_FMT_S32, (*(const int32_t*)pi>>24) + 0x80)
-        else CONV(SAMPLE_FMT_S16, int16_t, SAMPLE_FMT_S32,  *(const int32_t*)pi>>16)
-        else CONV(SAMPLE_FMT_S32, int32_t, SAMPLE_FMT_S32,  *(const int32_t*)pi)
-        else CONV(SAMPLE_FMT_FLT, float  , SAMPLE_FMT_S32,  *(const int32_t*)pi*(1.0 / (1<<31)))
-        else CONV(SAMPLE_FMT_DBL, double , SAMPLE_FMT_S32,  *(const int32_t*)pi*(1.0 / (1<<31)))
-        else CONV(SAMPLE_FMT_U8 , uint8_t, SAMPLE_FMT_FLT, av_clip_uint8(  lrintf(*(const float*)pi * (1<<7)) + 0x80))
-        else CONV(SAMPLE_FMT_S16, int16_t, SAMPLE_FMT_FLT, av_clip_int16(  lrintf(*(const float*)pi * (1<<15))))
-        else CONV(SAMPLE_FMT_S32, int32_t, SAMPLE_FMT_FLT, av_clipl_int32(llrintf(*(const float*)pi * (1U<<31))))
-        else CONV(SAMPLE_FMT_FLT, float  , SAMPLE_FMT_FLT, *(const float*)pi)
-        else CONV(SAMPLE_FMT_DBL, double , SAMPLE_FMT_FLT, *(const float*)pi)
-        else CONV(SAMPLE_FMT_U8 , uint8_t, SAMPLE_FMT_DBL, av_clip_uint8(  lrint(*(const double*)pi * (1<<7)) + 0x80))
-        else CONV(SAMPLE_FMT_S16, int16_t, SAMPLE_FMT_DBL, av_clip_int16(  lrint(*(const double*)pi * (1<<15))))
-        else CONV(SAMPLE_FMT_S32, int32_t, SAMPLE_FMT_DBL, av_clipl_int32(llrint(*(const double*)pi * (1U<<31))))
-        else CONV(SAMPLE_FMT_FLT, float  , SAMPLE_FMT_DBL, *(const double*)pi)
-        else CONV(SAMPLE_FMT_DBL, double , SAMPLE_FMT_DBL, *(const double*)pi)
+             CONV(AV_SAMPLE_FMT_U8 , uint8_t, AV_SAMPLE_FMT_U8 ,  *(const uint8_t*)pi)
+        else CONV(AV_SAMPLE_FMT_S16, int16_t, AV_SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)<<8)
+        else CONV(AV_SAMPLE_FMT_S32, int32_t, AV_SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)<<24)
+        else CONV(AV_SAMPLE_FMT_FLT, float  , AV_SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
+        else CONV(AV_SAMPLE_FMT_DBL, double , AV_SAMPLE_FMT_U8 , (*(const uint8_t*)pi - 0x80)*(1.0 / (1<<7)))
+        else CONV(AV_SAMPLE_FMT_U8 , uint8_t, AV_SAMPLE_FMT_S16, (*(const int16_t*)pi>>8) + 0x80)
+        else CONV(AV_SAMPLE_FMT_S16, int16_t, AV_SAMPLE_FMT_S16,  *(const int16_t*)pi)
+        else CONV(AV_SAMPLE_FMT_S32, int32_t, AV_SAMPLE_FMT_S16,  *(const int16_t*)pi<<16)
+        else CONV(AV_SAMPLE_FMT_FLT, float  , AV_SAMPLE_FMT_S16,  *(const int16_t*)pi*(1.0 / (1<<15)))
+        else CONV(AV_SAMPLE_FMT_DBL, double , AV_SAMPLE_FMT_S16,  *(const int16_t*)pi*(1.0 / (1<<15)))
+        else CONV(AV_SAMPLE_FMT_U8 , uint8_t, AV_SAMPLE_FMT_S32, (*(const int32_t*)pi>>24) + 0x80)
+        else CONV(AV_SAMPLE_FMT_S16, int16_t, AV_SAMPLE_FMT_S32,  *(const int32_t*)pi>>16)
+        else CONV(AV_SAMPLE_FMT_S32, int32_t, AV_SAMPLE_FMT_S32,  *(const int32_t*)pi)
+        else CONV(AV_SAMPLE_FMT_FLT, float  , AV_SAMPLE_FMT_S32,  *(const int32_t*)pi*(1.0 / (1<<31)))
+        else CONV(AV_SAMPLE_FMT_DBL, double , AV_SAMPLE_FMT_S32,  *(const int32_t*)pi*(1.0 / (1<<31)))
+        else CONV(AV_SAMPLE_FMT_U8 , uint8_t, AV_SAMPLE_FMT_FLT, av_clip_uint8(  lrintf(*(const float*)pi * (1<<7)) + 0x80))
+        else CONV(AV_SAMPLE_FMT_S16, int16_t, AV_SAMPLE_FMT_FLT, av_clip_int16(  lrintf(*(const float*)pi * (1<<15))))
+        else CONV(AV_SAMPLE_FMT_S32, int32_t, AV_SAMPLE_FMT_FLT, av_clipl_int32(llrintf(*(const float*)pi * (1U<<31))))
+        else CONV(AV_SAMPLE_FMT_FLT, float  , AV_SAMPLE_FMT_FLT, *(const float*)pi)
+        else CONV(AV_SAMPLE_FMT_DBL, double , AV_SAMPLE_FMT_FLT, *(const float*)pi)
+        else CONV(AV_SAMPLE_FMT_U8 , uint8_t, AV_SAMPLE_FMT_DBL, av_clip_uint8(  lrint(*(const double*)pi * (1<<7)) + 0x80))
+        else CONV(AV_SAMPLE_FMT_S16, int16_t, AV_SAMPLE_FMT_DBL, av_clip_int16(  lrint(*(const double*)pi * (1<<15))))
+        else CONV(AV_SAMPLE_FMT_S32, int32_t, AV_SAMPLE_FMT_DBL, av_clipl_int32(llrint(*(const double*)pi * (1U<<31))))
+        else CONV(AV_SAMPLE_FMT_FLT, float  , AV_SAMPLE_FMT_DBL, *(const double*)pi)
+        else CONV(AV_SAMPLE_FMT_DBL, double , AV_SAMPLE_FMT_DBL, *(const double*)pi)
         else return -1;
     }
     return 0;

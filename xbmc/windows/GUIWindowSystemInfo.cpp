@@ -47,15 +47,6 @@ CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
 }
-bool CGUIWindowSystemInfo::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindow::OnAction(action);
-}
 bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -104,6 +95,7 @@ void CGUIWindowSystemInfo::FrameMove()
 #endif
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
+    SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
   }
   else if (m_section == CONTROL_BT_STORAGE)
   {
@@ -124,7 +116,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
 #endif
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
-    SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_ADDRESS);
+    SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
     SetControlLabel(i++, "%s: %s", 13160, NETWORK_GATEWAY_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13161, NETWORK_DNS1_ADDRESS);
     SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);

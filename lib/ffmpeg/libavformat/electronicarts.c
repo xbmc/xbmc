@@ -109,7 +109,7 @@ static int process_audio_header_elements(AVFormatContext *s)
     ea->sample_rate = -1;
     ea->num_channels = 1;
 
-    while (inHeader) {
+    while (!url_feof(pb) && inHeader) {
         int inSubheader;
         uint8_t byte;
         byte = get_byte(pb);
@@ -118,7 +118,7 @@ static int process_audio_header_elements(AVFormatContext *s)
         case 0xFD:
             av_log (s, AV_LOG_DEBUG, "entered audio subheader\n");
             inSubheader = 1;
-            while (inSubheader) {
+            while (!url_feof(pb) && inSubheader) {
                 uint8_t subbyte;
                 subbyte = get_byte(pb);
 
@@ -423,6 +423,17 @@ static int ea_read_header(AVFormatContext *s,
     }
 
     if (ea->audio_codec) {
+        if (ea->num_channels <= 0) {
+            av_log(s, AV_LOG_WARNING, "Unsupported number of channels: %d\n", ea->num_channels);
+            ea->audio_codec = 0;
+            return 1;
+        }
+        if (ea->sample_rate <= 0) {
+            av_log(s, AV_LOG_ERROR, "Unsupported sample rate: %d\n", ea->sample_rate);
+            ea->audio_codec = 0;
+            return 1;
+        }
+
         /* initialize the audio decoder stream */
         st = av_new_stream(s, 0);
         if (!st)
@@ -557,7 +568,7 @@ get_video_packet:
     return ret;
 }
 
-AVInputFormat ea_demuxer = {
+AVInputFormat ff_ea_demuxer = {
     "ea",
     NULL_IF_CONFIG_SMALL("Electronic Arts Multimedia Format"),
     sizeof(EaDemuxContext),

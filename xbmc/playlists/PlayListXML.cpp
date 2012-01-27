@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/Variant.h"
 #ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"
 #endif
@@ -132,20 +133,20 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 
        CStdString info = name;
        CFileItemPtr newItem( new CFileItem(info) );
-       newItem->m_strPath = url;
+       newItem->SetPath(url);
 
        // Set language as metadata
        if ( !lang.IsEmpty() )
-         newItem->SetProperty("language", lang );
+         newItem->SetProperty("language", lang.c_str() );
 
        // Set category as metadata
        if ( !category.IsEmpty() )
-         newItem->SetProperty("category", category );
+         newItem->SetProperty("category", category.c_str() );
 
        // Set channel as extra info and as metadata
        if ( !channel.IsEmpty() )
        {
-         newItem->SetProperty("remotechannel", channel );
+         newItem->SetProperty("remotechannel", channel.c_str() );
          newItem->SetExtraInfo( "Channel: " + channel );
        }
 
@@ -185,16 +186,16 @@ void CPlayListXML::Save(const CStdString& strFileName) const
   {
     CFileItemPtr item = m_vecItems[i];
     write.AppendFormat("  <stream>\n" );
-    write.AppendFormat("    <url>%s</url>", item->m_strPath.c_str() );
+    write.AppendFormat("    <url>%s</url>", item->GetPath().c_str() );
     write.AppendFormat("    <name>%s</name>", item->GetLabel().c_str() );
 
-    if ( !item->GetProperty("language").IsEmpty() )
+    if ( !item->GetProperty("language").empty() )
       write.AppendFormat("    <lang>%s</lang>", item->GetProperty("language").c_str() );
 
-    if ( !item->GetProperty("category").IsEmpty() )
+    if ( !item->GetProperty("category").empty() )
       write.AppendFormat("    <category>%s</category>", item->GetProperty("category").c_str() );
 
-    if ( !item->GetProperty("remotechannel").IsEmpty() )
+    if ( !item->GetProperty("remotechannel").empty() )
       write.AppendFormat("    <channel>%s</channel>", item->GetProperty("remotechannel").c_str() );
 
     if ( item->m_iHasLock > 0 )

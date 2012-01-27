@@ -183,7 +183,7 @@ static int adx_encode_frame(AVCodecContext *avctx,
     return dst-frame;
 }
 
-AVCodec adpcm_adx_encoder = {
+AVCodec ff_adpcm_adx_encoder = {
     "adpcm_adx",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_ADPCM_ADX,
@@ -192,6 +192,6 @@ AVCodec adpcm_adx_encoder = {
     adx_encode_frame,
     adx_encode_close,
     NULL,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("SEGA CRI ADX ADPCM"),
 };

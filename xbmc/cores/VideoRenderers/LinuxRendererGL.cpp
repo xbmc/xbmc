@@ -35,9 +35,14 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
+#include "guilib/LocalizeStrings.h"
+#include "threads/SingleLock.h"
 #include "DllSwScale.h"
-#include "DllAvCodec.h"
+#include "utils/log.h"
+#include "utils/GLUtils.h"
+#include "RenderCapture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -129,7 +134,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
-    m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_eventTexturesDone[i] = new CEvent(false,true);
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
@@ -154,8 +159,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_context = NULL;
   m_rgbPbo = 0;
 
-  m_dllAvUtil = new DllAvUtil;
-  m_dllAvCodec = new DllAvCodec;
   m_dllSwScale = new DllSwScale;
 }
 
@@ -163,7 +166,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
 {
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
-    CloseHandle(m_eventTexturesDone[i]);
+    delete m_eventTexturesDone[i];
 
   if (m_rgbPbo)
   {
@@ -191,9 +194,33 @@ CLinuxRendererGL::~CLinuxRendererGL()
   }
 
   delete m_dllSwScale;
-  delete m_dllAvCodec;
-  delete m_dllAvUtil;
 }
+
+bool CLinuxRendererGL::ValidateRenderer()
+{
+  if (!m_bConfigured)
+    return false;
+
+  // if its first pass, just init textures and return
+  if (ValidateRenderTarget())
+    return false;
+
+  // this needs to be checked after texture validation
+  if (!m_bImageReady)
+    return false;
+
+  int index = m_iYV12RenderBuffer;
+  YUVBUFFER& buf =  m_buffers[index];
+
+  if (!buf.fields[FIELD_FULL][0].id)
+    return false;
+
+  if (buf.image.flags==0)
+    return false;
+
+  return true;
+}
+
 
 void CLinuxRendererGL::ManageTextures()
 {
@@ -226,7 +253,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -289,7 +316,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     im.flags |= IMAGE_FLAG_READING;
   else
   {
-    if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+    if( ! m_eventTexturesDone[source]->WaitMSec(500))
       CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
     im.flags |= IMAGE_FLAG_WRITING;
@@ -317,7 +344,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   YV12Image &im = m_buffers[source].image;
 
   if( im.flags & IMAGE_FLAG_WRITING )
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -445,7 +472,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
 
   if (!(im->flags&IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -508,7 +535,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
              , im->stride[2], im->plane[2] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -524,8 +551,22 @@ void CLinuxRendererGL::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
     /* reset texture locks, a bit ugly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]);
+    m_eventTexturesDone[i]->Set();
   }
+}
+
+void CLinuxRendererGL::Flush()
+{
+  if (!m_bValidated)
+    return;
+
+  glFinish();
+
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    (this->*m_textureDelete)(i);
+
+  glFinish();
+  m_bValidated = false;
 }
 
 void CLinuxRendererGL::Update(bool bPauseDrawing)
@@ -537,29 +578,22 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
-
-  // if its first pass, just init textures and return
-  if (ValidateRenderTarget())
-    return;
-
-  // this needs to be checked after texture validation
-  if (!m_bImageReady) return;
-
   int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf =  m_buffers[index];
 
-  if (!buf.fields[FIELD_FULL][0].id) return ;
+  if (!ValidateRenderer())
+  {
+    if (clear) //if clear is set, we're expected to overwrite all backbuffer pixels, even if we have nothing to render
+      ClearBackBuffer();
 
-  if (buf.image.flags==0)
     return;
+  }
 
   ManageDisplay();
   ManageTextures();
 
   g_graphicsContext.BeginPaint();
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  if( !m_eventTexturesDone[index]->WaitMSec(500))
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -574,7 +608,13 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_iLastRenderBuffer = index;
 
   if (clear)
-    DrawBlackBars();
+  {
+    //draw black bars when video is not transparent, clear the entire backbuffer when it is
+    if (alpha == 255)
+      DrawBlackBars();
+    else
+      ClearBackBuffer();
+  }
 
   if (alpha<255)
   {
@@ -608,6 +648,14 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glFlush();
 
   g_graphicsContext.EndPaint();
+}
+
+void CLinuxRendererGL::ClearBackBuffer()
+{
+  //set the entire backbuffer to black
+  glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0,0,0,0);
 }
 
 //draw black bars around the video quad, this is more efficient than glClear()
@@ -678,73 +726,15 @@ void CLinuxRendererGL::FlipPage(int source)
   return;
 }
 
-
-unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  int index = NextYV12Texture();
-  if( index < 0 )
-    return -1;
-
-  YV12Image &im = m_buffers[index].image;
-  // copy Y
-  p = 0;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  w >>= im.cshift_x; h >>= im.cshift_y;
-  x >>= im.cshift_x; y >>= im.cshift_y;
-
-  // copy U
-  p = 1;
-  //check for valid second plane, YUY2 and UYVY don't have one
-  if(im.plane[p] && src[p])
-  {
-    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-    s = src[p];
-    for (i = 0;i < h;i++)
-    {
-      memcpy(d, s, w);
-      s += stride[p];
-      d += im.stride[p];
-    }
-  }
-
-  // copy V
-  p = 2;
-  //check for valid third plane, NV12, YUY2 and UYVY don't have one
-  if(im.plane[p] && src[p])
-  {
-    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-    s = src[p];
-    for (i = 0;i < h;i++)
-    {
-      memcpy(d, s, w);
-      s += stride[p];
-      d += im.stride[p];
-    }
-  }
-
-  SetEvent(m_eventTexturesDone[index]);
-  return 0;
-}
-
 unsigned int CLinuxRendererGL::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -752,14 +742,8 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
-  if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+  if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
-
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
 
   return true;
 }
@@ -845,7 +829,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
     return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
     if (m_renderMethod & RENDER_GLSL)
@@ -886,7 +872,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -924,12 +910,19 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
+    bool tryGlsl = true;
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
+#if defined(_LINUX) && !defined(__APPLE__)
+       //with render method set to auto, don't try glsl on ati if we're on linux
+       //it seems to be broken in a random way with every new driver release
+       tryGlsl = g_Windowing.GetRenderVendor().Left(3).CompareNoCase("ati") != 0;
+#endif
+      
       case RENDER_METHOD_GLSL:
       // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram)
+      if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
@@ -1057,6 +1050,8 @@ void CLinuxRendererGL::UnInit()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
+  glFinish();
+
   if (m_rgbPbo)
   {
     glDeleteBuffersARB(1, &m_rgbPbo);
@@ -1096,19 +1091,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (flags & RENDER_FLAG_BOT)
     m_currentField = FIELD_BOT;
 
-  else if (flags & RENDER_FLAG_LAST)
-  {
-    switch(m_currentField)
-    {
-    case FIELD_TOP:
-      flags = RENDER_FLAG_TOP;
-      break;
-
-    case FIELD_BOT:
-      flags = RENDER_FLAG_BOT;
-      break;
-    }
-  }
   else
     m_currentField = FIELD_FULL;
 
@@ -1530,7 +1512,7 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderVAAPI(int index, int field)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE       &plane = m_buffers[index].fields[field][0];
+  YUVPLANE       &plane = m_buffers[index].fields[0][0];
   VAAPI::CHolder &va    = m_buffers[index].vaapi;
 
   if(!va.surface)
@@ -1649,31 +1631,33 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
+bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 {
-  // get our screen rect
-  const CRect rv = g_graphicsContext.GetViewWindow();
+  if (!m_bValidated)
+    return false;
 
   // save current video rect
   CRect saveSize = m_destRect;
 
-  // new video rect is thumbnail size
-  m_destRect.SetRect(0, 0, (float)width, (float)height);
+  // new video rect is capture size
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
 
-  // clear framebuffer and invert Y axis to get non-inverted image
-  glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glClearColor(0, 0, 0, 0);
+  //invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(0, height, 0);
+  glTranslatef(0, capture->GetHeight(), 0);
   glScalef(1.0, -1.0f, 1.0f);
-  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
+  capture->BeginRender();
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
+  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+               GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  capture->EndRender();
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
@@ -1681,6 +1665,8 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
 
   // restore original video rect
   m_destRect = saveSize;
+
+  return true;
 }
 
 //********************************************************************************************************
@@ -1886,7 +1872,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return true;
 }
 
@@ -1901,7 +1887,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
 
   if (!(im->flags & IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -1952,7 +1938,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
              , im->stride[1]/2, im->plane[1] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2116,7 +2102,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -2207,7 +2193,7 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 
   glGenTextures(1, &plane.id);
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2215,7 +2201,7 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 void CLinuxRendererGL::UploadVDPAUTexture(int index)
 {
 #ifdef HAVE_LIBVDPAU
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
 #endif
 }
@@ -2277,7 +2263,7 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2362,7 +2348,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   if(status != VA_STATUS_SUCCESS)
     CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
 }
 
@@ -2374,7 +2360,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 
   if (!(im->flags & IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -2408,7 +2394,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
              , im->stride[0] / 4, im->plane[0] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2605,7 +2591,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
     VerifyGLState();
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -2808,7 +2794,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
 
   if (!(im->flags&IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -2826,7 +2812,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   else
     ToRGBFrame(im, fields[FIELD_FULL][0].flipindex, buf.flipindex);
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   static int imaging = -1;
   if (imaging==-1)
@@ -2997,10 +2983,19 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
 
+bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
+{
+  if(mode == VS_DEINTERLACEMODE_OFF
+  || mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
+    return true;
+
+  return false;
+}
+
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
-  if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO)
+  if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
   if(m_renderMethod & RENDER_VDPAU)
@@ -3014,9 +3009,34 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   }
 
   if(m_renderMethod & RENDER_VAAPI)
-    return false;
+  {
+#ifdef HAVE_LIBVA
+    VAAPI::CDisplayPtr disp = m_buffers[m_iYV12RenderBuffer].vaapi.display;
+    if(disp)
+    {
+      CSingleLock lock(*disp);
 
+      if(disp->support_deinterlace())
+      {
+        if( method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+        ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
+          return true;
+      }
+    }
+#endif
+    return false;
+  }
+
+#ifdef TARGET_DARWIN
+  // YADIF too slow for HD but we have no methods to fall back
+  // to something that works so just turn it off.
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return false;
+#endif
+  
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
+  || method == VS_INTERLACEMETHOD_SW_BLEND)
     return true;
 
   if((method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -3043,22 +3063,43 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
   if(method == VS_SCALINGMETHOD_CUBIC
   || method == VS_SCALINGMETHOD_LANCZOS2
+  || method == VS_SCALINGMETHOD_SPLINE36_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+  || method == VS_SCALINGMETHOD_SPLINE36
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
     if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) ||
         (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
     {
-      //lanczos3 is only allowed through advancedsettings.xml because it's very slow
-      if ((g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3) ||
-          method != VS_SCALINGMETHOD_LANCZOS3)
+      // spline36 and lanczos3 are only allowed through advancedsettings.xml
+      if(method != VS_SCALINGMETHOD_SPLINE36
+      && method != VS_SCALINGMETHOD_LANCZOS3)
         return true;
+      else
+        return g_advancedSettings.m_videoEnableHighQualityHwScalers;
     }
   }
  
   return false;
 }
 
+EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
+{
+  if(m_renderMethod & RENDER_VDPAU)
+  {
+#ifdef HAVE_LIBVDPAU
+    CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+    if(vdpau)
+      return vdpau->AutoInterlaceMethod();
+#endif
+    return VS_INTERLACEMETHOD_NONE;
+  }
+
+  if(Supports(VS_INTERLACEMETHOD_RENDER_BOB))
+    return VS_INTERLACEMETHOD_RENDER_BOB;
+
+  return VS_INTERLACEMETHOD_NONE;
+}
 
 void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
 {

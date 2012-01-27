@@ -35,6 +35,7 @@
 
 #include "avcodec.h"
 #include "dsputil.h"
+#include "libavcore/imgutils.h"
 
 #include "truemotion1data.h"
 
@@ -71,6 +72,7 @@ typedef struct TrueMotion1Context {
     int last_deltaset, last_vectable;
 
     unsigned int *vert_pred;
+    int vert_pred_size;
 
 } TrueMotion1Context;
 
@@ -178,11 +180,7 @@ static int make_ydt15_entry(int p1, int p2, int16_t *ydt)
     return (lo + (hi << 16)) << 1;
 }
 
-#if HAVE_BIGENDIAN
-static int make_cdt15_entry(int p2, int p1, int16_t *cdt)
-#else
 static int make_cdt15_entry(int p1, int p2, int16_t *cdt)
-#endif
 {
     int r, b, lo;
 
@@ -207,11 +205,7 @@ static int make_ydt16_entry(int p1, int p2, int16_t *ydt)
     return (lo + (hi << 16)) << 1;
 }
 
-#if HAVE_BIGENDIAN
-static int make_cdt16_entry(int p2, int p1, int16_t *cdt)
-#else
 static int make_cdt16_entry(int p1, int p2, int16_t *cdt)
-#endif
 {
     int r, b, lo;
 
@@ -221,11 +215,7 @@ static int make_cdt16_entry(int p1, int p2, int16_t *cdt)
     return (lo + (lo << 16)) << 1;
 }
 
-#if HAVE_BIGENDIAN
-static int make_ydt24_entry(int p2, int p1, int16_t *ydt)
-#else
 static int make_ydt24_entry(int p1, int p2, int16_t *ydt)
-#endif
 {
     int lo, hi;
 
@@ -234,11 +224,7 @@ static int make_ydt24_entry(int p1, int p2, int16_t *ydt)
     return (lo + (hi << 8) + (hi << 16)) << 1;
 }
 
-#if HAVE_BIGENDIAN
-static int make_cdt24_entry(int p2, int p1, int16_t *cdt)
-#else
 static int make_cdt24_entry(int p1, int p2, int16_t *cdt)
-#endif
 {
     int r, b;
 
@@ -321,14 +307,11 @@ static void gen_vector_table24(TrueMotion1Context *s, const uint8_t *sel_vector_
 static int truemotion1_decode_header(TrueMotion1Context *s)
 {
     int i;
+    int width_shift = 0;
+    int new_pix_fmt;
     struct frame_header header;
     uint8_t header_buffer[128];  /* logical maximum size of the header */
     const uint8_t *sel_vector_table;
-
-    /* There is 1 change bit per 4 pixels, so each change byte represents
-     * 32 pixels; divide width by 4 to obtain the number of change bits and
-     * then round up to the nearest byte. */
-    s->mb_change_bits_row_size = ((s->avctx->width >> 2) + 7) >> 3;
 
     header.header_size = ((s->buf[0] >> 5) | (s->buf[0] << 3)) & 0x7f;
     if (s->buf[0] < 0x10)
@@ -404,7 +387,7 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
     if ((header.compression & 1) && header.header_type)
         sel_vector_table = pc_tbl2;
     else {
-        if (header.vectable < 4)
+        if (header.vectable > 0 && header.vectable < 4)
             sel_vector_table = tables[header.vectable - 1];
         else {
             av_log(s->avctx, AV_LOG_ERROR, "invalid vector table id (%d)\n", header.vectable);
@@ -412,11 +395,30 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
         }
     }
 
-    // FIXME: where to place this ?!?!
-    if (compression_types[header.compression].algorithm == ALGO_RGB24H)
-        s->avctx->pix_fmt = PIX_FMT_RGB32;
-    else
-        s->avctx->pix_fmt = PIX_FMT_RGB555; // RGB565 is supported as well
+    if (compression_types[header.compression].algorithm == ALGO_RGB24H) {
+        new_pix_fmt = PIX_FMT_RGB32;
+        width_shift = 1;
+    } else
+        new_pix_fmt = PIX_FMT_RGB555; // RGB565 is supported as well
+
+    s->w >>= width_shift;
+    if (av_image_check_size(s->w, s->h, 0, s->avctx) < 0)
+        return -1;
+
+    if (s->w != s->avctx->width || s->h != s->avctx->height ||
+        new_pix_fmt != s->avctx->pix_fmt) {
+        if (s->frame.data[0])
+            s->avctx->release_buffer(s->avctx, &s->frame);
+        s->avctx->sample_aspect_ratio = (AVRational){ 1 << width_shift, 1 };
+        s->avctx->pix_fmt = new_pix_fmt;
+        avcodec_set_dimensions(s->avctx, s->w, s->h);
+        av_fast_malloc(&s->vert_pred, &s->vert_pred_size, s->avctx->width * sizeof(unsigned int));
+    }
+
+    /* There is 1 change bit per 4 pixels, so each change byte represents
+     * 32 pixels; divide width by 4 to obtain the number of change bits and
+     * then round up to the nearest byte. */
+    s->mb_change_bits_row_size = ((s->avctx->width >> (2 - width_shift)) + 7) >> 3;
 
     if ((header.deltaset != s->last_deltaset) || (header.vectable != s->last_vectable))
     {
@@ -476,8 +478,7 @@ static av_cold int truemotion1_decode_init(AVCodecContext *avctx)
 
     /* there is a vertical predictor for each pixel in a line; each vertical
      * predictor is 0 to start with */
-    s->vert_pred =
-        (unsigned int *)av_malloc(s->avctx->width * sizeof(unsigned int));
+    av_fast_malloc(&s->vert_pred, &s->vert_pred_size, s->avctx->width * sizeof(unsigned int));
 
     return 0;
 }
@@ -831,7 +832,7 @@ static void truemotion1_decode_24bit(TrueMotion1Context *s)
                 }
             }
 
-            pixels_left -= 4;
+            pixels_left -= 2;
         }
 
         /* next change row */
@@ -890,7 +891,7 @@ static av_cold int truemotion1_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec truemotion1_decoder = {
+AVCodec ff_truemotion1_decoder = {
     "truemotion1",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TRUEMOTION1,

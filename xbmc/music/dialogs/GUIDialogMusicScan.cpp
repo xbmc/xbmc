@@ -69,7 +69,7 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
 
 void CGUIDialogMusicScan::FrameMove()
 {
-  if (m_bRunning)
+  if (m_active)
     UpdateState();
 
   CGUIDialog::FrameMove();

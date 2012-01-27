@@ -42,13 +42,10 @@ extern "C" {
   #else
     #include <ffmpeg/avformat.h>
   #endif
-  /* libavformat/riff.h is not a public header, so include it here */
-  #include "ffmpeg/libavformat/riff.h"
   /* av_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
   void av_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
-  #include "libavformat/riff.h"
 #endif
 }
 
@@ -86,6 +83,7 @@ public:
                             offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
   virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
@@ -97,6 +95,7 @@ public:
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
   virtual void put_byte(ByteIOContext *s, int b)=0;
   virtual void put_buffer(ByteIOContext *s, const unsigned char *buf, int size)=0;
+  virtual void put_be24(ByteIOContext *s, unsigned int val)=0;
   virtual void put_be32(ByteIOContext *s, unsigned int val)=0;
   virtual void put_be16(ByteIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
@@ -128,11 +127,16 @@ public:
   virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual int url_feof(ByteIOContext *s) { return ::url_feof(s); }
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
+  // API added on: 2009-03-01
   virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return ::av_metadata_get(m, key, prev, flags); }
+#else
+  virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return NULL; }
+#endif
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
   virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
-  virtual void av_read_frame_flush(AVFormatContext *s) { return ::av_read_frame_flush(s); }
+  virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }
@@ -150,6 +154,12 @@ public:
                             offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,98,0)
+  // API added on: 2010-02-08
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return ::av_probe_input_buffer(pb, fmt, filename, logctx, offset, max_probe_size); }
+#else
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return -1; }
+#endif
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
   virtual int url_fdopen(ByteIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
@@ -161,6 +171,7 @@ public:
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
   virtual void put_byte(ByteIOContext *s, int b) { ::put_byte(s, b); }
   virtual void put_buffer(ByteIOContext *s, const unsigned char *buf, int size) { ::put_buffer(s, buf, size); }
+  virtual void put_be24(ByteIOContext *s, unsigned int val) { ::put_be24(s, val); }
   virtual void put_be32(ByteIOContext *s, unsigned int val) { ::put_be32(s, val); }
   virtual void put_be16(ByteIOContext *s, unsigned int val) { ::put_be16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
@@ -178,10 +189,14 @@ public:
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
-#if LIBAVFORMAT_VERSION_INT <= (52<<16 | 31<<8)
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,43,0)
+  // API added on: 2009-12-13
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+#elif LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
+  // API added on: 2009-03-01
   virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set(pm, key, value); }
 #else
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return -1; }
 #endif
 
   // DLL faking.
@@ -210,7 +225,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_pause, (AVFormatContext *p1))
   DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext *p1))
-#ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
@@ -218,27 +232,14 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_FUNC_ALIGNED3(AVInputFormat*, __cdecl, av_probe_input_format2, AVProbeData*, int, int*)
+  DEFINE_FUNC_ALIGNED6(int, __cdecl, av_probe_input_buffer, ByteIOContext *, AVInputFormat **, const char *, void *, unsigned int, unsigned int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_byte, ByteIOContext*, int)
   DEFINE_FUNC_ALIGNED3(void, __cdecl, put_buffer, ByteIOContext*, const unsigned char *, int)
+  DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be24, ByteIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, ByteIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, ByteIOContext*, unsigned int)
-#else
-  DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
-  DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
-  DEFINE_METHOD1(int, av_find_stream_info_dont_call, (AVFormatContext *p1))
-  DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
-  DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
-  DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
-  DEFINE_METHOD3(AVInputFormat*, av_probe_input_format2, (AVProbeData* p1 , int p2, int *p3))
-  DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
-  DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
-  DEFINE_METHOD2(void, put_byte, (ByteIOContext* p1, int p2))
-  DEFINE_METHOD3(void, put_buffer, (ByteIOContext* p1, const unsigned char *p2, int p3))
-  DEFINE_METHOD2(void, put_be32, (ByteIOContext* p1, unsigned int p2))
-  DEFINE_METHOD2(void, put_be16, (ByteIOContext* p1, unsigned int p2))
-#endif
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
   DEFINE_METHOD8(int, init_put_byte, (ByteIOContext *p1, unsigned char *p2, int p3, int p4, void *p5, 
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
@@ -286,6 +287,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(init_put_byte)
     RESOLVE_METHOD(av_probe_input_format)
     RESOLVE_METHOD(av_probe_input_format2)
+    RESOLVE_METHOD(av_probe_input_buffer)
     RESOLVE_METHOD(dump_format)
     RESOLVE_METHOD(url_fdopen)
     RESOLVE_METHOD(url_fopen)
@@ -297,6 +299,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(get_partial_buffer)
     RESOLVE_METHOD(put_byte)
     RESOLVE_METHOD(put_buffer)
+    RESOLVE_METHOD(put_be24)
     RESOLVE_METHOD(put_be32)
     RESOLVE_METHOD(put_be16)
     RESOLVE_METHOD(avformat_alloc_context)
@@ -313,6 +316,12 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_write_frame)
     RESOLVE_METHOD(av_metadata_set2)
   END_METHOD_RESOLVE()
+
+  /* dependencies of libavformat */
+  DllAvCodec m_dllAvCodec;
+  // DllAvCore loaded implicitely by m_dllAvCodec
+  // DllAvUtil loaded implicitely by m_dllAvCodec
+
 public:
   void av_register_all()
   {
@@ -323,6 +332,13 @@ public:
   {
     CSingleLock lock(DllAvCodec::m_critSection);
     return(av_find_stream_info_dont_call(ic));
+  }
+
+  virtual bool Load()
+  {
+    if (!m_dllAvCodec.Load())
+      return false;
+    return DllDynamic::Load();
   }
 };
 

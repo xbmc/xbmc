@@ -128,14 +128,15 @@ namespace XFILE
 
       pFileItem->SetLabel(pathTokens[baseTokens.size()]);
       if (bIsFolder)
+      {
         pFileItem->m_dwSize = 0;
+        URIUtils::AddSlashAtEnd(strBuffer);
+      }
       else
         pFileItem->m_dwSize = ze->usize;
-      pFileItem->m_strPath = strBuffer;
+      pFileItem->SetPath(strBuffer);
       pFileItem->m_bIsFolder = bIsFolder;
       pFileItem->m_idepth = ze->method;
-      if (bIsFolder)
-        URIUtils::AddSlashAtEnd(pFileItem->m_strPath);
       items.Add(pFileItem);
     }
     items.SetFastLookup(bWasFast);

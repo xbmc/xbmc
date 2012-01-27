@@ -41,12 +41,12 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
   CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
   if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo, false, true))
   { // replace our paths as necessary
-    items.m_strPath = untranslatedPath;
+    items.SetPath(untranslatedPath);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
-      if (strnicmp(item->m_strPath.c_str(), translatedPath.c_str(), translatedPath.GetLength()) == 0)
-        item->m_strPath = URIUtils::AddFileToFolder(untranslatedPath, item->m_strPath.Mid(translatedPath.GetLength()));
+      if (strnicmp(item->GetPath().c_str(), translatedPath.c_str(), translatedPath.GetLength()) == 0)
+        item->SetPath(URIUtils::AddFileToFolder(untranslatedPath, item->GetPath().Mid(translatedPath.GetLength())));
     }
     return true;
   }

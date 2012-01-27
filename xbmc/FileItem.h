@@ -28,12 +28,11 @@
 #include "guilib/GUIListItem.h"
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
-#include "video/VideoDatabase.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -79,6 +78,9 @@ public:
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
+  const CStdString &GetPath() const { return m_strPath; };
+  void SetPath(const CStdString &path) { m_strPath = path; };
+
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
@@ -87,19 +89,22 @@ public:
 
   bool Exists(bool bUseCache = true) const;
   bool IsVideo() const;
+  bool IsDiscStub() const;
   bool IsPicture() const;
   bool IsLyrics() const;
   bool IsAudio() const;
   bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsLastFM() const;
-  bool IsInternetStream() const;
+  bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
   bool IsPlugin() const;
+  bool IsScript() const;
   bool IsAddonsPath() const;
+  bool IsSourcesPath() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
@@ -116,9 +121,10 @@ public:
   bool IsOnDVD() const;
   bool IsOnLAN() const;
   bool IsHD() const;
+  bool IsNfs() const;  
+  bool IsAfp() const;    
   bool IsRemote() const;
   bool IsSmb() const;
-  bool IsXBMS() const;
   bool IsURL() const;
   bool IsDAAP() const;
   bool IsStack() const;
@@ -136,6 +142,7 @@ public:
   bool IsTuxBox() const;
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
+  bool IsSlingbox() const;
   bool IsVTP() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
@@ -147,7 +154,7 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
-  VIDEODB_CONTENT_TYPE GetVideoContentType() const;
+  int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
@@ -232,6 +239,17 @@ public:
   // Gets the correct movie title
   CStdString GetMovieName(bool bUseFolderNames = false) const;
 
+  /*! \brief Find the base movie path (eg the folder if using "use foldernames for lookups")
+   Takes care of VIDEO_TS, BDMV, and rar:// listings
+   \param useFolderNames whether we're using foldernames for lookups
+   \return the base movie folder
+   */
+  CStdString GetBaseMoviePath(bool useFolderNames) const;
+
+#ifdef UNIT_TESTING
+  static bool testGetBaseMoviePath();
+#endif
+
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
@@ -239,6 +257,20 @@ public:
   // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
+
+  /*! \brief Get the path where we expect local metadata to reside.
+   For a folder, this is just the existing path (eg tvshow folder)
+   For a file, this is the parent path, with exceptions made for VIDEO_TS and BDMV files
+
+   Three cases are handled:
+
+     /foo/bar/movie_name/file_name          -> /foo/bar/movie_name/
+     /foo/bar/movie_name/VIDEO_TS/file_name -> /foo/bar/movie_name/
+     /foo/bar/movie_name/BDMV/file_name     -> /foo/bar/movie_name/
+
+     \sa URIUtils::GetParentPath
+   */
+  CStdString GetLocalMetadataPath() const;
 
   // finds a matching local trailer file
   CStdString FindTrailer() const;
@@ -255,6 +287,15 @@ public:
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
   const CStdString& GetExtraInfo() const { return m_extrainfo; };
 
+  /*! \brief Update an item with information from another item
+   We take metadata information from the given item and supplement the current item
+   with that info.  If tags exist in the new item we use the entire tag information.
+   Properties are appended, and labels, thumbnail and icon are updated if non-empty
+   in the given item.
+   \param item the item used to supplement information
+   */
+  void UpdateInfo(const CFileItem &item);
+
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;
@@ -263,7 +304,6 @@ private:
   CStdString GetPreviouslyCachedMusicThumb() const;
 
 public:
-  CStdString m_strPath;            ///< complete path to item
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -278,7 +318,9 @@ public:
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+
 private:
+  CStdString m_strPath;            ///< complete path to item
 
   SPECIAL_SORT m_specialSort;
   bool m_bIsParentFolder;
@@ -377,7 +419,14 @@ public:
   void SetFastLookup(bool fastLookup);
   bool Contains(const CStdString& fileName) const;
   bool GetFastLookup() const { return m_fastLookup; };
-  void Stack();
+
+  /*! \brief stack a CFileItemList
+   By default we stack all items (files and folders) in a CFileItemList
+   \param stackFiles whether to stack all items or just collapse folders (defaults to true)
+   \sa StackFiles,StackFolders
+   */
+  void Stack(bool stackFiles = true);
+
   SORT_ORDER GetSortOrder() const { return m_sortOrder; }
   SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   /*! \brief load a CFileItemList out of the cache
@@ -432,6 +481,14 @@ public:
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
   const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+
+  /*! \brief Specify whether this list should be sorted with folders separate from files
+   By default we sort with folders listed (and sorted separately) except for those sort modes
+   which should be explicitly sorted with folders interleaved with files (eg SORT_METHOD_FILES).
+   With this set the folder state will be ignored, allowing folders and files to sort interleaved.
+   \param sort whether to ignore the folder state.
+   */
+  void SetSortIgnoreFolders(bool sort) { m_sortIgnoreFolders = sort; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
   void SetContent(const CStdString &content) { m_content = content; };
@@ -443,11 +500,24 @@ private:
   void FillSortFields(FILEITEMFILLFUNC func);
   CStdString GetDiscCacheFile(int windowID) const;
 
+  /*!
+   \brief stack files in a CFileItemList
+   \sa Stack
+   */
+  void StackFiles();
+
+  /*!
+   \brief stack folders in a CFileItemList
+   \sa Stack
+   */
+  void StackFolders();
+
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
   bool m_fastLookup;
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
+  bool m_sortIgnoreFolders;
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;

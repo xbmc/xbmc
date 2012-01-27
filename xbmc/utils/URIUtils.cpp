@@ -26,10 +26,14 @@
 #include "filesystem/MythDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
-#include "filesystem/VirtualPathDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "URL.h"
+#include "StringUtils.h"
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 using namespace std;
 using namespace XFILE;
@@ -184,6 +188,30 @@ void URIUtils::Split(const CStdString& strFileNameAndPath,
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
 }
 
+CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+
+  // silly CStdString can't take a char in the constructor
+  CStdString sep(1, url.GetDirectorySeparator());
+
+  // split the filename portion of the URL up into separate dirs
+  CStdStringArray dirs;
+  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  
+  // we start with the root path
+  CStdString dir = url.GetWithoutFilename();
+  
+  if (!dir.IsEmpty())
+    dirs.insert(dirs.begin(), dir);
+
+  // we don't need empty token on the end
+  if (dirs.size() > 1 && dirs.back().IsEmpty())
+    dirs.erase(dirs.end() - 1);
+
+  return dirs;
+}
+
 void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
 {
   // find the common path of parent and path
@@ -200,6 +228,18 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
+bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
+{
+  return prot.Equals("zip")
+      || prot.Equals("rar");
+}
+
+bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
+{
+  return ProtocolHasParentInHostname(prot)
+      || prot.Equals("musicsearch");
+}
+
 CStdString URIUtils::GetParentPath(const CStdString& strPath)
 {
   CStdString strReturn;
@@ -213,7 +253,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
+  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.IsEmpty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -223,20 +263,20 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CStackDirectory dir;
     CFileItemList items;
     dir.GetDirectory(strPath,items);
-    GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
+    GetDirectory(items[0]->GetPath(),items[0]->m_strDVDLabel);
     if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
-      GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
+      GetDirectory(items[i]->GetPath(),items[i]->m_strDVDLabel);
       if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
-        GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
+        items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
-        items[i]->m_strPath = items[i]->m_strDVDLabel;
+        items[i]->SetPath(items[i]->m_strDVDLabel);
 
-      GetCommonPath(strParent,items[i]->m_strPath);
+      GetCommonPath(strParent,items[i]->GetPath());
     }
     return true;
   }
@@ -315,6 +355,17 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+{
+  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
+      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
+  {
+    if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
+      return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+  }
+  return strPath;
+}
+
 bool URIUtils::IsRemote(const CStdString& strFile)
 {
   if (IsCDDA(strFile) || IsISO9660(strFile))
@@ -325,18 +376,6 @@ bool URIUtils::IsRemote(const CStdString& strFile)
 
   if(IsStack(strFile))
     return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
-
-  if (IsVirtualPath(strFile))
-  { // virtual paths need to be checked separately
-    CVirtualPathDirectory dir;
-    vector<CStdString> paths;
-    if (dir.GetPathes(strFile, paths))
-    {
-      for (unsigned int i = 0; i < paths.size(); i++)
-        if (IsRemote(paths[i])) return true;
-    }
-    return false;
-  }
 
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
@@ -364,9 +403,6 @@ bool URIUtils::IsOnDVD(const CStdString& strFile)
 #ifdef _WIN32
   if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
-#else
-  if (strFile.Left(2).CompareNoCase("d:") == 0)
-    return true;
 #endif
 
   if (strFile.Left(4).CompareNoCase("dvd:") == 0)
@@ -408,13 +444,10 @@ bool URIUtils::IsOnLAN(const CStdString& strPath)
     return true;
 
   CURL url(strPath);
-  if(IsInArchive(strPath))
+  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
     return IsOnLAN(url.GetHostName());
 
   if(!IsRemote(strPath))
-    return false;
-
-  if(IsPlugin(strPath))
     return false;
 
   CStdString host = url.GetHostName();
@@ -470,26 +503,27 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
+  CStdString strFileLow = strFile;
+  strFileLow.MakeLower();
+  if (strFileLow.Find("video_ts.ifo") != -1 && IsOnDVD(strFile))
+    return true;
+
 #if defined(_WIN32)
+  if (strFile.Left(6).Equals("dvd://"))
+    return true;
+
   if(strFile.Mid(1) != ":\\"
   && strFile.Mid(1) != ":")
     return false;
 
-  if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
+  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
     return true;
 #else
-  CStdString strFileLow = strFile;
-  strFileLow.MakeLower();
-  if (strFileLow == "d:/"  || strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
+  if (strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 #endif
 
   return false;
-}
-
-bool URIUtils::IsVirtualPath(const CStdString& strFile)
-{
-  return strFile.Left(12).Equals("virtualpath:");
 }
 
 bool URIUtils::IsStack(const CStdString& strFile)
@@ -563,10 +597,22 @@ bool URIUtils::IsPlugin(const CStdString& strFile)
   return url.GetProtocol().Equals("plugin");
 }
 
+bool URIUtils::IsScript(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("script");
+}
+
 bool URIUtils::IsAddonsPath(const CStdString& strFile)
 {
   CURL url(strFile);
   return url.GetProtocol().Equals("addons");
+}
+
+bool URIUtils::IsSourcesPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetProtocol().Equals("sources");
 }
 
 bool URIUtils::IsCDDA(const CStdString& strFile)
@@ -592,16 +638,6 @@ bool URIUtils::IsSmb(const CStdString& strFile)
 bool URIUtils::IsURL(const CStdString& strFile)
 {
   return strFile.Find("://") >= 0;
-}
-
-bool URIUtils::IsXBMS(const CStdString& strFile)
-{
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  return strFile2.Left(5).Equals("xbms:");
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)
@@ -669,6 +705,11 @@ bool URIUtils::IsHDHomeRun(const CStdString& strFile)
   return strFile.Left(10).Equals("hdhomerun:");
 }
 
+bool URIUtils::IsSlingbox(const CStdString& strFile)
+{
+  return strFile.Left(6).Equals("sling:");
+}
+
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
   return strFile.Left(4).Equals("vtp:");
@@ -684,6 +725,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   if(IsTuxBox(strFile)
   || IsVTP(strFile)
   || IsHDHomeRun(strFile)
+  || IsSlingbox(strFile)
   || IsHTSP(strFile)
   || strFile.Left(4).Equals("sap:"))
     return true;
@@ -698,6 +740,27 @@ bool URIUtils::IsMusicDb(const CStdString& strFile)
 {
   return strFile.Left(8).Equals("musicdb:");
 }
+
+bool URIUtils::IsNfs(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("nfs:");
+}
+
+bool URIUtils::IsAfp(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("afp:");
+}
+
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
@@ -732,8 +795,8 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
       AddSlashAtEnd(file);
       url.SetFileName(file);
       strFolder = url.Get();
-      return;
     }
+    return;
   }
 
   if (!HasSlashAtEnd(strFolder))
@@ -827,6 +890,14 @@ void URIUtils::GetDirectory(const CStdString& strFilePath,
   if (iPos1 > 0)
   {
     strDirectoryPath = strFilePath.Left(iPos1 + 1); // include the slash
+
+    // Keep possible |option=foo options for certain paths
+    iPos2 = strFilePath.ReverseFind('|');
+    if (iPos2 > 0)
+    {
+      strDirectoryPath += strFilePath.Mid(iPos2);
+    }
+
   }
 }
 
@@ -872,4 +943,3 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 #endif
 }
-

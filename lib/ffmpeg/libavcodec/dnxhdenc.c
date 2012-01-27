@@ -239,12 +239,12 @@ static int dnxhd_write_header(AVCodecContext *avctx, uint8_t *buf)
     buf[5] = ctx->interlaced ? ctx->cur_field+2 : 0x01;
     buf[6] = 0x80; // crc flag off
     buf[7] = 0xa0; // reserved
-    AV_WB16(buf + 0x18, avctx->height); // ALPF
+    AV_WB16(buf + 0x18, avctx->height>>ctx->interlaced); // ALPF
     AV_WB16(buf + 0x1a, avctx->width);  // SPL
-    AV_WB16(buf + 0x1d, avctx->height); // NAL
+    AV_WB16(buf + 0x1d, avctx->height>>ctx->interlaced); // NAL
 
     buf[0x21] = 0x38; // FIXME 8 bit per comp
-    buf[0x22] = 0x88 + (ctx->frame.interlaced_frame<<2);
+    buf[0x22] = 0x88 + (ctx->interlaced<<2);
     AV_WB32(buf + 0x28, ctx->cid); // CID
     buf[0x2c] = ctx->interlaced ? 0 : 0x80;
 
@@ -552,7 +552,7 @@ static int dnxhd_encode_rdo(AVCodecContext *avctx, DNXHDEncContext *ctx)
             if (bits > ctx->frame_bits)
                 break;
         }
-        //dprintf(ctx->m.avctx, "lambda %d, up %u, down %u, bits %d, frame %d\n",
+        //av_dlog(ctx->m.avctx, "lambda %d, up %u, down %u, bits %d, frame %d\n",
         //        lambda, last_higher, last_lower, bits, ctx->frame_bits);
         if (end) {
             if (bits > ctx->frame_bits)
@@ -582,7 +582,7 @@ static int dnxhd_encode_rdo(AVCodecContext *avctx, DNXHDEncContext *ctx)
             down_step = 1<<LAMBDA_FRAC_BITS;
         }
     }
-    //dprintf(ctx->m.avctx, "out lambda %d\n", lambda);
+    //av_dlog(ctx->m.avctx, "out lambda %d\n", lambda);
     ctx->lambda = lambda;
     return 0;
 }
@@ -610,7 +610,7 @@ static int dnxhd_find_qscale(DNXHDEncContext *ctx)
             if (bits > ctx->frame_bits)
                 break;
         }
-        //dprintf(ctx->m.avctx, "%d, qscale %d, bits %d, frame %d, higher %d, lower %d\n",
+        //av_dlog(ctx->m.avctx, "%d, qscale %d, bits %d, frame %d, higher %d, lower %d\n",
         //        ctx->m.avctx->frame_number, qscale, bits, ctx->frame_bits, last_higher, last_lower);
         if (bits < ctx->frame_bits) {
             if (qscale == 1)
@@ -640,7 +640,7 @@ static int dnxhd_find_qscale(DNXHDEncContext *ctx)
                 return -1;
         }
     }
-    //dprintf(ctx->m.avctx, "out qscale %d\n", qscale);
+    //av_dlog(ctx->m.avctx, "out qscale %d\n", qscale);
     ctx->qscale = qscale;
     return 0;
 }
@@ -848,7 +848,7 @@ static int dnxhd_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec dnxhd_encoder = {
+AVCodec ff_dnxhd_encoder = {
     "dnxhd",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DNXHD,

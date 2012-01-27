@@ -28,6 +28,9 @@
 #include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecVDA.h"
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+#include "Video/DVDVideoCodecVideoToolBox.h"
+#endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -35,25 +38,15 @@
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
-#ifdef USE_LIBA52_DECODER
-  #include "Audio/DVDAudioCodecLiba52.h"
-#endif
-#ifdef USE_LIBDTS_DECODER
-  #include "Audio/DVDAudioCodecLibDts.h"
-#endif
 #include "Audio/DVDAudioCodecLibMad.h"
-#ifdef USE_LIBFAAD_DECODER
-  #include "Audio/DVDAudioCodecLibFaad.h"
-#endif
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
-#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
-  #include "Audio/DVDAudioCodecPassthrough.h"
-#endif
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/DVDOverlayCodecTX3G.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
+
 
 #include "DVDStreamInfo.h"
 #include "settings/GUISettings.h"
@@ -126,7 +119,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces)
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
@@ -138,6 +131,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   hwSupport += "VDADecoder:yes ";
 #elif defined(__APPLE__)
   hwSupport += "VDADecoder:no ";
+#endif
+#if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(__APPLE__)
+  hwSupport += "VideoToolBoxDecoder:yes ";
+#elif defined(__APPLE__)
+  hwSupport += "VideoToolBoxDecoder:no ";
 #endif
 #ifdef HAVE_LIBCRYSTALHD
   hwSupport += "CrystalHD:yes ";
@@ -173,12 +171,35 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 #if defined(HAVE_LIBVDADECODER)
-  if (hint.width > 720 && g_sysinfo.HasVDADecoder())
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usevda"))
   {
-    if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+    if (g_sysinfo.HasVDADecoder())
     {
-      CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
+      {
+        CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      }
+    }
+  }
+#endif
+
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usevideotoolbox"))
+  {
+    if (g_sysinfo.HasVideoToolBoxDecoder())
+    {
+      switch(hint.codec)
+      {
+        case CODEC_ID_H264:
+          if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
+            break;
+          CLog::Log(LOGINFO, "Apple VideoToolBox Decoder...");
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
+        break;
+        default:
+        break;
+      }
     }
   }
 #endif
@@ -229,6 +250,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   }
 #endif
 
+  CStdString value;
+  value.Format("%d", surfaces);
+  options.push_back(CDVDCodecOption("surfaces", value));
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
 
   return NULL;
@@ -241,33 +265,12 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
 
   if (passthrough)
   {
-#if (defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)) && !defined(WIN32)
-    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-    if( pCodec ) return pCodec;
-#endif
-
     pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
     if ( pCodec ) return pCodec;
   }
 
   switch (hint.codec)
   {
-#ifdef USE_LIBA52_DECODER
-  case CODEC_ID_AC3:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLiba52(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#endif
-#ifdef USE_LIBDTS_DECODER
-  case CODEC_ID_DTS:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLibDts(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#endif
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
@@ -275,15 +278,6 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       if( pCodec ) return pCodec;
       break;
     }
-#ifdef USE_LIBFAAD_DECODER
-  case CODEC_ID_AAC:
-  //case CODEC_ID_MPEG4AAC:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLibFaad(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#endif
   case CODEC_ID_PCM_S32LE:
   case CODEC_ID_PCM_S32BE:
   case CODEC_ID_PCM_U32LE:
@@ -345,6 +339,10 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
 
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    case CODEC_ID_MOV_TEXT:
+      pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
       if( pCodec ) return pCodec;
 
     default:

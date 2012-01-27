@@ -95,7 +95,7 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
 
 
 CDVDTeletextData::CDVDTeletextData()
-: CThread()
+: CThread("CDVDTeletextData")
 , m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;
@@ -233,11 +233,6 @@ void CDVDTeletextData::ResetTeletextCache()
     m_TXTCache.SubPage = 0;
 }
 
-void CDVDTeletextData::OnStartup()
-{
-  CThread::SetName("CDVDTeletextData");
-}
-
 void CDVDTeletextData::Process()
 {
   int             b1, b2, b3, b4;
@@ -246,7 +241,7 @@ void CDVDTeletextData::Process()
   unsigned char   vtxt_row[42];
   unsigned char   pagedata[9][23*40];
   unsigned char   magazine  = 0xff;
-  int             doupdate  = 0;
+//  int             doupdate  = 0;
 
   CLog::Log(LOGNOTICE, "running thread: CDVDTeletextData");
 
@@ -372,8 +367,8 @@ void CDVDTeletextData::Process()
                 memset(m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]]->data, ' ', 23*40);
                 memset(pagedata[magazine],' ', 23*40);
               }
-              if (dehamming[vtxt_row[9]] & 8)   /* C8 -> update page */
-                doupdate = m_TXTCache.PageReceiving;
+//              if (dehamming[vtxt_row[9]] & 8)   /* C8 -> update page */
+//                doupdate = m_TXTCache.PageReceiving;
 
               pageinfo_thread->boxed = !!(dehamming[vtxt_row[7]] & 0x0c);
 
@@ -640,7 +635,7 @@ void CDVDTeletextData::Process()
             {
               SavePage(m_TXTCache.CurrentPage[magazine], m_TXTCache.CurrentSubPage[magazine], pagedata[magazine]);
               m_TXTCache.PageUpdate = true;
-              doupdate = 0;
+//              doupdate = 0;
               if (!m_TXTCache.ZapSubpageManual)
                 m_TXTCache.SubPage = m_TXTCache.CurrentSubPage[magazine];
             }

@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUISettings.h"
 #include "utils/log.h"
+#include "dialogs/GUIDialogKeyboard.h"
 
 #define CONTROL_GROUP_LIST          5
 #define CONTROL_SETTINGS_LABEL      2
@@ -190,6 +191,14 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
     if (m_usePopupSliders && setting.data && setting.formatFunction)
       SET_CONTROL_LABEL2(controlID,setting.formatFunction(*(float *)setting.data, setting.interval));
   }
+  else if (setting.type == SettingInfo::STRING)
+  {
+    SET_CONTROL_LABEL(controlID, setting.name);
+    string strNewValue = string(*(CStdString *)setting.data);
+    if (strNewValue.empty())
+      strNewValue = "-";
+    SET_CONTROL_LABEL2(controlID, strNewValue);
+  }
 
   if (setting.enabled)
   {
@@ -201,15 +210,10 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   }
 }
 
-bool CGUIDialogSettings::OnAction(const CAction& action)
+bool CGUIDialogSettings::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    OnCancel();
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
+  OnCancel();
+  return CGUIDialog::OnBack(actionID);
 }
 
 void CGUIDialogSettings::OnClick(int iID)
@@ -255,6 +259,14 @@ void CGUIDialogSettings::OnClick(int iID)
     CGUIDialogSlider::ShowAndGetInput(setting.name, *(float *)setting.data, setting.min, setting.interval, setting.max, this, &setting);
     if (setting.formatFunction)
       SET_CONTROL_LABEL2(iID, setting.formatFunction(*(float *)setting.data, setting.interval));
+  }
+  else if (setting.type == SettingInfo::STRING)
+  {
+    CGUIDialogKeyboard::ShowAndGetInput(*(CStdString *) setting.data, true);
+    string strNewValue = string(*(CStdString *)setting.data);
+    if (strNewValue.empty())
+      strNewValue = "-";
+    SET_CONTROL_LABEL2(iID, strNewValue);
   }
   OnSettingChanged(setting);
 }
@@ -322,6 +334,17 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
     if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
   }
+  if (setting.type == SettingInfo::STRING && m_pOriginalSettingsButton)
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
+    if (!pControl) return ;
+    ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
+    string strValue = string(*(CStdString *)setting.data);
+    if (strValue.empty())
+      strValue = "-";
+    ((CGUIButtonControl *)pControl)->SetLabel2(strValue);
+    pControl->SetWidth(width);
+  }
   if (!pControl) return;
 
   pControl->SetID(iControlID);
@@ -348,6 +371,17 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, f
   setting.max = max;
   setting.interval = interval;
   setting.formatFunction = function;
+  m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::AddString(unsigned int id, int label, CStdString *current)
+{
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::STRING;
+  setting.data = current;
+  setting.enabled = true;
   m_settings.push_back(setting);
 }
 

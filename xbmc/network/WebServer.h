@@ -24,12 +24,8 @@
 #ifdef HAS_WEB_SERVER
 #include "utils/StdString.h"
 #include <sys/types.h>
-#ifndef _WIN32
 #include <sys/select.h>
 #include <sys/socket.h>
-#else
-#include <WS2tcpip.h>
-#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -51,7 +47,9 @@ public:
   bool Stop();
   bool IsStarted();
   void SetCredentials(const CStdString &username, const CStdString &password);
-  virtual bool Download(const char *path, Json::Value *result);
+
+  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
+  virtual bool Download(const char *path, CVariant &result);
   virtual int GetCapabilities();
 private:
   enum HTTPMethod
@@ -90,7 +88,7 @@ private:
   static int HttpApi(struct MHD_Connection *connection);
   static HTTPMethod GetMethod(const char *method);
   static int CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL);
-  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL);
+  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
   static int CreateAddonsListResponse(struct MHD_Connection *connection);

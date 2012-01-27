@@ -63,7 +63,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   CStdString thumb;
   if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
-    CStdString image = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->m_strPath);
+    CStdString image = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
     thumb = CTextureCache::Get().CheckAndCacheImage(image);
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
@@ -92,7 +92,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
       else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, thumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumb);
         AddJob(extract);
       }
     }
@@ -114,7 +114,7 @@ void CPictureThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* 
   if (success)
   {
     CThumbExtractor* loader = (CThumbExtractor*)job;
-    loader->m_item.m_strPath = loader->m_listpath;
+    loader->m_item.SetPath(loader->m_listpath);
     CFileItemPtr pItem(new CFileItem(loader->m_item));
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
     g_windowManager.SendThreadMessage(msg);
@@ -137,10 +137,10 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
   db.Open();
   if (pItem->IsCBR() || pItem->IsCBZ())
   {
-    CStdString strTBN(URIUtils::ReplaceExtension(pItem->m_strPath,".tbn"));
+    CStdString strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
     if (CFile::Exists(strTBN))
     {
-      db.SetTextureForPath(pItem->m_strPath, strTBN);
+      db.SetTextureForPath(pItem->GetPath(), strTBN);
       pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(strTBN));
       return;
     }
@@ -149,23 +149,23 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
   {
     // first check for a folder.jpg
     CStdString thumb = "folder.jpg";
-    CStdString strPath = pItem->m_strPath;
+    CStdString strPath = pItem->GetPath();
     if (pItem->IsCBR())
     {
-      URIUtils::CreateArchivePath(strPath,"rar",pItem->m_strPath,"");
+      URIUtils::CreateArchivePath(strPath,"rar",pItem->GetPath(),"");
       thumb = "cover.jpg";
     }
     if (pItem->IsCBZ())
     {
-      URIUtils::CreateArchivePath(strPath,"zip",pItem->m_strPath,"");
+      URIUtils::CreateArchivePath(strPath,"zip",pItem->GetPath(),"");
       thumb = "cover.jpg";
     }
     if (pItem->IsMultiPath())
-      strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
+      strPath = CMultiPathDirectory::GetFirstPath(pItem->GetPath());
     thumb = URIUtils::AddFileToFolder(strPath, thumb);
     if (CFile::Exists(thumb))
     {
-      db.SetTextureForPath(pItem->m_strPath, thumb);
+      db.SetTextureForPath(pItem->GetPath(), thumb);
       pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
       return;
     }
@@ -217,8 +217,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab the first thumb
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-        CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->m_strPath);
-        db.SetTextureForPath(pItem->m_strPath, thumb);
+        CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
+        db.SetTextureForPath(pItem->GetPath(), thumb);
         thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
         pItem->SetThumbnailImage(thumb);
       }
@@ -228,10 +228,10 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
         CStdString strFiles[4];
         for (int thumb = 0; thumb < 4; thumb++)
-          strFiles[thumb] = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(items[thumb]->m_strPath), false);
-        CStdString thumb = CTextureCache::GetUniqueImage(pItem->m_strPath, ".png");
+          strFiles[thumb] = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(items[thumb]->GetPath()), false);
+        CStdString thumb = CTextureCache::GetUniqueImage(pItem->GetPath(), ".png");
         CPicture::CreateFolderThumb(strFiles, thumb);
-        db.SetTextureForPath(pItem->m_strPath, thumb);
+        db.SetTextureForPath(pItem->GetPath(), thumb);
         pItem->SetThumbnailImage(thumb);
       }
     }

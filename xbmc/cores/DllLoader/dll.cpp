@@ -147,8 +147,6 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
 
-  CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> %p", dllhandle->GetName(), (void*)dllhandle);
-
   DllLoaderContainer::ReleaseModule(dllhandle);
 
   return 1;

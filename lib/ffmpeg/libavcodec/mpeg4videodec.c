@@ -1023,12 +1023,7 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
                     if(last) i+=192;
                 } else {
                     /* second escape */
-#if MIN_CACHE_BITS < 20
-                    LAST_SKIP_BITS(re, &s->gb, 2);
-                    UPDATE_CACHE(re, &s->gb);
-#else
                     SKIP_BITS(re, &s->gb, 2);
-#endif
                     GET_RL_VLC(level, run, re, &s->gb, rl_vlc, TEX_VLC_BITS, 2, 1);
                     i+= run + rl->max_run[run>>7][level/qmul] +1; //FIXME opt indexing
                     level = (level ^ SHOW_SBITS(re, &s->gb, 1)) - SHOW_SBITS(re, &s->gb, 1);
@@ -1036,12 +1031,7 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
                 }
             } else {
                 /* first escape */
-#if MIN_CACHE_BITS < 19
-                LAST_SKIP_BITS(re, &s->gb, 1);
-                UPDATE_CACHE(re, &s->gb);
-#else
                 SKIP_BITS(re, &s->gb, 1);
-#endif
                 GET_RL_VLC(level, run, re, &s->gb, rl_vlc, TEX_VLC_BITS, 2, 1);
                 i+= run;
                 level = level + rl->max_level[run>>7][(run-1)&63] * qmul;//FIXME opt indexing
@@ -1575,6 +1565,7 @@ static int decode_vol_header(MpegEncContext *s, GetBitContext *gb){
     s->avctx->time_base.den = get_bits(gb, 16);
     if(!s->avctx->time_base.den){
         av_log(s->avctx, AV_LOG_ERROR, "time_base.den==0\n");
+        s->avctx->time_base.num = 0;
         return -1;
     }
 
@@ -2234,7 +2225,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec mpeg4_decoder = {
+AVCodec ff_mpeg4_decoder = {
     "mpeg4",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG4,
@@ -2252,7 +2243,7 @@ AVCodec mpeg4_decoder = {
 
 
 #if CONFIG_MPEG4_VDPAU_DECODER
-AVCodec mpeg4_vdpau_decoder = {
+AVCodec ff_mpeg4_vdpau_decoder = {
     "mpeg4_vdpau",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG4,

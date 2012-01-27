@@ -25,7 +25,7 @@ attribute vec4 m_attrcord0;
 attribute vec4 m_attrcord1;
 varying vec4   m_cord0;
 varying vec4   m_cord1;
-varying vec4   m_colour;
+varying lowp vec4 m_colour;
 uniform mat4   m_proj;
 uniform mat4   m_model;
 

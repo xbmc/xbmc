@@ -24,8 +24,9 @@
 #include "utils/CharsetConverter.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "input/XBMC_vkeys.h"
 #include "LocalizeStrings.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "utils/md5.h"
 
 #ifdef __APPLE__
@@ -138,44 +139,44 @@ bool CGUIEditControl::OnAction(const CAction &action)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x24) // home
+    if (b == XBMCVK_HOME)
     {
       m_cursorPos = 0;
       UpdateText(false);
       return true;
     }
-    else if (b == 0x23) // end
+    else if (b == XBMCVK_END)
     {
       m_cursorPos = m_text2.length();
       UpdateText(false);
       return true;
     }
-    if (b == 0x25 && m_cursorPos > 0)
-    { // left
+    if (b == XBMCVK_LEFT && m_cursorPos > 0)
+    {
       m_cursorPos--;
       UpdateText(false);
       return true;
     }
-    if (b == 0x27 && m_cursorPos < m_text2.length())
-    { // right
+    if (b == XBMCVK_RIGHT && m_cursorPos < m_text2.length())
+    {
       m_cursorPos++;
       UpdateText(false);
       return true;
     }
-    if (b == 0x2e)
+    if (b == XBMCVK_DELETE)
     {
       if (m_cursorPos < m_text2.length())
-      { // delete
+      {
         if (!ClearMD5())
           m_text2.erase(m_cursorPos, 1);
         UpdateText();
         return true;
       }
     }
-    if (b == 0x8)
+    if (b == XBMCVK_BACK)
     {
       if (m_cursorPos > 0)
-      { // backspace
+      {
         if (!ClearMD5())
           m_text2.erase(--m_cursorPos, 1);
         UpdateText();
@@ -305,13 +306,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
-    vector<CGUIActionDescriptor> textChangeActions = m_textChangeActions;
-    for (unsigned int i = 0; i < textChangeActions.size(); i++)
-    {
-      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-      message.SetAction(textChangeActions[i]);
-      g_windowManager.SendMessage(message);
-    }
+    m_textChangeActions.Execute(GetID(), GetParentID());
   }
   SetInvalid();
 }
@@ -363,7 +358,7 @@ void CGUIEditControl::RecalcLabelPosition()
     m_textOffset = 0;
 }
 
-void CGUIEditControl::RenderText()
+void CGUIEditControl::ProcessText(unsigned int currentTime)
 {
   if (m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
@@ -375,6 +370,7 @@ void CGUIEditControl::RenderText()
     RecalcLabelPosition();
   }
 
+  bool changed = false;
 
   float posX = m_label.GetRenderRect().x1;
   float maxTextWidth = m_label.GetMaxWidth();
@@ -384,8 +380,8 @@ void CGUIEditControl::RenderText()
   if (leftTextWidth > 0)
   {
     // render the text on the left
-    m_label.SetColor(GetTextColor());
-    m_label.Render();
+    changed |= m_label.SetColor(GetTextColor());
+    changed |= m_label.Process(currentTime);
     
     posX += leftTextWidth + spaceWidth;
     maxTextWidth -= leftTextWidth + spaceWidth;
@@ -417,13 +413,23 @@ void CGUIEditControl::RenderText()
       text.Insert(m_cursorPos, col);
     }
 
-    m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
-    m_label2.SetTextW(text);
-    m_label2.SetAlign(align);
-    m_label2.SetColor(GetTextColor());
-    m_label2.Render();
+    changed |= m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
+    if (text.IsEmpty())
+      changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
+    else
+      changed |= m_label2.SetTextW(text);
+    changed |= m_label2.SetAlign(align);
+    changed |= m_label2.SetColor(GetTextColor());
+    changed |= m_label2.Process(currentTime);
     g_graphicsContext.RestoreClipRegion();
   }
+  if (changed)
+    MarkDirtyRegion();
+}
+
+void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
+{
+  m_hintInfo = hint;
 }
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
@@ -527,7 +533,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 
 void CGUIEditControl::OnPasteClipboard()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   const char *szStr = Cocoa_Paste();
   if (szStr)
   {

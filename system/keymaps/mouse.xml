@@ -1,0 +1,22 @@
+<keymap>
+  <global>
+    <mouse>
+      <leftclick>leftclick</leftclick>
+      <middleclick>middleclick</middleclick>
+      <rightclick>rightclick</rightclick>
+      <doubleclick>doubleclick</doubleclick>
+      <wheeldown>wheeldown</wheeldown>
+      <wheelup>wheelup</wheelup>
+      <mousedrag>mousedrag</mousedrag>
+      <mousemove>mousemove</mousemove>
+    </mouse>
+  </global>
+  <SlideShow>
+    <mouse>
+      <leftclick>Pause</leftclick>
+      <rightclick>PreviousMenu</rightclick>
+      <wheelup>PreviousPicture</wheelup>
+      <wheeldown>NextPicture</wheeldown>
+    </mouse>
+  </SlideShow>
+</keymap>

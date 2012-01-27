@@ -10,4 +10,12 @@
     <string id="30006">Smooth-Presetduur</string>
     <string id="30007">Presetduur</string>
     <string id="30008">Beatgevoeligheid</string>
+    <string id="30009">Preset Pakket</string>
+    <string id="30010">Standaard Pakket</string>
+    <string id="30011">Gebruiker Gedefineerde Preset Folder</string>
+    <string id="30012">Gebruiker  Preset Folder</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.Van sec.</string>
+    <string id="30051">%2.Van %%</string>
 </strings>

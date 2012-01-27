@@ -25,6 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #include <string>
 #include <sstream>
@@ -99,6 +100,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
   for(int row = 0; row < 3; row++)
     for(int col = 0; col < 4; col++)
       coef.m[row][col] = conv[col][row];
+  coef.identity = false;
 
   matrix *= coef;
   matrix *= TransformMatrix::CreateTranslation(0.0, -0.5, -0.5);
@@ -237,7 +239,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 #if HAS_GLES == 2
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1i(m_hAlpha, m_alpha);
+  glUniform1f(m_hAlpha, m_alpha);
 #endif
   VerifyGLState();
   return true;

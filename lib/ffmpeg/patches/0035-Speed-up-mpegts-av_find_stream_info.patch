@@ -1,0 +1,38 @@
+From b3b5bde15444655b238ba68c5052c3e41b2e7cf6 Mon Sep 17 00:00:00 2001
+From: elupus <elupus@svn>
+Date: Mon, 28 Jun 2010 21:26:54 +0000
+Subject: [PATCH 35/36] Speed up mpegts av_find_stream_info
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@31478 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ libavformat/mpegts.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index 112ff50..9c25e37 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -699,7 +699,7 @@ static int mpegts_push_data(MpegTSFilter *filter,
+ #endif
+ 
+                     /* stream not present in PMT */
+-                    if (!pes->st) {
++                    if (ts->auto_guess && !pes->st) {
+                         pes->st = av_new_stream(ts->stream, pes->pid);
+                         if (!pes->st)
+                             return AVERROR(ENOMEM);
+@@ -1539,7 +1539,10 @@ static int mpegts_read_header(AVFormatContext *s,
+ 
+         av_dlog(ts->stream, "tuning done\n");
+ 
+-        s->ctx_flags |= AVFMTCTX_NOHEADER;
++        /* only flag NOHEADER if we are in file mode,
++           in streaming mode scanning may take too long for users */
++        if (!url_is_streamed(pb))
++            s->ctx_flags |= AVFMTCTX_NOHEADER;
+     } else {
+         AVStream *st;
+         int pcr_pid, pid, nb_packets, nb_pcrs, ret, pcr_l;
+-- 
+1.7.3
+

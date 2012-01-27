@@ -40,11 +40,14 @@ public:
                       NET_PROTOCOL_HTSP,
                       NET_PROTOCOL_VTP,
                       NET_PROTOCOL_MYTH,
-                      NET_PROTOCOL_TUXBOX};
+                      NET_PROTOCOL_TUXBOX,
+                      NET_PROTOCOL_SFTP,
+                      NET_PROTOCOL_NFS, 
+                      NET_PROTOCOL_AFP};
   CGUIDialogNetworkSetup(void);
   virtual ~CGUIDialogNetworkSetup(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnInitWindow();
 
   static bool ShowAndGetNetworkAddress(CStdString &path);

@@ -176,7 +176,7 @@
   <string id="202">Eslogan</string>
   <string id="203">Resumen</string>
 
-  <string id="205">Votos:</string>
+  <string id="205">Votos</string>
   <string id="206">Reparto</string>
   <string id="207">Argumento</string>
   <string id="208">Reproducir</string>
@@ -387,7 +387,7 @@
   <string id="426">No se encontró información CDDB.</string>
   <string id="427">Disco</string>
   <string id="428">Inserte el CD/DVD correcto</string>
-  <string id="429">Por favor, inserte el siguiente CD/DVD</string>
+  <string id="429">Por favor, inserte el siguiente disco</string>
   <string id="430">Por: DVD#</string>
   <string id="431">Sin caché</string>
   <string id="432">Eliminar película de la base de datos</string>
@@ -802,6 +802,9 @@
 
   <string id="1260">Anunciar estos servicios a otros sistemas a través de Zeroconf</string>
 
+  <string id="1270">Permitir a XBMC recibir contenido de AirPlay</string>
+  <string id="1271">Nombre del Dispositivo</string>
+
   <string id="1300">Dispositivo de audio personalizado</string>
   <string id="1301">Dispositivo passthrough personalizado</string>
 
@@ -967,7 +970,7 @@
   <string id="12378">Mostrar cada imagen durante</string>
   <string id="12379">Usar efectos de movimiento y ampliación</string>
   
-<string id="12383">Reloj de 12 horas</string>
+  <string id="12383">Reloj de 12 horas</string>
   <string id="12384">Reloj de 24 horas</string>
   <string id="12385">Día/Mes</string>
   <string id="12386">Mes/Día</string>
@@ -977,6 +980,7 @@
   <string id="12392">Horas</string>
   <string id="12393">Días</string>
   <string id="12394">Tiempo total encendido</string>
+  <string id="12395">Nivel de batería</string>
 
   <string id="12600">El Tiempo</string>
 
@@ -1198,7 +1202,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Sintonizar en Last.fm</string>
   <string id="13411">Velocidad mínima de ventilador</string>
-
+  <string id="13412">Reproducir desde aquí</string>
   <string id="13413">Descargando</string>
   <string id="13414">Incluir artistas que sólo aparecen en recopilaciones</string>
   <string id="13415">Método de renderizado</string>
@@ -1218,6 +1222,7 @@
   <string id="13429">Permitir aceleración de hardware (VDADecoder)</string>
   <string id="13430">Permitir aceleración de hardware (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Permitir aceleración de hardware (VideoToolbox)</string>
 
   <string id="13500">Método sincronización de A/V</string>
   <string id="13501">Reloj de audio</string>
@@ -1477,6 +1482,7 @@
   <string id="16033">No se pudo abrir la base de datos.</string>
   <string id="16034">No se pudieron obtener canciones de la base de datos.</string>
   <string id="16035">Lista de reproducción del modo fiesta</string>
+  <string id="16036">Desentrelazar (Half)</string>
 
   <string id="16100">Todos los vídeos</string>
   <string id="16101">No vistos</string>
@@ -1513,6 +1519,10 @@
   <string id="16317">Temporal (Medio)</string>
   <string id="16318">Temporal/Espacial (Medio)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimizado</string>
 
   <string id="16400">Post-procesamiento de vídeo</string>
 
@@ -1723,6 +1733,9 @@
   <string id="20256">Cliente HTS Tvheadend</string>
   <string id="20257">Cliente VDR Streamdev</string>
   <string id="20258">Cliente MythTV</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple File Protocol (AFP)</string>
 
   <string id="20300">Directorio servidor web (HTTP)</string>
   <string id="20301">Directorio servidor web (HTTPS)</string>
@@ -1830,28 +1843,28 @@
   <string id="20410">Trailer</string>
   <string id="20411">Acoplar</string>
   <string id="20412">Acoplar series de TV</string>
-  <string id="20413">Obtener fanart</string>
+  <string id="20413">Descargar fanart</string>
   <string id="20414">Mostrar fanarts en biblioteca de música y vídeo </string>
   <string id="20415">Buscando contenido nuevo</string>
   <string id="20416">Emisión</string>
   <string id="20417">Escritor</string>
-  <string id="20418">Limpiar nombres de archivo</string>
-
+  <string id="20418"></string>
+  <string id="20419">Mostrar datos de media en el modo de Archivos</string>
   <string id="20420">Nunca</string>
-  <string id="20421">Si sólo hay una temporada</string>
+  <string id="20421">Si hay sólo una temporada</string>
   <string id="20422">Siempre</string>
   <string id="20423">Tiene trailer</string>
   <string id="20424">Falso</string>
   <string id="20425">Presentación de fanart</string>
-  <string id="20426">Exportar a un sólo archivo o separar</string>
-  <string id="20427">¿archivos por entrada?</string>
+  <string id="20426">¿Exportar a un sólo archivo o separar</string>
+  <string id="20427">archivos por entrada?</string>
   <string id="20428">Un sólo archivo</string>
   <string id="20429">Separar</string>
   <string id="20430">¿Exportar miniaturas y fanart?</string>
   <string id="20431">¿Sobreescribir archivos antiguos?</string>
   <string id="20432">Excluir ruta de actualizaciones de biblioteca</string>
   <string id="20433">Extraer los metadatos de información del medio</string>
-  <string id="20434">Fijados</string>
+  <string id="20434">Colecciones</string>
   <string id="20435">Fijar miniaturas de películas</string>
   <string id="20436">Exportar miniaturas de actor</string>
   <string id="20437">Elegir fanart</string>
@@ -1873,6 +1886,8 @@
   <string id="20453">episodios</string>
   <string id="20454">Oyente</string>
   <string id="20455">Oyentes</string>
+  <string id="20456">Fijar fanart de Colección</string>
+  <string id="20457">Colección de Películas</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Mostrar archivos y directorios ocultos</string>
@@ -1979,6 +1994,13 @@
   <string id="21451">Se necesita conexión a Internet.</string>
   <string id="21452">Conseguir más...</string>
   <string id="21453">Raíz del sistema de archivos</string>
+  
+  <string id="21460">Subtitle location</string>
+  <string id="21461">Fijo</string>
+  <string id="21462">Pie de vídeo</string>
+  <string id="21463">Debajo del vídeo</string>
+  <string id="21464">Arriba del vídeo</string>
+  <string id="21465">Encima del vídeo</string>
 
   <string id="21800">Nombre de archivo</string>
   <string id="21801">Ruta de archivo</string>
@@ -2161,6 +2183,11 @@
   <string id="24041">Instalar desde un archivo .zip</string>
   <string id="24042">Descargando %i%%</string>
   <string id="24043">Actualizaciones disponibles</string>
+  <string id="24044">Dependencias incumplidas</string>
+  <string id="24045">El Add-on no tiene la estructura correcta</string>
+  <string id="24046">%s es usado por los siguintes add-ons instalados</string>
+  <string id="24047">Este add-on no se puede desinstalar</string>
+  <string id="24048">Volver una versión atrás</string>
 
   <string id="24050">Add-ons disponibles</string>
   <string id="24051">Versión:</string>
@@ -2189,6 +2216,8 @@
   <string id="24089">El Add-on se reinicia</string>
   <string id="24090">Bloquear el gestor de Add-ons</string>
 
+  <string id="24094">(actual)</string>
+  <string id="24095">(en la lista negra)</string>
   <string id="24096">Add-on marcado como roto en el repositorio</string>
   <string id="24097">¿Desea deshabilitarlo en el sistema?</string>
   <string id="24098">Roto</string>
@@ -2276,26 +2305,15 @@
   <string id="33081">Este archivo está partido. Seleccione la parte que desea reproducir.</string>
   <string id="33082">Ruta al script</string>
   <string id="33083">Habilitar el botón de scripts personalizado</string>
-
-  <!-- translators: no need to add these to your language files -->
-  <string id="34000">Lame</string>
-  <string id="34001">Vorbis</string>
-  <string id="34002">Wav</string>
-  <string id="34003">DXVA2</string>
-  <string id="34004">VAAPI</string>
-  <string id="34005">Flac</string>
+  
+  <string id="33100">Error al iniciar</string>
+  <string id="33101">Servidor Web</string>
+  <string id="33102">Servidor de Eventos</string>
+  <string id="33103">Servidor de comunicación remoto</string>
 
   <string id="34100">Configuración de altavoces</string>
-  <string id="34101">2.0</string>
-  <string id="34102">2.1</string>
-  <string id="34103">3.0</string>
-  <string id="34104">3.1</string>
-  <string id="34105">4.0</string>
-  <string id="34106">4.1</string>
-  <string id="34107">5.0</string>
-  <string id="34108">5.1</string>
-  <string id="34109">7.0</string>
-  <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
+  <string id="34201">No se ha podido encontrar el siguiente elemento a reproducir</string>
+  <string id="34202">No se ha podido encontrar el elemento anterior a reproducir</string>
 
 </strings>

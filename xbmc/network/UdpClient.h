@@ -22,6 +22,9 @@
 
 #include "utils/StdString.h"
 #include "threads/Thread.h"
+#include "threads/CriticalSection.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 class CUdpClient : CThread
 {
@@ -61,5 +64,5 @@ protected:
   std::vector<UdpCommand> commands;
   typedef std::vector<UdpCommand> ::iterator COMMANDITERATOR;
 
-  CRITICAL_SECTION critical_section;
+  CCriticalSection critical_section;
 };

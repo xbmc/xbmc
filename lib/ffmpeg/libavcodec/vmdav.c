@@ -446,7 +446,7 @@ static av_cold int vmdaudio_decode_init(AVCodecContext *avctx)
     s->channels = avctx->channels;
     s->bits = avctx->bits_per_coded_sample;
     s->block_align = avctx->block_align;
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
 
     av_log(s->avctx, AV_LOG_DEBUG, "%d channels, %d bits/sample, block align = %d, sample rate = %d\n",
             s->channels, s->bits, s->block_align, avctx->sample_rate);
@@ -565,7 +565,7 @@ static int vmdaudio_decode_frame(AVCodecContext *avctx,
  * Public Data Structures
  */
 
-AVCodec vmdvideo_decoder = {
+AVCodec ff_vmdvideo_decoder = {
     "vmdvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_VMDVIDEO,
@@ -578,7 +578,7 @@ AVCodec vmdvideo_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("Sierra VMD video"),
 };
 
-AVCodec vmdaudio_decoder = {
+AVCodec ff_vmdaudio_decoder = {
     "vmdaudio",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_VMDAUDIO,

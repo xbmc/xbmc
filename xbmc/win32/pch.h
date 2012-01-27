@@ -15,10 +15,14 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
 #include "DSound.h"
+#ifdef HAS_DX
 #include "D3D9.h"
 #include "D3DX9.h"
+#else
+#include <d3d9types.h>
+#endif
 #include "boost/shared_ptr.hpp"
 #include "SDL\SDL.h"
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.
-#include "StdString.h"
+#include "utils/StdString.h"

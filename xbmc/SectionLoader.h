@@ -22,6 +22,7 @@
 
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 
 //  forward
 class LibraryLoader;
@@ -54,11 +55,16 @@ public:
   static LibraryLoader* LoadDLL(const CStdString& strSection, bool bDelayUnload=true, bool bLoadSymbols=false);
   static void UnloadDLL(const CStdString& strSection);
   static void UnloadDelayed();
-  static void UnloadAll();
 protected:
   std::vector<CSection> m_vecLoadedSections;
   typedef std::vector<CSection>::iterator ivecLoadedSections;
   std::vector<CDll> m_vecLoadedDLLs;
   CCriticalSection m_critSection;
+
+private:
+  void UnloadAll();
 };
-extern class CSectionLoader g_sectionLoader;
+
+XBMC_GLOBAL_REF(CSectionLoader,g_sectionLoader);
+#define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
+

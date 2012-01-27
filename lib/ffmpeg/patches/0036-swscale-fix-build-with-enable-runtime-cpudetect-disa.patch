@@ -1,0 +1,56 @@
+From 189505c7a47007ae25fe9d4c46787c3ef9378dc9 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Wed, 2 Feb 2011 19:36:23 +0200
+Subject: [PATCH 36/36] swscale: fix build with --enable-runtime-cpudetect --disable-mmx/mmx2/amd3dnow
+
+Commit 0fc29f2708a "swscale: simplify selection of optimizations to
+compile." (25 Aug 2010) changed the behaviour so that with
+--enable-runtime-cpudetect --disable-mmx/mmx2/amd3dnow the instruction
+sets are actually disabled.
+
+However, ff_getSwsFunc() still calls the respective initialization
+functions which no longer exist, causing a build failure.
+
+Fix that by putting those calls under #if as well.
+---
+ libswscale/swscale.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/libswscale/swscale.c b/libswscale/swscale.c
+index 375171f..8d7bb73 100644
+--- a/libswscale/swscale.c
++++ b/libswscale/swscale.c
+@@ -1262,19 +1262,26 @@ SwsFunc ff_getSwsFunc(SwsContext *c)
+ 
+ #if ARCH_X86
+     // ordered per speed fastest first
++#if COMPILE_MMX2
+     if (flags & SWS_CPU_CAPS_MMX2) {
+         sws_init_swScale_MMX2(c);
+         return swScale_MMX2;
+-    } else if (flags & SWS_CPU_CAPS_3DNOW) {
++    }
++#endif
++#if COMPILE_3DNOW
++    if (flags & SWS_CPU_CAPS_3DNOW) {
+         sws_init_swScale_3DNow(c);
+         return swScale_3DNow;
+-    } else if (flags & SWS_CPU_CAPS_MMX) {
++    }
++#endif
++#if COMPILE_MMX
++    if (flags & SWS_CPU_CAPS_MMX) {
+         sws_init_swScale_MMX(c);
+         return swScale_MMX;
+-    } else {
++    }
++#endif
+         sws_init_swScale_C(c);
+         return swScale_C;
+-    }
+ 
+ #else
+ #if COMPILE_ALTIVEC
+-- 
+1.7.3
+

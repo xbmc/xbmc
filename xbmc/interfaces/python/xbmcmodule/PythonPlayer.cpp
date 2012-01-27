@@ -21,7 +21,9 @@
 
 #include "pyutil.h"
 #include "PythonPlayer.h"
+#include "pythreadstate.h"
 #include "../XBPython.h"
+#include "threads/Atomics.h"
 
 using namespace PYXBMC;
 
@@ -60,9 +62,9 @@ static int SPyEvent_Function(void* e)
     Py_DECREF(ret);
   }
 
-  Py_BEGIN_ALLOW_THREADS
+  CPyThreadState pyState;
   delete object;
-  Py_END_ALLOW_THREADS
+
   return 0;
 
 }
@@ -76,13 +78,13 @@ CPythonPlayer::CPythonPlayer()
 
 void CPythonPlayer::Release()
 {
-  if(InterlockedDecrement(&m_refs) == 0)
+  if(AtomicDecrement(&m_refs) == 0)
     delete this;
 }
 
 void CPythonPlayer::Acquire()
 {
-  InterlockedIncrement(&m_refs);
+  AtomicIncrement(&m_refs);
 }
 
 CPythonPlayer::~CPythonPlayer(void)

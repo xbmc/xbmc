@@ -19,12 +19,20 @@
  *
  */
 
+#if !defined(__arm__)
 #ifndef WINDOW_SYSTEM_OSX_H
 #define WINDOW_SYSTEM_OSX_H
 
 #include "windowing/WinSystem.h"
+#include "threads/CriticalSection.h"
 #include <SDL/SDL_video.h>
 
+typedef struct _CGDirectDisplayID *CGDirectDisplayID;
+typedef u_int32_t CGDisplayChangeSummaryFlags;
+
+class IDispResource;
+
+class CWinEventsOSX;
 class CWinSystemOSX : public CWinSystemBase
 {
 public:
@@ -45,26 +53,40 @@ public:
   virtual bool Restore();
   virtual bool Hide();
   virtual bool Show(bool raise = true);
+  virtual void OnMove(int x, int y);
+
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
 
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
   
   virtual int GetNumScreens();
 
-
+  void CheckDisplayChanging(u_int32_t flags);
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
-  void  GetScreenResolution(int* w, int* h, double* fps);
-  void  EnableVSync(bool enable);
-  bool  SwitchToVideoMode(int width, int height, double refreshrate);
-  void  GetVideoModes(void);
+  void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
+  void  EnableVSync(bool enable); 
+  bool  SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
+  void  FillInVideoModes();
   bool  FlushBuffer(void);
 
+  static void DisplayReconfigured(CGDirectDisplayID display, 
+    CGDisplayChangeSummaryFlags flags, void *userData);
+  
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
+  CWinEventsOSX *m_osx_events;
+  bool                         m_can_display_switch;
+  void                        *m_windowDidMove;
+  void                        *m_windowDidReSize;
+
+  CCriticalSection             m_resourceSection;
+  std::vector<IDispResource*>  m_resources;
 };
 
 #endif // WINDOW_SYSTEM_H
-
+#endif

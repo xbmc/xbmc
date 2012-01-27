@@ -33,16 +33,17 @@ public:
   CGUIWindowSettingsCategory(void);
   virtual ~CGUIWindowSettingsCategory(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void FrameMove();
   virtual void Render();
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
 protected:
   virtual void OnInitWindow();
 
   void CheckNetworkSettings();
-  void FillInSubtitleHeights(CSetting *pSetting);
+  void FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl);
   void FillInSubtitleFonts(CSetting *pSetting);
   void FillInCharSets(CSetting *pSetting);
   void FillInSkinFonts(CSetting *pSetting);
@@ -60,25 +61,23 @@ protected:
   void FillInSkinThemes(CSetting *pSetting);
   void FillInSkinColors(CSetting *pSetting);
 
-  void FillInNetworkInterfaces(CSetting *pSetting);
+  void FillInNetworkInterfaces(CSetting *pSetting, float groupWidth, int &iControlID);
   void NetworkInterfaceChanged(void);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
 
   virtual void SetupControls();
+  CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);
   void CreateSettings();
   void UpdateSettings();
-  void UpdateRealTimeSettings();
   void CheckForUpdates();
   void FreeSettingsControls();
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
   virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
-  void AddSetting(CSetting *pSetting, float width, int &iControlID);
+  CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
-  void JumpToSection(int windowID, const CStdString &section);
-  void JumpToPreviousSection();
   void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
 
   std::vector<CBaseSettingControl *> m_vecSettings;
@@ -91,12 +90,6 @@ protected:
   CGUIButtonControl *m_pOriginalButton;
   CGUIEditControl *m_pOriginalEdit;
   CGUIImage *m_pOriginalImage;
-  // Network settings
-  int m_iNetworkAssignment;
-  CStdString m_strNetworkIPAddress;
-  CStdString m_strNetworkSubnet;
-  CStdString m_strNetworkGateway;
-  CStdString m_strNetworkDNS;
 
   CStdString m_strErrorMessage;
 
@@ -106,13 +99,6 @@ protected:
   std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
   std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
   std::map<CStdString, CStdString> m_SkinFontSetIDs;
-
-  // state of the window saved in JumpToSection()
-  // to get to the previous settings screen when
-  // using JumpToPreviousSection()
-  int m_iSectionBeforeJump;
-  int m_iControlBeforeJump;
-  int m_iWindowBeforeJump;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 

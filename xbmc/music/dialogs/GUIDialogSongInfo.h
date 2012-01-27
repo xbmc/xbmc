@@ -34,6 +34,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void SetSong(CFileItem *item);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   bool NeedsUpdate() const { return m_needsUpdate; };
 
   virtual bool HasListItems() const { return true; };

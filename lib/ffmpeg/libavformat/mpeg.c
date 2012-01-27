@@ -474,9 +474,6 @@ static int mpegps_read_packet(AVFormatContext *s,
         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
             codec_id = CODEC_ID_AAC;
             type = AVMEDIA_TYPE_AUDIO;
-        } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
-            codec_id = CODEC_ID_AAC_LATM;
-            type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
             codec_id = CODEC_ID_MPEG4;
             type = AVMEDIA_TYPE_VIDEO;
@@ -629,7 +626,7 @@ static int64_t mpegps_read_dts(AVFormatContext *s, int stream_index,
     return dts;
 }
 
-AVInputFormat mpegps_demuxer = {
+AVInputFormat ff_mpegps_demuxer = {
     "mpeg",
     NULL_IF_CONFIG_SMALL("MPEG-PS format"),
     sizeof(MpegDemuxContext),

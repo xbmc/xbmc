@@ -1,0 +1,31 @@
+diff -ruN libmad-0.15.1b.orig/Makefile.am libmad-0.15.1b/Makefile.am
+--- libmad-0.15.1b.orig/Makefile.am	2004-02-17 02:02:03.000000000 +0000
++++ libmad-0.15.1b/Makefile.am	2005-08-25 12:08:04.000000000 +0000
+@@ -33,9 +33,12 @@
+ minimad_INCLUDES =	
+ minimad_LDADD =		libmad.la
+ 
+-EXTRA_DIST =		mad.h.sed  \
++EXTRA_DIST =		mad.h.sed  \
+ 			CHANGES COPYRIGHT CREDITS README TODO VERSION
+ 
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA= mad.pc
++
+ exported_headers =	version.h fixed.h bit.h timer.h stream.h frame.h  \
+ 			synth.h decoder.h
+ 
+diff -ruN libmad-0.15.1b.orig/mad.pc.in libmad-0.15.1b/mad.pc.in
+--- libmad-0.15.1b.orig/mad.pc.in	1970-01-01 00:00:00.000000000 +0000
++++ libmad-0.15.1b/mad.pc.in	2005-08-25 12:08:04.000000000 +0000
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: MAD
++Description: libmad - MPEG audio decoder library
++Version: @VERSION@
++Libs: -L${libdir} -lmad
++Cflags:

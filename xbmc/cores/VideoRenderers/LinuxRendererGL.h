@@ -31,6 +31,10 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 
+#include "threads/Event.h"
+
+class CRenderCapture;
+
 class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
@@ -114,8 +118,6 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class DllAvUtil;
-class DllAvCodec;
 class DllSwScale;
 
 class CLinuxRendererGL : public CBaseRenderer
@@ -127,18 +129,18 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+  bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual void         Flush();
 
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(CVDPAU* vdpau);
@@ -152,13 +154,18 @@ public:
   // Feature support
   virtual bool SupportsMultiPassRendering();
   virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(EDEINTERLACEMODE mode);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
+  void         ClearBackBuffer();
   void         DrawBlackBars();
 
+  bool ValidateRenderer();
   virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
@@ -284,16 +291,14 @@ protected:
   // clear colour for "black" bars
   float m_clearColour;
 
-  // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil         *m_dllAvUtil;
-  DllAvCodec        *m_dllAvCodec;
+  // software scale library (fallback if required gl version is not available)
   DllSwScale        *m_dllSwScale;
   BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int       m_rgbBufferSize;
   GLuint             m_rgbPbo;
   struct SwsContext *m_context;
 
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  CEvent* m_eventTexturesDone[NUM_BUFFERS];
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);

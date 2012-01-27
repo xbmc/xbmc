@@ -22,11 +22,11 @@
 #include "GUIPythonWindowDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
+#include "threads/SingleLock.h"
 
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(int id)
 :CGUIPythonWindow(id)
 {
-  m_bRunning = false;
   m_loadOnDemand = false;
 }
 
@@ -56,15 +56,6 @@ bool CGUIPythonWindowDialog::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowDialog::Show(bool show /* = true */)
-{
-  int count = ExitCriticalSection(g_graphicsContext);
-  ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 0, show ? 1 : 0};
-  tMsg.lpVoid = this;
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-  RestoreCriticalSection(g_graphicsContext, count);
-}
-
 void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
 {
   if (show)
@@ -74,14 +65,14 @@ void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
     // active this dialog...
     CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
     OnMessage(msg);
-    m_bRunning = true;
+    m_active = true;
   }
   else // hide
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    OnMessage(msg);
+    Close();
+}
 
-    g_windowManager.RemoveDialog(GetID());
-    m_bRunning = false;
-  }
+void CGUIPythonWindowDialog::OnDeinitWindow(int nextWindowID)
+{
+  g_windowManager.RemoveDialog(GetID());
+  CGUIPythonWindow::OnDeinitWindow(nextWindowID);
 }

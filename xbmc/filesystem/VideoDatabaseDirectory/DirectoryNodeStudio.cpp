@@ -31,7 +31,7 @@ CDirectoryNodeStudio::CDirectoryNodeStudio(const CStdString& strName, CDirectory
 
 }
 
-NODE_TYPE CDirectoryNodeStudio::GetChildType()
+NODE_TYPE CDirectoryNodeStudio::GetChildType() const
 {
   CQueryParams params;
   CollectQueryParams(params);
@@ -43,7 +43,15 @@ NODE_TYPE CDirectoryNodeStudio::GetChildType()
   return NODE_TYPE_TITLE_TVSHOWS;
 }
 
-bool CDirectoryNodeStudio::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeStudio::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetStudioById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeStudio::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

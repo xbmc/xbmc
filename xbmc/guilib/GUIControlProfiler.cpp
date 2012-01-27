@@ -131,8 +131,6 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "mover"; break;
   case CGUIControl::GUICONTROL_RESIZE:
     lpszType = "resize"; break;
-  case CGUIControl::GUICONTROL_BUTTONBAR:
-    lpszType = "buttonscroller"; break;
   case CGUIControl::GUICONTROL_EDIT:
     lpszType = "edit"; break;
   case CGUIControl::GUICONTROL_VISUALISATION:

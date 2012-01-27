@@ -66,6 +66,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
+#define VIDEO_SETTINGS_DEINTERLACEMODE    24
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -75,7 +76,23 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_NONE                 , 16018));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
+
+    /* remove unsupported methods */
+    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
+    {
+      if(g_renderManager.Supports((EDEINTERLACEMODE)it->first))
+        it++;
+      else
+        it = entries.erase(it);
+    }
+
+    AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
+  }
+  {
+    vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BLEND         , 20131));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED, 20130));
@@ -83,6 +100,8 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB_INVERTED  , 16022));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB           , 16021));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE          , 16020));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE_HALF     , 16036));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_SW_BLEND             , 16324));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , 16311));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , 16310));
@@ -90,6 +109,8 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, 16318));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , 16317));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , 16314));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BOB                   , 16320));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BEST                  , 16321));
 
     /* remove unsupported methods */
     for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
@@ -100,7 +121,9 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
+      EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
   }
   {
     vector<pair<int, int> > entries;
@@ -108,7 +131,9 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
     entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36_FAST    , 16323));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3_FAST    , 16315));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36         , 16322));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
 //    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
@@ -211,6 +236,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.m_defaultVideoSettings.m_AudioStream = -1;
       g_settings.Save();
     }
+  }
+  else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)
+  {
+    EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, g_settings.m_currentVideoSettings.m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
   }
 }
 

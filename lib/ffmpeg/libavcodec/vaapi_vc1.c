@@ -116,6 +116,18 @@ static inline VAMvModeVC1 vc1_get_MVMODE2(VC1Context *v)
     return 0;
 }
 
+/** Reconstruct bitstream TTFRM (7.1.1.41, Table-53) */
+static inline int vc1_get_TTFRM(VC1Context *v)
+{
+    switch (v->ttfrm) {
+    case TT_8X8: return 0;
+    case TT_8X4: return 1;
+    case TT_4X8: return 2;
+    case TT_4X4: return 3;
+    }
+    return 0;
+}
+
 /** Pack FFmpeg bitplanes into a VABitPlaneBuffer element */
 static inline void vc1_pack_bitplanes(uint8_t *bitplane, int n, const uint8_t *ff_bp[3], int x, int y, int stride)
 {
@@ -138,7 +150,7 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t 
     struct vaapi_context * const vactx = avctx->hwaccel_context;
     VAPictureParameterBufferVC1 *pic_param;
 
-    dprintf(avctx, "vaapi_vc1_start_frame()\n");
+    av_dlog(avctx, "vaapi_vc1_start_frame()\n");
 
     vactx->slice_param_size = sizeof(VASliceParameterBufferVC1);
 
@@ -160,6 +172,9 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t 
     pic_param->sequence_fields.bits.syncmarker                      = s->resync_marker;
     pic_param->sequence_fields.bits.rangered                        = v->rangered;
     pic_param->sequence_fields.bits.max_b_frames                    = s->avctx->max_b_frames;
+#if VA_CHECK_VERSION(0,32,0)
+    pic_param->sequence_fields.bits.profile                         = v->profile;
+#endif
     pic_param->coded_width                                          = s->avctx->coded_width;
     pic_param->coded_height                                         = s->avctx->coded_height;
     pic_param->entrypoint_fields.value                              = 0; /* reset all bits */
@@ -236,7 +251,7 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t 
     pic_param->transform_fields.value                               = 0; /* reset all bits */
     pic_param->transform_fields.bits.variable_sized_transform_flag  = v->vstransform;
     pic_param->transform_fields.bits.mb_level_transform_type_flag   = v->ttmbf;
-    pic_param->transform_fields.bits.frame_level_transform_type     = v->ttfrm;
+    pic_param->transform_fields.bits.frame_level_transform_type     = vc1_get_TTFRM(v);
     pic_param->transform_fields.bits.transform_ac_codingset_idx1    = v->c_ac_table_index;
     pic_param->transform_fields.bits.transform_ac_codingset_idx2    = v->y_ac_table_index;
     pic_param->transform_fields.bits.intra_transform_dc_table       = v->s.dc_table_index;
@@ -308,7 +323,7 @@ static int vaapi_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, 
     MpegEncContext * const s = &v->s;
     VASliceParameterBufferVC1 *slice_param;
 
-    dprintf(avctx, "vaapi_vc1_decode_slice(): buffer %p, size %d\n", buffer, size);
+    av_dlog(avctx, "vaapi_vc1_decode_slice(): buffer %p, size %d\n", buffer, size);
 
     /* Current bit buffer is beyond any marker for VC-1, so skip it */
     if (avctx->codec_id == CODEC_ID_VC1 && IS_MARKER(AV_RB32(buffer))) {
@@ -326,7 +341,7 @@ static int vaapi_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, 
 }
 
 #if CONFIG_WMV3_VAAPI_HWACCEL
-AVHWAccel wmv3_vaapi_hwaccel = {
+AVHWAccel ff_wmv3_vaapi_hwaccel = {
     .name           = "wmv3_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_WMV3,
@@ -339,7 +354,7 @@ AVHWAccel wmv3_vaapi_hwaccel = {
 };
 #endif
 
-AVHWAccel vc1_vaapi_hwaccel = {
+AVHWAccel ff_vc1_vaapi_hwaccel = {
     .name           = "vc1_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_VC1,

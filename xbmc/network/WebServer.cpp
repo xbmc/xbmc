@@ -28,12 +28,13 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "threads/SingleLock.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "addons/AddonManager.h"
 
 #ifdef _WIN32
-#pragma comment(lib, "../../lib/win32/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
+#pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
 
 #define MAX_STRING_POST_SIZE 20000
@@ -71,7 +72,8 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
   if (!response)
     return MHD_NO;
 
-  ret = MHD_add_response_header (response, "WWW-Authenticate", "Basic realm=XBMC");
+  ret = MHD_add_response_header(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  ret |= MHD_add_response_header(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     MHD_destroy_response (response);
@@ -121,8 +123,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
 
-  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
-    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
+//  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
+//    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
 
 #ifdef HAS_JSONRPC
   if (strURL.Equals("/jsonrpc"))
@@ -143,7 +145,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   {
     strURL = strURL.Right(strURL.length() - 5);
     CURL::Decode(strURL);
-    return CreateFileDownloadResponse(connection, strURL);
+    return CreateFileDownloadResponse(connection, strURL, methodType);
   }
 
 #ifdef HAS_WEB_INTERFACE
@@ -200,7 +202,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else
       return CreateRedirect(connection, originalURL += "/");
   }
-  return CreateFileDownloadResponse(connection, strURL);
+  return CreateFileDownloadResponse(connection, strURL, methodType);
 
 #endif
 
@@ -294,7 +296,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdStri
   return ret;
 }
 
-int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType)
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
@@ -302,10 +304,21 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    response = MHD_create_response_from_callback ( file->GetLength(),
-                                                   2048,
-                                                   &CWebServer::ContentReaderCallback, file,
-                                                   &CWebServer::ContentReaderFreeCallback); 
+    if (methodType != HEAD)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback); 
+    } else {
+      CStdString contentLength;
+      contentLength.Format("%I64d", file->GetLength());
+      file->Close();
+      delete file;
+
+      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      MHD_add_response_header(response, "Content-Length", contentLength);
+    }
 
     CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
@@ -426,7 +439,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           &CWebServer::AnswerToConnection,
                           this,
 #if (MHD_VERSION >= 0x00040002)
-                          MHD_OPTION_THREAD_POOL_SIZE, 8,
+                          MHD_OPTION_THREAD_POOL_SIZE, 1,
 #endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
@@ -508,7 +521,7 @@ void CWebServer::SetCredentials(const CStdString &username, const CStdString &pa
   m_needcredentials = !password.IsEmpty();
 }
 
-bool CWebServer::Download(const char *path, Json::Value *result)
+bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
   bool exists = false;
   CFile *file = new CFile();
@@ -522,17 +535,25 @@ bool CWebServer::Download(const char *path, Json::Value *result)
 
   if (exists)
   {
-    string str = "vfs/";
-    str += path;
-    (*result)["path"] = str;
+    protocol = "http";
+    string url = "vfs/";
+    CStdString strPath = path;
+    CURL::Encode(strPath);
+    url += strPath;
+    details["path"] = url;
   }
 
   return exists;
 }
 
+bool CWebServer::Download(const char *path, CVariant &result)
+{
+  return false;
+}
+
 int CWebServer::GetCapabilities()
 {
-  return Response | FileDownload;
+  return Response | FileDownloadRedirect;
 }
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)

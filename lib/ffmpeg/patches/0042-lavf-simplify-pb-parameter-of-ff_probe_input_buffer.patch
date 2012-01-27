@@ -1,0 +1,71 @@
+From c0cbd02d3bcd49f4258a9ba86004e70a56bb3a64 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Tue, 8 Feb 2011 00:46:52 +0200
+Subject: [PATCH 42/43] lavf: simplify pb parameter of ff_probe_input_buffer
+
+There is no need to pass the ByteIOContext via a pointer to a pointer
+anymore.
+
+Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+(cherry picked from commit aad216fd7e3209fe0a865d8751e680925f6654d3)
+---
+ libavformat/internal.h |    2 +-
+ libavformat/utils.c    |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/libavformat/internal.h b/libavformat/internal.h
+index a17d9c6..f2f3ddc 100644
+--- a/libavformat/internal.h
++++ b/libavformat/internal.h
+@@ -97,7 +97,7 @@ uint64_t ff_ntp_time(void);
+  * @return 0 in case of success, a negative value corresponding to an
+  * AVERROR code otherwise
+  */
+-int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
++int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+                           const char *filename, void *logctx,
+                           unsigned int offset, unsigned int max_probe_size);
+ 
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index e2881ba..f5b22a2 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -524,7 +524,7 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
+ #define PROBE_BUF_MIN 2048
+ #define PROBE_BUF_MAX (1<<20)
+ 
+-int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
++int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+                           const char *filename, void *logctx,
+                           unsigned int offset, unsigned int max_probe_size)
+ {
+@@ -555,7 +555,7 @@ int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+ 
+         /* read probe data */
+         buf = av_realloc(buf, probe_size + AVPROBE_PADDING_SIZE);
+-        if ((ret = get_buffer(*pb, buf + buf_offset, probe_size - buf_offset)) < 0) {
++        if ((ret = get_buffer(pb, buf + buf_offset, probe_size - buf_offset)) < 0) {
+             /* fail if error was not end of file, otherwise, lower score */
+             if (ret != AVERROR_EOF) {
+                 av_free(buf);
+@@ -585,7 +585,7 @@ int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
+     }
+ 
+     /* rewind. reuse probe buffer to avoid seeking */
+-    if ((ret = ff_rewind_with_probe_data(*pb, buf, pd.buf_size)) < 0)
++    if ((ret = ff_rewind_with_probe_data(pb, buf, pd.buf_size)) < 0)
+         av_free(buf);
+ 
+     return ret;
+@@ -622,7 +622,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
+         if (buf_size > 0) {
+             url_setbufsize(pb, buf_size);
+         }
+-        if (!fmt && (err = ff_probe_input_buffer(&pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
++        if (!fmt && (err = ff_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+             goto fail;
+         }
+     }
+-- 
+1.7.3
+

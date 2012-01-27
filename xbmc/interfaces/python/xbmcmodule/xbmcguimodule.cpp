@@ -19,42 +19,19 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-    #include <python2.6/structmember.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-    #include <python2.5/structmember.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-    #include <python2.4/structmember.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-  #include "python/Include/structmember.h"
-#endif
-#include "../XBPythonDll.h"
+#include <Python.h>
+#include <structmember.h>
+
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "utils/log.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIListItem.h"
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -68,31 +45,26 @@ namespace PYXBMC
 {
   // lock() method
   PyDoc_STRVAR(lock__doc__,
-    "lock() -- Lock the gui until xbmcgui.unlock() is called.\n"
-    "\n"
-    "*Note, This will improve performance when doing a lot of gui manipulation at once.\n"
-    "       The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcgui.lock()\n");
+    "'xbmcgui.lock()' is depreciated and serves no purpose anymore,\n"
+    "\n"           
+    "it will be removed in future releases\n");
 
   PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUILock();
+    CLog::Log(LOGWARNING,"'xbmcgui.lock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   // unlock() method
   PyDoc_STRVAR(unlock__doc__,
-    "unlock() -- Unlock the gui from a lock() call.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcgui.unlock()\n");
+    "'xbmcgui.unlock()' is depreciated and serves no purpose anymore,\n"
+    "\n"           
+    "it will be removed in future releases\n");
 
   PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUIUnlock();
+    CLog::Log(LOGWARNING,"'xbmcgui.unlock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -109,7 +81,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetActiveWindow();
     PyXBMCGUIUnlock();
-    return Py_BuildValue((char*)"l", id);
+    return Py_BuildValue((char*)"i", id);
   }
 
   // getCurrentWindowDialogId() method
@@ -124,7 +96,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     PyXBMCGUIUnlock();
-    return Py_BuildValue((char*)"l", id);
+    return Py_BuildValue((char*)"i", id);
   }
 
   // define c functions to be used in python here
@@ -165,6 +137,7 @@ namespace PYXBMC
     initDialogProgress_Type();
     initAction_Type();
     initControlRadioButton_Type();
+    initControlEdit_Type();
 
     if (PyType_Ready(&Window_Type) < 0 ||
         PyType_Ready(&WindowDialog_Type) < 0 ||
@@ -186,6 +159,7 @@ namespace PYXBMC
         PyType_Ready(&DialogProgress_Type) < 0 ||
         PyType_Ready(&ControlSlider_Type) < 0 ||
         PyType_Ready(&ControlRadioButton_Type) < 0 ||
+        PyType_Ready(&ControlEdit_Type) < 0 ||
         PyType_Ready(&Action_Type) < 0)
       return;
 
@@ -225,6 +199,7 @@ namespace PYXBMC
     Py_INCREF(&DialogProgress_Type);
     Py_INCREF(&Action_Type);
     Py_INCREF(&ControlRadioButton_Type);
+    Py_INCREF(&ControlEdit_Type);
 
     pXbmcGuiModule = Py_InitModule3((char*)"xbmcgui", xbmcGuiMethods, xbmcgui_module_documentation);
 
@@ -251,6 +226,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcGuiModule, (char*)"DialogProgress", (PyObject *)&DialogProgress_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"Action", (PyObject *)&Action_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlRadioButton", (PyObject*)&ControlRadioButton_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlEdit", (PyObject*)&ControlEdit_Type);
 
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__date__", (char*)"14 July 2006");

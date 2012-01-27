@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "climits"
 
 using namespace XFILE;
 
@@ -79,14 +80,14 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       CFileItemPtr pItem(new CFileItem(name));
 
-      pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(parse.getFlagtrycwd() != 0);
+      CStdString filePath = path + name;
       if (pItem->m_bIsFolder)
-        URIUtils::AddSlashAtEnd(pItem->m_strPath);
+        URIUtils::AddSlashAtEnd(filePath);
 
       /* qualify the url with host and all */
-      url.SetFileName(pItem->m_strPath);
-      pItem->m_strPath = url.Get();
+      url.SetFileName(filePath);
+      pItem->SetPath(url.Get());
 
       pItem->m_dwSize = parse.getSize();
       pItem->m_dateTime=parse.getTime();

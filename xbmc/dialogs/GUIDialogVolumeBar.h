@@ -30,8 +30,4 @@ public:
   virtual ~CGUIDialogVolumeBar(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  void ResetTimer();
-protected:
-  unsigned int m_timer;
 };

@@ -37,6 +37,7 @@ public:
   static DVDVideoPicture* ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format);
   static bool CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
   static bool CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture *pSrc);
+  static bool CopyDXVA2Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
 
   static bool IsVP3CompatibleWidth(int width);
 

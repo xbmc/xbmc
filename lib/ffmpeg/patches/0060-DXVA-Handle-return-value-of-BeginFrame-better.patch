@@ -1,0 +1,51 @@
+From dd2e3a9656477f19891ae37846018da0d72c3574 Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Fri, 11 Nov 2011 19:10:54 -0500
+Subject: [PATCH] [DXVA] Handle return value of BeginFrame better.
+
+The nVidia cards sometimes return E_PENDING and need time before they can start
+decoding a new frame.
+
+Helps nVidia cards with blocky pictures/pixellation artifacts after skip or
+when CPU is busy.
+---
+ lib/ffmpeg/libavcodec/dxva2.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/dxva2.c b/lib/ffmpeg/libavcodec/dxva2.c
+index 3f14311..0cf99c3 100644
+--- a/lib/ffmpeg/libavcodec/dxva2.c
++++ b/lib/ffmpeg/libavcodec/dxva2.c
+@@ -21,6 +21,9 @@
+  */
+ 
+ #include "dxva2_internal.h"
++#include <unistd.h>
++
++#define MAX_RETRY_ON_PENDING		50
+ 
+ void *ff_dxva2_get_surface(const Picture *picture)
+ {
+@@ -88,10 +91,17 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
+     DXVA2_DecodeBufferDesc buffer[4];
+     DXVA2_DecodeExecuteParams exec;
+     int      result;
++    HRESULT  hr;
++    int      tries = 0;
+ 
+-    if (FAILED(IDirectXVideoDecoder_BeginFrame(ctx->decoder,
++    while ((hr=IDirectXVideoDecoder_BeginFrame(ctx->decoder,
+                                                ff_dxva2_get_surface(s->current_picture_ptr),
+-                                               NULL))) {
++                                               NULL)) == E_PENDING
++           && tries < MAX_RETRY_ON_PENDING) {
++        usleep(1000);
++        tries++;
++    }
++    if (FAILED(hr)) {
+         av_log(avctx, AV_LOG_ERROR, "Failed to begin frame\n");
+         return -1;
+     }
+-- 
+1.7.3.1.msysgit.0
+

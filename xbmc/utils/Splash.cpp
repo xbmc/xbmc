@@ -22,6 +22,8 @@
 #include "system.h"
 #include "Splash.h"
 #include "guilib/GUIImage.h"
+#include "guilib/GUILabelControl.h"
+#include "guilib/GUIFontManager.h"
 #include "filesystem/File.h"
 #include "windowing/WindowingFactory.h"
 #include "rendering/RenderSystem.h"
@@ -33,12 +35,17 @@ CSplash::CSplash(const CStdString& imageName)
 {
   m_ImageName = imageName;
   fade = 0.5;
+  m_messageLayout = NULL;
+  m_image = NULL;
+  m_layoutWasLoading = false;
 }
 
 
 CSplash::~CSplash()
 {
   Stop();
+  delete m_image;
+  delete m_messageLayout;
 }
 
 void CSplash::OnStartup()
@@ -49,26 +56,59 @@ void CSplash::OnExit()
 
 void CSplash::Show()
 {
+  Show("");
+}
+
+void CSplash::Show(const CStdString& message)
+{
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
 
-  g_graphicsContext.SetCameraPosition(CPoint(0, 0));
-  float w = g_graphicsContext.GetWidth() * 0.5f;
-  float h = g_graphicsContext.GetHeight() * 0.5f;
-  CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);
-  image->SetAspectRatio(CAspectRatio::AR_KEEP);
-  image->AllocResources();
+  RESOLUTION_INFO res(1280,720,0);
+  g_graphicsContext.SetRenderingResolution(res, true);  
+  if (!m_image)
+  {
+    m_image = new CGUIImage(0, 0, 0, 0, 1280, 720, m_ImageName);
+    m_image->SetAspectRatio(CAspectRatio::AR_CENTER);
+  }
 
   //render splash image
   g_Windowing.BeginRender();
 
-  image->Render();
-  image->FreeResources();
-  delete image;
+  m_image->AllocResources();
+  m_image->Render();
+  m_image->FreeResources();
+
+  // render message
+  if (!message.IsEmpty())
+  {
+    if (!m_layoutWasLoading)
+    {
+      // load arial font, white body, no shadow, size: 20, no additional styling
+      CGUIFont *messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
+      if (messageFont)
+        m_messageLayout = new CGUITextLayout(messageFont, true, 0);
+      m_layoutWasLoading = true;
+    }
+    if (m_messageLayout)
+    {
+      m_messageLayout->Update(message, 1150, false, true);
+
+      float textWidth, textHeight;
+      m_messageLayout->GetTextExtent(textWidth, textHeight);
+      // ideally place text in center of empty area below splash image
+      float y = 540 + m_image->GetTextureHeight() / 4 - textHeight / 2;
+      if (y + textHeight > 720) // make sure entire text is visible
+        y = 720 - textHeight;
+
+      m_messageLayout->RenderOutline(640, y, 0, 0xFF000000, XBFONT_CENTER_X, 1280);
+    }
+  }
 
   //show it on screen
   g_Windowing.EndRender();
-  g_graphicsContext.Flip();
+  CDirtyRegionList dirty;
+  g_graphicsContext.Flip(dirty);
   g_graphicsContext.Unlock();
 }
 

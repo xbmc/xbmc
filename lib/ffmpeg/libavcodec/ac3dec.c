@@ -187,22 +187,17 @@ static av_cold int ac3_decode_init(AVCodecContext *avctx)
     AC3DecodeContext *s = avctx->priv_data;
     s->avctx = avctx;
 
-    ac3_common_init();
+    ff_ac3_common_init();
     ac3_tables_init();
     ff_mdct_init(&s->imdct_256, 8, 1, 1.0);
     ff_mdct_init(&s->imdct_512, 9, 1, 1.0);
     ff_kbd_window_init(s->window, 5.0, 256);
     dsputil_init(&s->dsp, avctx);
+    ff_fmt_convert_init(&s->fmt_conv, avctx);
     av_lfg_init(&s->dith_state, 0);
 
-    /* set bias values for float to int16 conversion */
-    if(s->dsp.float_to_int16_interleave == ff_float_to_int16_interleave_c) {
-        s->add_bias = 385.0f;
-        s->mul_bias = 1.0f;
-    } else {
-        s->add_bias = 0.0f;
-        s->mul_bias = 32767.0f;
-    }
+    /* set scale value for float to int16 conversion */
+    s->mul_bias = 32767.0f;
 
     /* allow downmixing to stereo or mono */
     if (avctx->channels > 0 && avctx->request_channels > 0 &&
@@ -219,7 +214,7 @@ static av_cold int ac3_decode_init(AVCodecContext *avctx)
             return AVERROR(ENOMEM);
     }
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -626,9 +621,6 @@ static void do_rematrixing(AC3DecodeContext *s)
 static inline void do_imdct(AC3DecodeContext *s, int channels)
 {
     int ch;
-    float add_bias = s->add_bias;
-    if(s->out_channels==1 && channels>1)
-        add_bias *= LEVEL_MINUS_3DB; // compensate for the gain in downmix
 
     for (ch=1; ch<=channels; ch++) {
         if (s->block_switch[ch]) {
@@ -637,13 +629,13 @@ static inline void do_imdct(AC3DecodeContext *s, int channels)
             for(i=0; i<128; i++)
                 x[i] = s->transform_coeffs[ch][2*i];
             ff_imdct_half(&s->imdct_256, s->tmp_output, x);
-            s->dsp.vector_fmul_window(s->output[ch-1], s->delay[ch-1], s->tmp_output, s->window, add_bias, 128);
+            s->dsp.vector_fmul_window(s->output[ch-1], s->delay[ch-1], s->tmp_output, s->window, 128);
             for(i=0; i<128; i++)
                 x[i] = s->transform_coeffs[ch][2*i+1];
             ff_imdct_half(&s->imdct_256, s->delay[ch-1], x);
         } else {
             ff_imdct_half(&s->imdct_512, s->tmp_output, s->transform_coeffs[ch]);
-            s->dsp.vector_fmul_window(s->output[ch-1], s->delay[ch-1], s->tmp_output, s->window, add_bias, 128);
+            s->dsp.vector_fmul_window(s->output[ch-1], s->delay[ch-1], s->tmp_output, s->window, 128);
             memcpy(s->delay[ch-1], s->tmp_output+128, 128*sizeof(float));
         }
     }
@@ -1264,7 +1256,7 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
         } else {
             gain *= s->dynamic_range[0];
         }
-        s->dsp.int32_to_float_fmul_scalar(s->transform_coeffs[ch], s->fixed_coeffs[ch], gain, 256);
+        s->fmt_conv.int32_to_float_fmul_scalar(s->transform_coeffs[ch], s->fixed_coeffs[ch], gain, 256);
     }
 
     /* apply spectral extension to high frequency bins */
@@ -1416,7 +1408,7 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
             av_log(avctx, AV_LOG_ERROR, "error decoding the audio block\n");
             err = 1;
         }
-        s->dsp.float_to_int16_interleave(out_samples, output, 256, s->out_channels);
+        s->fmt_conv.float_to_int16_interleave(out_samples, output, 256, s->out_channels);
         out_samples += 256 * s->out_channels;
     }
     *data_size = s->num_blocks * 256 * avctx->channels * sizeof (int16_t);
@@ -1437,7 +1429,7 @@ static av_cold int ac3_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ac3_decoder = {
+AVCodec ff_ac3_decoder = {
     .name = "ac3",
     .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_AC3,
@@ -1449,7 +1441,7 @@ AVCodec ac3_decoder = {
 };
 
 #if CONFIG_EAC3_DECODER
-AVCodec eac3_decoder = {
+AVCodec ff_eac3_decoder = {
     .name = "eac3",
     .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_EAC3,

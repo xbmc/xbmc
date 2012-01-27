@@ -34,13 +34,13 @@ typedef struct {
 } Page;
 
 typedef struct {
-    unsigned int nb_pages;    /** total pages in file */
-    unsigned int nb_records;  /** total records in file */
+    unsigned int nb_pages;    /**< total pages in file */
+    unsigned int nb_records;  /**< total records in file */
     int page_table_offset;
-#define MAX_PAGES  256        /** Deluxe Paint hardcoded value */
-    Page pt[MAX_PAGES];       /** page table */
-    int page;                 /** current page (or AVERROR_xxx code) */
-    int record;               /** current record (with in page) */
+#define MAX_PAGES  256        /**< Deluxe Paint hardcoded value */
+    Page pt[MAX_PAGES];       /**< page table */
+    int page;                 /**< current page (or AVERROR_xxx code) */
+    int record;               /**< current record (with in page) */
 } AnmDemuxContext;
 
 #define LPF_TAG  MKTAG('L','P','F',' ')
@@ -225,7 +225,7 @@ repeat:
     return 0;
 }
 
-AVInputFormat anm_demuxer = {
+AVInputFormat ff_anm_demuxer = {
     "anm",
     NULL_IF_CONFIG_SMALL("Deluxe Paint Animation"),
     sizeof(AnmDemuxContext),

@@ -29,7 +29,6 @@
  *
  */
 
-#include "input/XBIRRemote.h"
 #include "utils/StdString.h"
 
 // Analogue - don't change order
@@ -76,6 +75,12 @@
 #define KEY_VKEY            0xF000 // a virtual key/functional key e.g. cursor left
 #define KEY_ASCII           0xF100 // a printable character in the range of TRUE ASCII (from 0 to 127) // FIXME make it clean and pure unicode! remove the need for KEY_ASCII
 #define KEY_UNICODE         0xF200 // another printable character whose range is not included in this KEY code
+
+// 0xE000 -> 0xE0FF is reserved for mouse actions
+#define KEY_MOUSE           0xE000
+
+// 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
+#define KEY_APPCOMMAND      0xD000
 
 #define KEY_INVALID         0xFFFF
 
@@ -134,7 +139,7 @@
 #define ACTION_CALIBRATE_RESET        48 // reset calibration to defaults. Can b used in: settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
 #define ACTION_ANALOG_MOVE            49 // analog thumbstick move. Can b used in: slideshow.xml window id=2007/settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
 #define ACTION_ROTATE_PICTURE         50 // rotate current picture during slideshow. Can b used in slideshow.xml window id=2007
-#define ACTION_CLOSE_DIALOG           51 // action for closing the dialog. Can b used in any dialog
+
 #define ACTION_SUBTITLE_DELAY_MIN     52 // Decrease subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SUBTITLE_DELAY_PLUS    53 // Increase subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_AUDIO_DELAY_MIN        54 // Increase avsync delay.  Can b used in videoFullScreen.xml window id=2005
@@ -178,6 +183,7 @@
 #define ACTION_VOLUME_UP            88
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
+#define ACTION_NAV_BACK             92
 
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
@@ -281,14 +287,23 @@
 
 #define ACTION_GESTURE_NOTIFY         221
 #define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
 #define ACTION_VSHIFT_UP              227 // shift up video image in DVDPlayer
 #define ACTION_VSHIFT_DOWN            228 // shift down video image in DVDPlayer
 
-#define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
+#define ACTION_PLAYER_PLAYPAUSE       229 // Play/pause. If playing it pauses, if paused it plays.
+
+// The NOOP action can be specified to disable an input event. This is
+// useful in user keyboard.xml etc to disable actions specified in the
+// system mappings.
+#define ACTION_NOOP                   999
+
+#define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in DVDPlayer
+#define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
+#define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
@@ -323,6 +338,7 @@
 
 #define WINDOW_ADDON_BROWSER              10040
 
+#define WINDOW_DIALOG_POINTER             10099
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
 #define WINDOW_DIALOG_KEYBOARD            10103
@@ -364,6 +380,9 @@
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
+#define WINDOW_DIALOG_PLAY_EJECT          10148
+#define WINDOW_DIALOG_PERIPHERAL_MANAGER  10149
+#define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -419,7 +438,7 @@ class CAction
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);
 
   /*! \brief Identifier of the action

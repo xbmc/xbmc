@@ -46,6 +46,8 @@
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "Resolution.h"
+#include "utils/GlobalsHandling.h"
+#include "DirtyRegion.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -56,6 +58,8 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_BIG_WIDE,
                  VIEW_TYPE_WRAP,
                  VIEW_TYPE_BIG_WRAP,
+                 VIEW_TYPE_INFO,
+                 VIEW_TYPE_BIG_INFO,
                  VIEW_TYPE_AUTO,
                  VIEW_TYPE_MAX };
 
@@ -78,6 +82,11 @@ public:
   void SetMediaDir(const CStdString& strMediaDir);
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
+
+  void SetScissors(const CRect &rect);
+  void ResetScissors();
+  const CRect &GetScissors() const { return m_scissors; }
+
   const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
@@ -92,8 +101,8 @@ public:
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this);  }
-  void Unlock() { LeaveCriticalSection(*this); }
+  void Lock() { lock(); }
+  void Unlock() { unlock(); }
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
@@ -101,10 +110,11 @@ public:
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
-  void SetRenderingResolution(RESOLUTION res, bool needsScaling);  ///< Sets scaling up for rendering
-  void SetScalingResolution(RESOLUTION res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
+  const RESOLUTION_INFO &GetResInfo() const;
+  void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
-  void Flip();
+  void Flip(const CDirtyRegionList& dirty);
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
   inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }
@@ -125,36 +135,77 @@ public:
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
   void RestoreCameraPosition();
+  /*! \brief Set a region in which to clip all rendering
+   Anything that is rendered after setting a clip region will be clipped so that no part renders
+   outside of the clip region.  Successive calls to SetClipRegion intersect the clip region, which
+   means the clip region may eventually become an empty set.  In this case SetClipRegion returns false
+   to indicate that no rendering need be performed.
+
+   This call must be matched with a RestoreClipRegion call unless SetClipRegion returns false.
+
+   Usage should be of the form:
+
+     if (SetClipRegion(x, y, w, h))
+     {
+       ...
+       perform rendering
+       ...
+       RestoreClipRegion();
+     }
+
+   \param x the left-most coordinate of the clip region
+   \param y the top-most coordinate of the clip region
+   \param w the width of the clip region
+   \param h the height of the clip region
+   \returns true if the region is set and the result is non-empty. Returns false if the resulting region is empty.
+   \sa RestoreClipRegion
+   */
   bool SetClipRegion(float x, float y, float w, float h);
+
+   /*! \brief Restore a clip region to the previous clip region (if any) prior to the last SetClipRegion call
+    This function should be within an if (SetClipRegion(x,y,w,h)) block.
+    \sa SetClipRegion
+    */
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
-  inline void ResetWindowTransform()
+  inline unsigned int AddGUITransform()
   {
-    while (m_groupTransform.size())
-      m_groupTransform.pop();
+    unsigned int size = m_groupTransform.size();
     m_groupTransform.push(m_guiTransform);
+    UpdateFinalTransform(m_groupTransform.top());
+    return size;
   }
-  inline void AddTransform(const TransformMatrix &matrix)
+  inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
-    if (m_groupTransform.size())
-      m_groupTransform.push(m_groupTransform.top() * matrix);
-    else
-      m_groupTransform.push(matrix);
+    TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
+    m_groupTransform.push(absoluteMatrix);
+    UpdateFinalTransform(absoluteMatrix);
+    return absoluteMatrix;
+  }
+  inline void SetTransform(const TransformMatrix &matrix)
+  {
+    // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
+    //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
+    ASSERT(m_groupTransform.size());
+    m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
   }
-  inline void RemoveTransform()
+  inline unsigned int RemoveTransform()
   {
-    ASSERT(m_groupTransform.size() > 1);
+    ASSERT(m_groupTransform.size());
     if (m_groupTransform.size())
       m_groupTransform.pop();
     if (m_groupTransform.size())
       UpdateFinalTransform(m_groupTransform.top());
     else
       UpdateFinalTransform(TransformMatrix());
+    return m_groupTransform.size();
   }
+
+  CRect generateAABB(const CRect &rect) const;
 
 protected:
   std::stack<CRect> m_viewStack;
@@ -172,7 +223,7 @@ protected:
 private:
   void UpdateCameraPosition(const CPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
-  RESOLUTION m_windowResolution;
+  RESOLUTION_INFO m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
   std::stack<CPoint> m_cameras;
@@ -182,11 +233,15 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
+
+  CRect m_scissors;
 };
 
 /*!
  \ingroup graphics
  \brief
  */
-extern CGraphicContext g_graphicsContext;
+
+XBMC_GLOBAL(CGraphicContext,g_graphicsContext);
+
 #endif

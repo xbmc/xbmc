@@ -20,10 +20,12 @@
  */
 
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "PluginDirectory.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "addons/IAddon.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -47,14 +49,12 @@ CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory()
 {
-  m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
-  CloseHandle(m_fetchComplete);
   delete m_listItems;
   delete m_fileResult;
 }
@@ -78,7 +78,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
 {
   CURL url(strPath);
 
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -93,13 +93,14 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
 
   CStdString basePath(url.Get());
   // reset our wait event, and grab a new handle
-  ResetEvent(m_fetchComplete);
+  m_fetchComplete.Reset();
   int handle = getNewHandle(this);
 
   // clear out our status variables
   m_fileResult->Reset();
   m_listItems->Clear();
-  m_listItems->m_strPath = strPath;
+  m_listItems->SetPath(strPath);
+  m_listItems->SetLabel(m_addon->Name());
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
@@ -117,7 +118,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   bool success = false;
 #ifdef HAS_PYTHON
   CStdString file = m_addon->LibPath();
-  if (g_pythonParser.evalFile(file, argv) >= 0)
+  if (g_pythonParser.evalFile(file, argv,m_addon) >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
     success = WaitOnScriptResult(file, scriptName, retrievingDir);
@@ -140,11 +141,12 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
   bool success = newDir->StartScript(strPath, false);
 
   if (success)
-  { // update the play path, saving the old one as needed
+  { // update the play path and metadata, saving the old one as needed
     if (!resultItem.HasProperty("original_listitem_url"))
-      resultItem.SetProperty("original_listitem_url", resultItem.m_strPath);
-    resultItem.m_strPath = newDir->m_fileResult->m_strPath;
+      resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
+    resultItem.SetPath(newDir->m_fileResult->GetPath());
     resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
+    resultItem.UpdateInfo(*newDir->m_fileResult);
   }
   delete newDir;
 
@@ -206,7 +208,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
 
   // set the event to mark that we're done
-  SetEvent(dir->m_fetchComplete);
+  dir->m_fetchComplete.Set();
 }
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
@@ -407,7 +409,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::Get().PromptForInstall(url.GetHostName(), addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -433,7 +435,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   // run the script
 #ifdef HAS_PYTHON
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (g_pythonParser.evalFile(addon->LibPath(), argv) >= 0)
+  if (g_pythonParser.evalFile(addon->LibPath(), argv,addon) >= 0)
     return true;
   else
 #endif
@@ -447,27 +449,27 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
 
-  unsigned int startTime = CTimeUtils::GetTimeMS();
+  unsigned int startTime = XbmcThreads::SystemClockMillis();
   CGUIDialogProgress *progressBar = NULL;
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
-    CSingleExit ex(g_graphicsContext);
-    // check if the python script is finished
-    if (WaitForSingleObject(m_fetchComplete, 20) == WAIT_OBJECT_0)
-    { // python has returned
-      CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
-      break;
+    {
+      CSingleExit ex(g_graphicsContext);
+      // check if the python script is finished
+      if (m_fetchComplete.WaitMSec(20))
+      { // python has returned
+        CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
+        break;
+      }
     }
-    ex.Restore();
-
     // check our script is still running
 #ifdef HAS_PYTHON
     if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
 #endif
     { // check whether we exited normally
-      if (WaitForSingleObject(m_fetchComplete, 0) == WAIT_TIMEOUT)
+      if (!m_fetchComplete.WaitMSec(0))
       { // python didn't return correctly
         CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
         m_success = false;
@@ -476,14 +478,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
 
     // check whether we should pop up the progress dialog
-    if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
+    if (!progressBar && XbmcThreads::SystemClockMillis() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // if script has shown progressbar don't override it
       if (progressBar && progressBar->IsActive())
       {
-        startTime = CTimeUtils::GetTimeMS();
+        startTime = XbmcThreads::SystemClockMillis();
         progressBar = NULL;
       }
 
@@ -519,9 +521,9 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         if (!m_cancelled)
         {
           m_cancelled = true;
-          startTime = CTimeUtils::GetTimeMS();
+          startTime = XbmcThreads::SystemClockMillis();
         }
-        if (m_cancelled && CTimeUtils::GetTimeMS() - startTime > timeToKillScript)
+        if (m_cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
         { // cancel our script
 #ifdef HAS_PYTHON
           int id = g_pythonParser.getScriptId(scriptPath.c_str());
@@ -556,7 +558,7 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
   *dir->m_fileResult = *resultItem;
 
   // set the event to mark that we're done
-  SetEvent(dir->m_fetchComplete);
+  dir->m_fetchComplete.Set();
 }
 
 CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)

@@ -77,11 +77,12 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // create our settings
   m_volume = g_settings.m_nVolumeLevel * 0.01f;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatDecibel, false);
+  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
+  {
     EnableSettings(AUDIO_SETTINGS_VOLUME,false);
-#if 0
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
-#endif
+    EnableSettings(AUDIO_SETTINGS_VOLUME_AMPLIFICATION,false);
+  }
   AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
@@ -188,6 +189,12 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (strName.length() == 0)
       strName = "Unnamed";
 
+    CStdString strLanguage;
+    g_application.m_pPlayer->GetSubtitleLanguage(i, strLanguage);
+
+    if (strName != strLanguage)
+      strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
@@ -278,13 +285,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
     CStdString strPath;
-    if (URIUtils::IsInRAR(g_application.CurrentFileItem().m_strPath) || URIUtils::IsInZIP(g_application.CurrentFileItem().m_strPath))
+    if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
     {
-      CURL url(g_application.CurrentFileItem().m_strPath);
+      CURL url(g_application.CurrentFileItem().GetPath());
       strPath = url.GetHostName();
     }
     else
-      strPath = g_application.CurrentFileItem().m_strPath;
+      strPath = g_application.CurrentFileItem().GetPath();
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)

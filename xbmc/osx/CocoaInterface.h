@@ -23,26 +23,15 @@
 
 #include <string>
 #include "utils/StdString.h"
+#if !defined(__arm__)
 #include <Carbon/Carbon.h>
-
-class CCocoaAutoPool
-{
-  public:
-    CCocoaAutoPool();
-    ~CCocoaAutoPool();
-  private:
-    void *m_opaque_pool;
-};
+#endif
+#include "AutoPool.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-  // Pools.
-  //
-  void* Cocoa_Create_AutoReleasePool(void);
-  void Cocoa_Destroy_AutoReleasePool(void* pool);
-  
   // Power and Screen
   //
   void Cocoa_UpdateSystemActivity(void);
@@ -65,7 +54,7 @@ extern "C"
   
   // Devices
   //
-  void Cocoa_MountPoint2DeviceName(char *path);
+  char* Cocoa_MountPoint2DeviceName(char *path);
   bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName);
 
   // Mouse.
@@ -91,9 +80,14 @@ extern "C"
 
   const char *Cocoa_Paste() ;  
 
+#if !defined(__arm__)
   // helper from QA 1134
   // http://developer.apple.com/mac/library/qa/qa2001/qa1134.html
   OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend);
+#endif
+
+  void Cocoa_ResetAudioDevices();
+
 #ifdef __cplusplus
 }
 #endif

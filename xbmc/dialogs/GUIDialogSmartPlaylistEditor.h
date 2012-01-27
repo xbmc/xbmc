@@ -35,7 +35,7 @@ public:
   CGUIDialogSmartPlaylistEditor(void);
   virtual ~CGUIDialogSmartPlaylistEditor(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
 
   static bool EditPlaylist(const CStdString &path, const CStdString &type = "");

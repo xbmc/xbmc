@@ -46,12 +46,27 @@ CGUIScrollBar::~CGUIScrollBar(void)
 {
 }
 
+void CGUIScrollBar::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  bool changed = false;
+
+  if (m_bInvalidated)
+    changed |= UpdateBarSize();
+
+  changed |= m_guiBackground.Process(currentTime);
+  changed |= m_guiBarNoFocus.Process(currentTime);
+  changed |= m_guiBarFocus.Process(currentTime);
+  changed |= m_guiNibNoFocus.Process(currentTime);
+  changed |= m_guiNibFocus.Process(currentTime);
+
+  if (changed)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
 
 void CGUIScrollBar::Render()
 {
-  if (m_bInvalidated)
-    UpdateBarSize();
-
   m_guiBackground.Render();
   if (m_bHasFocus)
   {
@@ -94,59 +109,71 @@ bool CGUIScrollBar::OnAction(const CAction &action)
   case ACTION_MOVE_LEFT:
     if (m_orientation == HORIZONTAL)
     {
-      Move( -1);
-      return true;
+      if(Move( -1))
+        return true;
     }
     break;
 
   case ACTION_MOVE_RIGHT:
     if (m_orientation == HORIZONTAL)
     {
-      Move(1);
-      return true;
+      if(Move(1))
+        return true;
     }
     break;
   case ACTION_MOVE_UP:
     if (m_orientation == VERTICAL)
     {
-      Move(-1);
-      return true;
+      if(Move(-1))
+        return true;
     }
     break;
 
   case ACTION_MOVE_DOWN:
     if (m_orientation == VERTICAL)
     {
-      Move(1);
-      return true;
+      if(Move(1))
+        return true;
     }
     break;
   }
   return CGUIControl::OnAction(action);
 }
 
-void CGUIScrollBar::Move(int numSteps)
+bool CGUIScrollBar::Move(int numSteps)
 {
+  if (numSteps < 0 && m_offset == 0) // we are at the beginning - can't scroll up/left anymore
+    return false;
+  if (numSteps > 0 && m_offset == m_numItems - m_pageSize) // we are at the end - we can't scroll down/right anymore
+    return false;
+
   m_offset += numSteps * m_pageSize;
   if (m_offset > m_numItems - m_pageSize) m_offset = m_numItems - m_pageSize;
   if (m_offset < 0) m_offset = 0;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
   SendWindowMessage(message);
   SetInvalid();
+  return true;
 }
 
 void CGUIScrollBar::SetRange(int pageSize, int numItems)
 {
-  m_pageSize = pageSize;
-  m_numItems = numItems;
-  m_offset = 0;
-  SetInvalid();
+  if (m_pageSize != pageSize || m_numItems != numItems)
+  {
+    m_pageSize = pageSize;
+    m_numItems = numItems;
+    m_offset = 0;
+    SetInvalid();
+  }
 }
 
 void CGUIScrollBar::SetValue(int value)
 {
-  m_offset = value;
-  SetInvalid();
+  if (m_offset != value)
+  {
+    m_offset = value;
+    SetInvalid();
+  }
 }
 
 void CGUIScrollBar::FreeResources(bool immediately)
@@ -189,8 +216,10 @@ void CGUIScrollBar::SetInvalid()
   m_guiNibFocus.SetInvalid();
 }
 
-void CGUIScrollBar::UpdateBarSize()
+bool CGUIScrollBar::UpdateBarSize()
 {
+  bool changed = false;
+
   // scale our textures to suit
   if (m_orientation == VERTICAL)
   {
@@ -200,10 +229,10 @@ void CGUIScrollBar::UpdateBarSize()
     if (nibSize < m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureHeight() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetHeight()) nibSize = GetHeight();
 
-    m_guiBarNoFocus.SetHeight(nibSize);
-    m_guiBarFocus.SetHeight(nibSize);
-    m_guiNibNoFocus.SetHeight(nibSize);
-    m_guiNibFocus.SetHeight(nibSize);
+    changed |= m_guiBarNoFocus.SetHeight(nibSize);
+    changed |= m_guiBarFocus.SetHeight(nibSize);
+    changed |= m_guiNibNoFocus.SetHeight(nibSize);
+    changed |= m_guiNibFocus.SetHeight(nibSize);
     // nibSize may be altered by the border size of the nib (and bar).
     nibSize = std::max(m_guiBarFocus.GetHeight(), m_guiNibFocus.GetHeight());
 
@@ -212,10 +241,11 @@ void CGUIScrollBar::UpdateBarSize()
     float nibPos = (GetHeight() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetHeight() - nibSize) nibPos = GetHeight() - nibSize;
-    m_guiBarNoFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
-    m_guiBarFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
-    m_guiNibNoFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
-    m_guiNibFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
+
+    changed |= m_guiBarNoFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
+    changed |= m_guiBarFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
+    changed |= m_guiNibNoFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
+    changed |= m_guiNibFocus.SetPosition(GetXPosition(), GetYPosition() + nibPos);
   }
   else
   {
@@ -225,21 +255,24 @@ void CGUIScrollBar::UpdateBarSize()
     if (nibSize < m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE) nibSize = m_guiNibFocus.GetTextureWidth() + 2 * MIN_NIB_SIZE;
     if (nibSize > GetWidth()) nibSize = GetWidth();
 
-    m_guiBarNoFocus.SetWidth(nibSize);
-    m_guiBarFocus.SetWidth(nibSize);
-    m_guiNibNoFocus.SetWidth(nibSize);
-    m_guiNibFocus.SetWidth(nibSize);
+    changed |= m_guiBarNoFocus.SetWidth(nibSize);
+    changed |= m_guiBarFocus.SetWidth(nibSize);
+    changed |= m_guiNibNoFocus.SetWidth(nibSize);
+    changed |= m_guiNibFocus.SetWidth(nibSize);
 
     // and the position
     percent = (m_numItems == m_pageSize) ? 0 : (float)m_offset / (m_numItems - m_pageSize);
     float nibPos = (GetWidth() - nibSize) * percent;
     if (nibPos < 0) nibPos = 0;
     if (nibPos > GetWidth() - nibSize) nibPos = GetWidth() - nibSize;
-    m_guiBarNoFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
-    m_guiBarFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
-    m_guiNibNoFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
-    m_guiNibFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
+
+    changed |= m_guiBarNoFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
+    changed |= m_guiBarFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
+    changed |= m_guiNibNoFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
+    changed |= m_guiNibFocus.SetPosition(GetXPosition() + nibPos, GetYPosition());
   }
+
+  return changed;
 }
 
 bool CGUIScrollBar::HitTest(const CPoint &point) const
@@ -258,10 +291,16 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
     fPercent = (point.x - m_guiBackground.GetXPosition() - 0.5f*m_guiBarFocus.GetWidth()) / m_guiBackground.GetWidth();
   if (fPercent < 0) fPercent = 0;
   if (fPercent > 1) fPercent = 1;
-  m_offset = (int)(floor(fPercent * m_numItems + 0.5f));
-  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
-  SendWindowMessage(message);
-  SetInvalid();
+
+  int offset = (int)(floor(fPercent * m_numItems + 0.5f));
+
+  if (m_offset != offset)
+  {
+    m_offset = offset;
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
+    SendWindowMessage(message);
+    SetInvalid();
+  }
 }
 
 EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
@@ -295,7 +334,29 @@ EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent 
   {
     Move(1);
     return EVENT_RESULT_HANDLED;
+  }  
+  else if (event.m_id == ACTION_GESTURE_NOTIFY)
+  {
+    return (m_orientation == HORIZONTAL) ? EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA : EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA;
+  }  
+  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  { // grab exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
   }
+  else if (event.m_id == ACTION_GESTURE_PAN)
+  { // do the drag 
+    SetFromPosition(point);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_END)
+  { // release exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
+  }
+  
   return EVENT_RESULT_UNHANDLED;
 }
 
@@ -306,14 +367,16 @@ CStdString CGUIScrollBar::GetDescription() const
   return description;
 }
 
-void CGUIScrollBar::UpdateColors()
+bool CGUIScrollBar::UpdateColors()
 {
-  CGUIControl::UpdateColors();
-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
-  m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
-  m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
-  m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 
 bool CGUIScrollBar::IsVisible() const

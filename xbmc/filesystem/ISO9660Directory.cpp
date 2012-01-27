@@ -79,10 +79,10 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
         if (strDir != "." && strDir != "..")
         {
           CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-          pItem->m_strPath = strRoot;
-          pItem->m_strPath += wfd.cFileName;
+          CStdString path = strRoot + wfd.cFileName;
+          URIUtils::AddSlashAtEnd(path);
+          pItem->SetPath(path);
           pItem->m_bIsFolder = true;
-          URIUtils::AddSlashAtEnd(pItem->m_strPath);
           FILETIME localTime;
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
@@ -92,8 +92,7 @@ bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &i
       else
       {
         CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-        pItem->m_strPath = strRoot;
-        pItem->m_strPath += wfd.cFileName;
+        pItem->SetPath(strRoot + wfd.cFileName);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
         FILETIME localTime;

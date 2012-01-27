@@ -169,7 +169,7 @@ static int yuv4_write_header(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat yuv4mpegpipe_muxer = {
+AVOutputFormat ff_yuv4mpegpipe_muxer = {
     "yuv4mpegpipe",
     NULL_IF_CONFIG_SMALL("YUV4MPEG pipe format"),
     "",
@@ -316,7 +316,7 @@ static int yuv4_read_header(AVFormatContext *s, AVFormatParameters *ap)
             pix_fmt = alt_pix_fmt;
     }
 
-    if (raten == 0 && rated == 0) {
+    if (raten <= 0 || rated <= 0) {
         // Frame rate unknown
         raten = 25;
         rated = 1;
@@ -390,7 +390,7 @@ static int yuv4_probe(AVProbeData *pd)
 }
 
 #if CONFIG_YUV4MPEGPIPE_DEMUXER
-AVInputFormat yuv4mpegpipe_demuxer = {
+AVInputFormat ff_yuv4mpegpipe_demuxer = {
     "yuv4mpegpipe",
     NULL_IF_CONFIG_SMALL("YUV4MPEG pipe format"),
     sizeof(struct frame_attributes),

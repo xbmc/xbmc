@@ -1,8 +1,12 @@
 # global patterns
+testMain
 
 # commonly used editors
 # vim
 *.swp
+# Eclipse
+*.project
+*.cproject
 
 # generated files etc
 config.cache
@@ -39,11 +43,21 @@ config.log
 *.vcxproj.user
 *.obj
 *ReSharper*
+*.idb
 
 # osx specifics
 /build/
 .DS_Store
 *.dSYM
+._*
+/tools/darwin/depends/config.site
+/tools/darwin/depends/config.site.mk
+/tools/darwin/depends/Makefile
+/tools/darwin/depends/Makefile.include
+/tools/darwin/depends/configure
+/tools/darwin/depends/python26/Makefile
+/tools/darwin/depends/**/.gitignore
+/tools/darwin/depends/**/.installed
 
 .libs/
 .deps/
@@ -75,6 +89,7 @@ config.log
 /xbmc-xrandr
 /git_revision.h
 /libtool
+/*.patch
 
 # /addons/
 /addons/com.nullsoft.milkdrop.xbmc/*.vis
@@ -95,7 +110,6 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
-/addons/script.module.pysqlite/
 
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
@@ -111,17 +125,28 @@ config.log
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/peripherals/
+/xbmc/peripherals/bus/Makefile
+/xbmc/peripherals/devices/Makefile
+
 # /lib/
 /lib/Makefile
 
 # /lib/addons/
 /lib/addons/script.module.pil/
 !/lib/addons/script.module.pil/Makefile
-/lib/addons/script.module.pysqlite/
-!/lib/addons/script.module.pysqlite/Makefile
 
 # /lib/asap/
 /lib/asap/Makefile
+/lib/asap/players.h
+/lib/asap/players/*.obx
+/lib/asap/win32/xbmc_asap.dll
+/lib/asap/win32/xbmc_asap.lib
+/lib/asap/xbmc/xbmc_asap.res
+
+
+# /lib/cmyth/
+lib/cmyth/Makefile
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -149,6 +174,9 @@ config.log
 /lib/cpluff/libcpluff/cpluffdef.h
 /lib/cpluff/libcpluff/win32/Debug
 /lib/cpluff/libcpluff/win32/Release
+
+# /lib/libcec
+/lib/libcec/libcec
 
 # /lib/enca
 /lib/enca/libenca_win32/Debug
@@ -204,10 +232,6 @@ config.log
 /lib/libass/m4/ltsugar.m4
 /lib/libass/m4/ltversion.m4
 /lib/libass/m4/lt~obsolete.m4
-
-# /lib/libcdio
-/lib/libcdio/Debug
-/lib/libcdio/Release
 
 # /lib/libiconv
 /lib/libiconv/libiconv_win32/Debug
@@ -269,6 +293,7 @@ config.log
 # /lib/libapetag
 /lib/libapetag/Makefile
 /lib/libapetag/config.h
+/lib/libapetag/install-sh
 /lib/libapetag/libtool
 /lib/libapetag/stamp-h1
 
@@ -276,15 +301,12 @@ config.log
 /project/obj
 /project/output
 
-# /project/Win32BuildSetup/dependencies
-/project/Win32BuildSetup/dependencies/SDL.dll
-/project/Win32BuildSetup/dependencies/glew32.dll
-
 # /project/Win32BuildSetup/
-/project/Win32BuildSetup/BuildLog.htm
+/project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
+/project/Win32BuildSetup/dependencies
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads
@@ -316,6 +338,7 @@ config.log
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
+/project/VS2010Express/*.vsp
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -327,6 +350,7 @@ config.log
 /system/libcmyth.dll
 /system/libcurl.dll
 /system/libeay32.dll
+/system/librtmp.dll
 /system/libexif.dll
 /system/libexpat.dll
 /system/libid3tag.dll
@@ -334,30 +358,50 @@ config.log
 /system/libssh2.dll
 /system/libssl32.dll
 /system/hdhomerun.dll
+/system/ssh.dll
+/system/sqlite3.dll
+/system/libsamplerate-0.dll
+/system/libnfs.dll
+/system/dnssd.dll
+/system/libcec.dll
+/system/pthreadVC2.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
+/system/cdrip/ogg.dll
+/system/cdrip/vorbis.dll
+/system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
+/system/players/dvdplayer/avcodec-52.dll
+/system/players/dvdplayer/avcore-0.dll
+/system/players/dvdplayer/avformat-52.dll
+/system/players/dvdplayer/avutil-50.dll
+/system/players/dvdplayer/avfilter-1.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
+/system/players/dvdplayer/libdvdcss-2.dll
+/system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
-/system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
+/system/players/dvdplayer/postproc-51.dll
+/system/players/dvdplayer/swscale-0.dll
+/system/players/dvdplayer/libbluray.dll
+/system/players/dvdplayer/libmpeg2-0.dll
+/system/players/dvdplayer/libmad.dll
 
 # /system/players/paplayer
-/system/players/paplayer/wavpack.dll
 /system/players/paplayer/libmodplug.dll
 /system/players/paplayer/StSoundLibrary.dll
 /system/players/paplayer/vorbisfile.dll
 /system/players/paplayer/vgmstream.dll
 /system/players/paplayer/NoseFart.dll
-/system/players/paplayer/AC3Codec.dll
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
-/system/players/dvdplayer/libmad.dll
-/system/players/dvdplayer/libdts.dll
+/system/players/paplayer/timidity.dll
+/system/players/paplayer/libFLAC.dll
+/system/players/paplayer/xbmc_asap.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
@@ -366,18 +410,12 @@ config.log
 /system/profiles.xml
 
 # /system/python
-/system/python/Lib/
-/system/python/python24.zip
-/system/python/python24.dll
-/system/python/DLLs/_socket.pyd
-/system/python/DLLs/pyexpat.pyd
-/system/python/DLLs/select.pyd
-/system/python/DLLs/unicodedata.pyd
-/system/python/DLLs/zlib.pyd
-/system/python/DLLs/bz2.pyd
+/system/python/
 
 # /system/webserver
 /system/webserver
+
+/system/airplay
 
 # /system
 /system/zlib1.dll
@@ -422,6 +460,7 @@ config.log
 /tools/EventClients/*.pyc
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
+/tools/EventClients/Clients/WiiRemote/WiiRemote
 
 # /tools/Linux/
 /tools/Linux/xbmc.sh
@@ -476,6 +515,7 @@ config.log
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
+/xbmc/cores/DllLoader/Makefile
 
 /xbmc/cores/Makefile
 
@@ -499,50 +539,12 @@ config.log
 /lib/ffmpeg/doc/*.html
 /lib/ffmpeg/doc/*.1
 
-# /lib/liba52/
-/lib/liba52/config.log
-/lib/liba52/config.status
-/lib/liba52/libtool
-/lib/liba52/Makefile
-/lib/liba52/include/stamp-h1
-/lib/liba52/src/a52dec
-/lib/liba52/src/extract_a52
-/lib/liba52/test/compare
-
-# /lib/liba52/autotools/
-/lib/liba52/autotools/Makefile
-
-# /lib/liba52/doc/
-/lib/liba52/doc/Makefile
-
-# /lib/liba52/include/
-/lib/liba52/include/stamp-h
-/lib/liba52/include/config.h
-/lib/liba52/include/Makefile
-
-# /lib/liba52/liba52/
-/lib/liba52/liba52/Makefile
-
-# /lib/liba52/libao/
-/lib/liba52/libao/Makefil
-/lib/liba52/libao/Makefile
-
-# /lib/liba52/src/
-/lib/liba52/src/Makefi
-/lib/liba52/src/Makefile
-
-# /lib/liba52/test/
-/lib/liba52/test/Makefile
-
-# /lib/liba52/vc++/
-/lib/liba52/vc++/Makefile
-/lib/liba52/vc++/Debug
-
 # /lib/libdvd/
 /lib/libdvd/Makefile
 
 # /lib/libdvd/includes/
 /lib/libdvd/includes/dv
+/lib/libdvd/includes/dvdcss/dvdcss.h
 
 # /lib/libdvd/includes/dvdread/
 /lib/libdvd/includes/dvdread/ifo_print.h
@@ -587,6 +589,7 @@ config.log
 /lib/libdvd/libdvdcss/test/Makefile
 /lib/libdvd/libdvdcss/doc/doxygen.cfg
 /lib/libdvd/libdvdcss/test/csstest
+/lib/libdvd/libdvdcss/test/csstest.exe
 
 # /lib/libdvd/libdvdnav/
 /lib/libdvd/libdvdnav/conf
@@ -635,85 +638,6 @@ config.log
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
 
-# /lib/libdts/
-/lib/libdts/config.log
-/lib/libdts/config.h
-/lib/libdts/Makefile
-/lib/libdts/config.status
-/lib/libdts/stamp-h1
-/lib/libdts/configure.lineno
-
-# /lib/libdts/autotools/
-/lib/libdts/autotools/Makefile
-
-# /lib/libdts/debian/
-/lib/libdts/debian/Makefile
-
-# /lib/libdts/doc/
-/lib/libdts/doc/Makefile
-
-# /lib/libdts/include/
-/lib/libdts/include/Makefile
-
-# /lib/libdts/libao/
-/lib/libdts/libao/Makefile
-
-# /lib/libdts/libdts/
-/lib/libdts/libdts/Makefile
-
-# /lib/libdts/src/
-/lib/libdts/src/extract_dts
-/lib/libdts/src/dtsdec
-/lib/libdts/src/Makefile
-
-# /lib/libdts/test/
-/lib/libdts/test/compare
-/lib/libdts/test/Makefile
-
-# /lib/libdts/vc++/
-/lib/libdts/vc++/Makefile
-/lib/libdts/vc++/libdts.lib
-/lib/libdts/vc++/Debug
-/lib/libdts/vc++/Release
-
-# /lib/libfaad2/
-/lib/libfaad2/config.log
-/lib/libfaad2/config.h
-/lib/libfaad2/Makefile
-/lib/libfaad2/config.status
-/lib/libfaad2/stamp-h1
-/lib/libfaad2/configure.lineno
-/lib/libfaad2/libtool
-/lib/libfaad2/faad2.spec
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/common/
-/lib/libfaad2/common/Makefile
-
-# /lib/libfaad2/common/mp4ff/
-/lib/libfaad2/common/mp4ff/Makefile
-
-# /lib/libfaad2/frontend/
-/lib/libfaad2/frontend/Makefile
-/lib/libfaad2/frontend/faad
-
-# /lib/libfaad2/libfaad/
-/lib/libfaad2/libfaad/Makefile
-/lib/libfaad2/libfaad/DebugDLL
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/plugins/
-/lib/libfaad2/plugins/Makefile
-
-# /lib/libfaad2/plugins/mpeg4ip/
-/lib/libfaad2/plugins/mpeg4ip/Makefile
-
-# /lib/libfaad2/plugins/xmms/
-/lib/libfaad2/plugins/xmms/Makefile
-
-# /lib/libfaad2/plugins/xmms/src/
-/lib/libfaad2/plugins/xmms/src/Makefile
-
 # /lib/libmad/
 /lib/libmad/config.h
 /lib/libmad/Makefile
@@ -737,6 +661,7 @@ config.log
 /lib/libmpeg2/libtool
 /lib/libmpeg2/configure.lineno
 /lib/libmpeg2/Makefile
+/lib/libmpeg2/src/*.exe
 
 # /lib/libmpeg2/doc/
 /lib/libmpeg2/doc/Makefile
@@ -966,11 +891,6 @@ config.log
 /lib/win32/libsamplerate/libsamplerate_win32/Debug
 /lib/win32/libsamplerate/libsamplerate_win32/Release
 
-# /lib/win32/libwavpack/
-/lib/win32/libwavpack/Makefile
-/lib/win32/libwavpack/Debug
-/lib/win32/libwavpack/Release
-
 # /lib/win32/sqlite
 /lib/win32/sqlite/libsqlite_win32/Debug
 /lib/win32/sqlite/libsqlite_win32/Release
@@ -1078,6 +998,22 @@ config.log
 /lib/libapetag/config.h
 /lib/libapetag/Debug
 /lib/libapetag/Release
+/lib/libapetag/aclocal.m4
+/lib/libapetag/config.guess
+/lib/libapetag/config.h.in
+/lib/libapetag/config.h.in~
+/lib/libapetag/config.sub
+/lib/libapetag/configure
+/lib/libapetag/depcomp
+/lib/libapetag/INSTALL
+/lib/libapetag/ltmain.sh
+/lib/libapetag/m4/libtool.m4
+/lib/libapetag/m4/ltoptions.m4
+/lib/libapetag/m4/ltsugar.m4
+/lib/libapetag/m4/ltversion.m4
+/lib/libapetag/m4/lt~obsolete.m4
+/lib/libapetag/Makefile.in
+/lib/libapetag/missing
 
 # /lib/cmyth/
 /lib/cmyth/Makefile.depend
@@ -1112,6 +1048,8 @@ config.log
 
 # /lib/libid3tag/
 /lib/libid3tag/Makefile
+/lib/libid3tag/libid3tag/autom4te.cache
+/lib/libid3tag/libid3tag/configure
 /lib/libid3tag/libid3tag/Makefile
 /lib/libid3tag/libid3tag/compat.c
 /lib/libid3tag/libid3tag/config.h
@@ -1123,9 +1061,25 @@ config.log
 /lib/libid3tag/libid3tag/msvc++/libid3tag.lib
 /lib/libid3tag/libid3tag/msvc++/Debug
 /lib/libid3tag/libid3tag/msvc++/Release
+/lib/libid3tag/libid3tag/aclocal.m4
+/lib/libid3tag/libid3tag/config.guess
+/lib/libid3tag/libid3tag/config.h.in
+/lib/libid3tag/libid3tag/config.h.in~
+/lib/libid3tag/libid3tag/config.sub
+/lib/libid3tag/libid3tag/depcomp
+/lib/libid3tag/libid3tag/INSTALL
+/lib/libid3tag/libid3tag/install-sh
+/lib/libid3tag/libid3tag/ltmain.sh
+/lib/libid3tag/libid3tag/Makefile.in
+/lib/libid3tag/libid3tag/missing
+/lib/libid3tag/libid3tag/mkinstalldirs
+/lib/libid3tag/libid3tag/msvc++/Makefile.in
+
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/python/Makefile
+/xbmc/interfaces/python/xbmcmodule/Makefile
 /xbmc/interfaces/python/linux/Makefile
 /xbmc/interfaces/python/linux/wrapper_python.def
 
@@ -1164,11 +1118,6 @@ config.log
 
 /lib/libUPnP/Makefile
 
-# /lib/libXBMS
-/lib/libXBMS/Makefile
-/lib/libXBMS/libXBMS/Debug
-/lib/libXBMS/libXBMS/Release
-
 # /lib/libXDAAP
 /lib/libXDAAP/Makefile
 /lib/libXDAAP/libXDAAP_win32/Debug
@@ -1177,6 +1126,7 @@ config.log
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/configure
 /xbmc/screensavers/rsxs-0.9/config.h
 /xbmc/screensavers/rsxs-0.9/config.log
 /xbmc/screensavers/rsxs-0.9/config/Makefile
@@ -1205,11 +1155,51 @@ config.log
 /xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
 /xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
 /xbmc/screensavers/rsxs-0.9/stamp-h1
+/xbmc/screensavers/rsxs-0.9/aclocal.m4
+/xbmc/screensavers/rsxs-0.9/compile
+/xbmc/screensavers/rsxs-0.9/config.guess
+/xbmc/screensavers/rsxs-0.9/config.h.in
+/xbmc/screensavers/rsxs-0.9/config.h.in~
+/xbmc/screensavers/rsxs-0.9/config.sub
+/xbmc/screensavers/rsxs-0.9/config/Makefile.in
+/xbmc/screensavers/rsxs-0.9/depcomp
+/xbmc/screensavers/rsxs-0.9/INSTALL
+/xbmc/screensavers/rsxs-0.9/install-sh
+/xbmc/screensavers/rsxs-0.9/lib/Makefile.in
+/xbmc/screensavers/rsxs-0.9/libltdl/Makefile.in
+/xbmc/screensavers/rsxs-0.9/Makefile.in
+/xbmc/screensavers/rsxs-0.9/missing
+/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flux/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/helios/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
 
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
 
 /xbmc/visualizations/Goom/Makefile
+/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
+/xbmc/visualizations/Goom/goom2k4-0/configure
+/xbmc/visualizations/Goom/goom2k4-0/INSTALL
+/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/config.guess
+/xbmc/visualizations/Goom/goom2k4-0/config.sub
+/xbmc/visualizations/Goom/goom2k4-0/depcomp
+/xbmc/visualizations/Goom/goom2k4-0/install-sh
+/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
+/xbmc/visualizations/Goom/goom2k4-0/missing
+/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/ylwrap
 
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release

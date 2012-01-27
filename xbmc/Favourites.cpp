@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoInfoTag.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {
@@ -78,7 +79,7 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
       if(!items.Contains(favourite->FirstChild()->Value()))
       {
         CFileItemPtr item(new CFileItem(name));
-        item->m_strPath = favourite->FirstChild()->Value();
+        item->SetPath(favourite->FirstChild()->Value());
         if (thumb) item->SetThumbnailImage(thumb);
         items.Add(item);
       }
@@ -103,7 +104,7 @@ bool CFavourites::Save(const CFileItemList &items)
     favNode.SetAttribute("name", item->GetLabel().c_str());
     if (item->HasThumbnail())
       favNode.SetAttribute("thumb", item->GetThumbnailImage().c_str());
-    TiXmlText execute(item->m_strPath);
+    TiXmlText execute(item->GetPath());
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
   }
@@ -131,9 +132,9 @@ bool CFavourites::AddOrRemove(CFileItem *item, int contextWindow)
   { // create our new favourite item
     CFileItemPtr favourite(new CFileItem(item->GetLabel()));
     if (item->GetLabel().IsEmpty())
-      favourite->SetLabel(CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder));
+      favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
     favourite->SetThumbnailImage(item->GetThumbnailImage());
-    favourite->m_strPath = executePath;
+    favourite->SetPath(executePath);
     items.Add(favourite);
   }
 
@@ -171,19 +172,15 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
   CStdString execute;
   if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
                             !(item->IsSmartPlayList() || item->IsPlayList())))
-    execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->m_strPath));
-  else if (item->m_strPath.Left(9).Equals("plugin://"))
-    execute.Format("RunPlugin(%s)", Paramify(item->m_strPath));
-  else if (item->m_strPath.Left(9).Equals("script://"))
-    execute.Format("RunScript(%s)", Paramify(item->m_strPath.Mid(9)));
-  else if (contextWindow == WINDOW_PROGRAMS)
-    execute.Format("RunXBE(%s)", Paramify(item->m_strPath));
+    execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->GetPath()));
+  else if (item->IsScript())
+    execute.Format("RunScript(%s)", Paramify(item->GetPath().Mid(9)));
   else  // assume a media file
   {
     if (item->IsVideoDb() && item->HasVideoInfoTag())
       execute.Format("PlayMedia(%s)", Paramify(item->GetVideoInfoTag()->m_strFileNameAndPath));
     else
-      execute.Format("PlayMedia(%s)", Paramify(item->m_strPath));
+      execute.Format("PlayMedia(%s)", Paramify(item->GetPath()));
   }
   return execute;
 }

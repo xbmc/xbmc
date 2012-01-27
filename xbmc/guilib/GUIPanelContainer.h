@@ -35,10 +35,11 @@
 class CGUIPanelContainer : public CGUIBaseContainer
 {
 public:
-  CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
   virtual ~CGUIPanelContainer(void);
   virtual CGUIPanelContainer *Clone() const { return new CGUIPanelContainer(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);

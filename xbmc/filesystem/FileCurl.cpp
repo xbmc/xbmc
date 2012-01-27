@@ -338,7 +338,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 
 void CFileCurl::Close()
 {
-  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
   m_state->Disconnect();
 
   m_url.Empty();
@@ -438,7 +437,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, "");
+    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
   }
 
@@ -982,8 +981,6 @@ int64_t CFileCurl::Seek(int64_t iFilePosition, int iWhence)
       else
         return -1;
       break;
-    case SEEK_POSSIBLE:
-      return m_seekable ? 1 : 0;
     default:
       return -1;
   }
@@ -1138,8 +1135,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   if(buffer)
   {
-    char content[255];
-    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
+    char *content;
+    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content))
     {
       g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
@@ -1149,7 +1146,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     {
       memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_size = (int64_t)length;
-      if(strstr(content, "text/html")) //consider html files directories
+      if(content && strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
         buffer->st_mode = _S_IFREG;
@@ -1293,16 +1290,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     {
       case CURLM_OK:
       {
-        // hack for broken curl, that thinks there is data all the time
-        // happens especially on ftp during initial connection
-#ifndef _LINUX
-        SwitchToThread();
-#elif __APPLE__
-        sched_yield();
-#else
-        pthread_yield();
-#endif
-
         int maxfd = -1;
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);
@@ -1398,4 +1385,12 @@ bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString use
    CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> failed", url.Get().c_str());
    content = "";
    return false;
+}
+
+int CFileCurl::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return m_seekable ? 1 : 0;
+
+  return -1;
 }

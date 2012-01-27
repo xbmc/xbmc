@@ -35,17 +35,17 @@
 class CGUIFixedListContainer : public CGUIBaseContainer
 {
 public:
-  CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition, int cursorRange);
+  CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange);
   virtual ~CGUIFixedListContainer(void);
   virtual CGUIFixedListContainer *Clone() const { return new CGUIFixedListContainer(*this); };
 
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
 
 protected:
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
+  virtual bool GetOffsetRange(int &minOffset, int &maxOffset) const;
   virtual void ValidateOffset();
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const;

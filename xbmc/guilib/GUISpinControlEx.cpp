@@ -62,50 +62,53 @@ void CGUISpinControlEx::SetInvalid()
   m_buttonControl.SetInvalid();
 }
 
-void CGUISpinControlEx::Render()
+void CGUISpinControlEx::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // make sure the button has focus if it should have...
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
-  m_buttonControl.Render();
   if (m_bInvalidated)
-    SetPosition(GetXPosition(), GetYPosition());
+  {
+    float spinPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - (m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX);
+    float spinPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
+    CGUISpinControl::SetPosition(spinPosX, spinPosY);
+  }
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
+  CGUISpinControl::Process(currentTime, dirtyregions);
+}
 
+void CGUISpinControlEx::Render()
+{
+  m_buttonControl.Render();
   CGUISpinControl::Render();
 }
 
 void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
-  float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - (m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX);
-  float spinPosY = posY + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
-  CGUISpinControl::SetPosition(spinPosX, spinPosY);
+  CGUISpinControl::SetInvalid();
 }
 
 void CGUISpinControlEx::SetWidth(float width)
 {
   m_buttonControl.SetWidth(width);
-  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+  CGUISpinControl::SetInvalid();
 }
 
 void CGUISpinControlEx::SetHeight(float height)
 {
   m_buttonControl.SetHeight(height);
-  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+  CGUISpinControl::SetInvalid();
 }
 
-void CGUISpinControlEx::SetVisible(bool bVisible)
+bool CGUISpinControlEx::UpdateColors()
 {
-  m_buttonControl.SetVisible(bVisible);
-  CGUISpinControl::SetVisible(bVisible);
-}
+  bool changed = CGUISpinControl::UpdateColors();
+  changed |= m_buttonControl.SetColorDiffuse(m_diffuseColor);
+  changed |= m_buttonControl.UpdateColors();
 
-void CGUISpinControlEx::UpdateColors()
-{
-  CGUISpinControl::UpdateColors();
-  m_buttonControl.SetColorDiffuse(m_diffuseColor);
-  m_buttonControl.UpdateColors();
+  return changed;
 }
 
 void CGUISpinControlEx::SetEnabled(bool bEnable)

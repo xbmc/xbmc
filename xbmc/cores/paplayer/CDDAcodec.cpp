@@ -20,7 +20,13 @@
  */
 
 #include "CDDAcodec.h"
+#if !(defined(__APPLE__) && defined(__arm__))
 #include <cdio/sector.h>
+#else
+typedef int32_t lsn_t;
+#define CDIO_CD_FRAMESIZE_RAW   2352
+#define CDIO_CD_FRAMES_PER_SEC   75
+#endif
 
 #define SECTOR_COUNT 55 // max. sectors that can be read at once
 #define MAX_BUFFER_SIZE 2*SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW

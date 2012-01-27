@@ -41,52 +41,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   if (TIXML_SUCCESS == node->QueryFloatAttribute("time", &temp)) m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
   if (TIXML_SUCCESS == node->QueryFloatAttribute("delay", &temp)) m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
 
-  const char *tween = node->Attribute("tween");
-  if (tween)
-  {
-    if (strcmpi(tween, "linear")==0)
-      m_pTweener = new LinearTweener();
-    else if (strcmpi(tween, "quadratic")==0)
-      m_pTweener = new QuadTweener();
-    else if (strcmpi(tween, "cubic")==0)
-      m_pTweener = new CubicTweener();
-    else if (strcmpi(tween, "sine")==0)
-      m_pTweener = new SineTweener();
-    else if (strcmpi(tween, "back")==0)
-      m_pTweener = new BackTweener();
-    else if (strcmpi(tween, "circle")==0)
-      m_pTweener = new CircleTweener();
-    else if (strcmpi(tween, "bounce")==0)
-      m_pTweener = new BounceTweener();
-    else if (strcmpi(tween, "elastic")==0)
-      m_pTweener = new ElasticTweener();
-
-    const char *easing = node->Attribute("easing");
-    if (m_pTweener && easing)
-    {
-      if (strcmpi(easing, "in")==0)
-        m_pTweener->SetEasing(EASE_IN);
-      else if (strcmpi(easing, "out")==0)
-        m_pTweener->SetEasing(EASE_OUT);
-      else if (strcmpi(easing, "inout")==0)
-        m_pTweener->SetEasing(EASE_INOUT);
-    }
-  }
-
-  float accel = 0;
-  node->QueryFloatAttribute("acceleration", &accel);
-
-  if (!m_pTweener)
-  { // no tweener is specified - use a linear tweener
-    // or quadratic if we have acceleration
-    if (accel)
-    {
-      m_pTweener = new QuadTweener(accel);
-      m_pTweener->SetEasing(EASE_IN);
-    }
-    else
-      m_pTweener = new LinearTweener();
-  }
+  m_pTweener = GetTweener(node);
 }
 
 CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect)
@@ -145,6 +100,59 @@ void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
 {
   float offset = (state == ANIM_STATE_APPLIED) ? 1.0f : 0.0f;
   ApplyEffect(offset, center);
+}
+
+Tweener* CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
+{
+  Tweener* m_pTweener = NULL;
+  const char *tween = pAnimationNode->Attribute("tween");
+  if (tween)
+  {
+    if (strcmpi(tween, "linear")==0)
+      m_pTweener = new LinearTweener();
+    else if (strcmpi(tween, "quadratic")==0)
+      m_pTweener = new QuadTweener();
+    else if (strcmpi(tween, "cubic")==0)
+      m_pTweener = new CubicTweener();
+    else if (strcmpi(tween, "sine")==0)
+      m_pTweener = new SineTweener();
+    else if (strcmpi(tween, "back")==0)
+      m_pTweener = new BackTweener();
+    else if (strcmpi(tween, "circle")==0)
+      m_pTweener = new CircleTweener();
+    else if (strcmpi(tween, "bounce")==0)
+      m_pTweener = new BounceTweener();
+    else if (strcmpi(tween, "elastic")==0)
+      m_pTweener = new ElasticTweener();
+
+    const char *easing = pAnimationNode->Attribute("easing");
+    if (m_pTweener && easing)
+    {
+      if (strcmpi(easing, "in")==0)
+        m_pTweener->SetEasing(EASE_IN);
+      else if (strcmpi(easing, "out")==0)
+        m_pTweener->SetEasing(EASE_OUT);
+      else if (strcmpi(easing, "inout")==0)
+        m_pTweener->SetEasing(EASE_INOUT);
+    }
+  }
+
+  float accel = 0;
+  pAnimationNode->QueryFloatAttribute("acceleration", &accel);
+
+  if (!m_pTweener)
+  { // no tweener is specified - use a linear tweener
+    // or quadratic if we have acceleration
+    if (accel)
+    {
+      m_pTweener = new QuadTweener(accel);
+      m_pTweener->SetEasing(EASE_IN);
+    }
+    else
+      m_pTweener = new LinearTweener();
+  }
+
+  return m_pTweener;
 }
 
 CFadeEffect::CFadeEffect(const TiXmlElement *node, bool reverseDefaults) : CAnimEffect(node, EFFECT_TYPE_FADE)
@@ -389,7 +397,7 @@ const CAnimation &CAnimation::operator =(const CAnimation &src)
   if (this == &src) return *this; // same
   m_type = src.m_type;
   m_reversible = src.m_reversible;
-  m_condition = src.m_condition;
+  m_condition = src.m_condition; // TODO: register/unregister
   m_repeatAnim = src.m_repeatAnim;
   m_lastCondition = src.m_lastCondition;
   m_queuedProcess = src.m_queuedProcess;
@@ -571,21 +579,22 @@ void CAnimation::QueueAnimation(ANIMATION_PROCESS process)
   m_queuedProcess = process;
 }
 
-CAnimation *CAnimation::CreateFader(float start, float end, unsigned int delay, unsigned int length)
+CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, unsigned int length, ANIMATION_TYPE type)
 {
-  CAnimation *anim = new CAnimation();
-  if (anim)
-  {
-    CFadeEffect *effect = new CFadeEffect(start, end, delay, length);
-    if (effect)
-      anim->AddEffect(effect);
-  }
+  CAnimation anim;
+  anim.m_type = type;
+  anim.AddEffect(new CFadeEffect(start, end, delay, length));
   return anim;
 }
 
-void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
+bool CAnimation::CheckCondition()
 {
-  bool condition = g_infoManager.GetBool(m_condition, contextWindow, item);
+  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+}
+
+void CAnimation::UpdateCondition(const CGUIListItem *item)
+{
+  bool condition = g_infoManager.GetBoolValue(m_condition, item);
   if (condition && !m_lastCondition)
     QueueAnimation(ANIM_PROCESS_NORMAL);
   else if (!condition && m_lastCondition)
@@ -598,16 +607,16 @@ void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
   m_lastCondition = condition;
 }
 
-void CAnimation::SetInitialCondition(int contextWindow)
+void CAnimation::SetInitialCondition()
 {
-  m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
+  m_lastCondition = g_infoManager.GetBoolValue(m_condition);
   if (m_lastCondition)
     ApplyAnimation();
   else
     ResetAnimation();
 }
 
-void CAnimation::Create(const TiXmlElement *node, const CRect &rect)
+void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context)
 {
   if (!node || !node->FirstChild())
     return;
@@ -615,7 +624,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect)
   // conditions and reversibility
   const char *condition = node->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.TranslateString(condition);
+    m_condition = g_infoManager.Register(condition, context);
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;
@@ -699,4 +708,106 @@ void CAnimation::AddEffect(CAnimEffect *effect)
   // our length is the maximum of all the effect lengths
   if (effect->GetLength() > m_delay + m_length)
     m_length = effect->GetLength() - m_delay;
+}
+
+CScroller::CScroller(unsigned int duration /* = 200 */, Tweener *tweener /* = NULL */)
+{
+  m_scrollValue = 0;
+  m_delta = 0;
+  m_startTime = 0;
+  m_startPosition = 0;
+  m_hasResumePoint = false;
+  m_lastTime = 0;
+  m_duration = duration > 0 ? duration : 1;
+  m_pTweener = tweener;
+  if (m_pTweener) m_pTweener->IncRef();
+}
+
+CScroller::CScroller(const CScroller& right)
+{
+  m_pTweener = NULL;
+  *this = right;
+}
+
+const CScroller &CScroller::operator=(const CScroller &right)
+{
+  if (&right == this) return *this;
+
+  m_scrollValue = right.m_scrollValue;
+  m_delta = right.m_delta;
+  m_startTime = right.m_startTime;
+  m_startPosition = right.m_startPosition;
+  m_hasResumePoint = right.m_hasResumePoint;
+  m_lastTime = right.m_lastTime;
+  m_duration = right.m_duration;
+  if (m_pTweener)
+    m_pTweener->Free();
+  m_pTweener = right.m_pTweener;
+  if (m_pTweener)
+    m_pTweener->IncRef();
+  return *this;
+}
+
+CScroller::~CScroller()
+{
+  if (m_pTweener) m_pTweener->Free();
+}
+
+void CScroller::ScrollTo(float endPos)
+{
+  float delta = endPos - m_scrollValue;
+    // if there is scrolling running in same direction - set resume point
+  m_hasResumePoint = m_delta != 0 && delta * m_delta > 0 && m_pTweener ? m_pTweener->HasResumePoint() : 0;
+
+  m_delta = delta;
+  m_startPosition = m_scrollValue;
+  m_startTime = m_lastTime;
+}
+
+float CScroller::Tween(float progress)
+{
+  if (m_pTweener)
+  {
+    if (m_hasResumePoint) // tweener with in_and_out easing
+    {
+      // time linear transformation (y = a*x + b): 0 -> resumePoint and 1 -> 1
+      // resumePoint = a * 0 + b and 1 = a * 1 + b
+      // a = 1 - resumePoint , b = resumePoint
+      // our resume point is 0.5
+      // a = 0.5 , b = 0.5
+      progress = 0.5f * progress + 0.5f;
+      // tweener value linear transformation (y = a*x + b): resumePointValue -> 0 and 1 -> 1
+      // 0 = a * resumePointValue and 1 = a * 1 + b
+      // a = 1 / ( 1 - resumePointValue) , b = -resumePointValue / (1 - resumePointValue)
+      // we assume resumePointValue = Tween(resumePoint) = Tween(0.5) = 0.5
+      // (this is true for tweener with in_and_out easing - it's rotationally symmetric about (0.5,0.5) continuous function)
+      // a = 2 , b = -1
+      return (2 * m_pTweener->Tween(progress, 0, 1, 1) - 1);
+    }
+    else 
+      return m_pTweener->Tween(progress, 0, 1, 1);
+  }
+  else
+    return progress;
+}
+
+bool CScroller::Update(unsigned int time)
+{
+  m_lastTime = time;
+  if (m_delta != 0)
+  {
+    if (time - m_startTime >= m_duration) // we are finished
+    {
+      m_scrollValue = m_startPosition + m_delta;
+      m_startTime = 0;
+      m_hasResumePoint = false;
+      m_delta = 0;
+      m_startPosition = 0;
+    }
+    else
+      m_scrollValue = m_startPosition + Tween((float)(time - m_startTime) / m_duration) * m_delta;
+    return true;
+  }
+  else
+    return false;
 }

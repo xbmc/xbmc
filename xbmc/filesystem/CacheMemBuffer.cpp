@@ -20,6 +20,7 @@
  */
 
 #ifdef _LINUX
+#include "threads/SystemClock.h"
 #include "linux/PlatformDefs.h"
 #endif
 #include "settings/AdvancedSettings.h"
@@ -60,12 +61,11 @@ int CacheMemBuffer::Open()
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::Close()
+void CacheMemBuffer::Close()
 {
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
-  return CACHE_RC_OK;
 }
 
 int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
@@ -96,7 +96,7 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   CSingleLock lock(m_sync);
   if ( m_buffer.getMaxReadSize() == 0 ) {
-    return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
+    return m_bEndOfInput ? 0 : CACHE_RC_WOULD_BLOCK;
   }
 
   int nRead = iMaxSize;
@@ -137,22 +137,15 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   if (millis == 0 || IsEndOfInput())
     return m_buffer.getMaxReadSize();
 
-  unsigned int time = CTimeUtils::GetTimeMS() + millis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
+  XbmcThreads::EndTime endTime(millis);
+  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && !endTime.IsTimePast() )
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.getMaxReadSize();
 }
 
-int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
+int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
 {
-  if (iWhence != SEEK_SET)
-  {
-    // sanity. we should always get here with SEEK_SET
-    CLog::Log(LOGERROR, "%s, only SEEK_SET supported.", __FUNCTION__);
-    return CACHE_RC_ERROR;
-  }
-
   CSingleLock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
@@ -169,7 +162,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
   // check if seek is inside the current buffer
   if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize())
   {
-    unsigned int nOffset = (iFilePosition - m_nStartPosition);
+    unsigned int nOffset = (unsigned int)(iFilePosition - m_nStartPosition);
     // copy to history so we can seek back
     if (m_HistoryBuffer.getMaxWriteSize() < nOffset)
       m_HistoryBuffer.SkipBytes(nOffset);
@@ -204,9 +197,6 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
     nToCopy -= nSpace;
     if (nToCopy > 0)
       m_forwardBuffer.Copy(saveUnRead);
-
-    SEEK_CHECK_RET(m_HistoryBuffer.Copy(saveHist));
-    m_HistoryBuffer.Clear();
 
     m_nStartPosition = iFilePosition;
     m_space.Set();

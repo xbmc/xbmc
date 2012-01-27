@@ -11,4 +11,15 @@
     <string id="30007">Suurin ruudunpäivitysnopeus</string>
     <string id="30008">Stereo 3D käytössä</string>
     <string id="30009">Esiasetuspaketti</string>
+    <string id="30010">Käyttäjän esiasetuskansio        </string>
+    <string id="30011">Esiasetuksen sekoitustila</string>
+
+    <string id="30020">WA51-esiasetukset</string>
+    <string id="30021">Winamp-esiasetukset</string>
+    <string id="30022">Käyttäjän määrittämä esiasetuskansio</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f s</string>
+    <string id="30051">%2.0f %%</string>
+    <string id="30052">%2.0f fps</string>
 </strings>

@@ -57,11 +57,16 @@ protected:
   void OnEnable(bool enable);
   void OnSettings();
   void OnChangeLog();
+  void OnRollback();
 
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
   unsigned int m_jobid;
   bool m_changelog;
+
+  // rollback data
+  void GrabRollbackVersions();
+  std::vector<CStdString> m_rollbackVersions;
 };
 

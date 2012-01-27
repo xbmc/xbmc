@@ -32,6 +32,11 @@ typedef struct AVFilterGraph {
 } AVFilterGraph;
 
 /**
+ * Allocate a filter graph.
+ */
+AVFilterGraph *avfilter_graph_alloc(void);
+
+/**
  * Get a filter instance with name name from graph.
  *
  * @return the pointer to the found filter instance or NULL if it
@@ -48,30 +53,70 @@ AVFilterContext *avfilter_graph_get_filter(AVFilterGraph *graph, char *name);
 int avfilter_graph_add_filter(AVFilterGraph *graphctx, AVFilterContext *filter);
 
 /**
- * Check for the validity of graph.
+ * Create and add a filter instance into an existing graph.
+ * The filter instance is created from the filter filt and inited
+ * with the parameters args and opaque.
  *
- * A graph is considered valid if all its input and output pads are
- * connected.
+ * In case of success put in *filt_ctx the pointer to the created
+ * filter instance, otherwise set *filt_ctx to NULL.
  *
- * @return 0 in case of success, a negative value otherwise
+ * @param name the instance name to give to the created filter instance
+ * @param graph_ctx the filter graph
+ * @return a negative AVERROR error code in case of failure, a non
+ * negative value otherwise
  */
-int avfilter_graph_check_validity(AVFilterGraph *graphctx, AVClass *log_ctx);
+int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt,
+                                 const char *name, const char *args, void *opaque,
+                                 AVFilterGraph *graph_ctx);
 
 /**
- * Configure all the links of graphctx.
+ * Check validity and configure all the links and formats in the graph.
  *
- * @return 0 in case of success, a negative value otherwise
+ * @param graphctx the filter graph
+ * @param log_ctx context used for logging
+ * @return 0 in case of success, a negative AVERROR code otherwise
  */
-int avfilter_graph_config_links(AVFilterGraph *graphctx, AVClass *log_ctx);
+int avfilter_graph_config(AVFilterGraph *graphctx, AVClass *log_ctx);
 
 /**
- * Configure the formats of all the links in the graph.
+ * Free a graph and destroy its links, graph may be NULL.
  */
-int avfilter_graph_config_formats(AVFilterGraph *graphctx, AVClass *log_ctx);
+void avfilter_graph_free(AVFilterGraph *graph);
 
 /**
- * Free a graph and destroy its links.
+ * A linked-list of the inputs/outputs of the filter chain.
+ *
+ * This is mainly useful for avfilter_graph_parse(), since this
+ * function may accept a description of a graph with not connected
+ * input/output pads. This struct specifies, per each not connected
+ * pad contained in the graph, the filter context and the pad index
+ * required for establishing a link.
  */
-void avfilter_graph_destroy(AVFilterGraph *graph);
+typedef struct AVFilterInOut {
+    /** unique name for this input/output in the list */
+    char *name;
+
+    /** filter context associated to this input/output */
+    AVFilterContext *filter_ctx;
+
+    /** index of the filt_ctx pad to use for linking */
+    int pad_idx;
+
+    /** next input/input in the list, NULL if this is the last */
+    struct AVFilterInOut *next;
+} AVFilterInOut;
+
+/**
+ * Add a graph described by a string to a graph.
+ *
+ * @param graph   the filter graph where to link the parsed graph context
+ * @param filters string to be parsed
+ * @param inputs  linked list to the inputs of the graph
+ * @param outputs linked list to the outputs of the graph
+ * @return zero on success, a negative AVERROR code on error
+ */
+int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
+                         AVFilterInOut *inputs, AVFilterInOut *outputs,
+                         AVClass *log_ctx);
 
 #endif  /* AVFILTER_AVFILTERGRAPH_H */

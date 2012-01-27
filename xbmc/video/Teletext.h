@@ -26,11 +26,7 @@
 #include "guilib/GUITexture.h"
 
 // stuff for freetype
-#ifndef _LINUX
-#include "ft2build.h"
-#else
 #include <ft2build.h>
-#endif
 #include FT_FREETYPE_H
 #include FT_CACHE_H
 #include FT_CACHE_SMALL_BITMAPS_H

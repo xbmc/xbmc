@@ -32,12 +32,16 @@
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
-namespace DXVA { class CProcessor; }
+namespace DXVA { class CSurfaceContext; }
 namespace VAAPI { struct CHolder; }
 class CVDPAU;
 class COpenMax;
 class COpenMaxVideo;
 struct OpenMaxVideoBuffer;
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  class CDVDVideoCodecVideoToolBox;
+  struct __CVBuffer;
+#endif
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -52,8 +56,7 @@ struct DVDVideoPicture
       int iLineSize[4];   // [4] = alpha channel, currently not used
     };
     struct {
-      DXVA::CProcessor* proc;
-      int64_t           proc_id;
+      DXVA::CSurfaceContext* context;
     };
     struct {
       CVDPAU* vdpau;
@@ -66,6 +69,12 @@ struct DVDVideoPicture
       COpenMax *openMax;
       OpenMaxVideoBuffer *openMaxBuffer;
     };
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+    struct {
+      CDVDVideoCodecVideoToolBox *vtb;
+      struct __CVBuffer *cvBufferRef;
+    };
+#endif
   };
 
   unsigned int iFlags;
@@ -75,6 +84,10 @@ struct DVDVideoPicture
   unsigned int iFrameType         : 4; // see defines above // 1->I, 2->P, 3->B, 0->Undef
   unsigned int color_matrix       : 4;
   unsigned int color_range        : 1; // 1 indicate if we have a full range of color
+  unsigned int chroma_position;
+  unsigned int color_primaries;
+  unsigned int color_transfer;
+  unsigned int extended_format;
   int iGroupId;
 
   int8_t* qscale_table; // Quantization parameters, primarily used by filters
@@ -94,7 +107,8 @@ struct DVDVideoPicture
     FMT_YUY2,
     FMT_DXVA,
     FMT_VAAPI,
-    FMT_OMXEGL
+    FMT_OMXEGL,
+    FMT_CVBREF,
   } format;
 };
 
@@ -164,6 +178,17 @@ public:
    */
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
 
+
+  /*
+   * returns true if successfull
+   * the data is cleared to zero
+   */ 
+  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture)
+  {
+    memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
+    return true;
+  }
+
   /*
    * returns true if successfull
    * the data is valid until the next Decode call
@@ -181,6 +206,20 @@ public:
    * codec can then skip actually decoding the data, just consume the data set picture headers
    */
   virtual void SetDropState(bool bDrop) = 0;
+
+
+  enum EFilterFlags {
+    FILTER_NONE                =  0x0,
+    FILTER_DEINTERLACE_YADIF   =  0x1,  /* use first deinterlace mode */
+    FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
+    FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
+    FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */
+  };
+
+  /*
+   * set the type of filters that should be applied at decoding stage if possible
+   */
+  virtual unsigned int SetFilters(unsigned int filters) { return 0u; }
 
   /*
    *

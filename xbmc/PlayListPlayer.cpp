@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayListFactory.h"
 #include "Application.h"
@@ -31,6 +32,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "music/tags/MusicInfoTag.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 using namespace PLAYLIST;
 
@@ -130,9 +133,9 @@ int CPlayListPlayer::GetNextSong()
   if (RepeatedOne(m_iCurrentPlayList))
   {
     // otherwise immediately abort playback
-    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetProperty("unplayable").asBoolean())
     {
-      CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->m_strPath.c_str());
+      CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->GetPath().c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       g_windowManager.SendThreadMessage(msg);
       Reset();
@@ -156,9 +159,11 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
-  // stop playing
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
+    if(!bAutoPlay)
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
+
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
     g_windowManager.SendThreadMessage(msg);
     Reset();
@@ -166,10 +171,7 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     return false;
   }
 
-  if (bAutoPlay)
-    CFileItemPtr item = playlist[iSong];
-
-  return Play(iSong, bAutoPlay);
+  return Play(iSong, false);
 }
 
 bool CPlayListPlayer::PlayPrevious()
@@ -178,15 +180,19 @@ bool CPlayListPlayer::PlayPrevious()
     return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) 
-    return false;
   int iSong = m_iCurrentSong;
 
   if (!RepeatedOne(m_iCurrentPlayList))
     iSong--;
 
-  if (iSong < 0)
+  if (iSong < 0 && Repeated(m_iCurrentPlayList))
     iSong = playlist.size() - 1;
+
+  if (iSong < 0 || playlist.size() <= 0)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34202));
+    return false;
+  }
 
   return Play(iSong, false, true);
 }
@@ -248,10 +254,10 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
   m_bPlaybackStarted = false;
 
-  unsigned int playAttempt = CTimeUtils::GetTimeMS();
+  unsigned int playAttempt = XbmcThreads::SystemClockMillis();
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
-    CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
+    CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->GetPath().c_str());
     playlist.SetUnPlayable(m_iCurrentSong);
 
     // abort on 100 failed CONSECTUTIVE songs
@@ -259,7 +265,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
     if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
-        || ((CTimeUtils::GetTimeMS() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
+        || ((XbmcThreads::SystemClockMillis() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
     {
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
@@ -420,7 +426,7 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
   return false;
 }
 
-void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = false */)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -443,6 +449,13 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
       playlist.Shuffle();
     else
       playlist.UnShuffle();
+
+    if (bNotify)
+    {
+      CStdString shuffleStr;
+      shuffleStr.Format("%s: %s", g_localizeStrings.Get(191), g_localizeStrings.Get(bYesNo ? 593 : 591)); // Shuffle: All/Off
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559),  shuffleStr);
+    }
 
     // find the previous order value and fix the current song marker
     if (iOrder >= 0)
@@ -468,7 +481,7 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist) const
   return false;
 }
 
-void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
+void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify /* = false */)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -476,6 +489,19 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
   // disable repeat in party mode
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     state = REPEAT_NONE;
+
+  // notify the user if there was a change in the repeat state
+  if (m_repeatState[iPlaylist] != state && bNotify)
+  {
+    int iLocalizedString;
+    if (state == REPEAT_NONE)
+      iLocalizedString = 595; // Repeat: Off
+    else if (state == REPEAT_ONE)
+      iLocalizedString = 596; // Repeat: One
+    else
+      iLocalizedString = 597; // Repeat: All
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(iLocalizedString));
+  }
 
   m_repeatState[iPlaylist] = state;
 }
@@ -557,6 +583,8 @@ void CPlayListPlayer::Insert(int iPlaylist, CPlayList& playlist, int iIndex)
   list.Insert(playlist, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex)
@@ -568,6 +596,8 @@ void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iInde
   list.Insert(pItem, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
@@ -579,6 +609,8 @@ void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
   list.Insert(items, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
@@ -587,6 +619,8 @@ void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
   list.Remove(iPosition);
+  if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iPosition)
+    m_iCurrentSong--;
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
@@ -601,4 +635,23 @@ void CPlayListPlayer::Clear()
     m_PlaylistVideo->Clear();
   if (m_PlaylistEmpty)
     m_PlaylistEmpty->Clear();
+}
+
+void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+
+  CPlayList& list = GetPlaylist(iPlaylist);
+  if (list.Swap(indexItem1, indexItem2) && iPlaylist == m_iCurrentPlayList)
+  {
+    if (m_iCurrentSong == indexItem1)
+      m_iCurrentSong = indexItem2;
+    else if (m_iCurrentSong == indexItem2)
+      m_iCurrentSong = indexItem1;
+  }
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
 }

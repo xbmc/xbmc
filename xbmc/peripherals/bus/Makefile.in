@@ -1,0 +1,18 @@
+SRCS=PeripheralBus.cpp
+
+ifeq (@USE_LIBUDEV@,1)
+SRCS+=linux/PeripheralBusUSBLibUdev.cpp
+endif
+
+ifeq (@USE_LIBUSB@,1)
+SRCS+=linux/PeripheralBusUSBLibUSB.cpp
+endif
+
+ifeq ($(findstring osx,@ARCH@),osx)
+SRCS+=osx/PeripheralBusUSB.cpp
+endif
+
+LIB=peripheral-bus.a
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

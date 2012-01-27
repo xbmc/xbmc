@@ -285,6 +285,7 @@ int COpenMaxVideo::Decode(BYTE* pData, int iSize, double dts, double pts)
     omx_demux_packet demux_packet;
     demux_packet.dts = dts;
     demux_packet.pts = pts;
+
     demux_packet.size = demuxer_bytes;
     demux_packet.buff = new OMX_U8[demuxer_bytes];
     memcpy(demux_packet.buff, demuxer_content, demuxer_bytes);
@@ -313,7 +314,7 @@ int COpenMaxVideo::Decode(BYTE* pData, int iSize, double dts, double pts)
       omx_buffer->pBuffer = demux_packet.buff;
       omx_buffer->nAllocLen  = demux_packet.size;
       omx_buffer->nFilledLen = demux_packet.size;
-      omx_buffer->nTimeStamp = demux_packet.pts * 1000.0; // in microseconds;
+      omx_buffer->nTimeStamp = (demux_packet.pts == DVD_NOPTS_VALUE) ? 0 : demux_packet.pts * 1000.0; // in microseconds;
       omx_buffer->pAppPrivate = omx_buffer;
       omx_buffer->nInputPortIndex = m_omx_input_port;
 
@@ -335,12 +336,12 @@ int COpenMaxVideo::Decode(BYTE* pData, int iSize, double dts, double pts)
       m_dts_queue.push(demux_packet.dts);
 
       // if m_omx_input_avaliable and/or demux_queue are now empty,
-      // wait up to 100ms for OpenMax to consume a demux packet
+      // wait up to 20ms for OpenMax to consume a demux packet
       if (m_omx_input_avaliable.empty() || m_demux_queue.empty())
-        m_input_consumed_event.WaitMSec(20);
+        m_input_consumed_event.WaitMSec(1);
     }
     if (m_omx_input_avaliable.empty() && !m_demux_queue.empty())
-      m_input_consumed_event.WaitMSec(20);
+      m_input_consumed_event.WaitMSec(1);
 
     #if defined(OMX_DEBUG_VERBOSE)
     if (m_omx_input_avaliable.empty())
@@ -422,7 +423,7 @@ bool COpenMaxVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       m_dts_queue.pop();
     }
     // nTimeStamp is in microseconds
-    pDvdVideoPicture->pts = (double)buffer->omx_buffer->nTimeStamp / 1000.0;
+    pDvdVideoPicture->pts = (buffer->omx_buffer->nTimeStamp == 0) ? DVD_NOPTS_VALUE : (double)buffer->omx_buffer->nTimeStamp / 1000.0;
   }
   #if defined(OMX_DEBUG_VERBOSE)
   else

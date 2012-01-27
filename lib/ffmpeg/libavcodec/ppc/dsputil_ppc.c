@@ -20,21 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/cpu.h"
 #include "libavcodec/dsputil.h"
 #include "dsputil_altivec.h"
-
-int mm_flags = 0;
-
-int mm_support(void)
-{
-    int result = 0;
-#if HAVE_ALTIVEC
-    if (has_altivec()) {
-        result |= FF_MM_ALTIVEC;
-    }
-#endif /* result */
-    return result;
-}
 
 /* ***** WARNING ***** WARNING ***** WARNING ***** */
 /*
@@ -181,9 +169,7 @@ void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
 #if HAVE_ALTIVEC
     if(CONFIG_H264_DECODER) dsputil_h264_init_ppc(c, avctx);
 
-    if (has_altivec()) {
-        mm_flags |= FF_MM_ALTIVEC;
-
+    if (av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC) {
         dsputil_init_altivec(c, avctx);
         if(CONFIG_VC1_DECODER)
             vc1dsp_init_altivec(c, avctx);

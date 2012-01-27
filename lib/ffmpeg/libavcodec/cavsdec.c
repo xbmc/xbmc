@@ -143,7 +143,7 @@ static int decode_residual_block(AVSContext *h, GetBitContext *gb,
     if(dequant(h,level_buf, run_buf, block, ff_cavs_dequant_mul[qp],
                ff_cavs_dequant_shift[qp], i))
         return -1;
-    h->s.dsp.cavs_idct8_add(dst,block,stride);
+    h->cdsp.cavs_idct8_add(dst,block,stride);
     h->s.dsp.clear_block(block);
     return 0;
 }
@@ -709,7 +709,7 @@ static int cavs_decode_frame(AVCodecContext * avctx,void *data, int *data_size,
     }
 }
 
-AVCodec cavs_decoder = {
+AVCodec ff_cavs_decoder = {
     "cavs",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_CAVS,

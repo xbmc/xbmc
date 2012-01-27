@@ -72,6 +72,9 @@ public:
 
   static void Render(DVDVideoPicture* pPicture, CDVDOverlay* pOverlay, double pts)
   {
+    if(pPicture->format != DVDVideoPicture::FMT_YUV420P)
+      return;
+
     DVDPictureRenderer p;
 
     p.data[0] = pPicture->data[0];

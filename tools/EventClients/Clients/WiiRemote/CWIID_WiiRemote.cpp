@@ -152,10 +152,11 @@ CWiiRemote::~CWiiRemote()
 /* Basicly this just sets up standard control bits */
 void CWiiRemote::SetBluetoothAddress(const char *btaddr)
 {
+  static const bdaddr_t b = {{0, 0, 0, 0, 0, 0}}; /* BDADDR_ANY */
   if (btaddr != NULL)
     str2ba(btaddr, &m_btaddr);
   else
-    bacpy(&m_btaddr, &(*BDADDR_ANY));
+    bacpy(&m_btaddr, &b);
 }
 
 void CWiiRemote::SetSensativity(float DeadX, float DeadY, int NumSamples)

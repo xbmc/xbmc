@@ -91,8 +91,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(__APPLE__)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
-#elif defined(_XBOX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
 #endif
   }
 
@@ -170,7 +168,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   {
     delete m_pDll;
     m_pDll = NULL;
-    new CAddonStatusHandler(ID(), STATUS_UNKNOWN, "Can't load Dll", false);
+    new CAddonStatusHandler(ID(), ADDON_STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
   m_pStruct = (TheStruct*)malloc(sizeof(TheStruct));
@@ -191,12 +189,12 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   try
   {
     ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
-    if (status == STATUS_OK)
+    if (status == ADDON_STATUS_OK)
       m_initialized = true;
-    else if ((status == STATUS_NEED_SETTINGS) || (status == STATUS_NEED_SAVEDSETTINGS))
+    else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
-      m_needsavedsettings = (status == STATUS_NEED_SAVEDSETTINGS);
-      if (TransferSettings() == STATUS_OK)
+      m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
+      if (TransferSettings() == ADDON_STATUS_OK)
         m_initialized = true;
       else
         new CAddonStatusHandler(ID(), status, "", false);
@@ -223,7 +221,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
   {
     if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
     {
-      char   str_id[64];
+      char   str_id[64] = "";
       char   str_value[1024];
       CAddon::LoadUserSettings();
       for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
@@ -260,7 +258,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
-  delete m_pStruct;
+  free(m_pStruct);
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;
@@ -279,7 +277,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
   {
     HandleException(e, "m_pDll->GetStatus()");
   }
-  return STATUS_UNKNOWN;
+  return ADDON_STATUS_UNKNOWN;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -291,7 +289,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
   if (!LoadDll())
     return false;
 
-  StructSetting** sSet;
+  ADDON_StructSetting** sSet;
   std::vector<DllSetting> vSet;
   unsigned entries = 0;
   try
@@ -382,7 +380,7 @@ template<class TheDll, typename TheStruct, typename TheProps>
 ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 {
   bool restart = false;
-  ADDON_STATUS reportStatus = STATUS_OK;
+  ADDON_STATUS reportStatus = ADDON_STATUS_OK;
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
@@ -397,7 +395,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
     const TiXmlElement *setting = category->FirstChildElement("setting");
     while (setting)
     {
-      ADDON_STATUS status = STATUS_OK;
+      ADDON_STATUS status = ADDON_STATUS_OK;
       const char *id = setting->Attribute("id");
       const char *type = setting->Attribute("type");
 
@@ -427,9 +425,9 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
         }
 
-        if (status == STATUS_NEED_RESTART)
+        if (status == ADDON_STATUS_NEED_RESTART)
           restart = true;
-        else if (status != STATUS_OK)
+        else if (status != ADDON_STATUS_OK)
           reportStatus = status;
       }
       setting = setting->NextSiblingElement("setting");
@@ -437,12 +435,12 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
     category = category->NextSiblingElement("category");
   }
 
-  if (restart || reportStatus != STATUS_OK)
+  if (restart || reportStatus != ADDON_STATUS_OK)
   {
-    new CAddonStatusHandler(ID(), restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+    new CAddonStatusHandler(ID(), restart ? ADDON_STATUS_NEED_RESTART : reportStatus, "", true);
   }
 
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

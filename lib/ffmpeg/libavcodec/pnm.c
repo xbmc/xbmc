@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "pnm.h"
 
@@ -101,7 +102,7 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
             }
         }
         /* check that all tags are present */
-        if (w <= 0 || h <= 0 || maxval <= 0 || depth <= 0 || tuple_type[0] == '\0' || avcodec_check_dimensions(avctx, w, h))
+        if (w <= 0 || h <= 0 || maxval <= 0 || depth <= 0 || tuple_type[0] == '\0' || av_image_check_size(w, h, 0, avctx))
             return -1;
 
         avctx->width  = w;
@@ -134,11 +135,15 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
         return -1;
     pnm_get(s, buf1, sizeof(buf1));
     avctx->height = atoi(buf1);
-    if(avcodec_check_dimensions(avctx, avctx->width, avctx->height))
+    if(av_image_check_size(avctx->width, avctx->height, 0, avctx))
         return -1;
     if (avctx->pix_fmt != PIX_FMT_MONOWHITE) {
         pnm_get(s, buf1, sizeof(buf1));
         s->maxval = atoi(buf1);
+        if (s->maxval <= 0) {
+            av_log(avctx, AV_LOG_ERROR, "Invalid maxval: %d\n", s->maxval);
+            s->maxval = 255;
+        }
         if (s->maxval >= 256) {
             if (avctx->pix_fmt == PIX_FMT_GRAY8) {
                 avctx->pix_fmt = PIX_FMT_GRAY16BE;

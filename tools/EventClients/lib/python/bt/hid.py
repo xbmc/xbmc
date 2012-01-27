@@ -16,6 +16,9 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from bluetooth import *
+import fcntl
+import bluetooth._bluetooth as _bt
+import array
 
 class HID:
     def __init__(self, bdaddress=None):
@@ -56,6 +59,13 @@ class HID:
             self.connected = False
             return False
 
+    def get_local_address(self):
+        hci = BluetoothSocket( HCI )
+        fd  = hci.fileno()
+        buf = array.array('B', [0] * 96)
+        fcntl.ioctl(fd, _bt.HCIGETDEVINFO, buf, 1)
+        data = struct.unpack_from("H8s6B", buf.tostring())
+        return data[2:8][::-1]
 
     def get_control_socket(self):
         if self.connected:

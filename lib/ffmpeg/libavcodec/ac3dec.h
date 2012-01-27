@@ -55,6 +55,7 @@
 #include "get_bits.h"
 #include "dsputil.h"
 #include "fft.h"
+#include "fmtconvert.h"
 
 /* override ac3.h to include coupling channel */
 #undef AC3_MAX_CHANNELS
@@ -63,9 +64,6 @@
 
 #define AC3_OUTPUT_LFEON  8
 
-#define AC3_MAX_COEFS   256
-#define AC3_BLOCK_SIZE  256
-#define MAX_BLOCKS        6
 #define SPX_MAX_BANDS    17
 
 typedef struct {
@@ -101,8 +99,8 @@ typedef struct {
  ///@}
 
 ///@defgroup cpl standard coupling
-    int cpl_in_use[MAX_BLOCKS];             ///< coupling in use                        (cplinu)
-    int cpl_strategy_exists[MAX_BLOCKS];    ///< coupling strategy exists               (cplstre)
+    int cpl_in_use[AC3_MAX_BLOCKS];         ///< coupling in use                        (cplinu)
+    int cpl_strategy_exists[AC3_MAX_BLOCKS];///< coupling strategy exists               (cplstre)
     int channel_in_cpl[AC3_MAX_CHANNELS];   ///< channel in coupling                    (chincpl)
     int phase_flags_in_use;                 ///< phase flags in use                     (phsflginu)
     int phase_flags[18];                    ///< phase flags                            (phsflg)
@@ -131,7 +129,7 @@ typedef struct {
 
 ///@defgroup aht adaptive hybrid transform
     int channel_uses_aht[AC3_MAX_CHANNELS];                         ///< channel AHT in use (chahtinu)
-    int pre_mantissa[AC3_MAX_CHANNELS][AC3_MAX_COEFS][MAX_BLOCKS];  ///< pre-IDCT mantissas
+    int pre_mantissa[AC3_MAX_CHANNELS][AC3_MAX_COEFS][AC3_MAX_BLOCKS];  ///< pre-IDCT mantissas
 ///@}
 
 ///@defgroup channel channel
@@ -161,7 +159,7 @@ typedef struct {
 ///@defgroup exponents exponents
     int num_exp_groups[AC3_MAX_CHANNELS];           ///< Number of exponent groups      (nexpgrp)
     int8_t dexps[AC3_MAX_CHANNELS][AC3_MAX_COEFS];  ///< decoded exponents
-    int exp_strategy[MAX_BLOCKS][AC3_MAX_CHANNELS]; ///< exponent strategies            (expstr)
+    int exp_strategy[AC3_MAX_BLOCKS][AC3_MAX_CHANNELS]; ///< exponent strategies        (expstr)
 ///@}
 
 ///@defgroup bitalloc bit allocation
@@ -171,8 +169,8 @@ typedef struct {
     int fast_gain[AC3_MAX_CHANNELS];                ///< fast gain values/SMR's         (fgain)
     uint8_t bap[AC3_MAX_CHANNELS][AC3_MAX_COEFS];   ///< bit allocation pointers
     int16_t psd[AC3_MAX_CHANNELS][AC3_MAX_COEFS];   ///< scaled exponents
-    int16_t band_psd[AC3_MAX_CHANNELS][50];         ///< interpolated exponents
-    int16_t mask[AC3_MAX_CHANNELS][50];             ///< masking curve values
+    int16_t band_psd[AC3_MAX_CHANNELS][AC3_CRITICAL_BANDS]; ///< interpolated exponents
+    int16_t mask[AC3_MAX_CHANNELS][AC3_CRITICAL_BANDS];     ///< masking curve values
     int dba_mode[AC3_MAX_CHANNELS];                 ///< delta bit allocation mode
     int dba_nsegs[AC3_MAX_CHANNELS];                ///< number of delta segments
     uint8_t dba_offsets[AC3_MAX_CHANNELS][8];       ///< delta segment offsets
@@ -193,7 +191,7 @@ typedef struct {
 
 ///@defgroup opt optimization
     DSPContext dsp;                         ///< for optimization
-    float add_bias;                         ///< offset for float_to_int16 conversion
+    FmtConvertContext fmt_conv;             ///< optimized conversion functions
     float mul_bias;                         ///< scaling for float_to_int16 conversion
 ///@}
 

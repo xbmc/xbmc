@@ -50,6 +50,8 @@ enum ERENDERFEATURE
   RENDERFEATURE_NONLINSTRETCH
 };
 
+struct DVDVideoPicture;
+
 class CBaseRenderer
 {
 public:
@@ -61,9 +63,14 @@ public:
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio() const;
 
+  virtual bool AddVideoPicture(DVDVideoPicture* picture) { return false; }
+  virtual void Flush() {};
+
+  virtual unsigned int GetProcessorSize() { return 0; }
+
 protected:
   void       ChooseBestResolution(float fps);
-  bool       FindResolutionFromOverride(float fps, float& weight);
+  bool       FindResolutionFromOverride(float fps, float& weight, bool fallback);
   void       FindResolutionFromFpsMatch(float fps, float& weight);
   RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
   float      RefreshWeight(float refresh, float fps);

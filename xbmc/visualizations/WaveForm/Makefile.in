@@ -1,17 +1,32 @@
 ARCH=@ARCH@
-DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=Main.o
 
 SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 
+ifeq (@USE_OPENGLES@,1)
+  OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o ../../guilib/MatrixGLES.o
+  DEFINES+=-DHAS_GLES=2
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS+=-framework OpenGLES
+  else
+    LDFLAGS+=-lGLESv2
+  endif
+else
+  DEFINES+=-DHAS_SDL
+  DEFINES+=-DHAS_SDL_OPENGL
+  ifeq ($(findstring osx,$(ARCH)), osx)
+    LDFLAGS+=-framework OpenGL
+  else
+    LDFLAGS+=-lGL -lGLU
+  endif
+endif
+
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS)
-	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(CXX) $(CFLAGS) $(LDFLAGS) -bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ $(OBJS)
 else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) -Wl,--unresolved-symbols=ignore-all $(OBJS)
 endif
 
 include @abs_top_srcdir@/Makefile.include

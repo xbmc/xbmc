@@ -20,12 +20,8 @@
  *
  */
 #include "Addon.h"
-#include "include/xbmc_addon_dll.h"
-#include "tinyXML/tinyxml.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
-#include "utils/Job.h"
-#include "utils/Stopwatch.h"
 #include <vector>
 #include <map>
 #include <deque>
@@ -41,8 +37,7 @@ namespace ADDON
 {
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
-  typedef std::deque<cp_cfg_element_t*> DEQUEELEMENTS;
-  typedef std::deque<cp_cfg_element_t*>::iterator IDEQUEELEMENTS;
+  typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
@@ -97,6 +92,9 @@ namespace ADDON
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
+    void AddToUpdateableAddons(AddonPtr &pAddon);
+    void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
+    bool ReloadSettings(const CStdString &id);
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
      \param enabled Whether to get only enabled or disabled addons
@@ -112,12 +110,19 @@ namespace ADDON
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void UpdateRepos(bool force=false);
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+
+    /*! \brief Retrieve a vector of repeated elements from a given configuration element
+     \param base the base configuration element.
+     \param path the path to the configuration element from the base element.
+     \param result [out] returned list of elements.
+     \return true if the configuration element is present and the list of elements is non-empty
+     */
+    bool GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &result);
 
     /*! \brief Retrieve a list of strings from a given configuration element
      Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
@@ -153,15 +158,14 @@ namespace ADDON
      \return true if the repository XML file is parsed, false otherwise.
      */
     bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
-    ADDONDEPS GetDeps(const CStdString& id);
 
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
     */
-    bool StartServices();
+    bool StartServices(const bool beforelogin);
     /*! \brief Stop all services addons.
     */
-    void StopServices();
+    void StopServices(const bool onlylogin);
 
   private:
     void LoadAddons(const CStdString &path, 
@@ -171,6 +175,7 @@ namespace ADDON
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
+    VECADDONS    m_updateableAddons;
 
     /*! \brief Fetch a (single) addon from a plugin descriptor.
      Assumes that there is a single (non-trivial) extension point per addon.
@@ -195,7 +200,6 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    CStopWatch m_watch;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
   };

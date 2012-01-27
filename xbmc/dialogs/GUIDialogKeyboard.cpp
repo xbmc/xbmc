@@ -26,6 +26,7 @@
 #include "GUIDialogOK.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/XBMC_vkeys.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
@@ -138,27 +139,27 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     uint8_t b = action.GetID() & 0xFF;
-    if (b == 0x24) // home
+    if (b == XBMCVK_HOME)
     {
       MoveCursor(-GetCursorPos());
     }
-    else if (b == 0x23) // end
+    else if (b == XBMCVK_END)
     {
       MoveCursor(m_strEdit.GetLength() - GetCursorPos());
     }
-    else if (b == 0x25) // left
+    else if (b == XBMCVK_LEFT)
     {
       MoveCursor( -1);
     }
-    else if (b == 0x27) // right
+    else if (b == XBMCVK_RIGHT)
     {
       MoveCursor(1);
     }
-    else if (b == 0x0D) // enter
+    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
     {
       OnOK();
     }
-    else if (b == 0x2E) // delete
+    else if (b == XBMCVK_DELETE)
     {
       if (GetCursorPos() < m_strEdit.GetLength())
       {
@@ -166,8 +167,8 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
         Backspace();
       }
     }
-    else if (b == 0x08) Backspace();    // backspace
-    else if (b == 0x1B) Close();        // escape
+    else if (b == XBMCVK_BACK) Backspace();
+    else if (b == XBMCVK_ESCAPE) Close();
   }
   else if (action.GetID() >= KEY_ASCII)
   { // input from the keyboard
@@ -534,7 +535,6 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CVariant
 
   // setup keyboard
   pKeyboard->Initialize();
-  pKeyboard->CenterWindow();
   pKeyboard->SetHeading(heading);
   pKeyboard->SetHiddenInput(hiddenInput);
   pKeyboard->SetText(aTextString);
@@ -658,12 +658,12 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   }
 }
 
-void CGUIDialogKeyboard::Close(bool forceClose)
+void CGUIDialogKeyboard::OnDeinitWindow(int nextWindowID)
 {
+  // call base class
+  CGUIDialog::OnDeinitWindow(nextWindowID);
   // reset the heading (we don't always have this)
   m_strHeading = "";
-  // call base class
-  CGUIDialog::Close(forceClose);
 }
 
 void CGUIDialogKeyboard::MoveCursor(int iAmount)
@@ -736,7 +736,7 @@ void CGUIDialogKeyboard::ResetShiftAndSymbols()
   m_lastRemoteClickTime = 0;
 }
 
-const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
+const char* CGUIDialogKeyboard::s_charsSeries[10] = { " 0!@#$%^&*()[]{}<>/\\|", ".,1;:\'\"-+_=?`~", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
 void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
 { // find all controls with this id, and set all their labels
@@ -763,7 +763,7 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
     return false;
 
   pKeyboard->m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
-  bool ret = ShowAndGetInput(filter, true);
+  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true);
   pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }
@@ -773,5 +773,5 @@ void CGUIDialogKeyboard::SetHeading(const CVariant &heading)
   if (heading.isString())
     m_strHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
-    m_strHeading = g_localizeStrings.Get(heading.asInteger());
+    m_strHeading = g_localizeStrings.Get((uint32_t)heading.asInteger());
 }

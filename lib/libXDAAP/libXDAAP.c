@@ -606,6 +606,8 @@ static int Priv_DAAP_ClientHost_GetDatabaseItems(DAAP_SClientHost *pCHThis,
     HTTP_RETURN_IF_FAILED(httpRes);
 
     items.h.expecting = QUERY_GENERICLISTING;
+    items.returnedcount = 0;
+    items.listitems = 0;
     dmap_parseProtocolData(httpRes->contentlen, httpRes->data,
                            (protoParseResult*)&items);
 

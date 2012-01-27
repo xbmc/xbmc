@@ -27,6 +27,7 @@
 #include "cores/AudioRenderers/IAudioRenderer.h"
 #include "cores/IAudioCallback.h"
 #include "threads/CriticalSection.h"
+#include "PlatformDefs.h"
 
 #ifndef _LINUX
 enum CodecID;
@@ -58,12 +59,14 @@ public:
 
   void SetVolume(int iVolume);
   void SetDynamicRangeCompression(long drc);
+  float GetCurrentAttenuation();
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, CodecID codec);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
+  double AddSilence(double delay);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
@@ -83,6 +86,7 @@ protected:
   int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
+  double m_SecondsPerByte;
   bool m_bPassthrough;
   bool m_bPaused;
 

@@ -32,7 +32,8 @@
 #include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors
-#include "GUIActionDescriptor.h"
+#include "DirtyRegion.h"
+#include "GUIAction.h"
 
 class CGUIListItem; // forward
 class CAction;
@@ -60,6 +61,8 @@ enum EVENT_RESULT { EVENT_RESULT_UNHANDLED = 0,
                     EVENT_RESULT_HANDLED,
                     EVENT_RESULT_PAN_HORIZONTAL,
                     EVENT_RESULT_PAN_VERTICAL,
+                    EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA,
+                    EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA,                    
                     EVENT_RESULT_ROTATE,
                     EVENT_RESULT_ZOOM };
 
@@ -75,8 +78,11 @@ public:
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void DoRender();
   virtual void Render();
+
   bool HasRendered() const { return m_hasRendered; };
 
   // OnAction() is called by our window when we are the focused control.
@@ -93,6 +99,7 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
+  virtual bool OnBack();
   virtual void OnNextControl();
   virtual void OnPrevControl();
   virtual void OnFocus() {};
@@ -153,39 +160,52 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
-  void SetColorDiffuse(const CGUIInfoColor &color);
+  bool SetColorDiffuse(const CGUIInfoColor &color);
   CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
-  virtual void SetNavigation(int up, int down, int left, int right);
+
+  void MarkDirtyRegion();
+
+  /*! \brief return the render region in screen coordinates of this control
+   */
+  const CRect &GetRenderRegion() const { return m_renderRegion; };
+  /*! \brief calculate the render region in parentcontrol coordinates of this control
+   Called during process to update m_renderRegion
+   */
+  virtual CRect CalcRenderRegion() const;
+
+  virtual void SetNavigation(int up, int down, int left, int right, int back = 0);
   virtual void SetTabNavigation(int next, int prev);
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
-   \param up vector of CGUIActionDescriptors to execute on up
-   \param down vector of CGUIActionDescriptors to execute on down
-   \param left vector of CGUIActionDescriptors to execute on left
-   \param right vector of CGUIActionDescriptors to execute on right
+   \param up CGUIAction to execute on up
+   \param down CGUIAction to execute on down
+   \param left CGUIAction to execute on left
+   \param right CGUIAction to execute on right
+   \param back CGUIAction to execute on back
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
-   \sa SetNavigation, ExecuteActions
+   \sa SetNavigation
    */
-  virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
-                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right, bool replace = true);
-  void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
-  int GetControlIdUp() const { return m_controlUp;};
-  int GetControlIdDown() const { return m_controlDown;};
-  int GetControlIdLeft() const { return m_controlLeft;};
-  int GetControlIdRight() const { return m_controlRight;};
+  virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
+                                    const CGUIAction &left, const CGUIAction &right,
+                                    const CGUIAction &back, bool replace = true);
+  int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
+  int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
+  int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
+  int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
+  int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
   virtual int GetNextControl(int direction) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetVisible(bool bVisible);
-  void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
-  int GetVisibleCondition() const { return m_visibleCondition; };
-  void SetEnableCondition(int condition);
+  virtual void SetVisible(bool bVisible, bool setVisState = false);
+  void SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus = "");
+  unsigned int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetEnableCondition(const CStdString &expression);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
@@ -238,7 +258,6 @@ public:
     GUICONTROL_VIDEO,
     GUICONTROL_MOVER,
     GUICONTROL_RESIZE,
-    GUICONTROL_BUTTONBAR,
     GUICONTROL_EDIT,
     GUICONTROL_VISUALISATION,
     GUICONTROL_RENDERADDON,
@@ -281,26 +300,20 @@ protected:
    */
   virtual bool CanFocusFromPoint(const CPoint &point) const;
 
-  virtual void UpdateColors();
-  virtual void Animate(unsigned int currentTime);
+  virtual bool UpdateColors();
+  virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
 
-  // navigation
-  int m_controlLeft;
-  int m_controlRight;
-  int m_controlUp;
-  int m_controlDown;
-  int m_controlNext;
-  int m_controlPrev;
-
-  std::vector<CGUIActionDescriptor> m_leftActions;
-  std::vector<CGUIActionDescriptor> m_rightActions;
-  std::vector<CGUIActionDescriptor> m_upActions;
-  std::vector<CGUIActionDescriptor> m_downActions;
-  std::vector<CGUIActionDescriptor> m_nextActions;
-  std::vector<CGUIActionDescriptor> m_prevActions;
+  // navigation and actions
+  CGUIAction m_actionLeft;
+  CGUIAction m_actionRight;
+  CGUIAction m_actionUp;
+  CGUIAction m_actionDown;
+  CGUIAction m_actionBack;
+  CGUIAction m_actionNext;
+  CGUIAction m_actionPrev;
 
   float m_posX;
   float m_posY;
@@ -319,14 +332,14 @@ protected:
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 
   // visibility condition/state
-  int m_visibleCondition;
+  unsigned int m_visibleCondition;
   GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasRendered;
   // enable/disable state
-  int m_enableCondition;
+  unsigned int m_enableCondition;
   bool m_enabled;
 
   bool m_pushedUpdates;
@@ -336,6 +349,10 @@ protected:
   CPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;
+  TransformMatrix m_cachedTransform; // Contains the absolute transform the control
+
+  bool  m_controlIsDirty;
+  CRect m_renderRegion;         // In screen coordinates
 };
 
 #endif

@@ -87,12 +87,15 @@ public:
    CNetwork();
    virtual ~CNetwork();
 
+   // Return our hostname
+   virtual CStdString GetHostName(void);
+
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
    CNetworkInterface* GetInterfaceByName(CStdString& name);
 
    // Return the first interface which is active
-   CNetworkInterface* GetFirstConnectedInterface(void);
+   virtual CNetworkInterface* GetFirstConnectedInterface(void);
 
    // Return true if there is a interface for the same network as address
    bool HasInterfaceForIP(unsigned long address);

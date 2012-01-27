@@ -19,29 +19,25 @@
  *
  */
 
+#include "pyutil.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "player.h"
 #include "pyplaylist.h"
-#include "pyutil.h"
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #include "listitem.h"
 #include "FileItem.h"
 #include "utils/LangCodeExpander.h"
 #include "settings/Settings.h"
+#include "pythreadstate.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 
 // player callback class
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,9 +57,9 @@ namespace PYXBMC
 
     self->iPlayList = PLAYLIST_MUSIC;
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer = new CPythonPlayer();
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
 
     self->pPlayer->SetCallback(PyThreadState_Get(), (PyObject*)self);
     self->playerCore = EPC_NONE;
@@ -82,10 +78,10 @@ namespace PYXBMC
   {
     self->pPlayer->SetCallback(NULL, NULL);
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer->Release();
-    Py_END_ALLOW_THREADS
-
+    pyState.Restore();
+      
     self->pPlayer = NULL;
     self->ob_type->tp_free((PyObject*)self);
   }
@@ -141,6 +137,8 @@ namespace PYXBMC
       {
         g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
       }
+
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
     else if ((PyString_Check(pObject) || PyUnicode_Check(pObject)) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
@@ -150,14 +148,17 @@ namespace PYXBMC
       pListItem = (ListItem*)pObjectListItem;
 
       // set m_strPath to the passed url
-      pListItem->item->m_strPath = PyString_AsString(pObject);
+      pListItem->item->SetPath(PyString_AsString(pObject));
 
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
     }
     else if (PyString_Check(pObject) || PyUnicode_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
-      g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
+      
+      CPyThreadState pyState;
+      g_application.getApplicationMessenger().MediaPlay(item.GetPath());
     }
     else if (PlayList_Check(pObject))
     {
@@ -165,6 +166,8 @@ namespace PYXBMC
       PlayList* pPlayList = (PlayList*)pObject;
       self->iPlayList = pPlayList->iPlayList;
       g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
+
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
 
@@ -178,7 +181,9 @@ namespace PYXBMC
 
   PyObject* pyPlayer_Stop(PyObject *self, PyObject *args)
   {
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaStop();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -190,7 +195,9 @@ namespace PYXBMC
 
   PyObject* Player_Pause(PyObject *self, PyObject *args)
   {
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaPause();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -205,7 +212,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerNext();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -220,7 +229,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -244,7 +255,10 @@ namespace PYXBMC
     }
     g_playlistPlayer.SetCurrentSong(iItem);
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPlay(iItem);
+    pyState.Restore();
+
     //g_playlistPlayer.Play(iItem);
     //CLog::Log(LOGNOTICE, "Current Song After Play: %i", g_playlistPlayer.GetCurrentSong());
 
@@ -523,12 +537,36 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_ShowSubtitles
+  PyDoc_STRVAR(showSubtitles__doc__,
+    "showSubtitles(visible) -- enable/disable subtitles\n"
+    "\n"
+    "visible        : boolean - True for visible subtitles.\n"
+    "example:\n"
+    "  - xbmc.Player().showSubtitles(True)");
+
+  PyObject* Player_ShowSubtitles(PyObject *self, PyObject *args)
+  {
+    char bVisible;
+    if (!PyArg_ParseTuple(args, (char*)"b", &bVisible)) return NULL;
+    if (g_application.m_pPlayer)
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleOn = (bVisible != 0);
+      g_application.m_pPlayer->SetSubtitleVisible(bVisible != 0);
+
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+    return NULL;
+  }
+
   // Player_DisableSubtitles
   PyDoc_STRVAR(DisableSubtitles__doc__,
     "DisableSubtitles() -- disable subtitles\n");
 
   PyObject* Player_DisableSubtitles(PyObject *self)
   {
+    CLog::Log(LOGWARNING,"'xbmc.Player().disableSubtitles()' is deprecated and will be removed in future releases, please use 'xbmc.Player().showSubtitles(false)' instead");
     if (g_application.m_pPlayer)
     {
       g_settings.m_currentVideoSettings.m_SubtitleOn = false;
@@ -542,7 +580,7 @@ namespace PYXBMC
 
   // Player_getAvailableAudioStreams
   PyDoc_STRVAR(getAvailableAudioStreams__doc__,
-               "getAvailableAudioStreams() -- get Audio stream names\n");
+    "getAvailableAudioStreams() -- get Audio stream names\n");
   
   PyObject* Player_getAvailableAudioStreams(PyObject *self)
   {
@@ -557,7 +595,7 @@ namespace PYXBMC
         g_LangCodeExpander.Lookup(FullLang, strName);
         if (FullLang.IsEmpty())
           g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
-        PyList_Append(list, Py_BuildValue("s", FullLang.c_str()));
+        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
       }
       return list;
     }
@@ -568,12 +606,12 @@ namespace PYXBMC
 
   // Player_setAudioStream
   PyDoc_STRVAR(setAudioStream__doc__,
-               "setAudioStream(stream) -- set Audio Stream \n"
-               "\n"
-               "stream           : int\n"
-               "\n"
-               "example:\n"
-               "  - setAudioStream(1)\n");
+    "setAudioStream(stream) -- set Audio Stream \n"
+    "\n"
+    "stream           : int\n"
+    "\n"
+    "example:\n"
+    "  - setAudioStream(1)\n");
   
   PyObject* Player_setAudioStream(PyObject *self, PyObject *args)
   {
@@ -590,7 +628,60 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }  
+
+  // Player_getAvailableSubtitleStreams
+  PyDoc_STRVAR(getAvailableSubtitleStreams__doc__,
+    "getAvailableSubtitleStreams() -- get Subtitle stream names\n");
+
+  PyObject* Player_getAvailableSubtitleStreams(PyObject *self)
+  {
+    if (g_application.m_pPlayer)
+    {
+      PyObject *list = PyList_New(0);
+      for (int iStream=0; iStream < g_application.m_pPlayer->GetSubtitleCount(); iStream++)
+      {
+        CStdString strName;
+        CStdString FullLang;
+        g_application.m_pPlayer->GetSubtitleName(iStream, strName);
+        if (!g_LangCodeExpander.Lookup(FullLang, strName))
+          FullLang = strName;
+        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
+      }
+      return list;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_setSubtitleStream
+  PyDoc_STRVAR(setSubtitleStream__doc__,
+    "setSubtitleStream(stream) -- set Subtitle Stream \n"
+    "\n"
+    "stream           : int\n"
+    "\n"
+    "example:\n"
+    "  - setSubtitleStream(1)\n");
+
+  PyObject* Player_setSubtitleStream(PyObject *self, PyObject *args)
+  {
+    int iStream;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iStream)) return NULL;
   
+    if (g_application.m_pPlayer)
+    {
+      int streamCount = g_application.m_pPlayer->GetSubtitleCount();
+      if(iStream < streamCount)
+      {
+        g_application.m_pPlayer->SetSubtitle(iStream);
+        g_application.m_pPlayer->SetSubtitleVisible(true);
+      }
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
@@ -614,9 +705,12 @@ namespace PYXBMC
     {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
     {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
     {(char*)"getSubtitles", (PyCFunction)Player_GetSubtitles, METH_NOARGS, getSubtitles__doc__},
+    {(char*)"showSubtitles", (PyCFunction)Player_ShowSubtitles, METH_VARARGS, showSubtitles__doc__},
     {(char*)"disableSubtitles", (PyCFunction)Player_DisableSubtitles, METH_NOARGS, DisableSubtitles__doc__},
     {(char*)"getAvailableAudioStreams", (PyCFunction)Player_getAvailableAudioStreams, METH_NOARGS, getAvailableAudioStreams__doc__},
     {(char*)"setAudioStream", (PyCFunction)Player_setAudioStream, METH_VARARGS, setAudioStream__doc__},
+    {(char*)"getAvailableSubtitleStreams", (PyCFunction)Player_getAvailableSubtitleStreams, METH_NOARGS, getAvailableSubtitleStreams__doc__},
+    {(char*)"setSubtitleStream", (PyCFunction)Player_setSubtitleStream, METH_VARARGS, setSubtitleStream__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -632,12 +726,6 @@ namespace PYXBMC
     "         : - xbmc.PLAYER_CORE_PAPLAYER\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Player_Type;
 

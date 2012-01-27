@@ -95,6 +95,8 @@ __int64 CDVDInputStreamMemory::Seek(__int64 offset, int whence)
       else m_iDataPos = (int)offset;
       break;
     }
+    default:
+      return -1;
   }
   return m_iDataPos;
 }

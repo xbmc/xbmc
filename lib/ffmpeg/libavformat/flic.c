@@ -152,12 +152,12 @@ static int flic_read_header(AVFormatContext *s,
 
         /* all audio frames are the same size, so use the size of the first chunk for block_align */
         ast->codec->block_align = AV_RL32(&preamble[0]);
-        ast->codec->codec_type = CODEC_TYPE_AUDIO;
+        ast->codec->codec_type = AVMEDIA_TYPE_AUDIO;
         ast->codec->codec_id = CODEC_ID_PCM_U8;
         ast->codec->codec_tag = 0;
         ast->codec->sample_rate = FLIC_TFTD_SAMPLE_RATE;
         ast->codec->channels = 1;
-        ast->codec->sample_fmt = SAMPLE_FMT_U8;
+        ast->codec->sample_fmt = AV_SAMPLE_FMT_U8;
         ast->codec->bit_rate = st->codec->sample_rate * 8;
         ast->codec->bits_per_coded_sample = 8;
         ast->codec->channel_layout = CH_LAYOUT_MONO;
@@ -259,7 +259,7 @@ static int flic_read_packet(AVFormatContext *s,
     return ret;
 }
 
-AVInputFormat flic_demuxer = {
+AVInputFormat ff_flic_demuxer = {
     "flic",
     NULL_IF_CONFIG_SMALL("FLI/FLC/FLX animation format"),
     sizeof(FlicDemuxContext),

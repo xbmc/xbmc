@@ -8,6 +8,7 @@
     point="xbmc.player.musicviz"
     library_windx="MilkDrop_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">MilkDrop ще ви отведе на пътешествие между звуковите вълни, които чувате</summary>
     <summary lang="en">MilkDrop takes you flying through the soundwaves you're hearing</summary>
     <summary lang="es">Milkdrop te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="fi">MilkDrop lennättää sinut ääniaaltojen läpi</summary>
@@ -20,6 +21,7 @@
     <summary lang="ro">MilkDrop vă face să zburați printre undele audio pe care le auziți</summary>
     <summary lang="se">MilkDrop tar med dig på en flygtur genom ljudvågorna du hör</summary>
     <summary lang="zh">MilkDrop带你与声波一起飞翔</summary>
+    <description lang="bg">Първоначално MilkDrop е замислена като приставка за музикалния плеър Winamp. Докато слушате музикалната си колекция MilkDrop ще ви накара да "полетите" измежду звуковите вълни, които чувате. Ползва ритъма за да създаде безброй еуфорични ефекти. Така създава едно богато визуално пътешествие в звука.</description>
     <description lang="en">MilkDrop was originally a music visualizer "plug-in" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound.</description>
     <description lang="es">MilkDrop era originalmente un plug-in visualizador de música para Winamp. Mientras escuchas música, MilkDrop te lleva volando a través de las ondas que estás escuchando, y utiliza la detección del ritmo para activar una gran cantidad de efectos psicodélicos, creando una rica experiencia visual a través del sonido.</description>
     <description lang="fi">MilkDrop oli alunperin Winampin visualisaattorilisäosa. Kuunnellessasi musiikkia MilkDrop lennättää sinut kuulemiesi ääniaaltojen läpi ja käyttää tahdintunnistusta lukemattomien psykedeelisten tehosteiden toistamiseen, luoden visuaalisen matkan musiikin läpi.</description>

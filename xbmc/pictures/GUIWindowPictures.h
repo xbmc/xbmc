@@ -34,8 +34,10 @@ public:
   CGUIWindowPictures(void);
   virtual ~CGUIWindowPictures(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnInitWindow();
 
 protected:
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList& items);
   virtual void OnInfo(int item);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
@@ -60,4 +62,5 @@ protected:
   DllImageLib m_ImageLib;
 
   CPictureThumbLoader m_thumbLoader;
+  bool m_slideShowStarted;
 };

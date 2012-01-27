@@ -1,0 +1,31 @@
+From fdf7deeb66155a71acf2e34766d376d50f81b43a Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Fri, 22 Apr 2011 15:42:51 +0200
+Subject: Don't mark generated dummy frame output from mpeg1/2 decoder as keyframe.
+
+We use this flag to tell when to assume decoded data is free
+from artifacts after a seek. The mpeg1/2 decoder will generate
+a dummy frame if decoding is started on a non keyframe. This
+will sadly be output from decoder to player and displayed
+as a gray screen.
+
+diff --git a/lib/ffmpeg/libavcodec/mpegvideo.c b/lib/ffmpeg/libavcodec/mpegvideo.c
+index c8706bc..a0acda1 100644
+--- a/lib/ffmpeg/libavcodec/mpegvideo.c
++++ b/lib/ffmpeg/libavcodec/mpegvideo.c
+@@ -996,6 +996,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
+             /* Allocate a dummy frame */
+             i= ff_find_unused_picture(s, 0);
+             s->last_picture_ptr= &s->picture[i];
++            s->last_picture_ptr->key_frame = 0;
+             if(ff_alloc_picture(s, s->last_picture_ptr, 0) < 0)
+                 return -1;
+         }
+@@ -1003,6 +1004,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
+             /* Allocate a dummy frame */
+             i= ff_find_unused_picture(s, 0);
+             s->next_picture_ptr= &s->picture[i];
++            s->next_picture_ptr->key_frame = 0;
+             if(ff_alloc_picture(s, s->next_picture_ptr, 0) < 0)
+                 return -1;
+         }

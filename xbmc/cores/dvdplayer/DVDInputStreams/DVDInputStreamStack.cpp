@@ -68,9 +68,9 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
   {
     TFile file(new CFile());
 
-    if (!file->Open(items[index]->m_strPath, READ_TRUNCATED))
+    if (!file->Open(items[index]->GetPath(), READ_TRUNCATED))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->m_strPath.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->GetPath().c_str());
       continue;
     }
     TSeg segment;
@@ -79,7 +79,7 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
 
     if(segment.length <= 0)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get file length for '%s' - skipping", items[index]->m_strPath.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to get file length for '%s' - skipping", items[index]->GetPath().c_str());
       continue;
     }
 

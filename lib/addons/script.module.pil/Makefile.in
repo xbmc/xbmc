@@ -1,0 +1,58 @@
+
+OSTYPE=$(shell uname)
+VERSION=1.1.7
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+SOURCE=Imaging-$(VERSION)
+ARCHIVE=$(SOURCE).tar.gz
+
+RETRIEVE_TOOL=curl
+RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
+ARCHIVE_TOOL=tar
+ARCHIVE_TOOL_FLAGS=xf
+
+ifeq ($(OSTYPE),Darwin)
+include @abs_top_srcdir@/tools/darwin/depends/Makefile.include
+include @abs_top_srcdir@/tools/darwin/depends/config.site.mk
+export TARBALLS_LOCATION=.
+export PYTHONXCPREFIX=$(PREFIX)
+export LDFLAGS+=-L$(PREFIX)/lib
+PYTHON=$(TOOLCHAIN)/bin/python
+PYTHONCROSS=--cross-compile
+else
+PYTHON=@PYTHON@
+endif
+
+NO_SYSTEM_PIL=$(shell $(PYTHON) -m Image >/dev/null 2>&1 || echo "1")
+
+DESTDIR=@abs_top_srcdir@/addons/script.module.pil/lib/PIL
+
+CLEAN_FILES=$(ARCHIVE) $(SOURCE) $(DESTDIR)
+
+all: $(DESTDIR)
+
+ifeq (1,$(NO_SYSTEM_PIL))
+$(ARCHIVE):
+	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+
+$(SOURCE): $(ARCHIVE)
+	-rm -rf $(SOURCE)
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
+	if test "$(OSTYPE)" = "Darwin"; then \
+	cd $(SOURCE); \
+	patch -p1 < ../Imaging-1.1.7-crosscompiling-0.1.patch; \
+	patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch; \
+	patch -p1 < ../Imaging-1.1.7-access.patch; \
+	sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"; \
+	sed -ie "s|ZLIB_ROOT = None|ZLIB_ROOT = libinclude(\"${platform_sdk_path}/usr\")|" "setup.py"; \
+	fi
+
+$(DESTDIR): $(SOURCE)
+	-rm -rf $(DESTDIR)
+	pushd $(SOURCE) && $(PYTHON) setup.py build $(PYTHONCROSS) --build-lib $(DESTDIR); popd
+else
+$(DESTDIR):
+	@true
+endif
+
+include ../../../Makefile.include
+

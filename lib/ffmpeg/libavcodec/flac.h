@@ -28,11 +28,13 @@
 #define AVCODEC_FLAC_H
 
 #include "avcodec.h"
+#include "get_bits.h"
 
 #define FLAC_STREAMINFO_SIZE   34
 #define FLAC_MAX_CHANNELS       8
 #define FLAC_MIN_BLOCKSIZE     16
 #define FLAC_MAX_BLOCKSIZE  65535
+#define FLAC_MIN_FRAME_SIZE    11
 
 enum {
     FLAC_CHMODE_INDEPENDENT =  0,
@@ -80,6 +82,11 @@ typedef struct FLACFrameInfo {
     FLACCOMMONINFO
     int blocksize;          /**< block size of the frame                 */
     int ch_mode;            /**< channel decorrelation mode              */
+    int64_t frame_or_sample_num;    /**< frame number or sample number   */
+    int is_var_size;                /**< specifies if the stream uses variable
+                                         block sizes or a fixed block size;
+                                         also determines the meaning of
+                                         frame_or_sample_num             */
 } FLACFrameInfo;
 
 /**
@@ -120,4 +127,14 @@ void ff_flac_parse_block_header(const uint8_t *block_header,
  */
 int ff_flac_get_max_frame_size(int blocksize, int ch, int bps);
 
+/**
+ * Validate and decode a frame header.
+ * @param      avctx AVCodecContext to use as av_log() context
+ * @param      gb    GetBitContext from which to read frame header
+ * @param[out] fi    frame information
+ * @param      log_level_offset  log level offset. can be used to silence error messages.
+ * @return non-zero on error, 0 if ok
+ */
+int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
+                                FLACFrameInfo *fi, int log_level_offset);
 #endif /* AVCODEC_FLAC_H */

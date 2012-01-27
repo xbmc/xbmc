@@ -31,6 +31,9 @@ class TiXmlNode;
 
 class ILCD : public CThread
 {
+private:
+  enum DISABLE_ON_PLAY { DISABLE_ON_PLAY_NONE = 0, DISABLE_ON_PLAY_VIDEO = 1, DISABLE_ON_PLAY_MUSIC = 2 };
+
 public:
   enum LCD_MODE {
                         LCD_MODE_GENERAL = 0,
@@ -55,6 +58,8 @@ public:
   virtual void Resume() = 0;
   virtual void SetBackLight(int iLight) = 0;
   virtual void SetContrast(int iContrast) = 0;
+  virtual int  GetColumns() = 0;
+  virtual int  GetRows() = 0;
   virtual void SetLine(int iLine, const CStdString& strLine) = 0;
   virtual void DisableOnPlayback(bool playingVideo, bool playingMusic);
   CStdString GetProgressBar(double tCurrent, double tTotal);
@@ -63,13 +68,15 @@ public:
   void LoadSkin(const CStdString &xmlFile);
   void Reset();
   void Render(LCD_MODE mode);
+  ILCD() : m_disableOnPlay(DISABLE_ON_PLAY_NONE), 
+           m_eCurrentCharset(CUSTOM_CHARSET_DEFAULT) {}
 protected:
   virtual void Process() = 0;
   void StringToLCDCharSet(CStdString& strText);
   unsigned char GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset=-1);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
+
 private:
-  enum DISABLE_ON_PLAY { DISABLE_ON_PLAY_NONE = 0, DISABLE_ON_PLAY_VIDEO = 1, DISABLE_ON_PLAY_MUSIC = 2 };
   int m_disableOnPlay;
 
   std::vector<CGUIInfoLabel> m_lcdMode[LCD_MODE_MAX];

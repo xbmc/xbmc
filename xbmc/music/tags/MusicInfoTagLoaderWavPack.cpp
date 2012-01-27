@@ -20,7 +20,7 @@
  */
 
 #include "MusicInfoTagLoaderWavPack.h"
-#include "cores/paplayer/WAVPackcodec.h"
+#include "cores/paplayer/DVDPlayerCodec.h"
 
 
 using namespace MUSIC_INFO;
@@ -33,7 +33,7 @@ CMusicInfoTagLoaderWAVPack::~CMusicInfoTagLoaderWAVPack()
 
 int CMusicInfoTagLoaderWAVPack::ReadDuration(const CStdString& strFileName)
 {
-  WAVPackCodec codec;
+  DVDPlayerCodec codec;
   if (codec.Init(strFileName, 4096))
   {
     return (int)((codec.m_TotalTime + 500) / 1000);

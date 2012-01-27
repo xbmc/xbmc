@@ -9,8 +9,6 @@ typedef FILE* FileHandle;
 #define BAD_HANDLE NULL
 #endif
 
-#include "filesystem/File.h"
-
 class RAROptions;
 
 enum FILE_HANDLETYPE {FILE_HANDLENORMAL,FILE_HANDLESTD,FILE_HANDLEERR};
@@ -25,6 +23,9 @@ struct FileStat
   bool IsDir;
 };
 
+namespace XFILE {
+  class CFile;
+};
 
 class File
 {
@@ -33,7 +34,7 @@ class File
     void AddFileToList();
 
     //FileHandle hFile;
-    XFILE::CFile m_File;
+    XFILE::CFile &m_File;
 
     bool LastWrite;
     FILE_HANDLETYPE HandleType;

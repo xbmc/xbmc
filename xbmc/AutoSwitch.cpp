@@ -76,9 +76,16 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;
+
+  default:
+    {
+      if(MetadataPercentage(vecItems) > 0.25)
+        return DEFAULT_VIEW_INFO;
+      else
+        return DEFAULT_VIEW_LIST;
+    }
+    break;
   }
-  // if this was called by an unknown window just return listtview
-  if (iSortMethod < 0) return DEFAULT_VIEW_LIST;
 
   bool bThumbs = false;
 
@@ -232,3 +239,20 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
   return false;
 }
 
+float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
+{
+  int count = 0;
+  int total = vecItems.Size();
+  for (int i = 0; i < vecItems.Size(); i++)
+  {
+    const CFileItemPtr item = vecItems[i];
+    if(item->HasMusicInfoTag()
+    || item->HasVideoInfoTag()
+    || item->HasPictureInfoTag()
+    || item->HasProperty("Addon.ID"))
+      count++;
+    if(item->IsParentFolder())
+      total--;
+  }
+  return (float)count / total;
+}

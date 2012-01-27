@@ -53,11 +53,14 @@ void av_read_image_line(uint16_t *dst, const uint8_t *data[4], const int linesiz
         }
     } else {
         const uint8_t *p = data[plane]+ y*linesize[plane] + x*step + comp.offset_plus1-1;
+        int is_8bit = shift + depth <= 8;
+
+        if (is_8bit)
+            p += !!(flags & PIX_FMT_BE);
 
         while(w--){
-            int val;
-            if(flags & PIX_FMT_BE) val= AV_RB16(p);
-            else                   val= AV_RL16(p);
+            int val = is_8bit ? *p :
+                flags & PIX_FMT_BE ? AV_RB16(p) : AV_RL16(p);
             val = (val>>shift) & mask;
             if(read_pal_component)
                 val= data[1][4*val + c];
@@ -91,15 +94,23 @@ void av_write_image_line(const uint16_t *src, uint8_t *data[4], const int linesi
         int shift = comp.shift;
         uint8_t *p = data[plane]+ y*linesize[plane] + x*step + comp.offset_plus1-1;
 
-        while (w--) {
-            if (flags & PIX_FMT_BE) {
-                uint16_t val = AV_RB16(p) | (*src++<<shift);
-                AV_WB16(p, val);
-            } else {
-                uint16_t val = AV_RL16(p) | (*src++<<shift);
-                AV_WL16(p, val);
+        if (shift + depth <= 8) {
+            p += !!(flags & PIX_FMT_BE);
+            while (w--) {
+                *p |= (*src++<<shift);
+                p += step;
             }
-            p+= step;
+        } else {
+            while (w--) {
+                if (flags & PIX_FMT_BE) {
+                    uint16_t val = AV_RB16(p) | (*src++<<shift);
+                    AV_WB16(p, val);
+                } else {
+                    uint16_t val = AV_RL16(p) | (*src++<<shift);
+                    AV_WL16(p, val);
+                }
+                p+= step;
+            }
         }
     }
 }
@@ -839,4 +850,18 @@ int av_get_bits_per_pixel(const AVPixFmtDescriptor *pixdesc)
     }
 
     return bits >> log2_pixels;
+}
+
+char *av_get_pix_fmt_string (char *buf, int buf_size, enum PixelFormat pix_fmt)
+{
+    /* print header */
+    if (pix_fmt < 0) {
+        snprintf (buf, buf_size, "name      " " nb_components" " nb_bits");
+    } else {
+        const AVPixFmtDescriptor *pixdesc = &av_pix_fmt_descriptors[pix_fmt];
+        snprintf(buf, buf_size, "%-11s %7d %10d",
+                 pixdesc->name, pixdesc->nb_components, av_get_bits_per_pixel(pixdesc));
+    }
+
+    return buf;
 }

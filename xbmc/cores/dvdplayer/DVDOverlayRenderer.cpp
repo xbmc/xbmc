@@ -78,7 +78,8 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
     DWORD color = img->color;
     BYTE alpha = (BYTE)(color &0xff);
 
-    if(alpha == 255)
+    // fully transparent or width or height is 0 -> not displayed
+    if(alpha == 255 || img->w == 0 || img->h == 0)
     {
       img = img->next;
       continue;
@@ -101,7 +102,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
       if(y + i >= pPicture->height)
         break;
 
-      BYTE* line = img->bitmap + img->w*i;
+      BYTE* line = img->bitmap + img->stride*i;
 
       BYTE* target[3];
       target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;

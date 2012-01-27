@@ -1,0 +1,58 @@
+include Makefile.include
+
+BUILDTOOLS = gas-preprocessor help2man m4 autoconf automake libtool pkg-config yasm cmake sed tar dpkg
+
+SUBDIRS := \
+	Backrow pcre expat gettext readline sqlite3 \
+	liblzo2 freetype2 fontconfig \
+	openssl libssh libssh2 librtmp curl \
+	libjpeg-turbo tiff libpng libogg \
+	libvorbis libflac libmad fribidi libmpeg2 \
+	libass libcdio libsamplerate libcrystalhd libnfs \
+	libGLEW libsdl libsdl_mixer libsdl_image \
+	libmicrohttpd libmodplug libbluray libyajl \
+	libgpg-error libgcrypt afpfs-ng \
+	libplist libshairport libcec tinyxml \
+        samba python26 distribute distutilscross \
+	mysqlclient boost \
+
+ifeq ($(DARWIN), ios)
+  EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
+else
+  EXCLUDED = Backrow
+endif
+SUBDIRS := $(filter-out $(EXCLUDED),$(SUBDIRS))
+
+.PHONY: $(BUILDTOOLS) $(SUBDIRS)
+
+all: $(BUILDTOOLS) $(SUBDIRS)
+
+$(BUILDTOOLS):
+	$(MAKE) -C $@
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+clean:
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuildtools:
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuilddepends:
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleantoolchain:
+	rm -rf $(TOOLCHAIN)
+
+cleanprefix:
+	rm -rf $(PREFIX)
+
+distclean::
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+	find . -name .gitignore  -exec rm -rf {} \;
+	rm -rf $(TOOLCHAIN)
+	rm -rf $(PREFIX)
+	rm -f Makefile Makefile.include config.site config.site.mk config.log config.status configure

@@ -25,6 +25,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
+#include "video/Bookmark.h"
 
 class CArchive;
 class TiXmlNode;
@@ -42,7 +43,22 @@ class CVideoInfoTag : public IArchivable, public ISerializable
 public:
   CVideoInfoTag() { Reset(); };
   void Reset();
-  bool Load(const TiXmlElement *movie, bool chained = false);
+  /* \brief Load information to a videoinfotag from an XML element
+   There are three types of tags supported:
+    1. Single-value tags, such as <title>.  These are set if available, else are left untouched.
+    2. Additive tags, such as <set> or <genre>.  These are appended to or replaced (if available) based on the value
+       of the prioritise parameter.  In addition, a clear attribute is available in the XML to clear the current value prior
+       to appending.
+    3. Image tags such as <thumb> and <fanart>.  If the prioritise value is specified, any additional values are prepended
+       to the existing values.
+
+   \param element    the root XML element to parse.
+   \param append     whether information should be added to the existing tag, or whether it should be reset first.
+   \param prioritise if appending, whether additive tags should be prioritised (i.e. replace or prepend) over existing values. Defaults to false.
+
+   \sa ParseNative
+   */
+  bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value);
@@ -50,6 +66,15 @@ public:
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 
+  const CStdString& GetPath() const
+  {
+    if (m_strFileNameAndPath.IsEmpty())
+      return m_strPath;
+    return m_strFileNameAndPath;
+  };
+
+  CStdString m_basePath; // the base path of the video, for folder-based lookups
+  int m_parentPathID;      // the parent path id where the base path of the video lies
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
@@ -65,7 +90,8 @@ public:
   CStdString m_strArtist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
-  CStdString m_strSet;
+  std::vector<std::string> m_set;
+  std::vector<int> m_setId;
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
@@ -83,6 +109,7 @@ public:
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
   CStdString m_strShowLink;
+  CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;
   int m_iYear;
@@ -96,11 +123,20 @@ public:
   float m_fRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
+  int m_iIdShow;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
+  CBookmark m_resumePoint;
 
 private:
-  void ParseNative(const TiXmlElement* movie);
+  /* \brief Parse our native XML format for video info.
+   See Load for a description of the available tag types.
+
+   \param element    the root XML element to parse.
+   \param prioritise whether additive tags should be replaced (or prepended) by the content of the tags, or appended to.
+   \sa Load
+   */
+  void ParseNative(const TiXmlElement* element, bool prioritise);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

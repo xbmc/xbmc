@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
 #include <linux/cdrom.h>
 #endif
 #endif
@@ -49,6 +49,10 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "IoSupport.h"
+#include "cdioSupport.h"
+#include "storage/MediaManager.h"
+
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -62,7 +66,7 @@ CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
 CStdString CDetectDVDMedia::m_diskLabel = "";
 CStdString CDetectDVDMedia::m_diskPath = "";
 
-CDetectDVDMedia::CDetectDVDMedia()
+CDetectDVDMedia::CDetectDVDMedia() : CThread("CDetectDVDMedia")
 {
   m_bAutorun = false;
   m_bStop = false;
@@ -84,7 +88,6 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process()
 {
-  SetName("CDetectDVDMedia");
 // for apple - currently disable this check since cdio will return null if no media is loaded
 #ifndef __APPLE__
   //Before entering loop make sure we actually have a CDrom drive
@@ -525,6 +528,29 @@ const CStdString &CDetectDVDMedia::GetDVDLabel()
 const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
+}
+
+CDetectDisc::CDetectDisc(const CStdString &strPath, bool bautorun)
+{
+  m_strPath  = strPath;
+  m_bautorun = bautorun;
+}
+
+bool CDetectDisc::DoWork()
+{
+  CMediaSource share;
+  share.strPath = m_strPath;
+  share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+  share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
+  if(g_mediaManager.IsAudio(share.strPath))
+    share.strStatus = "Audio-CD";
+  else if(share.strStatus == "")
+    share.strStatus = g_localizeStrings.Get(446);
+  share.strName = share.strPath;
+  share.m_ignore = true;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+  g_mediaManager.AddAutoSource(share, m_bautorun);
+  return true;
 }
 
 #endif

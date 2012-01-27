@@ -100,7 +100,6 @@ public:
    \sa CImageLoader, IJobCallback
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  static void SetWatchedOverlay(CFileItem *item);
 
 protected:
   virtual void OnLoaderStart() ;

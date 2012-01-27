@@ -26,6 +26,7 @@
 #include "windowing/WindowingFactory.h"
 #include "FrameBufferObject.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #if HAS_GLES == 2
 // For OpenGL ES2.0, FBO are not extensions but part of the API.

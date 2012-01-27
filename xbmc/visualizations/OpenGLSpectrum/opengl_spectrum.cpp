@@ -25,23 +25,91 @@
 /*
  *  Ported to XBMC by d4rk
  *  Also added 'hSpeed' to animate transition between bar heights
+ *
+ *  Ported to GLES 2.0 by Gimli
  */
-
 
 #include "addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
+
+#if defined(HAS_GLES)
+
+#if defined(__APPLE__)
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#else
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#endif//__APPLE__
+
+#include "xbmc/guilib/MatrixGLES.h"
+#include "xbmc/visualizations/EGLHelpers/GUIShader.h"
+
+#ifndef M_PI
+#define M_PI       3.141592654f
+#endif
+#define DEG2RAD(d) ( (d) * M_PI/180.0f )
+
+//OpenGL wrapper - allows us to use same code of functions draw_bars and render
+#define GL_PROJECTION             MM_PROJECTION
+#define GL_MODELVIEW              MM_MODELVIEW
+
+#define glPushMatrix()            g_matrices.PushMatrix()
+#define glPopMatrix()             g_matrices.PopMatrix()
+#define glTranslatef(x,y,z)       g_matrices.Translatef(x,y,z)
+#define glRotatef(a,x,y,z)        g_matrices.Rotatef(DEG2RAD(a),x,y,z)
+#define glPolygonMode(a,b)        ;
+#define glBegin(a)                m_shader->Enable()
+#define glEnd()                   m_shader->Disable()
+#define glMatrixMode(a)           g_matrices.MatrixMode(a)
+#define glLoadIdentity()          g_matrices.LoadIdentity()
+#define glFrustum(a,b,c,d,e,f)    g_matrices.Frustum(a,b,c,d,e,f)
+
+GLenum  g_mode = GL_TRIANGLES;
+float g_fWaveform[2][512];
+std::string frag = "precision mediump float; \n"
+                   "varying lowp vec4 m_colour; \n"
+                   "void main () \n"
+                   "{ \n"
+                   "  gl_FragColor = m_colour; \n"
+                   "}\n";
+
+std::string vert = "attribute vec4 m_attrpos;\n"
+                   "attribute vec4 m_attrcol;\n"
+                   "attribute vec4 m_attrcord0;\n"
+                   "attribute vec4 m_attrcord1;\n"
+                   "varying vec4   m_cord0;\n"
+                   "varying vec4   m_cord1;\n"
+                   "varying lowp   vec4 m_colour;\n"
+                   "uniform mat4   m_proj;\n"
+                   "uniform mat4   m_model;\n"
+                   "void main ()\n"
+                   "{\n"
+                   "  mat4 mvp    = m_proj * m_model;\n"
+                   "  gl_Position = mvp * m_attrpos;\n"
+                   "  m_colour    = m_attrcol;\n"
+                   "  m_cord0     = m_attrcord0;\n"
+                   "  m_cord1     = m_attrcord1;\n"
+                   "}\n";
+
+CGUIShader *m_shader = NULL;
+
+#elif defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
+
+GLenum  g_mode = GL_FILL;
+#endif
 
 #define NUM_BANDS 16
 
-GLfloat y_angle = 45.0, y_speed = 0.5;
 GLfloat x_angle = 20.0, x_speed = 0.0;
+GLfloat y_angle = 45.0, y_speed = 0.5;
 GLfloat z_angle = 0.0, z_speed = 0.0;
 GLfloat heights[16][16], cHeights[16][16], scale;
 GLfloat hSpeed = 0.05;
-GLenum  g_mode = GL_FILL;
 
+#if defined(HAS_SDL_OPENGL)
 void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
   if(y1 == y2)
@@ -95,20 +163,83 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
   draw_rectangle(x_offset + width, 0.0, z_offset , x_offset + width, height, z_offset + 0.1);
 }
 
+#elif defined(HAS_GLES)
+
+void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
+{
+  GLfloat col[] =  {
+                      red * 0.1f, green * 0.1f, blue * 0.1f,
+                      red * 0.2f, green * 0.2f, blue * 0.2f,
+                      red * 0.3f, green * 0.3f, blue * 0.3f,
+                      red * 0.4f, green * 0.4f, blue * 0.4f,
+                      red * 0.5f, green * 0.5f, blue * 0.5f,
+                      red * 0.6f, green * 0.6f, blue * 0.6f,
+                      red * 0.7f, green * 0.7f, blue * 0.7f,
+                      red * 0.8f, green * 0.8f, blue *0.8f
+                   };
+  GLfloat ver[] =  {
+                      x_offset + 0.0f, 0.0f,    z_offset + 0.0f,
+                      x_offset + 0.1f, 0.0f,    z_offset + 0.0f,
+                      x_offset + 0.1f, 0.0f,    z_offset + 0.1f,
+                      x_offset + 0.0f, 0.0f,    z_offset + 0.1f,
+                      x_offset + 0.0f, height,  z_offset + 0.0f,
+                      x_offset + 0.1f, height,  z_offset + 0.0f,
+                      x_offset + 0.1f, height,  z_offset + 0.1f,
+                      x_offset + 0.0f, height,  z_offset + 0.1f
+                   };
+
+  GLubyte idx[] =  {
+                      // Bottom
+                      0, 1, 2,
+                      0, 2, 3,
+                      // Left
+                      0, 4, 7,
+                      0, 7, 3,
+                      // Back
+                      3, 7, 6,
+                      3, 6, 2,
+                      // Right
+                      1, 5, 6,
+                      1, 6, 2,
+                      // Front
+                      0, 4, 5,
+                      0, 5, 1,
+                      // Top
+                      4, 5, 6,
+                      4, 6, 7
+                   };
+
+  GLint   posLoc = m_shader->GetPosLoc();
+  GLint   colLoc = m_shader->GetColLoc();
+
+  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+
+  glDrawElements(g_mode, 36, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+}
+#endif
+
 void draw_bars(void)
 {
   int x,y;
   GLfloat x_offset, z_offset, r_base, b_base;
 
-  //glClearColor(0,0,0,0);
   glClear(GL_DEPTH_BUFFER_BIT);
   glPushMatrix();
   glTranslatef(0.0,-0.5,-5.0);
   glRotatef(x_angle,1.0,0.0,0.0);
   glRotatef(y_angle,0.0,1.0,0.0);
   glRotatef(z_angle,0.0,0.0,1.0);
+  
   glPolygonMode(GL_FRONT_AND_BACK, g_mode);
   glBegin(GL_TRIANGLES);
+  
   for(y = 0; y < 16; y++)
   {
     z_offset = -1.6 + ((15 - y) * 0.2);
@@ -118,7 +249,7 @@ void draw_bars(void)
 
     for(x = 0; x < 16; x++)
     {
-      x_offset = -1.6 + (x * 0.2);
+      x_offset = -1.6 + ((float)x * 0.2);
       if (::fabs(cHeights[y][x]-heights[y][x])>hSpeed)
       {
         if (cHeights[y][x]<heights[y][x])
@@ -127,8 +258,8 @@ void draw_bars(void)
           cHeights[y][x] -= hSpeed;
       }
       draw_bar(x_offset, z_offset,
-        cHeights[y][x], r_base - (x * (r_base / 15.0)),
-        x * (1.0 / 15), b_base);
+        cHeights[y][x], r_base - (float(x) * (r_base / 15.0)),
+        (float)x * (1.0 / 15), b_base);
     }
   }
   glEnd();
@@ -139,12 +270,29 @@ void draw_bars(void)
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
-  return STATUS_NEED_SETTINGS;
+  scale = 1.0 / log(256.0);
+
+#if defined(HAS_GLES)
+  m_shader = new CGUIShader(vert, frag);
+
+  if(!m_shader)
+    return ADDON_STATUS_UNKNOWN;
+
+  if(!m_shader->CompileAndLink())
+  {
+    delete m_shader;
+    return ADDON_STATUS_UNKNOWN;
+  }  
+#endif
+
+  scale = 1.0 / log(256.0);
+
+  return ADDON_STATUS_NEED_SETTINGS;
 }
 
 //-- Render -------------------------------------------------------------------
@@ -195,8 +343,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
       cHeights[y][x] = 0.0;
     }
   }
-
-  scale = 1.0 / log(256.0);
 
   x_speed = 0.0;
   y_speed = 0.5;
@@ -299,7 +445,7 @@ extern "C" bool IsLocked()
 // This dll must cease all runtime activities
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Stop()
+extern "C" void ADDON_Stop()
 {
 }
 
@@ -307,15 +453,22 @@ extern "C" void Stop()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void ADDON_Destroy()
 {
+#if defined(HAS_GLES)
+  if(m_shader) 
+  {
+    m_shader->Free();
+    delete m_shader;
+  }
+#endif
 }
 
 //-- HasSettings --------------------------------------------------------------
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+extern "C" bool ADDON_HasSettings()
 {
   return true;
 }
@@ -324,16 +477,16 @@ extern "C" bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS ADDON_GetStatus()
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting ***sSet)
+extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
@@ -343,7 +496,7 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 
-extern "C" void FreeSettings()
+extern "C" void ADDON_FreeSettings()
 {
 }
 
@@ -351,56 +504,37 @@ extern "C" void FreeSettings()
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* value)
 {
   if (!strSetting || !value)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
-  if (strcmp(strSetting, "mode")==0)
+  if (strcmp(strSetting, "bar_height")==0)
   {
     switch (*(int*) value)
     {
-      case 1:
-        g_mode = GL_LINE;
-        break;
+    case 1://standard
+      scale = 1.f / log(256.f);
+      break;
 
-      case 2:
-        g_mode = GL_POINT;
-        break;
-
-      case 0:
-      default:
-        g_mode = GL_FILL;
-        break;
-    }
-    return STATUS_OK;
-  }
-  else if (strcmp(strSetting, "bar_height")==0)
-  {
-    switch (*(int*) value)
-    {
-    case 1:
+    case 2://big
       scale = 2.f / log(256.f);
       break;
 
-    case 2:
+    case 3://real big
       scale = 3.f / log(256.f);
       break;
 
-    case 3:
-      scale = 0.5f / log(256.f);
-      break;
-
-    case 4:
+    case 4://unused
       scale = 0.33f / log(256.f);
       break;
 
-    case 0:
+    case 0://small
     default:
-      scale = 1.f / log(256.f);
+      scale = 0.5f / log(256.f);
       break;
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
   }
   else if (strcmp(strSetting, "speed")==0)
   {
@@ -427,9 +561,48 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
       hSpeed = 0.05f;
       break;
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
+  }
+  else if (strcmp(strSetting, "mode")==0)
+  {
+#if defined(HAS_SDL_OPENGL)
+    switch (*(int*) value)
+    {
+      case 1:
+        g_mode = GL_LINE;
+        break;
+
+      case 2:
+        g_mode = GL_POINT;
+        break;
+
+      case 0:
+      default:
+        g_mode = GL_FILL;
+        break;
+    }
+#else
+    switch (*(int*) value)
+    {
+      case 1:
+        g_mode = GL_LINE_LOOP;
+        break;
+
+      case 2:
+        g_mode = GL_LINES; //no points on gles!
+        break;
+
+      case 0:
+      default:
+        g_mode = GL_TRIANGLES;
+        break;
+    }
+
+#endif
+
+    return ADDON_STATUS_OK;
   }
 
-  return STATUS_UNKNOWN;
+  return ADDON_STATUS_UNKNOWN;
 }
 

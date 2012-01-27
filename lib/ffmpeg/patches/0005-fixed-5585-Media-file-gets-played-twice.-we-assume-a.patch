@@ -1,0 +1,35 @@
+From 0c18eecd120fac527942cd8609545bfba7566b27 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 01:45:48 -0400
+Subject: [PATCH 05/36] fixed: #5585 Media file gets played twice. we assume avi EOF when we can't find the next streams index entry for non interleaved files.
+
+---
+ libavformat/avidec.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/avidec.c b/libavformat/avidec.c
+index 6b3e927..3d223b7 100644
+--- a/libavformat/avidec.c
++++ b/libavformat/avidec.c
+@@ -898,7 +898,8 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
+         if(i>=0){
+             int64_t pos= best_st->index_entries[i].pos;
+             pos += best_ast->packet_size - best_ast->remaining;
+-            url_fseek(s->pb, pos + 8, SEEK_SET);
++            if(url_fseek(s->pb, pos + 8, SEEK_SET) < 0)
++              return AVERROR_EOF;
+ //        av_log(s, AV_LOG_DEBUG, "pos=%"PRId64"\n", pos);
+ 
+             assert(best_ast->remaining <= best_ast->packet_size);
+@@ -908,6 +909,8 @@ static int avi_read_packet(AVFormatContext *s, AVPacket *pkt)
+                 best_ast->packet_size=
+                 best_ast->remaining= best_st->index_entries[i].size;
+         }
++        else
++          return AVERROR_EOF;
+     }
+ 
+ resync:
+-- 
+1.7.3
+

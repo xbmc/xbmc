@@ -23,7 +23,6 @@
 #include "tinyXML/tinyxml.h"
 #include "filesystem/File.h"
 #include "AddonDatabase.h"
-#include "Application.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/JobManager.h"
@@ -31,6 +30,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -152,9 +152,12 @@ VECADDONS CRepository::Parse()
       AddonPtr addon = *i;
       if (m_zipped)
       {
-        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+        CStdString file;
+        file.Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
+        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt"))
+        file.Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
+        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,file))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
       else
@@ -170,14 +173,20 @@ VECADDONS CRepository::Parse()
   return result;
 }
 
-CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo, bool check)
+CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
+  : m_repos(repos)
 {
-  m_repo = boost::dynamic_pointer_cast<CRepository>(repo->Clone(repo));
 }
 
 bool CRepositoryUpdateJob::DoWork()
 {
-  VECADDONS addons = GrabAddons(m_repo,true);
+  VECADDONS addons;
+  for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(*i);
+    VECADDONS newAddons = GrabAddons(repo);
+    addons.insert(addons.end(), newAddons.begin(), newAddons.end());
+  }
   if (addons.empty())
     return false;
 
@@ -186,23 +195,30 @@ bool CRepositoryUpdateJob::DoWork()
   database.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
+    // manager told us to feck off
+    if (ShouldCancel(0,0))
+      break;
+    if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
+      addons[i]->Props().broken = g_localizeStrings.Get(24044);
+
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
-    if (addon && addons[i]->Version() > addon->Version())
+    if (addon && addons[i]->Version() > addon->Version() &&
+        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()))
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
         CStdString referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
-          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
+          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
         CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)
       {
-        g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(),
-                                                            g_localizeStrings.Get(24061),
-                                                            addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
+        CGUIDialogKaiToast::QueueNotification(addon->Icon(),
+                                              g_localizeStrings.Get(24061),
+                                              addon->Name(),TOAST_DISPLAY_TIME,false,TOAST_DISPLAY_TIME);
       }
     }
     if (!addons[i]->Props().broken.IsEmpty())
@@ -214,27 +230,21 @@ bool CRepositoryUpdateJob::DoWork()
                                              g_localizeStrings.Get(24097),
                                              ""))
           database.DisableAddon(addons[i]->ID());
-
-        database.BreakAddon(addons[i]->ID(),true,addons[i]->Props().broken);
       }
     }
-    if (addons[i]->Props().broken.IsEmpty())
-      database.BreakAddon(addons[i]->ID(),false);
+    database.BreakAddon(addons[i]->ID(), addons[i]->Props().broken);
   }
 
   return true;
 }
 
-VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
-                                           bool check)
+VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
 {
   CAddonDatabase database;
   database.Open();
   CStdString checksum;
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
-  CStdString reposum=checksum;
-  if (check)
-    reposum = repo->Checksum();
+  CStdString reposum = repo->Checksum();
   VECADDONS addons;
   if (idRepo == -1 || !checksum.Equals(reposum))
   {

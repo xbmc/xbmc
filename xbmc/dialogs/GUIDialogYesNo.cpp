@@ -22,8 +22,8 @@
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 
-CGUIDialogYesNo::CGUIDialogYesNo(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_YES_NO, "DialogYesNo.xml")
+CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
+    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
 {
   m_bConfirmed = false;
 }
@@ -61,17 +61,11 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
-bool CGUIDialogYesNo::OnAction(const CAction& action)
+bool CGUIDialogYesNo::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    m_bCanceled = true;
-    m_bConfirmed = false;
-    Close();
-    return true;
-  }
-
-  return CGUIDialogBoxBase::OnAction(action);
+  m_bCanceled = true;
+  m_bConfirmed = false;
+  return CGUIDialogBoxBase::OnBack(actionID);
 }
 
 // \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.

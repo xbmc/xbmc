@@ -1171,7 +1171,7 @@ static void pred_block(SnowContext *s, uint8_t *dst, uint8_t *tmp, int stride, i
         src += sx + sy*stride;
         if(   (unsigned)sx >= w - b_w - (HTAPS_MAX-2)
            || (unsigned)sy >= h - b_h - (HTAPS_MAX-2)){
-            ff_emulated_edge_mc(tmp + MB_SIZE, src, stride, b_w+HTAPS_MAX-1, b_h+HTAPS_MAX-1, sx, sy, w, h);
+            s->dsp.emulated_edge_mc(tmp + MB_SIZE, src, stride, b_w+HTAPS_MAX-1, b_h+HTAPS_MAX-1, sx, sy, w, h);
             src= tmp + MB_SIZE;
         }
 //        assert(b_w == b_h || 2*b_w == b_h || b_w == 2*b_h);
@@ -2234,7 +2234,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec snow_decoder = {
+AVCodec ff_snow_decoder = {
     "snow",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_SNOW,
@@ -3985,7 +3985,7 @@ static av_cold int encode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec snow_encoder = {
+AVCodec ff_snow_encoder = {
     "snow",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_SNOW,

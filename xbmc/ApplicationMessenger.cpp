@@ -42,6 +42,8 @@
 #include "guilib/GUIDialog.h"
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/Splash.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -66,6 +68,9 @@
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
+#include "utils/JobManager.h"
+#include "storage/DetectDVDType.h"
+
 using namespace std;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
@@ -73,7 +78,7 @@ CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;
   m_msg.dwParam2   = msg.dwParam2;
-  m_msg.hWaitEvent = msg.hWaitEvent;
+  m_msg.waitEvent  = msg.waitEvent;
   m_msg.lpVoid     = msg.lpVoid;
   m_msg.strParam   = msg.strParam;
   m_msg.params     = msg.params;
@@ -102,8 +107,8 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecMessages.front();
 
-    if (pMsg->hWaitEvent)
-      SetEvent(pMsg->hWaitEvent);
+    if (pMsg->waitEvent)
+      pMsg->waitEvent->Set();
 
     delete pMsg;
     m_vecMessages.pop();
@@ -113,8 +118,8 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
 
-    if (pMsg->hWaitEvent)
-      SetEvent(pMsg->hWaitEvent);
+    if (pMsg->waitEvent)
+      pMsg->waitEvent->Set();
 
     delete pMsg;
     m_vecWindowMessages.pop();
@@ -123,12 +128,16 @@ void CApplicationMessenger::Cleanup()
 
 void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 {
-  message.hWaitEvent = NULL;
+  message.waitEvent.reset();
+  boost::shared_ptr<CEvent> waitEvent;
   if (wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
     if (!g_application.IsCurrentThread())
-      message.hWaitEvent = CreateEvent(NULL, true, false, NULL);
+    {
+      message.waitEvent.reset(new CEvent(true));
+      waitEvent = message.waitEvent;
+    }
     else
     {
       //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
@@ -142,11 +151,8 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 
   if (g_application.m_bStop)
   {
-    if (message.hWaitEvent)
-    {
-      CloseHandle(message.hWaitEvent);
-      message.hWaitEvent = NULL;
-    }
+    if (message.waitEvent)
+      message.waitEvent.reset();
     return;
   }
 
@@ -154,7 +160,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->dwMessage = message.dwMessage;
   msg->dwParam1 = message.dwParam1;
   msg->dwParam2 = message.dwParam2;
-  msg->hWaitEvent = message.hWaitEvent;
+  msg->waitEvent = message.waitEvent;
   msg->lpVoid = message.lpVoid;
   msg->strParam = message.strParam;
   msg->params = message.params;
@@ -163,14 +169,18 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
-  lock.Leave();
-
-  if (message.hWaitEvent)
-  { // ensure the thread doesn't hold the graphics lock
+  lock.Leave();  // this releases the lock on the vec of messages and
+                 //   allows the ProcessMessage to execute and therefore
+                 //   delete the message itself. Therefore any accesss
+                 //   of the message itself after this point consittutes
+                 //   a race condition (yarc - "yet another race condition")
+                 //
+  if (waitEvent) // ... it just so happens we have a spare reference to the
+                 //  waitEvent ... just for such contingencies :)
+  { 
+    // ensure the thread doesn't hold the graphics lock
     CSingleExit exit(g_graphicsContext);
-    WaitForSingleObject(message.hWaitEvent, INFINITE);
-    CloseHandle(message.hWaitEvent);
-    message.hWaitEvent = NULL;
+    waitEvent->Wait();
   }
 }
 
@@ -186,11 +196,13 @@ void CApplicationMessenger::ProcessMessages()
 
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
-    lock.Leave();
+
+    boost::shared_ptr<CEvent> waitEvent = pMsg->waitEvent; 
+    lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
-    if (pMsg->hWaitEvent)
-      SetEvent(pMsg->hWaitEvent);
+    if (waitEvent)
+      waitEvent->Set();
     delete pMsg;
 
     lock.Enter();
@@ -224,25 +236,24 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           case POWERSTATE_MINIMIZE:
             Minimize();
             break;
+
+          case TMSG_RENDERER_FLUSH:
+            g_renderManager.Flush();
+            break;
         }
       }
       break;
 
 case TMSG_POWERDOWN:
       {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
+        g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
-        exit(64);
       }
       break;
 
     case TMSG_QUIT:
       {
-        g_application.Stop();
-        Sleep(200);
-        exit(0);
+        g_application.Stop(EXITCODE_QUIT);
       }
       break;
 
@@ -261,21 +272,16 @@ case TMSG_POWERDOWN:
     case TMSG_RESTART:
     case TMSG_RESET:
       {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
+        g_application.Stop(EXITCODE_REBOOT);
         g_powerManager.Reboot();
-        exit(66);
       }
       break;
 
     case TMSG_RESTARTAPP:
       {
 #ifdef _WIN32
-        g_application.Stop();
-        Sleep(200);
+        g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
-        exit(65);
         // TODO
       }
       break;
@@ -318,12 +324,26 @@ case TMSG_POWERDOWN:
             }
 
             g_playlistPlayer.ClearPlaylist(playlist);
-            g_playlistPlayer.Add(playlist, (*list));
             g_playlistPlayer.SetCurrentPlaylist(playlist);
-            g_playlistPlayer.Play(pMsg->dwParam1);
+            //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
+            //It will fall through to PlayFile
+            if (list->Size() == 1 && !(*list)[0]->IsPlayList())
+              g_application.PlayMedia(*((*list)[0]), playlist);
+            else
+            {
+              g_playlistPlayer.Add(playlist, (*list));
+              g_playlistPlayer.Play(pMsg->dwParam1);
+            }
           }
 
           delete list;
+        }
+        else if (pMsg->dwParam1 == PLAYLIST_MUSIC || pMsg->dwParam1 == PLAYLIST_VIDEO)
+        {
+          if (g_playlistPlayer.GetCurrentPlaylist() != (int)pMsg->dwParam1)
+            g_playlistPlayer.SetCurrentPlaylist(pMsg->dwParam1);
+
+          PlayListPlayerPlay(pMsg->dwParam2);
         }
       }
       break;
@@ -347,7 +367,7 @@ case TMSG_POWERDOWN:
         g_application.WakeUpScreenSaverAndDPMS();
 
         g_graphicsContext.Lock();
-        pSlideShow->Reset();
+
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
@@ -362,16 +382,18 @@ case TMSG_POWERDOWN:
           CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)
           {
+            pSlideShow->Reset();
             for (int i=0;i<items.Size();++i)
             {
               pSlideShow->Add(items[i].get());
             }
-            pSlideShow->Select(items[0]->m_strPath);
+            pSlideShow->Select(items[0]->GetPath());
           }
         }
         else
         {
           CFileItem item(pMsg->strParam, false);
+          pSlideShow->Reset();
           pSlideShow->Add(&item);
           pSlideShow->Select(pMsg->strParam);
         }
@@ -422,6 +444,9 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_SETLANGUAGE:
+      g_guiSettings.SetLanguage(pMsg->strParam);
+      break;
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
@@ -498,7 +523,7 @@ case TMSG_POWERDOWN:
           break;
 
         case 3:
-          g_application.getApplicationMessenger().RebootToDashBoard();
+          g_application.getApplicationMessenger().Quit();
           break;
 
         case 4:
@@ -515,7 +540,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
-      g_pythonParser.evalFile(pMsg->strParam.c_str());
+      g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
 #endif
       break;
 
@@ -580,6 +605,10 @@ case TMSG_POWERDOWN:
       g_playlistPlayer.SetShuffle(pMsg->dwParam1, pMsg->dwParam2 > 0);
       break;
 
+    case TMSG_PLAYLISTPLAYER_REPEAT:
+      g_playlistPlayer.SetRepeat(pMsg->dwParam1, (PLAYLIST::REPEAT_STATE)pMsg->dwParam2);
+      break;
+
     case TMSG_PLAYLISTPLAYER_GET_ITEMS:
       if (pMsg->lpVoid)
       {
@@ -588,6 +617,16 @@ case TMSG_POWERDOWN:
 
         for (int i = 0; i < playlist.size(); i++)
           list->Add(CFileItemPtr(new CFileItem(*playlist[i])));
+      }
+      break;
+
+    case TMSG_PLAYLISTPLAYER_SWAP:
+      if (pMsg->lpVoid)
+      {
+        vector<int> *indexes = (vector<int> *)pMsg->lpVoid;
+        if (indexes->size() == 2)
+          g_playlistPlayer.Swap(pMsg->dwParam1, indexes->at(0), indexes->at(1));
+        delete indexes;
       }
       break;
 
@@ -610,7 +649,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
+          pDialog->DoModal((int)pMsg->dwParam1, pMsg->strParam);
       }
       break;
 
@@ -618,15 +657,15 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->Show_Internal();
+          pDialog->Show();
       }
       break;
 
-    case TMSG_GUI_DIALOG_CLOSE:
+    case TMSG_GUI_WINDOW_CLOSE:
       {
-        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
-        if (dialog)
-          dialog->Close_Internal(pMsg->dwParam1 > 0);
+        CGUIWindow *window = (CGUIWindow *)pMsg->lpVoid;
+        if (window)
+          window->Close(pMsg->dwParam2 & 0x1 ? true : false, pMsg->dwParam1, pMsg->dwParam2 & 0x2 ? true : false);
       }
       break;
 
@@ -652,16 +691,18 @@ case TMSG_POWERDOWN:
       {
         if (pMsg->lpVoid)
         {
+          CAction *action = (CAction *)pMsg->lpVoid;
           if (pMsg->dwParam1 == WINDOW_INVALID)
-            g_application.OnAction(*(CAction *)pMsg->lpVoid);
+            g_application.OnAction(*action);
           else
           {
             CGUIWindow *pWindow = g_windowManager.GetWindow(pMsg->dwParam1);  
             if (pWindow)
-              pWindow->OnAction(*(CAction *)pMsg->lpVoid);
+              pWindow->OnAction(*action);
             else
               CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
           }
+          delete action;
         }
       }
       break;
@@ -682,42 +723,28 @@ case TMSG_POWERDOWN:
         {
           vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
-            infoLabels->push_back(g_infoManager.GetBool(g_infoManager.TranslateString(pMsg->params[i])));
+            infoLabels->push_back(g_infoManager.EvaluateBool(pMsg->params[i]));
         }
       }
       break;
 
 #ifdef HAS_DVD_DRIVE
-    case TMSG_OPTICAL_MOUNT:
-      {
-        CMediaSource share;
-        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
-        share.strPath = pMsg->strParam;
-        if(g_mediaManager.IsAudio(share.strPath))
-          share.strStatus = "Audio-CD";
-        else if(share.strStatus == "")
-          share.strStatus = g_localizeStrings.Get(446);
-        share.strName = share.strPath;
-        share.m_ignore = true;
-        share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
-      }
-      break;
-
-    case TMSG_OPTICAL_UNMOUNT:
-      {
-        CMediaSource share;
-        share.strPath = pMsg->strParam;
-        share.strName = share.strPath;
-        g_mediaManager.RemoveAutoSource(share);
-      }
-      break;
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
 #endif
+    case TMSG_VOLUME_SHOW:
+      {
+        CAction action((int)pMsg->dwParam1);
+        g_application.ShowVolumeBar(&action);
+      }
+    case TMSG_SPLASH_MESSAGE:
+      {
+        if (g_application.m_splash)
+          g_application.m_splash->Show(pMsg->strParam);
+      }
   }
 }
 
@@ -732,11 +759,13 @@ void CApplicationMessenger::ProcessWindowMessages()
     m_vecWindowMessages.pop();
 
     // leave here in case we make more thread messages from this one
-    lock.Leave();
+
+    boost::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
+    lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
-    if (pMsg->hWaitEvent)
-      SetEvent(pMsg->hWaitEvent);
+    if (waitEvent)
+      waitEvent->Set();
     delete pMsg;
 
     lock.Enter();
@@ -777,9 +806,7 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 
 void CApplicationMessenger::MediaPlay(string filename)
 {
-  CFileItem item;
-  item.m_strPath = filename;
-  item.m_bIsFolder = false;
+  CFileItem item(filename, false);
   if (item.IsAudio())
     item.SetMusicThumb();
   else
@@ -805,6 +832,15 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  tMsg.lpVoid = NULL;
+  tMsg.dwParam1 = playlistid;
+  tMsg.dwParam2 = song;
   SendMessage(tMsg, true);
 }
 
@@ -934,6 +970,25 @@ void CApplicationMessenger::PlayListPlayerGetItems(int playlist, CFileItemList &
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::PlayListPlayerSwap(int playlist, int indexItem1, int indexItem2)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_SWAP};
+  tMsg.dwParam1 = playlist;
+  vector<int> *indexes = new vector<int>();
+  indexes->push_back(indexItem1);
+  indexes->push_back(indexItem2);
+  tMsg.lpVoid = (void *)indexes;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerRepeat(int playlist, int repeatState)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REPEAT};
+  tMsg.dwParam1 = playlist;
+  tMsg.dwParam2 = repeatState;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::PictureShow(string filename)
 {
   ThreadMessage tMsg = {TMSG_PICTURE_SHOW};
@@ -949,6 +1004,13 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   tMsg.dwParam1 = addTBN ? 1 : 0;
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SetGUILanguage(const std::string &strLanguage)
+{
+  ThreadMessage tMsg = {TMSG_SETLANGUAGE};
+  tMsg.strParam = strLanguage;
   SendMessage(tMsg);
 }
 
@@ -997,12 +1059,6 @@ void CApplicationMessenger::Reset()
 void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
-  SendMessage(tMsg);
-}
-
-void CApplicationMessenger::RebootToDashBoard()
-{
-  ThreadMessage tMsg = {TMSG_DASHBOARD};
   SendMessage(tMsg);
 }
 
@@ -1057,11 +1113,11 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose,
-                                  bool waitResult)
+void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
-  tMsg.lpVoid = dialog;
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, nextWindowID};
+  tMsg.dwParam2 = (DWORD)(forceClose ? 0x01 : 0 | enableSound ? 0x02 : 0);
+  tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
 
@@ -1072,12 +1128,12 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::SendAction(const CAction &action, int windowID)
+void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool waitResult)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
   tMsg.dwParam1 = windowID;
-  tMsg.lpVoid = (void*)&action;
-  SendMessage(tMsg, true);
+  tMsg.lpVoid = new CAction(action);
+  SendMessage(tMsg, waitResult);
 }
 
 vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
@@ -1102,17 +1158,21 @@ vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &pr
   return infoLabels;
 }
 
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
+void CApplicationMessenger::ShowVolumeBar(bool up)
 {
-  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
-  tMsg.strParam = device;
-  tMsg.dwParam1 = (DWORD)bautorun;
+  ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
+  tMsg.dwParam1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::OpticalUnMount(CStdString device)
+void CApplicationMessenger::SetSplashMessage(const CStdString& message)
 {
-  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
-  tMsg.strParam = device;
-  SendMessage(tMsg, false);
+  ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
+  tMsg.strParam = message;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::SetSplashMessage(int stringID)
+{
+  SetSplashMessage(g_localizeStrings.Get(stringID));
 }

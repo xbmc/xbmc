@@ -57,7 +57,7 @@ public:
   virtual const char *getErrorMsg();
 
 /* func. connects to database-server */
-  virtual int connect();
+  virtual int connect(bool create);
 /* func. disconnects from database-server */
   virtual void disconnect();
 /* func. creates new database */
@@ -66,6 +66,9 @@ public:
   virtual int drop();
 /* check if database exists (ie has tables/views defined) */
   virtual bool exists();
+
+/* \brief copy database */
+  virtual int copy(const char *backup_name);
 
   virtual long nextid(const char* seq_name);
 
@@ -93,7 +96,6 @@ private:
   void mysqlStrAccumReset(StrAccum *p);
   void mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx);
   char *mysql_vmprintf(const char *zFormat, va_list ap);
-
 };
 
 
@@ -174,6 +176,7 @@ or insert() operations default = false) */
 /* Go to record No (starting with 0) */
   virtual bool seek(int pos=0);
 
+  virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
 #endif

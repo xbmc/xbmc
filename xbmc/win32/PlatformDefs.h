@@ -24,6 +24,8 @@
 
 #ifdef _WIN32
 
+#define LINE_ENDING "\r\n"
+
 #define __STDC_FORMAT_MACROS
 #include "inttypes.h"
 
@@ -89,6 +91,7 @@ typedef unsigned long ThreadIdentifier;
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);
 extern "C" char * strcasestr(const char* haystack, const char* needle);
+extern int pgwin32_putenv(const char *envval);
 
 #endif // _WIN32
 

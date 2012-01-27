@@ -30,10 +30,13 @@
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <sstream>
   #include <X11/extensions/Xrandr.h>
+  #include "windowing/WindowingFactory.h"
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(__arm__)
   #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"
+#elif defined(__APPLE__) && defined(__arm__)
+  #include "WindowingFactory.h"
 #elif defined(_WIN32) && defined(HAS_DX)
   #pragma comment (lib,"d3d9.lib")
   #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
@@ -112,6 +115,11 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
   m_Started.Reset();
+
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
+  m_Dpy = NULL;
+  m_UseNvSettings = true;
+#endif
 }
 
 void CVideoReferenceClock::Process()
@@ -145,6 +153,7 @@ void CVideoReferenceClock::Process()
     CSingleLock SingleLock(m_CritSection);
     Now = CurrentHostCounter();
     m_CurrTime = Now + m_ClockOffset; //add the clock offset from the previous time we stopped
+    m_LastIntTime = m_CurrTime;
     m_CurrTimeFract = 0.0;
     m_ClockSpeed = 1.0;
     m_TotalMissedVblanks = 0;
@@ -217,18 +226,22 @@ bool CVideoReferenceClock::SetupGLX()
   unsigned int GlxTest;
   XSetWindowAttributes Swa;
 
-  m_Dpy = NULL;
   m_vInfo = NULL;
   m_Context = NULL;
-  m_Window = NULL;
+  m_Window = 0;
+  m_pixmap = None;
+  m_glPixmap = None;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
-  m_Dpy = XOpenDisplay(NULL);
   if (!m_Dpy)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
-    return false;
+    m_Dpy = XOpenDisplay(NULL);
+    if (!m_Dpy)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
+      return false;
+    }
   }
 
   if (!glXQueryExtension(m_Dpy, NULL, NULL))
@@ -257,6 +270,14 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
+  CStdString Vendor = g_Windowing.GetRenderVendor();
+  Vendor.ToLower();
+  if (Vendor.compare(0, 3, "ati") == 0)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati workaround", Vendor.c_str());
+    m_bIsATI = true;
+  }
+
   m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributes);
   if (!m_vInfo)
   {
@@ -264,13 +285,26 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  Swa.border_pixel = 0;
-  Swa.event_mask = StructureNotifyMask;
-  Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
-  SwaMask = CWBorderPixel | CWColormap | CWEventMask;
+  if (!m_bIsATI)
+  {
+    Swa.border_pixel = 0;
+    Swa.event_mask = StructureNotifyMask;
+    Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
+    SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-  m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
+    m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
+  }
+  else
+  {
+    m_pixmap = XCreatePixmap(m_Dpy, DefaultRootWindow(m_Dpy), 256, 256, m_vInfo->depth);
+    if (!m_pixmap)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: unable to create pixmap");
+      return false;
+    }
+    m_glPixmap = glXCreateGLXPixmap(m_Dpy, m_vInfo, m_pixmap);
+  }
 
   m_Context = glXCreateContext(m_Dpy, m_vInfo, NULL, True);
   if (!m_Context)
@@ -279,25 +313,32 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+  if (!m_bIsATI)
+    ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+  else
+    ReturnV = glXMakeCurrent(m_Dpy, m_glPixmap, m_Context);
+
   if (ReturnV != True)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
     return false;
   }
 
-  m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-  if (!m_glXWaitVideoSyncSGI)
+  if (!m_bIsATI)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
-    return false;
-  }
+    m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
+    if (!m_glXWaitVideoSyncSGI)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
+      return false;
+    }
 
-  ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
-  if (ReturnV)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
-    return false;
+    ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
+    if (ReturnV)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+      return false;
+    }
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
@@ -335,9 +376,12 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
 {
   double fRefreshRate;
   char   Buff[255];
+  int    buffpos;
   int    ReturnV;
   struct lconv *Locale = localeconv();
   FILE*  NvSettings;
+  int    fd;
+  int64_t now;
 
   const char* VendorPtr = (const char*)glGetString(GL_VENDOR);
   if (!VendorPtr)
@@ -361,17 +405,75 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     return false;
   }
 
-  ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
-  pclose(NvSettings);
-  if (ReturnV != 1)
+  fd = fileno(NvSettings);
+  if (fd == -1)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: unable to get nvidia-settings file descriptor: %s", strerror(errno));
+    pclose(NvSettings);
     return false;
   }
 
+  now = CurrentHostCounter();
+  buffpos = 0;
+  while (CurrentHostCounter() - now < CurrentHostFrequency() * 5)
+  {
+    fd_set set;
+    FD_ZERO(&set);
+    FD_SET(fd, &set);
+    struct timeval timeout = {1, 0};
+    ReturnV = select(fd + 1, &set, NULL, NULL, &timeout);
+    if (ReturnV == -1)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: select failed on %s: %s", NVSETTINGSCMD, strerror(errno));
+      pclose(NvSettings);
+      return false;
+    }
+    else if (FD_ISSET(fd, &set))
+    {
+      ReturnV = read(fd, Buff + buffpos, (int)sizeof(Buff) - buffpos);
+      if (ReturnV == -1)
+      {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: read failed on %s: %s", NVSETTINGSCMD, strerror(errno));
+        pclose(NvSettings);
+        return false;
+      }
+      else if (ReturnV > 0)
+      {
+        buffpos += ReturnV;
+        if (buffpos >= (int)sizeof(Buff) - 1)
+          break;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  if (buffpos <= 0)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
+    //calling pclose() here might hang
+    //what should be done instead is fork, call nvidia-settings
+    //then kill the process if it hangs
+    return false;
+  }
+  else if (buffpos > (int)sizeof(Buff) - 1)
+  {
+    buffpos = sizeof(Buff) - 1;
+    pclose(NvSettings);
+  }
+  Buff[buffpos] = 0;
+
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
 
-  for (int i = 0; i < 255 && Buff[i]; i++)
+  if (!strchr(Buff, '\n'))
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s incomplete output (no newline)", NVSETTINGSCMD);
+    return false;
+  }
+
+  for (int i = 0; i < buffpos; i++)
   {
       //workaround for locale mismatch
     if (Buff[i] == '.' || Buff[i] == ',')
@@ -422,9 +524,21 @@ void CVideoReferenceClock::CleanupGLX()
   if (m_Window)
   {
     XDestroyWindow(m_Dpy, m_Window);
-    m_Window = NULL;
+    m_Window = 0;
   }
-  if (m_Dpy)
+  if (m_glPixmap)
+  {
+    glXDestroyPixmap(m_Dpy, m_glPixmap);
+    m_glPixmap = None;
+  }
+  if (m_pixmap)
+  {
+    XFreePixmap(m_Dpy, m_pixmap);
+    m_pixmap = None;
+  }
+
+  //ati saves the Display* in their libGL, if we close it here, we crash
+  if (m_Dpy && !m_bIsATI)
   {
     XCloseDisplay(m_Dpy);
     m_Dpy = NULL;
@@ -446,11 +560,59 @@ void CVideoReferenceClock::RunGLX()
   m_glXGetVideoSyncSGI(&VblankCount);
   PrevVblankCount = VblankCount;
 
+  uint64_t lastVblankTime = CurrentHostCounter();
+  int sleepTime, correction;
+  int integral = 0;
+
   while(!m_bStop)
   {
     //wait for the next vblank
-    ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
-    m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
+    if (!m_bIsATI)
+    {
+      ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
+      m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
+    }
+    else
+    {
+      // calculate sleep time in micro secs
+      // we start with 50% of interval
+      sleepTime = 500000LL / m_RefreshRate;
+
+      // correct sleepTime by time used for processing since last vblank
+      correction = (CurrentHostCounter() - lastVblankTime) * 1000000LL / m_SystemFrequency;
+      sleepTime -= correction;
+
+      // correct sleep time by integral term
+      // consider 10 cycles as desired
+      sleepTime += integral;
+
+      // clamp sleepTime to a min value of 30% of interval
+      // integral is already clamped to a max value
+      sleepTime = std::max(int(300000LL/m_RefreshRate), sleepTime);
+
+      unsigned int iterations = 0;
+      while (VblankCount == PrevVblankCount && !m_bStop)
+      {
+        usleep(sleepTime);
+        m_glXGetVideoSyncSGI(&VblankCount);
+        sleepTime = sleepTime > 200 ? sleepTime/2 : 100;
+        iterations++;
+      }
+      if (iterations > 10)
+        integral += 100;
+      else if (iterations < 10)
+        integral -= 100;
+
+      // clamp integral to an absolute value of 20% of interval
+      if (integral > 200000LL/m_RefreshRate)
+        integral = 200000LL/m_RefreshRate;
+      else if (integral < -200000LL/m_RefreshRate)
+        integral = -200000LL/m_RefreshRate;
+
+      lastVblankTime = CurrentHostCounter();
+      ReturnV = 0;
+    }
+
     Now = CurrentHostCounter();         //get the timestamp of this vblank
 
     if(ReturnV)
@@ -468,12 +630,13 @@ void CVideoReferenceClock::RunGLX()
       SingleLock.Leave();
       SendVblankSignal();
       UpdateRefreshrate();
-
       IsReset = false;
     }
-    else
+    else if (!m_bStop)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
+
+      integral = 0;
 
       //only try reattaching once
       if (IsReset)
@@ -489,7 +652,11 @@ void CVideoReferenceClock::RunGLX()
       }
 
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
-      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+      if (!m_bIsATI)
+        ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+      else
+        ReturnV = glXMakeCurrent(m_Dpy, m_glPixmap, m_Context);
+
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
@@ -761,7 +928,7 @@ void CVideoReferenceClock::CleanupD3D()
 }
 
 #elif defined(__APPLE__)
-
+#if !defined(__arm__)
 // Called by the Core Video Display Link whenever it's appropriate to render a frame.
 static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
 {
@@ -781,7 +948,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
 
   return kCVReturnSuccess;
 }
-
+#endif
 bool CVideoReferenceClock::SetupCocoa()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up Cocoa");
@@ -791,12 +958,18 @@ bool CVideoReferenceClock::SetupCocoa()
   m_MissedVblanks = 0;
   m_RefreshRate = 60;              //init the refreshrate so we don't get any division by 0 errors
 
+  #if defined(__arm__)
+  {
+    g_Windowing.InitDisplayLink();
+  }
+  #else
   if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cocoa_CVDisplayLinkCreate failed");
     return false;
   }
   else
+  #endif
   {
     UpdateRefreshrate(true);
     return true;
@@ -815,7 +988,11 @@ void CVideoReferenceClock::RunCocoa()
 void CVideoReferenceClock::CleanupCocoa()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up Cocoa");
-  Cocoa_CVDisplayLinkRelease();
+  #if defined(__arm__)
+    g_Windowing.DeinitDisplayLink();
+  #else
+    Cocoa_CVDisplayLinkRelease();
+  #endif
 }
 
 void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
@@ -847,6 +1024,7 @@ void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
   SingleLock.Leave();
 
   SendVblankSignal();
+  UpdateRefreshrate();
 }
 #endif
 
@@ -871,7 +1049,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
   {
-    double increment = (double)NrVBlanks * m_ClockSpeed * m_fineadjust / m_RefreshRate * m_SystemFrequency;
+    double increment = UpdateInterval() * NrVBlanks;
     double integer   = floor(increment);
     m_CurrTime      += (int64_t)(integer + 0.5); //make sure it gets correctly converted to int
 
@@ -883,8 +1061,13 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
 }
 
+double CVideoReferenceClock::UpdateInterval()
+{
+  return m_ClockSpeed * m_fineadjust / (double)m_RefreshRate * (double)m_SystemFrequency;
+}
+
 //called from dvdclock to get the time
-int64_t CVideoReferenceClock::GetTime()
+int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
 {
   CSingleLock SingleLock(m_CritSection);
 
@@ -903,7 +1086,24 @@ int64_t CVideoReferenceClock::GetTime()
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
 
-    return m_CurrTime;
+    if (interpolated)
+    {
+      //interpolate from the last time the clock was updated
+      double elapsed = (double)(Now - m_VblankTime) * m_ClockSpeed * m_fineadjust;
+      //don't interpolate more than 2 vblank periods
+      elapsed = min(elapsed, UpdateInterval() * 2.0);
+
+      //make sure the clock doesn't go backwards
+      int64_t intTime = m_CurrTime + (int64_t)elapsed;
+      if (intTime > m_LastIntTime)
+        m_LastIntTime = intTime;
+
+      return m_LastIntTime;
+    }
+    else
+    {
+      return m_CurrTime;
+    }
   }
   else
   {
@@ -983,7 +1183,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     return false;
 
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
-  if (m_UseNvSettings || Forced)
+  if (m_UseNvSettings)
   {
     int NvRefreshRate;
     //if this fails we can't get the refreshrate from nvidia-settings
@@ -1028,7 +1228,11 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   return false;
 
 #elif defined(__APPLE__)
-  int RefreshRate = MathUtils::round_int(Cocoa_GetCVDisplayLinkRefreshPeriod());
+  #if defined(__arm__)
+    int RefreshRate = round(g_Windowing.GetDisplayLinkFPS() + 0.5);
+  #else
+    int RefreshRate = MathUtils::round_int(Cocoa_GetCVDisplayLinkRefreshPeriod());
+  #endif
 
   if (RefreshRate != m_RefreshRate || Forced)
   {

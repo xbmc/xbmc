@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
@@ -120,7 +121,7 @@ void SSortFileItem::ByFile(CFileItemPtr &item)
 {
   if (!item) return;
 
-  CURL url(item->m_strPath);
+  CURL url(item->GetPath());
   CStdString label;
   label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), item->m_lStartOffset);
   item->SetSortLabel(label);
@@ -131,7 +132,7 @@ void SSortFileItem::ByFullPath(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%s %d", item->m_strPath, item->m_lStartOffset);
+  label.Format("%s %d", item->GetPath(), item->m_lStartOffset);
   item->SetSortLabel(label);
 }
 
@@ -145,6 +146,19 @@ void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
     item->SetSortLabel(item->GetMusicInfoTag()->GetTitle());
   else
     item->SetSortLabel(item->GetLabel());
+}
+
+void SSortFileItem::ByPlayCount(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  if (item->HasVideoInfoTag())
+    label.Format("%i %s", item->GetVideoInfoTag()->m_playCount, item->GetLabel().c_str());
+  if (item->HasMusicInfoTag())
+    label.Format("%i %s", item->GetMusicInfoTag()->GetPlayCount(), item->GetLabel().c_str());
+
+  item->SetSortLabel(label);
 }
 
 void SSortFileItem::ByDate(CFileItemPtr &item)

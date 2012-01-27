@@ -27,10 +27,10 @@ class CGUIDialogYesNo :
       public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogYesNo(void);
+  CGUIDialogYesNo(int overrideId = -1);
   virtual ~CGUIDialogYesNo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction& action);
+  virtual bool OnBack(int actionID);
 
   static bool ShowAndGetInput(int heading, int line0, int line1, int line2, int iNoLabel=-1, int iYesLabel=-1);
   static bool ShowAndGetInput(int heading, int line0, int line1, int line2, bool& bCanceled);

@@ -33,7 +33,7 @@ typedef struct PCXContext {
     AVFrame picture;
 } PCXContext;
 
-static const uint32_t monoblack_pal[] = { 0x000000, 0xFFFFFF };
+static const uint32_t monoblack_pal[16] = { 0x000000, 0xFFFFFF };
 
 static av_cold int pcx_encode_init(AVCodecContext *avctx)
 {
@@ -189,7 +189,7 @@ static int pcx_encode_frame(AVCodecContext *avctx,
     return buf - buf_start;
 }
 
-AVCodec pcx_encoder = {
+AVCodec ff_pcx_encoder = {
     "pcx",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_PCX,

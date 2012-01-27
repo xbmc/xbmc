@@ -40,6 +40,7 @@
 
 CWinSystemWin32GL::CWinSystemWin32GL()
 {
+  m_hglrc = NULL;
   m_wglSwapIntervalEXT = NULL;
 }
 
@@ -94,7 +95,7 @@ void CWinSystemWin32GL::SetVSyncImpl(bool enable)
     m_wglSwapIntervalEXT(enable ? 1 : 0);
 }
 
-bool CWinSystemWin32GL::PresentRenderImpl()
+bool CWinSystemWin32GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 {
   if(!m_bWindowCreated || !m_bRenderCreated)
     return false;

@@ -19,8 +19,9 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "Stopwatch.h"
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
 #include <sys/sysinfo.h>
 #endif
 #include "utils/TimeUtils.h"
@@ -102,6 +103,6 @@ int64_t CStopWatch::GetTicks() const
 #ifndef _LINUX
   return CurrentHostCounter();
 #else
-  return CTimeUtils::GetTimeMS();
+  return XbmcThreads::SystemClockMillis();
 #endif
 }

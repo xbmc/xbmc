@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include "avformat.h"
 
+#define MAX_URL_SIZE 4096
+
 typedef struct AVCodecTag {
     enum CodecID id;
     unsigned int tag;
@@ -53,6 +55,16 @@ const char *small_strptime(const char *p, const char *fmt,
 
 char *ff_data_to_hex(char *buf, const uint8_t *src, int size, int lowercase);
 
+/**
+ * Parse a string of hexadecimal strings. Any space between the hexadecimal
+ * digits is ignored.
+ *
+ * @param data if non-null, the parsed data is written to this pointer
+ * @param p the string to parse
+ * @return the number of bytes written (or to be written, if data is null)
+ */
+int ff_hex_to_data(uint8_t *data, const char *p);
+
 void ff_program_add_stream_index(AVFormatContext *ac, int progid, unsigned int idx);
 
 /**
@@ -70,26 +82,7 @@ void ff_read_frame_flush(AVFormatContext *s);
 /** Get the current time since NTP epoch in microseconds. */
 uint64_t ff_ntp_time(void);
 
-/**
- * Probe a bytestream to determine the input format. Each time a probe returns
- * with a score that is too low, the probe buffer size is increased and another
- * attempt is made. When the maximum probe size is reached, the input format
- * with the highest score is returned.
- *
- * @param pb the bytestream to probe, it may be closed and opened again
- * @param fmt the input format is put here
- * @param filename the filename of the stream
- * @param logctx the log context
- * @param offset the offset within the bytestream to probe from
- * @param max_probe_size the maximum probe buffer size (zero for default)
- * @return 0 in case of success, a negative value corresponding to an
- * AVERROR code otherwise
- */
-int ff_probe_input_buffer(ByteIOContext **pb, AVInputFormat **fmt,
-                          const char *filename, void *logctx,
-                          unsigned int offset, unsigned int max_probe_size);
-
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if FF_API_URL_SPLIT
 /**
  * @deprecated use av_url_split() instead
  */
@@ -137,11 +130,13 @@ int ff_url_join(char *str, int size, const char *proto,
  * @param size the size of the buff buffer
  * @param c the AVCodecContext of the media to describe
  * @param dest_addr the destination address of the media stream, may be NULL
+ * @param dest_type the destination address type, may be NULL
  * @param port the destination port of the media stream, 0 if unknown
  * @param ttl the time to live of the stream, 0 if not multicast
  */
 void ff_sdp_write_media(char *buff, int size, AVCodecContext *c,
-                        const char *dest_addr, int port, int ttl);
+                        const char *dest_addr, const char *dest_type,
+                        int port, int ttl);
 
 /**
  * Write a packet to another muxer than the one the user originally
@@ -166,5 +161,50 @@ int ff_get_v_length(uint64_t val);
  * Put val using a variable number of bytes.
  */
 void ff_put_v(ByteIOContext *bc, uint64_t val);
+
+/**
+ * Read a whole line of text from ByteIOContext. Stop reading after reaching
+ * either a \n, a \0 or EOF. The returned string is always \0 terminated,
+ * and may be truncated if the buffer is too small.
+ *
+ * @param s the read-only ByteIOContext
+ * @param buf buffer to store the read line
+ * @param maxlen size of the buffer
+ * @return the length of the string written in the buffer, not including the
+ *         final \0
+ */
+int ff_get_line(ByteIOContext *s, char *buf, int maxlen);
+
+#define SPACE_CHARS " \t\r\n"
+
+/**
+ * Callback function type for ff_parse_key_value.
+ *
+ * @param key a pointer to the key
+ * @param key_len the number of bytes that belong to the key, including the '='
+ *                char
+ * @param dest return the destination pointer for the value in *dest, may
+ *             be null to ignore the value
+ * @param dest_len the length of the *dest buffer
+ */
+typedef void (*ff_parse_key_val_cb)(void *context, const char *key,
+                                    int key_len, char **dest, int *dest_len);
+/**
+ * Parse a string with comma-separated key=value pairs. The value strings
+ * may be quoted and may contain escaped characters within quoted strings.
+ *
+ * @param str the string to parse
+ * @param callback_get_buf function that returns where to store the
+ *                         unescaped value string.
+ * @param context the opaque context pointer to pass to callback_get_buf
+ */
+void ff_parse_key_value(const char *str, ff_parse_key_val_cb callback_get_buf,
+                        void *context);
+
+/**
+ * Find stream index based on format-specific stream ID
+ * @return stream index, or < 0 on error
+ */
+int ff_find_stream_index(AVFormatContext *s, int id);
 
 #endif /* AVFORMAT_INTERNAL_H */

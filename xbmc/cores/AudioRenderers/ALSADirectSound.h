@@ -50,7 +50,7 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CALSADirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
   virtual ~CALSADirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -63,6 +63,7 @@ public:
   virtual long GetCurrentVolume() const;
   virtual void Mute(bool bMute);
   virtual bool SetCurrentVolume(long nVolume);
+  virtual void SetDynamicRangeCompression(long drc) { m_drc = drc; }
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
@@ -71,13 +72,13 @@ public:
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
   unsigned int GetSpaceFrames();
-  static bool SoundDeviceExists(const CStdString& device);
-  static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard);
+  static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, int dev, CStdString readableCard);
   snd_pcm_t 		*m_pPlayHandle;
 
   IAudioCallback* m_pCallback;
   CPCMAmplifier 	m_amp;
   long m_nCurrentVolume;
+  long m_drc;
   snd_pcm_uframes_t m_dwFrameCount;
   snd_pcm_uframes_t m_uiBufferSize;
   unsigned int      m_dwNumPackets;

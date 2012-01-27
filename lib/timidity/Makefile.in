@@ -53,11 +53,11 @@ SLIB=@abs_top_srcdir@/system/players/paplayer/timidity-@ARCH@.so
 
 $(SLIB): $(OBJS) exports.def
 ifeq ($(findstring osx,$(ARCH)), osx)
-	ld -bundle -undefined dynamic_lookup -o $@ $(OBJS) $(BUNDLE1_O)
-	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias -bundle \
+	-undefined dynamic_lookup -read_only_relocs suppress -o $@ @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) $(BUNDLE1_O)
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o -Wl,--version-script=exports.def
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) -Wl,--unresolved-symbols=ignore-all `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` \
+		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o -Wl,--version-script=exports.def
 endif
  
 include @abs_top_srcdir@/Makefile.include

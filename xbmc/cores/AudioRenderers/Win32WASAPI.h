@@ -47,7 +47,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bAudioPassthrough=false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, EEncoded encoded = IAudioRenderer::ENCODED_NONE);
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
@@ -59,6 +59,7 @@ public:
   virtual long GetCurrentVolume() const;
   virtual void Mute(bool bMute);
   virtual bool SetCurrentVolume(long nVolume);
+  virtual void SetDynamicRangeCompression(long drc) { m_drc = drc; }
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
@@ -78,6 +79,7 @@ private:
   IAudioCallback* m_pCallback;
 
   long m_nCurrentVolume;
+  long m_drc;
   float m_fVolAdjustFactor;
 
   unsigned int m_uiChunkSize;

@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "Autorun.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -53,7 +54,7 @@
 CGUIWindowMusicSongs::CGUIWindowMusicSongs(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_FILES, "MyMusicSongs.xml")
 {
-  m_vecItems->m_strPath="?";
+  m_vecItems->SetPath("?");
 
   m_thumbLoader.SetObserver(this);
   // Remove old HD cache every time XBMC is loaded
@@ -78,7 +79,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       // the window translator does it by using a virtual window id (5)
 
       // is this the first time the window is opened?
-      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultMusicSource);
 
       return CGUIWindowMusicBase::OnMessage(message);
@@ -93,10 +94,10 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
       if (directory.IsHD())
       {
         CStdString strParent;
-        URIUtils::GetParentPath(directory.m_strPath, strParent);
-        if (directory.m_strPath == m_vecItems->m_strPath || strParent == m_vecItems->m_strPath)
+        URIUtils::GetParentPath(directory.GetPath(), strParent);
+        if (directory.GetPath() == m_vecItems->GetPath() || strParent == m_vecItems->GetPath())
         {
-          Update(m_vecItems->m_strPath);
+          Update(m_vecItems->GetPath());
         }
       }
     }
@@ -115,7 +116,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
       if (iControl == CONTROL_BTNPLAYLISTS)
       {
-        if (!m_vecItems->m_strPath.Equals("special://musicplaylists/"))
+        if (!m_vecItems->GetPath().Equals("special://musicplaylists/"))
           Update("special://musicplaylists/");
       }
       else if (iControl == CONTROL_BTNSCAN)
@@ -163,13 +164,13 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
 {
   CStdString strPath;
   if (iItem < 0 || iItem >= m_vecItems->Size())
-    strPath = m_vecItems->m_strPath;
+    strPath = m_vecItems->GetPath();
   else if (m_vecItems->Get(iItem)->m_bIsFolder)
-    strPath = m_vecItems->Get(iItem)->m_strPath;
+    strPath = m_vecItems->Get(iItem)->GetPath();
   else
   { // TODO: MUSICDB - should we allow scanning a single item into the database?
     //       This will require changes to the info scanner, which assumes we're running on a folder
-    strPath = m_vecItems->m_strPath;
+    strPath = m_vecItems->GetPath();
   }
   DoScan(strPath);
 }
@@ -199,6 +200,10 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 
   // check for .CUE files here.
   items.FilterCueItems();
+
+  CStdString label;
+  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("music"), &label)) 
+    items.SetLabel(label);
 
   return true;
 }
@@ -289,8 +294,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
   if (item)
   {
     // are we in the playlists location?
-    bool inPlaylists = m_vecItems->m_strPath.Equals(CUtil::MusicPlaylistsLocation()) ||
-                       m_vecItems->m_strPath.Equals("special://musicplaylists/");
+    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::MusicPlaylistsLocation()) ||
+                       m_vecItems->GetPath().Equals("special://musicplaylists/");
 
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
@@ -311,17 +316,17 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
-      if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (item->GetProperty("pluginreplacecontextitems").asBoolean())
         return;
       if (!item->IsPlayList())
       {
         if (item->IsAudio() && !item->IsLastFM())
           buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
         else if (!item->IsParentFolder() && !item->IsLastFM() &&
-                 !item->m_strPath.Left(3).Equals("new") && item->m_bIsFolder)
+                 !item->GetPath().Left(3).Equals("new") && item->m_bIsFolder)
         {
 #if 0
-          if (m_musicdatabase.GetAlbumIdByPath(item->m_strPath) > -1)
+          if (m_musicdatabase.GetAlbumIdByPath(item->GetPath()) > -1)
 #endif
             buttons.Add(CONTEXT_BUTTON_INFO, 13351); // Album Info
         }
@@ -364,14 +369,14 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM()                                         &&
-               !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
+               !item->GetPath().Equals("add") && !item->IsParentFolder() &&
                !item->IsPlugin()                                         &&
               (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
     }
-    if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+    if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
   if (!m_vecItems->IsVirtualDirectoryRoot())
@@ -412,7 +417,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
-      Update(m_vecItems->m_strPath);
+      Update(m_vecItems->GetPath());
     return true;
 
   case CONTEXT_BUTTON_DELETE:
@@ -424,7 +429,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     return true;
 
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("music", m_vecItems->m_strPath);
+    CGUIDialogContextMenu::SwitchMedia("music", m_vecItems->GetPath());
     return true;
   default:
     break;
@@ -449,7 +454,7 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
 
 #ifdef HAS_DVD_DRIVE
   if (m_vecItems->Get(iItem)->IsDVD())
-    MEDIA_DETECT::CAutorun::PlayDisc();
+    MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
   else
 #endif
     CGUIWindowMusicBase::PlayItem(iItem);
@@ -478,7 +483,7 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
     CSongMap songs;
     CMusicDatabase database;
     database.Open();
-    database.RemoveSongsFromPath(m_vecItems->Get(iItem)->m_strPath,songs,false);
+    database.RemoveSongsFromPath(m_vecItems->Get(iItem)->GetPath(),songs,false);
     database.CleanupOrphanedItems();
     g_infoManager.ResetLibraryBools();
   }

@@ -30,6 +30,8 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "tinyXML/tinyxml.h"
+
 
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
@@ -53,7 +55,6 @@ namespace ADDON
 cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
-bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
 
 /**********************************************************
  * CAddonMgr
@@ -80,11 +81,23 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CPluginSource(props));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_SCRIPT_MODULE:
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(props));
+    case ADDON_SCRIPT_WEATHER:
+      {
+        // Eden (API v2.0) broke old weather add-ons
+        AddonPtr result(new CAddon(props));
+        AddonVersion ver1 = AddonVersion(GetXbmcApiVersionDependency(result));
+        AddonVersion ver2 = AddonVersion("2.0");
+        if (ver1 < ver2)
+        {
+          CLog::Log(LOGINFO,"%s: Weather add-ons for api < 2.0 unsupported (%s)",__FUNCTION__,result->ID().c_str());
+          return AddonPtr();
+        }
+        return result;
+      }
     case ADDON_SERVICE:
       return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
@@ -115,9 +128,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           break;
 #elif defined(__APPLE__)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
-          break;
-#elif defined(_XBOX)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_xbox")) && value.empty())
           break;
 #endif
         if (type == ADDON_VIZ)
@@ -150,12 +160,11 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
   if (!userdirs)
     return false;
 
-  DEQUEELEMENTS elements;
-  bool status = GetExtElementDeque(elements, (cp_cfg_element_t *)userdirs, "userdir");
-  if (!status)
+  ELEMENTS elements;
+  if (!GetExtElements((cp_cfg_element_t *)userdirs, "userdir", elements))
     return false;
 
-  IDEQUEELEMENTS itr = elements.begin();
+  ELEMENTS::iterator itr = elements.begin();
   while (itr != elements.end())
   {
     CStdString path = GetExtValue(*itr++, "@path");
@@ -174,6 +183,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 
 CAddonMgr::CAddonMgr()
 {
+  m_cpluff = NULL;
 }
 
 CAddonMgr::~CAddonMgr()
@@ -289,6 +299,49 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool al
   return !addons.empty();
 }
 
+void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  m_updateableAddons.push_back(pAddon);
+}
+
+void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
+  
+  if(it != m_updateableAddons.end())
+  {
+    m_updateableAddons.erase(it);
+  }
+}
+
+struct AddonIdFinder 
+{ 
+    AddonIdFinder(const CStdString& id)
+      : m_id(id)
+    {}
+    
+    bool operator()(const AddonPtr& addon) 
+    { 
+      return m_id.Equals(addon->ID()); 
+    }
+    private:
+    CStdString m_id;
+};
+
+bool CAddonMgr::ReloadSettings(const CStdString &id)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
+  
+  if( it != m_updateableAddons.end())
+  {
+    return (*it)->ReloadSettings();
+  }
+  return false;
+}
+
 bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   CSingleLock lock(m_critSection);
@@ -303,7 +356,9 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
         if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
           continue;
 
-        if (temp[j]->Version() < repoAddon->Version())
+        if (temp[j]->Version() < repoAddon->Version() &&
+            !m_database.IsAddonBlacklisted(temp[j]->ID(),
+                                           repoAddon->Version().c_str()))
           addons.push_back(repoAddon);
       }
     }
@@ -507,26 +562,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   return AddonPtr();
 }
 
-void CAddonMgr::UpdateRepos(bool force)
-{
-  CSingleLock lock(m_critSection);
-  if (!force && m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
-    return;
-  m_watch.StartZero();
-  VECADDONS addons;
-  GetAddons(ADDON_REPOSITORY,addons);
-  for (unsigned int i=0;i<addons.size();++i)
-  {
-    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
-    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
-    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
-    {
-      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
-    }
-  }
-}
-
 /*
  * libcpluff interaction
  */
@@ -552,8 +587,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (platforms[i] == "wingl")
 #elif defined(_WIN32) && defined(HAS_DX)
       if (platforms[i] == "windx")
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN_OSX)
       if (platforms[i] == "osx")
+#elif defined(TARGET_DARWIN_IOS)
+      if (platforms[i] == "ios")
 #endif
         return true;
     }
@@ -570,25 +607,19 @@ const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const c
   return element;
 }
 
-/* Returns all duplicate elements from a base element */
-bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path)
+bool CAddonMgr::GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &elements)
 {
-  if (!base)
+  if (!base || !path)
     return false;
 
-  unsigned int i = 0;
-  while (true)
+  for (unsigned int i = 0; i < base->num_children; i++)
   {
-    if (i >= base->num_children)
-      break;
-    CStdString temp = (base->children+i)->name;
+    CStdString temp = base->children[i].name;
     if (!temp.compare(path))
-      elements.push_back(base->children+i);
-    i++;
+      elements.push_back(&base->children[i]);
   }
 
-  if (elements.empty()) return false;
-  return true;
+  return !elements.empty();
 }
 
 const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
@@ -601,24 +632,6 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
       return &props->extensions[i];
   }
   return NULL;
-}
-
-ADDONDEPS CAddonMgr::GetDeps(const CStdString &id)
-{
-  ADDONDEPS result;
-  cp_status_t status;
-
-  cp_plugin_info_t *info = m_cpluff->get_plugin_info(m_cp_context,id.c_str(),&status);
-  if (info)
-  {
-    for (unsigned int i=0;i<info->num_imports;++i)
-      result.insert(make_pair(CStdString(info->imports[i].plugin_id),
-                              make_pair(AddonVersion(info->version),
-                                        AddonVersion(info->version))));
-    m_cpluff->release_info(m_cp_context, info);
-  }
-
-  return result;
 }
 
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
@@ -642,8 +655,13 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
 {
-  if (!info || !info->extensions)
+  if (!info)
     return AddonPtr();
+
+  if (!info->extensions)
+  { // no extensions, so we need only the dep information
+    return AddonPtr(new CAddon(info));
+  }
 
   // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
   //        the first extension point (eg use the TYPE information we pass in)
@@ -727,7 +745,7 @@ bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPt
   return addon != NULL;
 }
 
-bool CAddonMgr::StartServices()
+bool CAddonMgr::StartServices(const bool beforelogin)
 {
   CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
 
@@ -740,13 +758,17 @@ bool CAddonMgr::StartServices()
   {
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
     if (service)
-      ret &= service->Start();
+    {
+      if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
+        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
+        ret &= service->Start();
+    }
   }
 
   return ret;
 }
 
-void CAddonMgr::StopServices()
+void CAddonMgr::StopServices(const bool onlylogin)
 {
   CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
 
@@ -758,7 +780,11 @@ void CAddonMgr::StopServices()
   {
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
     if (service)
-      service->Stop();
+    {
+      if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
+        || (!onlylogin) )
+        service->Stop();
+    }
   }
 }
 

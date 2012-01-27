@@ -1,0 +1,20 @@
+To configure ffmpeg for the iPhone 3gs and iPod touch 3g:
+
+./configure --enable-cross-compile --arch=arm --target-os=darwin --cc='/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc -arch armv7' --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk --cpu=cortex-a8 --enable-pic
+
+To configure ffmpeg for all other iPhones and iPods:
+
+./configure --enable-cross-compile --arch=arm --target-os=darwin --cc='/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/gcc -arch armv6' --sysroot=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk --cpu=arm1176jzf-s
+
+Make sure to replace the iPhone SDK version with the version that you're using.
+Pre-3.0 versions aren't supported and probably won't work.
+
+If deploying to all generations, it's recommended to do separate out-of-tree
+builds for each architecture, then lipo together the resulting libs. For
+instance, assuming separate builds in armv6 and armv7:
+
+lipo -create -arch armv6 armv6/libavcodec/libavcodec.a -arch armv7 armv7/libavcodec/libavcodec.a -output universal/libavcodec.a
+
+and similar for each library. Then in XCode, make sure to build for both armv6
+and armv7. If you only care about one generation (since the armv6 devices are
+too slow for instance), then lipo is unnecessary of course.

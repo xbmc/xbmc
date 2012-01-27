@@ -614,10 +614,10 @@ bool CKaraokeLyricsCDG::Load()
   
   if ( buggy_commands == 0 )
 	CLog::Log( LOGDEBUG, "CDG loader: CDG file %s has been loading successfully, %d useful packets, %dKb used",
-				m_cdgFile.c_str(), m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
+				m_cdgFile.c_str(), (int)m_cdgStream.size(), (int)(m_cdgStream.size() * sizeof(CDGPacket) / 1024) );
  else
 	CLog::Log( LOGDEBUG, "CDG loader: CDG file %s was damaged, %d errors ignored, %d useful packets, %dKb used",
-				m_cdgFile.c_str(), buggy_commands, m_cdgStream.size(), m_cdgStream.size() * sizeof(CDGPacket) / 1024 );
+				m_cdgFile.c_str(), buggy_commands, (int)m_cdgStream.size(), (int)(m_cdgStream.size() * sizeof(CDGPacket) / 1024) );
 
   return true;
 }

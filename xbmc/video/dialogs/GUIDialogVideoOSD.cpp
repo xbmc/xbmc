@@ -34,12 +34,6 @@ CGUIDialogVideoOSD::~CGUIDialogVideoOSD(void)
 {
 }
 
-void CGUIDialogVideoOSD::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  m_bRelativeCoords = true;
-}
-
 void CGUIDialogVideoOSD::FrameMove()
 {
   if (m_autoClosing)
@@ -61,6 +55,11 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
     // these could indicate next chapter if video supports it
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
+  }
+  if (action.GetID() == ACTION_SHOW_OSD)
+  {
+    Close();
+    return true;
   }
 
   return CGUIDialog::OnAction(action);

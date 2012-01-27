@@ -25,6 +25,7 @@
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderCapture.h"
 #endif
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -38,6 +39,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -138,13 +141,16 @@ void CGUIDialogVideoBookmarks::Update()
   CBookmark resumemark;
 
   // open the d/b and retrieve the bookmarks for the current movie
+  CStdString path = g_application.CurrentFile();
+  if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks);
-  videoDatabase.GetBookMarksForFile(g_application.CurrentFile(), m_bookmarks, CBookmark::EPISODE, true);
+  videoDatabase.GetBookMarksForFile(path, m_bookmarks);
+  videoDatabase.GetBookMarksForFile(path, m_bookmarks, CBookmark::EPISODE, true);
   /* push in the resume mark first */
-  if( videoDatabase.GetResumeBookMark(g_application.CurrentFile(), resumemark) )
-    m_bookmarks.insert(m_bookmarks.begin(), resumemark);
+  if( videoDatabase.GetResumeBookMark(path, resumemark) )
+    m_bookmarks.push_back(resumemark);
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
@@ -213,9 +219,12 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::STANDARD);
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::RESUME);
-  videoDatabase.ClearBookMarksOfFile(g_application.CurrentFile(), CBookmark::EPISODE);
+  CStdString path = g_application.CurrentFile();
+  if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::STANDARD);
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::RESUME);
+  videoDatabase.ClearBookMarksOfFile(path, CBookmark::EPISODE);
   videoDatabase.Close();
   Update();
 }
@@ -248,25 +257,35 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
   {
-    CSingleLock lock(g_graphicsContext);
-    // we're really just using the CTexture here as a pixel buffer
-    CTexture texture(width, height, XB_FMT_A8R8G8B8);
 #ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.CreateThumbnail(&texture, width, height);
+    CRenderCapture* thumbnail = g_renderManager.AllocRenderCapture();
+    g_renderManager.Capture(thumbnail, width, height, CAPTUREFLAG_IMMEDIATELY);
+    if (thumbnail->GetUserState() == CAPTURESTATE_DONE)
+    {
+      Crc32 crc;
+      crc.ComputeFromLowerCase(g_application.CurrentFile());
+      bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
+      bookmark.thumbNailImage = URIUtils::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+      if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
+                                          bookmark.thumbNailImage))
+        bookmark.thumbNailImage.Empty();
+    }
+    else
+      CLog::Log(LOGERROR,"CGUIDialogVideoBookmarks: failed to create thumbnail");
+
+    g_renderManager.ReleaseRenderCapture(thumbnail);
 #endif
-    Crc32 crc;
-    crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
-    bookmark.thumbNailImage = URIUtils::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-    if (!CPicture::CreateThumbnailFromSurface(texture.GetPixels(), width, height, texture.GetPitch(),
-                                        bookmark.thumbNailImage))
-      bookmark.thumbNailImage.Empty();
   }
   videoDatabase.Open();
   if (tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
   else
-    videoDatabase.AddBookMarkToFile(g_application.CurrentFile(), bookmark, CBookmark::STANDARD);
+  {
+    CStdString path = g_application.CurrentFile();
+    if (g_application.CurrentFileItem().HasProperty("original_listitem_url"))
+      path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+    videoDatabase.AddBookMarkToFile(path, bookmark, CBookmark::STANDARD);
+  }
   videoDatabase.Close();
   Update();
 }

@@ -1,0 +1,36 @@
+From 576a80321fbb6a6f4c4e69af75440e94990498bc Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 02:15:41 -0400
+Subject: [PATCH 09/36] additional HDMV types and reg descriptors
+
+---
+ libavformat/mpegts.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index d550e3e..74b0886 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -512,6 +512,8 @@ static const StreamType HDMV_types[] = {
+     { 0x82, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS },
+     { 0x83, AVMEDIA_TYPE_AUDIO, CODEC_ID_TRUEHD },
+     { 0x84, AVMEDIA_TYPE_AUDIO, CODEC_ID_EAC3 },
++    { 0x85, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS }, /* DTS HD */
++    { 0x86, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS }, /* DTS HD MASTER*/
+     { 0x90, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_HDMV_PGS_SUBTITLE },
+     { 0 },
+ };
+@@ -526,6 +528,10 @@ static const StreamType MISC_types[] = {
+ static const StreamType REGD_types[] = {
+     { MKTAG('d','r','a','c'), AVMEDIA_TYPE_VIDEO, CODEC_ID_DIRAC },
+     { MKTAG('A','C','-','3'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_AC3 },
++    { MKTAG('D','T','S','1'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
++    { MKTAG('D','T','S','2'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
++    { MKTAG('D','T','S','3'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
++    { MKTAG('V','C','-','1'), AVMEDIA_TYPE_VIDEO,   CODEC_ID_VC1 },
+     { 0 },
+ };
+ 
+-- 
+1.7.3
+

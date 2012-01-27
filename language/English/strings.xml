@@ -176,7 +176,7 @@
   <string id="202">Tagline</string>
   <string id="203">Plot outline</string>
 
-  <string id="205">Votes:</string>
+  <string id="205">Votes</string>
   <string id="206">Cast</string>
   <string id="207">Plot</string>
   <string id="208">Play</string>
@@ -387,7 +387,7 @@
   <string id="426">No CD information found</string>
   <string id="427">Disc</string>
   <string id="428">Insert correct CD/DVD</string>
-  <string id="429">Please insert the following CD/DVD</string>
+  <string id="429">Please insert the following disc:</string>
   <string id="430">Sort by: DVD#</string>
   <string id="431">No cache</string>
   <string id="432">Remove movie from library</string>
@@ -525,6 +525,7 @@
   <string id="573">Path</string>
   <string id="574">Country</string>
   <string id="575">In progress</string>
+  <string id="576">Times played</string>
 
   <string id="580">Sort direction</string>
   <string id="581">Sort method</string>
@@ -705,6 +706,8 @@
   <string id="851">Valid port range is 1-65535</string>
   <string id="852">Valid port range is 1024-65535</string>
 
+  <string id="998">Add Music...</string>
+  <string id="999">Add Videos...</string>
   <string id="1000">- Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>
@@ -801,6 +804,9 @@
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
   <string id="1260">Announce these services to other systems via Zeroconf</string>
+  <string id="1270">Allow XBMC to receive AirPlay content</string>
+  <string id="1271">Device name</string>
+  <string id="1272">- Use password protection</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -977,6 +983,7 @@
   <string id="12392">Hours</string>
   <string id="12393">Days</string>
   <string id="12394">Total uptime</string>
+  <string id="12395">Battery level</string>
 
   <string id="12600">Weather</string>
 
@@ -1011,6 +1018,7 @@
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
+  
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled during video playback</string>
@@ -1058,9 +1066,11 @@
 
   <string id="13200">Profiles</string>
   <string id="13201">Delete profile '%s'?</string>
+  
   <string id="13204">Last loaded profile:</string>
   <string id="13205">Unknown</string>
   <string id="13206">Overwrite</string>
+  
   <string id="13208">Alarm clock</string>
   <string id="13209">Alarm clock interval (in minutes)</string>
   <string id="13210">Started, alarm in %im</string>
@@ -1161,6 +1171,7 @@
   <string id="13359">Set artist thumb</string>
   <string id="13360">Automatically generate thumbnails</string>
   <string id="13361">Enable voice</string>
+  
   <string id="13375">Enable device</string>
   <string id="13376">Volume</string>
   <string id="13377">Default view mode</string>
@@ -1218,6 +1229,7 @@
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
   <string id="13430">Allow hardware acceleration (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Allow hardware acceleration (VideoToolbox)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -1464,7 +1476,7 @@
   <string id="16020">De-interlace</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (inverted)</string>
-  <string id="16023">Interlaced handling</string>
+  <string id="16023"></string>
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the artist name</string>
   <string id="16026">Playback failed</string>
@@ -1477,7 +1489,13 @@
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
   <string id="16035">Party mode playlist</string>
-
+  <string id="16036">De-interlace (Half)</string>
+  <string id="16037">Deinterlace video</string>
+  <string id="16038">Deinterlace method</string>
+  <string id="16039">Off</string>
+  <string id="16040">Auto</string>
+  <string id="16041">On</string>
+  
   <string id="16100">All Videos</string>
   <string id="16101">Unwatched</string>
   <string id="16102">Watched</string>
@@ -1513,7 +1531,12 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
-
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimized</string>
+  <string id="16324">Software Blend</string>
+  
   <string id="16400">Post-processing</string>
 
   <string id="17500">Display sleep timeout</string>
@@ -1723,6 +1746,9 @@
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
   <string id="20258">MythTV client</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1830,12 +1856,13 @@
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV shows</string>
-  <string id="20413">Get Fanart</string>
+  <string id="20413">Get fanart</string>
   <string id="20414">Show Fanart in video and music libraries</string>
   <string id="20415">Scanning for new content</string>
   <string id="20416">First aired</string>
   <string id="20417">Writer</string>
-  <string id="20418">Clean file and folder names</string>
+  <string id="20418"></string>
+  <string id="20419">Show metadata in files view</string>
 
   <string id="20420">Never</string>
   <string id="20421">If only one season</string>
@@ -1873,6 +1900,9 @@
   <string id="20453">episodes</string>
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
+  <string id="20456">Set movieset fanart</string>
+  <string id="20457">Movie set</string>
+  <string id="20458">Group movies in sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1893,8 +1923,9 @@
   <string id="21365">Remove media share</string>
   <string id="21366">Subtitle folder</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
-
-  <string id="21369">Enable mouse</string>
+  <string id="21368">Override ASS/SSA subtitles fonts</string>
+  
+  <string id="21369">Enable mouse and Touch Screen support</string>
   <string id="21370">Play navigation sounds during media playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD player region</string>
@@ -1979,6 +2010,15 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
+  <string id="21454">Cache full</string>
+  <string id="21455">Cache filled before reaching required amount for continous playback</string>
+  
+  <string id="21460">Subtitle location</string>
+  <string id="21461">Fixed</string>
+  <string id="21462">Bottom of video</string>
+  <string id="21463">Below video</string>
+  <string id="21464">Top of video</string>
+  <string id="21465">Above video</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
@@ -2161,6 +2201,11 @@
   <string id="24041">Install from zip file</string>
   <string id="24042">Downloading %i%%</string>
   <string id="24043">Available Updates</string>
+  <string id="24044">Dependencies not met</string>
+  <string id="24045">Add-on does not have the correct structure</string>
+  <string id="24046">%s is used by the following installed add-on(s)</string>
+  <string id="24047">This add-on cannot be uninstalled</string>
+  <string id="24048">Rollback</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2185,14 +2230,19 @@
   <string id="24073">Could not connect</string>
   <string id="24074">Needs to restart</string>
   <string id="24075">Disable</string>
+  <string id="24076">Add-on Required</string>
   <string id="24080">Try to reconnect?</string>
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
+  <string id="24094">(current)</string>
+  <string id="24095">(blacklisted)</string>
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>
   <string id="24099">Would you like to switch to this skin?</string>
+  <string id="24100">To use this feature you must download an Add-on:</string>
+  <string id="24101">Would you like to download this Add-on?</string>
   <string id="25000">Notifications</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2277,6 +2327,13 @@
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
 
+  <string id="33100">Failed to start</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Event Server</string>
+  <string id="33103">Remote communication server</string>
+  
+  <string id="33200">Detected New Connection</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2298,4 +2355,51 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Can't find a next item to play</string>
+  <string id="34202">Can't find a previous item to play</string>
+  
+  <string id="34300">Failed to start zeroconf</string>
+  <string id="34301">Is Apple's Bonjour Service installed? See log for more info.</string>
+  
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
+  <string id="34402">Failed to initialize audio device</string>
+  <string id="34403">Check your audiosettings</string>
+
+  <string id="35000">Peripherals</string>
+
+  <string id="35001">Generic HID device</string>
+  <string id="35002">Generic network adapter</string>
+  <string id="35003">Generic disk</string>
+  <string id="35004">There are no settings available&#10;for this peripheral.</string>
+  <string id="35005">New device configured</string>
+  <string id="35006">Device removed</string>
+  <string id="35007">Keymap to use for this device</string>
+  <string id="35008">Keymap enabled</string>
+
+  <string id="35500">Location</string>
+  <string id="35501">Class</string>
+  <string id="35502">Name</string>
+  <string id="35503">Vendor</string>
+  <string id="35504">Product ID</string>
+  
+  <string id="36000">Pulse-Eight CEC adapter</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Switch to keyboard side command</string>
+  <string id="36003">Switch to remote side command</string>
+  <string id="36004">Press "user" button command</string>
+  <string id="36005">Enable switch side commands</string>
+  <string id="36006">Could not open the adapter</string>
+  <string id="36007">Power on the TV when starting XBMC</string>
+  <string id="36008">Power off devices when stopping XBMC</string>
+  <string id="36009">Put devices in standby mode when activating screensaver</string>
+  <string id="36010"></string>
+  <string id="36011">Could not detect the CEC port. Set it up manually.</string>
+  <string id="36012">Could not detect the CEC adapter.</string>
+  <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
+  <string id="36014">Put this PC in standby mode when the TV is switched off</string>
+  <string id="36015">HDMI port number</string>
+  <string id="36016">Connected</string> <!-- max. 13 characters -->
+  <string id="36017">Adapter found, but libcec is not available</string>
+  <string id="36018">Use the TV's language setting</string>
 </strings>

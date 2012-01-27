@@ -23,18 +23,9 @@
 #include "addons/Scraper.h"
 #include "utils/log.h"
 
-using namespace MUSIC_GRABBER;
-using namespace XFILE;
 using namespace std;
-
-CMusicArtistInfo::CMusicArtistInfo(void)
-{
-  m_bLoaded = false;
-}
-
-CMusicArtistInfo::~CMusicArtistInfo(void)
-{
-}
+using namespace XFILE;
+using namespace MUSIC_GRABBER;
 
 CMusicArtistInfo::CMusicArtistInfo(const CStdString& strArtist, const CScraperUrl& strArtistURL)
 {
@@ -43,73 +34,15 @@ CMusicArtistInfo::CMusicArtistInfo(const CStdString& strArtist, const CScraperUr
   m_bLoaded = false;
 }
 
-const CArtist& CMusicArtistInfo::GetArtist() const
-{
-  return m_artist;
-}
-
-CArtist& CMusicArtistInfo::GetArtist()
-{
-  return m_artist;
-}
-
 void CMusicArtistInfo::SetArtist(const CArtist& artist)
 {
   m_artist = artist;
   m_bLoaded = true;
 }
 
-const CScraperUrl& CMusicArtistInfo::GetArtistURL() const
+bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper,
+  const CStdString &strSearch)
 {
-  return m_artistURL;
+  return m_bLoaded = scraper->GetArtistDetails(http, m_artistURL, strSearch, m_artist);
 }
 
-bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
-{
-  if (!m_artist.Load(artist,bChained))
-    return false;
-
-  SetLoaded(true);
-
-  return true;
-}
-
-bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper)
-{
-  // load our scraper xml
-  if (!scraper->Load())
-    return false;
-
-  vector<CStdString> extras;
-  extras.push_back(m_strSearch);
-
-  vector<CStdString> xml = scraper->Run("GetArtistDetails",GetArtistURL(),http,&extras);
-
-  bool ret=true;
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    // ok, now parse the xml file
-    TiXmlDocument doc;
-    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
-    if (!doc.RootElement())
-    {
-      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-      return false;
-    }
-
-    ret = Parse(doc.RootElement(),it!=xml.begin());
-  }
-
-  return ret;
-}
-
-void CMusicArtistInfo::SetLoaded(bool bOnOff)
-{
-  m_bLoaded = bOnOff;
-}
-
-bool CMusicArtistInfo::Loaded() const
-{
-  return m_bLoaded;
-}

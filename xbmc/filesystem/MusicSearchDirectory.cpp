@@ -19,12 +19,14 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MusicSearchDirectory.h"
 #include "music/MusicDatabase.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "guilib/LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -47,14 +49,15 @@ bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
     return false;
 
   // and retrieve the search details
-  items.m_strPath = strPath;
-  unsigned int time = CTimeUtils::GetTimeMS();
+  items.SetPath(strPath);
+  unsigned int time = XbmcThreads::SystemClockMillis();
   CMusicDatabase db;
   db.Open();
   db.Search(search, items);
   db.Close();
   CLog::Log(LOGDEBUG, "%s (%s) took %u ms",
-            __FUNCTION__, strPath.c_str(), CTimeUtils::GetTimeMS() - time);
+            __FUNCTION__, strPath.c_str(), XbmcThreads::SystemClockMillis() - time);
+  items.SetLabel(g_localizeStrings.Get(137)); // Search
   return true;
 }
 

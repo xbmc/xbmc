@@ -3,10 +3,12 @@
 set -e
 
 autoreconf -vif
+autoreconf -vif lib/libid3tag/libid3tag
+autoreconf -vif xbmc/screensavers/rsxs-0.9
+autoreconf -vif xbmc/visualizations/Goom/goom2k4-0
+autoreconf -vif lib/libapetag
 autoreconf -vif lib/cpluff
-# we must autoreconf libass as we don't know till later if it's used.
-[ -d lib/libass ] && autoreconf -vif lib/libass
-# order matters with libbdnav and friends
+# order matters with libdvd and friends
 [ -d lib/libdvd/libdvdcss ] && \
   autoreconf -vif lib/libdvd/libdvdcss
 autoreconf -vif lib/libdvd/libdvdread

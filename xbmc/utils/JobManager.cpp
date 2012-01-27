@@ -32,7 +32,7 @@ bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
   return false;
 }
 
-CJobWorker::CJobWorker(CJobManager *manager)
+CJobWorker::CJobWorker(CJobManager *manager) : CThread("Jobworker")
 {
   m_jobManager = manager;
   Create(true); // start work immediately, and kill ourselves when we're done
@@ -51,7 +51,6 @@ CJobWorker::~CJobWorker()
 void CJobWorker::Process()
 {
   SetPriority( GetMinPriority() );
-  SetName("Jobworker");
   while (true)
   {
     // request an item from our manager (this call is blocking)

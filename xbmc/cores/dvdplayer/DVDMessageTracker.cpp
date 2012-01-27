@@ -19,8 +19,10 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "DVDMessageTracker.h"
 #include "DVDMessage.h"
+#include "threads/SingleLock.h"
 
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 
@@ -56,15 +58,14 @@ void CDVDMessageTracker::Register(CDVDMsg* pMsg)
 {
   if (m_bInitialized)
   {
-    EnterCriticalSection(&m_critSection);
+    CSingleLock lock(m_critSection);
     m_messageList.push_back(new CDVDMessageTrackerItem(pMsg));
-    LeaveCriticalSection(&m_critSection);
   }
 }
 
 void CDVDMessageTracker::UnRegister(CDVDMsg* pMsg)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   std::list<CDVDMessageTrackerItem*>::iterator iter = m_messageList.begin();
   while (iter != m_messageList.end())
@@ -79,7 +80,6 @@ void CDVDMessageTracker::UnRegister(CDVDMsg* pMsg)
     iter++;
   }
 
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CDVDMessageTracker::OnStartup()
@@ -93,13 +93,13 @@ void CDVDMessageTracker::Process()
   {
     Sleep(1000);
 
-    EnterCriticalSection(&m_critSection);
+    CSingleLock lock(m_critSection);
 
     std::list<CDVDMessageTrackerItem*>::iterator iter = m_messageList.begin();
     while (!m_bStop && iter != m_messageList.end())
     {
       CDVDMessageTrackerItem* pItem = *iter;
-      if ((CTimeUtils::GetTimeMS() - pItem->m_time_created) > 60000)
+      if ((XbmcThreads::SystemClockMillis() - pItem->m_time_created) > 60000)
       {
         if (!pItem->m_debug_logged)
         {
@@ -112,7 +112,6 @@ void CDVDMessageTracker::Process()
       iter++;
     }
 
-    LeaveCriticalSection(&m_critSection);
   }
 }
 

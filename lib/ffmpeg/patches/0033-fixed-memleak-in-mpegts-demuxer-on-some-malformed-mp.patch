@@ -1,0 +1,39 @@
+From c8c185cc7890cc2bbcc285810f5ac801a8d7ef1e Mon Sep 17 00:00:00 2001
+From: elupus <elupus@svn>
+Date: Fri, 26 Nov 2010 20:56:48 +0000
+Subject: [PATCH 33/36] fixed: memleak in mpegts demuxer on some malformed (??) mpegts files with too large pes packets
+
+at-visions sample file brokenStream.mpg
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@35475 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ libavformat/mpegts.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/libavformat/mpegts.c b/libavformat/mpegts.c
+index 2fc0089..112ff50 100644
+--- a/libavformat/mpegts.c
++++ b/libavformat/mpegts.c
+@@ -616,6 +616,10 @@ static int mpegts_set_stream_info(AVStream *st, PESContext *pes,
+ 
+ static void new_pes_packet(PESContext *pes, AVPacket *pkt)
+ {
++    if(pkt->data) {
++      av_log(pes->stream, AV_LOG_ERROR, "ignoring previously allocated packet on stream %d\n", pkt->stream_index);
++      av_free_packet(pkt);
++    }
+     av_init_packet(pkt);
+ 
+     pkt->destruct = av_destruct_packet;
+@@ -1657,6 +1661,8 @@ static int mpegts_read_packet(AVFormatContext *s,
+     }
+ 
+     ts->pkt = pkt;
++    ts->pkt->data = NULL;
++
+     ret = handle_packets(ts, 0);
+     if (ret < 0) {
+         /* flush pes data left */
+-- 
+1.7.3
+

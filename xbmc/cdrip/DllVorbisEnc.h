@@ -24,12 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined WIN32)
-  #include "cdrip/oggvorbis/vorbisenc.h"
-#else
-  #include <vorbis/vorbisenc.h>
-  #include "utils/log.h"
-#endif
+#include <vorbis/vorbisenc.h>
+#include "utils/log.h"
 #include "DynamicDll.h"
 
 class DllVorbisEncInterface
@@ -39,28 +35,6 @@ public:
   virtual int vorbis_encode_init_vbr(vorbis_info *vi, long channels, long rate, float base_quality)=0;
   virtual ~DllVorbisEncInterface() {}
 };
-
-#if (!defined WIN32)
-
-class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
-{
-public:
-    virtual ~DllVorbisEnc() {};
-    virtual int vorbis_encode_init(vorbis_info *vi, long channels, long rate, long max_bitrate, long nominal_bitrate, long min_bitrate)
-        { return ::vorbis_encode_init(vi, channels, rate, max_bitrate, nominal_bitrate, min_bitrate); }
-    virtual int vorbis_encode_init_vbr(vorbis_info *vi, long channels, long rate, float base_quality)
-        { return ::vorbis_encode_init_vbr(vi, channels, rate, base_quality); }
-
-    // DLL faking.
-    virtual bool ResolveExports() { return true; }
-    virtual bool Load() {
-        CLog::Log(LOGDEBUG, "DllVorbisEnc: Using libvorbisenc system library");
-        return true;
-    }
-    virtual void Unload() {}
-};
-
-#else
 
 class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
 {
@@ -72,5 +46,3 @@ class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
     RESOLVE_METHOD(vorbis_encode_init_vbr)
   END_METHOD_RESOLVE()
 };
-
-#endif

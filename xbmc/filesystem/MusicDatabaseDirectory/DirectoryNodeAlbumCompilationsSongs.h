@@ -31,7 +31,7 @@ namespace XFILE
     public:
       CDirectoryNodeAlbumCompilationsSongs(const CStdString& strName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items);
+      virtual bool GetContent(CFileItemList& items) const;
     };
   }
 }

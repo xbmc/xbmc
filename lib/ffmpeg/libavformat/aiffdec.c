@@ -21,7 +21,7 @@
 
 #include "libavutil/intfloat_readwrite.h"
 #include "avformat.h"
-#include "raw.h"
+#include "pcm.h"
 #include "aiff.h"
 
 #define AIFF                    0
@@ -311,7 +311,7 @@ static int aiff_read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat aiff_demuxer = {
+AVInputFormat ff_aiff_demuxer = {
     "aiff",
     NULL_IF_CONFIG_SMALL("Audio IFF"),
     sizeof(AIFFInputContext),

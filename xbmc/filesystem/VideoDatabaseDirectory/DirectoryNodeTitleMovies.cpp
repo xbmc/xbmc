@@ -31,7 +31,7 @@ CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, 
 
 }
 
-bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
+bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

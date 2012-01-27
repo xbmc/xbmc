@@ -275,7 +275,7 @@ static inline void cvtyuvtoRGB (SwsContext *c,
 
 #define DEFCSP420_CVT(name,out_pixels)                                  \
 static int altivec_##name (SwsContext *c,                               \
-                           unsigned char **in, int *instrides,          \
+                           const unsigned char **in, int *instrides,    \
                            int srcSliceY,        int srcSliceH,         \
                            unsigned char **oplanes, int *outstrides)    \
 {                                                                       \
@@ -309,10 +309,10 @@ static int altivec_##name (SwsContext *c,                               \
                                                                         \
     vector unsigned short lCSHIFT = c->CSHIFT;                          \
                                                                         \
-    ubyte *y1i   = in[0];                                               \
-    ubyte *y2i   = in[0]+instrides[0];                                  \
-    ubyte *ui    = in[1];                                               \
-    ubyte *vi    = in[2];                                               \
+    const ubyte *y1i   = in[0];                                         \
+    const ubyte *y2i   = in[0]+instrides[0];                            \
+    const ubyte *ui    = in[1];                                         \
+    const ubyte *vi    = in[2];                                         \
                                                                         \
     vector unsigned char *oute                                          \
         = (vector unsigned char *)                                      \
@@ -626,7 +626,7 @@ const vector unsigned char
   this is so I can play live CCIR raw video
 */
 static int altivec_uyvy_rgb32 (SwsContext *c,
-                               unsigned char **in, int *instrides,
+                               const unsigned char **in, int *instrides,
                                int srcSliceY,        int srcSliceH,
                                unsigned char **oplanes, int *outstrides)
 {
@@ -638,7 +638,7 @@ static int altivec_uyvy_rgb32 (SwsContext *c,
     vector signed   short R0,G0,B0,R1,G1,B1;
     vector unsigned char  R,G,B;
     vector unsigned char *out;
-    ubyte *img;
+    const ubyte *img;
 
     img = in[0];
     out = (vector unsigned char *)(oplanes[0]+srcSliceY*outstrides[0]);
@@ -778,8 +778,8 @@ void ff_yuv2rgb_init_tables_altivec(SwsContext *c, const int inv_table[4], int b
 
 void
 ff_yuv2packedX_altivec(SwsContext *c,
-                       const int16_t *lumFilter, int16_t **lumSrc, int lumFilterSize,
-                       const int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
+                       const int16_t *lumFilter, const int16_t **lumSrc, int lumFilterSize,
+                       const int16_t *chrFilter, const int16_t **chrSrc, int chrFilterSize,
                      uint8_t *dest, int dstW, int dstY)
 {
     int i,j;

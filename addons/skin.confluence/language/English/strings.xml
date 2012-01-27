@@ -6,9 +6,10 @@
   <string id="31002">Hate</string>
   <string id="31003">Power Options</string>
   <string id="31004">Working...</string>
-  <string id="31005">Hide INFO</string>
-
+  <string id="31005">Hide Information</string>
+  <string id="31006">View Options</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Fullscreen</string>
 
   <string id="31020">Recently Added</string>
   <string id="31021">Video - Files</string>
@@ -38,6 +39,8 @@
   <string id="31047">Current Preset</string>
   <string id="31048">Visualization Presets</string>
   <string id="31049">End Time</string>
+  <string id="31050">Sort: Ascending</string>
+  <string id="31051">Sort: Descending</string>
 
 
   <!-- Playlist Editor labels -->
@@ -55,7 +58,7 @@
   <string id="31102">Background</string>
   <string id="31103">Show "Paused" in picture slide show</string>
   <string id="31104">Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Videos" button always goes to video "Files"</string>
   <string id="31106">Miscellaneous options</string>
   <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Hide Main Menu Buttons</string>
@@ -77,13 +80,13 @@
   <string id="31124">Show Background "Now Playing" Video</string>
   <string id="31125">Show Background "Now Playing" Visualization</string>
 
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31126">Play TV theme songs in video library (TvTunes add-on)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Lyrics</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
   
-  <string id="31131"></string> <!-- blanked 2010-12-23 -->
+<string id="31131"></string> <!-- blanked 2010-12-23 -->
   <string id="31132">Lyrics Add-on</string>
   <string id="31133">Subtitle Add-on</string>
   <string id="31134">Home Page Videos Submenu</string>
@@ -105,7 +108,7 @@
   <string id="31300">Current Temp</string>
   <string id="31301">Last Updated</string>
   <string id="31302">Menu</string>
-  <string id="31303"></string>
+  <string id="31303">Data provider</string>
   <string id="31304">Picture</string>
   <string id="31305">No Disc Media Detected</string>
   <string id="31306">Eject</string>
@@ -133,6 +136,7 @@
   <string id="31328">Recently Added</string>
   <string id="31329">[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]</string>
   <string id="31330">Click button to play[CR][CR]Movie trailer</string>
+  <string id="31331">Album Details</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pause</string>
@@ -160,4 +164,17 @@
   <string id="31408">[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings</string>
 
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
-</strings>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Weather Maps</string>
+  <string id="31901">36 Hour Forecast</string>
+  <string id="31902">Hourly Forecast</string>
+  <string id="31903">Weekend Forecast</string>
+  <string id="31904">10 Day Forecast</string>
+  <string id="31905">Forecast</string>
+  <string id="31906">Maps &amp; Video</string>
+  <string id="31907">Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]</string>
+  <string id="31908">Chance of Precipitation</string>
+  <string id="31909">Fetching forecast info...</string>
+
+  </strings>

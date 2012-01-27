@@ -24,14 +24,10 @@
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
-#ifdef _MSC_VER
-#include <winsock2.h>
-#define SHUT_RDWR SD_BOTH
-#define ETIMEDOUT WSAETIMEDOUT
-#else
+
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#endif
+#include <sys/socket.h>
 
 extern "C" {
 #include "libhts/net.h"
@@ -220,7 +216,8 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
   htsmsg_t *m;
-  const char *method, *server, *version;
+//  const char *method;
+  const char *server, *version;
   const void * chall = NULL;
   size_t chall_len = 0;
   int32_t proto = 0;
@@ -249,7 +246,7 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
     CLog::Log(LOGERROR, "CHTSPSession::Open - failed to read greeting from server");
     return false;
   }
-  method  = htsmsg_get_str(m, "method");
+//  method  = htsmsg_get_str(m, "method");
             htsmsg_get_s32(m, "htspversion", &proto);
   server  = htsmsg_get_str(m, "servername");
   version = htsmsg_get_str(m, "serverversion");
@@ -625,7 +622,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   CStdString temp;
 
-  CURL url(item.m_strPath);
+  CURL url(item.GetPath());
   temp.Format("tags/%d/%d.ts", tagid, channel.id);
   url.SetFileName(temp);
 
@@ -642,7 +639,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   if(tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  item.m_strPath  = url.Get();
+  item.SetPath(url.Get());
   item.m_strTitle = tag->m_strTitle;
   item.SetThumbnailImage(channel.icon);
   item.SetMimeType("video/X-htsp");

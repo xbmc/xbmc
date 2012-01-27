@@ -3,19 +3,17 @@
  *
  * This file is part of libass.
  *
- * libass is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * libass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with libass; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "config.h"
@@ -833,7 +831,7 @@ static void compute_string_bbox(TextInfo *info, DBBox *bbox)
                      d6_to_double(info->glyphs[0].pos.y);
 
         for (i = 0; i < info->length; ++i) {
-            double s,e;
+            double s, e;
             if (info->glyphs[i].skip) continue;
             s = d6_to_double(info->glyphs[i].pos.x);
             e = s + d6_to_double(info->glyphs[i].advance.x);
@@ -890,6 +888,7 @@ init_render_context(ASS_Renderer *render_priv, ASS_Event *event)
 {
     render_priv->state.event = event;
     render_priv->state.style = render_priv->track->styles + event->Style;
+    render_priv->state.parsed_tags = 0;
 
     reset_render_context(render_priv);
 
@@ -1311,6 +1310,11 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
             FT_Done_Glyph(outline);
         }
     }
+
+    // VSFilter compatibility: invisible fill and no border?
+    // In this case no shadow is supposed to be rendered.
+    if (!info->outline_glyph && (info->c[0] & 0xFF) == 0xFF)
+        info->bm_s = 0;
 }
 
 /**
@@ -1399,16 +1403,17 @@ static void trim_whitespace(ASS_Renderer *render_priv)
             }
             // A break itself can contain a whitespace, too
             cur = ti->glyphs + i;
-            if (cur->symbol == ' ')
+            if (cur->symbol == ' ') {
                 cur->skip++;
-            // Mark whitespace after
-            j = i + 1;
-            cur = ti->glyphs + j;
-            while (j < ti->length && IS_WHITESPACE(cur)) {
-                cur->skip++;
-                cur = ti->glyphs + ++j;
+                // Mark whitespace after
+                j = i + 1;
+                cur = ti->glyphs + j;
+                while (j < ti->length && IS_WHITESPACE(cur)) {
+                    cur->skip++;
+                    cur = ti->glyphs + ++j;
+                }
+                i = j - 1;
             }
-            i = j - 1;
         }
     }
 }
@@ -1443,10 +1448,9 @@ wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
     break_type = 0;
     s1 = text_info->glyphs;     // current line start
     for (i = 0; i < text_info->length; ++i) {
-        int break_at;
+        int break_at = -1;
         double s_offset, len;
         cur = text_info->glyphs + i;
-        break_at = -1;
         s_offset = d6_to_double(s1->bbox.xMin + s1->pos.x);
         len = d6_to_double(cur->bbox.xMax + cur->pos.x) - s_offset;
 
@@ -1455,19 +1459,15 @@ wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
             break_at = i;
             ass_msg(render_priv->library, MSGL_DBG2,
                     "forced line break at %d", break_at);
-        }
-
-        if ((len >= max_text_width)
-            && (render_priv->state.wrap_style != 2)) {
+        } else if (cur->symbol == ' ') {
+            last_space = i;
+        } else if (len >= max_text_width
+                   && (render_priv->state.wrap_style != 2)) {
             break_type = 1;
             break_at = last_space;
-            if (break_at == -1)
-                break_at = i - 1;
-            if (break_at == -1)
-                break_at = 0;
-            ass_msg(render_priv->library, MSGL_DBG2, "overfill at %d", i);
-            ass_msg(render_priv->library, MSGL_DBG2, "line break at %d",
-                    break_at);
+            if (break_at >= 0)
+                ass_msg(render_priv->library, MSGL_DBG2, "line break at %d",
+                        break_at);
         }
 
         if (break_at != -1) {
@@ -1488,14 +1488,6 @@ wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
             s_offset = d6_to_double(s1->bbox.xMin + s1->pos.x);
             text_info->n_lines++;
         }
-
-        if (cur->symbol == ' ')
-            last_space = i;
-
-        // make sure the hard linebreak is not forgotten when
-        // there was a new soft linebreak just inserted
-        if (cur->symbol == '\n' && break_type == 1)
-            i--;
     }
 #define DIFF(x,y) (((x) < (y)) ? (y - x) : (x - y))
     exit = 0;

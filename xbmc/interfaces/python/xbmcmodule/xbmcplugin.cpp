@@ -19,23 +19,17 @@
  *
  */
 
+// include for constants
+#include "pyutil.h"
+
 #include "filesystem/PluginDirectory.h"
 #include "listitem.h"
 #include "FileItem.h"
-
-// include for constants
-#include "pyutil.h"
 
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,7 +68,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"iOO|bl",
+      (char*)"iOO|bi",
       (char**)keywords,
       &handle,
       &pURL,
@@ -90,7 +84,7 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
 
     ListItem *pListItem = (ListItem *)pItem;
-    pListItem->item->m_strPath = url;
+    pListItem->item->SetPath(url);
     pListItem->item->m_bIsFolder = (0 != bIsFolder);
 
     // call the directory class to add our item
@@ -126,7 +120,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"iO|l",
+      (char*)"iO|i",
       (char**)keywords,
       &handle,
       &pItems,
@@ -158,7 +152,7 @@ namespace PYXBMC
       if (!PyXBMCGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
 
       ListItem *pListItem = (ListItem *)pItem;
-      pListItem->item->m_strPath = url;
+      pListItem->item->SetPath(url);
       pListItem->item->m_bIsFolder = (0 != bIsFolder);
       items.Add(pListItem->item);
     }

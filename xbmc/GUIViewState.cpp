@@ -33,7 +33,9 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "guilib/GUIWindowManager.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -44,6 +46,7 @@
 #include "guilib/TextureManager.h"
 
 using namespace std;
+using namespace ADDON;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
@@ -70,7 +73,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol()=="musicsearch")
     return new CGUIViewStateMusicSearch(items);
 
-  if (items.IsSmartPlayList())
+  if (items.IsSmartPlayList() || url.GetProtocol() == "upnp")
   {
     if (items.GetContent() == "songs")
       return new CGUIViewStateMusicSmartPlaylist(items);
@@ -92,7 +95,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
 
-  if (items.m_strPath == "special://musicplaylists/")
+  if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
 
   if (windowId==WINDOW_MUSIC_NAV)
@@ -133,6 +136,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
+  m_playlist = PLAYLIST_NONE;
   m_sortOrder=SORT_ORDER_ASC;
 }
 
@@ -147,7 +151,7 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
   // and descending for the views which should be usually descending.
   // default sort order for date, size, program count + rating is reversed
   SORT_METHOD sortMethod = GetSortMethod();
-  if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE ||
+  if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE || sortMethod == SORT_METHOD_PLAYCOUNT ||
       sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
       sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE || sortMethod == SORT_METHOD_LISTENERS)
   {
@@ -298,7 +302,7 @@ bool CGUIViewState::DisableAddSourceButtons()
 
 int CGUIViewState::GetPlaylist()
 {
-  return PLAYLIST_NONE;
+  return m_playlist;
 }
 
 const CStdString& CGUIViewState::GetPlaylistDirectory()
@@ -357,7 +361,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     source.strName = label;
     if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;
     m_sources.push_back(source);
   }
@@ -375,7 +379,7 @@ void CGUIViewState::AddLiveTVSources()
       source.strName = (*it).strName;
       source.vecPaths = (*it).vecPaths;
       source.m_strThumbnailImage = "";
-      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+      source.FromNameAndPaths("video", source.strName, source.vecPaths);
       m_sources.push_back(source);
     }
   }
@@ -395,6 +399,8 @@ void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
 {
   if (GetSortMethod() == SORT_METHOD_NONE)
     m_sortOrder = SORT_ORDER_NONE;
+  else if (sortOrder == SORT_ORDER_NONE)
+    m_sortOrder = SORT_ORDER_ASC;
   else
     m_sortOrder = sortOrder;
 }
@@ -405,7 +411,8 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
   if (db.Open())
   {
     CViewState state;
-    if (db.GetViewState(path, windowID, state))
+    if (db.GetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin")) ||
+        db.GetViewState(path, windowID, state, ""))
     {
       SetViewAsControl(state.m_viewMode);
       SetSortMethod(state.m_sortMethod);
@@ -423,7 +430,7 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
     CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
     if (viewState)
       *viewState = state;
-    db.SetViewState(path, windowID, state);
+    db.SetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin"));
     db.Close();
     if (viewState)
       g_settings.Save();
@@ -444,12 +451,25 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, g_windowManager.GetActiveWindow());
+  if (items.IsPlugin())
+  {
+    CURL url(items.GetPath());
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon) && addon)
+    {
+      PluginPtr plugin = boost::static_pointer_cast<CPluginSource>(addon);
+      if (plugin->Provides(CPluginSource::AUDIO))
+        m_playlist = PLAYLIST_MUSIC;
+      if (plugin->Provides(CPluginSource::VIDEO))
+        m_playlist = PLAYLIST_VIDEO;
+    }
+  }
+  LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
 void CGUIViewStateFromItems::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, g_windowManager.GetActiveWindow());
+  SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
 

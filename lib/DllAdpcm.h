@@ -27,27 +27,27 @@ class DllADPCMInterface
 {
 public:
     virtual ~DllADPCMInterface() {}
-    virtual int LoadXWAV(const char* szFileName)=0;
-    virtual void FreeXWAV(int)=0;
-    virtual long FillBuffer(int nsf, char* buffer, int size)=0;
-    virtual int GetPlaybackRate(int nsf)=0;
-    virtual int GetNumberOfChannels(int info)=0;
-    virtual int GetSampleSize(int info)=0;
-    virtual int GetLength(int info)=0;
-    virtual int Seek(int info, int pos)=0;
+    virtual void* LoadXWAV(const char* szFileName)=0;
+    virtual void FreeXWAV(void*)=0;
+    virtual long FillBuffer(void* nsf, char* buffer, int size)=0;
+    virtual int GetPlaybackRate(void* nsf)=0;
+    virtual int GetNumberOfChannels(void* info)=0;
+    virtual int GetSampleSize(void* info)=0;
+    virtual int GetLength(void* info)=0;
+    virtual int Seek(void* info, int pos)=0;
 };
 
 class DllADPCM : public DllDynamic, DllADPCMInterface
 {
   DECLARE_DLL_WRAPPER(DllADPCM, DLL_PATH_ADPCM_CODEC)
-  DEFINE_METHOD1(int, LoadXWAV, (const char* p1))
-  DEFINE_METHOD1(void, FreeXWAV, (int p1))
-  DEFINE_METHOD3(long, FillBuffer, (int p1, char* p2, int p3))
-  DEFINE_METHOD1(int, GetPlaybackRate, (int p1))
-  DEFINE_METHOD1(int, GetNumberOfChannels, (int p1))
-  DEFINE_METHOD1(int, GetSampleSize, (int p1))
-  DEFINE_METHOD1(int, GetLength, (int p1))
-  DEFINE_METHOD2(int, Seek, (int p1, int p2))
+  DEFINE_METHOD1(void*, LoadXWAV, (const char* p1))
+  DEFINE_METHOD1(void, FreeXWAV, (void* p1))
+  DEFINE_METHOD3(long, FillBuffer, (void* p1, char* p2, int p3))
+  DEFINE_METHOD1(int, GetPlaybackRate, (void* p1))
+  DEFINE_METHOD1(int, GetNumberOfChannels, (void* p1))
+  DEFINE_METHOD1(int, GetSampleSize, (void* p1))
+  DEFINE_METHOD1(int, GetLength, (void* p1))
+  DEFINE_METHOD2(int, Seek, (void* p1, int p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DLL_LoadXWAV, LoadXWAV)

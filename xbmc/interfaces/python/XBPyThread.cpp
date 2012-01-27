@@ -19,26 +19,15 @@
  *
  */
 
-// python.h should always be included first before any other includes
-#include "system.h"
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-    #include <python2.6/osdefs.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-    #include <python2.5/osdefs.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-    #include <python2.4/osdefs.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-  #include "python/Include/osdefs.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
 #endif
-#include "XBPythonDll.h"
+
+// python.h should always be included first before any other includes
+#include <Python.h>
+#include <osdefs.h>
+
+#include "system.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -47,18 +36,15 @@
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
+#include "addons/Addon.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
 
 #include "xbmcmodule/pyutil.h"
+#include "xbmcmodule/pythreadstate.h"
+#include "utils/CharsetConverter.h"
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -74,7 +60,7 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-XBPyThread::XBPyThread(XBPython *pExecuter, int id)
+XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter   = pExecuter;
@@ -102,11 +88,23 @@ XBPyThread::~XBPyThread()
   }
 }
 
+void XBPyThread::setSource(const CStdString &src)
+{
+#ifdef TARGET_WINDOWS
+  CStdString strsrc = src;
+  g_charsetConverter.utf8ToSystem(strsrc);
+  m_source  = new char[strsrc.GetLength()+1];
+  strcpy(m_source, strsrc);
+#else
+  m_source  = new char[src.GetLength()+1];
+  strcpy(m_source, src);
+#endif
+}
+
 int XBPyThread::evalFile(const CStdString &src)
 {
   m_type    = 'F';
-  m_source  = new char[src.GetLength()+1];
-  strcpy(m_source, src);
+  setSource(src);
   Create();
   return 0;
 }
@@ -114,8 +112,7 @@ int XBPyThread::evalFile(const CStdString &src)
 int XBPyThread::evalString(const CStdString &src)
 {
   m_type    = 'S';
-  m_source  = new char[src.GetLength()+1];
-  strcpy(m_source, src);
+  setSource(src);
   Create();
   return 0;
 }
@@ -130,11 +127,6 @@ int XBPyThread::setArgv(const std::vector<CStdString> &argv)
     strcpy(m_argv[i], argv[i].c_str());
   }
   return 0;
-}
-
-void XBPyThread::OnStartup()
-{
-  CThread::SetName("Python Thread");
 }
 
 void XBPyThread::Process()
@@ -155,7 +147,7 @@ void XBPyThread::Process()
   // swap in my thread state
   PyThreadState_Swap(state);
 
-  m_pExecuter->InitializeInterpreter();
+  m_pExecuter->InitializeInterpreter(addon);
 
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
@@ -170,40 +162,42 @@ void XBPyThread::Process()
   ADDON::VECADDONS addons;
   ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
   for (unsigned int i = 0; i < addons.size(); ++i)
+#ifdef TARGET_WINDOWS
+  {
+    CStdString strTmp(_P(addons[i]->LibPath()));
+    g_charsetConverter.utf8ToSystem(strTmp);
+    path += PY_PATH_SEP + strTmp;
+  }
+#else
     path += PY_PATH_SEP + _P(addons[i]->LibPath());
+#endif
 
   // and add on whatever our default path is
   path += PY_PATH_SEP;
 
-#if (defined USE_EXTERNAL_PYTHON)
-  {
-    // we want to use sys.path so it includes site-packages
-    // if this fails, default to using Py_GetPath
-    PyObject *sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
-    PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
-    PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
+  // we want to use sys.path so it includes site-packages
+  // if this fails, default to using Py_GetPath
+  PyObject *sysMod(PyImport_ImportModule((char*)"sys")); // must call Py_DECREF when finished
+  PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
+  PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 
-    if( pathObj && PyList_Check(pathObj) )
+  if( pathObj && PyList_Check(pathObj) )
+  {
+    for( int i = 0; i < PyList_Size(pathObj); i++ )
     {
-      for( int i = 0; i < PyList_Size(pathObj); i++ )
+      PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
+      if( e && PyString_Check(e) )
       {
-        PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-        if( e && PyString_Check(e) )
-        {
-            path += PyString_AsString(e); // returns internal data, don't delete or modify
-            path += PY_PATH_SEP;
-        }
+          path += PyString_AsString(e); // returns internal data, don't delete or modify
+          path += PY_PATH_SEP;
       }
     }
-    else
-    {
-      path += Py_GetPath();
-    }
-    Py_DECREF(sysMod); // release ref to sysMod
   }
-#else
-  path += Py_GetPath();
-#endif
+  else
+  {
+    path += Py_GetPath();
+  }
+  Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
   if (m_argv != NULL)
@@ -232,21 +226,34 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  xbp_chdir(scriptDir.c_str());
-
   if (!stopping)
   {
     if (m_type == 'F')
     {
       // run script from file
-      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
+      // We need to have python open the file because on Windows the DLL that python
+      //  is linked against may not be the DLL that xbmc is linked against so
+      //  passing a FILE* to python from an fopen has the potential to crash.
+      PyObject* file = PyFile_FromString((char *) _P(m_source).c_str(), (char*)"r");
+      FILE *fp = PyFile_AsFile(file);
+
       if (fp)
       {
         PyObject *f = PyString_FromString(_P(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
+        if (addon.get() != NULL)
+        {
+          PyObject *pyaddonid = PyString_FromString(addon->ID().c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
+
+          CStdString version = ADDON::GetXbmcApiVersionDependency(addon);
+          PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
+
+          CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",addon->ID().c_str(),version.c_str());
+        }
         Py_DECREF(f);
-        PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
-        fclose(fp);
+        PyRun_FileExFlags(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);
       }
       else
         CLog::Log(LOGERROR, "%s not found!", m_source);
@@ -310,6 +317,7 @@ void XBPyThread::Process()
         CLog::Log(LOGINFO, "<unknown exception type>");
       }
 
+      PYXBMC::PyXBMCGUILock();
       CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
       if (pDlgToast)
       {
@@ -327,6 +335,7 @@ void XBPyThread::Process()
         desc.Format(g_localizeStrings.Get(2100), script);
         pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
       }
+      PYXBMC::PyXBMCGUIUnlock();
     }
 
     Py_XDECREF(exc_type);
@@ -352,9 +361,11 @@ void XBPyThread::Process()
       CLog::Log(LOGINFO, "Scriptresult: Waiting on thread %"PRIu64, (uint64_t)s->thread_id);
       old = s;
     }
-    Py_BEGIN_ALLOW_THREADS
+
+    CPyThreadState pyState;
     Sleep(100);
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
+
     s = state->interp->tstate_head;
   }
 
@@ -410,14 +421,14 @@ void XBPyThread::stop()
   if (m_threadState)
   {
     PyEval_AcquireLock();
-    PyThreadState* old = PyThreadState_Swap(m_threadState);
+    PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
     PyObject *m;
     m = PyImport_AddModule((char*)"xbmc");
     if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
 
-    for(PyThreadState* state = m_threadState->interp->tstate_head; state; state = state->next)
+    for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
       Py_XDECREF(state->async_exc);
       state->async_exc = PyExc_SystemExit;

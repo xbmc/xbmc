@@ -40,7 +40,7 @@
       <altname>Interact AxisPad</altname>
       <button id="1">FullScreen</button> <!--square -->
       <button id="3">Select</button>  <!--x --> 
-      <button id="4">ParentDir</button>   <!--circle --> 
+      <button id="4">Back</button>   <!--circle --> 
       <button id="2">Queue</button> <!-- tri -->
       <button id="5">PreviousMenu</button> <!-- l1 -->
       <button id="7"></button>  <!-- l2 -->      

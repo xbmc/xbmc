@@ -76,6 +76,7 @@ struct SSortFileItem
   static void ByEpisodeNum(CFileItemPtr &item);
   static void ByProductionCode(CFileItemPtr &item);
   static void ByLastPlayed(CFileItemPtr &item);
+  static void ByPlayCount(CFileItemPtr &item);
   static void ByBitrate(CFileItemPtr &item);
   static void ByListeners(CFileItemPtr &item);
 };
@@ -116,6 +117,7 @@ typedef enum {
   SORT_METHOD_FULLPATH,
   SORT_METHOD_LABEL_IGNORE_FOLDERS,
   SORT_METHOD_LASTPLAYED,
+  SORT_METHOD_PLAYCOUNT,
   SORT_METHOD_LISTENERS,
   SORT_METHOD_UNSORTED,
   SORT_METHOD_BITRATE,

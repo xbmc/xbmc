@@ -45,7 +45,7 @@ CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, fl
 CGUIResizeControl::~CGUIResizeControl(void)
 {}
 
-void CGUIResizeControl::Render()
+void CGUIResizeControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_bInvalidated)
   {
@@ -65,18 +65,26 @@ void CGUIResizeControl::Render()
       alphaChannel = 63 - (alphaCounter % 64);
 
     alphaChannel += 192;
-    SetAlpha( (unsigned char)alphaChannel );
+    if (SetAlpha( (unsigned char)alphaChannel ))
+      MarkDirtyRegion();
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
     m_frameCounter++;
   }
   else
   {
-    SetAlpha(0xff);
+    if (SetAlpha(0xff))
+      MarkDirtyRegion();
     m_imgFocus.SetVisible(false);
     m_imgNoFocus.SetVisible(true);
   }
-  // render both so the visibility settings cause the frame counter to resetcorrectly
+  m_imgFocus.Process(currentTime);
+  m_imgNoFocus.Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIResizeControl::Render()
+{
   m_imgFocus.Render();
   m_imgNoFocus.Render();
   CGUIControl::Render();
@@ -215,17 +223,19 @@ void CGUIResizeControl::SetPosition(float posX, float posY)
   m_imgNoFocus.SetPosition(posX, posY);
 }
 
-void CGUIResizeControl::SetAlpha(unsigned char alpha)
+bool CGUIResizeControl::SetAlpha(unsigned char alpha)
 {
-  m_imgFocus.SetAlpha(alpha);
-  m_imgNoFocus.SetAlpha(alpha);
+  return m_imgFocus.SetAlpha(alpha) | 
+         m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIResizeControl::UpdateColors()
+bool CGUIResizeControl::UpdateColors()
 {
-  CGUIControl::UpdateColors();
-  m_imgFocus.SetDiffuseColor(m_diffuseColor);
-  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_imgFocus.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 
 void CGUIResizeControl::SetLimits(float x1, float y1, float x2, float y2)

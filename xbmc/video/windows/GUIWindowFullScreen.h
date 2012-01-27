@@ -38,6 +38,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregion);
   virtual void Render();
   virtual void OnWindowLoaded();
   void ChangetheTimeCode(int remote);
@@ -45,7 +46,6 @@ public:
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:
   void RenderTTFSubtitles();
@@ -78,6 +78,7 @@ private:
 
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
+  CGUIInfoBool m_showCodec;
 
   bool m_bShowCurrentTime;
 

@@ -62,10 +62,10 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
       if (strDir != "." && strDir != "..")
       {
         CFileItemPtr pItem(new CFileItem((char*)dp->d_name));
-        pItem->m_strPath = strRoot;
-        pItem->m_strPath += (char*)dp->d_name;
+        strDir = strRoot + (char*)dp->d_name;
+        URIUtils::AddSlashAtEnd(strDir);
+        pItem->SetPath(strDir);
         pItem->m_bIsFolder = true;
-        URIUtils::AddSlashAtEnd(pItem->m_strPath);
 
         items.Add(pItem);
       }
@@ -73,8 +73,7 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
     else
     {
       CFileItemPtr pItem(new CFileItem((char*)dp->d_name));
-      pItem->m_strPath = strRoot;
-      pItem->m_strPath += (char*)dp->d_name;
+      pItem->SetPath(strRoot + (char*)dp->d_name);
       pItem->m_bIsFolder = false;
       pItem->m_dwSize = dp->d_filesize;
 

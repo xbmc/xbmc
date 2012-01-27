@@ -37,6 +37,7 @@
 #include "utils/fastmemcpy.h"
 #include "DllSwScale.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 
 namespace BCM
 {
@@ -217,6 +218,7 @@ protected:
   void                CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -228,9 +230,11 @@ protected:
   bool                m_has_bcm70015;
   unsigned int        m_timeout;
   bool                m_format_valid;
+  bool                m_is_live_stream;
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  bool                m_output_YV12;
   uint64_t            m_PictureNumber;
   uint8_t             m_color_space;
   unsigned int        m_color_range;
@@ -325,6 +329,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_has_bcm70015(has_bcm70015),
   m_timeout(20),
   m_format_valid(false),
+  m_is_live_stream(false),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
@@ -333,6 +338,12 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
   m_dllSwScale->Load();
+
+  
+  if (g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_YV12_PREFERED)
+    m_output_YV12 = true;
+  else
+    m_output_YV12 = false;
 }
 
 CMPCOutputThread::~CMPCOutputThread()
@@ -378,10 +389,25 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
   if (timestamp != DVD_NOPTS_VALUE)
   {
     double duration;
+    // if timestamp does not start at a low value we 
+    // came in the middle of an online live stream
+    // 250 ms is a fourth of a 25fps source
+    // if timestamp is larger than that at the beginning
+    // we are much more out of sync than with the rough 
+    // calculation. To cover these 250 ms we need
+    // roughly 5 seconds of video stream to get back
+    // in sync
+    if (m_framerate_cnt == 0 && timestamp > 250000.0)
+      m_is_live_stream = true;
+    
     duration = timestamp - m_framerate_timestamp;
     if (duration > 0.0)
     {
       double framerate;
+      // cnt count has to be done here, cause we miss frames
+      // if framerate will not calculated correctly and
+      // duration has to be > 0.0 so we do not calc images twice
+      m_framerate_cnt++;
 
       m_framerate_timestamp += duration;
       framerate = DVD_TIME_BASE / duration;
@@ -400,8 +426,9 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
         case 30:
         case 25:
         case 24:
-          m_framerate_cnt++;
-          m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
+          // if we have such a live stream framerate is more exact than calculating
+          // cause of m_framerate_cnt and timestamp do not match in any way
+          m_framerate = m_is_live_stream ? framerate : DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
         break;
       }
     }
@@ -733,6 +760,46 @@ void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   pBuffer->m_interlace = false;
 }
 
+void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
+{
+  // crystalhd driver sends internal info in 1st pixel location, then restores
+  // original pixel value but sometimes, the info is broked and the
+  // driver cannot do the restore and zeros the pixel. This is wrong for
+  // yuv color space, uv values should be set to 128 otherwise we get a
+  // bright green pixel in upper left.
+  // We fix this by replicating the 2nd pixel to the 1st.
+  switch(pBuffer->m_format)
+  {
+    default:
+    case DVDVideoPicture::FMT_YUV420P:
+    {
+      uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+      uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+      uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_u[0] = d_u[1];
+      d_v[0] = d_v[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_NV12:
+    {
+      uint8_t  *d_y  = pBuffer->m_y_buffer_ptr;
+      uint16_t *d_uv = (uint16_t*)pBuffer->m_uv_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_uv[0] = d_uv[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_YUY2:
+    {
+      uint32_t *d_yuyv = (uint32_t*)pBuffer->m_y_buffer_ptr;
+      d_yuyv[0] = d_yuyv[1];
+    }
+    break;
+  }
+}
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -771,15 +838,19 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-#ifdef _WIN32
-            // force Windows to use YV12 until DX renderer gets NV12 or YUY2 capability.
-            pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-#else
-            if (m_color_space == BCM::MODE422_YUY2)
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+            if (m_output_YV12)
+            {
+              // output YV12, nouveau driver has slow NV12, YUY2 capability.
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+            }
             else
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-#endif
+            {
+              if (m_color_space == BCM::MODE422_YUY2)
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              else
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+            }
+
             CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
             while (!m_bStop && m_ReadyList.Count() > 10)
               Sleep(1);
@@ -880,6 +951,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             }
           }
 
+          CheckUpperLeftGreenPixelHack(pBuffer);
           m_ReadyList.Push(pBuffer);
           m_ready_event.Set();
           got_picture = true;
@@ -1667,10 +1739,10 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
     if (data_size < nal_size)
 			return false;
 
-    m_chd_params.sps_pps_buf[0] = 0;
-    m_chd_params.sps_pps_buf[1] = 0;
-    m_chd_params.sps_pps_buf[2] = 0;
-    m_chd_params.sps_pps_buf[3] = 1;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 0] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 1] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 2] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 3] = 1;
 
     m_chd_params.sps_pps_size += 4;
 

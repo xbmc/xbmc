@@ -29,6 +29,7 @@
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
     : CGUIWindow(WINDOW_TEST_PATTERN, "")
 {
+  m_needsScaling = false;
 }
 
 CGUIWindowTestPattern::~CGUIWindowTestPattern(void)
@@ -39,23 +40,17 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_PREVIOUS_MENU:
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-    break;
-
   case ACTION_MOVE_UP:
   case ACTION_MOVE_LEFT:
-     m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;
-     break;
+    m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;
+    SetInvalid();
+    return true;
 
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_RIGHT:
-     m_pattern = (m_pattern + 1) % TEST_PATTERNS_COUNT;
-     break;
-
+    m_pattern = (m_pattern + 1) % TEST_PATTERNS_COUNT;
+    SetInvalid();
+    return true;
   }
   return CGUIWindow::OnAction(action); // base class to handle basic movement etc.
 }
@@ -75,6 +70,14 @@ bool CGUIWindowTestPattern::OnMessage(CGUIMessage& message)
 
   }
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_pattern == 0 || m_pattern == 4)
+    MarkDirtyRegion();
+  CGUIWindow::Process(currentTime, dirtyregions);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowTestPattern::Render()

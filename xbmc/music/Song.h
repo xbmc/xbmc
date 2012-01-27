@@ -92,6 +92,8 @@ public:
   CStdString lastPlayed;
   int iStartOffset;
   int iEndOffset;
+  int iArtistId;
+  int iAlbumId;
 
   // Karaoke-specific information
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke
@@ -108,6 +110,8 @@ class CSongMap
 public:
   CSongMap();
 
+  std::map<CStdString, CSong>::const_iterator Begin();
+  std::map<CStdString, CSong>::const_iterator End();
   CSong *Find(const CStdString &file);
   void Add(const CStdString &file, const CSong &song);
   void Clear();

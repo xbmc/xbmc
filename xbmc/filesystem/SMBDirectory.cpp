@@ -33,7 +33,6 @@
 
 #include "system.h"
 
-#if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
@@ -200,7 +199,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if (bIsDir)
       {
         CFileItemPtr pItem(new CFileItem(strFile));
-        pItem->m_strPath = strRoot;
+        CStdString path(strRoot);
 
         // needed for network / workgroup browsing
         // skip if root if we are given a server
@@ -210,10 +209,11 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           CURL rooturl(strRoot);
           rooturl.SetFileName("");
           rooturl.SetHostName("");
-          pItem->m_strPath = smb.URLEncode(rooturl);
+          path = smb.URLEncode(rooturl);
         }
-        pItem->m_strPath += aDir.name;
-        URIUtils::AddSlashAtEnd(pItem->m_strPath);
+        path = URIUtils::AddFileToFolder(path,aDir.name);
+        URIUtils::AddSlashAtEnd(path);
+        pItem->SetPath(path);
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
         if (hidden)
@@ -223,7 +223,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       else
       {
         CFileItemPtr pItem(new CFileItem(strFile));
-        pItem->m_strPath = strRoot + aDir.name;
+        pItem->SetPath(strRoot + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
         pItem->m_dateTime=localTime;
@@ -348,6 +348,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
 bool CSMBDirectory::Create(const char* strPath)
 {
+  bool success = true;
   CSingleLock lock(smb);
   smb.Init();
 
@@ -356,15 +357,15 @@ bool CSMBDirectory::Create(const char* strPath)
   CStdString strFileName = smb.URLEncode(url);
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
-
-  if(result != 0)
+  success = (result == 0 || EEXIST == errno);
+  if(!success)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 #endif
 
-  return (result == 0 || EEXIST == result);
+  return success;
 }
 
 bool CSMBDirectory::Remove(const char* strPath)
@@ -499,5 +500,3 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
   return XBMC_SMB_MOUNT_PATH + strPath;
 #endif
 }
-
-#endif

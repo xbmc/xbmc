@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# if no argument provided, write stdin to a file and re-run the script
+if [ $# = 0 ]; then
+    cat > patcheck.stdout
+    $0 patcheck.stdout
+    rm -f patcheck.stdout
+    exit
+fi
+
 TMP=patcheck.tmp
 OPT="-nH"
 #FILES=`grep '^+++' $* | sed 's/+++ //g'`
@@ -43,6 +51,8 @@ hiegrep 'for *\( *'"$ERE_PRITYP"' '  'not gcc 2.95 compatible' $*
 hiegrep '(static|inline|const) *\1'  'duplicate word' $*
 hiegrep 'INIT_VLC_USE_STATIC' 'forbidden ancient vlc type' $*
 hiegrep '=[-+\*\&] ' 'looks like compound assignment' $*
+hiegrep2 '/\*\* *[a-zA-Z0-9].*' '\*/' 'Inconsistently formatted doxygen comment' $*
+hiegrep '; */\*\*[^<]' 'Misformatted doxygen comment' $*
 
 hiegrep2 '(int|unsigned|static|void)[a-zA-Z0-9 _]*(init|end)[a-zA-Z0-9 _]*\(.*[^;]$' '(av_cold|:\+[^a-zA-Z_])' 'These functions may need av_cold, please review the whole patch for similar functions needing av_cold' $*
 
@@ -85,6 +95,9 @@ hiegrep2 '\.channel_layouts *= *\(' 'const' 'missing const for channel_layouts a
 hiegrep2 "$ERE_TYPES" '(static|av_|ff_|typedef|:\+[^a-zA-Z_])' 'Non static with no ff_/av_ prefix' $*
 
 hiegrep ':\+[^}#]*else' 'missing } prior to else' $*
+hiegrep '(if|while|for)\(' 'missing whitespace between keyword and ( (feel free to ignore)' $*
+hiegrep '(else|do){'       'missing whitespace between keyword and { (feel free to ignore)' $*
+hiegrep '}(else|while)'    'missing whitespace between } and keyword (feel free to ignore)' $*
 
 #FIXME this should print the previous statement maybe
 hiegrep ':\+  *{ *$' '{ should be on the same line as the related previous statement' $*
@@ -123,7 +136,7 @@ if test -e $TMP ; then
     cat $TMP
 fi
 
-grep '^Index:.*Changelog' $* >/dev/null || printf "\nMissing changelog entry (ignore if minor change)\n"
+grep '^+++ .*Changelog' $* >/dev/null || printf "\nMissing changelog entry (ignore if minor change)\n"
 
 cat $* | tr '\n' '@' | egrep --color=always -o '(fprintf|av_log|printf)\([^)]*\)[+ ;@]*\1'  >$TMP && printf "\nMergeable calls\n"
 cat $TMP | tr '@' '\n'

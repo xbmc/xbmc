@@ -79,7 +79,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       // global playlist changed outside playlist window
       m_vecItems->RemoveDiscCache(GetID());
       UpdateButtons();
-      Update(m_vecItems->m_strPath);
+      Update(m_vecItems->GetPath());
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems->Size() <= 0)
       {
@@ -98,7 +98,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_vecItems->m_strPath="playlistvideo://";
+      m_vecItems->SetPath("playlistvideo://");
 
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
@@ -131,7 +131,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
           g_settings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_VIDEO);
           g_settings.Save();
           UpdateButtons();
-          Update(m_vecItems->m_strPath);
+          Update(m_vecItems->GetPath());
         }
       }
       else if (iControl == CONTROL_BTNSAVE)
@@ -216,6 +216,13 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
   return CGUIWindowVideoBase::OnAction(action);
 }
 
+bool CGUIWindowVideoPlaylist::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK)
+    return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
+  return CGUIWindowVideoBase::OnBack(actionID);
+}
+
 bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate /* = true */)
 {
   int iSelected = iItem;
@@ -246,7 +253,7 @@ bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem, int iAction, bo
     }
 
     if (bUpdate)
-      Update(m_vecItems->m_strPath);
+      Update(m_vecItems->GetPath());
     return true;
   }
 
@@ -323,7 +330,7 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem)
   else
   {
     CFileItemPtr pItem = m_vecItems->Get(iItem);
-    CStdString strPath = pItem->m_strPath;
+    CStdString strPath = pItem->GetPath();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.Play( iItem );
   }
@@ -337,20 +344,9 @@ void CGUIWindowVideoPlaylist::RemovePlayListItem(int iItem)
       && g_playlistPlayer.GetCurrentSong() == iItem)
     return ;
 
-  g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).Remove(iItem);
+  g_playlistPlayer.Remove(PLAYLIST_VIDEO, iItem);
 
-  // Correct the current playing song in playlistplayer
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO && g_application.IsPlayingVideo())
-  {
-    int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-    if (iItem <= iCurrentSong)
-    {
-      iCurrentSong--;
-      g_playlistPlayer.SetCurrentSong(iCurrentSong);
-    }
-  }
-
-  Update(m_vecItems->m_strPath);
+  Update(m_vecItems->GetPath());
 
   if (m_vecItems->Size() <= 0)
   {
@@ -510,7 +506,7 @@ void CGUIWindowVideoPlaylist::MoveItem(int iStart, int iDest)
     else
       break;
   }
-  Update(m_vecItems->m_strPath);
+  Update(m_vecItems->GetPath());
 }
 
 void CGUIWindowVideoPlaylist::MarkPlaying()

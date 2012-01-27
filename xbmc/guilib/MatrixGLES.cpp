@@ -50,6 +50,8 @@ CMatrixGLES::~CMatrixGLES()
   {
     while (!m_matrices[i].empty())
     {
+      GLfloat *matrix = m_matrices[i].back();
+      delete [] matrix;
       m_matrices[i].pop_back();
     }
   }
@@ -90,14 +92,20 @@ void CMatrixGLES::PushMatrix()
     GLfloat *matrix = new GLfloat[16];
     memcpy(matrix, m_pMatrix, sizeof(GLfloat)*16);
     m_matrices[m_matrixMode].push_back(matrix);
+    m_pMatrix = matrix;
   }
 }
 
 void CMatrixGLES::PopMatrix()
 {
-  if (MODE_WITHIN_RANGE(m_matrixMode) && (m_matrices[m_matrixMode].size() > 1))
+  if (MODE_WITHIN_RANGE(m_matrixMode))
   {
-    m_matrices[m_matrixMode].pop_back();
+    if (m_matrices[m_matrixMode].size() > 1)
+    { 
+      GLfloat *matrix = m_matrices[m_matrixMode].back();
+      delete [] matrix;
+      m_matrices[m_matrixMode].pop_back();
+    }
     m_pMatrix = m_matrices[m_matrixMode].back();
   }
 }
@@ -202,6 +210,56 @@ void CMatrixGLES::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
   MultMatrixf(matrix);
 }
 
+#if defined(__ARM_NEON__)
+  
+inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
+{
+  asm volatile (
+    // Store A & B leaving room at top of registers for result (q0-q3)
+    "vldmia %1, { q4-q7 }  \n\t"
+    "vldmia %2, { q8-q11 } \n\t"
+
+    // result = first column of B x first row of A
+    "vmul.f32 q0, q8, d8[0]\n\t"
+    "vmul.f32 q1, q8, d10[0]\n\t"
+    "vmul.f32 q2, q8, d12[0]\n\t"
+    "vmul.f32 q3, q8, d14[0]\n\t"
+
+    // result += second column of B x second row of A
+    "vmla.f32 q0, q9, d8[1]\n\t"
+    "vmla.f32 q1, q9, d10[1]\n\t"
+    "vmla.f32 q2, q9, d12[1]\n\t"
+    "vmla.f32 q3, q9, d14[1]\n\t"
+
+    // result += third column of B x third row of A
+    "vmla.f32 q0, q10, d9[0]\n\t"
+    "vmla.f32 q1, q10, d11[0]\n\t"
+    "vmla.f32 q2, q10, d13[0]\n\t"
+    "vmla.f32 q3, q10, d15[0]\n\t"
+
+    // result += last column of B x last row of A
+    "vmla.f32 q0, q11, d9[1]\n\t"
+    "vmla.f32 q1, q11, d11[1]\n\t"
+    "vmla.f32 q2, q11, d13[1]\n\t"
+    "vmla.f32 q3, q11, d15[1]\n\t"
+
+    // output = result registers
+    "vstmia %2, { q0-q3 }"
+    : //no output 
+    : "r" (dst_mat), "r" (src_mat_2), "r" (src_mat_1)       // input - note *value* of pointer doesn't change
+    : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
+    );
+}
+void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
+{
+  if (m_pMatrix)
+  {
+    GLfloat m[16];
+    Matrix4Mul(m_pMatrix, matrix, m);
+  }
+}
+
+#else
 void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
 {
   if (m_pMatrix)
@@ -228,6 +286,7 @@ void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
     m_pMatrix[3] = d;  m_pMatrix[7] = h;  m_pMatrix[11] = l;  m_pMatrix[15] = p;
   }
 }
+#endif
 
 // gluLookAt implementation taken from Mesa3D
 void CMatrixGLES::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz)
@@ -286,6 +345,51 @@ void CMatrixGLES::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat cente
 
   MultMatrixf(&m[0][0]);
   Translatef(-eyex, -eyey, -eyez);
+}
+
+static void __gluMultMatrixVecf(const GLfloat matrix[16], const GLfloat in[4], GLfloat out[4])
+{
+  int i;
+
+  for (i=0; i<4; i++)
+  {
+    out[i] = in[0] * matrix[0*4+i] +
+             in[1] * matrix[1*4+i] +
+             in[2] * matrix[2*4+i] +
+             in[3] * matrix[3*4+i];
+  }
+}
+
+// gluProject implementation taken from Mesa3D
+bool CMatrixGLES::Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz)
+{
+  GLfloat in[4];
+  GLfloat out[4];
+
+  in[0]=objx;
+  in[1]=objy;
+  in[2]=objz;
+  in[3]=1.0;
+  __gluMultMatrixVecf(modelMatrix, in, out);
+  __gluMultMatrixVecf(projMatrix, out, in);
+  if (in[3] == 0.0)
+    return false;
+  in[0] /= in[3];
+  in[1] /= in[3];
+  in[2] /= in[3];
+  /* Map x, y and z to range 0-1 */
+  in[0] = in[0] * 0.5 + 0.5;
+  in[1] = in[1] * 0.5 + 0.5;
+  in[2] = in[2] * 0.5 + 0.5;
+
+  /* Map x,y to viewport */
+  in[0] = in[0] * viewport[2] + viewport[0];
+  in[1] = in[1] * viewport[3] + viewport[1];
+
+  *winx=in[0];
+  *winy=in[1];
+  *winz=in[2];
+  return true;
 }
 
 void CMatrixGLES::PrintMatrix(void)

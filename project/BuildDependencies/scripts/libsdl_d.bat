@@ -16,4 +16,7 @@ copy SDL_image-1.2.10\include\SDL_image.h "%CUR_PATH%\include\SDL\"
 copy SDL_image-1.2.10\lib\*.dll "%XBMC_PATH%\tools\TexturePacker\"
 copy SDL_image-1.2.10\lib\SDL_image.lib "%CUR_PATH%\lib\SDL_image.lib" /Y
 
+rem for debugging
+copy SDL-1.2.14\lib\SDL.dll "%XBMC_PATH%\project\VS2010Express\XBMC\Debug (DirectX)\" /Y 
+
 cd %LOC_PATH%

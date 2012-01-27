@@ -28,13 +28,15 @@
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
+#include "RenderManager.h"
 
 #ifdef HAS_DX
 
 using namespace OVERLAY;
 
 #define USE_PREMULTIPLIED_ALPHA 1
+#define ALPHA_CHANNEL_OFFSET 3
 
 static bool LoadTexture(int width, int height, int stride
                       , D3DFORMAT format
@@ -64,7 +66,16 @@ static bool LoadTexture(int width, int height, int stride
     texture->Release();
     return false;
   }
-  ASSERT(format == desc.Format);
+  ASSERT(format == desc.Format || (format == D3DFMT_A8 && desc.Format == D3DFMT_A8R8G8B8));
+
+  // Some old hardware doesn't have D3DFMT_A8 and returns D3DFMT_A8R8G8B8 textures instead
+  int destbpp;
+  if     (desc.Format == D3DFMT_A8)
+    destbpp = 1;
+  else if(desc.Format == D3DFMT_A8R8G8B8)
+    destbpp = 4;
+  else
+    ASSERT(0);
 
   *u = (float)width  / desc.Width;
   *v = (float)height / desc.Height;
@@ -80,22 +91,48 @@ static bool LoadTexture(int width, int height, int stride
   uint8_t* src   = (uint8_t*)pixels;
   uint8_t* dst   = (uint8_t*)lr.pBits;
 
-  for (int y = 0; y < height; y++)
+  if (bpp == destbpp)
   {
-    memcpy(dst, src, bpp * width);
-    src += stride;
-    dst += lr.Pitch;
+    for (int y = 0; y < height; y++)
+    {
+      memcpy(dst, src, bpp * width);
+      src += stride;
+      dst += lr.Pitch;
+    }
+  }
+  else if (bpp == 1 && destbpp == 4)
+  {
+    for (int y = 0; y < height; y++)
+    {
+      for (int x = 0; x < width; x++)
+        dst[x*destbpp + ALPHA_CHANNEL_OFFSET] = src[x];
+      src += stride;
+      dst += lr.Pitch;
+    }
   }
 
   if((unsigned)width < desc.Width)
   {
     uint8_t* src   = (uint8_t*)pixels   + bpp *(width - 1);
     uint8_t* dst   = (uint8_t*)lr.pBits + bpp * width;
-    for (int y = 0; y < height; y++)
+
+    if (bpp == destbpp)
     {
-      memcpy(dst, src, bpp);
-      src += stride;
-      dst += lr.Pitch;
+      for (int y = 0; y < height; y++)
+      {
+        memcpy(dst, src, bpp);
+        src += stride;
+        dst += lr.Pitch;
+      }
+    }
+    else if (bpp == 1 && destbpp == 4)
+    {
+      for (int y = 0; y < height; y++)
+      {
+        dst[ALPHA_CHANNEL_OFFSET] = src[0];
+        src += stride;
+        dst += lr.Pitch;
+      }
     }
   }
 
@@ -103,7 +140,14 @@ static bool LoadTexture(int width, int height, int stride
   {
     uint8_t* src   = (uint8_t*)pixels   + stride   * (height - 1);
     uint8_t* dst   = (uint8_t*)lr.pBits + lr.Pitch * height;
-    memcpy(dst, src, bpp * width);
+
+    if (bpp == destbpp)
+      memcpy(dst, src, bpp * width);
+    else if (bpp == 1 && destbpp == 4)
+    {
+      for (int x = 0; x < width; x++)
+        dst[x*destbpp + ALPHA_CHANNEL_OFFSET] = src[x];
+    }
   }
 
   if (!texture->UnlockRect(0))
@@ -118,31 +162,26 @@ static bool LoadTexture(int width, int height, int stride
 
 COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 {
-  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
 
-  int width  = res.iWidth;
-  int height = res.iHeight;
-
-  m_width  = (float)width;
-  m_height = (float)height;
+  m_width  = 1.0;
+  m_height = 1.0;
+  m_align  = ALIGN_VIDEO;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
   m_count  = 0;
 
-  if     (res.fPixelRatio > 1.0)
-    width  = MathUtils::round_int(width  * res.fPixelRatio);
-  else if(res.fPixelRatio < 1.0)
-    height = MathUtils::round_int(height / res.fPixelRatio);
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
 
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)0.0f;
-  m_y      = (float)0.0f;
-
 
   SQuads quads;
   if(!convert_quad(o, pts, width, height, quads))
     return;
-
+  
   float u, v;
   if(!LoadTexture(quads.size_x
                 , quads.size_y

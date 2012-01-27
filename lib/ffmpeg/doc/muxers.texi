@@ -1,0 +1,112 @@
+@chapter Muxers
+@c man begin MUXERS
+
+Muxers are configured elements in FFmpeg which allow writing
+multimedia streams to a particular type of file.
+
+When you configure your FFmpeg build, all the supported muxers
+are enabled by default. You can list all available muxers using the
+configure option @code{--list-muxers}.
+
+You can disable all the muxers with the configure option
+@code{--disable-muxers} and selectively enable / disable single muxers
+with the options @code{--enable-muxer=@var{MUXER}} /
+@code{--disable-muxer=@var{MUXER}}.
+
+The option @code{-formats} of the ff* tools will display the list of
+enabled muxers.
+
+A description of some of the currently available muxers follows.
+
+@section image2
+
+Image file muxer.
+
+This muxer writes video frames to multiple image files specified by a
+pattern.
+
+The pattern may contain the string "%d" or "%0@var{N}d", which
+specifies the position of the characters representing a numbering in
+the filenames. If the form "%d0@var{N}d" is used, the string
+representing the number in each filename is 0-padded to @var{N}
+digits. The literal character '%' can be specified in the pattern with
+the string "%%".
+
+If the pattern contains "%d" or "%0@var{N}d", the first filename of
+the file list specified will contain the number 1, all the following
+numbers will be sequential.
+
+The pattern may contain a suffix which is used to automatically
+determine the format of the image files to write.
+
+For example the pattern "img-%03d.bmp" will specify a sequence of
+filenames of the form @file{img-001.bmp}, @file{img-002.bmp}, ...,
+@file{img-010.bmp}, etc.
+The pattern "img%%-%d.jpg" will specify a sequence of filenames of the
+form @file{img%-1.jpg}, @file{img%-2.jpg}, ..., @file{img%-10.jpg},
+etc.
+
+The following example shows how to use @file{ffmpeg} for creating a
+sequence of files @file{img-001.jpeg}, @file{img-002.jpeg}, ...,
+taking one image every second from the input video:
+@example
+ffmpeg -i in.avi -r 1 -f image2 'img-%03d.jpeg'
+@end example
+
+Note that with @file{ffmpeg}, if the format is not specified with the
+@code{-f} option and the output filename specifies an image file
+format, the image2 muxer is automatically selected, so the previous
+command can be written as:
+@example
+ffmpeg -i in.avi -r 1 'img-%03d.jpeg'
+@end example
+
+Note also that the pattern must not necessarily contain "%d" or
+"%0@var{N}d", for example to create a single image file
+@file{img.jpeg} from the input video you can employ the command:
+@example
+ffmpeg -i in.avi -f image2 -vframes 1 img.jpeg
+@end example
+
+@section mpegts
+
+MPEG transport stream muxer.
+
+This muxer implements ISO 13818-1 and part of ETSI EN 300 468.
+
+The muxer options are:
+
+@table @option
+@item -mpegts_original_network_id @var{number}
+Set the original_network_id (default 0x0001). This is unique identifier
+of a network in DVB. Its main use is in the unique identification of a
+service through the path Original_Network_ID, Transport_Stream_ID.
+@item -mpegts_transport_stream_id @var{number}
+Set the transport_stream_id (default 0x0001). This identifies a
+transponder in DVB.
+@item -mpegts_service_id @var{number}
+Set the service_id (default 0x0001) also known as program in DVB.
+@item -mpegts_pmt_start_pid @var{number}
+Set the first PID for PMT (default 0x1000, max 0x1f00).
+@item -mpegts_start_pid @var{number}
+Set the first PID for data packets (default 0x0100, max 0x0f00).
+@end table
+
+The recognized metadata settings in mpegts muxer are @code{service_provider}
+and @code{service_name}. If they are not set the default for
+@code{service_provider} is "FFmpeg" and the default for
+@code{service_name} is "Service01".
+
+@example
+ffmpeg -i file.mpg -acodec copy -vcodec copy \
+     -mpegts_original_network_id 0x1122 \
+     -mpegts_transport_stream_id 0x3344 \
+     -mpegts_service_id 0x5566 \
+     -mpegts_pmt_start_pid 0x1500 \
+     -mpegts_start_pid 0x150 \
+     -metadata service_provider="Some provider" \
+     -metadata service_name="Some Channel" \
+     -y out.ts
+@end example
+
+@c man end MUXERS

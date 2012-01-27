@@ -25,6 +25,7 @@
 #endif
 #include "Texture.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #if defined(HAS_GL)
 

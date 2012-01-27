@@ -55,11 +55,12 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     CFileItemPtr item = items[i];
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
     {
-      CStdString strImage = GetIcon(item->m_strPath);
+      CStdString strImage = GetIcon(item->GetPath());
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
   }
+  items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }
@@ -114,11 +115,11 @@ bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
-  CFileItem directory(strDirectory, true);
-  URIUtils::RemoveSlashAtEnd(directory.m_strPath);
+  CStdString path(strDirectory);
+  URIUtils::RemoveSlashAtEnd(path);
 
   Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
+  crc.ComputeFromLowerCase(path);
 
   CStdString strFileName;
   strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
@@ -149,32 +150,23 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     return false;
 
   // get genre
-  CStdString strTemp;
   if (params.GetGenreId() >= 0)
-  {
-    strTemp = "";
-    musicdatabase.GetGenreById(params.GetGenreId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += musicdatabase.GetGenreById(params.GetGenreId());
 
   // get artist
   if (params.GetArtistId() >= 0)
   {
-    strTemp = "";
-    musicdatabase.GetArtistById(params.GetArtistId(), strTemp);
     if (!strLabel.IsEmpty())
       strLabel += " / ";
-    strLabel += strTemp;
+    strLabel += musicdatabase.GetArtistById(params.GetArtistId());
   }
 
   // get album
   if (params.GetAlbumId() >= 0)
   {
-    strTemp = "";
-    musicdatabase.GetAlbumById(params.GetAlbumId(), strTemp);
     if (!strLabel.IsEmpty())
       strLabel += " / ";
-    strLabel += strTemp;
+    strLabel += musicdatabase.GetAlbumById(params.GetAlbumId());
   }
 
   if (strLabel.IsEmpty())

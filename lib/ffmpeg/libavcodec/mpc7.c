@@ -85,7 +85,7 @@ static av_cold int mpc7_decode_init(AVCodecContext * avctx)
             c->IS, c->MSS, c->gapless, c->lastframelen, c->maxbands);
     c->frames_to_skip = 0;
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     avctx->channel_layout = (avctx->channels==2) ? CH_LAYOUT_STEREO : CH_LAYOUT_MONO;
 
     if(vlc_initialized) return 0;
@@ -206,7 +206,7 @@ static int mpc7_decode_frame(AVCodecContext * avctx,
     bits = av_malloc(((buf_size - 1) & ~3) + FF_INPUT_BUFFER_PADDING_SIZE);
     c->dsp.bswap_buf((uint32_t*)bits, (const uint32_t*)(buf + 4), (buf_size - 4) >> 2);
     init_get_bits(&gb, bits, (buf_size - 4)* 8);
-    skip_bits(&gb, buf[0]);
+    skip_bits_long(&gb, buf[0]);
 
     /* read subband indexes */
     for(i = 0; i <= c->maxbands; i++){
@@ -260,7 +260,7 @@ static int mpc7_decode_frame(AVCodecContext * avctx,
         for(ch = 0; ch < 2; ch++)
             idx_to_quant(c, &gb, bands[i].res[ch], c->Q[ch] + off);
 
-    ff_mpc_dequantize_and_synth(c, mb, data);
+    ff_mpc_dequantize_and_synth(c, mb, data, 2);
 
     av_free(bits);
 
@@ -288,7 +288,7 @@ static void mpc7_decode_flush(AVCodecContext *avctx)
     c->frames_to_skip = 32;
 }
 
-AVCodec mpc7_decoder = {
+AVCodec ff_mpc7_decoder = {
     "mpc7",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MUSEPACK7,

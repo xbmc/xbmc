@@ -28,10 +28,12 @@
 #include "utils/log.h"
 #include <cdio/logging.h>
 #include <cdio/util.h>
-#ifdef _LINUX
 #include <cdio/mmc.h>
-#endif
 #include <cdio/cd_types.h>
+
+#if defined(_WIN32)
+#pragma comment(lib, "libcdio.dll.lib")
+#endif
 
 using namespace MEDIA_DETECT;
 
@@ -160,14 +162,9 @@ discmode_t CLibcdio::cdio_get_discmode(CdIo_t *p_cdio)
 
 int CLibcdio::mmc_get_tray_status(const CdIo_t *p_cdio)
 {
-#ifdef _LINUX
   CSingleLock lock(*this);
 
   return( ::mmc_get_tray_status(p_cdio) );
-#else
-  // win32 doesn't implement this routine
-  return 0;
-#endif
 }
 
 int CLibcdio::cdio_eject_media(CdIo_t **p_cdio)
@@ -562,142 +559,6 @@ int CCdIoSupport::GetJolietLevel( void )
 #define is_it_dbg(sig) /*\
     if (is_it(sig)) printf("%s, ", sigs[sig].description)*/
 
-#ifndef _LINUX
-int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
-{
-  int ret = FS_UNKNOWN;
-
-  if (ReadBlock(UDFX_SECTOR, start_session, 0, track_num) < 0)
-    return ret;
-
-  if ( IsIt(IS_UDFX) )
-  {
-    return FS_UDFX;
-  }
-
-  if (ReadBlock(ISO_SUPERBLOCK_SECTOR, start_session, 0, track_num) < 0)
-    return ret;
-
-  if (IsIt(IS_UDF))
-  {
-    // Detect UDF version
-    // Test if we have a valid version of UDF the xbox can read nativly
-    if (ReadBlock(35, start_session, 5, track_num) < 0)
-      return FS_UNKNOWN;
-
-    m_nUDFVerMinor = (int)buffer[5][240];
-    m_nUDFVerMajor = (int)buffer[5][241];
-    // Read disc label
-    if (ReadBlock(32, start_session, 5, track_num) < 0)
-      return FS_UDF;
-    m_strDiscLabel = buffer[5] + 25;
-    return FS_UDF;
-  }
-  /* filesystem */
-  if (IsIt(IS_CD_I) && IsIt(IS_CD_RTOS) && !IsIt(IS_BRIDGE) && !IsIt(IS_XA))
-  {
-    return FS_INTERACTIVE;
-  }
-  else
-  { /* read sector 0 ONLY, when NO greenbook CD-I !!!! */
-
-    if (ReadBlock(0, start_session, 1, track_num) < 0)
-      return ret;
-
-    if (IsIt(IS_HS))
-      ret |= FS_HIGH_SIERRA;
-    else if (IsIt(IS_ISOFS))
-    {
-      if (IsIt(IS_CD_RTOS) && IsIt(IS_BRIDGE))
-        ret = FS_ISO_9660_INTERACTIVE;
-      else if (IsHFS())
-        ret = FS_ISO_HFS;
-      else
-        ret = FS_ISO_9660;
-
-      m_nIsofsSize = GetSize();
-      m_strDiscLabel = buffer[0] + 40;
-      if (ReadBlock(UDF_ANCHOR_SECTOR, start_session, 5, track_num) < 0)
-        return ret;
-
-      // Maybe there is an UDF anchor in iso session
-      // so its ISO/UDF session and we prefere UDF
-      if ( IsUDF() )
-      {
-        // Detect UDF version
-        // Test if we have a valid version of UDF the xbox can read nativly
-        if (ReadBlock(35, start_session, 5, track_num) < 0)
-          return ret;
-
-        m_nUDFVerMinor = (int)buffer[5][240];
-        m_nUDFVerMajor = (int)buffer[5][241];
-        // Read disc label
-        if (ReadBlock(32, start_session, 5, track_num) < 0)
-          return ret;
-        // we are using ISO/UDF cd's as iso,
-        // no need to get UDF disc label
-        //m_strDiscLabel=buffer[5]+25;
-        ret = FS_ISO_UDF;
-      }
-      /*
-            if (IsRockridge())
-          ret |= ROCKRIDGE;
-      */
-
-      if (ReadBlock(BOOT_SECTOR, start_session, 3, track_num) < 0)
-        return ret;
-
-      if (IsJoliet())
-      {
-        m_nJolietLevel = GetJolietLevel();
-        ret |= JOLIET;
-      }
-      if (IsIt(IS_BOOTABLE))
-        ret |= BOOTABLE;
-
-      if (IsIt(IS_XA) && IsIt(IS_ISOFS) && !IsIt(IS_PHOTO_CD))
-      {
-        if (ReadBlock(VCD_INFO_SECTOR, start_session, 4, track_num) < 0)
-          return ret;
-
-        if (IsIt(IS_BRIDGE) && IsIt(IS_CD_RTOS))
-        {
-          if (IsIt(IS_VIDEO_CD))
-            ret |= VIDEOCDI;
-        }
-        else
-        {
-          if (IsIt(IS_CVD))
-            ret |= CVD;
-        }
-      }
-    }
-    else if (IsHFS())
-      ret |= FS_HFS;
-    else if (IsIt(IS_EXT2))
-      ret |= FS_EXT2;
-    else if (Is3DO())
-      ret |= FS_3DO;
-    else
-    {
-      if (ReadBlock(UFS_SUPERBLOCK_SECTOR, start_session, 2, track_num) < 0)
-        return ret;
-
-      if (IsIt(IS_UFS))
-        ret |= FS_UFS;
-      else
-        ret |= FS_UNKNOWN;
-    }
-  }
-
-  /* other checks */
-  if (IsIt(IS_XA)) ret |= XA;
-  if (IsIt(IS_PHOTO_CD)) ret |= PHOTO_CD;
-  if (IsIt(IS_CDTV)) ret |= CDTV;
-
-  return ret;
-}
-#else
 int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 {
   CSingleLock lock(*m_cdio);
@@ -781,25 +642,21 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
   return ret;
 }
-#endif
 
-void CCdIoSupport::GetCdTextInfo(trackinfo *pti, int trackNum)
+void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 {
   CSingleLock lock(*m_cdio);
 
   // Get the CD-Text , if any
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
 
-  cdtext_init(&pti->cdtext);
-
   if (pcdtext == NULL)
     return ;
 
+  // same ids used in libcdio and for our structure + the ids are consecutive make this copy loop safe.
   for (int i = 0; i < MAX_CDTEXT_FIELDS; i++)
-  {
     if (pcdtext->field[i])
-      pti->cdtext.field[i] = strdup(pcdtext->field[i]);
-  }
+      xcdt[(cdtext_field_t)i] = pcdtext->field[(cdtext_field_t)i];
 }
 
 CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
@@ -815,10 +672,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
-    char buf[1024];
-    sprintf(buf, "%s: Error in automatically selecting driver with input\n",
-            __FUNCTION__);
-    OutputDebugString( buf );
+    CLog::Log(LOGERROR, "%s: Error in automatically selecting driver with input", __FUNCTION__);
     return NULL;
   }
 
@@ -857,25 +711,20 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
     msf_t msf;
     if (bIsCDRom && !::cdio_get_track_msf(cdio, i, &msf))
     {
-      char buf[1024];
       trackinfo ti;
       ti.nfsInfo = FS_UNKNOWN;
       ti.ms_offset = 0;
       ti.isofs_size = 0;
       ti.nJolietLevel = 0;
       ti.nFrames = 0;
-      cdtext_init(&ti.cdtext);
       info->SetTrackInformation( i, ti );
-      sprintf( buf, "cdio_track_msf for track %i failed, I give up.\n", i);
-      OutputDebugString( buf );
+      CLog::Log(LOGDEBUG, "cdio_track_msf for track %i failed, I give up.", i);
       delete info;
       ::cdio_destroy(cdio);
       return NULL;
     }
 
-    trackinfo ti_0, ti;
-    cdtext_init(&ti_0.cdtext);
-    cdtext_init(&ti.cdtext);
+    trackinfo ti;
     if (bIsCDRom && TRACK_FORMAT_AUDIO == ::cdio_get_track_format(cdio, i))
     {
       m_nNumAudio++;
@@ -894,12 +743,13 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       // Make sure that we have the Disc related info available
       if (i == 1)
       {
-        GetCdTextInfo(&ti_0, 0);
-        info->SetDiscCDTextInformation( ti_0.cdtext );
+        xbmc_cdtext_t xcdt;
+        GetCdTextInfo(xcdt, 0);
+        info->SetDiscCDTextInformation( xcdt );
       }
 
       // Get this tracks info
-      GetCdTextInfo(&ti, i);
+      GetCdTextInfo(ti.cdtext, i);
     }
     else
     {
@@ -925,7 +775,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   info->SetFirstAudioTrack( m_nFirstAudio );
   info->SetFirstDataTrack( m_nFirstData );
 
-  char buf[1024];
   CLog::Log(LOGINFO, "CD Analysis Report");
   CLog::Log(LOGINFO, STRONG);
 
@@ -947,10 +796,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       else
       {
         m_nFs &= ~FS_MASK; /* del filesystem info */
-        sprintf(buf, "Oops: %i unused sectors at start, "
-                "but hidden track check failed.\n",
-                m_nStartTrack);
-        OutputDebugString( buf );
+        CLog::Log(LOGDEBUG, "Oops: %i unused sectors at start, but hidden track check failed.", m_nStartTrack);
       }
     }
     PrintAnalysis(m_nFs, m_nNumAudio);
@@ -968,15 +814,16 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       switch ( track_format )
       {
       case TRACK_FORMAT_AUDIO:
-        trackinfo ti;
-        ti.nfsInfo = FS_NO_DATA;
-        m_nFs = FS_NO_DATA;
-        ti.ms_offset = 0;
-        ti.isofs_size = 0;
-        ti.nJolietLevel = 0;
-        ti.nFrames = ::cdio_get_track_lba(cdio, i);
-        cdtext_init(&ti.cdtext);
-        info->SetTrackInformation( i + 1, ti );
+        {
+          trackinfo ti;
+          ti.nfsInfo = FS_NO_DATA;
+          m_nFs = FS_NO_DATA;
+          ti.ms_offset = 0;
+          ti.isofs_size = 0;
+          ti.nJolietLevel = 0;
+          ti.nFrames = ::cdio_get_track_lba(cdio, i);
+          info->SetTrackInformation( i + 1, ti );
+        }
       case TRACK_FORMAT_ERROR:
         break;
       case TRACK_FORMAT_CDI:
@@ -998,33 +845,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       m_nFs = GuessFilesystem(m_nStartTrack, i);
       trackinfo ti;
-      cdtext_init(&ti.cdtext);
       ti.nfsInfo = m_nFs;
-      // valid UDF version for xbox
-      if ((m_nFs & FS_MASK) == FS_UDF)
-      {
-        // Is UDF 1.02
-        if (m_nUDFVerMajor > 0x1)
-        {
-          ti.nfsInfo = FS_UNKNOWN;
-          m_strDiscLabel.Empty();
-        }
-        else if (m_nUDFVerMinor > 0x2)
-        {
-          ti.nfsInfo = FS_UNKNOWN;
-          m_strDiscLabel.Empty();
-        }
-      }
-
-      if ((m_nFs & FS_MASK) == FS_ISO_UDF)
-      {
-        // fallback to iso9660 if not udf 1.02
-        if (m_nUDFVerMajor > 0x1)
-          ti.nfsInfo = FS_ISO_9660;
-        else if (m_nUDFVerMinor > 0x2)
-          ti.nfsInfo = FS_ISO_9660;
-      }
-
       ti.ms_offset = m_nMsOffset;
       ti.isofs_size = m_nIsofsSize;
       ti.nJolietLevel = m_nJolietLevel;
@@ -1053,12 +874,6 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
 
       info->SetTrackInformation( i, ti );
 
-      // xbox does not support multisession cd's
-      if (!(((m_nFs & FS_MASK) == FS_ISO_9660 ||
-             (m_nFs & FS_MASK) == FS_ISO_HFS ||
-             /* (fs & FS_MASK) == FS_ISO_9660_INTERACTIVE) && (fs & XA))) */
-             (m_nFs & FS_MASK) == FS_ISO_9660_INTERACTIVE)))
-        break; /* no method for non-iso9660 multisessions */
     }
   }
   ::cdio_destroy( cdio );

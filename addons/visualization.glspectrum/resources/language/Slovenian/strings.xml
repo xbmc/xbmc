@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Način</string>
+    <string id="30001">Polno</string>
+    <string id="30002">Shema</string>
+    <string id="30003">Točke</string>
+    <string id="30004">Višina stolpcev</string>
+    <string id="30005">Majhna</string>
+    <string id="30006">Privzeto</string>
+    <string id="30007">Velika</string>
+    <string id="30008">Zelo velika</string>
+    <string id="30009">Hitrost</string>
+    <string id="30010">Zelo počasno</string>
+    <string id="30011">Počasno</string>
+    <string id="30012">Privzeto</string>
+    <string id="30013">Hitro</string>
+    <string id="30014">Zelo hitro</string>
+</strings>

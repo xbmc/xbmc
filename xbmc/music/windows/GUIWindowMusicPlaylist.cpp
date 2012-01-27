@@ -83,7 +83,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // global playlist changed outside playlist window
       m_vecItems->RemoveDiscCache(GetID());
       UpdateButtons();
-      Update(m_vecItems->m_strPath);
+      Update(m_vecItems->GetPath());
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems->Size() <= 0)
       {
@@ -108,7 +108,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       // Setup item cache for tagloader
       m_musicInfoLoader.UseCacheOnHD("special://temp/MusicPlaylist.fi");
 
-      m_vecItems->m_strPath="playlistmusic://";
+      m_vecItems->SetPath("playlistmusic://");
 
       // updatebuttons is called in here
       if (!CGUIWindowMusicBase::OnMessage(message))
@@ -142,7 +142,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
           g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
           g_settings.Save();
           UpdateButtons();
-          Update(m_vecItems->m_strPath);
+          Update(m_vecItems->GetPath());
         }
       }
       else if (iControl == CONTROL_BTNSAVE)
@@ -220,7 +220,7 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    g_windowManager.ChangeActiveWindow(WINDOW_MUSIC);
+    g_windowManager.PreviousWindow();
     return true;
   }
   if ((action.GetID() == ACTION_MOVE_ITEM_UP) || (action.GetID() == ACTION_MOVE_ITEM_DOWN))
@@ -233,6 +233,13 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
     return true;
   }
   return CGUIWindowMusicBase::OnAction(action);
+}
+
+bool CGUIWindowMusicPlayList::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK)
+    return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
+  return CGUIWindowMusicBase::OnBack(actionID);
 }
 
 bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate /* = true */)
@@ -265,7 +272,7 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
     }
 
     if (bUpdate)
-      Update(m_vecItems->m_strPath);
+      Update(m_vecItems->GetPath());
     return true;
   }
 
@@ -296,7 +303,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
       }
     }
 
-    CStdString strOldDirectory = m_vecItems->m_strPath;
+    CStdString strOldDirectory = m_vecItems->GetPath();
     m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
     CPlayListM3U playlist;
@@ -307,13 +314,13 @@ void CGUIWindowMusicPlayList::SavePlayList()
       //  Musicdatabase items should contain the real path instead of a musicdb url
       //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
       if (pItem->IsMusicDb())
-        pItem->m_strPath=pItem->GetMusicInfoTag()->GetURL();
+        pItem->SetPath(pItem->GetMusicInfoTag()->GetURL());
 
       playlist.Add(pItem);
     }
     CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
-    Update(m_vecItems->m_strPath); // need to update
+    Update(m_vecItems->GetPath()); // need to update
   }
 }
 
@@ -326,7 +333,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  Update(m_vecItems->m_strPath);
+  Update(m_vecItems->GetPath());
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
@@ -339,20 +346,9 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
       && g_playlistPlayer.GetCurrentSong() == iItem)
     return ;
 
-  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iItem);
+  g_playlistPlayer.Remove(PLAYLIST_MUSIC, iItem);
 
-  // Correct the current playing song in playlistplayer
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio())
-  {
-    int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-    if (iItem <= iCurrentSong)
-    {
-      iCurrentSong--;
-      g_playlistPlayer.SetCurrentSong(iCurrentSong);
-    }
-  }
-
-  Update(m_vecItems->m_strPath);
+  Update(m_vecItems->GetPath());
 
   if (m_vecItems->Size() <= 0)
   {
@@ -429,7 +425,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
     if (iPlaylist!=PLAYLIST_NONE)
     {
       if (m_guiState.get())
-        m_guiState->SetPlaylistDirectory(m_vecItems->m_strPath);
+        m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
       g_playlistPlayer.SetCurrentPlaylist( iPlaylist );
       g_playlistPlayer.Play( iItem );
@@ -478,7 +474,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
 
       // No music info and it's not CDDA so we'll just show the filename
       CStdString str;
-      str = CUtil::GetTitleFromPath(pItem->m_strPath);
+      str = CUtil::GetTitleFromPath(pItem->GetPath());
       str.Format("%02.2i. %s ", pItem->m_iprogramCount, str);
       pItem->SetLabel(str);
     }
@@ -656,7 +652,7 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
     else
       break;
   }
-  Update(m_vecItems->m_strPath);
+  Update(m_vecItems->GetPath());
 
   if (bRestart)
     m_musicInfoLoader.Load(*m_vecItems);

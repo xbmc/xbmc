@@ -148,6 +148,7 @@
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4231;4355;4910;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

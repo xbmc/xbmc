@@ -124,8 +124,6 @@
   <string id="168">Synkroniser tid over Internet</string>
   <string id="169">Opløsning</string>
   <string id="170">Juster skærmens opdateringshastighed til det samme som videoens</string>
-  <string id="171">
-  </string>
   <string id="172">Udgivelsesdato</string>
   <string id="173">Vis 4:3 videoer som</string>
   <string id="175">Stemninger</string>
@@ -152,7 +150,7 @@
   <string id="198">Indlæser filmdetaljer</string>
   <string id="202">Undertitel</string>
   <string id="203">Handling</string>
-  <string id="205">Stemmer:</string>
+  <string id="205">Stemmer</string>
   <string id="206">Skuespillere</string>
   <string id="207">Handling</string>
   <string id="208">Afspil</string>
@@ -2115,4 +2113,6 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
+  <string id="34201">Kan ikke finde det næste fil for at spille</string>
+  <string id="34202">Kan ikke finde tidligere fil at afspille</string>
 </strings>

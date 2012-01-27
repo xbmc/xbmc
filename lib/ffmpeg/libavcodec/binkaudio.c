@@ -33,6 +33,7 @@
 #include "get_bits.h"
 #include "dsputil.h"
 #include "fft.h"
+#include "fmtconvert.h"
 
 extern const uint16_t ff_wma_critical_freqs[25];
 
@@ -43,6 +44,7 @@ typedef struct {
     AVCodecContext *avctx;
     GetBitContext gb;
     DSPContext dsp;
+    FmtConvertContext fmt_conv;
     int first;
     int channels;
     int frame_len;          ///< transform size (samples)
@@ -71,6 +73,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     s->avctx = avctx;
     dsputil_init(&s->dsp, avctx);
+    ff_fmt_convert_init(&s->fmt_conv, avctx);
 
     /* determine frame length */
     if (avctx->sample_rate < 22050) {
@@ -119,7 +122,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     s->bands[s->num_bands] = s->frame_len / 2;
 
     s->first = 1;
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
 
     for (i = 0; i < s->channels; i++)
         s->coeffs_ptr[i] = s->coeffs + i * s->frame_len;
@@ -222,12 +225,8 @@ static void decode_block(BinkAudioContext *s, short *out, int use_dct)
             ff_rdft_calc(&s->trans.rdft, coeffs);
     }
 
-    if (s->dsp.float_to_int16_interleave == ff_float_to_int16_interleave_c) {
-        for (i = 0; i < s->channels; i++)
-            for (j = 0; j < s->frame_len; j++)
-                s->coeffs_ptr[i][j] = 385.0 + s->coeffs_ptr[i][j]*(1.0/32767.0);
-    }
-    s->dsp.float_to_int16_interleave(out, (const float **)s->coeffs_ptr, s->frame_len, s->channels);
+    s->fmt_conv.float_to_int16_interleave(out, (const float **)s->coeffs_ptr,
+                                          s->frame_len, s->channels);
 
     if (!s->first) {
         int count = s->overlap_len * s->channels;
@@ -286,7 +285,7 @@ static int decode_frame(AVCodecContext *avctx,
     return buf_size;
 }
 
-AVCodec binkaudio_rdft_decoder = {
+AVCodec ff_binkaudio_rdft_decoder = {
     "binkaudio_rdft",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_BINKAUDIO_RDFT,
@@ -298,7 +297,7 @@ AVCodec binkaudio_rdft_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("Bink Audio (RDFT)")
 };
 
-AVCodec binkaudio_dct_decoder = {
+AVCodec ff_binkaudio_dct_decoder = {
     "binkaudio_dct",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_BINKAUDIO_DCT,

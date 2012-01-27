@@ -293,7 +293,7 @@ static int audio_read_close(AVFormatContext *s1)
 }
 
 #if CONFIG_OSS_INDEV
-AVInputFormat oss_demuxer = {
+AVInputFormat ff_oss_demuxer = {
     "oss",
     NULL_IF_CONFIG_SMALL("Open Sound System capture"),
     sizeof(AudioData),
@@ -306,7 +306,7 @@ AVInputFormat oss_demuxer = {
 #endif
 
 #if CONFIG_OSS_OUTDEV
-AVOutputFormat oss_muxer = {
+AVOutputFormat ff_oss_muxer = {
     "oss",
     NULL_IF_CONFIG_SMALL("Open Sound System playback"),
     "",
@@ -315,11 +315,7 @@ AVOutputFormat oss_muxer = {
     /* XXX: we make the assumption that the soundcard accepts this format */
     /* XXX: find better solution with "preinit" method, needed also in
        other formats */
-#if HAVE_BIGENDIAN
-    CODEC_ID_PCM_S16BE,
-#else
-    CODEC_ID_PCM_S16LE,
-#endif
+    AV_NE(CODEC_ID_PCM_S16BE, CODEC_ID_PCM_S16LE),
     CODEC_ID_NONE,
     audio_write_header,
     audio_write_packet,

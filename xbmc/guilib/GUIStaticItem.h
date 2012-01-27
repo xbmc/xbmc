@@ -28,6 +28,7 @@
 
 #include "GUIInfoTypes.h"
 #include "../xbmc/FileItem.h"
+#include "GUIAction.h"
 
 class TiXmlElement;
 
@@ -67,9 +68,24 @@ public:
    \param contextWindow window context to use for any info labels
    */
   void UpdateProperties(int contextWindow);
+
+  /*! \brief update visibility of this item
+   \param contextWindow window context to use for any info labels
+   \return true if visible state has changed, false otherwise
+   */
+  bool UpdateVisibility(int contextWindow);
+
+  /*! \brief whether this item is visible or not
+   */
+  bool IsVisible() const;
+
+  const CGUIAction &GetClickActions() const { return m_clickActions; };
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
   InfoVector m_info;
+  unsigned int m_visCondition;
+  bool m_visState;
+  CGUIAction m_clickActions;
 };
 
 typedef boost::shared_ptr<CGUIStaticItem> CGUIStaticItemPtr;

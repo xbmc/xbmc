@@ -78,12 +78,22 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
   m_vecIntervals = vecIntervals;
 }
 
-void CGUIRSSControl::UpdateColors()
+bool CGUIRSSControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  m_headlineColor.Update();
-  m_channelColor.Update();
-  CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
+  changed |= m_headlineColor.Update();
+  changed |= m_channelColor.Update();
+
+  return changed;
+}
+
+void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIRSSControl::Render()
@@ -130,6 +140,13 @@ void CGUIRSSControl::Render()
     }
   }
   CGUIControl::Render();
+}
+
+CRect CGUIRSSControl::CalcRenderRegion() const
+{
+  if (m_label.font)
+    return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_label.font->GetTextHeight(1));
+  return CGUIControl::CalcRenderRegion();
 }
 
 void CGUIRSSControl::OnFeedUpdate(const vecText &feed)

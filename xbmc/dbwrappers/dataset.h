@@ -70,7 +70,8 @@ protected:
   bool active;
   std::string error, // Error description
     host, port, db, login, passwd, //Login info
-    sequence_table; //Sequence table for nextid
+    sequence_table, //Sequence table for nextid
+    default_charset; //Default character set
 
 public:
 /* constructor */
@@ -79,7 +80,7 @@ public:
   virtual ~Database();
   virtual Dataset *CreateDataset() const = 0;
 /* sets a new host name */
-  void setHostName(const char *newHost) { host = newHost; }
+  virtual void setHostName(const char *newHost) { host = newHost; }
 /* gets a host name */
   const char *getHostName(void) const { return host.c_str(); }
 /* sets a new port */
@@ -87,7 +88,7 @@ public:
 /* gets a port */
   const char *getPort(void) const { return port.c_str(); }
 /* sets a new database name */
-  void setDatabase(const char *newDb) { db = newDb; }
+  virtual void setDatabase(const char *newDb) { db = newDb; }
 /* gets a database name */
   const char *getDatabase(void) const { return db.c_str(); }
 /* sets a new login to database */
@@ -104,7 +105,8 @@ public:
   void setSequenceTable(const char *new_seq_table) { sequence_table = new_seq_table; };
 /* Get name of sequence table */
   const char *getSequenceTable(void) { return sequence_table.c_str(); }
-
+/* Get the default character set */
+  const char *getDefaultCharset(void) { return default_charset.c_str(); }
 
 /* virtual methods that must be overloaded in derived classes */
 
@@ -113,7 +115,7 @@ public:
   virtual int setErr(int err_code, const char *qry)=0;
   virtual const char *getErrorMsg(void) { return error.c_str(); }
 	
-  virtual int connect(void) { return DB_COMMAND_OK; }
+  virtual int connect(bool create) { return DB_COMMAND_OK; }
   virtual int connectFull( const char *newDb, const char *newHost=NULL,
                       const char *newLogin=NULL, const char *newPasswd=NULL,const char *newPort=NULL);
   virtual void disconnect(void) { active = false; }
@@ -121,6 +123,9 @@ public:
   virtual int create(void) { return DB_COMMAND_OK; }
   virtual int drop(void) { return DB_COMMAND_OK; }
   virtual long nextid(const char* seq_name)=0;
+
+/* \brief copy database */
+  virtual int copy(const char *new_name) { return -1; }
 
   virtual bool exists(void) { return false; }
 
@@ -131,7 +136,20 @@ public:
   virtual void rollback_transaction() {};
 
 /* virtual methods for formatting */
-  virtual std::string vprepare(const char *format, va_list args) { return std::string(""); };
+
+  /*! \brief Prepare a SQL statement for execution or querying using C printf nomenclature.
+   \param format - C printf compliant format string
+   \param ... - optional comma seperated list of variables for substitution in format string placeholders.
+   \return escaped and formatted string.
+   */
+  virtual std::string prepare(const char *format, ...);
+
+  /*! \brief Prepare a SQL statement for execution or querying using C printf nomenclature
+   \param format - C printf compliant format string
+   \param args - va_list of variables for substitution in format string placeholders.
+   \return escaped and formatted string.
+   */
+  virtual std::string vprepare(const char *format, va_list args);
 
   virtual bool in_transaction() {return false;};
 
@@ -281,6 +299,13 @@ public:
 //  virtual bool lookup(char *field_name, char*field_value);
 /* Refresh dataset (reopen it and set the same cursor position) */
   virtual void refresh();
+
+  /*! \brief Drop an index from the database table, provided it exists.
+   \param table - name of the table the index to be dropped is associated with
+   \param index - name of the index to be dropped
+   \return true when the index is guaranteed to no longer exist in the database.
+   */
+  virtual bool dropIndex(const char *table, const char *index) { return false; }
 
 /* Go to record No (starting with 0) */
   virtual bool seek(int pos=0);

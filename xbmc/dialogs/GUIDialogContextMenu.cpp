@@ -22,11 +22,11 @@
 #include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
+#include "guilib/GUIControlGroupList.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
-#include "video/windows/GUIWindowVideoFiles.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
@@ -43,6 +43,8 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
+#include "video/windows/GUIWindowVideoBase.h"
+#include "ThumbnailCache.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -51,12 +53,15 @@
 using namespace std;
 
 #define BACKGROUND_IMAGE       999
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
 #define BACKGROUND_BOTTOM      998
 #define BACKGROUND_TOP         997
+#define SPACE_BETWEEN_BUTTONS    2
+#endif
+#define GROUP_LIST             996
 #define BUTTON_TEMPLATE       1000
 #define BUTTON_START          1001
 #define BUTTON_END            (BUTTON_START + (int)m_buttons.size() - 1)
-#define SPACE_BETWEEN_BUTTONS    2
 
 void CContextButtons::Add(unsigned int button, const CStdString &label)
 {
@@ -89,6 +94,17 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogContextMenu::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_CONTEXT_MENU)
+  {
+    Close();
+    return true;
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogContextMenu::OnInitWindow()
 {
   m_clickedButton = -1;
@@ -109,6 +125,13 @@ void CGUIDialogContextMenu::SetupButtons()
     return;
   pButtonTemplate->SetVisible(false);
 
+  CGUIControlGroupList* pGroupList = NULL;
+  {
+    const CGUIControl* pControl = GetControl(GROUP_LIST);
+    if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
+      pGroupList = (CGUIControlGroupList*)pControl;
+  }
+
   // add our buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
@@ -117,30 +140,83 @@ void CGUIDialogContextMenu::SetupButtons()
     { // set the button's ID and position
       int id = BUTTON_START + i;
       pButton->SetID(id);
-      pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
       pButton->SetVisible(true);
-      pButton->SetNavigation(id - 1, id + 1, id, id);
       pButton->SetLabel(m_buttons[i].second);
-      AddControl(pButton);
+      if (pGroupList)
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), pButtonTemplate->GetYPosition());
+        // try inserting context buttons at position specified by template
+        // button, if template button is not in grouplist fallback to adding
+        // new buttons at the end of grouplist
+        if (!pGroupList->InsertControl(pButton, pButtonTemplate))
+          pGroupList->AddControl(pButton);
+      }
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+      else
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+        pButton->SetNavigation(id - 1, id + 1, id, id);
+        AddControl(pButton);
+      }
+#endif
     }
   }
 
-  // update the navigation of the first and last buttons
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START);
-  if (pControl)
-    pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(BUTTON_END);
-  if (pControl)
-    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  CGUIControl *pControl = NULL;
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+  if (!pGroupList)
+  {
+    // if we don't have grouplist update the navigation of the first and last buttons
+    pControl = (CGUIControl *)GetControl(BUTTON_START);
+    if (pControl)
+      pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    pControl = (CGUIControl *)GetControl(BUTTON_END);
+    if (pControl)
+      pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  }
+#endif
 
-  // fix up the height of the background image
+  // fix up background images placement and size
   pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
   {
-    pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
-    if (pControl2)
-      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    // first set size of background image
+    if (pGroupList)
+    {
+      if (pGroupList->GetOrientation() == VERTICAL)
+      {
+        // keep gap between bottom edges of grouplist and background image
+        pControl->SetHeight(pControl->GetHeight() - pGroupList->Size() + pGroupList->GetHeight());
+      }
+      else
+      {
+        // keep gap between right edges of grouplist and background image
+        pControl->SetWidth(pControl->GetWidth() - pGroupList->Size() + pGroupList->GetWidth());
+      }
+    }
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+    else
+      pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+
+    if (pGroupList && pGroupList->GetOrientation() == HORIZONTAL)
+    {
+      // if there is grouplist control with horizontal orientation - adjust width of top and bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_TOP);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+
+      pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+    }
+    else
+    {
+      // adjust position of bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    }
+#endif
   }
 
   // update our default control
@@ -152,25 +228,28 @@ void CGUIDialogContextMenu::SetupButtons()
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 {
-  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
-    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+  if (posY + GetHeight() > m_coordsRes.iHeight)
+    posY = m_coordsRes.iHeight - GetHeight();
   if (posY < 0) posY = 0;
-  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
-    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+  if (posX + GetWidth() > m_coordsRes.iWidth)
+    posX = m_coordsRes.iWidth - GetWidth();
   if (posX < 0) posX = 0;
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
   // we currently hack the positioning of the buttons from y position 0, which
   // forces skinners to place the top image at a negative y value.  Thus, we offset
   // the y coordinate by the height of the top image.
   const CGUIControl *top = GetControl(BACKGROUND_TOP);
   if (top)
     posY += top->GetHeight();
+#endif
   CGUIDialog::SetPosition(posX, posY);
 }
 
-float CGUIDialogContextMenu::GetHeight()
+float CGUIDialogContextMenu::GetHeight() const
 {
   const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
   if (backMain)
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
   {
     float height = backMain->GetHeight();
     const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
@@ -181,11 +260,14 @@ float CGUIDialogContextMenu::GetHeight()
       height += backTop->GetHeight();
     return height;
   }
+#else
+  return backMain->GetHeight();
+#endif
   else
     return CGUIDialog::GetHeight();
 }
 
-float CGUIDialogContextMenu::GetWidth()
+float CGUIDialogContextMenu::GetWidth() const
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -218,8 +300,10 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
-      if ( g_mediaManager.IsDiscInDrive() )
-        buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      if (CGUIWindowVideoBase::GetResumeItemOffset(item.get()) > 0)
+        buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
+
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
     }
     else // Must be HDD
@@ -251,7 +335,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
         if (plugin->HasSettings())
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }
-      buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
+      if (type != "video")
+        buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
       if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
@@ -308,15 +393,18 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
-    return g_mediaManager.Eject(item->m_strPath);
+    return g_mediaManager.Eject(item->GetPath());
 
 #ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true); // restart
+
+  case CONTEXT_BUTTON_RESUME_DISC:
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32
-    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->m_strPath)[0]);
+    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
 #else
     CIoSupport::ToggleTray();
 #endif
@@ -453,9 +541,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         CStdString cachedThumb;
         if (type == "music")
         {
-          cachedThumb = item->m_strPath;
+          cachedThumb = item->GetPath();
           URIUtils::RemoveSlashAtEnd(cachedThumb);
-          cachedThumb = CUtil::GetCachedMusicThumb(cachedThumb);
+          cachedThumb = CThumbnailCache::GetMusicThumb(cachedThumb);
         }
         else if (type == "video")
           cachedThumb = item->GetCachedVideoThumb();
@@ -464,8 +552,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
           CTextureDatabase db;
           if (db.Open())
           {
-            cachedThumb = CTextureCache::GetUniqueImage(item->m_strPath, URIUtils::GetExtension(strThumb));
-            db.SetTextureForPath(item->m_strPath, cachedThumb);
+            cachedThumb = CTextureCache::GetUniqueImage(item->GetPath(), URIUtils::GetExtension(strThumb));
+            db.SetTextureForPath(item->GetPath(), cachedThumb);
           }
         }
         XFILE::CFile::Cache(strThumb, cachedThumb);
@@ -579,7 +667,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
     }
     else
     {
-      if (!testShare.strPath.Equals(item->m_strPath))
+      if (!testShare.strPath.Equals(item->GetPath()))
         continue;
     }
     // paths match, what about share name - only match the leftmost
@@ -628,8 +716,6 @@ void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdStri
     g_settings.m_defaultFileSource = strDefault;
   else if (strType == "music")
     g_settings.m_defaultMusicSource = strDefault;
-  else if (strType == "video")
-    g_settings.m_defaultVideoSource = strDefault;
   else if (strType == "pictures")
     g_settings.m_defaultPictureSource = strDefault;
   g_settings.SaveSources();
@@ -695,4 +781,3 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
   // no control to center at, so just center the window
   CenterWindow();
 }
-

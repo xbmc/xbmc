@@ -1,5 +1,4 @@
 /*
- * Memory buffer source filter
  * Copyright (c) 2008 Vitor Sessak
  *
  * This file is part of FFmpeg.
@@ -19,8 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @file
+ * memory buffer source filter
+ */
+
 #include "avfilter.h"
 #include "vsrc_buffer.h"
+#include "libavcore/imgutils.h"
 
 typedef struct {
     int64_t           pts;
@@ -28,9 +33,9 @@ typedef struct {
     int               has_frame;
     int               h, w;
     enum PixelFormat  pix_fmt;
+    AVRational        time_base;     ///< time_base to set in the output link
     AVRational        pixel_aspect;
 } BufferSourceContext;
-
 
 int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame,
                              int64_t pts, AVRational pixel_aspect)
@@ -59,12 +64,25 @@ int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame,
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 {
     BufferSourceContext *c = ctx->priv;
+    char pix_fmt_str[128];
+    int n = 0;
 
-    if(args && sscanf(args, "%d:%d:%d", &c->w, &c->h, &c->pix_fmt) == 3)
-        return 0;
+    if (!args ||
+        (n = sscanf(args, "%d:%d:%127[^:]:%d:%d", &c->w, &c->h, pix_fmt_str, &c->time_base.num, &c->time_base.den)) != 5) {
+        av_log(ctx, AV_LOG_ERROR, "Expected 5 arguments, but only %d found in '%s'\n", n, args);
+        return AVERROR(EINVAL);
+    }
+    if ((c->pix_fmt = av_get_pix_fmt(pix_fmt_str)) == PIX_FMT_NONE) {
+        char *tail;
+        c->pix_fmt = strtol(pix_fmt_str, &tail, 10);
+        if (*tail || c->pix_fmt < 0 || c->pix_fmt >= PIX_FMT_NB) {
+            av_log(ctx, AV_LOG_ERROR, "Invalid pixel format string '%s'\n", pix_fmt_str);
+            return AVERROR(EINVAL);
+        }
+    }
 
-    av_log(ctx, AV_LOG_ERROR, "init() expected 3 arguments:'%s'\n", args);
-    return -1;
+    av_log(ctx, AV_LOG_INFO, "w:%d h:%d pixfmt:%s\n", c->w, c->h, av_pix_fmt_descriptors[c->pix_fmt].name);
+    return 0;
 }
 
 static int query_formats(AVFilterContext *ctx)
@@ -82,15 +100,15 @@ static int config_props(AVFilterLink *link)
 
     link->w = c->w;
     link->h = c->h;
+    link->time_base = c->time_base;
 
     return 0;
 }
 
-
 static int request_frame(AVFilterLink *link)
 {
     BufferSourceContext *c = link->src->priv;
-    AVFilterPicRef *picref;
+    AVFilterBufferRef *picref;
 
     if (!c->has_frame) {
         av_log(link->src, AV_LOG_ERROR,
@@ -104,17 +122,18 @@ static int request_frame(AVFilterLink *link)
                                        AV_PERM_REUSE2,
                                        link->w, link->h);
 
-    av_picture_copy((AVPicture *)&picref->data, (AVPicture *)&c->frame,
-                    picref->pic->format, link->w, link->h);
+    av_image_copy(picref->data, picref->linesize,
+                  c->frame.data, c->frame.linesize,
+                  picref->format, link->w, link->h);
 
-    picref->pts = c->pts;
-    picref->pixel_aspect = c->pixel_aspect;
-    picref->interlaced      = c->frame.interlaced_frame;
-    picref->top_field_first = c->frame.top_field_first;
-    avfilter_start_frame(link, avfilter_ref_pic(picref, ~0));
+    picref->pts                    = c->pts;
+    picref->video->pixel_aspect    = c->pixel_aspect;
+    picref->video->interlaced      = c->frame.interlaced_frame;
+    picref->video->top_field_first = c->frame.top_field_first;
+    avfilter_start_frame(link, avfilter_ref_buffer(picref, ~0));
     avfilter_draw_slice(link, 0, link->h, 1);
     avfilter_end_frame(link);
-    avfilter_unref_pic(picref);
+    avfilter_unref_buffer(picref);
 
     c->has_frame = 0;
 
@@ -127,9 +146,9 @@ static int poll_frame(AVFilterLink *link)
     return !!(c->has_frame);
 }
 
-AVFilter avfilter_vsrc_buffer =
-{
+AVFilter avfilter_vsrc_buffer = {
     .name      = "buffer",
+    .description = NULL_IF_CONFIG_SMALL("Buffer video frames, and make them accessible to the filterchain."),
     .priv_size = sizeof(BufferSourceContext),
     .query_formats = query_formats,
 

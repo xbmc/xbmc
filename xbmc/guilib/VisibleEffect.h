@@ -66,6 +66,7 @@ public:
   const TransformMatrix &GetTransform() const { return m_matrix; };
   EFFECT_TYPE GetType() const { return m_effect; };
 
+  static Tweener* GetTweener(const TiXmlElement *pAnimationNode);
 protected:
   TransformMatrix m_matrix;
   EFFECT_TYPE m_effect;
@@ -149,9 +150,9 @@ public:
 
   const CAnimation &operator=(const CAnimation &src);
 
-  static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
+  static CAnimation CreateFader(float start, float end, unsigned int delay, unsigned int length, ANIMATION_TYPE type = ANIM_TYPE_NONE);
 
-  void Create(const TiXmlElement *node, const CRect &rect);
+  void Create(const TiXmlElement *node, const CRect &rect, int context);
 
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
@@ -164,14 +165,14 @@ public:
   void QueueAnimation(ANIMATION_PROCESS process);
 
   inline bool IsReversible() const { return m_reversible; };
-  inline int  GetCondition() const { return m_condition; };
   inline ANIMATION_TYPE GetType() const { return m_type; };
   inline ANIMATION_STATE GetState() const { return m_currentState; };
   inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
-  void UpdateCondition(int contextWindow, const CGUIListItem *item = NULL);
-  void SetInitialCondition(int contextWindow);
+  bool CheckCondition();
+  void UpdateCondition(const CGUIListItem *item = NULL);
+  void SetInitialCondition();
 
 private:
   void Calculate(const CPoint &point);
@@ -183,7 +184,7 @@ private:
   // type of animation
   ANIMATION_TYPE m_type;
   bool m_reversible;
-  int m_condition;
+  unsigned int m_condition;
 
   // conditional anims can repeat
   ANIM_REPEAT m_repeatAnim;
@@ -201,4 +202,61 @@ private:
   unsigned int m_amount;
 
   std::vector<CAnimEffect *> m_effects;
+};
+
+/**
+ * Class used to handle scrolling, allow using tweeners.
+ * Usage:
+ *   start scrolling using ScrollTo() method / stop scrolling using Stop() method
+ *   update scroll value each frame with current time using Update() method
+ *   get/set scroll value using GetValue()/SetValue()
+ */
+class CScroller
+{
+public:
+  CScroller(unsigned int duration = 200, Tweener *tweener = NULL);
+  CScroller(const CScroller& right);
+  const CScroller &operator=(const CScroller &src);
+  ~CScroller();
+
+  /**
+   * Set target value scroller will be scrolling to
+   * @param endPos target 
+   */
+  void ScrollTo(float endPos);
+  
+  /**
+   * Immediately stop scrolling
+   */
+  void Stop() { m_delta = 0; };
+  /**
+   * Update the scroller to where it would be at the given time point, calculating a new Value.
+   * @param time time point
+   * @return True if we are scrolling at given time point
+   */
+  bool Update(unsigned int time);
+
+  /**
+   * Value of scroll
+   */
+  float GetValue() const { return m_scrollValue; };
+  void SetValue(float scrollValue) { m_scrollValue = scrollValue; };
+
+  bool IsScrolling() const { return m_delta != 0; };
+  bool IsScrollingUp() const { return m_delta < 0; };
+  bool IsScrollingDown() const { return m_delta > 0; };
+
+  unsigned int GetDuration() const { return m_duration; };
+private:
+  float Tween(float progress);
+
+  float        m_scrollValue;
+  float        m_delta;                   //!< Brief distance that we have to travel during scroll
+  float        m_startPosition;           //!< Brief starting position of scroll
+  bool         m_hasResumePoint;          //!< Brief check if we should tween from middle of the tween
+  unsigned int m_startTime;               //!< Brief starting time of scroll
+  unsigned int m_lastTime;                //!< Brief last remember time (updated each time Scroll() method is called)
+
+  unsigned int m_duration;                //!< Brief duration of scroll
+  Tweener* m_pTweener;
 };

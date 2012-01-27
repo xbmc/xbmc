@@ -29,6 +29,7 @@
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
 #include "oggdec.h"
+#include "vorbiscomment.h"
 
 static int ogm_chapter(AVFormatContext *as, uint8_t *key, uint8_t *val)
 {
@@ -137,6 +138,8 @@ ff_vorbis_comment(AVFormatContext * as, AVMetadata **m, const uint8_t *buf, int 
         av_log(as, AV_LOG_INFO,
                "truncated comment header, %i comments not found\n", n);
 
+    ff_metadata_conv(m, NULL, ff_vorbiscomment_metadata_conv);
+
     return 0;
 }
 
@@ -206,12 +209,19 @@ vorbis_header (AVFormatContext * s, int idx)
         return -1;
 
     priv = os->private;
+
+    if (priv->packet[pkt_type>>1])
+        return -1;
+    if (pkt_type > 1 && !priv->packet[0] || pkt_type > 3 && !priv->packet[1])
+        return -1;
+
     priv->len[pkt_type >> 1] = os->psize;
     priv->packet[pkt_type >> 1] = av_mallocz(os->psize);
     memcpy(priv->packet[pkt_type >> 1], os->buf + os->pstart, os->psize);
     if (os->buf[os->pstart] == 1) {
         const uint8_t *p = os->buf + os->pstart + 7; /* skip "\001vorbis" tag */
         unsigned blocksize, bs0, bs1;
+        int srate;
 
         if (os->psize != 30)
             return -1;
@@ -220,7 +230,7 @@ vorbis_header (AVFormatContext * s, int idx)
             return -1;
 
         st->codec->channels = bytestream_get_byte(&p);
-        st->codec->sample_rate = bytestream_get_le32(&p);
+        srate = bytestream_get_le32(&p);
         p += 4; // skip maximum bitrate
         st->codec->bit_rate = bytestream_get_le32(&p); // nominal bitrate
         p += 4; // skip minimum bitrate
@@ -240,11 +250,22 @@ vorbis_header (AVFormatContext * s, int idx)
         st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
         st->codec->codec_id = CODEC_ID_VORBIS;
 
-        st->time_base.num = 1;
-        st->time_base.den = st->codec->sample_rate;
+        if (srate > 0) {
+            st->codec->sample_rate = srate;
+            st->time_base.num = 1;
+            st->time_base.den = srate;
+        }
     } else if (os->buf[os->pstart] == 3) {
-        if (os->psize > 8)
-            ff_vorbis_comment (s, &st->metadata, os->buf + os->pstart + 7, os->psize - 8);
+        if (os->psize > 8 &&
+            ff_vorbis_comment(s, &st->metadata, os->buf + os->pstart + 7, os->psize - 8) >= 0) {
+            // drop all metadata we parsed and which is not required by libvorbis
+            unsigned new_len = 7 + 4 + AV_RL32(priv->packet[1] + 7) + 4 + 1;
+            if (new_len >= 16 && new_len < os->psize) {
+                AV_WL32(priv->packet[1] + new_len - 5, 0);
+                priv->packet[1][new_len - 1] = 1;
+                priv->len[1] = new_len;
+            }
+        }
     } else {
         st->codec->extradata_size =
             fixup_vorbis_headers(s, priv, &st->codec->extradata);

@@ -19,7 +19,7 @@
  *
  */
  
-#ifdef __APPLE__
+#if defined (TARGET_DARWIN)
 // defined in PlatformDefs.h but I don't want to include that here
 typedef unsigned char   BYTE;
 
@@ -29,9 +29,13 @@ typedef unsigned char   BYTE;
 #include "powermanagement/PowerManager.h"
 #include "windowing/WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
+#if !defined(TARGET_DARWIN_IOS)
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/ps/IOPowerSources.h>
 #include <IOKit/ps/IOPSKeys.h>
+#endif
+
+#include "osx/DarwinUtils.h"
 
 // missing in 10.4/10.5 SDKs.
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
@@ -49,8 +53,9 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_HasBattery = -1;
   m_BatteryPercent = 100;
   m_SentBatteryMessage = false;
+#if !defined(TARGET_DARWIN_IOS)
   m_power_source = NULL;
-
+#endif
   CreateOSPowerCallBacks();
 }
 
@@ -62,11 +67,15 @@ CCocoaPowerSyscall::~CCocoaPowerSyscall()
 
 bool CCocoaPowerSyscall::Powerdown(void)
 {
+  bool result;
+#if defined(TARGET_DARWIN_IOS)
+  result = false;
+#else
   if (g_sysinfo.IsAppleTV())
   {
     // The ATV prefered method is via command-line, others don't seem to work
     system("echo frontrow | sudo -S shutdown -h now");
-    return true;
+    result = true;
   }
   else
   {
@@ -77,12 +86,17 @@ bool CCocoaPowerSyscall::Powerdown(void)
       CLog::Log(LOGINFO, "Computer is going to shutdown!");
     else
       CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
-    return (error == noErr);
+    result = (error == noErr);
   }
+#endif
+  return result;
 }
 
 bool CCocoaPowerSyscall::Suspend(void)
 {
+#if defined(TARGET_DARWIN_IOS)
+  return false;
+#else
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
   m_OnSuspend = true;
 
@@ -93,24 +107,32 @@ bool CCocoaPowerSyscall::Suspend(void)
   else
     CLog::Log(LOGINFO, "Computer wouldn't sleep!");
   return (error == noErr);
+#endif
 }
 
 bool CCocoaPowerSyscall::Hibernate(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Hibernate");
+#if defined(TARGET_DARWIN_IOS)
+  return false;
+#else
   // just in case hibernate is ever called
   return Suspend();
+#endif
 }
 
 bool CCocoaPowerSyscall::Reboot(void)
 {
+  bool result;
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
-
+#if defined(TARGET_DARWIN_IOS)
+  result = false;
+#else
   if (g_sysinfo.IsAppleTV())
   {
     // The ATV prefered method is via command-line, others don't seem to work
     system("echo frontrow | sudo -S reboot");
-    return true;
+    result = true;
   }
   else
   {
@@ -119,26 +141,34 @@ bool CCocoaPowerSyscall::Reboot(void)
       CLog::Log(LOGINFO, "Computer is going to restart!");
     else
       CLog::Log(LOGINFO, "Computer wouldn't restart!");
-    return (error == noErr);
+    result = (error == noErr);
   }
+#endif
+  return result;
 }
 
 bool CCocoaPowerSyscall::CanPowerdown(void)
 {
+#if defined(TARGET_DARWIN_IOS)
+  return false;
+#else
   // All Apple products can power down
   return true;
+#endif
 }
 
 bool CCocoaPowerSyscall::CanSuspend(void)
 {
+  bool result;
+#if defined(TARGET_DARWIN_IOS)
+  result = false;
+#else
   // Only OSX boxes can suspend, the AppleTV cannot
-  bool result = true;
-  
   if (g_sysinfo.IsAppleTV())
     result = false;
   else
     result =IOPMSleepEnabled();
-
+#endif
   return(result);
 }
 
@@ -151,13 +181,21 @@ bool CCocoaPowerSyscall::CanHibernate(void)
 
 bool CCocoaPowerSyscall::CanReboot(void)
 {
-  // All Apple products can reboot
+#if defined(TARGET_DARWIN_IOS)
+  return false;
+#else
+  // All Apple products except iOS can reboot
   return true;
+#endif
 }
 
 bool CCocoaPowerSyscall::HasBattery(void)
 {
-  bool result = true;
+  bool result;
+#if defined(TARGET_DARWIN_IOS)
+  result = false;
+#else
+  result = true;
 
   if (m_HasBattery == -1)
   {
@@ -182,8 +220,13 @@ bool CCocoaPowerSyscall::HasBattery(void)
   {
     result = m_HasBattery;
   }
-
+#endif
   return result;
+}
+
+int CCocoaPowerSyscall::BatteryLevel(void)
+{
+  return DarwinBatteryLevel();
 }
 
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
@@ -196,8 +239,10 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   else if (m_OnResume)
   {
     callback->OnWake();
+#if !defined(TARGET_DARWIN_IOS)
     if (g_Windowing.IsFullScreen())
       Cocoa_HideDock();
+#endif
     m_OnResume = false;
   } 
   
@@ -215,6 +260,7 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 
 void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 {
+#if !defined(TARGET_DARWIN_IOS)
   CCocoaAutoPool autopool;
   // we want sleep/wake notifications, register to receive system power notifications
   m_root_port = IORegisterForSystemPower(this, &m_notify_port, OSPowerCallBack, &m_notifier_object);
@@ -238,10 +284,12 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
     else
       CLog::Log(LOGERROR, "%s - IOPSNotificationCreateRunLoopSource failed", __FUNCTION__);
   }
+#endif
 }
 
 void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 {
+#if !defined(TARGET_DARWIN_IOS)
   CCocoaAutoPool autopool;
   // we no longer want sleep/wake notifications
   // remove the sleep notification port from the application runloop
@@ -264,10 +312,12 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
       CFRelease(m_power_source);
     }
   }
+#endif
 }
 
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
 {
+#if !defined(TARGET_DARWIN_IOS)
   CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx;
   
@@ -305,17 +355,21 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       //CLog::Log(LOGDEBUG, "%s - kIOMessageSystemHasPoweredOn", __FUNCTION__);
     break;
 	}
+#endif
 }
 
+#if !defined(TARGET_DARWIN_IOS)
 static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 {
 	if (a == nil || b == nil) 
 		return 0;
 	return (CFStringCompare (a, b, 0) == kCFCompareEqualTo);
 }
+#endif
 
 void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 {
+#if !defined(TARGET_DARWIN_IOS)
   // Called whenever any power source is added, removed, or changes. 
   // When on battery, we get called periodically as battery level changes.
   CCocoaAutoPool autopool;
@@ -365,6 +419,7 @@ void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 
   CFRelease(power_sources_list);
   CFRelease(power_sources_info);
+#endif
 }
 
 #endif

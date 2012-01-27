@@ -55,12 +55,10 @@ public:
   CStdString GetKeyName(int KeyID);
 
 private:
+  bool LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode);
+
   XBMC_keysym m_lastKeysym;
   unsigned int m_lastKeyTime;
-
-  // In Linux the codes (numbers) for multimedia keys differ depending on
-  // what driver is used and the evdev bool switches between the two.
-  bool m_bEvdev;
 };
 
 extern CKeyboardStat g_Keyboard;

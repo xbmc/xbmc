@@ -37,6 +37,7 @@ public:
   virtual ~CGUIDialogFileBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void FrameMove();
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
@@ -66,7 +67,7 @@ protected:
   void OnSort();
   void ClearFileItems();
   void Update(const CStdString &strDirectory);
-  bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  bool HaveDiscOrConnection( int iDriveType );
   bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
   void OnAddMediaSource();

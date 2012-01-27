@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (!(filter_ctx = avfilter_open(filter, NULL))) {
+    if (avfilter_open(&filter_ctx, filter, NULL) < 0) {
         fprintf(stderr, "Inpossible to open filter with name '%s'\n", filter_name);
         return 1;
     }
@@ -60,11 +60,13 @@ int main(int argc, char **argv)
 
     /* create a link for each of the input pads */
     for (i = 0; i < filter_ctx->input_count; i++) {
-        AVFilterLink *link = av_malloc(sizeof(AVFilterLink));
+        AVFilterLink *link = av_mallocz(sizeof(AVFilterLink));
+        link->type = filter_ctx->filter->inputs[i].type;
         filter_ctx->inputs[i] = link;
     }
     for (i = 0; i < filter_ctx->output_count; i++) {
-        AVFilterLink *link = av_malloc(sizeof(AVFilterLink));
+        AVFilterLink *link = av_mallocz(sizeof(AVFilterLink));
+        link->type = filter_ctx->filter->outputs[i].type;
         filter_ctx->outputs[i] = link;
     }
 
@@ -76,23 +78,22 @@ int main(int argc, char **argv)
     /* print the supported formats in input */
     for (i = 0; i < filter_ctx->input_count; i++) {
         AVFilterFormats *fmts = filter_ctx->inputs[i]->out_formats;
-
-        printf("INPUT[%d] %s: ", i, filter_ctx->filter->inputs[i].name);
         for (j = 0; j < fmts->format_count; j++)
-            printf("%s ", av_pix_fmt_descriptors[fmts->formats[j]].name);
-        printf("\n");
+            printf("INPUT[%d] %s: %s\n",
+                   i, filter_ctx->filter->inputs[i].name,
+                   av_pix_fmt_descriptors[fmts->formats[j]].name);
     }
 
     /* print the supported formats in output */
     for (i = 0; i < filter_ctx->output_count; i++) {
         AVFilterFormats *fmts = filter_ctx->outputs[i]->in_formats;
-
-        printf("OUTPUT[%d] %s: ", i, filter_ctx->filter->outputs[i].name);
         for (j = 0; j < fmts->format_count; j++)
-            printf("%s ", av_pix_fmt_descriptors[fmts->formats[j]].name);
-        printf("\n");
+            printf("OUTPUT[%d] %s: %s\n",
+                   i, filter_ctx->filter->outputs[i].name,
+                   av_pix_fmt_descriptors[fmts->formats[j]].name);
     }
 
+    avfilter_free(filter_ctx);
     fflush(stdout);
     return 0;
 }

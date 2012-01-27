@@ -186,7 +186,6 @@ typedef struct
 }
 WindowsHeaderPlus_t;
 
-#if !defined (_XBOX)
 /*
 #define IMAGE_SUBSYSTEM_UNKNOWN                     0
 #define IMAGE_SUBSYSTEM_NATIVE                      1
@@ -202,7 +201,6 @@ WindowsHeaderPlus_t;
 #define IMAGE_DLLCHARACTERISTICS_WDM_DRIVER         0x2000
 #define IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE  0X8000
 */
-#endif
 
 /*
  *      Optional Header Data Directories (Image Only)
@@ -353,7 +351,7 @@ typedef struct
 }
 SymbolTable_t;
 
-#if !defined (_XBOX) && !defined(_WIN32)
+#if !defined(_WIN32)
 
 #define IMAGE_SYM_UNDEFINED     0
 #define IMAGE_SYM_ABSOLUTE      0xFFFF

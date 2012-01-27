@@ -32,7 +32,7 @@ CDirectoryNodeAlbumCompilationsSongs::CDirectoryNodeAlbumCompilationsSongs(const
 }
 
 
-bool CDirectoryNodeAlbumCompilationsSongs::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumCompilationsSongs::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

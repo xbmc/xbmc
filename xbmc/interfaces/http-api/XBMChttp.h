@@ -125,7 +125,7 @@ private:
   CUdpBroadcast* pUdpBroadcast;
   CUdpClient UdpClient;
   CKey lastKey;
-  int repeatKeyRate; //ms
+  unsigned int repeatKeyRate; //ms
   unsigned int MarkTime;
   bool autoGetPictureThumbs;
   CStdString lastThumbFn, lastPlayingInfo, lastSlideInfo;

@@ -2,10 +2,10 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeAlbum.cpp \
      DirectoryNodeAlbumCompilations.cpp \
      DirectoryNodeAlbumCompilationsSongs.cpp \
-     DirectoryNodeAlbumRecentlyPlayed.cpp \
-     DirectoryNodeAlbumRecentlyPlayedSong.cpp \
      DirectoryNodeAlbumRecentlyAdded.cpp \
      DirectoryNodeAlbumRecentlyAddedSong.cpp \
+     DirectoryNodeAlbumRecentlyPlayed.cpp \
+     DirectoryNodeAlbumRecentlyPlayedSong.cpp \
      DirectoryNodeAlbumTop100.cpp \
      DirectoryNodeAlbumTop100Song.cpp \
      DirectoryNodeArtist.cpp \

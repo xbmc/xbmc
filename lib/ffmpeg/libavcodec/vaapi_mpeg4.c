@@ -47,7 +47,7 @@ static int vaapi_mpeg4_start_frame(AVCodecContext *avctx, av_unused const uint8_
     VAIQMatrixBufferMPEG4 *iq_matrix;
     int i;
 
-    dprintf(avctx, "vaapi_mpeg4_start_frame()\n");
+    av_dlog(avctx, "vaapi_mpeg4_start_frame()\n");
 
     vactx->slice_param_size = sizeof(VASliceParameterBufferMPEG4);
 
@@ -125,7 +125,7 @@ static int vaapi_mpeg4_decode_slice(AVCodecContext *avctx, const uint8_t *buffer
     MpegEncContext * const s = avctx->priv_data;
     VASliceParameterBufferMPEG4 *slice_param;
 
-    dprintf(avctx, "vaapi_mpeg4_decode_slice(): buffer %p, size %d\n", buffer, size);
+    av_dlog(avctx, "vaapi_mpeg4_decode_slice(): buffer %p, size %d\n", buffer, size);
 
     /* video_plane_with_short_video_header() contains all GOBs
      * in-order, and this is what VA API (Intel backend) expects: only
@@ -150,7 +150,7 @@ static int vaapi_mpeg4_decode_slice(AVCodecContext *avctx, const uint8_t *buffer
 }
 
 #if CONFIG_MPEG4_VAAPI_HWACCEL
-AVHWAccel mpeg4_vaapi_hwaccel = {
+AVHWAccel ff_mpeg4_vaapi_hwaccel = {
     .name           = "mpeg4_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_MPEG4,
@@ -164,7 +164,7 @@ AVHWAccel mpeg4_vaapi_hwaccel = {
 #endif
 
 #if CONFIG_H263_VAAPI_HWACCEL
-AVHWAccel h263_vaapi_hwaccel = {
+AVHWAccel ff_h263_vaapi_hwaccel = {
     .name           = "h263_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_H263,

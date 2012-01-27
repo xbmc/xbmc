@@ -49,7 +49,7 @@ static av_cold int libspeex_decode_init(AVCodecContext *avctx)
     if (avctx->extradata_size >= 80)
         s->header = speex_packet_to_header(avctx->extradata, avctx->extradata_size);
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     if (s->header) {
         avctx->sample_rate = s->header->rate;
         avctx->channels    = s->header->nb_channels;
@@ -138,7 +138,7 @@ static av_cold int libspeex_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec libspeex_decoder = {
+AVCodec ff_libspeex_decoder = {
     "libspeex",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_SPEEX,

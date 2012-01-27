@@ -27,6 +27,7 @@
 #include "guilib/Texture.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace std;
 
@@ -45,16 +46,16 @@ CGUIDialogTeletext::~CGUIDialogTeletext()
 
 bool CGUIDialogTeletext::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_CLOSE_DIALOG)
-  {
-    m_bClose = true;
-    return true;
-  }
-
   if (m_TextDecoder.HandleAction(action))
     return true;
 
   return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogTeletext::OnBack(int actionID)
+{
+  m_bClose = true;
+  return true;
 }
 
 bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
@@ -65,7 +66,7 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
     if (!g_application.m_pPlayer->GetTeletextCache())
     {
       Close();
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
       return true;
     }
   }

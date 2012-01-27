@@ -27,6 +27,8 @@
 
 #include <dxva2api.h>
 
+#define FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG 1 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
+
 /**
  * This structure is used to provides the necessary configurations and data
  * to the DXVA2 FFmpeg HWAccel implementation.
@@ -63,6 +65,7 @@ struct dxva_context {
      * Private to the FFmpeg AVHWAccel implementation
      */
     unsigned report_id;
+    unsigned last_slice_count;
 };
 
 #endif /* AVCODEC_DXVA_H */

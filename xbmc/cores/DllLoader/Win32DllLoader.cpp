@@ -23,11 +23,11 @@
 #include "Win32DllLoader.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "Util.h"
 #include "utils/log.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "CharsetConverter.h"
+#include "filesystem/SpecialProtocol.h"
+#include "utils/CharsetConverter.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
@@ -136,48 +136,10 @@ Export win32_exports[] =
   { NULL,                          -1, NULL,                                NULL }
 };
 
-// stuff for python
-extern "C"
-{
-  char* xbp_getcwd(char *buf, int size);
-  int xbp_chdir(const char *dirname);
-  int xbp_access(const char *path, int mode);
-  int xbp_unlink(const char *filename);
-  int xbp_chmod(const char *filename, int pmode);
-  int xbp_rmdir(const char *dirname);
-  int xbp_utime(const char *filename, struct utimbuf *times);
-  int xbp_rename(const char *oldname, const char *newname);
-  int xbp_mkdir(const char *dirname);
-  int xbp_open(const char *filename, int oflag, int pmode);
-  FILE* xbp__wfopen(const wchar_t *filename, const wchar_t *mode);
-};
-
-Export win32_python_exports[] =
-{
-  // these just correct for path separators and call the base
-  { "access",                               -1, (void*)xbp_access,                             NULL },
-  { "_access",                              -1, (void*)xbp_access,                             NULL },
-  { "unlink",                               -1, (void*)xbp_unlink,                             NULL },
-  { "chmod",                                -1, (void*)xbp_chmod,                              NULL },
-  { "rmdir",                                -1, (void*)xbp_rmdir,                              NULL },
-  { "utime",                                -1, (void*)xbp_utime,                              NULL },
-  { "rename",                               -1, (void*)xbp_rename,                             NULL },
-  { "mkdir",                                -1, (void*)xbp_mkdir,                              NULL },
-  { "open",                                 -1, (void*)xbp_open,                               NULL },
-  { "_wfopen",                              -1, (void*)xbp__wfopen,                            NULL },
-//  { "opendir",                              -1, (void*)xbp_opendir,                            NULL }, _LINUX only
-
-  // special workaround just for python
-  { "_chdir",                               -1, (void*)xbp_chdir,                              NULL },
-  { "_getcwd",                              -1, (void*)xbp_getcwd,                             NULL },
-  { "_putenv",                              -1, (void*)dll_putenv,                             NULL },
-  { "__p__environ",                         -1, (void*)dll___p__environ,                       NULL },
-  { NULL,                                   -1, NULL,                                          NULL }
-};
-
 Win32DllLoader::Win32DllLoader(const char *dll) : LibraryLoader(dll)
 {
   m_dllHandle = NULL;
+  bIsSystemDll = false;
   DllLoaderContainer::RegisterDll(this);
 }
 
@@ -194,28 +156,32 @@ bool Win32DllLoader::Load()
     return true;
 
   CStdString strFileName = GetFileName();
-  CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
 
   CStdStringW strDllW;
   g_charsetConverter.utf8ToW(_P(strFileName), strDllW);
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
-    CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
+    LPVOID lpMsgBuf;
+    DWORD dw = GetLastError(); 
+
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, 0, (LPTSTR) &lpMsgBuf, 0, NULL );
+    CLog::Log(LOGERROR, "%s: Failed to load %s with error %d:%s", __FUNCTION__, _P(strFileName).c_str(), dw, lpMsgBuf);
+    LocalFree(lpMsgBuf);
     return false;
   }
 
   // handle functions that the dll imports
   if (NeedsHooking(strFileName.c_str()))
     OverrideImports(strFileName);
+  else
+    bIsSystemDll = true;
 
   return true;
 }
 
 void Win32DllLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "%s %s\n", __FUNCTION__, GetName());
-
   // restore our imports
   RestoreImports();
 
@@ -252,7 +218,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
 
 bool Win32DllLoader::IsSystemDll()
 {
-  return false;
+  return bIsSystemDll;
 }
 
 HMODULE Win32DllLoader::GetHModule()
@@ -425,16 +391,6 @@ bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fix
 bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
 {
   char *dll = GetName();
-#ifdef HAVE_LIBPYTHON2_6
-  if (strstr(dll, "python26.dll")
-#else
-  if (strstr(dll, "python24.dll")
-#endif
-   || strstr(dll, ".pyd"))
-  { // special case for python
-    if (FunctionNeedsWrapping(win32_python_exports, functionName, fixup))
-      return true;
-  }
   return FunctionNeedsWrapping(win32_exports, functionName, fixup);
 }
 

@@ -21,71 +21,52 @@
  *
  */
 
-#include "system.h" // for HANDLE, CRITICALSECTION
+#include "threads/Condition.h"
+#include "threads/SingleLock.h"
+#include "threads/Helpers.h"
 
+/**
+ * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
+ */
 class CSharedSection
 {
+  CCriticalSection sec;
+  XbmcThreads::ConditionVariable actualCv;
+  XbmcThreads::TightConditionVariable<XbmcThreads::InversePredicate<unsigned int&> > cond;
+
+  unsigned int sharedCount;
 
 public:
-  CSharedSection();
-  CSharedSection(const CSharedSection& src);
-  CSharedSection& operator=(const CSharedSection& src);
-  virtual ~CSharedSection();
+  inline CSharedSection() : cond(actualCv,XbmcThreads::InversePredicate<unsigned int&>(sharedCount)), sharedCount(0)  {}
 
-  void EnterExclusive();
-  void LeaveExclusive();
+  inline void lock() { CSingleLock l(sec); if (sharedCount) cond.wait(l); sec.lock(); }
+  inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
+  inline void unlock() { sec.unlock(); }
 
-  void EnterShared();
-  void LeaveShared();
-
-private:
-
-  CRITICAL_SECTION m_critSection;
-
-  HANDLE m_eventFree;
-  bool m_exclusive;
-  long m_sharedLock;
+  inline void lock_shared() { CSingleLock l(sec); sharedCount++; }
+  inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
+  inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { cond.notifyAll(); } }
 };
 
-class CSharedLock
+class CSharedLock : public XbmcThreads::SharedLock<CSharedSection>
 {
 public:
-  CSharedLock(CSharedSection& cs);
-  CSharedLock(const CSharedSection& cs);
-  virtual ~CSharedLock();
+  inline CSharedLock(CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>(cs) {}
+  inline CSharedLock(const CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>((CSharedSection&)cs) {}
 
-  bool IsOwner() const;
-  bool Enter();
-  void Leave();
-
-protected:
-  CSharedLock(const CSharedLock& src);
-  CSharedLock& operator=(const CSharedLock& src);
-
-  // Reference to critical section object
-  CSharedSection& m_cs;
-  // Ownership flag
-  bool m_bIsOwner;
+  inline bool IsOwner() const { return owns_lock(); }
+  inline void Enter() { lock(); }
+  inline void Leave() { unlock(); }
 };
 
-class CExclusiveLock
+class CExclusiveLock : public XbmcThreads::UniqueLock<CSharedSection>
 {
 public:
-  CExclusiveLock(CSharedSection& cs);
-  CExclusiveLock(const CSharedSection& cs);
-  virtual ~CExclusiveLock();
+  inline CExclusiveLock(CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection>(cs) {}
+  inline CExclusiveLock(const CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection> ((CSharedSection&)cs) {}
 
-  bool IsOwner() const;
-  bool Enter();
-  void Leave();
-
-protected:
-  CExclusiveLock(const CExclusiveLock& src);
-  CExclusiveLock& operator=(const CExclusiveLock& src);
-
-  // Reference to critical section object
-  CSharedSection& m_cs;
-  // Ownership flag
-  bool m_bIsOwner;
+  inline bool IsOwner() const { return owns_lock(); }
+  inline void Leave() { unlock(); }
+  inline void Enter() { lock(); }
 };
 

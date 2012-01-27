@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -27,6 +28,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "Util.h"
 
 using namespace XFILE;
 using namespace std;
@@ -138,8 +140,9 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     else
       label.Format("Current Stream: Channel %s, SNR %d", status.channel, status.signal_to_noise_quality);
 
-    CFileItemPtr item(new CFileItem("hdhomerun://" + url.GetHostName() + "/" + url.GetFileName(), false));
-    URIUtils::RemoveSlashAtEnd(item->m_strPath);
+    CStdString path = "hdhomerun://" + url.GetHostName() + "/" + url.GetFileName();
+    URIUtils::RemoveSlashAtEnd(path);
+    CFileItemPtr item(new CFileItem(path, false));
     item->SetLabel(label);
     item->SetLabelPreformated(true);
     items.Add(item);
@@ -243,7 +246,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
   // on live streams.
-  unsigned int timestamp = CTimeUtils::GetTimeMS() + 5000;
+  XbmcThreads::EndTime timestamp(5000);
   while(1)
   {
     datasize = (size_t) uiBufSize;
@@ -254,7 +257,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
       return (unsigned int)datasize;
     }
 
-    if(CTimeUtils::GetTimeMS() > timestamp)
+    if(timestamp.IsTimePast())
       return 0;
 
     Sleep(64);

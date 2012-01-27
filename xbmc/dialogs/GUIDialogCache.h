@@ -23,6 +23,7 @@
 
 #include "filesystem/File.h"
 #include "threads/Thread.h"
+#include "threads/SystemClock.h"
 
 class CGUIDialogProgress;
 
@@ -47,8 +48,7 @@ protected:
 
   void OpenDialog();
 
-  DWORD m_dwTimeStamp;
-  DWORD m_dwDelay;
+  XbmcThreads::EndTime m_endtime;
   CGUIDialogProgress* m_pDlg;
   CStdString m_strLinePrev;
   CStdString m_strLinePrev2;

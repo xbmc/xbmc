@@ -22,7 +22,7 @@
 #pragma once
 
 #ifdef HAS_DX
-#include "StdString.h"
+#include "utils/StdString.h"
 #include <map>
 
 class ID3DResource
@@ -49,12 +49,16 @@ public:
   bool GetLevelDesc(UINT level, D3DSURFACE_DESC *desc);
   bool GetSurfaceLevel(UINT level, LPDIRECT3DSURFACE9 *surface);
 
+  // Accessors
   LPDIRECT3DTEXTURE9 Get() const { return m_texture; };
+  UINT GetWidth()  { return m_width; }
+  UINT GetHeight() { return m_height; }
 
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
   virtual void OnLostDevice();
   virtual void OnResetDevice();
+
 
 private:
   unsigned int GetMemoryUsage(unsigned int pitch) const;

@@ -810,15 +810,15 @@ void CExifParse::ProcessGpsInfo(
                     const unsigned char* const OffsetBase,
                     unsigned ExifLength)
 {
-  int NumDirEntries = Get16(DirStart);
+  int NumDirEntries = Get16(DirStart, m_MotorolaOrder);
 
   for (int de=0;de<NumDirEntries;de++)
   {
     const unsigned char* DirEntry = DIR_ENTRY_ADDR(DirStart, de);
 
-    unsigned Tag        = Get16(DirEntry);
-    unsigned Format     = Get16(DirEntry+2);
-    unsigned Components = (unsigned)Get32(DirEntry+4);
+    unsigned Tag        = Get16(DirEntry, m_MotorolaOrder);
+    unsigned Format     = Get16(DirEntry+2, m_MotorolaOrder);
+    unsigned Components = (unsigned)Get32(DirEntry+4, m_MotorolaOrder);
     if ((Format-1) >= NUM_FORMATS)
     {
       // (-1) catches illegal zero case as unsigned underflows to positive large.
@@ -834,7 +834,7 @@ void CExifParse::ProcessGpsInfo(
 
     if (ByteCount > 4)
     {
-      unsigned OffsetVal = (unsigned)Get32(DirEntry+8);
+      unsigned OffsetVal = (unsigned)Get32(DirEntry+8, m_MotorolaOrder);
       // If its bigger than 4 bytes, the dir entry contains an offset.
       if (OffsetVal+ByteCount > ExifLength)
       {
@@ -878,7 +878,7 @@ void CExifParse::ProcessGpsInfo(
       case TAG_GPS_ALT:
         {
           char temp[18];
-          sprintf(temp,"%dm", Get32(ValuePtr));
+          sprintf(temp,"%dm", Get32(ValuePtr, m_MotorolaOrder));
           strcat(m_ExifInfo->GpsAlt, temp);
         }
       break;

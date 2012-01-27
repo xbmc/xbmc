@@ -39,14 +39,16 @@ static int flac_write_block_padding(ByteIOContext *pb, unsigned int n_padding_by
     return 0;
 }
 
-static int flac_write_block_comment(ByteIOContext *pb, AVMetadata *m,
+static int flac_write_block_comment(ByteIOContext *pb, AVMetadata **m,
                                     int last_block, int bitexact)
 {
     const char *vendor = bitexact ? "ffmpeg" : LIBAVFORMAT_IDENT;
     unsigned int len, count;
     uint8_t *p, *p0;
 
-    len = ff_vorbiscomment_length(m, vendor, &count);
+    ff_metadata_conv(m, ff_vorbiscomment_metadata_conv, NULL);
+
+    len = ff_vorbiscomment_length(*m, vendor, &count);
     p0 = av_malloc(len+4);
     if (!p0)
         return AVERROR(ENOMEM);
@@ -72,7 +74,7 @@ static int flac_write_header(struct AVFormatContext *s)
     if (ret)
         return ret;
 
-    ret = flac_write_block_comment(s->pb, s->metadata, 0,
+    ret = flac_write_block_comment(s->pb, &s->metadata, 0,
                                    codec->flags & CODEC_FLAG_BITEXACT);
     if (ret)
         return ret;
@@ -116,7 +118,7 @@ static int flac_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat flac_muxer = {
+AVOutputFormat ff_flac_muxer = {
     "flac",
     NULL_IF_CONFIG_SMALL("raw FLAC"),
     "audio/x-flac",
@@ -128,5 +130,4 @@ AVOutputFormat flac_muxer = {
     flac_write_packet,
     flac_write_trailer,
     .flags= AVFMT_NOTIMESTAMPS,
-    .metadata_conv = ff_vorbiscomment_metadata_conv,
 };

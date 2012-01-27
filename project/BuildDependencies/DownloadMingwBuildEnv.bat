@@ -68,5 +68,3 @@ TYPE msys.bat_dist>>msys.bat
 cd %CUR_PATH%
 
 IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
-
-pause

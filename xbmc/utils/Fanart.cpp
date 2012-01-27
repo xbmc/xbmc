@@ -66,7 +66,7 @@ bool CFanart::Unpack()
   m_url.Empty();
 
   TiXmlElement *fanart = doc.FirstChildElement("fanart");
-  if (fanart)
+  while (fanart)
   {
     m_url = fanart->Attribute("url");
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
@@ -85,6 +85,7 @@ bool CFanart::Unpack()
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
     }
+    fanart = fanart->NextSiblingElement("fanart");
   }
   return true;
 }

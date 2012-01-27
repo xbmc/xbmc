@@ -26,18 +26,24 @@
 #include <io.h>
 #include <direct.h>
 #include <process.h>
+#else
+#ifndef __APPLE__
+#include <mntent.h>
+#endif
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
-#ifdef _LINUX
-#include <sys/ioctl.h>
-#ifndef __APPLE__
-#include <mntent.h>
-#include <linux/cdrom.h>
-#else
-#include <IOKit/storage/IODVDMediaBSDClient.h>
-#endif
+#include "system.h" // for HAS_DVD_DRIVE
+#ifdef HAS_DVD_DRIVE
+  #ifdef _LINUX
+    #include <sys/ioctl.h>
+    #ifndef __APPLE__
+      #include <linux/cdrom.h>
+    #else
+      #include <IOKit/storage/IODVDMediaBSDClient.h>
+    #endif
+  #endif
 #endif
 #include <fcntl.h>
 #include <time.h>
@@ -58,6 +64,7 @@
 #include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -103,19 +110,16 @@ static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;
 char **dll__environ = dll__environ_imp;
 
-CRITICAL_SECTION dll_cs_environ;
+CCriticalSection dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
 
 extern "C" void __stdcall init_emu_environ()
 {
-  InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
-#ifdef _XBOX
-  dll_putenv("OS=xbox");
-#elif defined(_WIN32)
+#if defined(_WIN32)
   // fill our array with the windows system vars
   LPTSTR lpszVariable; 
   LPTCH lpvEnv;
@@ -138,9 +142,22 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
-  dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
-  dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+
+  // check if we are running as real xbmc.app or just binary
+  if (!CUtil::GetFrameworksPath(true).IsEmpty())
+  {
+    // using external python, it's build looking for xxx/lib/python2.6
+    // so point it to frameworks which is where python2.6 is located
+    dll_putenv(string("PYTHONPATH=" + _P("special://frameworks")).c_str());
+    dll_putenv(string("PYTHONHOME=" + _P("special://frameworks")).c_str());
+    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://frameworks")).c_str());
+  }
+  else
+  {
+    dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
+    dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+  }
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
@@ -169,24 +186,24 @@ extern "C" void __stdcall update_emu_environ()
       g_guiSettings.GetString("network.httpproxyserver") &&
       g_guiSettings.GetString("network.httpproxyport"))
   {
-    const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
-    const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
-    // Should we check for valid strings here? should HTTPS_PROXY use https://?
-    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
-    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
-#ifdef _WIN32
-    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
-    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
-#endif
-    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    CStdString strProxy;
+    if (g_guiSettings.GetString("network.httpproxyusername") &&
+        g_guiSettings.GetString("network.httpproxypassword"))
     {
-      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
-      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
-#ifdef _WIN32
-      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
-      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
-#endif
+      strProxy.Format("%s:%s@", g_guiSettings.GetString("network.httpproxyusername").c_str(),
+                                g_guiSettings.GetString("network.httpproxypassword").c_str());
     }
+
+    strProxy += g_guiSettings.GetString("network.httpproxyserver");
+    strProxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+
+#ifdef _WIN32
+    pgwin32_putenv(("HTTP_PROXY=http://" +strProxy).c_str());
+    pgwin32_putenv(("HTTPS_PROXY=http://" +strProxy).c_str());
+#else
+    setenv( "HTTP_PROXY", "http://" + strProxy, true );
+    setenv( "HTTPS_PROXY", "http://" + strProxy, true );
+#endif
   }
   else
   {
@@ -1681,22 +1698,6 @@ extern "C"
     return 0;
   }
 
-  uintptr_t dll_beginthread(
-    void( *start_address )( void * ),
-    unsigned stack_size,
-    void *arglist
-  )
-  {
-    return _beginthread(start_address, stack_size, arglist);
-  }
-
-  HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
-                           LPDWORD lpThreadId)
-  {
-    return dllCreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
-  }
-
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
@@ -1933,44 +1934,45 @@ extern "C"
         if (size)
           value[size - 1] = '\0';
 
-        EnterCriticalSection(&dll_cs_environ);
-
-        char** free_position = NULL;
-        for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
         {
-          if (dll__environ[i] != NULL)
+          CSingleLock lock(dll_cs_environ);
+
+          char** free_position = NULL;
+          for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
           {
-            // we only support overwriting the old values
-            if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+            if (dll__environ[i] != NULL)
             {
-              // free it first
-              free(dll__environ[i]);
-              dll__environ[i] = NULL;
+              // we only support overwriting the old values
+              if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+              {
+                // free it first
+                free(dll__environ[i]);
+                dll__environ[i] = NULL;
+                free_position = &dll__environ[i];
+              }
+            }
+            else
+            {
               free_position = &dll__environ[i];
             }
           }
-          else
-          {
-            free_position = &dll__environ[i];
-          }
-        }
 
-        if (free_position != NULL)
-        {
-          // free position, copy value
-          size = strlen(var) + strlen(value) + 2;
-          *free_position = (char*)malloc(size); // for '=' and 0 termination
-          if ((*free_position))
+          if (free_position != NULL)
           {
-            strncpy(*free_position, var, size);
-            (*free_position)[size - 1] = '\0';
-            strncat(*free_position, "=", size - strlen(*free_position));
-            strncat(*free_position, value, size - strlen(*free_position));
-            added = true;
+            // free position, copy value
+            size = strlen(var) + strlen(value) + 2;
+            *free_position = (char*)malloc(size); // for '=' and 0 termination
+            if ((*free_position))
+            {
+              strncpy(*free_position, var, size);
+              (*free_position)[size - 1] = '\0';
+              strncat(*free_position, "=", size - strlen(*free_position));
+              strncat(*free_position, value, size - strlen(*free_position));
+              added = true;
+            }
           }
-        }
 
-        LeaveCriticalSection(&dll_cs_environ);
+        }
 
         free(value);
       }
@@ -1980,37 +1982,28 @@ extern "C"
   }
 
 
-#ifdef _XBOX
-  char *getenv(const char *s)
-  {
-    // some libs in the solution linked to getenv which was exported in python.lib
-    // now python is in a dll this needs the be fixed, or not
-    CLog::Log(LOGWARNING, "old getenv from python.lib called, library check needed");
-    return NULL;
-  }
-#endif
 
   char* dll_getenv(const char* szKey)
   {
     char* value = NULL;
 
-    EnterCriticalSection(&dll_cs_environ);
-
-    update_emu_environ();//apply any changes
-
-    for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
     {
-      if (dll__environ[i])
+      CSingleLock lock(dll_cs_environ);
+
+      update_emu_environ();//apply any changes
+
+      for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
       {
-        if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+        if (dll__environ[i])
         {
-          // found it
-          value = dll__environ[i] + strlen(szKey) + 1;
+          if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+          {
+            // found it
+            value = dll__environ[i] + strlen(szKey) + 1;
+          }
         }
       }
     }
-
-    LeaveCriticalSection(&dll_cs_environ);
 
     if (value != NULL)
     {
@@ -2034,11 +2027,7 @@ extern "C"
 
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
-#ifdef _XBOX
-    // the xbox has a NSIG of 23 (+1), problem is when calling signal with
-    // one of the signals below the xbox wil crash. Just return SIG_ERR
-    if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
-#elif defined(_WIN32)
+#if defined(_WIN32)
     //vs2008 asserts for known signals, return err for everything unknown to windows.
     if (sig == 5 || sig == 7 || sig == 9 || sig == 10 || sig == 12 || sig == 14 || sig == 18 || sig == 19 || sig == 20)
       return SIG_ERR;
@@ -2088,10 +2077,12 @@ extern "C"
 
   int __cdecl dll_ioctl(int fd, unsigned long int request, va_list va)
   {
+     int ret;
      CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
      if (!pFile)
        return -1;
 
+#ifdef HAS_DVD_DRIVE
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
 #else
@@ -2099,16 +2090,20 @@ extern "C"
 #endif
     {
       void *p1 = va_arg(va, void*);
-      int ret = pFile->IoControl(request, p1);
+      SNativeIoControl d;
+      d.request = request;
+      d.param   = p1;
+      ret = pFile->IoControl(IOCTRL_NATIVE, &d);
       if(ret<0)
         CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
-      return ret;
     }
     else
+#endif
     {
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
-      return -1;
+      ret = -1;
     }
+    return ret;
   }
 #endif
 

@@ -1,0 +1,16 @@
+SRCS=Peripheral.cpp \
+     PeripheralBluetooth.cpp \
+     PeripheralDisk.cpp \
+     PeripheralHID.cpp \
+     PeripheralNIC.cpp \
+     PeripheralNyxboard.cpp \
+     PeripheralTuner.cpp
+
+ifeq (@USE_LIBCEC@,1)
+SRCS+=PeripheralCecAdapter.cpp
+endif
+
+LIB = peripheral-devices.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

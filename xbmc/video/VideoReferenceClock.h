@@ -60,7 +60,7 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    int64_t GetTime();
+    int64_t GetTime(bool interpolated = true);
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
@@ -80,9 +80,11 @@ class CVideoReferenceClock : public CThread
     bool    UpdateRefreshrate(bool Forced = false);
     void    SendVblankSignal();
     void    UpdateClock(int NrVBlanks, bool CheckMissed);
+    double  UpdateInterval();
     int64_t TimeOfNextVblank();
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
+    int64_t m_LastIntTime;       //last interpolated clock value, to make sure the clock doesn't go backwards
     double  m_CurrTimeFract;     //fractional part that is lost due to rounding when updating the clock
     double  m_ClockSpeed;        //the frequency of the clock set by dvdplayer
     int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
@@ -117,9 +119,12 @@ class CVideoReferenceClock : public CThread
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
+    Pixmap       m_pixmap;
+    GLXPixmap    m_glPixmap;
     int          m_RREventBase;
 
     bool         m_UseNvSettings;
+    bool         m_bIsATI;
 
 #elif defined(_WIN32) && defined(HAS_DX)
     bool   SetupD3D();

@@ -143,9 +143,11 @@ void CKaraokeWindowBackground::Render()
 {
   // We cannot use CSingleLock on m_CritSectionVideoEnded, because OnPlayBackEnded() might be
   // called from a different thread, and since we cannot proceed on m_CritSectionShared, we'll deadlock
-  EnterCriticalSection( m_CritSectionVideoEnded );
-  bool ended = m_videoEnded;
-  LeaveCriticalSection( m_CritSectionVideoEnded );
+  bool ended;
+  {
+    CSingleLock lock( m_CritSectionVideoEnded );
+    ended = m_videoEnded;
+  }
 
   CSingleLock lock (m_CritSectionShared);
   // Do we need to restart video?
@@ -236,11 +238,11 @@ void CKaraokeWindowBackground::StartVideo( const CStdString& path, __int64 offse
 
   if ( !m_videoPlayer->OpenFile( item, options ) )
   {
-    CLog::Log(LOGERROR, "KaraokeVideoBackground: error opening video file %s", item.m_strPath.c_str());
+    CLog::Log(LOGERROR, "KaraokeVideoBackground: error opening video file %s", item.GetPath().c_str());
     return;
   }
 
-  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: video file %s opened successfully", item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: video file %s opened successfully", item.GetPath().c_str());
 
   m_ImgControl->SetVisible( false );
   m_VisControl->SetVisible( false );
@@ -346,9 +348,10 @@ void CKaraokeWindowBackground::NextVideo()
   // Only one video selected, restarting
   m_videoLastTime = 0;
 
-  EnterCriticalSection( m_CritSectionVideoEnded );
-  m_videoEnded = false;
-  LeaveCriticalSection( m_CritSectionVideoEnded );
+  {
+    CSingleLock lock(m_CritSectionVideoEnded );
+    m_videoEnded = false;
+  }
 
   StartVideo( m_path, m_videoLastTime );
   CLog::Log( LOGDEBUG, "KaraokeVideoBackground: restarting video from the beginning" );

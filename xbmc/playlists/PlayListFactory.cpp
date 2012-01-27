@@ -70,7 +70,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
       return new CPlayListWPL();
   }
 
-  CStdString extension = URIUtils::GetExtension(item.m_strPath);
+  CStdString extension = URIUtils::GetExtension(item.GetPath());
   extension.MakeLower();
 
   if (extension == ".m3u" || extension == ".strm")
@@ -123,7 +123,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   || strMimeType == "audio/x-mpegurl")
     return true;
 
-  return IsPlaylist(item.m_strPath);
+  return IsPlaylist(item.GetPath());
 }
 
 bool CPlayListFactory::IsPlaylist(const CStdString& filename)

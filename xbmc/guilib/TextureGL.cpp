@@ -23,6 +23,7 @@
 #include "TextureGL.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 
@@ -59,7 +60,6 @@ void CGLTexture::LoadToGPU()
     // nothing to load - probably same image (no change)
     return;
   }
-
   if (m_texture == 0)
   {
     // Have OpenGL generate a texture object handle for us
@@ -90,7 +90,8 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
-  GLenum format;
+  GLenum format = GL_BGRA;
+  GLint numcomponents = GL_RGBA;
 
   switch (m_format)
   {
@@ -104,15 +105,18 @@ void CGLTexture::LoadToGPU()
   case XB_FMT_DXT5_YCoCg:
     format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
     break;
+  case XB_FMT_RGB8:
+    format = GL_RGB;
+    numcomponents = GL_RGB;
+    break;
   case XB_FMT_A8R8G8B8:
   default:
-    format = GL_BGRA;
     break;
   }
 
   if ((m_format & XB_FMT_DXT_MASK) == 0)
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_textureWidth, m_textureHeight, 0,
+    glTexImage2D(GL_TEXTURE_2D, 0, numcomponents, m_textureWidth, m_textureHeight, 0,
       format, GL_UNSIGNED_BYTE, m_pixels);
   }
   else
@@ -127,13 +131,48 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
-#if HAS_GLES == 1
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA_EXT, m_textureWidth, m_textureHeight, 0,
-		GL_BGRA_EXT, GL_UNSIGNED_BYTE, m_pixels);
-#elif HAS_GLES == 2
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureWidth, m_textureHeight, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
+  // All incoming textures are BGRA, which GLES does not necessarily support.
+  // Some (most?) hardware supports BGRA textures via an extension.
+  // If not, we convert to RGBA first to avoid having to swizzle in shaders.
+  // Explicitly define GL_BGRA_EXT here in the case that it's not defined by
+  // system headers, and trust the extension list instead.
+#ifndef GL_BGRA_EXT
+#define GL_BGRA_EXT 0x80E1
 #endif
+
+  GLint internalformat;
+  GLenum pixelformat;
+
+  switch (m_format)
+  {
+    default:
+    case XB_FMT_RGBA8:
+      internalformat = pixelformat = GL_RGBA;
+      break;
+    case XB_FMT_RGB8:
+      internalformat = pixelformat = GL_RGB;
+      break;
+    case XB_FMT_A8R8G8B8:
+      if (g_Windowing.SupportsBGRA())
+      {
+        internalformat = pixelformat = GL_BGRA_EXT;
+      }
+      else if (g_Windowing.SupportsBGRAApple())
+      {
+        // Apple's implementation does not conform to spec. Instead, they require
+        // differing format/internalformat, more like GL.
+        internalformat = GL_RGBA;
+        pixelformat = GL_BGRA_EXT;
+      }
+      else
+      {
+        SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
+        internalformat = pixelformat = GL_RGBA;
+      }
+      break;
+  }
+  glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
+    pixelformat, GL_UNSIGNED_BYTE, m_pixels);
 
 #endif
   VerifyGLState();

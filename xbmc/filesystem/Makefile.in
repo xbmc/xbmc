@@ -4,6 +4,7 @@ CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
      ASAPFileDirectory.cpp \
+     CacheCircular.cpp \
      CacheMemBuffer.cpp \
      CacheStrategy.cpp \
      CDDADirectory.cpp \
@@ -27,13 +28,14 @@ SRCS=AddonsDirectory.cpp \
      FileISO.cpp \
      FileLastFM.cpp \
      FileMusicDatabase.cpp \
+     FilePipe.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
      FileSFTP.cpp \
-     FileSmb.cpp \
      FileSpecialProtocol.cpp \
      FileTuxBox.cpp \
      FileUDF.cpp \
+     FileUPnP.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -60,6 +62,7 @@ SRCS=AddonsDirectory.cpp \
      OGGFileDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
+     PipesManager.cpp \
      PluginDirectory.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
@@ -67,8 +70,9 @@ SRCS=AddonsDirectory.cpp \
      SAPFile.cpp \
      SFTPDirectory.cpp \
      SIDFileDirectory.cpp \
+     Slingbox.cpp \
      SmartPlaylistDirectory.cpp \
-     SMBDirectory.cpp \
+     SourcesDirectory.cpp \
      SpecialProtocol.cpp \
      SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
@@ -77,21 +81,32 @@ SRCS=AddonsDirectory.cpp \
      UPnPDirectory.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
-     VirtualPathDirectory.cpp \
      VTPDirectory.cpp \
      VTPFile.cpp \
      VTPSession.cpp \
      ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
-     ZipManager.cpp \
+     ZipManager.cpp
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
-SRCS+=FileRar.cpp \
-      FileXBMSP.cpp \
-      RarDirectory.cpp \
-      RarManager.cpp \
-      XBMSDirectory.cpp \
+SRCS+=FileRar.cpp
+SRCS+=RarDirectory.cpp
+SRCS+=RarManager.cpp
+endif
 
+ifeq (@USE_LIBSMBCLIENT@,1)
+SRCS+=FileSmb.cpp
+SRCS+=SMBDirectory.cpp
+endif
+
+ifeq (@USE_LIBNFS@,1)
+SRCS+=FileNFS.cpp
+SRCS+=NFSDirectory.cpp
+endif
+
+ifeq (@USE_LIBAFPCLIENT@,1)
+SRCS+=FileAFP.cpp
+SRCS+=AFPDirectory.cpp
 endif
 
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
@@ -99,10 +114,6 @@ INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
-
-ifeq ($(findstring osx,$(ARCH)), osx)
-INCLUDES+=-I@abs_top_srcdir@/lib/darwin/libcurl-OSX/include
-endif
 
 LIB=filesystem.a
 

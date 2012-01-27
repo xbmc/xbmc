@@ -23,6 +23,7 @@
 
 #include "DVDOverlayCodec.h"
 #include "DllAvCodec.h"
+#include "DllAvUtil.h"
 
 class CDVDOverlaySpu;
 class CDVDOverlayText;

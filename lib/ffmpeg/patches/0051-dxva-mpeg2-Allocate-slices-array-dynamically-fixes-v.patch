@@ -1,0 +1,74 @@
+From 87abcf002b55c8a26b6640ee55a56d3b79dd4740 Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Wed, 5 Oct 2011 12:38:30 -0400
+Subject: [PATCH 1/6] dxva-mpeg2 Allocate slices array dynamically - fixes videos with > 175 slices.
+ They used to result in images with a black bottom.
+
+sample on team ftp samples/PR471/too_many_slices.ts
+
+Inspired by the vaapi code to reallocate the slices array for each new slice.
+Could be more efficient if the array could be preserved for all frames and
+freed only at the end of the video, but there doesn't seem to be anywhere
+appropriate to free the memory at the end.
+
+Alternative is to allocate the proper size straight away for a new frame,
+instead of realloc'ing for each slice.
+---
+ lib/ffmpeg/libavcodec/dxva2_mpeg2.c |   14 +++++++++++---
+ 1 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
+index 780542a..9ac2d17 100644
+--- a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
++++ b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
+@@ -22,12 +22,12 @@
+ 
+ #include "dxva2_internal.h"
+ 
+-#define MAX_SLICES (SLICE_MAX_START_CODE - SLICE_MIN_START_CODE + 1)
+ struct dxva2_picture_context {
+     DXVA_PictureParameters pp;
+     DXVA_QmatrixData       qm;
+     unsigned               slice_count;
+-    DXVA_SliceInfo         slice[MAX_SLICES];
++    DXVA_SliceInfo         *slice;
++    unsigned int           slice_alloc;
+ 
+     const uint8_t          *bitstream;
+     unsigned               bitstream_size;
+@@ -220,6 +220,8 @@ static int start_frame(AVCodecContext *avctx,
+     fill_quantization_matrices(avctx, ctx, s, &ctx_pic->qm);
+ 
+     ctx_pic->slice_count    = 0;
++    ctx_pic->slice          = NULL;
++    ctx_pic->slice_alloc    = 0;
+     ctx_pic->bitstream_size = 0;
+     ctx_pic->bitstream      = NULL;
+     return 0;
+@@ -232,9 +234,14 @@ static int decode_slice(AVCodecContext *avctx,
+     struct dxva2_picture_context *ctx_pic =
+         s->current_picture_ptr->hwaccel_picture_private;
+     unsigned position;
++    DXVA_SliceInfo* slice;
+ 
+-    if (ctx_pic->slice_count >= MAX_SLICES)
++    slice = av_fast_realloc(ctx_pic->slice,
++                            &ctx_pic->slice_alloc,
++                            (ctx_pic->slice_count + 1) * sizeof(DXVA_SliceInfo));
++    if (!slice)
+         return -1;
++    ctx_pic->slice = slice;
+ 
+     if (!ctx_pic->bitstream)
+         ctx_pic->bitstream = buffer;
+@@ -258,6 +265,7 @@ static int end_frame(AVCodecContext *avctx)
+                                      &ctx_pic->pp, sizeof(ctx_pic->pp),
+                                      &ctx_pic->qm, sizeof(ctx_pic->qm),
+                                      commit_bitstream_and_slice_buffer);
++    av_freep(ctx_pic->slice);
+ }
+ 
+ AVHWAccel ff_mpeg2_dxva2_hwaccel = {
+-- 
+1.7.3.1.msysgit.0
+

@@ -25,6 +25,7 @@
  */
 #include "WinSystemX11.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/GlobalsHandling.h"
 
 class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 {
@@ -38,7 +39,7 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
 protected:
-  virtual bool PresentRenderImpl();
+  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   virtual void SetVSyncImpl(bool enable);
 
   CStdString m_glxext;
@@ -53,5 +54,9 @@ protected:
 
   int m_iVSyncErrors;
 };
+
+XBMC_GLOBAL_REF(CWinSystemX11GL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GL)
+
 
 #endif // WINDOW_SYSTEM_H

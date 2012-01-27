@@ -37,12 +37,27 @@ extern const char program_name[];
  */
 extern const int program_birth_year;
 
-extern const int this_year;
-
 extern const char **opt_names;
 extern AVCodecContext *avcodec_opts[AVMEDIA_TYPE_NB];
 extern AVFormatContext *avformat_opts;
 extern struct SwsContext *sws_opts;
+
+/**
+ * Initialize the cmdutils option system, in particular
+ * allocate the *_opts contexts.
+ */
+void init_opts(void);
+/**
+ * Uninitialize the cmdutils option system, in particular
+ * free the *_opts contexts and their contents.
+ */
+void uninit_opts(void);
+
+/**
+ * Trivial log callback.
+ * Only suitable for show_help and similar since it lacks prefix handling.
+ */
+void log_callback_help(void* ptr, int level, const char* fmt, va_list vl);
 
 /**
  * Fallback for options that are not explicitly handled, these will be
@@ -132,7 +147,7 @@ void show_help_options(const OptionDef *options, const char *msg, int mask, int 
 void parse_options(int argc, char **argv, const OptionDef *options,
                    void (* parse_arg_function)(const char*));
 
-void set_context_opts(void *ctx, void *opts_ctx, int flags);
+void set_context_opts(void *ctx, void *opts_ctx, int flags, AVCodec *codec);
 
 /**
  * Print an error message to stderr, indicating filename and a human
@@ -219,5 +234,69 @@ int read_yesno(void);
  * AVERROR error code in case of failure.
  */
 int read_file(const char *filename, char **bufptr, size_t *size);
+
+typedef struct {
+    int64_t num_faulty_pts; /// Number of incorrect PTS values so far
+    int64_t num_faulty_dts; /// Number of incorrect DTS values so far
+    int64_t last_pts;       /// PTS of the last frame
+    int64_t last_dts;       /// DTS of the last frame
+} PtsCorrectionContext;
+
+/**
+ * Reset the state of the PtsCorrectionContext.
+ */
+void init_pts_correction(PtsCorrectionContext *ctx);
+
+/**
+ * Attempt to guess proper monotonic timestamps for decoded video frames
+ * which might have incorrect times. Input timestamps may wrap around, in
+ * which case the output will as well.
+ *
+ * @param pts the pts field of the decoded AVPacket, as passed through
+ * AVCodecContext.reordered_opaque
+ * @param dts the dts field of the decoded AVPacket
+ * @return one of the input values, may be AV_NOPTS_VALUE
+ */
+int64_t guess_correct_pts(PtsCorrectionContext *ctx, int64_t pts, int64_t dts);
+
+/**
+ * Get a file corresponding to a preset file.
+ *
+ * If is_path is non-zero, look for the file in the path preset_name.
+ * Otherwise search for a file named arg.ffpreset in the directories
+ * $FFMPEG_DATADIR (if set), $HOME/.ffmpeg, and in the datadir defined
+ * at configuration time, in that order. If no such file is found and
+ * codec_name is defined, then search for a file named
+ * codec_name-preset_name.ffpreset in the above-mentioned directories.
+ *
+ * @param filename buffer where the name of the found filename is written
+ * @param filename_size size in bytes of the filename buffer
+ * @param preset_name name of the preset to search
+ * @param is_path tell if preset_name is a filename path
+ * @param codec_name name of the codec for which to look for the
+ * preset, may be NULL
+ */
+FILE *get_preset_file(char *filename, size_t filename_size,
+                      const char *preset_name, int is_path, const char *codec_name);
+
+#if CONFIG_AVFILTER
+#include "libavfilter/avfilter.h"
+
+typedef struct {
+    enum PixelFormat pix_fmt;
+} FFSinkContext;
+
+extern AVFilter ffsink;
+
+/**
+ * Extract a frame from sink.
+ *
+ * @return a negative error in case of failure, 1 if one frame has
+ * been extracted successfully.
+ */
+int get_filtered_video_frame(AVFilterContext *sink, AVFrame *frame,
+                             AVFilterBufferRef **picref, AVRational *pts_tb);
+
+#endif /* CONFIG_AVFILTER */
 
 #endif /* FFMPEG_CMDUTILS_H */

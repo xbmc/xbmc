@@ -28,7 +28,7 @@
  */
 
 #include "avformat.h"
-#include "raw.h"
+#include "pcm.h"
 #include "riff.h"
 
 /* if we don't know the size in advance */
@@ -183,7 +183,7 @@ static int au_read_packet(AVFormatContext *s,
 }
 
 #if CONFIG_AU_DEMUXER
-AVInputFormat au_demuxer = {
+AVInputFormat ff_au_demuxer = {
     "au",
     NULL_IF_CONFIG_SMALL("SUN AU format"),
     0,
@@ -197,7 +197,7 @@ AVInputFormat au_demuxer = {
 #endif
 
 #if CONFIG_AU_MUXER
-AVOutputFormat au_muxer = {
+AVOutputFormat ff_au_muxer = {
     "au",
     NULL_IF_CONFIG_SMALL("SUN AU format"),
     "audio/basic",

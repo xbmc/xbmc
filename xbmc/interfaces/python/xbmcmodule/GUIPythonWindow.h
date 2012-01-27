@@ -22,35 +22,20 @@
  */
 
 #include "guilib/GUIWindow.h"
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
+#include "threads/Event.h"
 
 class PyXBMCAction
 {
 public:
   int param;
-  PyObject* pCallbackWindow;
-  PyObject* pObject;
+  void* pCallbackWindow;
+  void* pObject;
   int controlId; // for XML window
 #if defined(_LINUX) || defined(_WIN32)
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction(PyObject*& callback);
+  PyXBMCAction(void*& callback);
   virtual ~PyXBMCAction() ;
 };
 
@@ -64,11 +49,15 @@ public:
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
-  void             SetCallbackWindow(PyThreadState *state, PyObject *object);
+  virtual bool    OnBack(int actionID);
+  void             SetCallbackWindow(void* state, void *object);
   void             WaitForActionEvent(unsigned int timeout);
   void             PulseActionEvent();
+  void             SetDestroyAfterDeinit(bool destroy = true);
 protected:
-  PyObject*        pCallbackWindow;
-  PyThreadState*   m_threadState;
-  HANDLE           m_actionEvent;
+  virtual void     OnDeinitWindow(int nextWindowID = 0);
+  void* pCallbackWindow;
+  void* m_threadState;
+  CEvent           m_actionEvent;
+  bool             m_destroyAfterDeinit;
 };

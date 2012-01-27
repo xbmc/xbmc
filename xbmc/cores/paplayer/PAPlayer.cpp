@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "GUIInfoManager.h"
@@ -32,6 +33,7 @@
 #include "../AudioRenderers/AudioRendererFactory.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -151,7 +153,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_bStopPlaying = false;
   m_bytesSentOut = 0;
 
-  CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.GetPath().c_str());
 
   m_timeOffset = (__int64)(options.starttime * 1000);
 
@@ -223,7 +225,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   if (IsPaused())
     Pause();
 
-  if (file.m_strPath == m_currentFile->m_strPath &&
+  if (file.GetPath() == m_currentFile->GetPath() &&
       file.m_lStartOffset > 0 &&
       file.m_lStartOffset == m_currentFile->m_lEndOffset)
   { // continuing on a .cue sheet item - return true to say we'll handle the transistion
@@ -241,7 +243,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
   }
 
   // ok, we're good to go on queuing this one up
-  CLog::Log(LOGINFO, "PAPlayer: Queuing next file %s", file.m_strPath.c_str());
+  CLog::Log(LOGINFO, "PAPlayer: Queuing next file %s", file.GetPath().c_str());
 
   m_bQueueFailed = false;
   if (checkCrossFading)
@@ -381,7 +383,7 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
       m_bitsPerSample[num], //uiBitsPerSample
       false               , //bResample
       true                , //bIsMusic
-      false                 //bPassthrough
+      IAudioRenderer::ENCODED_NONE //bPassthrough
     );
 
     if (!m_pAudioDecoder[num]) return false;
@@ -493,13 +495,13 @@ void PAPlayer::ToFFRW(int iSpeed)
 void PAPlayer::UpdateCacheLevel()
 {
   //check cachelevel every .5 seconds
-  if (m_LastCacheLevelCheck + 500 < CTimeUtils::GetTimeMS())
+  if ((XbmcThreads::SystemClockMillis() - m_LastCacheLevelCheck) > 500)
   {
     ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
     if (codec)
     {
       m_CacheLevel = codec->GetCacheLevel();
-      m_LastCacheLevelCheck = CTimeUtils::GetTimeMS();
+      m_LastCacheLevelCheck = XbmcThreads::SystemClockMillis();
       //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
@@ -585,7 +587,7 @@ bool PAPlayer::ProcessPAP()
     // Check for EOF and queue the next track if applicable
     if (m_decoder[m_currentDecoder].GetStatus() == STATUS_ENDED)
     { // time to swap tracks
-      if (m_nextFile->m_strPath != m_currentFile->m_strPath ||
+      if (m_nextFile->GetPath() != m_currentFile->GetPath() ||
           !m_nextFile->m_lStartOffset ||
           m_nextFile->m_lStartOffset != m_currentFile->m_lEndOffset)
       { // don't have a .cue sheet item
@@ -758,11 +760,6 @@ bool PAPlayer::ProcessPAP()
   return true;
 }
 
-void PAPlayer::ResetTime()
-{
-  m_bytesSentOut = 0;
-}
-
 __int64 PAPlayer::GetTime()
 {
   __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;
@@ -891,9 +888,9 @@ void PAPlayer::HandleSeeking()
 {
   if (m_SeekTime != -1)
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, CTimeUtils::GetTimeMS() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, (int)(XbmcThreads::SystemClockMillis() - time));
     FlushStreams();
     m_SeekTime = -1;
   }
@@ -979,10 +976,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
     ret = true;
   }
-  else if (m_Chunklen[stream] > m_pAudioDecoder[stream]->GetSpace())
-  { // resampler probably have data but wait until we can send atleast a packet
-    ret = false;
-  }
   else if (m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
     // got some data from our resampler - construct audio packet
@@ -999,8 +992,17 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     while (m_bufferPos[stream] >= (int)m_pAudioDecoder[stream]->GetChunkLen())
     {
       int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
-      m_bufferPos[stream] -= rtn;
-      memcpy(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
+
+      if (rtn > 0)
+      {
+        m_bufferPos[stream] -= rtn;
+        memmove(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
+      }
+      else //no pcm data added
+      {
+        int sleepTime = MathUtils::round_int(m_pAudioDecoder[stream]->GetCacheTime() * 200.0);
+        Sleep(std::max(sleepTime, 1));
+      }
     }
 
     // something done

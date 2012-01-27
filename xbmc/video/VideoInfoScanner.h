@@ -24,9 +24,8 @@
 #include "addons/Scraper.h"
 #include "NfoFile.h"
 #include "VideoInfoDownloader.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
-class CIMDB;
 class CRegExp;
 
 namespace VIDEO
@@ -47,6 +46,7 @@ namespace VIDEO
     CStdString strTitle;
     int iSeason;
     int iEpisode;
+    bool isFolder;
     CDateTime cDate;
   } SEpisode;
 
@@ -94,10 +94,11 @@ namespace VIDEO
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
+     \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, int idShow = -1);
+    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, int idShow = -1);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -177,6 +178,13 @@ namespace VIDEO
      */
     bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
+    /*! \brief Extract episode air-date from a processed regexp
+     \param reg Regular expression object with at least 3 matches
+     \param episodeInfo Episode information to fill in.
+     \return true on success (3 matches), false on failure (fewer than 3 matches)
+     */
+    bool GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
+
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
@@ -211,7 +219,6 @@ namespace VIDEO
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
      and we should return INFO_NOT_FOUND only if no information is found for any of
      the episodes. INFO_ADDED then indicates we've added one or more episodes.
-     \param episodes the episode list for the show.
      \param files the episode files to process.
      \param scraper scraper to use for finding online info
      \param idShow the database id of the show.
@@ -220,12 +227,11 @@ namespace VIDEO
      \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
      INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
      */
-    INFO_RET OnProcessSeriesFolder(EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    INFO_RET OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
 
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
+    bool EnumerateEpisodeItem(const CFileItemPtr item, EPISODES& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItemPtr item, EPISODES &episodeList);
-    bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
-    bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
 
     CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 

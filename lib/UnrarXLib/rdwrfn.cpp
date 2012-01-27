@@ -63,7 +63,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
         return(-1);
       }
       if (UnpackToMemory)
-        if (WaitForSingleObject(hSeek,1) == WAIT_OBJECT_0) // we are seeking
+        if (hSeek->WaitMSec(1)) // we are seeking
         {
           if (m_iSeekTo > CurUnpStart+SrcArc->NewLhd.FullPackSize) // need to seek outside this block
           {
@@ -82,7 +82,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
             {
               if (CurUnpStart+MAXWINMEMSIZE>SrcArc->NewLhd.FullUnpSize)
               {
-                m_iSeekTo=SrcArc->NewLhd.FullUnpSize-iSeekTo+iStartOfFile; // back
+                m_iSeekTo=iStartOfFile;
                 UnpPackedSize = SrcArc->NewLhd.FullPackSize;
               }
               else 
@@ -113,8 +113,8 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
             CurUnpRead = CurUnpStart + iSeekTo - iStartOfFile;
             CurUnpWrite = SrcFile->Tell() - iStartOfFile + CurUnpStart;
             
-            ResetEvent(hSeek);
-            SetEvent(hSeekDone);
+            hSeek->Reset();
+            hSeekDone->Set();
           }
         }
       if (bRead)
@@ -146,7 +146,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
       if (m_pDlgProgress)
       {
         CURL url(SrcArc->FileName);
-        m_pDlgProgress->SetLine(2,url.GetWithoutUserDetails()); // update currently extracted rar file
+        m_pDlgProgress->SetLine(0,url.GetWithoutUserDetails()); // update currently extracted rar file
         m_pDlgProgress->Progress();
       }
     }
@@ -210,13 +210,13 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
   {
     while(UnpackToMemorySize < (int)Count)
     {
-      SetEvent(hBufferEmpty);
-      while( WaitForSingleObject(hBufferFilled,1) != WAIT_OBJECT_0) 
-        if (WaitForSingleObject(hQuit,1) == WAIT_OBJECT_0)
+      hBufferEmpty->Set();
+      while(! hBufferFilled->WaitMSec(1)) 
+        if (hQuit->WaitMSec(1))
           return;
     }
     
-    if (WaitForSingleObject(hSeek,1) != WAIT_OBJECT_0) // we are seeking
+    if (! hSeek->WaitMSec(1)) // we are seeking
     {
       memcpy(UnpackToMemoryAddr,Addr,Count);
       UnpackToMemoryAddr+=Count;

@@ -373,9 +373,27 @@ ogg_packet (AVFormatContext * s, int *str, int *dstart, int *dsize, int64_t *fpo
         if (!os->header){
             os->segp = segp;
             os->psize = psize;
-            if (!ogg->headers)
-                s->data_offset = os->sync_pos;
+
+            // We have reached the first non-header packet. All header
+            // packets must be complete before the first non-header
+            // one, so everything that follows must be non-header.
             ogg->headers = 1;
+
+            // Update the header state for all streams and
+            // compute the data_offset.
+            s->data_offset = os->sync_pos;
+            for (i = 0; i < ogg->nstreams; i++) {
+                struct ogg_stream *cur_os = ogg->streams + i;
+                // Set stream header state to 0 if its last packet
+                // was a header.
+                if (cur_os->header > 0)
+                    cur_os->header = 0;
+
+                // if we have a partial non-header packet, its start is
+                // obviously at or after the data start
+                if (cur_os->incomplete)
+                    s->data_offset = FFMIN(s->data_offset, cur_os->sync_pos);
+            }
         }else{
             os->pstart += os->psize;
             os->psize = 0;
@@ -630,7 +648,7 @@ static int ogg_probe(AVProbeData *p)
         return 0;
 }
 
-AVInputFormat ogg_demuxer = {
+AVInputFormat ff_ogg_demuxer = {
     "ogg",
     NULL_IF_CONFIG_SMALL("Ogg"),
     sizeof (struct ogg),
@@ -641,6 +659,5 @@ AVInputFormat ogg_demuxer = {
     ogg_read_seek,
     ogg_read_timestamp,
     .extensions = "ogg",
-    .metadata_conv = ff_vorbiscomment_metadata_conv,
     .flags = AVFMT_GENERIC_INDEX,
 };

@@ -80,8 +80,15 @@ static void compute_antialias_float(MPADecodeContext *s,
     }
 }
 
+static av_cold int decode_end(AVCodecContext * avctx)
+{
+    MPADecodeContext *s = avctx->priv_data;
+    ff_dct_end(&s->dct);
+    return 0;
+}
+
 #if CONFIG_MP1FLOAT_DECODER
-AVCodec mp1float_decoder =
+AVCodec ff_mp1float_decoder =
 {
     "mp1float",
     AVMEDIA_TYPE_AUDIO,
@@ -89,7 +96,7 @@ AVCodec mp1float_decoder =
     sizeof(MPADecodeContext),
     decode_init,
     NULL,
-    NULL,
+    decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
     .flush= flush,
@@ -97,7 +104,7 @@ AVCodec mp1float_decoder =
 };
 #endif
 #if CONFIG_MP2FLOAT_DECODER
-AVCodec mp2float_decoder =
+AVCodec ff_mp2float_decoder =
 {
     "mp2float",
     AVMEDIA_TYPE_AUDIO,
@@ -105,7 +112,7 @@ AVCodec mp2float_decoder =
     sizeof(MPADecodeContext),
     decode_init,
     NULL,
-    NULL,
+    decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
     .flush= flush,
@@ -113,7 +120,7 @@ AVCodec mp2float_decoder =
 };
 #endif
 #if CONFIG_MP3FLOAT_DECODER
-AVCodec mp3float_decoder =
+AVCodec ff_mp3float_decoder =
 {
     "mp3float",
     AVMEDIA_TYPE_AUDIO,
@@ -121,7 +128,7 @@ AVCodec mp3float_decoder =
     sizeof(MPADecodeContext),
     decode_init,
     NULL,
-    NULL,
+    decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
     .flush= flush,
@@ -129,7 +136,7 @@ AVCodec mp3float_decoder =
 };
 #endif
 #if CONFIG_MP3ADUFLOAT_DECODER
-AVCodec mp3adufloat_decoder =
+AVCodec ff_mp3adufloat_decoder =
 {
     "mp3adufloat",
     AVMEDIA_TYPE_AUDIO,
@@ -137,7 +144,7 @@ AVCodec mp3adufloat_decoder =
     sizeof(MPADecodeContext),
     decode_init,
     NULL,
-    NULL,
+    decode_end,
     decode_frame_adu,
     CODEC_CAP_PARSE_ONLY,
     .flush= flush,
@@ -145,7 +152,7 @@ AVCodec mp3adufloat_decoder =
 };
 #endif
 #if CONFIG_MP3ON4FLOAT_DECODER
-AVCodec mp3on4float_decoder =
+AVCodec ff_mp3on4float_decoder =
 {
     "mp3on4float",
     AVMEDIA_TYPE_AUDIO,

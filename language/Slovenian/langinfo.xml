@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language locale="sl">
   <charsets>
     <gui>CP1250</gui>
@@ -12,7 +12,7 @@
   </dvd>
 
   <regions>
-    <region name="OSREDNJE SLOVENSKA" locale="SI">
+    <region name="Slovenija" locale="SI">
       <dateshort>D.M.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -21,4 +21,11 @@
       <timezone>CEST</timezone>
     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+    <token>Der</token>
+    <token>Die</token>
+    <token>Das</token>
+  </sorttokens>
 </language>

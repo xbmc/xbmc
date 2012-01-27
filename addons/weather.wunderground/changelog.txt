@@ -1,0 +1,7 @@
+v0.0.2
+- show dialog instead of empty list when no locations are found
+- added german translation
+- use 'location' string instead of 'area code'
+
+v0.0.1
+- initial beta

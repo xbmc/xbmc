@@ -122,7 +122,6 @@ bool DPMSSupport::DisablePowerSaving()
 #define INT64 __X11_SPECIFIC_INT64
 #include <X11/Xlib.h>
 #include <X11/extensions/dpms.h>
-#include <X11/extensions/XTest.h>
 #undef INT64
 #undef BOOL
 
@@ -184,11 +183,6 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   XFlush(dpy);
   XMapWindow(dpy, g_Windowing.GetWindow());
   XFlush(dpy);
-  // Send fake key event (shift) to make sure the screen
-  // unblanks on keypresses other than keyboard.
-  XTestFakeKeyEvent(dpy, 62, 1, 0);
-  XTestFakeKeyEvent(dpy, 62, 0, 0);
-  XFlush(dpy);
 
   return true;
 }
@@ -213,24 +207,22 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   {
   case OFF:
     // Turn off display
-    SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2);
-    break;
+    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
   case STANDBY:
     // Set display to low power
-    SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1);
-    break;
+    return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
+  default:
+    return true;
   }
-  return true;
 }
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
   // Turn display on
-  SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1);
-  return true;
+  return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
 }
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(__arm__)
 #include <IOKit/IOKitLib.h>
 #include <CoreFoundation/CFNumber.h>
 
@@ -263,6 +255,9 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   case STANDBY:
     // Set display to low power
     status = (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue) == 0);
+    break;
+  default:
+    status = false;
     break;
   }
   return status;

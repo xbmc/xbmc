@@ -111,6 +111,7 @@ bool CFileHD::Exists(const CURL& url)
 
 #ifdef _WIN32
   CStdStringW strWFile;
+  URIUtils::RemoveSlashAtEnd(strFile);
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);
 #else
@@ -317,10 +318,14 @@ void CFileHD::Flush()
   ::FlushFileBuffers(m_hFile);
 }
 
-int CFileHD::IoControl(int request, void* param)
+int CFileHD::IoControl(EIoControl request, void* param)
 {
 #ifdef _LINUX
-  return ioctl((*m_hFile).fd, request, param);
+  if(request == IOCTRL_NATIVE && param)
+  {
+    SNativeIoControl* s = (SNativeIoControl*)param;
+    return ioctl((*m_hFile).fd, s->request, s->param);
+  }
 #endif
   return -1;
 }

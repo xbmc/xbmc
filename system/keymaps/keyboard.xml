@@ -45,11 +45,14 @@
       <right>Right</right>
       <up>Up</up>
       <down>Down</down>
+      <left mod="ctrl">analogseekback</left>
+      <right mod="ctrl">analogseekforward</right>
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
       <enter>Select</enter>
-      <backspace>ParentDir</backspace>
+      <backspace>Back</backspace>
+      <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
@@ -65,6 +68,7 @@
       <s mod="ctrl">Screenshot</s>
       <minus>VolumeDown</minus>
       <plus>VolumeUp</plus>
+      <equals>VolumeUp</equals>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>
@@ -75,26 +79,42 @@
       <seven>Number7</seven>
       <eight>Number8</eight>
       <nine>Number9</nine>
+      <numpadminus>VolumeDown</numpadminus>
+      <numpadplus>VolumeUp</numpadplus>
+      <numpadzero>Number0</numpadzero>
+      <numpadone>Number1</numpadone>
+      <numpadtwo>Number2</numpadtwo>
+      <numpadthree>Number3</numpadthree>
+      <numpadfour>Number4</numpadfour>
+      <numpadfive>Number5</numpadfive>
+      <numpadsix>Number6</numpadsix>
+      <numpadseven>Number7</numpadseven>
+      <numpadeight>Number8</numpadeight>
+      <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
-      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <browser_refresh/>
-      <browser_search/>
-      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
-      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
-      <play_pause>Pause</play_pause>
-      <stop>Stop</stop>
-      <volume_up>VolumeUp</volume_up>
-      <volume_mute>Mute</volume_mute>
-      <volume_down>VolumeDown</volume_down>
-      <next_track>SkipNext</next_track>
-      <prev_track>SkipPrevious</prev_track>
-      <launch_mail></launch_mail>
-      <key id='61620'></key>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
-      <key id='65446'>ParentDir</key>
-      <key id='65459'>Play</key>
+      <!-- Multimedia keyboard keys -->
+      <browser_back>Back</browser_back>
+      <browser_forward/>
+      <browser_refresh/>
+      <browser_stop/>
+      <browser_search/>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <volume_up>VolumeUp</volume_up>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <stop>Stop</stop>
+      <play_pause>Pause</play_pause>
+      <launch_mail></launch_mail>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_app2_pc_icon>ActivateWindow(MyPrograms)</launch_app2_pc_icon>
+      <launch_file_browser/>
+      <launch_media_center/>
       <!-- ****************************************************** -->
       <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
       <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->
@@ -113,12 +133,12 @@
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
       <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
+      <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m> <!-- MCE DVD menu -->
       <!-- MCE keypresses without an obvious use in XBMC -->
       <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
       <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
       <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
       <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
-      <m mod="ctrl,shift">Notification(MCEKeypress, DVD menu, 3)</m>
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
@@ -149,11 +169,10 @@
   </MyFiles>
   <MyMusicPlaylist>
     <keyboard>
-      <space>Playlist</space>      <!-- Close playlist -->
+      <space>Back</space>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
-      <backspace>Playlist</backspace>      <!-- Close playlist -->
     </keyboard>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -167,6 +186,7 @@
     <keyboard>
       <space>Playlist</space>
       <q>Queue</q>
+      <delete>Delete</delete>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
@@ -192,6 +212,7 @@
       <o>CodecInfo</o>
       <z>AspectRatio</z>
       <t>ShowSubtitles</t>
+      <t mod="ctrl">SubtitleAlign</t>
       <l>NextSubtitle</l>
       <left>StepBack</left>
       <right>StepForward</right>
@@ -200,6 +221,8 @@
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <v>XBMC.ActivateWindow(Teletext)</v>
+      <up mod="ctrl">SubtitleShiftUp</up>
+      <down mod="ctrl">SubtitleShiftDown</down>
     </keyboard>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -213,17 +236,15 @@
       <f>FastForward</f>
       <r>Rewind</r>
       <period>StepForward</period>
-      <backspace>Close</backspace>
       <o>CodecInfo</o>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
       <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <escape>Close</escape>
-      <m>close</m>
+      <m>Back</m>
     </keyboard>
   </PlayerControls>
   <Visualisation>
@@ -250,12 +271,11 @@
   </Visualisation>
   <MusicOSD>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
@@ -265,31 +285,29 @@
   </MusicOSD>
   <VisualisationSettings>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>Close</v>
+      <v>Back</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationSettings>
   <VisualisationPresetList>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
-      <p>Close</p>
-      <v>Close</v>
+      <p>Back</p>
+      <v>Back</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationPresetList>
@@ -311,8 +329,9 @@
       <comma>PreviousPicture</comma>
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
+      <return>Rotate</return>
+      <enter>Rotate</enter>
       <r>Rotate</r>
-      <backspace>PreviousMenu</backspace>
     </keyboard>
   </SlideShow>
   <ScreenCalibration>
@@ -330,18 +349,10 @@
       <d>ResetCalibration</d>
     </keyboard>
   </GUICalibration>
-  <SelectDialog>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-    </keyboard>
-  </SelectDialog>
   <VideoOSD>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-      <m>Close</m>
-      <g mod="ctrl">close</g> <!-- MCE Guide button -->
+      <m>Back</m>
+      <g mod="ctrl">Back</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
@@ -360,29 +371,23 @@
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
-      <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
   </OSDAudioSettings>
   <VideoBookmarks>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
+      <delete>Delete</delete>
     </keyboard>
   </VideoBookmarks>
   <MyVideoLibrary>
@@ -401,175 +406,72 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
-      <backspace>Playlist</backspace>      <!-- Close playlist -->
-      <space>Playlist</space>      <!-- Close playlist -->
+      <space>Back</space>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
     </keyboard>
   </MyVideoPlaylist>
+  <MyPictures>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyPictures>
   <ContextMenu>
     <keyboard>
-      <c>Close</c>
-      <menu>Close</menu>
-      <backspace>Close</backspace>
+      <c>Back</c>
+      <menu>Back</menu>
     </keyboard>
   </ContextMenu>
-  <FileStackingDialog>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </FileStackingDialog>
   <Scripts>
     <keyboard>
       <i>info</i>
     </keyboard>
   </Scripts>
-  <Weather>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <key id='65446'>PreviousMenu</key>
-    </keyboard>
-  </Weather>
-  <Settings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </Settings>
-  <MyPicturesSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyMusicSettings>
-  <SystemSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </SystemSettings>
-  <MyVideosSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </AppearanceSettings>
-  <Profiles>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </Profiles>
-  <systeminfo>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </systeminfo>
-  <shutdownmenu>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <s>Close</s>  
-    </keyboard>
-  </shutdownmenu>
-  <submenu>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </submenu>
   <MusicInformation>
     <keyboard>
-      <backspace>Close</backspace>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
-      <key id='65446'>Close</key>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
-      <backspace>Close</backspace>
-      <i>Close</i>
-      <key id='65446'>Close</key>
+      <i>Back</i>
     </keyboard>
   </MovieInformation>
-  <AddonInformation>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </AddonInformation>
-  <AddonSettings>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </AddonSettings>
-  <TextViewer>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </TextViewer>
-  <LockSettings>
-    <keyboard>
-      <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </LockSettings>
-  <ProfileSettings>
-    <keyboard>
-      <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </ProfileSettings>
   <PictureInfo>
     <keyboard>
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
-      <o>Close</o>
-      <backspace>Close</backspace>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
+      <o>Back</o>
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
   <Teletext>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-      <v>Close</v>
+      <v>Back</v>
     </keyboard>
   </Teletext>
-  <Favourites>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </Favourites>
-  <NumericInput>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </NumericInput>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>
     </keyboard>
   </FileBrowser>
+  <ShutdownMenu>
+    <keyboard>
+      <s>Back</s>
+    </keyboard>
+  </ShutdownMenu>
+  <AddonInformation>
+    <keyboard>
+      <i>Back</i>
+    </keyboard>
+  </AddonInformation>
+  <AddonSettings>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </AddonSettings>
 </keymap>

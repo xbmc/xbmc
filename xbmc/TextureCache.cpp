@@ -159,6 +159,13 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)
 {
+  if (0 == strncmp(url.c_str(), "thumb://", 8))
+  {
+    CStdString image = CURL(url).GetHostName();
+    CURL::Decode(image);
+    if (IsCachedImage(image))
+      return image; // no point generating thumbs of already cached images
+  }
   if (IsCachedImage(url))
     return url;
 
@@ -176,7 +183,7 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
   return URIUtils::AddFileToFolder("thumb://" + url, URIUtils::GetFileName(image));
 }
 
-CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
+CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS)
 {
   CStdString path(GetCachedImage(url));
   if (!path.IsEmpty())
@@ -191,9 +198,33 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
     }
     return path;
   }
+  return "";
+}
 
-  // Uncached image - best we can do for now is cache it so that the texture manager
-  // can load it.
+CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
+{
+  CStdString path(CheckCachedImage(url,returnDDS));
+  if (!path.IsEmpty())
+  {
+    return path;
+  }
+  return CacheImageFile(url);
+}
+
+CStdString CTextureCache::CacheImageFile(const CStdString &url)
+{
+  // Cache image so that the texture manager can load it.
+  CStdString originalFile = GetCacheFile(url);
+
+  CStdString hash = CCacheJob::CacheImage(url, originalFile);
+  if (!hash.IsEmpty())
+  {
+    AddCachedTexture(url, originalFile, hash);
+    if (g_advancedSettings.m_useDDSFanart)
+      AddJob(new CDDSJob(GetCachedPath(originalFile)));
+    return GetCachedPath(originalFile);
+  }
+  return "";
 
   // TODO: In the future we need a cache job to callback when the image is loaded
   //       thus automatically updating the images.  We'd also need fallback code inside
@@ -233,18 +264,6 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
   // a current image and a new one is loading we currently hold on to the current one and render
   // the current one faded out - we'd need to change this so that the fading only happened once it
   // was ready to render.
-
-  CStdString originalFile = GetCacheFile(url);
-
-  CStdString hash = CCacheJob::CacheImage(url, originalFile);
-  if (!hash.IsEmpty())
-  {
-    AddCachedTexture(url, originalFile, hash);
-    if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CDDSJob(GetCachedPath(originalFile)));
-    return GetCachedPath(originalFile);
-  }
-  return "";
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)

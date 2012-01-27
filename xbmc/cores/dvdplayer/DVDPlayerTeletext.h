@@ -49,7 +49,6 @@ public:
   CDVDMessageQueue m_messageQueue;
 
 protected:
-  virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
 

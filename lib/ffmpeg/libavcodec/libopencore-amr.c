@@ -32,7 +32,7 @@ static void amr_decode_fix_avctx(AVCodecContext *avctx)
         avctx->channels = 1;
 
     avctx->frame_size = 160 * is_amr_wb;
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
 }
 
 #if CONFIG_LIBOPENCORE_AMRNB
@@ -139,7 +139,7 @@ static int amr_nb_decode_frame(AVCodecContext *avctx, void *data,
     return packet_size;
 }
 
-AVCodec libopencore_amrnb_decoder = {
+AVCodec ff_libopencore_amrnb_decoder = {
     "libopencore_amrnb",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_AMR_NB,
@@ -213,7 +213,7 @@ static int amr_nb_encode_frame(AVCodecContext *avctx,
     return written;
 }
 
-AVCodec libopencore_amrnb_encoder = {
+AVCodec ff_libopencore_amrnb_encoder = {
     "libopencore_amrnb",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_AMR_NB,
@@ -222,7 +222,7 @@ AVCodec libopencore_amrnb_encoder = {
     amr_nb_encode_frame,
     amr_nb_encode_close,
     NULL,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("OpenCORE Adaptive Multi-Rate (AMR) Narrow-Band"),
 };
 
@@ -310,7 +310,7 @@ static int amr_wb_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec libopencore_amrwb_decoder = {
+AVCodec ff_libopencore_amrwb_decoder = {
     "libopencore_amrwb",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_AMR_WB,

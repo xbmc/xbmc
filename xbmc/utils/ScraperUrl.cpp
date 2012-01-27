@@ -73,7 +73,8 @@ bool CScraperUrl::Parse()
 
 bool CScraperUrl::ParseElement(const TiXmlElement* element)
 {
-  if (!element || !element->FirstChild()) return false;
+  if (!element || !element->FirstChild() ||
+      !element->FirstChild()->Value()) return false;
 
   stringstream stream;
   stream << *element;
@@ -194,6 +195,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFil
       file.Open(strCachePath);
       char* temp = new char[(int)file.GetLength()];
       file.Read(temp,file.GetLength());
+      strHTML.clear();
       strHTML.append(temp,temp+file.GetLength());
       file.Close();
       delete[] temp;
@@ -280,6 +282,8 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
   return false;
 }
 
+// XML format is of strUrls is:
+// <TAG><url>...</url>...</TAG> (parsed by ParseElement) or <url>...</url> (ditto)
 bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 {
   if (strUrls.IsEmpty())
@@ -297,15 +301,11 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
     TiXmlElement *link = docHandle.FirstChild("episodeguide").Element();
     if (link->FirstChildElement("url"))
     {
-      link = link->FirstChildElement("url");
-      while (link)
-      {
+      for (link = link->FirstChildElement("url"); link; link = link->NextSiblingElement("url"))
         ParseElement(link);
-        link = link->NextSiblingElement("url");
-      }
     }
     else if (link->FirstChild() && link->FirstChild()->Value())
-      ParseString(link->FirstChild()->Value());
+      ParseElement(link);
   }
   else
     return false;

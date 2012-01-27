@@ -194,7 +194,7 @@ CP_C_API cp_plugin_info_t * cp_get_plugin_info(cp_context_t *context, const char
 		// Lookup plug-in information
 		if (id != NULL) {
 			if ((node = hash_lookup(context->env->plugins, id)) == NULL) {
-				cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
+				//cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
 				status = CP_ERR_UNKNOWN;
 				break;
 			}

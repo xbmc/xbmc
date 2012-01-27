@@ -21,7 +21,7 @@
  */
 
 #include <winsock2.h>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "IrssMessage.h"
 #include "threads/Thread.h"
 
@@ -51,6 +51,7 @@ private:
   bool  m_bInitialized;
   SOCKET m_socket;
   bool m_isConnecting;
+  int  m_iAttempt;
   CStdString m_deviceName;
   CStdString m_keyCode;
 

@@ -48,6 +48,7 @@ public:
   virtual ~CGUIButtonControl(void);
   virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
@@ -58,10 +59,10 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
-  void SetClickActions(const std::vector<CGUIActionDescriptor>& clickActions) { m_clickActions = clickActions; };
-  const std::vector<CGUIActionDescriptor> &GetClickActions() const { return m_clickActions; };
-  void SetFocusActions(const std::vector<CGUIActionDescriptor>& focusActions) { m_focusActions = focusActions; };
-  void SetUnFocusActions(const std::vector<CGUIActionDescriptor>& unfocusActions) { m_unfocusActions = unfocusActions; };
+  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
+  const CGUIAction &GetClickActions() const { return m_clickActions; };
+  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; };
+  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
@@ -75,15 +76,18 @@ public:
   void SettingsCategorySetTextAlign(uint32_t align);
 
   virtual void OnClick();
-  bool HasClickActions() { return m_clickActions.size() > 0; };
+  bool HasClickActions() { return m_clickActions.HasActionsMeetingCondition(); };
 
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
+
+  virtual CRect CalcRenderRegion() const;
+
 protected:
   friend class CGUISpinControlEx;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   void OnFocus();
   void OnUnFocus();
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CGUILabel::COLOR GetTextColor() const;
 
   CGUITexture m_imgFocus;
@@ -96,9 +100,9 @@ protected:
   CGUILabel      m_label;
   CGUILabel      m_label2;
 
-  std::vector<CGUIActionDescriptor> m_clickActions;
-  std::vector<CGUIActionDescriptor> m_focusActions;
-  std::vector<CGUIActionDescriptor> m_unfocusActions;
+  CGUIAction m_clickActions;
+  CGUIAction m_focusActions;
+  CGUIAction m_unfocusActions;
 
   bool m_bSelected;
 };

@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Canvia la</string>
+  <string id="31001">M'agrada</string>
+  <string id="31002">No m'agrada</string>
+  <string id="31003">Opcions d'energia</string>
+  <string id="31004">Treballant...</string>
+  <string id="31005">Amaga la informació</string>
+  <string id="31006">Veure les opcions</string>
+  <string id="31007">Connectors</string>
+  <string id="31008">Pantalla completa</string>
+
+  <string id="31020">Afegits recentment</string>
+  <string id="31021">Fitxers - Vídeo</string>
+  <string id="31022">Fitxers - Música</string>
+  <string id="31023">S'està reproduint</string>
+  <string id="31024">Pàgina</string>
+  <string id="31025">Elements</string>
+  <string id="31026">Opcions vàries</string>
+  <string id="31027">Ubicació</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Tapa de cartell</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Llista completa</string>
+  <string id="31031">Miniatures</string>
+  <string id="31032">Tapa d'imatge</string>
+  <string id="31033">Informació</string>
+
+  <!-- Extra labels -->
+  <string id="31040">S'està reproduint</string>
+
+  <string id="31042">REPRODUINT</string>
+  <string id="31043">EN PAUSA</string>
+  <string id="31044">AVANÇA RÀPID</string>
+  <string id="31045">REBOBINA</string>
+  <string id="31046">Propietats de l'àudio</string>
+  <string id="31047">Predefinit actual</string>
+  <string id="31048">Visualitzacions predefinides</string>
+  <string id="31049">Hora de finalització</string>
+  <string id="31050">Ordena: Ascendent</string>
+  <string id="31051">Ordena: Descendent</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Obre una llista de reproducció</string>
+  <string id="31056">Desa la llista de reproducció</string>
+  <string id="31057">Tanca la llista de reproducció</string>
+  <string id="31058">Fitxers de música del sistema</string>
+  <string id="31059">Llista de reproducció actual</string>
+  <string id="31060">Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir.</string>
+  <string id="31061">Selecció actual</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Opcions de la pantalla principal</string>
+  <string id="31102">Fons</string>
+  <string id="31103">Visualitza "En pausa" en mode de presentació d'imatges</string>
+  <string id="31104">Reprodueix els tràilers en una finestra [COLOR=grey3](Només al diàleg d'informació de vídeo)[/COLOR]</string>
+  <string id="31105">"Videos" button always goes to video "Files"</string>
+  <string id="31106">Opcions vàries</string>
+  <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Amaga els botons del menú principal</string>
+  <string id="31109">Fons multimèdia</string>
+  <string id="31110">Edita el fons per els continguts multimèdia</string>
+  <string id="31111">Amaga</string>
+  <string id="31112">Opcions</string>
+  <string id="31113">Una imatge</string>
+  <string id="31114">Múltiples imatges</string>
+  <string id="31115">Personalitzador</string>
+  <string id="31116"></string>
+  <string id="31117">Mostra els vídeos afegits recentment</string>
+  <string id="31118">Submenú de programes de la pantalla principal</string>
+  <string id="31119">Amaga el fanart del fons</string>
+  <string id="31120">ETIQUETA DEL BOTÓ</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31122">Pàgina del temps</string>
+  <string id="31123">Utilitza "Cartells" en lloc de "Bàners" per als programes de televisió</string>
+  <string id="31124">Mostra el vídeo en reproducció en el fons</string>
+  <string id="31125">Mostra la visualització en reproducció en el fons</string>
+
+  <string id="31126">Play TV theme songs in video library (TvTunes add-on)</string>
+  <string id="31127">TvTunes</string>
+  <string id="31128">Lletres</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+  
+  <string id="31131"></string> <!-- blanked 2010-12-23 -->
+  <string id="31132">Complement de lletres</string>
+  <string id="31133">Complement de subtítols</string>
+  <string id="31134">Submenú de vídeos de la pantalla principal</string>
+  <string id="31135">Submenú de música de la pantalla principal</string>
+  <string id="31136">Submenú d'imatges de la pantalla principal</string>
+
+  <string id="31140">OSD de música</string>
+  <string id="31141">OSD de vídeo</string>
+
+  <!-- Script labels -->
+  <string id="31200">Dreceres de teclat</string>
+  <string id="31201">Categories</string>
+  <string id="31202">Mostra el repartiment</string>
+  <string id="31203">Escull la teva cançó</string>
+  <string id="31204">Enllaços de secció</string>
+  <string id="31205">Origen de les lletres</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Temperatura actual</string>
+  <string id="31301">Actualització més recent</string>
+  <string id="31302">Menú</string>
+  <string id="31303">Proveïdor de dades</string>
+  <string id="31304">Imatge</string>
+  <string id="31305">No s'ha detectat cap disc amb continguts multimèdia</string>
+  <string id="31306">Expulsa</string>
+  <string id="31307">Amaga el fanart</string>
+  <string id="31308">Detalls de la pel·lícula</string>
+  <string id="31309">Memòria utilitzada:</string>
+  <string id="31310">Número de pista</string>
+  <string id="31311">Imatge de fanart[CR][CR]No disponible[CR][CR] Feu clic per definir-la</string>
+  <string id="31312">Scraper actual</string>
+  <string id="31313">Tria un scraper</string>
+  <string id="31314">Opcions d'escaneig de continguts</string>
+  <string id="31315">Bàsic</string>
+  <string id="31316"></string>
+  <string id="31317">Estableix el camí del fanart</string>
+  <string id="31318">Fanart petit</string>
+  <string id="31319">Perfil seleccionat</string>
+  <string id="31320">Últim accés el</string>
+  <string id="31321">Selector de cançons del karaoke</string>
+  <string id="31322">Emès</string>
+  <string id="31323">Pel·lícules més recents</string>
+  <string id="31324">Episodis més recents</string>
+  <string id="31325">Opcions de la llista de reproducció</string>
+  <string id="31326">Creat</string>
+  <string id="31327">Resolució</string>
+  <string id="31328">Afegits recentment</string>
+  <string id="31329">[B]Temporitzador activat[/B] [COLOR=grey2] - El sistema s'apagarà automàticament en[/COLOR]</string>
+  <string id="31330">Feu clic per reproduir[CR][CR]Trailer de la pel·lícula</string>
+  <string id="31331">Detalls de l'àlbum</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pausa</string>
+  <string id="31352">Atura</string>
+  <string id="31353">Avança ràpid</string>
+  <string id="31354">Rebobina</string>
+  <string id="31355">Menú de la pel·lícula</string>
+  <string id="31356">Descarrega els subtítols</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Tema per defecte</string>
+  <string id="31391">Tema per defecte sense majúscules</string>
+  <string id="31392">Basat en Arial</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]CONFIGUREU ELS PARÀMETRES D'APARENÇA[/B][CR][CR]Canvieu el tema · Establiu l'idioma i la regió · Canvieu les opcions del llistat de fitxers[CR]Establiu un estalvi de pantalla</string>
+  <string id="31401">[B]CONFIGUREU ELS PARÀMETRES DE VÍDEO[/B][CR][CR]Gestioneu la biblioteca de vídeos · Establiu les opcions de reproducció de vídeo[CR]Canvieu les opcions del llistat de vídeo · Establiu els tipus de lletra dels subtítols</string>
+  <string id="31402">[B]CONFIGUREU ELS PARÀMETRES DE LA MÚSICA[/B][CR][CR]Gestioneu la biblioteca de música · Establiu les opcions de reproducció de la música[CR]Canvieu les opcions del llistat de música · Configureu l'enviament de cançons[CR]Establiu les opcions del karaoke</string>
+  <string id="31403">[B]CONFIGUREU ELS PARÀMETRES D'IMATGE[/B][CR][CR]Establiu les opcions del llistat d'imatges · Configureu les presentacions de diapositives</string>
+  <string id="31404">[B]CONFIGUREU ELS PARÀMETRES DEL TEMPS[/B][CR][CR]Indiqueu tres ciutats per recollir informació del temps</string>
+  <string id="31405">[B]CONFIGUREU ELS PARÀMETRES DE LA XARXA[/B][CR][CR]Configureu el control de l'XBMC a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Establiu les opcions d'accés a internet</string>
+  <string id="31406">[B]CONFIGUREU ELS PARÀMETRES DEL SISTEMA[/B][CR][CR]Configureu i calibreu les pantalles · Configureu la sortida d'àudio[CR]Configureu els comandaments a distància · Establiu les opcions d'estalvi d'energia[CR]Habiliteu la depuració · Configureu el bloqueig mestre</string>
+  <string id="31407">[B]CONFIGUREU ELS PARÀMETRES DEL TEMA[/B][CR][CR]Configureu la pell Confluence · Afegiu i elimineu elements del menú d'inici[CR]Canvieu els fons de la pell</string>
+  <string id="31408">[B]CONFIGUREU ELS COMPLEMENTS[/B][CR][CR]Gestioneu els complements instal·lats · Cerqueu i instal·leu complements des de xbmc.org[CR]Modifiqueu els paràmetres dels complements</string>
+
+  <string id="31421">Seleccioneu el vostre perfil d'usuari[CR]per iniciar la sessió i continuar</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Mapes del temps</string>
+  <string id="31901">Predicció a 36 hores</string>
+  <string id="31902">Predicció per hores</string>
+  <string id="31903">Predicció del cap de setmana</string>
+  <string id="31904">Predicció a 10 dies</string>
+  <string id="31905">Predicció</string>
+  <string id="31906">Mapes i vídeo</string>
+  <string id="31907">Vídeo de la predicció [COLOR=grey2](Reproducció a pantalla completa)[/COLOR]</string>
+  <string id="31908">Possibilitat de precipitació</string>
+  <string id="31909">S'està obtenint la informació de la predicció...</string>
+
+</strings>

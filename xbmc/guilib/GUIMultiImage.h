@@ -44,6 +44,7 @@ public:
   virtual ~CGUIMultiImage(void);
   virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
@@ -55,6 +56,7 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual void SetInvalid();
   virtual bool CanFocus() const;
+  virtual CStdString GetDescription() const;
 
   void SetInfo(const CGUIInfoLabel &info);
   void SetAspectRatio(const CAspectRatio &ratio);

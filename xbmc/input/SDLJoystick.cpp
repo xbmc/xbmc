@@ -238,8 +238,8 @@ void CJoystick::Update(SDL_Event& joyEvent)
   int buttonId = -1;
   int axisId = -1;
   int joyId = -1;
-  bool ignore = false; // not used for now
-  bool axis = false;
+  DECLARE_UNUSED(bool,ignore = false)
+  DECLARE_UNUSED(bool,axis = false);
 
   switch(joyEvent.type)
   {

@@ -32,6 +32,7 @@ public:
   static bool MessagePump();
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 private:
+  static void RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify);
   static void WindowFromScreenCoords(HWND hWnd, POINT *point);
   static void OnGestureNotify(HWND hWnd, LPARAM lParam);
   static void OnGesture(HWND hWnd, LPARAM lParam);

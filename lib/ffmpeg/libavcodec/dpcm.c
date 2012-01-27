@@ -155,7 +155,7 @@ static av_cold int dpcm_decode_init(AVCodecContext *avctx)
         break;
     }
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -299,7 +299,7 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
 }
 
 #define DPCM_DECODER(id, name, long_name_)      \
-AVCodec name ## _decoder = {                    \
+AVCodec ff_ ## name ## _decoder = {             \
     #name,                                      \
     AVMEDIA_TYPE_AUDIO,                         \
     id,                                         \

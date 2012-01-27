@@ -113,13 +113,13 @@ static const uint8_t quant_lut_offset[8] = { 0, 0, 1, 4, 11, 32, 81, 230 };
 
 static void apply_mdct(NellyMoserEncodeContext *s)
 {
-    memcpy(s->in_buff, s->buf[s->bufsel], NELLY_BUF_LEN * sizeof(float));
-    s->dsp.vector_fmul(s->in_buff, ff_sine_128, NELLY_BUF_LEN);
+    s->dsp.vector_fmul(s->in_buff, s->buf[s->bufsel], ff_sine_128, NELLY_BUF_LEN);
     s->dsp.vector_fmul_reverse(s->in_buff + NELLY_BUF_LEN, s->buf[s->bufsel] + NELLY_BUF_LEN, ff_sine_128,
                                NELLY_BUF_LEN);
     ff_mdct_calc(&s->mdct_ctx, s->mdct_out, s->in_buff);
 
-    s->dsp.vector_fmul(s->buf[s->bufsel] + NELLY_BUF_LEN, ff_sine_128, NELLY_BUF_LEN);
+    s->dsp.vector_fmul(s->buf[s->bufsel] + NELLY_BUF_LEN, s->buf[s->bufsel] + NELLY_BUF_LEN,
+                       ff_sine_128, NELLY_BUF_LEN);
     s->dsp.vector_fmul_reverse(s->buf[s->bufsel] + 2 * NELLY_BUF_LEN, s->buf[1 - s->bufsel], ff_sine_128,
                                NELLY_BUF_LEN);
     ff_mdct_calc(&s->mdct_ctx, s->mdct_out + NELLY_BUF_LEN, s->buf[s->bufsel] + NELLY_BUF_LEN);
@@ -351,7 +351,7 @@ static void encode_block(NellyMoserEncodeContext *s, unsigned char *output, int 
 static int encode_frame(AVCodecContext *avctx, uint8_t *frame, int buf_size, void *data)
 {
     NellyMoserEncodeContext *s = avctx->priv_data;
-    int16_t *samples = data;
+    const int16_t *samples = data;
     int i;
 
     if (s->last_frame)
@@ -382,7 +382,7 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *frame, int buf_size, voi
     return 0;
 }
 
-AVCodec nellymoser_encoder = {
+AVCodec ff_nellymoser_encoder = {
     .name = "nellymoser",
     .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_NELLYMOSER,
@@ -392,4 +392,5 @@ AVCodec nellymoser_encoder = {
     .close = encode_end,
     .capabilities = CODEC_CAP_SMALL_LAST_FRAME | CODEC_CAP_DELAY,
     .long_name = NULL_IF_CONFIG_SMALL("Nellymoser Asao"),
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
 };

@@ -32,6 +32,7 @@
 #include "playlists/PlayListM3U.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKeyboard.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
@@ -59,14 +60,11 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
   delete m_playlist;
 }
 
-bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
+bool CGUIWindowMusicPlaylistEditor::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
-  { // don't go to parent folder unless we're on the list in question
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindowMusicBase::OnAction(action);
+  if (actionID == ACTION_NAV_BACK && !m_viewControl.HasControl(GetFocusedControlID()))
+    return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
+  return CGUIWindowMusicBase::OnBack(actionID);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
@@ -83,8 +81,8 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath.Empty();
+      if (m_vecItems->GetPath() == "?")
+        m_vecItems->SetPath("");
       CGUIWindowMusicBase::OnMessage(message);
 
       if (message.GetNumStringParams())
@@ -154,7 +152,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
     db->SetLabel(g_localizeStrings.Get(14022));
     db->SetLabelPreformated(true);
     db->m_bIsShareOrDrive = true;
-    items.m_strPath = "";
+    items.SetPath("");
     items.Add(db);
     return true;
   }
@@ -202,7 +200,7 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
 
 #ifdef HAS_DVD_DRIVE
   if (m_vecItems->Get(iItem)->IsDVD())
-    MEDIA_DETECT::CAutorun::PlayDisc();
+    MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
   else
 #endif
     CGUIWindowMusicBase::PlayItem(iItem);
