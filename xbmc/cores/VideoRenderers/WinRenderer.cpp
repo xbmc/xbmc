@@ -558,7 +558,7 @@ void CWinRenderer::UpdatePSVideoFilter()
       if (!m_scalerShader->Create(m_scalingMethod))
       {
         SAFE_DELETE(m_scalerShader);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
         m_bUseHQScaler = false;
       }
     }

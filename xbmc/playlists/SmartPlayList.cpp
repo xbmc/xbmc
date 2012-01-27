@@ -711,6 +711,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
     else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_TV_MPAA);
+    else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_TV_STUDIOS);
     else if (field == FIELD_DIRECTOR) result = "cant_order_by_director"; // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_NUMEPISODES) result = "totalcount";

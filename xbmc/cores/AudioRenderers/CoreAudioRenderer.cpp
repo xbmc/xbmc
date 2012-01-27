@@ -36,7 +36,6 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-
 const AudioChannelLabel g_LabelMap[] =
 {
   kAudioChannelLabel_Left, // PCM_FRONT_LEFT,
@@ -552,14 +551,14 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
         "No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(m_init_state.uiSamplesPerSec);
       // TODO: wait for audio device startup
-      Sleep(100);
+      Sleep(250);
     }
     else
     {
       // Standard PCM data
       configured = InitializePCM(m_init_state.iChannels, m_init_state.uiSamplesPerSec, m_init_state.uiBitsPerSample, m_init_state.channelMap);
       // TODO: wait for audio device startup
-      Sleep(100);
+      Sleep(250);
     }
     
     // No suitable output format was able to be configured

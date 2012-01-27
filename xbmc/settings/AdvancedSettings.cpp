@@ -93,6 +93,7 @@ void CAdvancedSettings::Initialize()
   m_videoEnableHighQualityHwScalers = false;
   m_videoAutoScaleMaxFps = 30.0f;
   m_videoAllowMpeg4VDPAU = false;
+  m_videoAllowMpeg4VAAPI = false;  
   m_videoDisableBackgroundDeinterlace = false;
   m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
   m_DXVACheckCompatibility = false;
@@ -114,12 +115,6 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_lcdRows = 4;
-  m_lcdColumns = 20;
-  m_lcdAddress1 = 0;
-  m_lcdAddress2 = 0x40;
-  m_lcdAddress3 = 0x14;
-  m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
@@ -467,6 +462,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement,"enablehighqualityhwscalers", m_videoEnableHighQualityHwScalers);
     XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+    XMLUtils::GetBoolean(pElement,"allowmpeg4vaapi",m_videoAllowMpeg4VAAPI);    
     XMLUtils::GetBoolean(pElement, "disablebackgrounddeinterlace", m_videoDisableBackgroundDeinterlace);
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
 
@@ -606,12 +602,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "rows", m_lcdRows, 1, 4);
-    XMLUtils::GetInt(pElement, "columns", m_lcdColumns, 1, 40);
-    XMLUtils::GetInt(pElement, "address1", m_lcdAddress1, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address2", m_lcdAddress2, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);

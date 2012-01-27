@@ -522,7 +522,10 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
     strRootFormat.Format( _T("%c:"), cDL);
-    g_application.getApplicationMessenger().OpticalUnMount(strRootFormat);
+    CMediaSource share;
+    share.strPath = strRootFormat;
+    share.strName = share.strPath;
+    g_mediaManager.RemoveAutoSource(share);
   }
   return bRet? S_OK : S_FALSE;
 }

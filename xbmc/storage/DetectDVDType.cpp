@@ -51,6 +51,7 @@
 #include "Application.h"
 #include "IoSupport.h"
 #include "cdioSupport.h"
+#include "storage/MediaManager.h"
 
 
 using namespace XFILE;
@@ -527,6 +528,29 @@ const CStdString &CDetectDVDMedia::GetDVDLabel()
 const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
+}
+
+CDetectDisc::CDetectDisc(const CStdString &strPath, bool bautorun)
+{
+  m_strPath  = strPath;
+  m_bautorun = bautorun;
+}
+
+bool CDetectDisc::DoWork()
+{
+  CMediaSource share;
+  share.strPath = m_strPath;
+  share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+  share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
+  if(g_mediaManager.IsAudio(share.strPath))
+    share.strStatus = "Audio-CD";
+  else if(share.strStatus == "")
+    share.strStatus = g_localizeStrings.Get(446);
+  share.strName = share.strPath;
+  share.m_ignore = true;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+  g_mediaManager.AddAutoSource(share, m_bautorun);
+  return true;
 }
 
 #endif

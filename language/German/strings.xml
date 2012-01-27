@@ -2472,6 +2472,8 @@
   <string id="21451">Internetverbindung benötigt.</string>
   <string id="21452">Mehr...</string>
   <string id="21453">Root Dateisystem</string>
+  <string id="21454">Cache voll</string>
+  <string id="21455">Cache gefüllt bevor ausreichende Datenmenge für ruckelfreie Wiedergabe erreicht wurde</string>
 
   <string id="21460">Position der Untertitel</string>
   <string id="21461">Fixiert</string>
@@ -2782,13 +2784,19 @@
   <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
   <string id="33082">Skriptpfad</string>
   <string id="33083">Benutzerdefinierten Skript Button aktivieren</string>
-  <string id="33100">Start fehlgeschlagen</string>
 
+  <string id="33200">Neue Verbindung erkannt</string>
   <string id="34100">Lautsprecherkonfiguration</string>
 
   <string id="34201">Nächstes Element konnte nicht gefunden werden</string>
   <string id="34202">Vorheriges Element konnte nich gefunden werden</string>
-
+  <string id="34300">zeroconf konnte nicht gestartet werden</string>
+  <string id="34301">Ist der Bonjour Service von Apple installiert? Log-File einsehen für mehr Info</string>
+  
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Videofilter/-scaler konnte nicht initialisiert werden! Verwende Bilineares Scaling</string>
+  <string id="34402">Audiogerät konnte nicht initialisiert werden</string>
+  <string id="34403">Audio-Einstellungen überprüfen</string>
   <string id="35000">Geräte</string>
 
   <string id="35001">HID-Gerät</string>
