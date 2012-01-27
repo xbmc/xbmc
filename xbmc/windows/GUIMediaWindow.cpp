@@ -967,16 +967,18 @@ bool CGUIMediaWindow::OnClick(int iItem)
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
-    if (pItem->IsPlugin())
+    if (m_vecItems->IsPlugin())
     {
-      CURL url(pItem->GetPath());
+      CURL url(m_vecItems->GetPath());
       AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO) && pItem->IsAudio())
+        if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
-          autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");
+          CFileItemList items;
+          auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
+          autoplay = state.get() && state->AutoPlayNextItem();
         }
       }
     }
