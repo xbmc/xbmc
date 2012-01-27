@@ -2730,61 +2730,41 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 #ifdef UNIT_TESTING
 bool CFileItem::testGetBaseMoviePath()
 {
-  CFileItem item;
-  CStdString path;
-  bool result = true;
-  
-  item.SetPath("c:\\dir\\filename.avi");
-  path = item.GetBaseMoviePath(false);
-  if (path != "c:\\dir\\filename.avi")
-    result = false;
+  typedef struct
+  {
+    const char *file;
+    bool use_folder;
+    const char *base;
+  } testfiles;
 
-  item.SetPath("c:\\dir\\filename.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "c:\\dir\\")
-    result = false;
+  const testfiles test_files[] = {{ "c:\\dir\\filename.avi", false, "c:\\dir\\filename.avi" },
+                                  { "c:\\dir\\filename.avi", true,  "c:\\dir\\" },
+                                  { "/dir/filename.avi", false, "/dir/filename.avi" },
+                                  { "/dir/filename.avi", true,  "/dir/" },
+                                  { "smb://somepath/file.avi", false, "smb://somepath/file.avi" },
+                                  { "smb://somepath/file.avi", true, "smb://somepath/" },
+                                  { "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi", false, "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi" },
+                                  { "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi", true,  "/path/to/movie_name/" },
+                                  { "/home/user/TV Shows/Dexter/S1/1x01.avi", false, "/home/user/TV Shows/Dexter/S1/1x01.avi" },
+                                  { "/home/user/TV Shows/Dexter/S1/1x01.avi", true, "/home/user/TV Shows/Dexter/S1/" },
+                                  { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", true, "g:\\multimedia\\movies\\" },
+                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie_name/" },
+                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", true, "/home/user/movies/movie_name/" },
+                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", false, "/home/user/movies/movie_name/" },
+                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", true, "/home/user/movies/movie_name/" }};
 
-  item.SetPath("/dir/filename.avi");
-  path = item.GetBaseMoviePath(false);
-  if (path != "/dir/filename.avi")
-    result = false;
-
-  item.SetPath("/dir/filename.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "/dir/")
-    result = false;
-
-  item.SetPath("smb://somepath/file.avi");
-  path = item.GetBaseMoviePath(false);
-  if (path != "smb://somepath/file.avi")
-    result = false;
-  
-  item.SetPath("smb://somepath/file.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "smb://somepath/")
-    result = false;
-
-  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
-  path = item.GetBaseMoviePath(false);
-  if (path != "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi")
-    result = false;
-
-  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "/path/to/movie_name/")
-    result = false;
-
-  item.SetPath("/home/user/TV Shows/Dexter/S1/1x01.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "/home/user/TV Shows/Dexter/S1/")
-    result = false;
-  
-  item.SetPath("rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi");
-  path = item.GetBaseMoviePath(true);
-  if (path != "g:\\multimedia\\movies\\")
-    result = false;
-
-  return result;
+  for (unsigned int i = 0; i < sizeof(test_files) / sizeof(testfiles); i++)
+  {
+    CFileItem item;
+    item.SetPath(test_files[i].file);
+    CStdString path = item.GetBaseMoviePath(test_files[i].use_folder);
+    if (path != test_files[i].base)
+    {
+      CLog::Log(LOGFATAL, "%s failed ('%s' -> '%s' != '%s')", __FUNCTION__, test_files[i].file, path.c_str(), test_files[i].base);
+      return false;
+    }
+  }
+  return true;
 }
 #endif
 
