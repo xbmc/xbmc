@@ -222,7 +222,7 @@ void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
   {
     vecSettings settings;
     // check whether we actually have these settings available.
-    g_guiSettings.GetSettingsGroup(m_vecCategories[i]->m_strCategory, settings);
+    g_guiSettings.GetSettingsGroup(m_vecCategories[i], settings);
     if (settings.size())
       vecCategories.push_back(m_vecCategories[i]);
   }
@@ -898,21 +898,32 @@ CSettingsGroup *CGUISettings::GetGroup(int groupID)
   return NULL;
 }
 
+void CGUISettings::AddSetting(CSettingsCategory* cat, CSetting* setting)
+{
+  if (!setting)
+    return;
+
+  if (cat)
+    cat->m_settings.push_back(setting);
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(setting->GetSetting()).ToLower(), setting));
+}
+
 void CGUISettings::AddSeparator(CSettingsCategory* cat, const char *strSetting)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingSeparator *pSetting = new CSettingSeparator(iOrder, CStdString(strSetting).ToLower());
   if (!pSetting) return;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 void CGUISettings::AddBool(CSettingsCategory* cat, const char *strSetting, int iLabel, bool bData, int iControlType)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingBool* pSetting = new CSettingBool(iOrder, CStdString(strSetting).ToLower(), iLabel, bData, iControlType);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
+
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
@@ -959,10 +970,10 @@ void CGUISettings::ToggleBool(const char *strSetting)
 
 void CGUISettings::AddFloat(CSettingsCategory* cat, const char *strSetting, int iLabel, float fData, float fMin, float fStep, float fMax, int iControlType)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingFloat* pSetting = new CSettingFloat(iOrder, CStdString(strSetting).ToLower(), iLabel, fData, fMin, fStep, fMax, iControlType);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 float CGUISettings::GetFloat(const char *strSetting) const
@@ -1003,39 +1014,36 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
     LoadFromXML(pRootElement, it);
 }
 
-
 void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin/*=-1*/)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, iFormat, iLabelMin);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
-void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting,
-                          int iLabel, int iData, const map<int,int>& entries,
-                          int iControlType)
+void CGUISettings::AddInt(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, const map<int,int>& entries, int iControlType)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, entries, iControlType);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingHex* pSetting = new CSettingHex(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 int CGUISettings::GetInt(const char *strSetting) const
@@ -1068,26 +1076,26 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
 
 void CGUISettings::AddString(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingString* pSetting = new CSettingString(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingPath* pSetting = new CSettingPath(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type)
 {
-  int iOrder = cat?++cat->m_entries:0;
+  int iOrder = cat ? cat->m_settings.size() : 0;
   CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type);
   if (!pSetting) return ;
-  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+  AddSetting(cat, pSetting);
 }
 
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt /* = true */) const
@@ -1149,14 +1157,18 @@ CSetting *CGUISettings::GetSetting(const char *strSetting)
 }
 
 // get all the settings beginning with the term "strGroup"
-void CGUISettings::GetSettingsGroup(const char *strGroup, vecSettings &settings)
+void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &settings)
 {
+  if (!cat || cat->m_settings.size() <= 0)
+    return;
+
   vecSettings unorderedSettings;
-  for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
+  for (unsigned int index = 0; index < cat->m_settings.size(); index++)
   {
-    if ((*it).first.Left(strlen(strGroup)).Equals(strGroup) && (*it).second->GetOrder() > 0 && !(*it).second->IsAdvanced())
-      unorderedSettings.push_back((*it).second);
+    if (!cat->m_settings.at(index)->IsAdvanced())
+      unorderedSettings.insert(unorderedSettings.begin(), cat->m_settings.begin(), cat->m_settings.end());
   }
+
   // now order them...
   sort(unorderedSettings.begin(), unorderedSettings.end(), sortsettings());
 
