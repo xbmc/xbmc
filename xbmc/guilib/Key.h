@@ -324,7 +324,7 @@
 #define WINDOW_SETTINGS_MYMUSIC           10015
 #define WINDOW_SETTINGS_SYSTEM            10016
 #define WINDOW_SETTINGS_MYVIDEOS          10017
-#define WINDOW_SETTINGS_NETWORK           10018
+#define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility

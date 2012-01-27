@@ -489,6 +489,44 @@ void CGUISettings::Initialize()
   AddBool(in, "input.enablemouse", 21369, true);
 #endif
 
+  CSettingsCategory* net = AddCategory(4, "network", 798);
+  if (g_application.IsStandAlone())
+  {
+#ifndef __APPLE__
+    AddString(NULL, "network.interface",775,"", SPIN_CONTROL_TEXT);
+
+    map<int, int> networkAssignments;
+    networkAssignments.insert(make_pair(716, NETWORK_DHCP));
+    networkAssignments.insert(make_pair(717, NETWORK_STATIC));
+    networkAssignments.insert(make_pair(787, NETWORK_DISABLED));
+    AddInt(NULL, "network.assignment", 715, NETWORK_DHCP, networkAssignments, SPIN_CONTROL_TEXT);
+    AddString(NULL, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(NULL, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
+    AddString(NULL, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(NULL, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(NULL, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
+    AddString(NULL, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
+
+    map<int, int> networkEncapsulations;
+    networkEncapsulations.insert(make_pair(780, ENC_NONE));
+    networkEncapsulations.insert(make_pair(781, ENC_WEP));
+    networkEncapsulations.insert(make_pair(782, ENC_WPA));
+    networkEncapsulations.insert(make_pair(783, ENC_WPA2));
+    AddInt(NULL, "network.enc", 778, ENC_NONE, networkEncapsulations, SPIN_CONTROL_TEXT);
+    AddString(NULL, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
+#ifndef _WIN32
+    AddString(NULL, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
+#endif
+    AddSeparator(NULL, "network.sep1");
+#endif
+  }
+  AddBool(net, "network.usehttpproxy", 708, false);
+  AddString(net, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
+  AddString(net, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
+  AddString(net, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
+  AddString(net, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
+  AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024, SPIN_CONTROL_INT_PLUS, MASK_KBPS, TEXT_OFF);
+
   CSettingsCategory* pwm = AddCategory(4, "powermanagement", 14095);
   // Note: Application.cpp might hide powersaving settings if not supported.
   AddInt(pwm, "powermanagement.displaysoff", 1450, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
@@ -708,96 +746,59 @@ void CGUISettings::Initialize()
   AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.yahoomusic.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddBool(NULL, "scrapers.langfallback", 21416, false);
 
-  // network settings
-  AddGroup(6, 705);
+  // service settings
+  AddGroup(6, 14036);
 
-  CSettingsCategory* srv = AddCategory(6, "services", 14036);
-  AddString(srv,"services.devicename", 1271, "XBMC", EDIT_CONTROL_INPUT);
-  AddSeparator(srv,"services.sep4");
-  AddBool(srv, "services.upnpserver", 21360, false);
-  AddBool(srv, "services.upnprenderer", 21881, false);
-  AddSeparator(srv,"services.sep3");
+  CSettingsCategory* srvGeneral = AddCategory(6, "general", 16000);
+  AddString(srvGeneral,"services.devicename", 1271, "XBMC", EDIT_CONTROL_INPUT);
+
+  CSettingsCategory* srvUpnp = AddCategory(6, "upnp", 20187);
+  AddBool(srvUpnp, "services.upnpserver", 21360, false);
+  AddBool(srvUpnp, "services.upnprenderer", 21881, false);
+
 #ifdef HAS_WEB_SERVER
-  AddBool(srv,  "services.webserver",        263, false);
+  CSettingsCategory* srvWeb = AddCategory(6, "webserver", 33101);
+  AddBool(srvWeb,  "services.webserver",        263, false);
 #ifdef _LINUX
-  AddString(srv,"services.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+  AddString(srvWeb,"services.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #else
-  AddString(srv,"services.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+  AddString(srvWeb,"services.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
-  AddString(srv,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
-  AddString(srv,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-  AddDefaultAddon(srv, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
+  AddString(srvWeb,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(srvWeb,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddDefaultAddon(srvWeb, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
 #endif
 #ifdef HAS_EVENT_SERVER
-  AddSeparator(srv,"services.sep1");
-  AddBool(srv,  "services.esenabled",         791, true);
+  CSettingsCategory* srvEvent = AddCategory(6, "remotecontrol", 790);
+  AddBool(srvEvent,  "services.esenabled",         791, true);
   AddString(NULL,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(NULL,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
   AddInt(NULL,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
-  AddBool(srv,  "services.esallinterfaces",   794, false);
+  AddBool(srvEvent,  "services.esallinterfaces",   794, false);
   AddInt(NULL,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(NULL,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
 #ifdef HAS_ZEROCONF
-  AddSeparator(srv, "services.sep2");
+  CSettingsCategory* srvZeroconf = AddCategory(6, "zeroconf", 1259);
 #ifdef TARGET_WINDOWS
-  AddBool(srv, "services.zeroconf", 1260, false);
+  AddBool(srvZeroconf, "services.zeroconf", 1260, false);
 #else
-  AddBool(srv, "services.zeroconf", 1260, true);
+  AddBool(srvZeroconf, "services.zeroconf", 1260, true);
 #endif
 #endif
 
 #ifdef HAS_AIRPLAY
-  AddSeparator(srv, "services.sep5");
-  AddBool(srv, "services.airplay", 1270, false);
-  AddBool(srv, "services.useairplaypassword", 1272, false);
-  AddString(srv, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
-  AddSeparator(srv, "services.sep6");  
+  CSettingsCategory* srvAirplay = AddCategory(6, "airplay", 1273);
+  AddBool(srvAirplay, "services.airplay", 1270, false);
+  AddBool(srvAirplay, "services.useairplaypassword", 1272, false);
+  AddString(srvAirplay, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733); 
 #endif
 
 #ifndef _WIN32
-  CSettingsCategory* smb = AddCategory(6, "smb", 1200);
-  AddString(smb, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
-  AddString(smb, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
+  CSettingsCategory* srvSmb = AddCategory(6, "smb", 1200);
+  AddString(srvSmb, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
+  AddString(srvSmb, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
 #endif
-
-  CSettingsCategory* net = AddCategory(6, "network", 798);
-  if (g_application.IsStandAlone())
-  {
-#ifndef __APPLE__
-    AddString(NULL, "network.interface",775,"", SPIN_CONTROL_TEXT);
-
-    map<int, int> networkAssignments;
-    networkAssignments.insert(make_pair(716, NETWORK_DHCP));
-    networkAssignments.insert(make_pair(717, NETWORK_STATIC));
-    networkAssignments.insert(make_pair(787, NETWORK_DISABLED));
-    AddInt(NULL, "network.assignment", 715, NETWORK_DHCP, networkAssignments, SPIN_CONTROL_TEXT);
-    AddString(NULL, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(NULL, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
-    AddString(NULL, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-
-    map<int, int> networkEncapsulations;
-    networkEncapsulations.insert(make_pair(780, ENC_NONE));
-    networkEncapsulations.insert(make_pair(781, ENC_WEP));
-    networkEncapsulations.insert(make_pair(782, ENC_WPA));
-    networkEncapsulations.insert(make_pair(783, ENC_WPA2));
-    AddInt(NULL, "network.enc", 778, ENC_NONE, networkEncapsulations, SPIN_CONTROL_TEXT);
-    AddString(NULL, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
-#ifndef _WIN32
-    AddString(NULL, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
-#endif
-    AddSeparator(NULL, "network.sep1");
-#endif
-  }
-  AddBool(net, "network.usehttpproxy", 708, false);
-  AddString(net, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
-  AddString(net, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddString(net, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
-  AddString(net, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
-  AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024, SPIN_CONTROL_INT_PLUS, MASK_KBPS, TEXT_OFF);
 
   // appearance settings
   AddGroup(7, 480);
