@@ -2709,16 +2709,14 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  int pos;
-  if ((pos=strMovieName.Find("BDMV/")) != -1 ||
-      (pos=strMovieName.Find("BDMV\\")) != -1)
-    strMovieName = strMovieName.Mid(0,pos+5);
+  if (IsOpticalMediaFile())
+    return GetLocalMetadataPath();
 
-  if ((!m_bIsFolder || IsOpticalMediaFile() || URIUtils::IsInArchive(m_strPath)) && bUseFolderNames)
+  if ((!m_bIsFolder || URIUtils::IsInArchive(m_strPath)) && bUseFolderNames)
   {
     CStdString name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);
-    if (URIUtils::IsInArchive(m_strPath) || strMovieName.Find( "VIDEO_TS" ) != -1)
+    if (URIUtils::IsInArchive(m_strPath))
     {
       CStdString strArchivePath;
       URIUtils::GetParentPath(strMovieName, strArchivePath);
