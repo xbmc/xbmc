@@ -55,7 +55,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libbluetooth-dev, zlib1g-dev, libsmbclient-dev, libboost-thread-dev
  libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
  libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl, python-dev, libyajl-dev,
- libplist-dev, libusb-dev, libudev-dev
+ libplist-dev, libusb-dev, libudev-dev, libltdl-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
