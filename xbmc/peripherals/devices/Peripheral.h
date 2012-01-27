@@ -128,6 +128,8 @@ namespace PERIPHERALS
      */
     virtual const CStdString GetSettingString(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual void SetSettingVisible(const CStdString &strKey, bool bSetTo);
+    virtual bool IsSettingVisible(const CStdString &strKey) const;
 
     virtual int GetSettingInt(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, int iValue);

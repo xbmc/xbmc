@@ -2381,6 +2381,7 @@
   <string id="35006">Device removed</string>
   <string id="35007">Keymap to use for this device</string>
   <string id="35008">Keymap enabled</string>
+  <string id="35009">Do not use the custom keymap for this device</string>
 
   <string id="35500">Location</string>
   <string id="35501">Class</string>

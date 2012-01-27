@@ -377,6 +377,21 @@ void CPeripheral::SetSetting(const CStdString &strKey, float fValue)
   }
 }
 
+void CPeripheral::SetSettingVisible(const CStdString &strKey, bool bSetTo)
+{
+  map<CStdString, CSetting *>::iterator it = m_settings.find(strKey);
+  if (it != m_settings.end())
+    (*it).second->SetVisible(bSetTo);
+}
+
+bool CPeripheral::IsSettingVisible(const CStdString &strKey) const
+{
+  map<CStdString, CSetting *>::const_iterator it = m_settings.find(strKey);
+  if (it != m_settings.end())
+    return (*it).second->IsVisible();
+  return false;
+}
+
 void CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValue)
 {
   map<CStdString, CSetting *>::iterator it = m_settings.find(strKey);
