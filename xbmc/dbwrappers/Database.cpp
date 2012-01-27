@@ -31,12 +31,15 @@
 #include "utils/URIUtils.h"
 #include "mysqldataset.h"
 #include "sqlitedataset.h"
+#include "threads/SingleLock.h"
 
 
 using namespace AUTOPTR;
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20
+
+CCriticalSection CDatabase::s_openGuard;
 
 CDatabase::CDatabase(void)
 {
@@ -288,6 +291,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   CStdString latestDb;
   latestDb.Format("%s%d", baseDBName, version);
 
+  CSingleLock lock(s_openGuard); // guard the db open/upgrade process - we don't want more than one thread in here at a time
   while (version >= 0)
   {
     if (version)

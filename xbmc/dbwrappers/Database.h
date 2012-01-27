@@ -22,6 +22,7 @@
  */
 
 #include "utils/StdString.h"
+#include "threads/CriticalSection.h"
 
 namespace dbiplus {
   class Database;
@@ -132,4 +133,6 @@ private:
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   unsigned int m_openCount;
+
+  static CCriticalSection s_openGuard;
 };
