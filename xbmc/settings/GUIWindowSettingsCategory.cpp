@@ -2246,30 +2246,34 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
 
 DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RESOLUTION res)
 {
-  CBaseSettingControl *control = GetSetting(strSetting);
-  control->SetDelayed();
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-  pControl->Clear();
-
-  CStdString strScreen;
-  if (g_advancedSettings.m_canWindowed)
-    pControl->AddLabel(g_localizeStrings.Get(242), -1);
-
-  for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
-  {
-    strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
-    pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
-  }
-
   DisplayMode mode;
-
   if (res == RES_WINDOW)
     mode = DM_WINDOWED;
   else
     mode = g_settings.m_ResInfo[res].iScreen;
 
-  pControl->SetValue(mode);
-  g_guiSettings.SetInt("videoscreen.screen", mode);
+  // we expect "videoscreen.screen" but it might be hidden on some platforms,
+  // so check that we actually have a visable control.
+  CBaseSettingControl *control = GetSetting(strSetting);
+  if (control)
+  {
+    control->SetDelayed();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+    pControl->Clear();
+
+    CStdString strScreen;
+    if (g_advancedSettings.m_canWindowed)
+      pControl->AddLabel(g_localizeStrings.Get(242), -1);
+
+    for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
+    {
+      strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
+      pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
+    }
+    pControl->SetValue(mode);
+    g_guiSettings.SetInt("videoscreen.screen", mode);
+  }
+
   return mode;
 }
 

@@ -141,11 +141,14 @@ bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
 }
 
 bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
-                                 const CStdString& strSeparator, CStdString& strStringValue)
+                                 const CStdString& strSeparator, CStdString& strStringValue,
+                                 bool clear)
 {
   CStdString strTemp;
   const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
   bool bResult=false;
+  if (node && node->FirstChild() && clear)
+    strStringValue.clear();
   while (node)
   {
     if (node->FirstChild())

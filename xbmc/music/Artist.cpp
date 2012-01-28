@@ -25,18 +25,18 @@
 
 using namespace std;
 
-bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
+bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
 {
   if (!artist) return false;
-  if (!chained)
+  if (!append)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetAdditiveString(artist,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(artist,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(artist,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(artist,"yearsactive",g_advancedSettings.m_musicItemSeparator,strYearsActive);
-  XMLUtils::GetAdditiveString(artist,"instruments",g_advancedSettings.m_musicItemSeparator,strInstruments);
+  XMLUtils::GetAdditiveString(artist, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prioritise);
+  XMLUtils::GetAdditiveString(artist, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
+  XMLUtils::GetAdditiveString(artist, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
+  XMLUtils::GetAdditiveString(artist, "yearsactive", g_advancedSettings.m_musicItemSeparator, strYearsActive, prioritise);
+  XMLUtils::GetAdditiveString(artist, "instruments", g_advancedSettings.m_musicItemSeparator, strInstruments, prioritise);
 
   XMLUtils::GetString(artist,"born",strBorn);
   XMLUtils::GetString(artist,"formed",strFormed);
@@ -51,7 +51,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *thumb;
@@ -60,7 +60,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
     thumb = thumb->NextSiblingElement("thumb");
   }
   // prefix thumbs from nfos
-  if (prefix && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
   {
     rotate(thumbURL.m_url.begin(),
            thumbURL.m_url.begin()+iThumbCount, 
@@ -88,7 +88,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
   if (fanart2)
   {
     // we prefix to handle mixed-mode nfo's with fanart set
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *fanart2;

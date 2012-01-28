@@ -400,7 +400,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         items.SetContent("");
     }
-    else
+    else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
       if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
@@ -1450,6 +1450,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
+    CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
     if (!DeleteItem(item.get(), true))
       return true;
 

@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
 <!--Translator: Juanjo Armellino-->
-<!--Date of translation: 12/30/2011, fixed to EDEN beta1-->
-<!--$Revision$-->
+<!--Date of translation: 01/23/2012-->
+<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imágenes</string>
@@ -184,6 +183,7 @@
   <string id="221">La red no está conectada</string>
   <string id="222">Cancelar</string>
   <string id="224">Velocidad</string>
+  <string id="225">Desplazamiento vertical</string>
   <string id="226">Patrones de prueba</string>
   <string id="227">Consultar CDs de audio en freedb.org</string>
   <string id="228">Mezclar lista de reproducción al cargar</string>
@@ -1851,6 +1851,8 @@
   <string id="21451">Se requiere una conexión a internet.</string>
   <string id="21452">Obtener más...</string>
   <string id="21453">Sistema de archivos Root</string>
+  <string id="21454">Cache lleno</string>
+  <string id="21455">El cache se llenó antes de alcanzar la cantidad requerida para reproducción continua</string>
   <string id="21460">Ubicación de subtitulos</string>
   <string id="21461">Fijo</string>
   <string id="21462">Sobre el final del video</string>
@@ -2140,6 +2142,7 @@
   <string id="33101">Servidor Web</string>
   <string id="33102">Servidor de eventos</string>
   <string id="33103">Servidor de comunicacion remota</string>
+  <string id="33200">Detectada nueva conexión</string>
   <string id="34100">Configuración de parlantes</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
@@ -2153,6 +2156,12 @@
   <string id="34110">7.1</string>
   <string id="34201">No se encuentra el próximo item</string>
   <string id="34202">No se encuentra el item anterior</string>
+  <string id="34300">Fallo al iniciar Zeroconf</string>
+  <string id="34301">Está instalado el servicio Bonjour de Apple? vea log para mas info.</string>
+  <string id="34400">Renderizado de video</string>
+  <string id="34401">Fallo al iniciar filtros/escaladores de video, utilizando escalado bilineal</string>
+  <string id="34402">Fallo al iniciar dispositivo de sonido</string>
+  <string id="34403">Verifique su configuracion de sonido</string>
   <string id="35000">Periféricos</string>
   <string id="35001">Dispositivo HID genérico</string>
   <string id="35002">Adaptador de red genérico</string>

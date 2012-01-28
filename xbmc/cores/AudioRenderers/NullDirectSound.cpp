@@ -22,6 +22,7 @@
 #include "threads/SystemClock.h"
 #include "NullDirectSound.h"
 #include "guilib/AudioContext.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -52,7 +53,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34402), g_localizeStrings.Get(34403), TOAST_DISPLAY_TIME, false);
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;

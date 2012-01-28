@@ -32,14 +32,16 @@ using namespace XCURL;
 
 /* okey this is damn ugly. our dll loader doesn't allow for postload, preunload functions */
 static long g_curlReferences = 0;
-//static unsigned int g_curlTimeout = 0;
+#if(0)
+static unsigned int g_curlTimeout = 0;
+#endif
 
 bool DllLibCurlGlobal::Load()
 {
   CSingleLock lock(m_critSection);
   if(g_curlReferences > 0)
   {
-    //g_curlReferences++;
+    g_curlReferences++;
     return true;
   }
 
@@ -56,16 +58,13 @@ bool DllLibCurlGlobal::Load()
   }
 
   /* check idle will clean up the last one */
-  //g_curlReferences = 2;
-  g_curlReferences = 1;
+  g_curlReferences = 2;
 
   return true;
 }
 
 void DllLibCurlGlobal::Unload()
 {
-  return;
-  /*
   CSingleLock lock(m_critSection);
   if (--g_curlReferences == 0)
   {
@@ -78,22 +77,21 @@ void DllLibCurlGlobal::Unload()
     DllDynamic::Unload();
   }
 
-  // CheckIdle will clear this one up
+  /* CheckIdle will clear this one up */
+#if(0)
   if(g_curlReferences == 1)
     g_curlTimeout = XbmcThreads::SystemClockMillis();
-  */ 
+#endif
 }
 
 void DllLibCurlGlobal::CheckIdle()
 {
   /* avoid locking section here, to avoid stalling gfx thread on loads*/
-  return;
-  /*
   if(g_curlReferences == 0)
     return;
 
   CSingleLock lock(m_critSection);
-  // 20 seconds idle time before closing handle
+  /* 20 seconds idle time before closing handle */
   const unsigned int idletime = 30000;
 
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
@@ -118,10 +116,11 @@ void DllLibCurlGlobal::CheckIdle()
     it++;
   }
 
-  // check if we should unload the dll
+  /* check if we should unload the dll */
+#if(0) // we never unload libcurl, since libssl can break when python unloads then
   if(g_curlReferences == 1 && XbmcThreads::SystemClockMillis() - g_curlTimeout > idletime)
     Unload();
-  */ 
+#endif
 }
 
 void DllLibCurlGlobal::easy_aquire(const char *protocol, const char *hostname, CURL_HANDLE** easy_handle, CURLM** multi_handle)

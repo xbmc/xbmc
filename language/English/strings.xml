@@ -2352,6 +2352,7 @@
   <string id="20455">Listeners</string>
   <string id="20456">Set movieset fanart</string>
   <string id="20457">Movie set</string>
+  <string id="20458">Group movies in sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2459,7 +2460,9 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
-
+  <string id="21454">Cache full</string>
+  <string id="21455">Cache filled before reaching required amount for continous playback</string>
+  
   <string id="21460">Subtitle location</string>
   <string id="21461">Fixed</string>
   <string id="21462">Bottom of video</string>
@@ -2779,6 +2782,8 @@
   <string id="33101">Webserver</string>
   <string id="33102">Event Server</string>
   <string id="33103">Remote communication server</string>
+  
+  <string id="33200">Detected New Connection</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
@@ -2803,6 +2808,14 @@
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>
+  
+  <string id="34300">Failed to start zeroconf</string>
+  <string id="34301">Is Apple's Bonjour Service installed? See log for more info.</string>
+  
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
+  <string id="34402">Failed to initialize audio device</string>
+  <string id="34403">Check your audiosettings</string>
 
   <string id="35000">Peripherals</string>
 

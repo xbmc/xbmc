@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: Medo Alyami-->
+<!--Email: alyami1@live.com-->
+<!--Based on English 72696c450cb789e240194a0595bed6e291e3a158 (14.11.2011)-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">تغيير</string>
+  <string id="31001">حب</string>
+  <string id="31002">كراهية</string>
+  <string id="31003">خيارات الطاقة</string>
+  <string id="31004">...جاري التشغيل</string>
+  <string id="31005">إخفاء المعلومات</string>
+  <string id="31006">خيارات العرض</string>
+  <string id="31007">الملحقات</string>
+  <string id="31008">شاشة كاملة</string>
+
+  <string id="31020">أضيفت مؤخرا</string>
+  <string id="31021">الفيديو - ملفات</string>
+  <string id="31022">الموسيقى - ملفات</string>
+  <string id="31023">يشتغل الان</string>
+  <string id="31024">عناصر</string>
+  <string id="31025">صفحة</string>
+  <string id="31026">خيارات متنوعه</string>
+  <string id="31027">الموقع</string>
+
+  <!-- View Type labels -->
+  <string id="31028">ملصق التفاف</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">قائمة كاملة</string>
+  <string id="31031">مصغرات الصورة</string>
+  <string id="31032">صورة التفاف</string>
+  <string id="31033">معلومات</string>
+
+  <!-- Extra labels -->
+  <string id="31040">يشتغل الان</string>
+
+  <string id="31042">يشتغل الان</string>
+  <string id="31043">متوقف</string>
+  <string id="31044">تقديم سريع</string>
+  <string id="31045">إرجاع</string>
+  <string id="31046">خصائص الصوت</string>
+  <string id="31047">القيمة الحالية</string>
+  <string id="31048">التصور المسبقة</string>
+  <string id="31049">وقت الانتهاء</string>
+  <string id="31050">الفرز:تصاعدي</string>
+  <string id="31051">الفرز:تنازلي</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">فتح قائمة التشغيل</string>
+  <string id="31056">حفظ قائمة التشغيل</string>
+  <string id="31057">إغلاق قائمة التشغيل</string>
+  <string id="31058">ملفات موسيقى النظام</string>
+  <string id="31059">قائمة التشغيل الحالية</string>
+  <string id="31060">.هذا الملف مكدس، حدد الجزء الذي تريد تشغيله</string>
+  <string id="31061">مختارة حاليا</string>
+
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">خيارات الصفحة الرئيسية</string>
+  <string id="31102">الخلفية</string>
+  <string id="31103">إظهار "إيقاف مؤقت" في عرض شرائح الصور</string>
+  <string id="31104">[COLOR=grey3] (صندوق حوار معلومات الفيديو فقط)[/COLOR]تشغيل مقطع الفيديو في نافذة</string>
+  <string id="31105">"الفيديو" الزر يذهب دائما الى "ملفات الفيديو"</string>
+  <string id="31106">خيارات متنوعة</string>
+  <string id="31107">[COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]إخفاء وضع علامة القراءة من أسماء الفيديو</string>
+  <string id="31108">إخفاء أزرار القائمة الرئيسية</string>
+  <string id="31109">خلفيات الوسائط</string>
+  <string id="31110">تعديل خلفية نوع الوسائط</string>
+  <string id="31111">إخفاء</string>
+  <string id="31112">خيارات</string>
+  <string id="31113">صورة واحدة</string>
+  <string id="31114">عدة صورة</string>
+  <string id="31115">مخصص</string>
+  <string id="31116"></string>
+  <string id="31117">إظهار الفيديوات المضافة مؤخراً</string>
+  <string id="31118">القائمة الفرعية لقائمة البرامج الرئيسية</string>
+  <string id="31119">Fanart إخفاء خلفية</string>
+  <string id="31120">علامة الزر</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31122">صفحة الطقس</string>
+  <string id="31123">استخدام "ملصقات" بدلا من "لافتات" للمسلسلات التلفزيونية</string>
+  <string id="31124">إظهار خلفية "التشغيل الآن" للفيديو</string>
+  <string id="31125">إظهار خلفية "التشغيل الآن" للتصور</string>
+
+  <string id="31126">(TvTunes ملحق) تشغيل أغاني سمة التلفزيون في مكتبة الفيديو</string>
+  <string id="31127">TvTunes</string>
+  <string id="31128">كلمات الأغاني</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+
+  <string id="31131"></string> <!-- blanked 2010-12-23 -->
+  <string id="31132">ملحق كلمات الأغاني</string>
+  <string id="31133">ملحق الترجمات</string>
+  <string id="31134">القائمة الفرعية لقائمة الفيديو الرئيسية</string>
+  <string id="31135">القائمة الفرعية لقائمة الموسيقى الرئيسية</string>
+  <string id="31136">القائمة الفرعية لقائمة الصور الرئيسية</string>
+
+  <string id="31140">عرض الموسيقى على الشاشة</string>
+  <string id="31141">عرض الفيديو على الشاشة</string>
+
+  <!-- Script labels -->
+  <string id="31200">اختصارات</string>
+  <string id="31201">الفئات</string>
+  <string id="31202">إظهار الرواية</string>
+  <string id="31203">اختر أغنيتك</string>
+  <string id="31204">روابط ذات صلة</string>
+  <string id="31205">مصدر كلمات الأغنية</string>
+
+  <!-- Extra labels -->
+  <string id="31300">درجة الحرارة الحالية</string>
+  <string id="31301">اخر تحديث</string>
+  <string id="31302">القائمة</string>
+  <string id="31303">: مزود البيانات</string>
+  <string id="31304">الصور</string>
+  <string id="31305">لم يتم الكشف عن قرص وسائط</string>
+  <string id="31306">إخراج</string>
+  <string id="31307">Fanart إخفاء</string>
+  <string id="31308">تفاصيل الفلم</string>
+  <string id="31309">الذاكرة المستخدمة:</string>
+  <string id="31310">رقم المسار</string>
+  <string id="31311">انقر الزر للتعيين[CR][CR]غير متوفرة[CR][CR]Fanart صورة</string>
+  <string id="31312">Current Scraper</string>
+  <string id="31313">Choose a Scraper</string>
+  <string id="31314">خيارات فحص المحتوى </string>
+  <string id="31315">أساسي</string>
+  <string id="31316"></string>
+  <string id="31317">Fanart تعيين مسار</string>
+  <string id="31318">Fanart صغيرة</string>
+  <string id="31319">الملف الشخصي المحدد</string>
+  <string id="31320">آخر تسجيل دخول في</string>
+  <string id="31321">محدد أغاني الكاريوكي</string>
+  <string id="31322">المبث</string>
+  <string id="31323">أحدث الأفلام</string>
+  <string id="31324">أحدث الحلقات</string>
+  <string id="31325">خيارات قائمة التشغيل</string>
+  <string id="31326">أنشئ</string>
+  <string id="31327">الدقة</string>
+  <string id="31328">أضيف مؤخراً</string>
+  <string id="31329">[COLOR=grey2] إغلاق النظام تلقائيا في - [/COLOR][B]!تعيين مؤقت[B]</string>
+  <string id="31330">مقطع الفلم [CR][CR] انقر على الزر لتشغيل</string>
+  <string id="31331">تفاصبل الألبوم</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">توقيف مؤقت</string>
+  <string id="31352">توقف كامل</string>
+  <string id="31353">تقديم سريع</string>
+  <string id="31354">ترجيع</string>
+  <string id="31355">قائمة الفلم</string>
+  <string id="31356">تحميل الترجمات</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">الخلفية الاإفتراضية</string>
+  <string id="31391">Skin default with no Caps</string>
+  <string id="31392">Arial based</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]تكوين إعدادات المظهر[/B][CR][CR]تغيير الخلفية · تعيين اللغة والمنطقة · تغيير خيارات قائمة الملف[CR]ضبط شاشة التوقف</string>
+  <string id="31401">[B]تكوين إعدادات الفيديو[/B][CR][CR]إدارة مكتبة الفيديو · تعيين خيارات تشغيل الفيديو · تغيير خيارات قائمة الفيديو[CR]تعيين خطوط الترجمة</string>
+  <string id="31402">[B]تكوين إعدادات الموسيقى[/B][CR][CR]إدارة مكتبة الموسيقي · تعيين خيارات تشغيل الموسيقى · تغيير خيارات قائمة الموسيقى · تعيين خيارات الكارويوكي</string>
+  <string id="31403">[B]تكوين إعدادات الصور[/B][CR][CR]ضبط عرض الشرائح · تغيير خيارات قائمة الصور</string>
+  <string id="31404">[B]تكوين إعدادات الطقس[/B][CR][CR]تعيين ثلاث مدن لجمع معلومات عن الطقس</string>
+  <string id="31405">[B]تكوين إعدادات شبكة الاتصال[/B][CR][CR] HTTP و UPnP عبرXBMC ضبط تحكم · تكوين ملف تقاسم[CR]تعيين خيارات الوصول إلى الإنترنت</string>
+  <string id="31406">[B]تكوين إعدادات النظام[/B][CR][CR]ضبط المعايرة والعرض· تكوين مخرج الصوت · ضبط التحكم عن بعد[CR]تعيين خيارات توفير الطاقة · تمكين التصحيح · ضبط القفل الرئيسي </string>
+  <string id="31407">[B]تكوين إعدادات الخلفيات [/B][CR][CR]Setup the Confluence skin · أضف وإزالة عناصر القائمة الرئيسية[CR]تغيير الخلفيات</string>
+  <string id="31408">[B]تكوين الملحقات [/B][CR][CR]xbmc.org إدارة الملحقات المثبتة · تصفح وتثبيت الملحقات من[CR] تعديل إعدادت الملحق</string>
+
+  <string id="31421">للدخول والإستمرارا [CR]XBMC  حدد ملفك الشخصي الخاص بـ</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">خرائط الطقس</string>
+  <string id="31901">36 hour توقعات طقس</string>
+  <string id="31902">توقعات الطقس لكل ساعة</string>
+  <string id="31903">توقعات طقس نهاية الأسبوع</string>
+  <string id="31904">10 Days توقعات طقس</string>
+  <string id="31905">توقعات الطقس</string>
+  <string id="31906">الخرائط والفيديو</string>
+  <string id="31907">[COLOR=grey2](Fullscreen Playback)[/COLOR]توقعات الطقس فيديو</string>
+  <string id="31908">فرصة هطول الأمطار</string>
+  <string id="31909">...جلب معلومات توقعات الطقس</string>
+
+  </strings>

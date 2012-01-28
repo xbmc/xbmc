@@ -285,9 +285,10 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
+#include "storage/DetectDVDType.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -1054,7 +1055,10 @@ bool CApplication::InitDirectoriesWin32()
   VECSOURCES::const_iterator it;
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
+    {
+      CDetectDisc* discdetection = new CDetectDisc(it->strPath, false);
+      CJobManager::GetInstance().AddJob(discdetection, NULL);
+    }
   // remove end
 
   return true;
@@ -1093,6 +1097,18 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
   }
+
+  // Load curl so curl_global_init gets called before any service threads
+  // are started. Unloading will have no effect as curl is never fully unloaded.
+  // To quote man curl_global_init:
+  //  "This function is not thread safe. You must not call it when any other
+  //  thread in the program (i.e. a thread sharing the same memory) is running.
+  //  This doesn't just mean no other thread that is using libcurl. Because
+  //  curl_global_init() calls functions of other libraries that are similarly
+  //  thread unsafe, it could conflict with any other thread that
+  //  uses these other libraries."
+  g_curlInterface.Load();
+  g_curlInterface.Unload();
 
   StartServices();
 
@@ -1241,6 +1257,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
 #endif
+    ADDON::CAddonMgr::Get().StartServices(false);
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
@@ -3071,6 +3088,11 @@ bool CApplication::ProcessEventServer(float frameTime)
   bool isAxis = false;
   float fAmount = 0.0;
 
+  // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
+  // when the action exits XBMC
+  es = CEventServer::GetInstance();
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
+    return false;
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
   if (wKeyID)

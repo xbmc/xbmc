@@ -7,8 +7,8 @@
 <!--Date of translation: 22/04/2011-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 25/11/2011-->
-<!--Based on English strings commit f0e75fab88 -->
+<!--Date of translation: 21/01/2012-->
+<!--Based on English strings commit e9bcfd0779 -->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -682,7 +682,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Hata %i: paylaşım bulunamıyor</string>
-  <string id="771"></string>
+
   <string id="772">Ses çıkışı</string>
   <string id="773">Atla</string>
   <string id="774">Slayt Gösterisi klasörü</string>
@@ -1932,8 +1932,8 @@
   <string id="21366">Altyazı klasörü</string>
   <string id="21367">Film ve alternatif altyazı klasörü</string>
   <string id="21368">ASS/SSA altyazı yazı tiplerini geçersiz kıl</string>
-
-  <string id="21369">Fareyi etkinleştir</string>
+  
+  <string id="21369">Fareyi ve Dokunmatik Ekran desteğini etkinleştir</string>
   <string id="21370">Ortam oynatılırken kılavuz seslerini çal</string>
   <string id="21371">Küçük resimler</string>
   <string id="21372">DVD bölge kodunu zorla</string>
@@ -2018,7 +2018,9 @@
   <string id="21451">Internet bağlantısı gereklidir.</string>
   <string id="21452">Daha Fazla...</string>
   <string id="21453">Kök dosya sistemi</string>
-
+  <string id="21454">Önbellek dolu</string>
+  <string id="21455">Önbellek sürekli oynatma için gerekli miktara ulaşamadan doldu</string>
+  
   <string id="21460">Altyazı konumu</string>
   <string id="21461">Sabit</string>
   <string id="21462">Videonun en altında</string>
@@ -2322,8 +2324,8 @@
   <string id="33071">Özel arka planlar</string>
   <string id="33072">Benioku'yu görüntüle</string>
   <string id="33073">Değişiklikleri görüntüle</string>
-  <string id="33074">This version of %s requires an</string>
-  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33074">%s sürümünün çalışması için</string>
+  <string id="33075">%s veya daha büyük bir XBMC sürümü gerekli.</string>
   <string id="33076">Lütfen XBMC'yi güncelleyin.</string>
   <string id="33077">Hiç veri bulunamadı!</string>
   <string id="33078">Sonraki sayfa</string>
@@ -2332,11 +2334,13 @@
   <string id="33081">Bu dosya yığınlandı, oynatmak istediğiniz bölümü seçin.</string>
   <string id="33082">Betik yolu</string>
   <string id="33083">Özel betik tuşunu etkinleştir</string>
-  
+
   <string id="33100">Başlatılamadı</string>
   <string id="33101">Web Sunucusu</string>
   <string id="33102">Olay Sunucusu</string>
   <string id="33103">Uzak iletişim sunucusu</string>
+  
+  <string id="33200">Yeni Bağlantı Algılandı</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
@@ -2361,6 +2365,14 @@
 
   <string id="34201">Çalınacak sonraki öğeyi bulamıyor</string>
   <string id="34202">Çalınacak önceki öğeyi bulamıyor</string>
+  
+  <string id="34300">Zeroconf başlatılamadı</string>
+  <string id="34301">Apple'ın Bonjour Hizmeti yüklü mü? Daha fazla bilgi için hata ayıklama çıktısına bakın.</string>
+  
+  <string id="34400">Video İşleme</string>
+  <string id="34401">Video filtreleri/ölçekleyiciler başlatılamadı, bilinear ölçeklendirmeye dönülüyor</string>
+  <string id="34402">Ses aygıtı başlatılamadı</string>
+  <string id="34403">Ses ayarlarınızı denetleyin</string>
 
   <string id="35000">Çevre birimleri</string>
 
