@@ -72,7 +72,8 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
   if (!response)
     return MHD_NO;
 
-  ret = MHD_add_response_header (response, "WWW-Authenticate", "Basic realm=XBMC");
+  ret = MHD_add_response_header(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
+  ret |= MHD_add_response_header(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     MHD_destroy_response (response);

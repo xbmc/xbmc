@@ -72,6 +72,11 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
   return true;
 }
 
+void CWinSystemWin32DX::OnMove(int x, int y)
+{
+  CRenderSystemDX::OnMove();
+}
+
 bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   // When going DX fullscreen -> windowed, we must reset the D3D device first to

@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "network/DNSNameCache.h"
+#include "threads/SystemClock.h"
 
 #include <nfsc/libnfs-raw-mount.h>
 
@@ -44,6 +45,14 @@
 //so when no read was done for 4mins and files are open
 //do the nfs keep alive for the open files
 #define KEEP_ALIVE_TIMEOUT 480
+
+//4 mins cached context timeout
+#define CONTEXT_TIMEOUT 240000
+
+//return codes for getContextForExport
+#define CONTEXT_INVALID  0    //getcontext failed
+#define CONTEXT_NEW      1    //new context created
+#define CONTEXT_CACHED   2    //context cached and therefore already mounted (no new mount needed)
 
 using namespace XFILE;
 
@@ -121,32 +130,75 @@ void CNfsConnection::clearMembers()
 
 void CNfsConnection::destroyOpenContexts()
 {
-  for( tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();it++)
+  for(tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();it++)
   {
-    m_pLibNfs->nfs_destroy_context(it->first);
+    m_pLibNfs->nfs_destroy_context(it->second.pContext);
   }
   m_openContextMap.clear();
 }
 
-bool CNfsConnection::getNewContext()
+struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname)
 {
-  bool ret = HandleDyLoad(); 
-    
-  if(ret)
+  struct nfs_context *pRet = NULL;
+
+  tOpenContextMap::iterator it = m_openContextMap.find(exportname.c_str());
+  if(it != m_openContextMap.end())
   {
-    clearMembers();  
-    m_pNfsContext = m_pLibNfs->nfs_init_context();
-    
-    if (!m_pNfsContext) 
+    //check if context has timed out already
+    uint64_t now = XbmcThreads::SystemClockMillis();
+    if((now - it->second.lastAccessedTime) < CONTEXT_TIMEOUT)
     {
-      CLog::Log(LOGERROR,"NFS: Error initcontext in getNewContext.");
-      ret = false;
+      //its not timedout yet
+      //refresh access time of that
+      //context and return it
+      CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %"PRId64", new: %"PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
+      it->second.lastAccessedTime = now;
+      pRet = it->second.pContext;
     }
     else 
     {
-      m_openContextMap[m_pNfsContext] = 0; //add context to list of all contexts      
+      //context is timed out
+      //destroy it and return NULL
+      CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
+      m_pLibNfs->nfs_destroy_context(it->second.pContext);
     }
+  }
+  return pRet;
+}
 
+int CNfsConnection::getContextForExport(const CStdString &exportname)
+{
+  int ret = CONTEXT_INVALID; 
+    
+  if(HandleDyLoad())
+  {
+    clearMembers();  
+    
+    m_pNfsContext = getContextFromMap(exportname);
+
+    if(!m_pNfsContext)
+    {
+      CLog::Log(LOGDEBUG,"NFS: Context for %s not open - get a new context.", exportname.c_str());
+      m_pNfsContext = m_pLibNfs->nfs_init_context();
+    
+      if(!m_pNfsContext) 
+      {
+        CLog::Log(LOGERROR,"NFS: Error initcontext in getContextForExport.");
+      }
+      else 
+      {
+        struct contextTimeout tmp;
+        tmp.pContext = m_pNfsContext;
+        tmp.lastAccessedTime = XbmcThreads::SystemClockMillis();
+        m_openContextMap[exportname] = tmp; //add context to list of all contexts      
+        ret = CONTEXT_NEW;
+      }
+    }
+    else
+    {
+      ret = CONTEXT_CACHED;
+      CLog::Log(LOGDEBUG,"NFS: Using cached context.");
+    }
   }
   return ret;
 }
@@ -205,27 +257,36 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
   
   if(ret && (!exportPath.Equals(m_exportPath,true) || !url.GetHostName().Equals(m_hostName,false)) )
   {
-    if(!getNewContext())//we need a new context because sharename or hostname has changed
+    int contextRet = getContextForExport(url.GetHostName() + exportPath);
+    
+    if(contextRet == CONTEXT_INVALID)//we need a new context because sharename or hostname has changed
     {
       return false;
     }
     
-    //we connect to the directory of the path. This will be the "root" path of this connection then.
-    //So all fileoperations are relative to this mountpoint...
-    nfsRet = m_pLibNfs->nfs_mount(m_pNfsContext, m_resolvedHostName.c_str(), exportPath.c_str());
-
-    if  (nfsRet != 0) 
+    if(contextRet == CONTEXT_NEW) //new context was created - we need to mount it
     {
-      CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
-      return false;
+      //we connect to the directory of the path. This will be the "root" path of this connection then.
+      //So all fileoperations are relative to this mountpoint...
+      nfsRet = m_pLibNfs->nfs_mount(m_pNfsContext, m_resolvedHostName.c_str(), exportPath.c_str());
+
+      if(nfsRet != 0) 
+      {
+        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
+        return false;
+      }
+      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s\n", url.GetHostName().c_str(), exportPath.c_str());
     }
     m_exportPath = exportPath;
     m_hostName = url.GetHostName();
     //read chunksize only works after mount
     m_readChunkSize = m_pLibNfs->nfs_get_readmax(m_pNfsContext);
-    m_writeChunkSize = m_pLibNfs->nfs_get_writemax(m_pNfsContext);   
-    
-    CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), exportPath.c_str(),(int)m_readChunkSize,(int)m_writeChunkSize);
+    m_writeChunkSize = m_pLibNfs->nfs_get_writemax(m_pNfsContext);
+
+    if(contextRet == CONTEXT_NEW)
+    {
+      CLog::Log(LOGDEBUG,"NFS: chunks: r/w %i/%i\n", (int)m_readChunkSize,(int)m_writeChunkSize);          
+    }
   }
   return ret; 
 }
@@ -304,7 +365,7 @@ void CNfsConnection::resetKeepAlive(struct nfsfh  *_pFileHandle)
 //we were before
 void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
 {
-  off_t offset = 0;
+  off64_t offset = 0;
   char buffer[32];
   CLog::Log(LOGNOTICE, "NFS: sending keep alive after %i s.",KEEP_ALIVE_TIMEOUT/2);
   CSingleLock lock(*this);
@@ -390,7 +451,7 @@ CFileNFS::~CFileNFS()
 int64_t CFileNFS::GetPosition()
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
   CSingleLock lock(gNfsConnection);
   
   if (gNfsConnection.GetNfsContext() == NULL || m_pFileHandle == NULL) return 0;
@@ -516,7 +577,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   
   if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
 
-  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);  
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, (size_t)uiBufSize, (char *)lpBuf);  
 
   lock.Leave();//no need to keep the connection lock after that
   
@@ -534,7 +595,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
 int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
 {
   int ret = 0;
-  off_t offset = 0;
+  off64_t offset = 0;
 
   CSingleLock lock(gNfsConnection);  
   if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
@@ -577,9 +638,9 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
 {
   int numberOfBytesWritten = 0;
   int writtenBytes = 0;
-  int leftBytes = uiBufSize;
+  int64_t leftBytes = uiBufSize;
   //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
-  int chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
+  int64_t chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
   
   CSingleLock lock(gNfsConnection);
   
@@ -724,3 +785,4 @@ bool CFileNFS::IsValidFile(const CStdString& strFileName)
   return true;
 }
 #endif//HAS_FILESYSTEM_NFS
+

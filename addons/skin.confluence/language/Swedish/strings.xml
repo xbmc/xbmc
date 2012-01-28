@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/19/2010-->
+<!--Date of translation: 12/26/2011-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Ändra din</string>
@@ -11,7 +11,9 @@
   <string id="31003">Strömalternativ</string>
   <string id="31004">Arbetar...</string>
   <string id="31005">Dölj INFO</string>
+  <string id="31006">Visa val</string>
   <string id="31007">Tillägg</string>
+  <string id="31008">Helskärm</string>
   <string id="31020">Nyligen tillagda</string>
   <string id="31021">Filmer - Filer</string>
   <string id="31022">Musik - Filer</string>
@@ -35,6 +37,8 @@
   <string id="31047">Nuvarande förval</string>
   <string id="31048">Visualiseringsförval</string>
   <string id="31049">Sluttid</string>
+  <string id="31050">Sort: stigande</string>
+  <string id="31051">Sort: fallande</string>
   <string id="31055">Öppna spellista</string>
   <string id="31056">Spara spellista</string>
   <string id="31057">Stäng spellista</string>
@@ -46,7 +50,7 @@
   <string id="31102">Bakgrund</string>
   <string id="31103">Visa "Pausad" i bildspel</string>
   <string id="31104">Spela trailers i ett fönster [COLOR=grey3](Endast i videoinformationsdialogen)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">Videoknappen öppnar alltid videofiler</string>
   <string id="31106">Övriga alternativ</string>
   <string id="31107">Dölj flaggläsning från videofilnamn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Dölj huvudmenyknappar</string>
@@ -59,15 +63,22 @@
   <string id="31115">Anpassare</string>
   <string id="31117">Visa nyligen tillagda filmer</string>
   <string id="31118">Hemsidans undermeny</string>
+  <string id="31119">Dölj bakgrundsfanart</string>
   <string id="31120">KNAPPETIKETT</string>
   <string id="31122">Vädersida</string>
   <string id="31123">Använd omslag istället för banner för TV-serier</string>
   <string id="31124">Visa bakgrund "Nu spelas" filmer</string>
   <string id="31125">Visa bakgrund "Nu spelas" visualisering</string>
+  <string id="31126">Spela TV-temasånger i videobiblioteket (TVTunes-tillägg)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Sångtexter</string>
-  <string id="31131"></string>
+  <string id="31131">
+  </string>
   <string id="31132">Sångtextstillägg</string>
   <string id="31133">Undertextstillägg</string>
+  <string id="31134">Hemskärmens videoundermeny</string>
+  <string id="31135">Hemskärmens musikundermeny</string>
+  <string id="31136">Hemskärmens bildundermeny</string>
   <string id="31140">Musik-OSD</string>
   <string id="31141">Video-OSD</string>
   <string id="31200">Genvägar</string>
@@ -79,6 +90,7 @@
   <string id="31300">Nuvarande temp</string>
   <string id="31301">Sist uppdaterad</string>
   <string id="31302">Meny</string>
+  <string id="31303">Dataleverantör</string>
   <string id="31304">Bild</string>
   <string id="31305">Ingen diskmedia upptäckt</string>
   <string id="31306">Mata ut</string>
@@ -105,6 +117,7 @@
   <string id="31328">Nyligen tillagda</string>
   <string id="31329">[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet om[/COLOR]</string>
   <string id="31330">Klicka på knappen för att[CR][CR]spela filmtrailer</string>
+  <string id="31331">Albumdetaljer</string>
   <string id="31351">Paus</string>
   <string id="31352">Stopp</string>
   <string id="31353">Spola framåt</string>
@@ -124,4 +137,14 @@
   <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder</string>
   <string id="31408">[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg - Visa och installera tillägg från xbmc.org[CR]Ändra inställningar för tillägg</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
+  <string id="31900">Väderkartor</string>
+  <string id="31901">36-timmarsprognos</string>
+  <string id="31902">Timprognos</string>
+  <string id="31903">Helgprognos</string>
+  <string id="31904">10-dagarsprognos</string>
+  <string id="31905">Prognos</string>
+  <string id="31906">Karta &amp; video</string>
+  <string id="31907">Videoprognost [COLOR=grey2](Helskärmsuppspelning)[/COLOR]</string>
+  <string id="31908">Chans till nederbörd</string>
+  <string id="31909">Hämtar prognosinfo...</string>
 </strings>

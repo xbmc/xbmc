@@ -54,7 +54,7 @@ extern "C"
   
   // Devices
   //
-  void Cocoa_MountPoint2DeviceName(char *path);
+  char* Cocoa_MountPoint2DeviceName(char *path);
   bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName);
 
   // Mouse.
@@ -85,6 +85,9 @@ extern "C"
   // http://developer.apple.com/mac/library/qa/qa2001/qa1134.html
   OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend);
 #endif
+
+  void Cocoa_ResetAudioDevices();
+
 #ifdef __cplusplus
 }
 #endif

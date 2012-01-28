@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--File used for translation: English, Revision: 35647 -->
 <!--Translator: tonywoolf-->
 <!--Email: tonywoolf@gmail.com-->
-<!--Date of translation: Dec/11/2010-->
-
+<!--Date of translation: 01/07/2012-->
 <strings>
   <string id="0">Програми</string>
   <string id="1">Снимки</string>
@@ -75,6 +73,7 @@
   <string id="85">NW</string>
   <string id="86">NNW</string>
   <string id="87">VAR</string>
+
   <string id="98">Вид: Автоматичен</string>
   <string id="99">Вид: Автоматичен едър</string>
   <string id="100">Вид: Икони</string>
@@ -90,8 +89,8 @@
   <string id="110">Създай картинки</string>
   <string id="111">Преки пътища</string>
   <string id="112">Пауза</string>
-  <string id="113"></string>
-  <string id="114"></string>
+  <string id="113">Неуспешен ъпдейт</string>
+  <string id="114">Неуспешна инсталация</string>
   <string id="115">Копирай</string>
   <string id="116">Местене</string>
   <string id="117">Изтрий</string>
@@ -144,11 +143,9 @@
   <string id="164">Няма Диск</string>
   <string id="165">Диск Намерен</string>
   <string id="166">Кожа</string>
-  <string id="167">Включи FTP сървър</string>
-  <string id="168">Включи интернет време</string>
+
   <string id="169">Резолюция</string>
   <string id="170">Промени честота на обновяване</string>
-  <string id="171"></string>
 
   <string id="172">Дата на издаване</string>
   <string id="173">Покажи 4:3 видео като</string>
@@ -157,7 +154,7 @@
   <string id="176">Стилове</string>
 
   <string id="179">Песен</string>
-  <string id="180">Дължина</string>
+  <string id="180">Продължителност</string>
   <string id="181">Избери Албум</string>
   <string id="182">Песни</string>
   <string id="183">Преглед</string>
@@ -258,7 +255,7 @@
   <string id="282">Намерен %i позиции</string>
   <string id="283">Резултати от търсене</string>
   <string id="284">Няма резултати</string>
-  <string id="286"></string>
+
   <string id="287">Субтитри</string>
   <string id="288">Шрифт</string>
   <string id="289">- Размер</string>
@@ -278,11 +275,7 @@
   <string id="304">Език</string>
   <string id="305">Включен</string>
   <string id="306">Не-редуващи</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=авто)</string>
   <string id="313">Почиствам базата данни</string>
   <string id="314">Приготвям...</string>
@@ -375,8 +368,7 @@
   <string id="404">Вятър</string>
   <string id="405">Оросяване</string>
   <string id="406">Влажност</string>
-  <string id="407">От</string>
-  <string id="408">на</string>
+
   <string id="409">Подразбиране</string>
   <string id="410">Достъп до метеорологична служба</string>
   <string id="411">Зареждам време за:</string>
@@ -402,7 +394,7 @@
   <string id="431">Няма кеш</string>
   <string id="432">Премахни филм от библиотеката</string>
   <string id="433">Наистина да премахна '%s'?</string>
-    <string id="434">От %s at %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">От %s at %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Сменяем диск</string>
   <string id="438">Отварям файл</string>
@@ -479,7 +471,7 @@
   <string id="517">Наскоро възпроизвеждани албуми</string>
   <string id="518">Старт</string>
   <string id="519">Стартирай със...</string>
-  <string id="520"></string>
+
   <string id="521">Компилации</string>
   <string id="522">Премахни източник</string>
   <string id="523">Превключи медия</string>
@@ -535,6 +527,7 @@
   <string id="573">Път</string>
   <string id="574">Държава</string>
   <string id="575">В процес</string>
+  <string id="576">Пъти просвирвано</string>
 
   <string id="580">Посока на сортиране</string>
   <string id="581">Метод на сортиране</string>
@@ -567,6 +560,8 @@
   <string id="609">CDDA път за извличане не е зададен.</string>
   <string id="610">Извличам аудио пътека</string>
   <string id="611">Въведи номер</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Примерна честота</string>
 
   <string id="620">Аудио CD</string>
   <string id="621">Енкодер</string>
@@ -620,13 +615,15 @@
   <string id="706">- Сървър</string>
 
   <string id="708">Ползвай HTTP proxy сървър за достъп до интернет</string>
+
   <string id="711">Интернет Протокол (IP)</string>
   <string id="712">Избран невалиден порт. Стойността може да е между 1 и 65535.</string>
   <string id="713">HTTP proxy</string>
+
   <string id="715">- Задаване</string>
   <string id="716">Автоматично (DHCP)</string>
   <string id="717">Ръчно (Статично)</string>
-  <string id="718"></string>
+
   <string id="719">- IP address</string>
   <string id="720">- Netmask</string>
   <string id="721">- Default gateway</string>
@@ -637,9 +634,9 @@
   <string id="726">Промените не са запазени. Продължаване без запазване?</string>
   <string id="727">Web сървър</string>
   <string id="728">FTP сървър</string>
-  <string id="729"></string>
+
   <string id="730">Порт</string>
-  <string id="731"></string>
+
   <string id="732">Запази &amp; приложи</string>
   <string id="733">Парола</string>
   <string id="734">Без парола</string>
@@ -711,6 +708,8 @@
   <string id="851">Валидните портове са 1-65535</string>
   <string id="852">Валидните портове са 1024-65535</string>
 
+  <string id="998">Добави музика...</string>
+  <string id="999">Добави видео...</string>
   <string id="1000">- Преглед</string>
   <string id="1001">Не мога да се свържа</string>
   <string id="1002">XBMC не може да се свърже към мрежовото местоположение.</string>
@@ -797,10 +796,6 @@
   <string id="1234">Програми &amp; снимки &amp; музика</string>
   <string id="1235">Програми &amp; снимки &amp; видео</string>
 
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-
   <string id="1250">Автоматично откриване</string>
   <string id="1251">Система за автоматично откриване</string>
   <string id="1252">Nickname</string>
@@ -811,6 +806,9 @@
   <string id="1257">Желаете ли да се свържете към автоматично откриваща система?</string>
 
   <string id="1260">Обяви тези услуги за други системи през Zeroconf</string>
+  <string id="1270">Позволи XBMC да приема AirPlay съдържание</string>
+  <string id="1271">Име на устройство</string>
+  <string id="1272">- </string>
 
   <string id="1300">Потребителско аудио устройство</string>
   <string id="1301">Преходно потребителско устройство</string>
@@ -853,8 +851,6 @@
 
   <string id="2100">Скриптът неуспешен! : %s</string>
   <string id="2101">Необходима е по-нова версия - Виж лога</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
   <string id="4501">Включи LCD/VFD</string>
 
@@ -925,19 +921,10 @@
   <string id="12009">Създаване на индекса наново...</string>
   <string id="12010">Връщане към прозореца с музика</string>
   <string id="12011">Връщане към прозореца с видео</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Започване от начало</string>
   <string id="12022">Възобновяване от %s</string>
-  <string id="12023"></string>
-  
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -987,19 +974,18 @@
   <string id="12377">Това ще ресетне всички запазени стойности</string>
   <string id="12378">Покажи всяка снимка за</string>
   <string id="12379">Използвай ефекти за мащабиране</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">12 часов часовник</string>
   <string id="12384">24 часов часовник</string>
   <string id="12385">Ден/Месец</string>
   <string id="12386">Месец/Ден</string>
-  <string id="12387"></string>
+
   <string id="12390">Работа на системата</string>
   <string id="12391">Минути</string>
   <string id="12392">Час(а)</string>
   <string id="12393">Дни</string>
   <string id="12394">Всичко време от стартиране</string>
+  <string id="12395">Ниво на батерията</string>
 
   <string id="12600">Времето</string>
 
@@ -1034,6 +1020,7 @@
 
   <string id="13100">Филтър трептене</string>
   <string id="13101">Драйвер (изисква рестарт)</string>
+
   <string id="13105">Вертикална синхронизация</string>
   <string id="13106">Изключен</string>
   <string id="13107">Вкл при възпроизвеждане</string>
@@ -1068,28 +1055,10 @@
   <string id="13146">XBMC, променянето на тези настройки ще повлияе</string>
   <string id="13147">контрола. Искате ли да продължите?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
   <string id="13159">Subnet mask</string>
   <string id="13160">Gateway</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Инициализиране неуспешно</string>
-
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-
 
   <string id="13170">Никога</string>
   <string id="13171">Незабавно</string>
@@ -1099,9 +1068,11 @@
 
   <string id="13200">Профили</string>
   <string id="13201">Изтрий профил '%s'?</string>
+
   <string id="13204">Последно зареден профил:</string>
   <string id="13205">Непознат</string>
   <string id="13206">Презапиши</string>
+
   <string id="13208">Алармен часовник</string>
   <string id="13209">Интервал на алармата (в минути)</string>
   <string id="13210">Стартирана, аларма в %im</string>
@@ -1130,20 +1101,17 @@
 
   <string id="13283">Операционна Система:</string>
   <string id="13284">CPU скорост:</string>
-  <string id="13285"></string>
+
   <string id="13286">Видео енкодер:</string>
   <string id="13287">Резолюция на екрана:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">А/В кабел:</string>
-  <string id="13293"></string>
+
   <string id="13294">DVD регион:</string>
   <string id="13295">Интернет:</string>
   <string id="13296">Свързан</string>
   <string id="13297">Не е свързан. Проверете мрежовите настройки.</string>
-  <string id="13298"></string>
+
   <string id="13299">Целева температура</string>
   <string id="13300">Скорост на вентилатор</string>
   <string id="13301">Атоматичен температурен контрол</string>
@@ -1182,8 +1150,7 @@
   <string id="13334">Редактиране етикет</string>
   <string id="13335">Направи по подразбиране</string>
   <string id="13336">Премахни бутон</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Остави както е</string>
   <string id="13341">Зелен</string>
   <string id="13342">Оранжев</string>
@@ -1206,6 +1173,7 @@
   <string id="13359">Снимка за изпълнител</string>
   <string id="13360">Генерирай картинка</string>
   <string id="13361">Включи глас</string>
+
   <string id="13375">Включи устройство</string>
   <string id="13376">Капацитет</string>
   <string id="13377">Режим на изглед по подразбиране</string>
@@ -1243,7 +1211,7 @@
   <string id="13409">Топ 250</string>
   <string id="13410">Настрой на Last.fm</string>
   <string id="13411">Минимална скорост на вентилатора</string>
-
+  <string id="13412">Изпълни от тук</string>
   <string id="13413">Сваляне</string>
   <string id="13414">Скрий изпълнител, участващ само в компилации</string>
   <string id="13415">Метод за рендване</string>
@@ -1263,6 +1231,7 @@
   <string id="13429">Позволи хардуерно ускорение (VDADecoder)</string>
   <string id="13430">Позволи хардуерно ускорение (OpenMax)</string>
   <string id="13431">Пикселни шейдъри</string>
+  <string id="13432">Позволи хардуерно ускориние (VideoToolbox)</string>
 
   <string id="13500">А/В метод за синхронизиране</string>
   <string id="13501">Аудио честота</string>
@@ -1275,6 +1244,11 @@
   <string id="13508">Високо</string>
   <string id="13509">Наистина високо(бавно!)</string>
   <string id="13510">Синхронизирай възпроизвеждане към дисплея</string>
+
+  <string id="13550">Пауза при смяна на честота на опресняване</string>
+  <string id="13551">Изкл</string>
+  <string id="13552">%.1f секунда</string>
+  <string id="13553">%.1f секунди</string>
 
   <string id="13600">Apple Remote</string>
 
@@ -1461,7 +1435,7 @@
   <string id="15283">Песни наскоро слушани %name%</string>
   <string id="15284">Слушай %name%те препоръчителни Last.fm радио</string>
   <string id="15285">Топ етикети за потребител %name%</string>
-  <string id="15286">Слушай %name%ят плейлист Last.fm радио</string>
+
   <string id="15287">Желаете ли да добавите текущата песен към любимите?</string>
   <string id="15288">Желаете ли да забраните текущата песен?</string>
   <string id="15289">Добавено към любимите: '%s'.</string>
@@ -1517,6 +1491,12 @@
   <string id="16033">Не мога да отворя базата данни.</string>
   <string id="16034">Не мога да взема песента от базата данни.</string>
   <string id="16035">Плейлист Режим парти</string>
+  <string id="16036">De-interlace (Half)</string>
+  <string id="16037">Deinterlace видео</string>
+  <string id="16038">Deinterlace метод</string>
+  <string id="16039">Изкл</string>
+  <string id="16040">Авто</string>
+  <string id="16041">Вкл</string>
 
   <string id="16100">Всички видео</string>
   <string id="16101">Не гледани</string>
@@ -1524,11 +1504,6 @@
   <string id="16103">Маркирай като гледани</string>
   <string id="16104">Маркирай като не гледани</string>
   <string id="16105">Редактиране заглавие</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
 
   <string id="16200">Операцията беше отхвърлена</string>
   <string id="16201">Копирането неуспешно</string>
@@ -1558,11 +1533,13 @@
   <string id="16317">Временно (Half)</string>
   <string id="16318">Временно/Пространствен (Half)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 оптимизирано</string>
+  <string id="16324">Софтуерно смесване</string>
 
   <string id="16400">Видео след-обработка</string>
-  <string id="16401">Изключен</string>
-  <string id="16402">Включен за SD съдържание</string>
-  <string id="16403">Винаги включен</string>
 
   <string id="17500">Изобразяване време за заспиване</string>
 
@@ -1747,8 +1724,7 @@
   <string id="20184">Завърти, ползвайки EXIF инфо</string>
   <string id="20185">Използвай стил плакат за ТВ Сериали</string>
   <string id="20186">Моля почакайте</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Включи автоскрол за резюме &amp; преглед</string>
   <string id="20190">Потребителски</string>
   <string id="20191">Включи дебъг запис</string>
@@ -1771,6 +1747,10 @@
   <string id="20255">Първо влизане, редактирайте си профила</string>
   <string id="20256">HTS Tvheadend клиент</string>
   <string id="20257">VDR Streamdev клиент</string>
+  <string id="20258">MythTV клиент</string>
+  <string id="20259">Мрежова файлова система (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Web сървър директория (HTTP)</string>
   <string id="20301">Web сървър директория (HTTPS)</string>
@@ -1778,24 +1758,17 @@
   <string id="20303">Искате ли да пропуснете и да продължите?</string>
   <string id="20304">RSS емисии</string>
 
-  <string id="20306"></string>
   <string id="20307">Secondary DNS</string>
   <string id="20308">DHCP сървър:</string>
   <string id="20309">Направи нова папка</string>
   <string id="20310">Затъмни LCD при възпроизвеждане</string>
   <string id="20311">Неизвестен или вграден (защитен)</string>
   <string id="20312">Затъмни LCD на пауза</string>
-  <string id="20313">Превключи LED на вкл ако на пауза</string>
+
   <string id="20314">Видео - Библиотека</string>
-  <string id="20315">Запазени игри</string>
+
   <string id="20316">Сорт: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Възпроизведи част...</string>
   <string id="20325">Ресет на калибровката</string>
   <string id="20326">Това ще ресетне стойностите на калибровка от %s</string>
@@ -1848,7 +1821,7 @@
   <string id="20373">Сезон</string>
   <string id="20374">Свалям информация за филма</string>
   <string id="20375">Безцелно съдържание</string>
-
+  <string id="20376">Оригинално заглавие</string>
   <string id="20377">Опресни информация за ТВ Сериал</string>
   <string id="20378">Обновяване на информацията за всички епизоди?</string>
   <string id="20379">Избраната папка съдържа един ТВ Сериал</string>
@@ -1891,6 +1864,7 @@
   <string id="20416">Излъчен на</string>
   <string id="20417">Автор</string>
   <string id="20418">Почистване на имена на файлове и папки</string>
+  <string id="20419">Покажи метаданни във файл режим</string>
 
   <string id="20420">Никога</string>
   <string id="20421">Ако е само един сезон</string>
@@ -1926,6 +1900,10 @@
   <string id="20451">Държави</string>
   <string id="20452">епизод</string>
   <string id="20453">епизоди</string>
+  <string id="20454">Слушател</string>
+  <string id="20455">Слушатели</string>
+  <string id="20456">Задай плакат снимачна площадка</string>
+  <string id="20457">Снимачна площадка</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Показвай скрити папки и файлове</string>
@@ -1946,6 +1924,7 @@
   <string id="21365">Премахни споделяне на медия</string>
   <string id="21366">Потребителска папка за субтитри</string>
   <string id="21367">Премести &amp; алтернативна папка за субтитри</string>
+  <string id="21368">Презапиши ASS/SSA шрифт за субтитри</string>
 
   <string id="21369">Включи мишка</string>
   <string id="21370">Просвирвай навигационни звуци с възпроизвеждането на медия</string>
@@ -2032,6 +2011,13 @@
   <string id="21451">Изисква интернет връзка.</string>
   <string id="21452">Вземи още...</string>
   <string id="21453">Основна файлова система</string>
+
+  <string id="21460">Местонахождение на субтитри</string>
+  <string id="21461">Фиксиран</string>
+  <string id="21462">Край на видео</string>
+  <string id="21463">Под видео</string>
+  <string id="21464">Горе видео</string>
+  <string id="21465">Над видео</string>
 
   <string id="21800">Име на файл</string>
   <string id="21801">Път на файл</string>
@@ -2136,6 +2122,8 @@
   <string id="22020">Ръководство</string>
   <string id="22021">Позволени грешки в съотношението (%)</string>
   <string id="22022">Включване на видео файлове в листинги</string>
+  <string id="22023">DirectX доставчик:</string>
+  <string id="22024">Direct3D версия:</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Шрифт</string>
@@ -2190,6 +2178,7 @@
   <string id="24015">Информация за музикално видео</string>
   <string id="24016">Информация за албум</string>
   <string id="24017">Информация за актьор</string>
+  <string id="24018">Услуги</string>
 
   <string id="24020">Конфигурация</string>
   <string id="24021">Изключено</string>
@@ -2235,28 +2224,23 @@
   <string id="24073">Не мога да се свържа</string>
   <string id="24074">Изисква се рестарт</string>
   <string id="24075">Изключи</string>
+  <string id="24076">Изисква добавка</string>
   <string id="24080">Свързване отново?</string>
   <string id="24089">Добавката се рестартира</string>
   <string id="24090">Заключи управление на добавки</string>
-
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
 
   <string id="24096">Добавка маркирана като повредена в хранилището.</string>
   <string id="24097">Желаете ли да я изключите от системата?</string>
   <string id="24098">Повреден</string>
   <string id="24099">Желаете ли да превключите на тази кожа?</string>
+  <string id="24100">За да използвате това свойство, трябва да свалите добавка:</string>
+  <string id="24101">Желаете ли да свалите тази добавка?</string>
   <string id="25000">Известия</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Библиотека</string>
   <string id="29801">QWERTY клавиатура</string>
   <string id="29802">Passthrough Аудио се използва</string>
-
-  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
@@ -2335,4 +2319,69 @@
   <string id="33082">Път до скрипт</string>
   <string id="33083">Включи потребителски скрипт бутон</string>
 
+  <string id="33100">Неуспешен старт</string>
+  <string id="33101">Уеб сървър</string>
+  <string id="33102">Сървър на събития</string>
+  <string id="33103">Отдалечен комуникационен сървър</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
+
+  <string id="34100">Конфигурация на високоговорители</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">Не мога да намеря следващ файл за просвирване</string>
+  <string id="34202">Не мога да намеря предишен файл за просвирване</string>
+
+  <string id="35000">Периферия</string>
+
+  <string id="35001">HID устройство</string>
+  <string id="35002">Мрежов адаптер</string>
+  <string id="35003">Диск</string>
+  <string id="35004">Няма достъпни настройки&#10;за това устройство.</string>
+  <string id="35005">Ново устройство конфигурирано</string>
+  <string id="35006">Устройството премахнато</string>
+  <string id="35007">Клавиши за това устройство</string>
+  <string id="35008">Клавиши активирани</string>
+
+  <string id="35500">Местоположение</string>
+  <string id="35501">Клас</string>
+  <string id="35502">Име</string>
+  <string id="35503">Доставчик</string>
+  <string id="35504">Продукт ID</string>
+
+  <string id="36000">Pulse-Eight CEC адаптер</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Превключи на клавиатура</string>
+  <string id="36003">Превключи на отдалечена страна</string>
+  <string id="36004">Натисни "user" бутон</string>
+  <string id="36005">Включи превключване на управление</string>
+  <string id="36006">Не мога да отворя адаптера</string>
+  <string id="36007">Включи телевизора, когато стартира XBMC</string>
+  <string id="36008">Изключи устройства, когато спира XBMC</string>
+  <string id="36009">Сложи устройствата на стендбай, когато се активира скрийнсейвър</string>
+  <string id="36010"></string>
+  <string id="36011">Не мога да открия  порт CEC. Настройте ръчно.</string>
+  <string id="36012">Не мога да открия  адаптер CEC.</string>
+  <string id="36013">Неподдържана libcec интерфейс версия. %d е по-голяма от поддържаната от XBMC (%d)</string>
+  <string id="36014">Компютъра на стендбай, когато телевизора е изключен</string>
+  <string id="36015">HDMI номер</string>
+  <string id="36016">Свързан</string> <!-- max. 13 characters -->
+  <string id="36017">Адаптера е намерен, но libcec не е достъпен</string>
+  <string id="36018">Ползвай езиковите настройки на телевизора</string>
 </strings>

@@ -1,11 +1,11 @@
 ; filename                                  mirror                                                      source of the file
-mingwrt-3.18-mingw32-dev.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.18/
-mingwrt-3.18-mingw32-dll.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.18/
+mingwrt-3.20-mingw32-dev.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.20/
+mingwrt-3.20-mingw32-dll.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.20/
 w32api-3.17-2-mingw32-dev.tar.lzma          http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/Win32-API/w32api-3.17/
 gcc-core-4.5.2-1-mingw32-bin.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
 gcc-c++-4.5.2-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
 libstdc++-4.5.2-1-mingw32-dll-6.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
-binutils-2.21-3-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.21/
+binutils-2.22-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.22/
 yasm-1.1.0-win32.exe                        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://www.tortall.net/projects/yasm/releases/
 dlfcn-win32-static-r19.tar.bz2              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://dlfcn-win32.googlecode.com/files/
 libexpat-2.0.1-1-mingw32-dev.tar.gz         http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/expat/expat-2.0.1-1/

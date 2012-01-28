@@ -52,6 +52,9 @@
 # include <stdbool.h>
 #endif
 
+/*****************************************************************************/
+#if OPT_MODE == 1
+
 #ifdef LITTLE_ENDIAN
 #define iman_ 0
 #else
@@ -59,6 +62,183 @@
 #endif
 #define _double2fixmagic 68719476736.0 * 1.5
 
+#if defined(__GNUC__) && defined(__i386__)
+static inline int32 imuldiv8(int32 a, int32 b)
+{
+    int32 result;
+    __asm__("movl %1, %%eax\n\t"
+	    "movl %2, %%edx\n\t"
+	    "imull %%edx\n\t"
+	    "shr $8, %%eax\n\t"
+	    "shl $24, %%edx\n\t"
+	    "or %%edx, %%eax\n\t"
+	    "movl %%eax, %0\n\t"
+	    : "=g"(result)
+	    : "g"(a), "g"(b)
+	    : "eax", "edx");
+    return result;
+}
+
+static inline int32 imuldiv16(int32 a, int32 b)
+{
+    int32 result;
+    __asm__("movl %1, %%eax\n\t"
+	    "movl %2, %%edx\n\t"
+	    "imull %%edx\n\t"
+	    "shr $16, %%eax\n\t"
+	    "shl $16, %%edx\n\t"
+	    "or %%edx, %%eax\n\t"
+	    "movl %%eax, %0\n\t"
+	    : "=g"(result)
+	    : "g"(a), "g"(b)
+	    : "eax", "edx");
+    return result;
+}
+
+static inline int32 imuldiv24(int32 a, int32 b)
+{
+    int32 result;
+    __asm__("movl %1, %%eax\n\t"
+	    "movl %2, %%edx\n\t"
+	    "imull %%edx\n\t"
+	    "shr $24, %%eax\n\t"
+	    "shl $8, %%edx\n\t"
+	    "or %%edx, %%eax\n\t"
+	    "movl %%eax, %0\n\t"
+	    : "=g"(result)
+	    : "g"(a), "g"(b)
+	    : "eax", "edx");
+    return result;
+}
+
+static inline int32 imuldiv28(int32 a, int32 b)
+{
+    int32 result;
+    __asm__("movl %1, %%eax\n\t"
+	    "movl %2, %%edx\n\t"
+	    "imull %%edx\n\t"
+	    "shr $28, %%eax\n\t"
+	    "shl $4, %%edx\n\t"
+	    "or %%edx, %%eax\n\t"
+	    "movl %%eax, %0\n\t"
+	    : "=g"(result)
+	    : "g"(a), "g"(b)
+	    : "eax", "edx");
+    return result;
+}
+
+#elif _MSC_VER
+inline int32 imuldiv8(int32 a, int32 b) {
+	_asm {
+		mov eax, a
+		mov edx, b
+		imul edx
+		shr eax, 8
+		shl edx, 24
+		or  eax, edx
+	}
+}
+
+inline int32 imuldiv16(int32 a, int32 b) {
+	_asm {
+		mov eax, a
+		mov edx, b
+		imul edx
+		shr eax, 16
+		shl edx, 16
+		or  eax, edx
+	}
+}
+
+inline int32 imuldiv24(int32 a, int32 b) {
+	_asm {
+		mov eax, a
+		mov edx, b
+		imul edx
+		shr eax, 24
+		shl edx, 8
+		or  eax, edx
+	}
+}
+
+inline int32 imuldiv28(int32 a, int32 b) {
+	_asm {
+		mov eax, a
+		mov edx, b
+		imul edx
+		shr eax, 28
+		shl edx, 4
+		or  eax, edx
+	}
+}
+
+#elif defined(__GNUC__) && defined(__ppc__)
+static inline int32 imuldiv8(int32 a, int32 b)
+{
+    register int32 ret,rah,ral,rlh,rll;
+    __asm__ ("mulhw %0,%7,%8\n\t"
+	     "mullw %1,%7,%8\n\t"
+	     "rlwinm %2,%0,24,0,7\n\t"
+	     "rlwinm %3,%1,24,8,31\n\t"
+	     "or %4,%2,%3"
+	     :"=r"(rah),"=r"(ral),
+	      "=r"(rlh),"=r"(rll),
+	      "=r"(ret),
+	      "=r"(a),"=r"(b)
+	     :"5"(a),"6"(b));
+    return ret;
+}
+
+static inline int32 imuldiv16(int32 a, int32 b)
+{
+    register int32 ret,rah,ral,rlh,rll;
+    __asm__ ("mulhw %0,%7,%8\n\t"
+	     "mullw %1,%7,%8\n\t"
+	     "rlwinm %2,%0,16,0,15\n\t"
+	     "rlwinm %3,%1,16,16,31\n\t"
+	     "or %4,%2,%3"
+	     :"=r"(rah),"=r"(ral),
+	      "=r"(rlh),"=r"(rll),
+	      "=r"(ret),
+	      "=r"(a),"=r"(b)
+	     :"5"(a),"6"(b));
+    return ret;
+}
+
+static inline int32 imuldiv24(int32 a, int32 b)
+{
+    register int32 ret,rah,ral,rlh,rll;
+    __asm__ ("mulhw %0,%7,%8\n\t"
+	     "mullw %1,%7,%8\n\t"
+	     "rlwinm %2,%0,8,0,23\n\t"
+	     "rlwinm %3,%1,8,24,31\n\t"
+	     "or %4,%2,%3"
+	     :"=r"(rah),"=r"(ral),
+	      "=r"(rlh),"=r"(rll),
+	      "=r"(ret),
+	      "=r"(a),"=r"(b)
+	     :"5"(a),"6"(b));
+    return ret;
+}
+
+static inline int32 imuldiv28(int32 a, int32 b)
+{
+    register int32 ret,rah,ral,rlh,rll;
+    __asm__ ("mulhw %0,%7,%8\n\t"
+	     "mullw %1,%7,%8\n\t"
+	     "rlwinm %2,%0,4,0,27\n\t"
+	     "rlwinm %3,%1,4,28,31\n\t"
+	     "or %4,%2,%3"
+	     :"=r"(rah),"=r"(ral),
+	      "=r"(rlh),"=r"(rll),
+	      "=r"(ret),
+	      "=r"(a),"=r"(b)
+	     :"5"(a),"6"(b));
+    return ret;
+}
+
+#else
+/* Generic version of imuldiv. */
 #define imuldiv8(a, b) \
     (int32)(((int64)(a) * (int64)(b)) >> 8)
 
@@ -71,10 +251,13 @@
 #define imuldiv28(a, b) \
     (int32)(((int64)(a) * (int64)(b)) >> 28)
 
+#endif /* architectures */
+
 static inline int32 signlong(int32 a)
 {
 	return ((a | 0x7fffffff) >> 30);
 }
+#endif /* OPT_MODE != 0 */
 
 /*****************************************************************************/
 #if USE_ALTIVEC

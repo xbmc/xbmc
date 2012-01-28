@@ -49,6 +49,17 @@ using namespace std;
 using namespace boost;
 using namespace VAAPI;
 
+static int compare_version(int major_l, int minor_l, int micro_l, int major_r, int minor_r, int micro_r)
+{
+  if(major_l < major_r) return -1;
+  if(major_l > major_r) return  1;
+  if(minor_l < minor_r) return -1;
+  if(minor_l > minor_r) return  1;
+  if(micro_l < micro_r) return -1;
+  if(micro_l > micro_r) return  1;
+  return 0;
+}
+
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
 
@@ -79,14 +90,30 @@ static CDisplayPtr GetGlobalDisplay()
   int major_version, minor_version;
   VAStatus res = vaInitialize(disp, &major_version, &minor_version);
 
+  CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
+
   if(res != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "VAAPI - unable to initialize display %d - %s", res, vaErrorStr(res));
     return display;
   }
 
-  CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
-  display = CDisplayPtr(new CDisplay(disp));
+  const char* vendor = vaQueryVendorString(disp);
+  CLog::Log(LOGDEBUG, "VAAPI - vendor: %s", vendor);
+
+  bool deinterlace = true;
+  int major, minor, micro;
+  if(sscanf(vendor,  "Intel i965 driver - %d.%d.%d", &major, &minor, &micro) == 3)
+  {
+    /* older version will crash and burn */
+    if(compare_version(major, minor, micro, 1, 0, 17) < 0)
+    {
+      CLog::Log(LOGDEBUG, "VAAPI - deinterlace not support on this intel driver version");
+      deinterlace = false;
+    }
+  }
+
+  display = CDisplayPtr(new CDisplay(disp, deinterlace));
   display_global = display;
   return display;
 }

@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--Translator: Artūras Griškonis (ArtX38)-->
+<!--Email: info@xbmc.lt-->
+<!--Date of translation: 22/06/2011-->
+<!--Based on english strings version 283c0ee1becdac1849562a5e73cbc41dfa289ef8-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Keičiami</string>
+  <string id="31001">Patinka</string>
+  <string id="31002">Nepatinka</string>
+  <string id="31003">Energijos nustatymai</string>
+  <string id="31004">Veikia...</string>
+  <string id="31005">Paslėpti Informaciją</string>
+  <string id="31006">Rodinio parinktys</string>
+  <string id="31007">Pridėtis</string>
+  <string id="31008">Per visą ekraną</string>
+
+  <string id="31020">Neseniai Pridėti</string>
+  <string id="31021">Video - Failai</string>
+  <string id="31022">Muzikos - Failai</string>
+  <string id="31023">Atkūrimas</string>
+  <string id="31024">Puslapis</string>
+  <string id="31025">Elementai</string>
+  <string id="31026">Kitos Opcijos</string>
+  <string id="31027">Vietovė</string>
+
+  <!-- View Type labels -->
+  <string id="31028">Posterių Karuselė</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Pilnas sąrašas</string>
+  <string id="31031">Miniatiūros</string>
+  <string id="31032">Paveikslėliai žemai</string>
+  <string id="31033">Informacija</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Dabar grojami</string>
+
+  <string id="31042">RODOMA</string>
+  <string id="31043">PAUZĖ</string>
+  <string id="31044">PRASUKTI PIRMYN</string>
+  <string id="31045">PRASUKTI ATGAL</string>
+  <string id="31046">Garso Savybės</string>
+  <string id="31047">Aktualūs Nustatymai</string>
+  <string id="31048">Vizualizacijos Parinktys</string>
+  <string id="31049">Pabaigos Laikas</string>
+  <string id="31050">Ruš.: Didėjimo tvarka</string>
+  <string id="31051">Ruš.: Mažėjimo tvarka</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Atidaryti grojaraštį</string>
+  <string id="31056">Įšsaugoti grojaraštį</string>
+  <string id="31057">Uždaryti grojaraštį</string>
+  <string id="31058">Sisteminiai audio failai</string>
+  <string id="31059">Aktualus grojaraštis</string>
+  <string id="31060">Šis failas yra sugrupuotas, pasirinkite dalį katrą norite atkurti.</string>
+  <string id="31061">Dabartinis Pasirinkimas</string>
+
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Pagrindinio ekrano nustatymai</string>
+  <string id="31102">Fonas</string>
+  <string id="31103">Rodyti "Pauzė" prezentacijos režime</string>
+  <string id="31104">Rodyti treilerį lange [COLOR=red](Tik dėl informacijos apie video dialogą)[/COLOR]</string>
+  <string id="31105">Rodyti pavadinimus foniniame nuskaityme</string>
+  <string id="31106">Įvairios opcijos</string>
+  <string id="31107">Paslėpti nuorodas iš skaitomo failo [COLOR=red](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31108">Slėpti  Pagrindinio Menių Nuorodas</string>
+  <string id="31109">Pagrindinio menių fonas</string>
+  <string id="31110">Pakeisti pagrindinio ekrano foną</string>
+  <string id="31111">Paslėpti</string>
+  <string id="31112">Nustatymai</string>
+  <string id="31113">Vienas Vaizdas</string>
+  <string id="31114">Daug Vaizdų</string>
+  <string id="31115">Nustatymai</string>
+  <string id="31116">Prid. skriptai</string>
+  <string id="31117">Rodyti Neseniai Patalpintus Video</string>
+  <string id="31118">Pagrindinio Ekrano Submeniu</string>
+  <string id="31119">Slėpti Fanart informaciją</string>
+  <string id="31120">MYGTUKO PAVADINIMAS</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31122">Orų Puslapis</string>
+  <string id="31123">Naudoti "Posterius" vietoi "Banerių" serialams</string>
+  <string id="31124">Rodyti foninį "Atkuriamasis" Video</string>
+  <string id="31125">Rodyti foninį "Atkuriamasis" Vizualizacija</string>
+
+  <string id="31126">Ijungti Dainų Tekstai OSD</string>
+  <string id="31127">KELIAS IKI LYRICS PRIEDŲ</string>
+  <string id="31128">Dainų Tekstai</string>
+  <string id="31129">Įjungti Subtitrus Atsiųstus dėl Video OSD</string>
+  <string id="31130">KELIAS IKI SUBTITRŲ PRIEDŲ</string>
+  <string id="31131">Naudoti Horizantalų Pagrindinį Menių</string>
+  <string id="31132">Dainų Tekstų Priedas</string>
+  <string id="31133">Subtitrų Priedas</string>
+  <string id="31134">Pagrindinio puslapio Video Submeniu</string>
+  <string id="31135">Pagrindinio puslapio Muzikos Submeniu</string>
+  <string id="31136">Pagrindinio puslapio Paveikslėlių Submeniu</string>
+
+  <string id="31140">Muzika OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">Etiketės</string>
+  <string id="31201">Kategorijos</string>
+  <string id="31202">Rodyti Vaidmenis</string>
+  <string id="31203">Išsirinkti Jūsų Dainą</string>
+  <string id="31204">Nuorodų Kategorija</string>
+  <string id="31205">Dainų Tekstų Šaltinis</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Dabartinė Temperatūra</string>
+  <string id="31301">Paskutiniai Atnaujinimai</string>
+  <string id="31302">Meniu</string>
+  <string id="31303"></string>
+  <string id="31304">Vaizdas</string>
+  <string id="31305">Nėra Disko</string>
+  <string id="31306">Išimti</string>
+  <string id="31307">Paslėpti Fanart</string>
+  <string id="31308">Daugiau apie Filmą</string>
+  <string id="31309">Išnaudota Atminties:</string>
+  <string id="31310">Takelio Num.:</string>
+  <string id="31311">FANART[CR][CR]NEPASIEKIAMAS[CR][CR] PASPAUSTI, KAD PASIRINKTI</string>
+  <string id="31312">Aktualus Skreperis</string>
+  <string id="31313">Pasirinkti Skreperį</string>
+  <string id="31314">Nuskaitomo Turinio Parinktys</string>
+  <string id="31315">Bazinis(ė/iai)</string>
+  <string id="31316"></string>
+  <string id="31317">Nurodyti Kelią iki Fanart</string>
+  <string id="31318">Mažas Fanart</string>
+  <string id="31319">Pasirinktas Profilis</string>
+  <string id="31320">Paskutinis Įėjimas</string>
+  <string id="31321">Karaoke Dainos Pasirinkimas</string>
+  <string id="31322">Rodomas</string>
+  <string id="31323">Nauji Filmai</string>
+  <string id="31324">Nauji Epizodai</string>
+  <string id="31325">Sąrašo Opcijos</string>
+  <string id="31326">Sukūrta</string>
+  <string id="31327">Leidimas</string>
+  <string id="31328">Neseniai Dadėta</string>
+  <string id="31329">[B]NUSTATYTAS LAIKRODIS![/B] [COLOR=red] - AUTOMATIŠKAI ATSIJUNGS PO[/COLOR]</string>
+  <string id="31330">Spustelėkite norėdami atkūrti[CR][CR]Video treilerį</string>
+  <string id="31331">Albumai Detaliau</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pauzė</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Prasukimas Pirmyn</string>
+  <string id="31354">Prasukimas Atgal</string>
+  <string id="31355">Filmo Menių</string>
+  <string id="31356">Atsisiųsti Subtitrus</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Pagal nutylėjimą šablonui</string>
+  <string id="31391">Pagal nutylėjimą šablonui be Kaps</string>
+  <string id="31392">Arial Pagrindu</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B][COLOR=blue]IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Pakeisti išvaizdą · Nustatyti kalbą ir regioną · Pakeisti failų sarašą.[CR]Nustatyti ekrano vaizdą.[/COLOR]</string>
+  <string id="31401">[B][COLOR=blue]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas.[CR]Nustatyti video sarašą · Nustatyti subtitrų šriftą.[/COLOR]</string>
+  <string id="31402">[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas.[CR]Nustatyti audio sarašą · Nustatyti audio pridėjimą · Nustatyti karaoke.[/COLOR]</string>
+  <string id="31403">[B][COLOR=blue]PAVEIKSLŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją.[/COLOR]</string>
+  <string id="31404">[B][COLOR=blue]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti trys Miestus gauti informacijai apie orus.[/COLOR]</string>
+  <string id="31405">[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti XBMC valdymą  per UPnP ir HTTP · Nustatyti failų apsikeitimą.[CR]Nustatyi prieigą prie interneto.[/COLOR]</string>
+  <string id="31406">[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red] Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą.[CR]Nustatyti energijos sąnaudas · Nustatyti derinimą · Nustatyti blokavimą.[/COLOR]</string>
+  <string id="31407">[B][COLOR=red]ŠABLONŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=blue]www.xbmc.lt . www.xbmc.org . info@xbmc.lt[/COLOR][CR][COLOR=red]Nustatyti pasirinktą šabloną. Pakeisti šablono foną.[CR]Pridėti ir (arba) pašalinti pagrindinius menių punktus.[/COLOR]</string>
+  <string id="31408">[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti parametrų valdymą · Nustatymų diegimą iš xbmc.org[CR]Nustatyti priedų pakeitimą.[/COLOR]</string>
+
+  <string id="31421">Pasirinkite XBMC vartotojo profilį[CR]įeiti į sistemą ir tęsti.</string>
+
+
+  <!-- Weather plugin -->
+  <string id="31900">Orų Žemėlapiai</string>
+  <string id="31901">36 Valandų Prognozė</string>
+  <string id="31902">Valandinė Prognozė</string>
+  <string id="31903">Savaitgalio Prognozė</string>
+  <string id="31904">10 Dienų Prognozė</string>
+  <string id="31905">Prognozė</string>
+  <string id="31906">Žemėlapiai &amp; Video</string>
+  <string id="31907">Video Prognozė [COLOR=grey2](Pilnaekranis Atkūrimas)[/COLOR]</string>
+  <string id="31908">Kritulių Tikimybė</string>
+  <string id="31909">Parsiunčiama Prognozės Informacija...</string>
+
+</strings>

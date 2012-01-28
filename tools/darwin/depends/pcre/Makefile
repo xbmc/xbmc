@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-stack-for-recursion
 
-LIBDYLIB=$(SOURCE)/.libs/(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/.libs/lib$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed
 

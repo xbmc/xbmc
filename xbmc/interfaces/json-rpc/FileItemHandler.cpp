@@ -144,13 +144,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
     if (ID)
     {
-      if (stricmp(ID, "genreid") == 0)
-      {
-        CStdString genre = item->GetPath();
-        genre.TrimRight('/');
-        object[ID] = atoi(genre.c_str());
-      }
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
@@ -158,7 +152,12 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       if (stricmp(ID, "id") == 0)
       {
         if (item->HasMusicInfoTag())
-          object["type"] = "song";
+        {
+          if (item->m_bIsFolder && item->IsAlbum())
+            object["type"] = "album";
+          else
+            object["type"] = "song";
+        }
         else if (item->HasVideoInfoTag())
         {
           switch (item->GetVideoContentType())
@@ -173,6 +172,9 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
             case VIDEODB_CONTENT_MOVIES:
               object["type"] = "movie";
+              break;
+
+            default:
               break;
           }
         }

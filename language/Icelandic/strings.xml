@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2011-06-08-->
-<!--$Revision$-->
-<!--Based on english strings version 35715-->
+<!--Date of translation: 2012-01-22-->
+<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
 <strings>
   <string id="0">Forrit</string>
   <string id="1">Ljósmyndir</string>
@@ -57,7 +56,7 @@
   <string id="60">okt</string>
   <string id="61">nóv</string>
   <string id="62">des</string>
-  
+
   <string id="71">N</string>
   <string id="72">NNA</string>
   <string id="73">NA</string>
@@ -197,7 +196,7 @@
   <string id="221">Netkerfi ótengt</string>
   <string id="222">Hætta við</string>
   <string id="224">Hraði</string>
-
+  <string id="225">Lóðrétt hliðrun</string>
   <string id="226">Prufumynstur...</string>
   <string id="227">Sækja upplýsingar um tónlistardiska frá freedb.org</string>
   <string id="228">Endurraða spilunarlista í byrjun</string>
@@ -217,7 +216,7 @@
   <string id="242">Glugga</string>
   <string id="243">Glæðingartíðni</string>
   <string id="244">Fylla skjá</string>
-  <string id="245">Stærðir: (%i,%i)-&gt;(%i,%i) (Aðdráttur x%2.2f) AR:%2.2f:1 (Punktar: %2.2f:1)</string>
+  <string id="245">Stærðir: (%i,%i)-&gt;(%i,%i) (Aðdráttur x%2.2f) AR:%2.2f:1 (Punktar: %2.2f:1) (Lóð.hliðrun: %2.2f)</string>
 
   <string id="247">Skriftur</string>
   <string id="248">Tungumál</string>
@@ -391,7 +390,7 @@
   <string id="426">Engar upplýsingar fundust um geisladisk</string>
   <string id="427">Diskur</string>
   <string id="428">Settu inn réttan CD/DVD</string>
-  <string id="429">Settu inn eftirfarandi CD/DVD</string>
+  <string id="429">Settu inn eftirfarandi disk:</string>
   <string id="430">Raða eftir: DVD#</string>
   <string id="431">Ekkert biðminni</string>
   <string id="432">Eyða kvikmynd úr safni</string>
@@ -466,7 +465,7 @@
   <string id="510">Virkja myndskreytingu</string>
   <string id="511">Skipta sjálfvirkt um skjáham eftir svæði leiks</string>
   <string id="512">Ræsi gluggi</string>
-  <string id="513">Heima gluggi</string>
+  <string id="513">Forsíða</string>
   <string id="514">Handvirkar stillingar</string>
   <string id="515">Flokkur</string>
 
@@ -529,6 +528,7 @@
   <string id="573">Slóð</string>
   <string id="574">Land</string>
   <string id="575">Í vinnslu</string>
+  <string id="576">Oft spilað</string>
 
   <string id="580">Raða í átt</string>
   <string id="581">Röðunaraðferð</string>
@@ -709,6 +709,8 @@
   <string id="851">Gild gátt er á bilinu 1-65535</string>
   <string id="852">Gild gátt er á bilinu 1024-65535</string>
 
+  <string id="998">Bæta við tónlist...</string>
+  <string id="999">Bæta við myndefni...</string>
   <string id="1000">- Forsýna</string>
   <string id="1001">Get ekki tengst</string>
   <string id="1002">XBMC getur ekki tengst við netslóð.</string>
@@ -805,6 +807,9 @@
   <string id="1257">Viltu tengjast uppgötvuðu kerfi?</string>
 
   <string id="1260">Tilkynna þjónustur til annarra kerfa með Zeroconf</string>
+  <string id="1270">Leyfa XBMC að taka á móti AirPlay efni</string>
+  <string id="1271">Nafn tækis</string>
+  <string id="1272">- Nota lykilorð</string>
 
   <string id="1300">Sérsniðið hljóðtæki</string>
   <string id="1301">Sérsniðið gegnumstreymitæki</string>
@@ -981,6 +986,7 @@
   <string id="12392">Klukkustundir</string>
   <string id="12393">Dagar</string>
   <string id="12394">Heildar uppitími</string>
+  <string id="12395">Rafhlaða</string>
 
   <string id="12600">Veður</string>
 
@@ -1015,6 +1021,7 @@
 
   <string id="13100">Flökt sía</string>
   <string id="13101">Láta rekil ráða (þarfnast endurræsingar)</string>
+
   <string id="13105">Lóðrétt auð samstilling</string>
   <string id="13106">Óvirkt</string>
   <string id="13107">Virkt við afspilun</string>
@@ -1062,9 +1069,11 @@
 
   <string id="13200">Notendur</string>
   <string id="13201">Eyða notanda '%s'?</string>
+
   <string id="13204">Seinasti notandi:</string>
   <string id="13205">Óþekkt</string>
   <string id="13206">Yfirskrifa</string>
+
   <string id="13208">Vekjaraklukka</string>
   <string id="13209">Vekjaraklukku tími (í mínútum)</string>
   <string id="13210">Í gangi, vakning eftir %im</string>
@@ -1165,6 +1174,7 @@
   <string id="13359">Setja smámynd á listamann</string>
   <string id="13360">Búa til smámyndir</string>
   <string id="13361">Virkja rödd</string>
+
   <string id="13375">Virkja Tæki</string>
   <string id="13376">Hljóðstyrkur</string>
   <string id="13377">Sjálfgefinn sjónarhornsháttur</string>
@@ -1204,7 +1214,7 @@ fyrir þessa myndskreytingu</string>
   <string id="13409">Topp 250</string>
   <string id="13410">Stilla inn á Last.fm</string>
   <string id="13411">Lágmarks viftuhraði</string>
-
+  <string id="13412">Spila hér</string>
   <string id="13413">Niðurhala</string>
   <string id="13414">Fela tónlistarmenn sem birtast aðeins á safndiskum</string>
   <string id="13415">Teikni hamur</string>
@@ -1222,8 +1232,9 @@ fyrir þessa myndskreytingu</string>
   <string id="13427">Leyfa vélbúnaðarhröðun (DXVA2)</string>
   <string id="13428">Leyfa vélbúnaðarhröðun (CrystalHD)</string>
   <string id="13429">Leyfa vélbúnaðarhröðun (VDADecoder)</string>
-  <string id="13430">Allow hardware acceleration (OpenMax)</string>
+  <string id="13430">Leyfa vélbúnaðarhröðun (OpenMax)</string>
   <string id="13431">Punktaskyggir</string>
+  <string id="13432">Leyfa vélbúnaðarhröðun (VideoToolbox)</string>
 
   <string id="13500">A/V samstillingaraðferð</string>
   <string id="13501">Hljóðklukka</string>
@@ -1470,7 +1481,7 @@ fyrir þessa myndskreytingu</string>
   <string id="16020">De-interlace</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (Umsnúinn)</string>
-  <string id="16023">Interlaced meðhöndlun</string>
+  <string id="16023"/>
   <string id="16024">Hætti við...</string>
   <string id="16025">Sláðu inn nafn listamanns</string>
   <string id="16026">Hætt við spilun spilunarlista</string>
@@ -1483,6 +1494,12 @@ fyrir þessa myndskreytingu</string>
   <string id="16033">Gat ekki opnað gagnagrunn.</string>
   <string id="16034">Gat ekki náð í lög frá gagnagrunni.</string>
   <string id="16035">Partí spilunarlisti</string>
+  <string id="16036">De-interlace (Hálft)</string>
+  <string id="16037">Deinterlace mynd</string>
+  <string id="16038">Deinterlace aðferð</string>
+  <string id="16039">Af</string>
+  <string id="16040">Sjálfvirkt</string>
+  <string id="16041">Á</string>
 
   <string id="16100">Allar Myndir</string>
   <string id="16101">Ekki búið að horfa á</string>
@@ -1519,6 +1536,11 @@ fyrir þessa myndskreytingu</string>
   <string id="16317">Tími (Hálfur)</string>
   <string id="16318">Tími/Rými (Hálfur)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 fínstilling</string>
+  <string id="16324">Í hugbúnaði</string>
 
   <string id="16400">Eftirvinnsla</string>
 
@@ -1710,7 +1732,7 @@ fyrir þessa myndskreytingu</string>
   <string id="20190">Sérsniðið</string>
   <string id="20191">Virkja kembi úttak</string>
   <string id="20192">Ná í viðbótar upplýsingar við uppfærslu</string>
-  <string id="20193">Sjálfgefin þjónustua fyrir hljómplötu upplýsingar</string>
+  <string id="20193">Sjálfgefin þjónusta fyrir hljómplötuupplýsingar</string>
   <string id="20194">Sjálfgefin þjónusta fyrir tónlistarupplýsingar</string>
   <string id="20195">Breyta skrapara</string>
   <string id="20196">Flytja út tónlistarsafn</string>
@@ -1729,6 +1751,9 @@ fyrir þessa myndskreytingu</string>
   <string id="20256">HTS Tvheadend biðlari</string>
   <string id="20257">VDR Streamdev biðlari</string>
   <string id="20258">MythTV biðlari</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Mappa vefþjóns (HTTP)</string>
   <string id="20301">Mappa vefþjóns (HTTPS)</string>
@@ -1836,12 +1861,13 @@ fyrir þessa myndskreytingu</string>
   <string id="20410">Sýnishorn</string>
   <string id="20411">Fletja</string>
   <string id="20412">Fletja út sjónvarpsþætti</string>
-  <string id="20413">Ná í aðdáenda grafík</string>
-  <string id="20414">Sýna aðdáenda grafík í tónlistar- og myndabandasafni</string>
+  <string id="20413">Ná í aðdáendamyndir</string>
+  <string id="20414">Sýna aðdáendamyndir í tónlistar- og myndbandasafni</string>
   <string id="20415">Leita að nýju efni</string>
   <string id="20416">Sýnt fyrst</string>
   <string id="20417">Handritshöfundur</string>
-  <string id="20418">Hreinsa skráar- og möppunöfn</string>
+  <string id="20418"/>
+  <string id="20419">Sýna lýsigögn í skráarsýn</string>
 
   <string id="20420">Aldrei</string>
   <string id="20421">Bara ef ein sería</string>
@@ -1879,6 +1905,8 @@ fyrir þessa myndskreytingu</string>
   <string id="20453">þættir</string>
   <string id="20454">Hlustandi</string>
   <string id="20455">Hlustendur</string>
+  <string id="20456">Skilgreina aðdáendamyndir fyrir tökustað</string>
+  <string id="20457">Tökustaður</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -1899,8 +1927,9 @@ fyrir þessa myndskreytingu</string>
   <string id="21365">Fjarlægja samnýtingu</string>
   <string id="21366">Sérsniðin mappa fyrir þýðingartexta</string>
   <string id="21367">Kvikmynda og auka mappa fyrir þýðingartexta</string>
+  <string id="21368">Hunsa ASS/SSA skjátexta leturgerð</string>
 
-  <string id="21369">Virkja mús</string>
+  <string id="21369">Virkja stuðning við mús og snertiskjá</string>
   <string id="21370">Leyfa leiðsagnarhljóð á meðan efni er spilað</string>
   <string id="21371">Smámynd</string>
   <string id="21372">Fastsetja svæði DVD spilara</string>
@@ -1985,6 +2014,15 @@ fyrir þessa myndskreytingu</string>
   <string id="21451">Internet tenging er nauðsynleg.</string>
   <string id="21452">Ná í meira...</string>
   <string id="21453">Rótarskráarkerfið</string>
+  <string id="21454">Skyndiminni fullt</string>
+  <string id="21455">Skyndiminni fylltist áður en tókst að ná í nauðsynlegt magn fyrir áframhaldandi spilun</string>
+
+  <string id="21460">Staðsetning skjátexta</string>
+  <string id="21461">Fast</string>
+  <string id="21462">Neðst í myndband</string>
+  <string id="21463">Fyrir neðan myndband</string>
+  <string id="21464">Efst í myndbandi</string>
+  <string id="21465">Fyrir ofan myndband</string>
 
   <string id="21800">Skráarnafn</string>
   <string id="21801">Skáarslóð</string>
@@ -2167,6 +2205,11 @@ fyrir þessa myndskreytingu</string>
   <string id="24041">Setja inn frá zip skrá</string>
   <string id="24042">Niðurhala %i%%</string>
   <string id="24043">Fáanlegar uppfærslur</string>
+  <string id="24044">Kröfur voru ekki uppfylltar</string>
+  <string id="24045">Viðbót er ekki með rétta samsetningu</string>
+  <string id="24046">%s er notað af eftirfarandi viðbótum</string>
+  <string id="24047">Ekki er hægt að taka þessa viðbót út</string>
+  <string id="24048">Hætta við breytingar</string>
 
   <string id="24050">Tiltækar viðbætur</string>
   <string id="24051">Útgáfa:</string>
@@ -2191,14 +2234,19 @@ fyrir þessa myndskreytingu</string>
   <string id="24073">Gat ekki tengst</string>
   <string id="24074">Þarfnast endurræsingar</string>
   <string id="24075">Gera óvirkt</string>
+  <string id="24076">Þarfnast viðbótar</string>
   <string id="24080">Reyna að tengjast aftur?</string>
   <string id="24089">Endurræsingar viðbóta</string>
   <string id="24090">Læsa viðbótarstjóra</string>
 
+  <string id="24094">(núna)</string>
+  <string id="24095">(á bannlista)</string>
   <string id="24096">Viðbót hefur verið merkt sem biluð í safni.</string>
   <string id="24097">Viltu slökkva á henni á þínu kerfi?</string>
   <string id="24098">Biluð</string>
   <string id="24099">Viltu skipta yfir á þetta skinn?</string>
+  <string id="24100">Til að nota þetta þarftu að hala niður viðbót:</string>
+  <string id="24101">Viltu hala niður þessari viðbót?</string>
   <string id="25000">Tilkynningar</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2227,7 +2275,7 @@ fyrir þessa myndskreytingu</string>
   <string id="33015">Spyrja um niðurhal áður en myndband er spilað</string>
   <string id="33016">Úrklippur</string>
   <string id="33017">Endurræstu viðbót til að gera virkt</string>
-  <string id="33018">Úrklippur</string>
+  <string id="33018">Í kvöld</string>
   <string id="33019">Aðra nótt</string>
   <string id="33020">Staða</string>
   <string id="33021">Úrkoma</string>
@@ -2283,6 +2331,13 @@ fyrir þessa myndskreytingu</string>
   <string id="33082">Slóð á skriftu</string>
   <string id="33083">Virkja takka fyrir sérsniðna skriftu</string>
 
+  <string id="33100">Tókst ekki að ræsa</string>
+  <string id="33101">Vefþjónn</string>
+  <string id="33102">Atburðaþjónn</string>
+  <string id="33103">Fjartengdur samskiptaþjónn</string>
+
+  <string id="33200">Uppgötvaði nýja tengingu</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2304,4 +2359,52 @@ fyrir þessa myndskreytingu</string>
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Finn ekki næsta hlut til að spila</string>
+  <string id="34202">Finn ekki fyrri hlut til að spila</string>
+
+  <string id="34300">Gat ekki ræst zeroconf</string>
+  <string id="34301">Er Apple Bonjour þjónusta uppsett? Athugaðu atburðaskrá fyrir meiri upplýsingar.</string>
+
+  <string id="34400">Skjábirting</string>
+  <string id="34401">Gat ekki frumstillt skjá síur/kvarða, fer til baka í tvílínulega kvörðun</string>
+  <string id="34402">Gat ekki frumstillt hljóðkerfi</string>
+  <string id="34403">Athugaðu hljóðstillingar</string>
+
+  <string id="35000">Tæki</string>
+
+  <string id="35001">Almennt HID tæki</string>
+  <string id="35002">Almennt netkort</string>
+  <string id="35003">Almennur diskur</string>
+  <string id="35004">Engar stillingar eru tiltækar
+fyrir þetta tæki.</string>
+  <string id="35005">Nýtt tæki skilgreint</string>
+  <string id="35006">Tæki fjarlægt</string>
+  <string id="35007">Lyklavörpun sem á að nota fyrir þetta tæki</string>
+  <string id="35008">Lyklavörpun virk</string>
+
+  <string id="35500">Staðsetning</string>
+  <string id="35501">Klasi</string>
+  <string id="35502">Nafn</string>
+  <string id="35503">Söluaðili</string>
+  <string id="35504">Auðkenni vöru</string>
+
+  <string id="36000">Pulse-Eight CEC tengispjald</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Skipta yfir í hliðar lyklaborð</string>
+  <string id="36003">Skipta yfir í hliðar fjarstýringu</string>
+  <string id="36004">Ýta á "user" hnapp</string>
+  <string id="36005">Virkja að skipta á milli hliðarskipana</string>
+  <string id="36006">Gat ekki opnað tengispjald</string>
+  <string id="36007">Kveikja á sjónvarpinu þegar XBMC er ræst</string>
+  <string id="36008">Slökkva á tækjum þegar slökkt er á XBMC</string>
+  <string id="36009">Setja tæki í biðstöðu þegar skjávari er virkur</string>
+  <string id="36010"/>
+  <string id="36011">Fann ekki CEC gátt. Settu það upp handvirkt.</string>
+  <string id="36012">Fann ekki CEC tengispjald.</string>
+  <string id="36013">Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður (%d)</string>
+  <string id="36014">Setja tölvuna í biðstöðu þegar slökkt er á sjónvarpinu</string>
+  <string id="36015">HDMI gátt</string>
+  <string id="36016">Tengdur</string> <!-- max. 13 characters -->
+  <string id="36017">Fann tengispjald, en libcec er ekki tiltækt</string>
+  <string id="36018">Nota tungumál sjónvarps</string>
 </strings>

@@ -53,6 +53,7 @@ public:
   virtual bool Restore();
   virtual bool Hide();
   virtual bool Show(bool raise = true);
+  virtual void OnMove(int x, int y);
 
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
@@ -62,7 +63,7 @@ public:
   
   virtual int GetNumScreens();
 
-
+  void CheckDisplayChanging(u_int32_t flags);
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
@@ -72,7 +73,6 @@ protected:
   void  FillInVideoModes();
   bool  FlushBuffer(void);
 
-  void  CheckDisplayChanging(u_int32_t flags);
   static void DisplayReconfigured(CGDirectDisplayID display, 
     CGDisplayChangeSummaryFlags flags, void *userData);
   
@@ -81,6 +81,8 @@ protected:
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
   bool                         m_can_display_switch;
+  void                        *m_windowDidMove;
+  void                        *m_windowDidReSize;
 
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;

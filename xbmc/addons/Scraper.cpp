@@ -356,14 +356,23 @@ bool CScraper::Load()
         continue;
       }  
       AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+
+      bool bOptional = itr->second.second;
+
+      if (CAddonMgr::Get().GetAddon((*itr).first, dep))
       {
-        result = false;
-        break;
+        TiXmlDocument doc;
+        if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
+          m_parser.AddDocument(&doc);
       }
-      TiXmlDocument doc;
-      if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
-        m_parser.AddDocument(&doc);
+      else
+      {
+        if (!bOptional)
+        {
+          result = false;
+          break;
+        }
+      }
       itr++;
     }
   }
@@ -468,14 +477,15 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
   CStdString sTitle, sTitleYear, sYear;
   CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, fFirst);
 
+  if (!fFirst || Content() == CONTENT_MUSICVIDEOS)
+    sTitle.Replace("-"," ");
+
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper "
     "(path: '%s', content: '%s', version: '%s')", __FUNCTION__, sTitle.c_str(),
     Name().c_str(), Path().c_str(),
     ADDON::TranslateContent(Content()).c_str(), Version().c_str());
 
   sTitle.ToLower();
-  if (Content() == CONTENT_MUSICVIDEOS)
-    sTitle.Replace("-"," ");
 
   vector<CStdString> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);

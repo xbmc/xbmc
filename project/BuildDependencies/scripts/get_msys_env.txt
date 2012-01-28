@@ -20,7 +20,7 @@ xz-4.999.9beta_20100401-1-msys-1.0.13-bin.tar.gz        http://mirrors.xbmc.org/
 patch-2.6.1-1-msys-1.0.13-bin.tar.lzma                  http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/patch/patch-2.6.1-1/
 perl-5.6.1_2-2-msys-1.0.13-bin.tar.lzma                 http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/perl/perl-5.6.1_2-2/
 libcrypt-1.1_1-3-msys-1.0.13-dll-0.tar.lzma             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/crypt/crypt-1.1_1-3/
-autoconf-2.67-1-msys-1.0.15-bin.tar.lzma                http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/autoconf/autoconf-2.67-1/
+autoconf-2.68-1-msys-1.0.17-bin.tar.lzma                http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/autoconf/autoconf-2.68-1/
 m4-1.4.14-1-msys-1.0.13-bin.tar.lzma                    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/m4/m4-1.4.14-1/
 ; to get pr.exe
 coreutils-5.97-MSYS-1.0.11-snapshot.tar.bz2             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://www.finalmediaplayer.com/downloads/3rdparty/
@@ -29,4 +29,4 @@ findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma              http://mirrors.xbmc.org/
 automake-1.11.1-1-msys-1.0.13-bin.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/automake/automake-1.11.1-1/
 mktemp-1.6-2-msys-1.0.13-bin.tar.lzma                   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/mktemp/mktemp-1.6-2/
 texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma				http://mirrors.xbmc.org/build-deps/win32/mingw-msys/	  http://downloads.sourceforge.net/project/mingw/MSYS/texinfo/texinfo-4.13a-2/
-libtool-2.4-1-msys-1.0.15-bin.tar.lzm                   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/libtool/libtool-2.4-1/libtool-2.4-1-msys-1.0.15-bin.tar.lzma
+libtool-2.4-1-msys-1.0.15-bin.tar.lzma                  http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/libtool/libtool-2.4-1/libtool-2.4-1-msys-1.0.15-bin.tar.lzma

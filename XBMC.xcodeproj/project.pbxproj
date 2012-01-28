@@ -38,8 +38,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1809F6E0149C91E000960880 /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1809F6DE149C91E000960880 /* karaokevideobackground.cpp */; };
-		1809F6E1149C91E000960880 /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1809F6DE149C91E000960880 /* karaokevideobackground.cpp */; };
 		1830212813B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
 		1830212913B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
 		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
@@ -1941,8 +1939,6 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		1809F6DE149C91E000960880 /* karaokevideobackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokevideobackground.cpp; sourceTree = "<group>"; };
-		1809F6DF149C91E000960880 /* karaokevideobackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokevideobackground.h; sourceTree = "<group>"; };
 		1830212713B8E2DC00770920 /* controledit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controledit.cpp; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
@@ -4618,8 +4614,6 @@
 				F54C51E00F1E787700D46E3C /* karaokelyricstextlrc.h */,
 				7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */,
 				7CDAEA7C1001CD6E0040B25F /* karaokelyricstextustar.h */,
-				1809F6DE149C91E000960880 /* karaokevideobackground.cpp */,
-				1809F6DF149C91E000960880 /* karaokevideobackground.h */,
 				F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */,
 				F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */,
 			);
@@ -8049,7 +8043,6 @@
 				DF85BAB51443669A000686BE /* FileUPnP.cpp in Sources */,
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
-				1809F6E0149C91E000960880 /* karaokevideobackground.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8970,7 +8963,6 @@
 				F54BCC601439345300F86B0F /* HotKeyController.m in Sources */,
 				DF85BAB61443669A000686BE /* FileUPnP.cpp in Sources */,
 				F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
-				1809F6E1149C91E000960880 /* karaokevideobackground.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

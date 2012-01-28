@@ -218,7 +218,6 @@ const char* CCoreAudioChannelLayout::ChannelLayoutToString(AudioChannelLayout& l
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 AudioDeviceID CCoreAudioHardware::FindAudioDevice(CStdString searchName)
 {
   if (!searchName.length())
@@ -978,6 +977,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
       (unsigned int)m_StreamId, (unsigned int)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
+  sleep(1);   // For the change to take effect
   return true;   
 }
 

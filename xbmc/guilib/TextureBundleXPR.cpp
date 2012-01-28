@@ -279,10 +279,11 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   if (!buffer || !UnpackedBuf.Set((BYTE*)XPhysicalAlloc(file->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
   { // failed due to lack of memory
 #ifndef _LINUX
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
-              file->second.UnpackedSize + file->second.PackedSize, stat.dwAvailPhys);
+    MEMORYSTATUSEX stat;
+    stat.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&stat);
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %"PRIu64" bytes)", name.c_str(),
+              file->second.UnpackedSize + file->second.PackedSize, stat.ullAvailPhys);
 #elif defined(__APPLE__) || defined(__FreeBSD__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize);

@@ -218,6 +218,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
+                                  { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
                                   { "cpuusage",         SYSTEM_CPU_USAGE },
                                   { "gputemperature",   SYSTEM_GPU_TEMPERATURE },
@@ -1286,7 +1287,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
+    if(g_Windowing.IsFullScreen())
       strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
@@ -1393,21 +1394,22 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case SYSTEM_USED_MEMORY_PERCENT:
   case SYSTEM_TOTAL_MEMORY:
     {
-      MEMORYSTATUS stat;
-      GlobalMemoryStatus(&stat);
-      int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
+      MEMORYSTATUSEX stat;
+      stat.dwLength = sizeof(MEMORYSTATUSEX);
+      GlobalMemoryStatusEx(&stat);
+      int iMemPercentFree = 100 - ((int)( 100.0f* (stat.ullTotalPhys - stat.ullAvailPhys)/stat.ullTotalPhys + 0.5f ));
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.dwAvailPhys/MB));
+        strLabel.Format("%luMB", (ULONG)(stat.ullAvailPhys/MB));
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%luMB", (ULONG)((stat.dwTotalPhys - stat.dwAvailPhys)/MB));
+        strLabel.Format("%luMB", (ULONG)((stat.ullTotalPhys - stat.ullAvailPhys)/MB));
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.dwTotalPhys/MB));
+        strLabel.Format("%luMB", (ULONG)(stat.ullTotalPhys/MB));
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -1518,7 +1520,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
-    if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
+    if (g_lcd && g_lcd->IsConnected()) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
     break;
 #endif
   case NETWORK_IP_ADDRESS:
@@ -1707,9 +1709,10 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
       {
-        MEMORYSTATUS stat;
-        GlobalMemoryStatus(&stat);
-        int memPercentUsed = (int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f );
+        MEMORYSTATUSEX stat;
+        stat.dwLength = sizeof(MEMORYSTATUSEX);
+        GlobalMemoryStatusEx(&stat);
+        int memPercentUsed = (int)( 100.0f* (stat.ullTotalPhys - stat.ullAvailPhys)/stat.ullTotalPhys + 0.5f );
         if (info == SYSTEM_FREE_MEMORY)
           value = 100 - memPercentUsed;
         else
@@ -1902,6 +1905,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_powerManager.CanHibernate();
   else if (condition == SYSTEM_CAN_REBOOT)
     bReturn = g_powerManager.CanReboot();
+  else if (condition == SYSTEM_SCREENSAVER_ACTIVE)
+    bReturn = g_application.IsInScreenSaver();
 
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;

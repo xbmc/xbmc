@@ -34,6 +34,9 @@
 using namespace XFILE;
 using namespace JSONRPC;
 
+static const unsigned int SourcesSize = 5;
+static CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+
 JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
@@ -44,7 +47,13 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   {
     CFileItemList items;
     for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
+    {
+      // Do not show sources which are locked
+      if (sources->at(i).m_iHasLock == 2)
+        continue;
+
       items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
+    }
 
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
@@ -73,6 +82,17 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   CDirectory directory;
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
+
+  // Check if this directory is part of a source and whether it's locked
+  VECSOURCES *sources;
+  bool isSource;
+  for (unsigned int index = 0; index < SourcesSize; index++)
+  {
+    sources = g_settings.GetSourcesFromType(SourceNames[index]);
+    int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
+    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
+      return InvalidParams;
+  }
 
   CStdStringArray regexps;
   CStdString extensions = "";
@@ -106,18 +126,31 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         items[i]->SetPath(url.GetWithoutUserDetails());
       }
 
-      if (items[i]->m_bIsFolder)
-        filteredDirectories.Add(items[i]);
-      else if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-               (media == "music" && items[i]->HasMusicInfoTag()))
-        filteredFiles.Add(items[i]);
+      if ((media == "video" && items[i]->HasVideoInfoTag()) ||
+          (media == "music" && items[i]->HasMusicInfoTag()))
+      {
+        if (items[i]->m_bIsFolder)
+          filteredDirectories.Add(items[i]);
+        else 
+          filteredFiles.Add(items[i]);
+      }
       else
       {
         CFileItem fileItem;
-        if (FillFileItem(items[i]->GetPath(), fileItem, media))
-          filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
-        else if (media == "files")
-          filteredFiles.Add(items[i]);
+        if (FillFileItem(items[i], fileItem, media))
+        {
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
+          else
+            filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
+        }
+        else
+        {
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(items[i]);
+          else
+            filteredFiles.Add(items[i]);
+        }
       }
     }
 
@@ -141,7 +174,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     if (!hasFileField)
       param["properties"].append("file");
 
-    HandleFileItemList(NULL, true, "files", filteredDirectories, param, result);
+    HandleFileItemList("id", true, "files", filteredDirectories, param, result);
     for (unsigned int index = 0; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "directory";
@@ -187,24 +220,32 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }
 
-bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &item, CStdString media /* = "" */)
+bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &item, CStdString media /* = "" */)
 {
+  if (originalItem.get() == NULL)
+    return false;
+
   bool status = false;
-  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && CFile::Exists(strFilename))
+  CStdString strFilename = originalItem->GetPath();
+  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
   {
     if (media.Equals("video"))
-      status |= CVideoLibrary::FillFileItem(strFilename, item);
+      status = CVideoLibrary::FillFileItem(strFilename, item);
     else if (media.Equals("music"))
-      status |= CAudioLibrary::FillFileItem(strFilename, item);
+      status = CAudioLibrary::FillFileItem(strFilename, item);
 
-    if (!status)
+    if (!status && originalItem->GetLabel().empty())
     {
-      item = CFileItem(strFilename, false);
-      if (item.GetLabel().IsEmpty())
-        item.SetLabel(CUtil::GetTitleFromPath(strFilename, false));
-    }
+      bool isDir = CDirectory::Exists(strFilename);
+      CStdString label = CUtil::GetTitleFromPath(strFilename, isDir);
+      if (!label.empty())
+      {
+        item = CFileItem(strFilename, isDir);
+        item.SetLabel(label);
 
-    status = true;
+        status = true;
+      }
+    }
   }
 
   return status;
@@ -224,23 +265,20 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       CStdString extensions = "";
       CStdStringArray regexps;
 
-      if (media.Equals("video") || media.Equals("music") || media.Equals("pictures"))
+      if (media.Equals("video"))
       {
-        if (media.Equals("video"))
-        {
-          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-          extensions = g_settings.m_videoExtensions;
-        }
-        else if (media.Equals("music"))
-        {
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-          extensions = g_settings.m_musicExtensions;
-        }
-        else if (media.Equals("pictures"))
-        {
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-          extensions = g_settings.m_pictureExtensions;
-        }
+        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        extensions = g_settings.m_videoExtensions;
+      }
+      else if (media.Equals("music"))
+      {
+        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        extensions = g_settings.m_musicExtensions;
+      }
+      else if (media.Equals("pictures"))
+      {
+        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+        extensions = g_settings.m_pictureExtensions;
       }
 
       CDirectory directory;
@@ -261,8 +299,10 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           else
           {
             CFileItem fileItem;
-            if (FillFileItem(items[i]->GetPath(), fileItem, media))
+            if (FillFileItem(items[i], fileItem, media))
               list.Add(CFileItemPtr(new CFileItem(fileItem)));
+            else if (media == "files")
+              list.Add(items[i]);
           }
         }
 

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1809F6F0149C924B00960880 /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1809F6EE149C924B00960880 /* karaokevideobackground.cpp */; };
 		1830216013B8E35300770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830215F13B8E35300770920 /* controledit.cpp */; };
 		18404DFB1396C43B00863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404DF91396C43B00863BBA /* Slingbox.cpp */; };
 		18404DFD1396C44F00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DFC1396C44F00863BBA /* SlingboxLib.a */; };
@@ -948,8 +947,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1809F6EE149C924B00960880 /* karaokevideobackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokevideobackground.cpp; sourceTree = "<group>"; };
-		1809F6EF149C924B00960880 /* karaokevideobackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokevideobackground.h; sourceTree = "<group>"; };
 		1830215F13B8E35300770920 /* controledit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controledit.cpp; sourceTree = "<group>"; };
 		18404DF91396C43B00863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
 		18404DFA1396C43B00863BBA /* Slingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slingbox.h; sourceTree = "<group>"; };
@@ -4751,8 +4748,6 @@
 				F56C75EE131EC153000AD0F6 /* karaokelyricstextlrc.h */,
 				F56C75EF131EC153000AD0F6 /* karaokelyricstextustar.cpp */,
 				F56C75F0131EC153000AD0F6 /* karaokelyricstextustar.h */,
-				1809F6EE149C924B00960880 /* karaokevideobackground.cpp */,
-				1809F6EF149C924B00960880 /* karaokevideobackground.h */,
 				F56C75F1131EC153000AD0F6 /* karaokewindowbackground.cpp */,
 				F56C75F2131EC153000AD0F6 /* karaokewindowbackground.h */,
 			);
@@ -6939,7 +6934,6 @@
 				F5E113AD1435882400175026 /* pyrendercapture.cpp in Sources */,
 				DF673A251443769300A5A509 /* FileUPnP.cpp in Sources */,
 				F5BD033A148D4923001B5583 /* CryptThreading.cpp in Sources */,
-				1809F6F0149C924B00960880 /* karaokevideobackground.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

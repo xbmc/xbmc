@@ -30,6 +30,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p0 < ../006_no_printf.patch
 	cd $(SOURCE); patch -p0 < ../007_fix_syslog_defines.patch
 	cd $(SOURCE); patch -p0 < ../008-add-missing-libs.patch
+	cd $(SOURCE); patch -p0 < ../009_fix_ipv6.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 

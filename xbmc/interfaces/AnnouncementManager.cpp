@@ -26,7 +26,10 @@
 #include "utils/Variant.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"
+#include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+
+#define LOOKUP_PROPERTY "database-lookup"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -36,12 +39,18 @@ vector<IAnnouncer *> CAnnouncementManager::m_announcers;
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
+  if (!listener)
+    return;
+
   CSingleLock lock (m_critSection);
   m_announcers.push_back(listener);
 }
 
 void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 {
+  if (!listener)
+    return;
+
   CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
   {
@@ -75,6 +84,12 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 
 void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
+  if (!item.get())
+  {
+    Announce(flag, sender, message, data);
+    return;
+  }
+
   // Extract db id of item
   CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
   CStdString type;
@@ -82,12 +97,29 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 
   if (item->HasVideoInfoTag())
   {
-    CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
-
     id = item->GetVideoInfoTag()->m_iDbId;
+
+    // TODO: Can be removed once this is properly handled when starting playback of a file
+    if (id <= 0 && !item->GetPath().empty() &&
+       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
+    {
+      CVideoDatabase videodatabase;
+      if (videodatabase.Open())
+      {
+        if (videodatabase.LoadVideoInfo(item->GetPath(), *item->GetVideoInfoTag()))
+          id = item->GetVideoInfoTag()->m_iDbId;
+
+        videodatabase.Close();
+      }
+    }
+
+    CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
 
     if (id <= 0)
     {
+      // TODO: Can be removed once this is properly handled when starting playback of a file
+      item->SetProperty(LOOKUP_PROPERTY, false);
+
       object["title"] = item->GetVideoInfoTag()->m_strTitle;
 
       switch (item->GetVideoContentType())
@@ -118,8 +150,30 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
     id = item->GetMusicInfoTag()->GetDatabaseId();
     type = "song";
 
+    // TODO: Can be removed once this is properly handled when starting playback of a file
+    if (id <= 0 && !item->GetPath().empty() &&
+       (!item->HasProperty(LOOKUP_PROPERTY) || item->GetProperty(LOOKUP_PROPERTY).asBoolean()))
+    {
+      CMusicDatabase musicdatabase;
+      if (musicdatabase.Open())
+      {
+        CSong song;
+        if (musicdatabase.GetSongByFileName(item->GetPath(), song))
+        {
+          item->GetMusicInfoTag()->SetSong(song);
+          item->SetMusicThumb();
+          id = item->GetMusicInfoTag()->GetDatabaseId();
+        }
+
+        musicdatabase.Close();
+      }
+    }
+
     if (id <= 0)
     {
+      // TODO: Can be removed once this is properly handled when starting playback of a file
+      item->SetProperty(LOOKUP_PROPERTY, false);
+
       object["title"] = item->GetMusicInfoTag()->GetTitle();
 
       if (item->GetMusicInfoTag()->GetTrackNumber() > 0)

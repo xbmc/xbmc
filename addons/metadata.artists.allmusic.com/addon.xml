@@ -13,9 +13,11 @@
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Инф. за артисти от AllMusic + снимки на артисти от HTBackdrops</summary>
     <summary lang="en">AllMusic artist information + HTBackdrops artist images</summary>
     <summary lang="de">Scraper für Künstler-Informationen von AllMusic.com</summary>
     <summary lang="es">Descarga información de Artistas de AllMusic</summary>
+    <summary lang="fi">AllMusic.com -esittäjätietojen ja HTBackdrops-esittäjäkuvien lataaja</summary>
     <summary lang="fr">Scraper d'artistes musicaux AllMusic</summary>
     <summary lang="hu">AllMusic előadó információk</summary>
     <summary lang="nl">AllMusic-artiestinfo</summary>
@@ -25,6 +27,9 @@
     <summary lang="ru">Информация об исполнителе из AllMusic</summary>
     <summary lang="se">AllMusic artistinformation + HTBackdrops artistbilder</summary>
     <summary lang="zh">AllMusic艺术家信息</summary>
+    <description lang="bg">Попълнете метаинформацията в библиотеката си от AllMusic.com
+Уебсайтът allmusic.com е създаден през 19995, като място за страстни музикални фенове. Засегнати са всички жанрове и стилове музика. От най-комерсиалните и популярни до най-невъзприетите. Критиката към артисти и албуми се прави в контекста на съответните им жанрове - от опера до гаражен рок.
+Home Theater Backdrops (HTBackdrops.com) представлява база от данни с изображения задвижвана от общността около уебсайта. Съдържа висококачествени изображенията на артисти под формата на миниатюри и fanarts. Всички те са създадени или произхождат от общността. Моля, обмислете възможността да качите изображения за любимите ви артисти.</description>
     <description lang="en">Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion. All genres and styles of music are covered here, ranging from the most commercially popular to the most obscure. We critique albums and artists within the context of their own genres - from opera to garage rock to traditional country.
 
@@ -37,6 +42,9 @@ Alle Genres und Stile der Musik werden hier abgedeckt, reichend von Mainstream b
 La página web allmusic fue creada en el 1995 cómo un sitio donde los fans podíaan compartir su pasión por la música.
 El equipo de AMG, junto con cuentos de colaboradores expertos (todos ellos fans de la música) han hecho de allmusic uno de los sitios más extensos del planeta. Todos ellos intentan crear y mantener unos contenidos que los amantes de la música y los profesionales del sector obtienen de AMG.
 Todos los géneros y estilos musicales tienen cabida, desde los más comerciales hasta los más oscuros. En allmusic se critican los álbumes y los artistas en el entorno que les corresponde - desde opera, pasando por rock hasta country tradicional. Así se asegura que los fans de cualquier estilo de música puedan depender de nosotros para mantenerse al día de las novedades de sus artistas favoritos y descubrir nuevos sonidos.</description>
+    <description lang="fi">Käytä AllMusic.com -sivustoa täyttämään kirjastosi metatiedot.
+AllMusic.com -sivusto luotiin vuonna 1995 paikaksi, jossa musiikkifanit voivat tyydyttää intohimonsa musiikkiin. Kaikki musiikin lajityypit ja tyylisuunnat ovat edustettuina täällä, vaihdellen kaupallisesti suosituimmista kaikkein huomaamattomimpiin. Me arvostelemme albumit ja esittäjät heidän oman lajityyppinsä sisällä - oopperasta ja autotallirokista aina perinteiseen country-musiikkiin.
+HTBackdrops.com -sivusto on yhteisön ylläpitämä tietokanta korkealaatuisille esittäjä- ja fanitaidekuville. Sivuston jäsenet ovat luoneet kaikki sivuston kuvat. Lähetä meille itse tekemäsi suosikkiartistiesi kuvat, jotta voimme lisätä ne tietokantaan.</description>
     <description lang="fr">Utiliser AllMusic.com pour la récupération des méta-données.
 Le site web AllMusic a été créé en 1995 afin que les fans de musique puissent assouvir leur passion.
 L'équipe rédactionnelle d'AMG, forte de ses centaines de contributeurs avisés (tous passionnés de musique à part entière), a fait de AllMusic la source de référence la plus complète de toute la planète. Chacun s'investissant dans la construction et la maintenance d'un contenu aussi passionné et judicieux que tout amoureux de musique ou tout professionnel de l'industrie serait en droit d'attendre d'AMG.

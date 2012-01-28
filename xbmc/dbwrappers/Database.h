@@ -30,7 +30,7 @@ namespace dbiplus {
 
 #include <memory>
 
-struct DatabaseSettings; // forward
+class DatabaseSettings; // forward
 
 class CDatabase
 {

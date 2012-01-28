@@ -400,7 +400,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         items.SetContent("");
     }
-    else
+    else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
       if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
@@ -836,6 +836,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
   ||  node == NODE_TYPE_SEASONS
+  ||  node == NODE_TYPE_SETS
   ||  node == NODE_TYPE_TITLE_MOVIES
   ||  node == NODE_TYPE_TITLE_TVSHOWS
   ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
@@ -1449,6 +1450,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
   {
+    CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
     if (!DeleteItem(item.get(), true))
       return true;
 

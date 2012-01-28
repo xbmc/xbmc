@@ -65,6 +65,11 @@ bool DarwinIsAppleTV2(void)
   return (result == 1);
 }
 
+const char *GetDarwinVersionString(void)
+{
+  return [[[NSProcessInfo processInfo] operatingSystemVersionString] UTF8String];
+}
+
 float GetIOSVersion(void)
 {
   CCocoaAutoPool pool;

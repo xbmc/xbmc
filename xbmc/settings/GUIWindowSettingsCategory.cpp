@@ -116,6 +116,10 @@
 #include "network/AirPlayServer.h"
 #endif
 
+#if defined(HAS_WEB_SERVER)
+#include "network/WebServer.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
@@ -147,9 +151,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   // set the correct ID range...
   m_idRange = 8;
   m_iScreen = 0;
-  // set the network settings so that we don't reset them unnecessarily
-  m_iNetworkAssignment = -1;
-  m_strErrorMessage = "";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
   m_returningFromSkinLoad = false;
@@ -176,14 +177,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl = message.GetSenderId();
-      /*   if (iControl >= CONTROL_START_BUTTONS && iControl < CONTROL_START_BUTTONS + m_vecSections.size())
-         {
-          // change the setting...
-          m_iSection = iControl-CONTROL_START_BUTTONS;
-          CheckNetworkSettings();
-          CreateSettings();
-          return true;
-         }*/
       for (unsigned int i = 0; i < m_vecSettings.size(); i++)
       {
         if (m_vecSettings[i]->GetID() == (int)iControl)
@@ -211,7 +204,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           }
         }
         m_iSection = focusedControl - CONTROL_START_BUTTONS;
-        CheckNetworkSettings();
 
         CreateSettings();
       }
@@ -265,7 +257,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       m_delayedSetting = NULL;
 
       CheckForUpdates();
-      CheckNetworkSettings();
       CGUIWindow::OnMessage(message);
       FreeControls();
       return true;
@@ -584,8 +575,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value = g_guiSettings.GetResolution();
-        if (g_settings.m_ResInfo[value].bFullScreen)
+        if (g_Windowing.IsFullScreen())
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
@@ -967,11 +957,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #endif
   }
-}
-
-void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
-{
-  // date and time used to be here
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1938,9 +1923,6 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
 
 void CGUIWindowSettingsCategory::FrameMove()
 {
-  // update realtime changeable stuff
-  UpdateRealTimeSettings();
-
   if (m_delayedSetting && m_delayedTimer.GetElapsedMilliseconds() > 3000)
   { // we send a thread message so that it's processed the following frame (some settings won't
     // like being changed during Render())
@@ -1985,60 +1967,6 @@ void CGUIWindowSettingsCategory::DoProcess(unsigned int currentTime, CDirtyRegio
 void CGUIWindowSettingsCategory::Render()
 {
   CGUIWindow::Render();
-  // render the error message if necessary
-  if (m_strErrorMessage.size())
-  {
-    CGUIFont *pFont = g_fontManager.GetFont("font13");
-    float fPosY = g_graphicsContext.GetHeight() * 0.8f;
-    float fPosX = g_graphicsContext.GetWidth() * 0.5f;
-    CGUITextLayout::DrawText(pFont, fPosX, fPosY, 0xffffffff, 0, m_strErrorMessage, XBFONT_CENTER_X);
-  }
-}
-
-void CGUIWindowSettingsCategory::CheckNetworkSettings()
-{
-  if (!g_application.IsStandAlone())
-    return;
-
-  // check if our network needs restarting (requires a reset, so check well!)
-  if (m_iNetworkAssignment == -1)
-  {
-    // nothing to do here, folks - move along.
-    return ;
-  }
-  // we need a reset if:
-  // 1.  The Network Assignment has changed OR
-  // 2.  The Network Assignment is STATIC and one of the network fields have changed
-  if (m_iNetworkAssignment != g_guiSettings.GetInt("network.assignment") ||
-      (m_iNetworkAssignment == NETWORK_STATIC && (
-         m_strNetworkIPAddress != g_guiSettings.GetString("network.ipaddress") ||
-         m_strNetworkSubnet != g_guiSettings.GetString("network.subnet") ||
-         m_strNetworkGateway != g_guiSettings.GetString("network.gateway") ||
-         m_strNetworkDNS != g_guiSettings.GetString("network.dns"))))
-  {
-/*    // our network settings have changed - we should prompt the user to reset XBMC
-    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, 0))
-    {
-      // reset settings
-      g_application.getApplicationMessenger().RestartApp();
-      // Todo: aquire new network settings without restart app!
-    }
-    else*/
-
-    // update our settings variables
-    m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
-    m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
-    m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
-    m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
-    m_strNetworkDNS = g_guiSettings.GetString("network.dns");
-
-    // replace settings
-    /*   g_guiSettings.SetInt("network.assignment", m_iNetworkAssignment);
-       g_guiSettings.SetString("network.ipaddress", m_strNetworkIPAddress);
-       g_guiSettings.SetString("network.subnet", m_strNetworkSubnet);
-       g_guiSettings.SetString("network.gateway", m_strNetworkGateway);
-       g_guiSettings.SetString("network.dns", m_strNetworkDNS);*/
-  }
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl)
@@ -2076,8 +2004,12 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   // find TTF fonts
   {
     CFileItemList items;
+    CFileItemList items2;
+    CDirectory::GetDirectory("special://home/media/Fonts/", items2);
+
     if (CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
     {
+      items.Append(items2);
       for (int i = 0; i < items.Size(); ++i)
       {
         CFileItemPtr pItem = items[i];
@@ -2258,30 +2190,34 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
 
 DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RESOLUTION res)
 {
-  CBaseSettingControl *control = GetSetting(strSetting);
-  control->SetDelayed();
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-  pControl->Clear();
-
-  CStdString strScreen;
-  if (g_advancedSettings.m_canWindowed)
-    pControl->AddLabel(g_localizeStrings.Get(242), -1);
-
-  for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
-  {
-    strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
-    pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
-  }
-
   DisplayMode mode;
-
   if (res == RES_WINDOW)
     mode = DM_WINDOWED;
   else
     mode = g_settings.m_ResInfo[res].iScreen;
 
-  pControl->SetValue(mode);
-  g_guiSettings.SetInt("videoscreen.screen", mode);
+  // we expect "videoscreen.screen" but it might be hidden on some platforms,
+  // so check that we actually have a visable control.
+  CBaseSettingControl *control = GetSetting(strSetting);
+  if (control)
+  {
+    control->SetDelayed();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+    pControl->Clear();
+
+    CStdString strScreen;
+    if (g_advancedSettings.m_canWindowed)
+      pControl->AddLabel(g_localizeStrings.Get(242), -1);
+
+    for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
+    {
+      strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
+      pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
+    }
+    pControl->SetValue(mode);
+    g_guiSettings.SetInt("videoscreen.screen", mode);
+  }
+
   return mode;
 }
 
@@ -2627,16 +2563,6 @@ void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::OnInitWindow()
 {
-  if (g_application.IsStandAlone())
-  {
-#ifndef __APPLE__
-    m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");
-    m_strNetworkIPAddress = g_guiSettings.GetString("network.ipaddress");
-    m_strNetworkSubnet = g_guiSettings.GetString("network.subnet");
-    m_strNetworkGateway = g_guiSettings.GetString("network.gateway");
-    m_strNetworkDNS = g_guiSettings.GetString("network.dns");
-#endif
-  }
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
   SetupControls();

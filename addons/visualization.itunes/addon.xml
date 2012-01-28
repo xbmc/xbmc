@@ -8,6 +8,7 @@
     point="xbmc.player.musicviz"
     library_osx="iTunes.mvis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="bg">Обвивка за визуализации от iTunes</summary>
     <summary lang="en">iTunes Visualization Wrapper</summary>
     <summary lang="es">Wrapper de visualizaciones de iTunes</summary>
     <summary lang="de">iTunes Visualisierung</summary>
@@ -20,6 +21,7 @@
     <summary lang="pt">Visualização iTunes</summary>
     <summary lang="se">iTunes visualiseringsomslag</summary>
     <summary lang="zh">iTunes可视化效果包</summary>
+    <description lang="bg">iTunes Visualization Wrapper ви позволява да използвате визуализациите от локалната инсталация на OSX iTunes в XBMC</description>
     <description lang="en">iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
     <description lang="es">El Wrapper de visualizaciones de iTunes le permite usar las visualizaciones de su OSX iTunes en XBMC</description>
     <description lang="de">iTunes Visualisierung ermöglicht es von der OSX iTunes Installation die Visualisierung in XBMC nutzen zu können</description>

@@ -120,7 +120,7 @@ CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
   if (!musicInfo)
     return CStdString();
 
-  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetArtist().empty() ? musicInfo->GetArtist() : musicInfo->GetAlbumArtist());
+  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : musicInfo->GetArtist());
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)
@@ -232,7 +232,10 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
-    return GetThumb(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
+    CStdString path = item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (path.empty())
+      return "";
+    return GetThumb(path,g_settings.GetVideoFanartFolder());
   }
   if (item.HasMusicInfoTag())
     return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
