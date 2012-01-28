@@ -138,8 +138,10 @@ void CThread::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;
   m_StopEvent.Set();
+  CSingleLock lock(m_CriticalSection);
   if (m_ThreadId && bWait)
   {
+    lock.Leave();
     WaitForThreadExit(0xFFFFFFFF);
   }
 }
