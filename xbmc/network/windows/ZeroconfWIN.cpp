@@ -121,6 +121,7 @@ bool CZeroconfWIN::doRemoveService(const std::string& fcr_ident)
 void CZeroconfWIN::doStop()
 {
   CSingleLock lock(m_data_guard);
+  CLog::Log(LOGDEBUG, "ZeroconfWIN: Shutdown services");
   for(tServiceMap::iterator it = m_services.begin(); it != m_services.end(); ++it)
     DNSServiceRefDeallocate(it->second);
   m_services.clear();

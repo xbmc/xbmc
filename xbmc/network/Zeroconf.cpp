@@ -77,10 +77,8 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
   if(!ret.second) //identifier exists
     return false;
   if(m_started)
-  {
-    CPublish* publish = new CPublish(fcr_identifier, info);
-    CJobManager::GetInstance().AddJob(publish, NULL);
-  }
+    CJobManager::GetInstance().AddJob(new CPublish(fcr_identifier, info), NULL);
+
   //not yet started, so its just queued
   return true;
 }
@@ -117,8 +115,7 @@ void CZeroconf::Start()
     return;
   m_started = true;
 
-  CPublish* publish = new CPublish(m_service_map);
-  CJobManager::GetInstance().AddJob(publish, NULL);
+  CJobManager::GetInstance().AddJob(new CPublish(m_service_map), NULL);
 }
 
 void CZeroconf::Stop()
@@ -158,14 +155,14 @@ void CZeroconf::ReleaseInstance()
   smp_instance = 0;
 }
 
-CZeroconf::CPublish::CPublish(const std::string& fcr_identifier, PublishInfo& pubinfo)
+CZeroconf::CPublish::CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo)
 {
   m_servmap.insert(std::make_pair(fcr_identifier, pubinfo));
 }
 
-CZeroconf::CPublish::CPublish(tServiceMap& servmap)
+CZeroconf::CPublish::CPublish(const tServiceMap& servmap) 
+  : m_servmap(servmap)
 {
-  m_servmap = servmap;
 }
 
 bool CZeroconf::CPublish::DoWork()

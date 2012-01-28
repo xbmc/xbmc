@@ -122,8 +122,8 @@ private:
   class CPublish : public CJob
   {
   public:
-    CPublish(const std::string& fcr_identifier, PublishInfo& pubinfo);
-    CPublish(tServiceMap& servmap);
+    CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);
+    CPublish(const tServiceMap& servmap);
 
     bool DoWork();
 
