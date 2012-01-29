@@ -530,10 +530,9 @@ const CStdString &CDetectDVDMedia::GetDVDPath()
   return m_diskPath;
 }
 
-CDetectDisc::CDetectDisc(const CStdString &strPath, bool bautorun)
+CDetectDisc::CDetectDisc(const CStdString &strPath, const bool bautorun)
+  : m_strPath(strPath), m_bautorun(bautorun)
 {
-  m_strPath  = strPath;
-  m_bautorun = bautorun;
 }
 
 bool CDetectDisc::DoWork()
