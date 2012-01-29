@@ -174,6 +174,10 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
               object["type"] = "movie";
               break;
 
+            case VIDEODB_CONTENT_TVSHOWS:
+              object["type"] = "tvshow";
+              break;
+
             default:
               break;
           }
