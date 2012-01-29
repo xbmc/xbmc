@@ -71,6 +71,7 @@ namespace PERIPHERALS
     virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
     virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
     virtual bool HasConnectedAudioSystem(void);
+    virtual void SetAudioSystemConnected(bool bSetTo);
     virtual void ScheduleVolumeUp(void);
     virtual void VolumeUp(void);
     virtual void ScheduleVolumeDown(void);
@@ -108,6 +109,7 @@ namespace PERIPHERALS
     bool                              m_bStarted;
     bool                              m_bHasButton;
     bool                              m_bIsReady;
+    bool                              m_bHasConnectedAudioSystem;
     CStdString                        m_strMenuLanguage;
     CDateTime                         m_screensaverLastActivated;
     CecButtonPress                    m_button;

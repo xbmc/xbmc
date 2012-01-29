@@ -74,6 +74,7 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bStarted(false),
   m_bHasButton(false),
   m_bIsReady(false),
+  m_bHasConnectedAudioSystem(false),
   m_strMenuLanguage("???"),
   m_lastKeypress(0),
   m_lastChange(VOLUME_CHANGE_NONE)
@@ -342,7 +343,14 @@ bool CPeripheralCecAdapter::SetHdmiPort(int iDevice, int iHdmiPort)
 
 bool CPeripheralCecAdapter::HasConnectedAudioSystem(void)
 {
-  return m_cecAdapter && m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM);
+  CSingleLock lock(m_critSection);
+  return m_bHasConnectedAudioSystem;
+}
+
+void CPeripheralCecAdapter::SetAudioSystemConnected(bool bSetTo)
+{
+  CSingleLock lock(m_critSection);
+  m_bHasConnectedAudioSystem = bSetTo;
 }
 
 void CPeripheralCecAdapter::ScheduleVolumeUp(void)
@@ -953,12 +961,13 @@ void CPeripheralCecAdapterQueryThread::Process(void)
 
   /* disable the mute setting when an amp is found, because the amp handles the mute setting and
      set PCM output to 100% */
-  if (m_adapter->HasConnectedAudioSystem())
+  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
   {
     cec_osd_name ampName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
     CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
     strNotification.AppendFormat(" - %s", ampName.name);
 
+    m_adapter->SetAudioSystemConnected(true);
     g_settings.m_bMute = false;
     g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
   }
