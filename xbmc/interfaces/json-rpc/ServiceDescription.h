@@ -423,7 +423,7 @@ namespace JSONRPC
                   "\"playcount\", \"writer\", \"studio\", \"mpaa\", \"cast\", \"country\","
                   "\"imdbnumber\", \"premiered\", \"productioncode\", \"runtime\", \"set\","
                   "\"showlink\", \"streamdetails\", \"top250\", \"votes\", \"fanart\","
-                  "\"thumbnail\", \"file\", \"sorttitle\", \"resume\", \"setid\" ]"
+                  "\"thumbnail\", \"file\", \"sorttitle\", \"resume\", \"setid\", \"dateadded\" ]"
       "}"
     "}",
     "\"Video.Fields.MovieSet\": {"
@@ -440,7 +440,8 @@ namespace JSONRPC
                   "\"studio\", \"mpaa\", \"cast\", \"playcount\", \"episode\","
                   "\"imdbnumber\", \"premiered\", \"votes\", \"lastplayed\","
                   "\"fanart\", \"thumbnail\", \"file\", \"originaltitle\","
-                  "\"sorttitle\", \"episodeguide\", \"season\", \"watchedepisodes\" ]"
+                  "\"sorttitle\", \"episodeguide\", \"season\", \"watchedepisodes\","
+                  "\"dateadded\"]"
       "}"
     "}",
     "\"Video.Fields.Season\": {"
@@ -458,7 +459,7 @@ namespace JSONRPC
                   "\"firstaired\", \"playcount\", \"runtime\", \"director\","
                   "\"productioncode\", \"season\", \"episode\", \"originaltitle\","
                   "\"showtitle\", \"cast\", \"streamdetails\", \"lastplayed\", \"fanart\","
-                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\" ]"
+                  "\"thumbnail\", \"file\", \"resume\", \"tvshowid\", \"dateadded\" ]"
       "}"
     "}",
     "\"Video.Fields.MusicVideo\": {"
@@ -468,7 +469,7 @@ namespace JSONRPC
         "\"enum\": [ \"title\", \"playcount\", \"runtime\", \"director\","
                   "\"studio\", \"year\", \"plot\", \"album\", \"artist\","
                   "\"genre\", \"track\", \"streamdetails\", \"lastplayed\","
-                  "\"fanart\", \"thumbnail\", \"file\", \"resume\" ]"
+                  "\"fanart\", \"thumbnail\", \"file\", \"resume\", \"dateadded\" ]"
       "}"
     "}",
     "\"Video.Cast\": {"
@@ -543,7 +544,8 @@ namespace JSONRPC
       "\"properties\": {"
         "\"file\": { \"type\": \"string\" },"
         "\"plot\": { \"type\": \"string\" },"
-        "\"lastplayed\": { \"type\": \"string\" }"
+        "\"lastplayed\": { \"type\": \"string\" },"
+        "\"dateadded\": { \"type\": \"string\" }"
       "}"
     "}",
     "\"Video.Details.File\": {"
