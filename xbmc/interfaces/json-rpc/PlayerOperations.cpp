@@ -182,13 +182,23 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
   {
     case Video:
     case Audio:
-      CBuiltins::Execute("playercontrol(play)");
+      if (parameterObject["play"].isString())
+        CBuiltins::Execute("playercontrol(play)");
+      else
+      {
+        if (parameterObject["play"].asBoolean() == g_application.IsPaused())
+          g_application.getApplicationMessenger().MediaPause();
+      }
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
       return OK;
 
     case Picture:
-      SendSlideshowAction(ACTION_PAUSE);
       slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      if (slideshow && slideshow->IsPlaying() &&
+         (parameterObject["play"].isString() ||
+         (parameterObject["play"].isBoolean() && parameterObject["play"].asBoolean() == slideshow->IsPaused())))
+        SendSlideshowAction(ACTION_PAUSE);
+
       if (slideshow && slideshow->IsPlaying() && !slideshow->IsPaused())
         result["speed"] = slideshow->GetDirection();
       else

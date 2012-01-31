@@ -25,6 +25,12 @@
     "type": "string",
     "enum": [ "increment", "decrement" ]
   },
+  "Global.Toggle": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "string", "enum": [ "toggle" ], "required": true }
+    ]
+  },
   "Configuration.Notifications": {
     "type": "object",
     "properties": {

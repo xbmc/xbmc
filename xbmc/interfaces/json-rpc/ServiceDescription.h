@@ -53,6 +53,12 @@ namespace JSONRPC
       "\"type\": \"string\","
       "\"enum\": [ \"increment\", \"decrement\" ]"
     "}",
+    "\"Global.Toggle\": {"
+      "\"type\": ["
+        "{ \"type\": \"boolean\", \"required\": true },"
+        "{ \"type\": \"string\", \"enum\": [ \"toggle\" ], \"required\": true }"
+      "]"
+    "}",
     "\"Configuration.Notifications\": {"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -1004,7 +1010,8 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
-        "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true }"
+        "{ \"name\": \"playerid\", \"$ref\": \"Player.Id\", \"required\": true },"
+        "{ \"name\": \"play\", \"$ref\": \"Global.Toggle\", \"default\": \"toggle\" }"
       "],"
       "\"returns\": { \"$ref\": \"Player.Speed\" }"
     "}",
@@ -2009,11 +2016,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlGUI\","
       "\"params\": ["
-        "{ \"name\": \"fullscreen\", \"required\": true, \"type\": ["
-            "{ \"type\": \"boolean\", \"required\": true },"
-            "{ \"type\": \"string\", \"enum\": [ \"toggle\" ], \"required\": true }"
-          "]"
-        "}"
+        "{ \"name\": \"fullscreen\", \"required\": true, \"$ref\": \"Global.Toggle\" }"
       "],"
       "\"returns\": { \"type\": \"boolean\", \"description\": \"Fullscreen state\" }"
     "}",
@@ -2170,11 +2173,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
-        "{ \"name\": \"mute\", \"required\": true, \"type\": ["
-            "{ \"type\": \"boolean\", \"required\": true },"
-            "{ \"type\": \"string\", \"enum\": [ \"toggle\" ], \"required\": true }"
-          "]"
-        "}"
+        "{ \"name\": \"mute\", \"required\": true, \"$ref\": \"Global.Toggle\" }"
       "],"
       "\"returns\": { \"type\": \"boolean\", \"description\": \"Mute state\" }"
     "}",
