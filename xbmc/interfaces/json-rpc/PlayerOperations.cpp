@@ -743,6 +743,10 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const CStdString &method, ITranspo
           return InvalidParams;
 
         g_application.m_pPlayer->SetSubtitle(index);
+
+        // Check if we need to enable subtitles to be displayed
+        if (parameterObject["enable"].asBoolean() && !g_application.m_pPlayer->GetSubtitleVisible())
+          g_application.m_pPlayer->SetSubtitleVisible(true);
       }
       else
         return FailedToExecute;

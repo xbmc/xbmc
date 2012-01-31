@@ -403,7 +403,8 @@
           { "type": "string", "enum": [ "previous", "next", "off", "on" ] },
           { "type": "integer", "minimum": 0, "description": "Index of the subtitle to display" }
         ]
-      }
+      },
+      { "name": "enable", "type": "boolean", "default": false, "description": "Whether to enable subtitles to be displayed after setting the new subtitle" }
     ],
     "returns": "string"
   },
