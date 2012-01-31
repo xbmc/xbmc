@@ -363,21 +363,8 @@ void CVideoDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create movieview");
   m_pDS->exec("DROP VIEW IF EXISTS movieview");
-  CStdString movieview = PrepareSQL("CREATE VIEW movieview AS SELECT "
-                                    "movie.*,"
-                                    "files.strFileName AS strFileName,"
-                                    "path.strPath AS strPath,"
-                                    "files.playCount AS playCount,"
-                                    "files.lastPlayed AS lastPlayed,"
-                                    "  NULLIF(setlinkmovie.idSet, 0) AS idSet "
-                                    "FROM movie"
-                                    "  LEFT JOIN setlinkmovie ON"
-                                    "    setlinkmovie.idMovie=movie.idMovie"
-                                    "  LEFT JOIN files ON"
-                                    "    files.idFile=movie.idFile"
-                                    "  LEFT JOIN path ON"
-                                    "    path.idPath=files.idPath");
-  m_pDS->exec(movieview.c_str());
+  m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed "
+              "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
 }
 
 //********************************************************************************************************************************
