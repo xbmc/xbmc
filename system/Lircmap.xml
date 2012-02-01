@@ -425,7 +425,6 @@
 		<play>KEY_PLAY</play>
 		<play>KEY_PLAYPAUSE</play>
 		<pause>KEY_PAUSE</pause>
-		<pause>KEY_PLAYPAUSE</pause>
 		<stop>KEY_STOP</stop>
 		<stop>KEY_STOPCD</stop>
 		<forward>KEY_FASTFORWARD</forward>
