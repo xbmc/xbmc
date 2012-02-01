@@ -232,7 +232,7 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
-    CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty() ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath;
+    CStdString path = item.GetVideoInfoTag()->GetPath();
     if (path.empty())
       return "";
     return GetThumb(path,g_settings.GetVideoFanartFolder());
