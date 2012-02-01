@@ -209,7 +209,7 @@ CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
 {
   // get the locally cached thumb
-  if (item.IsVideoDb() || item.HasVideoInfoTag())
+  if (item.IsVideoDb() || (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->IsEmpty()))
   {
     if (!item.HasVideoInfoTag())
       return "";
@@ -232,7 +232,7 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
-    CStdString path = item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath;
+    CStdString path = item.GetVideoInfoTag()->GetPath();
     if (path.empty())
       return "";
     return GetThumb(path,g_settings.GetVideoFanartFolder());
