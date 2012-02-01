@@ -169,7 +169,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       path = URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
-      path = URIUtils::AddFileToFolder(path, filename);
+      path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
     }
     else
       return;
