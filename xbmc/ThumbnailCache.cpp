@@ -209,7 +209,7 @@ CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
 {
   // get the locally cached thumb
-  if (item.IsVideoDb() || item.HasVideoInfoTag())
+  if (item.IsVideoDb() || (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->IsEmpty()))
   {
     if (!item.HasVideoInfoTag())
       return "";
