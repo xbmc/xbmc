@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Translator: Kristján Bjarni Guðmundsson and Matthías Bjarnason-->
-<!--Email: kristjanbjarni@gmail.com - matthiasrusl@gmail.com-->
-<!--Date of translation: 2012-01-31-->
-<!--Based on English 3978ce61ee897fab5daf83c345f3a8183aae0b22 (25.01.2012)-->
+<!--Translator: Kristján Bjarni Guðmundsson-->
+<!--Email: kristjanbjarni@gmail.com-->
+<!--Date of translation: 2012-02-01-->
+<!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
   <string id="1">Ljósmyndir</string>
@@ -56,7 +56,7 @@
   <string id="60">okt</string>
   <string id="61">nóv</string>
   <string id="62">des</string>
-
+  
   <string id="71">N</string>
   <string id="72">NNA</string>
   <string id="73">NA</string>
@@ -970,7 +970,7 @@
   <string id="12362">Slökkva á kerfi ef fjöldi lykilorðságiskana á lás fer yfir hámark</string>
   <string id="12367">Aðal kóði er ekki gildur</string>
   <string id="12368">Vinsamlega sláðu inn aðal kóða</string>
-  <string id="12373">Stillingar og skráarsýsl</string>
+  <string id="12373">Stillingar og  skráarsýsl</string>
   <string id="12376">Setja sem sjálfgefið fyrir allar myndir</string>
   <string id="12377">Þetta mun endurstilla allar fyrri vistaðar stillingar</string>
   <string id="12378">Sýna hverja mynd í</string>
@@ -1069,11 +1069,11 @@
 
   <string id="13200">Notendur</string>
   <string id="13201">Eyða notanda '%s'?</string>
-
+  
   <string id="13204">Seinasti notandi:</string>
   <string id="13205">Óþekkt</string>
   <string id="13206">Yfirskrifa</string>
-
+  
   <string id="13208">Vekjaraklukka</string>
   <string id="13209">Vekjaraklukku tími (í mínútum)</string>
   <string id="13210">Í gangi, vakning eftir %im</string>
@@ -1174,7 +1174,7 @@
   <string id="13359">Setja smámynd á listamann</string>
   <string id="13360">Búa til smámyndir</string>
   <string id="13361">Virkja rödd</string>
-
+  
   <string id="13375">Virkja Tæki</string>
   <string id="13376">Hljóðstyrkur</string>
   <string id="13377">Sjálfgefinn sjónarhornsháttur</string>
@@ -1303,7 +1303,7 @@ fyrir þessa myndskreytingu</string>
 
   <string id="14038">Netstillingum breytt</string>
   <string id="14039">XBMC þarf að endurræsa til að virkja</string>
-  <string id="14040">netstillingar. Viltu endurræsa núna?</string>
+  <string id="14040">netstillingar.  Viltu endurræsa núna?</string>
   <string id="14041">Bandvíddstakmarkanir á Internettengingu</string>
 
   <string id="14043">- Slökkva í miðri spilun</string>
@@ -1528,8 +1528,8 @@ fyrir þessa myndskreytingu</string>
   <string id="16309">Sinc (hugbúnaður)</string>
   <string id="16310">Temporal</string>
   <string id="16311">Temporal/Spatial</string>
-  <string id="16312">(VDPAU)Noise Reduction</string>
-  <string id="16313">(VDPAU)Sharpness</string>
+  <string id="16312">(VDPAU)Suðhreinsun</string>
+  <string id="16313">(VDPAU)Skerpa</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimized</string>
   <string id="16316">Sjálfvirkt</string>
@@ -1548,7 +1548,7 @@ fyrir þessa myndskreytingu</string>
 
   <string id="19000">Skipta yfir á rás</string>
 
-  <string id="20000">CDDA afritunar mappa</string>
+  <string id="20000">Tónlistarmappa fyrir vistun</string>
   <string id="20001">Nota ytri DVD spilara</string>
   <string id="20002">Ytri DVD spilari</string>
   <string id="20003">Svindl mappa</string>
@@ -1819,7 +1819,8 @@ fyrir þessa myndskreytingu</string>
   <string id="20368">Framleiðslu kóði</string>
   <string id="20369">Fela söguþráð á því sem ekki er búið að horfa á</string>
   <string id="20370">* Falið til að spilla ekki söguþræði *</string>
-  <string id="20371">Velja smámynd fyrir þáttaröð</string>
+  <string id="20371">Velja smámynd fyrir þáttaröð
+</string>
   <string id="20372">Mynd þáttaraðar</string>
   <string id="20373">Þáttaröð</string>
   <string id="20374">Sæki upplýsingar um myndefni</string>
@@ -1870,7 +1871,7 @@ fyrir þessa myndskreytingu</string>
   <string id="20419">Sýna lýsigögn í skráarsýn</string>
 
   <string id="20420">Aldrei</string>
-  <string id="20421">Bara ef ein sería</string>
+  <string id="20421">Bara ef ein þáttaröð</string>
   <string id="20422">Alltaf</string>
   <string id="20423">Er með sýnishorn</string>
   <string id="20424">Ósatt</string>
@@ -1907,7 +1908,7 @@ fyrir þessa myndskreytingu</string>
   <string id="20455">Hlustendur</string>
   <string id="20456">Velja aðdáendamynd fyrir kvikmyndasett</string>
   <string id="20457">Kvikmyndasett</string>
-  <string id="20458">Flokka kvikmyndir í sett</string>
+  <string id="20458">Hópa saman kvikmyndir í sett</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -2204,12 +2205,12 @@ fyrir þessa myndskreytingu</string>
   <string id="24039">Óvirkar viðbætur</string>
   <string id="24040">(Hreinsa núverandi stillingu)</string>
   <string id="24041">Setja inn frá zip skrá</string>
-  <string id="24042">Niðurhal %i%%</string>
+  <string id="24042">Niðurhaa %i%%</string>
   <string id="24043">Fáanlegar uppfærslur</string>
   <string id="24044">Kröfur voru ekki uppfylltar</string>
   <string id="24045">Viðbót er ekki rétt uppsett</string>
   <string id="24046">%s er notað af eftirfarandi viðbótum</string>
-  <string id="24047">Ekki er hægt að fjarlægja þessa viðbót</string>
+  <string id="24047">Ekki er hægt að taka þessa viðbót út</string>
   <string id="24048">Niðurfæra útgáfu</string>
 
   <string id="24050">Tiltækar viðbætur</string>
@@ -2336,7 +2337,7 @@ fyrir þessa myndskreytingu</string>
   <string id="33101">Vefþjónn</string>
   <string id="33102">Atburðaþjónn</string>
   <string id="33103">Fjartengdur samskiptaþjónn</string>
-
+  
   <string id="33200">Uppgötvaði nýja tengingu</string>
 
   <!-- translators: no need to add these to your language files -->
@@ -2388,7 +2389,7 @@ fyrir þetta tæki.</string>
   <string id="35502">Nafn</string>
   <string id="35503">Söluaðili</string>
   <string id="35504">Auðkenni vöru</string>
-
+  
   <string id="36000">Pulse-Eight CEC tengispjald</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
   <string id="36002">Skipta yfir í hliðar lyklaborð</string>
