@@ -3,7 +3,7 @@
 <!--Translator: Idan Bushari-->
 <!--Email: bushari2003@hotmail.com-->
 <!--Date of translation: 01/25/2012-->
-<!--Based on English cd69c7030b0caec990b6143fac65ca8168dccf71 (23.01.2012)-->
+<!--Based on English 3978ce61ee897fab5daf83c345f3a8183aae0b22 (26.01.2012)-->
 <strings>
   <string id="0">תוכנות</string>
   <string id="1">תמונות</string>
@@ -1650,7 +1650,7 @@
   <string id="20415">סורק עבור תוכן חדש</string>
   <string id="20416">שודר לראשונה</string>
   <string id="20417">כותב</string>
-  <string id="20419">הצג מטה דאטה בתצוגת קבצים</string>
+  <string id="20419">החלף שמות קבצים עם כותרות ספריה</string>
   <string id="20420">אף פעם</string>
   <string id="20421">אם רק עונה אחת</string>
   <string id="20422">תמיד</string>
