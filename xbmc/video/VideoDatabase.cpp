@@ -3997,7 +3997,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount,AVG(movie.c%02d) AS rating FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath", VIDEODB_ID_RATING);
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount,AVG(movie.c%02d) AS rating,MAX(movie.idFile) as idFile,MAX(files.dateAdded) AS dateAdded FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath", VIDEODB_ID_RATING);
       strSQL += where;
     }
     else
@@ -4005,7 +4005,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       CStdString group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount),AVG(movie.c%02d) AS rating FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ", VIDEODB_ID_RATING);
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount),AVG(movie.c%02d) AS rating,MAX(movie.idFile) as idFile,MAX(files.dateAdded) AS dateAdded FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ", VIDEODB_ID_RATING);
         group = " GROUP BY sets.idSet HAVING c>1";
       }
       strSQL += where;
@@ -4046,6 +4046,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
               pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
               // Set the rating to the average of all the ratings of the movies in the set
               pItem->GetVideoInfoTag()->m_fRating = m_pDS->fv(4).get_asFloat();
+              // Set the file id to the idFile of the latest file added being part of the set
+              pItem->GetVideoInfoTag()->m_iFileId = m_pDS->fv(5).get_asInt();
+              // Set the dateAdded to the dateAdded of the latest file added being part of the set
+              pItem->GetVideoInfoTag()->m_dateAdded.SetFromDBDateTime(m_pDS->fv(6).get_asString());
             }
             if (!items.Contains(pItem->GetPath()))
             {
@@ -4079,6 +4083,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
           // Set the rating to the average of all the ratings of the movies in the set
           pItem->GetVideoInfoTag()->m_fRating = m_pDS->fv(4).get_asFloat();
+          // Set the file id to the idFile of the latest file added being part of the set
+          pItem->GetVideoInfoTag()->m_iFileId = m_pDS->fv(5).get_asInt();
+          // Set the dateAdded to the dateAdded of the latest file added being part of the set
+          pItem->GetVideoInfoTag()->m_dateAdded.SetFromDBDateTime(m_pDS->fv(6).get_asString());
         }
         bool thumb=false,fanart=false;
         if (CFile::Exists(pItem->GetCachedVideoThumb()))
