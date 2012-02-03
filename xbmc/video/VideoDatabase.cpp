@@ -4113,6 +4113,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       m_pDS->close();
     }
 
+    // Handle movie sets as files when sorting
+    if (items.Size() > 0)
+      items.SetSortIgnoreFolders(true);
+
 //    CLog::Log(LOGDEBUG, "%s Time: %d ms", XbmcThreads::SystemClockMillis() - time);
     return true;
   }
