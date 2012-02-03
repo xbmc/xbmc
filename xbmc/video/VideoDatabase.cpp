@@ -19,6 +19,8 @@
  *
  */
 
+#include <set>
+
 #include "threads/SystemClock.h"
 #include "VideoDatabase.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -3995,7 +3997,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
-        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath");
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount,AVG(movie.c%02d) AS rating FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath", VIDEODB_ID_RATING);
       strSQL += where;
     }
     else
@@ -4003,7 +4005,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       CStdString group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount) FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ");
+        strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,COUNT(1) AS c,count(files.playCount),AVG(movie.c%02d) AS rating FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile ", VIDEODB_ID_RATING);
         group = " GROUP BY sets.idSet HAVING c>1";
       }
       strSQL += where;
@@ -4016,12 +4018,11 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
 
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
-      map<int, pair<CStdString,int> > mapSets;
-      map<int, pair<CStdString,int> >::iterator it;
+      set<int> mapSets;
+      set<int>::iterator it;
       while (!m_pDS->eof())
       {
         int idSet = m_pDS->fv("sets.idSet").get_asInt();
-        CStdString strSet = m_pDS->fv("sets.strSet").get_asString();
         it = mapSets.find(idSet);
         // was this set already found?
         if (it == mapSets.end())
@@ -4029,36 +4030,33 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           // check path
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
+            mapSets.insert(idSet);
+
+            CFileItemPtr pItem(new CFileItem(m_pDS->fv("sets.strSet").get_asString()));
+            pItem->GetVideoInfoTag()->m_iDbId = idSet;
+            CStdString strDir;
+            strDir.Format("%ld/", idSet);
+            pItem->SetPath(strBaseDir + strDir);
+            pItem->m_bIsFolder=true;
+            pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-              mapSets.insert(pair<int, pair<CStdString,int> >(idSet, pair<CStdString,int>(strSet,m_pDS->fv(3).get_asInt())));
-            else
-              mapSets.insert(pair<int, pair<CStdString,int> >(idSet, pair<CStdString,int>(strSet,0)));
+            {
+              pItem->GetVideoInfoTag()->m_playCount = m_pDS->fv(3).get_asInt();
+              pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
+              pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+              // Set the rating to the average of all the ratings of the movies in the set
+              pItem->GetVideoInfoTag()->m_fRating = m_pDS->fv(4).get_asFloat();
+            }
+            if (!items.Contains(pItem->GetPath()))
+            {
+              pItem->SetLabelPreformated(true);
+              items.Add(pItem);
+            }
           }
         }
         m_pDS->next();
       }
       m_pDS->close();
-
-      for (it=mapSets.begin();it != mapSets.end();++it)
-      {
-        CFileItemPtr pItem(new CFileItem(it->second.first));
-        pItem->GetVideoInfoTag()->m_iDbId = it->first;
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->SetPath(strBaseDir + strDir);
-        pItem->m_bIsFolder=true;
-        pItem->GetVideoInfoTag()->m_strPath = pItem->GetPath();
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-        {
-          pItem->GetVideoInfoTag()->m_playCount = it->second.second;
-          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
-        }
-        if (!items.Contains(pItem->GetPath()))
-        {
-          pItem->SetLabelPreformated(true);
-          items.Add(pItem);
-        }
-      }
     }
     else
     {
@@ -4079,6 +4077,8 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInt() == m_pDS->fv(2).get_asInt()) ? 1 : 0;
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
           pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+          // Set the rating to the average of all the ratings of the movies in the set
+          pItem->GetVideoInfoTag()->m_fRating = m_pDS->fv(4).get_asFloat();
         }
         bool thumb=false,fanart=false;
         if (CFile::Exists(pItem->GetCachedVideoThumb()))
