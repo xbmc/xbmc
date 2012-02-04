@@ -36,6 +36,7 @@
 #ifdef TSREADER
 #include "lib/tsreader/TSReader.h"
 #endif
+#include "FileUtils.h"
 
 using namespace std;
 using namespace ADDON;
@@ -579,6 +580,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   int             code;
   PVR_CHANNEL     tag;
   CStdString      stream;
+  bool            bCheckForThumbs = false;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -619,6 +621,20 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   if( !SendCommand2(command.c_str(), code, lines) )
     return PVR_ERROR_SERVER_ERROR;
 
+#ifdef TARGET_WINDOWS
+  /* Check if we can find the MediaPortal channel logo folders on this machine */
+  std::string strIconName;
+  std::string strThumbPath = "C:\\ProgramData\\Team MediaPortal\\MediaPortal\\Thumbs\\";
+  bCheckForThumbs = OS::CFile::Exists("C:\\ProgramData\\Team MediaPortal\\MediaPortal\\Thumbs\\");
+  if (bCheckForThumbs)
+  {
+    if (bRadio)
+      strThumbPath += "Radio\\";
+    else
+      strThumbPath += "TV\\logos\\";
+  }
+#endif
+
   memset(&tag, 0, sizeof(PVR_CHANNEL));
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
@@ -642,7 +658,22 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
       tag.iUniqueId = channel.UID();
       tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
       tag.strChannelName = channel.Name();
+#ifdef TARGET_WINDOWS
+      if (bCheckForThumbs)
+      {
+        strIconName = strThumbPath + ToThumbFileName(channel.Name()) + ".png";
+        if ( OS::CFile::Exists(strIconName) )
+        {
+          tag.strIconPath = strIconName.c_str();
+        }
+        else
+        {
+          tag.strIconPath = "";
+        }
+      }
+#else
       tag.strIconPath = "";
+#endif
       tag.iEncryptionSystem = channel.Encrypted();
       tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
       tag.bIsHidden = false;

@@ -134,6 +134,7 @@
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
+    <ClCompile Include="..\..\windows\FileUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Cards.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
     <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\NonCopyable.h" />

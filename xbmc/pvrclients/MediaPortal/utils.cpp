@@ -23,6 +23,7 @@
 #include "utils.h"
 #include <string>
 #include <stdio.h>
+#include "utils/StdString.h"
 
 using namespace std;
 
@@ -118,4 +119,15 @@ time_t DateTimeToTimeT(const std::string& datetime)
     retval = 0;
 
   return retval;
+}
+
+const char* ToThumbFileName(const char* strChannelName)
+{
+  CStdString strThumbName = strChannelName;
+
+  strThumbName.Replace(":","_");
+  strThumbName.Replace("/","_");
+  strThumbName.Replace("\\","_");
+
+  return strThumbName.c_str();
 }
