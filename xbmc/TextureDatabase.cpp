@@ -24,6 +24,7 @@
 #include "utils/Crc32.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
+#include "URL.h"
 
 CTextureDatabase::CTextureDatabase()
 {
@@ -67,6 +68,38 @@ bool CTextureDatabase::CreateTables()
 
 bool CTextureDatabase::UpdateOldVersion(int version)
 {
+  BeginTransaction();
+  try
+  {
+    if (version < 7)
+    { // update all old thumb://foo urls to image://foo?size=thumb
+      m_pDS->query("select id,texture from path where texture like 'thumb://%'");
+      while (!m_pDS->eof())
+      {
+        unsigned int id = m_pDS->fv(0).get_asInt();
+        CURL url(m_pDS->fv(1).get_asString());
+        m_pDS2->exec(PrepareSQL("update path set texture='image://%s?size=thumb' where id=%u", url.GetHostName().c_str(), id));
+        m_pDS->next();
+      }
+      m_pDS->query("select id, url from texture where url like 'thumb://%'");
+      while (!m_pDS->eof())
+      {
+        unsigned int id = m_pDS->fv(0).get_asInt();
+        CURL url(m_pDS->fv(1).get_asString());
+        unsigned int hash = GetURLHash(m_pDS->fv(1).get_asString());
+        m_pDS2->exec(PrepareSQL("update texture set url='image://%s?size=thumb', urlhash=%u where id=%u", url.GetHostName().c_str(), hash, id));
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, version);
+    RollbackTransaction();
+    return false;
+  }
+  CommitTransaction();
   return true;
 }
 

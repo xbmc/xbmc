@@ -112,10 +112,12 @@ public:
    */
   static CStdString GetCachedPath(const CStdString &file);
 
-  /*! \brief retrieve a wrapped URL for a thumb file
+  /*! \brief retrieve a wrapped URL for a image file
    \param image name of the file
-   \return full wrapped URL of the thumb file
+   \param type type of file containing the image (picture, video, music)
+   \return full wrapped URL of the image file
    */
+  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type);
   static CStdString GetWrappedThumbURL(const CStdString &image);
 
   /*! \brief get a unique image path to associate with the given URL, useful for caching images

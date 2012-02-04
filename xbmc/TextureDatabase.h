@@ -60,6 +60,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 6; };
+  virtual int GetMinVersion() const { return 7; };
   const char *GetBaseDBName() const { return "Textures"; };
 };
