@@ -59,15 +59,16 @@ bool CHTSPConnection::Connect()
 
   cTimeMs RetryTimeout;
   char errbuf[1024];
+  memset(&errbuf,0,sizeof(errbuf));
   int  errlen = sizeof(errbuf);
 
   XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
 
   m_fd = INVALID_SOCKET;
-  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) m_iConnectTimeout * 1000)
+  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) m_iConnectTimeout)
   {
     m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen,
-        m_iConnectTimeout * 1000 - (int) RetryTimeout.Elapsed());
+        m_iConnectTimeout - (int) RetryTimeout.Elapsed());
     cCondWait::SleepMs(100);
   }
 
