@@ -32,6 +32,7 @@
 #include "pictures/Picture.h"
 #include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace XFILE;
 
@@ -64,11 +65,41 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
   // unwrap the URL as required
   CStdString image(url);
   bool fullSize = true;
-  if (0 == strncmp(url.c_str(), "thumb://", 8))
+  if (url.compare(0, 8, "image://") == 0)
   {
-    fullSize = false;
-    image = CURL(url).GetHostName();
+    // format is image://[type@]<url_encoded_path>?options
+    CURL thumbURL(url);
+
+    if (!thumbURL.GetUserName().IsEmpty())
+      return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
+
+    image = thumbURL.GetHostName();
     CURL::Decode(image);
+
+    CStdString optionString = thumbURL.GetOptions().Mid(1);
+    optionString.TrimRight('/'); // in case XBMC adds a slash
+
+    std::vector<CStdString> options;
+    StringUtils::SplitString(optionString, "&", options);
+    for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
+    {
+      CStdString option, value;
+      int pos = i->Find('=');
+      if (pos != -1)
+      {
+        option = i->Left(pos);
+        value  = i->Mid(pos + 1);
+      }
+      else
+      {
+        option = *i;
+        value = "";
+      }
+      if (option == "size" && value == "thumb")
+      {
+        fullSize = false;
+      }
+    }
   }
 
   // generate the hash
@@ -159,7 +190,7 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)
 {
-  if (0 == strncmp(url.c_str(), "thumb://", 8))
+  if (url.compare(0, 8, "image://") == 0)
   {
     CStdString image = CURL(url).GetHostName();
     CURL::Decode(image);
@@ -176,11 +207,18 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url)
   return "";
 }
 
+CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type)
+{
+  CStdString url(image);
+  CURL::Encode(url);
+  return "image://" + type + "@" + url;
+}
+
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
 {
   CStdString url(image);
   CURL::Encode(url);
-  return URIUtils::AddFileToFolder("thumb://" + url, URIUtils::GetFileName(image));
+  return "image://" + url + "/transform?size=thumb";
 }
 
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS)
