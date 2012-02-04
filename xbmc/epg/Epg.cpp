@@ -393,10 +393,11 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
 
     newTag->m_Epg = this;
     newTag->Update(tag);
+    newTag->m_bChanged = false;
   }
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
+bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */, bool bSort /* = true */)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -404,17 +405,20 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   CEpgInfoTag *infoTag = GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC());
 
   /* create a new tag if no tag with this ID exists */
+  bool bNewTag(false);
   if (!infoTag)
   {
     infoTag = new CEpgInfoTag();
     infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     push_back(infoTag);
+    bNewTag = true;
   }
 
   infoTag->m_Epg = this;
-  infoTag->Update(tag);
+  infoTag->Update(tag, bNewTag);
 
-  Sort();
+  if (bSort)
+    Sort();
 
   if (bUpdateDatabase)
     bReturn = infoTag->Persist();
@@ -477,36 +481,58 @@ void CEpg::UpdateFirstAndLastDates(void)
 bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 {
   bool bReturn(false);
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+
   CSingleLock lock(m_critSection);
 
-  /* copy over tags */
-  for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
+  if (epg.size() > 0)
   {
-    CEpgInfoTag *newTag = new CEpgInfoTag();
-    if (newTag)
+    if (bStoreInDb)
     {
-      newTag->Update(*epg.at(iTagPtr));
-      newTag->m_Epg = this;
-      push_back(newTag);
+      if (!database || !database->Open())
+      {
+        CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+        return bReturn;
+      }
+      database->BeginTransaction();
     }
+    CLog::Log(LOGDEBUG, "%s - %u entries in memory before merging", __FUNCTION__, size());
+    /* copy over tags */
+    for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
+    {
+      UpdateEntry(*epg.at(iTagPtr), bStoreInDb, false);
+    }
+
+    Sort();
+    CLog::Log(LOGDEBUG, "%s - %u entries in memory after merging and before fixing", __FUNCTION__, size());
+    FixOverlappingEvents(bStoreInDb);
+    m_nowActive = NULL;
+    CLog::Log(LOGDEBUG, "%s - %u entries in memory after fixing", __FUNCTION__, size());
+    /* update the last scan time of this table */
+    m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+
+    /* update the first and last date */
+    UpdateFirstAndLastDates();
+
+    //m_bTagsChanged = true;
+    /* persist changes */
+    if (bStoreInDb)
+    {
+      bReturn = database->CommitTransaction();
+      database->Close();
+      if (bReturn)
+        Persist(true);
+    }
+    else
+      bReturn = true;
   }
-
-  FixOverlappingEvents();
-  m_nowActive = NULL;
-
-  /* update the last scan time of this table */
-  m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-
-  /* update the first and last date */
-  UpdateFirstAndLastDates();
-
-  m_bTagsChanged = true;
-
-  /* persist changes */
-  if (bStoreInDb)
-    bReturn = Persist(true);
   else
-    bReturn = true;
+  {
+    if (bStoreInDb)
+      bReturn = Persist(true);
+    else
+       bReturn = true;
+  }
 
   return bReturn;
 }
@@ -635,6 +661,8 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
     m_bTagsChanged = false;
   }
 
+  database->BeginTransaction();
+
   if (epgCopy.m_iEpgID <= 0 || epgCopy.m_bChanged)
   {
     int iId = database->Persist(epgCopy);
@@ -642,27 +670,22 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
     {
       epgCopy.m_iEpgID   = iId;
       epgCopy.m_bChanged = false;
+      if (m_iEpgID != epgCopy.m_iEpgID)
+      {
+        CSingleLock lock(m_critSection);
+        m_iEpgID = epgCopy.m_iEpgID;
+      }
     }
   }
 
-  if (bUpdateLastScanTime)
-    database->PersistLastEpgScanTime(epgCopy.m_iEpgID);
-
   bool bReturn(true);
-  if (epgCopy.m_bTagsChanged)
-  {
-    bReturn = epgCopy.PersistTags();
-    epgCopy.m_bTagsChanged = !bReturn;
-  }
+
+  if (bUpdateLastScanTime)
+    bReturn = database->PersistLastEpgScanTime(epgCopy.m_iEpgID);
+
+  database->CommitTransaction();
 
   database->Close();
-
-  {
-    CSingleLock lock(m_critSection);
-    m_iEpgID        = epgCopy.m_iEpgID;
-    m_bChanged     |= epgCopy.m_bChanged;
-    m_bTagsChanged |= epgCopy.m_bTagsChanged;
-  }
 
   return bReturn;
 }
@@ -707,10 +730,11 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 /** @name Private methods */
 //@{
 
-bool CEpg::FixOverlappingEvents(void)
+bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 {
   bool bReturn(false);
   CEpgInfoTag *previousTag(NULL), *currentTag(NULL);
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   for (int iPtr = size() - 1; iPtr >= 0; iPtr--)
   {
@@ -723,18 +747,33 @@ bool CEpg::FixOverlappingEvents(void)
 
     if (previousTag->StartAsUTC() <= currentTag->StartAsUTC())
     {
+      if (bUpdateDb)
+      {
+        if (!database || !database->Open())
+        {
+          CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+          bReturn = false;
+          continue;
+        }
+        bReturn = database->Delete(*currentTag);
+      }
+      else
+        bReturn = true;
+
       if (m_nowActive && *m_nowActive == *currentTag)
         m_nowActive = NULL;
 
       delete currentTag;
       erase(begin() + iPtr);
-      bReturn = true;
     }
     else if (previousTag->StartAsUTC() < currentTag->EndAsUTC())
     {
       currentTag->SetEndFromUTC(previousTag->StartAsUTC());
+      if (bUpdateDb)
+        bReturn = currentTag->Persist();
+      else
+        bReturn = true;
       previousTag = at(iPtr);
-      bReturn = true;
     }
     else
     {
@@ -800,10 +839,17 @@ bool CEpg::PersistTags(void) const
   GetLastDate().GetAsTime(iEnd);
   database->Delete(*this, iStart, iEnd);
 
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-    at(iTagPtr)->Persist(false);
+  if (size() > 0)
+  {
+    for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+      bReturn = at(iTagPtr)->Persist() && bReturn;
+  }
+  else
+  {
+    /* Return true if we have no tags, so that no error is logged */
+    bReturn = true;
+  }
 
-  bReturn = database->CommitInsertQueries();
   return bReturn;
 }
 

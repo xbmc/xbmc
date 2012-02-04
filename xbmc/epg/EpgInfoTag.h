@@ -394,9 +394,10 @@ namespace EPG
     /*!
      * @brief Update the information in this tag with the info in the given tag.
      * @param tag The new info.
+     * @param bUpdateBroadcastId If set to false, the tag BroadcastId (locally unique) will not be chacked/updated
      * @return True if something changed, false otherwise.
      */
-    virtual bool Update(const CEpgInfoTag &tag);
+    virtual bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
 
   protected:
     /*!

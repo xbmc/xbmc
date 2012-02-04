@@ -722,11 +722,10 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   SetIcon(tag.strIconPath);
 }
 
-bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
+bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
 {
   CSingleLock lock(m_critSection);
   bool bChanged = (
-      m_iBroadcastId       != tag.m_iBroadcastId ||
       m_strTitle           != tag.m_strTitle ||
       m_strPlotOutline     != tag.m_strPlotOutline ||
       m_strPlot            != tag.m_strPlot ||
@@ -745,10 +744,14 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
       m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
       ( tag.m_strGenre.length() > 0 && m_strGenre != tag.m_strGenre )
   );
+  if (bUpdateBroadcastId)
+    bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
 
   if (bChanged)
   {
-    m_iBroadcastId       = tag.m_iBroadcastId;
+    if (bUpdateBroadcastId)
+      m_iBroadcastId       = tag.m_iBroadcastId;
+
     m_strTitle           = tag.m_strTitle;
     m_strPlotOutline     = tag.m_strPlotOutline;
     m_strPlot            = tag.m_strPlot;
@@ -789,7 +792,7 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   CSingleLock lock(m_critSection);
   if (!m_bChanged)
     return true;
-
+  CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || (bSingleUpdate && !database->Open()))
   {
