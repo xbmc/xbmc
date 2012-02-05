@@ -1514,9 +1514,9 @@ int cPVRClientMediaPortal::GetCurrentClientChannel()
 
 PVR_ERROR cPVRClientMediaPortal::GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
-  if (g_iTVServerXBMCBuild < 108)
+  if (g_iTVServerXBMCBuild < 108 || (m_iCurrentChannel == -1))
   {
-    // Not yet supported
+    // Not yet supported or playing webstream
     return PVR_ERROR_NO_ERROR;
   }
 
