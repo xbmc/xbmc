@@ -640,9 +640,9 @@
     "properties": {
       "method": { "type": "string", "default": "none",
         "enum": [ "none", "label", "date", "size", "file", "drivetype", "track", "duration", "title", "artist",
-                  "album", "genre", "year", "videorating", "programcount", "playlist", "episode", "videotitle",
-                  "sorttitle", "productioncode", "songrating", "mpaarating", "videoruntime", "studio", "fullpath",
-                  "lastplayed", "unsorted" ]
+                  "album", "genre", "country", "year", "videorating", "dateadded", "programcount", "playlist",
+                  "episode", "videotitle", "sorttitle", "productioncode", "songrating", "mpaarating", "videoruntime",
+                  "studio", "fullpath", "lastplayed", "playcount", "listeners", "bitrate", "unsorted" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false }

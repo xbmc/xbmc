@@ -327,10 +327,14 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = ignorethe ? SORT_METHOD_ALBUM_IGNORE_THE : SORT_METHOD_ALBUM;
   else if (method.Equals("genre"))
     sortmethod = SORT_METHOD_GENRE;
+  else if (method.Equals("country"))
+    sortmethod = SORT_METHOD_COUNTRY;
   else if (method.Equals("year"))
     sortmethod = SORT_METHOD_YEAR;
   else if (method.Equals("videorating"))
     sortmethod = SORT_METHOD_VIDEO_RATING;
+  else if (method.Equals("dateadded"))
+    sortmethod = SORT_METHOD_DATEADDED;
   else if (method.Equals("programcount"))
     sortmethod = SORT_METHOD_PROGRAM_COUNT;
   else if (method.Equals("playlist"))
@@ -357,8 +361,12 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = SORT_METHOD_LASTPLAYED;
   else if (method.Equals("playcount"))
     sortmethod = SORT_METHOD_PLAYCOUNT;
+  else if (method.Equals("listeners"))
+    sortmethod = SORT_METHOD_LISTENERS;
   else if (method.Equals("unsorted"))
     sortmethod = SORT_METHOD_UNSORTED;
+  else if (method.Equals("bitrate"))
+    sortmethod = SORT_METHOD_BITRATE;
   else
     return false;
 
