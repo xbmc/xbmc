@@ -624,15 +624,31 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
 #ifdef TARGET_WINDOWS
   /* Check if we can find the MediaPortal channel logo folders on this machine */
   std::string strIconName;
-  std::string strThumbPath = "C:\\ProgramData\\Team MediaPortal\\MediaPortal\\Thumbs\\";
-  bCheckForThumbs = OS::CFile::Exists("C:\\ProgramData\\Team MediaPortal\\MediaPortal\\Thumbs\\");
-  if (bCheckForThumbs)
+  std::string strThumbPath;
+  std::string strProgramData;
+
+  if (OS::GetEnvironmentVariable("PROGRAMDATA", strProgramData) == true)
+    strThumbPath = strProgramData + "\\Team MediaPortal\\MediaPortal\\Thumbs\\";
+  else
   {
-    if (bRadio)
-      strThumbPath += "Radio\\";
+    if (OS::Version() >= OS::WindowsVista)
+    {
+      /* Windows Vista/7/Server 2008 */
+      strThumbPath = "C:\\ProgramData\\Team MediaPortal\\MediaPortal\\Thumbs\\";
+    }
     else
-      strThumbPath += "TV\\logos\\";
+    {
+      /* Windows XP */
+      strThumbPath = "C:\\Documents and Settings\\All Users\\Application Data\\Team MediaPortal\\MediaPortal\\thumbs\\";
+    }
   }
+
+  if (bRadio)
+    strThumbPath += "Radio\\";
+  else
+    strThumbPath += "TV\\logos\\";
+
+  bCheckForThumbs = OS::CFile::Exists(strThumbPath);
 #endif
 
   memset(&tag, 0, sizeof(PVR_CHANNEL));

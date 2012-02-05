@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\utils.cpp" />
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
     <ClCompile Include="..\..\windows\FileUtils.cpp" />
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Cards.h" />

@@ -121,7 +121,7 @@ time_t DateTimeToTimeT(const std::string& datetime)
   return retval;
 }
 
-const char* ToThumbFileName(const char* strChannelName)
+std::string ToThumbFileName(const char* strChannelName)
 {
   CStdString strThumbName = strChannelName;
 
@@ -129,5 +129,5 @@ const char* ToThumbFileName(const char* strChannelName)
   strThumbName.Replace("/","_");
   strThumbName.Replace("\\","_");
 
-  return strThumbName.c_str();
+  return strThumbName;
 }

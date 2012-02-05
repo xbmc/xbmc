@@ -21,6 +21,10 @@
 #include <ctime>
 #include "uri.h"
 
+#ifdef TARGET_WINDOWS
+#include "windows/WindowsUtils.h"
+#endif
+
 using namespace std;
 
 /** Delete macros that make the pointer NULL again */
@@ -48,4 +52,4 @@ time_t DateTimeToTimeT(const std::string& datetime);
 /**
  * @brief Filters forbidden filename characters from channel name and replaces them with _ )
  */
-const char* ToThumbFileName(const char* strChannelName);
+std::string ToThumbFileName(const char* strChannelName);
