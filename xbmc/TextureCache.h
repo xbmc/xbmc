@@ -100,7 +100,8 @@ public:
    */
   void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
-  /*! \brief retrieve the cache file to associate with the given image
+  /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image
+   Use GetCachedPath(GetCacheFile(url)) for the full path to the file.
    \param url location of the image
    \return a "unique" filename for the associated cache file.
    */
@@ -155,14 +156,14 @@ private:
 
     /*! \brief Cache an image either full size or thumb sized
      \param url URL of image to cache
-     \param original URL of cached version
+     \param relativeCacheFile relative URL of cached version
      \param oldHash hash of any previously cached version - if the hashes match, we don't cache the image
      \return hash of the image that we cached, empty on failure
      */
-    static CStdString CacheImage(const CStdString &url, const CStdString &original, const CStdString &oldHash = "");
+    static CStdString CacheImage(const CStdString &url, const CStdString &relativeCacheFile, const CStdString &oldHash = "");
 
     CStdString m_url;
-    CStdString m_original;
+    CStdString m_relativeCacheFile;
     CStdString m_hash;
     CStdString m_oldHash;
   };

@@ -40,7 +40,7 @@ CTextureCache::CCacheJob::CCacheJob(const CStdString &url, const CStdString &old
 {
   m_url = url;
   m_oldHash = oldHash;
-  m_original = CTextureCache::GetCacheFile(m_url);
+  m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
 }
 
 bool CTextureCache::CCacheJob::operator==(const CJob* job) const
@@ -48,7 +48,7 @@ bool CTextureCache::CCacheJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CCacheJob* cacheJob = dynamic_cast<const CCacheJob*>(job);
-    if (cacheJob && cacheJob->m_original == m_original)
+    if (cacheJob && cacheJob->m_relativeCacheFile == m_relativeCacheFile)
       return true;
   }
   return false;
@@ -56,11 +56,11 @@ bool CTextureCache::CCacheJob::operator==(const CJob* job) const
 
 bool CTextureCache::CCacheJob::DoWork()
 {
-  m_hash = CacheImage(m_url, m_original, m_oldHash);
+  m_hash = CacheImage(m_url, m_relativeCacheFile, m_oldHash);
   return !m_hash.IsEmpty();
 }
 
-CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CStdString &original, const CStdString &oldHash)
+CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CStdString &cacheFile, const CStdString &oldHash)
 {
   // unwrap the URL as required
   CStdString image(url);
@@ -107,16 +107,20 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
   if (hash.IsEmpty() || hash == oldHash)
     return hash;
 
-  if (!oldHash.IsEmpty())
-    CLog::Log(LOGDEBUG, "Re-caching image '%s' as '%s' %s size", image.c_str(), original.c_str(), fullSize ? "full" : "thumb");
+  CStdString logMessage = oldHash.IsEmpty() ? "Caching" : "Recaching";
+  CStdString cacheURL = CTextureCache::GetCachedPath(cacheFile);
+  if (fullSize)
+  {
+    CLog::Log(LOGDEBUG, "%s full image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
+    if (CPicture::CacheFanart(image, cacheURL))
+      return hash;
+  }
   else
-    CLog::Log(LOGDEBUG, "Caching image '%s' as '%s' %s size", image.c_str(), original.c_str(), fullSize ? "full" : "thumb");
-
-  CStdString originalURL = CTextureCache::GetCachedPath(original);
-  if (fullSize && CPicture::CacheFanart(image, originalURL))
-    return hash;
-  if (!fullSize && CPicture::CacheThumb(image, originalURL))
-    return hash;
+  {
+    CLog::Log(LOGDEBUG, "%s thumb image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
+    if (CPicture::CacheThumb(image, cacheURL))
+      return hash;
+  }
   return "";
 }
 
@@ -252,15 +256,15 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
 {
   // Cache image so that the texture manager can load it.
-  CStdString originalFile = GetCacheFile(url);
+  CStdString relativeCacheFile = GetCacheFile(url);
 
-  CStdString hash = CCacheJob::CacheImage(url, originalFile);
+  CStdString hash = CCacheJob::CacheImage(url, relativeCacheFile);
   if (!hash.IsEmpty())
   {
-    AddCachedTexture(url, originalFile, hash);
+    AddCachedTexture(url, relativeCacheFile, hash);
     if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CDDSJob(GetCachedPath(originalFile)));
-    return GetCachedPath(originalFile);
+      AddJob(new CDDSJob(GetCachedPath(relativeCacheFile)));
+    return GetCachedPath(relativeCacheFile);
   }
   return "";
 
@@ -383,10 +387,10 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (strcmp(job->GetType(), "cacheimage") == 0 && success)
   {
     CCacheJob *cacheJob = (CCacheJob *)job;
-    AddCachedTexture(cacheJob->m_url, cacheJob->m_original, cacheJob->m_hash);
+    AddCachedTexture(cacheJob->m_url, cacheJob->m_relativeCacheFile, cacheJob->m_hash);
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CDDSJob(GetCachedPath(cacheJob->m_original)));
+      AddJob(new CDDSJob(GetCachedPath(cacheJob->m_relativeCacheFile)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
