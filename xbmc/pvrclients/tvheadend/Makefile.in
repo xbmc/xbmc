@@ -13,9 +13,7 @@ LIB    = @abs_top_srcdir@/addons/pvr.hts/XBMC_Tvheadend.pvr
 SRCS=client.cpp \
      HTSPConnection.cpp \
      HTSPData.cpp \
-     HTSPDemux.cpp \
-     thread.cpp \
-     tools.cpp
+     HTSPDemux.cpp
 
 include ../Makefile.include
 

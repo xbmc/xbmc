@@ -20,6 +20,8 @@
  */
 
 #include "HTSPConnection.h"
+#include "../../../lib/platform/threads/mutex.h"
+#include "../../../lib/platform/util/timeutils.h"
 #include "client.h"
 
 extern "C" {
@@ -31,6 +33,7 @@ extern "C" {
 
 using namespace std;
 using namespace ADDON;
+using namespace PLATFORM;
 
 CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),
@@ -57,18 +60,20 @@ bool CHTSPConnection::Connect()
   if (m_bIsConnected)
     return true;
 
-  cTimeMs RetryTimeout;
+  uint64_t iNow = GetTimeMs();
+  uint64_t iTarget = iNow + m_iConnectTimeout;
+
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
 
   XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
 
   m_fd = INVALID_SOCKET;
-  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) m_iConnectTimeout * 1000)
+  while (m_fd == INVALID_SOCKET && iNow < iTarget)
   {
-    m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen,
-        m_iConnectTimeout * 1000 - (int) RetryTimeout.Elapsed());
-    cCondWait::SleepMs(100);
+    m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, iTarget - iNow);
+    CCondition::Sleep(100);
+    iNow = GetTimeMs();
   }
 
   if(m_fd == INVALID_SOCKET)
