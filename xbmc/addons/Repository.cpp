@@ -255,10 +255,8 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
   }
   else
-  {
     database.GetRepository(repo->ID(),addons);
-    database.SetRepoTimestamp(repo->ID(),CDateTime::GetCurrentDateTime().GetAsDBDateTime());
-  }
+  database.SetRepoTimestamp(repo->ID(),CDateTime::GetCurrentDateTime().GetAsDBDateTime());
 
   return addons;
 }

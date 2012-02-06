@@ -164,12 +164,12 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   // save our playlist
   if (m_path.IsEmpty())
   {
-    CStdString filename(m_playlist.m_playlistName);
+    CStdString filename(CUtil::MakeLegalFileName(m_playlist.m_playlistName));
     CStdString path;
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
       path = URIUtils::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
-      path = URIUtils::AddFileToFolder(path, filename);
+      path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(filename));
     }
     else
       return;
