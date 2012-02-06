@@ -569,9 +569,17 @@ public:
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
+   \param strDateAdded datetime when the path was added to the filesystem/database
    \return id of the file, -1 if it could not be added.
    */
-  int AddPath(const CStdString& strPath);
+  int AddPath(const CStdString& strPath, const CStdString &strDateAdded = "");
+  
+  /*! \brief Updates the dateAdded field in the files table for the file
+   with the given idFile and the given path based on the files modification date
+   \param idFile id of the file in the files table
+   \param strFileNameAndPath path to the file
+   */
+  void UpdateFileDateAdded(int idFile, const CStdString& strFileNameAndPath);
 
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);

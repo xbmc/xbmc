@@ -52,6 +52,7 @@
 #include "dbwrappers/dataset.h"
 #include "ThumbnailCache.h"
 #include "utils/LabelFormatter.h"
+#include "XBDateTime.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -533,7 +534,7 @@ bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector<int>& subpat
   return false;
 }
 
-int CVideoDatabase::AddPath(const CStdString& strPath)
+int CVideoDatabase::AddPath(const CStdString& strPath, const CStdString &strDateAdded /*= "" */)
 {
   CStdString strSQL;
   try
@@ -551,7 +552,11 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    strSQL=PrepareSQL("insert into path (idPath, strPath, strContent, strScraper, dateAdded) values (NULL,'%s','','', '%s')", strPath1.c_str(), CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+    // only set dateadded if we got one
+    if (!strDateAdded.empty())
+      strSQL=PrepareSQL("insert into path (idPath, strPath, strContent, strScraper, dateAdded) values (NULL,'%s','','', '%s')", strPath1.c_str(), strDateAdded.c_str());
+    else
+      strSQL=PrepareSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
     m_pDS->exec(strSQL.c_str());
     idPath = (int)m_pDS->lastinsertid();
     return idPath;
@@ -612,7 +617,8 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
       return idFile;
     }
     m_pDS->close();
-    strSQL=PrepareSQL("insert into files (idFile, idPath, strFileName, dateAdded) values(NULL, %i, '%s', '%s')", idPath, strFileName.c_str(), CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+
+    strSQL=PrepareSQL("insert into files (idFile, idPath, strFileName) values(NULL, %i, '%s')", idPath, strFileName.c_str());
     m_pDS->exec(strSQL.c_str());
     idFile = (int)m_pDS->lastinsertid();
     return idFile;
@@ -629,6 +635,35 @@ int CVideoDatabase::AddFile(const CFileItem& item)
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     return AddFile(item.GetVideoInfoTag()->m_strFileNameAndPath);
   return AddFile(item.GetPath());
+}
+
+void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNameAndPath)
+{
+  if (idFile < 0 || strFileNameAndPath.empty())
+    return;
+    
+  CStdString strSQL = "";
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CDateTime dateAdded;
+    // Let's try to get the modification datetime
+    struct __stat64 buffer;
+    if (CFile::Stat(strFileNameAndPath, &buffer) == 0)
+      dateAdded = *localtime((const time_t*)&buffer.st_mtime);
+
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+
+    strSQL = PrepareSQL("update files set dateAdded='%s' where idFile=%d", dateAdded.GetAsDBDateTime().c_str(), idFile);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to update dateadded for file (%s)", __FUNCTION__, strSQL.c_str());
+  }
 }
 
 bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
@@ -974,6 +1009,7 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
       int idFile = AddFile(strFilenameAndPath);
       if (idFile < 0)
         return -1;
+      UpdateFileDateAdded(idFile, strFilenameAndPath);
       CStdString strSQL=PrepareSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
       idMovie = (int)m_pDS->lastinsertid();
@@ -1005,7 +1041,16 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     m_pDS->exec(strSQL.c_str());
     int idTvShow = (int)m_pDS->lastinsertid();
 
-    int idPath = AddPath(strPath);
+    // Get the creation datetime of the tvshow directory
+    CDateTime dateAdded;
+    struct __stat64 buffer;
+    if (XFILE::CFile::Stat(strPath, &buffer) == 0)
+      dateAdded = *localtime((const time_t*)&buffer.st_ctime);
+
+    if (!dateAdded.IsValid())
+      dateAdded = CDateTime::GetCurrentDateTime();
+
+    int idPath = AddPath(strPath, dateAdded.GetAsDBDateTime());
     strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i)",idTvShow,idPath);
     m_pDS->exec(strSQL.c_str());
 
@@ -1031,6 +1076,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
     int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
       return -1;
+    UpdateFileDateAdded(idFile, strFilenameAndPath);
 
     CStdString strSQL=PrepareSQL("insert into episode (idEpisode, idFile) values (NULL, %i)", idFile);
     m_pDS->exec(strSQL.c_str());
@@ -1063,6 +1109,7 @@ int CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
       int idFile = AddFile(strFilenameAndPath);
       if (idFile < 0)
         return -1;
+      UpdateFileDateAdded(idFile, strFilenameAndPath);
       CStdString strSQL=PrepareSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
       idMVideo = (int)m_pDS->lastinsertid();
