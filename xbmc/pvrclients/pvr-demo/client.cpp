@@ -21,7 +21,6 @@
 
 #include "client.h"
 #include "xbmc_pvr_dll.h"
-#include "tools.h"
 #include "PVRDemoData.h"
 
 using namespace std;
