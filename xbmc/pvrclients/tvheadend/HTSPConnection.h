@@ -22,7 +22,6 @@
  */
 
 #include "HTSPTypes.h"
-#include "thread.h"
 
 extern "C" {
 #include "libhts/net.h"
