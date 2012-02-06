@@ -10,8 +10,6 @@ LIBDIR = @abs_top_srcdir@/addons/pvr.demo
 LIB    = @abs_top_srcdir@/addons/pvr.demo/XBMC_demo.pvr
 
 SRCS=client.cpp \
-     thread.cpp \
-     tools.cpp \
      PVRDemoData.cpp
 
 include ../Makefile.include
