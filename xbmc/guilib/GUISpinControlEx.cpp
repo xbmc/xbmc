@@ -69,9 +69,12 @@ void CGUISpinControlEx::Process(unsigned int currentTime, CDirtyRegionList &dirt
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
   if (m_bInvalidated)
-    SetPosition(GetXPosition(), GetYPosition());
-
-  m_buttonControl.Process(currentTime, dirtyregions);
+  {
+    float spinPosX = m_buttonControl.GetXPosition() + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - (m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX);
+    float spinPosY = m_buttonControl.GetYPosition() + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
+    CGUISpinControl::SetPosition(spinPosX, spinPosY);
+  }
+  m_buttonControl.DoProcess(currentTime, dirtyregions);
   CGUISpinControl::Process(currentTime, dirtyregions);
 }
 
@@ -84,21 +87,19 @@ void CGUISpinControlEx::Render()
 void CGUISpinControlEx::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);
-  float spinPosX = posX + m_buttonControl.GetWidth() - GetSpinWidth() * 2 - (m_spinPosX ? m_spinPosX : m_buttonControl.GetLabelInfo().offsetX);
-  float spinPosY = posY + (m_buttonControl.GetHeight() - GetSpinHeight()) * 0.5f;
-  CGUISpinControl::SetPosition(spinPosX, spinPosY);
+  CGUISpinControl::SetInvalid();
 }
 
 void CGUISpinControlEx::SetWidth(float width)
 {
   m_buttonControl.SetWidth(width);
-  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+  CGUISpinControl::SetInvalid();
 }
 
 void CGUISpinControlEx::SetHeight(float height)
 {
   m_buttonControl.SetHeight(height);
-  SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+  CGUISpinControl::SetInvalid();
 }
 
 bool CGUISpinControlEx::UpdateColors()

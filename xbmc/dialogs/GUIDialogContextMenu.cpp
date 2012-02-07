@@ -220,10 +220,17 @@ void CGUIDialogContextMenu::SetupButtons()
   }
 
   // update our default control
-  if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
-    m_defaultControl = BUTTON_START;
-  while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
-    m_defaultControl++;
+  if (pGroupList)
+    m_defaultControl = pGroupList->GetID();
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+  else
+  {
+    if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
+      m_defaultControl = BUTTON_START;
+    while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
+      m_defaultControl++;
+  }
+#endif
 }
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)

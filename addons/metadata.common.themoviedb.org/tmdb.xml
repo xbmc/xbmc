@@ -39,9 +39,6 @@
 			<RegExp input="$$9" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
 				<expression>(.+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2+">
-				<expression fixchars="1">&quot;overview&quot;:&quot;(.{180,}?)[.?!]</expression>
-			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseTMDBPlot>
@@ -49,9 +46,6 @@
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
 				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="2+">
-				<expression fixchars="1">&quot;overview&quot;:&quot;(.{180,}?)[.?!]</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

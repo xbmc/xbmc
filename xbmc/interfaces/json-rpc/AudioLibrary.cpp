@@ -329,6 +329,22 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     }
 
     musicdatabase.Close();
+
+    if (success)
+    {
+      // If we retrieved the list of songs by "artistid"
+      // we sort by album (and implicitly by track number)
+      if (artistID != -1)
+        list.Sort(SORT_METHOD_ALBUM_IGNORE_THE, SORT_ORDER_ASC);
+      // If we retrieve the list of songs by "genreid"
+      // we sort by artist (and implicitly by album and track number)
+      else if (genreID != -1)
+        list.Sort(SORT_METHOD_ARTIST_IGNORE_THE, SORT_ORDER_ASC);
+      // otherwise we sort by track number
+      else
+        list.Sort(SORT_METHOD_TRACKNUM, SORT_ORDER_ASC);
+
+    }
   }
 
   return success;
