@@ -28,6 +28,7 @@ from utilities import *
 
 LOCATION_URL    = 'http://autocomplete.wunderground.com/aq?query=%s&format=JSON'
 WEATHER_URL     = 'http://api.wunderground.com/api/%s/conditions/forecast7day/hourly%s.json'
+GEOIP_URL       = 'http://api.wunderground.com/api/%s/geolookup/q/autoip.json'
 A_I_K           = 'NDEzNjBkMjFkZjFhMzczNg=='
 WEATHER_WINDOW  = xbmcgui.Window(12600)
 
@@ -82,6 +83,16 @@ def location(string):
         locid.append(locationid)
     return loc, locid
 
+def geoip():
+    data = fetch(GEOIP_URL % aik[::-1])
+    if data != '' and data.has_key('location'):
+        location = data['location']['l']
+        __addon__.setSetting('Location1', data['location']['city'])
+        __addon__.setSetting('Location1id', location)
+    else:
+        location = ''
+    return location
+
 def forecast(city):
     data = fetch(WEATHER_URL % (aik[::-1], city))
     if data != '':
@@ -129,6 +140,8 @@ if sys.argv[1].startswith('Location'):
 else:
     location = __addon__.getSetting('Location%sid' % sys.argv[1])
     aik = base64.b64decode(A_I_K)
+    if location == '':
+        location = geoip()
     forecast(location)
 
 refresh_locations()

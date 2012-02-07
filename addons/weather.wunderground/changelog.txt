@@ -1,3 +1,6 @@
+v0.0.3
+- geoip support for automatic location selection
+
 v0.0.2
 - show dialog instead of empty list when no locations are found
 - added german translation
