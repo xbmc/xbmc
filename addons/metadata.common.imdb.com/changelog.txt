@@ -1,3 +1,15 @@
+[B]2.1.9[/B]
+- fixed: plot when contains html links (once again)
+
+[B]2.1.8[/B]
+- revert: two latest changes - cause crash some times
+
+[B]2.1.7[/B]
+- fixed: typo in fixing previous plot issue
+
+[B]2.1.6[/B]
+- fixed: plot when contains html links
+
 [B]2.1.5[/B]
 - fixed: Cleanup and factored out Genres to common
 

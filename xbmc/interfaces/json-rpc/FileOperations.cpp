@@ -34,6 +34,9 @@
 using namespace XFILE;
 using namespace JSONRPC;
 
+static const unsigned int SourcesSize = 5;
+static CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+
 JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
@@ -44,7 +47,13 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   {
     CFileItemList items;
     for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
+    {
+      // Do not show sources which are locked
+      if (sources->at(i).m_iHasLock == 2)
+        continue;
+
       items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
+    }
 
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
@@ -73,6 +82,17 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   CDirectory directory;
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
+
+  // Check if this directory is part of a source and whether it's locked
+  VECSOURCES *sources;
+  bool isSource;
+  for (unsigned int index = 0; index < SourcesSize; index++)
+  {
+    sources = g_settings.GetSourcesFromType(SourceNames[index]);
+    int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
+    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
+      return InvalidParams;
+  }
 
   CStdStringArray regexps;
   CStdString extensions = "";

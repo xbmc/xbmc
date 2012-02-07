@@ -14,9 +14,9 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
-and 10.6 Intel development platforms are supported. The current build system
-is Xcode 3.1.2 There are two ways to build XBMC for Mac, from command-line or
-from Xcode.
+and 10.6 Intel development platforms are supported. Xcode 4.x is not supported.
+The current build system is Xcode 3.2.5 There are two ways to build XBMC for Mac,
+from command-line or from Xcode.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
@@ -41,8 +41,10 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 Install latest Xcode. You can download it from Apple's site after registration at
 (http://developer.apple.com/tools/download). You also need to install the 10.4
-sdk. If using Xcode 3.x, you MUST use Xcode 3.1.2 so update your existing version
-if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
+sdk. If using Xcode 3.x, you MUST use Xcode 3.1.2 or a newer version, so update
+your existing version. if you are running a previous Xcode 3.x version. 
+Xcode 3.x only runs on 10.5 and above. If you are running 10.7, DO NOT USE Xcode 4.x,
+it will fail. Use Xcode 3.x under 10.7.
 
 -----------------------------------------------------------------------------
 3.1 Install XBMC build depends

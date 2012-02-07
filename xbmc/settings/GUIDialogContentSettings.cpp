@@ -170,7 +170,7 @@ void CGUIDialogContentSettings::CreateSettings()
   case CONTENT_MOVIES:
     {
       AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
-      AddBool(2,20330,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(2,20329,&m_bUseDirNames, m_bShowScanSettings);
       AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
       AddBool(4,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
       AddBool(5,20432,&m_bNoUpdate, m_bShowScanSettings);

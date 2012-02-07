@@ -68,6 +68,16 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
       if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
       return false;
     }
+    if (strExtension.Equals(".dat|"))
+    {
+      CStdString fileName = URIUtils::GetFileName(strFile);
+      /* VCD filenames are of the form AVSEQ##(#).DAT, ITEM###(#).DAT, MUSIC##(#).DAT - i.e. all 11 or 12 characters long
+         starting with AVSEQ, MUSIC or ITEM */
+      if ((fileName.length() == 11 || fileName.length() == 12) &&
+          (fileName.Left(5).Equals("AVSEQ") || fileName.Left(5).Equals("MUSIC") || fileName.Left(4).Equals("ITEM")))
+        return true;
+      return false;
+    }
     return true;
   }
   return false;

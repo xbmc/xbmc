@@ -2569,6 +2569,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("strGenre").get_asString()));
       pItem->GetMusicInfoTag()->SetGenre(m_pDS->fv("strGenre").get_asString());
+      pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("idGenre").get_asInt());
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("idGenre").get_asInt());
       pItem->SetPath(strBaseDir + strDir);

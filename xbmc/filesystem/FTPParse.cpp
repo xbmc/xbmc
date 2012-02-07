@@ -415,7 +415,13 @@ int CFTPParse::FTPParse(string str)
     if (pcrecpp::RE("-").FullMatch(type))
       m_flagtryretr = 1;
     if (pcrecpp::RE("l").FullMatch(type))
+    {
       m_flagtrycwd = m_flagtryretr = 1;
+      // handle symlink
+      size_t found = m_name.find(" -> ");
+      if (found != std::string::npos)
+        m_name = m_name.substr(0, found);
+    }
     setTime(date);
 
     return 1;
@@ -441,7 +447,13 @@ int CFTPParse::FTPParse(string str)
     if (pcrecpp::RE("-").FullMatch(type))
       m_flagtryretr = 1;
     if (pcrecpp::RE("l").FullMatch(type))
+    {
       m_flagtrycwd = m_flagtryretr = 1;
+      // handle symlink
+      size_t found = m_name.find(" -> ");
+      if (found != std::string::npos)
+        m_name = m_name.substr(0, found);
+    }
     setTime(date);
 
     return 1;

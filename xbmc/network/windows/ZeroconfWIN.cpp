@@ -26,6 +26,7 @@
 #include <threads/SingleLock.h>
 #include <utils/log.h>
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 #pragma comment(lib, "dnssd.lib")
 
@@ -46,7 +47,7 @@ bool CZeroconfWIN::IsZCdaemonRunning()
   if(err != kDNSServiceErr_NoError)
   {
     CLog::Log(LOGERROR, "ZeroconfWIN: Zeroconf can't be started probably because Apple's Bonjour Service isn't installed. You can get it by either installing Itunes or Apple's Bonjour Print Service for Windows (http://support.apple.com/kb/DL999)");
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to start zeroconf", "Is Apple's Bonjour Service installed? See log for more info.", 10000, true);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34300), g_localizeStrings.Get(34301), 10000, true);
     return false;
   }
   CLog::Log(LOGDEBUG, "ZeroconfWIN:Bonjour version is %d.%d", version / 10000, version / 100 % 100);
@@ -64,7 +65,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
   TXTRecordRef txtRecord;
   TXTRecordCreate(&txtRecord, 0, NULL);
 
-  CLog::Log(LOGDEBUG, __FUNCTION__ " identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
+  CLog::Log(LOGDEBUG, "ZeroconfWIN: identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   //add txt records
   if(!txt.empty())
@@ -85,14 +86,14 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     if (netService)
       DNSServiceRefDeallocate(netService);
 
-    CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceRegister returned (error = %ld)", (int) err);
+    CLog::Log(LOGERROR, "ZeroconfWIN: DNSServiceRegister returned (error = %ld)", (int) err);
   } 
   else
   {
     err = DNSServiceProcessResult(netService);
 
     if (err != kDNSServiceErr_NoError)
-      CLog::Log(LOGERROR, __FUNCTION__ " DNSServiceProcessResult returned (error = %ld)", (int) err);
+      CLog::Log(LOGERROR, "ZeroconfWIN: DNSServiceProcessResult returned (error = %ld)", (int) err);
 
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
@@ -120,6 +121,7 @@ bool CZeroconfWIN::doRemoveService(const std::string& fcr_ident)
 void CZeroconfWIN::doStop()
 {
   CSingleLock lock(m_data_guard);
+  CLog::Log(LOGDEBUG, "ZeroconfWIN: Shutdown services");
   for(tServiceMap::iterator it = m_services.begin(); it != m_services.end(); ++it)
     DNSServiceRefDeallocate(it->second);
   m_services.clear();

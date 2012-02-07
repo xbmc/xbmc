@@ -393,6 +393,7 @@ namespace INFO
 #define SYSTEM_BATTERY_LEVEL        714
 #define SYSTEM_IDLE_TIME            715
 #define SYSTEM_FRIENDLY_NAME        716
+#define SYSTEM_SCREENSAVER_ACTIVE   717
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -494,7 +495,7 @@ namespace INFO
 
 #define VERSION_MAJOR 11
 #define VERSION_MINOR 0
-#define VERSION_TAG "-BETA2"
+#define VERSION_TAG "-BETA3"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
