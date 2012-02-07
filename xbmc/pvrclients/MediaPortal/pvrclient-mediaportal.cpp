@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "os-dependent.h"
+#include "platform/util/timeutils.h"
 
 #include "client.h"
 #include "timers.h"

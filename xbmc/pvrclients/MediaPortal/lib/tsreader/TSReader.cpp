@@ -35,6 +35,7 @@
 #include "MultiFileReader.h"
 #include "utils.h"
 #include "MemoryReader.h"
+#include "platform/util/timeutils.h"
 
 using namespace ADDON;
 

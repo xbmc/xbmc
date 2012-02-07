@@ -19,7 +19,7 @@
 #include "libXBMC_addon.h"
 #include "utils.h"
 #include <string>
-#include "libTcpSocket/os-dependent_socket.h"
+#include "os-dependent.h"
 #include "client.h"
 #include "Socket.h"
 
@@ -81,12 +81,16 @@ bool Socket::setHostname ( const std::string host )
   return true;
 }
 
-
 bool Socket::close()
 {
   if (is_valid())
   {
-    tcp_close(_sd);
+    if (_sd != SOCKET_ERROR)
+#ifdef TARGET_WINDOWS
+      closesocket(_sd);
+#else
+      close(_sd);
+#endif
     _sd = INVALID_SOCKET;
     osCleanup();
     return true;

@@ -19,12 +19,10 @@
  */
 
 #if defined(TARGET_WINDOWS)
-// I don't want pthread_win32 stuff to be included
-#define PTHREAD_H
 #define NOMINMAX                      // don't define min() and max() to prevent a clash with std::min() and std::max
 #endif
 
-#include "libPlatform/os-dependent.h"
+#include "platform/os.h"
 
 #if defined(TARGET_WINDOWS)
 #  include "windows/os_windows.h"
