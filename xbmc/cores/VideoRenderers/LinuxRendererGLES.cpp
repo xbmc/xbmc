@@ -51,6 +51,9 @@
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #include <CoreVideo/CoreVideo.h>
 #endif
+#ifdef TARGET_DARWIN_IOS
+#include "osx/DarwinUtils.h"
+#endif
 
 using namespace Shaders;
 
@@ -582,6 +585,9 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
 void CLinuxRendererGLES::LoadShaders(int field)
 {
+#ifdef TARGET_DARWIN_IOS
+  float ios_version = GetIOSVersion();
+#endif
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
@@ -614,8 +620,8 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_renderMethod = RENDER_CVREF;
         break;
       }
-      #if defined(__APPLE__) && defined(__arm__)
-      else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YV12)
+      #if defined(TARGET_DARWIN_IOS)
+      else if (ios_version < 5.0 && CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YV12)
       {
         CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA render method");
         m_renderMethod = RENDER_SW;

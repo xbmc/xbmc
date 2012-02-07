@@ -22,10 +22,10 @@
  */
 
 #include "client.h"
-#include "thread.h"
+#include "../../../lib/platform/threads/threads.h"
 #include "HTSPConnection.h"
 
-class CHTSPData : public cThread
+class CHTSPData : public PLATFORM::CThread
 {
 public:
   CHTSPData();
@@ -64,14 +64,14 @@ public:
   PVR_ERROR    GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
 protected:
-  virtual void Action(void);
+  virtual void *Process(void);
 
 private:
   struct SMessage
   {
-    cCondVar* event;
-    cMutex  * mutex;
-    htsmsg_t* msg;
+    PLATFORM::CCondition* event;
+    PLATFORM::CMutex    * mutex;
+    htsmsg_t*             msg;
   };
   typedef std::map<int, SMessage> SMessages;
 
@@ -83,15 +83,15 @@ private:
   bool SendEnableAsync();
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
-  CHTSPConnection *m_session;
-  cCondVar         m_started;
-  cMutex           m_Mutex;
-  SChannels        m_channels;
-  STags            m_tags;
-  SEvents          m_events;
-  SMessages        m_queue;
-  SRecordings      m_recordings;
-  int              m_iReconnectRetries;
-  bool             m_bDisconnectWarningDisplayed;
+  CHTSPConnection *    m_session;
+  PLATFORM::CCondition m_started;
+  PLATFORM::CMutex     m_mutex;
+  SChannels            m_channels;
+  STags                m_tags;
+  SEvents              m_events;
+  SMessages            m_queue;
+  SRecordings          m_recordings;
+  int                  m_iReconnectRetries;
+  bool                 m_bDisconnectWarningDisplayed;
 };
 

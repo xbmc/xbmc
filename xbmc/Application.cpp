@@ -1055,10 +1055,7 @@ bool CApplication::InitDirectoriesWin32()
   VECSOURCES::const_iterator it;
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-    {
-      CDetectDisc* discdetection = new CDetectDisc(it->strPath, false);
-      CJobManager::GetInstance().AddJob(discdetection, NULL);
-    }
+      CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
   // remove end
 
   return true;

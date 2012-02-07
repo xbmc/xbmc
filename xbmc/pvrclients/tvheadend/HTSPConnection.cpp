@@ -20,6 +20,9 @@
  */
 
 #include "HTSPConnection.h"
+#include "../../../lib/platform/threads/mutex.h"
+#include "../../../lib/platform/util/timeutils.h"
+#include "../../../lib/platform/sockets/tcp.h"
 #include "client.h"
 
 extern "C" {
@@ -31,9 +34,10 @@ extern "C" {
 
 using namespace std;
 using namespace ADDON;
+using namespace PLATFORM;
 
 CHTSPConnection::CHTSPConnection() :
-    m_fd(INVALID_SOCKET),
+    m_socket(NULL),
     m_challenge(NULL),
     m_iChallengeLength(0),
     m_iProtocol(0),
@@ -57,23 +61,23 @@ bool CHTSPConnection::Connect()
   if (m_bIsConnected)
     return true;
 
-  cTimeMs RetryTimeout;
-  char errbuf[1024];
-  int  errlen = sizeof(errbuf);
+  uint64_t iNow = GetTimeMs();
+  uint64_t iTarget = iNow + m_iConnectTimeout;
 
   XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
 
-  m_fd = INVALID_SOCKET;
-  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) m_iConnectTimeout * 1000)
+  if (!m_socket)
+    m_socket = new CTcpConnection(m_strHostname, m_iPortnumber);
+  while (!m_socket->IsOpen() && iNow < iTarget)
   {
-    m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen,
-        m_iConnectTimeout * 1000 - (int) RetryTimeout.Elapsed());
-    cCondWait::SleepMs(100);
+    if (!m_socket->Open(iTarget - iNow))
+      CCondition::Sleep(100);
+    iNow = GetTimeMs();
   }
 
-  if(m_fd == INVALID_SOCKET)
+  if (!m_socket->IsOpen())
   {
-    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, errbuf);
+    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, m_socket->GetError().c_str());
     return false;
   }
 
@@ -110,10 +114,11 @@ void CHTSPConnection::Close()
     return;
   m_bIsConnected = false;
 
-  if(m_fd != INVALID_SOCKET)
+  if(m_socket->IsOpen())
   {
-    tcp_close(m_fd);
-    m_fd = INVALID_SOCKET;
+    m_socket->Close();
+    delete m_socket;
+    m_socket = NULL;
   }
 
   if(m_challenge)
@@ -127,17 +132,16 @@ void CHTSPConnection::Close()
 void CHTSPConnection::Abort(void)
 {
   if (!m_bIsConnected)
-	  return;
+    return;
   m_bIsConnected = false;
 
-  tcp_shutdown(m_fd);
+  m_socket->Shutdown();
 }
 
-htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
+htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iDatapacketTimeout /* = 10000 */)
 {
   void*    buf;
   uint32_t l;
-  int      x;
 
   if(m_queue.size())
   {
@@ -146,36 +150,34 @@ htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
     return m;
   }
 
-  if (!IsConnected() || m_fd == INVALID_SOCKET)
   {
-    XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
-    return NULL;
-  }
+    CLockObject lock(m_mutex);
+    if (!IsConnected() || !m_socket->IsOpen())
+    {
+      XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
+      return NULL;
+    }
 
-  x = tcp_read_timeout(m_fd, &l, 4, timeout);
-  if(x == ETIMEDOUT)
-    return htsmsg_create_map();
+    if (m_socket->Read(&l, 4, iInitialTimeout) != 4)
+    {
+      if(m_socket->GetErrorNumber() != ETIMEDOUT && m_socket->GetErrorNumber() != 0)
+        XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      return NULL;
+    }
 
-  if(x)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)", __FUNCTION__, x);
-    Close();
-    return NULL;
-  }
+    l = ntohl(l);
+    if(l == 0)
+      return NULL;
 
-  l   = ntohl(l);
-  if(l == 0)
-    return htsmsg_create_map();
+    buf = malloc(l);
 
-  buf = malloc(l);
-
-  x = tcp_read(m_fd, buf, l);
-  if(x)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)", __FUNCTION__, x);
-    free(buf);
-    Close();
-    return NULL;
+    if(m_socket->Read(buf, l, iDatapacketTimeout) != (ssize_t)l)
+    {
+      XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      free(buf);
+      Close();
+      return NULL;
+    }
   }
 
   return htsmsg_binary_deserialize(buf, l, buf); /* consumes 'buf' */
@@ -193,8 +195,15 @@ bool CHTSPConnection::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(tcp_send(m_fd, (char*)buf, len, 0) < 0)
+  CLockObject lock(m_mutex);
+  ssize_t iWriteResult = m_socket->Write(buf, len);
+  if (iWriteResult != (ssize_t)len)
   {
+    if (m_socket->GetErrorNumber() == 0)
+    {
+      XBMC->Log(LOG_ERROR, "%s - Failed to write packet, but no error was set?", __FUNCTION__);
+    }
+    XBMC->Log(LOG_ERROR, "%s - Failed to write packet (%s)", __FUNCTION__, m_socket->GetError().c_str());
     free(buf);
     Close();
     return false;

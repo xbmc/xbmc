@@ -16,8 +16,6 @@
     <ClCompile Include="..\..\HTSPConnection.cpp" />
     <ClCompile Include="..\..\HTSPData.cpp" />
     <ClCompile Include="..\..\HTSPDemux.cpp" />
-    <ClCompile Include="..\..\thread.cpp" />
-    <ClCompile Include="..\..\tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
@@ -25,8 +23,6 @@
     <ClInclude Include="..\..\HTSPConnection.h" />
     <ClInclude Include="..\..\HTSPData.h" />
     <ClInclude Include="..\..\HTSPDemux.h" />
-    <ClInclude Include="..\..\thread.h" />
-    <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}</ProjectGuid>
@@ -80,13 +76,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -96,7 +92,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -105,7 +101,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

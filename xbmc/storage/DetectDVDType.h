@@ -97,7 +97,7 @@ private:
 class CDetectDisc : public CJob
 {
 public:
-  CDetectDisc(const CStdString &strPath, bool bautorun);
+  CDetectDisc(const CStdString &strPath, const bool bautorun);
   bool DoWork();
 
 private:

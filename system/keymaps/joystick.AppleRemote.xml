@@ -39,14 +39,14 @@
       <!-- hold center-->      <button id="7">Fullscreen</button>
       <!-- hold menu  -->      <button id="8">ContextMenu</button>
 
-      <!-- old buttons for ATV <2.2, used on OSX  -->
+      <!-- old buttons for ATV1 <2.2, used on OSX  -->
       <!-- hold left  -->      <button id="9">Left</button>
       <!-- hold right -->      <button id="10">Right</button>
 
       <!-- new aluminium remote buttons  -->
       <!-- play/pause -->      <button id="12">Play</button>
 
-      <!-- Additional buttons via Harmony Apple TV remote profile -->
+      <!-- Additional buttons via Harmony Apple TV remote profile - these are also the learned buttons on Apple TV 2gen-->
       <!-- pageup     -->      <button id="13">PageUp</button>
       <!-- pagedown   -->      <button id="14">PageDown</button>
       <!-- pause      -->      <button id="15">Pause</button><!-- work? -->
@@ -57,7 +57,7 @@
       <!-- skip fwd   -->      <button id="20">SkipNext</button>
       <!-- skip back  -->      <button id="21">SkipPrevious</button>
 
-      <!-- Learned remote buttons (ATV >2.3) -->
+      <!-- Learned remote buttons (ATV1 >2.3) -->
       <!-- Play       -->      <button id="70">Play</button>
       <!-- Pause      -->      <button id="71">Pause</button>
       <!-- Stop       -->      <button id="72">Stop</button>
@@ -68,7 +68,7 @@
       <!-- Return     -->      <button id="77">OSD</button>
       <!-- Enter      -->      <button id="78">ShowVideoMenu</button>
 
-      <!-- few gestures from Apple's iPhone Remote (ATV > 2.3 ?) -->
+      <!-- few gestures from Apple's iPhone Remote (ATV1 > 2.3 ?) -->
       <!-- SwipeLeft  -->      <button id="80">Left</button>
       <!-- SwipeRight -->      <button id="81">Right</button>
       <!-- SwipeUp    -->      <button id="82">Up</button>

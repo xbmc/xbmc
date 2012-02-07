@@ -390,11 +390,6 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
   int iEpgId = epg->EpgID();
 
-  if (bSingleUpdate)
-  {
-    Delete(*tag.GetTable(), iStartTime, iEndTime);
-  }
-
   int iBroadcastId = tag.BroadcastId();
   CSingleLock lock(m_critSection);
   CStdString strQuery;

@@ -33,6 +33,7 @@
 #include "Application.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
+#include "guilib/GUIWindowManager.h"
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -823,8 +824,15 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else
     {
-      g_application.getApplicationMessenger().MediaStop();
-      CAirPlayServer::m_isPlaying--;
+      if (IsPlaying()) //only stop player if we started him
+      {
+        g_application.getApplicationMessenger().MediaStop();
+        CAirPlayServer::m_isPlaying--;
+      }
+      else //if we are not playing and get the stop request - we just wanna stop picture streaming
+      {
+        g_windowManager.PreviousWindow();
+      }
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
   }

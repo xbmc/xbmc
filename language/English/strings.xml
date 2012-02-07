@@ -2222,7 +2222,7 @@
   <string id="20326">This will reset the calibration values for %s</string>
   <string id="20327">to it's default values.</string>
   <string id="20328">Browse for destination</string>
-
+  <string id="20329">Movies are in separate folders that match the movie title</string>
   <string id="20330">Use folder names for lookups</string>
   <string id="20331">File</string>
   <string id="20332">Use file or folder names in lookups?</string>
@@ -2312,7 +2312,7 @@
   <string id="20416">First aired</string>
   <string id="20417">Writer</string>
   <string id="20418"></string>
-  <string id="20419">Show metadata in files view</string>
+  <string id="20419">Replace file names with library titles</string>
 
   <string id="20420">Never</string>
   <string id="20421">If only one season</string>

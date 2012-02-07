@@ -24,6 +24,7 @@
 #define BOOL XBMC_BOOL 
 #import "WinEventsIOS.h"
 #import "XBMC_events.h"
+#include "utils/log.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -120,8 +121,9 @@ typedef enum {
   kBREventRemoteActionStop      = 17,
   kBREventRemoteActionFastFwd   = 18,
   kBREventRemoteActionRewind    = 19,
-  kBREventRemoteActionSkipBack  = 20,
-  kBREventRemoteActionSkipFwd   = 21,
+  kBREventRemoteActionSkipFwd   = 20,
+  kBREventRemoteActionSkipBack  = 21,
+
 
   kBREventRemoteActionPlayHold  = 22,
   kBREventRemoteActionCenterHold,
@@ -338,6 +340,7 @@ int           m_systemsleepTimeout;
 - (eATVClientEvent) ATVClientEventFromBREvent:(BREvent*) f_event
 {
   int remoteAction = [f_event remoteAction];
+  CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i", remoteAction);
 
   switch (remoteAction)
   {
