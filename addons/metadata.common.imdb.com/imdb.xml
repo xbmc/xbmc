@@ -35,7 +35,7 @@
 	<ParseIMDBPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression trim="1">&lt;h2&gt;Storyline&lt;/h2&gt;\n+&lt;p&gt;([^&lt;]+)</expression>
+				<expression trim="1">&lt;h2&gt;Storyline&lt;/h2&gt;\n+&lt;p&gt;(.*?)&lt;[^a/]</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
