@@ -43,6 +43,11 @@
 #include <netdb.h>
 #include <poll.h>
 
+/* Needed on Mac OS/X */
+#ifndef SOL_TCP
+#define SOL_TCP IPPROTO_TCP
+#endif
+
 namespace PLATFORM
 {
   // Standard sockets
