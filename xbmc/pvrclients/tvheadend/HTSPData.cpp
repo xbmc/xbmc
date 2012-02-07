@@ -625,19 +625,23 @@ void *CHTSPData::Process()
 
   bool bInitialised(false);
   htsmsg_t* msg;
-  while (IsRunning())
+  while (!IsStopped())
   {
     if (!bInitialised && !m_session->IsConnected())
       break;
 
     if (!CheckConnection())
     {
-      CCondition::Sleep(1000);
+      Sleep(1000);
       continue;
     }
 
-    if((msg = m_session->ReadMessage(250)) == NULL)
+    /* if there's anything in the buffer, read it */
+    if((msg = m_session->ReadMessage(5)) == NULL)
+    {
+      Sleep(5);
       continue;
+    }
 
     uint32_t seq;
     if(htsmsg_get_u32(msg, "seq", &seq) == 0)
