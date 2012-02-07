@@ -223,7 +223,7 @@ namespace PLATFORM
       CLockObject lock(m_mutex);
       if (m_iUseCount > 0)
         --m_iUseCount;
-      m_condition.Broadcast();
+      m_condition.Signal();
     }
 
     _Socket   *m_socket;
