@@ -150,31 +150,34 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
     return m;
   }
 
-  if (!IsConnected() || !m_socket->IsOpen())
   {
-    XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
-    return NULL;
-  }
+    CLockObject lock(m_mutex);
+    if (!IsConnected() || !m_socket->IsOpen())
+    {
+      XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
+      return NULL;
+    }
 
-  if (m_socket->Read(&l, 4, iInitialTimeout) != 4)
-  {
-    if(m_socket->GetErrorNumber() != ETIMEDOUT && m_socket->GetErrorNumber() != 0)
-      XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
-    return htsmsg_create_map();
-  }
+    if (m_socket->Read(&l, 4, iInitialTimeout) != 4)
+    {
+      if(m_socket->GetErrorNumber() != ETIMEDOUT && m_socket->GetErrorNumber() != 0)
+        XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      return NULL;
+    }
 
-  l = ntohl(l);
-  if(l == 0)
-    return htsmsg_create_map();
+    l = ntohl(l);
+    if(l == 0)
+      return NULL;
 
-  buf = malloc(l);
+    buf = malloc(l);
 
-  if(m_socket->Read(buf, l, iDatapacketTimeout) != (ssize_t)l)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%s)", __FUNCTION__, m_socket->GetError().c_str());
-    free(buf);
-    Close();
-    return NULL;
+    if(m_socket->Read(buf, l, iDatapacketTimeout) != (ssize_t)l)
+    {
+      XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      free(buf);
+      Close();
+      return NULL;
+    }
   }
 
   return htsmsg_binary_deserialize(buf, l, buf); /* consumes 'buf' */
@@ -192,8 +195,14 @@ bool CHTSPConnection::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if (m_socket->Write(buf, len) != (ssize_t)len)
+  CLockObject lock(m_mutex);
+  ssize_t iWriteResult = m_socket->Write(buf, len);
+  if (iWriteResult != (ssize_t)len)
   {
+    if (m_socket->GetErrorNumber() == 0)
+    {
+      XBMC->Log(LOG_ERROR, "%s - Failed to write packet, but no error was set?", __FUNCTION__);
+    }
     XBMC->Log(LOG_ERROR, "%s - Failed to write packet (%s)", __FUNCTION__, m_socket->GetError().c_str());
     free(buf);
     Close();

@@ -22,6 +22,7 @@
  */
 
 #include "HTSPTypes.h"
+#include "../../../lib/platform/threads/mutex.h"
 
 extern "C" {
 #include "libhts/net.h"
@@ -67,6 +68,7 @@ private:
   bool SendGreeting(void);
   bool Auth(void);
 
+  PLATFORM::CMutex          m_mutex;
   PLATFORM::CTcpConnection* m_socket;
   void*                     m_challenge;
   int                       m_iChallengeLength;
