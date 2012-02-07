@@ -21,8 +21,8 @@
 
 #include <stdint.h>
 #include <limits.h>
-#include <libavcodec/avcodec.h> // For codec id's
 #include "HTSPDemux.h"
+#include <libavcodec/avcodec.h> // For codec id's
 
 extern "C" {
 #include "libhts/net.h"
