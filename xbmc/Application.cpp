@@ -2997,7 +2997,10 @@ bool CApplication::ProcessJsonRpcButtons()
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
   if (tempKey.GetButtonCode() != KEY_INVALID)
+  {
+    tempKey.SetFromService(true);
     return OnKey(tempKey);
+  }
 #endif
   return false;
 }
@@ -3069,6 +3072,7 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
+      key.SetFromService(true);
       return OnKey(key);
     }
   }
