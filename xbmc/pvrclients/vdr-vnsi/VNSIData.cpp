@@ -25,13 +25,8 @@
 #include "vnsicommand.h"
 #include "utils/StdString.h"
 
-extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
-}
-
-#define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
-
 using namespace ADDON;
+using namespace PLATFORM;
 
 cVNSIData::cVNSIData()
  : m_aborting(false)
@@ -41,7 +36,7 @@ cVNSIData::cVNSIData()
 cVNSIData::~cVNSIData()
 {
   Abort();
-  Cancel(1);
+  StopThread();
   Close();
 }
 
@@ -52,9 +47,6 @@ bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
   if(!cVNSISession::Open(hostname, port, name))
     return false;
 
-  if(name != NULL) {
-    SetDescription(name);
-  }
   return true;
 }
 
@@ -63,20 +55,20 @@ bool cVNSIData::Login()
   if(!cVNSISession::Login())
     return false;
 
-  Start();
+  CreateThread();
   return true;
 }
 
 void cVNSIData::Abort()
 {
-  CMD_LOCK;
+  CLockObject lock(m_mutex);
   m_aborting = true;
   cVNSISession::Abort();
 }
 
 void cVNSIData::SignalConnectionLost()
 {
-  CMD_LOCK;
+  CLockObject lock(m_mutex);
 
   if(m_aborting)
     return;
@@ -103,30 +95,33 @@ void cVNSIData::OnReconnect()
 
 cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
 {
-  m_Mutex.Lock();
+  m_mutex.Lock();
 
   SMessage &message(m_queue[vrp->getSerial()]);
-  message.event = new cCondWait();
+  message.event = new CEvent;
   message.pkt   = NULL;
 
-  m_Mutex.Unlock();
+  m_mutex.Unlock();
 
-  if(!cVNSISession::SendMessage(vrp))
+  if(!cVNSISession::TransmitMessage(vrp))
   {
     m_queue.erase(vrp->getSerial());
     return NULL;
   }
 
-  message.event->Wait(g_iConnectTimeout * 1000);
+  if (!message.event->Wait(g_iConnectTimeout * 1000))
+  {
+    XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iConnectTimeout);
+  }
 
-  m_Mutex.Lock();
+  m_mutex.Lock();
 
   cResponsePacket* vresp = message.pkt;
   delete message.event;
 
   m_queue.erase(vrp->getSerial());
 
-  m_Mutex.Unlock();
+  m_mutex.Unlock();
 
   return vresp;
 }
@@ -780,23 +775,27 @@ bool cVNSIData::SendPing()
   return (vresp != NULL);
 }
 
-void cVNSIData::Action()
+void *cVNSIData::Process()
 {
   uint32_t lastPing = 0;
 
   cResponsePacket* vresp;
 
-  while (Running())
+  while (!IsStopped())
   {
     // try to reconnect
     if(ConnectionLost() && !TryReconnect())
     {
-      SleepMs(1000);
+      Sleep(1000);
       continue;
-   }
+    }
 
-    // read message
-    vresp = cVNSISession::ReadMessage();
+    // if there's anything in the buffer, read it
+    if ((vresp = cVNSISession::ReadMessage(5)) == NULL)
+    {
+      Sleep(5);
+      continue;
+    }
 
     // check if the connection is still up
     if (vresp == NULL)
@@ -805,8 +804,8 @@ void cVNSIData::Action()
       {
         lastPing = time(NULL);
 
-        if(!SendPing())
-          SignalConnectionLost();
+//        if(!SendPing())
+//          SignalConnectionLost();
       }
       continue;
     }
@@ -815,13 +814,12 @@ void cVNSIData::Action()
 
     if (vresp->getChannelID() == VNSI_CHANNEL_REQUEST_RESPONSE)
     {
-
-      CMD_LOCK;
+      CLockObject lock(m_mutex);
       SMessages::iterator it = m_queue.find(vresp->getRequestID());
       if (it != m_queue.end())
       {
         it->second.pkt = vresp;
-        it->second.event->Signal();
+        it->second.event->Broadcast();
       }
       else
       {
@@ -858,7 +856,7 @@ void cVNSIData::Action()
         char* str1      = vresp->extract_String();
         char* str2      = vresp->extract_String();
 
-        PVR->Recording(str1, str2, on);
+        PVR->Recording(str1, str2, on!=0?true:false);
         PVR->TriggerTimerUpdate();
 
         delete[] str1;
@@ -891,6 +889,7 @@ void cVNSIData::Action()
       delete vresp;
     }
   }
+  return NULL;
 }
 
 int cVNSIData::GetChannelGroupCount(bool automatic)
@@ -943,7 +942,7 @@ bool cVNSIData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
     PVR_CHANNEL_GROUP tag;
 
     tag.strGroupName = vresp->extract_String();
-    tag.bIsRadio = vresp->extract_U8();
+    tag.bIsRadio = vresp->extract_U8()!=0?true:false;
     PVR->TransferChannelGroup(handle, &tag);
 
     delete[] tag.strGroupName;

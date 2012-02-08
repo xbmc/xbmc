@@ -22,13 +22,16 @@
 
 #include <stdint.h>
 #include <string>
+#include "../../../lib/platform/threads/threads.h"
 
-extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
-}
 
 class cResponsePacket;
 class cRequestPacket;
+
+namespace PLATFORM
+{
+  class CTcpConnection;
+}
 
 class cVNSISession
 {
@@ -41,8 +44,8 @@ public:
   virtual void      Close();
   virtual void      Abort();
 
-  cResponsePacket*  ReadMessage();
-  bool              SendMessage(cRequestPacket* vrp);
+  cResponsePacket*  ReadMessage(int iInitialTimeout = 10000, int iDatapacketTimeout = 10000);
+  bool              TransmitMessage(cRequestPacket* vrp);
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
   bool              ReadSuccess(cRequestPacket* m);
@@ -56,7 +59,7 @@ protected:
   void SleepMs(int ms);
 
   bool TryReconnect();
-  bool IsOpen() { return m_fd != INVALID_SOCKET; }
+  bool IsOpen();
 
   virtual void OnDisconnect();
   virtual void OnReconnect();
@@ -64,19 +67,21 @@ protected:
   virtual void SignalConnectionLost();
   bool ConnectionLost() { return m_connectionLost; }
 
-  std::string     m_hostname;
-  int             m_port;
-  std::string     m_name;
+  std::string      m_hostname;
+  int              m_port;
+  std::string      m_name;
+  PLATFORM::CMutex m_mutex;
 
 private:
 
-  bool readData(uint8_t* buffer, int totalBytes);
+  bool readData(uint8_t* buffer, int totalBytes, int timeout);
 
-  socket_t    m_fd;
-  int         m_protocol;
-  std::string m_server;
-  std::string m_version;
-  bool        m_connectionLost;
+  PLATFORM::CTcpConnection *m_socket;
+  PLATFORM::CMutex          m_readMutex;
+  int                       m_protocol;
+  std::string               m_server;
+  std::string               m_version;
+  bool                      m_connectionLost;
 
   struct {
         uint32_t opCodeID;

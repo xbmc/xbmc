@@ -5,7 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a -ldl -lpthread
+LIBS   = -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.vdr.vnsi
 LIB    = @abs_top_srcdir@/addons/pvr.vdr.vnsi/XBMC_VDR_vnsi.pvr
 
@@ -17,16 +17,13 @@ SRCS   = client.cpp \
 	VNSISession.cpp \
 	requestpacket.cpp \
 	responsepacket.cpp \
-	thread.cpp \
 	tools.cpp
 
 include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
-	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 
 $(LIB): $(OBJS)
-	${MAKE} -C @abs_top_srcdir@/lib/libTcpSocket
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
