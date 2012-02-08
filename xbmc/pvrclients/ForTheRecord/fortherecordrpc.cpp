@@ -629,6 +629,13 @@ namespace ForTheRecord
 
     int retval = ForTheRecordJSONRPC("ForTheRecord/Control/AreRecordingSharesAccessible", arguments, response);
 
+    if (response.type() != Json::arrayValue)
+    {
+      // response on error is a objectValue
+      // TODO: parse it to display the error
+      return -1;
+    }
+
     return retval;
   }
 
