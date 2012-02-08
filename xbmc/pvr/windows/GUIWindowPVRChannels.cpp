@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogKeyboard.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #include "pvr/PVRManager.h"
@@ -99,6 +100,8 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
 
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
+
+    buttons.Add(CONTEXT_BUTTON_FILTER, 19249);                                        /* filter channels */
   }
 }
 
@@ -116,6 +119,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonAdd(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonGroupManager(pItem.get(), button) ||
+      OnContextButtonFilter(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
@@ -462,6 +466,22 @@ bool CGUIWindowPVRChannels::OnContextButtonShowHidden(CFileItem *item, CONTEXT_B
   {
     m_bShowHiddenChannels = !m_bShowHiddenChannels;
     UpdateData();
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_FILTER)
+  {
+    CStdString filter = m_parent->GetProperty("filter").asString();
+    CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
+    m_parent->OnFilterItems(filter);
+
     bReturn = true;
   }
 
