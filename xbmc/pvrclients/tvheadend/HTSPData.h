@@ -83,6 +83,14 @@ private:
   bool SendEnableAsync();
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
+  void ParseChannelRemove(htsmsg_t* msg);
+  void ParseChannelUpdate(htsmsg_t* msg);
+  void ParseDVREntryDelete(htsmsg_t* msg);
+  void ParseDVREntryUpdate(htsmsg_t* msg);
+  static bool ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event);
+  void ParseTagRemove(htsmsg_t* msg);
+  void ParseTagUpdate(htsmsg_t* msg);
+
   CHTSPConnection *    m_session;
   PLATFORM::CCondition m_started;
   PLATFORM::CMutex     m_mutex;

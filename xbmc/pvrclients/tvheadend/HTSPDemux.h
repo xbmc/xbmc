@@ -40,14 +40,18 @@ public:
   bool GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo);
 
 protected:
-  void SubscriptionStart (htsmsg_t *m);
-  void SubscriptionStop  (htsmsg_t *m);
-  void SubscriptionStatus(htsmsg_t *m);
+  void ParseSubscriptionStart (htsmsg_t *m);
+  void ParseSubscriptionStop  (htsmsg_t *m);
+  void ParseSubscriptionStatus(htsmsg_t *m);
   bool SendSubscribe  (int subscription, int channel);
   bool SendUnsubscribe(int subscription);
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
 
 private:
+  bool ParseQueueStatus(htsmsg_t* msg);
+  bool ParseSignalStatus(htsmsg_t* msg);
+  bool ParseSourceInfo(htsmsg_t* msg);
+
   CHTSPConnection      *m_session;
   bool                  m_bGotFirstIframe;
   bool                  m_bIsRadio;
