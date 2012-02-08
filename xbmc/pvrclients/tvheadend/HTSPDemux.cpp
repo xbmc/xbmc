@@ -123,20 +123,20 @@ DemuxPacket* CHTSPDemux::Read()
 
     if     (strcmp("subscriptionStart",  method) == 0)
     {
-      SubscriptionStart(msg);
+      ParseSubscriptionStart(msg);
       DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
       pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
       htsmsg_destroy(msg);
       return pkt;
     }
     else if(strcmp("subscriptionStop",   method) == 0)
-      SubscriptionStop (msg);
+      ParseSubscriptionStop (msg);
     else if(strcmp("subscriptionStatus", method) == 0)
-      SubscriptionStatus(msg);
+      ParseSubscriptionStatus(msg);
     else if(strcmp("queueStatus"       , method) == 0)
-      CHTSPConnection::ParseQueueStatus(msg, m_QueueStatus);
+      ParseQueueStatus(msg);
     else if(strcmp("signalStatus"       , method) == 0)
-      CHTSPConnection::ParseSignalStatus(msg, m_Quality);
+      ParseSignalStatus(msg);
     else if(strcmp("muxpkt"            , method) == 0)
     {
       DemuxPacket *pkt = ParseMuxPacket(msg);
@@ -289,7 +289,7 @@ inline void HTSPSetDemuxStreamInfoLanguage(PVR_STREAM_PROPERTIES::PVR_STREAM &st
   }
 }
 
-void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
+void CHTSPDemux::ParseSubscriptionStart(htsmsg_t *m)
 {
   htsmsg_t       *streams;
   htsmsg_field_t *f;
@@ -402,7 +402,7 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
     }
   }
 
-  if (CHTSPConnection::ParseSourceInfo(m, m_SourceInfo))
+  if (ParseSourceInfo(m))
   {
     XBMC->Log(LOG_DEBUG, "%s - subscription started on adapter %s, mux %s, network %s, provider %s, service %s"
         , __FUNCTION__, m_SourceInfo.si_adapter.c_str(), m_SourceInfo.si_mux.c_str(),
@@ -415,7 +415,7 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
   }
 }
 
-void CHTSPDemux::SubscriptionStop  (htsmsg_t *m)
+void CHTSPDemux::ParseSubscriptionStop  (htsmsg_t *m)
 {
   XBMC->Log(LOG_DEBUG, "%s - subscription ended on adapter %s", __FUNCTION__, m_SourceInfo.si_adapter.c_str());
   m_Streams.iStreamCount = 0;
@@ -435,7 +435,7 @@ void CHTSPDemux::SubscriptionStop  (htsmsg_t *m)
   m_SourceInfo.si_service = "";
 }
 
-void CHTSPDemux::SubscriptionStatus(htsmsg_t *m)
+void CHTSPDemux::ParseSubscriptionStatus(htsmsg_t *m)
 {
   const char* status;
   status = htsmsg_get_str(m, "status");
@@ -465,4 +465,89 @@ bool CHTSPDemux::SendSubscribe(int subscription, int channel)
   htsmsg_add_s32(m, "channelId"     , channel);
   htsmsg_add_s32(m, "subscriptionId", subscription);
   return m_session->ReadSuccess(m, true, "subscribe to channel");
+}
+
+bool CHTSPDemux::ParseQueueStatus(htsmsg_t* msg)
+{
+  if(htsmsg_get_u32(msg, "packets", &m_QueueStatus.packets)
+  || htsmsg_get_u32(msg, "bytes",   &m_QueueStatus.bytes)
+  || htsmsg_get_u32(msg, "Bdrops",  &m_QueueStatus.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &m_QueueStatus.pdrops)
+  || htsmsg_get_u32(msg, "Idrops",  &m_QueueStatus.idrops))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return false;
+  }
+
+  /* delay isn't always transmitted */
+  if(htsmsg_get_u32(msg, "delay", &m_QueueStatus.delay))
+    m_QueueStatus.delay = 0;
+
+  return true;
+}
+
+bool CHTSPDemux::ParseSignalStatus(htsmsg_t* msg)
+{
+  if(htsmsg_get_u32(msg, "feSNR", &m_Quality.fe_snr))
+    m_Quality.fe_snr = -2;
+
+  if(htsmsg_get_u32(msg, "feSignal", &m_Quality.fe_signal))
+    m_Quality.fe_signal = -2;
+
+  if(htsmsg_get_u32(msg, "feBER", &m_Quality.fe_ber))
+    m_Quality.fe_ber = -2;
+
+  if(htsmsg_get_u32(msg, "feUNC", &m_Quality.fe_unc))
+    m_Quality.fe_unc = -2;
+
+  const char* status;
+  if((status = htsmsg_get_str(msg, "feStatus")))
+    m_Quality.fe_status = status;
+  else
+    m_Quality.fe_status = "(unknown)";
+
+//  XBMC->Log(LOG_DEBUG, "%s - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
+//      , __FUNCTION__, quality.fe_snr, quality.fe_signal, quality.fe_ber
+//      , quality.fe_unc, quality.fe_status.c_str());
+
+  return true;
+}
+
+bool CHTSPDemux::ParseSourceInfo(htsmsg_t* msg)
+{
+  htsmsg_t       *sourceinfo;
+  if((sourceinfo = htsmsg_get_map(msg, "sourceinfo")) == NULL)
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message", __FUNCTION__);
+    return false;
+  }
+
+  const char* str;
+  if((str = htsmsg_get_str(sourceinfo, "adapter")) == NULL)
+    m_SourceInfo.si_adapter = "";
+  else
+    m_SourceInfo.si_adapter = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "mux")) == NULL)
+    m_SourceInfo.si_mux = "";
+  else
+    m_SourceInfo.si_mux = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "network")) == NULL)
+    m_SourceInfo.si_network = "";
+  else
+    m_SourceInfo.si_network = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "provider")) == NULL)
+    m_SourceInfo.si_provider = "";
+  else
+    m_SourceInfo.si_provider = str;
+
+  if((str = htsmsg_get_str(sourceinfo, "service")) == NULL)
+    m_SourceInfo.si_service = "";
+  else
+    m_SourceInfo.si_service = str;
+
+  return true;
 }
