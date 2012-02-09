@@ -227,7 +227,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
 
     CURL url(URIUtils::SubstitutePath(strFileName));
-    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url) && !CUtil::IsPicture(strFileName) )
+    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     if (m_flags & READ_CACHED)
