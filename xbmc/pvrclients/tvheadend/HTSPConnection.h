@@ -49,7 +49,7 @@ public:
   const char *GetVersion() const { return m_strVersion.c_str(); }
 
   htsmsg_t *  ReadMessage(int iInitialTimeout = 10000, int iDatapacketTimeout = 10000);
-  bool        SendMessage(htsmsg_t* m);
+  bool        TransmitMessage(htsmsg_t* m);
   htsmsg_t *  ReadResult (htsmsg_t* m, bool sequence = true);
   bool        ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
 

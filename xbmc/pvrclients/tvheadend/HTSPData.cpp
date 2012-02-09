@@ -120,7 +120,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
 
   CLockObject messageLock(*message.mutex);
   htsmsg_add_u32(m, "seq", seq);
-  if(!m_session->SendMessage(m))
+  if(!m_session->TransmitMessage(m))
   {
     m_queue.erase(seq);
     return NULL;
