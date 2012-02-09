@@ -26,7 +26,6 @@
 #include "client.h"
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
 #include "cmyth/include/refmem/atomic.h"
 #include "libhts/htsmsg_binary.h"
 #include "libhts/sha1.h"
@@ -183,7 +182,7 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
   return htsmsg_binary_deserialize(buf, l, buf); /* consumes 'buf' */
 }
 
-bool CHTSPConnection::SendMessage(htsmsg_t* m)
+bool CHTSPConnection::TransmitMessage(htsmsg_t* m)
 {
   void*  buf;
   size_t len;
@@ -217,7 +216,7 @@ htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
     htsmsg_add_u32(m, "seq", iSequence);
   }
 
-  if(!SendMessage(m))
+  if(!TransmitMessage(m))
     return NULL;
 
   std::deque<htsmsg_t*> queue;
