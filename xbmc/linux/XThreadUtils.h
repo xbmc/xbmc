@@ -89,7 +89,7 @@ public:
   void *Get()
   {
     if (pthread_getspecific(m_key) == NULL)
-pthread_setspecific(m_key, malloc(8));
+      pthread_setspecific(m_key, calloc(8, 1));
 
     return pthread_getspecific(m_key);
   }

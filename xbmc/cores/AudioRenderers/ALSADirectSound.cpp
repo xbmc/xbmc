@@ -60,17 +60,8 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     PCM_FRONT_CENTER, PCM_LOW_FREQUENCY,
     PCM_SIDE_LEFT   , PCM_SIDE_RIGHT
   };
-  static enum PCMChannels HDMIChannelMap[] = { PCM_FRONT_LEFT, PCM_FRONT_RIGHT
-                                             , PCM_FRONT_CENTER, PCM_LOW_FREQUENCY
-                                             , PCM_BACK_LEFT, PCM_BACK_RIGHT
-                                             , PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER
-                                             , PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
-  CStdString deviceuse(device);
 
-
-  enum PCMChannels *output_map = ALSAChannelMap;
-  if((deviceuse + ":").Left(5) == "hdmi:")
-    output_map = HDMIChannelMap;
+  CStdString deviceuse;
 
   /* setup the channel mapping */
   m_uiDataChannels = iChannels;
@@ -85,7 +76,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     while(outLayout[ch] != PCM_INVALID)
     {
       for(map = 0; map < 8; ++map)
-        if (outLayout[ch] == output_map[map])
+        if (outLayout[ch] == ALSAChannelMap[map])
         {
           if (map > outChannels)
             outChannels = map;
@@ -94,7 +85,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
       ++ch;
     }
 
-    m_remap.SetOutputFormat(++outChannels, output_map);
+    m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
     if (m_remap.CanRemap())
     {
       iChannels = outChannels;
@@ -136,6 +127,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     snd_config_update();
 
   snd_config_t *config = snd_config;
+  deviceuse = device;
 
   nErr = snd_config_copy(&config, snd_config);
   CHECK_ALSA_RETURN(LOGERROR,"config_copy",nErr);

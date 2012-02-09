@@ -393,7 +393,7 @@
   <string id="431">Pas de cache</string>
   <string id="432">Retirer le film de la médiathèque</string>
   <string id="433">Êtes-vous sûr(e) de retirer '%s' ?</string>
-  <string id="434">Direction : %s, Vitesse :  %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">%s à %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
   
   <string id="437">Disque amovible</string>
   <string id="438">Ouverture du fichier</string>

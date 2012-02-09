@@ -193,9 +193,10 @@ namespace EPG
      * @brief Update an entry in this EPG.
      * @param tag The tag to update.
      * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+     * @param bSort If set to false, epg entries will not be sorted after updating; used for mass updates
      * @return True if it was updated successfully, false otherwise.
      */
-    virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false);
+    virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false, bool bSort = true);
 
     /*!
      * @brief Update the EPG from 'start' till 'end'.
@@ -291,9 +292,10 @@ namespace EPG
 
     /*!
      * @brief Fix overlapping events from the tables.
+     * @param bUpdateDb If set to yes, any changes to tags during fixing will be persisted to database
      * @return True if anything changed, false otherwise.
      */
-    virtual bool FixOverlappingEvents(void);
+    virtual bool FixOverlappingEvents(bool bUpdateDb = false);
 
     /*!
      * @brief Sort all entries in this EPG by date.

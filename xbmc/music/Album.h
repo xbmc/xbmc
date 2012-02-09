@@ -62,7 +62,14 @@ public:
     songs.clear();
   }
 
-  bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
+  /*! \brief Load album information from an XML file.
+   See CVideoInfoTag::Load for a description of the types of elements we load.
+   \param element    the root XML element to parse.
+   \param append     whether information should be added to the existing tag, or whether it should be reset first.
+   \param prioritise if appending, whether additive tags should be prioritised (i.e. replace or prepend) over existing values. Defaults to false.
+   \sa CVideoInfoTag::Load
+   */
+  bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   long idAlbum;

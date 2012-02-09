@@ -877,7 +877,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder && item->GetPath() != "add" && item->GetPath() != "addons://more/video")
+  CStdString path = item->GetPath();
+  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" && path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1353,6 +1354,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
+  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, item.GetPath().c_str());
 
   if (item.GetPath().Left(17) == "pvr://recordings/")
   {
@@ -1758,9 +1760,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
   }
 
-  m_stackingAvailable = !(items.IsTuxBox() || items.IsPlugin() ||
-                          items.IsAddonsPath() || items.IsRSS() ||
-                          items.IsInternetStream() || items.IsVideoDb());
+  m_stackingAvailable = StackingAvailable(items);
   // we may also be in a tvshow files listing
   // (ideally this should be removed, and our stack regexps tidied up if necessary
   // No "normal" episodes should stack, and multi-parts should be supported)
@@ -1772,6 +1772,13 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Stack();
 
   return bResult;
+}
+
+bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
+{
+  return !(items.IsTuxBox()         || items.IsPlugin()  ||
+           items.IsAddonsPath()     || items.IsRSS()     ||
+           items.IsInternetStream() || items.IsVideoDb());
 }
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)

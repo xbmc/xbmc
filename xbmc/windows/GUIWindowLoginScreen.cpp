@@ -45,6 +45,7 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "addons/AddonManager.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
@@ -264,6 +265,9 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
+  // stop service addons and give it some time before we start it again
+  ADDON::CAddonMgr::Get().StopServices(true);
+
   if (profile != 0 || !g_settings.IsMasterUser())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -295,6 +299,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
 #endif
+
+  // start services which should run on login 
+  ADDON::CAddonMgr::Get().StartServices(false);
 
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 

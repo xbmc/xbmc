@@ -439,7 +439,7 @@ void CButtonTranslator::RemoveDevice(CStdString& strDevice)
   Load();
 }
 
-bool CButtonTranslator::Load(void)
+bool CButtonTranslator::Load(bool AlwaysLoad)
 {
   m_translatorMap.clear();
 
@@ -452,8 +452,11 @@ bool CButtonTranslator::Load(void)
   };
   bool success = false;
 
-  // If we've already loaded the m_baseMap we don't need to load it again
-  if (m_Loaded)
+  // If we've already loaded the m_baseMap we don't need to load it
+  // again - this speeds up reloads caused by plugging and unplugging
+  // HID devices. However if AlwaysLoad is true always load the keymaps
+  // from scratch.
+  if (m_Loaded && !AlwaysLoad)
   {
     m_translatorMap = m_baseMap;
   }

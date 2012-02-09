@@ -1476,7 +1476,7 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       if(level  < 0.0)
       {
-        CGUIDialogKaiToast::QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
         caching = CACHESTATE_INIT;
       }
       if(level >= 1.0)
