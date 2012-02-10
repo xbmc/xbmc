@@ -1073,7 +1073,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
  
     if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
     {
-      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%), level(%d)",
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
         __FUNCTION__, width, height, profile, level);
       return false;
     }
