@@ -229,10 +229,12 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         CStdString strFiles[4];
         for (int thumb = 0; thumb < 4; thumb++)
           strFiles[thumb] = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(items[thumb]->GetPath()), false);
-        CStdString thumb = CTextureCache::GetUniqueImage(pItem->GetPath(), ".png");
-        CPicture::CreateFolderThumb(strFiles, thumb);
+        CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
+        CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb);
+        CPicture::CreateFolderThumb(strFiles, CTextureCache::GetCachedPath(relativeCacheFile));
+        CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
         db.SetTextureForPath(pItem->GetPath(), thumb);
-        pItem->SetThumbnailImage(thumb);
+        pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
       }
     }
     // refill in the icon to get it to update

@@ -128,6 +128,15 @@ public:
    */
   static CStdString GetUniqueImage(const CStdString &url, const CStdString &extension);
 
+  /*! \brief Add this image to the database
+   Thread-safe wrapper of CTextureDatabase::AddCachedTexture
+   \param image url of the original image
+   \param cacheFile url of the cached image
+   \param hash hash of the original image
+   \return true if we successfully added to the database, false otherwise.
+   */
+  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash);
+
 private:
   /* \brief Job class for creating .dds versions of textures
    */
@@ -179,15 +188,6 @@ private:
    \return true if this is a cached image, false otherwise.
    */
   bool IsCachedImage(const CStdString &image) const;
-
-  /*! \brief Add this image to the database
-   Thread-safe wrapper of CTextureDatabase::AddCachedTexture
-   \param image url of the original image
-   \param cacheFile url of the cached image
-   \param hash hash of the original image
-   \return true if we successfully added to the database, false otherwise.
-   */
-  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
