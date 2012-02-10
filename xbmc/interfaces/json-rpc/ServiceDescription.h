@@ -1630,7 +1630,9 @@ namespace JSONRPC
       "\"description\": \"Scans the audio sources for new library items\","
       "\"transport\": \"Response\","
       "\"permission\": \"UpdateData\","
-      "\"params\": [],"
+      "\"params\": ["
+        "{ \"name\": \"directory\", \"type\": \"string\", \"default\": \"\" }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"AudioLibrary.Export\": {"
@@ -1949,7 +1951,9 @@ namespace JSONRPC
       "\"description\": \"Scans the video sources for new library items\","
       "\"transport\": \"Response\","
       "\"permission\": \"UpdateData\","
-      "\"params\": [],"
+      "\"params\": ["
+        "{ \"name\": \"directory\", \"type\": \"string\", \"default\": \"\" }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"VideoLibrary.Export\": {"

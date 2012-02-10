@@ -350,7 +350,14 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLaye
 
 JSONRPC_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
+  std::string directory = parameterObject["directory"].asString();
+  CStdString cmd;
+  if (directory.empty())
+    cmd = "updatelibrary(video)";
+  else
+    cmd.Format("updatelibrary(video, %s)", directory.c_str());
+
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
 }
 

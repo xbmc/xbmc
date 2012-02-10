@@ -280,7 +280,14 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedSongs(const CStdString &method, I
 
 JSONRPC_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
+  std::string directory = parameterObject["directory"].asString();
+  CStdString cmd;
+  if (directory.empty())
+    cmd = "updatelibrary(music)";
+  else
+    cmd.Format("updatelibrary(music, %s)", directory.c_str());
+
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
 }
 
