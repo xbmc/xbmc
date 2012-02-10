@@ -108,6 +108,16 @@
     "minimum": 0.0,
     "maximum": 100.0
   },
+  "Player.Position.Time": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "hours": { "type": "integer", "minimum": 0, "maximum": 23, "default": 0 },
+      "minutes": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
+      "seconds": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
+      "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999, "default": 0 }
+    }
+  },
   "Player.Speed": {
     "type": "object",
     "required": true,

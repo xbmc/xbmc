@@ -279,8 +279,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
     case Video:
     case Audio:
       if (parameterObject["value"].isObject())
-        g_application.SeekTime(((parameterObject["value"]["hours"].asInteger() * 60) + parameterObject["value"]["minutes"].asInteger()) * 60 + 
-          parameterObject["value"]["seconds"].asInteger() + ((double)parameterObject["value"]["milliseconds"].asInteger() / 1000.0));
+        g_application.SeekTime(ParseTimeInSeconds(parameterObject["value"]));
       else if (IsType(parameterObject["value"], NumberValue))
         g_application.SeekPercentage(parameterObject["value"].asFloat());
       else if (parameterObject["value"].isString())
@@ -442,19 +441,27 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const CStdString &method, ITransportLay
 
 JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  CVariant optionShuffled = parameterObject["options"]["shuffled"];
+  CVariant optionRepeat = parameterObject["options"]["repeat"];
+  CVariant optionResume = parameterObject["options"]["resume"];
+
   if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
+
+    if (playlistid < PLAYLIST_PICTURE)
+    {
+      // Apply the "shuffled" option if available
+      if (optionShuffled.isBoolean())
+        g_playlistPlayer.SetShuffle(playlistid, optionShuffled.asBoolean(), false);
+      // Apply the "repeat" option if available
+      if (!optionRepeat.isNull())
+        g_playlistPlayer.SetRepeat(playlistid, (REPEAT_STATE)ParseRepeatState(optionRepeat), false);
+    }
+
     switch (playlistid)
     {
       case PLAYLIST_MUSIC:
-        if (g_playlistPlayer.GetCurrentPlaylist() != playlistid)
-          g_playlistPlayer.SetCurrentPlaylist(playlistid);
-
-        g_application.getApplicationMessenger().PlayListPlayerPlay((int)parameterObject["item"]["position"].asInteger());
-        OnPlaylistChanged();
-        break;
-
       case PLAYLIST_VIDEO:
         g_application.getApplicationMessenger().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
         OnPlaylistChanged();
@@ -473,7 +480,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
 
     exec += parameterObject["item"]["path"].asString();
 
-    if (parameterObject["item"]["random"].asBoolean())
+    if ((optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
+       (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean()))
       exec += ", random";
     else
       exec += ", notrandom";
@@ -513,10 +521,32 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
         for (int index = 0; index < list.Size(); index++)
           slideshow->Add(list[index].get());
 
+        if (optionShuffled.isBoolean() && optionShuffled.asBoolean())
+          slideshow->Shuffle();
+
         return StartSlideshow();
       }
       else
+      {
+        // Handle "shuffled" option
+        if (optionShuffled.isBoolean())
+          list.SetProperty("shuffled", optionShuffled);
+        // Handle "repeat" option
+        if (!optionRepeat.isNull())
+          list.SetProperty("repeat", ParseRepeatState(optionRepeat));
+        // Handle "resume" option
+        if (list.Size() == 1)
+        {
+          if (optionResume.isBoolean() && optionResume.asBoolean())
+            list[0]->m_lStartOffset = STARTOFFSET_RESUME;
+          else if (optionResume.isDouble())
+            list[0]->SetProperty("StartPercent", optionResume);
+          else if (optionResume.isObject())
+            list[0]->m_lStartOffset = (int)(ParseTimeInSeconds(optionResume) * 75.0);
+        }
+
         g_application.getApplicationMessenger().MediaPlay(list);
+      }
 
       return ACK;
     }
@@ -629,19 +659,11 @@ JSONRPC_STATUS CPlayerOperations::UnShuffle(const CStdString &method, ITransport
 
 JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  REPEAT_STATE state = REPEAT_NONE;
-  std::string strState = parameterObject["state"].asString();
-  
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      if (strState.compare("one") == 0)
-        state = REPEAT_ONE;
-      else if (strState.compare("all") == 0)
-        state = REPEAT_ALL;
-
-      g_application.getApplicationMessenger().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), state);
+      g_application.getApplicationMessenger().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
       OnPlaylistChanged();
       break;
 
@@ -1317,4 +1339,35 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     return InvalidParams;
 
   return OK;
+}
+
+int CPlayerOperations::ParseRepeatState(const CVariant &repeat)
+{
+  REPEAT_STATE state = REPEAT_NONE;
+  std::string strState = repeat.asString();
+
+  if (strState.compare("one") == 0)
+    state = REPEAT_ONE;
+  else if (strState.compare("all") == 0)
+    state = REPEAT_ALL;
+
+  return state;
+}
+
+double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
+{
+  double seconds = 0.0;
+  if (time.isObject())
+  {
+    if (time.isMember("hours"))
+      seconds += time["hours"].asInteger() * 60 * 60;
+    if (time.isMember("minutes"))
+      seconds += time["minutes"].asInteger() * 60;
+    if (time.isMember("seconds"))
+      seconds += time["seconds"].asInteger();
+    if (time.isMember("milliseconds"))
+      seconds += time["milliseconds"].asDouble() / 1000.0;
+  }
+
+  return seconds;
 }

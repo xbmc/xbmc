@@ -114,11 +114,24 @@
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {
               "path": { "type": "string", "required": true },
-              "random": { "type": "boolean", "default": true },
+              "random": { "type": "boolean", "default": true, "description": "Deprecated, use the shuffled property of the options parameter instead" },
               "recursive": { "type": "boolean", "default": true }
             }
           }
         ]
+      },
+      { "name": "options", "type": "object", "additionalProperties": false,
+        "properties": {
+          "shuffled": { "$ref": "Optional.Boolean" },
+          "repeat": { "type": [ "null", "Player.Repeat" ], "default": null },
+          "resume": { "type": [
+              { "type": "boolean", "required": true, "description": "Whether to resume from the resume point or not" },
+              { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to start from" },
+              { "$ref": "Player.Position.Time", "required": true, "description": "Time to start from" }
+            ],
+            "default": false
+          }
+        }
       }
     ],
     "returns": "string"
@@ -213,14 +226,7 @@
       { "name": "playerid", "$ref": "Player.Id", "required": true },
       { "name": "value", "required": true, "type": [
           { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to seek to" },
-          { "type": "object", "additionalProperties": false, "required": true, "description": "Time to seek to",
-            "properties": {
-              "hours": { "type": "integer", "minimum": 0, "maximum": 23 },
-              "minutes": { "type": "integer", "minimum": 0, "maximum": 59 },
-              "seconds": { "type": "integer", "minimum": 0, "maximum": 59 },
-              "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999 }
-            }
-          },
+          { "$ref": "Player.Position.Time", "required": true, "description": "Time to seek to" },
           { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" }
         ]
       }
