@@ -35,7 +35,7 @@ public:
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
   /*! \brief Get a texture associated with the given path
-   Used for retrieval of previously discovered (and cached) images to save
+   Used for retrieval of previously discovered images to save
    stat() on the filesystem all the time
    \param url path that may be associated with a texture
    \return URL of the texture associated with the given path
@@ -43,8 +43,10 @@ public:
   CStdString GetTextureForPath(const CStdString &url);
 
   /*! \brief Set a texture associated with the given path
-   Used for setting of previously discovered (and cached) images to save
-   stat() on the filesystem all the time
+   Used for setting of previously discovered images to save
+   stat() on the filesystem all the time. Should be used to set
+   the actual image path, not the cached image path (the image will be
+   cached at load time.)
    \param url path that was used to find the texture
    \param texture URL of the texture to associate with the path
    */
@@ -60,6 +62,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 7; };
+  virtual int GetMinVersion() const { return 8; };
   const char *GetBaseDBName() const { return "Textures"; };
 };
