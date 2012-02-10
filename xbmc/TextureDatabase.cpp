@@ -92,6 +92,10 @@ bool CTextureDatabase::UpdateOldVersion(int version)
       }
       m_pDS->close();
     }
+    if (version < 8)
+    { // get rid of old cached thumbs as they were previously set to the cached thumb name instead of the source thumb
+      m_pDS->exec("delete from path");
+    }
   }
   catch (...)
   {
