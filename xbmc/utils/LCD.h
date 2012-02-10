@@ -58,6 +58,8 @@ public:
   virtual void Resume() = 0;
   virtual void SetBackLight(int iLight) = 0;
   virtual void SetContrast(int iContrast) = 0;
+  virtual int  GetColumns() = 0;
+  virtual int  GetRows() = 0;
   virtual void SetLine(int iLine, const CStdString& strLine) = 0;
   virtual void DisableOnPlayback(bool playingVideo, bool playingMusic);
   CStdString GetProgressBar(double tCurrent, double tTotal);

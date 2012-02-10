@@ -1,3 +1,11 @@
+v0.0.4
+- don't fetch weather when no locations are set up
+- fix incrementing values on each weather refresh when no locations are set up
+- workaround: stop xbmc from running the script in a loop when no locations are set up
+
+v0.0.3
+- added Simplified Chinese translation
+
 v0.0.2
 - show dialog instead of empty list when no locations are found
 - added german translation

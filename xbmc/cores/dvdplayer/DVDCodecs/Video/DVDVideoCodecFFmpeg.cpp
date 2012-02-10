@@ -101,7 +101,9 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   }
 #endif
 #ifdef HAVE_LIBVA
-    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi"))
+    // mpeg4 vaapi decoding is disabled
+    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi") 
+    && (avctx->codec_id != CODEC_ID_MPEG4 || g_advancedSettings.m_videoAllowMpeg4VAAPI)) 
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur))
@@ -164,6 +166,22 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
 
   pCodec = NULL;
+
+  if (hints.codec == CODEC_ID_H264)
+  {
+    switch(hints.profile)
+    {
+      case FF_PROFILE_H264_HIGH_10:
+      case FF_PROFILE_H264_HIGH_10_INTRA:
+      case FF_PROFILE_H264_HIGH_422:
+      case FF_PROFILE_H264_HIGH_422_INTRA:
+      case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+      case FF_PROFILE_H264_HIGH_444_INTRA:
+      case FF_PROFILE_H264_CAVLC_444:
+      m_bSoftware = true;
+      break;
+    }
+  }
 
 #ifdef HAVE_LIBVDPAU
   if(g_guiSettings.GetBool("videoplayer.usevdpau") && !m_bSoftware)
@@ -446,7 +464,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if(m_pFrame->key_frame)
+  if(m_pFrame->key_frame || m_pCodecContext->codec_id == CODEC_ID_H264) /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
   {
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;

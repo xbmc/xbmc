@@ -86,10 +86,9 @@ namespace ADDON
      \param addon [out] the retrieved addon pointer - only use if the function returns true.
      \param type type of addon to retrieve - defaults to any type.
      \param enabledOnly whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
-     \param install whether to install the requested addon in case it's not yet installed - defaults to false.
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
      */
-    bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true, bool install = false);
+    bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);

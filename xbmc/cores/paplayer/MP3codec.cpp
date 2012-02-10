@@ -71,7 +71,9 @@ MP3Codec::MP3Codec()
   
   m_HaveData = false;
   flushcnt = 0;
-  madx_init(&mxhouse);
+
+  if (m_dll.Load())
+    madx_init(&mxhouse);
 }
 
 MP3Codec::~MP3Codec()
@@ -84,7 +86,8 @@ MP3Codec::~MP3Codec()
   delete[] m_OutputBuffer;
   m_OutputBuffer = NULL;
   
-  madx_deinit(&mxhouse);
+  if (m_dll.IsLoaded())
+    madx_deinit(&mxhouse);
 }
 
 //Eventhandler if filereader is clearedwe flush the decoder.
@@ -95,8 +98,9 @@ void MP3Codec::OnFileReaderClearEvent()
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_dll.IsLoaded())
-    m_dll.Load();
+  if (!m_dll.Load())
+    return false;
+
   // set defaults...
   m_InputBufferPos = 0;
   m_OutputBufferPos = 0;

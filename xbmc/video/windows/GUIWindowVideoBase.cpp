@@ -873,7 +873,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder && item->GetPath() != "add" && item->GetPath() != "addons://more/video")
+  CStdString path = item->GetPath();
+  if (!item->m_bIsFolder && path != "add" && path != "addons://more/video" && path.Left(19) != "newsmartplaylist://" && path.Left(14) != "newplaylist://")
     return OnFileAction(iItem, g_guiSettings.GetInt("myvideos.selectaction"));
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -1126,7 +1127,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
-      if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1)
+      if (item->HasVideoInfoTag() && !item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
       }
@@ -1349,6 +1350,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
+  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, item.GetPath().c_str());
 
   PlayMovie(&item);
 
@@ -1695,9 +1697,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
   }
 
-  m_stackingAvailable = !(items.IsTuxBox() || items.IsPlugin() ||
-                          items.IsAddonsPath() || items.IsRSS() ||
-                          items.IsInternetStream() || items.IsVideoDb());
+  m_stackingAvailable = StackingAvailable(items);
   // we may also be in a tvshow files listing
   // (ideally this should be removed, and our stack regexps tidied up if necessary
   // No "normal" episodes should stack, and multi-parts should be supported)
@@ -1709,6 +1709,13 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Stack();
 
   return bResult;
+}
+
+bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
+{
+  return !(items.IsTuxBox()         || items.IsPlugin()  ||
+           items.IsAddonsPath()     || items.IsRSS()     ||
+           items.IsInternetStream() || items.IsVideoDb());
 }
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)

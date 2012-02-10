@@ -551,8 +551,8 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"b", &bVisible)) return NULL;
     if (g_application.m_pPlayer)
     {
-      g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
-      g_application.m_pPlayer->SetSubtitleVisible(bVisible);
+      g_settings.m_currentVideoSettings.m_SubtitleOn = (bVisible != 0);
+      g_application.m_pPlayer->SetSubtitleVisible(bVisible != 0);
 
       Py_INCREF(Py_None);
       return Py_None;

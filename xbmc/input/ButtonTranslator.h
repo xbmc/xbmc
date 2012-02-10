@@ -69,7 +69,7 @@ public:
   void RemoveDevice(CStdString& strDevice);
 
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load(void);
+  bool Load(bool AlwaysLoad = false);
   /// clears the maps
   void Clear();
 

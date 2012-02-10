@@ -57,7 +57,6 @@
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
-#include "addons/AddonManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -726,7 +725,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "mute", m_bMute);
     GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    GetInteger(pElement, "premutevolumelevel", m_iPreMuteVolumeLevel, 0, 0, 100);
     GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
   }
 
@@ -902,7 +903,9 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement volumeNode("audio");
   pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
+  XMLUtils::SetBoolean(pNode, "mute", m_bMute);
   XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
+  XMLUtils::SetInt(pNode, "premutevolumelevel", m_iPreMuteVolumeLevel);
   XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
 
   SaveCalibration(pRoot);
@@ -948,7 +951,7 @@ bool CSettings::LoadProfile(unsigned int index)
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-    CButtonTranslator::GetInstance().Load();
+    CButtonTranslator::GetInstance().Load(true);
     g_localizeStrings.Load(strLanguagePath);
 
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
@@ -978,8 +981,6 @@ bool CSettings::LoadProfile(unsigned int index)
 
     CUtil::DeleteMusicDatabaseDirectoryCache();
     CUtil::DeleteVideoDatabaseDirectoryCache();
-
-    ADDON::CAddonMgr::Get().StartServices(false);
 
     return true;
   }

@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include "utils/Job.h"
 
 class CCriticalSection;
 /// this class provides support for zeroconf
@@ -117,4 +118,16 @@ private:
   //protects singleton creation/destruction
   static long sm_singleton_guard;
   static CZeroconf* smp_instance;
+
+  class CPublish : public CJob
+  {
+  public:
+    CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);
+    CPublish(const tServiceMap& servmap);
+
+    bool DoWork();
+
+  private:
+    tServiceMap m_servmap;
+  };
 };

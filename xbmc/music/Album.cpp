@@ -28,19 +28,19 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-bool CAlbum::Load(const TiXmlElement *album, bool chained, bool prefix)
+bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 {
   if (!album) return false;
-  if (!chained)
+  if (!append)
     Reset();
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetAdditiveString(album,"artist",g_advancedSettings.m_musicItemSeparator,strArtist);
-  XMLUtils::GetAdditiveString(album,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(album,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(album,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(album,"theme",g_advancedSettings.m_musicItemSeparator,strThemes);
+  XMLUtils::GetAdditiveString(album, "artist", g_advancedSettings.m_musicItemSeparator, strArtist, prioritise);
+  XMLUtils::GetAdditiveString(album, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prioritise);
+  XMLUtils::GetAdditiveString(album, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
+  XMLUtils::GetAdditiveString(album, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
+  XMLUtils::GetAdditiveString(album, "theme", g_advancedSettings.m_musicItemSeparator, strThemes, prioritise);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
@@ -65,7 +65,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained, bool prefix)
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *thumb;
@@ -73,8 +73,8 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained, bool prefix)
     }
     thumb = thumb->NextSiblingElement("thumb");
   }
-  // prefix thumbs from nfos
-  if (prefix && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  // prioritise thumbs from nfos
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
   {
     rotate(thumbURL.m_url.begin(),
            thumbURL.m_url.begin()+iThumbCount, 

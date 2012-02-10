@@ -123,6 +123,7 @@ class CAdvancedSettings
     bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
+    bool  m_videoAllowMpeg4VAAPI;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     bool m_videoDisableBackgroundDeinterlace;
     int  m_videoCaptureUseOcclusionQuery;
@@ -138,12 +139,6 @@ class CAdvancedSettings
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
 
-    int m_lcdRows;
-    int m_lcdColumns;
-    int m_lcdAddress1;
-    int m_lcdAddress2;
-    int m_lcdAddress3;
-    int m_lcdAddress4;
     bool m_lcdHeartbeat;
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;

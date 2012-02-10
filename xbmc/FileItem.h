@@ -239,8 +239,10 @@ public:
   // Gets the correct movie title
   CStdString GetMovieName(bool bUseFolderNames = false) const;
 
-  /*! \brief Find the base movie path (eg the folder if using "use foldernames for lookups")
-   Takes care of VIDEO_TS, BDMV, and rar:// listings
+  /*! \brief Find the base movie path (i.e. the item the user expects us to use to lookup the movie)
+   For folder items, with "use foldernames for lookups" it returns the folder.
+   Regardless of settings, for VIDEO_TS/BDMV it returns the parent of the VIDEO_TS/BDMV folder (if present)
+
    \param useFolderNames whether we're using foldernames for lookups
    \return the base movie folder
    */
@@ -257,6 +259,20 @@ public:
   // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
+
+  /*! \brief Get the path where we expect local metadata to reside.
+   For a folder, this is just the existing path (eg tvshow folder)
+   For a file, this is the parent path, with exceptions made for VIDEO_TS and BDMV files
+
+   Three cases are handled:
+
+     /foo/bar/movie_name/file_name          -> /foo/bar/movie_name/
+     /foo/bar/movie_name/VIDEO_TS/file_name -> /foo/bar/movie_name/
+     /foo/bar/movie_name/BDMV/file_name     -> /foo/bar/movie_name/
+
+     \sa URIUtils::GetParentPath
+   */
+  CStdString GetLocalMetadataPath() const;
 
   // finds a matching local trailer file
   CStdString FindTrailer() const;
@@ -279,8 +295,9 @@ public:
    Properties are appended, and labels, thumbnail and icon are updated if non-empty
    in the given item.
    \param item the item used to supplement information
+   \param replaceLabels whether to replace labels (defaults to true)
    */
-  void UpdateInfo(const CFileItem &item);
+  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
 
   bool IsSamePath(const CFileItem *item) const;
 

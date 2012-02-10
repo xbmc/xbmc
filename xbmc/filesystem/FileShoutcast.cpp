@@ -111,7 +111,7 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
   if (m_metaint > 0)
     toRead = std::min((unsigned int)uiBufSize,(unsigned int)m_metaint-m_currint);
   else
-    toRead = std::min(uiBufSize,int64_t(16*255));
+    toRead = std::min((unsigned int)uiBufSize,(unsigned int)16*255);
   toRead = m_file.Read(lpBuf,toRead);
   m_currint += toRead;
   return toRead;

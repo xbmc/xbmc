@@ -20,7 +20,6 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
-#include "AddonInstaller.h"
 #include "DllLibCPluff.h"
 #include "utils/StringUtils.h"
 #include "utils/JobManager.h"
@@ -32,7 +31,6 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
-#include "dialogs/GUIDialogYesNo.h"
 
 
 #ifdef HAS_VISUALISATION
@@ -392,7 +390,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/, bool install  /*= false*/)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -406,25 +404,6 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       return false;
     return NULL != addon.get();
   }
-  else
-  {
-    if (install)
-    {
-      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),
-                                            str.c_str(), g_localizeStrings.Get(24101)))
-        return false;
-
-      if (CAddonInstaller::Get().Install(str.c_str(), true, "", false))
-      {
-        cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-        addon = GetAddonFromDescriptor(cpaddon);
-        m_cpluff->release_info(m_cp_context, cpaddon);
-        if (status == CP_OK && cpaddon)
-          return NULL != addon.get();
-      }
-    }
-  }
-
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);
 

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--Translator: Gulp-->
+<!--Email: http://forum.xbmc.org/member.php?u=42290-->
+<!--Based on English 72696c450cb789e240194a0595bed6e291e3a158 (14.11.2011)-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Cambia il tuo</string>
@@ -6,9 +9,10 @@
   <string id="31002">Odio</string>
   <string id="31003">Impostazioni Avanzate</string>
   <string id="31004">Sto lavorando...</string>
-  <string id="31005">Nascondi INFO</string>
-
+  <string id="31005">Nascondi informazioni</string>
+  <string id="31006">Vedi Opzioni</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Schermo Intero</string>
 
   <string id="31020">Aggiunti di recente</string>
   <string id="31021">Files - Video</string>
@@ -18,7 +22,7 @@
   <string id="31025">Oggetti</string>
   <string id="31026">Opzioni Varie</string>
   <string id="31027">Località</string>
- 
+
   <!-- View Type labels -->
   <string id="31028">Poster</string>
   <string id="31029">Fanart</string>
@@ -38,6 +42,8 @@
   <string id="31047">Preset Corrente</string>
   <string id="31048">Preset Visualizzazione</string>
   <string id="31049">Orario fine riproduzione</string>
+  <string id="31050">Ordina: Crescente</string>
+  <string id="31051">Ordina: Decrescente</string>
 
 
   <!-- Playlist Editor labels -->
@@ -48,16 +54,16 @@
   <string id="31059">Playlist Corrente </string>
   <string id="31060">Questo file è stato accorpato, scegli la parte da cui vuoi iniziare.</string>
   <string id="31061">Correntemente Selezionato</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Opzioni pagina principale</string>
   <string id="31102">Sfondo</string>
   <string id="31103">Mostra "In pausa" durante la visualizzazione delle immagini</string>
   <string id="31104">Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">Il pulsante "Video" porta sempre ai "files" video</string>
   <string id="31106">Opzioni Varie</string>
-  <string id="31107"></string>
+  <string id="31107">Nascondi la spunta letto dai nomi dei file video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Nascondi i bottoni del menù principale</string>
   <string id="31109">Sfondi per le sezioni principali</string>
   <string id="31110">Modifica lo Sfondo per la Sezione</string>
@@ -68,20 +74,27 @@
   <string id="31115">Personalizzazione</string>
   <string id="31116"></string>
   <string id="31117">Mostra i Video Aggiunti di Recente</string>
-  <string id="31118">Sottomenu Pagina Principale</string>
-  <string id="31119"></string>
+  <string id="31118">Sottomenù Pagina Principale</string>
+  <string id="31119">Nascondi i Fanart sullo sfondo</string>
   <string id="31120">ETICHETTA BOTTONE</string>
-  <string id="31121"></string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
   <string id="31122">Pagina Meteo</string>
   <string id="31123">Usa i "Posters" invece dei "Banners" per le Serie Tv</string>
   <string id="31124">Mostra nello Sfondo il nome del Video "In Riproduzione" </string>
   <string id="31125">Mostra nello Sfondo Visualizzazioni il nome del file "In Riproduzione"</string>
 
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">Riproduci le sigle TV (sonore) nell'archivio video (add-on TvTunes)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">XBMC Testi Canzoni</string>
-  <string id="31129"></string>
-  <string id="31130"></string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+
+<string id="31131"></string> <!-- blanked 2010-12-23 -->
+  <string id="31132">Add-on Testi</string>
+  <string id="31133">Add-on Sottotitoli</string>
+  <string id="31134">Sottomenù Home Page Video</string>
+  <string id="31135">Sottomenù Home Page Musica</string>
+  <string id="31136">Sottomenù Home Page Immagini</string>
 
   <string id="31140">OSD Musica</string>
   <string id="31141">OSD Video</string>
@@ -94,16 +107,11 @@
   <string id="31204">Sezione Links</string>
   <string id="31205">Sorgente Testi</string>
 
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Radar &amp; Pevisioni</string>
-  <string id="31251">Previsioni</string>
-  <string id="31252">TWC Script</string>
-
   <!-- Extra labels -->
   <string id="31300">Temperatura Corrente</string>
   <string id="31301">Ultimo Aggiornamento</string>
-  <string id="31302">Menu</string>
-  <string id="31303"></string>
+  <string id="31302">Menù</string>
+  <string id="31303">Fornitore dei dati</string>
   <string id="31304">Immagini</string>
   <string id="31305">Nessun Disco Rilevato</string>
   <string id="31306">Espelli</string>
@@ -131,15 +139,21 @@
   <string id="31328">Aggiunti di Recente</string>
   <string id="31329">[B]Timer Impostato![/B] [COLOR=grey2] - Il Sistema Verrà Spento in[/COLOR]</string>
   <string id="31330">Premi il bottone per riprodurre [CR][CR]il trailer del Film</string>
+  <string id="31331">Dettagli Album</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pausa</string>
   <string id="31352">Stop</string>
   <string id="31353">Avanti Veloce</string>
   <string id="31354">Indietro</string>
-  <string id="31355">Menu Filmato</string>
+  <string id="31355">Menù Filmato</string>
   <string id="31356">Scarica Sottotitoli</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Predefinito della Skin</string>
+  <string id="31391">Predefinito della Skin senza maiuscole</string>
+  <string id="31392">Basato su Arial</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURA LE IMPOSTAZIONI PER L'ASPETTO[/B][CR][CR]Cambia la skin · Imposta Lingua e Regione · Cambia le impostazioni di elenco dei file[CR]Imposta uno screensaver</string>
@@ -150,6 +164,20 @@
   <string id="31405">[B]CONFIGURA IMPOSTAZIONI DI RETE[/B][CR][CR]Imposta il controllo di XBMC via UPnP e HTTP · Configura le opzioni di condivisione[CR]Imposta le opzioni di accesso ad Internet</string>
   <string id="31406">[B]CONFIGURA IMPOSTAZIONI DI SISTEMA[/B][CR][CR]Imposta e calibra il video · Configura l'uscita Audio · Imposta i controlli remoti[CR]Imposta le ozioni di risparmio energetico · Abilita il Debug · Imposta il master lock</string>
   <string id="31407">[B]CONFIGURA IMPOSTAZIONI SKIN[/B][CR][CR]Configura la skin Confluence · Aggiungi o rimuovi oggetti dalla pagina principale[CR]Cambia gli sfondi</string> <string id="31408">[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons</string>
+  <string id="31408">[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci gli Add-ons installati · Esplora e installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons</string>
 
   <string id="31421">Scegli il tuo profilo utente di XBMC[CR]per fare il login e continuare</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Mappa Meteo</string>
+  <string id="31901">Previsioni a 36 Ore</string>
+  <string id="31902">Previsioni Orarie</string>
+  <string id="31903">Previsioni per il Weekend</string>
+  <string id="31904">Previsioni a 10 giorni</string>
+  <string id="31905">Previsioni</string>
+  <string id="31906">Mappe &amp; Video</string>
+  <string id="31907">Previsioni Video [COLOR=grey2](Riproduzione a schermo intero)[/COLOR]</string>
+  <string id="31908">Percentuale di precipitazioni</string>
+  <string id="31909">Recuper informazioni previsioni...</string>
+
 </strings>
