@@ -16,6 +16,7 @@
   <string id="7">Διαχείριση αρχείων</string>
   <string id="8">Καιρός</string>
   <string id="9">xbmc media center</string>
+  
   <string id="11">Δευτέρα</string>
   <string id="12">Τρίτη</string>
   <string id="13">Τετάρτη</string>
@@ -23,6 +24,7 @@
   <string id="15">Παρασκευή</string>
   <string id="16">Σάββατο</string>
   <string id="17">Κυριακή</string>
+  
   <string id="21">Ιανουαρίου</string>
   <string id="22">Φεβρουαρίου</string>
   <string id="23">Μαρτίου</string>
@@ -760,6 +762,9 @@
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
   <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
   <string id="1260">Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα διαμέσου του Zeroconf</string>
+  <string id="1270">Έγκριση στο XBMC να λαμβάνει περιεχόμενο AirPlay</string>
+  <string id="1271">Όνομα συσκευής</string>
+  <string id="1272">- Χρήση προστασίας με κωδικό</string>
   <string id="1300">Ειδική συσκευή ήχου</string>
   <string id="1301">Ειδική συσκευή διέλευσης</string>
   <string id="1396">Πυκνό</string>
@@ -1734,13 +1739,15 @@
   <string id="20447">Να αγνοηθούν και να ανανεωθούν από το internet;</string>
   <string id="20448">Αδυναμία λήψης πληροφοριών </string>
   <string id="20449">Αδυναμία σύνδεσης με τον απομακρυσμένο διακομιστή</string>
-  <string id="20450">Επιθυμείτε, να συνεχίσετε  την αναζήτηση;</string>
+  <string id="20450">Επιθυμείτε, να συνεχίσετε την αναζήτηση;</string>
   <string id="20451">Χώρες</string>
   <string id="20452">επεισόδιο</string>
   <string id="20453">επεισόδια</string>
   <string id="20454">Ακροατής</string>
   <string id="20455">Ακροατές</string>
   <string id="20456">Προσαρμογή ορισμάτων ταινίας fanart</string>
+  <string id="20457">Ομάδα Ταινιών</string>
+  <string id="20458">Ομαδοποίηση ταινιών</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
@@ -1755,6 +1762,7 @@
   <string id="21365">Απομάκρυνση κοινόχρηστων πολυμέσων</string>
   <string id="21366">Φακέλος υποτίτλων</string>
   <string id="21367">Ταινία &amp; εναλλακτικός φάκελος υποτίτλων</string>
+  <string id="21368">Παράκαμψη γραμματοσειρών υποτίτλων ASS/SSA</string>
   <string id="21369">Ενεργοποίηση ποντικιού</string>
   <string id="21370">Ενεργοποίηση ήχων πλοήγησης κατά την εκτέλεση πολυμέσων</string>
   <string id="21371">Μικρογραφία</string>
@@ -1840,6 +1848,15 @@
   <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
   <string id="21452">Λήψη περισσότερων...</string>
   <string id="21453">Σύστημα αρχείων root</string>
+  <string id="21454">Λανθάνουσα μνήμη πλήρης</string>
+  <string id="21455">Η λανθάνουσα μνήμη γέμισε πριν φθάσει το απαιτούμενο μέγεθος για συνεχόμενη αναπαραγωγή</string>
+  <string id="21460">Θέση υπότιτλου</string>
+  <string id="21461">Σταθερή</string>
+  <string id="21462">Κάτω πλευρά του βίντεο</string>
+  <string id="21463">Κάτω από το βίντεο</string>
+  <string id="21464">Πάνω πλευρά του βίντεο</string>
+  <string id="21465">Πάνω από το βίντεο</string>
+
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
