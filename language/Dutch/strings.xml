@@ -1648,10 +1648,10 @@
   <string id="20109">- Verschalen </string>
   <string id="20110">UPnP-client</string>
   <string id="20111">Automatisch starten</string>
-  <string id="20112">Vorige login: %s</string>
+  <string id="20112">Vorige aanmelding: %s</string>
   <string id="20113">Nog nooit ingelogd</string>
   <string id="20114">Profiel %i / %i</string>
-  <string id="20115">Gebruikerslogin / Selecteer een profiel</string>
+  <string id="20115">Gebruikersaanmelding / Selecteer een profiel</string>
   <string id="20116">Inlogscherm vergrendelen</string>
   <string id="20117">Ongeldige vergrendelcode.</string>
   <string id="20118">Dit vereist een actieve hoofdvergrendeling.</string>
@@ -1742,7 +1742,7 @@
   <string id="20252">Glazen vullen (video's)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
-  <string id="20255">Eerste login, profiel bijwerken</string>
+  <string id="20255">Eerste aanmelding, profiel bijwerken</string>
   <string id="20256">HTS tvheadend client</string>
   <string id="20257">VDR streamdev client</string>
   <string id="20258">MythTV client</string>
