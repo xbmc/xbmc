@@ -324,20 +324,18 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
   // see whether we have a cached image for this item
   CStdString thumb = GetCachedThumb(item);
-  if (!thumb.IsEmpty())
+  if (thumb.IsEmpty())
   {
+    thumb = GetLocalThumb(item);
+    if (!thumb.IsEmpty())
+    {
+      CTextureDatabase db;
+      if (db.Open())
+        db.SetTextureForPath(item.GetPath(), thumb);
+    }
+  }
+  if (!thumb.IsEmpty())
     item.SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
-    return true;
-  }
-  thumb = GetLocalThumb(item);
-  if (!thumb.IsEmpty())
-  {
-    CTextureDatabase db;
-    if (db.Open())
-      db.SetTextureForPath(item.GetPath(), thumb);
-    thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-  }
-  item.SetThumbnailImage(thumb);
   return true;
 }
 
