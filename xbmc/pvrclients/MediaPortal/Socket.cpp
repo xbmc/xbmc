@@ -25,6 +25,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace MPTV;
 
 namespace MPTV
 {
@@ -89,7 +90,7 @@ bool Socket::close()
 #ifdef TARGET_WINDOWS
       closesocket(_sd);
 #else
-      close(_sd);
+      ::close(_sd);
 #endif
     _sd = INVALID_SOCKET;
     osCleanup();
