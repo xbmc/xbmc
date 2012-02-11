@@ -75,8 +75,8 @@ public:
   CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "", int context = 0);
 
   void SetLabel(const CStdString &label, const CStdString &fallback, int context = 0);
-  CStdString GetLabel(int contextWindow, bool preferImage = false) const;
-  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
+  CStdString GetLabel(int contextWindow, bool preferImage = false, CStdString *fallback = NULL) const;
+  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, CStdString *fallback = NULL) const;
   bool IsConstant() const;
   bool IsEmpty() const;
 
