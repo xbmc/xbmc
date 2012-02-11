@@ -137,7 +137,6 @@
     <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
-    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />

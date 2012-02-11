@@ -15,6 +15,12 @@
     <Filter Include="Header Files\tinyXML">
       <UniqueIdentifier>{4a9cd83d-78e2-4957-864f-e37d61e2975e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\windows">
+      <UniqueIdentifier>{35770ebf-6188-47cc-8ca8-7d03db978210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\windows">
+      <UniqueIdentifier>{517ca399-06e9-4a7c-ab6e-feff75842920}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channels.cpp">
@@ -62,8 +68,8 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp">
       <Filter>Source Files\tinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\SingleLock.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\windows\CriticalSection.cpp">
+      <Filter>Source Files\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\windows\FileUtils.cpp">
       <Filter>Source Files</Filter>
@@ -72,7 +78,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\windows\WindowsUtils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,8 +133,14 @@
     <ClInclude Include="..\..\SingleLock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\windows\os_windows.h">
+      <Filter>Header Files\windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\FileUtils.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windows\WindowsUtils.h">
+      <Filter>Header Files\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

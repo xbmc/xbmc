@@ -34,6 +34,8 @@ typedef DWORD tThreadId;
 #define va_copy(x, y) x = y
 #endif
 
+/* String to 64-bit int */
+#define atoll(S) _atoi64(S)
 
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '\\'

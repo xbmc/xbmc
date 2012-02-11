@@ -516,7 +516,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   // If the file has already been closed, don't continue
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
-    XBMC->Log(LOG_DEBUG, "FileReader::Read() no open file");
+    XBMC->Log(LOG_ERROR, "FileReader::Read() no open file");
     return E_FAIL;
   }
 //  BoostThread Boost;
@@ -531,7 +531,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   DWORD dwErr = ::GetLastError();
   if ((DWORD)li.LowPart == (DWORD)0xFFFFFFFF && dwErr)
   {
-    XBMC->Log(LOG_DEBUG, "FileReader::Read() seek failed");
+    XBMC->Log(LOG_ERROR, "FileReader::Read() seek failed, error %d.", dwErr);
     return E_FAIL;
   }
   int64_t m_filecurrent = li.QuadPart;
@@ -603,7 +603,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 
   if (!hr)
   {
-    XBMC->Log(LOG_DEBUG, "FileReader::Read() read failed - error = %d",  HRESULT_FROM_WIN32(GetLastError()));
+    XBMC->Log(LOG_ERROR, "FileReader::Read() read failed - error = %d",  HRESULT_FROM_WIN32(GetLastError()));
     return E_FAIL;
   }
 

@@ -26,6 +26,12 @@
 
 #if defined(TARGET_WINDOWS)
 #  include "windows/os_windows.h"
+#  if defined LIVE555
+   // Define needed for including headers from LIVE555 (see NetCommon.h)
+#    ifndef _WIN32
+#      define _WIN32
+#    endif
+#  endif
 #else
 #  include "posix/os_posix.h"
 #endif

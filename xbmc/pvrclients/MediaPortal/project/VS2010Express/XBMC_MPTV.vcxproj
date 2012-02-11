@@ -128,7 +128,6 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
-    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
@@ -156,6 +155,8 @@
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
+    <ClInclude Include="..\..\windows\WindowsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

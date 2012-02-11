@@ -1,3 +1,6 @@
+v1.2.2.110:
+- Added: Compatibility option to turn off fast channel switching. Closes the timeshift before opening a new one.
+
 v1.2.2.109:
 - Fixed: rtsp client tread stop
 - Fixed: fix mimetype for tv channels

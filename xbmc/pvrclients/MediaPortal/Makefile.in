@@ -20,7 +20,6 @@ SRCS   = channels.cpp \
 	uri.cpp \
 	utils.cpp \
 	posix/CriticalSection.cpp \
-	SingleLock.cpp \
 	Cards.cpp
 
 include ../Makefile.include
@@ -30,13 +29,13 @@ include ../Makefile.include
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
 	$(MAKE) -C lib/tinyxml clean
-	$(MAKE) -C lib/live555 clean
+	#$(MAKE) -C lib/live555 clean
 	#$(MAKE) -C lib/tsreader clean
 	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 
 $(LIB): $(OBJS)
 	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket
 	$(MAKE) -C lib/tinyxml
-	$(MAKE) -C lib/live555
+	#$(MAKE) -C lib/live555
 	#$(MAKE) -C lib/tsreader
 	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

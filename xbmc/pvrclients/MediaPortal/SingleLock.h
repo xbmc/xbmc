@@ -19,13 +19,25 @@
 
 #include "CriticalSection.h"
 #include "NonCopyable.h"
+#include "client.h"
 
-class CSingleLock : public NonCopyable
+using namespace ADDON;
+
+class CSingleLock: public NonCopyable
 {
   public:
-   CSingleLock(CCriticalSection& cs);
-   CSingleLock(const CCriticalSection& cs);
-    ~CSingleLock();
-  protected:
+    CSingleLock(CCriticalSection& cs): m_CriticalSection(cs)
+    {
+      //XBMC->Log(LOG_DEBUG, "%s: lock %p", __FUNCTION__, &m_CriticalSection);
+      m_CriticalSection.lock();
+    };
+
+    ~CSingleLock(void)
+    {
+      //XBMC->Log(LOG_DEBUG, "%s: unlock %p", __FUNCTION__, &m_CriticalSection);
+      m_CriticalSection.unlock();
+    };
+
+  private:
     CCriticalSection& m_CriticalSection;
 };

@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER
+#if defined TSREADER && defined LIVE555
 
 #include "WaitEvent.h"
 #include "CriticalSection.h"
@@ -61,5 +61,4 @@ class CMemoryBuffer
     IMemoryCallback* m_pcallback;
     bool m_bRunning;
 };
-
-#endif //TSREADER
+#endif //TSREADER && LIVE555

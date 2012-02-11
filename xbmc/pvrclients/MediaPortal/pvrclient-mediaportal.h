@@ -52,7 +52,7 @@ public:
   const char* GetBackendVersion(void);
   const char* GetConnectionString(void);
   PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed);
-  PVR_ERROR GetMPTVTime(time_t *localTime, int *gmtOffset);
+  PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
 
   /* EPG handling */
   PVR_ERROR GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart = NULL, time_t iEnd = NULL);
@@ -86,7 +86,7 @@ public:
   int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channel);
-  PVR_ERROR GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus);
+  PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus);
   const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
   /* Record stream handling */
