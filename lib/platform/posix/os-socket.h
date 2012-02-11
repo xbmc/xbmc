@@ -76,7 +76,7 @@ namespace PLATFORM
     if (socket == INVALID_SOCKET_VALUE)
     {
       *iError = EINVAL;
-      return -1;
+      return -EINVAL;
     }
 
     ssize_t iBytesWritten(0);
@@ -90,19 +90,19 @@ namespace PLATFORM
       if (returnv < 0)
       {
         *iError = errno;
-        return -1;
+        return -errno;
       }
       else if (returnv == 0)
       {
         *iError = ETIMEDOUT;
-        return -1;
+        return -ETIMEDOUT;
       }
 
       returnv = write(socket, (char*)data + iBytesWritten, len - iBytesWritten);
       if (returnv == -1)
       {
         *iError = errno;
-        return -1;
+        return -errno;
       }
       iBytesWritten += returnv;
     }
@@ -121,7 +121,7 @@ namespace PLATFORM
     if (socket == INVALID_SOCKET_VALUE)
     {
       *iError = EINVAL;
-      return -1;
+      return -EINVAL;
     }
 
     if (iTimeoutMs > 0)
@@ -150,7 +150,7 @@ namespace PLATFORM
       if (returnv == -1)
       {
         *iError = errno;
-        return -1;
+        return -errno;
       }
       else if (returnv == 0)
       {
@@ -161,7 +161,7 @@ namespace PLATFORM
       if (returnv == -1)
       {
         *iError = errno;
-        return -1;
+        return -errno;
       }
 
       iBytesRead += returnv;
@@ -210,7 +210,7 @@ namespace PLATFORM
     if (socket == INVALID_SOCKET_VALUE)
     {
       *iError = EINVAL;
-      return -1;
+      return -EINVAL;
     }
 
     if (iTimeoutMs > 0)
