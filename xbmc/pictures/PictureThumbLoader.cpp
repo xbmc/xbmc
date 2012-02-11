@@ -63,48 +63,54 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   CStdString thumb;
   if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
-    CStdString image = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
-    thumb = CTextureCache::Get().CheckAndCacheImage(image);
+    thumb = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
     thumb = pItem->GetCachedVideoThumb();
-    if (CFile::Exists(thumb))
-    {
-      thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-    }
-    else
+    if (!CFile::Exists(thumb))
     {
       CStdString strPath, strFileName;
       URIUtils::Split(thumb, strPath, strFileName);
 
-      thumb = strPath + "auto-" + strFileName;
+      CStdString autoThumb = strPath + "auto-" + strFileName;
 
       // this is abit of a hack to avoid loading zero sized images
       // which we know will fail. They will just display empty image
       // we should really have some way for the texture loader to
       // do fallbacks to default images for a failed image instead
       struct __stat64 st;
-      if (CFile::Exists(thumb) && CFile::Stat(thumb, &st) == 0 && st.st_size > 0)
+      if (CFile::Exists(autoThumb) && CFile::Stat(autoThumb, &st) == 0 && st.st_size > 0)
       {
-        thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+        thumb = autoThumb;
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, autoThumb);
         AddJob(extract);
+        thumb.clear();
       }
     }
   }
   else if (!pItem->HasThumbnail())
   { // folder, zip, cbz, rar, cbr, playlist
     thumb = GetCachedThumb(*pItem);
-    if (!thumb.IsEmpty())
-      thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
   }
   if (!thumb.IsEmpty())
-    pItem->SetThumbnailImage(thumb);
+  {
+    // TODO: In future, do we want the thumbnail image to be the actual URL, and have the caching
+    //       either done here in a job or done at load time (or both).
+    //
+    //       If so, we need to alter GUIInfoManager::GetItemLabel() to return the thumb image
+    //       even if it can't be loaded by the non-background texture manager.
+    //
+    //       In addition, we'd need to hook up a method for the skinner to display either a fallback
+    //       or preferably the icon image while the thumb loads. This would need support in the
+    //       texture control to load directly-load fallback images before loading slow-load images
+    //       In addition, ideally the infomanager could return a (vector of?) fallbacks
+    pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+  }
   pItem->FillInDefaultIcon();
   return true;
 }
@@ -219,8 +225,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
         CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), thumb);
-        thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-        pItem->SetThumbnailImage(thumb);
+        pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
       }
       else
       {
