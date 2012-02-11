@@ -680,7 +680,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
   }
   
-// The volume command is used to change playback volume.
+  // The volume command is used to change playback volume.
   // A value argument should be supplied which indicates how loud we should get.
   // 0.000000 => silent
   // 1.000000 => loud
@@ -698,7 +698,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       else if (volume >= 0 && volume <= 1)
       {
         int oldVolume = g_application.GetVolume();
-        g_application.SetVolume(volume*100);
+        volume *= 100;
+        g_application.SetVolume(volume);
         g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
       }
   }
