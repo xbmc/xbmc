@@ -35,6 +35,7 @@ typedef enum {
   DVR_PRIO_UNIMPORTANT,
 } dvr_prio_t;
 
+using namespace std;
 using namespace ADDON;
 using namespace PLATFORM;
 
@@ -119,7 +120,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
 
   CLockObject messageLock(*message.mutex);
   htsmsg_add_u32(m, "seq", seq);
-  if(!m_session->SendMessage(m))
+  if(!m_session->TransmitMessage(m))
   {
     m_queue.erase(seq);
     return NULL;
@@ -666,28 +667,28 @@ void *CHTSPData::Process()
 
     CLockObject lock(m_mutex);
     if     (strstr(method, "channelAdd"))
-      CHTSPConnection::ParseChannelUpdate(msg, m_channels);
+      ParseChannelUpdate(msg);
     else if(strstr(method, "channelUpdate"))
-      CHTSPConnection::ParseChannelUpdate(msg, m_channels);
+      ParseChannelUpdate(msg);
     else if(strstr(method, "channelDelete"))
-      CHTSPConnection::ParseChannelRemove(msg, m_channels);
+      ParseChannelRemove(msg);
     else if(strstr(method, "tagAdd"))
-      CHTSPConnection::ParseTagUpdate(msg, m_tags);
+      ParseTagUpdate(msg);
     else if(strstr(method, "tagUpdate"))
-      CHTSPConnection::ParseTagUpdate(msg, m_tags);
+      ParseTagUpdate(msg);
     else if(strstr(method, "tagDelete"))
-      CHTSPConnection::ParseTagRemove(msg, m_tags);
+      ParseTagRemove(msg);
     else if(strstr(method, "initialSyncCompleted"))
     {
       bInitialised = true;
       m_started.Broadcast();
     }
     else if(strstr(method, "dvrEntryAdd"))
-      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
+      ParseDVREntryUpdate(msg);
     else if(strstr(method, "dvrEntryUpdate"))
-      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
+      ParseDVREntryUpdate(msg);
     else if(strstr(method, "dvrEntryDelete"))
-      CHTSPConnection::ParseDVREntryDelete(msg, m_recordings);
+      ParseDVREntryDelete(msg);
     else
       XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 
@@ -769,7 +770,7 @@ bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
     return false;
   }
 
-  if (m_session->ParseEvent(msg, id, event))
+  if (ParseEvent(msg, id, event))
   {
     m_events[id] = event;
     return true;
@@ -783,4 +784,302 @@ bool CHTSPData::SendEnableAsync()
   htsmsg_t *m = htsmsg_create_map();
   htsmsg_add_str(m, "method", "enableAsyncMetadata");
   return m_session->ReadSuccess(m, true, "enableAsyncMetadata failed");
+}
+
+void CHTSPData::ParseChannelRemove(htsmsg_t* msg)
+{
+  uint32_t id;
+  if(htsmsg_get_u32(msg, "channelId", &id))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+  XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
+
+  m_channels.erase(id);
+
+  PVR->TriggerChannelUpdate();
+}
+
+void CHTSPData::ParseChannelUpdate(htsmsg_t* msg)
+{
+  bool bChanged(false);
+  uint32_t iChannelId, iEventId = 0, iChannelNumber = 0, iCaid = 0;
+  const char *strName, *strIconPath;
+  if(htsmsg_get_u32(msg, "channelId", &iChannelId))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+
+  SChannel &channel = m_channels[iChannelId];
+  channel.id = iChannelId;
+
+  if(htsmsg_get_u32(msg, "eventId", &iEventId) == 0)
+    channel.event = iEventId;
+
+  if((strName = htsmsg_get_str(msg, "channelName")))
+  {
+    bChanged = (channel.name != strName);
+    channel.name = strName;
+  }
+
+  if((strIconPath = htsmsg_get_str(msg, "channelIcon")))
+  {
+    bChanged = (channel.icon != strIconPath);
+    channel.icon = strIconPath;
+  }
+
+  if(htsmsg_get_u32(msg, "channelNumber", &iChannelNumber) == 0)
+  {
+    int iNewChannelNumber = (iChannelNumber == 0) ? iChannelId + 1000 : iChannelNumber;
+    bChanged = (channel.num != iNewChannelNumber);
+    channel.num = iNewChannelNumber;
+  }
+
+  htsmsg_t *tags;
+
+  if((tags = htsmsg_get_list(msg, "tags")))
+  {
+    bChanged = true;
+    channel.tags.clear();
+
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, tags)
+    {
+      if(f->hmf_type != HMF_S64)
+        continue;
+      channel.tags.push_back((int)f->hmf_s64);
+    }
+  }
+
+  htsmsg_t *services;
+
+  if((services = htsmsg_get_list(msg, "services")))
+  {
+    bChanged = true;
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, services)
+    {
+      if(f->hmf_type != HMF_MAP)
+        continue;
+
+      htsmsg_t *service = &f->hmf_msg;
+      const char *service_type = htsmsg_get_str(service, "type");
+      if(service_type != NULL)
+      {
+        channel.radio = !strcmp(service_type, "Radio");
+      }
+
+      if(!htsmsg_get_u32(service, "caid", &iCaid))
+        channel.caid = (int) iCaid;
+    }
+  }
+
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s', event:%u",
+      __FUNCTION__, iChannelId, strName ? strName : "(null)", strIconPath ? strIconPath : "(null)", iEventId);
+
+  if (bChanged)
+    PVR->TriggerChannelUpdate();
+}
+
+void CHTSPData::ParseDVREntryDelete(htsmsg_t* msg)
+{
+  uint32_t id;
+
+  if(htsmsg_get_u32(msg, "id", &id))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+
+  XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
+
+  m_recordings.erase(id);
+
+  PVR->TriggerTimerUpdate();
+  PVR->TriggerRecordingUpdate();
+}
+
+void CHTSPData::ParseDVREntryUpdate(htsmsg_t* msg)
+{
+  SRecording recording;
+  const char *state;
+
+  if(htsmsg_get_u32(msg, "id",      &recording.id)
+  || htsmsg_get_u32(msg, "channel", &recording.channel)
+  || htsmsg_get_u32(msg, "start",   &recording.start)
+  || htsmsg_get_u32(msg, "stop",    &recording.stop)
+  || (state = htsmsg_get_str(msg, "state")) == NULL)
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+
+  /* parse the dvr entry's state */
+  if     (strstr(state, "scheduled"))
+    recording.state = ST_SCHEDULED;
+  else if(strstr(state, "recording"))
+    recording.state = ST_RECORDING;
+  else if(strstr(state, "completed"))
+    recording.state = ST_COMPLETED;
+  else if(strstr(state, "invalid"))
+    recording.state = ST_INVALID;
+
+  const char* str;
+  if((str = htsmsg_get_str(msg, "title")) == NULL)
+    recording.title = "";
+  else
+    recording.title = str;
+
+  if((str = htsmsg_get_str(msg, "description")) == NULL)
+    recording.description = "";
+  else
+    recording.description = str;
+
+  if((str = htsmsg_get_str(msg, "error")) == NULL)
+    recording.error = "";
+  else
+    recording.error = str;
+
+  // if the user has aborted the recording then the recording.error will be set to 300 by tvheadend
+  if (recording.error == "300")
+  {
+    recording.state = ST_ABORTED;
+    recording.error.clear();
+  }
+
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
+      , __FUNCTION__, recording.id, state, recording.title.c_str()
+      , recording.description.c_str());
+
+  m_recordings[recording.id] = recording;
+
+  PVR->TriggerTimerUpdate();
+
+  if (recording.state == ST_RECORDING)
+   PVR->TriggerRecordingUpdate();
+}
+
+bool CHTSPData::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
+{
+  uint32_t start, stop, next, chan_id, content;
+  const char *title, *desc, *ext_desc;
+  if(         htsmsg_get_u32(msg, "start", &start)
+  ||          htsmsg_get_u32(msg, "stop" , &stop)
+  || (title = htsmsg_get_str(msg, "title")) == NULL)
+  {
+    XBMC->Log(LOG_DEBUG, "%s - malformed event", __FUNCTION__);
+    htsmsg_print(msg);
+    htsmsg_destroy(msg);
+    return false;
+  }
+  event.Clear();
+  event.id    = id;
+  event.start = start;
+  event.stop  = stop;
+  event.title = title;
+
+  desc     = htsmsg_get_str(msg, "description");
+  ext_desc = htsmsg_get_str(msg, "ext_text");
+
+  if (desc && ext_desc)
+  {
+    string strBuf = desc;
+    strBuf.append(ext_desc);
+    event.descs = strBuf;
+  }
+  else if (desc)
+    event.descs = desc;
+  else if (ext_desc)
+    event.descs = ext_desc;
+  else
+    event.descs = "";
+
+  if(htsmsg_get_u32(msg, "nextEventId", &next))
+    event.next = 0;
+  else
+    event.next = next;
+  if(htsmsg_get_u32(msg, "channelId", &chan_id))
+    event.chan_id = -1;
+  else
+    event.chan_id = chan_id;
+  if(htsmsg_get_u32(msg, "contentType", &content))
+    event.content = -1;
+  else
+    event.content = content;
+
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, chan_id:%u, title:'%s', genre_type:%u, genre_sub_type:%u, desc:'%s', start:%u, stop:%u, next:%u"
+                    , __FUNCTION__
+                    , event.id
+                    , event.chan_id
+                    , event.title.c_str()
+                    , event.content & 0x0F
+                    , event.content & 0xF0
+                    , event.descs.c_str()
+                    , event.start
+                    , event.stop
+                    , event.next);
+
+  return true;
+}
+
+void CHTSPData::ParseTagRemove(htsmsg_t* msg)
+{
+  uint32_t id;
+  if(htsmsg_get_u32(msg, "tagId", &id))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+  XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
+
+  m_tags.erase(id);
+
+  PVR->TriggerChannelGroupsUpdate();
+}
+
+void CHTSPData::ParseTagUpdate(htsmsg_t* msg)
+{
+  uint32_t id;
+  const char *name, *icon;
+  if(htsmsg_get_u32(msg, "tagId", &id))
+  {
+    XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
+    htsmsg_print(msg);
+    return;
+  }
+  STag &tag = m_tags[id];
+  tag.id = id;
+
+  if((icon = htsmsg_get_str(msg, "tagIcon")))
+    tag.icon  = icon;
+
+  if((name = htsmsg_get_str(msg, "tagName")))
+    tag.name  = name;
+
+  htsmsg_t *channels;
+
+  if((channels = htsmsg_get_list(msg, "members")))
+  {
+    tag.channels.clear();
+
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, channels)
+    {
+      if(f->hmf_type != HMF_S64)
+        continue;
+      tag.channels.push_back((int)f->hmf_s64);
+    }
+  }
+
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s'"
+      , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)");
+
+  PVR->TriggerChannelGroupsUpdate();
 }

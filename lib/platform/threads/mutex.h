@@ -39,6 +39,8 @@
 #include "../posix/os-threads.h"
 #endif
 
+#include "../util/timeutils.h"
+
 namespace PLATFORM
 {
   class PreventCopy
@@ -163,28 +165,107 @@ namespace PLATFORM
     bool    m_bClearOnExit;
   };
 
+  class CTryLockObject : public PreventCopy
+  {
+  public:
+    inline CTryLockObject(CMutex &mutex, bool bClearOnExit = false) :
+      m_mutex(mutex),
+      m_bClearOnExit(bClearOnExit),
+      m_bIsLocked(m_mutex.TryLock())
+    {
+    }
+
+    inline ~CTryLockObject(void)
+    {
+      if (m_bClearOnExit)
+        Clear();
+      else if (m_bIsLocked)
+        Unlock();
+    }
+
+    inline bool TryLock(void)
+    {
+      bool bReturn = m_mutex.TryLock();
+      m_bIsLocked |= bReturn;
+      return bReturn;
+    }
+
+    inline void Unlock(void)
+    {
+      if (m_bIsLocked)
+      {
+        m_bIsLocked = false;
+        m_mutex.Unlock();
+      }
+    }
+
+    inline bool Clear(void)
+    {
+      m_bIsLocked = false;
+      return m_mutex.Clear();
+    }
+
+    inline bool Lock(void)
+    {
+      bool bReturn = m_mutex.Lock();
+      m_bIsLocked |= bReturn;
+      return bReturn;
+    }
+
+    inline bool IsLocked(void) const
+    {
+      return m_bIsLocked;
+    }
+
+  private:
+    CMutex &      m_mutex;
+    bool          m_bClearOnExit;
+    volatile bool m_bIsLocked;
+  };
+
   class CCondition : public PreventCopy
   {
   public:
-    inline CCondition(void) {}
+    inline CCondition(void) :
+      m_bPredicate(false),
+      m_iWaitingThreads(0) {}
     inline ~CCondition(void)
     {
+      Broadcast();
+    }
+
+    void Broadcast(void)
+    {
+      Set(true);
       m_condition.Broadcast();
     }
 
-    inline void Broadcast(void)
+    void Signal(void)
     {
-      m_condition.Broadcast();
-    }
-
-    inline void Signal(void)
-    {
+      Set(false);
       m_condition.Signal();
     }
 
-    inline bool Wait(CMutex &mutex, uint32_t iTimeout = 0)
+    bool Wait(CMutex &mutex, uint32_t iTimeout = 0)
     {
-      return m_condition.Wait(mutex.m_mutex, iTimeout);
+      {
+        CLockObject lock(m_mutex);
+        ++m_iWaitingThreads;
+      }
+
+      if (iTimeout > 0)
+      {
+        CTimeout timeout(iTimeout);
+        while (!m_bPredicate && timeout.TimeLeft() > 0)
+          m_condition.Wait(mutex.m_mutex, timeout.TimeLeft());
+      }
+      else
+      {
+        while (!m_bPredicate)
+          m_condition.Wait(mutex.m_mutex, 0);
+      }
+
+      return ResetAndReturn();
     }
 
     static void Sleep(uint32_t iTimeout)
@@ -196,6 +277,26 @@ namespace PLATFORM
     }
 
   private:
+    void Set(bool bBroadcast = false)
+    {
+      CLockObject lock(m_mutex);
+      m_bPredicate = true;
+      m_bBroadcast = bBroadcast;
+    }
+
+    bool ResetAndReturn(void)
+    {
+      CLockObject lock(m_mutex);
+      bool bReturn(m_bPredicate);
+      if (bReturn && (--m_iWaitingThreads == 0 || !m_bBroadcast))
+        m_bPredicate = false;
+      return bReturn;
+    }
+
+    CMutex         m_mutex;
     CConditionImpl m_condition;
+    volatile bool  m_bPredicate;
+    volatile bool  m_bBroadcast;
+    unsigned int   m_iWaitingThreads;
   };
 }

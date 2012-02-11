@@ -147,7 +147,7 @@ namespace PLATFORM
 
     ssize_t iReturn = send(socket, (char*)data, (int)len, 0);
     if (iReturn < (ssize_t)len)
-      *iError = errno;
+      *iError = GetSocketError();
     return iReturn;
   }
 
@@ -184,19 +184,28 @@ namespace PLATFORM
         FD_SET(socket, &fd_read);
 
         if (select((int)socket + 1, &fd_read, NULL, NULL, &tv) == 0)
+        {
+          *iError = ETIMEDOUT;
           return ETIMEDOUT;
+        }
         TcpSocketSetBlocking(socket, false);
       }
 
       ssize_t iReadResult = (iTimeoutMs > 0) ?
-          recv(socket, (char*)data + iBytesRead, (int)(len - iBytesRead), MSG_WAITALL) :
+          recv(socket, (char*)data + iBytesRead, (int)(len - iBytesRead), 0) :
           recv(socket, (char*)data, (int)len, MSG_WAITALL);
       *iError = GetSocketError();
+
+      if (iTimeoutMs > 0)
+      {
+        TcpSocketSetBlocking(socket, true);
+        iNow = GetTimeMs();
+      }
+
       if (iReadResult < 0)
       {
-        if (errno == EAGAIN && iTimeoutMs > 0)
+        if (*iError == EAGAIN && iTimeoutMs > 0)
           continue;
-        *iError = errno;
         return -1;
       }
       else if (iReadResult == 0 || (iReadResult != (ssize_t)len && iTimeoutMs == 0))
@@ -206,14 +215,12 @@ namespace PLATFORM
       }
 
       iBytesRead += iReadResult;
-
-      if (iTimeoutMs > 0)
-      {
-        TcpSocketSetBlocking(socket, true);
-        iNow = GetTimeMs();
-      }
     }
-    return 0;
+
+    if (iBytesRead < (ssize_t)len && *iError == 0)
+      *iError = ETIMEDOUT;
+
+    return iBytesRead;
   }
 
   inline bool TcpResolveAddress(const char *strHost, uint16_t iPort, int *iError, struct addrinfo **info)
@@ -279,7 +286,7 @@ namespace PLATFORM
       }
       else
       {
-        *iError = errno;
+        *iError = GetSocketError();
       }
     }
 

@@ -49,20 +49,9 @@ public:
   const char *GetVersion() const { return m_strVersion.c_str(); }
 
   htsmsg_t *  ReadMessage(int iInitialTimeout = 10000, int iDatapacketTimeout = 10000);
-  bool        SendMessage(htsmsg_t* m);
+  bool        TransmitMessage(htsmsg_t* m);
   htsmsg_t *  ReadResult (htsmsg_t* m, bool sequence = true);
   bool        ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
-
-  static bool ParseEvent         (htsmsg_t* msg, uint32_t id, SEvent &event);
-  static void ParseChannelUpdate (htsmsg_t* msg, SChannels &channels);
-  static void ParseChannelRemove (htsmsg_t* msg, SChannels &channels);
-  static void ParseTagUpdate     (htsmsg_t* msg, STags &tags);
-  static void ParseTagRemove     (htsmsg_t* msg, STags &tags);
-  static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue);
-  static bool ParseSignalStatus  (htsmsg_t* msg, SQuality &quality);
-  static bool ParseSourceInfo    (htsmsg_t* msg, SSourceInfo &si);
-  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
-  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
 private:
   bool SendGreeting(void);
