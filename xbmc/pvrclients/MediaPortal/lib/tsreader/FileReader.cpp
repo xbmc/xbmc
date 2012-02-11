@@ -522,6 +522,8 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 //  BoostThread Boost;
 
 #ifdef TARGET_WINDOWS
+  long hr;
+
   //Get File Position
   LARGE_INTEGER li;
   li.QuadPart = 0;

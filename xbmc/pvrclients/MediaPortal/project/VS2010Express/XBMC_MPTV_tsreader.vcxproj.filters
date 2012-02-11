@@ -101,6 +101,12 @@
     <ClCompile Include="..\..\lib\tsreader\Thread.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\windows\FileUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\channels.h">
@@ -180,6 +186,12 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\Thread.h">
       <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windows\WindowsUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FileUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
