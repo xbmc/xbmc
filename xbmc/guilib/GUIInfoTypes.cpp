@@ -139,7 +139,7 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
   Parse(label, context);
 }
 
-CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
+CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback) const
 {
   CStdString label;
   for (unsigned int i = 0; i < m_info.size(); i++)
@@ -149,9 +149,9 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
     {
       CStdString infoLabel;
       if (preferImage)
-        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow);
+        infoLabel = g_infoManager.GetImage(portion.m_info, contextWindow, fallback);
       if (infoLabel.IsEmpty())
-        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
+        infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow, fallback);
       if (!infoLabel.IsEmpty())
         label += portion.GetLabel(infoLabel);
     }
@@ -165,7 +165,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
   return label;
 }
 
-CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages) const
+CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback) const
 {
   if (!item->IsFileItem()) return "";
   CStdString label;
@@ -176,9 +176,9 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
     {
       CStdString infoLabel;
       if (preferImages)
-        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info);
+        infoLabel = g_infoManager.GetItemImage((const CFileItem *)item, portion.m_info, fallback);
       else
-        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info);
+        infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info, fallback);
       if (!infoLabel.IsEmpty())
         label += portion.GetLabel(infoLabel);
     }

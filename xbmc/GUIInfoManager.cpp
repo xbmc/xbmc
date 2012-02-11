@@ -1082,7 +1082,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   return TIME_FORMAT_GUESS;
 }
 
-CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
+CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fallback)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false);
@@ -1110,7 +1110,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     if (window)
     {
       CFileItemPtr item = window->GetCurrentListItem();
-      strLabel = GetItemLabel(item.get(), info);
+      strLabel = GetItemLabel(item.get(), info, fallback);
     }
 
     return strLabel;
@@ -2665,7 +2665,7 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int conte
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow, CStdString *fallback)
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -2701,7 +2701,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
 
     if (item) // If we got a valid item, do the lookup
-      return GetItemImage(item.get(), info.m_info); // Image prioritizes images over labels (in the case of music item ratings for instance)
+      return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else if (info.m_info == PLAYER_TIME)
   {
@@ -2845,14 +2845,14 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
+CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fallback)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, true);
 
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
   }
   else if (info == WEATHER_CONDITIONS)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
@@ -2866,6 +2866,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
+    if (fallback)
+      *fallback = "DefaultAlbumCover.png";
     return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultAlbumCover.png";
   }
   else if (info == MUSICPLAYER_RATING)
@@ -2881,6 +2883,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   else if (info == VIDEOPLAYER_COVER)
   {
     if (!g_application.IsPlayingVideo()) return "";
+    if (fallback)
+      *fallback = "DefaultVideoCover.png";
     if(m_currentMovieThumb.IsEmpty())
       return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
@@ -2889,7 +2893,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB);
+      return GetItemImage(&const_cast<CFileItemList&>(((CGUIMediaWindow*)window)->CurrentDirectory()), LISTITEM_THUMB, fallback);
   }
   else if (info == CONTAINER_TVSHOWTHUMB)
   {
@@ -2911,10 +2915,10 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     {
       CFileItemPtr item = window->GetCurrentListItem();
       if (item)
-        return GetItemImage(item.get(), info);
+        return GetItemImage(item.get(), info, fallback);
     }
   }
-  return GetLabel(info, contextWindow);
+  return GetLabel(info, contextWindow, fallback);
 }
 
 CStdString CGUIInfoManager::GetDate(bool bNumbersOnly)
@@ -3824,7 +3828,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdString *fallback)
 {
   if (!item) return "";
 
@@ -4060,6 +4064,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
         strThumb = item->GetIconImage();
+      if (fallback)
+        *fallback = item->GetIconImage();
       return strThumb;
     }
   case LISTITEM_OVERLAY:
@@ -4207,7 +4213,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   return "";
 }
 
-CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info, CStdString *fallback)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, true, item);
@@ -4240,7 +4246,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
     break;
   }  /* switch (info) */
 
-  return GetItemLabel(item, info);
+  return GetItemLabel(item, info, fallback);
 }
 
 bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
