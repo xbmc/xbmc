@@ -163,7 +163,7 @@ namespace PLATFORM
     virtual ssize_t Write(void* data, size_t len)
     {
       if (!m_socket || !WaitReady())
-        return EINVAL;
+        return -EINVAL;
 
       ssize_t iReturn = m_socket->Write(data, len);
       MarkReady();
@@ -174,7 +174,7 @@ namespace PLATFORM
     virtual ssize_t Read(void* data, size_t len, uint64_t iTimeoutMs = 0)
     {
       if (!m_socket || !WaitReady())
-        return EINVAL;
+        return -EINVAL;
 
       ssize_t iReturn = m_socket->Read(data, len, iTimeoutMs);
       MarkReady();
@@ -193,7 +193,7 @@ namespace PLATFORM
     virtual int GetErrorNumber(void)
     {
       CLockObject lock(m_mutex);
-      return m_socket ? m_socket->GetErrorNumber() : EINVAL;
+      return m_socket ? m_socket->GetErrorNumber() : -EINVAL;
     }
 
     virtual CStdString GetName(void)
