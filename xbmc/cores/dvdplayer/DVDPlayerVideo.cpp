@@ -234,7 +234,10 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   }
 
   // use aspect in stream if available
-  m_fForcedAspectRatio = hint.aspect;
+  if(hint.forced_aspect)
+    m_fForcedAspectRatio = hint.aspect;
+  else
+    m_fForcedAspectRatio = 0.0;
 
   if (m_pVideoCodec)
     delete m_pVideoCodec;
