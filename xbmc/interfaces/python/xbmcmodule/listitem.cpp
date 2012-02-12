@@ -526,6 +526,8 @@ namespace PYXBMC
       {
         if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "discnumber") == 0)
+          self->item->GetMusicInfoTag()->SetPartOfSet(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
