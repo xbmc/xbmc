@@ -103,8 +103,15 @@ public:
   CStdString   GetUniquePipeName();
   XFILE::Pipe *CreatePipe(const CStdString &name="", int nMaxPipeSize = PIPE_DEFAULT_MAX_SIZE);
   XFILE::Pipe *OpenPipe(const CStdString &name);
+  bool         OpenPipeForWrite(const CStdString &name);
+  bool         Write(const CStdString &name, const char *buf, int nSize);
+  bool         Read(const CStdString &name, char *buf, int nSize);
   void         ClosePipe(XFILE::Pipe *pipe);
+  void         ClosePipe(const CStdString &name);
   bool         Exists(const CStdString &name);
+  void         SetOpenThreashold(const CStdString &name, int threashold);
+  void         SetEof(const CStdString &name);
+  void         Flush(const CStdString &name);
   
 protected:
   PipesManager();
@@ -117,4 +124,5 @@ protected:
 }
 
 #endif
+
 

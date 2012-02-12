@@ -304,6 +304,32 @@ XFILE::Pipe *PipesManager::CreatePipe(const CStdString &name, int nMaxPipeSize)
   return p;
 }
 
+bool         PipesManager::OpenPipeForWrite(const CStdString &name)
+{
+  bool ret = true;
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    ret = CreatePipe(name) != NULL;
+
+  return ret;
+}
+
+bool         PipesManager::Write(const CStdString &name, const char *buf, int nSize)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return false;
+  return m_pipes[name]->Write(buf,nSize, INFINITE);
+}
+
+bool         PipesManager::Read(const CStdString &name, char *buf, int nSize)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return false;
+  return m_pipes[name]->Read(buf,nSize, INFINITE);
+}
+
 XFILE::Pipe *PipesManager::OpenPipe(const CStdString &name)
 {
   CSingleLock lock(m_lock);
@@ -311,6 +337,15 @@ XFILE::Pipe *PipesManager::OpenPipe(const CStdString &name)
     return NULL;
   m_pipes[name]->AddRef();
   return m_pipes[name];
+}
+
+void         PipesManager::ClosePipe(const CStdString &name)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return;
+  lock.Leave();
+  ClosePipe(m_pipes[name]);
 }
 
 void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
@@ -334,3 +369,26 @@ bool         PipesManager::Exists(const CStdString &name)
   return (m_pipes.find(name) != m_pipes.end());
 }
 
+void         PipesManager::SetOpenThreashold(const CStdString &name, int threashold)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return;
+  m_pipes[name]->SetOpenThreashold(threashold);
+}
+
+void         PipesManager::SetEof(const CStdString &name)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return;
+  m_pipes[name]->SetEof();
+}
+
+void         PipesManager::Flush(const CStdString &name)
+{
+  CSingleLock lock(m_lock);
+  if (m_pipes.find(name) == m_pipes.end())
+    return;
+  m_pipes[name]->Flush();
+}
