@@ -583,7 +583,6 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   int             code;
   PVR_CHANNEL     tag;
   CStdString      stream;
-  bool            bCheckForThumbs = false;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -625,6 +624,8 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     return PVR_ERROR_SERVER_ERROR;
 
 #ifdef TARGET_WINDOWS
+  bool            bCheckForThumbs = false;
+
   /* Check if we can find the MediaPortal channel logo folders on this machine */
   std::string strIconName;
   std::string strThumbPath;
@@ -655,7 +656,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     strThumbPath += "TV\\logos\\";
 
   bCheckForThumbs = OS::CFile::Exists(strThumbPath);
-#endif
+#endif // TARGET_WINDOWS
 
   memset(&tag, 0, sizeof(PVR_CHANNEL));
 
@@ -1783,7 +1784,7 @@ bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
   // should always have a valid root but handle gracefully if it does
   if (!pElem)
   {
-    XBMC->Log(LOG_DEBUG, "Could not find <genrestrings> element");    
+    XBMC->Log(LOG_DEBUG, "Could not find <genrestrings> element");
     return false;
   }
 
