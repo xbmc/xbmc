@@ -78,7 +78,7 @@ Subtypes:
   JAZZ                                         0x04
   MUSICAL_OPERA                                0x05
   BALLET                                       0x06
-  
+
 ARTSCULTURE                                    0x70 //without music
 Subtypes:
   PERFORMING_ARTS                              0x01

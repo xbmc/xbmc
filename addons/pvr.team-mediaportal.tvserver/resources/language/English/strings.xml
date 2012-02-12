@@ -20,6 +20,24 @@
     <string id="30041">MediaPortal</string>
 
     <!-- on-screen error messages -->
-    <string id="30050">Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!</string>
-    <string id="30051">Your TVServerXBMC version is too old. Please upgrade to v%s or higher!</string>
+    <string id="30050">Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!</string>
+    <string id="30051">Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!</string>
+
+    <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
+    <string id="30060">All cards are busy</string>
+    <string id="30061">Channel is scrambled</string>
+    <string id="30062">No video or audio detected</string>
+    <string id="30063">No signal detected</string>
+    <string id="30064">Unknown error</string>
+    <string id="30065">Unable to start graph</string>
+    <string id="30066">Unknown channel</string>
+    <string id="30067">No tuning details</string>
+    <string id="30068">Channel is not mapped to any card</string>
+    <string id="30069">Card is disabled</string>
+    <string id="30070">Connection to slave failed</string>
+    <string id="30071">Not the owner</string>
+    <string id="30072">Graph building failed</string>
+    <string id="30073">SW Encoder missing</string>
+    <string id="30074">No free disk space</string>
+    <string id="30075">No PMT found</string>
 </strings>

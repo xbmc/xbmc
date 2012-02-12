@@ -1,4 +1,6 @@
 v1.2.2.110:
+- Added: use channel icons from MediaPortal (Windows, localhost only)
+- Changed: switch from libPlatform + libTcpSocket to platform library
 - Added: Compatibility option to turn off fast channel switching. Closes the timeshift before opening a new one.
 
 v1.2.2.109:
