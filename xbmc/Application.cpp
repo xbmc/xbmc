@@ -66,6 +66,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/MythSession.h"
+#include "filesystem/FileMusicDatabase.h"
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "filesystem/SAPDirectory.h"
@@ -3640,6 +3641,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
+    return false;
+  }
+
+  // resolve MusicDb url, needed to resolve plugin items in music database
+  if (item.IsMusicDb())
+  {
+    CURL url(item.GetPath());
+    if (CStdString mainFile = CFileMusicDatabase::TranslateUrl(url))
+    {
+      CFileItem item_new(mainFile,false);
+      return PlayFile(item_new, false);
+    }
     return false;
   }
 
