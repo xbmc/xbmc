@@ -4634,6 +4634,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // handle musicdb:// and plugin://
       CFileItem file(*playlist[iNext]);
       CURL url(file.GetPath());
+      if (url.GetProtocol() == "musicdb" )
+        url = CFileMusicDatabase::TranslateUrl(url);
       if (url.GetProtocol() == "plugin")
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
 
