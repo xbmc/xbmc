@@ -385,6 +385,8 @@ void CRenderSystemGL::CaptureStateBlock()
 {
   if (!m_bRenderCreated)
     return;
+  
+  glGetIntegerv(GL_VIEWPORT, m_viewPort);
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -405,6 +407,7 @@ void CRenderSystemGL::ApplyStateBlock()
   if (!m_bRenderCreated)
     return;
 
+  glViewport(m_viewPort[0], m_viewPort[1], m_viewPort[2], m_viewPort[3]);
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
   glMatrixMode(GL_TEXTURE);

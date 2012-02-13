@@ -252,7 +252,7 @@ namespace VIDEO
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
-    std::vector<int> m_pathsToClean;
+    std::set<int> m_pathsToClean;
     CNfoFile m_nfoReader;
   };
 }

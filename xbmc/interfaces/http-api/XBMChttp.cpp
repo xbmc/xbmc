@@ -2085,7 +2085,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
       }
     }
     CKey tempKey(buttonCode, leftTrigger, rightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
-    tempKey.SetFromHttpApi(true);
+    tempKey.SetFromService(true);
     key = tempKey;
     lastKey = key;
     return SetResponse(openTag+"OK");

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Succo, updated by Gulp-->
 <!--Email: succo69@libero.it, http://forum.xbmc.org/member.php?u=42290-->
-<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
+<!--Based on English 5c8c939de7422db2427f37d5c26036138a9fe04e (03.02.2012)-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -1774,7 +1774,7 @@
   <string id="20326">Questo resetterà il valore di calibrazione per %s</string>
   <string id="20327">al suo valore originale.</string>
   <string id="20328">Cerca la destinazione</string>
-
+  <string id="20329">I film sono in cartelle separate che riportano il titolo del film</string>
   <string id="20330">Usa i nomi delle cartelle per le ricerche</string>
   <string id="20331">File</string>
   <string id="20332">Uso i nomi dei files o delle cartelle per le ricerche?</string>
@@ -1864,7 +1864,7 @@
   <string id="20416">Prima visione</string>
   <string id="20417">Scrittore</string>
   <string id="20418">Pulisci i nomi dei files e delle cartelle</string>
-  <string id="20419">Mostra i metadati nella vista files</string>
+  <string id="20419">Sostituisci i nomi dei files con i titoli presenti nella libreria</string>
 
   <string id="20420">Mai</string>
   <string id="20421">Se solo una stagione</string>
@@ -1903,7 +1903,8 @@
   <string id="20454">In Ascolto</string>
   <string id="20455">In Ascolto</string>
   <string id="20456">Imposta l'immagine fanart per un set di filmati</string>
-  <string id="20457">imposta filmato</string>
+  <string id="20457">Set di film</string>
+  <string id="20458">Raggruppa i film in set</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Mostra i files e le cartelle nascoste</string>

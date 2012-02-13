@@ -83,7 +83,8 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   while (file.ReadString(szLine, 1024))
   {
     strLine = szLine;
-    StringUtils::RemoveCRLF(strLine);
+    strLine.TrimRight(" \t\r\n");
+    strLine.TrimLeft(" \t");
 
     if (strLine.Left( (int)strlen(M3U_INFO_MARKER) ) == M3U_INFO_MARKER)
     {
@@ -104,6 +105,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
     {
       CStdString strFileName = strLine;
+
+      if (strFileName.size() > 0 && strFileName[0] == '#')
+        continue; // assume a comment or something else we don't support
 
       // Skip self - do not load playlist recursively
       if (URIUtils::GetFileName(strFileName).Equals(m_strPlayListName))

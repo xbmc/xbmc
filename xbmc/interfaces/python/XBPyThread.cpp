@@ -375,6 +375,13 @@ void XBPyThread::Process()
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
+  //set stopped event - this allows ::stop to run and kill remaining threads
+  //this event has to be fired without holding m_pExecuter->m_critSection
+  //before
+  //Also the GIL (PyEval_AcquireLock) must not be held
+  //if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
+  stoppedEvent.Set();
+
   { CSingleLock lock(m_pExecuter->m_critSection);
     m_threadState = NULL;
   }
@@ -428,6 +435,17 @@ void XBPyThread::stop()
     if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
 
+    PyThreadState_Swap(old);
+    PyEval_ReleaseLock();
+
+    if(!stoppedEvent.WaitMSec(5000))//let the script 5 secs for shut stuff down
+    {
+      CLog::Log(LOGERROR, "XBPyThread::stop - script didn't stop in proper time - lets kill it");
+    }
+    
+    //everything which didn't exit by now gets killed
+    PyEval_AcquireLock();
+    old = PyThreadState_Swap((PyThreadState*)m_threadState);    
     for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
       Py_XDECREF(state->async_exc);

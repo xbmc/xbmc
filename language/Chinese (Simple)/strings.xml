@@ -1768,7 +1768,7 @@
   <string id="20326">这个操作会重新校准%s的配置</string>
   <string id="20327">还原为初时配置</string>
   <string id="20328">选择指定位置</string>
-
+  <string id="20329">电影在以片名命名的单独目录中</string>
   <string id="20330">以文件夹名来查找</string>
   <string id="20331">文件</string>
   <string id="20332">用文件夹名或文件名进行查找？</string>
@@ -1858,7 +1858,7 @@
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
   <string id="20418"></string>
-  <string id="20419">文件视图显示媒体标识信息</string>
+  <string id="20419">用资料库标题替换文件名</string>
 
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
@@ -1898,6 +1898,7 @@
   <string id="20455">听众</string>
   <string id="20456">设置影片集同人画</string>
   <string id="20457">影片集</string>
+  <string id="20458">电影按影片集分组</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2005,6 +2006,8 @@
   <string id="21451">需要访问互联网。</string>
   <string id="21452">获取更多...</string>
   <string id="21453">根文件系统</string>
+  <string id="21454">缓存满</string>
+  <string id="21455">缓存在达到连续播放所需数量之前已满</string>
 
   <string id="21460">字幕位置</string>
   <string id="21461">固定</string>
@@ -2325,6 +2328,8 @@
   <string id="33102">事件服务器</string>
   <string id="33103">远程通信服务器</string>
 
+  <string id="33200">检测到新的连接</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2348,6 +2353,14 @@
 
   <string id="34201">未找到下一播放项目</string>
   <string id="34202">未找到上一播放项目</string>
+
+  <string id="34300">启动 zeroconf 失败</string>
+  <string id="34301">Apple 的 Bonjour 服务是否已安装？更多信息见日志记录。</string>
+
+  <string id="34400">视频渲染</string>
+  <string id="34401">视频滤镜/缩放器初始化失败，使用双线性缩放</string>
+  <string id="34402">音频设备初始化失败</string>
+  <string id="34403">检查你的音频设置</string>
 
   <string id="35000">外部设备</string>
 

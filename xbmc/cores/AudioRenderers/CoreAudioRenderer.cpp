@@ -26,6 +26,7 @@
 
 #include "CoreAudioRenderer.h"
 #include "Application.h"
+#include "Systeminfo.h"
 #include "guilib/AudioContext.h"
 #include "osx/CocoaInterface.h"
 #include "settings/GUISettings.h"
@@ -1010,7 +1011,15 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     
     // Get User-Configured (XBMC) Speaker Configuration
     AudioChannelLayout guiLayout;
-    guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
+    if (g_sysinfo.IsAppleTV())
+    {
+      // Force ATV1 to a 2.0 layout (that is all it knows), since it does not provide a usable channel layout
+      guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: AppleTV detected - Forcing channel layout to 2.0 (max available PCM channels)");  
+    }
+    else
+      guiLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo; 
+    
     CCoreAudioChannelLayout userLayout(guiLayout);
     CStdString strUserLayout;
     CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: User-Configured Speaker Layout: %s", CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)userLayout, strUserLayout));  

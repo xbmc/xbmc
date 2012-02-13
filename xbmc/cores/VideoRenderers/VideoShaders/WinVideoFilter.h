@@ -164,6 +164,7 @@ public:
 protected:
   virtual bool ChooseIntermediateD3DFormat();
   virtual bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
+  virtual bool ClearIntermediateRenderTarget();
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,

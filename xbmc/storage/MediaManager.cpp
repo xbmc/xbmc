@@ -170,7 +170,7 @@ void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
   m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
-void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
+void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
 {
   // Load our xml file
   LoadSources();
@@ -180,6 +180,30 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
     share.strName = url.GetWithoutUserDetails();
+    locations.push_back(share);
+  }
+  if (autolocations)
+  {
+    CMediaSource share;
+    share.m_ignore = true;
+#ifdef HAS_FILESYSTEM_SMB
+    share.strPath = "smb://";
+    share.strName = g_localizeStrings.Get(20171);
+    locations.push_back(share);
+#endif
+
+#ifdef HAS_FILESYSTEM_NFS
+    share.strPath = "nfs://";
+    share.strName = g_localizeStrings.Get(20259);
+    locations.push_back(share);
+#endif// HAS_FILESYSTEM_NFS
+
+    share.strPath = "upnp://";
+    share.strName = "UPnP Devices";
+    locations.push_back(share);
+
+    share.strPath = "zeroconf://";
+    share.strName = "Zeroconf Browser";
     locations.push_back(share);
   }
 }
