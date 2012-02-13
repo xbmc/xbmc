@@ -4630,10 +4630,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_pPlayer) m_pPlayer->OnNothingToQueueNotify();
         return true; // nothing to do
       }
+
+      // handle musicdb:// and plugin://
+      CFileItem file(*playlist[iNext]);
+      CURL url(file.GetPath());
+      if (url.GetProtocol() == "plugin")
+        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
+
       // ok, grab the next song
-      CFileItemPtr item = playlist[iNext];
-      // ok - send the file to the player if it wants it
-      if (m_pPlayer && m_pPlayer->QueueNextFile(*item))
+
+      if (m_pPlayer && m_pPlayer->QueueNextFile(file))
       { // player wants the next file
         m_nextPlaylistItem = iNext;
       }
