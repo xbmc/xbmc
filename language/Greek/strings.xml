@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 12/25/2011 / Based on english strings version 1E+42-->
+<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 12/25/2011 / Last update (by CutSickAss): 14/02/2012 / Based on english strings version 1E+42-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -188,7 +188,7 @@
   <string id="216">Ποσοστό μεγέθυνσης</string>
   <string id="217">Λόγος εικονοστοιχείων</string>
   <string id="218">Μονάδα DVD</string>
-  <string id="219">Παρακαλώ, εισάγετε δίσκο</string>
+  <string id="219">Παρακαλώ εισάγετε δίσκο</string>
   <string id="220">Απομακρυσμένος κοινόχρηστος πόρος</string>
   <string id="221">Το δίκτυο είναι αποσυνδεμένο</string>
   <string id="222">Άκυρο</string>
@@ -432,7 +432,7 @@
   <string id="475">Μουσική μόνο</string>
   <string id="476">Μουσική &amp; βίντεο</string>
   <string id="477">Αδυναμία φόρτωσης της λίστας αναπαραγωγής</string>
-  <string id="478">Aπεικόνισεις οθόνης (OSD)</string>
+  <string id="478">Aπεικονίσεις οθόνης (OSD)</string>
   <string id="479">Κέλυφος &amp; γλώσσα</string>
   <string id="480">Εξατομίκευση</string>
   <string id="481">Ιδιότητες ήχου</string>
@@ -625,7 +625,7 @@
   <string id="719">- Διεύθυνση IP</string>
   <string id="720">- Μάσκα δικτύου</string>
   <string id="721">- Προεπιλεγμένη πύλη</string>
-  <string id="722">- Διακομιστή DNS</string>
+  <string id="722">- Διακομιστής DNS</string>
   <string id="723">Αποθήκευση &amp; επανεκκίνηση</string>
   <string id="724">Προσδιορίστηκε εσφαλμένη διεύθυνση. Η τιμή πρέπει να έχει τη μορφή AAA.BBB.CCC.DDD</string>
   <string id="725">με τιμές μεταξύ 0 και 255.</string>
@@ -801,7 +801,7 @@
   <string id="1254">Να απαιτείται επιβεβαίωση για να συνδεθεί</string>
   <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP)</string>
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
-  <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
+  <string id="1257">Να συνδεθείτε στο σύστημα που εντοπίστηκε;</string>
 
   <string id="1260">Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα διαμέσου του Zeroconf</string>
   <string id="1270">Έγκριση στο XBMC να λαμβάνει περιεχόμενο AirPlay</string>
@@ -863,7 +863,7 @@
   <string id="10008">Ρυθμίσεις - Γενικά</string>
   <string id="10009">Ρυθμίσεις - Οθόνη</string>
   <string id="10010">Ρυθμίσεις - Αισθητικά - Βαθμονόμηση γραφικού περιβάλλοντος (GUI)</string>
-  <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμιση Οθόνης</string>
+  <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμηση Οθόνης</string>
   <string id="10012">Ρυθμίσεις - Φωτογραφίες</string>
   <string id="10013">Ρυθμίσεις - Εφαρμογές</string>
   <string id="10014">Ρυθμίσεις - Καιρός</string>
@@ -917,7 +917,7 @@
 
   <string id="12008">Διάλογος στοιβαγμένου αρχείου</string>
   <string id="12009">Ανακατασκευή περιεχομένων...</string>
-  <string id="12010">Επιστροφή στην μουσική</string>
+  <string id="12010">Επιστροφή στη μουσική</string>
   <string id="12011">Επιστροφή στα βίντεο</string>
 
   <string id="12021">Εκκίνηση από την αρχή</string>
@@ -957,14 +957,14 @@
   <string id="12344">Ο κωδικός πρόσβασης δεν ταιριάζει.</string>
   <string id="12345">Δεν επιτράπηκε η πρόσβαση</string>
   <string id="12346">Οι δοκιμές εισαγωγής κωδικού πρόσβασης εξαντλήθηκαν.</string>
-  <string id="12347">Το συστήμα τώρα θα απενεργοποιηθεί.</string>
+  <string id="12347">Το σύστημα τώρα θα απενεργοποιηθεί.</string>
   <string id="12348">Το αντικείμενο κλειδώθηκε</string>
   <string id="12353">Επανενεργοποίηση κλειδώματος</string>
   <string id="12356">Αλλαγή κλειδώματος</string>
   <string id="12357">Πηγαίο κλείδωμα</string>
   <string id="12358">Το πεδίο του κωδικού πρόσβασης ήταν κενό. Ξαναπροσπαθήστε.</string>
   <string id="12360">Κεντρικό κλείδωμα</string>
-  <string id="12362">Απενεργοποίηση συστήματος όταν προσπάθειες εισαγωγής εξαντληθούν</string>
+  <string id="12362">Απενεργοποίηση συστήματος όταν εξαντληθούν οι προσπάθειες εισαγωγής</string>
   <string id="12367">Ο κεντρικός κωδικός δεν είναι έγκυρος</string>
   <string id="12368">Παρακαλώ, εισάγετε έναν έγκυρο κεντρικό κωδικό</string>
   <string id="12373">Ρυθμίσεις &amp;  διαχείριση αρχείων</string>
@@ -988,7 +988,7 @@
   <string id="12600">Ο καιρός</string>
 
   <string id="12900">Προφύλαξη οθόνης</string>
-  <string id="12901">Πλήρους οθόνης απεικονίσεις (OSD)</string>
+  <string id="12901">Απεικονίσεις πλήρους οθόνης (OSD)</string>
 
   <string id="13000">Σύστημα</string>
   <string id="13001">Άμεση ελάττωση περιστροφής (Spindown)</string>
@@ -1100,7 +1100,7 @@
   <string id="13283">Λειτουργικό σύστημα</string>
   <string id="13284">Ταχύτητα CPU</string>
 
-  <string id="13286">Βίντεο κωδικοποιητής</string>
+  <string id="13286">Κωδικοποιητής βίντεο:</string>
   <string id="13287">Ανάλυση οθόνης</string>
 
   <string id="13292">Καλώδιο A/V</string>
@@ -1205,7 +1205,7 @@
   <string id="13405">Μικρογραφία</string>
   <string id="13406">Πληροφορίες εικόνας</string>
   <string id="13407">%s προκαθορισμένα</string>
-  <string id="13408">(Αξιολόγηση χρήστη IMDb)</string>
+  <string id="13408">(Αξιολόγηση IMDb)</string>
   <string id="13409">250 κορυφαία</string>
   <string id="13410">Συντονισμός στο Last.FM</string>
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
@@ -1720,7 +1720,7 @@
   <string id="20182">Κενό</string>
   <string id="20183">Επαναφόρτωση κελύφους</string>
   <string id="20184">Περιστροφή εικόνων που χρησιμοποιούν τις πληροφορίες EXIF</string>
-  <string id="20185">Χρήση όψης αφίσας για τις τηλεοπτικές σειρές</string>
+  <string id="20185">Χρήση στυλ αφισών για τις τηλεοπτικές σειρές</string>
   <string id="20186">Απασχολημένο</string>
 
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
@@ -1862,7 +1862,7 @@
   <string id="20416">Πρεμιέρα</string>
   <string id="20417">Σενάριο</string>
   <string id="20418"></string>
-  <string id="20419">Εμφάνιση μεταδεδομένων κατά την προβολή αρχείων</string>
+  <string id="20419">Αντικατάσταση ονομάτων αρχείων με τίτλους συλλογών</string>
 
   <string id="20420">Ποτέ</string>
   <string id="20421">Eάν είναι ενός κύκλου</string>
@@ -1884,7 +1884,7 @@
   <string id="20437">Επιλεγμένο fanart</string>
   <string id="20438">Τοπικό fanart</string>
   <string id="20439">Χωρίς fanart</string>
-  <string id="20440">Tρέχον fanart</string>
+  <string id="20440">Τρέχον fanart</string>
   <string id="20441">Απομακρυσμένο fanart</string>
   <string id="20442">Αλλαγή περιεχομένου</string>
   <string id="20443">Επιθυμείτε να ανανεώσετε τις πληροφορίες</string>
@@ -1976,9 +1976,9 @@
   <string id="21417">- Ρυθμίσεις</string>
   <string id="21418">Πολύγλωσσο</string>
   <string id="21419">Δεν υπάρχει διαθέσιμος καταγραφέας</string>
-  <string id="21420">Τιμές για αντιστοίχηση</string>
+  <string id="21420">Τιμές για αντιστοίχιση</string>
   <string id="21421">Όροι έξυπνης λίστας αναπαραγωγής</string>
-  <string id="21422">Κριτήρια αντιστοίχησης αντικειμένων</string>
+  <string id="21422">Κριτήρια αντιστοίχισης αντικειμένων</string>
   <string id="21423">Νέοι κανόνες...</string>
   <string id="21424">Αντικείμενα με πολλές αντιστοιχίες</string>
   <string id="21425">με όλους τους κανόνες</string>
@@ -2401,5 +2401,5 @@
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
   <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
-  <string id="36018">Χρησιμοποιήστε τη γλώσσα της τηλεόρασης</string>
+  <string id="36018">Χρήση της γλώσσας της τηλεόρασης</string>
 </strings>
