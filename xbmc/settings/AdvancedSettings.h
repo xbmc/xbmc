@@ -130,6 +130,7 @@ class CAdvancedSettings
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
     bool m_DXVAForceProcessorRenderer;
+    int  m_videoFpsDetect;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
