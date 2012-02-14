@@ -29,70 +29,37 @@
 #include "IFile.h"
 #include "URL.h"
 #include "threads/CriticalSection.h"
-#include "DllLibAfp.h"
 
-// libafpclient includes
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __cplusplus
-}
-#endif
+#include "/Users/chris/Development/source/libxafp/include/libxafp.h"
 
 CStdString URLEncode(CStdString str);
 
-class CAfpConnection : public CCriticalSection
+struct libafpclient;
+struct afp_server;
+struct afp_file_info;
+struct afp_volume;
+struct afp_url;
+class  DllLibAfp;
+
+extern xafp_context_pool_handle gAFPCtxPool;
+
+// TODO: This sucks... Improve it.
+class CAFPContext
 {
 public:
-    enum eAfpConnectError
-    {
-      AfpOk     = 0,
-      AfpFailed = 1,
-      AfpAuth   = 2,
-    };
-    typedef enum eAfpConnectError afpConnnectError;
-
-   CAfpConnection();
-  ~CAfpConnection();
-
-  afpConnnectError      Connect(const CURL &url);
-  void                  Disconnect(void);
-  struct afp_server     *GetServer()    {return m_pAfpServer;}
-  struct afp_volume     *GetVolume()    {return m_pAfpVol;};
-  struct afp_url        *GetUrl()       {return m_pAfpUrl;};
-  CStdString            GetPath(const CURL &url);
-  DllLibAfp             *GetImpl()      {return m_pLibAfp;}
+  CAFPContext(xafp_client_handle hnd) : m_Handle(hnd) {}
+  ~CAFPContext()
+  {
+    xafp_free_context(gAFPCtxPool, m_Handle);
+  }
   
-  const char            *GetConnectedIp() const { if(m_pAfpUrl) return m_pAfpUrl->servername;else return "";}
-  
-  //special stat which uses its own context
-  //needed for getting intervolume symlinks to work
-  //it uses the same global server connection
-  //but its own volume
-  int                   stat(const CURL &url, struct stat *statbuff);
-  
-  void AddActiveConnection();
-  void AddIdleConnection();
-  void CheckIfIdle();  
-  void Deinit();  
-
-private:
-  bool                  initLib(void);
-  bool                  connectVolume(const char *volumename, struct afp_volume *&pVolume);
-  void                  disconnectVolume(void);
-  CStdString            getAuthenticatedPath(const CURL &url);
-
-  int                   m_OpenConnections;
-  int                   m_IdleTimeout;
-  struct afp_server     *m_pAfpServer;
-  struct afp_volume     *m_pAfpVol;
-  struct afp_url        *m_pAfpUrl;
-  struct libafpclient   *m_pAfpClient;
-  DllLibAfp             *m_pLibAfp;
-  bool                  m_bDllInited;
+  operator xafp_client_handle()
+  {
+    return m_Handle;
+  }
+protected:
+  xafp_client_handle m_Handle;
 };
-
-extern CAfpConnection gAfpConnection;
 
 namespace XFILE
 {
@@ -122,6 +89,7 @@ public:
                         { if (request == IOCTRL_SEEK_POSSIBLE) return 1;
                           return -1;
                         };
+  static xafp_client_handle    GetClientContext(const CURL& url);
 
 protected:
   bool                  IsValidFile(const CStdString& strFileName);
@@ -129,8 +97,8 @@ protected:
   CURL                  m_url;
   int64_t               m_fileSize;
   off_t                 m_fileOffset; // current SEEK pointer
-  struct afp_file_info *m_pFp;
-  struct afp_volume    *m_pAfpVol;  
+  xafp_file_handle      m_fileHandle;
+  xafp_client_handle    m_Context;
 };
 }
 #endif // _LINUX

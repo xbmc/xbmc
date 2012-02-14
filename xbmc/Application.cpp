@@ -4897,7 +4897,7 @@ void CApplication::ProcessSlow()
 #endif
 
 #ifdef HAS_FILESYSTEM_AFP
-  gAfpConnection.CheckIfIdle();
+  //gAfpConnection.CheckIfIdle();
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP

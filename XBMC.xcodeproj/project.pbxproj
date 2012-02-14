@@ -593,6 +593,8 @@
 		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
+		83EB0638144D132F00D58AF5 /* libxafp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EB0637144D132F00D58AF5 /* libxafp.dylib */; };
+		83EB0639144D132F00D58AF5 /* libxafp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EB0637144D132F00D58AF5 /* libxafp.dylib */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
 		8863281D0E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */; };
@@ -2546,6 +2548,7 @@
 		83A72B960FBC8E3B00171871 /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83E0B2480F7C95FF0091643F /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
+		83EB0637144D132F00D58AF5 /* libxafp.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxafp.dylib; path = ../../libxafp/build/Debug/libxafp.dylib; sourceTree = SOURCE_ROOT; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
 		880DBE490DC223FF00E26B71 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
 		880DBE4A0DC223FF00E26B71 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
@@ -3982,6 +3985,7 @@
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
 				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
+				83EB0638144D132F00D58AF5 /* libxafp.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4015,6 +4019,7 @@
 				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
 				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
 				18404E711396E06C00863BBA /* SlingboxLib.a in Frameworks */,
+				83EB0639144D132F00D58AF5 /* libxafp.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4062,6 +4067,7 @@
 				F56C8CE9131F5DCC000AD0F6 /* libm.dylib */,
 				F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */,
 				F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */,
+				83EB0637144D132F00D58AF5 /* libxafp.dylib */,
 				F56C8CE6131F5DC6000AD0F6 /* libz.dylib */,
 				E38E23910D2626E600618676 /* OpenGL.framework */,
 				F59879070FBAA0C3008EF4FB /* QuartzCore.framework */,
@@ -9040,6 +9046,9 @@
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"\"$(SRCROOT)/lib/shairport\"",
+					"\"$(SRCROOT)/../../libxafp/build/Debug\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9138,6 +9147,8 @@
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"\"$(SRCROOT)/../../libxafp/build/Debug\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9298,6 +9309,7 @@
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"\"$(SRCROOT)/lib/shairport\"",
+					"\"$(SRCROOT)/../../libxafp/build/Debug\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9399,6 +9411,7 @@
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"$(SRCROOT)/lib/SlingboxLib",
 					"\"$(SRCROOT)/lib/shairport\"",
+					"\"$(SRCROOT)/../../libxafp/build/Debug\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
