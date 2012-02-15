@@ -33,7 +33,10 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
+#if defined(HAS_FFMPEG)
 #include "DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DllSwScale.h"
+#endif
 
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -50,7 +53,6 @@
 #include "DVDPerformanceCounter.h"
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
-#include "DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -2805,6 +2807,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
 
 bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
 {
+#if defined(HAS_FFMPEG)
   CLog::Log(LOGNOTICE, "Opening Subtitle stream: %i source: %i", iStream, source);
 
   CDemuxStream* pStream = NULL;
@@ -2897,6 +2900,8 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
   m_CurrentSubtitle.started = false;
 
   return true;
+#endif
+  return false;
 }
 
 bool CDVDPlayer::OpenTeletextStream(int iStream, int source)
@@ -3623,9 +3628,10 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   std::string vobsubfile = subfilename;
   if(ext == ".idx")
   {
+#if defined(HAS_FFMPEG)
     if (vobsubfile.empty())
       vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
-   
+
     CDVDDemuxVobsub v;
     if(!v.Open(filename, vobsubfile))
       return -1;
@@ -3640,6 +3646,8 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     CStdString strReplace(URIUtils::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return -1;
+#endif
+    return -1;
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);

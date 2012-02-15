@@ -15,12 +15,12 @@ POSTPROC_SO=postproc-52-$(ARCH).so
 SWRESAMPLE_SO=swresample-0-$(ARCH).so
 
 DIRS=
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
+ifeq ($(or $(findstring 1,@USE_EXTERNAL_FFMPEG@),$(findstring 0,@USE_FFMPEG@)),)
   DIRS+=ffmpeg
 endif
 
 LIBS=
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
+ifeq ($(or $(findstring 1,@USE_EXTERNAL_FFMPEG@),$(findstring 0,@USE_FFMPEG@)),)
   LIBS+=$(AVUTIL_SO) \
 	$(AVCODEC_SO) \
 	$(AVFORMAT_SO) \

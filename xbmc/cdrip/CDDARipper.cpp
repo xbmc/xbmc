@@ -31,7 +31,9 @@
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
+#if defined(HAS_FFMPEG)
 #include "EncoderFFmpeg.h"
+#endif
 #include "EncoderFlac.h"
 #include "filesystem/CDDADirectory.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"

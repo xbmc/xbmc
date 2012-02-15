@@ -30,8 +30,10 @@
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
+#if defined(HAS_FFMPEG)
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#endif
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "../../Util.h"
@@ -300,9 +302,11 @@ void CDVDPlayerVideo::Process()
 
   DVDVideoPicture picture;
   CPulldownCorrection pulldown;
+#if defined(HAS_FFMPEG)
   CDVDVideoPPFFmpeg mPostProcess("");
   CStdString sPostProcessType;
   bool bPostProcessDeint = false;
+#endif
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
 
@@ -581,7 +585,9 @@ void CDVDPlayerVideo::Process()
           m_pVideoCodec->ClearPicture(&picture);
           if (m_pVideoCodec->GetPicture(&picture))
           {
+#if defined(HAS_FFMPEG)
             sPostProcessType.clear();
+#endif
 
             picture.iGroupId = pPacket->iGroupId;
 
@@ -615,13 +621,15 @@ void CDVDPlayerVideo::Process()
             {
               if(mInt == VS_INTERLACEMETHOD_SW_BLEND)
               {
+#if defined(HAS_FFMPEG)
                 if (!sPostProcessType.empty())
                   sPostProcessType += ",";
                 sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
                 bPostProcessDeint = true;
+#endif
               }
             }
-
+#if defined(HAS_FFMPEG)
             if (g_settings.m_currentVideoSettings.m_PostProcess)
             {
               if (!sPostProcessType.empty())
@@ -636,7 +644,7 @@ void CDVDPlayerVideo::Process()
               if (mPostProcess.Process(&picture))
                 mPostProcess.GetPicture(&picture);
             }
-
+#endif
             /* if frame has a pts (usually originiating from demux packet), use that */
             if(picture.pts != DVD_NOPTS_VALUE)
             {

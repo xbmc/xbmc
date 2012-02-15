@@ -21,9 +21,7 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "system.h"
 // enum CodecID
 
 #include <string>
@@ -42,6 +40,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
+#if defined(HAS_FFMPEG)
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
@@ -50,6 +49,7 @@ extern "C" {
   #endif
 #else
   #include "libavcodec/avcodec.h"
+#endif
 #endif
 }
 

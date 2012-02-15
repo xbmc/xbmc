@@ -127,6 +127,7 @@ libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 libcec_disabled_missing_libs="== libcec disabled because both libudev and libusb are not available. CEC adapter support will not be available. =="
+ffmpeg_disabled="== FFmpeg support manually disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -318,6 +319,12 @@ AC_ARG_ENABLE([airtunes],
   [enable AirTunes support(default is auto)])],
   [use_airtunes=$enableval],
   [use_airtunes=auto])
+
+AC_ARG_ENABLE([ffmpeg],
+  [AS_HELP_STRING([--enable-ffmpeg],
+  [enable internal FFmpeg libraries (default is yes)])],
+  [use_ffmpeg=$enableval],
+  [use_ffmpeg=yes])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -1218,6 +1225,7 @@ if test "$use_external_ffmpeg" = "yes"; then
     [[#include <libavfilter/avfilter.h>]])
 
   AC_MSG_NOTICE($external_ffmpeg_enabled)
+  SKIP_CONFIG_FFMPEG=1
   USE_EXTERNAL_FFMPEG=1
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
 
@@ -1244,6 +1252,7 @@ if test "$use_external_ffmpeg" = "yes"; then
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
+  SKIP_CONFIG_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
@@ -1257,6 +1266,17 @@ if test -z "$PYTHON_VERSION"; then
   AC_MSG_ERROR([Can't find a Python version.])
 else
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+fi
+
+if test "x$use_ffmpeg" != "xno"; then
+  USE_FFMPEG=1
+  SKIP_CONFIG_FFMPEG=0
+  AC_DEFINE([HAVE_FFMPEG], [1], [Whether to use FFmpeg libraries.])
+else
+  use_vdpau=no
+  USE_FFMPEG=0
+  SKIP_CONFIG_FFMPEG=1
+  AC_MSG_NOTICE($ffmpeg_disabled)
 fi
 
 # VDPAU
@@ -1532,6 +1552,12 @@ if test "$use_dbus" = "yes"; then
   final_message="$final_message\n  DBUS:\t\tYes"
 else
   final_message="$final_message\n  DBUS:\t\tNo"
+fi
+
+if test "x$use_ffmpeg" != "xno"; then
+  final_message="$final_message\n  FFmpeg:\tYes"
+else
+  final_message="$final_message\n  FFmpeg:\tNo"
 fi
 
 if test "x$use_vdpau" != "xno"; then
@@ -1844,6 +1870,7 @@ OUTPUT_FILES="Makefile \
     lib/snesapu/SNES/SNESAPU/Makefile \
     lib/stsound/StSoundLibrary/Makefile \
     xbmc/cores/playercorefactory/Makefile \
+    xbmc/music/tags/Makefile \
     xbmc/music/karaoke/Makefile \
     xbmc/osx/Makefile \
     xbmc/guilib/Makefile \
@@ -1936,7 +1963,7 @@ AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_WEB_SERVER)
-
+AC_SUBST(USE_FFMPEG)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2072,7 +2099,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       sed -i -e "s#define HAVE_SYMVER 1#define HAVE_SYMVER 0#" config.h &&
       sed -i -e "s#define HAVE_SYMVER_GNU_ASM 1#define HAVE_SYMVER_GNU_ASM 0#" config.h
   fi
-], [$USE_EXTERNAL_FFMPEG])
+], [$SKIP_CONFIG_FFMPEG])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
   ./configure \

@@ -28,7 +28,11 @@
   #include "config.h"
 #endif
 #include <vector>
+#if defined(HAS_FFMPEG)
 #include "DllAvCodec.h"
+#else
+#include "FFMpegInternals.h"
+#endif
 
 struct AVStream;
 

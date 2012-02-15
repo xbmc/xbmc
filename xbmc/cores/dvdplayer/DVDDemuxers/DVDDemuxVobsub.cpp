@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "DVDDemuxVobsub.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -48,6 +49,7 @@ CDVDDemuxVobsub::~CDVDDemuxVobsub()
 
 bool CDVDDemuxVobsub::Open(const string& filename, const string& subfilename)
 {
+#if defined(HAS_FFMPEG)
   m_Filename = filename;
 
   auto_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
@@ -143,6 +145,9 @@ bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
     m_Timestamp--;
   }
   return true;
+#else
+  return false;
+#endif
 }
 
 DemuxPacket* CDVDDemuxVobsub::Read()

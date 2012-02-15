@@ -1,11 +1,14 @@
 SRCS=CDDARipper.cpp \
      CDDAReader.cpp \
      Encoder.cpp \
-     EncoderFFmpeg.cpp \
      EncoderFlac.cpp \
      EncoderLame.cpp \
      EncoderVorbis.cpp \
      EncoderWav.cpp \
+
+ifeq (@USE_FFMPEG@,1)
+SRCS += EncoderFFmpeg.cpp
+endif
 
 LIB=cdrip.a
 

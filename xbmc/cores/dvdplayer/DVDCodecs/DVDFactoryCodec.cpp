@@ -31,21 +31,25 @@
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
 #include "Video/DVDVideoCodecVideoToolBox.h"
 #endif
+#if defined(HAS_FFMPEG)
 #include "Video/DVDVideoCodecFFmpeg.h"
+#include "Audio/DVDAudioCodecFFmpeg.h"
+#include "Overlay/DVDOverlayCodecFFmpeg.h"
+#include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
+#else
+#include "FFMpegInternals.h"
+#endif
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
-#include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
-#include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
 #include "Overlay/DVDOverlayCodecTX3G.h"
-#include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 
 #include "DVDStreamInfo.h"
@@ -250,10 +254,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   }
 #endif
 
+#if defined(HAS_FFMPEG)
   CStdString value;
   value.Format("%d", surfaces);
   options.push_back(CDVDCodecOption("surfaces", value));
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
+#endif
 
   return NULL;
 }
@@ -265,8 +271,10 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
 
   if (passthrough)
   {
+#if defined(HAS_FFMPEG)
     pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
     if ( pCodec ) return pCodec;
+#endif
   }
 
   switch (hint.codec)
@@ -316,9 +324,10 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       break;
     }
   }
-
+#if defined(HAS_FFMPEG)
   pCodec = OpenCodec( new CDVDAudioCodecFFmpeg(), hint, options );
   if( pCodec ) return pCodec;
+#endif
 
   return NULL;
 }
@@ -346,8 +355,11 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
 
     default:
+#if defined(HAS_FFMPEG)
       pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
       if( pCodec ) return pCodec;
+#endif
+      return NULL;
   }
 
   return NULL;

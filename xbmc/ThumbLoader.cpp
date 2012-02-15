@@ -36,7 +36,9 @@
 #include "programs/Shortcut.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoDatabase.h"
+#if defined (HAS_FFMPEG)
 #include "cores/dvdplayer/DVDFileInfo.h"
+#endif
 
 using namespace XFILE;
 using namespace std;
@@ -135,7 +137,9 @@ bool CThumbExtractor::DoWork()
   if (m_thumb)
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
+#if defined (HAS_FFMPEG)
     result = CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+#endif
     if(result)
     {
       m_item.SetProperty("HasAutoThumb", true);
@@ -146,7 +150,9 @@ bool CThumbExtractor::DoWork()
   else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_path.c_str());
+#if defined (HAS_FFMPEG)
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
+#endif
   }
 
   return result;
