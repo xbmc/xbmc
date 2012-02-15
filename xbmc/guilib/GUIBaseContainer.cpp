@@ -830,8 +830,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
     CGUIListItem *lastItem = m_lastItem;
-    unsigned int selected = GetSelectedItem();
-    CGUIListItem* selectedItem = m_items.size() > 0 ? m_items[selected].get() : NULL;
+    int selected = GetSelectedItem();
+    CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
     Reset();
     bool updateItems = false;
     if (!m_staticUpdateTime)
@@ -852,8 +852,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
         if (item.get() == lastItem)
           m_lastItem = lastItem;
         // if item is selected and it changed position, re-select it
-        if (item.get() == selectedItem && selected != i)
-          SelectItem(i);
+        if (item.get() == selectedItem && selected != (int)m_items.size() - 1)
+          SelectItem(m_items.size() - 1);
       }
       // update any properties
       if (updateItems)
