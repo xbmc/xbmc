@@ -90,8 +90,8 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     }
   }
   else if (!pItem->HasThumbnail())
-  { // folder, zip, cbz, rar, cbr, playlist
-    thumb = GetCachedThumb(*pItem);
+  { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
+    thumb = GetCachedImage(*pItem, "thumb");
   }
   if (!thumb.IsEmpty())
   {
@@ -133,7 +133,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     CStdString strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
     if (CFile::Exists(strTBN))
     {
-      db.SetTextureForPath(pItem->GetPath(), strTBN);
+      db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
       CTextureCache::Get().BackgroundCacheImage(strTBN);
       pItem->SetThumbnailImage(strTBN);
       return;
@@ -159,7 +159,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     thumb = URIUtils::AddFileToFolder(strPath, thumb);
     if (CFile::Exists(thumb))
     {
-      db.SetTextureForPath(pItem->GetPath(), thumb);
+      db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
       CTextureCache::Get().BackgroundCacheImage(thumb);
       pItem->SetThumbnailImage(thumb);
       return;
@@ -213,7 +213,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       { // less than 4 items, so just grab the first thumb
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
         CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
-        db.SetTextureForPath(pItem->GetPath(), thumb);
+        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CTextureCache::Get().BackgroundCacheImage(thumb);
         pItem->SetThumbnailImage(thumb);
       }
@@ -228,7 +228,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb);
         CPicture::CreateFolderThumb(strFiles, CTextureCache::GetCachedPath(relativeCacheFile));
         CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
-        db.SetTextureForPath(pItem->GetPath(), thumb);
+        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
       }
     }

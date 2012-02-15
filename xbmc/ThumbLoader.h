@@ -69,12 +69,19 @@ public:
 
   bool LoadRemoteThumb(CFileItem *pItem);
 
-  /*! \brief Checks whether the given item has a thumb listed in the texture database
-   \param item CFileItem to check for a thumb
-   \return the thumb associated with this item
-   \sa CheckAndCacheThumb
+  /*! \brief Checks whether the given item has an image listed in the texture database
+   \param item CFileItem to check
+   \param type the type of image to retrieve
+   \return the image associated with this item
    */
-  static CStdString GetCachedThumb(const CFileItem &item);
+  static CStdString GetCachedImage(const CFileItem &item, const CStdString &type);
+
+  /*! \brief Associate an image with the given item in the texture database
+   \param item CFileItem to associate the image with
+   \param type the type of image
+   \param image the URL of the image
+   */
+  static void SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image);
 };
 
 class CVideoThumbLoader : public CThumbLoader, public CJobQueue

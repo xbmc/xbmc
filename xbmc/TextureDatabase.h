@@ -38,9 +38,10 @@ public:
    Used for retrieval of previously discovered images to save
    stat() on the filesystem all the time
    \param url path that may be associated with a texture
+   \param type type of image to look for
    \return URL of the texture associated with the given path
    */
-  CStdString GetTextureForPath(const CStdString &url);
+  CStdString GetTextureForPath(const CStdString &url, const CStdString &type);
 
   /*! \brief Set a texture associated with the given path
    Used for setting of previously discovered images to save
@@ -48,9 +49,10 @@ public:
    the actual image path, not the cached image path (the image will be
    cached at load time.)
    \param url path that was used to find the texture
+   \param type type of image to associate
    \param texture URL of the texture to associate with the path
    */
-  void SetTextureForPath(const CStdString &url, const CStdString &texture);
+  void SetTextureForPath(const CStdString &url, const CStdString &type, const CStdString &texture);
 
 protected:
   /*! \brief retrieve a hash for the given url
@@ -62,6 +64,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 8; };
+  virtual int GetMinVersion() const { return 9; };
   const char *GetBaseDBName() const { return "Textures"; };
 };

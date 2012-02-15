@@ -70,12 +70,19 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
   return pItem->HasThumbnail();
 }
 
-CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
+CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString &type)
 {
   CTextureDatabase db;
   if (db.Open())
-    return db.GetTextureForPath(item.GetPath());
+    return db.GetTextureForPath(item.GetPath(), type);
   return "";
+}
+
+void CThumbLoader::SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image)
+{
+  CTextureDatabase db;
+  if (db.Open())
+    db.SetTextureForPath(item.GetPath(), type, image);
 }
 
 CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
@@ -304,16 +311,12 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
     return true;
 
   // see whether we have a cached image for this item
-  CStdString thumb = GetCachedThumb(item);
+  CStdString thumb = GetCachedImage(item, "thumb");
   if (thumb.IsEmpty())
   {
     thumb = GetLocalThumb(item);
     if (!thumb.IsEmpty())
-    {
-      CTextureDatabase db;
-      if (db.Open())
-        db.SetTextureForPath(item.GetPath(), thumb);
-    }
+      SetCachedImage(item, "thumb", thumb);
   }
   if (!thumb.IsEmpty())
   {
