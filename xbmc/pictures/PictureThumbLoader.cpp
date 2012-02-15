@@ -71,23 +71,16 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     thumb = pItem->GetCachedVideoThumb();
     if (!CFile::Exists(thumb))
     {
-      CStdString strPath, strFileName;
-      URIUtils::Split(thumb, strPath, strFileName);
-
-      CStdString autoThumb = strPath + "auto-" + strFileName;
-
-      // this is abit of a hack to avoid loading zero sized images
-      // which we know will fail. They will just display empty image
-      // we should really have some way for the texture loader to
-      // do fallbacks to default images for a failed image instead
-      if (CFile::Exists(autoThumb))
+      CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
+      CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
+      if (!cachedThumb.IsEmpty())
       {
-        thumb = autoThumb;
+        thumb = thumbURL;
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, autoThumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);
         AddJob(extract);
         thumb.clear();
       }

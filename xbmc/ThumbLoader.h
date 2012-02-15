@@ -92,6 +92,12 @@ public:
   virtual bool LoadItem(CFileItem* pItem);
   void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
 
+  /*! \brief helper function to retrieve a thumb URL for embedded video thumbs
+   \param item a video CFileItem.
+   \return a URL for the embedded thumb.
+   */
+  static CStdString GetEmbeddedThumbURL(const CFileItem &item);
+
   /*!
    \brief Callback from CThumbExtractor on completion of a generated image
 

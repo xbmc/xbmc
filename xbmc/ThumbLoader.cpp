@@ -135,12 +135,16 @@ bool CThumbExtractor::DoWork()
   if (m_thumb)
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
-    result = CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+    // construct the thumb cache file
+    CTextureDetails details;
+    details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
+    result = CDVDFileInfo::ExtractThumb(m_path, details, &m_item.GetVideoInfoTag()->m_streamDetails);
     if(result)
     {
+      CTextureCache::Get().AddCachedTexture(m_target, details);
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
-      m_item.SetThumbnailImage(m_target);
+      m_item.SetThumbnailImage(CTextureCache::GetCachedPath(details.file));
     }
   }
   else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
@@ -225,20 +229,18 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     pItem->SetUserVideoThumb();
     if (CFile::Exists(cachedThumb))
       pItem->SetThumbnailImage(cachedThumb);
-    else
+    else if (!pItem->m_bIsFolder && pItem->IsVideo())
     {
-      CStdString strPath, strFileName;
-      URIUtils::Split(cachedThumb, strPath, strFileName);
-
       // create unique thumb for auto generated thumbs
-      cachedThumb = strPath + "auto-" + strFileName;
-      if (CFile::Exists(cachedThumb))
+      CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
+      cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
+      if (!cachedThumb.IsEmpty())
       {
         pItem->SetProperty("HasAutoThumb", true);
-        pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetThumbnailImage(cachedThumb);
       }
-      else if (!pItem->m_bIsFolder && pItem->IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
+      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
                g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
@@ -246,7 +248,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         if (URIUtils::IsInRAR(item.GetPath()))
           SetupRarOptions(item,path);
 
-        CThumbExtractor* extract = new CThumbExtractor(item, path, true, cachedThumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
         return true;
       }
@@ -270,6 +272,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   return true;
+}
+
+CStdString CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
+{
+  CStdString path(item.GetPath());
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+  if (URIUtils::IsStack(path))
+    path = CStackDirectory::GetFirstStackedFile(path);
+
+  return CTextureCache::GetWrappedImageURL(path, "video");
 }
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
