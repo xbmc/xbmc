@@ -79,8 +79,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
       // which we know will fail. They will just display empty image
       // we should really have some way for the texture loader to
       // do fallbacks to default images for a failed image instead
-      struct __stat64 st;
-      if (CFile::Exists(autoThumb) && CFile::Stat(autoThumb, &st) == 0 && st.st_size > 0)
+      if (CFile::Exists(autoThumb))
       {
         thumb = autoThumb;
       }
