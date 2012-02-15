@@ -52,10 +52,12 @@ bool CTextureDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxTexture ON texture(urlhash)");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, texture text)\n");
+    m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, type text, texture text)\n");
 
+    // TODO: Should the path index be a covering index? (we need only retrieve texture)
+    //       Also, do we actually need the urlhash'ing here, or will an index on the url suffice?
     CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash)");
+    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash, type)");
   }
   catch (...)
   {
@@ -95,6 +97,13 @@ bool CTextureDatabase::UpdateOldVersion(int version)
     if (version < 8)
     { // get rid of old cached thumbs as they were previously set to the cached thumb name instead of the source thumb
       m_pDS->exec("delete from path");
+    }
+    if (version < 9)
+    { // get rid of the old path table and add the type column
+      m_pDS->dropIndex("path", "idxPath");
+      m_pDS->exec("DROP TABLE path");
+      m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, type text, texture text)\n");
+      m_pDS->exec("CREATE INDEX idxPath ON path(urlhash, type)");
     }
   }
   catch (...)
@@ -216,7 +225,7 @@ unsigned int CTextureDatabase::GetURLHash(const CStdString &url) const
   return (unsigned int)crc;
 }
 
-CStdString CTextureDatabase::GetTextureForPath(const CStdString &url)
+CStdString CTextureDatabase::GetTextureForPath(const CStdString &url, const CStdString &type)
 {
   try
   {
@@ -225,7 +234,7 @@ CStdString CTextureDatabase::GetTextureForPath(const CStdString &url)
 
     unsigned int hash = GetURLHash(url);
 
-    CStdString sql = PrepareSQL("select texture from path where urlhash=%u", hash);
+    CStdString sql = PrepareSQL("select texture from path where urlhash=%u and type='%s'", hash, type.c_str());
     m_pDS->query(sql.c_str());
 
     if (!m_pDS->eof())
@@ -243,7 +252,7 @@ CStdString CTextureDatabase::GetTextureForPath(const CStdString &url)
   return "";
 }
 
-void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString &texture)
+void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString &type, const CStdString &texture)
 {
   try
   {
@@ -252,7 +261,7 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
 
     unsigned int hash = GetURLHash(url);
 
-    CStdString sql = PrepareSQL("select id from path where urlhash=%u", hash);
+    CStdString sql = PrepareSQL("select id from path where urlhash=%u and type='%s'", hash, type.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
@@ -264,7 +273,7 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
     else
     { // add the texture
       m_pDS->close();
-      sql = PrepareSQL("insert into path (id, urlhash, url, texture) values(NULL, %u, '%s', '%s')", hash, url.c_str(), texture.c_str());
+      sql = PrepareSQL("insert into path (id, urlhash, url, type, texture) values(NULL, %u, '%s', '%s', '%s')", hash, url.c_str(), type.c_str(), texture.c_str());
       m_pDS->exec(sql.c_str());
     }
   }

@@ -558,7 +558,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         { // store the thumb for this share
           CTextureDatabase db;
           if (db.Open())
-            db.SetTextureForPath(item->GetPath(), strThumb);
+            db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
         }
         if (!cachedThumb.IsEmpty())
           XFILE::CFile::Cache(strThumb, cachedThumb);
