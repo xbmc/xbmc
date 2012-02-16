@@ -27,7 +27,6 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AudioServices.h>
 #include <CoreAudio/CoreAudioTypes.h>
-#include <AudioToolbox/AUGraph.h>
 #include <list>
 #include <vector>
 
@@ -64,7 +63,7 @@ public:
   CIOSCoreAudioDevice(AudioComponentInstance deviceId);
   UInt32 GetTotalOutputChannels();
 
-  void Attach(AudioComponentInstance audioUnit) {m_AudioUnit = audioUnit;}
+  void Attach(AudioUnit audioUnit) {m_AudioUnit = audioUnit;}
   AudioComponentInstance GetComponent(){return m_AudioUnit;}
   
   void SetupInfo();
@@ -80,7 +79,7 @@ public:
                  AudioUnitElement bus, AudioStreamBasicDescription* pDesc);
   bool SetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope,
                  AudioUnitElement bus, AudioStreamBasicDescription* pDesc);
-  Float32 GetCurrentVolume() const;
+  Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);
   int  FramesPerSlice(int nSlices);
   void AudioChannelLayout(int layoutTag);
@@ -89,17 +88,9 @@ public:
   bool SetSessionListener(AudioSessionPropertyID inID, 
                  AudioSessionPropertyListener inProc, void* pClientData);
 
-  AUGraph   m_AudioGraph;
-  AUNode    m_OutputNode;
-  AUNode    m_MixerNode;
   AudioComponentInstance m_AudioUnit;
   AudioComponentInstance m_MixerUnit;
   bool m_Passthrough;
-private:
-  bool SetFormat(AudioComponentInstance &unit, AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);
-  bool EnableInputOuput(AudioComponentInstance &unit);
-  bool OpenUnit(OSType type, OSType subType, OSType manufacturer, AudioComponentInstance &unit, AUNode &node);
-  bool InitWithGraph(AudioStreamBasicDescription* pDesc, AURenderCallback renderCallback, void *pClientData);
 };
 
 // Helper Functions
@@ -110,4 +101,3 @@ const char* IOSStreamDescriptionToString(AudioStreamBasicDescription desc, CStdS
 
 #endif
 #endif // __COREAUDIO_H__
-
