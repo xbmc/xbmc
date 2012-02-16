@@ -134,12 +134,6 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     return false;
   }
 
-  if(!m_Passthrough)//set last stored volume
-  {
-    SetCurrentVolume(g_settings.m_nVolumeLevel);  
-  }
-  
-
   m_PacketSize = iChannels * (uiBitsPerSample / 8) * 512;
 
   m_BufferFrames = m_AudioDevice.FramesPerSlice(m_PacketSize);
