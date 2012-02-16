@@ -117,7 +117,6 @@ class CAdvancedSettings
     float m_videoIgnorePercentAtEnd;
     CStdString m_audioHost;
     bool m_audioApplyDrc;
-    bool m_audioIosAllowVolumeControl;
 
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
