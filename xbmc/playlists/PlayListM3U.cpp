@@ -105,6 +105,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
     {
       CStdString strFileName = strLine;
 
+      if (strFileName.size() > 0 && strFileName[0] == '#')
+        continue; // assume a comment or something else we don't support
+
       // Skip self - do not load playlist recursively
       if (URIUtils::GetFileName(strFileName).Equals(m_strPlayListName))
         continue;
