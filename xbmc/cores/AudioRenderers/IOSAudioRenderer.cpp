@@ -24,7 +24,6 @@
 #include "IOSAudioRingBuffer.h"
 #include "AudioContext.h"
 #include "GUISettings.h"
-#include "Settings/AdvancedSettings.h"
 #include "Settings.h"
 #include "utils/log.h"
 
@@ -113,12 +112,6 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
 
   m_Channels = iChannels;
 
-  bool passthroughForHardware = true;
-  
-  if(g_advancedSettings.m_audioIosAllowVolumeControl)
-  {
-    passthroughForHardware = m_Passthrough;
-  }
   // Set the input stream format for the AudioUnit
   // We use the default DefaultOuput AudioUnit, so we only can set the input stream format.
   // The autput format is automaticaly set to the input format.
@@ -135,7 +128,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   audioFormat.mReserved = 0;
 
   // Attach our output object to the device
-  if(!m_AudioDevice.Init(passthroughForHardware, &audioFormat, RenderCallback, this))
+  if(!m_AudioDevice.Init(/*m_Passthrough*/ true, &audioFormat, RenderCallback, this))
   {
     CLog::Log(LOGDEBUG, "CIOSAudioRenderer::Init failed");
     return false;
@@ -268,7 +261,7 @@ bool CIOSAudioRenderer::Stop()
 //***********************************************************************************************
 LONG CIOSAudioRenderer::GetCurrentVolume() const
 {
-  return m_AudioDevice.GetCurrentVolume();
+  return m_CurrentVolume;
 }
 
 void CIOSAudioRenderer::Mute(bool bMute)
@@ -277,8 +270,7 @@ void CIOSAudioRenderer::Mute(bool bMute)
 
 bool CIOSAudioRenderer::SetCurrentVolume(LONG nVolume)
 {
-  m_CurrentVolume = nVolume;
-  return m_AudioDevice.SetCurrentVolume(nVolume);
+  return true;
 }
 
 //***********************************************************************************************
@@ -413,12 +405,8 @@ OSStatus CIOSAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
 
   m_Buffer->Read((unsigned char *)ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
 
-  if (m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
-  {
+  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
-    if (ioActionFlags)
-      *ioActionFlags |=  kAudioUnitRenderAction_OutputIsSilence;
-  }  
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRequested;
 
@@ -442,4 +430,3 @@ void  CIOSAudioRenderer::PropertyChangeCallback(void* inClientData, AudioSession
 }
 
 #endif
-
