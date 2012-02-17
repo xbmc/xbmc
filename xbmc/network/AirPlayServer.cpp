@@ -689,7 +689,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       const char* found = strstr(queryString.c_str(), "volume=");
       double volume = found ? (double)(atof(found + strlen("volume="))) : 0;
 
-      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %i", uri.c_str(), volume);
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
 
       if (needAuth && !checkAuthorization(authorization, method, uri))
       {
