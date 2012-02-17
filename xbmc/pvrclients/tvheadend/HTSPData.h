@@ -69,9 +69,8 @@ protected:
 private:
   struct SMessage
   {
-    PLATFORM::CCondition* event;
-    PLATFORM::CMutex    * mutex;
-    htsmsg_t*             msg;
+    PLATFORM::CEvent* event;
+    htsmsg_t*         msg;
   };
   typedef std::map<int, SMessage> SMessages;
 
@@ -91,15 +90,16 @@ private:
   void ParseTagRemove(htsmsg_t* msg);
   void ParseTagUpdate(htsmsg_t* msg);
 
-  CHTSPConnection *    m_session;
-  PLATFORM::CCondition m_started;
-  PLATFORM::CMutex     m_mutex;
-  SChannels            m_channels;
-  STags                m_tags;
-  SEvents              m_events;
-  SMessages            m_queue;
-  SRecordings          m_recordings;
-  int                  m_iReconnectRetries;
-  bool                 m_bDisconnectWarningDisplayed;
+  CHTSPConnection *          m_session;
+  bool                       m_bIsStarted;
+  PLATFORM::CCondition<bool> m_started;
+  PLATFORM::CMutex           m_mutex;
+  SChannels                  m_channels;
+  STags                      m_tags;
+  SEvents                    m_events;
+  SMessages                  m_queue;
+  SRecordings                m_recordings;
+  int                        m_iReconnectRetries;
+  bool                       m_bDisconnectWarningDisplayed;
 };
 
