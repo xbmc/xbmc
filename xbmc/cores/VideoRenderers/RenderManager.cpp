@@ -247,6 +247,9 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_presentevent.Set();
   }
 
+  RESOLUTION res= m_pRenderer->GetResolution();
+  m_GlobalAVDelay = g_advancedSettings.GetGlobalAVDelay(g_settings.m_ResInfo[res].fRefreshRate);
+
   return result;
 }
 

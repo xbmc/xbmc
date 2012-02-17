@@ -59,6 +59,15 @@ struct RefreshOverride
   bool  fallback;
 };
 
+
+struct RefreshAVDelay
+{
+  float refreshmin;
+  float refreshmax;
+
+  float delay;
+};
+
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings
@@ -125,6 +134,8 @@ class CAdvancedSettings
     bool  m_videoAllowMpeg4VDPAU;
     bool  m_videoAllowMpeg4VAAPI;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
+    std::vector<RefreshAVDelay> m_videoRefreshAVDelay;
+    float m_videoAVDefaultDelay;
     bool m_videoDisableBackgroundDeinterlace;
     int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
@@ -303,6 +314,8 @@ class CAdvancedSettings
     bool m_enableMultimediaKeys;
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(const CStdString &file);
+
+    float GetGlobalAVDelay(float refreshrate);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
