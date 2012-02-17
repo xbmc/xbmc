@@ -874,9 +874,11 @@
   <string id="10019">Ρυθμίσεις - Εξατομίκευση</string>
   <string id="10020">Scripts</string>
   <string id="10021">Περιηγητής ιστού</string>
-
+  <string id="10025">Βίντεο</string>
   <string id="10028">Βίντεο/Λίστα Αναπαραγωγής</string>
+  <string id="10029">Οθόνη σύνδεσης</string>
   <string id="10034">Ρυθμίσεις - Προφίλ</string>
+  <string id="10040">Περιηγητής Πρόσθετων</string>
 
   <string id="10100">Διάλογος Ναι/Όχι</string>
   <string id="10101">Διάλογος διαδικασίας</string>
