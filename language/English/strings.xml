@@ -2412,4 +2412,6 @@
   <string id="36020">Make XBMC the active source when starting</string>
   <string id="36021">Physical address (overrules HDMI port)</string>
   <string id="36022">COM port (leave empty unless needed)</string>
+  <string id="36023">Configuration updated</string>
+  <string id="36024">Failed to set the new configuration. Please check your settings.</string>
 </strings>

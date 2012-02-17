@@ -43,7 +43,7 @@ namespace CEC
 
 namespace PERIPHERALS
 {
-  class CPeripheralCecAdapterQueryThread;
+  class CPeripheralCecAdapterUpdateThread;
 
   typedef struct
   {
@@ -61,7 +61,7 @@ namespace PERIPHERALS
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
-    friend class CPeripheralCecAdapterQueryThread;
+    friend class CPeripheralCecAdapterUpdateThread;
 
   public:
     CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
@@ -116,26 +116,33 @@ namespace PERIPHERALS
     std::queue<CecVolumeChange>       m_volumeChangeQueue;
     unsigned int                      m_lastKeypress;
     CecVolumeChange                   m_lastChange;
-    CPeripheralCecAdapterQueryThread *m_queryThread;
+    CPeripheralCecAdapterUpdateThread*m_queryThread;
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
     CEC::libcec_configuration         m_configuration;
   };
 
-  class CPeripheralCecAdapterQueryThread : public CThread
+  class CPeripheralCecAdapterUpdateThread : public CThread
   {
   public:
-    CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter, bool bGetMenuLanguage);
-    virtual ~CPeripheralCecAdapterQueryThread(void);
+    CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, CEC::libcec_configuration *configuration);
+    virtual ~CPeripheralCecAdapterUpdateThread(void);
 
     virtual void Signal(void);
+    virtual bool UpdateConfiguration(CEC::libcec_configuration *configuration);
 
   protected:
+    virtual bool WaitReady(void);
+    virtual bool SetInitialConfiguration(void);
     virtual void Process(void);
 
-    CPeripheralCecAdapter *m_adapter;
-    CEvent                 m_event;
-    bool                   m_bGetMenuLanguage;
+    CPeripheralCecAdapter *    m_adapter;
+    CEvent                     m_event;
+    CCriticalSection           m_critSection;
+    CEC::libcec_configuration  m_configuration;
+    CEC::libcec_configuration  m_nextConfiguration;
+    bool                       m_bNextConfigurationScheduled;
+    bool                       m_bIsUpdating;
   };
 }
 

@@ -300,7 +300,7 @@ void CPeripheralCecAdapter::Process(void)
 
   CAnnouncementManager::AddAnnouncer(this);
 
-  m_queryThread = new CPeripheralCecAdapterQueryThread(this, m_configuration.bUseTVMenuLanguage == 1);
+  m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);
 
   while (!m_bStop)
@@ -871,7 +871,7 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
   else
   {
     SetConfigurationFromSettings();
-    m_cecAdapter->SetConfiguration(&m_configuration);
+    m_queryThread->UpdateConfiguration(&m_configuration);
   }
 }
 
@@ -917,65 +917,6 @@ bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
   }
 
   return false;
-}
-
-CPeripheralCecAdapterQueryThread::CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter, bool bGetMenuLanguage) :
-    CThread("CEC Adapter Query Thread"),
-    m_adapter(adapter),
-    m_bGetMenuLanguage(bGetMenuLanguage)
-{
-  m_event.Reset();
-}
-
-CPeripheralCecAdapterQueryThread::~CPeripheralCecAdapterQueryThread(void)
-{
-  m_event.Set();
-  StopThread(true);
-}
-
-void CPeripheralCecAdapterQueryThread::Signal(void)
-{
-  m_event.Set();
-}
-
-void CPeripheralCecAdapterQueryThread::Process(void)
-{
-  /* wait until the TV reports to be powered on */
-  do
-  {
-    m_event.WaitMSec(2000);
-    if (m_adapter->m_bStop)
-      return;
-  }while (m_adapter->m_cecAdapter->GetDevicePowerStatus(CECDEVICE_TV) != CEC_POWER_STATUS_ON);
-
-  if (m_bGetMenuLanguage)
-  {
-    cec_menu_language language;
-    if (m_adapter->m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
-      m_adapter->SetMenuLanguage(language.language);
-  }
-
-  CStdString strNotification;
-  cec_osd_name tvName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
-  strNotification.Format("%s: %s", g_localizeStrings.Get(36016), tvName.name);
-
-  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
-     set PCM output to 100% */
-  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
-  {
-    cec_osd_name ampName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
-    CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
-    strNotification.AppendFormat(" - %s", ampName.name);
-
-    m_adapter->SetAudioSystemConnected(true);
-    g_settings.m_bMute = false;
-    g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
-  }
-
-  m_adapter->m_bIsReady = true;
-
-  m_adapter->m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strNotification);
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configuration &config)
@@ -1110,6 +1051,159 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, ce
       int iDevice(0);
       if (sscanf(strDevice.c_str(), "%x", &iDevice) == 1 && iDevice >= 0 && iDevice <= 0xF)
         addresses.Set((cec_logical_address)iDevice);
+    }
+  }
+}
+
+CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, libcec_configuration *configuration) :
+    CThread("CEC Adapter Update Thread"),
+    m_adapter(adapter),
+    m_configuration(*configuration),
+    m_bNextConfigurationScheduled(false),
+    m_bIsUpdating(true)
+{
+  m_nextConfiguration.Clear();
+  m_event.Reset();
+}
+
+CPeripheralCecAdapterUpdateThread::~CPeripheralCecAdapterUpdateThread(void)
+{
+  StopThread(false);
+  m_event.Set();
+  StopThread(true);
+}
+
+void CPeripheralCecAdapterUpdateThread::Signal(void)
+{
+  m_event.Set();
+}
+
+bool CPeripheralCecAdapterUpdateThread::UpdateConfiguration(libcec_configuration *configuration)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bIsUpdating)
+  {
+    m_bNextConfigurationScheduled = true;
+    m_nextConfiguration = *configuration;
+  }
+  else
+  {
+    m_configuration = *configuration;
+    m_event.Set();
+  }
+  return true;
+}
+
+bool CPeripheralCecAdapterUpdateThread::WaitReady(void)
+{
+  // don't wait if we're not powering up anything
+  if (m_configuration.wakeDevices.IsEmpty() && m_configuration.bActivateSource == 0)
+    return true;
+
+  // wait for the TV if we're configured to become the active source.
+  // wait for the first device in the wake list otherwise.
+  cec_logical_address waitFor = (m_configuration.bActivateSource == 1) ?
+      CECDEVICE_TV :
+      m_configuration.wakeDevices.primary;
+
+  cec_power_status powerStatus(CEC_POWER_STATUS_UNKNOWN);
+  bool bContinue(true);
+  while (bContinue && !m_adapter->m_bStop && !m_bStop && powerStatus != CEC_POWER_STATUS_ON)
+  {
+    powerStatus = m_adapter->m_cecAdapter->GetDevicePowerStatus(waitFor);
+    if (powerStatus != CEC_POWER_STATUS_ON)
+      bContinue = !m_event.WaitMSec(1000);
+  }
+
+  return powerStatus == CEC_POWER_STATUS_ON;
+}
+
+bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
+{
+  // devices to wake are set
+  if (!m_configuration.wakeDevices.IsEmpty())
+    m_adapter->m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
+
+  // the option to make XBMC the active source is set
+  if (m_configuration.bActivateSource == 1)
+    m_adapter->m_cecAdapter->SetActiveSource();
+
+  // wait until devices are powered up
+  if (!WaitReady())
+    return false;
+
+  // request the menu language of the TV
+  if (m_configuration.bUseTVMenuLanguage == 1)
+  {
+    cec_menu_language language;
+    if (m_adapter->m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
+      m_adapter->SetMenuLanguage(language.language);
+  }
+
+  // request the OSD name of the TV
+  CStdString strNotification;
+  cec_osd_name tvName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_TV);
+  strNotification.Format("%s: %s", g_localizeStrings.Get(36016), tvName.name);
+
+  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
+     set PCM output to 100% */
+  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
+  {
+    // request the OSD name of the amp
+    cec_osd_name ampName = m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM);
+    CLog::Log(LOGDEBUG, "%s - CEC capable amplifier found (%s). volume will be controlled on the amp", __FUNCTION__, ampName.name);
+    strNotification.AppendFormat(" - %s", ampName.name);
+
+    // set amp present
+    m_adapter->SetAudioSystemConnected(true);
+    g_settings.m_bMute = false;
+    g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
+  }
+
+  m_adapter->m_bIsReady = true;
+
+  // try to send an OSD string to the TV
+  m_adapter->m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
+  // and let the gui know that we're done
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strNotification);
+
+  CSingleLock lock(m_critSection);
+  m_bIsUpdating = false;
+  return true;
+}
+
+void CPeripheralCecAdapterUpdateThread::Process(void)
+{
+  // set the initial configuration
+  if (!SetInitialConfiguration())
+    return;
+
+  // and wait for updates
+  bool bUpdate(false);
+  while (!m_bStop)
+  {
+    // update received
+    if (m_event.WaitMSec(500) || bUpdate)
+    {
+      // set the new configuration
+      bool bConfigSet(m_adapter->m_cecAdapter->SetConfiguration(&m_configuration));
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), g_localizeStrings.Get(bConfigSet ? 36023 : 36024));
+      {
+        CSingleLock lock(m_critSection);
+        bUpdate = m_bNextConfigurationScheduled;
+        if (bUpdate)
+        {
+          // another update is scheduled
+          m_bNextConfigurationScheduled = false;
+          m_configuration = m_nextConfiguration;
+        }
+        else
+        {
+          // nothing left to do, wait for updates
+          m_bIsUpdating = false;
+          m_event.Reset();
+        }
+      }
     }
   }
 }
