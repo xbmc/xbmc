@@ -60,7 +60,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
-  m_loadOnDemand = true;
+  m_loadType = LOAD_ON_DEMAND;
   m_closing = false;
   m_active = false;
   m_renderOrder = 0;
@@ -690,7 +690,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   bool bHasPath=false;
   if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
     bHasPath = true;
-  if (xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
+  if (xmlFile.size() && (forceLoad || m_loadType == LOAD_ON_DEMAND || !m_windowLoaded))
     Load(xmlFile,bHasPath);
 
   int64_t slend;
@@ -714,7 +714,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   CGUIControlGroup::FreeResources();
   //g_TextureManager.Dump();
   // unload the skin
-  if (m_loadOnDemand || forceUnload) ClearAll();
+  if (m_loadType == LOAD_ON_DEMAND || forceUnload) ClearAll();
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)

@@ -49,7 +49,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString s
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_scriptPath = strFallBackPath;
   m_destroyAfterDeinit = false;
 }

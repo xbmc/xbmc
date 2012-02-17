@@ -26,7 +26,7 @@
 CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)
 : CGUIPythonWindowXML(id,strXML,strFallBackPath)
 {
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
 }
 
 CGUIPythonWindowXMLDialog::~CGUIPythonWindowXMLDialog(void)

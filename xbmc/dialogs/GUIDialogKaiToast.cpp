@@ -37,7 +37,7 @@ CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
 {
   m_defaultIcon = "";
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_timer = 0;
   m_toastDisplayTime = 0;
   m_toastMessageTime = 0;
