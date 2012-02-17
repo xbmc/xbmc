@@ -116,17 +116,36 @@ namespace PLATFORM
         ::SetEvent(m_conditionPreVista);
     }
 
-    bool Wait(mutex_t &mutex, uint32_t iTimeoutMs)
+    bool Wait(mutex_t &mutex)
     {
       if (m_bOnVista)
       {
-        return ((*g_SleepConditionVariableCS)(m_conditionVista, mutex, iTimeoutMs <= 0 ? INFINITE : iTimeoutMs) ? true : false);
+        return ((*g_SleepConditionVariableCS)(m_conditionVista, mutex, INFINITE) ? true : false);
       }
       else
       {
         ::ResetEvent(m_conditionPreVista);
         MutexUnlock(mutex);
-        DWORD iWaitReturn = ::WaitForSingleObject(m_conditionPreVista, iTimeoutMs <= 0 ? 1000 : iTimeoutMs);
+        DWORD iWaitReturn = ::WaitForSingleObject(m_conditionPreVista, 1000);
+        MutexLock(mutex);
+        return (iWaitReturn == 0);
+      }
+    }
+
+    bool Wait(mutex_t &mutex, uint32_t iTimeoutMs)
+    {
+      if (iTimeoutMs == 0)
+        return Wait(mutex);
+
+      if (m_bOnVista)
+      {
+        return ((*g_SleepConditionVariableCS)(m_conditionVista, mutex, iTimeoutMs) ? true : false);
+      }
+      else
+      {
+        ::ResetEvent(m_conditionPreVista);
+        MutexUnlock(mutex);
+        DWORD iWaitReturn = ::WaitForSingleObject(m_conditionPreVista, iTimeoutMs);
         MutexLock(mutex);
         return (iWaitReturn == 0);
       }
