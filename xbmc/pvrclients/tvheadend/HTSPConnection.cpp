@@ -166,7 +166,7 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
 
     l = ntohl(l);
     if(l == 0)
-      return NULL;
+      return htsmsg_create_map();
 
     buf = malloc(l);
 
