@@ -70,7 +70,7 @@ bool CHTSPConnection::Connect()
   while (!m_socket->IsOpen() && iNow < iTarget)
   {
     if (!m_socket->Open(iTarget - iNow))
-      CCondition::Sleep(100);
+      CEvent::Sleep(100);
     iNow = GetTimeMs();
   }
 
