@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AudioServices.h>
 #include <CoreAudio/CoreAudioTypes.h>
+#include <AudioToolbox/AUGraph.h>
 #include <list>
 #include <vector>
 
@@ -40,15 +41,15 @@ class CIOSCoreAudioHardware;
 class CIOSCoreAudioDevice;
 class CIOSCoreAudioUnit;
 
-typedef std::list<AudioComponentInstance> IOSCoreAudioDeviceList;
+typedef std::list<AudioUnit> IOSCoreAudioDeviceList;
 
 // There is only one AudioSystemObject instance system-side.
 // Therefore, all CIOSCoreAudioHardware methods are static
 class CIOSCoreAudioHardware
 {
 public:
-  static AudioComponentInstance FindAudioDevice(CStdString deviceName);
-  static AudioComponentInstance GetDefaultOutputDevice();
+  static AudioUnit FindAudioDevice(CStdString deviceName);
+  static AudioUnit GetDefaultOutputDevice();
   static UInt32 GetOutputDevices(IOSCoreAudioDeviceList* pList);
 };
 
@@ -58,13 +59,13 @@ public:
   CIOSCoreAudioDevice();
   virtual ~CIOSCoreAudioDevice();
   
-  AudioComponentInstance GetId() {return m_AudioUnit;}
+  AudioUnit GetId() {return m_OutputUnit;}
   const char* GetName(CStdString& name);
-  CIOSCoreAudioDevice(AudioComponentInstance deviceId);
+  CIOSCoreAudioDevice(AudioUnit deviceId);
   UInt32 GetTotalOutputChannels();
 
-  void Attach(AudioUnit audioUnit) {m_AudioUnit = audioUnit;}
-  AudioComponentInstance GetComponent(){return m_AudioUnit;}
+  void Attach(AudioUnit audioUnit) {m_OutputUnit = audioUnit;}
+  AudioUnit GetComponent(){return m_OutputUnit;}
   
   void SetupInfo();
   bool Init(bool bPassthrough, AudioStreamBasicDescription* pDesc, AURenderCallback renderCallback, void *pClientData);
@@ -73,24 +74,29 @@ public:
   void Start();
   void Stop();
 
-  bool EnableInput(AudioComponentInstance componentInstance, AudioUnitElement bus);
-  bool EnableOutput(AudioComponentInstance componentInstance, AudioUnitElement bus);
-  bool GetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope,
+  bool EnableInput(AudioUnit componentInstance, AudioUnitElement bus, bool bEnable);
+  bool EnableOutput(AudioUnit componentInstance, AudioUnitElement bus, bool bEnable);
+  bool GetFormat(AudioUnit componentInstance, AudioUnitScope scope,
                  AudioUnitElement bus, AudioStreamBasicDescription* pDesc);
-  bool SetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope,
+  bool SetFormat(AudioUnit componentInstance, AudioUnitScope scope,
                  AudioUnitElement bus, AudioStreamBasicDescription* pDesc);
-  Float32 GetCurrentVolume();
+  Float32 GetCurrentVolume() const;
   bool SetCurrentVolume(Float32 vol);
   int  FramesPerSlice(int nSlices);
   void AudioChannelLayout(int layoutTag);
-  bool SetRenderProc(AudioComponentInstance componentInstance, AudioUnitElement bus,
+  bool SetRenderProc(AudioUnit componentInstance, AudioUnitElement bus,
                  AURenderCallback callback, void* pClientData);
   bool SetSessionListener(AudioSessionPropertyID inID, 
                  AudioSessionPropertyListener inProc, void* pClientData);
 
-  AudioComponentInstance m_AudioUnit;
-  AudioComponentInstance m_MixerUnit;
+  AUGraph   m_AudioGraph;
+  AUNode    m_OutputNode;
+  AUNode    m_MixerNode;
+  AudioUnit m_OutputUnit;
+  AudioUnit m_MixerUnit;
   bool m_Passthrough;
+private:
+  bool OpenUnit(OSType type, OSType subType, OSType manufacturer, AudioUnit &unit, AUNode &node);
 };
 
 // Helper Functions
