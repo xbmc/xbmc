@@ -107,13 +107,16 @@ namespace PLATFORM
   class CTimeout
   {
   public:
-    CTimeout(uint32_t iTime) :
-      m_iTarget(GetTimeMs() + iTime) {}
+    CTimeout(void) : m_iTarget(0) {}
+    CTimeout(uint32_t iTimeout) { Init(iTimeout); }
 
-    uint64_t TimeLeft(void) const
+    bool IsSet(void) const       { return m_iTarget > 0; }
+    void Init(uint32_t iTimeout) { m_iTarget = GetTimeMs() + iTimeout; }
+
+    uint32_t TimeLeft(void) const
     {
       uint64_t iNow = GetTimeMs();
-      return (iNow > m_iTarget) ? 0 : m_iTarget - iNow;
+      return (iNow > m_iTarget) ? 0 : (uint32_t)(m_iTarget - iNow);
     }
 
   private:
