@@ -340,7 +340,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, bool bValue)
       bool bChanged(boolSetting->GetData() != bValue);
       boolSetting->SetData(bValue);
       if (bChanged && m_bInitialised)
-        m_changedSettings.push_back(strKey);
+        m_changedSettings.insert(strKey);
     }
   }
 }
@@ -356,7 +356,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, int iValue)
       bool bChanged(intSetting->GetData() != iValue);
       intSetting->SetData(iValue);
       if (bChanged && m_bInitialised)
-        m_changedSettings.push_back(strKey);
+        m_changedSettings.insert(strKey);
     }
   }
 }
@@ -372,7 +372,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, float fValue)
       bool bChanged(floatSetting->GetData() != fValue);
       floatSetting->SetData(fValue);
       if (bChanged && m_bInitialised)
-        m_changedSettings.push_back(strKey);
+        m_changedSettings.insert(strKey);
     }
   }
 }
@@ -405,7 +405,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
         bool bChanged(!stringSetting->GetData().Equals(strValue));
         stringSetting->SetData(strValue);
         if (bChanged && m_bInitialised)
-          m_changedSettings.push_back(strKey);
+          m_changedSettings.insert(strKey);
       }
     }
     else if ((*it).second->GetType() == SETTINGS_TYPE_INT)
@@ -468,7 +468,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 
   if (!bExiting)
   {
-    for (vector<CStdString>::iterator it = m_changedSettings.begin(); it != m_changedSettings.end(); it++)
+    for (set<CStdString>::const_iterator it = m_changedSettings.begin(); it != m_changedSettings.end(); it++)
       OnSettingChanged(*it);
   }
   m_changedSettings.clear();
@@ -499,7 +499,7 @@ void CPeripheral::ResetDefaultSettings(void)
   map<CStdString, CSetting *>::iterator it = m_settings.begin();
   while (it != m_settings.end())
   {
-    m_changedSettings.push_back((*it).first);
+    m_changedSettings.insert((*it).first);
     ++it;
   }
 

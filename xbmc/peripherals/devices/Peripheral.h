@@ -20,7 +20,7 @@
  *
  */
 
-#include <vector>
+#include <set>
 #include "utils/StdString.h"
 #include "peripherals/PeripheralTypes.h"
 
@@ -167,6 +167,6 @@ namespace PERIPHERALS
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;
-    std::vector<CStdString>          m_changedSettings;
+    std::set<CStdString>             m_changedSettings;
   };
 }
