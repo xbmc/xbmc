@@ -60,7 +60,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
-  m_loadType = LOAD_ON_DEMAND;
+  m_loadType = LOAD_EVERY_TIME;
   m_closing = false;
   m_active = false;
   m_renderOrder = 0;
@@ -685,13 +685,29 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  // load skin xml fil
-  CStdString xmlFile = GetProperty("xmlfile").asString();
-  bool bHasPath=false;
-  if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
-    bHasPath = true;
-  if (xmlFile.size() && (forceLoad || m_loadType == LOAD_ON_DEMAND || !m_windowLoaded))
-    Load(xmlFile,bHasPath);
+  // use forceLoad to determine if xml file needs loading
+  forceLoad |= (m_loadType == LOAD_EVERY_TIME);
+
+  // if window is loaded (not cleared before) and we aren't forced to load
+  // we will have to load it only if include conditions values were changed
+  if (m_windowLoaded && !forceLoad)
+    forceLoad = g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
+
+  // if window is loaded and load is forced we have to free window resources first
+  if (m_windowLoaded && forceLoad)
+    FreeResources(true);
+
+  // load skin xml file only if we are forced to load or window isn't loaded yet
+  forceLoad |= !m_windowLoaded;
+  if (forceLoad)
+  {
+    CStdString xmlFile = GetProperty("xmlfile").asString();
+    if (xmlFile.size())
+    {
+      bool bHasPath = xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1;
+      Load(xmlFile,bHasPath);
+    }
+  }
 
   int64_t slend;
   slend = CurrentHostCounter();
@@ -703,7 +719,13 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+  if (forceLoad)
+    CLog::Log(LOGDEBUG,"Alloc resources: %.2fms  (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+  else
+  {
+    CLog::Log(LOGDEBUG,"Window %s was already loaded", GetProperty("xmlfile").c_str());
+    CLog::Log(LOGDEBUG,"Alloc resources: %.2fm", 1000.f * (end - start) / freq);
+  }
 #endif
   m_bAllocated = true;
 }
@@ -714,7 +736,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   CGUIControlGroup::FreeResources();
   //g_TextureManager.Dump();
   // unload the skin
-  if (m_loadType == LOAD_ON_DEMAND || forceUnload) ClearAll();
+  if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
