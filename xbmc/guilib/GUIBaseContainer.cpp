@@ -891,6 +891,12 @@ void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
   }
 }
 
+void CGUIBaseContainer::SetInitialVisibility()
+{
+  UpdateStaticItems(true);
+  CGUIControl::SetInitialVisibility();
+}
+
 void CGUIBaseContainer::CalculateLayout()
 {
   CGUIListItemLayout *oldFocusedLayout = m_focusedLayout;
@@ -1041,16 +1047,17 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     }
     item = item->NextSiblingElement("item");
   }
-  SetStaticContent(items);
+  SetStaticContent(items, false);
 }
 
-void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items, bool forceUpdate /* = true */)
 {
   m_staticContent = true;
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateStaticItems(true);
+  if (forceUpdate)
+    UpdateStaticItems(true);
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
