@@ -92,15 +92,20 @@ namespace PLATFORM
       pthread_cond_broadcast(&m_condition);
     }
 
-    bool Wait(mutex_t &mutex, uint32_t iTimeoutMs)
+    bool Wait(mutex_t &mutex)
     {
       sched_yield();
-      if (iTimeoutMs > 0)
-      {
-        struct timespec timeout = GetAbsTime(iTimeoutMs);
-        return (pthread_cond_timedwait(&m_condition, &mutex, &timeout) == 0);
-      }
       return (pthread_cond_wait(&m_condition, &mutex) == 0);
+    }
+
+    bool Wait(mutex_t &mutex, uint32_t iTimeoutMs)
+    {
+      if (iTimeoutMs == 0)
+        return Wait(mutex);
+
+      sched_yield();
+      struct timespec timeout = GetAbsTime(iTimeoutMs);
+      return (pthread_cond_timedwait(&m_condition, &mutex, &timeout) == 0);
     }
 
     pthread_cond_t m_condition;

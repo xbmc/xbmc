@@ -667,7 +667,7 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
     return -1;
   }
 
-  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u", group.GroupID());
+  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
