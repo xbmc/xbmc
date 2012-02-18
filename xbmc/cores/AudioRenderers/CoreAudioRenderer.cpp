@@ -26,7 +26,6 @@
 
 #include "CoreAudioRenderer.h"
 #include "Application.h"
-#include "Systeminfo.h"
 #include "guilib/AudioContext.h"
 #include "osx/CocoaInterface.h"
 #include "settings/GUISettings.h"
@@ -35,6 +34,7 @@
 #include "threads/Atomics.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 
 const AudioChannelLabel g_LabelMap[] =
