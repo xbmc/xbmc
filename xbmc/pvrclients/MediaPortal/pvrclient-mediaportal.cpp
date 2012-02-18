@@ -930,6 +930,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     XBMC->Log(LOG_DEBUG, "RECORDING: %s", data.c_str() );
 
     CStdString strRecordingId;
+    CStdString strDirectory;
     cRecording recording;
     recording.SetCardSettings(&m_cCards);
 
@@ -939,7 +940,6 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
       tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
-      tag.strDirectory   = recording.Directory(); // used in XBMC as directory structure below "Recordings"
       tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
       tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
@@ -949,6 +949,10 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iLifetime      = recording.Lifetime();
       tag.iGenreType     = 0; //TODO?
       tag.iGenreSubType  = 0; //TODO?
+
+      strDirectory = recording.Directory();
+      strDirectory.Replace("\\", " - "); // XBMC supports only 1 sublevel below Recordings, so flatten the MediaPortal directory structure
+      tag.strDirectory   = strDirectory.c_str(); // used in XBMC as directory structure below "Recordings"
 
       if (g_bUseRecordingsDir == true)
       {

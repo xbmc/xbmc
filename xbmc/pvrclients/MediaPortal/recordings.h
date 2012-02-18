@@ -109,4 +109,9 @@ public:
    * \param the cardSettings
    */
   void SetCardSettings(CCards* cardSettings);
+
+  /**
+   * \brief Parse Recording file path and divide it in 3 parts: base path, subdirectory and filename;
+   */
+  void SplitFilePath(void);
 };
