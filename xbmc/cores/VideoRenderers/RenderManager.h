@@ -106,9 +106,9 @@ public:
       return RES_INVALID;
   }
 
-  float GetGlobalAVDelay()
+  float GetGlobalAudioDelay()
   {
-    return m_GlobalAVDelay;
+    return m_GlobalAudioDelay;
   }
     
 
@@ -223,7 +223,7 @@ protected:
     PRESENT_METHOD_BOB,
   };
 
-  float      m_GlobalAVDelay;
+  float      m_GlobalAudioDelay;
 
   double     m_presenttime;
   double     m_presentcorr;

@@ -1113,7 +1113,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 
   //User set delay
   pts += m_iVideoDelay;
-  pts -= 1000000 * g_renderManager.GetGlobalAVDelay();
+  pts -= DVD_SEC_TO_TIME(g_renderManager.GetGlobalAudioDelay());
 
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock, iFrameDuration;

@@ -60,7 +60,7 @@ struct RefreshOverride
 };
 
 
-struct RefreshAVDelay
+struct RefreshAudioDelay
 {
   float refreshmin;
   float refreshmax;
@@ -134,8 +134,8 @@ class CAdvancedSettings
     bool  m_videoAllowMpeg4VDPAU;
     bool  m_videoAllowMpeg4VAAPI;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
-    std::vector<RefreshAVDelay> m_videoRefreshAVDelay;
-    float m_videoAVDefaultDelay;
+    std::vector<RefreshAudioDelay> m_videoRefreshAudioDelay;
+    float m_videoAudioDefaultDelay;
     bool m_videoDisableBackgroundDeinterlace;
     int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
@@ -315,7 +315,7 @@ class CAdvancedSettings
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(const CStdString &file);
 
-    float GetGlobalAVDelay(float refreshrate);
+    float GetGlobalAudioDelay(float refreshrate);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

@@ -536,44 +536,46 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     }
 
     // Store global AV delay settings
-    m_videoAVDefaultDelay = 0;
-    TiXmlElement* pAdjustAVDelay = pElement->FirstChildElement("globalavdelay");
-    if (pAdjustAVDelay)
+    m_videoAudioDefaultDelay = 0;
+    TiXmlElement* pAdjustAudioDelay = pElement->FirstChildElement("globalaudiodelay");
+    if (!pAdjustAudioDelay) // backward compatibility
+    	pAdjustAudioDelay = pElement->FirstChildElement("globalavdelay");
+    if (pAdjustAudioDelay)
     {
-      TiXmlElement* pRefreshAVDelay = pAdjustAVDelay->FirstChildElement("refresh");
-      while (pRefreshAVDelay)
+      TiXmlElement* pRefreshAudioDelay = pAdjustAudioDelay->FirstChildElement("refresh");
+      while (pRefreshAudioDelay)
       {
-        RefreshAVDelay avdelay = {0};
+        RefreshAudioDelay audiodelay = {0};
 
         float refresh;
-        if (XMLUtils::GetFloat(pRefreshAVDelay, "rate", refresh))
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "rate", refresh))
         {
-          avdelay.refreshmin = refresh - 0.01f;
-          avdelay.refreshmax = refresh + 0.01f;
+          audiodelay.refreshmin = refresh - 0.01f;
+          audiodelay.refreshmax = refresh + 0.01f;
         }
 
         float refreshmin, refreshmax;
-        if (XMLUtils::GetFloat(pRefreshAVDelay, "min", refreshmin) &&
-            XMLUtils::GetFloat(pRefreshAVDelay, "max", refreshmax))
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "min", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshAudioDelay, "max", refreshmax))
         {
-          avdelay.refreshmin = refreshmin;
-          avdelay.refreshmax = refreshmax;
+          audiodelay.refreshmin = refreshmin;
+          audiodelay.refreshmax = refreshmax;
         }
 
         float delay;
-        if (XMLUtils::GetFloat(pRefreshAVDelay, "delay", delay, -600.0f, 600.0f))
-          avdelay.delay = delay;
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "delay", delay, -600.0f, 600.0f))
+          audiodelay.delay = delay;
 
-        if (avdelay.refreshmin > 0.0f && avdelay.refreshmax >= avdelay.refreshmin)
-          m_videoRefreshAVDelay.push_back(avdelay);
+        if (audiodelay.refreshmin > 0.0f && audiodelay.refreshmax >= audiodelay.refreshmin)
+          m_videoRefreshAudioDelay.push_back(audiodelay);
         else
-          CLog::Log(LOGWARNING, "Ignoring malformed global AV delay entry, min:%f max:%f", avdelay.refreshmin, avdelay.refreshmax);
+          CLog::Log(LOGWARNING, "Ignoring malformed global Audio delay entry, min:%f max:%f", audiodelay.refreshmin, audiodelay.refreshmax);
 
-        pRefreshAVDelay = pRefreshAVDelay->NextSiblingElement("refresh");
+        pRefreshAudioDelay = pRefreshAudioDelay->NextSiblingElement("refresh");
       }
 
-      // Get default global AV delay
-      XMLUtils::GetFloat(pAdjustAVDelay, "delay", m_videoAVDefaultDelay, -600.0f, 600.0f);
+      // Get default global Audio delay
+      XMLUtils::GetFloat(pAdjustAudioDelay, "delay", m_videoAudioDefaultDelay, -600.0f, 600.0f);
     }
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
@@ -1091,14 +1093,14 @@ void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetGlobalAVDelay(float refreshrate)
+float CAdvancedSettings::GetGlobalAudioDelay(float refreshrate)
 {
-  float delay = m_videoAVDefaultDelay / 1000.0f;
-  for (int i = 0; i < m_videoRefreshAVDelay.size(); i++)
+  float delay = m_videoAudioDefaultDelay / 1000.0f;
+  for (int i = 0; i < m_videoRefreshAudioDelay.size(); i++)
   {
-    RefreshAVDelay& avdelay = m_videoRefreshAVDelay[i];
-    if (refreshrate >= avdelay.refreshmin && refreshrate <= avdelay.refreshmax)
-      delay = avdelay.delay / 1000.0f;
+    RefreshAudioDelay& audiodelay = m_videoRefreshAudioDelay[i];
+    if (refreshrate >= audiodelay.refreshmin && refreshrate <= audiodelay.refreshmax)
+      delay = audiodelay.delay / 1000.0f;
   }
 
   return delay;
