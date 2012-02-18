@@ -26,6 +26,7 @@
 
 #include "CoreAudioRenderer.h"
 #include "Application.h"
+#include "SystemInfo.h"
 #include "guilib/AudioContext.h"
 #include "osx/CocoaInterface.h"
 #include "settings/GUISettings.h"
