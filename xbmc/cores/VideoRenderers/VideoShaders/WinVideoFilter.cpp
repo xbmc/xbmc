@@ -714,6 +714,27 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
   return true;
 }
 
+bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
+{
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  LPDIRECT3DSURFACE9 currentRT;
+  pD3DDevice->GetRenderTarget(0, &currentRT);
+
+  LPDIRECT3DSURFACE9 intermediateRT;
+  m_IntermediateTarget.GetSurfaceLevel(0, &intermediateRT);
+
+  pD3DDevice->SetRenderTarget(0, intermediateRT);
+
+  pD3DDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0L, 1.0f, 0L);
+
+  pD3DDevice->SetRenderTarget(0, currentRT);
+  currentRT->Release();
+  intermediateRT->Release();
+
+  return true;
+}
+
 void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                            unsigned int destWidth, unsigned int destHeight,
                                            CRect sourceRect,
@@ -723,6 +744,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
   || m_destWidth != destWidth || m_destHeight != destHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
   {
+    // fixme better: clearing the whole render target when changing the source/dest rect is not optimal.
+    // Problem is that the edges of the final picture may retain content when the rects change.
+    // For example when changing zoom value, the edges can retain content from the previous zoom value.
+    // Playing with coordinates was unsuccessful so far, this is a quick fix for release.
+    ClearIntermediateRenderTarget();
+
     m_sourceWidth = sourceWidth;
     m_sourceHeight = sourceHeight;
     m_destWidth = destWidth;

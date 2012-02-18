@@ -874,9 +874,11 @@
   <string id="10019">Settings - Appearance</string>
   <string id="10020">Scripts</string>
   <string id="10021">Web Browser</string>
-
+  <string id="10025">Videos</string>
   <string id="10028">Videos/Playlist</string>
+  <string id="10029">Login screen</string>
   <string id="10034">Settings - Profiles</string>
+  <string id="10040">Addon browser</string>
 
   <string id="10100">Yes/No dialog</string>
   <string id="10101">Progress dialog</string>

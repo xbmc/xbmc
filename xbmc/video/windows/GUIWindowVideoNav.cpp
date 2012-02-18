@@ -485,10 +485,6 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       // set the watched overlay
       if (pItem->IsVideo())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
-
-      // Since the item is not in our db but the user wants a clean label we should clean it up (stacking may do some cleaning as well)
-      if (replaceLabels)
-        pItem->CleanString();
     }
   }
 }
@@ -1505,10 +1501,12 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
     return "videodb://3/3/";
   else if (dir.Equals("MusicVideoArtists"))
     return "videodb://3/4/";
-  else if (dir.Equals("MusicVideoDirectors"))
+  else if (dir.Equals("MusicVideoAlbums"))
     return "videodb://3/5/";
-  else if (dir.Equals("MusicVideoStudios"))
+  else if (dir.Equals("MusicVideoDirectors"))
     return "videodb://3/6/";
+  else if (dir.Equals("MusicVideoStudios"))
+    return "videodb://3/7/";
   else if (dir.Equals("MusicVideos"))
     return "videodb://3/";
   else if (dir.Equals("RecentlyAddedMovies"))

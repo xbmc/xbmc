@@ -2261,7 +2261,7 @@ bool CApplication::OnKey(const CKey& key)
       if (!action.GetID())
       {
         // keyboard entry - pass the keys through directly
-        if (key.GetFromHttpApi())
+        if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
@@ -2278,7 +2278,7 @@ bool CApplication::OnKey(const CKey& key)
         return true;
       // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromHttpApi())
+    if (key.GetFromService())
     {
       if (key.GetButtonCode() != KEY_INVALID)
         action = CButtonTranslator::GetInstance().GetAction(iWin, key);
@@ -2998,7 +2998,10 @@ bool CApplication::ProcessJsonRpcButtons()
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
   if (tempKey.GetButtonCode() != KEY_INVALID)
+  {
+    tempKey.SetFromService(true);
     return OnKey(tempKey);
+  }
 #endif
   return false;
 }
@@ -3070,6 +3073,7 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
+      key.SetFromService(true);
       return OnKey(key);
     }
   }

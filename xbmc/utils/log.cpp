@@ -170,7 +170,7 @@ void CLog::MemDump(char *pData, int length)
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
       {
         CStdString strFormat;
-        strFormat.Format(" %02x", *pData++);
+        strFormat.Format(" %02x", (unsigned char)*pData++);
         strLine += strFormat;
       }
       strLine += " ";
