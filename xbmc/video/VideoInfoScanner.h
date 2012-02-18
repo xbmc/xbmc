@@ -176,7 +176,7 @@ namespace VIDEO
      \param episodeInfo Episode information to fill in.
      \return true on success (2 matches), false on failure (fewer than 2 matches)
      */
-    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
+    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason);
 
     /*! \brief Extract episode air-date from a processed regexp
      \param reg Regular expression object with at least 3 matches
