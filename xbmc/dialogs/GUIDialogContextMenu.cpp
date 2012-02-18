@@ -71,9 +71,12 @@ void CContextButtons::Add(unsigned int button, int label)
   push_back(pair<unsigned int, CStdString>(button, g_localizeStrings.Get(label)));
 }
 
-CGUIDialogContextMenu::CGUIDialogContextMenu(void):CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
+CGUIDialogContextMenu::CGUIDialogContextMenu(void)
+  : CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
 {
   m_clickedButton = -1;
+  m_backgroundImageSize = 0;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogContextMenu::~CGUIDialogContextMenu(void)
@@ -184,12 +187,12 @@ void CGUIDialogContextMenu::SetupButtons()
       if (pGroupList->GetOrientation() == VERTICAL)
       {
         // keep gap between bottom edges of grouplist and background image
-        pControl->SetHeight(pControl->GetHeight() - pGroupList->Size() + pGroupList->GetHeight());
+        pControl->SetHeight(m_backgroundImageSize - pGroupList->Size() + pGroupList->GetHeight());
       }
       else
       {
         // keep gap between right edges of grouplist and background image
-        pControl->SetWidth(pControl->GetWidth() - pGroupList->Size() + pGroupList->GetWidth());
+        pControl->SetWidth(m_backgroundImageSize - pGroupList->Size() + pGroupList->GetWidth());
       }
     }
 #if PRE_SKIN_VERSION_11_COMPATIBILITY
@@ -671,15 +674,39 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
+  m_coordX = m_posX;
+  m_coordY = m_posY;
+  
+  const CGUIControlGroupList* pGroupList = NULL;
+  const CGUIControl* pControl = GetControl(GROUP_LIST);
+  if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
+    pGroupList = (CGUIControlGroupList*)pControl;
+
+  pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl && pGroupList)
+  {
+    if (pGroupList->GetOrientation() == VERTICAL)
+      m_backgroundImageSize = pControl->GetHeight();
+    else
+      m_backgroundImageSize = pControl->GetWidth();
+  }
+
   CGUIDialog::OnWindowLoaded();
-  SetInitialVisibility();
-  SetupButtons();
 }
 
-void CGUIDialogContextMenu::OnWindowUnload()
+void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
 {
+  //we can't be sure that controls are removed on window unload
+  //we have to remove them to be sure that they won't stay for next use of context menu
+  for (unsigned int i = 0; i < m_buttons.size(); i++)
+  {
+    const CGUIControl *control = GetControl(BUTTON_START + i);
+    if (control)
+      RemoveControl(control);
+  }
+
   m_buttons.clear();
-  CGUIDialog::OnWindowUnload();
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
@@ -746,6 +773,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
   {
     pMenu->m_buttons = choices;
     pMenu->Initialize();
+    pMenu->SetupButtons();
     pMenu->PositionAtCurrentFocus();
     pMenu->DoModal();
     return pMenu->m_clickedButton;
@@ -763,7 +791,7 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
     {
       CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f)
                    + window->GetRenderPosition();
-      SetPosition(m_posX + pos.x - GetWidth() * 0.5f, m_posY + pos.y - GetHeight() * 0.5f);
+      SetPosition(m_coordX + pos.x - GetWidth() * 0.5f, m_coordY + pos.y - GetHeight() * 0.5f);
       return;
     }
   }
