@@ -72,6 +72,11 @@
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
     
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+    {
+      eaglLayer.contentsScale = [[UIScreen mainScreen] scale];
+      self.contentScaleFactor = [[UIScreen mainScreen] scale];
+    }
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
@@ -198,16 +203,14 @@
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
     
-    CGRect rect = self.bounds; 
-    
-    if(rect.size.height > rect.size.width) {
-      glViewport(0, 0, rect.size.height, rect.size.width);
-      glScissor(0, 0, rect.size.height, rect.size.width);
+    if(framebufferHeight > framebufferWidth) {
+      glViewport(0, 0, framebufferHeight, framebufferWidth);
+      glScissor(0, 0, framebufferHeight, framebufferWidth);
     } 
     else
     {
-      glViewport(0, 0, rect.size.width, rect.size.height);
-      glScissor(0, 0, rect.size.width, rect.size.height);
+      glViewport(0, 0, framebufferWidth, framebufferHeight);
+      glScissor(0, 0, framebufferWidth, framebufferHeight);
     }
   }
 }
