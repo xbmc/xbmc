@@ -37,6 +37,7 @@
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
+#include "network/httprequesthandler/HTTPImageTransformationHandler.h"
 #ifdef HAS_HTTPAPI
 #include "network/httprequesthandler/HTTPApiHandler.h"
 #endif
@@ -347,6 +348,7 @@ CApplication::CApplication(void)
 #ifdef HAS_WEB_SERVER
   , m_WebServer(*new CWebServer)
   , m_httpVfsHandler(*new CHTTPVfsHandler)
+  , m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler)
 #ifdef HAS_JSONRPC
   , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
 #endif
@@ -407,6 +409,7 @@ CApplication::~CApplication(void)
 #ifdef HAS_WEB_SERVER
   delete &m_WebServer;
   delete &m_httpVfsHandler;
+  delete &m_httpImageTransformationHandler;
 #ifdef HAS_HTTPAPI
   delete &m_httpApiHandler;
 #endif
@@ -1103,6 +1106,7 @@ bool CApplication::Initialize()
 
 #ifdef HAS_WEB_SERVER
   CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
+  CWebServer::RegisterRequestHandler(&m_httpImageTransformationHandler);
 #ifdef HAS_JSONRPC
   CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
 #endif
@@ -3377,6 +3381,7 @@ void CApplication::Stop(int exitCode)
 
 #ifdef HAS_WEB_SERVER
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
+  CWebServer::UnregisterRequestHandler(&m_httpImageTransformationHandler);
 #ifdef HAS_JSONRPC
   CWebServer::UnregisterRequestHandler(&m_httpJsonRpcHandler);
 #endif

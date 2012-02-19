@@ -72,6 +72,7 @@ class CWebServer;
 #ifdef HAS_WEB_SERVER
 class CWebServer;
 class CHTTPVfsHandler;
+class CHTTPImageTransformationHandler;
 #ifdef HAS_JSONRPC
 class CHTTPJsonRpcHandler;
 #endif
@@ -240,6 +241,7 @@ public:
 #ifdef HAS_WEB_SERVER
   CWebServer& m_WebServer;
   CHTTPVfsHandler& m_httpVfsHandler;
+  CHTTPImageTransformationHandler& m_httpImageTransformationHandler;
 #ifdef HAS_JSONRPC
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
 #endif
