@@ -251,6 +251,9 @@ cResponsePacket* cVNSISession::ReadMessage(int iInitialTimeout /*= 10000*/, int 
 
 bool cVNSISession::TransmitMessage(cRequestPacket* vrp)
 {
+  if (!IsOpen())
+    return false;
+
   ssize_t iWriteResult = m_socket->Write(vrp->getPtr(), vrp->getLen());
   if (iWriteResult != (ssize_t)vrp->getLen())
   {
@@ -351,7 +354,7 @@ bool cVNSISession::readData(uint8_t* buffer, int totalBytes, int timeout)
   int bytesRead = m_socket->Read(buffer, totalBytes, timeout);
   if (bytesRead == totalBytes)
     return true;
-  else if (bytesRead < 0)
+  else if (m_socket->GetErrorNumber() != ETIMEDOUT)
   {
     SignalConnectionLost();
     return false;
