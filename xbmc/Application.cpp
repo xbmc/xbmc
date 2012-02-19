@@ -66,6 +66,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/MythSession.h"
+#include "filesystem/FileMusicDatabase.h"
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "filesystem/SAPDirectory.h"
@@ -3647,6 +3648,18 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     return false;
   }
 
+  // resolve MusicDb url, needed to resolve plugin items in music database
+  if (item.IsMusicDb())
+  {
+    CURL url(item.GetPath());
+    if (CStdString mainFile = CFileMusicDatabase::TranslateUrl(url))
+    {
+      CFileItem item_new(mainFile,false);
+      return PlayFile(item_new, false);
+    }
+    return false;
+  }
+
   if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
@@ -4621,10 +4634,18 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_pPlayer) m_pPlayer->OnNothingToQueueNotify();
         return true; // nothing to do
       }
+
+      // handle musicdb:// and plugin://
+      CFileItem file(*playlist[iNext]);
+      CURL url(file.GetPath());
+      if (url.GetProtocol() == "musicdb" )
+        url = CFileMusicDatabase::TranslateUrl(url);
+      if (url.GetProtocol() == "plugin")
+        XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
+
       // ok, grab the next song
-      CFileItemPtr item = playlist[iNext];
-      // ok - send the file to the player if it wants it
-      if (m_pPlayer && m_pPlayer->QueueNextFile(*item))
+
+      if (m_pPlayer && m_pPlayer->QueueNextFile(file))
       { // player wants the next file
         m_nextPlaylistItem = iNext;
       }
