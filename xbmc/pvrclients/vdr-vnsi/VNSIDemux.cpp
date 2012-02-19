@@ -79,16 +79,15 @@ void cVNSIDemux::Abort()
 
 DemuxPacket* cVNSIDemux::Read()
 {
-  if(ConnectionLost() && !TryReconnect())
+  if(ConnectionLost())
   {
-    SleepMs(100);
-    return PVR->AllocateDemuxPacket(0);
+    return NULL;
   }
 
   cResponsePacket *resp = ReadMessage();
 
   if(resp == NULL)
-    return NULL;
+    return PVR->AllocateDemuxPacket(0);
 
   if (resp->getChannelID() != VNSI_CHANNEL_STREAM)
   {
@@ -174,7 +173,7 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   m_channelinfo = channelinfo;
   m_Streams.iStreamCount  = 0;
 
-  return !ConnectionLost();
+  return true;
 }
 
 bool cVNSIDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
@@ -311,7 +310,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].iFPSRate    = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iHeight     = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iWidth      = resp->extract_U32();
-      m_Streams.stream[m_Streams.iStreamCount].fAspect     = resp->extract_Double();
+      m_Streams.stream[m_Streams.iStreamCount].fAspect     = (float)resp->extract_Double();
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
@@ -329,7 +328,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].iFPSRate    = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iHeight     = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iWidth      = resp->extract_U32();
-      m_Streams.stream[m_Streams.iStreamCount].fAspect     = resp->extract_Double();
+      m_Streams.stream[m_Streams.iStreamCount].fAspect     = (float)resp->extract_Double();
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
@@ -459,7 +458,7 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
           m_Streams.stream[i].iFPSRate          = resp->extract_U32();
           m_Streams.stream[i].iHeight           = resp->extract_U32();
           m_Streams.stream[i].iWidth            = resp->extract_U32();
-          m_Streams.stream[i].fAspect           = resp->extract_Double();
+          m_Streams.stream[i].fAspect           = (float)resp->extract_Double();
         }
         else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
         {
@@ -485,9 +484,4 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
     }
   }
   return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);
-}
-
-void cVNSIDemux::OnReconnect()
-{
-  SwitchChannel(m_channelinfo);
 }
