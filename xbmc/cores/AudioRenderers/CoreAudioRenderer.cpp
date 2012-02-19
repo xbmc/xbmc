@@ -1235,11 +1235,11 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     if (g_sysinfo.IsAppleTV())
     {
       // Force ATV1 to a 2.0 layout (that is all it knows), since it does not provide a usable channel layout
-      guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: AppleTV detected - Forcing channel layout to 2.0 (max available PCM channels)");  
+      guiLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo; 
     }
     else
-      guiLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo; 
+      guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
     
     CCoreAudioChannelLayout userLayout(guiLayout);
     CStdString strUserLayout;
