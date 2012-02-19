@@ -1023,19 +1023,6 @@ bool CApplication::InitDirectoriesWin32()
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
-  // check for a DVD drive
-  VECSOURCES vShare;
-  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  // Can be removed once the StorageHandler supports optical media
-  VECSOURCES::const_iterator it;
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
-  // remove end
-
   return true;
 #else
   return false;
@@ -1269,6 +1256,21 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
+
+#ifdef TARGET_WINDOWS
+  // check for a DVD drive
+  VECSOURCES vShare;
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    g_mediaManager.SetHasOpticalDrive(true);
+
+  // Can be removed once the StorageHandler supports optical media
+  VECSOURCES::const_iterator it;
+  for(it=vShare.begin();it!=vShare.end();++it)
+    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
+      CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
+  // remove end
+#endif
   return true;
 }
 
