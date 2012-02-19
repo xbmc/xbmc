@@ -276,7 +276,7 @@ id3_compat_lookup (str, len)
 #line 96 "compat.gperf"
       {"TIME", OBSOLETE  /* Time [obsolete] */},
 #line 75 "compat.gperf"
-      {"PIC",  EQ(APIC)  /* Attached picture */},
+      {"PIC",  TX(APIC)  /* Attached picture */},
 #line 127 "compat.gperf"
       {"UFI",  EQ(UFID)  /* Unique file identifier */},
 #line 72 "compat.gperf"
