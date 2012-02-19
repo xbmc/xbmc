@@ -34,7 +34,6 @@ extern "C" {
 using namespace ADDON;
 
 CHTSPDemux::CHTSPDemux() :
-    m_bGotFirstIframe(false),
     m_bIsRadio(false),
     m_bAbort(false),
     m_subs(0),
@@ -159,23 +158,18 @@ DemuxPacket* CHTSPDemux::Read()
 DemuxPacket *CHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
 {
   DemuxPacket* pkt = NULL;
-  uint32_t    index, duration, frametype;
+  uint32_t    index, duration;
   const void* bin;
   size_t      binlen;
   int64_t     ts;
-  char        frametypechar[1];
-
-  htsmsg_get_u32(msg, "frametype", &frametype);
-  frametypechar[0] = static_cast<char>( frametype );
 
   if(htsmsg_get_u32(msg, "stream" , &index)  ||
-     htsmsg_get_bin(msg, "payload", &bin, &binlen) ||
-     (!m_bGotFirstIframe && frametypechar[0] != 'I'))
+     htsmsg_get_bin(msg, "payload", &bin, &binlen))
   {
-    return pkt;
+    XBMC->Log(LOG_ERROR, "%s - malformed message", __FUNCTION__);
+    return PVR->AllocateDemuxPacket(0);
   }
 
-  m_bGotFirstIframe = true;
   pkt = PVR->AllocateDemuxPacket(binlen);
   memcpy(pkt->pData, bin, binlen);
 
@@ -300,7 +294,6 @@ void CHTSPDemux::ParseSubscriptionStart(htsmsg_t *m)
   }
 
   m_Streams.iStreamCount = 0;
-  m_bGotFirstIframe = m_bIsRadio; // only wait for the first I frame when playing back a tv stream
 
   HTSMSG_FOREACH(f, streams)
   {
