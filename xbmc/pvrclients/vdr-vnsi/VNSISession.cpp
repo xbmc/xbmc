@@ -69,8 +69,11 @@ void cVNSISession::Close()
   {
     m_socket->Close();
   }
-  delete m_socket;
-  m_socket = NULL;
+  if (m_socket)
+  {
+    delete m_socket;
+    m_socket = NULL;
+  }
 }
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
