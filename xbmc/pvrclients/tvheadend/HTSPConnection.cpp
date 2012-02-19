@@ -159,8 +159,10 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
 
     if (m_socket->Read(&l, 4, iInitialTimeout) != 4)
     {
-      if(m_socket->GetErrorNumber() != ETIMEDOUT && m_socket->GetErrorNumber() != 0)
-        XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      if(m_socket->GetErrorNumber() == ETIMEDOUT)
+        return htsmsg_create_map();
+
+      XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
       return NULL;
     }
 
