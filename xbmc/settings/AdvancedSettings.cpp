@@ -535,7 +535,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       }
     }
 
-    // Store global AV delay settings
+    // Store global audio delay settings
     m_videoAudioDefaultDelay = 0;
     TiXmlElement* pAdjustAudioDelay = pElement->FirstChildElement("globalaudiodelay");
     if (!pAdjustAudioDelay) // backward compatibility
