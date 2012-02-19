@@ -91,9 +91,6 @@ class CGUIWindow;
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
 
-#define TMSG_OPTICAL_MOUNT        700
-#define TMSG_OPTICAL_UNMOUNT      701
-
 #define TMSG_CALLBACK             800
 
 #define TMSG_VOLUME_SHOW          900
@@ -196,9 +193,6 @@ public:
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);
   std::vector<bool> GetInfoBooleans(const std::vector<CStdString> &properties);
-
-  void OpticalMount(CStdString device, bool bautorun=false);
-  void OpticalUnMount(CStdString device);
 
   void ShowVolumeBar(bool up);
 

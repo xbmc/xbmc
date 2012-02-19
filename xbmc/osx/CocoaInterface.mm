@@ -40,6 +40,8 @@
 
 #import "AutoPool.h"
 
+#import "CoreAudio.h"
+
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
 
@@ -670,170 +672,50 @@ OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
   return(error); 
 }
 
-// All this just to reset all audio devices to default :)
-static AudioStreamBasicDescription* FormatsAudioList(AudioStreamID s)
-{
-  OSStatus ret;
-  UInt32   listSize;
-  AudioDevicePropertyID p;
-  AudioStreamBasicDescription *list;
-
-  // This is deprecated for kAudioStreamPropertyAvailablePhysicalFormats,
-  // but compiling on 10.3 requires the older constant
-  p = kAudioStreamPropertyPhysicalFormats;
-
-  // Retrieve all the stream formats supported by this output stream
-  ret = AudioStreamGetPropertyInfo(s, 0, p, &listSize, NULL);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
-      "could not get list size: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-
-  // Space for a terminating ID:
-  listSize += sizeof(AudioStreamBasicDescription);
-  list      = (AudioStreamBasicDescription *)malloc(listSize);
-
-  if (list == NULL)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList(): out of memory?");
-    return NULL;
-  }
-
-  ret = AudioStreamGetProperty(s, 0, p, &listSize, list);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FormatsList: "
-      "could not get list: Error = 0x%08x",
-      (unsigned int)ret);
-    free(list);
-    return NULL;
-  }
-
-  // Add a terminating ID:
-  list[listSize/sizeof(AudioStreamID)].mFormatID = 0;
-
-  return list;
-}
-
-static void ResetAudioStream(AudioStreamID s)
-{
-  OSStatus ret;
-  UInt32   paramSize;
-  AudioStreamBasicDescription currentFormat;
-
-  // Find the streams current physical format
-  paramSize = sizeof(currentFormat);
-  AudioStreamGetProperty(s, 0, 
-    kAudioStreamPropertyPhysicalFormat, &paramSize, &currentFormat);
-
-  // If it's currently AC-3/SPDIF then reset it to some mixable format
-  if (currentFormat.mFormatID == 'IAC3' ||
-      currentFormat.mFormatID == kAudioFormat60958AC3)
-  {
-    bool streamReset = false;
-    AudioStreamBasicDescription *formats = FormatsAudioList(s);
-
-    if (!formats)
-      return;
-
-    for (int i = 0; !streamReset && formats[i].mFormatID != 0; i++)
-    {
-      if (formats[i].mFormatID == kAudioFormatLinearPCM)
-      {
-        ret = AudioStreamSetProperty(s, NULL, 0,
-          kAudioStreamPropertyPhysicalFormat, sizeof(formats[i]), &(formats[i]));
-        if (ret != noErr)
-        {
-          CLog::Log(LOGWARNING, "ResetAudioStream: "
-            "could not set physical format: Error = 0x%08x",
-            (unsigned int)ret);
-          continue;
-        }
-        else
-        {
-          streamReset = true;
-          sleep(1);   // For the change to take effect
-        }
-      }
-    }
-    free(formats);
-  }
-}
-
-static AudioStreamID* AudioStreamsList(AudioDeviceID d)
-{
-  OSStatus ret;
-  UInt32   listSize;
-  AudioStreamID *list;
-
-  ret = AudioDeviceGetPropertyInfo(d, 0, FALSE,
-    kAudioDevicePropertyStreams, &listSize, NULL);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "could not get list size: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-
-  // Space for a terminating ID:
-  listSize += sizeof(AudioStreamID);
-  list      = (AudioStreamID *)malloc(listSize);
-
-  if (list == NULL)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList(): out of memory?");
-    return NULL;
-  }
-
-  ret = AudioDeviceGetProperty(d, 0, FALSE,
-    kAudioDevicePropertyStreams, &listSize, list);
-  if (ret != noErr)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
-      "could not get list: Error = 0x%08x",
-      (unsigned int)ret);
-    return NULL;
-  }
-  // Add a terminating ID:
-  list[listSize/sizeof(AudioStreamID)] = kAudioHardwareBadStreamError;
-
-  return list;
-}
-
 void Cocoa_ResetAudioDevices()
 {
   // Reset any devices with an AC3/DTS/SPDIF stream back to a Linear PCM
   // so that they can become a default output device
-  UInt32 size;
-  int    numDevices;
-  AudioDeviceID *devices;
-
-  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
-  devices = (AudioDeviceID*)malloc(size);
-  if (!devices)
+  CoreAudioDeviceList deviceList;
+  CCoreAudioHardware::GetOutputDevices(&deviceList);
+  for (CoreAudioDeviceList::iterator d = deviceList.begin(); d != deviceList.end(); d++)
   {
-    CLog::Log(LOGERROR, "ResetAudioDevices: out of memory?");
-    return;
-  }
-  numDevices = size / sizeof(AudioDeviceID);
-  AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, devices);
-
-  for (int i = 0; i < numDevices; i++)
-  {
-    AudioStreamID *streams;
-    streams = AudioStreamsList(devices[i]);
-    if (!streams)
-      continue;
-    for (int j = 0; streams[j] != kAudioHardwareBadStreamError; j++)
-      ResetAudioStream(streams[j]);
-
-    free(streams);
-  }
-  free(devices);
+    CCoreAudioDevice device(*d);
+    AudioStreamIdList streamList;
+    if (device.GetStreams(&streamList))
+    {
+      for (AudioStreamIdList::iterator s = streamList.begin(); s != streamList.end(); s++)
+      {
+        CCoreAudioStream stream;
+        if (stream.Open(*s))
+        {
+          AudioStreamBasicDescription currentFormat;
+          if (stream.GetPhysicalFormat(&currentFormat))
+          {
+            if (currentFormat.mFormatID == 'IAC3' || currentFormat.mFormatID == kAudioFormat60958AC3)
+            {
+              StreamFormatList formatList;
+              if (stream.GetAvailablePhysicalFormats(&formatList))
+              {
+                for (StreamFormatList::iterator f = formatList.begin(); f != formatList.end(); f++)
+                {
+                  if ((*f).mFormat.mFormatID == kAudioFormatLinearPCM)
+                  {
+                    if (stream.SetPhysicalFormat(&(*f).mFormat))
+                    {
+                      sleep(1);
+                      break;
+                    }
+                  }
+                }
+              }
+            }              
+          }
+          stream.Close();
+        }
+      }
+    }
+  }  
 }
 
 #endif

@@ -298,8 +298,31 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
 {
   union id3_field const *field;
   struct id3_frame const *frame;
-  const id3_ucs4_t* ucs4 = id3_ucs4_empty;
   int commentNumber = 0;
+//on ios use the "old" version without the bugfix from https://github.com/xbmc/xbmc/commit/e09cb07
+//because it somehow exposes a bug which leads to unreproducable crashs on id3v2 tags
+#ifdef TARGET_DARWIN_IOS
+  const id3_ucs4_t* ucs4 = 0;
+  // return the first non-empty comment
+  do
+  {
+    frame = id3_tag_findframe(tag, ID3_FRAME_COMMENT, commentNumber++);
+    if (frame == 0)
+	    return id3_ucs4_empty;
+
+    *encoding = id3_field_gettextencoding(id3_frame_field(frame, 0));
+
+    field = id3_frame_field(frame, 3);
+    if (field == 0)
+      return id3_ucs4_empty;
+    
+    ucs4 = id3_field_getfullstring(field);
+    if (!ucs4)
+      return id3_ucs4_empty;
+  }
+  while (*ucs4 == 0);
+#else
+  const id3_ucs4_t* ucs4 = id3_ucs4_empty;
 
   // return the first non-empty comment
   do
@@ -341,6 +364,7 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
     }
   }
   while (frame);
+#endif//else TARGET_DARWIN_IOS
   return ucs4;
 }
 

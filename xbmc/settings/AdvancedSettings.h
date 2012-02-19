@@ -130,6 +130,7 @@ class CAdvancedSettings
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
     bool m_DXVAForceProcessorRenderer;
+    int  m_videoFpsDetect;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -139,12 +140,6 @@ class CAdvancedSettings
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
 
-    int m_lcdRows;
-    int m_lcdColumns;
-    int m_lcdAddress1;
-    int m_lcdAddress2;
-    int m_lcdAddress3;
-    int m_lcdAddress4;
     bool m_lcdHeartbeat;
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;

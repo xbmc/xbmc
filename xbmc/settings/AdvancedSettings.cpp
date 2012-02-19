@@ -99,6 +99,7 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_DXVAForceProcessorRenderer = true;
+  m_videoFpsDetect = 1;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -115,12 +116,6 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_lcdRows = 4;
-  m_lcdColumns = 20;
-  m_lcdAddress1 = 0;
-  m_lcdAddress2 = 0x40;
-  m_lcdAddress3 = 0x14;
-  m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
@@ -543,6 +538,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
+    //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
+    XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -595,12 +592,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "rows", m_lcdRows, 1, 4);
-    XMLUtils::GetInt(pElement, "columns", m_lcdColumns, 1, 40);
-    XMLUtils::GetInt(pElement, "address1", m_lcdAddress1, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address2", m_lcdAddress2, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);

@@ -51,7 +51,7 @@ public:
   NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1,
                    const CStdString& strPath2="");
   template<class T>
-    bool GetDetails(T& details,const char* document=NULL, bool prefix=false)
+    bool GetDetails(T& details,const char* document=NULL, bool prioritise=false)
   {
     TiXmlDocument doc;
     CStdString strDoc;
@@ -64,7 +64,7 @@ public:
       g_charsetConverter.unknownToUTF8(strDoc);
 
     doc.Parse(strDoc.c_str());
-    return details.Load(doc.RootElement(),true,prefix);
+    return details.Load(doc.RootElement(), true, prioritise);
   }
 
   void Close();

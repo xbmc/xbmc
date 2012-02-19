@@ -52,7 +52,14 @@ class CNfsConnection : public CCriticalSection
 {     
 public:
   typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
-  typedef std::map<std::string, struct nfs_context *> tOpenContextMap;    
+
+  struct contextTimeout
+  {
+    struct nfs_context *pContext;
+    uint64_t lastAccessedTime;
+  };
+
+  typedef std::map<std::string, struct contextTimeout> tOpenContextMap;    
   
   CNfsConnection();
   ~CNfsConnection();

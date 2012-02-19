@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ydatografida-->
-<!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/25/2011-->
-<!--$Revision$-->
-<!--Based on english strings version 1E+42-->
+<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 12/25/2011 / Last update (by CutSickAss): 14/02/2012 / Based on english strings version 1E+42-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -16,6 +11,7 @@
   <string id="7">Διαχείριση αρχείων</string>
   <string id="8">Καιρός</string>
   <string id="9">xbmc media center</string>
+
   <string id="11">Δευτέρα</string>
   <string id="12">Τρίτη</string>
   <string id="13">Τετάρτη</string>
@@ -23,6 +19,7 @@
   <string id="15">Παρασκευή</string>
   <string id="16">Σάββατο</string>
   <string id="17">Κυριακή</string>
+
   <string id="21">Ιανουαρίου</string>
   <string id="22">Φεβρουαρίου</string>
   <string id="23">Μαρτίου</string>
@@ -35,6 +32,7 @@
   <string id="30">Οκτωβρίου</string>
   <string id="31">Νοεμβρίου</string>
   <string id="32">Δεκεμβρίου</string>
+
   <string id="41">Δευ</string>
   <string id="42">Τρι</string>
   <string id="43">Τετ</string>
@@ -42,6 +40,7 @@
   <string id="45">Παρ</string>
   <string id="46">Σαβ</string>
   <string id="47">Κυρ</string>
+
   <string id="51">Ιαν</string>
   <string id="52">Φεβ</string>
   <string id="53">Μαρ</string>
@@ -54,6 +53,7 @@
   <string id="60">Οκτ</string>
   <string id="61">Νοε</string>
   <string id="62">Δεκ</string>
+
   <string id="71">Β</string>
   <string id="72">ΒΒΑ</string>
   <string id="73">ΒΑ</string>
@@ -71,6 +71,7 @@
   <string id="85">ΒΔ</string>
   <string id="86">ΒΒΔ</string>
   <string id="87">ΔΙΑΦ</string>
+
   <string id="98">Προβολή: Αυτόματη</string>
   <string id="99">Προβολή: Εικόνες</string>
   <string id="100">Προβολή: Εικονίδια</string>
@@ -140,12 +141,16 @@
   <string id="164">Δεν υπάρχει δίσκος</string>
   <string id="165">Υπάρχει δίσκος</string>
   <string id="166">Κέλυφος</string>
+
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
+
   <string id="172">Ημερομηνία κυκλοφορίας</string>
   <string id="173">Προβολή των βίντεο με αναλογία 4:3 ως</string>
+
   <string id="175">Διάθεση</string>
   <string id="176">Στυλ</string>
+
   <string id="179">Τραγούδι</string>
   <string id="180">Διάρκεια</string>
   <string id="181">Επιλογή άλμπουμ</string>
@@ -167,8 +172,10 @@
   <string id="197">Αναζήτηση πληροφοριών %s</string>
   <string id="198">Φόρτωση πληροφοριών ταινίας</string>
   <string id="199">Διεπαφή ιστού</string>
+
   <string id="202">Σύνθημα</string>
   <string id="203">Περίληψη πλοκής</string>
+
   <string id="205">Ψήφοι</string>
   <string id="206">Ρόλοι και ηθοποιοί</string>
   <string id="207">Πλοκή</string>
@@ -181,7 +188,7 @@
   <string id="216">Ποσοστό μεγέθυνσης</string>
   <string id="217">Λόγος εικονοστοιχείων</string>
   <string id="218">Μονάδα DVD</string>
-  <string id="219">Παρακαλώ, εισάγετε δίσκο</string>
+  <string id="219">Παρακαλώ εισάγετε δίσκο</string>
   <string id="220">Απομακρυσμένος κοινόχρηστος πόρος</string>
   <string id="221">Το δίκτυο είναι αποσυνδεμένο</string>
   <string id="222">Άκυρο</string>
@@ -206,7 +213,8 @@
   <string id="242">Σε παράθυρο</string>
   <string id="243">Ανανέωση βαθμολογίας</string>
   <string id="244">Πλήρης οθόνη</string>
-  <string id="245">Μέγεθος: (%i,%i)-&gt;(%i,%i) (Εστίαση x%2.2f) AR:%2.2f:1 (Εινονοστοιχεία: %2.2f:1) (ΚΜετατόπιση: %2.2f)</string>
+  <string id="245">Μέγεθος: (%i,%i)-&gt;(%i,%i) (Εστίαση x%2.2f) AR:%2.2f:1 (Εικονοστοιχεία: %2.2f:1) (ΚΜετατόπιση: %2.2f)</string>
+
   <string id="247">Scripts</string>
   <string id="248">Γλώσσα</string>
   <string id="249">Μουσική</string>
@@ -237,7 +245,7 @@
   <string id="274">Θέση υποτίτλων</string>
   <string id="275">Ρύθμιση λόγου εικονοστοιχείων</string>
   <string id="276">Μετακινήστε το βέλος για να αλλάξετε το μέγεθος του ορατού πλαισίου</string>
-  <string id="277">Μετακινήστε την μπάρα για να αλλάξει η θέση των υποτίτλων</string>
+  <string id="277">Μετακινήστε τη μπάρα για να αλλάξει η θέση των υποτίτλων</string>
   <string id="278">Αλλάξτε το σχήμα ώστε να είναι τέλειο τετράγωνο</string>
   <string id="279">Αδυναμία φόρτωσης των ρυθμίσεων</string>
   <string id="280">Χρησιμοποίηση προεπιλεγμένων ρυθμίσεων</string>
@@ -245,6 +253,7 @@
   <string id="282">Βρέθηκαν %i αντικείμενα</string>
   <string id="283">Αποτελέσματα αναζήτησης</string>
   <string id="284">Δεν βρέθηκαν αποτελέσματα</string>
+
   <string id="287">Υπότιτλοι</string>
   <string id="288">Γραμματοσειρά</string>
   <string id="289">- Μέγεθος</string>
@@ -256,14 +265,15 @@
   <string id="296">Απαλοιφή</string>
   <string id="297">Καθυστέρηση ήχου</string>
   <string id="298">Σελιδοδείκτες</string>
-  <string id="299">- Δέκτης ικανός για αναπαραγωγή AAC </string>
+  <string id="299">- Δέκτης ικανός για αναπαραγωγή AAC</string>
   <string id="300">- Δέκτης ικανός για αναπαραγωγή MP1</string>
-  <string id="301">- Δέκτης ικανός για αναπαραγωγή MP2 </string>
+  <string id="301">- Δέκτης ικανός για αναπαραγωγή MP2</string>
   <string id="302">- Δέκτης ικανός για αναπαραγωγή MP3</string>
   <string id="303">Καθυστέρηση</string>
   <string id="304">Γλώσσα</string>
   <string id="305">Ενεργό/ή</string>
   <string id="306">Μη-διαστρωματωμένο</string>
+
   <string id="312">(0=αυτόματα)</string>
   <string id="313">Εκκαθάριση βάσης δεδομένων</string>
   <string id="314">Προετοιμασία...</string>
@@ -356,6 +366,7 @@
   <string id="404">Άνεμος</string>
   <string id="405">Σημείο δρόσου</string>
   <string id="406">Υγρασία</string>
+
   <string id="409">Προεπιλεγμένα</string>
   <string id="410">Πρόσβαση στο Weather.com</string>
   <string id="411">Πληροφορίες καιρού:</string>
@@ -368,6 +379,7 @@
   <string id="418">Ελαχ.</string>
   <string id="419">Μεγ.</string>
   <string id="420">HDMI</string>
+
   <string id="422">Διαγραφή πληροφοριών άλμπουμ</string>
   <string id="423">Διαγραφή πληροφοριών CD</string>
   <string id="424">Επιλογή</string>
@@ -380,7 +392,8 @@
   <string id="431">Δεν υπάρχει ελεύθερη λανθάνουσα μνήμη</string>
   <string id="432">Διαγραφή ταινίας από τη συλλογή</string>
   <string id="433">Να διαγραφεί '%s';</string>
-  <string id="434">Από %s με ένταση %i %s</string>
+  <string id="434">Από %s με ένταση %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+
   <string id="437">Αφαιρούμενος δίσκος</string>
   <string id="438">Άνοιγμα αρχείου</string>
   <string id="439">Λανθάνουσα μνήμη</string>
@@ -391,7 +404,7 @@
   <string id="444">Βίντεο</string>
   <string id="445">Ήχος</string>
   <string id="446">DVD</string>
-  <string id="447">Αυτόματη εκκίνηση πολυμέσων  </string>
+  <string id="447">Αυτόματη εκκίνηση πολυμέσων</string>
   <string id="448">LCD</string>
   <string id="449">Ενεργό/ή</string>
   <string id="450">Στήλες</string>
@@ -419,11 +432,12 @@
   <string id="475">Μουσική μόνο</string>
   <string id="476">Μουσική &amp; βίντεο</string>
   <string id="477">Αδυναμία φόρτωσης της λίστας αναπαραγωγής</string>
-  <string id="478">Aπεικόνισεις οθόνης (OSD)</string>
+  <string id="478">Aπεικονίσεις οθόνης (OSD)</string>
   <string id="479">Κέλυφος &amp; γλώσσα</string>
   <string id="480">Εξατομίκευση</string>
   <string id="481">Ιδιότητες ήχου</string>
   <string id="482">Περί XBMC</string>
+
   <string id="485">Διαγραφή άλμπουμ</string>
   <string id="486">Επανάληψη</string>
   <string id="487">Επανάληψη του ιδίου</string>
@@ -442,7 +456,7 @@
   <string id="501">Αναζήτηση για ονόματα άλμπουμ...</string>
   <string id="502">Άνοιγμα</string>
   <string id="503">Απασχολημένο</string>
-  <string id="504">Κενός </string>
+  <string id="504">Κενός</string>
   <string id="505">Φόρτωση πληροφοριών πολυμέσων...</string>
   <string id="507">Ταξιν: Χρήση</string>
   <string id="510">Ενεργοποίηση απεικονίσεων</string>
@@ -451,9 +465,11 @@
   <string id="513">Αρχική οθόνη</string>
   <string id="514">Χειροκίνητες ρυθμίσεις</string>
   <string id="515">Είδος</string>
+
   <string id="517">Πρόσφατα εκτελεσθέντα άλμπουμ</string>
   <string id="518">Εκκίνηση</string>
   <string id="519">Εκκίνηση σε...</string>
+
   <string id="521">Συλλογές</string>
   <string id="522">Απομάκρυνση πηγής</string>
   <string id="523">Εναλλαγή πολυμέσων</string>
@@ -482,6 +498,7 @@
   <string id="546">Συσκευή εξόδου διέλευσης</string>
   <string id="547">Δεν υπάρχει βιογραφία γι΄ αυτόν τον καλλιτέχνη</string>
   <string id="548">Υποβιβασμός πολυκάναλου ήχου σε στερεοφωνικό</string>
+
   <string id="550">Κατάταξη: %s</string>
   <string id="551">Όνομα</string>
   <string id="552">Ημερομηνία</string>
@@ -509,6 +526,7 @@
   <string id="574">Χώρα</string>
   <string id="575">Σε εξέλιξη</string>
   <string id="576">Αριθμός αναπαραγωγών</string>
+
   <string id="580">Σειρά ταξινόμησης</string>
   <string id="581">Κριτήρια ταξινόμησης</string>
   <string id="582">Λειτουργία Προβολής</string>
@@ -527,12 +545,14 @@
   <string id="595">Επανάληψη: Όχι</string>
   <string id="596">Επανάληψη: Μία φορά</string>
   <string id="597">Επανάληψη: Όλων</string>
+
   <string id="600">Εγγραφή CD ήχου</string>
   <string id="601">Μεσαία</string>
   <string id="602">Κανονική</string>
   <string id="603">Ακραία</string>
   <string id="604">Σταθερός ρυθμός</string>
   <string id="605">Εγγραφή...</string>
+
   <string id="607">Προς:</string>
   <string id="608">Αδυναμία εγγραφής CD ή κομματιού</string>
   <string id="609">Δεν ορίσθηκε διαδρομή εξαγωγής CDDA.</string>
@@ -540,6 +560,7 @@
   <string id="611">Εισαγωγή αριθμού</string>
   <string id="612">Bits/Sample</string>
   <string id="613">Συχνότητα δειγματοληψίας</string>
+
   <string id="620">CDs ήχου</string>
   <string id="621">Κωδικοποιητής</string>
   <string id="622">Ποιότητα</string>
@@ -577,35 +598,43 @@
   <string id="657">Αναζήτηση φακέλου</string>
   <string id="658">Πληροφορίες τραγουδιού</string>
   <string id="659">Μη γραμμική παραμόρφωση</string>
+
   <string id="660">Ενίσχυση έντασης</string>
   <string id="661">Επιλογή φακέλου εξαγωγής</string>
   <string id="662">Αυτό το αρχείο δεν είναι πλέον διαθέσιμο.</string>
   <string id="663">Να αφαιρεθεί από τη συλλογή;</string>
   <string id="664">Αναζήτηση Script</string>
   <string id="665">Επίπεδο συμπίεσης</string>
+
   <string id="700">Εκκαθάριση συλλογής</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από τη συλλογή</string>
   <string id="702">Η διαδρομή έχει σαρωθεί προηγούμενος</string>
   <string id="705">Δίκτυο</string>
   <string id="706">- Διακομιστής</string>
+
   <string id="708">Χρήση ενός διαμεσολαβητή HTTP για πρόσβαση στο internet</string>
+
   <string id="711">Πρωτόκολλο Internet (IP)</string>
   <string id="712">Προσδιορίσατε λάθος θύρα. Η τιμή κυμαίνεται μεταξύ 1 και 65535.</string>
   <string id="713">Διαμεσολαβητής HTTP</string>
+
   <string id="715">- Εκχώρηση</string>
   <string id="716">Αυτόματη (DHCP)</string>
   <string id="717">Χειροκίνητη (Στατική)</string>
+
   <string id="719">- Διεύθυνση IP</string>
   <string id="720">- Μάσκα δικτύου</string>
   <string id="721">- Προεπιλεγμένη πύλη</string>
-  <string id="722">- Διακομιστή DNS</string>
+  <string id="722">- Διακομιστής DNS</string>
   <string id="723">Αποθήκευση &amp; επανεκκίνηση</string>
   <string id="724">Προσδιορίστηκε εσφαλμένη διεύθυνση. Η τιμή πρέπει να έχει τη μορφή AAA.BBB.CCC.DDD</string>
   <string id="725">με τιμές μεταξύ 0 και 255.</string>
   <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
   <string id="727">Διακομιστής Ιστού</string>
   <string id="728">Διακομιστής FTP</string>
+
   <string id="730">- Θύρα</string>
+
   <string id="732">Αποθήκευση &amp; εφαρμογή</string>
   <string id="733">- Κωδικός πρόσβασης</string>
   <string id="734">Χωρίς κωδικό πρόσβασης</string>
@@ -626,10 +655,12 @@
   <string id="749">Kατοπτρική εικόνα</string>
   <string id="750">Είστε σίγουρος;</string>
   <string id="751">Απομάκρυνση πηγής</string>
+
   <string id="754">Προσθήκη συνδέσμου εφαρμογής</string>
   <string id="755">Επεξεργασία διαδρομής εφαρμογής</string>
   <string id="756">Επεξεργασία ονόματος εφαρμογής</string>
   <string id="757">Επεξεργασία βάθους διαδρομής</string>
+
   <string id="759">Προβολή: Μεγάλη λίστα</string>
   <string id="760">Κίτρινο</string>
   <string id="761">Λευκό</string>
@@ -639,7 +670,10 @@
   <string id="765">Κυανό</string>
   <string id="766">Ανοικτό γκρι</string>
   <string id="767">Γκρι</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Σφάλμα %i: ο κοινόχρηστος πόρος δεν είναι διαθέσιμος</string>
+
   <string id="772">Έξοδος ήχου</string>
   <string id="773">Αναζήτηση</string>
   <string id="774">Φάκελος παρουσίασης διαφανειών</string>
@@ -658,6 +692,7 @@
   <string id="787">Απενεργοποίηση Διασύνδεσης</string>
   <string id="788">Η Διασύνδεση δικτύου απενεργοποιήθηκε επιτυχώς.</string>
   <string id="789">Όνομα ασύρματου δικτύου (ESSID)</string>
+
   <string id="791">Έγκριση σε προγράμματα απομακρυσμένου ελέγχου να ελέγξουν το XBMC</string>
   <string id="792">Θύρα</string>
   <string id="793">Εύρος θύρας</string>
@@ -666,9 +701,11 @@
   <string id="796">Συνεχής καθυστέρηση (ms)</string>
   <string id="797">Μέγιστος αριθμός πελατών</string>
   <string id="798">Πρόσβαση στο internet</string>
+
   <string id="850">Εισαγωγή μη έγκυρου εύρους τιμών θύρας</string>
   <string id="851">Το έγκυρο εύρος τιμών θύρας είναι 1-65535</string>
   <string id="852">Το έγκυρο εύρος τιμών θύρας είναι 1024-65535</string>
+
   <string id="998">Προσθήκη Μουσικής...</string>
   <string id="999">Προσθήκη Βίντεο...</string>
   <string id="1000">- Προεπισκόπηση</string>
@@ -676,6 +713,7 @@
   <string id="1002">Το ΧΒMC είναι ανίκανο να συνδεθεί στο δίκτυο.</string>
   <string id="1003">Αυτό μπορεί να συμβαίνει διότι το δίκτυο δεν είναι συνδεμένο.</string>
   <string id="1004">Θέλετε οπωσδήποτε να το προσθέσετε;</string>
+
   <string id="1006">Διεύθυνση IP</string>
   <string id="1007">Προσθήκη τοποθεσίας δικτύου</string>
   <string id="1008">Πρωτόκολλο</string>
@@ -722,18 +760,21 @@
   <string id="1049">Ρυθμίσεις script</string>
   <string id="1050">Μεμονωμένα</string>
   <string id="1051">Εισαγωγή διεύθυνσης</string>
+
   <string id="1200">Πελάτης SMB</string>
   <string id="1202">Ομάδα Εργασίας</string>
   <string id="1203">Προεπιλεγμένο όνομα χρήστη</string>
   <string id="1204">Προεπιλεγμένος κωδικός πρόσβασης</string>
-  <string id="1207">WINS διακομιστής </string>
+
+  <string id="1207">WINS διακομιστής</string>
   <string id="1208">Προσάρτηση κοινόχρηστων SMB</string>
+
   <string id="1210">Απομάκρυνση</string>
   <string id="1211">Μουσική</string>
   <string id="1212">Βίντεο</string>
   <string id="1213">Φωτογραφίες</string>
   <string id="1214">Αρχεία</string>
-  <string id="1215">Μουσική &amp; βίντεο</string>
+  <string id="1215">Μουσική &amp; βίντεο </string>
   <string id="1216">Μουσική &amp; εικόνες</string>
   <string id="1217">Μουσική &amp; αρχεία</string>
   <string id="1218">Βίντεο &amp; εικόνες</string>
@@ -752,16 +793,24 @@
   <string id="1233">Εφαρμογές &amp; βίντεο &amp; μουσική</string>
   <string id="1234">Εφαρμογές &amp; εικόνες &amp; μουσική</string>
   <string id="1235">Εφαρμογές &amp; εικόνες &amp; βίντεο</string>
+
   <string id="1250">Αυτόματος εντοπισμός</string>
   <string id="1251">Αυτόματος εντοπισμός συστήματος</string>
   <string id="1252">Ψευδώνυμο</string>
+
   <string id="1254">Να απαιτείται επιβεβαίωση για να συνδεθεί</string>
-  <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP) </string>
+  <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP)</string>
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
-  <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
+  <string id="1257">Να συνδεθείτε στο σύστημα που εντοπίστηκε;</string>
+
   <string id="1260">Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα διαμέσου του Zeroconf</string>
+  <string id="1270">Έγκριση στο XBMC να λαμβάνει περιεχόμενο AirPlay</string>
+  <string id="1271">Όνομα συσκευής</string>
+  <string id="1272">- Χρήση προστασίας με κωδικό</string>
+
   <string id="1300">Ειδική συσκευή ήχου</string>
   <string id="1301">Ειδική συσκευή διέλευσης</string>
+
   <string id="1396">Πυκνό</string>
   <string id="1397">και</string>
   <string id="1398">Παγωνιά</string>
@@ -784,17 +833,25 @@
   <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
   <string id="1417">Κόκκοι</string>
-  <string id="1418">Καταιγίδες (με κεραυνούς) </string>
+  <string id="1418">Καταιγίδες (με κεραυνούς)</string>
   <string id="1419">Μπόρες (με κεραυνούς)</string>
   <string id="1420">Μέση</string>
   <string id="1421">Πολύ υψηλή</string>
   <string id="1422">Θυελλώδης</string>
   <string id="1423">Ομίχλη</string>
+
+  <!-- strings through to 1450 reserved for weather translation -->
+
   <string id="1450">Σε κατάσταση ύπνωσης κατά την αναμονή</string>
+  <!-- strings through to 1470 reserved for power-saving -->
+
   <string id="2050">Διάρκεια</string>
+
   <string id="2100">Αποτυχία script! : %s</string>
   <string id="2101">Απαιτείται νεώτερη έκδοση - Δείτε το αρχείο καταγραφής</string>
+
   <string id="4501">Ενεργοποίηση LCD/VFD</string>
+
   <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Εφαρμογές</string>
   <string id="10002">Φωτογραφίες</string>
@@ -806,7 +863,7 @@
   <string id="10008">Ρυθμίσεις - Γενικά</string>
   <string id="10009">Ρυθμίσεις - Οθόνη</string>
   <string id="10010">Ρυθμίσεις - Αισθητικά - Βαθμονόμηση γραφικού περιβάλλοντος (GUI)</string>
-  <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμιση Οθόνης</string>
+  <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμηση Οθόνης</string>
   <string id="10012">Ρυθμίσεις - Φωτογραφίες</string>
   <string id="10013">Ρυθμίσεις - Εφαρμογές</string>
   <string id="10014">Ρυθμίσεις - Καιρός</string>
@@ -817,15 +874,21 @@
   <string id="10019">Ρυθμίσεις - Εξατομίκευση</string>
   <string id="10020">Scripts</string>
   <string id="10021">Περιηγητής ιστού</string>
+  <string id="10025">Βίντεο</string>
   <string id="10028">Βίντεο/Λίστα Αναπαραγωγής</string>
+  <string id="10029">Οθόνη σύνδεσης</string>
   <string id="10034">Ρυθμίσεις - Προφίλ</string>
+  <string id="10040">Περιηγητής Πρόσθετων</string>
+
   <string id="10100">Διάλογος Ναι/Όχι</string>
   <string id="10101">Διάλογος διαδικασίας</string>
-  <string id="10210">Αναζήτηση για υπότιτλων...</string>
+
+  <string id="10210">Αναζήτηση για υπότιτλους...</string>
   <string id="10211">Προσωρινή αποθήκευση υπότιτλων...</string>
   <string id="10212">τερματισμός</string>
   <string id="10213">αποθήκευση</string>
   <string id="10214">Άνοιγμα ροής</string>
+
   <string id="10500">Μουσική/Λίστα αναπαραγωγής</string>
   <string id="10501">Μουσική/Αρχεία</string>
   <string id="10502">Μουσική/Συλλογή</string>
@@ -838,11 +901,14 @@
   <string id="10509">Δικτυακό παιχνίδι</string>
   <string id="10510">Καταλήξεις</string>
   <string id="10511">Πληροφορίες συστήματος</string>
+
   <string id="10516">Μουσική - Συλλογή</string>
   <string id="10517">Μουσική - Εκτελείται τώρα</string>
+
   <string id="10522">Βίντεο - Εκτελείται τώρα</string>
   <string id="10523">Πληροφορίες</string>
   <string id="10524">Πληροφορίες ταινίας</string>
+
   <string id="12000">Επιλογή διαλόγου</string>
   <string id="12001">Μουσική/Πληροφορίες</string>
   <string id="12002">Διάλογος OK</string>
@@ -850,12 +916,15 @@
   <string id="12004">Scripts/Πληροφορίες</string>
   <string id="12005">Βίντεο πλήρους οθόνης</string>
   <string id="12006">Απεικόνιση μουσικής</string>
+
   <string id="12008">Διάλογος στοιβαγμένου αρχείου</string>
   <string id="12009">Ανακατασκευή περιεχομένων...</string>
-  <string id="12010">Επιστροφή στην μουσική</string>
+  <string id="12010">Επιστροφή στη μουσική</string>
   <string id="12011">Επιστροφή στα βίντεο</string>
+
   <string id="12021">Εκκίνηση από την αρχή</string>
   <string id="12022">Επανεκκίνηση από %s</string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -886,44 +955,50 @@
   <string id="12340">Εισαγωγή νέου κωδικού πρόσβασης</string>
   <string id="12341">Επανεισαγωγή νέου κωδικού πρόσβασης</string>
   <string id="12342">Λάθος κωδικός πρόσβασης.</string>
-  <string id="12343">δοκιμές έμειναν</string>
+  <string id="12343">δοκιμές έμειναν </string>
   <string id="12344">Ο κωδικός πρόσβασης δεν ταιριάζει.</string>
   <string id="12345">Δεν επιτράπηκε η πρόσβαση</string>
   <string id="12346">Οι δοκιμές εισαγωγής κωδικού πρόσβασης εξαντλήθηκαν.</string>
-  <string id="12347">Το συστήμα τώρα θα απενεργοποιηθεί.</string>
+  <string id="12347">Το σύστημα τώρα θα απενεργοποιηθεί.</string>
   <string id="12348">Το αντικείμενο κλειδώθηκε</string>
   <string id="12353">Επανενεργοποίηση κλειδώματος</string>
   <string id="12356">Αλλαγή κλειδώματος</string>
   <string id="12357">Πηγαίο κλείδωμα</string>
   <string id="12358">Το πεδίο του κωδικού πρόσβασης ήταν κενό. Ξαναπροσπαθήστε.</string>
   <string id="12360">Κεντρικό κλείδωμα</string>
-  <string id="12362">Απενεργοποίηση συστήματος όταν προσπάθειες εισαγωγής εξαντληθούν</string>
+  <string id="12362">Απενεργοποίηση συστήματος όταν εξαντληθούν οι προσπάθειες εισαγωγής</string>
   <string id="12367">Ο κεντρικός κωδικός δεν είναι έγκυρος</string>
   <string id="12368">Παρακαλώ, εισάγετε έναν έγκυρο κεντρικό κωδικό</string>
   <string id="12373">Ρυθμίσεις &amp;  διαχείριση αρχείων</string>
   <string id="12376">Ορισμός ως προεπιλογή για όλες τις ταινίες</string>
   <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
   <string id="12378">Χρονικό διάστημα προβολής κάθε εικόνας</string>
-  <string id="12379">Εφέ προσαρμογης αναλογιών σήματος (pan &amp; zoom)</string>
+  <string id="12379">Εφέ προσαρμογής αναλογιών σήματος (pan &amp; zoom)</string>
+
   <string id="12383">Κανονικό ρολόι</string>
   <string id="12384">Ψηφιακό ρολόι</string>
   <string id="12385">Μέρα/Μήνας</string>
   <string id="12386">Μήνας/Μέρα</string>
+
   <string id="12390">Χρόνος λειτουργίας συστήματος</string>
   <string id="12391">Λεπτά</string>
   <string id="12392">Ώρες</string>
   <string id="12393">Μέρες</string>
   <string id="12394">Συνολικός χρόνος λειτουργίας</string>
   <string id="12395">Επίπεδο φόρτισης</string>
+
   <string id="12600">Ο καιρός</string>
+
   <string id="12900">Προφύλαξη οθόνης</string>
-  <string id="12901">Πλήρους οθόνης απεικόνισεις (OSD)</string>
+  <string id="12901">Απεικονίσεις πλήρους οθόνης (OSD)</string>
+
   <string id="13000">Σύστημα</string>
   <string id="13001">Άμεση ελάττωση περιστροφής (Spindown)</string>
   <string id="13002">Βίντεο μόνο</string>
   <string id="13003">- Καθυστέρηση</string>
   <string id="13004">- Ελάχιστη διάρκεια αρχείου</string>
   <string id="13005">Παύση λειτουργίας</string>
+
   <string id="13008">Λειτουργία τερματισμού</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
@@ -933,15 +1008,19 @@
   <string id="13014">Ελαχιστοποίηση</string>
   <string id="13015">Ενέργεια πλήκτρου λειτουργίας</string>
   <string id="13016">Απενεργοποίηση συστήματος</string>
+
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
   <string id="13023">Η συσκευή αφαιρέθηκε επιτυχώς</string>
   <string id="13024">Συνδέθηκε χειριστήριο</string>
   <string id="13025">Αποσυνδέθηκε χειριστήριο</string>
+
   <string id="13050">Έχει αποφορτιστεί η μπαταρία</string>
+
   <string id="13100">Φίλτρο Flicker (τρεμόπαιγμα οθόνης)</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
+
   <string id="13105">Κατακόρυφος χρονισμός</string>
   <string id="13106">Ανενεργός</string>
   <string id="13107">Ενεργός κατά την αναπαραγωγή βίντεο</string>
@@ -949,10 +1028,12 @@
   <string id="13109">Δοκιμή ανάλυσης</string>
   <string id="13110">Αποθήκευση ανάλυσης;</string>
   <string id="13111">Θέλετε να διατηρήσετε αυτή την ανάλυση;</string>
+
   <string id="13112">Υψηλή ποιότητα ανακλιμακοθέτησης</string>
   <string id="13113">Ανενεργό</string>
-  <string id="13114">Ενεργό για περιεχόμενο SD </string>
+  <string id="13114">Ενεργό για περιεχόμενο SD</string>
   <string id="13115">Πάντα ενεργό</string>
+
   <string id="13116">Μέθοδος ανακλιμακοθέτησης</string>
   <string id="13117">Δικυβική</string>
   <string id="13118">Lanczos</string>
@@ -960,30 +1041,38 @@
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU HQ ανακλιμακοθέτηση</string>
   <string id="13122">VDPAU Μετατροπή στάθμης χρώματος</string>
+
   <string id="13130">Κενό σε άλλες απεικονίσεις</string>
   <string id="13131">Ανενεργή</string>
-  <string id="13132">Blank displays</string>
-  <string id="13140">Έχουν ανιχνευτεί ενεργές συνδέσεις! </string>
+  <string id="13132">Κενές απεικονίσεις</string>
+
+  <string id="13140">Έχουν ανιχνευτεί ενεργές συνδέσεις!</string>
   <string id="13141">Εάν συνεχίσετε, δεν θα είναι δυνατός πλέον ο έλεγχος του XBMC.</string>
   <string id="13142">Να διακοπεί η λειτουργία του Απομακρυσμένου διακομιστή;</string>
+
   <string id="13144">Αλλαγή κατάστασης συσκευής (Apple Remote);</string>
   <string id="13145">Εάν χρησιμοποιείτε τώρα τη συσκευή (Apple Remote) για να</string>
   <string id="13146">ελέγξετε το XBMC, η αλλαγή της ρύθμισης αυτής θα επηρεάσει</string>
   <string id="13147">την ικανότητα ελέγχου του. Θέλετε να συνεχίσετε;</string>
-  <string id="13159">Μάσκα Subnet</string>
+
+  <string id="13159">Μάσκα Υποδικτύου</string>
   <string id="13160">Πύλη</string>
   <string id="13161">Πρωτεύον DNS</string>
   <string id="13162">Η αναγνώριση απέτυχε</string>
+
   <string id="13170">Ποτέ</string>
   <string id="13171">Αμέσως</string>
   <string id="13172">Μετά από %i δευτ.</string>
   <string id="13173">Ημερομηνία εγκατάστασης</string>
   <string id="13174">Πλήθος περιστροφών σε ισχύ</string>
+
   <string id="13200">Προφίλ</string>
   <string id="13201">Διαγραφή προφίλ '%s';</string>
+
   <string id="13204">Προηγούμενο προφίλ:</string>
   <string id="13205">Άγνωστο</string>
   <string id="13206">Αντικατάσταση</string>
+
   <string id="13208">Ξυπνητήρι</string>
   <string id="13209">Διάρκεια κουδουνισμού (σε λεπτά)</string>
   <string id="13210">Εκκίνηση ξυπνητηριού σε %im</string>
@@ -991,13 +1080,16 @@
   <string id="13212">Ακυρώθηκε %im%is απέμειναν</string>
   <string id="13213">%2.0fm</string>
   <string id="13214">%2.0fs</string>
+
   <string id="13249">Αναζήτηση υποτίτλων στα RARs</string>
   <string id="13250">Αναζήτηση για υπότιτλο...</string>
   <string id="13251">Μετακίνηση αντικειμένου</string>
   <string id="13252">Μετακίνηση αντικειμένου εδώ</string>
   <string id="13253">Ακύρωση μετακίνησης</string>
+
   <string id="13270">Υλικό</string>
   <string id="13271">Ταχύτητα CPU</string>
+
   <string id="13274">Συνδέθηκε, αλλά η διεύθυνση DNS δεν είναι διαθέσιμη.</string>
   <string id="13275">Σκληρός δίσκος</string>
   <string id="13276">DVD-ROM</string>
@@ -1006,15 +1098,20 @@
   <string id="13279">Δίκτυο</string>
   <string id="13280">Βίντεο</string>
   <string id="13281">Υλικό</string>
+
   <string id="13283">Λειτουργικό σύστημα</string>
   <string id="13284">Ταχύτητα CPU</string>
-  <string id="13286">Βίντεο κωδικοποιητής</string>
+
+  <string id="13286">Κωδικοποιητής βίντεο:</string>
   <string id="13287">Ανάλυση οθόνης</string>
+
   <string id="13292">Καλώδιο A/V</string>
+
   <string id="13294">Περιοχή DVD</string>
   <string id="13295">Internet</string>
   <string id="13296">Συνδέθηκε</string>
   <string id="13297">Δε συνδέθηκε. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
+
   <string id="13299">Θερμοκρασία στόχος</string>
   <string id="13300">Ταχύτητα ανεμιστήρα</string>
   <string id="13301">Αυτόματος έλεγχος θερμοκρασίας</string>
@@ -1053,6 +1150,7 @@
   <string id="13334">Επεξεργασία ετικέτας</string>
   <string id="13335">Εξ' ορισμού επιλογή</string>
   <string id="13336">Απαλοιφή πλήκτρου</string>
+
   <string id="13340">Παραμένει ως έχει</string>
   <string id="13341">Πράσινο</string>
   <string id="13342">Πορτοκαλί</string>
@@ -1075,6 +1173,7 @@
   <string id="13359">Ορισμός μικρογραφίας καλλιτέχνη</string>
   <string id="13360">Αυτόματη δημιουργία μικρογραφιών</string>
   <string id="13361">Ενεργοποίηση φωνής</string>
+
   <string id="13375">Ενεργοποίηση συσκευής</string>
   <string id="13376">Ένταση</string>
   <string id="13377">Προεπιλεγμένη κατάσταση προβολής</string>
@@ -1089,10 +1188,8 @@
   <string id="13386">Αναζήτηση βασισμένη στην χρήση χρόνου</string>
   <string id="13387">Πρότυπο ονομασίας κομματιού (δεξιά πλευρά)</string>
   <string id="13388">Προκαθορισμένα</string>
-  <string id="13389">Δεν υπάρχουν διαθέσιμα προκαθορισμένα
-γι' αυτή την απεικόνιση</string>
-  <string id="13390">Δεν υπάρχουν διαθέσιμες ρυθμίσεις
-γι' αυτή την απεικόνιση</string>
+  <string id="13389">Δεν υπάρχουν διαθέσιμα προκαθορισμένα γι' αυτή την απεικόνιση</string>
+  <string id="13390">Δεν υπάρχουν διαθέσιμες ρυθμίσεις γι' αυτή την απεικόνιση</string>
   <string id="13391">Εξαγωγή/Εισαγωγή</string>
   <string id="13392">Χρήση απεικονίσεων κατά την αναπαραγωγή ήχου</string>
   <string id="13393">Υπολόγισε το μέγεθος</string>
@@ -1110,8 +1207,8 @@
   <string id="13405">Μικρογραφία</string>
   <string id="13406">Πληροφορίες εικόνας</string>
   <string id="13407">%s προκαθορισμένα</string>
-  <string id="13408">(Αξιολόγηση χρήστη IMDb)</string>
-  <string id="13409">250 κορυφαία </string>
+  <string id="13408">(Αξιολόγηση IMDb)</string>
+  <string id="13409">250 κορυφαία</string>
   <string id="13410">Συντονισμός στο Last.FM</string>
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">Αναπαραγωγή από εδώ</string>
@@ -1135,6 +1232,7 @@
   <string id="13430">Αποδοχή επιτάχυνσης υλικού (OpenMax)</string>
   <string id="13431">Σκιάσεις εικονοστοιχείου</string>
   <string id="13432">Έγκριση επιτάχυνσης υλικού (VideoToolbox)</string>
+
   <string id="13500">Μέθοδος συγχρονισμού A/V</string>
   <string id="13501">Χρονισμός ήχου</string>
   <string id="13502">Χρονισµός βίντεο (εις βάρος του ήχου)</string>
@@ -1146,19 +1244,25 @@
   <string id="13508">Υψηλή</string>
   <string id="13509">Πραγματικά υψηλή (αργή!)</string>
   <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
-  <string id="13550">Παύση κατά τη διάρκεια ανανέωσης του ρυθμού αλλαγής </string>
+
+  <string id="13550">Παύση κατά τη διάρκεια ανανέωσης του ρυθμού αλλαγής</string>
   <string id="13551">Ανενεργό</string>
   <string id="13552">%.1f Δευτερόλεπτο</string>
   <string id="13553">%.1f Δευτερόλεπτα</string>
+
   <string id="13600">Apple Remote</string>
+
   <string id="13602">Έγκριση έναρξης του XBMC μέσου απομακρυσμένου ελέγχου</string>
   <string id="13603">Ακολουθία χρόνου καθυστέρησης</string>
+
   <string id="13610">Ανενεργή</string>
   <string id="13611">Τυπική</string>
   <string id="13612">Τηλεχειριστήριο γενικής χρήσης</string>
   <string id="13613">Τηλεχειριστήριο γενικής χρήσης (Harmony)</string>
+
   <string id="13620">Σφάλμα συσκευής (Apple Remote)</string>
   <string id="13621">Αδυναμία υποστήριξης συσκευής (Apple Remote).</string>
+
   <string id="14000">Στοίβαγμα</string>
   <string id="14001">Σκόρπισμα</string>
   <string id="14003">Λήψη αρχείου λίστας αναπαραγωγής...</string>
@@ -1166,6 +1270,7 @@
   <string id="14005">Ανάλυση λίστας ροής πολυμέσων...</string>
   <string id="14006">Αποτυχία λήψης λίστας ροής πολυμέσων</string>
   <string id="14007">Αποτυχία λήψης αρχείου λίστας αναπαραγωγής</string>
+
   <string id="14009">Κατάλογος παιχνιδιών</string>
   <string id="14010">Αυτόματη εναλλαγή με βάση τις μικρογραφίες</string>
   <string id="14011">Ενεργοποίηση αυτόματης εναλλαγής στην προβολή μικρογραφιών</string>
@@ -1192,10 +1297,12 @@
   <string id="14034">Λανθάνουσα μνήμη DVD - DVDRom</string>
   <string id="14035">- Τοπικό δίκτυο</string>
   <string id="14036">Υπηρεσίες</string>
+
   <string id="14038">Οι ρυθμίσεις του δικτύου άλλαξαν</string>
   <string id="14039">Το XBMC πρέπει να επανεκκινηθεί για να αλλάξουν</string>
   <string id="14040">οι ρυθμίσεις δικτύου. Να γίνει επανεκκίνηση;</string>
   <string id="14041">Σύνδεση Internet με περιορισμένο εύρος</string>
+
   <string id="14043">- Τερματισμός κατά την αναπαραγωγή</string>
   <string id="14044">%i λεπτ.</string>
   <string id="14045">%i δευτ.</string>
@@ -1207,11 +1314,12 @@
   <string id="14051">Διαμόρφωση Ώρας</string>
   <string id="14052">Διαμόρφωση Ημ/νίας</string>
   <string id="14053">Φίλτρα γραφικού περιβάλλοντος (GUI)</string>
+
   <string id="14055">Σάρωση στο παρασκήνιο</string>
   <string id="14056">Διακοπή σάρωσης</string>
   <string id="14057">Δεν είναι εφικτό κατά τη σάρωση πληροφοριών αρχείων</string>
   <string id="14058">Εφέ Film Grain</string>
-  <string id="14059">Έρευνα στους κοινόχρηστους πόρους για μικρογραφίες </string>
+  <string id="14059">Έρευνα στους κοινόχρηστους πόρους για μικρογραφίες</string>
   <string id="14060">Άγνωστος τύπος λανθάνουσας μνήμης - Internet</string>
   <string id="14061">Αυτόματο/η</string>
   <string id="14062">Εισάγετε όνομα χρήστη για</string>
@@ -1224,6 +1332,7 @@
   <string id="14069">Εφαρμογή αυτών των ρυθμίσεων τώρα;</string>
   <string id="14070">Εφαρμογή ρυθμίσεων τώρα</string>
   <string id="14071">Επιτρεπτή η μετονομασία και η διαγραφή</string>
+
   <string id="14074">Ορισμός ζώνης ώρας</string>
   <string id="14075">Ενεργοποίηση θερινής ώρας</string>
   <string id="14076">Προσθήκη στα αγαπημένα</string>
@@ -1246,26 +1355,32 @@
   <string id="14093">Ασφάλεια</string>
   <string id="14094">Συσκευές εισόδου</string>
   <string id="14095">Εξοικονόμηση ενέργειας</string>
+
   <string id="15015">Απομάκρυνση</string>
   <string id="15016">Παιχνίδια</string>
+
   <string id="15019">Προσθήκη</string>
+
   <string id="15052">Κωδικός πρόσβασης</string>
+
   <string id="15100">Συλλογή</string>
   <string id="15101">Βάση δεδομένων</string>
   <string id="15102">* Όλα τα άλμπουμ</string>
   <string id="15103">* Όλοι οι καλλιτέχνες</string>
   <string id="15104">* Όλα τα τραγούδια</string>
   <string id="15105">* Όλα τα είδη</string>
+
   <string id="15107">Aποθήκευση...</string>
   <string id="15108">Ήχοι πλοήγησης</string>
   <string id="15109">Προεπιλεγμένο κέλυφος</string>
   <string id="15111">- Θέμα</string>
   <string id="15112">Προεπιλεγμένο Θέμα</string>
+
   <string id="15200">Last.FM</string>
   <string id="15201">Αποστολή τραγουδιών στο Last.FM</string>
   <string id="15202">Όνομα χρήστη Last.FM</string>
   <string id="15203">Κωδικός πρόσβασης Last.FM</string>
-  <string id="15204">Αδύνατη η χειραψία: σε αδράνεια... </string>
+  <string id="15204">Αδύνατη η χειραψία: σε αδράνεια...</string>
   <string id="15205">Παρακαλώ, αναβαθμίστε το XBMC</string>
   <string id="15206">Απέτυχε η εξακρίβωση. Ελέγξτε το όνομα χρήστη και τον κωδικό πρόσβασης</string>
   <string id="15207">Συνδεμένο</string>
@@ -1283,6 +1398,7 @@
   <string id="15219">Κωδικός πρόσβασης (Libre.fm)</string>
   <string id="15220">Libre.fm</string>
   <string id="15221">Υποβολή αιτήματος τραγουδιού</string>
+
   <string id="15250">Αποστολή Last.fm radio στο Last.fm</string>
   <string id="15251">Σύνδεση με Last.FM...</string>
   <string id="15252">Επιλογή σταθμού...</string>
@@ -1319,6 +1435,7 @@
   <string id="15283">Κομμάτια που ακούστηκαν πρόσφατα από τον %name%</string>
   <string id="15284">Ακρόαση των προτιμήσεων του %name% στο Last.FM radio</string>
   <string id="15285">Κορυφαίες ετικέτες για τον χρήστη %name%</string>
+
   <string id="15287">Να προστεθεί το παρόν κομμάτι στα  αγαπημένα σας;</string>
   <string id="15288">Να αποκλειστεί το παρόν κομμάτι;</string>
   <string id="15289">Προσθήκη στα αγαπημένα σας κομμάτια: '%s'.</string>
@@ -1331,16 +1448,21 @@
   <string id="15296">Αποδεκτό</string>
   <string id="15297">Να αφαιρεθεί το παρόν κομμάτι από τα  αγαπημένα σας;</string>
   <string id="15298">Να μην αποκλειστεί το παρόν κομμάτι;</string>
+
   <string id="15300">H διαδρομή δεν βρέθηκε</string>
   <string id="15301">Απέτυχε η σύνδεση με τον διακομιστή δικτύου</string>
   <string id="15302">Δεν βρέθηκαν διακομιστές</string>
   <string id="15303">Δεν βρέθηκαν ομάδες εργασίας</string>
+
   <string id="15310">Άνοιγμα πηγής multi-path</string>
   <string id="15311">Διαδρομή:</string>
+
   <string id="16000">Γενικά</string>
+
   <string id="16002">Έρευνα στο Internet</string>
   <string id="16003">Αναπαραγωγή</string>
   <string id="16004">Αναπαραγωγή πολυμέσων από το δίσκο</string>
+
   <string id="16008">Εισάγετε νέο τίτλο</string>
   <string id="16009">Εισάγετε το όνομα της ταινίας</string>
   <string id="16010">Εισάγετε το όνομα του προφίλ</string>
@@ -1353,7 +1475,7 @@
   <string id="16017">Εισαγωγή συμβολοσειράς αναζήτησης</string>
   <string id="16018">Καμία</string>
   <string id="16019">Αυτόματη επιλογή</string>
-  <string id="16020">Διαστρωμάτωση</string>
+  <string id="16020">Απόπλεξη</string>
   <string id="16021">Επιλεκτική</string>
   <string id="16022">Επιλεκτική (αντιστροφή)</string>
   <string id="16023">Μέθοδος περιπλεγμένου χειρισμού</string>
@@ -1369,13 +1491,20 @@
   <string id="16033">Απέτυχε το άνοιγμα της βάσης δεδομένων.</string>
   <string id="16034">Απέτυχε η λήψη τραγουδιών από τη βάση δεδομένων.</string>
   <string id="16035">Λίστα αναπαραγωγής σε Party Μode</string>
-  <string id="16036">Απεπλεγμένη (κατά το ήμισυ) </string>
+  <string id="16036">Απόπλεξη (κατά το ήμισυ)</string>
+  <string id="16037">Απόπλεξη βίντεο</string>
+  <string id="16038">Μέθοδος απόπλεξης</string>
+  <string id="16039">Ανενεργή</string>
+  <string id="16040">Αυτόματη</string>
+  <string id="16041">Ενεργή</string>
+
   <string id="16100">Όλα τα βίντεο</string>
   <string id="16101">Μη προβληθέντα</string>
   <string id="16102">Προβληθέντα</string>
   <string id="16103">Επισήμανση ως προβληθέντα</string>
   <string id="16104">Επισήμανση ως μη προβληθέντα</string>
   <string id="16105">Επεξεργασία τίτλου</string>
+
   <string id="16200">Η διαδικασία ακυρώθηκε</string>
   <string id="16201">Η αντιγραφή απέτυχε</string>
   <string id="16202">Απέτυχε η αντιγραφή τουλάχιστον ενός αρχείου</string>
@@ -1383,6 +1512,7 @@
   <string id="16204">Απέτυχε η μετακίνηση τουλάχιστον ενός αρχείου</string>
   <string id="16205">Η διαγραφή απέτυχε</string>
   <string id="16206">Απέτυχε η διαγραφή τουλάχιστον ενός αρχείου</string>
+
   <string id="16300">Μέθοδος προσαρμογής ανάλυσης βίντεο</string>
   <string id="16301">Εγγύτερη προσέγγιση</string>
   <string id="16302">Διγραμμική</string>
@@ -1403,18 +1533,29 @@
   <string id="16317">Χρονική (κατά το ήμισυ)</string>
   <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 βελτιστοποιημένο</string>
+  <string id="16324">Blend λογισμικού</string>
+  
   <string id="16400">Μετα-επεξεργασία</string>
-  <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
+
+  <string id="17500">Προβολή λήξης χρόνου αναστολής</string>
+
   <string id="19000">Αλλαγή καναλιού</string>
+
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
   <string id="20001">Χρήση εξωτερικού αναπαραγωγέα DVD</string>
   <string id="20002">Εξωτερικός αναπαραγωγέας DVD</string>
   <string id="20003">Φάκελος εκπαιδευτών</string>
   <string id="20004">Φάκελος στιγμιότυπου</string>
+
   <string id="20006">Φάκελος λίστας αναπαραγωγής</string>
   <string id="20007">Εγγραφές</string>
   <string id="20008">Στιγμιότυπα</string>
   <string id="20009">Χρήση XBMC</string>
+
   <string id="20011">Λίστες αναπαραγωγής μουσικής</string>
   <string id="20012">Λίστες αναπαραγωγής βίντεο</string>
   <string id="20013">Να εκτελεστεί το παιχνίδι;</string>
@@ -1424,10 +1565,16 @@
   <string id="20017">Τοπική μικρογραφία</string>
   <string id="20018">Χωρίς μικρογραφία</string>
   <string id="20019">Επιλογή μικρογραφίας</string>
+
+  <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
+  <string id="20022"></string>
   <string id="20023">Διένεξη</string>
   <string id="20024">Σάρωση καινούργιων</string>
   <string id="20025">Σάρωση όλων</string>
   <string id="20026">Περιοχή</string>
+
+  <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
+
   <string id="20037">Συνολικές</string>
   <string id="20038">Κλείδωμα της μουσικής</string>
   <string id="20039">Κλείδωμα των βίντεο</string>
@@ -1447,6 +1594,7 @@
   <string id="20053">Αριστερή γενική διαχείριση</string>
   <string id="20054">Καταχωρημένη γενική διαχείριση</string>
   <string id="20055">Μικρογραφία Allmusic.com</string>
+
   <string id="20057">Απομάκρυνση μικρογραφίας</string>
   <string id="20058">Προσθέστε προφίλ...</string>
   <string id="20059">Ερώτημα για όλα τα άλμπουμ</string>
@@ -1520,7 +1668,7 @@
   <string id="20128">Πήγαινε στο root</string>
   <string id="20129">Ύφανση</string>
   <string id="20130">Ύφανση (αντιστροφή)</string>
-  <string id="20131">Συνδυασμός </string>
+  <string id="20131">Συνδυασμός</string>
   <string id="20132">Επανεκκίνηση βίντεο</string>
   <string id="20133">Επεξεργασία τοποθεσίας δικτύου</string>
   <string id="20134">Απομάκρυνση τοποθεσίας δικτύου</string>
@@ -1554,9 +1702,9 @@
   <string id="20162">Χρησιμοποιημένα</string>
   <string id="20163">από τα</string>
   <string id="20164">Δεν υποστηρίζει κλείδωμα</string>
-  <string id="20165">Ξεκλείδωτοs</string>
-  <string id="20166">Κλειδωμένοs</string>
-  <string id="20167">Παγωμένοs</string>
+  <string id="20165">Ξεκλείδωτος</string>
+  <string id="20166">Κλειδωμένος</string>
+  <string id="20167">Παγωμένος</string>
   <string id="20168">Απαιτεί επανεκκίνηση</string>
   <string id="20169">Εβδομάδα</string>
   <string id="20170">Γραμμή</string>
@@ -1574,8 +1722,9 @@
   <string id="20182">Κενό</string>
   <string id="20183">Επαναφόρτωση κελύφους</string>
   <string id="20184">Περιστροφή εικόνων που χρησιμοποιούν τις πληροφορίες EXIF</string>
-  <string id="20185">Χρήση όψης αφίσας για τις τηλεοπτικές σειρές</string>
+  <string id="20185">Χρήση στυλ αφισών για τις τηλεοπτικές σειρές</string>
   <string id="20186">Απασχολημένο</string>
+
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
   <string id="20190">Προσαρμογή</string>
   <string id="20191">Ενεργοποίηση καταγραφής αποσφαλμάτωσης</string>
@@ -1587,42 +1736,52 @@
   <string id="20197">Εισαγωγή μουσικής συλλογής</string>
   <string id="20198">Δεν βρέθηκε ο καλλιτέχνης!</string>
   <string id="20199">Αποτυχία λήψης πληροφοριών για τον καλλιτέχνη</string>
+
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+
   <string id="20250">Party on! (βίντεο)</string>
   <string id="20251">Αναμιγνύοντας τα ποτά (βίντεο)</string>
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
   <string id="20253">Διακομιστής WebDAV (HTTP)</string>
   <string id="20254">Διακομιστής WebDAV (HTTPS)</string>
   <string id="20255">Πρώτη σύνδεση, επεξεργαστείτε το προφίλ σας</string>
-  <string id="20256">HTS Tvheadend client</string>
-  <string id="20257">VDR Streamdev client</string>
-  <string id="20258">MythTV client</string>
+  <string id="20256">Πελάτης HTS Tvheadend</string>
+  <string id="20257">Πελάτης VDR Streamdev</string>
+  <string id="20258">Πελάτης MythTV</string>
   <string id="20259">Σύστημα Αρχείων Δικτύου (NFS)</string>
   <string id="20260">Κέλυφος Ασφαλείας (SSH/SFTP)</string>
+  <string id="20261">Πρωτόκολλο Αρχειοθέτησης Apple (AFP)</string>
+
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
-  <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
+  <string id="20302">Αδυναμία εγγραφής στο φάκελο:</string>
   <string id="20303">Θέλετε να παραβλεφθεί και να συνεχίσετε;</string>
   <string id="20304">Ροή τίτλων ειδήσεων (RSS)</string>
+
   <string id="20307">Δευτερεύον DNS</string>
   <string id="20308">DHCP διακομιστή:</string>
   <string id="20309">Δημιουργία νέου φακέλου</string>
-  <string id="20310">Dim LCD κατα την αναπαραγωγή</string>
+  <string id="20310">Σκίαση LCD κατά την αναπαραγωγή</string>
   <string id="20311">Άγνωστο ή πάνω στην μητρική (προστατεύεται)</string>
-  <string id="20312">Dim LCD σε παύση</string>
+  <string id="20312">Σκίαση LCD σε παύση</string>
+
   <string id="20314">Βίντεο - Συλλογή</string>
+
   <string id="20316">Ταξ. κατά: ID</string>
+
   <string id="20324">Αναπαραγωγή κομματιού...</string>
   <string id="20325">Επαναφορά βαθμονόμησης</string>
   <string id="20326">Επαναφορά των τιμών βαθμονόμησης για %s</string>
   <string id="20327">στις προκαθορισμένες τιμές.</string>
   <string id="20328">Αναζήτηση προορισμού</string>
+  <string id="20329">Οι ταινίες είναι σε διαφορετικούς φακέλους που ταιριάζουν με τον τίτλο της ταινίας</string>
   <string id="20330">Χρήση ονόματος φακέλου για αναζητήσεις</string>
   <string id="20331">Αρχείο</string>
   <string id="20332">Χρήση φακέλων ή ονομάτων αρχείων στις αναζητήσεις;</string>
   <string id="20333">Ορισμός περιεχομένου</string>
   <string id="20334">Φάκελος</string>
   <string id="20335">Κατόπτευση κατ' επανάληψη του περιεχομένου;</string>
-  <string id="20336">Ξεκλείδωτες πηγές</string>
+  <string id="20336">Ξεκλείδωμα πηγών</string>
   <string id="20337">Ηθοποιός</string>
   <string id="20338">Ταινία</string>
   <string id="20339">Σκηνοθεσία</string>
@@ -1656,7 +1815,7 @@
   <string id="20367">Απόκρυψη προβληθέντων</string>
   <string id="20368">Κωδικός παραγωγής</string>
   <string id="20369">Εμφάνιση πλοκής στα μη προβληθέντα</string>
-  <string id="20370">* Απόκρυψη σε περίληψη *</string>
+  <string id="20370">* Απόκρυψη για αποφυγή spoiler *</string>
   <string id="20371">Ορισμός μικρογραφίας κύκλου</string>
   <string id="20372">Εικόνα κύκλου</string>
   <string id="20373">Κύκλος</string>
@@ -1685,16 +1844,17 @@
   <string id="20396">Άλμπουμ καλλιτέχνη</string>
   <string id="20397">Άλμπουμ</string>
   <string id="20398">Αναπαραγωγή τραγουδιού</string>
-  <string id="20399">Μουσικά βίντεο από άλμπουμ </string>
+  <string id="20399">Μουσικά βίντεο από άλμπουμ</string>
   <string id="20400">Μουσικά βίντεο ανά καλλιτέχνη</string>
   <string id="20401">Αναπαραγωγή μουσικού βίντεο</string>
   <string id="20402">Λήψη μικρογραφιών ηθοποιού κατά τη προσθήκη στη συλλογή</string>
   <string id="20403">Ορισμός μικρογραφίας ηθοποιού</string>
+
   <string id="20405">Αφαίρεση σελιδοδείκτη επεισοδίου</string>
   <string id="20406">Ορισμός σελιδοδείκτη επεισοδίου</string>
   <string id="20407">Ρυθμίσεις καταγραφέα</string>
   <string id="20408">Λήψη πληροφοριών για το μουσικό βίντεο</string>
-  <string id="20409">Λήψη πληροφοριών για την τηλεοπτική σειρά </string>
+  <string id="20409">Λήψη πληροφοριών για την τηλεοπτική σειρά</string>
   <string id="20410">Διαφημιστικό</string>
   <string id="20411">Ισοπέδωση</string>
   <string id="20412">Ισοπέδωση τηλεοπτικών σειρών</string>
@@ -1703,7 +1863,9 @@
   <string id="20415">Έλεγχος για νέα περιεχόμενα</string>
   <string id="20416">Πρεμιέρα</string>
   <string id="20417">Σενάριο</string>
-  <string id="20419">Εμφάνιση μεταδεδομένων κατά την προβολή αρχείων</string>
+  <string id="20418"></string>
+  <string id="20419">Αντικατάσταση ονομάτων αρχείων με τίτλους συλλογών</string>
+
   <string id="20420">Ποτέ</string>
   <string id="20421">Eάν είναι ενός κύκλου</string>
   <string id="20422">Πάντα</string>
@@ -1718,13 +1880,13 @@
   <string id="20431">Αντικατάσταση παλιών αρχείων;</string>
   <string id="20432">Εξαίρεση διαδρομής από τις ενημερώσεις συλλογής</string>
   <string id="20433">Εξαγωγή μικρογραφιών και πληροφοριών</string>
-  <string id="20434">Ορίσματα</string>
+  <string id="20434">Ομάδες Ταινιών</string>
   <string id="20435">Ορισμός θέσης μικρογραφίας ταινίας</string>
   <string id="20436">Εξαγωγή μικρογραφιών καλλιτέχνη;</string>
   <string id="20437">Επιλεγμένο fanart</string>
   <string id="20438">Τοπικό fanart</string>
   <string id="20439">Χωρίς fanart</string>
-  <string id="20440">Tρέχον fanart</string>
+  <string id="20440">Τρέχον fanart</string>
   <string id="20441">Απομακρυσμένο fanart</string>
   <string id="20442">Αλλαγή περιεχομένου</string>
   <string id="20443">Επιθυμείτε να ανανεώσετε τις πληροφορίες</string>
@@ -1732,16 +1894,21 @@
   <string id="20445">Fanart</string>
   <string id="20446">Βρέθηκαν τοπικά αποθηκευμένες πληροφορίες.</string>
   <string id="20447">Να αγνοηθούν και να ανανεωθούν από το internet;</string>
-  <string id="20448">Αδυναμία λήψης πληροφοριών </string>
+  <string id="20448">Αδυναμία λήψης πληροφοριών</string>
   <string id="20449">Αδυναμία σύνδεσης με τον απομακρυσμένο διακομιστή</string>
-  <string id="20450">Επιθυμείτε, να συνεχίσετε  την αναζήτηση;</string>
+  <string id="20450">Επιθυμείτε να συνεχίσετε την αναζήτηση;</string>
   <string id="20451">Χώρες</string>
   <string id="20452">επεισόδιο</string>
   <string id="20453">επεισόδια</string>
   <string id="20454">Ακροατής</string>
   <string id="20455">Ακροατές</string>
-  <string id="20456">Προσαρμογή ορισμάτων ταινίας fanart</string>
+  <string id="20456">Ορισμός fanart ομάδας ταινιών</string>
+  <string id="20457">Ομάδα Ταινιών</string>
+  <string id="20458">Ομαδοποίηση ταινιών</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
+
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
+
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
   <string id="21333">Η ροή πολυμέσων θα σταματήσει!</string>
@@ -1749,12 +1916,17 @@
   <string id="21335">Θέλετε να ξεκινήσει η ροή πολυμέσων;</string>
   <string id="21336">Σύνδεση στο: %s</string>
   <string id="21337">Συσκευή TuxBox</string>
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+
   <string id="21359">Προσθήκη κοινόχρηστου πολυμέσου...</string>
   <string id="21360">Διαμοιρασμός κοινόχρηστων συλλογών μουσικής και βίντεο διαμέσου UPnP</string>
+
   <string id="21364">Επεξεργασία κοινόχρηστων πολυμέσων</string>
   <string id="21365">Απομάκρυνση κοινόχρηστων πολυμέσων</string>
-  <string id="21366">Φακέλος υποτίτλων</string>
+  <string id="21366">Φάκελος υποτίτλων</string>
   <string id="21367">Ταινία &amp; εναλλακτικός φάκελος υποτίτλων</string>
+  <string id="21368">Παράκαμψη γραμματοσειρών υποτίτλων ASS/SSA</string>
+
   <string id="21369">Ενεργοποίηση ποντικιού</string>
   <string id="21370">Ενεργοποίηση ήχων πλοήγησης κατά την εκτέλεση πολυμέσων</string>
   <string id="21371">Μικρογραφία</string>
@@ -1806,9 +1978,9 @@
   <string id="21417">- Ρυθμίσεις</string>
   <string id="21418">Πολύγλωσσο</string>
   <string id="21419">Δεν υπάρχει διαθέσιμος καταγραφέας</string>
-  <string id="21420">Τιμές για αντιστοίχηση</string>
+  <string id="21420">Τιμές για αντιστοίχιση</string>
   <string id="21421">Όροι έξυπνης λίστας αναπαραγωγής</string>
-  <string id="21422">Κριτήρια αντιστοίχησης αντικειμένων</string>
+  <string id="21422">Κριτήρια αντιστοίχισης αντικειμένων</string>
   <string id="21423">Νέοι κανόνες...</string>
   <string id="21424">Αντικείμενα με πολλές αντιστοιχίες</string>
   <string id="21425">με όλους τους κανόνες</string>
@@ -1835,11 +2007,21 @@
   <string id="21446">Κωδικοποίηση ήχου</string>
   <string id="21447">Γλώσσα ήχου</string>
   <string id="21448">Γλώσσα υποτίτλων</string>
-  <string id="21449">Το τηλεχειριστήριο στέλνει εντολές πληκτρολογίου </string>
+  <string id="21449">Το τηλεχειριστήριο στέλνει εντολές πληκτρολογίου</string>
   <string id="21450">- Επεξεργασία</string>
   <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
   <string id="21452">Λήψη περισσότερων...</string>
   <string id="21453">Σύστημα αρχείων root</string>
+  <string id="21454">Λανθάνουσα μνήμη πλήρης</string>
+  <string id="21455">Η λανθάνουσα μνήμη γέμισε πριν φθάσει το απαιτούμενο μέγεθος για συνεχόμενη αναπαραγωγή</string>
+
+  <string id="21460">Θέση υπότιτλου</string>
+  <string id="21461">Σταθερή</string>
+  <string id="21462">Κάτω πλευρά του βίντεο</string>
+  <string id="21463">Κάτω από το βίντεο</string>
+  <string id="21464">Πάνω πλευρά του βίντεο</string>
+  <string id="21465">Πάνω από το βίντεο</string>
+
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
@@ -1848,7 +2030,8 @@
   <string id="21805">Ανάλυση</string>
   <string id="21806">Σχόλιο</string>
   <string id="21807">Απόδοση</string>
-  <string id="21808">Επεξεργασία Jpeg</string>
+  <string id="21808">Επεξεργασία JPEG</string>
+
   <string id="21820">Ημερομηνία λήψης</string>
   <string id="21821">Περιγραφή</string>
   <string id="21822">Κατασκευαστής κάμερας</string>
@@ -1869,10 +2052,11 @@
   <string id="21837">Ευαισθησία ISO</string>
   <string id="21838">Ψηφιακή μεγέθυνση</string>
   <string id="21839">Πλάτος CCD</string>
-  <string id="21840">GPS γεωγραφικό πλάτος </string>
+  <string id="21840">GPS γεωγραφικό πλάτος</string>
   <string id="21841">GPS γεωγραφικό μήκος</string>
   <string id="21842">GPS υψόμετρο</string>
   <string id="21843">Προσανατολισμός</string>
+
   <string id="21860">Συμπληρωματικές πληροφορίες</string>
   <string id="21861">Λέξεις κλειδιά</string>
   <string id="21862">Λεζάντα</string>
@@ -1894,11 +2078,11 @@
   <string id="21878">Πνευματικά δικαιώματα</string>
   <string id="21879">Κωδικός χώρας</string>
   <string id="21880">Υπηρεσία πληροφόρησης</string>
-  <string id="21881">Έγκριση στους ελεγκτές UPnP να ελέγχουν το  XBMC</string>
+  <string id="21881">Έγκριση στους ελεγκτές UPnP να ελέγχουν το XBMC</string>
   <string id="21882">Απόπειρα αποφυγής οδηγιών πριν από το μενού DVD</string>
   <string id="21883">Αποθηκευμένη μουσική</string>
   <string id="21884">Ερώτημα για όλους τους καλλιτέχνες</string>
-  <string id="21885">Λήψη πληροφοριών για το άλμπουμ </string>
+  <string id="21885">Λήψη πληροφοριών για το άλμπουμ</string>
   <string id="21886">Λήψη πληροφοριών για τον καλλιτέχνη</string>
   <string id="21887">Βιογραφικό</string>
   <string id="21888">Δισκογραφία</string>
@@ -1914,16 +2098,20 @@
   <string id="21898">Έτη ενεργής σταδιοδρομίας</string>
   <string id="21899">Ετικέτα</string>
   <string id="21900">Γέννηση/Δημιουργία</string>
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
+
   <string id="22000">Ενημέρωση της συλλογής κατά την εκκίνηση</string>
   <string id="22001">Απόκρυψη εξέλιξης ενημερώσεων συλλογής</string>
   <string id="22002">- Κατάληξη DNS</string>
+
   <string id="22003">%2.3fs</string>
   <string id="22004">Καθυστέρηση κατά: %2.3fs</string>
   <string id="22005">Προβάδισμα κατά: %2.3fs</string>
-  <string id="22006">Μετατόπιση υπότιτλων</string>
+  <string id="22006">Μετατόπιση υποτίτλων</string>
   <string id="22007">Κατασκευαστής OpenGL:</string>
   <string id="22008">Αποτυπωτής OpenGL:</string>
-  <string id="22009">Έκδοση OpenGL: </string>
+  <string id="22009">Έκδοση OpenGL:</string>
   <string id="22010">Θερμοκρασία GPU:</string>
   <string id="22011">Θερμοκρασία CPU:</string>
   <string id="22012">Συνολική μνήμη</string>
@@ -1939,13 +2127,15 @@
   <string id="22022">Εμφάνιση αρχείων βίντεο στις λίστες</string>
   <string id="22023">Κατασκευαστής DirectX:</string>
   <string id="22024">Έκδοση Direct3D:</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Γραμματοσειρά</string>
   <string id="22031">- Μέγεθος</string>
   <string id="22032">- Χρώματα</string>
   <string id="22033">- Κωδικοποίηση χαρακτήρων</string>
   <string id="22034">Εξαγωγή τίτλων karaoke ως HTML</string>
   <string id="22035">Εξαγωγή τίτλων karaoke ως CSV</string>
-  <string id="22036">Εισαγωγή τίτλων karaoke... </string>
+  <string id="22036">Εισαγωγή τίτλων karaoke...</string>
   <string id="22037">Αυτόματη εμφάνιση επιλογέα τραγουδιών</string>
   <string id="22038">Εξαγωγή τίτλων karaoke...</string>
   <string id="22039">Εισαγωγή αριθμού τραγουδιού</string>
@@ -1953,24 +2143,32 @@
   <string id="22041">άσπρο/κόκκινο</string>
   <string id="22042">άσπρο/μπλε</string>
   <string id="22043">μαύρο/άσπρο</string>
+
   <string id="22079">Προεπιλεγμένη ενέργεια</string>
   <string id="22080">Επιλογή</string>
   <string id="22081">Προβολή πληροφοριών</string>
   <string id="22082">Περισσότερα...</string>
   <string id="22083">Αναπαραγωγή όλων</string>
-  <string id="23049">Μη διαθέσιμο Teletext </string>
+
+  <string id="23049">Μη διαθέσιμο Teletext</string>
   <string id="23050">Ενεργοποίηση Teletext</string>
   <string id="23051">Μέρος %i</string>
   <string id="23052">Aποθήκευση %i bytes</string>
   <string id="23053">Διακόπτεται</string>
   <string id="23054">Εκτελείται</string>
+
+  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ενεργός εξωτερικός αναπαραγωγέας</string>
   <string id="23101">Πιέστε το 'Εντάξει' για να τερματίσετε τον αναπαραγωγέα</string>
+
   <string id="23104">Πιέστε το 'Εντάξει' όταν η αναπαραγωγή ολοκληρωθεί</string>
+
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Πρόσθετο</string>
   <string id="24001">Πρόσθετα</string>
   <string id="24002">Ρυθμίσεις πρόσθετου</string>
   <string id="24003">Πληροφορίες πρόσθετου</string>
+
   <string id="24005">Πηγές πολυμέσων</string>
   <string id="24007">Πληροφορίες ταινίας</string>
   <string id="24008">Προφύλαξη οθόνης</string>
@@ -1981,9 +2179,10 @@
   <string id="24013">Στίχοι</string>
   <string id="24014">Πληροφορίες τηλεόρασης</string>
   <string id="24015">Πληροφορίες μουσικού βίντεο</string>
-  <string id="24016">Πληροφορίες άλμπουμ </string>
+  <string id="24016">Πληροφορίες άλμπουμ</string>
   <string id="24017">Πληροφορίες καλλιτέχνη</string>
   <string id="24018">Υπηρεσίες</string>
+
   <string id="24020">Ρύθμιση</string>
   <string id="24021">Απενεργοποίηση</string>
   <string id="24022">Ενεργοποίηση</string>
@@ -2008,7 +2207,8 @@
   <string id="24045">Η Επέκταση δεν έχει τη σωστή δομή</string>
   <string id="24046">%s χρησιμοποιείται από την εγκατεστημένη(νες) Επέκταση(εις)</string>
   <string id="24047">Αδυναμία απεγκατάστασης αυτής της Επέκτασης</string>
-  <string id="24048">Επαναφορά </string>
+  <string id="24048">Επαναφορά</string>
+
   <string id="24050">Διαθέσιμα πρόσθετα</string>
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>
@@ -2025,25 +2225,37 @@
   <string id="24067">Γίνεται λήψη πρόσθετων</string>
   <string id="24068">Διαθέσιμη ενημέρωση</string>
   <string id="24069">Ενημέρωση</string>
+
   <string id="24070">Αδυναμία χρήσης πρόσθετου.</string>
   <string id="24071">Παρουσιάστηκε άγνωστο σφάλμα.</string>
   <string id="24072">Απαιτούνται ρυθμίσεις</string>
   <string id="24073">Δεν ήταν δυνατή η σύνδεση</string>
   <string id="24074">Απαιτείται επανεκκίνηση</string>
   <string id="24075">Απενεργοποίηση</string>
+  <string id="24076">Απαιτείται Πρόσθετο</string>
   <string id="24080">Νέα προσπάθεια επανασύνδεσης;</string>
   <string id="24089">Επανεκκινήσεις πρόσθετου</string>
   <string id="24090">Κλείδωμα διαχειριστή πρόσθετων</string>
+
   <string id="24094">(τρέχων)</string>
-  <string id="24095">(ανεπιθύμητο) </string>
+  <string id="24095">(ανεπιθύμητο)</string>
   <string id="24096">Το πρόσθετο έχει επισημανθεί ως κατεστραμμένο στο αποθετήριο.</string>
   <string id="24097">Επιθυμείτε να απενεργοποιηθεί από το σύστημά σας;</string>
   <string id="24098">Κατεστραμμένο</string>
   <string id="24099">Επιθυμείτε να εφαρμοστεί αυτό το κέλυφος;</string>
+  <string id="24100">Για να χρησιμοποιήσετε αυτή τη λειτουργία πρέπει να κατεβάσετε ένα Πρόσθετο:</string>
+  <string id="24101">Επιθυμείτε να κατεβάσετε αυτό το Πρόσθετο;</string>
   <string id="25000">Ειδοποιήσεις</string>
+
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>
+
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
   <string id="33001">Ποιότητα διαφημιστικού</string>
   <string id="33002">Ροή πολυμέσων</string>
   <string id="33003">Λήψη</string>
@@ -2116,16 +2328,22 @@
   <string id="33081">Αυτό το αρχείο είναι στοιβαγμένο, επιλέξτε το μέρος αυτού που επιθυμείτε να αναπαραχθεί.</string>
   <string id="33082">Διαδρομή για το script</string>
   <string id="33083">Ενεργοποίηση προσαρμοσμένου πλήκτρου script</string>
+
   <string id="33100">Αποτυχία εκκίνησης</string>
   <string id="33101">Διακομιστής web</string>
   <string id="33102">Διακομιστής Συμβάντων</string>
   <string id="33103">Απομακρυσμένος Διακομιστής Επικοινωνίας</string>
+
+  <string id="33200">Εντοπίστηκε Νέα Σύνδεση</string>
+
+  <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
   <string id="34005">Flac</string>
+
   <string id="34100">Διάταξη ηχείων</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
@@ -2137,22 +2355,36 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
   <string id="34201">Αδυναμία εύρεσης επόμενου αντικειμένου για αναπαραγωγή</string>
   <string id="34202">Αδυναμία εύρεσης προηγούμενου αντικειμένου για αναπαραγωγή</string>
+
+  <string id="34300">Αποτυχία εκκίνησης του zeroconf</string>
+  <string id="34301">Είναι εγκατεστημένη η Υπηρεσία Bonjour της Apple; Δείτε το αρχείο καταγραφής για περισσότερες πληροφορίες.</string>
+  
+  <string id="34400">Απόδοση Βίντεο</string>
+  <string id="34401">Αποτυχία αρχικοποίησης φίλτρων/scalers βίντεο, επαναφορά σε διγραμμική προσαρμογή ανάλυσης</string>
+  <string id="34402">Αποτυχία αρχικοποίησης της συσκευής ήχου</string>
+  <string id="34403">Ελέγξτε τις ρυθμίσεις ήχου</string>
+
   <string id="35000">Περιφερειακά</string>
+
   <string id="35001">Γενική συσκευή HID</string>
   <string id="35002">Γενικός προσαρμογέας δικτύου</string>
   <string id="35003">Γενικός δίσκος</string>
-  <string id="35004">Δεν υπάρχουν διαθέσιμες ρυθμίσεις για αυτό το περιφερικό.</string>
+  <string id="35004">Δεν υπάρχουν διαθέσιμες ρυθμίσεις για αυτό το περιφερειακό.</string>
   <string id="35005">Η νέα συσκευή έχει ρυθμιστεί</string>
   <string id="35006">Η συσκευή έχει αφαιρεθεί</string>
-  <string id="35007">Το Keymap να χρησιμοποιήθει για τη συγκεκριμένη συσκευή</string>
+  <string id="35007">Το Keymap να χρησιμοποιηθεί για τη συγκεκριμένη συσκευή</string>
   <string id="35008">Ενεργοποιημένο Keymap</string>
+
   <string id="35500">Τοποθεσία</string>
   <string id="35501">Κλάση</string>
   <string id="35502">Όνομα</string>
   <string id="35503">Προμηθευτής</string>
   <string id="35504">Αναγνωριστικό προϊόντος</string>
+
   <string id="36000">Προσαρμογέας Pulse-Eight CEC</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
   <string id="36002">Μετάβαση στο πληκτρολόγιο εντολών</string>
@@ -2171,5 +2403,5 @@
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
   <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
-  <string id="36018">Χρησιμοποιήστε τη γλώσσα της τηλεόρασης</string>
+  <string id="36018">Χρήση της γλώσσας της τηλεόρασης</string>
 </strings>

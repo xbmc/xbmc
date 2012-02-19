@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa with a help of Zsolt Malecz-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Based on English 4c45436d4c19274fca2d478373326688c5682e55 (11.12.2011)-->
+<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
 <strings>
   <string id="0">Programok</string>
   <string id="1">Képek</string>
@@ -2033,8 +2033,8 @@
   <string id="21451">Internet kapcsolat szükséges.</string>
   <string id="21452">Több beszerzése...</string>
   <string id="21453">Fájlrendszer</string>
-  <string id="21454">Hallgató</string>
-  <string id="21455">Hallgató</string>
+  <string id="21454">Gyorsítótár megtelt</string>
+  <string id="21455">A gyorsítótár még azelőtt megtelt, hogy elegendő lett volna a folyamatos lejátszáshoz</string>
 
   <string id="21460">Felirat helye</string>
   <string id="21461">Rögzített</string>
@@ -2354,13 +2354,22 @@
   <string id="33102">Eseménykiszolgáló</string>
   <string id="33103">Távoli kommunikációs kiszolgáló</string>
 
+  <string id="33200">Új kapcsolatot észleltem</string>
+
   <string id="34100">Hangfalkiépítés</string>
 
   <string id="34201">Nincs következő lejátszandó elem</string>
   <string id="34202">Nincs előző lejátszandó elem</string>
 
-  <string id="35000">Perifériák</string>
+  <string id="34300">A zeroconf elindítása nem sikerült</string>
+  <string id="34301">Biztos, hogy az Apple Bonjour Service telepítve van? (Részletes információ a naplóban)</string>
 
+  <string id="34400">Video leképező rendszer hiba</string>
+  <string id="34401">Az átméretező (scaler) nem használható, visszaállva a bilinear eljárásra</string>
+  <string id="34402">A beállított hangeszköz nem használható</string>
+  <string id="34403">Ellenőrizd a hangbeállításokat</string>
+
+  <string id="35000">Perifériák</string>
   <string id="35001">Szabványos HID eszköz</string>
   <string id="35002">Szabványos hálózati adapter</string>
   <string id="35003">Szabványos lemez</string>

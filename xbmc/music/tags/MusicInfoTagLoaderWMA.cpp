@@ -131,7 +131,7 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
     {
       iOffset += 64;
       pDataI = (unsigned int*)(pData.get() + iOffset);
-      float F1 = (float)pDataI[1];
+      uint64_t F1 = pDataI[1];
       F1 = F1 * 0x10000 * 0x10000 + pDataI[0];
       tag.SetDuration((long)((F1 / 10000) / 1000)); // from milliseconds to seconds
     }

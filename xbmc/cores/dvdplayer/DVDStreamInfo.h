@@ -76,6 +76,7 @@ public:
   int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   bool ptsinvalid;  // pts cannot be trusted (avi's).
+  bool forced_aspect; // aspect is forced from container
 
   // AUDIO
   int channels;

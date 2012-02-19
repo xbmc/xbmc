@@ -464,7 +464,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if(m_pFrame->key_frame)
+  if(m_pFrame->key_frame || m_pCodecContext->codec_id == CODEC_ID_H264) /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
   {
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;

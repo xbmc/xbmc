@@ -1,3 +1,16 @@
+v0.0.5
+- add geoip support
+- fetch 7 day forecast
+- workaround: when user switches weather addon, xbmc may call the script with a location id that has not been setup. try to fallback to id 1 in this case.
+
+v0.0.4
+- don't fetch weather when no locations are set up
+- fix incrementing values on each weather refresh when no locations are set up
+- workaround: stop xbmc from running the script in a loop when no locations are set up
+
+v0.0.3
+- added Simplified Chinese translation
+
 v0.0.2
 - show dialog instead of empty list when no locations are found
 - added german translation

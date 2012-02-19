@@ -40,6 +40,8 @@ XLCDproc::XLCDproc()
   m_iActualpos   = 0;
   m_iBackLight   = 32;
   m_iLCDContrast = 50;
+  m_iColumns     = 0;
+  m_iRows        = 0;
   m_bStop        = true;
   m_sockfd       = -1;
   m_lastInitAttempt = 0;
@@ -289,6 +291,16 @@ void XLCDproc::Resume()
     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
     CloseSocket();
   }
+}
+
+int XLCDproc::GetColumns()
+{
+  return m_iColumns;
+}
+
+int XLCDproc::GetRows()
+{
+  return m_iRows;
 }
 
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)
