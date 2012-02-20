@@ -332,6 +332,11 @@ bool CCDDARipper::RipCD()
   }
 
   CLog::Log(LOGINFO, "Ripped CD succesfull");
+  if (g_guiSettings.GetBool("audiocds.ejectonrip"))
+  {
+    CLog::Log(LOGINFO, "Ejecting CD");
+    CIoSupport::EjectTray();
+  }
   return true;
 }
 
