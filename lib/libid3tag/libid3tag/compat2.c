@@ -276,7 +276,7 @@ id3_compat_lookup (str, len)
 #line 96 "compat.gperf"
       {"TIME", OBSOLETE  /* Time [obsolete] */},
 #line 75 "compat.gperf"
-      {"PIC",  EQ(APIC)  /* Attached picture */},
+      {"PIC",  TX(APIC)  /* Attached picture */},
 #line 127 "compat.gperf"
       {"UFI",  EQ(UFID)  /* Unique file identifier */},
 #line 72 "compat.gperf"
@@ -346,7 +346,7 @@ int translate_APIC(struct id3_frame *frame, char const *oldid,
 		   id3_byte_t const *data, id3_length_t length)
 {
   id3_byte_t const *end;
-  char type[3];
+  char type[4];
   enum id3_field_textencoding encoding;
   int result = 0;
   
