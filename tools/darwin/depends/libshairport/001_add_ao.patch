@@ -25,7 +25,7 @@ diff -uP libshairport-1.2.0.20310_lib/src/ao.h ../../../../../libshairport-1.2.0
 + *
 + *  You should have received a copy of the GNU General Public License
 + *  along with GNU Make; see the file COPYING.  If not, write to
-+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
++ *  the Free Software Foundation, 51 Franklin Street, Suite 500, Boston, MA 02110, USA.
 + *
 + */
 +#ifndef __AO_H__

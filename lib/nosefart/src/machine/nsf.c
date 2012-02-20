@@ -11,7 +11,7 @@
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
 ** Library General Public License for more details.  To obtain a 
 ** copy of the GNU Library General Public License, write to the Free 
-** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+** Software Foundation, Inc., 51 Franklin Street, Suite 500, Boston, MA 02110, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
 ** must bear this legend.
