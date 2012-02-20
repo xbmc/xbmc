@@ -322,7 +322,7 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
   }
   while (*ucs4 == 0);
 #else
-  const id3_ucs4_t* ucs4 = id3_ucs4_empty;
+  const id3_ucs4_t* ucs4 = 0;
 
   // return the first non-empty comment
   do
@@ -355,17 +355,16 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
         //finally fetch the comment
         field = id3_frame_field(frame, 3);
         if (field == 0)
-          break;
+          continue;
     
-        ucs4 = id3_field_getfullstring(field);
-        //done
-        break;  
+        return id3_field_getfullstring(field);
       }
     }
   }
   while (frame);
 #endif//else TARGET_DARWIN_IOS
   return ucs4;
+//  return id3_ucs4_empty;
 }
 
 int id3_metadata_setcomment(struct id3_tag* tag, id3_ucs4_t* value)
