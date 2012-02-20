@@ -76,7 +76,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 # define TX(id)    #id, translate_##id
 
 static id3_compat_func_t translate_TCON;
-static id3_compat_func_t translate_TPIC;
+static id3_compat_func_t translate_APIC;
 
 #define TOTAL_KEYWORDS 75
 #define MIN_WORD_LENGTH 3
