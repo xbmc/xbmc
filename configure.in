@@ -2145,7 +2145,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
-    CFLAGS="$CFLAGS $ARCH_DEFINES" \ 
+    CFLAGS="$CFLAGS" \ 
     CXXFLAGS="$CXXFLAGS" \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
