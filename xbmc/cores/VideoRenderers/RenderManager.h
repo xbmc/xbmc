@@ -96,6 +96,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->Reset();
   }
+
   RESOLUTION GetResolution()
   {
     CSharedLock lock(m_sharedSection);
@@ -104,6 +105,12 @@ public:
     else
       return RES_INVALID;
   }
+
+  float GetGlobalAudioDelay()
+  {
+    return m_GlobalAudioDelay;
+  }
+    
 
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
@@ -216,6 +223,7 @@ protected:
     PRESENT_METHOD_BOB,
   };
 
+  float      m_GlobalAudioDelay;
 
   double     m_presenttime;
   double     m_presentcorr;

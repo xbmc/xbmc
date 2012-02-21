@@ -535,6 +535,49 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       }
     }
 
+    // Store global audio delay settings
+    m_videoAudioDefaultDelay = 0;
+    TiXmlElement* pAdjustAudioDelay = pElement->FirstChildElement("globalaudiodelay");
+    if (!pAdjustAudioDelay) // backward compatibility
+    	pAdjustAudioDelay = pElement->FirstChildElement("globalavdelay");
+    if (pAdjustAudioDelay)
+    {
+      TiXmlElement* pRefreshAudioDelay = pAdjustAudioDelay->FirstChildElement("refresh");
+      while (pRefreshAudioDelay)
+      {
+        RefreshAudioDelay audiodelay = {0};
+
+        float refresh;
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "rate", refresh))
+        {
+          audiodelay.refreshmin = refresh - 0.01f;
+          audiodelay.refreshmax = refresh + 0.01f;
+        }
+
+        float refreshmin, refreshmax;
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "min", refreshmin) &&
+            XMLUtils::GetFloat(pRefreshAudioDelay, "max", refreshmax))
+        {
+          audiodelay.refreshmin = refreshmin;
+          audiodelay.refreshmax = refreshmax;
+        }
+
+        float delay;
+        if (XMLUtils::GetFloat(pRefreshAudioDelay, "delay", delay, -600.0f, 600.0f))
+          audiodelay.delay = delay;
+
+        if (audiodelay.refreshmin > 0.0f && audiodelay.refreshmax >= audiodelay.refreshmin)
+          m_videoRefreshAudioDelay.push_back(audiodelay);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed global Audio delay entry, min:%f max:%f", audiodelay.refreshmin, audiodelay.refreshmax);
+
+        pRefreshAudioDelay = pRefreshAudioDelay->NextSiblingElement("refresh");
+      }
+
+      // Get default global Audio delay
+      XMLUtils::GetFloat(pAdjustAudioDelay, "delay", m_videoAudioDefaultDelay, -600.0f, 600.0f);
+    }
+
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
@@ -1048,4 +1091,17 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
 void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 {
   m_settingsFiles.push_back(filename);
+}
+
+float CAdvancedSettings::GetGlobalAudioDelay(float refreshrate)
+{
+  float delay = m_videoAudioDefaultDelay / 1000.0f;
+  for (int i = 0; i < m_videoRefreshAudioDelay.size(); i++)
+  {
+    RefreshAudioDelay& audiodelay = m_videoRefreshAudioDelay[i];
+    if (refreshrate >= audiodelay.refreshmin && refreshrate <= audiodelay.refreshmax)
+      delay = audiodelay.delay / 1000.0f;
+  }
+
+  return delay;
 }

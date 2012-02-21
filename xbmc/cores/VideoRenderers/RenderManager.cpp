@@ -247,6 +247,8 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_presentevent.Set();
   }
 
+  m_GlobalAudioDelay = g_advancedSettings.GetGlobalAudioDelay(fps);
+
   return result;
 }
 
