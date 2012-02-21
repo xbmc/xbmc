@@ -363,7 +363,7 @@ protected:
   bool ProcessPeripherals(float frameTime);
   bool ProcessHTTPApiButtons();
   bool ProcessJsonRpcButtons();
-  bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
+  bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount, unsigned int holdTime = 0);
 
   float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);
