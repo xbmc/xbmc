@@ -929,14 +929,15 @@ CUPnPServer::Build(CFileItemPtr                  item,
         }
     }
 
-    // remap Root virtualpath://upnproot/ to id "0"
-    if (object->m_ObjectID == "virtualpath://upnproot/")
-        object->m_ObjectID = "0";
+    if (object) {
+        // remap Root virtualpath://upnproot/ to id "0"
+        if (object->m_ObjectID == "virtualpath://upnproot/")
+            object->m_ObjectID = "0";
 
-    // remap Parent Root virtualpath://upnproot/ to id "0"
-    if (object->m_ParentID == "virtualpath://upnproot/")
-        object->m_ParentID = "0";
-
+        // remap Parent Root virtualpath://upnproot/ to id "0"
+        if (object->m_ParentID == "virtualpath://upnproot/")
+            object->m_ParentID = "0";
+    }
     return object;
 
 failure:
