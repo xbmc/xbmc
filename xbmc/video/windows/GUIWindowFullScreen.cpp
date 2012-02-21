@@ -786,9 +786,11 @@ void CGUIWindowFullScreen::FrameMove()
     // show audio codec info
     CStdString strAudio, strVideo, strGeneral;
     g_application.m_pPlayer->GetAudioInfo(strAudio);
+    CStdString strGAD;
+    strGAD.Format("%s GAD:%.3f", strAudio, g_renderManager.GetGlobalAudioDelay());
     {
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
-      msg.SetLabel(strAudio);
+      msg.SetLabel(strGAD);
       OnMessage(msg);
     }
     // show video codec info
