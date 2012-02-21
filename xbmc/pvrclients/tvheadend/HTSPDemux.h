@@ -53,7 +53,6 @@ private:
   bool ParseSourceInfo(htsmsg_t* msg);
 
   CHTSPConnection      *m_session;
-  bool                  m_bGotFirstIframe;
   bool                  m_bIsRadio;
   bool                  m_bAbort;
   bool                  m_bResetNeeded;
