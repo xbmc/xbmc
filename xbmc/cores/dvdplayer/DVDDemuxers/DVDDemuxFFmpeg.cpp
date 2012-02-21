@@ -1190,7 +1190,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
 std::string CDVDDemuxFFmpeg::GetFileName()
 {
-  if(m_pInput && m_pInput)
+  if(m_pInput)
     return m_pInput->GetFileName();
   else
     return "";
