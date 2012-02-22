@@ -61,7 +61,7 @@ namespace PVR
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
      */
-    void Create(int iClientId);
+    bool Create(int iClientId);
 
     /*!
      * @brief Destroy the instance of this add-on.
