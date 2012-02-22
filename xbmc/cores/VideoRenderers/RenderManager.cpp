@@ -640,7 +640,7 @@ void CXBMCRenderManager::Present()
   Render(true, 0, 255);
 
   /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
+  if(g_graphicsContext.IsFullScreenVideo() && m_presentstep == PRESENT_IDLE)
     WaitPresentTime(m_presenttime);
 
   m_presentevent.Set();
