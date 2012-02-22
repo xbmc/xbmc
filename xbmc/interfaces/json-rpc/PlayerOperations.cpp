@@ -34,6 +34,7 @@
 #include "VideoLibrary.h"
 #include "video/VideoDatabase.h"
 #include "AudioLibrary.h"
+#include "GUIInfoManager.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -101,11 +102,23 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
     {
       if (g_application.CurrentFileItem().GetLabel().empty())
       {
-        CFileItem tmpItem;
+        CFileItem tmpItem = g_application.CurrentFileItem();
         if (player == Video)
-          CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+        {
+          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          {
+            tmpItem = CFileItem(*g_infoManager.GetCurrentMovieTag());
+            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+          }
+        }
         else
-          CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+        {
+          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          {
+            tmpItem = CFileItem(*g_infoManager.GetCurrentSongTag());
+            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+          }
+        }
 
         fileItem = CFileItemPtr(new CFileItem(tmpItem));
       }
