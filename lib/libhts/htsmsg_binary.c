@@ -1,11 +1,11 @@
 /*
  *  Functions converting HTSMSGs to/from a simple binary format
- *  Copyright (C) 2007 Andreas Öman
+ *  Copyright (C) 2007 Andreas ï¿½man
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <assert.h>
@@ -89,7 +88,7 @@ htsmsg_binary_des0(htsmsg_t *msg, const uint8_t *buf, size_t len)
     case HMF_S64:
       u64 = 0;
       for(i = datalen - 1; i >= 0; i--)
-	  u64 = (u64 << 8) | buf[i];
+          u64 = (u64 << 8) | buf[i];
       f->hmf_s64 = u64;
       break;
 
@@ -99,7 +98,7 @@ htsmsg_binary_des0(htsmsg_t *msg, const uint8_t *buf, size_t len)
       TAILQ_INIT(&sub->hm_fields);
       sub->hm_data = NULL;
       if(htsmsg_binary_des0(sub, buf, datalen) < 0)
-	return -1;
+        return -1;
       break;
 
     default:
@@ -167,8 +166,8 @@ htsmsg_binary_count(htsmsg_t *msg)
     case HMF_S64:
       u64 = f->hmf_s64;
       while(u64 != 0) {
-	len++;
-	u64 = u64 >> 8;
+        len++;
+        u64 = u64 >> 8;
       }
       break;
     }
@@ -210,8 +209,8 @@ htsmsg_binary_write(htsmsg_t *msg, uint8_t *ptr)
       u64 = f->hmf_s64;
       l = 0;
       while(u64 != 0) {
-	l++;
-	u64 = u64 >> 8;
+        l++;
+        u64 = u64 >> 8;
       }
       break;
     default:
@@ -246,8 +245,8 @@ htsmsg_binary_write(htsmsg_t *msg, uint8_t *ptr)
     case HMF_S64:
       u64 = f->hmf_s64;
       for(i = 0; i < l; i++) {
-	ptr[i] = (uint8_t)(u64 & 0xFF);
-	u64 = u64 >> 8;
+        ptr[i] = u64;
+        u64 = u64 >> 8;
       }
       break;
     }
@@ -266,7 +265,7 @@ htsmsg_binary_serialize(htsmsg_t *msg, void **datap, size_t *lenp, int maxlen)
   uint8_t *data;
 
   len = htsmsg_binary_count(msg);
-  if(len + 4 > (size_t)maxlen)
+  if(len + 4 > maxlen)
     return -1;
 
   data = malloc(len + 4);

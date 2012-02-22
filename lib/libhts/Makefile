@@ -2,6 +2,8 @@ INCLUDES=-I.
 
 SRCS = htsmsg.c \
        htsmsg_binary.c \
+       htsmsg_json.c \
+       htsmsg_xml.c \
        htsbuf.c \
        htsstr.c \
        net_posix.c \
