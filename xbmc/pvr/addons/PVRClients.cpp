@@ -1107,16 +1107,23 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
     return bReturn;
 
   /* load and initialise the client libraries */
-  boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(client);
-  if (addon)
+  boost::shared_ptr<CPVRClient> addon;
   {
-    addon->Create(iClientId);
-    if ((bReturn = addon->ReadyToUse()) == true)
+    CSingleLock lock(m_critSection);
+    CLIENTMAPITR existingClient = m_clientMap.find(iClientId);
+    if (existingClient != m_clientMap.end())
     {
-      CSingleLock lock(m_critSection);
+      addon = existingClient->second;
+    }
+    else
+    {
+      addon = boost::dynamic_pointer_cast<CPVRClient>(client);
       m_clientMap.insert(std::make_pair(iClientId, addon));
     }
   }
+
+  if (addon)
+    bReturn = addon->Create(iClientId);
 
   if (!bReturn)
     CLog::Log(LOGERROR, "PVR - %s - can't initialise add-on '%s'", __FUNCTION__, client->Name().c_str());
