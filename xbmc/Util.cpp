@@ -2173,7 +2173,7 @@ CStdString CUtil::ResolveExecutablePath()
   CStdString strExecutablePath;
 #ifdef WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
 #elif defined(__APPLE__)

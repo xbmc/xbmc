@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 02/14/2012-->
+<!--Date of translation: 02/21/2012-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programy</string>
@@ -808,8 +808,11 @@
   <string id="10019">Ustawienia - Wygląd</string>
   <string id="10020">Skrypty</string>
   <string id="10021">Przeglądarka</string>
+  <string id="10025">Pliki wideo</string>
   <string id="10028">Wideo/Playlista</string>
+  <string id="10029">Ekran logowania</string>
   <string id="10034">Ustawienia - Profile</string>
+  <string id="10040">Przeglądarka wtyczek</string>
   <string id="10100">Dialog Tak/Nie</string>
   <string id="10101">Okno postępu</string>
   <string id="10210">Szukam napisów...</string>
@@ -1554,6 +1557,9 @@
   <string id="20256">Klient HTS Tvheadend</string>
   <string id="20257">Klient VDR Streamdev</string>
   <string id="20258">Klient MythTV</string>
+  <string id="20259">System plików NFS</string>
+  <string id="20260">SSH/SFTP</string>
+  <string id="20261">Protokół AFP</string>
   <string id="20300">Katalog serwera web (HTTP)</string>
   <string id="20301">Katalog serwera web (HTTPS)</string>
   <string id="20302">Nie powiódł się zapis do folderu:</string>
@@ -1969,6 +1975,7 @@
   <string id="24041">Instaluj z pliku zip</string>
   <string id="24042">Pobieram %i%%</string>
   <string id="24043">Dostępne aktualizacje</string>
+  <string id="24044">Zależności nie są spełnione</string>
   <string id="24045">Wtyczka nie ma właściwej struktury</string>
   <string id="24046">%s jest używany przez następujące zainstalowane wtyczki</string>
   <string id="24047">Ta wtyczka nie może zostać usunięta</string>

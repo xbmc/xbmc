@@ -827,8 +827,9 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
 int CFile::IoControl(EIoControl request, void* param)
 {
   int result = -1;
-  if (m_pFile)
-    result = m_pFile->IoControl(request, param);
+  if (m_pFile == NULL)
+    return -1;
+  result = m_pFile->IoControl(request, param);
 
   if(result == -1 && request == IOCTRL_SEEK_POSSIBLE)
   {
