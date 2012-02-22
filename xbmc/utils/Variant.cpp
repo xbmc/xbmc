@@ -174,6 +174,16 @@ int64_t CVariant::asInteger(int64_t fallback) const
       return (int64_t)m_data.unsignedinteger;
     case VariantTypeDouble:
       return (int64_t)m_data.dvalue;
+    case VariantTypeString:
+    {
+      char *end = NULL;
+      string tmp = m_string;
+      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
+      long result = strtol(tmp.c_str(), &end, 0);
+      if (end == NULL)
+        return result;
+      break;
+    }
     default:
       return fallback;
   }
@@ -191,6 +201,16 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
       return (uint64_t)m_data.integer;
     case VariantTypeDouble:
       return (uint64_t)m_data.dvalue;
+    case VariantTypeString:
+    {
+      char *end = NULL;
+      string tmp = m_string;
+      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
+      unsigned long result = strtoul(tmp.c_str(), &end, 0);
+      if (end == NULL)
+        return result;
+      break;
+    }
     default:
       return fallback;
   }
@@ -208,6 +228,16 @@ double CVariant::asDouble(double fallback) const
       return (double)m_data.integer;
     case VariantTypeUnsignedInteger:
       return (double)m_data.unsignedinteger;
+    case VariantTypeString:
+    {
+      char *end = NULL;
+      string tmp = m_string;
+      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
+      double result = strtod(tmp.c_str(), &end);
+      if (end == NULL)
+        return result;
+      break;
+    }
     default:
       return fallback;
   }
@@ -225,6 +255,16 @@ float CVariant::asFloat(float fallback) const
       return (float)m_data.integer;
     case VariantTypeUnsignedInteger:
       return (float)m_data.unsignedinteger;
+    case VariantTypeString:
+    {
+      char *end = NULL;
+      string tmp = m_string;
+      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
+      float result = (float)strtod(tmp.c_str(), &end);
+      if (end == NULL)
+        return result;
+      break;
+    }
     default:
       return fallback;
   }
