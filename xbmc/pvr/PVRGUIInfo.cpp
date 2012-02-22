@@ -36,6 +36,7 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace std;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVR GUI info updater"),
@@ -761,13 +762,14 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
   if (m_iTimerInfoToggleCurrent < iBoundary)
   {
-    CPVRTimerInfoTag tag;
-    if (g_PVRTimers->GetTimerByIndex(m_iTimerInfoToggleCurrent, &tag))
+    vector<CPVRTimerInfoTag *> activeTags;
+    g_PVRTimers->GetActiveTimers(&activeTags);
+    if (activeTags.at(m_iTimerInfoToggleCurrent) != 0)
     {
-      strActiveTimerTitle.Format("%s",       tag.m_strTitle);
-      strActiveTimerChannelName.Format("%s", tag.ChannelName());
-      strActiveTimerChannelIcon.Format("%s", tag.ChannelIcon());
-      strActiveTimerTime.Format("%s",        tag.StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      strActiveTimerTitle.Format("%s",       activeTags.at(m_iTimerInfoToggleCurrent)->m_strTitle);
+      strActiveTimerChannelName.Format("%s", activeTags.at(m_iTimerInfoToggleCurrent)->ChannelName());
+      strActiveTimerChannelIcon.Format("%s", activeTags.at(m_iTimerInfoToggleCurrent)->ChannelIcon());
+      strActiveTimerTime.Format("%s",        activeTags.at(m_iTimerInfoToggleCurrent)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     }
   }
 

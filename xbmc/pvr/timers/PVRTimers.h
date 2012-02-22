@@ -36,22 +36,9 @@ namespace PVR
 {
   class CGUIDialogPVRTimerSettings;
 
-  class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
-                     public Observer,
+  class CPVRTimers : public Observer,
                      public Observable
   {
-  private:
-    CCriticalSection m_critSection;
-    bool             m_bIsUpdating;
-
-    /*!
-     * @brief Add timers to this container.
-     * @return The amount of timers that were added.
-     */
-    int LoadFromClients(void);
-
-    void Sort(void);
-
   public:
     CPVRTimers(void);
     virtual ~CPVRTimers(void);
@@ -101,8 +88,6 @@ namespace PVR
     int GetNumActiveTimers(void) const;
 
     int GetNumActiveRecordings(void) const;
-
-    bool GetTimerByIndex(unsigned int iIndex, CPVRTimerInfoTag *timer) const;
 
     /**
      * Get the directory for a path.
@@ -195,5 +180,16 @@ namespace PVR
     CPVRTimerInfoTag *GetMatch(const CFileItem *item);
     virtual void Notify(const Observable &obs, const CStdString& msg);
     bool IsRecordingOnChannel(const CPVRChannel &channel) const;
+
+  private:
+    /*!
+     * @brief Add timers to this container.
+     * @return The amount of timers that were added.
+     */
+    int LoadFromClients(void);
+
+    CCriticalSection                                       m_critSection;
+    bool                                                   m_bIsUpdating;
+    std::map<CDateTime, std::vector<CPVRTimerInfoTag *>* > m_tags;
   };
 }

@@ -704,7 +704,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
 
 int CPVRClients::GetTimers(CPVRTimers *timers)
 {
-  int iCurSize = timers->size();
+  int iCurSize = timers->GetNumActiveTimers();
   CLIENTMAP clients;
   GetConnectedClients(&clients);
 
@@ -720,7 +720,7 @@ int CPVRClients::GetTimers(CPVRTimers *timers)
     ++itrClients;
   }
 
-  return timers->size() - iCurSize;
+  return timers->GetNumActiveTimers() - iCurSize;
 }
 
 bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)

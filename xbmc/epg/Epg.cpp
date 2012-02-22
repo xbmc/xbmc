@@ -164,7 +164,7 @@ void CEpg::Cleanup(const CDateTime &Time)
 {
   bool bTagsChanged(false);
   CSingleLock lock(m_critSection);
-  for (map<CDateTime, CEpgInfoTag *>::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); it++)
+  for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
     if (it->second->EndAsUTC() < Time)
     {
@@ -172,7 +172,7 @@ void CEpg::Cleanup(const CDateTime &Time)
         m_nowActive = NULL;
 
       delete it->second;
-      m_tags.erase(it->first);
+      m_tags.erase(it++);
       bTagsChanged = true;
     }
   }
@@ -287,9 +287,12 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   CEpgInfoTag *newTag = new CEpgInfoTag();
   if (newTag)
   {
-    m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
+    {
+      CSingleLock lock(m_critSection);
+      m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
+      newTag->m_iEpgId = m_iEpgID;
+    }
 
-    newTag->m_iEpgId = m_iEpgID;
     newTag->Update(tag);
     newTag->m_bChanged = false;
   }
@@ -637,7 +640,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
   CEpgInfoTag *previousTag(NULL), *currentTag(NULL);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
-  for (map<CDateTime, CEpgInfoTag *>::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); it++)
+  for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
     if (!previousTag)
     {
@@ -665,7 +668,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
         m_nowActive = NULL;
 
       delete currentTag;
-      m_tags.erase(it->first);
+      m_tags.erase(it++);
     }
     else if (previousTag->StartAsUTC() < currentTag->EndAsUTC())
     {
