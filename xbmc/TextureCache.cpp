@@ -65,6 +65,7 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
   // unwrap the URL as required
   CStdString image(url);
   bool fullSize = true;
+  bool flipped = false;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
@@ -99,6 +100,10 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
       {
         fullSize = false;
       }
+      else if (option == "flipped")
+      {
+        flipped = true;
+      }
     }
   }
 
@@ -109,7 +114,13 @@ CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CSt
 
   CStdString logMessage = oldHash.IsEmpty() ? "Caching" : "Recaching";
   CStdString cacheURL = CTextureCache::GetCachedPath(cacheFile);
-  if (fullSize)
+  if (flipped)
+  {
+    CLog::Log(LOGDEBUG, "%s flipped image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
+    if (CPicture::ConvertFile(image, cacheURL, 0, 1920, 1080, 90, true))
+      return hash;
+  }
+  else if (fullSize)
   {
     CLog::Log(LOGDEBUG, "%s full image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
     if (CPicture::CacheFanart(image, cacheURL))
