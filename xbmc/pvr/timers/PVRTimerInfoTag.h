@@ -169,10 +169,11 @@ namespace PVR
      */
     virtual void OnEpgTagDeleted(void);
 
-    EPG::CEpgInfoTag *    m_epgInfo;
     CCriticalSection      m_critSection;
-    CDateTime             m_StartTime; /* start time */
-    CDateTime             m_StopTime;  /* stop time */
-    CDateTime             m_FirstDay;  /* if it is a repeating timer the first date it starts */
+    int                   m_iEpgId;    /*!< the id of the epg table or -1 if none */
+    CDateTime             m_epgStart;  /*!< the start time of the epg tag */
+    CDateTime             m_StartTime; /*!< start time */
+    CDateTime             m_StopTime;  /*!< stop time */
+    CDateTime             m_FirstDay;  /*!< if it is a repeating timer the first date it starts */
   };
 }
