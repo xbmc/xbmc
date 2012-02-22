@@ -434,7 +434,8 @@ namespace EPG
     CDateTime              m_endTime;            /*!< event end time */
     CDateTime              m_firstAired;         /*!< first airdate */
 
-    PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
+    CDateTime              m_timerStart;         /*!< the start time of the timer (if any) */
+    int                    m_iTimerId;           /*!< the id of the timer (if any) */
     int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
     CCriticalSection       m_critSection;
   };
