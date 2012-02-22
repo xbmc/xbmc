@@ -29,6 +29,8 @@
 #include "Epg.h"
 #include "EpgDatabase.h"
 
+#include <map>
+
 class CFileItemList;
 class CGUIDialogExtendedProgressBar;
 
@@ -266,14 +268,14 @@ namespace EPG
 
     /** @name Class state properties */
     //@{
-    bool         m_bIsUpdating;        /*!< true while an update is running */
-    bool         m_bIsInitialising;    /*!< true while the epg manager hasn't loaded all tables */
-    bool         m_bPreventUpdates;    /*!< true to prevent EPG updates */
-    time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
-    time_t       m_iNextEpgUpdate;     /*!< the time the EPG will be updated */
+    bool         m_bIsUpdating;            /*!< true while an update is running */
+    bool         m_bIsInitialising;        /*!< true while the epg manager hasn't loaded all tables */
+    bool         m_bPreventUpdates;        /*!< true to prevent EPG updates */
+    time_t       m_iLastEpgCleanup;        /*!< the time the EPG was cleaned up */
+    time_t       m_iNextEpgUpdate;         /*!< the time the EPG will be updated */
     time_t       m_iNextEpgActiveTagCheck; /*!< the time the EPG will be checked for active tag updates */
-    unsigned int m_iNextEpgId;         /*!< the next epg ID that will be given to a new table when the db isn't being used */
-    std::vector<CEpg*> m_epgs;         /*!< the EPGs in this container */
+    unsigned int m_iNextEpgId;             /*!< the next epg ID that will be given to a new table when the db isn't being used */
+    std::map<unsigned int, CEpg*> m_epgs;  /*!< the EPGs in this container */
     //@}
 
     CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
