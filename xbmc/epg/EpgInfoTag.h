@@ -407,18 +407,6 @@ namespace EPG
     virtual void UpdatePath(void);
 
     /*!
-     * @brief Change the pointer to the next event.
-     * @param event The next event.
-     */
-    virtual void SetNextEvent(CEpgInfoTag *event);
-
-    /*!
-     * @brief Change the pointer to the previous event.
-     * @param event The previous event.
-     */
-    virtual void SetPreviousEvent(CEpgInfoTag *event);
-
-    /*!
      * @brief Called by the CPVRTimerInfoTag destructor
      */
     virtual void OnTimerDeleted(void);
@@ -445,9 +433,6 @@ namespace EPG
     CDateTime              m_startTime;          /*!< event start time */
     CDateTime              m_endTime;            /*!< event end time */
     CDateTime              m_firstAired;         /*!< first airdate */
-
-    CEpgInfoTag *          m_nextEvent;          /*!< the event that will occur after this one */
-    CEpgInfoTag *          m_previousEvent;      /*!< the event that occurred before this one */
 
     PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
     int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
