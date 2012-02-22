@@ -419,3 +419,15 @@ CStdString CTextureCache::GetUniqueImage(const CStdString &url, const CStdString
   hash.Format("generated/%c/%s%s", hex[0], hex.c_str(), extension.c_str());
   return GetCachedPath(hash);
 }
+
+bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
+{
+  CStdString cachedImage(GetCachedImage(image));
+  if (!cachedImage.IsEmpty())
+  {
+    if (CFile::Cache(cachedImage, destination))
+      return true;
+    CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), destination.c_str());
+  }
+  return false;
+}

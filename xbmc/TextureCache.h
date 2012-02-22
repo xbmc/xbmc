@@ -147,6 +147,12 @@ public:
    */
   bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash);
 
+  /*! \brief Export a (possibly) cached image to a file
+   \param image url of the original image
+   \param destination url of the destination image
+   \return true if we successfully exported the file, false otherwise.
+   */
+  bool Export(const CStdString &image, const CStdString &destination);
 private:
   /* \brief Job class for creating .dds versions of textures
    */
