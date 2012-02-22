@@ -205,16 +205,25 @@ void CPVRManager::Process(void)
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
   g_EpgContainer.Start();
 
-  while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients())
+  bool bRestart(false);
+  while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients() && !bRestart)
   {
     /* continue last watched channel after first startup */
     if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
       ContinueLastChannel();
 
     /* execute the next pending jobs if there are any */
-    ExecutePendingJobs();
+    try
+    {
+      ExecutePendingJobs();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "PVRManager - %s - an error occured while trying to execute the last update job, trying to recover", __FUNCTION__);
+      bRestart = true;
+    }
 
-    if (GetState() == ManagerStateStarted)
+    if (GetState() == ManagerStateStarted && !bRestart)
       m_triggerEvent.WaitMSec(1000);
   }
 

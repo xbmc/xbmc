@@ -159,18 +159,21 @@ void CEpgContainer::Process(void)
   time_t iNow       = 0;
   m_iNextEpgUpdate  = 0;
   m_iNextEpgActiveTagCheck = 0;
-  CSingleLock lock(m_critSection);
-  LoadFromDB();
-  CheckPlayingEvents();
-  lock.Leave();
+
+  {
+    CSingleLock lock(m_critSection);
+    LoadFromDB();
+    CheckPlayingEvents();
+  }
 
   bool bUpdateEpg(true);
   while (!m_bStop && !g_application.m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    lock.Enter();
-    bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
-    lock.Leave();
+    {
+      CSingleLock lock(m_critSection);
+      bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
+    }
 
     /* load or update the EPG */
     if (!InterruptUpdate() && bUpdateEpg && UpdateEPG(m_bIsInitialising))
@@ -209,12 +212,14 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
   CSingleLock lock(m_critSection);
   for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
+    lock.Leave();
     const CPVRChannel *thisChannel = it->second->Channel();
     if (thisChannel && *thisChannel == channel)
     {
       epg = it->second;
       break;
     }
+    lock.Enter();
   }
 
   return epg;
@@ -240,7 +245,6 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   bReturn = epg ? epg->UpdateMetadata(entry, bUpdateDatabase) : false;
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
-  lock.Leave();
 
   return bReturn;
 }
@@ -501,9 +505,11 @@ const CDateTime CEpgContainer::GetFirstEPGDate(void)
   CSingleLock lock(m_critSection);
   for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
+    lock.Leave();
     CDateTime entry = it->second->GetFirstDate();
     if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
       returnValue = entry;
+    lock.Enter();
   }
 
   return returnValue;
@@ -516,9 +522,11 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   CSingleLock lock(m_critSection);
   for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
+    lock.Leave();
     CDateTime entry = it->second->GetLastDate();
     if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
       returnValue = entry;
+    lock.Enter();
   }
 
   return returnValue;
@@ -529,10 +537,11 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
   int iInitialSize = results.Size();
 
   /* get filtered results from all tables */
-  CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
-    it->second->Get(results, filter);
-  lock.Leave();
+  {
+    CSingleLock lock(m_critSection);
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      it->second->Get(results, filter);
+  }
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
