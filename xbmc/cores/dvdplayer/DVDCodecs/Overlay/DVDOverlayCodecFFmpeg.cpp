@@ -55,6 +55,8 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->sub_id = hints.identifier;
   m_pCodecContext->codec_tag = hints.codec_tag;
+  m_pCodecContext->width = hints.width;
+  m_pCodecContext->height = hints.height;
 
   if( hints.extradata && hints.extrasize > 0 )
   {

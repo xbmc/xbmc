@@ -2863,6 +2863,12 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
       CloseSubtitleStream(false);
     }
 
+    if (hint.height == 0 && hint.width == 0) 
+    {
+       hint.height = m_CurrentVideo.hint.height;
+       hint.width = m_CurrentVideo.hint.width;
+    }
+
     if(!m_dvdPlayerSubtitle.OpenStream(hint, filename))
     {
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, iStream);
