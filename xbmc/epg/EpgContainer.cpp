@@ -88,15 +88,6 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     return;
   }
 
-  if (g_PVRManager.IsStarted())
-  {
-    // XXX stop the timers from being updated while clearing tags
-    /* remove all pointers to epg tables on timers */
-    CPVRTimers *timers = g_PVRTimers;
-    for (unsigned int iTimerPtr = 0; timers != NULL && iTimerPtr < timers->size(); iTimerPtr++)
-      timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
-  }
-
   {
     CSingleLock lock(m_critSection);
     /* clear all epg tables and remove pointers to epg tables on channels */

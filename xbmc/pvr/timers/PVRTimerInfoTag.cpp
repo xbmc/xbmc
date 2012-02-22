@@ -166,8 +166,9 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
 
 CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_epgInfo)
-    m_epgInfo->SetTimer(NULL);
+    m_epgInfo->OnTimerDeleted();
 }
 
 /**
@@ -441,6 +442,12 @@ void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTag *tag)
       CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", m_strTitle.c_str());
     m_epgInfo = tag;
   }
+}
+
+void CPVRTimerInfoTag::OnEpgTagDeleted(void)
+{
+  CSingleLock lock(m_critSection);
+  m_epgInfo = NULL;
 }
 
 int CPVRTimerInfoTag::ChannelNumber() const
