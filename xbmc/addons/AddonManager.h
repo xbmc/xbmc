@@ -92,8 +92,8 @@ namespace ADDON
      */
     bool GetAddon(const CStdString &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true, bool bGetDisabledPVRAddons = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false, bool bGetDisabledPVRAddons = true);
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const CStdString &id);
