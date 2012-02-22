@@ -89,6 +89,8 @@ namespace PVR
 
     int GetNumActiveRecordings(void) const;
 
+    CPVRTimerInfoTag *GetTimer(const CDateTime &start, int iTimer = -1) const;
+
     /**
      * Get the directory for a path.
      */

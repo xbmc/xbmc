@@ -25,7 +25,7 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -54,7 +54,7 @@ CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
     m_strEpisodeName(""),
     m_strIconPath(""),
     m_strFileNameAndPath(""),
-    m_Timer(NULL),
+    m_iTimerId(-1),
     m_iEpgId(-1)
 {
 }
@@ -78,7 +78,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_strEpisodeName(""),
     m_strIconPath(""),
     m_strFileNameAndPath(""),
-    m_Timer(NULL),
+    m_iTimerId(-1),
     m_iEpgId(-1)
 {
 }
@@ -102,7 +102,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strEpisodeName(""),
     m_strIconPath(""),
     m_strFileNameAndPath(""),
-    m_Timer(NULL),
+    m_iTimerId(-1),
     m_iEpgId(-1)
 {
   Update(data);
@@ -130,16 +130,16 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_startTime(tag.m_startTime),
     m_endTime(tag.m_endTime),
     m_firstAired(tag.m_firstAired),
-    m_Timer(NULL),
+    m_iTimerId(tag.m_iTimerId),
     m_iEpgId(tag.m_iEpgId)
 {
 }
 
 CEpgInfoTag::~CEpgInfoTag()
 {
-  CSingleLock lock(m_critSection);
-  if (m_Timer)
-    m_Timer->OnEpgTagDeleted();
+  CPVRTimerInfoTag* tag = Timer();
+  if (tag)
+    tag->OnEpgTagDeleted();
 }
 
 bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
@@ -202,7 +202,8 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_startTime          = other.m_startTime;
   m_endTime            = other.m_endTime;
   m_firstAired         = other.m_firstAired;
-  m_Timer              = other.m_Timer;
+  m_iTimerId           = other.m_iTimerId;
+  m_timerStart         = other.m_timerStart;
   m_iEpgId             = other.m_iEpgId;
 
   return *this;
@@ -751,9 +752,10 @@ void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
   CPVRTimerInfoTag *oldTimer(NULL);
   {
     CSingleLock lock(m_critSection);
-    if (g_PVRManager.IsStarted() && m_Timer)
-      oldTimer = m_Timer;
-    m_Timer = newTimer;
+    if (g_PVRManager.IsStarted())
+      oldTimer = Timer();
+    m_timerStart = newTimer->StartAsUTC();
+    m_iTimerId   = newTimer->m_iClientIndex;
   }
   if (oldTimer)
     oldTimer->SetEpgInfoTag(NULL);
@@ -762,19 +764,23 @@ void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
 void CEpgInfoTag::OnTimerDeleted(void)
 {
   CSingleLock lock(m_critSection);
-  m_Timer = NULL;
+  m_iTimerId = -1;
 }
 
 bool CEpgInfoTag::HasTimer(void) const
 {
   CSingleLock lock(m_critSection);
-  return !(m_Timer == NULL);
+  return m_iTimerId != -1;
 }
 
 CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
 {
+  CPVRTimerInfoTag* tag(NULL);
   CSingleLock lock(m_critSection);
-  return m_Timer;
+  if (m_iTimerId >= 0)
+    tag = g_PVRTimers->GetTimer(m_timerStart, m_iTimerId);
+
+  return tag;
 }
 
 bool CEpgInfoTag::HasPVRChannel(void) const
