@@ -287,34 +287,21 @@ int CPVRTimers::GetTimers(CFileItemList* results)
 
 bool CPVRTimers::GetNextActiveTimer(CPVRTimerInfoTag *tag) const
 {
-  bool bReturn(false);
-  bool bGotFirst(false);
   CSingleLock lock(m_critSection);
-
-  map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.find(tag->StartAsUTC());
-  if (it != m_tags.end())
+  for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
   {
     for (unsigned int iTimerPtr = 0; iTimerPtr < it->second->size(); iTimerPtr++)
     {
       CPVRTimerInfoTag *current = it->second->at(iTimerPtr);
-      if (current->IsActive() && !current->IsRecording() &&
-          *current != *tag &&
-          (!bGotFirst || current->Compare(*tag) < 0))
+      if (current->IsActive() && !current->IsRecording())
       {
         *tag = *current;
-        bGotFirst = true;
-        bReturn = true;
+        return true;
       }
-    }
-
-    if (!bGotFirst && ++it != m_tags.end() && it->second->size() > 0)
-    {
-      *tag = *it->second->at(0);
-      bReturn = true;
     }
   }
 
-  return bReturn;
+  return false;
 }
 
 int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags) const
