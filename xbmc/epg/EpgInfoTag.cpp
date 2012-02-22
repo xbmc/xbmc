@@ -57,7 +57,7 @@ CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
     m_nextEvent(NULL),
     m_previousEvent(NULL),
     m_Timer(NULL),
-    m_Epg(NULL)
+    m_iEpgId(-1)
 {
 }
 
@@ -83,7 +83,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_nextEvent(NULL),
     m_previousEvent(NULL),
     m_Timer(NULL),
-    m_Epg(NULL)
+    m_iEpgId(-1)
 {
 }
 
@@ -109,7 +109,7 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_nextEvent(NULL),
     m_previousEvent(NULL),
     m_Timer(NULL),
-    m_Epg(NULL)
+    m_iEpgId(-1)
 {
   Update(data);
 }
@@ -139,7 +139,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_nextEvent(NULL),
     m_previousEvent(NULL),
     m_Timer(NULL),
-    m_Epg(tag.m_Epg)
+    m_iEpgId(tag.m_iEpgId)
 {
 }
 
@@ -213,7 +213,7 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_nextEvent          = other.m_nextEvent;
   m_previousEvent      = other.m_previousEvent;
   m_Timer              = other.m_Timer;
-  m_Epg                = other.m_Epg;
+  m_iEpgId             = other.m_iEpgId;
 
   return *this;
 }
@@ -646,8 +646,9 @@ CStdString CEpgInfoTag::Icon(void) const
   CStdString retVal;
   CSingleLock lock(m_critSection);
   retVal = m_strIconPath;
-  if (retVal.IsEmpty() && m_Epg && m_Epg->HasPVRChannel())
-     retVal = m_Epg->Channel()->IconPath();
+  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
+  if (retVal.IsEmpty() && epg && epg->HasPVRChannel())
+     retVal = epg->Channel()->IconPath();
   return retVal;
 }
 
@@ -702,12 +703,14 @@ CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
 
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
-  return m_Epg && m_Epg->HasPVRChannel();
+  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
+  return epg && epg->HasPVRChannel();
 }
 
 const PVR::CPVRChannel *CEpgInfoTag::ChannelTag(void) const
 {
-  return m_Epg ? m_Epg->Channel() : NULL;
+  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
+  return epg ? epg->Channel() : NULL;
 }
 
 void CEpgInfoTag::Update(const EPG_TAG &tag)
@@ -828,14 +831,15 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
 
 void CEpgInfoTag::UpdatePath(void)
 {
-  if (!m_Epg)
+  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
+  if (!epg)
     return;
 
   CStdString path;
-  if (m_Epg->HasPVRChannel())
-    path.Format("pvr://guide/%04i/%s.epg", m_Epg->Channel() ? m_Epg->Channel()->ChannelID() : m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  if (epg->HasPVRChannel())
+    path.Format("pvr://guide/%04i/%s.epg", epg->Channel() ? epg->Channel()->ChannelID() : epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
   else
-    path.Format("pvr://guide/%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+    path.Format("pvr://guide/%04i/%s.epg", epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
   SetPath(path);
 }
 
@@ -849,4 +853,9 @@ void CEpgInfoTag::SetPreviousEvent(CEpgInfoTag *event)
 {
   CSingleLock lock(m_critSection);
   m_previousEvent = event;
+}
+
+const CEpg *CEpgInfoTag::GetTable() const
+{
+  return g_EpgContainer.GetById(m_iEpgId);
 }
