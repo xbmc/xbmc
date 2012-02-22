@@ -37,7 +37,7 @@ namespace PVR
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
-  class CEpg : public std::vector<CEpgInfoTag*>, public Observable
+  class CEpg : public Observable
   {
     friend class CEpgDatabase;
 
@@ -272,6 +272,9 @@ namespace EPG
      */
     virtual bool IsRadio(void) const;
 
+    virtual const CEpgInfoTag *GetNextEvent(const CEpgInfoTag& tag) const;
+    virtual const CEpgInfoTag *GetPreviousEvent(const CEpgInfoTag& tag) const;
+
   protected:
     CEpg(void);
 
@@ -298,11 +301,6 @@ namespace EPG
     virtual bool FixOverlappingEvents(bool bUpdateDb = false);
 
     /*!
-     * @brief Sort all entries in this EPG by date.
-     */
-    virtual void Sort(void);
-
-    /*!
      * @brief Add an infotag to this container.
      * @param tag The tag to add.
      */
@@ -324,8 +322,6 @@ namespace EPG
      */
     virtual bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
 
-    virtual void UpdatePreviousAndNextPointers(void);
-
     /*!
      * @brief Update the cached first and last date.
      */
@@ -333,9 +329,9 @@ namespace EPG
 
     virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
 
+    std::map<CDateTime, CEpgInfoTag*> m_tags;
     bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                       m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
-    bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
     bool                       m_bLoaded;         /*!< true when the initial entries have been loaded */
     int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
