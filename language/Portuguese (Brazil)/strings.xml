@@ -5,7 +5,7 @@
 <!--Updated on 15/02/2012 by wcampos -->
 <!--Updated on 28/08/2011 by fabianosan -->
 <!--Updated on 15/11/2010 by bugre -->
-<!--Based on English 5c8c939de7422db2427f37d5c26036138a9fe04e (03.02.2012)-->
+<!--Based on English 4a0e4931310c8957d73ffec0cf6fdfa9292bb8d4 (08.02.2012)-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -200,6 +200,7 @@
   <string id="221">Rede não está conectada</string>
   <string id="222">Cancelar</string>
   <string id="224">Velocidade</string>
+  <string id="225">Deslocamento Vertical</string>
   <string id="226">Padrões de teste....</string>
   <string id="227">Procurar CDs de áudio na Internet</string>
   <string id="228">Misturar lista de reprodução ao carregar</string>
@@ -878,7 +879,11 @@
   <string id="10021">Navegador Web</string>
 
   <string id="10028">Vídeos/lista de reprodução</string>
+  <string id="10029">Tela de Login</string>
+  
   <string id="10034">Configurações - Perfil</string>
+  
+  <string id="10040">Addon-Navegador</string>
 
   <string id="10100">Janela sim/não</string>
   <string id="10101">Janela de progresso</string>
