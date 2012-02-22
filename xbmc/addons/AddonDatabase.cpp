@@ -82,10 +82,6 @@ bool CAddonDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
 
-    CLog::Log(LOGINFO, "create pvrenabled table");
-    m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxPVREnabled ON pvrenabled(addonID)");
-
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
@@ -109,17 +105,12 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   
   try
   {
-    if (version < 13) // XXX this will have to get a different version when pvr is merged to master
-    {
-      m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
-      m_pDS->exec("CREATE INDEX idxPVREnabled ON pvrenabled(addonID)");
-    }
-    if (version < 14)
+    if (version < 13)
     {
       m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
       m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
     }
-    if (version < 15)
+    if (version < 14)
     {
       m_pDS->exec("ALTER TABLE addon add minversion text");
     }
@@ -620,25 +611,6 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   {
     CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
   }
-  return false;
-}
-
-bool CAddonDatabase::EnableSystemPVRAddon(const CStdString &addonID, bool bEnable)
-{
-  if (bEnable)
-  {
-    if (!IsSystemPVRAddonEnabled(addonID))
-    {
-      CStdString strQuery = PrepareSQL("INSERT INTO pvrenabled(id, addonID) VALUES (NULL, '%s')", addonID.c_str());
-      return ExecuteQuery(strQuery);
-    }
-  }
-  else
-  {
-    CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
-    return DeleteValues("pvrenabled", strWhereClause);
-  }
-
   return false;
 }
 

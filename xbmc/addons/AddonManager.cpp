@@ -298,14 +298,14 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */, bool bGetDisabledPVRAddons /* = true */)
 {
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
     if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled, bGetDisabledPVRAddons))
       addons.insert(addons.end(), temp.begin(), temp.end());
   }
   return !addons.empty();
@@ -384,7 +384,7 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
   return GetAllOutdatedAddons(dummy,enabled);
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */, bool bGetDisabledPVRAddons /* = true */)
 {
   CStdString xbmcPath = _P("special://xbmc/addons");
   CSingleLock lock(m_critSection);
@@ -396,12 +396,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
-    if (addon && addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
-    {
-      if (m_database.IsSystemPVRAddonEnabled(addon->ID()) != enabled)
-        addon->Disable();
-    }
-    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
+    if (addon && ((bGetDisabledPVRAddons && addon->Type() == ADDON_PVRDLL) || m_database.IsAddonDisabled(addon->ID()) != enabled))
       addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);
@@ -422,12 +417,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 
     if (addon && addon.get() && enabledOnly)
     {
-      if (addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
-      {
-        if (!m_database.IsSystemPVRAddonEnabled(addon->ID()))
-          return false;
-      }
-      else if (m_database.IsAddonDisabled(addon->ID()))
+      if (m_database.IsAddonDisabled(addon->ID()))
         return false;
     }
     return NULL != addon.get();

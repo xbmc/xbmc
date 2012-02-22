@@ -1365,7 +1365,7 @@ bool CPVRClients::UpdateAddons(void)
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, m_addons, true)) == false)
+  if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, m_addons, true, false)) == false)
     CLog::Log(LOGERROR, "%s - failed to get add-ons from the add-on manager", __FUNCTION__);
 
   return bReturn;

@@ -81,18 +81,8 @@ public:
    \sa DisableAddon, IsAddonDisabled */
   bool HasDisabledAddons();
 
-  /*! \brief Enable an system PVR addon.
-   Sets a flag that this PVR addon has been enabled.  If disabled, it is usually still available on disk.
-   \param addonID id of the addon to enable
-   \param disable whether to enable or disable.  Defaults to false (disable)
-   \return true on success, false on failure
-   \sa IsSystemPVRAddonEnabled */
-  bool EnableSystemPVRAddon(const CStdString &addonID, bool enable = false);
-
-  /*! \brief Check whether an system PVR addon has been enabled via EnableSystemPVRAddon.
-   \param addonID id of the addon to check
-   \return true if the addon is disabled, false otherwise
-   \sa EnableSystemPVRAddon */
+  /*! @deprecated only here to allow clean upgrades from earlier pvr versions
+   */
   bool IsSystemPVRAddonEnabled(const CStdString &addonID);
 
   /*! \brief Mark an addon as broken

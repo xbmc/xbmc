@@ -214,9 +214,9 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   CStdString xbmcPath = _P("special://xbmc/addons");
   CAddonDatabase database;
   database.Open();
-  if (m_localAddon->Type() == ADDON_PVRDLL && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
-    database.EnableSystemPVRAddon(m_localAddon->ID(), enable);
-  else
+//  if (m_localAddon->Type() == ADDON_PVRDLL && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+//    database.EnableSystemPVRAddon(m_localAddon->ID(), enable);
+//  else
     database.DisableAddon(m_localAddon->ID(), !enable);
 
   if (m_localAddon->Type() == ADDON_PVRDLL && enable)
