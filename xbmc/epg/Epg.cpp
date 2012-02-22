@@ -391,7 +391,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
   {
     push_back(newTag);
 
-    newTag->m_Epg = this;
+    newTag->m_iEpgId = m_iEpgID;
     newTag->Update(tag);
     newTag->m_bChanged = false;
   }
@@ -414,7 +414,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     bNewTag = true;
   }
 
-  infoTag->m_Epg = this;
+  infoTag->m_iEpgId = m_iEpgID;
   infoTag->Update(tag, bNewTag);
 
   if (bSort)

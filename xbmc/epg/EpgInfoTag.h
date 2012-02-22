@@ -107,7 +107,7 @@ namespace EPG
      * @brief The table this event belongs to
      * @return The table this event belongs to
      */
-    virtual const CEpg *GetTable() const { return m_Epg; }
+    virtual const CEpg *GetTable() const;
 
     /*!
      * @brief Change the unique broadcast ID of this event.
@@ -450,7 +450,7 @@ namespace EPG
     CEpgInfoTag *          m_previousEvent;      /*!< the event that occurred before this one */
 
     PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
-    CEpg *                 m_Epg;                /*!< the schedule this event belongs to */
+    int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
     CCriticalSection       m_critSection;
   };
 }
