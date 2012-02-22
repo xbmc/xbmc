@@ -145,7 +145,9 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
 
 CEpgInfoTag::~CEpgInfoTag()
 {
-  SetTimer(NULL);
+  CSingleLock lock(m_critSection);
+  if (m_Timer)
+    m_Timer->OnEpgTagDeleted();
 }
 
 bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
@@ -678,6 +680,12 @@ void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
   }
   if (oldTimer)
     oldTimer->SetEpgInfoTag(NULL);
+}
+
+void CEpgInfoTag::OnTimerDeleted(void)
+{
+  CSingleLock lock(m_critSection);
+  m_Timer = NULL;
 }
 
 bool CEpgInfoTag::HasTimer(void) const

@@ -39,6 +39,7 @@ namespace EPG
   {
     friend class CEpg;
     friend class CEpgDatabase;
+    friend class PVR::CPVRTimerInfoTag;
 
   public:
     /*!
@@ -416,6 +417,11 @@ namespace EPG
      * @param event The previous event.
      */
     virtual void SetPreviousEvent(CEpgInfoTag *event);
+
+    /*!
+     * @brief Called by the CPVRTimerInfoTag destructor
+     */
+    virtual void OnTimerDeleted(void);
 
     bool                   m_bNotify;            /*!< notify on start */
     bool                   m_bChanged;           /*!< keep track of changes to this entry */

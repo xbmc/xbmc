@@ -66,6 +66,8 @@ namespace PVR
 
   class CPVRTimerInfoTag
   {
+    friend class EPG::CEpgInfoTag;
+
   public:
     CStdString            m_strTitle;           /*!< @brief name of this timer */
     CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
@@ -162,6 +164,11 @@ namespace PVR
     bool UpdateOnClient();
 
   protected:
+    /*!
+     * @brief Called by the CEpgInfoTag destructor
+     */
+    virtual void OnEpgTagDeleted(void);
+
     EPG::CEpgInfoTag *    m_epgInfo;
     CCriticalSection      m_critSection;
     CDateTime             m_StartTime; /* start time */
