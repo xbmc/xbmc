@@ -571,6 +571,8 @@ namespace PVR
     //@}
 
     void Notify(const Observable &obs, const CStdString& msg);
+
+    bool GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const;
   private:
     /*!
      * @brief Update add-ons from the AddonManager

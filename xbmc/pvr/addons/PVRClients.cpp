@@ -1343,3 +1343,17 @@ void CPVRClients::Notify(const Observable &obs, const CStdString& msg)
     UpdateAndInitialiseClients();
   }
 }
+
+bool CPVRClients::GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const
+{
+  CSingleLock lock(m_critSection);
+  for (CLIENTMAPCITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+  {
+    if (itr->second->ID() == strId)
+    {
+      addon = itr->second;
+      return true;
+    }
+  }
+  return false;
+}

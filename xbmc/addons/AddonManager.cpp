@@ -50,6 +50,8 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
 using namespace PVR;
@@ -396,8 +398,20 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   for(int i=0; i <num; i++)
   {
     const cp_extension_t *props = exts[i];
-    if (((bGetDisabledPVRAddons && TranslateType(props->ext_point_id) == ADDON_PVRDLL) || m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
+    bool bIsPVRAddon(TranslateType(props->ext_point_id) == ADDON_PVRDLL);
+
+    if (((bGetDisabledPVRAddons && bIsPVRAddon) || m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
     {
+      if (bIsPVRAddon && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
+        {
+          addons.push_back(pvrAddon);
+          continue;
+        }
+      }
+
       AddonPtr addon(Factory(props));
       if (addon)
         addons.push_back(addon);
@@ -419,10 +433,17 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
 
-    if (addon && addon.get() && enabledOnly)
+    if (addon && addon.get())
     {
-      if (m_database.IsAddonDisabled(addon->ID()))
+      if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
         return false;
+
+      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
+          addon = pvrAddon;
+      }
     }
     return NULL != addon.get();
   }
