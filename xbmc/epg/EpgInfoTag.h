@@ -109,6 +109,8 @@ namespace EPG
      */
     virtual const CEpg *GetTable() const;
 
+    virtual const int EpgID(void) const { return m_iEpgId; }
+
     /*!
      * @brief Change the unique broadcast ID of this event.
      * @param iUniqueBroadcastId The new unique broadcast ID.
