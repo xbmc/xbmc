@@ -1331,8 +1331,16 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 
 bool CPVRClients::UpdateAddons(void)
 {
-  CSingleLock lock(m_critSection);
-  return CAddonMgr::Get().GetAddons(ADDON_PVRDLL, m_addons, true, false);
+  ADDON::VECADDONS addons;
+  bool bReturn(CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false));
+
+  if (bReturn)
+  {
+    CSingleLock lock(m_critSection);
+    m_addons = addons;
+  }
+
+  return bReturn;
 }
 
 void CPVRClients::Notify(const Observable &obs, const CStdString& msg)
