@@ -1198,12 +1198,12 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strTh
     }
     else
     {
-      const field_value value = m_pDS->fv("idActor");
-      int idActor = value.get_asInt() ;
+      int idActor = m_pDS->fv("idActor").get_asInt();
+      m_pDS->close();
       // update the thumb url's
       if (!strThumb.IsEmpty())
         strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",strThumb.c_str(),idActor);
-      m_pDS->close();
+      m_pDS->exec(strSQL.c_str());
       return idActor;
     }
 
