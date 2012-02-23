@@ -251,7 +251,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return false;
 
@@ -443,7 +443,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -452,8 +452,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 
   /* delete the group from the database */
   bReturn = database->Delete(group);
-
-  database->Close();
 
   /* delete the group in this container */
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)

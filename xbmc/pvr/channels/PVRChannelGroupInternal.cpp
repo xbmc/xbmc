@@ -234,7 +234,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return -1;
 
@@ -250,8 +250,6 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
     CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database",
         __FUNCTION__);
   }
-
-  database->Close();
 
   SortByChannelNumber();
 
@@ -379,7 +377,7 @@ bool CPVRChannelGroupInternal::Persist(void)
   bool bHasChangedChannels = HasChangedChannels();
 
   /* open the database */
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return false;
 
@@ -421,7 +419,6 @@ bool CPVRChannelGroupInternal::Persist(void)
 
   if (bReturn)
     bReturn = CPVRChannelGroup::Persist();
-  database->Close();
 
   return bReturn;
 }

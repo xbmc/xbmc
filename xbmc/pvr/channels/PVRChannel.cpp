@@ -152,7 +152,7 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -166,7 +166,6 @@ bool CPVRChannel::Delete(void)
   }
 
   bReturn = database->Delete(*this);
-  database->Close();
   return bReturn;
 }
 
@@ -206,7 +205,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   if (!m_bChanged && m_iChannelId > 0)
     return bReturn;
 
-  if (CPVRDatabase *database = OpenPVRDatabase())
+  if (CPVRDatabase *database = GetPVRDatabase())
   {
     if (!bQueueWrite)
     {
@@ -218,7 +217,6 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
     {
       bReturn = database->Persist(*this, true) > 0;
     }
-    database->Close();
   }
   else
   {
