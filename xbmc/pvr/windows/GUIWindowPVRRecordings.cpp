@@ -70,7 +70,7 @@ CStdString CGUIWindowPVRRecordings::GetResumeString(CFileItem item)
     if (db.Open())
     {
       CBookmark bookmark;
-      CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strStreamURL);
+      CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strFileNameAndPath);
       if (db.GetResumeBookMark(itemPath, bookmark) )
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
       db.Close();
@@ -294,11 +294,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTO
   if ((button == CONTEXT_BUTTON_PLAY_ITEM) ||
       (button == CONTEXT_BUTTON_RESUME_ITEM))
   {
-    if (button == CONTEXT_BUTTON_RESUME_ITEM)
-    {
-      item->m_lStartOffset = STARTOFFSET_RESUME;
-    }
-
+    item->m_lStartOffset = button == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
     bReturn = PlayFile(item, false); /* play recording */
   }
 
