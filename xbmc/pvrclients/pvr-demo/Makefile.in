@@ -5,7 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a @abs_top_srcdir@/lib/tinyXML/tinyxml.a -ldl
+LIBS   = @abs_top_srcdir@/lib/tinyXML/tinyxml.a -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.demo
 LIB    = @abs_top_srcdir@/addons/pvr.demo/XBMC_demo.pvr
 
@@ -16,10 +16,8 @@ include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
-	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 	${MAKE} -C @abs_top_srcdir@/lib/tinyXML clean
 
 $(LIB): $(OBJS)
-	${MAKE} -C @abs_top_srcdir@/lib/libTcpSocket
 	${MAKE} -C @abs_top_srcdir@/lib/tinyXML
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

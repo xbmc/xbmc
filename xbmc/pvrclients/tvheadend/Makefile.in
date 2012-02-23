@@ -5,8 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a \
-	@abs_top_srcdir@/lib/libhts/libhts.a -ldl
+LIBS   = @abs_top_srcdir@/lib/libhts/libhts.a -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.hts
 LIB    = @abs_top_srcdir@/addons/pvr.hts/XBMC_Tvheadend.pvr
 
@@ -19,10 +18,8 @@ include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
-	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 	$(MAKE) -C @abs_top_srcdir@/lib/libhts clean
 
 $(LIB): $(OBJS)
-	${MAKE} -C @abs_top_srcdir@/lib/libTcpSocket
 	${MAKE} -C @abs_top_srcdir@/lib/libhts
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
