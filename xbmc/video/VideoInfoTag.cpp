@@ -94,7 +94,7 @@ void CVideoInfoTag::Reset()
   m_type.clear();
 }
 
-bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
+bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo, const TiXmlElement *additionalNode)
 {
   if (!node) return false;
 
@@ -243,6 +243,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   movie->InsertEndChild(resume);
 
   XMLUtils::SetString(movie, "dateadded", m_dateAdded.GetAsDBDateTime());
+
+  if (additionalNode)
+    movie->InsertEndChild(*additionalNode);
 
   return true;
 }
