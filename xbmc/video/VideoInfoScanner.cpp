@@ -47,6 +47,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "ThumbLoader.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1104,63 +1105,72 @@ namespace VIDEO
   void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, CGUIDialogProgress* pDialog /* == NULL */)
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
+    movieDetails.m_fanart.Unpack();
+    movieDetails.m_strPictureURL.Parse();
+
     // get & save fanart image
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
-    if (!isEpisode && (!useLocal || !pItem->CacheLocalFanart()))
+    if (!isEpisode)
     {
-      if (movieDetails.m_fanart.GetNumFanarts())
-        DownloadImage(movieDetails.m_fanart.GetImageURL(), pItem->GetCachedFanart(), false, pDialog);
+      CStdString fanart;
+      if (pItem->HasProperty("fanart_image"))
+        fanart = pItem->GetProperty("fanart_image").asString();
+      else if (useLocal)
+        fanart = pItem->GetLocalFanart();
+      if (fanart.IsEmpty())
+        fanart = movieDetails.m_fanart.GetImageURL();
+      if (!fanart.IsEmpty())
+      {
+        CTextureCache::Get().BackgroundCacheImage(fanart);
+        pItem->SetProperty("fanart_image", fanart);
+      }
     }
 
-    // get & save thumb image
-    CStdString cachedThumb = pItem->GetCachedVideoThumb();
-    if (isEpisode && CFile::Exists(cachedThumb))
-    { // have an episode (??? and also a normal "cached" thumb that we're going to override now???)
-      movieDetails.m_strFileNameAndPath = pItem->GetPath();
-      CFileItem item(movieDetails);
-      cachedThumb = item.GetCachedEpisodeThumb();
-    }
-
-    CStdString localThumb;
-    if (useLocal)
+    // get and cache thumb image
+    CStdString thumb;
+    if (pItem->HasThumbnail())
+      thumb = pItem->GetThumbnailImage();
+    else if (useLocal)
     {
-      localThumb = pItem->GetUserVideoThumb();
-      if (bApplyToDir && localThumb.IsEmpty())
+      thumb = pItem->GetUserVideoThumb();
+      if (bApplyToDir && thumb.IsEmpty())
       {
         CStdString strParent;
         URIUtils::GetParentPath(pItem->GetPath(), strParent);
-        CFileItem item(*pItem);
-        item.SetPath(strParent);
-        item.m_bIsFolder = true;
-        localThumb = item.GetUserVideoThumb();
+        CFileItem folderItem(*pItem);
+        folderItem.SetPath(strParent);
+        folderItem.m_bIsFolder = true;
+        thumb = folderItem.GetUserVideoThumb();
       }
+    }
+
+    if (thumb.IsEmpty())
+    {
+      thumb = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
+      if (!thumb.IsEmpty())
+      {
+        if (thumb.Find("http://") < 0 &&
+            thumb.Find("/") < 0 &&
+            thumb.Find("\\") < 0)
+        {
+          CStdString strPath;
+          URIUtils::GetDirectory(pItem->GetPath(), strPath);
+          thumb = URIUtils::AddFileToFolder(strPath, thumb);
+        }
+      }
+    }
+    if (!thumb.IsEmpty())
+    {
+      CTextureCache::Get().BackgroundCacheImage(thumb);
+      pItem->SetThumbnailImage(thumb);
     }
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
-
-    if (!localThumb.IsEmpty())
-      CPicture::CacheThumb(localThumb, cachedThumb);
-    else
-    { // see if we have an online image to use
-      CStdString onlineThumb = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
-      if (!onlineThumb.IsEmpty())
-      {
-        if (onlineThumb.Find("http://") < 0 &&
-            onlineThumb.Find("/") < 0 &&
-            onlineThumb.Find("\\") < 0)
-        {
-          CStdString strPath;
-          URIUtils::GetDirectory(pItem->GetPath(), strPath);
-          onlineThumb = URIUtils::AddFileToFolder(strPath, onlineThumb);
-        }
-        DownloadImage(onlineThumb, cachedThumb, true, pDialog);
-      }
-    }
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, parentDir);
     if (bApplyToDir)
-      ApplyThumbToFolder(parentDir, cachedThumb);
+      ApplyThumbToFolder(parentDir, thumb);
 
     CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
     // Hack to make sure CVideoInfoTag::m_strShowTitle is set for tvshows
