@@ -260,8 +260,8 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
       if (item->IsPicture())
       {
         CPictureInfoTag picture;
-        if (picture.Load(item->GetPath()))
-          *item->GetPictureInfoTag() = picture;
+        picture.Load(item->GetPath());
+        *item->GetPictureInfoTag() = picture;
       }
       if (item->GetLabel().IsEmpty())
         item->SetLabel(CUtil::GetTitleFromPath(file, false));
