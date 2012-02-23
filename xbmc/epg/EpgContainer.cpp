@@ -296,7 +296,7 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
 {
   if (g_PVRManager.IsStarted())
   {
-    CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
+    CPVRChannel *channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
     if (channel)
     {
       CEpg *epg = new CEpg(channel, true);
