@@ -35,7 +35,7 @@ def error(errorLine):
         try:
             print(errorLine)
         except:
-            print errorLine
+            print(errorLine)
 
     exit(1)
 

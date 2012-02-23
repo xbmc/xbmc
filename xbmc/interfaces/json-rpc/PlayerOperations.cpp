@@ -819,7 +819,7 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
 JSON_STATUS CPlayerOperations::StartSlideshow()
 {
   CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!slideshow && slideshow->NumSlides() <= 0)
+  if (!slideshow || slideshow->NumSlides() <= 0)
     return FailedToExecute;
 
   if (g_application.IsPlayingVideo())

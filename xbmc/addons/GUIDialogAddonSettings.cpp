@@ -321,9 +321,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         {
           // setup the shares
           VECSOURCES *shares = NULL;
-          if (!source || strcmpi(source, "") == 0)
-            shares = g_settings.GetSourcesFromType(type);
-          else
+          if (source && strcmpi(source, "") != 0)
             shares = g_settings.GetSourcesFromType(source);
 
           VECSOURCES localShares;
@@ -332,8 +330,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             VECSOURCES networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
-              g_mediaManager.GetNetworkLocations(networkShares);
-            localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
+              g_mediaManager.GetNetworkLocations(localShares);
           }
           else // always append local drives
           {

@@ -220,7 +220,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                      g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+                     g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
@@ -234,7 +234,10 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   }
 
   // use aspect in stream if available
-  m_fForcedAspectRatio = hint.aspect;
+  if(hint.forced_aspect)
+    m_fForcedAspectRatio = hint.aspect;
+  else
+    m_fForcedAspectRatio = 0.0;
 
   if (m_pVideoCodec)
     delete m_pVideoCodec;
@@ -1464,9 +1467,11 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
 {
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount  = 0;
-  m_bAllowDrop       = !m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO;
   m_iFrameRateLength = 1;
   m_iFrameRateErr    = 0;
+
+  m_bAllowDrop       = (!m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO) ||
+                        g_advancedSettings.m_videoFpsDetect == 0;
 }
 
 #define MAXFRAMERATEDIFF   0.01
@@ -1474,8 +1479,8 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
 
 void CDVDPlayerVideo::CalcFrameRate()
 {
-  if (m_iFrameRateLength >= 128)
-    return; //we're done calculating
+  if (m_iFrameRateLength >= 128 || g_advancedSettings.m_videoFpsDetect == 0)
+    return; //don't calculate the fps
 
   //only calculate the framerate if sync playback to display is on, adjust refreshrate is on,
   //or scaling method is set to auto
@@ -1492,7 +1497,8 @@ void CDVDPlayerVideo::CalcFrameRate()
   //and is able to calculate the correct frame duration from it
   double frameduration = m_pullupCorrection.GetFrameDuration();
 
-  if (frameduration == DVD_NOPTS_VALUE || m_pullupCorrection.GetPatternLength() > 1)
+  if (frameduration == DVD_NOPTS_VALUE ||
+      (g_advancedSettings.m_videoFpsDetect == 1 && m_pullupCorrection.GetPatternLength() > 1))
   {
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;

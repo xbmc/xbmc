@@ -99,6 +99,7 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_DXVAForceProcessorRenderer = true;
+  m_videoFpsDetect = 1;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -550,6 +551,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
+    //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
+    XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
