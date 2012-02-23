@@ -1732,8 +1732,6 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
 {
   try
   {
-    CVideoInfoTag info = details;
-
     int idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
@@ -1750,7 +1748,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     vector<int> vecDirectors;
     vector<int> vecGenres;
     vector<int> vecStudios;
-    AddGenreAndDirectorsAndStudios(info,vecDirectors,vecGenres,vecStudios);
+    AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
     for (unsigned int i = 0; i < vecGenres.size(); ++i)
       AddGenreToMovie(idMovie, vecGenres[i]);
@@ -1762,31 +1760,31 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       AddStudioToMovie(idMovie, vecStudios[i]);
 
     // add writers...
-    for (unsigned int i = 0; i < info.m_writingCredits.size(); i++)
-      AddWriterToMovie(idMovie, AddActor(info.m_writingCredits[i],""));
+    for (unsigned int i = 0; i < details.m_writingCredits.size(); i++)
+      AddWriterToMovie(idMovie, AddActor(details.m_writingCredits[i],""));
 
     // add cast...
     int order = 0;
-    for (CVideoInfoTag::iCast it = info.m_cast.begin(); it != info.m_cast.end(); ++it)
+    for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
       int idActor = AddActor(it->strName,it->thumbUrl.m_xml);
       AddActorToMovie(idMovie, idActor, it->strRole, order++);
     }
 
     // add sets...
-    for (unsigned int i = 0; i < info.m_set.size(); i++)
-      AddSetToMovie(idMovie, AddSet(info.m_set[i]));
+    for (unsigned int i = 0; i < details.m_set.size(); i++)
+      AddSetToMovie(idMovie, AddSet(details.m_set[i]));
 
     // add countries...
-    for (unsigned int i = 0; i < info.m_country.size(); i++)
-      AddCountryToMovie(idMovie, AddCountry(info.m_country[i]));
+    for (unsigned int i = 0; i < details.m_country.size(); i++)
+      AddCountryToMovie(idMovie, AddCountry(details.m_country[i]));
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
 
     // update our movie table (we know it was added already above)
     // and insert the new row
-    CStdString sql = "update movie set " + GetValueString(info, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
+    CStdString sql = "update movie set " + GetValueString(details, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets);
     sql += PrepareSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
