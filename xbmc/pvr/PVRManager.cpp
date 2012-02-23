@@ -111,6 +111,7 @@ void CPVRManager::ResetProperties(void)
 
   if (!g_application.m_bStop)
   {
+    m_database->Open(); m_database->Close();
     m_addons        = new CPVRClients;
     m_channelGroups = new CPVRChannelGroupsContainer;
     m_recordings    = new CPVRRecordings;

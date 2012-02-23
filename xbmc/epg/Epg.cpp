@@ -30,7 +30,7 @@
 #include "EpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "utils/StringUtils.h"
 
 #include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
@@ -47,7 +47,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_strName(strName),
     m_strScraperName(strScraperName),
     m_nowActive(NULL),
-    m_Channel(NULL)
+    m_iPVRChannelId(-1)
 {
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
@@ -62,7 +62,7 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
     m_nowActive(NULL),
-    m_Channel(channel)
+    m_iPVRChannelId(channel->ChannelID())
 {
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
@@ -77,7 +77,7 @@ CEpg::CEpg(void) :
     m_strName(StringUtils::EmptyString),
     m_strScraperName(StringUtils::EmptyString),
     m_nowActive(NULL),
-    m_Channel(NULL)
+    m_iPVRChannelId(-1)
 {
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
@@ -101,7 +101,7 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_lastScanTime    = right.m_lastScanTime;
   m_firstDate       = right.m_firstDate;
   m_lastDate        = right.m_lastDate;
-  m_Channel         = right.m_Channel;
+  m_iPVRChannelId   = right.m_iPVRChannelId;
 
   for (map<CDateTime, CEpgInfoTag *>::const_iterator it = right.m_tags.begin(); it != right.m_tags.end(); it++)
     m_tags.insert(make_pair(it->first, new CEpgInfoTag(*it->second)));
@@ -335,7 +335,7 @@ bool CEpg::Load(void)
   bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
-  if (!database || !database->Open())
+  if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "Epg - %s - could not open the database", __FUNCTION__);
     return bReturn;
@@ -357,7 +357,6 @@ bool CEpg::Load(void)
   }
 
   m_bLoaded = true;
-  database->Close();
 
   return bReturn;
 }
@@ -390,7 +389,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   {
     if (bStoreInDb)
     {
-      if (!database || !database->Open())
+      if (!database || !database->IsOpen())
       {
         CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
         return bReturn;
@@ -417,7 +416,6 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     if (bStoreInDb)
     {
       bReturn = database->CommitTransaction();
-      database->Close();
       if (bReturn)
         Persist(true);
     }
@@ -446,11 +444,8 @@ const CDateTime &CEpg::GetLastScanTime(void)
       CEpgDatabase *database = g_EpgContainer.GetDatabase();
       CDateTime dtReturn; dtReturn.SetValid(false);
 
-      if (database && database->Open())
-      {
+      if (database && database->IsOpen())
         database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
-        database->Close();
-      }
     }
 
     if (!m_lastScanTime.IsValid())
@@ -551,7 +546,7 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
 
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
-  if (!database || !database->Open())
+  if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return false;
@@ -589,8 +584,6 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
 
   database->CommitTransaction();
 
-  database->Close();
-
   return bReturn;
 }
 
@@ -618,10 +611,10 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
   bool bReturn = true;
   CSingleLock lock(m_critSection);
 
-  m_strName = epg.m_strName;
+  m_strName        = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
-  if (epg.HasPVRChannel())
-    m_Channel = epg.m_Channel;
+  if (m_iPVRChannelId == -1 || epg.m_iPVRChannelId != -1)
+    m_iPVRChannelId  = epg.m_iPVRChannelId;
 
   if (bUpdateDb)
     bReturn = Persist();
@@ -653,7 +646,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     {
       if (bUpdateDb)
       {
-        if (!database || !database->Open())
+        if (!database || !database->IsOpen())
         {
           CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
           bReturn = false;
@@ -691,32 +684,28 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 bool CEpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
-
-  if (g_PVRManager.IsStarted() && HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
+  if (ScraperName() == "client")
   {
-    if (g_PVRManager.IsStarted() && g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
-    {
-      CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
-          __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
-      PVR_ERROR error;
-      g_PVRClients->GetEPGForChannel(*m_Channel, this, start, end, &error);
-      bGrabSuccess = error == PVR_ERROR_NO_ERROR;
-    }
+    CPVRChannel *channel = Channel();
+    if (!channel)
+      CLog::Log(LOGINFO, "%s - channel not found, can't update", __FUNCTION__);
+    else if (!channel->EPGEnabled())
+      CLog::Log(LOGINFO, "%s - EPG updating disabled in the channel configuration", __FUNCTION__);
+    else if (!g_PVRClients->GetAddonCapabilities(channel->ClientID()).bSupportsEPG)
+      CLog::Log(LOGINFO, "%s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
     else
     {
-      CLog::Log(LOGINFO, "%s - channel '%s' on client '%i' does not support EPGs",
-          __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
+      CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      PVR_ERROR error;
+      g_PVRClients->GetEPGForChannel(*channel, this, start, end, &error);
+      bGrabSuccess = error == PVR_ERROR_NO_ERROR;
     }
   }
   else if (m_strScraperName.IsEmpty()) /* no grabber defined */
-  {
-    CLog::Log(LOGERROR, "EPG - %s - no EPG grabber defined for table '%s'",
-        __FUNCTION__, m_strName.c_str());
-  }
+    CLog::Log(LOGERROR, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
   else
   {
-    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'",
-        __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
+    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'", __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
   }
@@ -729,7 +718,7 @@ bool CEpg::PersistTags(void) const
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
-  if (!database || !database->Open())
+  if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "EPG - %s - could not load the database", __FUNCTION__);
     return bReturn;
@@ -815,30 +804,22 @@ bool CEpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 
 bool CEpg::IsRadio(void) const
 {
-  CSingleLock lock(m_critSection);
-
-  return HasPVRChannel() ? m_Channel->IsRadio() : false;
+  CPVRChannel *channel = Channel();
+  return channel ? channel->IsRadio() : false;
 }
 
 bool CEpg::IsRemovableTag(const CEpgInfoTag *tag) const
 {
-  CSingleLock lock(m_critSection);
-
-  if (HasPVRChannel())
-  {
-    return (!tag || !tag->HasTimer());
-  }
-
-  return true;
+  return (!tag || !tag->HasTimer());
 }
-
 
 bool CEpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
-  if (HasPVRChannel())
+  CPVRChannel *channel = Channel();
+  if (channel)
   {
-    CEpg tmpEpg(m_Channel);
+    CEpg tmpEpg(channel);
     if (tmpEpg.UpdateFromScraper(start, end))
       bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
   }
@@ -871,4 +852,38 @@ const CEpgInfoTag *CEpg::GetPreviousEvent(const CEpgInfoTag& tag) const
     return it->second;
   }
   return NULL;
+}
+
+CPVRChannel *CEpg::Channel(void) const
+{
+  int iChannelId(-1);
+  {
+    CSingleLock lock(m_critSection);
+    iChannelId = m_iPVRChannelId;
+  }
+
+  CLog::Log(LOGINFO, "%s - get channel %d (%d)", __FUNCTION__, iChannelId, g_PVRManager.IsStarted() ? 1 : 0);
+
+  if (iChannelId != -1 && g_PVRManager.IsStarted())
+    return g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
+
+  return NULL;
+}
+
+int CEpg::ChannelID(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iPVRChannelId;
+}
+
+void CEpg::SetChannel(PVR::CPVRChannel *channel)
+{
+  CSingleLock lock(m_critSection);
+  m_iPVRChannelId = channel->ChannelID();
+}
+
+bool CEpg::HasPVRChannel(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iPVRChannelId != -1;
 }

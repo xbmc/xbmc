@@ -288,7 +288,7 @@ void CPVRChannelGroup::SortByChannelNumber(void)
 
 /********** getters **********/
 
-const CPVRChannel *CPVRChannelGroup::GetByClient(int iUniqueChannelId, int iClientID) const
+CPVRChannel *CPVRChannelGroup::GetByClient(int iUniqueChannelId, int iClientID) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -307,7 +307,7 @@ const CPVRChannel *CPVRChannelGroup::GetByClient(int iUniqueChannelId, int iClie
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelID(int iChannelID) const
+CPVRChannel *CPVRChannelGroup::GetByChannelID(int iChannelID) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -325,7 +325,7 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelID(int iChannelID) const
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
+CPVRChannel *CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -343,7 +343,7 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
+CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -361,7 +361,7 @@ const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetLastPlayedChannel(void) const
+CPVRChannel *CPVRChannelGroup::GetLastPlayedChannel(void) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -409,7 +409,7 @@ unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel &channel) cons
   return iReturn;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber) const
+CPVRChannel *CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNumber) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
@@ -427,9 +427,9 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNum
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const
+CPVRChannel *CPVRChannelGroup::GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const
 {
-  const CPVRChannel *retVal(NULL);
+  CPVRChannel *retVal(NULL);
   bool bGotChannel(false);
   CSingleLock lock(m_critSection);
   int iChannelIndex = GetIndex(channel);
@@ -454,21 +454,21 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelUpDown(const CPVRChannel &chann
   return retVal;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel &channel) const
+CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel &channel) const
 {
-  const CPVRChannel *retVal(NULL);
+  CPVRChannel *retVal(NULL);
   retVal = GetByChannelUpDown(channel, true);
   return retVal;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel &channel) const
+CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel &channel) const
 {
-  const CPVRChannel *retVal(NULL);
+  CPVRChannel *retVal(NULL);
   retVal = GetByChannelUpDown(channel, false);
   return retVal;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
+CPVRChannel *CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
 {
   CSingleLock lock(m_critSection);
   return iIndex < size() ?
@@ -796,7 +796,7 @@ bool CPVRChannelGroup::IsGroupMember(int iChannelId) const
   return bReturn;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetFirstChannel(void) const
+CPVRChannel *CPVRChannelGroup::GetFirstChannel(void) const
 {
   CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);

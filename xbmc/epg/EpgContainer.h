@@ -204,13 +204,13 @@ namespace EPG
      */
     bool IsInitialising(void) const;
 
-  protected:
     /*!
-     * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
-     * @param epg The EPG to insert.
+     * @brief Call Persist() on each table
+     * @return True when they all were persisted, false otherwise.
      */
-    virtual void InsertEpg(CEpg *epg);
+    bool PersistAll(void);
 
+  protected:
     /*!
      * @brief Load the EPG settings.
      * @return True if the settings were loaded successfully, false otherwise.

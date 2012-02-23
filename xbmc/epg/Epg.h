@@ -83,13 +83,15 @@ namespace EPG
      * @brief The channel this EPG belongs to.
      * @return The channel this EPG belongs to
      */
-    virtual const PVR::CPVRChannel *Channel(void) const { return m_Channel; }
+    virtual PVR::CPVRChannel *Channel(void) const;
+
+    virtual int ChannelID(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
      * @param channel The new channel tag.
      */
-    virtual void SetChannel(PVR::CPVRChannel *channel) { m_Channel = channel; }
+    virtual void SetChannel(PVR::CPVRChannel *channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.
@@ -130,7 +132,7 @@ namespace EPG
     /*!
      * @return True if this EPG has a PVR channel set, false otherwise.
      */
-    virtual bool HasPVRChannel(void) const { return !(m_Channel == NULL); }
+    virtual bool HasPVRChannel(void) const;
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time
@@ -342,7 +344,7 @@ namespace EPG
     CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
     CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
 
-    PVR::CPVRChannel *         m_Channel;         /*!< the channel this EPG belongs to */
+    int                        m_iPVRChannelId;   /*!< the channel this EPG belongs to */
 
     mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
   };
