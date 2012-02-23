@@ -39,7 +39,6 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "peripherals/Peripherals.h"
-#include "storage/DetectDVDType.h"
 #include "utils/JobManager.h"
 
 #ifdef _WIN32

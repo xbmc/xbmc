@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="weather.wunderground" name="Weather Underground" version="0.0.2" provider-name="Team XBMC">
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="weather.wunderground" name="Weather Underground" version="0.0.5" provider-name="Team XBMC">
 	<requires>
 		<import addon="xbmc.python" version="2.0"/>
 		<import addon="script.module.simplejson" version="2.0.10"/>
@@ -9,11 +9,14 @@
 		<summary lang="bg">Синоптична прогноза от wunderground.com</summary>
 		<summary lang="en">Weather forecast from wunderground.com</summary>
 		<summary lang="se">Väderprognos från wunderground.com</summary>
+		<summary lang="zh">来自wunderground.com的天气预报</summary>
 		<description lang="bg">Прогноза за времето осигурена от Weather Underground (http://www.wunderground.com/)</description>
 		<description lang="en">Weather forecast provided by Weather Underground (http://www.wunderground.com/)</description>
 		<description lang="se">Väderprognos tillhandahållen av Weather Underground (http://www.wunderground.com/)</description>
+		<description lang="zh">由Weather Underground（http://www.wunderground.com/）提供的天气预报</description>
 		<disclaimer lang="en">Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html</disclaimer>
 		<disclaimer lang="se">Användning av detta tillägg innebär att du har godkänt Terms of Service från http://www.wunderground.com/weather/api/d/terms.html</disclaimer>
+		<disclaimer lang="zh">使用此扩展功能意味着你同意此连接下的服务条款：http://www.wunderground.com/weather/api/d/terms.html</disclaimer>
 		<platform>all</platform>
 	</extension>
 </addon>

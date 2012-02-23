@@ -882,8 +882,11 @@
   <string id="10020">Scripts</string>
   <string id="10021">Webbrowser</string>
 
+  <string id="10025">Video's</string>
   <string id="10028">Video/Afspeellijst</string>
+  <string id="10029">Aanmeld scherm</string>
   <string id="10034">Instellingen - Profielen</string>
+  <string id="10040">Addon verkenner</string>
 
   <string id="10100">Ja/Nee</string>
   <string id="10101">Voortgang</string>
@@ -2184,10 +2187,10 @@
   <string id="20109">- Verschalen </string>
   <string id="20110">UPnP-client</string>
   <string id="20111">Automatisch starten</string>
-  <string id="20112">Vorige login: %s</string>
+  <string id="20112">Vorige aanmelding: %s</string>
   <string id="20113">Nog nooit ingelogd</string>
   <string id="20114">Profiel %i / %i</string>
-  <string id="20115">Gebruikerslogin / Selecteer een profiel</string>
+  <string id="20115">Gebruikersaanmelding / Selecteer een profiel</string>
   <string id="20116">Inlogscherm vergrendelen</string>
   <string id="20117">Ongeldige vergrendelcode.</string>
   <string id="20118">Dit vereist een actieve hoofdvergrendeling.</string>
@@ -2278,7 +2281,7 @@
   <string id="20252">Glazen vullen (video's)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
-  <string id="20255">Eerste login, profiel bijwerken</string>
+  <string id="20255">Eerste aanmelding, profiel bijwerken</string>
   <string id="20256">HTS tvheadend client</string>
   <string id="20257">VDR streamdev client</string>
   <string id="20258">MythTV client</string>
@@ -2310,7 +2313,7 @@
   <string id="20326">Dit zet de kalibratiewaarden voor %s</string>
   <string id="20327">terug naar de standaardwaarden.</string>
   <string id="20328">een locatie om naar te kopiëren</string>
-
+  <string id="20329">Films staan in aparte folders die overeenkomen met de film titel</string>
   <string id="20330">Gebruik mapnamen bij zoeken</string>
   <string id="20331">Bestand</string>
   <string id="20332">Ook in bestands- of mapnamen zoeken?</string>
@@ -2400,7 +2403,7 @@
   <string id="20416">Eerst uitgez.</string>
   <string id="20417">Schrijver</string>
   <string id="20418"></string>
-  <string id="20419">Laat metadata zien in bestandslayout</string>
+  <string id="20419">Vervang bestandsnamen met bibliotheek titels</string>
 
   <string id="20420">Nooit</string>
   <string id="20421">Alleen indien &#xe9;&#xe9;n seizoen</string>
@@ -2440,6 +2443,7 @@
   <string id="20455">Luisteraars</string>
   <string id="20456">Kies filmset fanart</string>
   <string id="20457">Filmsets</string>
+  <string id="20458">Groepeer films in sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
@@ -2509,7 +2513,7 @@
   <string id="21414">Standaard tv-serie scraper</string>
   <string id="21415">Standaard muziekvideo scraper</string>
   <string id="21416">Alternatieven toestaan op basis van originele scraper taal</string>
-  <string id="21417">- Instellingen schermbeveiliging</string>
+  <string id="21417">- Instellingen</string>
   <string id="21418">Meertalig</string>
   <string id="21419">Geen scrapers beschikbaar</string>
   <string id="21420">Waarde gelijk aan</string>
@@ -2547,6 +2551,9 @@
   <string id="21452">Add-ons installeren</string>
   <string id="21453">Rootbestandsysteem</string>
 
+  <string id="21454">Cache is vol</string>
+  <string id="21455">Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspelen</string>
+  
   <string id="21460">Plaats van de ondertitels</string>
   <string id="21461">Vast</string>
   <string id="21462">Onderaan video</string>
@@ -2865,6 +2872,8 @@
   <string id="33102">Event Server</string>
   <string id="33103">Remote communication server</string>
 
+  <string id="33200">Detecteer nieuwe verbinding</string>
+  
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2888,7 +2897,15 @@
 
   <string id="34201">Kan volgende item niet vinden om af te spelen</string>
   <string id="34202">Kan vorige item niet vinden om af te spelen</string>
-
+  
+  <string id="34300">Niet gelukt om zeroconf te starten</string>
+  <string id="34301">Is Apple's Bonjour Service geinstalleerd? Zie log voor meer info.</string>
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Niet gelukt om video filters/scalers initialiseren, terugvallen naar bilinear scaling</string>
+  <string id="34402"></string>
+  <string id="34402">Niet gelukt om audio apparaat te initialiseren</string>
+  <string id="34403">Controleer je audio-instellingen</string>
+  
   <string id="35000">Randapparatuur</string>
 
   <string id="35001">Generiek HID apparaat</string>
@@ -2926,4 +2943,3 @@
   <string id="36017">Adapter gevonden, maar libcec is niet beschikbaar</string>
   <string id="36018">Gebruik de taalinstelling van de TV</string>
 </strings>
-

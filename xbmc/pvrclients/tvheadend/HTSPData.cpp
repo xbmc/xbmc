@@ -637,8 +637,11 @@ void *CHTSPData::Process()
     }
 
     /* if there's anything in the buffer, read it */
-    if((msg = m_session->ReadMessage(5)) == NULL)
+    msg = m_session->ReadMessage(5);
+    if(msg == NULL || msg->hm_data == NULL)
     {
+      if (msg)
+        htsmsg_destroy(msg);
       Sleep(5);
       continue;
     }

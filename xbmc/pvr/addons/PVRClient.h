@@ -61,7 +61,7 @@ namespace PVR
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
      */
-    void Create(int iClientId);
+    bool Create(int iClientId);
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -99,7 +99,7 @@ namespace PVR
      * @brief Query this add-on's capabilities.
      * @return pCapabilities The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void) const;
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.

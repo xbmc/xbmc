@@ -53,11 +53,14 @@ CEpgContainer::CEpgContainer(void) :
   m_iNextEpgId = 0;
   m_bPreventUpdates = false;
   m_updateEvent.Reset();
+
+  m_database.Open();
 }
 
 CEpgContainer::~CEpgContainer(void)
 {
   Unload();
+  m_database.Close();
 }
 
 CEpgContainer &CEpgContainer::Get(void)
@@ -88,20 +91,12 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     return;
   }
 
-  if (g_PVRManager.IsStarted())
-  {
-    // XXX stop the timers from being updated while clearing tags
-    /* remove all pointers to epg tables on timers */
-    CPVRTimers *timers = g_PVRTimers;
-    for (unsigned int iTimerPtr = 0; timers != NULL && iTimerPtr < timers->size(); iTimerPtr++)
-      timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
-  }
-
   {
     CSingleLock lock(m_critSection);
     /* clear all epg tables and remove pointers to epg tables on channels */
-    for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-      delete m_epgs[iEpgPtr];
+    m_epgs.clear();
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      delete it->second;
     m_epgs.clear();
     m_iNextEpgUpdate  = 0;
     m_bIsInitialising = true;
@@ -110,11 +105,8 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb && !m_bIgnoreDbForClient)
   {
-    if (m_database.Open())
-    {
+    if (m_database.IsOpen())
       m_database.DeleteEpg();
-      m_database.Close();
-    }
   }
 
   SetChanged();
@@ -132,6 +124,12 @@ void CEpgContainer::Start(void)
   m_bStop = false;
   g_guiSettings.RegisterObserver(this);
   LoadSettings();
+
+  m_iNextEpgUpdate  = 0;
+  m_iNextEpgActiveTagCheck = 0;
+
+  LoadFromDB();
+  CheckPlayingEvents();
 
   Create();
   SetPriority(-1);
@@ -153,32 +151,45 @@ void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
 
 void CEpgContainer::LoadFromDB(void)
 {
-  if (!m_bIgnoreDbForClient && m_database.Open())
+  if (!m_bIgnoreDbForClient && m_database.IsOpen())
   {
     m_database.DeleteOldEpgEntries();
     m_database.Get(*this);
-    m_database.Close();
+
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      it->second->Load();
   }
+}
+
+bool CEpgContainer::PersistAll(void)
+{
+  bool bReturn(true);
+  CSingleLock lock(m_critSection);
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+  {
+    CEpg *epg = it->second;
+    lock.Leave();
+    if (epg)
+      bReturn &= epg->Persist(false);
+    lock.Enter();
+  }
+
+  return bReturn;
 }
 
 void CEpgContainer::Process(void)
 {
   bool bLoaded(false);
   time_t iNow       = 0;
-  m_iNextEpgUpdate  = 0;
-  m_iNextEpgActiveTagCheck = 0;
-  CSingleLock lock(m_critSection);
-  LoadFromDB();
-  CheckPlayingEvents();
-  lock.Leave();
 
   bool bUpdateEpg(true);
   while (!m_bStop && !g_application.m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    lock.Enter();
-    bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
-    lock.Leave();
+    {
+      CSingleLock lock(m_critSection);
+      bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
+    }
 
     /* load or update the EPG */
     if (!InterruptUpdate() && bUpdateEpg && UpdateEPG(m_bIsInitialising))
@@ -202,37 +213,22 @@ void CEpgContainer::Process(void)
 
 CEpg *CEpgContainer::GetById(int iEpgId) const
 {
-  CEpg *epg = NULL;
+  if (iEpgId < 0)
+    return 0;
 
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-  {
-    if (m_epgs[iEpgPtr]->EpgID() == iEpgId)
-    {
-      epg = m_epgs[iEpgPtr];
-      break;
-    }
-  }
-
-  return epg;
+  map<unsigned int, CEpg *>::const_iterator it = m_epgs.find((unsigned int) iEpgId);
+  return it != m_epgs.end() ? it->second : NULL;
 }
 
 CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 {
-  CEpg *epg = NULL;
-
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-  {
-    const CPVRChannel *thisChannel = m_epgs[iEpgPtr]->Channel();
-    if (thisChannel && *thisChannel == channel)
-    {
-      epg = m_epgs[iEpgPtr];
-      break;
-    }
-  }
+  for (map<unsigned int, CEpg *>::const_iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+    if (channel.ChannelID() == it->second->ChannelID())
+      return it->second;
 
-  return epg;
+  return NULL;
 }
 
 bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = false */)
@@ -246,28 +242,23 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   if (!epg)
   {
     /* table does not exist yet, create a new one */
-    unsigned int iEpgId = !m_bIgnoreDbForClient ? entry.EpgID() : NextEpgId();
+    unsigned int iEpgId = m_bIgnoreDbForClient || entry.EpgID() <= 0 ? NextEpgId() : entry.EpgID();
     epg = CreateEpg(iEpgId);
     if (epg)
-      InsertEpg(epg);
+    {
+      bReturn = epg->UpdateMetadata(entry, bUpdateDatabase);
+      m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
+    }
+  }
+  else
+  {
+    bReturn = epg->UpdateMetadata(entry, bUpdateDatabase);
   }
 
-  bReturn = epg ? epg->UpdateMetadata(entry, bUpdateDatabase) : false;
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
-  lock.Leave();
 
   return bReturn;
-}
-
-void CEpgContainer::InsertEpg(CEpg *epg)
-{
-  WaitForUpdateFinish(true);
-
-  CSingleLock lock(m_critSection);
-  DeleteEpg(*epg, false);
-  m_epgs.push_back(epg);
-  m_bPreventUpdates = false;
 }
 
 bool CEpgContainer::LoadSettings(void)
@@ -284,21 +275,15 @@ bool CEpgContainer::RemoveOldEntries(void)
   CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
       __FUNCTION__);
 
-  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  CDateTime now = CDateTime::GetUTCDateTime();
 
   /* call Cleanup() on all known EPG tables */
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-    m_epgs[iEpgPtr]->Cleanup(now);
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+    it->second->Cleanup(now);
 
   /* remove the old entries from the database */
-  if (!m_bIgnoreDbForClient)
-  {
-    if (m_database.Open())
-    {
-      m_database.DeleteOldEpgEntries();
-      m_database.Close();
-    }
-  }
+  if (!m_bIgnoreDbForClient && m_database.IsOpen())
+    m_database.DeleteOldEpgEntries();
 
   CSingleLock lock(m_critSection);
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
@@ -311,7 +296,7 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
 {
   if (g_PVRManager.IsStarted())
   {
-    CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
+    CPVRChannel *channel = g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
     if (channel)
     {
       CEpg *epg = new CEpg(channel, true);
@@ -325,27 +310,22 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
 
 bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)
 {
-  bool bReturn = false;
+  if (epg.EpgID() < 0)
+    return false;
+
   CSingleLock lock(m_critSection);
 
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-  {
-    if (m_epgs[iEpgPtr]->EpgID() == epg.EpgID())
-    {
-      if (bDeleteFromDatabase && !m_bIgnoreDbForClient && m_database.Open())
-      {
-        m_database.Delete(*m_epgs[iEpgPtr]);
-        m_database.Close();
-      }
+  map<unsigned int, CEpg *>::iterator it = m_epgs.find((unsigned int)epg.EpgID());
+  if (it == m_epgs.end())
+    return false;
 
-      delete m_epgs[iEpgPtr];
-      m_epgs.erase(m_epgs.begin() + iEpgPtr);
-      bReturn = true;
-      break;
-    }
-  }
+  if (bDeleteFromDatabase && !m_bIgnoreDbForClient && m_database.IsOpen())
+    m_database.Delete(*it->second);
 
-  return bReturn;
+  delete it->second;
+  m_epgs.erase(it);
+
+  return true;
 }
 
 void CEpgContainer::CloseProgressDialog(void)
@@ -412,7 +392,6 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 {
   bool bInterrupted(false);
-  bool bDbOpened(false);
   unsigned int iUpdatedTables(0);
 
   /* set start and end time */
@@ -433,7 +412,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     ShowProgressDialog();
 
   /* open the database */
-  if (!m_bIgnoreDbForClient && !(bDbOpened = m_database.Open()))
+  if (!m_bIgnoreDbForClient && !m_database.IsOpen())
   {
     CLog::Log(LOGERROR, "EpgContainer - %s - could not open the database", __FUNCTION__);
     return false;
@@ -441,7 +420,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   /* load or update all EPG tables */
   CEpg *epg;
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
+  unsigned int iCounter(0);
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
     if (InterruptUpdate())
     {
@@ -449,7 +429,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       break;
     }
 
-    epg = m_epgs[iEpgPtr];
+    epg = it->second;
     if (!epg)
       continue;
 
@@ -457,14 +437,11 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       ++iUpdatedTables;
 
     if (bShowProgress)
-      UpdateProgressDialog(iEpgPtr, m_epgs.size(), epg->Name());
+      UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
   }
 
   if (!bInterrupted)
   {
-    CSingleLock lock(m_critSection);
-    m_bIsUpdating = false;
-
     if (bInterrupted)
     {
       /* the update has been interrupted. try again later */
@@ -489,8 +466,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     NotifyObservers("epg", true);
   }
 
-  if (bDbOpened)
-    m_database.Close();
+  CSingleLock lock(m_critSection);
+  m_bIsUpdating = false;
   m_updateEvent.Set();
 
   return !bInterrupted;
@@ -501,8 +478,8 @@ int CEpgContainer::GetEPGAll(CFileItemList &results)
   int iInitialSize = results.Size();
 
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-    m_epgs[iEpgPtr]->Get(results);
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+    it->second->Get(results);
 
   return results.Size() - iInitialSize;
 }
@@ -512,11 +489,13 @@ const CDateTime CEpgContainer::GetFirstEPGDate(void)
   CDateTime returnValue;
 
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
-    CDateTime entry = m_epgs[iEpgPtr]->GetFirstDate();
+    lock.Leave();
+    CDateTime entry = it->second->GetFirstDate();
     if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
       returnValue = entry;
+    lock.Enter();
   }
 
   return returnValue;
@@ -527,11 +506,13 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   CDateTime returnValue;
 
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
   {
-    CDateTime entry = m_epgs[iEpgPtr]->GetLastDate();
+    lock.Leave();
+    CDateTime entry = it->second->GetLastDate();
     if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
       returnValue = entry;
+    lock.Enter();
   }
 
   return returnValue;
@@ -542,10 +523,11 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
   int iInitialSize = results.Size();
 
   /* get filtered results from all tables */
-  CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-    m_epgs[iEpgPtr]->Get(results, filter);
-  lock.Leave();
+  {
+    CSingleLock lock(m_critSection);
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      it->second->Get(results, filter);
+  }
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
@@ -566,8 +548,8 @@ bool CEpgContainer::CheckPlayingEvents(void)
     bool bFoundChanges(false);
     CSingleLock lock(m_critSection);
 
-    for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-      bFoundChanges = m_epgs[iEpgPtr]->CheckPlayingEvent() || bFoundChanges;
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      bFoundChanges = it->second->CheckPlayingEvent() || bFoundChanges;
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
     m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 

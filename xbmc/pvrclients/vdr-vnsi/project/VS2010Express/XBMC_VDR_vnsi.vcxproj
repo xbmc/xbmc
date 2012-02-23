@@ -15,26 +15,24 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\responsepacket.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\tools.cpp" />
     <ClCompile Include="..\..\VNSIChannelScan.cpp" />
     <ClCompile Include="..\..\VNSIData.cpp" />
     <ClCompile Include="..\..\VNSIDemux.cpp" />
     <ClCompile Include="..\..\VNSIRecording.cpp" />
     <ClCompile Include="..\..\VNSISession.cpp" />
-    <ClCompile Include="..\..\thread.cpp" />
-    <ClCompile Include="..\..\tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\requestpacket.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\responsepacket.h" />
+    <ClInclude Include="..\..\tools.h" />
     <ClInclude Include="..\..\VNSIChannelScan.h" />
     <ClInclude Include="..\..\vnsicommand.h" />
     <ClInclude Include="..\..\VNSIData.h" />
     <ClInclude Include="..\..\VNSIDemux.h" />
     <ClInclude Include="..\..\VNSIRecording.h" />
     <ClInclude Include="..\..\VNSISession.h" />
-    <ClInclude Include="..\..\thread.h" />
-    <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />
@@ -98,7 +96,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>..\..\..\..\..\addons\pvr.vdr.vnsi\XBMC_VDR_vnsi_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -117,7 +115,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>..\..\..\..\..\addons\pvr.vdr.vnsi\XBMC_VDR_vnsi_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

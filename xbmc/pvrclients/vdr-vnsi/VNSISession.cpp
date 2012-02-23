@@ -31,6 +31,8 @@
 #include "requestpacket.h"
 #include "vnsicommand.h"
 #include "tools.h"
+#include "../../../lib/platform/sockets/tcp.h"
+#include "../../../lib/platform/util/timeutils.h"
 
 /* Needed on Mac OS/X */
  
@@ -39,9 +41,10 @@
 #endif
 
 using namespace ADDON;
+using namespace PLATFORM;
 
 cVNSISession::cVNSISession()
-  : m_fd(INVALID_SOCKET)
+  : m_socket(NULL)
   , m_protocol(0)
   , m_connectionLost(false)
 {
@@ -54,36 +57,43 @@ cVNSISession::~cVNSISession()
 
 void cVNSISession::Abort()
 {
-  tcp_shutdown(m_fd);
+  if (!m_socket)
+    return;
+
+  m_socket->Shutdown();
 }
 
 void cVNSISession::Close()
 {
-  if(!IsOpen())
-    return;
-
-  tcp_close(m_fd);
-  m_fd = INVALID_SOCKET;
+  if(IsOpen())
+  {
+    m_socket->Close();
+  }
+  if (m_socket)
+  {
+    delete m_socket;
+    m_socket = NULL;
+  }
 }
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
   Close();
 
-  cTimeMs RetryTimeout;
-  char errbuf[128];
-  memset(&errbuf,0,sizeof(errbuf));
-  m_fd = INVALID_SOCKET;
-  while (m_fd == INVALID_SOCKET && RetryTimeout.Elapsed() < (unsigned int) g_iConnectTimeout * 1000)
+  uint64_t iNow = GetTimeMs();
+  uint64_t iTarget = iNow + g_iConnectTimeout * 1000;
+  if (!m_socket)
+    m_socket = new CTcpConnection(hostname.c_str(), port);
+  while (!m_socket->IsOpen() && iNow < iTarget)
   {
-    m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf),
-        g_iConnectTimeout * 1000 - (int) RetryTimeout.Elapsed());
-    SleepMs(100);
+    if (!m_socket->Open(iTarget - iNow))
+      CEvent::Sleep(100);
+    iNow = GetTimeMs();
   }
 
-  if (m_fd == INVALID_SOCKET)
+  if (!m_socket->IsOpen())
   {
-    XBMC->Log(LOG_ERROR, "%s - Can't connect to VSNI Server: %s", __FUNCTION__, errbuf);
+    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, m_socket->GetError().c_str());
     return false;
   }
 
@@ -127,10 +137,10 @@ bool cVNSISession::Login()
 
     m_server    = ServerName;
     m_version   = ServerVersion;
-    m_protocol  = protocol;
+    m_protocol  = (int)protocol;
 
     if (m_name.empty())
-      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
+      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%d'",
         vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
 
     delete[] ServerName;
@@ -141,15 +151,16 @@ bool cVNSISession::Login()
   catch (const char * str)
   {
     XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
-    tcp_close(m_fd);
-    m_fd = INVALID_SOCKET;
+    m_socket->Close();
+    delete m_socket;
+    m_socket = NULL;
     return false;
   }
 
   return true;
 }
 
-cResponsePacket* cVNSISession::ReadMessage()
+cResponsePacket* cVNSISession::ReadMessage(int iInitialTimeout /*= 10000*/, int iDatapacketTimeout /*= 10000*/)
 {
   uint32_t channelID = 0;
   uint32_t requestID;
@@ -163,7 +174,9 @@ cResponsePacket* cVNSISession::ReadMessage()
 
   cResponsePacket* vresp = NULL;
 
-  if(!readData((uint8_t*)&channelID, sizeof(uint32_t)))
+  CLockObject lock(m_readMutex);
+
+  if(!readData((uint8_t*)&channelID, sizeof(uint32_t), iInitialTimeout))
     return NULL;
 
   // Data was read
@@ -171,7 +184,7 @@ cResponsePacket* cVNSISession::ReadMessage()
   channelID = ntohl(channelID);
   if (channelID == VNSI_CHANNEL_STREAM)
   {
-    if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader))) return NULL;
+    if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader), iDatapacketTimeout)) return NULL;
 
     opCodeID = ntohl(m_streamPacketHeader.opCodeID);
     streamID = ntohl(m_streamPacketHeader.streamID);
@@ -186,7 +199,7 @@ cResponsePacket* cVNSISession::ReadMessage()
       if (userDataLength > 0)
       {
         if (!userData) return NULL;
-        if (!readData(p->pData, userDataLength))
+        if (!readData(p->pData, userDataLength, iDatapacketTimeout))
         {
           PVR->FreeDemuxPacket(p);
           return NULL;
@@ -196,7 +209,7 @@ cResponsePacket* cVNSISession::ReadMessage()
     else if (userDataLength > 0) {
       userData = (uint8_t*)malloc(userDataLength);
       if (!userData) return NULL;
-      if (!readData(userData, userDataLength))
+      if (!readData(userData, userDataLength, iDatapacketTimeout))
       {
         free(userData);
         return NULL;
@@ -208,7 +221,7 @@ cResponsePacket* cVNSISession::ReadMessage()
   }
   else
   {
-    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
+    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader), iDatapacketTimeout)) return NULL;
 
     requestID = ntohl(m_responsePacketHeader.requestID);
     userDataLength = ntohl(m_responsePacketHeader.userDataLength);
@@ -219,7 +232,8 @@ cResponsePacket* cVNSISession::ReadMessage()
     {
       userData = (uint8_t*)malloc(userDataLength);
       if (!userData) return NULL;
-      if (!readData(userData, userDataLength)) {
+      if (!readData(userData, userDataLength, iDatapacketTimeout))
+      {
         free(userData);
         return NULL;
       }
@@ -235,14 +249,23 @@ cResponsePacket* cVNSISession::ReadMessage()
   return vresp;
 }
 
-bool cVNSISession::SendMessage(cRequestPacket* vrp)
+bool cVNSISession::TransmitMessage(cRequestPacket* vrp)
 {
-  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == (int)vrp->getLen());
+  if (!IsOpen())
+    return false;
+
+  ssize_t iWriteResult = m_socket->Write(vrp->getPtr(), vrp->getLen());
+  if (iWriteResult != (ssize_t)vrp->getLen())
+  {
+    XBMC->Log(LOG_ERROR, "%s - Failed to write packet (%s), bytes written: %d of total: %s", __FUNCTION__, m_socket->GetError().c_str(), iWriteResult, vrp->getLen());
+    return false;
+  }
+  return true;
 }
 
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
 {
-  if(!SendMessage(vrp))
+  if(!TransmitMessage(vrp))
   {
     SignalConnectionLost();
     return NULL;
@@ -304,6 +327,14 @@ bool cVNSISession::TryReconnect() {
   return true;
 }
 
+bool cVNSISession::IsOpen()
+{
+  bool bReturn(false);
+  if (m_socket && m_socket->IsOpen())
+    bReturn = true;
+  return bReturn;
+}
+
 void cVNSISession::SignalConnectionLost()
 {
   if(m_connectionLost)
@@ -318,16 +349,21 @@ void cVNSISession::SignalConnectionLost()
   OnDisconnect();
 }
 
-bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
+bool cVNSISession::readData(uint8_t* buffer, int totalBytes, int timeout)
 {
-  return (tcp_read_timeout(m_fd, buffer, totalBytes, g_iConnectTimeout * 1000) == 0);
+  int bytesRead = m_socket->Read(buffer, totalBytes, timeout);
+  if (bytesRead == totalBytes)
+    return true;
+  else if (m_socket->GetErrorNumber() != ETIMEDOUT)
+  {
+    SignalConnectionLost();
+    return false;
+  }
+  else
+    return false;
 }
 
 void cVNSISession::SleepMs(int ms)
 {
-#ifdef __WINDOWS__
-  Sleep(ms);
-#else
-  usleep(ms * 1000);
-#endif
+  CEvent::Sleep(ms);
 }

@@ -1,3 +1,24 @@
+[B]3.0.9[/B]
+- fixed: missing language parameter name in NfoUrl
+
+[B]3.0.8[/B]
+- fixed: movies without release date won't find
+
+[B]3.0.7[/B]
+- fixed: keep originaltitle; IMDb ID; remove TMDb title fallback, because it became obsolate
+
+[B]3.0.6[/B]
+- updated chinese translation
+
+[B]3.0.5[/B]
+- reverted latest change
+
+[B]3.0.4[/B]
+- added: option to not scrape sets
+
+[B]3.0.3[/B]
+- fixed: plot outline includes trash on some movies
+
 [B]3.0.2[/B]
 - fixed: imdb IDs not properly handled
 

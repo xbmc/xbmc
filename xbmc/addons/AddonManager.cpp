@@ -50,6 +50,8 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
 using namespace PVR;
@@ -298,14 +300,14 @@ bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
   return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool allowRepos /* = false */, bool bGetDisabledPVRAddons /* = true */)
 {
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
     if (!allowRepos && ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled, bGetDisabledPVRAddons))
       addons.insert(addons.end(), temp.begin(), temp.end());
   }
   return !addons.empty();
@@ -384,7 +386,7 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
   return GetAllOutdatedAddons(dummy,enabled);
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */, bool bGetDisabledPVRAddons /* = true */)
 {
   CStdString xbmcPath = _P("special://xbmc/addons");
   CSingleLock lock(m_critSection);
@@ -395,14 +397,25 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
-    AddonPtr addon(Factory(exts[i]));
-    if (addon && addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
+    const cp_extension_t *props = exts[i];
+    bool bIsPVRAddon(TranslateType(props->ext_point_id) == ADDON_PVRDLL);
+
+    if (((bGetDisabledPVRAddons && bIsPVRAddon) || m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
     {
-      if (m_database.IsSystemPVRAddonEnabled(addon->ID()) != enabled)
-        addon->Disable();
+      if (bIsPVRAddon && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
+        {
+          addons.push_back(pvrAddon);
+          continue;
+        }
+      }
+
+      AddonPtr addon(Factory(props));
+      if (addon)
+        addons.push_back(addon);
     }
-    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
-      addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);
   return addons.size() > 0;
@@ -420,15 +433,17 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
 
-    if (addon && addon.get() && enabledOnly)
+    if (addon && addon.get())
     {
-      if (addon->Type() == ADDON_PVRDLL && addon->Path().Left(xbmcPath.size()).Equals(xbmcPath))
-      {
-        if (!m_database.IsSystemPVRAddonEnabled(addon->ID()))
-          return false;
-      }
-      else if (m_database.IsAddonDisabled(addon->ID()))
+      if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
         return false;
+
+      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
+          addon = pvrAddon;
+      }
     }
     return NULL != addon.get();
   }

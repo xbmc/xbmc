@@ -288,7 +288,6 @@
 #ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
-#include "storage/DetectDVDType.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -1045,19 +1044,6 @@ bool CApplication::InitDirectoriesWin32()
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
-  // check for a DVD drive
-  VECSOURCES vShare;
-  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  // Can be removed once the StorageHandler supports optical media
-  VECSOURCES::const_iterator it;
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      CJobManager::GetInstance().AddJob(new CDetectDisc(it->strPath, false), NULL);
-  // remove end
-
   return true;
 #else
   return false;
@@ -1307,6 +1293,7 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
+
   return true;
 }
 
@@ -2321,7 +2308,7 @@ bool CApplication::OnKey(const CKey& key)
       if (!action.GetID())
       {
         // keyboard entry - pass the keys through directly
-        if (key.GetFromHttpApi())
+        if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
@@ -2338,7 +2325,7 @@ bool CApplication::OnKey(const CKey& key)
         return true;
       // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromHttpApi())
+    if (key.GetFromService())
     {
       if (key.GetButtonCode() != KEY_INVALID)
         action = CButtonTranslator::GetInstance().GetAction(iWin, key);
@@ -3059,7 +3046,10 @@ bool CApplication::ProcessJsonRpcButtons()
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
   if (tempKey.GetButtonCode() != KEY_INVALID)
+  {
+    tempKey.SetFromService(true);
     return OnKey(tempKey);
+  }
 #endif
   return false;
 }
@@ -3131,6 +3121,7 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
+      key.SetFromService(true);
       return OnKey(key);
     }
   }
@@ -3768,7 +3759,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   
   if( item.HasProperty("StartPercent") )
   {
-    options.startpercent = item.GetProperty("StartPercent").asDouble();
+    double fallback = 0.0f;
+    if(item.GetProperty("StartPercent").isString())
+      fallback = (double)atof(item.GetProperty("StartPercent").asString().c_str());
+    options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
   
   PLAYERCOREID eNewCore = EPC_NONE;
@@ -4471,6 +4465,12 @@ void CApplication::CheckScreenSaverAndDPMS()
   {
     m_bScreenSave = true;
     maybeScreensaver = false;
+  }
+
+  if (m_bScreenSave && IsPlayingVideo() && !m_pPlayer->IsPaused())
+  {
+    WakeUpScreenSaverAndDPMS();
+    return;
   }
 
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.

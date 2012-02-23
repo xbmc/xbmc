@@ -444,10 +444,10 @@ sqlite3* SqliteDataset::handle(){
 
 void SqliteDataset::make_query(StringList &_sql) {
   string query;
+  if (db == NULL) throw DbErrors("No Database Connection");
 
  try {
 
-  if (db == NULL) throw DbErrors("No Database Connection");
   if (autocommit) db->start_transaction();
 
 

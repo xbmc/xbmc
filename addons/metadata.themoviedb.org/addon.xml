@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.themoviedb.org"
        name="The MovieDB"
-       version="3.0.2"
+       version="3.0.9"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
-    <import addon="metadata.common.themoviedb.org" version="2.1.0"/>
+    <import addon="metadata.common.themoviedb.org" version="2.1.2"/>
     <import addon="metadata.common.hdtrailers.net" version="1.0.7"/>
-    <import addon="metadata.common.imdb.com" version="2.1.5"/>
-    <import addon="plugin.video.youtube" version="2.1.0" optional="true"/>
+    <import addon="metadata.common.imdb.com" version="2.1.9"/>
+    <import addon="plugin.video.youtube" version="2.1.4" optional="true"/>
   </requires>
   <extension point="xbmc.metadata.scraper.movies"
              language="en"

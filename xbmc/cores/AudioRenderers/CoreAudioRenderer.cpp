@@ -34,6 +34,7 @@
 #include "threads/Atomics.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 
 const AudioChannelLabel g_LabelMap[] =
@@ -58,6 +59,8 @@ const AudioChannelLabel g_LabelMap[] =
   kAudioChannelLabel_TopBackCenter //  PCM_TOP_BACK_CENTER 
 };
 
+#define MAX_AUDIO_CHANNEL_LABEL kAudioChannelLabel_CenterSurroundDirect
+
 const AudioChannelLayoutTag g_LayoutMap[] = 
 {
   kAudioChannelLayoutTag_Stereo, // PCM_LAYOUT_2_0 = 0,
@@ -68,7 +71,7 @@ const AudioChannelLayoutTag g_LayoutMap[] =
   kAudioChannelLayoutTag_DVD_6, // PCM_LAYOUT_4_1,
   kAudioChannelLayoutTag_MPEG_5_0_A, // PCM_LAYOUT_5_0,
   kAudioChannelLayoutTag_MPEG_5_1_A, // PCM_LAYOUT_5_1,
-  kAudioChannelLayoutTag_AudioUnit_7_0, // PCM_LAYOUT_7_0, ** This layout may be incorrect...no content to testß˚ **
+  kAudioChannelLayoutTag_AudioUnit_7_0, // PCM_LAYOUT_7_0, ** This layout may be incorrect...no content to test **
   kAudioChannelLayoutTag_MPEG_7_1_A, // PCM_LAYOUT_7_1
 };
 
@@ -337,16 +340,153 @@ void CCoreAudioPerformance::Reset()
 //***********************************************************************************************
 // Surround Up/Down Mapping Class
 //***********************************************************************************************
+struct ChannelPatch
+{
+  AudioChannelLabel label; // Target Channel
+  Float32 coeff; // Output level
+};
+
+// TODO: There is not a lot of logic behind these mapping coefficients
+// Routings for Explicit Mapping. These are in priority order.
+// g_ChannelRoutings[channel][routing][patch]
+// These are currently all down-mix routings
+#define MAX_CHANNELS sizeof(g_LabelMap)/sizeof(AudioChannelLabel)
+#define NO_ROUTINGS {{{kAudioChannelLabel_Unknown, 0.0f}}}
+ChannelPatch g_ChannelRoutings[MAX_AUDIO_CHANNEL_LABEL+1][MAX_CHANNELS][MAX_CHANNELS] = 
+{
+  NO_ROUTINGS, // kAudioChannelLabel_Unknown (0)
+  // kAudioChannelLabel_Left (1)
+  {
+    {{kAudioChannelLabel_Center, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_Right (2)
+  {
+    {{kAudioChannelLabel_Center, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_Center (3)
+  {
+    {{kAudioChannelLabel_Left, 0.707f},{kAudioChannelLabel_Right, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_LFEScreen (4)
+  {
+    {{kAudioChannelLabel_Left, 0.707f},{kAudioChannelLabel_Right, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_LeftSurround (5)
+  {
+    {{kAudioChannelLabel_LeftSurroundDirect, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_RightSurround (6)
+  {
+    {{kAudioChannelLabel_RightSurroundDirect, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_LeftCenter (7)
+  {
+    {{kAudioChannelLabel_Center, 0.707f},{kAudioChannelLabel_Left, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_RightCenter (8)
+  {
+    {{kAudioChannelLabel_Center, 0.707f},{kAudioChannelLabel_Right, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_CenterSurround (9)
+  {
+    {{kAudioChannelLabel_LeftSurround, 0.707f},{kAudioChannelLabel_RightSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_LeftSurroundDirect, 0.707f},{kAudioChannelLabel_RightSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 0.707f},{kAudioChannelLabel_Right, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_LeftSurroundDirect (10)
+  {
+    {{kAudioChannelLabel_LeftSurround, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },  
+  // kAudioChannelLabel_RightSurroundDirect (11)
+  {
+    {{kAudioChannelLabel_RightSurround, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  NO_ROUTINGS, //kAudioChannelLabel_TopCenterSurround (12)
+  NO_ROUTINGS, //kAudioChannelLabel_VerticalHeightLeft (13)
+  NO_ROUTINGS, //kAudioChannelLabel_VerticalHeightCenter (14)
+  NO_ROUTINGS, //kAudioChannelLabel_VerticalHeightRight (15)
+  NO_ROUTINGS, //kAudioChannelLabel_TopBackLeft (16)
+  NO_ROUTINGS, //kAudioChannelLabel_TopBackCenter (17)
+  NO_ROUTINGS, //kAudioChannelLabel_VerticalHeightRight (18)
+  NO_ROUTINGS, // INVALID LABEL (19)
+  NO_ROUTINGS, // INVALID LABEL (20)
+  NO_ROUTINGS, // INVALID LABEL (21)
+  NO_ROUTINGS, // INVALID LABEL (22)
+  NO_ROUTINGS, // INVALID LABEL (23)
+  NO_ROUTINGS, // INVALID LABEL (24)
+  NO_ROUTINGS, // INVALID LABEL (25)
+  NO_ROUTINGS, // INVALID LABEL (26)
+  NO_ROUTINGS, // INVALID LABEL (27)
+  NO_ROUTINGS, // INVALID LABEL (28)
+  NO_ROUTINGS, // INVALID LABEL (29)
+  NO_ROUTINGS, // INVALID LABEL (30)
+  NO_ROUTINGS, // INVALID LABEL (31)
+  NO_ROUTINGS, // INVALID LABEL (32)
+  // kAudioChannelLabel_RearSurroundLeft (33)
+  {
+    {{kAudioChannelLabel_LeftSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_LeftSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Left, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  // kAudioChannelLabel_RearSurroundRight (34)
+  {
+    {{kAudioChannelLabel_RightSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_RightSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurround, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_CenterSurroundDirect, 0.707f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Right, 1.0f},{kAudioChannelLabel_Unknown, 0.0f}},
+    {{kAudioChannelLabel_Unknown, 0.0f}}
+  },
+  NO_ROUTINGS, // kAudioChannelLabel_LeftWide (35)
+  NO_ROUTINGS, // kAudioChannelLabel_RightWide (36)
+  NO_ROUTINGS, // kAudioChannelLabel_LFE2 (37)
+  NO_ROUTINGS, // kAudioChannelLabel_LeftTotal (38)
+  NO_ROUTINGS, // kAudioChannelLabel_RightTotal (39)
+  NO_ROUTINGS, // kAudioChannelLabel_HearingImpaired (40)
+  NO_ROUTINGS, // kAudioChannelLabel_Narration (41)
+  NO_ROUTINGS, // kAudioChannelLabel_Mono (42)
+  NO_ROUTINGS, // kAudioChannelLabel_DialogCentricMix (43)
+  NO_ROUTINGS // kAudioChannelLabel_CenterSurroundDirect (44)
+};
+
 CCoreAudioMixMap::CCoreAudioMixMap() :
   m_isValid(false)
 {
-  m_pMap = (Float32*)calloc(sizeof(AudioChannelLayout), 1);
+  m_pMap = (Float32*)calloc(sizeof(Float32), 2);
 }
 
-CCoreAudioMixMap::CCoreAudioMixMap(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout) :
+CCoreAudioMixMap::CCoreAudioMixMap(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout, bool forceExplicit/*=false*/) :
   m_isValid(false)
 {
-  Rebuild(inLayout, outLayout);
+  Rebuild(inLayout, outLayout, forceExplicit);
 }
 
 CCoreAudioMixMap::~CCoreAudioMixMap()
@@ -354,11 +494,10 @@ CCoreAudioMixMap::~CCoreAudioMixMap()
   if (m_pMap)
   {
     free(m_pMap);
-    m_pMap = NULL;
   }
 }
 
-void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout)
+void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout, bool forceExplicit/*=false*/)
 {
   // map[in][out] = mix-level of input_channel[in] into output_channel[out]
 
@@ -371,24 +510,107 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   m_inChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(inLayout);
   m_outChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(outLayout);
   
-  // Try to find a 'well-known' matrix
-  const AudioChannelLayout* layouts[] = {&inLayout, &outLayout};
-  UInt32 propSize = 0;
-  OSStatus ret = AudioFormatGetPropertyInfo(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize);
-  m_pMap = (Float32*)calloc(1,propSize);
-  
-  // Try and get a predefined mixmap
-  ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize, m_pMap);
-  if (!ret)
+  // If the caller allows it, try to find a 'well-known' matrix
+  if (!forceExplicit)
   {
-    m_isValid = true;
-    return; // Nothing else to do...a map already exists
+    const AudioChannelLayout* layouts[] = {&inLayout, &outLayout};
+    UInt32 propSize = 0;
+    OSStatus ret = AudioFormatGetPropertyInfo(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize);
+    m_pMap = (Float32*)calloc(1,propSize);
+    ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize, m_pMap);
+    if (!ret)
+    {
+      m_isValid = true;
+      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild: Unable to locate pre-defined mixing matrix. Trying to build one explicitly...");
+      return; // Nothing else to do...a map already exists
+    }
+    
+    // No predefined mixing matrix was available. Going to have to build it manually
+    CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild: Unable to locate pre-defined mixing matrix. Trying to build one explicitly...");
   }
+  else
+    CLog::Log(LOGINFO, "CCoreAudioMixMap::Rebuild: Building explicit mixing matrix [forceExplicit=true]");
   
-  // No predefined mixmap was available. Going to have to build it manually
-  CLog::Log(LOGDEBUG, "CCoreAudioMixMap::CreateMap: Unable to locate pre-defined mixing matrix");
+  // Try to build a mixing matrix from scratch
+  m_isValid = BuildExplicit(inLayout, outLayout);
+}
+
+bool CCoreAudioMixMap::BuildExplicit(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout)
+{
+  // Initialize map
+  // map[in][out] = mix-level of input_channel[in] into output_channel[out]
+  m_pMap = (Float32*)calloc(sizeof(Float32), inLayout.mNumberChannelDescriptions * outLayout.mNumberChannelDescriptions);
   
-  m_isValid = false;
+  // Initialize array of output channel locations
+  int outPos[MAX_AUDIO_CHANNEL_LABEL + 1];
+  for (UInt32 i = 0; i < (MAX_AUDIO_CHANNEL_LABEL + 1); i++)
+    outPos[i] = -1;
+  
+  // Map output channel order to output layout
+  for (UInt32 channel = 0; channel < outLayout.mNumberChannelDescriptions; channel++)
+    outPos[outLayout.mChannelDescriptions[channel].mChannelLabel] = channel;
+  
+  CLog::Log(LOGDEBUG, "CCoreAudioMixMap::BuildExplicit: Building mixing matrix [%d input channels, %d output channels]", inLayout.mNumberChannelDescriptions, outLayout.mNumberChannelDescriptions);
+
+  // For each input channel, decide how to route/mix it
+  for (UInt32 channel = 0; channel < inLayout.mNumberChannelDescriptions; channel++)
+  {
+    AudioChannelDescription* pDesc = &inLayout.mChannelDescriptions[channel];
+    
+    if (pDesc->mChannelLabel > MAX_AUDIO_CHANNEL_LABEL)
+    {
+      CLog::Log(LOGINFO, "CCoreAudioMixMap::BuildExplicit:\tUnrecognized input channel encountered (label=%d) - skipping.", pDesc->mChannelLabel);
+      continue;
+    }
+    
+    // Does the channel exist in the output?
+    int outIndex = outPos[pDesc->mChannelLabel];
+    if (outIndex > -1) // If so, just pass it through
+    {
+      // map[in][out] = map[in * outCount + out]
+      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::BuildExplicit:\tin[%d] -> out[%d] @ %0.02f", channel, outIndex, 1.0f);
+      m_pMap[channel * outLayout.mNumberChannelDescriptions + outIndex] = 1.0f;
+    }
+    else // The input channel does not exist in the output layout. Decide where to route it...
+    {
+      // Loop through the pre-defined routings strategies for this channel. Use the first compatible one we find
+      for (UInt32 r = 0; r < MAX_CHANNELS; r++)
+      {
+        // If the first patch's label is kAudioChannelLabel_Unknown, this is the routing list terminator
+        if (g_ChannelRoutings[pDesc->mChannelLabel][r][0].label == kAudioChannelLabel_Unknown)
+          break; // No dice...
+        
+        // Check each patch in this routing to see if it is possible. If it is not, give up on this routing
+        bool validRouting = false;
+        for (UInt32 p = 0; ((p < MAX_CHANNELS) && !validRouting); p++)
+        {
+          ChannelPatch* patch = &g_ChannelRoutings[pDesc->mChannelLabel][r][p];
+          if (patch->label == kAudioChannelLabel_Unknown) // End of this routing
+            validRouting = true; // Success...this routing should work.          
+          else if (outPos[patch->label] == -1)
+            break; // The specified output channel is not available. Invalidate the whole routing
+        }
+        
+        // If this is a valid routing (all output channels are available), apply it...
+        if (validRouting)
+        {
+          for (UInt32 p = 0; p < MAX_CHANNELS; p++)
+          {
+            ChannelPatch* patch = &g_ChannelRoutings[pDesc->mChannelLabel][r][p];
+            if (patch->label == kAudioChannelLabel_Unknown) // List terminator
+              break;
+            
+            int outIndex = outPos[patch->label];
+            CLog::Log(LOGDEBUG, "CCoreAudioMixMap::BuildExplicit:\tin[%d] -> out[%d] @ %0.02f", channel, outIndex, patch->coeff);
+            m_pMap[channel * outLayout.mNumberChannelDescriptions + outIndex] = patch->coeff;
+          }
+          break;
+        }
+      }
+    }
+  }    
+  CLog::Log(LOGINFO, "CCoreAudioMixMap::BuildExplicit: Completed explicit channel map.");
+  return true;
 }
 
 //***********************************************************************************************
@@ -977,7 +1199,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
         hasLFE = true;
     }
     
-    // HACK: Fix broken channel layouts coming from some aac sources that include rear channel but no side channels.
+    // HACK: Fix broken channel layouts coming from some aac sources that include rear channels but no side channels.
     // 5.1 streams should include front and side channels. Rear channels are added by 6.1 and 7.1, so any 5.1 
     // source that claims to have rear channels is wrong.
     if (inputFormat.mChannelsPerFrame == 6 && hasLFE) // Check for 5.1 configuration (as best we can without getting too silly)
@@ -1010,7 +1232,15 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     
     // Get User-Configured (XBMC) Speaker Configuration
     AudioChannelLayout guiLayout;
-    guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
+    if (g_sysinfo.IsAppleTV())
+    {
+      // Force ATV1 to a 2.0 layout (that is all it knows), since it does not provide a usable channel layout
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: AppleTV detected - Forcing channel layout to 2.0 (max available PCM channels)");  
+      guiLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo; 
+    }
+    else
+      guiLayout.mChannelLayoutTag = g_LayoutMap[(PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout")];
+    
     CCoreAudioChannelLayout userLayout(guiLayout);
     CStdString strUserLayout;
     CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: User-Configured Speaker Layout: %s", CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)userLayout, strUserLayout));  
@@ -1125,11 +1355,14 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     }
     else
     {
+      CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: No matrix mixer configuration available - unmapped channels will be dropped");
       outputFormat = inputFormat; // We don't know how to map this...let CoreAudio handle it
     }    
   }
   else 
   {
+    if (allowMixing && !channelMap)
+      CLog::Log(LOGINFO, "CCoreAudioRenderer::InitializePCM: No channel map provided - extra channels will be dropped");
     outputFormat = inputFormat;
   }
   

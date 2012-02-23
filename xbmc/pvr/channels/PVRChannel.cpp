@@ -152,7 +152,7 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -166,7 +166,6 @@ bool CPVRChannel::Delete(void)
   }
 
   bReturn = database->Delete(*this);
-  database->Close();
   return bReturn;
 }
 
@@ -176,7 +175,7 @@ CEpg *CPVRChannel::GetEPG(void) const
   {
     CSingleLock lock(m_critSection);
     if (!m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0)
-      epg = g_EpgContainer.GetByChannel(*this);
+      epg = g_EpgContainer.GetById(m_iEpgId);
   }
   return epg;
 }
@@ -206,7 +205,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   if (!m_bChanged && m_iChannelId > 0)
     return bReturn;
 
-  if (CPVRDatabase *database = OpenPVRDatabase())
+  if (CPVRDatabase *database = GetPVRDatabase())
   {
     if (!bQueueWrite)
     {
@@ -218,7 +217,6 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
     {
       bReturn = database->Persist(*this, true) > 0;
     }
-    database->Close();
   }
   else
   {
@@ -674,7 +672,7 @@ bool CPVRChannel::CreateEPG(bool bForce /* = false */)
   if (!m_bEPGCreated || bForce)
   {
     CEpg epgTmp(this, false);
-    if (g_EpgContainer.UpdateEntry(epgTmp, m_iEpgId <= 0))
+    if (g_EpgContainer.UpdateEntry(epgTmp))
     {
       CEpg *epg = g_EpgContainer.GetByChannel(*this);
       if (epg)

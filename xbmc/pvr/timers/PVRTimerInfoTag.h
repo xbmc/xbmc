@@ -66,6 +66,8 @@ namespace PVR
 
   class CPVRTimerInfoTag
   {
+    friend class EPG::CEpgInfoTag;
+
   public:
     CStdString            m_strTitle;           /*!< @brief name of this timer */
     CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
@@ -162,10 +164,16 @@ namespace PVR
     bool UpdateOnClient();
 
   protected:
-    EPG::CEpgInfoTag *    m_epgInfo;
+    /*!
+     * @brief Called by the CEpgInfoTag destructor
+     */
+    virtual void OnEpgTagDeleted(void);
+
     CCriticalSection      m_critSection;
-    CDateTime             m_StartTime; /* start time */
-    CDateTime             m_StopTime;  /* stop time */
-    CDateTime             m_FirstDay;  /* if it is a repeating timer the first date it starts */
+    int                   m_iEpgId;    /*!< the id of the epg table or -1 if none */
+    CDateTime             m_epgStart;  /*!< the start time of the epg tag */
+    CDateTime             m_StartTime; /*!< start time */
+    CDateTime             m_StopTime;  /*!< stop time */
+    CDateTime             m_FirstDay;  /*!< if it is a repeating timer the first date it starts */
   };
 }

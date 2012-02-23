@@ -377,8 +377,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 {
   int iReturn(-1);
 
-  const CEpg *epg = tag.GetTable();
-  if (!epg || epg->EpgID() <= 0)
+  if (tag.EpgID() <= 0)
   {
     CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title().c_str());
     return iReturn;
@@ -388,7 +387,6 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   tag.StartAsUTC().GetAsTime(iStartTime);
   tag.EndAsUTC().GetAsTime(iEndTime);
   tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
-  int iEpgId = epg->EpgID();
 
   int iBroadcastId = tag.BroadcastId();
   CSingleLock lock(m_critSection);
@@ -404,7 +402,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
-        iEpgId, iStartTime, iEndTime,
+        tag.EpgID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
@@ -417,7 +415,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
-        iEpgId, iStartTime, iEndTime,
+        tag.EpgID(), iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),

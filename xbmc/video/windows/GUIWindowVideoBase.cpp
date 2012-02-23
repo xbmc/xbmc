@@ -282,7 +282,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items,"",true,false,DIR_CACHE_ONCE,true,true);
+      CDirectory::GetDirectory(item.GetPath(), items, g_settings.m_videoExtensions,true,false,DIR_CACHE_ONCE,true,true);
       items.Stack();
 
       // check for media files
@@ -1131,7 +1131,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
-      if (item->HasVideoInfoTag() && !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode > -1)
+      if (item->HasVideoInfoTag() && !item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
       }

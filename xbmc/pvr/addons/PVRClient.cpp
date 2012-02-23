@@ -60,6 +60,17 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::ResetProperties(void)
 {
+   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
+
+  /* initialise members */
+  if (!m_pInfo)
+    m_pInfo               = new PVR_PROPERTIES;
+  m_pInfo->iClientId      = -1;
+  CStdString userpath     = _P(Profile());
+  m_pInfo->strUserPath    = userpath.c_str();
+  CStdString clientpath   = _P(Path());
+  m_pInfo->strClientPath  = clientpath.c_str();
+
   m_bReadyToUse           = false;
   m_bGotBackendName       = false;
   m_bGotBackendVersion    = false;
@@ -89,18 +100,9 @@ void CPVRClient::ResetAddonCapabilities(void)
   m_addonCapabilities.bHandlesDemuxing         = false;
 }
 
-void CPVRClient::Create(int iClientId)
+bool CPVRClient::Create(int iClientId)
 {
-  CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
-
-  /* initialise members */
-  if (!m_pInfo)
-    m_pInfo              = new PVR_PROPERTIES;
-  m_pInfo->iClientId     = iClientId;
-  CStdString userpath    = _P(Profile());
-  m_pInfo->strUserPath   = userpath.c_str();
-  CStdString clientpath  = _P(Path());
-  m_pInfo->strClientPath = clientpath.c_str();
+  m_pInfo->iClientId = iClientId;
 
   /* initialise the add-on */
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create())
@@ -110,6 +112,7 @@ void CPVRClient::Create(int iClientId)
     m_bReadyToUse = true;
   }
   /* don't log failed inits here because it will spam the log file as this is called in a loop */
+  return m_bReadyToUse;
 }
 
 void CPVRClient::Destroy(void)
@@ -234,7 +237,7 @@ inline void PVRWriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNE
   addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
 }
 
-PVR_ADDON_CAPABILITIES CPVRClient::GetAddonCapabilities(void)
+PVR_ADDON_CAPABILITIES CPVRClient::GetAddonCapabilities(void) const
 {
   return m_addonCapabilities;
 }

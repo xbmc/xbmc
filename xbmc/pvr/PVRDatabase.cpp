@@ -32,6 +32,7 @@
 using namespace std;
 using namespace dbiplus;
 using namespace PVR;
+using namespace ADDON;
 
 CPVRDatabase::CPVRDatabase(void)
 {
@@ -167,6 +168,19 @@ bool CPVRDatabase::CreateTables()
     bReturn = false;
   }
 
+  // disable all PVR add-on when started the first time
+  ADDON::VECADDONS addons;
+  if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
+    CLog::Log(LOGERROR, "%s - failed to get add-ons from the add-on manager", __FUNCTION__);
+  else
+  {
+    CAddonDatabase database;
+    database.Open();
+    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+      database.DisableAddon(it->get()->ID());
+    database.Close();
+  }
+
   return bReturn;
 }
 
@@ -222,6 +236,24 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
         m_pDS->exec("DROP INDEX idx_idGroup_iChannelNumber;");
         m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
         m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
+      }
+      if (iVersion < 19)
+      {
+        // bit of a hack, but we need to keep the version/contents of the non-pvr databases the same to allow clean upgrades
+        ADDON::VECADDONS addons;
+        if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
+          CLog::Log(LOGERROR, "%s - failed to get add-ons from the add-on manager", __FUNCTION__);
+        else
+        {
+          CAddonDatabase database;
+          database.Open();
+          for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+          {
+            if (!database.IsSystemPVRAddonEnabled(it->get()->ID()))
+              database.DisableAddon(it->get()->ID());
+          }
+          database.Close();
+        }
       }
     }
   }

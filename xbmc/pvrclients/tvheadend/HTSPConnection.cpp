@@ -36,7 +36,7 @@ using namespace ADDON;
 using namespace PLATFORM;
 
 CHTSPConnection::CHTSPConnection() :
-    m_socket(NULL),
+    m_socket(new CTcpConnection(g_strHostname, g_iPortHTSP)),
     m_challenge(NULL),
     m_iChallengeLength(0),
     m_iProtocol(0),
@@ -53,35 +53,41 @@ CHTSPConnection::CHTSPConnection() :
 CHTSPConnection::~CHTSPConnection()
 {
   Close();
+  delete m_socket;
 }
 
 bool CHTSPConnection::Connect()
 {
-  if (m_bIsConnected)
-    return true;
-
-  uint64_t iNow = GetTimeMs();
-  uint64_t iTarget = iNow + m_iConnectTimeout;
-
-  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
-
-  if (!m_socket)
-    m_socket = new CTcpConnection(m_strHostname, m_iPortnumber);
-  while (!m_socket->IsOpen() && iNow < iTarget)
   {
-    if (!m_socket->Open(iTarget - iNow))
-      CEvent::Sleep(100);
-    iNow = GetTimeMs();
-  }
+    CLockObject lock(m_mutex);
 
-  if (!m_socket->IsOpen())
-  {
-    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, m_socket->GetError().c_str());
-    return false;
-  }
+    if (m_bIsConnected)
+      return true;
 
-  m_bIsConnected = true;
-  XBMC->Log(LOG_DEBUG, "%s - connected to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+    if (!m_socket)
+    {
+      XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (couldn't create a socket)", __FUNCTION__);
+      return false;
+    }
+
+    XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+
+    CTimeout timeout(m_iConnectTimeout);
+    while (!m_socket->IsOpen() && timeout.TimeLeft() > 0)
+    {
+      if (!m_socket->Open(timeout.TimeLeft()))
+        CEvent::Sleep(100);
+    }
+
+    if (!m_socket->IsOpen())
+    {
+      XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      return false;
+    }
+
+    m_bIsConnected = true;
+    XBMC->Log(LOG_DEBUG, "%s - connected to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+  }
 
   if (!SendGreeting())
   {
@@ -109,32 +115,27 @@ bool CHTSPConnection::Connect()
 
 void CHTSPConnection::Close()
 {
-  if (!m_bIsConnected)
-    return;
+  CLockObject lock(m_mutex);
   m_bIsConnected = false;
 
-  if(m_socket->IsOpen())
-  {
+  if(m_socket && m_socket->IsOpen())
     m_socket->Close();
-    delete m_socket;
-    m_socket = NULL;
-  }
 
   if(m_challenge)
   {
     free(m_challenge);
-    m_challenge     = NULL;
+    m_challenge        = NULL;
     m_iChallengeLength = 0;
   }
 }
 
 void CHTSPConnection::Abort(void)
 {
-  if (!m_bIsConnected)
-    return;
+  CLockObject lock(m_mutex);
   m_bIsConnected = false;
 
-  m_socket->Shutdown();
+  if(m_socket && m_socket->IsOpen())
+    m_socket->Shutdown();
 }
 
 htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iDatapacketTimeout /* = 10000 */)
@@ -151,7 +152,7 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
 
   {
     CLockObject lock(m_mutex);
-    if (!IsConnected() || !m_socket->IsOpen())
+    if (!IsConnected())
     {
       XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
       return NULL;
@@ -159,8 +160,10 @@ htsmsg_t* CHTSPConnection::ReadMessage(int iInitialTimeout /* = 10000 */, int iD
 
     if (m_socket->Read(&l, 4, iInitialTimeout) != 4)
     {
-      if(m_socket->GetErrorNumber() != ETIMEDOUT && m_socket->GetErrorNumber() != 0)
-        XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
+      if(m_socket->GetErrorNumber() == ETIMEDOUT)
+        return htsmsg_create_map();
+
+      XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%s)", __FUNCTION__, m_socket->GetError().c_str());
       return NULL;
     }
 
@@ -186,6 +189,12 @@ bool CHTSPConnection::TransmitMessage(htsmsg_t* m)
 {
   void*  buf;
   size_t len;
+
+  if (!IsConnected())
+  {
+    XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
+    return NULL;
+  }
 
   if(htsmsg_binary_serialize(m, &buf, &len, -1) < 0)
   {
@@ -343,4 +352,10 @@ bool CHTSPConnection::Auth(void)
   }
 
   return ReadSuccess(m, false, "get reply from authentication with server");
+}
+
+bool CHTSPConnection::IsConnected(void)
+{
+  CLockObject lock(m_mutex);
+  return m_bIsConnected && m_socket && m_socket->IsOpen();
 }

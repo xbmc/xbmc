@@ -71,14 +71,14 @@ namespace PVR
      * @param iGroupId The ID of the group.
      * @return The group or NULL if it wasn't found.
      */
-    const CPVRChannelGroup *GetById(int iGroupId) const;
+    CPVRChannelGroup *GetById(int iGroupId) const;
 
     /*!
      * @brief Get a group given it's name.
      * @param strName The name.
      * @return The group or NULL if it wan't found.
      */
-    const CPVRChannelGroup *GetByName(const CStdString &strName) const;
+    CPVRChannelGroup *GetByName(const CStdString &strName) const;
 
     /*!
      * @brief Get the group that contains all channels.
@@ -105,7 +105,7 @@ namespace PVR
      * @param group The current group.
      * @return The previous group or the group containing all channels if it wasn't found.
      */
-    const CPVRChannelGroup *GetPreviousGroup(const CPVRChannelGroup &group) const;
+    CPVRChannelGroup *GetPreviousGroup(const CPVRChannelGroup &group) const;
 
     /*!
      * @brief Get the ID of the next group in this container.

@@ -43,7 +43,7 @@ public:
   bool        Connect(void);
   void        Close();
   void        Abort();
-  bool        IsConnected(void) const { return m_bIsConnected; }
+  bool        IsConnected(void);
   int         GetProtocol() const { return m_iProtocol; }
   const char *GetServerName() const { return m_strServerName.c_str(); }
   const char *GetVersion() const { return m_strVersion.c_str(); }

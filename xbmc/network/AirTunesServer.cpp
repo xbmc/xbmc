@@ -115,9 +115,6 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   CFileItem item;
   item.SetPath(device->pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
-  item.SetProperty("isradio", true);
-  item.SetProperty("no-skip", true);
-  item.SetProperty("no-pause", true);
 
   if (ao_get_option(option, "artist"))
     item.GetMusicInfoTag()->SetArtist(ao_get_option(option, "artist"));

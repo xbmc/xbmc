@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
 <!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 12/25/2011-->
+<!--Date of translation: 02/21/2012-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programy</string>
@@ -808,8 +808,11 @@
   <string id="10019">Ustawienia - Wygląd</string>
   <string id="10020">Skrypty</string>
   <string id="10021">Przeglądarka</string>
+  <string id="10025">Pliki wideo</string>
   <string id="10028">Wideo/Playlista</string>
+  <string id="10029">Ekran logowania</string>
   <string id="10034">Ustawienia - Profile</string>
+  <string id="10040">Przeglądarka wtyczek</string>
   <string id="10100">Dialog Tak/Nie</string>
   <string id="10101">Okno postępu</string>
   <string id="10210">Szukam napisów...</string>
@@ -1788,6 +1791,9 @@
   <string id="20256">Klient HTS Tvheadend</string>
   <string id="20257">Klient VDR Streamdev</string>
   <string id="20258">Klient MythTV</string>
+  <string id="20259">System plików NFS</string>
+  <string id="20260">SSH/SFTP</string>
+  <string id="20261">Protokół AFP</string>
   <string id="20300">Katalog serwera web (HTTP)</string>
   <string id="20301">Katalog serwera web (HTTPS)</string>
   <string id="20302">Nie powiódł się zapis do folderu:</string>
@@ -1806,6 +1812,7 @@
   <string id="20326">Spowoduje to reset ustawień kalibracji dla %s</string>
   <string id="20327">i zostaną przywrócone wartości domyślne.</string>
   <string id="20328">Wskaż katalog docelowy</string>
+  <string id="20329">Filmy są w oddzielnych katalogach, z nazwami tytułu filmu</string>
   <string id="20330">Nazwa folderu jako podstawa szukania</string>
   <string id="20331">Plik</string>
   <string id="20332">Użyć nazwy pliku lub folderu jako podstawy szukania?</string>
@@ -1932,6 +1939,7 @@
   <string id="20455">Słuchaczy</string>
   <string id="20456">Ustaw fanart dla kolekcji filmów</string>
   <string id="20457">Kolekcja filmów</string>
+  <string id="20458">Grupuj filmy w kolekcje</string>
   <string id="21330">Pokazuj ukryte pliki i foldery</string>
   <string id="21331">Klient TuxBox</string>
   <string id="21332">UWAGA: Urządzenie TuxBox jest w trybie nagrywania!</string>
@@ -2030,6 +2038,8 @@
   <string id="21451">Wymagane połączenie z Internetem.</string>
   <string id="21452">Pobierz więcej...</string>
   <string id="21453">Główny system plików</string>
+  <string id="21454">Pełny bufor</string>
+  <string id="21455">Bufor wypełniany zanim osiągnie wymagany poziom do ciągłego odtwarzania</string>
   <string id="21460">Położenie napisów</string>
   <string id="21461">Stałe</string>
   <string id="21462">Dół wideo</string>
@@ -2199,6 +2209,7 @@
   <string id="24041">Instaluj z pliku zip</string>
   <string id="24042">Pobieram %i%%</string>
   <string id="24043">Dostępne aktualizacje</string>
+  <string id="24044">Zależności nie są spełnione</string>
   <string id="24045">Wtyczka nie ma właściwej struktury</string>
   <string id="24046">%s jest używany przez następujące zainstalowane wtyczki</string>
   <string id="24047">Ta wtyczka nie może zostać usunięta</string>
@@ -2313,6 +2324,7 @@
   <string id="33101">Serwer WWW</string>
   <string id="33102">Serwer zdarzeń</string>
   <string id="33103">Serwer zdalnej komunikacji</string>
+  <string id="33200">Wykryto nowe połączenie</string>
   <string id="34100">System głośników</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
@@ -2327,6 +2339,12 @@
 
   <string id="34201">Nie mogę znaleźć następnej pozycji do odtworzenia</string>
   <string id="34202">Nie mogę znaleźć poprzedniej pozycji do odtworzenia</string>
+  <string id="34300">Błąd podczas startu zeroconf</string>
+  <string id="34301">Usługa Apple Bonjour jest zainstalowana? Sprawdź log.</string>
+  <string id="34400">Rendering wideo</string>
+  <string id="34401">Błąd inicjalizacji filtrów/skalerów wideo, powracam do skalowania bilinearnego</string>
+  <string id="34402">Błąd inicjalizacji urządzenia audio</string>
+  <string id="34403">Sprawdź ustawienia dźwięku</string>
   <string id="35000">Peryferia</string>
   <string id="35001">Standardowe urządzenie HID</string>
   <string id="35002">Standardowy adapter sieciowy</string>
@@ -2334,7 +2352,13 @@
   <string id="35004">To urządzenie nie ma ustawień.</string>
   <string id="35005">Skonfigurowano nowe urządzenie</string>
   <string id="35006">Usunięto urządzenie</string>
+  <string id="35007">Mapa klawiszy do użycia z tym urządzeniem</string>
+  <string id="35008">Mapa klawiszy włączona</string>
   <string id="35500">Położenie</string>
+  <string id="35501">Klasa</string>
+  <string id="35502">Nazwa</string>
+  <string id="35503">Dostawca</string>
+  <string id="35504">ID produktu</string>
   <string id="36000">Adapter Pulse-Eight CEC</string>
   <string id="36006">Nie mogę połączyć się z adapterem</string>
   <string id="36007">Włącz TV, kiedy uruchomiany jest XBMC</string>

@@ -21,7 +21,6 @@
  */
 
 #include "VNSISession.h"
-#include "thread.h"
 #include "client.h"
 
 #include <string>
@@ -30,7 +29,7 @@
 class cResponsePacket;
 class cRequestPacket;
 
-class cVNSIData : public cVNSISession, public cThread
+class cVNSIData : public cVNSISession, public PLATFORM::CThread
 {
 public:
 
@@ -70,7 +69,7 @@ public:
 
 protected:
 
-  virtual void Action(void);
+  virtual void *Process(void);
   virtual bool OnResponsePacket(cResponsePacket *pkt);
 
   void SignalConnectionLost();
@@ -83,13 +82,13 @@ private:
 
   struct SMessage
   {
-    cCondWait       *event;
-    cResponsePacket *pkt;
+    PLATFORM::CEvent *event;
+    cResponsePacket  *pkt;
   };
   typedef std::map<int, SMessage> SMessages;
 
-  cMutex          m_Mutex;
-  SMessages       m_queue;
-  std::string     m_videodir;
-  bool            m_aborting;
+  SMessages        m_queue;
+  std::string      m_videodir;
+  bool             m_aborting;
+  PLATFORM::CMutex m_mutex;
 };

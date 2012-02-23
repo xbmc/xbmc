@@ -707,7 +707,7 @@
   <string id="852">유효한 포트 범위는 1024-65535 입니다</string>
 
   <string id="998">음악 파일 위치 추가...</string>
-  <string id="999">비디오 파일 위치 추가...</string>
+  <string id="999">비디오 추가...</string>
   <string id="1000">- 미리보기</string>
   <string id="1001">연결할수 없음</string>
   <string id="1002">XBMC가 네트워크에 연결할수 없습니다.</string>
@@ -874,9 +874,11 @@
   <string id="10019">설정 - 모양새</string>
   <string id="10020">스크립트</string>
   <string id="10021">웹 브라우저</string>
-
+  <string id="10025">비디오</string>
   <string id="10028">비디오/재생목록</string>
+  <string id="10029">로그인 화면</string>
   <string id="10034">설정 - 프로파일</string>
+  <string id="10040">애드온 탐색기</string>
 
   <string id="10100">예/아니오 대화창</string>
   <string id="10101">진행 대화창</string>
@@ -1209,7 +1211,7 @@
   <string id="13409">인기 250</string>
   <string id="13410">Last.fm 에 채널을 맞춤</string>
   <string id="13411">최소 팬 속도</string>
-  <string id="13412">Play from here</string>
+  <string id="13412">이 항목부터 재생</string>
   <string id="13413">다운로드</string>
   <string id="13414">컴필레이션에만 있는 아티스트 포함</string>
   <string id="13415">렌더링 방식</string>
@@ -1772,7 +1774,7 @@
   <string id="20326">기본값으로 %s 조정값를</string>
   <string id="20327">초기화하게 됩니다.</string>
   <string id="20328">대상 찾기</string>
-
+  <string id="20329">영화 파일들이 영화 제목과 같은 개별 폴더에 저장됨</string>
   <string id="20330">검색에 폴더 이름 사용</string>
   <string id="20331">파일</string>
   <string id="20332">검색에 파일이나 폴더 이름을 사용 하시겠습니까?</string>
@@ -1862,7 +1864,7 @@
   <string id="20416">초연</string>
   <string id="20417">각본</string>
   <string id="20418">파일 및 폴더 이름 정리</string>
-  <string id="20419">파일 보기에서 미디어정보 보기</string>
+  <string id="20419">파일명을 라이브러리 제목으로 표시</string>
 
   <string id="20420">안함</string>
   <string id="20421">한 시즌 일때만</string>
@@ -1902,6 +1904,7 @@
   <string id="20455">청취자</string>
   <string id="20456">시리즈 영화 팬아트 설정</string>
   <string id="20457">시리즈 영화</string>
+  <string id="20458">시리즈 영화 묶기</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
@@ -2009,6 +2012,8 @@
   <string id="21451">인터넷 연결이 필요함.</string>
   <string id="21452">더 가져오기...</string>
   <string id="21453">루트 파일시스템</string>
+  <string id="21454">캐시 가득참</string>
+  <string id="21455">연속 재생에 필요한 양에 도달하기 전에 캐시가 채워짐</string>
 
   <string id="21460">자막 위치</string>
   <string id="21461">고정</string>
@@ -2198,7 +2203,7 @@
   <string id="24041">압축 파일에서 설치</string>
   <string id="24042">%i%% 다운로드중</string>
   <string id="24043">사용가능한 업데이트</string>
-  <string id="24044">Dependencies not met</string>
+  <string id="24044">설치 요구조건을 충족하지 않습니다</string>
   <string id="24045">애드온의 구조가 바르지 않습니다</string>
   <string id="24046">%s 을 설치된 애드온이 사용합니다.</string>
   <string id="24047">이 추가기능은 제거할 수 없습니다</string>
@@ -2329,6 +2334,8 @@
   <string id="33102">이벤트 서버</string>
   <string id="33103">원격 커뮤니케이션 서버</string>
 
+  <string id="33200">새 연결 검색됨</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2353,6 +2360,14 @@
   <string id="34201">재생할 다음 항목이 없습니다</string>
   <string id="34202">재생할 이전 항목이 없습니다</string>
 
+  <string id="34300">제로컨프 시작 실패</string>
+  <string id="34301">애플 봉주르 서비스가 설치되어 있습니까? 자세한 정보는 로그를 확인하세요.</string>
+  
+  <string id="34400">비디오 렌더링</string>
+  <string id="34401">비디오 필터/스케일러 초기화 실패. 이중선형 스케일링으로 변경합니다</string>
+  <string id="34402">오디오 장치 초기화 실패</string>
+  <string id="34403">오디오 설정을 확인하세요</string>
+
   <string id="35000">주변장치</string>
 
   <string id="35001">Generic HID 장치</string>
@@ -2375,7 +2390,7 @@
   <string id="36002">키보드 사이드 명령으로 전환</string>
   <string id="36003">리모콘 사이드 명령으로 전환</string>
   <string id="36004">"user" 버튼 명령 누르기</string>
-  <string id="36005">Enable switch side commands</string>
+  <string id="36005">스위치 사이드 명령 사용</string>
   <string id="36006">어댑터를 열 수 없습니다</string>
   <string id="36007">XBMC 시작시 TV 켜기</string>
   <string id="36008">XBMC 종료시 장치 전원 끄기</string>

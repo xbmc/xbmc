@@ -239,28 +239,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.m_ignore = true;
     extraShares.push_back(share1);
 
-#ifdef HAS_FILESYSTEM_SMB
-    share1.strPath = "smb://";
-    share1.strName = g_localizeStrings.Get(20171);
-    extraShares.push_back(share1);
-#endif
-
-#ifdef HAS_FILESYSTEM_NFS
-    share1.strPath = "nfs://";
-    share1.strName = g_localizeStrings.Get(20259);
-    extraShares.push_back(share1);
-#endif// HAS_FILESYSTEM_NFS
-
-    share1.strPath = "upnp://";
-    share1.strName = "UPnP Devices";
-    extraShares.push_back(share1);
-
     share1.strPath = "sap://";
     share1.strName = "SAP Streams";
-    extraShares.push_back(share1);
-
-    share1.strPath = "zeroconf://";
-    share1.strName = "Zeroconf Browser";
     extraShares.push_back(share1);
 
     if (g_guiSettings.GetString("audiocds.recordingpath",false) != "")
@@ -288,18 +268,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "rtv://*/";
     share1.strName = "ReplayTV Devices";
     extraShares.push_back(share1);
-
-#ifdef HAS_FILESYSTEM_SMB
-    share1.strPath = "smb://";
-    share1.strName = g_localizeStrings.Get(20171);
-    extraShares.push_back(share1);
-#endif
-
-#ifdef HAS_FILESYSTEM_NFS
-    share1.strPath = "nfs://";
-    share1.strName = g_localizeStrings.Get(20259);
-    extraShares.push_back(share1);
-#endif// HAS_FILESYSTEM_NFS
 
     share1.strPath = "hdhomerun://";
     share1.strName = "HDHomerun Devices";
@@ -335,26 +303,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strName = g_localizeStrings.Get(20008);
       extraShares.push_back(share1);
     }
-
-#ifdef HAS_FILESYSTEM_SMB
-    share1.strPath = "smb://";
-    share1.strName = g_localizeStrings.Get(20171);
-    extraShares.push_back(share1);
-#endif
-
-#ifdef HAS_FILESYSTEM_NFS
-    share1.strPath = "nfs://";
-    share1.strName = g_localizeStrings.Get(20259);
-    extraShares.push_back(share1);
-#endif// HAS_FILESYSTEM_NFS
-
-    share1.strPath = "upnp://";
-    share1.strName = "UPnP Devices";
-    extraShares.push_back(share1);
-
-    share1.strPath = "zeroconf://";
-    share1.strName = "Zeroconf Browser";
-    extraShares.push_back(share1);
   }
   else if (m_type == "programs")
   {
