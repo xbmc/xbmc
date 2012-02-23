@@ -64,14 +64,14 @@ CPVRManager::CPVRManager(void) :
     m_loadingProgressDialog(NULL),
     m_managerState(ManagerStateStopped)
 {
-  m_database->Open();
   ResetProperties();
 }
 
 CPVRManager::~CPVRManager(void)
 {
   Stop();
-  m_database->Close();
+  if (m_database->IsOpen())
+    m_database->Close();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -134,6 +134,8 @@ void CPVRManager::Start(void)
 
   ResetProperties();
   SetState(ManagerStateStarting);
+
+  m_database->Open();
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
