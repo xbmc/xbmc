@@ -68,8 +68,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
-    CStdString thumb = CVideoThumbLoader::GetLocalThumb(*pItem);
-    if (thumb.IsEmpty())
+    if (!CVideoThumbLoader::FillThumb(*pItem))
     {
       CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
       CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);

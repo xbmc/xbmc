@@ -1256,11 +1256,10 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
           cast += character;
         }*/
         output += closeTag+openTag+"Cast:" + cast;
-        thumb = CVideoThumbLoader::GetLocalThumb(*item);
-        if (thumb.IsEmpty())
+        if (!CVideoThumbLoader::FillThumb(*item))
           thumb = "[None]";
         else
-          thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+          thumb = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
         output += closeTag+openTag+"Thumb:" + thumb;
         m_database.Close();
         delete item;
