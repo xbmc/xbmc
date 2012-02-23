@@ -36,9 +36,11 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
+#include "video/VideoInfoScanner.h"
 
 using namespace XFILE;
 using namespace std;
+using namespace VIDEO;
 
 CThumbLoader::CThumbLoader(int nThreads) :
   CBackgroundInfoLoader(nThreads)
@@ -205,6 +207,44 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     map<string, string> artwork;
     if (db.GetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork))
       pItem->SetArt(artwork);
+    else
+    {
+      if (pItem->GetVideoInfoTag()->m_type == "movie" ||
+          pItem->GetVideoInfoTag()->m_type == "episode" ||
+          pItem->GetVideoInfoTag()->m_type == "tvshow" ||
+          pItem->GetVideoInfoTag()->m_type == "musicvideo")
+      { // no art in the library, so find it locally and add
+        SScanSettings settings;
+        ADDON::ScraperPtr info = db.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath, settings);
+        if (info)
+        {
+          CFileItem item(*pItem);
+          item.SetPath(pItem->GetVideoInfoTag()->GetPath());
+          CVideoInfoScanner scanner;
+          scanner.GetArtwork(&item, info->Content(), settings.parent_name_root, true);
+          pItem->SetArt(item.GetArt());
+        }
+      }
+      else if (pItem->GetVideoInfoTag()->m_type == "set")
+      { // no art for a set -> use the first movie for this set for art
+        CFileItemList items;
+        if (db.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, pItem->GetVideoInfoTag()->m_iDbId) && items.Size() > 0)
+        {
+          if (db.GetArtForItem(items[0]->GetVideoInfoTag()->m_iDbId, items[0]->GetVideoInfoTag()->m_type, artwork))
+            pItem->SetArt(artwork);
+        }
+      }
+      // add to the database for next time around
+      map<string, string> artwork = pItem->GetArt();
+      if (!artwork.empty())
+      {
+        db.SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork);
+        for (map<string, string>::iterator i = artwork.begin(); i != artwork.end(); ++i)
+          CTextureCache::Get().BackgroundCacheImage(i->second);
+      }
+      else // nothing found - set an empty thumb so that next time around we don't hit here again
+        db.SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, "thumb", "");
+    }
     // For episodes and seasons, we want to set fanart for that of the show
     if (!pItem->HasProperty("fanart_image") && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
