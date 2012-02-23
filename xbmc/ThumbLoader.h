@@ -67,8 +67,6 @@ public:
   CThumbLoader(int nThreads=-1);
   virtual ~CThumbLoader();
 
-  bool LoadRemoteThumb(CFileItem *pItem);
-
   /*! \brief Checks whether the given item has an image listed in the texture database
    \param item CFileItem to check
    \param type the type of image to retrieve
