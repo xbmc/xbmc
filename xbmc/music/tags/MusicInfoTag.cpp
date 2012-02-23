@@ -57,6 +57,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_strComment = tag.m_strComment;
   m_strLyrics = tag.m_strLyrics;
+  m_strCueSheet = tag.m_strCueSheet;
   m_strLastPlayed = tag.m_strLastPlayed;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
@@ -166,6 +167,11 @@ const CStdString &CMusicInfoTag::GetLyrics() const
   return m_strLyrics;
 }
 
+const CStdString &CMusicInfoTag::GetCueSheet() const
+{
+  return m_strCueSheet;
+}
+
 char CMusicInfoTag::GetRating() const
 {
   return m_rating;
@@ -272,6 +278,10 @@ void CMusicInfoTag::SetLyrics(const CStdString& lyrics)
   m_strLyrics = lyrics;
 }
 
+	void CMusicInfoTag::SetCueSheet(const CStdString& cuesheet)
+{
+  m_strCueSheet = cuesheet;
+}
 void CMusicInfoTag::SetRating(char rating)
 {
   m_rating = rating;
