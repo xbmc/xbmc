@@ -314,15 +314,22 @@ const CEpgInfoTag *CEpg::GetTagAround(const CDateTime &time) const
 
 void CEpg::AddEntry(const CEpgInfoTag &tag)
 {
-  CEpgInfoTag *newTag = new CEpgInfoTag();
-  if (newTag)
+  CEpgInfoTag *newTag(NULL);
   {
+    CSingleLock lock(m_critSection);
+    map<CDateTime, CEpgInfoTag*>::iterator itr = m_tags.find(tag.StartAsUTC());
+    if (itr != m_tags.end())
+      newTag = itr->second;
+    else
     {
-      CSingleLock lock(m_critSection);
+      newTag = new CEpgInfoTag;
       m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
       newTag->m_iEpgId = m_iEpgID;
     }
+  }
 
+  if (newTag)
+  {
     newTag->Update(tag);
     newTag->m_iEpgId = m_iEpgID;
     newTag->m_bChanged = false;
