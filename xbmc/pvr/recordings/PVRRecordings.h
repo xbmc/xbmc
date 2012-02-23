@@ -33,13 +33,14 @@ namespace PVR
   private:
     CCriticalSection m_critSection;
     bool             m_bIsUpdating;
+    CStdString       m_strDirectoryHistory;
 
     virtual void UpdateFromClients(void);
     virtual CStdString TrimSlashes(const CStdString &strOrig) const;
     virtual const CStdString GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const;
     virtual bool IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember = true) const;
     virtual void GetContents(const CStdString &strDirectory, CFileItemList *results) const;
-    virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true) const;
+    virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true);
 
   public:
     CPVRRecordings(void);
