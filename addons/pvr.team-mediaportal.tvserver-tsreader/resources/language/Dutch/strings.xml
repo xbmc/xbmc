@@ -26,6 +26,7 @@
     <!-- on-screen error messages -->
     <string id="30050">Uw TVServerXBMC plugin '%s' is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
     <string id="30051">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
+    <string id="30052">Afspelen opname mislukt. Lege URL of bestandsnaam.</string>
 
     <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
     <string id="30060">Alle kaarten zijn bezet</string>

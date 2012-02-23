@@ -1678,6 +1678,11 @@ bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
     else
       return true;
   }
+  else
+  {
+    XBMC->Log(LOG_ERROR, "Recording playback not possible. Backend returned empty filename or stream URL for recording id %s", recording.strRecordingId );
+    XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30052));
+  }
 #endif
 
   return false;

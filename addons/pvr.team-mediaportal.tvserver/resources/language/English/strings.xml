@@ -22,6 +22,7 @@
     <!-- on-screen error messages -->
     <string id="30050">Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!</string>
     <string id="30051">Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!</string>
+    <string id="30052">Recording playback failed. Empty URL of filename.</string>
 
     <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
     <string id="30060">All cards are busy</string>
