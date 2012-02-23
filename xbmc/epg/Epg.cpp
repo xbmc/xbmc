@@ -46,7 +46,6 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
-    m_nowActive(NULL),
     m_iPVRChannelId(-1)
 {
   m_lastScanTime.SetValid(false);
@@ -61,7 +60,6 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
-    m_nowActive(NULL),
     m_iPVRChannelId(channel->ChannelID())
 {
   m_lastScanTime.SetValid(false);
@@ -76,7 +74,6 @@ CEpg::CEpg(void) :
     m_iEpgID(0),
     m_strName(StringUtils::EmptyString),
     m_strScraperName(StringUtils::EmptyString),
-    m_nowActive(NULL),
     m_iPVRChannelId(-1)
 {
   m_lastScanTime.SetValid(false);
@@ -97,7 +94,7 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_iEpgID          = right.m_iEpgID;
   m_strName         = right.m_strName;
   m_strScraperName  = right.m_strScraperName;
-  m_nowActive       = right.m_nowActive;
+  m_nowActiveStart  = right.m_nowActiveStart;
   m_lastScanTime    = right.m_lastScanTime;
   m_firstDate       = right.m_firstDate;
   m_lastDate        = right.m_lastDate;
@@ -147,7 +144,6 @@ void CEpg::Clear(void)
 {
   CSingleLock lock(m_critSection);
 
-  m_nowActive = NULL;
   for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
     delete it->second;
   m_tags.clear();
@@ -168,8 +164,8 @@ void CEpg::Cleanup(const CDateTime &Time)
   {
     if (it->second->EndAsUTC() < Time)
     {
-      if (m_nowActive && *m_nowActive == *it->second)
-        m_nowActive = NULL;
+      if (m_nowActiveStart == it->first)
+        m_nowActiveStart.SetValid(false);
 
       delete it->second;
       m_tags.erase(it++);
@@ -181,10 +177,20 @@ void CEpg::Cleanup(const CDateTime &Time)
     UpdateFirstAndLastDates();
 }
 
-bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
+bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
 {
   CSingleLock lock(m_critSection);
-  if (!m_nowActive || !m_nowActive->IsActive())
+  if (m_nowActiveStart.IsValid())
+  {
+    map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(m_nowActiveStart);
+    if (it != m_tags.end())
+    {
+      tag = *it->second;
+      return true;
+    }
+  }
+
+  if (bUpdateIfNeeded)
   {
     CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
     /* one of the first items will always match if the list is sorted */
@@ -192,18 +198,17 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
     {
       if (it->second->StartAsUTC() <= now && it->second->EndAsUTC() > now)
       {
-        m_nowActive = it->second;
-        break;
+        m_nowActiveStart = it->first;
+        tag = *it->second;
+        return true;
       }
     }
   }
 
-  if (m_nowActive)
-    tag = *m_nowActive;
-  return m_nowActive != NULL;
+  return false;
 }
 
-bool CEpg::InfoTagNext(CEpgInfoTag &tag) const
+bool CEpg::InfoTagNext(CEpgInfoTag &tag)
 {
   CEpgInfoTag nowTag;
   if (InfoTagNow(nowTag))
@@ -223,14 +228,14 @@ bool CEpg::InfoTagNext(CEpgInfoTag &tag) const
 bool CEpg::CheckPlayingEvent(void)
 {
   bool bReturn(false);
-  CSingleLock lock(m_critSection);
-  const CEpgInfoTag *previousTag = m_nowActive;
-  CEpgInfoTag tag;
-  if (InfoTagNow(tag) && (!previousTag || *previousTag != tag))
+  CEpgInfoTag previousTag, newTag;
+
+  if (!InfoTagNow(previousTag, false) || (InfoTagNow(newTag) && previousTag != newTag))
   {
     NotifyObservers("epg-current-event");
     bReturn = true;
   }
+
   return bReturn;
 }
 
@@ -403,7 +408,6 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 
     CLog::Log(LOGDEBUG, "%s - %u entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
     FixOverlappingEvents(bStoreInDb);
-    m_nowActive = NULL;
     CLog::Log(LOGDEBUG, "%s - %u entries in memory after fixing", __FUNCTION__, m_tags.size());
     /* update the last scan time of this table */
     m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -657,8 +661,8 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       else
         bReturn = true;
 
-      if (m_nowActive && *m_nowActive == *currentTag)
-        m_nowActive = NULL;
+      if (m_nowActiveStart == it->first)
+        m_nowActiveStart.SetValid(false);
 
       delete currentTag;
       m_tags.erase(it++);

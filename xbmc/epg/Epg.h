@@ -156,13 +156,13 @@ namespace EPG
      * @brief Get the event that is occurring now.
      * @return The current event.
      */
-    virtual bool InfoTagNow(CEpgInfoTag &tag) const;
+    virtual bool InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded = true);
 
     /*!
      * @brief Get the event that will occur next.
      * @return The next event.
      */
-    virtual bool InfoTagNext(CEpgInfoTag &tag) const;
+    virtual bool InfoTagNext(CEpgInfoTag &tag);
 
     /*!
      * @brief Get the event that occurs at the given time.
@@ -338,7 +338,7 @@ namespace EPG
     int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
     CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
-    mutable const CEpgInfoTag *m_nowActive;       /*!< the tag that is currently active */
+    CDateTime                  m_nowActiveStart;  /*!< the start time of the tag that is currently active */
 
     CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
     CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
@@ -346,6 +346,6 @@ namespace EPG
 
     int                        m_iPVRChannelId;   /*!< the channel this EPG belongs to */
 
-    mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
+    CCriticalSection           m_critSection;     /*!< critical section for changes in this table */
   };
 }
