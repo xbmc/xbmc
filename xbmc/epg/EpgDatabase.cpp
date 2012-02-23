@@ -377,7 +377,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 {
   int iReturn(-1);
 
-  if (!tag.EpgID() <= 0)
+  if (tag.EpgID() <= 0)
   {
     CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title().c_str());
     return iReturn;
