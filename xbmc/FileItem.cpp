@@ -132,7 +132,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   if (movie.m_iSeason == 0) SetProperty("isspecial", "true");
   FillInDefaultIcon();
-  SetCachedVideoThumb();
 }
 
 CFileItem::CFileItem(const CArtist& artist)

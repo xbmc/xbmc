@@ -260,12 +260,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       item->SetLabel(character);
       m_castList->Add(item);
     }
-    // set fanart property for tvshows and movies
-    if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-    {
-      if (m_movieItem->CacheLocalFanart())
-        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
-    }
     // determine type:
     if (type == VIDEODB_CONTENT_TVSHOWS)
     {
@@ -287,8 +281,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_firstAired;
       if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
-      if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
-        m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
       // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
       //       rather than bothering with show path and the localized strings involved?

@@ -4287,33 +4287,6 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
           pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
         }
-        bool thumb=false,fanart=false;
-        if (CFile::Exists(pItem->GetCachedVideoThumb()))
-        {
-          pItem->SetThumbnailImage(pItem->GetCachedVideoThumb());
-          thumb = true;
-        }
-        if (CFile::Exists(pItem->GetCachedFanart()))
-        {
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-          fanart = true;
-        }
-        if (!thumb || !fanart) // use the first item's thumb
-        {
-          CStdString strSQL = PrepareSQL("select strPath, strFileName from movieview join setlinkmovie on setlinkmovie.idMovie=movieview.idMovie where setlinkmovie.idSet=%u", m_pDS->fv("sets.idSet").get_asInt());
-          m_pDS2->query(strSQL.c_str());
-          if (!m_pDS2->eof())
-          {
-            CStdString path;
-            ConstructPath(path,m_pDS2->fv(0).get_asString(),m_pDS2->fv(1).get_asString());
-            CFileItem item(path,false);
-            if (!thumb && CFile::Exists(item.GetCachedVideoThumb()))
-              pItem->SetThumbnailImage(item.GetCachedVideoThumb());
-            if (!fanart && CFile::Exists(item.GetCachedFanart()))
-              pItem->SetProperty("fanart_image",item.GetCachedFanart());
-            m_pDS2->close();
-          }
-        }
         items.Add(pItem);
         m_pDS->next();
       }
@@ -4456,11 +4429,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->SetIconImage("DefaultArtist.png");
       }
       else
-      {
-        if (CFile::Exists(pItem->GetCachedActorThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
         pItem->SetIconImage("DefaultActor.png");
-      }
     }
     return true;
   }

@@ -196,6 +196,31 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     db.Close();
   }
 
+  // video db items normally have info in the database
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
+     !pItem->GetVideoInfoTag()->m_type.IsEmpty() && pItem->GetArt().empty())
+  {
+    CVideoDatabase db;
+    db.Open();
+    map<string, string> artwork;
+    if (db.GetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork))
+      pItem->SetArt(artwork);
+    // For episodes and seasons, we want to set fanart for that of the show
+    if (!pItem->HasProperty("fanart_image") && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
+    {
+      string fanart = db.GetArtForItem(pItem->GetVideoInfoTag()->m_iIdShow, "tvshow", "fanart");
+      if (!fanart.empty())
+        pItem->SetProperty("fanart_image", fanart);
+    }
+    db.Close();
+  }
+
+  if (pItem->GetVideoInfoTag()->m_type != "movie" &&
+      pItem->GetVideoInfoTag()->m_type != "episode" &&
+      pItem->GetVideoInfoTag()->m_type != "tvshow" &&
+      pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    return true; // nothing else to be done
+
   // fanart
   if (!pItem->HasProperty("fanart_image"))
   {
