@@ -205,12 +205,9 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
     else
     {
       mappedClient->Destroy();
-      CPVRDatabase *database = OpenPVRDatabase();
+      CPVRDatabase *database = GetPVRDatabase();
       if (database)
-      {
         database->DeleteClient(mappedClient->ID());
-        database->Close();
-      }
     }
     g_PVRManager.StartUpdateThreads();
   }
@@ -1064,7 +1061,7 @@ void CPVRClients::StartChannelScan(void)
 int CPVRClients::AddClientToDb(const AddonPtr client)
 {
   /* add this client to the database if it's not in there yet */
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   int iClientDbId = database ? database->AddClient(client->Name(), client->ID()) : -1;
   if (iClientDbId == -1)
   {
@@ -1261,7 +1258,7 @@ void CPVRClients::SaveCurrentChannelSettings(void)
       return;
   }
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return;
 
@@ -1277,8 +1274,6 @@ void CPVRClients::SaveCurrentChannelSettings(void)
         __FUNCTION__, channel.ChannelName().c_str());
     database->DeleteChannelSettings(channel);
   }
-
-  database->Close();
 }
 
 void CPVRClients::LoadCurrentChannelSettings(void)
@@ -1290,7 +1285,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
       return;
   }
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return;
 
@@ -1301,7 +1296,6 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 
     /* try to load the settings from the database */
     database->GetChannelSettings(channel, loadedChannelSettings);
-    database->Close();
 
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
     g_settings.m_currentVideoSettings.m_Brightness          = loadedChannelSettings.m_Brightness;

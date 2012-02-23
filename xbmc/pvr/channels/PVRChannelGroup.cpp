@@ -216,7 +216,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath").IsEmpty())
     return;
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return;
 
@@ -252,8 +252,6 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
     /* TODO: start channel icon scraper here if nothing was found */
   }
-
-  database->Close();
 }
 
 /********** sort methods **********/
@@ -524,14 +522,13 @@ CPVRChannelGroup *CPVRChannelGroup::GetNextGroup(void) const
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return -1;
 
   int iChannelCount = size();
 
   database->GetGroupMembers(*this);
-  database->Close();
 
   return size() - iChannelCount;
 }
@@ -628,7 +625,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
   bool bUseBackendChannelNumbers(size() == 0 || m_bUsingBackendChannelOrder);
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -655,8 +652,6 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   {
     bReturn = true;
   }
-
-  database->Close();
 
   return bReturn;
 }
@@ -837,7 +832,7 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges())
     return bReturn;
 
-  if (CPVRDatabase *database = OpenPVRDatabase())
+  if (CPVRDatabase *database = GetPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) size());
@@ -845,7 +840,6 @@ bool CPVRChannelGroup::Persist(void)
     lock.Leave();
 
     bReturn = database->Persist(*this);
-    database->Close();
   }
   else
   {

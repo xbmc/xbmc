@@ -64,12 +64,14 @@ CPVRManager::CPVRManager(void) :
     m_loadingProgressDialog(NULL),
     m_managerState(ManagerStateStopped)
 {
+  m_database->Open();
   ResetProperties();
 }
 
 CPVRManager::~CPVRManager(void)
 {
   Stop();
+  m_database->Close();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -111,7 +113,6 @@ void CPVRManager::ResetProperties(void)
 
   if (!g_application.m_bStop)
   {
-    m_database->Open(); m_database->Close();
     m_addons        = new CPVRClients;
     m_channelGroups = new CPVRChannelGroupsContainer;
     m_recordings    = new CPVRRecordings;
@@ -505,6 +506,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
+    m_database->Open();
     Cleanup();
     Start();
   }
