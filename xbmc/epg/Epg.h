@@ -277,6 +277,8 @@ namespace EPG
     virtual const CEpgInfoTag *GetNextEvent(const CEpgInfoTag& tag) const;
     virtual const CEpgInfoTag *GetPreviousEvent(const CEpgInfoTag& tag) const;
 
+    virtual size_t Size(void) const { return m_tags.size(); }
+
   protected:
     CEpg(void);
 

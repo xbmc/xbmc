@@ -217,9 +217,23 @@ bool CEpgInfoTag::Changed(void) const
 
 bool CEpgInfoTag::IsActive(void) const
 {
-  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  CDateTime now = CDateTime::GetUTCDateTime();
   CSingleLock lock(m_critSection);
   return (m_startTime <= now && m_endTime > now);
+}
+
+bool CEpgInfoTag::WasActive(void) const
+{
+  CDateTime now = CDateTime::GetUTCDateTime();
+  CSingleLock lock(m_critSection);
+  return (m_endTime < now);
+}
+
+bool CEpgInfoTag::InTheFuture(void) const
+{
+  CDateTime now = CDateTime::GetUTCDateTime();
+  CSingleLock lock(m_critSection);
+  return (m_startTime > now);
 }
 
 float CEpgInfoTag::ProgressPercentage(void) const
@@ -837,6 +851,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_iSeriesNumber      != tag.m_iSeriesNumber ||
         m_strEpisodeName     != tag.m_strEpisodeName ||
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
+        m_iEpgId             != tag.m_iEpgId ||
         ( tag.m_strGenre.length() > 0 && m_strGenre != tag.m_strGenre )
     );
     if (bUpdateBroadcastId)
@@ -854,6 +869,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_endTime            = tag.m_endTime;
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
+      m_iEpgId             = tag.m_iEpgId;
       if (m_iGenreType == EPG_GENRE_USE_STRING && tag.m_strGenre.length() > 0)
       {
         /* No type/subtype. Use the provided description */

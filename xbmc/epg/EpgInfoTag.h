@@ -87,6 +87,16 @@ namespace EPG
     virtual bool IsActive(void) const;
 
     /*!
+     * @return True when this event has already passed, false otherwise.
+     */
+    virtual bool WasActive(void) const;
+
+    /*!
+     * @return True when this event is in the future, false otherwise.
+     */
+    virtual bool InTheFuture(void) const;
+
+    /*!
      * @return The current progress of this tag.
      */
     virtual float ProgressPercentage(void) const;

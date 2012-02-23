@@ -155,6 +155,9 @@ void CEpgContainer::LoadFromDB(void)
   {
     m_database.DeleteOldEpgEntries();
     m_database.Get(*this);
+
+    for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+      it->second->Load();
   }
 }
 
@@ -272,7 +275,7 @@ bool CEpgContainer::RemoveOldEntries(void)
   CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
       __FUNCTION__);
 
-  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  CDateTime now = CDateTime::GetUTCDateTime();
 
   /* call Cleanup() on all known EPG tables */
   for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)

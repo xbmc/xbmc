@@ -175,7 +175,7 @@ CEpg *CPVRChannel::GetEPG(void) const
   {
     CSingleLock lock(m_critSection);
     if (!m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0)
-      epg = g_EpgContainer.GetByChannel(*this);
+      epg = g_EpgContainer.GetById(m_iEpgId);
   }
   return epg;
 }

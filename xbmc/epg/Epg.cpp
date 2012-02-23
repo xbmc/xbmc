@@ -192,16 +192,27 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
 
   if (bUpdateIfNeeded)
   {
-    CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+    CDateTime lastActiveTag;
+
     /* one of the first items will always match if the list is sorted */
     for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
     {
-      if (it->second->StartAsUTC() <= now && it->second->EndAsUTC() > now)
+      if (it->second->IsActive())
       {
         m_nowActiveStart = it->first;
         tag = *it->second;
         return true;
       }
+      else if (it->second->WasActive())
+        lastActiveTag = it->first;
+    }
+
+    /* there might be a gap between the last and next event. just return the last if found */
+    map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(lastActiveTag);
+    if (it != m_tags.end())
+    {
+      tag = *it->second;
+      return true;
     }
   }
 
@@ -221,6 +232,18 @@ bool CEpg::InfoTagNext(CEpgInfoTag &tag)
       return true;
     }
   }
+  else if (Size() > 0)
+  {
+    /* return the first event that is in the future */
+    for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
+    {
+      if (it->second->InTheFuture())
+      {
+        tag = *it->second;
+        return true;
+      }
+    }
+  }
 
   return false;
 }
@@ -229,8 +252,10 @@ bool CEpg::CheckPlayingEvent(void)
 {
   bool bReturn(false);
   CEpgInfoTag previousTag, newTag;
+  bool bGotPreviousTag = InfoTagNow(previousTag, false);
+  bool bGotCurrentTag = InfoTagNow(newTag);
 
-  if (!InfoTagNow(previousTag, false) || (InfoTagNow(newTag) && previousTag != newTag))
+  if (!bGotPreviousTag || (bGotCurrentTag && previousTag != newTag))
   {
     NotifyObservers("epg-current-event");
     bReturn = true;
@@ -299,6 +324,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     }
 
     newTag->Update(tag);
+    newTag->m_iEpgId = m_iEpgID;
     newTag->m_bChanged = false;
   }
 }
@@ -324,8 +350,8 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     bNewTag = true;
   }
 
-  infoTag->m_iEpgId = m_iEpgID;
   infoTag->Update(tag, bNewTag);
+  infoTag->m_iEpgId = m_iEpgID;
 
   if (bUpdateDatabase)
     bReturn = infoTag->Persist();
@@ -736,7 +762,13 @@ bool CEpg::PersistTags(void) const
   if (m_tags.size() > 0)
   {
     for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
-      bReturn = it->second->Persist() && bReturn;
+    {
+      if (!it->second->Persist())
+      {
+        CLog::Log(LOGERROR, "failed to persist epg tag %d", it->second->UniqueBroadcastID());
+        bReturn = false;
+      }
+    }
   }
   else
   {
@@ -865,8 +897,6 @@ CPVRChannel *CEpg::Channel(void) const
     CSingleLock lock(m_critSection);
     iChannelId = m_iPVRChannelId;
   }
-
-  CLog::Log(LOGINFO, "%s - get channel %d (%d)", __FUNCTION__, iChannelId, g_PVRManager.IsStarted() ? 1 : 0);
 
   if (iChannelId != -1 && g_PVRManager.IsStarted())
     return g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
