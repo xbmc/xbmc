@@ -169,7 +169,7 @@ namespace PVR
      * @brief Get the first channel in this group.
      * @return The first channel.
      */
-    virtual const CPVRChannel *GetFirstChannel(void) const;
+    virtual CPVRChannel *GetFirstChannel(void) const;
 
     /*!
      * @brief True if this group holds radio channels, false if it holds TV channels.
@@ -225,41 +225,41 @@ namespace PVR
      * @param iClientID The ID of the client.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByClient(int iUniqueChannelId, int iClientID) const;
+    virtual CPVRChannel *GetByClient(int iUniqueChannelId, int iClientID) const;
 
     /*!
      * @brief Get a channel given it's channel ID.
      * @param iChannelID The channel ID.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelID(int iChannelID) const;
+    virtual CPVRChannel *GetByChannelID(int iChannelID) const;
 
     /*!
      * @brief Get a channel given it's EPG ID.
      * @param iEpgID The channel EPG ID.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelEpgID(int iEpgID) const;
+    virtual CPVRChannel *GetByChannelEpgID(int iEpgID) const;
 
     /*!
      * @brief Get a channel given it's unique ID.
      * @param iUniqueID The unique ID.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByUniqueID(int iUniqueID) const;
+    virtual CPVRChannel *GetByUniqueID(int iUniqueID) const;
 
     /*!
      * @brief The channel that was played last that has a valid client or NULL if there was none.
      * @return The requested channel.
      */
-    virtual const CPVRChannel *GetLastPlayedChannel(void) const;
+    virtual CPVRChannel *GetLastPlayedChannel(void) const;
 
     /*!
      * @brief Get a channel given it's channel number.
      * @param iChannelNumber The channel number.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelNumber(unsigned int iChannelNumber) const;
+    virtual CPVRChannel *GetByChannelNumber(unsigned int iChannelNumber) const;
 
     /*!
      * @brief Get the channel number in this group of the given channel.
@@ -273,21 +273,21 @@ namespace PVR
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelUp(const CPVRChannel &channel) const;
+    virtual CPVRChannel *GetByChannelUp(const CPVRChannel &channel) const;
 
     /*!
      * @brief Get the previous channel in this group.
      * @param channel The current channel.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelDown(const CPVRChannel &channel) const;
+    virtual CPVRChannel *GetByChannelDown(const CPVRChannel &channel) const;
 
     /*!
      * @brief Get a channel given it's index in this container.
      * @param index The index in this container.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByIndex(unsigned int index) const;
+    virtual CPVRChannel *GetByIndex(unsigned int index) const;
 
     /*!
      * @brief Get the current index in this group of a channel.
@@ -424,7 +424,7 @@ namespace PVR
      * @param bChannelUp True to get the next channel, false to get the previous one.
      * @return The requested channel or NULL if there is none.
      */
-    virtual const CPVRChannel *GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const;
+    virtual CPVRChannel *GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const;
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupId;                    /*!< The ID of this group in the database */

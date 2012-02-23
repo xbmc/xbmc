@@ -428,19 +428,23 @@ bool CPVRChannelGroupInternal::Persist(void)
 
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
-    CPVRChannel *channel = at(iChannelPtr).channel;
-    if (!channel)
-      continue;
+    CSingleLock lock(m_critSection);
+    for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    {
+      CPVRChannel *channel = at(iChannelPtr).channel;
+      if (!channel)
+        continue;
 
-    channel->CreateEPG(bForce);
+      channel->CreateEPG(bForce);
+    }
   }
-  lock.Leave();
 
   if (HasChangedChannels())
+  {
+    g_EpgContainer.PersistAll();
     return Persist();
+  }
 
   return true;
 }

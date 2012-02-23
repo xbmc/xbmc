@@ -891,7 +891,7 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
     return true;
   CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
-  if (!database || (bSingleUpdate && !database->Open()))
+  if (!database || (bSingleUpdate && !database->IsOpen()))
   {
     CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
@@ -909,23 +909,17 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
     }
   }
 
-  if (bSingleUpdate)
-    database->Close();
-
   return bReturn;
 }
 
 void CEpgInfoTag::UpdatePath(void)
 {
-  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
-  if (!epg)
-    return;
-
   CStdString path;
-  if (epg->HasPVRChannel())
-    path.Format("pvr://guide/%04i/%s.epg", epg->Channel() ? epg->Channel()->ChannelID() : epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
-  else
-    path.Format("pvr://guide/%04i/%s.epg", epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  {
+    CSingleLock lock(m_critSection);
+    path.Format("pvr://guide/%04i/%s.epg", m_iEpgId, m_startTime.GetAsDBDateTime().c_str());
+  }
+
   SetPath(path);
 }
 

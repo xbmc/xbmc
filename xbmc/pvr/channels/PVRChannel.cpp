@@ -674,7 +674,7 @@ bool CPVRChannel::CreateEPG(bool bForce /* = false */)
   if (!m_bEPGCreated || bForce)
   {
     CEpg epgTmp(this, false);
-    if (g_EpgContainer.UpdateEntry(epgTmp, m_iEpgId <= 0))
+    if (g_EpgContainer.UpdateEntry(epgTmp))
     {
       CEpg *epg = g_EpgContainer.GetByChannel(*this);
       if (epg)

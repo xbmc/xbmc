@@ -60,7 +60,7 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::ResetProperties(void)
 {
-    CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
+   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
 
   /* initialise members */
   if (!m_pInfo)

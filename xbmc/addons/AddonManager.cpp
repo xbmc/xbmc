@@ -395,9 +395,13 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
-    AddonPtr addon(Factory(exts[i]));
-    if (addon && ((bGetDisabledPVRAddons && addon->Type() == ADDON_PVRDLL) || m_database.IsAddonDisabled(addon->ID()) != enabled))
-      addons.push_back(addon);
+    const cp_extension_t *props = exts[i];
+    if (((bGetDisabledPVRAddons && TranslateType(props->ext_point_id) == ADDON_PVRDLL) || m_database.IsAddonDisabled(props->plugin->identifier) != enabled))
+    {
+      AddonPtr addon(Factory(props));
+      if (addon)
+        addons.push_back(addon);
+    }
   }
   m_cpluff->release_info(m_cp_context, exts);
   return addons.size() > 0;

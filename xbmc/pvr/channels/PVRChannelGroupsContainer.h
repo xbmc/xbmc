@@ -103,28 +103,28 @@ namespace PVR
      * @param iGroupId The ID of the group.
      * @return The requested group or NULL if it wasn't found.
      */
-    virtual const CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
+    virtual CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
 
     /*!
      * @brief Get a group given it's ID.
      * @param iGroupId The ID of the group.
      * @return The requested group or NULL if it wasn't found.
      */
-    virtual const CPVRChannelGroup *GetByIdFromAll(int iGroupId) const;
+    virtual CPVRChannelGroup *GetByIdFromAll(int iGroupId) const;
 
     /*!
      * @brief Get a channel given it's database ID.
      * @param iChannelId The ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetChannelById(int iChannelId) const;
+    virtual CPVRChannel *GetChannelById(int iChannelId) const;
 
     /*!
      * @brief Get a channel given it's EPG ID.
      * @param iEpgId The EPG ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetChannelByEpgId(int iEpgId) const;
+    virtual CPVRChannel *GetChannelByEpgId(int iEpgId) const;
 
     /*!
      * @brief Get the groups list for a directory.
@@ -140,7 +140,7 @@ namespace PVR
      * @param strPath The path.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByPath(const CStdString &strPath);
+    virtual CPVRChannel *GetByPath(const CStdString &strPath);
 
     /*!
      * @brief Get the directory for a path.
@@ -169,23 +169,23 @@ namespace PVR
      * @param iClientID The ID of the client.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByUniqueID(int iClientChannelNumber, int iClientID);
+    virtual CPVRChannel *GetByUniqueID(int iClientChannelNumber, int iClientID);
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.
      * @param iChannelID The channel ID.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
+    virtual CPVRChannel *GetByChannelIDFromAll(int iChannelID);
 
-    virtual const CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
+    virtual CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
 
     /*!
      * @brief Get a channel given it's unique ID.
      * @param iUniqueID The unique ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    virtual const CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
+    virtual CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
 
     /*!
      * @brief Try to find missing channel icons automatically
@@ -196,7 +196,7 @@ namespace PVR
      * @brief The channel that was played last that has a valid client or NULL if there was none.
      * @return The requested channel.
      */
-    virtual const CPVRChannel *GetLastPlayedChannel(void) const;
+    virtual CPVRChannel *GetLastPlayedChannel(void) const;
 
   protected:
     /*!
