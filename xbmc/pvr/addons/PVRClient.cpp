@@ -237,7 +237,7 @@ inline void PVRWriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNE
   addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
 }
 
-PVR_ADDON_CAPABILITIES CPVRClient::GetAddonCapabilities(void)
+PVR_ADDON_CAPABILITIES CPVRClient::GetAddonCapabilities(void) const
 {
   return m_addonCapabilities;
 }

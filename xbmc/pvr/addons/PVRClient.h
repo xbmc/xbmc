@@ -99,7 +99,7 @@ namespace PVR
      * @brief Query this add-on's capabilities.
      * @return pCapabilities The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void) const;
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.
