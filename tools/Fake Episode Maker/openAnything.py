@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#       Copyright (C) 2008 Team XBMC
+#       Copyright (C) 2008-2012 Team XBMC
 #       http://www.xbmc.org
 #
 #   This Program is free software; you can redistribute it and/or modify

@@ -1,6 +1,6 @@
 @ECHO OFF
 rem XBMC for Windows install plugin
-rem Copyright (C) 2005-2008 Team XBMC
+rem Copyright (C) 2005-2012 Team XBMC
 rem http://xbmc.org
 
 rem Script by chadoe

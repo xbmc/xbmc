@@ -2,7 +2,7 @@
 #define LINUXRENDERERGLES_RENDERER
 
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
