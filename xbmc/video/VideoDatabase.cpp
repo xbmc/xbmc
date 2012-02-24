@@ -2825,24 +2825,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   if (needsCast)
   {
     GetResumePoint(details);
+    GetCast("movie", "idMovie", details.m_iDbId, details.m_cast);
 
-    // create cast string
-    CStdString strSQL = PrepareSQL("SELECT actors.strActor,actorlinkmovie.strRole,actors.strThumb FROM actorlinkmovie,actors WHERE actorlinkmovie.idMovie=%i AND actorlinkmovie.idActor=actors.idActor ORDER BY actorlinkmovie.iOrder",idMovie);
-    m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
-    {
-      SActorInfo info;
-      info.strName = m_pDS2->fv("actors.strActor").get_asString();
-      info.strRole = m_pDS2->fv("actorlinkmovie.strRole").get_asString();
-      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
-      details.m_cast.push_back(info);
-      m_pDS2->next();
-    }
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
 
     // create sets string
-    strSQL = PrepareSQL("SELECT sets.idSet, sets.strSet FROM sets,setlinkmovie WHERE setlinkmovie.idMovie=%i AND setlinkmovie.idSet=sets.idSet ORDER BY sets.idSet",idMovie);
+    CStdString strSQL = PrepareSQL("SELECT sets.idSet, sets.strSet FROM sets,setlinkmovie WHERE setlinkmovie.idMovie=%i AND setlinkmovie.idSet=sets.idSet ORDER BY sets.idSet",idMovie);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
@@ -2889,18 +2878,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
 
   if (needsCast)
   {
-    // create cast string
-    CStdString strSQL = PrepareSQL("select actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%i and actorlinktvshow.idActor = actors.idActor ORDER BY actorlinktvshow.iOrder",idTvShow);
-    m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
-    {
-      SActorInfo info;
-      info.strName = m_pDS2->fv("actors.strActor").get_asString();
-      info.strRole = m_pDS2->fv("actorlinktvshow.strRole").get_asString();
-      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
-      details.m_cast.push_back(info);
-      m_pDS2->next();
-    }
+    GetCast("tvshow", "idShow", details.m_iDbId, details.m_cast);
+
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
   }
@@ -2932,46 +2911,12 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   if (needsCast)
   {
     GetResumePoint(details);
+    GetCast("episode", "idEpisode", details.m_iDbId, details.m_cast);
+    GetCast("tvshow", "idShow", details.m_iIdShow, details.m_cast);
 
-    set<int> actors;
-    set<int>::iterator it;
-
-    // create cast string
-    CStdString strSQL = PrepareSQL("select actors.idActor,actors.strActor,actorlinkepisode.strRole,actors.strThumb from actorlinkepisode,actors where actorlinkepisode.idEpisode=%i and actorlinkepisode.idActor = actors.idActor ORDER BY actorlinkepisode.iOrder",idEpisode);
-    m_pDS2->query(strSQL.c_str());
-    bool showCast=false;
-    while (!m_pDS2->eof() || !showCast)
-    {
-      if (!m_pDS2->eof())
-      {
-        int idActor = m_pDS2->fv("actors.idActor").get_asInt();
-        it = actors.find(idActor);
-
-        if (it == actors.end())
-        {
-          SActorInfo info;
-          info.strName = m_pDS2->fv("actors.strActor").get_asString();
-          info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
-          info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
-          details.m_cast.push_back(info);
-          actors.insert(idActor);
-        }
-        m_pDS2->next();
-      }
-      if (m_pDS2->eof() && !showCast)
-      {
-        showCast = true;
-        int idShow = GetTvShowForEpisode(details.m_iDbId);
-        if (idShow > -1)
-        {
-          strSQL = PrepareSQL("select actors.idActor,actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%i and actorlinktvshow.idActor = actors.idActor ORDER BY actorlinktvshow.iOrder",idShow);
-          m_pDS2->query(strSQL.c_str());
-        }
-      }
-    }
     castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
-    strSQL=PrepareSQL("select * from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i and bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK,details.m_iDbId,CBookmark::EPISODE);
+    CStdString strSQL = PrepareSQL("select * from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i and bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK,details.m_iDbId,CBookmark::EPISODE);
     m_pDS2->query(strSQL.c_str());
     if (!m_pDS2->eof())
       details.m_fEpBookmark = m_pDS2->fv("bookmark.timeInSeconds").get_asFloat();
@@ -3009,6 +2954,51 @@ void CVideoDatabase::GetCommonDetails(auto_ptr<Dataset> &pDS, CVideoInfoTag &det
   details.m_playCount = pDS->fv(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
   details.m_lastPlayed.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_LASTPLAYED).get_asString());
   details.m_dateAdded.SetFromDBDateTime(pDS->fv(VIDEODB_DETAILS_DATEADDED).get_asString());
+}
+
+void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id, int type_id, vector<SActorInfo> &cast)
+{
+  try
+  {
+    if (!m_pDB.get()) return;
+    if (!m_pDS2.get()) return;
+
+    CStdString sql = PrepareSQL("SELECT actors.strActor,"
+                                "  actorlink%s.strRole,"
+                                "  actors.strThumb, "
+                                "FROM actorlink%s"
+                                "  JOIN actors ON"
+                                "    actorlink%s.idActor=actors.idActor"
+                                "WHERE actorlink%s.%s=%i "
+                                "ORDER BY actorlink%s.iOrder",table.c_str(), table.c_str(), table.c_str(), table.c_str(), table_id.c_str(), type_id, table.c_str());
+    m_pDS2->query(sql.c_str());
+    while (!m_pDS2->eof())
+    {
+      SActorInfo info;
+      info.strName = m_pDS2->fv(0).get_asString();
+      bool found = false;
+      for (vector<SActorInfo>::iterator i = cast.begin(); i != cast.end(); ++i)
+      {
+        if (i->strName == info.strName)
+        {
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+      {
+        info.strRole = m_pDS2->fv(1).get_asString();
+        info.thumbUrl.ParseString(m_pDS2->fv(2).get_asString());
+        cast.push_back(info);
+      }
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s,%s,%i) failed", __FUNCTION__, table.c_str(), table_id.c_str(), type_id);
+  }
 }
 
 /// \brief GetVideoSettings() obtains any saved video settings for the current file.
