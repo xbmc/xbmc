@@ -309,14 +309,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "SAP Streams";
     extraShares.push_back(share1);
 
-    share1.strPath = "upnp://";
-    share1.strName = "UPnP Devices";
-    extraShares.push_back(share1);
-
-    share1.strPath = "zeroconf://";
-    share1.strName = "Zeroconf Browser";
-    extraShares.push_back(share1);
-
     // add the recordings dir as needed
     if (CPVRDirectory::HasRecordings())
     {
