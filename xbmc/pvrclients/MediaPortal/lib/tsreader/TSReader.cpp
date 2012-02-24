@@ -35,6 +35,7 @@
 #include "MultiFileReader.h"
 #include "utils.h"
 #include "MemoryReader.h"
+#include "platform/util/timeutils.h"
 
 using namespace ADDON;
 
@@ -227,7 +228,7 @@ void CTsReader::Close()
   }
 }
 
-bool CTsReader::OnZap(const char* pszFileName)
+bool CTsReader::OnZap(const char* pszFileName, int64_t timeShiftBufferPos, long timeshiftBufferID)
 {
 #ifdef TARGET_WINDOWS
   string newFileName;
@@ -248,13 +249,26 @@ bool CTsReader::OnZap(const char* pszFileName)
   {
     if (m_fileReader)
     {
+      int64_t pos_before, pos_after;
+      pos_before = m_fileReader->GetFilePointer();
       result = m_fileReader->SetFilePointer(0LL, FILE_END);
+      pos_after = m_fileReader->GetFilePointer();
+
+      if ((timeShiftBufferPos > 0) && (pos_after > timeShiftBufferPos))
+      {
+        /* Move backward */
+        result = m_fileReader->SetFilePointer((timeShiftBufferPos-pos_after), FILE_CURRENT);
+        pos_after = m_fileReader->GetFilePointer();
+      }
+
+      XBMC->Log(LOG_DEBUG,"OnZap: move from %I64d to %I64d tsbufpos  %I64d", pos_before, pos_after, timeShiftBufferPos);
       usleep(100000);
       return (result == S_OK);
     }
     return S_FALSE;
   }
 #else
+  m_fileReader->SetFilePointer(0LL, FILE_END);
   return S_OK;
 #endif
 }

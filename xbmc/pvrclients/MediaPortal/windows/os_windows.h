@@ -21,6 +21,7 @@
 #ifdef TARGET_WINDOWS
 
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+#define NOMINMAX                      // don't define min() and max() to prevent a clash with std::min() and std::max
 #include <windows.h>
 #include <process.h>
 
@@ -33,6 +34,8 @@ typedef DWORD tThreadId;
 #define va_copy(x, y) x = y
 #endif
 
+/* String to 64-bit int */
+#define atoll(S) _atoi64(S)
 
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '\\'

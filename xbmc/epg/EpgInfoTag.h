@@ -39,6 +39,7 @@ namespace EPG
   {
     friend class CEpg;
     friend class CEpgDatabase;
+    friend class PVR::CPVRTimerInfoTag;
 
   public:
     /*!
@@ -86,6 +87,16 @@ namespace EPG
     virtual bool IsActive(void) const;
 
     /*!
+     * @return True when this event has already passed, false otherwise.
+     */
+    virtual bool WasActive(void) const;
+
+    /*!
+     * @return True when this event is in the future, false otherwise.
+     */
+    virtual bool InTheFuture(void) const;
+
+    /*!
      * @return The current progress of this tag.
      */
     virtual float ProgressPercentage(void) const;
@@ -106,7 +117,9 @@ namespace EPG
      * @brief The table this event belongs to
      * @return The table this event belongs to
      */
-    virtual const CEpg *GetTable() const { return m_Epg; }
+    virtual const CEpg *GetTable() const;
+
+    virtual const int EpgID(void) const { return m_iEpgId; }
 
     /*!
      * @brief Change the unique broadcast ID of this event.
@@ -406,16 +419,9 @@ namespace EPG
     virtual void UpdatePath(void);
 
     /*!
-     * @brief Change the pointer to the next event.
-     * @param event The next event.
+     * @brief Called by the CPVRTimerInfoTag destructor
      */
-    virtual void SetNextEvent(CEpgInfoTag *event);
-
-    /*!
-     * @brief Change the pointer to the previous event.
-     * @param event The previous event.
-     */
-    virtual void SetPreviousEvent(CEpgInfoTag *event);
+    virtual void OnTimerDeleted(void);
 
     bool                   m_bNotify;            /*!< notify on start */
     bool                   m_bChanged;           /*!< keep track of changes to this entry */
@@ -440,11 +446,9 @@ namespace EPG
     CDateTime              m_endTime;            /*!< event end time */
     CDateTime              m_firstAired;         /*!< first airdate */
 
-    CEpgInfoTag *          m_nextEvent;          /*!< the event that will occur after this one */
-    CEpgInfoTag *          m_previousEvent;      /*!< the event that occurred before this one */
-
-    PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
-    CEpg *                 m_Epg;                /*!< the schedule this event belongs to */
+    CDateTime              m_timerStart;         /*!< the start time of the timer (if any) */
+    int                    m_iTimerId;           /*!< the id of the timer (if any) */
+    int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
     CCriticalSection       m_critSection;
   };
 }

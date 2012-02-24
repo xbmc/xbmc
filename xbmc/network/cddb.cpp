@@ -417,12 +417,14 @@ void Xcddb::addTitle(const char *buffer)
   {
     strncpy(artist, value, index);
     artist[index] = '\0';
-    strcpy(title, value + index + 3);
+    strncpy(title, value + index + 3, sizeof(title));
+    title[0] = '\0';
   }
   else
   {
     artist[0] = '\0';
-    strcpy(title, value);
+    strncpy(title, value, sizeof(title));
+    title[0] = '\0';
   }
 
   CStdString strArtist=artist;

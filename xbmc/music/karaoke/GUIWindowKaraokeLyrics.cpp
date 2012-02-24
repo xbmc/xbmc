@@ -132,8 +132,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
   CSingleLock lock (m_CritSection);
   m_Lyrics = lyrics;
 
-  if ( m_Lyrics )
-    m_Lyrics->InitGraphics();
+  m_Lyrics->InitGraphics();
 
   // Set up current background mode
   if ( m_Lyrics->HasVideo() )

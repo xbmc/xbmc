@@ -33,6 +33,7 @@
 #include <string>
 #include "utils.h"
 #include <wchar.h>
+#include <algorithm>
 
 using namespace ADDON;
 
@@ -655,11 +656,11 @@ unsigned long MultiFileReader::setFilePointer(int64_t llDistanceToMove, unsigned
   fileEnd = (int64_t)(fileLength + fileStart);
   if (dwMoveMethod == FILE_BEGIN)
   {
-    return SetFilePointer((int64_t)min(fileEnd,(int64_t)(llDistanceToMove + fileStart)), FILE_BEGIN);
+    return SetFilePointer((int64_t) std::min(fileEnd,(int64_t)(llDistanceToMove + fileStart)), FILE_BEGIN);
   }
   else
   {
-    return SetFilePointer((int64_t)max((int64_t)-fileLength, llDistanceToMove), FILE_END);
+    return SetFilePointer((int64_t) std::max((int64_t)-fileLength, llDistanceToMove), FILE_END);
   }
 }
 

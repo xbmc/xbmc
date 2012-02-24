@@ -396,11 +396,19 @@ bool CALSADirectSound::Resume()
   if(state == SND_PCM_STATE_PAUSED)
     snd_pcm_pause(m_pPlayHandle,0);
 
-  if(state == SND_PCM_STATE_PREPARED)
+  else if(state == SND_PCM_STATE_PREPARED)
   {
     snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
     if(avail >= 0 && avail < (snd_pcm_sframes_t)m_uiBufferSize)
       snd_pcm_start(m_pPlayHandle);
+  }
+  else if(state == SND_PCM_STATE_RUNNING)
+  {}
+  else
+  {
+    CLog::Log(LOGWARNING, "CALSADirectSound::Resume - unexpected device state %d flushing", state);
+    Flush();
+    snd_pcm_start(m_pPlayHandle);
   }
 
   m_bPause = false;

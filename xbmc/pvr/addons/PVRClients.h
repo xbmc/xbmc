@@ -39,9 +39,10 @@ namespace PVR
 {
   class CPVRGUIInfo;
 
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
-  typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
-  typedef std::map< int, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >                 CLIENTMAP;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator       CLIENTMAPITR;
+  typedef std::map< int, boost::shared_ptr<CPVRClient> >::const_iterator CLIENTMAPCITR;
+  typedef std::map< int, PVR_STREAM_PROPERTIES >                         STREAMPROPS;
 
   #define XBMC_VIRTUAL_CLIENTID -1
 
@@ -169,7 +170,7 @@ namespace PVR
      * @param clientID The ID of the client.
      * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES GetAddonCapabilities(int iClientId);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(int iClientId) const;
 
     /*!
      * @brief Get the capabilities of the current playing client.
@@ -570,6 +571,8 @@ namespace PVR
     //@}
 
     void Notify(const Observable &obs, const CStdString& msg);
+
+    bool GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const;
   private:
     /*!
      * @brief Update add-ons from the AddonManager
@@ -634,14 +637,14 @@ namespace PVR
      * @param addon The client.
      * @return True if the client is connected, false otherwise.
      */
-    bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
+    bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon) const;
 
     /*!
      * @brief Check whether a client is registered.
      * @param client The client to check.
      * @return True if this client is registered, false otherwise.
      */
-    bool IsKnownClient(const ADDON::AddonPtr client);
+    bool IsKnownClient(const ADDON::AddonPtr client) const;
 
     /*!
      * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
@@ -656,6 +659,8 @@ namespace PVR
      * @return True if the client was initialised successfully, false otherwise.
      */
     bool InitialiseClient(ADDON::AddonPtr client);
+
+    int GetClientId(const ADDON::AddonPtr client) const;
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bAllClientsConnected;        /*!< true when all clients are loaded, false otherwise */

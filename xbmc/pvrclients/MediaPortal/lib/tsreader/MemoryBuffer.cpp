@@ -16,9 +16,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
+#if defined TSREADER && defined LIVE555
 
 #include "os-dependent.h"
+#include "platform/util/timeutils.h"
 #include "MemoryBuffer.h"
 #include "SingleLock.h"
 #include "client.h"
@@ -184,5 +185,4 @@ void CMemoryBuffer::SetCallback(IMemoryCallback* callback)
 {
   m_pcallback=callback;
 }
-
-#endif //TSREADER
+#endif //TSREADER && LIVE555

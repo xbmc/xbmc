@@ -110,9 +110,9 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   return true;
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetById(int iGroupId) const
+CPVRChannelGroup *CPVRChannelGroups::GetById(int iGroupId) const
 {
-  const CPVRChannelGroup *group = NULL;
+  CPVRChannelGroup *group = NULL;
 
   if (iGroupId == (m_bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV))
   {
@@ -128,7 +128,7 @@ const CPVRChannelGroup *CPVRChannelGroups::GetById(int iGroupId) const
   return group;
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) const
+CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) const
 {
   CPVRChannelGroup *group = NULL;
   CSingleLock lock(m_critSection);
@@ -251,7 +251,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return false;
 
@@ -348,9 +348,9 @@ int CPVRChannelGroups::GetPreviousGroupID(int iGroupId) const
   return GetPreviousGroup(*currentGroup)->GroupID();
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &group) const
+CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &group) const
 {
-  const CPVRChannelGroup *returnGroup = NULL;
+  CPVRChannelGroup *returnGroup = NULL;
   CSingleLock lock(m_critSection);
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
@@ -443,7 +443,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CPVRDatabase *database = OpenPVRDatabase();
+  CPVRDatabase *database = GetPVRDatabase();
   if (!database)
     return bReturn;
 
@@ -452,8 +452,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 
   /* delete the group from the database */
   bReturn = database->Delete(group);
-
-  database->Close();
 
   /* delete the group in this container */
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)

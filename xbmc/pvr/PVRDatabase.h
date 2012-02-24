@@ -57,7 +57,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetMinVersion() const { return 18; };
+    virtual int GetMinVersion() const { return 19; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -237,10 +237,10 @@ namespace PVR
    * @brief Try to open the PVR database.
    * @return The opened database or NULL if the database failed to open.
    */
-  inline CPVRDatabase *OpenPVRDatabase(void)
+  inline CPVRDatabase *GetPVRDatabase(void)
   {
     CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-    if (!database || !database->Open())
+    if (!database || !database->IsOpen())
     {
       CLog::Log(LOGERROR, "PVR - failed to open the database");
       database = NULL;

@@ -25,10 +25,8 @@
 #include "responsepacket.h"
 #include "vnsicommand.h"
 #include "tools.h"
+#include "../../../lib/platform/sockets/tcp.h"
 
-extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
-}
 
 cResponsePacket::cResponsePacket()
 {

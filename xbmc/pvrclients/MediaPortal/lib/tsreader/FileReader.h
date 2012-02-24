@@ -63,7 +63,7 @@ class FileReader
 
     virtual int64_t GetFileSize();
     virtual bool IsBuffer(){return false;};
-    virtual bool HasMoreData(){return false;};
+    virtual bool HasMoreData(int bytes){return false;};
     virtual int HasData(){return 0; } ;
 
   protected:

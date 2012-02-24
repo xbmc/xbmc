@@ -19,6 +19,7 @@
 #if defined TSREADER && defined LIVE555
 
 #include "os-dependent.h"
+#include "platform/util/timeutils.h"
 #include "RTSPClient.h"
 #include "MemorySink.h"
 #include "client.h"

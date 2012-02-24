@@ -64,12 +64,14 @@ CPVRManager::CPVRManager(void) :
     m_loadingProgressDialog(NULL),
     m_managerState(ManagerStateStopped)
 {
+  m_database->Open();
   ResetProperties();
 }
 
 CPVRManager::~CPVRManager(void)
 {
   Stop();
+  m_database->Close();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -146,6 +148,9 @@ void CPVRManager::Stop(void)
 
   SetState(ManagerStateStopping);
 
+  /* stop the EPG updater, since it might be using the pvr add-ons */
+  g_EpgContainer.Unload();
+
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
   /* stop playback if needed */
@@ -202,16 +207,25 @@ void CPVRManager::Process(void)
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
   g_EpgContainer.Start();
 
-  while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients())
+  bool bRestart(false);
+  while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients() && !bRestart)
   {
     /* continue last watched channel after first startup */
     if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
       ContinueLastChannel();
 
     /* execute the next pending jobs if there are any */
-    ExecutePendingJobs();
+    try
+    {
+      ExecutePendingJobs();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "PVRManager - %s - an error occured while trying to execute the last update job, trying to recover", __FUNCTION__);
+      bRestart = true;
+    }
 
-    if (GetState() == ManagerStateStarted)
+    if (GetState() == ManagerStateStarted && !bRestart)
       m_triggerEvent.WaitMSec(1000);
   }
 
@@ -492,6 +506,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
+    m_database->Open();
     Cleanup();
     Start();
   }

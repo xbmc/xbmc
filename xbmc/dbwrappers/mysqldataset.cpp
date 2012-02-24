@@ -1198,9 +1198,9 @@ MYSQL* MysqlDataset::handle(){
 void MysqlDataset::make_query(StringList &_sql) {
   string query;
   int result = 0;
+  if (db == NULL) throw DbErrors("No Database Connection");
   try
   {
-    if (db == NULL) throw DbErrors("No Database Connection");
     if (autocommit) db->start_transaction();
 
     for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++)

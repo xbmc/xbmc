@@ -27,9 +27,6 @@
 
 #include <sstream>
 
-extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
-}
 
 #define BUTTON_START                    5
 #define BUTTON_BACK                     6

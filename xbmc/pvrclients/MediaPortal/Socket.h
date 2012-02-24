@@ -23,10 +23,10 @@ namespace MPTV //Prevent name clash with Live555 Socket
 
 //Include platform specific datatypes, header files, defines and constants:
 #if defined TARGET_WINDOWS
-  #ifdef _WINSOCKAPI_
-    #undef _WINSOCKAPI_
-  #endif
+  #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+  #pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
   #include <winsock2.h>
+  #pragma warning(default:4005)
   #include <windows.h>
 
   #ifndef NI_MAXHOST
@@ -56,7 +56,8 @@ namespace MPTV //Prevent name clash with Live555 Socket
   typedef int SOCKET;
   typedef sockaddr SOCKADDR;
   typedef sockaddr_in SOCKADDR_IN;
-
+  #define INVALID_SOCKET (-1)
+  #define SOCKET_ERROR (-1)
 #else
   #error Platform specific socket support is not yet available on this platform!
 #endif

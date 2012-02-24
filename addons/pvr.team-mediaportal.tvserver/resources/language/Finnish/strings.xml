@@ -20,6 +20,6 @@
     <string id="30041">MediaPortal</string>
 
     <!-- on-screen error messages -->
-    <string id="30050">TVServerXBMC:n versio v%s on liian vanha. Päivitä vähintään versioon v%s tai uudempaan!</string>
-    <string id="30051">TVServerXBMC:n versio on liian vanha. Päivitä vähintään versioon v%s tai uudempaan!</string>
+    <string id="30050">TVServerXBMC:n versio '%s' on liian vanha. Päivitä vähintään versioon '%s' tai uudempaan!</string>
+    <string id="30051">TVServerXBMC:n versio on liian vanha. Päivitä vähintään versioon '%s' tai uudempaan!</string>
 </strings>

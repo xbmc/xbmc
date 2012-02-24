@@ -103,4 +103,23 @@ namespace PLATFORM
   {
     return (T)GetTimeMs() / (T)1000.0;
   }
+
+  class CTimeout
+  {
+  public:
+    CTimeout(void) : m_iTarget(0) {}
+    CTimeout(uint32_t iTimeout) { Init(iTimeout); }
+
+    bool IsSet(void) const       { return m_iTarget > 0; }
+    void Init(uint32_t iTimeout) { m_iTarget = GetTimeMs() + iTimeout; }
+
+    uint32_t TimeLeft(void) const
+    {
+      uint64_t iNow = GetTimeMs();
+      return (iNow > m_iTarget) ? 0 : (uint32_t)(m_iTarget - iNow);
+    }
+
+  private:
+    uint64_t m_iTarget;
+  };
 };

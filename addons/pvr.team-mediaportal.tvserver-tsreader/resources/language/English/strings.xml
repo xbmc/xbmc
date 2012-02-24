@@ -16,6 +16,7 @@
     <string id="30012">Mediaportal recordings directory</string>
     <string id="30013">Direct playback from Timeshift buffer (no rtsp)</string>
     <string id="30014">Timeshift buffer directory</string>
+    <string id="30004">Fast channel switching (don't stop timeshift)</string>
 
     <!-- category labels -->
     <string id="30040">Connection</string>
@@ -25,6 +26,7 @@
     <!-- on-screen error messages -->
     <string id="30050">Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!</string>
     <string id="30051">Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!</string>
+    <string id="30052">Recording playback failed. Empty URL of filename.</string>
 
     <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
     <string id="30060">All cards are busy</string>

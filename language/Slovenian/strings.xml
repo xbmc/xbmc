@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Tadej Novak-->
 <!--Email: tadej@tano.si-->
-<!--Date of translation: 20/11/2011-->
+<!--Date of translation: 18/02/2012-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programi</string>
@@ -879,8 +879,11 @@
   <string id="10020">Skripte</string>
   <string id="10021">Spletni brskalnik</string>
 
+  <string id="10025">Videi</string>
   <string id="10028">Video/Predvajalni seznam</string>
+  <string id="10029">Prijavno okno</string>
   <string id="10034">Nastavitve - Profili</string>
+  <string id="10040">Brskalnik dodatkov</string>
 
   <string id="10100">Da/Ne dialog</string>
   <string id="10101">Dialog napredka</string>
@@ -2226,6 +2229,7 @@
   <string id="20327">na privzete vrednosti.</string>
   <string id="20328">Prebrskaj za ciljem</string>
 
+  <string id="20329">Filmi so v ločenih mapah, ki se ujemajo z naslovom filma</string>
   <string id="20330">Uporabi imena map za poizvedbe</string>
   <string id="20331">Datoteka</string>
   <string id="20332">Uporabi ime datoteke ali mape v poizvedbah?</string>
@@ -2315,7 +2319,7 @@
   <string id="20416">Prvič na sporedu</string>
   <string id="20417">Scenarist</string>
   <string id="20418"></string>
-  <string id="20419">Prikaži podrobnosti v pogledu datotek</string>
+  <string id="20419">Zamenjaj imena datotek z naslovi v knjižnici</string>
 
   <string id="20420">Nikoli</string>
   <string id="20421">Če vsebuje le eno sezono</string>
@@ -2355,6 +2359,7 @@
   <string id="20455">Listeners</string>
   <string id="20456">Nastavi ozadje filmske zbirke</string>
   <string id="20457">Filmska zbirka</string>
+  <string id="20458">Združi filme v zbirke</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Prikaži skrite datoteke in mape</string>
@@ -2462,6 +2467,8 @@
   <string id="21451">Potrebna je internetna povezava.</string>
   <string id="21452">Prenesi več...</string>
   <string id="21453">Korenski datotečni sistem</string>
+  <string id="21454">Začasni pomnilnik poln</string>
+  <string id="21455">Začasni pomnilnik se je zapolnil, preden je bila dosežen nivo za tekoče predvajanje</string>
 
   <string id="21460">Položaj podnapisov</string>
   <string id="21461">Fiksno</string>
@@ -2782,6 +2789,8 @@
   <string id="33101">Spletni strežnik</string>
   <string id="33102">Strežnik dogodkov</string>
   <string id="33103">Strežnik oddaljene komunikacije</string>
+
+  <string id="33200">Zaznana nova povezava</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>

@@ -105,7 +105,7 @@ namespace PLATFORM
   public:
     CProtectedSocket(_Socket *socket) :
       m_socket(socket),
-      m_iUseCount(0) {}
+      m_bIsIdle(true) {}
 
     virtual ~CProtectedSocket(void)
     {
@@ -151,19 +151,19 @@ namespace PLATFORM
     virtual bool IsBusy(void)
     {
       CLockObject lock(m_mutex);
-      return m_socket && m_iUseCount > 0;
+      return m_socket && !m_bIsIdle;
     }
 
-    virtual int GetUseCount(void)
+    virtual bool IsIdle(void)
     {
       CLockObject lock(m_mutex);
-      return m_iUseCount;
+      return m_socket && m_bIsIdle;
     }
 
     virtual ssize_t Write(void* data, size_t len)
     {
       if (!m_socket || !WaitReady())
-        return EINVAL;
+        return -EINVAL;
 
       ssize_t iReturn = m_socket->Write(data, len);
       MarkReady();
@@ -174,7 +174,7 @@ namespace PLATFORM
     virtual ssize_t Read(void* data, size_t len, uint64_t iTimeoutMs = 0)
     {
       if (!m_socket || !WaitReady())
-        return EINVAL;
+        return -EINVAL;
 
       ssize_t iReturn = m_socket->Read(data, len, iTimeoutMs);
       MarkReady();
@@ -193,7 +193,7 @@ namespace PLATFORM
     virtual int GetErrorNumber(void)
     {
       CLockObject lock(m_mutex);
-      return m_socket ? m_socket->GetErrorNumber() : EINVAL;
+      return m_socket ? m_socket->GetErrorNumber() : -EINVAL;
     }
 
     virtual CStdString GetName(void)
@@ -208,27 +208,21 @@ namespace PLATFORM
     bool WaitReady(void)
     {
       CLockObject lock(m_mutex);
-      if (m_iUseCount > 0)
-        m_condition.Wait(m_mutex);
-
-      if (m_iUseCount > 0)
-        return false;
-
-      ++m_iUseCount;
+      m_condition.Wait(m_mutex, m_bIsIdle);
+      m_bIsIdle = false;
       return true;
     }
 
     void MarkReady(void)
     {
       CLockObject lock(m_mutex);
-      if (m_iUseCount > 0)
-        --m_iUseCount;
+      m_bIsIdle = true;
       m_condition.Signal();
     }
 
-    _Socket   *m_socket;
-    CMutex     m_mutex;
-    CCondition m_condition;
-    int        m_iUseCount;
+    _Socket *          m_socket;
+    CMutex             m_mutex;
+    CCondition<bool &> m_condition;
+    bool               m_bIsIdle;
   };
 };

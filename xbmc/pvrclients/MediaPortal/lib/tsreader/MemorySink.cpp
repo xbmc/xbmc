@@ -19,8 +19,6 @@
 #if defined TSREADER && defined LIVE555
 
 #include "os-dependent.h"
-//#include <winsock2.h>
-//#include <ws2tcpip.h>
 #include "MemorySink.h"
 #include "GroupsockHelper.hh"
 #include "SingleLock.h"

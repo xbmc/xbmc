@@ -37,7 +37,6 @@
 
 #include "threads/Thread.h"
 #include "utils/StdString.h"
-#include "utils/Job.h"
 
 namespace MEDIA_DETECT
 {
@@ -93,16 +92,4 @@ private:
   CLibcdio* m_cdio;
 };
 }
-
-class CDetectDisc : public CJob
-{
-public:
-  CDetectDisc(const CStdString &strPath, const bool bautorun);
-  bool DoWork();
-
-private:
-  CStdString  m_strPath;
-  bool        m_bautorun;
-};
-
 #endif

@@ -76,7 +76,7 @@ BYTE CKaraokeLyricsCDG::getPixel( int x, int y )
   if ( x >= (int) CDG_FULL_WIDTH || y >= (int) CDG_FULL_HEIGHT )
 	  return m_borderColor;
   
-  if ( x < 0 || y < 0 || offset > CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
+  if ( x < 0 || y < 0 || offset >= CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
   {
 	CLog::Log( LOGERROR, "CDG renderer: requested pixel (%d,%d) is out of boundary", x, y );
 	return 0;

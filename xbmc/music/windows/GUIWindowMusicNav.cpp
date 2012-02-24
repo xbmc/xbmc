@@ -559,6 +559,9 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (idArtist == -1)
           return false;
         CStdString path; path.Format("musicdb://2/%ld/", idArtist);
+        CArtist artist;
+        m_musicdatabase.GetArtistInfo(idArtist,artist,false);
+        *item = CFileItem(artist);
         item->SetPath(path);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
         Update(m_vecItems->GetPath());
@@ -573,6 +576,9 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (idAlbum == -1)
           return false;
         CStdString path; path.Format("musicdb://3/%ld/", idAlbum);
+        CAlbum album;
+        m_musicdatabase.GetAlbumInfo(idAlbum,album,NULL);
+        *item = CFileItem(path,album);
         item->SetPath(path);
         CGUIWindowMusicBase::OnContextButton(itemNumber,button);
         Update(m_vecItems->GetPath());

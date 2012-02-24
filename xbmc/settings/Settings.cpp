@@ -57,6 +57,7 @@
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
+#include "filesystem/DirectoryCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -981,8 +982,8 @@ bool CSettings::LoadProfile(unsigned int index)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     g_windowManager.SendMessage(msg);
 
-    CUtil::DeleteMusicDatabaseDirectoryCache();
-    CUtil::DeleteVideoDatabaseDirectoryCache();
+    CUtil::DeleteDirectoryCache();
+    g_directoryCache.Clear();
 
     return true;
   }

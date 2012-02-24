@@ -53,8 +53,6 @@ public:
 
 protected:
 
-  void OnReconnect();
-
   void StreamChange(cResponsePacket *resp);
   void StreamStatus(cResponsePacket *resp);
   void StreamSignalInfo(cResponsePacket *resp);

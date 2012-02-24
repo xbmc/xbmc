@@ -128,12 +128,13 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
-    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
+    <ClCompile Include="..\..\windows\FileUtils.cpp" />
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Cards.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
     <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\NonCopyable.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
+    <ClInclude Include="..\..\windows\WindowsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

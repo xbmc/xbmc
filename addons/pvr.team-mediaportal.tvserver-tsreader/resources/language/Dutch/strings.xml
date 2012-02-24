@@ -16,6 +16,7 @@
     <string id="30012">Mediaportal directory met opnames</string>
     <string id="30013">Direct afspelen uit Timeshift buffer (niet streamen)</string>
     <string id="30014">Timeshift buffer directory</string>
+    <string id="30004">Snel zappen (timeshift niet stoppen)</string>
 
     <!-- category labels -->
     <string id="30040">Verbinding</string>
@@ -25,6 +26,7 @@
     <!-- on-screen error messages -->
     <string id="30050">Uw TVServerXBMC plugin '%s' is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
     <string id="30051">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
+    <string id="30052">Afspelen opname mislukt. Lege URL of bestandsnaam.</string>
 
     <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
     <string id="30060">Alle kaarten zijn bezet</string>

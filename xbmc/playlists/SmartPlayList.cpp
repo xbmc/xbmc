@@ -663,7 +663,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PLOTOUTLINE) result.Format("c%02d", VIDEODB_ID_PLOTOUTLINE);
     else if (field == FIELD_TAGLINE) result.Format("c%02d", VIDEODB_ID_TAGLINE);
     else if (field == FIELD_VOTES) result.Format("c%02d", VIDEODB_ID_VOTES);
-    else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_RATING);
+    else if (field == FIELD_RATING) result.Format("CAST(c%02d as DECIMAL(5,3))", VIDEODB_ID_RATING);
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_CREDITS);   // join required
     else if (field == FIELD_PLAYCOUNT) result = "playCount";

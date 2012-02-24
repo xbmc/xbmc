@@ -137,12 +137,13 @@
     <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
-    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
+    <ClCompile Include="..\..\windows\FileUtils.cpp" />
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Cards.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
@@ -171,14 +173,12 @@
     <ClInclude Include="..\..\Socket.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\windows\WindowsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\lib\libTcpSocket\project\libTcpSocket_2010.vcxproj">
-      <Project>{0f78aaf3-a188-4491-8ba6-203dc0b8d7f5}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\lib\live555\LiveMedia555.vcxproj">
       <Project>{3c398bd4-5714-4802-ab86-d43add15b3c0}</Project>
     </ProjectReference>
