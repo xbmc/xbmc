@@ -206,7 +206,7 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
-  { "ReloadSources",              false,  "Reloads the sources.xml file },
+  { "ReloadSources",              false,  "Reloads the sources.xml file" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
