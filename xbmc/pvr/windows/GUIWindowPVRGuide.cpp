@@ -231,10 +231,7 @@ bool CGUIWindowPVRGuide::SelectPlayingFile(void)
       m_parent->m_guideGrid->SetChannel(g_application.CurrentFile());
     return true;
   }
-  else
-  {
-    return CGUIWindowPVRCommon::SelectPlayingFile();
-  }
+  return false;
 }
 
 void CGUIWindowPVRGuide::UpdateData(void)
