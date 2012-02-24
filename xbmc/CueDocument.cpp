@@ -229,7 +229,7 @@ bool CCueDocument::ParseData(const CStdString &strFile, const CStdString &strDat
     m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
-  m_buffer.Elose();
+  m_buffer.Close();
   if (m_iTotalTracks >= 0)
   {
     m_iTotalTracks++;

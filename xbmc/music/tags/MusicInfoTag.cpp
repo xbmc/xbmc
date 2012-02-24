@@ -278,10 +278,11 @@ void CMusicInfoTag::SetLyrics(const CStdString& lyrics)
   m_strLyrics = lyrics;
 }
 
-	void CMusicInfoTag::SetCueSheet(const CStdString& cuesheet)
+void CMusicInfoTag::SetCueSheet(const CStdString& cuesheet)
 {
   m_strCueSheet = cuesheet;
 }
+
 void CMusicInfoTag::SetRating(char rating)
 {
   m_rating = rating;

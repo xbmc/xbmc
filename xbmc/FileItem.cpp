@@ -2001,7 +2001,7 @@ void CFileItemList::FilterCueItems()
       for (int j = 0; j < (int)newitems.size(); j++)
 	{
 		CSong &song = newitems[j];
-		
+
         if (song.strFileName == pItem->m_strPath)
 		{
 			// patch up the duration of the last song
@@ -2015,7 +2015,7 @@ void CFileItemList::FilterCueItems()
 
       itemstodelete.push_back(pItem->m_strPath);
 	}
-  }	
+  }
   // now delete references to the media files with embedded cue sheet
   for (int i = 0; i < (int)itemstodelete.size(); i++)
   {

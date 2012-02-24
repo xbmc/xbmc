@@ -121,7 +121,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
 
   if ( strTagType == "LYRICS" )
     tag.SetLyrics(strTagValue);
-	
+
   if ( strTagType == "CUESHEET" )	
     tag.SetCueSheet(strTagValue);
 
