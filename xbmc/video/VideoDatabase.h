@@ -661,7 +661,7 @@ protected:
 
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);
   int AddGenre(const CStdString& strGenre1);
-  int AddActor(const CStdString& strActor, const CStdString& strThumb);
+  int AddActor(const CStdString& strActor, const CStdString& thumbURL, const CStdString &thumb = "");
   int AddCountry(const CStdString& strCountry);
   int AddSet(const CStdString& strSet);
   int AddStudio(const CStdString& strStudio1);

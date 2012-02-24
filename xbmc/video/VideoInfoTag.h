@@ -38,6 +38,7 @@ struct SActorInfo
   CStdString strName;
   CStdString strRole;
   CScraperUrl thumbUrl;
+  CStdString thumb;
 };
 
 class CVideoInfoTag : public IArchivable, public ISerializable

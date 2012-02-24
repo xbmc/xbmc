@@ -1665,23 +1665,22 @@ namespace VIDEO
     m_database.Close();
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors, const CStdString& strPath)
+  void CVideoInfoScanner::FetchActorThumbs(vector<SActorInfo>& actors, const CStdString& strPath)
   {
-    for (unsigned int i=0;i<actors.size();++i)
+    for (vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
     {
-      CFileItem item;
-      item.SetLabel(actors[i].strName);
-      CStdString strThumb = item.GetCachedActorThumb();
-      if (!CFile::Exists(strThumb))
+      if (i->thumb.IsEmpty())
       {
-        CStdString thumbFile = actors[i].strName;
+        CStdString thumbFile = i->strName;
         thumbFile.Replace(" ","_");
         thumbFile += ".tbn";
         CStdString strLocal = URIUtils::AddFileToFolder(URIUtils::AddFileToFolder(strPath, ".actors"), thumbFile);
         if (CFile::Exists(strLocal))
-          CPicture::CreateThumbnail(strLocal, strThumb);
-        else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-          DownloadImage(CScraperUrl::GetThumbURL(actors[i].thumbUrl.GetFirstThumb()), strThumb);
+          i->thumb = strLocal;
+        else if (!i->thumbUrl.GetFirstThumb().m_url.IsEmpty())
+          i->thumb = CScraperUrl::GetThumbURL(i->thumbUrl.GetFirstThumb());
+        if (!i->thumb.IsEmpty())
+          CTextureCache::Get().BackgroundCacheImage(strLocal);
       }
     }
   }

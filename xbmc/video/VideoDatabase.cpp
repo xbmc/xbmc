@@ -1244,12 +1244,13 @@ int CVideoDatabase::AddCountry(const CStdString& strCountry)
   return AddToTable("country", "idCountry", "strCountry", strCountry);
 }
 
-int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumbURLs)
+int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumbURLs, const CStdString &thumb)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
+    int idActor = -1;
     CStdString strSQL=PrepareSQL("select idActor from actors where strActor like '%s'", strActor.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
@@ -1258,12 +1259,11 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumb
       // doesnt exists, add it
       strSQL=PrepareSQL("insert into actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idActor = (int)m_pDS->lastinsertid();
-      return idActor;
+      idActor = (int)m_pDS->lastinsertid();
     }
     else
     {
-      int idActor = m_pDS->fv("idActor").get_asInt();
+      idActor = m_pDS->fv("idActor").get_asInt();
       m_pDS->close();
       // update the thumb url's
       if (!thumbURLs.IsEmpty())
@@ -1271,9 +1271,11 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumb
         strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",thumbURLs.c_str(),idActor);
         m_pDS->exec(strSQL.c_str());
       }
-      return idActor;
     }
-
+    // add artwork
+    if (!thumb.IsEmpty())
+      SetArtForItem(idActor, "actor", "thumb", thumb);
+    return idActor;
   }
   catch (...)
   {
@@ -1837,7 +1839,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     int order = 0;
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      int idActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      int idActor = AddActor(it->strName, it->thumbUrl.m_xml, it->thumb);
       AddActorToMovie(idMovie, idActor, it->strRole, order++);
     }
 
@@ -1913,7 +1915,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     int order = 0;
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      int idActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      int idActor = AddActor(it->strName, it->thumbUrl.m_xml, it->thumb);
       AddActorToTvShow(idTvShow, idActor, it->strRole, order++);
     }
 
@@ -1987,7 +1989,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     int order = 0;
     for (CVideoInfoTag::iCast it = details.m_cast.begin(); it != details.m_cast.end(); ++it)
     {
-      int idActor = AddActor(it->strName,it->thumbUrl.m_xml);
+      int idActor = AddActor(it->strName, it->thumbUrl.m_xml, it->thumb);
       AddActorToEpisode(idEpisode, idActor, it->strRole, order++);
     }
 

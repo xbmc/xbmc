@@ -195,7 +195,13 @@ namespace VIDEO
      */
     bool GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
-    void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
+    /*! \brief Fetch thumbs for actors
+     Updates each actor with their thumb (local or online)
+     \param actors - vector of SActorInfo
+     \param strPath - path on filesystem to look for local thumbs
+     */
+    void FetchActorThumbs(std::vector<SActorInfo>& actors, const CStdString& strPath);
+
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
     /*! \brief Retrieve a "fast" hash of the given directory (if available)
