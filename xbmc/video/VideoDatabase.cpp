@@ -1214,7 +1214,7 @@ int CVideoDatabase::AddCountry(const CStdString& strCountry)
   return AddToTable("country", "idCountry", "strCountry", strCountry);
 }
 
-int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strThumb)
+int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumbURLs)
 {
   try
   {
@@ -1226,7 +1226,7 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strTh
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=PrepareSQL("insert into actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),strThumb.c_str());
+      strSQL=PrepareSQL("insert into actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),thumbURLs.c_str());
       m_pDS->exec(strSQL.c_str());
       int idActor = (int)m_pDS->lastinsertid();
       return idActor;
@@ -1236,8 +1236,8 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strTh
       int idActor = m_pDS->fv("idActor").get_asInt();
       m_pDS->close();
       // update the thumb url's
-      if (!strThumb.IsEmpty())
-        strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",strThumb.c_str(),idActor);
+      if (!thumbURLs.IsEmpty())
+        strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",thumbURLs.c_str(),idActor);
       m_pDS->exec(strSQL.c_str());
       return idActor;
     }
