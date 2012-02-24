@@ -207,6 +207,9 @@ CFileItem::CFileItem(const CPVRChannel& channel)
     SetThumbnailImage(channel.IconPath());
     SetIconImage(channel.IconPath());
   }
+
+  SetProperty("channelid", channel.ChannelID());
+  SetProperty("path", channel.Path());
 }
 
 CFileItem::CFileItem(const CPVRRecording& record)
