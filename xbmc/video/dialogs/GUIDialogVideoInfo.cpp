@@ -709,12 +709,10 @@ void CGUIDialogVideoInfo::OnGetFanart()
   CFileItemList items;
 
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
-
-  if (CFile::Exists(cachedThumb))
+  if (item.HasProperty("fanart_image"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetThumbnailImage(item.GetProperty("fanart_image").asString());
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -764,8 +762,6 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
-
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
@@ -780,33 +776,24 @@ void CGUIDialogVideoInfo::OnGetFanart()
       db.UpdateFanart(*m_movieItem, (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType());
       db.Close();
     }
-
-    // download the fullres fanart image
-    CStdString tempFile = "special://temp/fanart_download.jpg";
-    CAsyncFileCopy downloader;
-    bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
-    if (succeeded)
-    {
-      if (flip)
-        CPicture::ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
-      else
-        CPicture::CacheFanart(tempFile, cachedThumb);
-    }
-    CFile::Delete(tempFile);
-    if (!succeeded)
-      return; // failed or cancelled download, so don't do anything
+    result = m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL();
   }
-  else if (CFile::Exists(result))
-  { // local file
-    if (flip)
-      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
-    else
-      CPicture::CacheFanart(result, cachedThumb);
+  else if (result.Equals("fanart://None") || !CFile::Exists(result))
+    result.clear();
+
+  // set the fanart image
+  if (flip && !result.IsEmpty())
+    result = CTextureCache::GetWrappedImageURL(result, "", "flipped");
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "fanart", result);
+    db.Close();
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  if (CFile::Exists(cachedThumb))
-    m_movieItem->SetProperty("fanart_image", cachedThumb);
+  if (!result.IsEmpty())
+    m_movieItem->SetProperty("fanart_image", result);
   else
     m_movieItem->ClearProperty("fanart_image");
   m_hasUpdatedThumb = true;

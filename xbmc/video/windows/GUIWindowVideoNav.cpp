@@ -304,16 +304,20 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         // grab the show thumb
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
+        map<string, string> art;
+        if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
+        {
+          if (art.find("thumb") != art.end())
+            items.SetProperty("tvshowthumb", art["thumb"]);
+          if (art.find("fanart") != art.end())
+            items.SetProperty("fanart_image", art["fanart"]);
+        }
         CFileItem showItem(details.m_strShowPath, true);
-        if (showItem.GetCachedVideoThumb())
-          items.SetProperty("tvshowthumb", showItem.GetCachedVideoThumb());
 
         // Grab fanart data
         items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
         items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
         items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
-        if (showItem.CacheLocalFanart())
-          items.SetProperty("fanart_image", showItem.GetCachedFanart());
 
         // save the show description (showplot)
         items.SetProperty("showplot", details.m_strPlot);
@@ -1126,7 +1130,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
       if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
-        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedVideoThumb();
+        cachedThumb = m_database.GetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb");
       if (CFile::Exists(cachedThumb))
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
@@ -1235,16 +1239,21 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      CTextureCache::Get().ClearCachedImage(cachedThumb, true);
       if (result.Left(14) == "thumb://Remote")
       {
         int number = atoi(result.Mid(14));
-        CFile::Cache(thumbs[number], cachedThumb);
+        result = thumbs[number];
       }
-      if (result == "thumb://None")
-        CTextureCache::Get().ClearCachedImage(cachedThumb, true);
+      else if (result == "thumb://None")
+        result.clear();
+      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
+        m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb", result);
       else
-        CFile::Cache(result,cachedThumb);
+      {
+        CTextureCache::Get().ClearCachedImage(cachedThumb, true);
+        if (!result.IsEmpty())
+          CFile::Cache(result,cachedThumb);
+      }
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
@@ -1256,26 +1265,19 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_MOVIESET_FANART:
     {
       CFileItemList items;
-      CStdString cachedFanart(item->GetCachedFanart());
 
-      if (CFile::Exists(cachedFanart))
+      CVideoThumbLoader loader;
+      loader.LoadItem(item.get());
+
+      if (item->HasProperty("fanart_image"))
       {
         CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-        itemCurrent->SetThumbnailImage(cachedFanart);
+        itemCurrent->SetThumbnailImage(item->GetProperty("fanart_image").asString());
         itemCurrent->SetLabel(g_localizeStrings.Get(20440));
         items.Add(itemCurrent);
       }
 
-      CStdString localFanart(item->GetLocalFanart());
-      if (!localFanart.IsEmpty())
-      {
-        CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
-        itemLocal->SetThumbnailImage(localFanart);
-        itemLocal->SetLabel(g_localizeStrings.Get(20438));
-        CTextureCache::Get().ClearCachedImage(localFanart);
-        items.Add(itemLocal);
-      }
-      else
+      // add the none option
       {
         CFileItemPtr itemNone(new CFileItem("fanart://None", false));
         itemNone->SetIconImage("DefaultVideo.png");
@@ -1290,26 +1292,16 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
         return false;
 
-      CTextureCache::Get().ClearCachedImage(cachedFanart, true);
+      if (result.Equals("fanart://None") || !CFile::Exists(result))
+          result.clear();
+      if (!result.IsEmpty() && flip)
+        result = CTextureCache::GetWrappedImageURL(result, "", "flipped");
 
-      if (result.Equals("fanart://Local"))
-        result = localFanart;
-
-      if (CFile::Exists(result))
-      {
-        if (flip)
-          CPicture::ConvertFile(result, cachedFanart,0,1920,-1,100,true);
-        else
-          CPicture::CacheFanart(result, cachedFanart);
-      }
+      // update the db
+      m_database.SetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, "fanart", result);
 
       // clear view cache and reload images
       CUtil::DeleteVideoDatabaseDirectoryCache();
-
-      if (CFile::Exists(cachedFanart))
-        item->SetProperty("fanart_image", cachedFanart);
-      else
-        item->ClearProperty("fanart_image");
 
       Update(m_vecItems->GetPath());
       return true;
