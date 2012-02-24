@@ -48,7 +48,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
-#include "system.h"
 
 using namespace std;
 using namespace ADDON;
@@ -343,29 +342,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             // get any options
             bool bWriteOnly = false;
             if (option)
-            {
-              std::string options = option;
-
-              bWriteOnly = (options.find("writeable") != string::npos);
-
-              if (options.find("smb") != string::npos)
-              {
-                CMediaSource smbshare;
-                smbshare.strPath = "smb://";
-                smbshare.strName = g_localizeStrings.Get(20171);
-                localShares.push_back(smbshare);
-              }
-
-#ifdef HAS_FILESYSTEM_NFS
-              if (options.find("nfs") != string::npos)
-              {
-                CMediaSource nfsshare;
-                nfsshare.strPath = "nfs://";
-                nfsshare.strName = g_localizeStrings.Get(20259);
-                localShares.push_back(nfsshare);
-              }
-#endif// HAS_FILESYSTEM_NFS
-            }
+              bWriteOnly = (strcmpi(option, "writeable") == 0);
 
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, label, value, bWriteOnly))
               ((CGUIButtonControl*) control)->SetLabel2(value);
