@@ -1,0 +1,2 @@
+[B]1.0.0[/B]
+Just simply put an unzipped copy of this in addons and the final directory should be called metadata.justUseFilename.org and restart xmbc. I will try my best to get this added to the offical repository.

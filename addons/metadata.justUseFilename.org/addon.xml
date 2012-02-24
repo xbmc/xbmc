@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.justUseFilename.org"
+       name="justUseTheFilename"
+       version="1.0.1"
+       provider-name="ELBSolutions.com Inc.">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.movies"
+             language="en"
+             library="justUseFilename.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Just Use the Filename as the name of the movie</summary>
+    <description lang="en">Simply use this scraper to add any videos ( home videos, and other) to their library without having to use nfo files with the filename of the movie. IMPORTANT: If you do not know this - setting the scraper and running an (automated) scan does NOT pick up changes you make to nfo files you put - it took a long time to 'get that' so I thought it was important to reiterate. To refresh your library eithr rename your files and re-run or set the 'this directory contains' parameter to none, click OK, then reset the values back to movie and rescrape. I learned how to do all this by editing the themoviedB.org scraper so thank you for your excellent example.</description>
+    <platform>all</platform>
+  </extension>
+</addon>
