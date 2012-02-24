@@ -349,6 +349,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     }
   }
 
+  // Update global AV delay
+  if (g_application.IsPlayingVideo())
+    g_application.m_pPlayer->SetGlobalAVDelay(res, true);
+
   if (res >= RES_DESKTOP)
   {
     g_advancedSettings.m_fullScreen = true;

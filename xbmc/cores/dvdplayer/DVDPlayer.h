@@ -171,6 +171,7 @@ public:
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool Record(bool bOnOff);
+  virtual void SetGlobalAVDelay(RESOLUTION res, bool apply);
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
 
@@ -306,6 +307,7 @@ protected:
   void UpdatePlayState(double timeout);
   double m_UpdateApplication;
 
+  float m_GlobalAVDelay;
   bool m_bAbortRequest;
 
   std::string m_filename; // holds the actual filename

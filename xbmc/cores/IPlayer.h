@@ -24,6 +24,7 @@
 #include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
 #include "utils/StdString.h"
+#include "guilib/Resolution.h"
 
 struct TextCacheStruct_t;
 class TiXmlElement;
@@ -103,6 +104,7 @@ public:
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
 
+  virtual void SetGlobalAVDelay(RESOLUTION res, bool apply) { return; };
   virtual void  SetAVDelay(float fValue = 0.0f) { return; }
   virtual float GetAVDelay()                    { return 0.0f;};
 
