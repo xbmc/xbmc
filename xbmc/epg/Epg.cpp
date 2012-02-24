@@ -173,7 +173,7 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
   if (m_nowActiveStart.IsValid())
   {
     map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(m_nowActiveStart);
-    if (it != m_tags.end())
+    if (it != m_tags.end() && it->second->IsActive())
     {
       tag = *it->second;
       return true;
