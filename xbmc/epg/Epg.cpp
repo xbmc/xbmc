@@ -655,9 +655,18 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 
 bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 {
-  bool bReturn(false);
+  bool bReturn(true);
   CEpgInfoTag *previousTag(NULL), *currentTag(NULL);
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database(NULL);
+  if (bUpdateDb)
+  {
+    database = g_EpgContainer.GetDatabase();
+    if (!database || !database->IsOpen())
+    {
+      CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+      return false;
+    }
+  }
 
   for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
@@ -668,20 +677,11 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     }
     currentTag = it->second;
 
-    if (previousTag->StartAsUTC() <= currentTag->StartAsUTC())
+    if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
     {
+      // delete the current tag. it's completely overlapped
       if (bUpdateDb)
-      {
-        if (!database || !database->IsOpen())
-        {
-          CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-          bReturn = false;
-          continue;
-        }
-        bReturn = database->Delete(*currentTag);
-      }
-      else
-        bReturn = true;
+        bReturn &= database->Delete(*currentTag);
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -689,13 +689,34 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       delete currentTag;
       m_tags.erase(it++);
     }
-    else if (previousTag->StartAsUTC() < currentTag->EndAsUTC())
+    else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
     {
-      currentTag->SetEndFromUTC(previousTag->StartAsUTC());
+      currentTag->SetStartFromUTC(previousTag->EndAsUTC());
       if (bUpdateDb)
-        bReturn = currentTag->Persist();
-      else
-        bReturn = true;
+        bReturn &= currentTag->Persist();
+
+      previousTag = it->second;
+    }
+    else if (previousTag->EndAsUTC() < currentTag->StartAsUTC())
+    {
+      time_t start, end, middle;
+      previousTag->EndAsUTC().GetAsTime(start);
+      currentTag->StartAsUTC().GetAsTime(end);
+      middle = start + ((end - start) / 2);
+      CDateTime newTime(middle);
+
+      currentTag->SetStartFromUTC(newTime);
+      previousTag->SetEndFromUTC(newTime);
+
+      if (m_nowActiveStart == it->first)
+        m_nowActiveStart = currentTag->StartAsUTC();
+
+      if (bUpdateDb)
+      {
+        bReturn &= currentTag->Persist();
+        bReturn &= previousTag->Persist();
+      }
+
       previousTag = it->second;
     }
     else
