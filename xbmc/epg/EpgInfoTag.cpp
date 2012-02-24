@@ -24,7 +24,7 @@
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
@@ -35,31 +35,7 @@ using namespace std;
 using namespace EPG;
 using namespace PVR;
 
-CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
-    m_bNotify(false),
-    m_bChanged(false),
-    m_iBroadcastId(-1),
-    m_iGenreType(0),
-    m_iGenreSubType(0),
-    m_iParentalRating(0),
-    m_iStarRating(0),
-    m_iSeriesNumber(0),
-    m_iEpisodeNumber(0),
-    m_iEpisodePart(0),
-    m_iUniqueBroadcastID(iUniqueBroadcastId),
-    m_strTitle(""),
-    m_strPlotOutline(""),
-    m_strPlot(""),
-    m_strGenre(""),
-    m_strEpisodeName(""),
-    m_strIconPath(""),
-    m_strFileNameAndPath(""),
-    m_iTimerId(-1),
-    m_iEpgId(-1)
-{
-}
-
-CEpgInfoTag::CEpgInfoTag(void) :
+CEpgInfoTag::CEpgInfoTag(int iEpgId /* = -1 */, int iPVRChannelNumber /* = -1 */, int iPVRChannelID /* = -1 */, const CStdString &strTableName /* = StringUtils::EmptyString */) :
     m_bNotify(false),
     m_bChanged(false),
     m_iBroadcastId(-1),
@@ -79,7 +55,10 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_strIconPath(""),
     m_strFileNameAndPath(""),
     m_iTimerId(-1),
-    m_iEpgId(-1)
+    m_iEpgId(iEpgId),
+    m_iPVRChannelNumber(iPVRChannelNumber),
+    m_iPVRChannelID(iPVRChannelID),
+    m_strTableName(strTableName)
 {
 }
 
@@ -103,7 +82,9 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strIconPath(""),
     m_strFileNameAndPath(""),
     m_iTimerId(-1),
-    m_iEpgId(-1)
+    m_iEpgId(-1),
+    m_iPVRChannelNumber(-1),
+    m_iPVRChannelID(-1)
 {
   Update(data);
 }
@@ -131,7 +112,10 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_endTime(tag.m_endTime),
     m_firstAired(tag.m_firstAired),
     m_iTimerId(tag.m_iTimerId),
-    m_iEpgId(tag.m_iEpgId)
+    m_iEpgId(tag.m_iEpgId),
+    m_iPVRChannelNumber(tag.m_iPVRChannelNumber),
+    m_iPVRChannelID(tag.m_iPVRChannelID),
+    m_strTableName(tag.m_strTableName)
 {
 }
 
@@ -167,7 +151,10 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
-          m_endTime            == right.m_endTime);
+          m_endTime            == right.m_endTime &&
+          m_iPVRChannelNumber  == right.m_iPVRChannelNumber &&
+          m_iPVRChannelID      == right.m_iPVRChannelID &&
+          m_strTableName       == right.m_strTableName);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -205,6 +192,9 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_iTimerId           = other.m_iTimerId;
   m_timerStart         = other.m_timerStart;
   m_iEpgId             = other.m_iEpgId;
+  m_iPVRChannelNumber  = other.m_iPVRChannelNumber;
+  m_iPVRChannelID      = other.m_iPVRChannelID;
+  m_strTableName       = other.m_strTableName;
 
   return *this;
 }
@@ -799,14 +789,35 @@ CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
 
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
-  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
-  return epg && epg->HasPVRChannel();
+  CSingleLock lock(m_critSection);
+  return m_iPVRChannelID != -1;
+}
+
+int CEpgInfoTag::PVRChannelNumber(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iPVRChannelNumber;
+}
+
+CStdString CEpgInfoTag::PVRChannelName(void) const
+{
+  CStdString strReturn;
+  CSingleLock lock(m_critSection);
+  strReturn = m_strTableName;
+  return strReturn;
 }
 
 const PVR::CPVRChannel *CEpgInfoTag::ChannelTag(void) const
 {
-  CEpg *epg = g_EpgContainer.GetById(m_iEpgId);
-  return epg ? epg->Channel() : NULL;
+  int iChannelId(-1);
+  {
+    CSingleLock lock(m_critSection);
+    iChannelId = m_iPVRChannelID;
+  }
+
+  return (iChannelId != -1) ?
+      g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId) :
+      NULL;
 }
 
 void CEpgInfoTag::Update(const EPG_TAG &tag)
@@ -852,6 +863,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_strEpisodeName     != tag.m_strEpisodeName ||
         m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
         m_iEpgId             != tag.m_iEpgId ||
+        m_iPVRChannelID      != tag.m_iPVRChannelID ||
+        m_iPVRChannelNumber  != tag.m_iPVRChannelNumber ||
+        m_strTableName       != tag.m_strTableName ||
         ( tag.m_strGenre.length() > 0 && m_strGenre != tag.m_strGenre )
     );
     if (bUpdateBroadcastId)
@@ -870,6 +884,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iGenreType         = tag.m_iGenreType;
       m_iGenreSubType      = tag.m_iGenreSubType;
       m_iEpgId             = tag.m_iEpgId;
+      m_iPVRChannelID      = tag.m_iPVRChannelID;
+      m_iPVRChannelNumber  = tag.m_iPVRChannelNumber;
+      m_strTableName       = tag.m_strTableName;
       if (m_iGenreType == EPG_GENRE_USE_STRING && tag.m_strGenre.length() > 0)
       {
         /* No type/subtype. Use the provided description */

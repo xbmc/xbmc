@@ -123,7 +123,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
     bReturn = true;
 
     const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
-    if (!tag || !tag->ChannelTag() || tag->ChannelTag()->UniqueID() <= 0)
+    if (!tag || !tag->HasPVRChannel())
     {
       /* invalid channel */
       CGUIDialogOK::ShowAndGetInput(19033,19067,0,0);

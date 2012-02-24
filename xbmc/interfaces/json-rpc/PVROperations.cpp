@@ -181,9 +181,9 @@ JSON_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITranspo
     CDateTime startTime(iStartTime);
     CEpgInfoTag *tag = g_EpgContainer.GetById(iEpgId)->GetTag(iUniqueId, startTime);
 
-    if (tag && tag->ChannelTag())
+    if (tag && tag->HasPVRChannel())
     {
-      CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'", tag->ChannelTag()->ChannelName().c_str(), tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(), tag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: schedule recording - channel: '%s' start: '%s' end: '%s'", tag->PVRChannelName().c_str(), tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false).c_str(), tag->EndAsLocalTime().GetAsLocalizedDateTime(false, false).c_str());
 
       CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
       bool bCreated = (newTimer != NULL);
