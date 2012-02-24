@@ -49,9 +49,6 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_iPVRChannelId(-1),
     m_iPVRChannelNumber(-1)
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
@@ -64,9 +61,6 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_iPVRChannelId(channel->ChannelID()),
     m_iPVRChannelNumber(channel->ChannelNumber())
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::CEpg(void) :
@@ -79,9 +73,6 @@ CEpg::CEpg(void) :
     m_iPVRChannelId(-1),
     m_iPVRChannelNumber(-1)
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::~CEpg(void)
@@ -99,8 +90,6 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_strScraperName    = right.m_strScraperName;
   m_nowActiveStart    = right.m_nowActiveStart;
   m_lastScanTime      = right.m_lastScanTime;
-  m_firstDate         = right.m_firstDate;
-  m_lastDate          = right.m_lastDate;
   m_iPVRChannelId     = right.m_iPVRChannelId;
   m_iPVRChannelNumber = right.m_iPVRChannelNumber;
 
@@ -176,9 +165,6 @@ void CEpg::Cleanup(const CDateTime &Time)
       bTagsChanged = true;
     }
   }
-
-  if (bTagsChanged)
-    UpdateFirstAndLastDates();
 }
 
 bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
@@ -399,30 +385,12 @@ bool CEpg::Load(void)
   {
     CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
         __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
-    UpdateFirstAndLastDates();
     bReturn = true;
   }
 
   m_bLoaded = true;
 
   return bReturn;
-}
-
-void CEpg::UpdateFirstAndLastDates(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* update the first and last date */
-  if (m_tags.size() > 0)
-  {
-    m_firstDate = m_tags.begin()->second->StartAsUTC();
-    m_lastDate = m_tags.rbegin()->second->EndAsUTC();
-  }
-  else
-  {
-    m_firstDate.SetValid(false);
-    m_lastDate.SetValid(false);
-  }
 }
 
 bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
@@ -454,9 +422,6 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     /* update the last scan time of this table */
     m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
-    /* update the first and last date */
-    UpdateFirstAndLastDates();
-
     //m_bTagsChanged = true;
     /* persist changes */
     if (bStoreInDb)
@@ -479,26 +444,30 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   return bReturn;
 }
 
-const CDateTime &CEpg::GetLastScanTime(void)
+CDateTime CEpg::GetLastScanTime(void)
 {
-  CSingleLock lock(m_critSection);
-
-  if (!m_lastScanTime.IsValid())
+  CDateTime lastScanTime;
   {
-    if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
-    {
-      CEpgDatabase *database = g_EpgContainer.GetDatabase();
-      CDateTime dtReturn; dtReturn.SetValid(false);
-
-      if (database && database->IsOpen())
-        database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
-    }
+    CSingleLock lock(m_critSection);
 
     if (!m_lastScanTime.IsValid())
     {
-      m_lastScanTime.SetDateTime(0, 0, 0, 0, 0, 0);
-      m_lastScanTime.SetValid(true);
+      if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
+      {
+        CEpgDatabase *database = g_EpgContainer.GetDatabase();
+        CDateTime dtReturn; dtReturn.SetValid(false);
+
+        if (database && database->IsOpen())
+          database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
+      }
+
+      if (!m_lastScanTime.IsValid())
+      {
+        m_lastScanTime.SetDateTime(0, 0, 0, 0, 0, 0);
+        m_lastScanTime.SetValid(true);
+      }
     }
+    lastScanTime = m_lastScanTime;
   }
 
   return m_lastScanTime;
@@ -633,18 +602,26 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
   return bReturn;
 }
 
-const CDateTime &CEpg::GetFirstDate(void) const
+CDateTime CEpg::GetFirstDate(void) const
 {
-  CSingleLock lock(m_critSection);
+  CDateTime first;
 
-  return m_firstDate;
+  CSingleLock lock(m_critSection);
+  if (m_tags.size() > 0)
+    first = m_tags.begin()->second->StartAsUTC();
+
+  return first;
 }
 
-const CDateTime &CEpg::GetLastDate(void) const
+CDateTime CEpg::GetLastDate(void) const
 {
-  CSingleLock lock(m_critSection);
+  CDateTime last;
 
-  return m_lastDate;
+  CSingleLock lock(m_critSection);
+  if (m_tags.size() > 0)
+    last = m_tags.rbegin()->second->StartAsUTC();
+
+  return last;
 }
 
 //@}
@@ -773,9 +750,14 @@ bool CEpg::PersistTags(void) const
     return bReturn;
   }
 
-  time_t iStart, iEnd;
-  GetFirstDate().GetAsTime(iStart);
-  GetLastDate().GetAsTime(iEnd);
+  CDateTime first = GetFirstDate();
+  CDateTime last = GetLastDate();
+
+  time_t iStart(0), iEnd(0);
+  if (first.IsValid())
+    first.GetAsTime(iStart);
+  if (last.IsValid())
+    last.GetAsTime(iEnd);
   database->Delete(*this, iStart, iEnd);
 
   if (m_tags.size() > 0)
