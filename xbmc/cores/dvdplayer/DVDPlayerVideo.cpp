@@ -518,15 +518,29 @@ void CDVDPlayerVideo::Process()
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 
+      // don't let codec converge count instantly reduce buffered message count for a stream
+      // - as that happens after a flush and then defeats the object of having the buffer
+      int iConvergeCount = m_pVideoCodec->GetConvergeCount();
+
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
+      if (m_pVideoCodec->GetConvergeCount() > iConvergeCount)
+         iConvergeCount = m_pVideoCodec->GetConvergeCount();
+
       // buffer packets so we can recover should decoder flush for some reason
-      if(m_pVideoCodec->GetConvergeCount() > 0)
+      if(iConvergeCount > 0)
       {
+        int popped = 0;
+        // store up to 11 seconds worth of demux messages (10s is a common key frame interval)
+        // and prune back up to 20 each time if we suddenly need less (to make more efficent when replaying)
         m_packets.push_back(DVDMessageListItem(pMsg, 0));
-        if(m_packets.size() > m_pVideoCodec->GetConvergeCount() 
-        || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
+        while (m_packets.size() > iConvergeCount || m_packets.size() * frametime > DVD_SEC_TO_TIME(11))
+        {
+          if (m_packets.size() <= 2 || popped > 20)
+             break;
           m_packets.pop_front();
+          popped++;
+        }
       }
 
       m_videoStats.AddSampleBytes(pPacket->iSize);
