@@ -1227,6 +1227,30 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   return true;
 }
 
+EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  switch (event.m_id)
+  {
+  case ACTION_MOUSE_LEFT_CLICK:
+    OnMouseClick(0, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_RIGHT_CLICK:
+    OnMouseClick(1, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_DOUBLE_CLICK:
+    OnMouseDoubleClick(0, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_WHEEL_UP:
+    OnMouseWheel(-1, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_WHEEL_DOWN:
+    OnMouseWheel(1, point);
+    return EVENT_RESULT_HANDLED;
+  default:
+    return EVENT_RESULT_UNHANDLED;
+  }
+}
+
 bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
