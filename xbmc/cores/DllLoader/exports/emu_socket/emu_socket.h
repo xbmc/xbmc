@@ -22,10 +22,6 @@
  *
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#endif
-
 #define SOCK_RAW 3
 
 #define EAFNOSUPPORT WSAEAFNOSUPPORT
@@ -39,21 +35,6 @@ struct mphostent {
 	  short  h_length;	    /* length of	address	*/
 	  char **h_addr_list; /* list of addresses	from name server */
 };
-
-#ifdef _XBOX
-typedef struct servent {
-		char FAR* s_name;
-		char FAR  FAR** s_aliases;
-		short s_port;
-		char FAR* s_proto;
-} servent;
-
-typedef struct protoent {
-		char FAR* p_name;
-		char FAR  FAR** p_aliases;
-		short p_proto;
-} protoent;
-#endif
 
 #ifndef IN_MULTICAST
 #define IN_MULTICAST(i)	    (((i) & 0xf0000000U) == 0xe0000000U)

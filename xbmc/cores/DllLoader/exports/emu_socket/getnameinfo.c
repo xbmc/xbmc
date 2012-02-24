@@ -37,12 +37,7 @@
  *   modified).
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#include <winsockx.h>
-#else
 #include <windows.h>
-#endif
 #include <stddef.h>
 #include "addrinfo.h"
 #include "emu_socket.h"
@@ -53,14 +48,6 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
-
-#ifdef _XBOX
-extern struct mphostent* __stdcall dllgethostbyname(const char* name);
-#define gethostbyname(name) dllgethostbyname(name)
-
-extern struct mphostent* __stdcall dllgethostbyaddr(const char* addr, int len, int type);
-#define gethostbyaddr(addr, len, type) dllgethostbyaddr(addr, len, type)
-#endif
 
 extern struct servent* __stdcall dllgetservbyname(const char* name, const char* proto);
 #define getservbyname(name, proto) dllgetservbyname(name, proto)
