@@ -38,6 +38,7 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace std;
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?
@@ -801,12 +802,12 @@ void CGUIEPGGridContainer::UpdateItems()
       while (progIdx <= lastIdx)
       {
         CGUIListItemPtr item = m_programmeItems[progIdx];
-        if (((CFileItem *)item.get())->GetEPGInfoTag()->PVRChannelNumber() != channelnum)
-          break;
-
         const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
         if (tag == NULL)
           progIdx++;
+
+        if (tag->PVRChannelNumber() != channelnum)
+          break;
 
         if (m_gridEnd <= tag->StartAsLocalTime())
         {
@@ -1133,6 +1134,40 @@ void CGUIEPGGridContainer::OnRight()
     if (!MoveChannel(false))
       CGUIControl::OnRight();
   }
+}
+
+void CGUIEPGGridContainer::SetChannel(const CStdString &channel)
+{
+  int iChannelIndex(-1);
+  for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
+  {
+    CStdString strPath = m_channelItems[iIndex]->GetProperty("path").asString(StringUtils::EmptyString);
+    if (strPath == channel)
+    {
+      iChannelIndex = iIndex;
+      break;
+    }
+  }
+
+  if (iChannelIndex >= 0)
+    ScrollToChannelOffset(iChannelIndex);
+}
+
+void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
+{
+  int iChannelIndex(-1);
+  for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
+  {
+    int iChannelId = m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
+    if (iChannelId == channel.ChannelID())
+    {
+      iChannelIndex = iIndex;
+      break;
+    }
+  }
+
+  if (iChannelIndex >= 0)
+    ScrollToChannelOffset(iChannelIndex);
 }
 
 void CGUIEPGGridContainer::SetChannel(int channel)
