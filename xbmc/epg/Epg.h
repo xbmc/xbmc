@@ -86,6 +86,7 @@ namespace EPG
     virtual PVR::CPVRChannel *Channel(void) const;
 
     virtual int ChannelID(void) const;
+    virtual int ChannelNumber(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
@@ -347,6 +348,7 @@ namespace EPG
     CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
 
     int                        m_iPVRChannelId;   /*!< the channel this EPG belongs to */
+    int                        m_iPVRChannelNumber; /*!< the channel number in the "all channels" group. set on create and not updated */
 
     CCriticalSection           m_critSection;     /*!< critical section for changes in this table */
   };
