@@ -257,7 +257,7 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
         }
       }
       if (iVersion < 20)
-        m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool;");
+        m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
     }
   }
   catch (...)
@@ -321,7 +321,7 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idEpg) "
-        "VALUES (%i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i);",
+        "VALUES (%i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(),
@@ -334,7 +334,7 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel, idEpg) "
-        "VALUES (%i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i, %i);",
+        "VALUES (%i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID(),

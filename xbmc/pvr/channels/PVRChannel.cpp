@@ -196,7 +196,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   if (m_strChannelName.IsEmpty())
     SetChannelName(channel.ClientChannelName());
   if (m_strIconPath.IsEmpty()||(!m_strIconPath.Equals(channel.IconPath()) && !IsUserSetIcon()))
-    SetIconPath(channel.IconPath());
+    SetIconPath(channel.IconPath(), false, false);
 
   return m_bChanged;
 }
@@ -284,7 +284,7 @@ bool CPVRChannel::IsRecording(void) const
   return g_PVRTimers->IsRecordingOnChannel(*this);
 }
 
-bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* = false */, bool bIsUserSetIcon /* = false */)
+bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* = false */, bool bIsUserSetIcon /* = true */)
 {
   bool bReturn(true); // different from the behaviour of the rest of this class
   CSingleLock lock(m_critSection);
@@ -300,7 +300,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
     SetChanged();
     m_bChanged = true;
 
-	/* did the user change the icon? */
+    /* did the user change the icon? */
     if (bIsUserSetIcon) {
       if (!m_strIconPath.IsEmpty()) {
         m_bIsUserSetIcon = true;
