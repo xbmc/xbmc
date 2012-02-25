@@ -464,11 +464,19 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if(m_pFrame->key_frame || m_pCodecContext->codec_id == CODEC_ID_H264) /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
+  if(m_pFrame->key_frame)
   {
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
   }
+
+  /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
+  if(m_iLastKeyframe > 300)
+    m_iLastKeyframe = 300;
+
+  /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
+  if(m_pCodecContext->codec_id == CODEC_ID_H264)
+    m_started = true;
 
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
