@@ -526,6 +526,7 @@
   <string id="573">Chemin</string>
   <string id="574">Pays</string>
   <string id="575">En cours</string>  
+  <string id="576">Nombre de Lectures</string>
   
   <string id="580">Direction du tri</string>
   <string id="581">Méthode du tri</string>
@@ -874,9 +875,11 @@
   <string id="10019">Paramètres - Apparence</string>
   <string id="10020">Scripts</string>
   <string id="10021">Navigateur</string>
-  
+  <string id="10025">Vidéos</string>
   <string id="10028">Vidéos/Playliste</string>
+  <string id="10029">Écran de connexion</string>
   <string id="10034">Paramètres - Profils</string>
+  <string id="10040">Gestionnaire d'add-ons</string>
   
   <string id="10100">Dialogues Oui/Non</string>
   <string id="10101">Dialogues Progression</string>
@@ -1774,7 +1777,7 @@
   <string id="20326">Ceci remettra à zéro les valeurs de calibrage pour %s</string>
   <string id="20327">aux valeurs par défaut.</string>
   <string id="20328">Parcourir pour une destination</string>
-  
+  <string id="20329">Chaque film dans un dossier séparé, libellé avec son titre</string>
   <string id="20330">Consultation avec les noms des dossiers</string>
   <string id="20331">Fichier</string>
   <string id="20332">Utiliser le nom des dossiers ou fichiers pour la consultation ?</string>
@@ -1880,7 +1883,7 @@
   <string id="20431">Écraser les anciens fichiers ?</string>
   <string id="20432">Exclure le chemin de la MAJ médiathèque</string>
   <string id="20433">Extraire les vignettes et les informations vidéo</string>
-  <string id="20434">Groupes</string>
+  <string id="20434">Sagas</string>
   <string id="20435">Définir une vignette de saga</string>
   <string id="20436">Exporter les vignettes acteur</string>
   <string id="20437">Choisir un fanart</string>
@@ -1904,6 +1907,7 @@
   <string id="20455">Auditeurs</string>  
   <string id="20456">Choisir le Fanart de la saga</string>
   <string id="20457">Saga</string>
+  <string id="20458">Grouper les films en saga</string>
   <!-- up to 21329 is reserved for the video db  !!  !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
@@ -2010,6 +2014,8 @@
   <string id="21451">Connexion Internet requise.</string>
   <string id="21452">Plus...</string>
   <string id="21453">Racine</string>
+  <string id="21454">Cache plein</string>
+  <string id="21455">Cache rempli mais insuffisant pour une lecture continue</string>
 
   <string id="21460">Emplacement du sous-titre</string>
   <string id="21461">Fixe</string>
@@ -2228,6 +2234,7 @@
   <string id="24073">Connexion impossible</string>
   <string id="24074">Redémarrage requis</string>
   <string id="24075">Désactiver</string>
+  <string id="24076">Add-on requis</string>
   <string id="24080">Tenter la reconnexion ?</string>
   <string id="24089">Redémarrage de l'Add-on</string>
   <string id="24090">Verrouiller le gestionnaire d'Add-on</string>
@@ -2238,6 +2245,8 @@
   <string id="24097">Voulez-vous le désactiver sur votre système ?</string>
   <string id="24098">Cassé</string>
   <string id="24099">Voulez-vous basculer vers ce thème ?</string>
+  <string id="24100">Pour utiliser cette fonctionnalité, vous devez télécharger un Add-on :</string>
+  <string id="24101">Voulez-vous télécharger cet Add-on ?</string>
   <string id="25000">Notifications</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2249,7 +2258,6 @@
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
   <!-- strings 33000 thru 33999 reserved for common strings used in Add-ons -->
-  <string id="30011">Chercher la durée</string>
   <string id="33001">Qualité du trailer</string>
   <string id="33002">Flux</string>
   <string id="33003">Télécharger</string>
@@ -2260,6 +2268,7 @@
   <string id="33008">Enregistrement en cours</string>
   <string id="33009">Copie en cours</string>
   <string id="33010">Définir le répertoire de téléchargement</string>
+  <string id="33011">Durée de la recherche</string>
   <string id="33012">Court</string>
   <string id="33013">Long</string>
   <string id="33014">Utiliser le lecteur DVD au lieu du lecteur habituel</string>
@@ -2327,6 +2336,8 @@
   <string id="33102">Serveur d'évènement</string>
   <string id="33103">Communication à distance avec le serveur</string>
 
+  <string id="33200">Nouvelle connexion détectée</string>
+
   <!-- translators : no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2350,6 +2361,14 @@
 
   <string id="34201">Aucun média à suivre</string>
   <string id="34202">Aucun média précédent</string>
+  
+  <string id="34300">Échec du démarrage zeroconf</string>
+  <string id="34301">Est-ce que le service d'Apple Bonjour est installé ? Consultez le log pour plus d'infos.</string>
+  
+  <string id="34400">Rendu Vidéo</string>
+  <string id="34401">Échec du filtre/redimensionnement vidéo, utilisation du redimensionnement bilinéaire à la place</string>
+  <string id="34402">Échec d'initialisation du périphérique audio</string>
+  <string id="34403">Vérifiez vos paramètres audio</string>
   
   <string id="35000">Périphériques</string>
 
