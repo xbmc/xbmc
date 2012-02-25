@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -207,9 +207,9 @@ int CTCPServer::GetCapabilities()
   return Response | Announcing;
 }
 
-void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CTCPServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  std::string str = AnnouncementToJSON(flag, sender, message, data, g_advancedSettings.m_jsonOutputCompact);
+  std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, g_advancedSettings.m_jsonOutputCompact);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

@@ -56,7 +56,7 @@ namespace PERIPHERALS
     CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
     virtual ~CPeripheralCecAdapter(void);
 
-    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
     virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
     virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
 

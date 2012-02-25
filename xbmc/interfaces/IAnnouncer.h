@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 class CVariant;
 namespace ANNOUNCEMENT
 {
-  enum EAnnouncementFlag
+  enum AnnouncementFlag
   {
     Player = 0x1,
     GUI = 0x2,
@@ -35,11 +35,38 @@ namespace ANNOUNCEMENT
 
   #define ANNOUNCE_ALL (Player | GUI | System | VideoLibrary | AudioLibrary | Other)
 
+  /*!
+    \brief Returns a string representation for the 
+    given AnnouncementFlag
+    \param notification Specific AnnouncementFlag
+    \return String representation of the given AnnouncementFlag
+    */
+  inline const char *AnnouncementFlagToString(const AnnouncementFlag &notification)
+  {
+    switch (notification)
+    {
+    case Player:
+      return "Player";
+    case GUI:
+      return "GUI";
+    case System:
+      return "System";
+    case VideoLibrary:
+      return "VideoLibrary";
+    case AudioLibrary:
+      return "AudioLibrary";
+    case Other:
+      return "Other";
+    default:
+      return "Unknown";
+    }
+  }
+
   class IAnnouncer
   {
   public:
     IAnnouncer() { };
     virtual ~IAnnouncer() { };
-    virtual void Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
+    virtual void Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
   };
 }
