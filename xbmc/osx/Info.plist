@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>XBMC</string>
 	<key>CFBundleGetInfoString</key>
-	<string>11.0.beta3</string>
+	<string>11.0.rc1</string>
 	<key>CFBundleIconFile</key>
 	<string>xbmc.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>11.0.beta3</string>
+	<string>11.0.rc1</string>
 	<key>CFBundleVersion</key>
 	<string>r####</string>
 	<key>CFBundleSignature</key>
