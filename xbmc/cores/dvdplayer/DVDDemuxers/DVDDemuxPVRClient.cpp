@@ -149,8 +149,6 @@ DemuxPacket* CDVDDemuxPVRClient::Read()
   else if (pPacket->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
     Reset();
-    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-    return CDVDDemuxUtils::AllocateDemuxPacket(0);
   }
 
   return pPacket;

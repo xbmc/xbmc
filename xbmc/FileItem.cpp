@@ -208,6 +208,9 @@ CFileItem::CFileItem(const CPVRChannel& channel)
     SetThumbnailImage(channel.IconPath());
     SetIconImage(channel.IconPath());
   }
+
+  SetProperty("channelid", channel.ChannelID());
+  SetProperty("path", channel.Path());
 }
 
 CFileItem::CFileItem(const CPVRRecording& record)
@@ -2659,6 +2662,8 @@ CStdString CFileItemList::GetDiscCacheFile(int windowID) const
     cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
     cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
+  else if (IsSmartPlayList())
+    cacheFile.Format("special://temp/sp-%08x.fi", (unsigned __int32)crc);
   else if (windowID)
     cacheFile.Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
   else

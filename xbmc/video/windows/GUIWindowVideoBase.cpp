@@ -1531,6 +1531,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
   OnDeleteItem(m_vecItems->Get(iItem));
 
+  m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->GetPath());
   m_viewControl.SetSelectedItem(iItem);
 }

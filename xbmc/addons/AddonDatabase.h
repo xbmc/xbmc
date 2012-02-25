@@ -57,8 +57,6 @@ public:
    \sa SetRepoTimestamp */
   CDateTime GetRepoTimestamp(const CStdString& id);
 
-  bool GetSystemEnabled(const CStdString& id);
-  bool SetSystemEnabled(const CStdString& id, bool enabled);
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 

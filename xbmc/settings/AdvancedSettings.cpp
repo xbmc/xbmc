@@ -553,6 +553,44 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
     //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
     XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
+
+    // Store global display latency settings
+    m_videoDefaultLatency = 0;
+    TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
+    if (pVideoLatency)
+    {
+      float refresh, refreshmin, refreshmax, delay;
+      TiXmlElement* pRefreshVideoLatency = pVideoLatency->FirstChildElement("refresh");
+
+      while (pRefreshVideoLatency)
+      {
+        RefreshVideoLatency videolatency = {0};
+
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "rate", refresh))
+        {
+          videolatency.refreshmin = refresh - 0.01f;
+          videolatency.refreshmax = refresh + 0.01f;
+        }
+        else if (XMLUtils::GetFloat(pRefreshVideoLatency, "min", refreshmin) &&
+                 XMLUtils::GetFloat(pRefreshVideoLatency, "max", refreshmax))
+        {
+          videolatency.refreshmin = refreshmin;
+          videolatency.refreshmax = refreshmax;
+        }
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "delay", delay, -600.0f, 600.0f))
+          videolatency.delay = delay;
+
+        if (videolatency.refreshmin > 0.0f && videolatency.refreshmax >= videolatency.refreshmin)
+          m_videoRefreshLatency.push_back(videolatency);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed display latency <refresh> entry, min:%f max:%f", videolatency.refreshmin, videolatency.refreshmax);
+
+        pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
+      }
+
+      // Get default global display latency
+      XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1105,4 +1143,17 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
 void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 {
   m_settingsFiles.push_back(filename);
+}
+
+float CAdvancedSettings::GetDisplayLatency(float refreshrate)
+{
+  float delay = m_videoDefaultLatency / 1000.0f;
+  for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
+  {
+    RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
+    if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
+      delay = videolatency.delay / 1000.0f;
+  }
+
+  return delay; // in seconds
 }

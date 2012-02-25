@@ -38,6 +38,7 @@
 
 using namespace PVR;
 using namespace EPG;
+using namespace std;
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?
@@ -680,16 +681,16 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       for (int i = 0; i < items->Size(); ++i)
       {
         const CEpgInfoTag* tag = items->Get(i)->GetEPGInfoTag();
-        if (!tag)
+        if (!tag || !tag->HasPVRChannel())
           continue;
 
-        const CPVRChannel *channel = tag->ChannelTag();
-        if (!tag->ChannelTag())
-          continue;
-
-        int iCurrentChannelNumber = channel->ChannelNumber();
+        int iCurrentChannelNumber = tag->PVRChannelNumber();
         if (iCurrentChannelNumber != iLastChannelNumber)
         {
+          const CPVRChannel *channel = tag->ChannelTag();
+          if (!channel)
+            continue;
+
           if (i > 0)
           {
             itemsPointer.stop = i-1;
@@ -792,7 +793,7 @@ void CGUIEPGGridContainer::UpdateItems()
     CDateTime gridCursor  = m_gridStart; //reset cursor for new channel
     unsigned long progIdx = m_epgItemsPtr[row].start;
     unsigned long lastIdx = m_epgItemsPtr[row].stop;
-    int channelnum        = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
+    int channelnum        = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->PVRChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -801,12 +802,12 @@ void CGUIEPGGridContainer::UpdateItems()
       while (progIdx <= lastIdx)
       {
         CGUIListItemPtr item = m_programmeItems[progIdx];
-        if (((CFileItem *)item.get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber() != channelnum)
-          break;
-
         const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
         if (tag == NULL)
           progIdx++;
+
+        if (tag->PVRChannelNumber() != channelnum)
+          break;
 
         if (m_gridEnd <= tag->StartAsLocalTime())
         {
@@ -1135,6 +1136,40 @@ void CGUIEPGGridContainer::OnRight()
   }
 }
 
+void CGUIEPGGridContainer::SetChannel(const CStdString &channel)
+{
+  int iChannelIndex(-1);
+  for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
+  {
+    CStdString strPath = m_channelItems[iIndex]->GetProperty("path").asString(StringUtils::EmptyString);
+    if (strPath == channel)
+    {
+      iChannelIndex = iIndex;
+      break;
+    }
+  }
+
+  if (iChannelIndex >= 0)
+    ScrollToChannelOffset(iChannelIndex);
+}
+
+void CGUIEPGGridContainer::SetChannel(const CPVRChannel &channel)
+{
+  int iChannelIndex(-1);
+  for (unsigned int iIndex = 0; iIndex < m_channelItems.size(); iIndex++)
+  {
+    int iChannelId = m_channelItems[iIndex]->GetProperty("channelid").asInteger(-1);
+    if (iChannelId == channel.ChannelID())
+    {
+      iChannelIndex = iIndex;
+      break;
+    }
+  }
+
+  if (iChannelIndex >= 0)
+    ScrollToChannelOffset(iChannelIndex);
+}
+
 void CGUIEPGGridContainer::SetChannel(int channel)
 {
   if (m_blockCursor + m_blockOffset == 0 || m_blockOffset + m_blockCursor + GetItemSize(m_item) == m_blocks)
@@ -1190,6 +1225,30 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint &point)
   SetChannel(channel);
   SetBlock(block);
   return true;
+}
+
+EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  switch (event.m_id)
+  {
+  case ACTION_MOUSE_LEFT_CLICK:
+    OnMouseClick(0, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_RIGHT_CLICK:
+    OnMouseClick(1, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_DOUBLE_CLICK:
+    OnMouseDoubleClick(0, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_WHEEL_UP:
+    OnMouseWheel(-1, point);
+    return EVENT_RESULT_HANDLED;
+  case ACTION_MOUSE_WHEEL_DOWN:
+    OnMouseWheel(1, point);
+    return EVENT_RESULT_HANDLED;
+  default:
+    return EVENT_RESULT_UNHANDLED;
+  }
 }
 
 bool CGUIEPGGridContainer::OnMouseOver(const CPoint &point)

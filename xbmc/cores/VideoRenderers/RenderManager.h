@@ -108,6 +108,7 @@ public:
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
+  double GetDisplayLatency() { return m_displayLatency; }
 
   bool Supports(ERENDERFEATURE feature)
   {
@@ -216,6 +217,8 @@ protected:
     PRESENT_METHOD_BOB,
   };
 
+  double m_displayLatency;
+  void UpdateDisplayLatency();
 
   double     m_presenttime;
   double     m_presentcorr;

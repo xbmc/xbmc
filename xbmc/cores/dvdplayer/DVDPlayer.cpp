@@ -774,6 +774,15 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
     if(packet)
     {
+      if(packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
+      {
+        // reset the caching state for pvr streams
+        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+          SetCaching(CACHESTATE_PVR);
+        CDVDDemuxUtils::FreeDemuxPacket(packet);
+        return true;
+      }
+
       if(packet->iStreamId < 0)
         return true;
 
@@ -2605,7 +2614,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   if (!m_bStop)
   {
-    double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
+    double dDelay = m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
 
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();

@@ -417,8 +417,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
   if (!epgTag)
     return bReturn;
 
-  const CPVRChannel *channel = epgTag->ChannelTag();
-  if (!channel || channel->ChannelNumber() > 0)
+  if (!epgTag->HasPVRChannel())
     return bReturn;
 
   if (epgTag->Timer() == NULL)
@@ -697,7 +696,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
     return false;
 
   CEpgInfoTag *tag = item->GetEPGInfoTag();
-  if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
+  if (!tag || !tag->HasPVRChannel())
     return false;
 
   CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
@@ -711,7 +710,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!pDialog)
     return false;
   pDialog->SetHeading(264);
-  pDialog->SetLine(0, tag->ChannelTag()->ChannelName());
+  pDialog->SetLine(0, tag->PVRChannelName());
   pDialog->SetLine(1, "");
   pDialog->SetLine(2, tag->Title());
   pDialog->DoModal();
@@ -731,7 +730,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
     return false;
 
   CEpgInfoTag *tag = item->GetEPGInfoTag();
-  if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
+  if (!tag || !tag->HasPVRChannel())
     return false;
 
   CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);

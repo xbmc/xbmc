@@ -343,11 +343,11 @@ namespace PLATFORM
       return bReturn;
     }
 
-    volatile bool              m_bSignaled;
-    CCondition<volatile bool&> m_condition;
-    CMutex                     m_mutex;
-    volatile bool              m_bBroadcast;
-    unsigned int               m_iWaitingThreads;
-    bool                       m_bAutoReset;
+    volatile bool             m_bSignaled;
+    CCondition<volatile bool> m_condition;
+    CMutex                    m_mutex;
+    volatile bool             m_bBroadcast;
+    unsigned int              m_iWaitingThreads;
+    bool                      m_bAutoReset;
   };
 }

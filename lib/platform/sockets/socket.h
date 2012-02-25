@@ -220,9 +220,9 @@ namespace PLATFORM
       m_condition.Signal();
     }
 
-    _Socket *          m_socket;
-    CMutex             m_mutex;
-    CCondition<bool &> m_condition;
-    bool               m_bIsIdle;
+    _Socket *        m_socket;
+    CMutex           m_mutex;
+    CCondition<bool> m_condition;
+    bool             m_bIsIdle;
   };
 };
