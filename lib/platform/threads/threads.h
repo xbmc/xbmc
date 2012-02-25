@@ -133,11 +133,11 @@ namespace PLATFORM
     void SetRunning(bool bSetTo);
 
   private:
-    bool               m_bStop;
-    bool               m_bRunning;
-    bool               m_bStopped;
-    CCondition<bool &> m_threadCondition;
-    CMutex             m_threadMutex;
-    thread_t           m_thread;
+    bool             m_bStop;
+    bool             m_bRunning;
+    bool             m_bStopped;
+    CCondition<bool> m_threadCondition;
+    CMutex           m_threadMutex;
+    thread_t         m_thread;
   };
 };
