@@ -1111,8 +1111,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     pts -= DVD_TIME_BASE * interval;
   }
 
-  //User set delay
-  pts += m_iVideoDelay;
+  // Correct pts by user set delay and rendering delay
+  pts += m_iVideoDelay - DVD_SEC_TO_TIME(g_renderManager.GetDisplayLatency());
 
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock, iFrameDuration;

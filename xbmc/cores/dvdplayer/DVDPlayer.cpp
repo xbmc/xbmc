@@ -2614,7 +2614,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   if (!m_bStop)
   {
-    double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
+    double dDelay = m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
 
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();
