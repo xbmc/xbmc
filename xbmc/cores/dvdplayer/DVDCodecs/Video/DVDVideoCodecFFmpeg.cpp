@@ -449,8 +449,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   avpkt.flags = AV_PKT_FLAG_KEY;
   len = m_dllAvCodec.avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
 
-  if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 1)
-    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+  if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 2)
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
 
   if (len < 0)
   {
@@ -467,7 +467,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if(m_pFrame->key_frame)
   {
     m_started = true;
-    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
 
   /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
