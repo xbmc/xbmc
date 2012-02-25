@@ -194,7 +194,7 @@ namespace PVR
      * @param bIsUserSetIcon true if user changed the icon via GUI, false otherwise.
      * @return True if the something changed, false otherwise.
      */
-    bool SetIconPath(const CStdString &strIconPath, bool bSaveInDb = false, bool bIsUserSetIcon = false);
+    bool SetIconPath(const CStdString &strIconPath, bool bSaveInDb = false, bool bIsUserSetIcon = true);
 
     /*!
      * @brief The name for this channel used by XBMC.
