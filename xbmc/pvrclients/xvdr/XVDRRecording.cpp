@@ -39,11 +39,11 @@ cXVDRRecording::~cXVDRRecording()
   Close();
 }
 
-bool cXVDRRecording::OpenRecording(const PVR_RECORDING& recinfo)
+bool cXVDRRecording::OpenRecording(const std::string& hostname, const PVR_RECORDING& recinfo)
 {
   m_recinfo = recinfo;
 
-  if(!cXVDRSession::Open(g_szHostname, DEFAULT_PORT, "XBMC RecordingStream Receiver"))
+  if(!cXVDRSession::Open(hostname, "XBMC RecordingStream Receiver"))
     return false;
 
   if(!cXVDRSession::Login())
@@ -194,5 +194,5 @@ long long cXVDRRecording::Length(void)
 
 void cXVDRRecording::OnReconnect()
 {
-  OpenRecording(m_recinfo);
+  OpenRecording(m_hostname, m_recinfo);
 }

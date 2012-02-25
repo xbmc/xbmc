@@ -15,14 +15,15 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\iso639.cpp" />
     <ClCompile Include="..\..\requestpacket.cpp" />
-    <ClCompile Include="..\..\responsepacket.cpp" />
     <ClCompile Include="..\..\thread.cpp" />
     <ClCompile Include="..\..\tools.cpp" />
     <ClCompile Include="..\..\XVDRChannelScan.cpp" />
     <ClCompile Include="..\..\XVDRData.cpp" />
     <ClCompile Include="..\..\XVDRDemux.cpp" />
     <ClCompile Include="..\..\XVDRRecording.cpp" />
+    <ClCompile Include="..\..\XVDRResponsePacket.cpp" />
     <ClCompile Include="..\..\XVDRSession.cpp" />
+    <ClCompile Include="..\..\XVDRSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client.h" />
@@ -37,7 +38,9 @@
     <ClInclude Include="..\..\XVDRData.h" />
     <ClInclude Include="..\..\XVDRDemux.h" />
     <ClInclude Include="..\..\XVDRRecording.h" />
+    <ClInclude Include="..\..\XVDRResponsePacket.h" />
     <ClInclude Include="..\..\XVDRSession.h" />
+    <ClInclude Include="..\..\XVDRSettings.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>pvrclient_vdr_xvdr</ProjectName>

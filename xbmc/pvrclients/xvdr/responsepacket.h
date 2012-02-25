@@ -1,8 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2007 Chris Tallon
- *      Copyright (C) 2010 Alwin Esch (Team XBMC)
- *      Copyright (C) 2011 Alexander Pipelka
+ *      Copyright (C) 2012 Alexander Pipelka
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,62 +20,17 @@
  *
  */
 
-#include <stdio.h>
-#include <stdint.h>
+#include "XVDRSettings.h"
+#include "XVDRResponsePacket.h"
+#include "client.h"
 
-class cResponsePacket
-{
-  public:
-    cResponsePacket();
-    ~cResponsePacket();
+class cResponsePacket : public cXVDRResponsePacket {
+protected:
 
-    void setResponse(uint32_t requestID, uint8_t* packet, uint32_t packetLength);
-    void setStatus(uint32_t requestID, uint8_t* packet, uint32_t packetLength);
+  void ConvertToUTF8(std::string& value)
+  {
+    if (cXVDRSettings::GetInstance().CharsetConv())
+      XBMC->UnknownToUTF8(value);
+  }
 
-    void setStream(uint32_t opcodeID, uint32_t streamID, uint32_t duration, int64_t dts, int64_t pts, uint8_t* packet, uint32_t packetLength);
-
-    bool noResponse() { return (userData == NULL); };
-    int  serverError();
-
-    uint32_t  getUserDataLength() { return userDataLength; }
-    uint32_t  getChannelID()      { return channelID; }
-    uint32_t  getRequestID()      { return requestID; }
-    uint32_t  getStreamID()       { return streamID; }
-    uint32_t  getOpCodeID()       { return opcodeID; }
-    uint32_t  getDuration()       { return duration; }
-    int64_t   getDTS()            { return dts; }
-    int64_t   getPTS()            { return pts; }
-
-    uint32_t  getPacketPos()      { return packetPos; }
-
-    char*     extract_String();
-    uint8_t   extract_U8();
-    uint32_t  extract_U32();
-    uint64_t  extract_U64();
-    int32_t   extract_S32();
-    int64_t   extract_S64();
-    double    extract_Double();
-
-    bool      end();
-
-    bool      uncompress();
-
-    // If you call this, the memory becomes yours. Free with free()
-    uint8_t* getUserData();
-
-  private:
-    uint8_t* userData;
-    uint32_t userDataLength;
-    uint32_t packetPos;
-
-    uint32_t channelID;
-
-    uint32_t requestID;
-    uint32_t streamID;
-    uint32_t opcodeID;
-    uint32_t duration;
-    int64_t  dts;
-    int64_t  pts;
-
-    bool ownBlock;
 };

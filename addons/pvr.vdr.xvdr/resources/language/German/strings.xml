@@ -68,4 +68,9 @@
     <string id="30064">Fehler beim Wechseln des Kanals</string>
     <string id="30065">Kanal '%s' unbekannt</string>
     <string id="30066">Kanal verschlüsselt</string>
+    <string id="30067">Kanalfilter</string>
+    <string id="30068">Unverschlüsselte Kanäle</string>
+    <string id="30069">Nur in eigener Sprache</string>
+    <string id="30070">Unterstüzte CaIDs</string>
+    <string id="30071">Verschlüsselte Kanäle</string>
 </strings>

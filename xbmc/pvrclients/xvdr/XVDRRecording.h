@@ -31,7 +31,7 @@ public:
   cXVDRRecording();
   ~cXVDRRecording();
 
-  bool OpenRecording(const PVR_RECORDING& recinfo);
+  bool OpenRecording(const std::string& hostname, const PVR_RECORDING& recinfo);
   void Close();
 
   int Read(unsigned char* buf, uint32_t buf_size);

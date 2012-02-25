@@ -29,7 +29,7 @@
 #include "requestpacket.h"
 #include "xvdrcommand.h"
 
-cXVDRDemux::cXVDRDemux()
+cXVDRDemux::cXVDRDemux() : m_priority(50)
 {
   m_Streams.iStreamCount = 0;
 }
@@ -38,10 +38,10 @@ cXVDRDemux::~cXVDRDemux()
 {
 }
 
-bool cXVDRDemux::OpenChannel(const PVR_CHANNEL &channelinfo)
+bool cXVDRDemux::OpenChannel(const std::string& hostname, const PVR_CHANNEL &channelinfo)
 {
   m_channelinfo = channelinfo;
-  if(!cXVDRSession::Open(g_szHostname, DEFAULT_PORT))
+  if(!cXVDRSession::Open(hostname))
     return false;
 
   if(!cXVDRSession::Login())
@@ -76,7 +76,7 @@ void cXVDRDemux::Abort()
 
 DemuxPacket* cXVDRDemux::Read()
 {
-  if(ConnectionLost() && !TryReconnect())
+  if(ConnectionLost())
   {
     SleepMs(100);
     return PVR->AllocateDemuxPacket(0);
@@ -163,16 +163,17 @@ DemuxPacket* cXVDRDemux::Read()
 
 bool cXVDRDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "changing to channel %d", channelinfo.iChannelNumber);
+  XBMC->Log(LOG_DEBUG, "changing to channel %d (priority %i)", channelinfo.iChannelNumber, m_priority);
 
   cRequestPacket vrp;
   uint32_t rc = 0;
-  if (vrp.init(XVDR_CHANNELSTREAM_OPEN) && vrp.add_U32(channelinfo.iUniqueId) && ReadSuccess(&vrp, rc))
+
+  if (vrp.init(XVDR_CHANNELSTREAM_OPEN) && vrp.add_U32(channelinfo.iUniqueId) && vrp.add_S32(m_priority) && ReadSuccess(&vrp, rc))
   {
     m_channelinfo = channelinfo;
     m_Streams.iStreamCount  = 0;
 
-    return !ConnectionLost();
+    return true;
   }
 
   switch (rc)
@@ -287,6 +288,18 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       stream->iCodecType     = AVMEDIA_TYPE_AUDIO;
       stream->iCodecId       = CODEC_ID_AAC;
+
+      memcpy(stream->strLanguage, language, 3);
+      m_Streams.iStreamCount++;
+
+      delete[] language;
+    }
+    else if(!strcmp(type, "LATM"))
+    {
+      const char *language = resp->extract_String();
+
+      stream->iCodecType     = AVMEDIA_TYPE_AUDIO;
+      stream->iCodecId       = CODEC_ID_AAC_LATM;
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
@@ -476,5 +489,12 @@ bool cXVDRDemux::StreamContentInfo(cResponsePacket *resp)
 
 void cXVDRDemux::OnReconnect()
 {
-  SwitchChannel(m_channelinfo);
+}
+
+void cXVDRDemux::SetPriority(int priority)
+{
+  if(priority < -1 || priority > 99)
+    priority = 50;
+
+  m_priority = priority;
 }

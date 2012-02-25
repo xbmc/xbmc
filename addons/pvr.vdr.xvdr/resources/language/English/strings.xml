@@ -68,4 +68,9 @@
     <string id="30064">Error on switching channel</string>
     <string id="30065">Channel '%s' unknown</string>
     <string id="30066">Encrypted channel</string>
+    <string id="30067">Channel Filter</string>
+    <string id="30068">FTA channels</string>
+    <string id="30069">Native language only</string>
+    <string id="30070">Supported CaIDs</string>
+    <string id="30071">Encrypted channels</string>
 </strings>

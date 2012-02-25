@@ -69,7 +69,7 @@ cXVDRChannelScan::~cXVDRChannelScan()
 {
 }
 
-bool cXVDRChannelScan::Open(const std::string& hostname, int port, const char* name)
+bool cXVDRChannelScan::Open(const std::string& hostname, const char* name)
 {
   m_running         = false;
   m_Canceled        = false;
@@ -77,7 +77,7 @@ bool cXVDRChannelScan::Open(const std::string& hostname, int port, const char* n
   m_progressDone    = NULL;
   m_progressSignal  = NULL;
 
-  if(!cXVDRData::Open(hostname, port, "XBMC channel scanner"))
+  if(!cXVDRData::Open(hostname, "XBMC channel scanner"))
     return false;
 
   /* Load the Window as Dialog */
