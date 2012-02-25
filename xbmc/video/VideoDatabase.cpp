@@ -4566,8 +4566,26 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     CStdString strIn = PrepareSQL("= %i", idShow);
     GetStackedTvShowList(idShow, strIn);
 
-    CStdString strSQL = PrepareSQL("select episode.c%02d,path.strPath,tvshow.c%02d,tvshow.c%02d,tvshow.c%02d,tvshow.c%02d,count(1),count(files.playCount) from episode join tvshowlinkepisode on tvshowlinkepisode.idEpisode=episode.idEpisode join tvshow on tvshow.idShow=tvshowlinkepisode.idShow join files on files.idFile=episode.idFile ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
-    CStdString joins = PrepareSQL(" join tvshowlinkpath on tvshowlinkpath.idShow = tvshow.idShow join path on path.idPath = tvshowlinkpath.idPath where tvshow.idShow %s ", strIn.c_str());
+    CStdString strSQL = PrepareSQL("SELECT episode.c%02d,"
+                                   "       path.strPath,"
+                                   "       tvshow.c%02d,"
+                                   "       tvshow.c%02d,"
+                                   "       tvshow.c%02d,"
+                                   "       tvshow.c%02d,"
+                                   "       count(1),"
+                                   "       count(files.playCount) "
+                                   "FROM episode"
+                                   " JOIN tvshowlinkepisode ON"
+                                   "   tvshowlinkepisode.idEpisode=episode.idEpisode"
+                                   " JOIN tvshow ON"
+                                   "   tvshow.idShow=tvshowlinkepisode.idShow"
+                                   " JOIN files ON"
+                                   "   files.idFile=episode.idFile ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
+    CStdString joins = PrepareSQL("  JOIN tvshowlinkpath ON"
+                                  "    tvshowlinkpath.idShow = tvshow.idShow"
+                                  "  JOIN path ON"
+                                  "    path.idPath = tvshowlinkpath.idPath "
+                                  "WHERE tvshow.idShow %s ", strIn.c_str());
     CStdString extraJoins, extraWhere;
     if (idActor != -1)
     {
