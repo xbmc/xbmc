@@ -98,6 +98,16 @@ void tcp_shutdown(socket_t fdSock);
  */
 int tcp_send(socket_t fdSock, void *buf, int len, int flags);
 
+/*!
+ * @brief Send data over a tcp socket opened with tcp_connect.
+ * @param fdSock The socket to write to.
+ * @param buf The buffer to write to the socket.
+ * @param nLen The length of the buffer.
+ * @param nTimeout The timeout in milliseconds.
+ * @return 0 on success, or the error number on error.
+ */
+int tcp_send_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
+
 #ifdef __cplusplus
 } //extern C
 #endif
