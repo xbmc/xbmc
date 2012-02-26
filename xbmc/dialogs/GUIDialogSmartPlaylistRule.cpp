@@ -185,6 +185,13 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
     XFILE::CDirectory::GetDirectory(path, items, ".xsp",false,false,XFILE::DIR_CACHE_ONCE,true,true);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      CSmartPlaylist playlist;
+      if (playlist.OpenAndReadName(item->GetPath()))
+        item->SetLabel(playlist.GetName());
+    }
     iLabel = 559;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PATH)
