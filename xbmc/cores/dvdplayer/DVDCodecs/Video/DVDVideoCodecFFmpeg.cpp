@@ -469,6 +469,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
+  if (m_pCodecContext->codec_id == CODEC_ID_H264) /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
+    m_started = true;
 
   /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
   if(m_iLastKeyframe > 300)
