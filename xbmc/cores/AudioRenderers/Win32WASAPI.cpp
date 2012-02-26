@@ -83,13 +83,42 @@ CWin32WASAPI::CWin32WASAPI() :
   m_LastCacheCheck(0),
   m_pAudioClient(NULL),
   m_pRenderClient(NULL),
-  m_pDevice(NULL)
+  m_pDevice(NULL),
+  m_Initialized(false)
 {
 }
 
+//***********************************************************************************************
 bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded bAudioPassthrough)
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
+  //Only one exclusive stream may be initialized at one time.
+  if(m_bIsAllocated)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Cannot create more then one WASAPI stream at one time.");
+    return false;
+  }
+
+  // Save parameters to restore after device loss
+  m_pCallback         = pCallback;
+  m_device            = device;
+  m_iChannels         = iChannels;
+  m_channelMap        = channelMap;
+  m_uiSamplesPerSec   = uiSamplesPerSec;
+  m_uiBitsPerSample   = uiBitsPerSample;
+  m_bResample         = bResample;
+  m_bIsMusic          = bIsMusic;
+  m_bAudioPassthrough = bAudioPassthrough;
+  
+  bool rc = Initialize();
+  if (rc)
+    m_bIsAllocated = true;
+  return rc;
+}
+
+//***********************************************************************************************
+bool CWin32WASAPI::Initialize()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", m_device.c_str());
 
   //First check if the version of Windows we are running on even supports WASAPI.
   if (!g_sysinfo.IsVistaOrHigher())
@@ -98,18 +127,11 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     return false;
   }
 
-  //Only one exclusive stream may be initialized at one time.
-  if(m_bIsAllocated)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Cannot create more then one WASAPI stream at one time.");
-    return false;
-  }
-
   int layoutChannels = 0;
 
-  if(!bAudioPassthrough && channelMap)
+  if(!m_bAudioPassthrough && m_channelMap)
   {
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
+    PCMChannels *outLayout = m_remap.SetInputFormat(m_iChannels, m_channelMap, m_uiBitsPerSample / 8, m_uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
         ++layoutChannels;
@@ -117,7 +139,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     //Expand monural to stereo as most devices don't seem to like 1 channel PCM streams.
     //Stereo sources should be sent explicitly as two channels so that the external hardware
     //can apply ProLogic/5CH Stereo/etc processing on it.
-    if(iChannels <= 2)
+    if(m_iChannels <= 2)
     {
       BuildChannelMapping(2, (PCMChannels *)wasapi_default_channel_layout[1]);
 
@@ -134,9 +156,8 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_bPlaying = false;
   m_bPause = false;
   m_bMuting = false;
-  m_uiChannels = iChannels;
-  m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = (bAudioPassthrough != ENCODED_NONE);
+  m_uiChannels = m_iChannels;
+  m_bPassthrough = (m_bAudioPassthrough != ENCODED_NONE);
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
@@ -148,8 +169,8 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = layoutChannels;
-  wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
-  if (bAudioPassthrough) 
+  wfxex.Format.nSamplesPerSec  = m_uiSamplesPerSec;
+  if (m_bAudioPassthrough)
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
@@ -162,17 +183,17 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     wfxex.dwChannelMask          = m_uiSpeakerMask;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
     wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;
-    wfxex.Format.wBitsPerSample  = uiBitsPerSample;
+    wfxex.Format.wBitsPerSample  = m_uiBitsPerSample;
   }
 
-  wfxex.Samples.wValidBitsPerSample = uiBitsPerSample == 32 ? 24 : uiBitsPerSample;
+  wfxex.Samples.wValidBitsPerSample = m_uiBitsPerSample == 32 ? 24 : m_uiBitsPerSample;
   wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
   m_uiAvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
   m_uiBytesPerFrame = wfxex.Format.nBlockAlign;
-  m_uiBytesPerSrcFrame = bAudioPassthrough ? m_uiBytesPerFrame : iChannels * wfxex.Format.wBitsPerSample >> 3;
+  m_uiBytesPerSrcFrame = m_bAudioPassthrough ? m_uiBytesPerFrame : m_iChannels * wfxex.Format.wBitsPerSample >> 3;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
@@ -216,7 +237,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     CStdString strDevName;
     g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
-    if(device == strDevName)
+    if(m_device == strDevName)
       i = uiCount;
     else
       SAFE_RELEASE(m_pDevice);
@@ -229,7 +250,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   if(!m_pDevice)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
+    CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", m_device.c_str());
     hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_pDevice);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
   }
@@ -241,7 +262,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   EXIT_ON_FAILURE(hr, __FUNCTION__": Activating the WASAPI endpoint device failed.")
 
   hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Audio format not supported by the WASAPI device.  Channels: %i, Rate: %i, Bits/sample: %i.", iChannels, uiSamplesPerSec, uiBitsPerSample)
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Audio format not supported by the WASAPI device.  Channels: %i, Rate: %i, Bits/sample: %i.", m_iChannels, m_uiSamplesPerSec, m_uiBitsPerSample)
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
   hr = m_pAudioClient->GetDevicePeriod(&hnsPeriodicity, NULL);
@@ -272,11 +293,11 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
 
-  m_bIsAllocated = true;
+  m_Initialized = true;
   m_CacheLen = 0;
   m_LastCacheCheck = XbmcThreads::SystemClockMillis();
-  
-  return m_bIsAllocated;
+
+  return true;
 
 failed:
   CLog::Log(LOGERROR, __FUNCTION__": WASAPI initialization failed.");
@@ -305,6 +326,18 @@ bool CWin32WASAPI::Deinitialize()
   {
     CLog::Log(LOGDEBUG, __FUNCTION__": Cleaning up");
 
+    Close();
+    m_bIsAllocated = false;
+
+    //Restart Directsound for the interface sounds.
+    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  }
+  return true;
+}
+
+//***********************************************************************************************
+bool CWin32WASAPI::Close()
+{
     m_pAudioClient->Stop();
 
     SAFE_RELEASE(m_pRenderClient);
@@ -315,12 +348,9 @@ bool CWin32WASAPI::Deinitialize()
     m_uiChunkSize = 0;
     m_uiBufferLen = 0;
 
-    m_bIsAllocated = false;
+    m_Initialized = false;
 
-    //Restart Directsound for the interface sounds.
-    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-  }
-  return true;
+    return true;
 }
 
 //***********************************************************************************************
@@ -417,6 +447,9 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
   if (!m_bIsAllocated || m_bPause)
     return 0;
 
+  if (!m_Initialized && !Initialize())
+    return 0;
+
   DWORD dwFlags = m_bMuting || m_nCurrentVolume == VOLUME_MINIMUM ? AUDCLNT_BUFFERFLAGS_SILENT : 0; 
 
   unsigned int uiBytesToWrite, uiSrcBytesToWrite;
@@ -447,11 +480,19 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
     // Release the buffer
     if (FAILED(hr=m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags)))
+    {
       CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%i)", hr);
+      if (hr == AUDCLNT_E_DEVICE_INVALIDATED)
+        Close();
+      return 0;
+    }
   }
   else
   {
     CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%i)", hr);
+    if (hr == AUDCLNT_E_DEVICE_INVALIDATED)
+      Close();
+    return 0;
   }
   m_CacheLen += uiBytesToWrite;
 
