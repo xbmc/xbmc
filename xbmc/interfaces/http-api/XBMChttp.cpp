@@ -187,9 +187,9 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   try
   {
     if (append)
-      outfile = fopen_utf8(_P(outfilename).c_str(), "ab" );
+      outfile = fopen_utf8(CSpecialProtocol::TranslatePath(outfilename).c_str(), "ab" );
     else
-      outfile = fopen_utf8(_P(outfilename).c_str(), "wb" );
+      outfile = fopen_utf8(CSpecialProtocol::TranslatePath(outfilename).c_str(), "wb" );
     while( ptr < inString.length() )
     {
       for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) 

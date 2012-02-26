@@ -100,8 +100,8 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
   m_pInfo->name = strdup(Name().c_str());
-  m_pInfo->presets = strdup(_P(Path()).c_str());
-  m_pInfo->profile = strdup(_P(Profile()).c_str());
+  m_pInfo->presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
+  m_pInfo->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_pInfo->submodule = NULL;
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
@@ -122,7 +122,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
     GetPresets();
 
     if (GetSubModules())
-      m_pInfo->submodule = strdup(_P(m_submodules.front()).c_str());
+      m_pInfo->submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
     else
       m_pInfo->submodule = NULL;
 
@@ -359,7 +359,7 @@ bool CVisualisation::UpdateTrack()
   if (Initialized())
   {
     // get the current album art filename
-    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
+    m_AlbumThumb = CSpecialProtocol::TranslatePath(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
     // get the current track tag
     const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();

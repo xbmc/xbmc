@@ -832,7 +832,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       CStdString strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
-        strFrom = _P(pFrom->FirstChild()->Value()).c_str();
+        strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo)
         strTo = pTo->FirstChild()->Value();

@@ -543,10 +543,10 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
-  if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
+  if (!CLog::Init(CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
-      _P(g_settings.m_logFolder).c_str());
+      CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str());
     return false;
   }
 
@@ -1015,7 +1015,7 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
+  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",CSpecialProtocol::TranslatePath("special://masterprofile/").c_str());
 
   CreateUserDirs();
 
@@ -2624,7 +2624,7 @@ bool CApplication::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
-    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().SetOutputFile(CSpecialProtocol::TranslatePath("special://home/guiprofiler.xml"));
     CGUIControlProfiler::Instance().Start();
     return true;
   }

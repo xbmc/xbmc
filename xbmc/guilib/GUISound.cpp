@@ -80,7 +80,7 @@ bool CGUISound::Load(const CStdString& strFile)
 
   return bReady;
 #elif defined(HAS_SDL_AUDIO)
-  m_soundBuffer = Mix_LoadWAV(_P(strFile));
+  m_soundBuffer = Mix_LoadWAV(CSpecialProtocol::TranslatePath(strFile));
   if (!m_soundBuffer)
     return false;
 

@@ -148,15 +148,23 @@ extern "C" void __stdcall init_emu_environ()
   {
     // using external python, it's build looking for xxx/lib/python2.6
     // so point it to frameworks which is where python2.6 is located
-    dll_putenv(string("PYTHONPATH=" + _P("special://frameworks")).c_str());
-    dll_putenv(string("PYTHONHOME=" + _P("special://frameworks")).c_str());
-    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://frameworks")).c_str());
+    dll_putenv(string("PYTHONPATH=" +
+      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
+    dll_putenv(string("PYTHONHOME=" +
+      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
+    dll_putenv(string("PATH=.;" +
+      CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
+      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
   }
   else
   {
-    dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
-    dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
-    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PYTHONPATH=" +
+      CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
+      CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
+    dll_putenv(string("PYTHONHOME=" +
+      CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
+      CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
@@ -528,7 +536,7 @@ extern "C"
     else if (!IS_STD_STREAM(stream))
     {
       // Translate the path
-      return freopen(_P(path).c_str(), mode, stream);
+      return freopen(CSpecialProtocol::TranslatePath(path).c_str(), mode, stream);
     }
 
     // error
@@ -768,7 +776,7 @@ extern "C"
   {
     char str[1024];
     int size = sizeof(str);
-    CURL url(_P(file));
+    CURL url(CSpecialProtocol::TranslatePath(file));
     if (url.IsLocal())
     {
       // move to CFile classes
@@ -792,7 +800,7 @@ extern "C"
       // Make sure the slashes are correct & translate the path
       struct _wfinddata64i32_t wdata;
       CStdStringW strwfile;
-      g_charsetConverter.utf8ToW(CUtil::ValidatePath(_P(str)), strwfile, false);
+      g_charsetConverter.utf8ToW(CUtil::ValidatePath(CSpecialProtocol::TranslatePath(str)), strwfile, false);
       intptr_t ret = _wfindfirst64i32(strwfile.c_str(), &wdata);
       if (ret != -1)
         to_finddata64i32(&wdata, data);
@@ -928,7 +936,7 @@ extern "C"
 
   DIR *dll_opendir(const char *file)
   {
-    CURL url(_P(file));
+    CURL url(CSpecialProtocol::TranslatePath(file));
     if (url.IsLocal())
     { // Make sure the slashes are correct & translate the path
       return opendir(CUtil::ValidatePath(url.Get().c_str()));
@@ -1892,7 +1900,7 @@ extern "C"
     if (!dir) return -1;
 
     // Make sure the slashes are correct & translate the path
-    CStdString strPath = CUtil::ValidatePath(_P(dir));
+    CStdString strPath = CUtil::ValidatePath(CSpecialProtocol::TranslatePath(dir));
 #ifndef _LINUX
     CStdStringW strWPath;
     g_charsetConverter.utf8ToW(strPath, strWPath, false);
