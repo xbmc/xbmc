@@ -338,19 +338,19 @@ bool CWin32WASAPI::Deinitialize()
 //***********************************************************************************************
 bool CWin32WASAPI::Close()
 {
-    m_pAudioClient->Stop();
+  m_pAudioClient->Stop();
 
-    SAFE_RELEASE(m_pRenderClient);
-    SAFE_RELEASE(m_pAudioClient);
-    SAFE_RELEASE(m_pDevice);
+  SAFE_RELEASE(m_pRenderClient);
+  SAFE_RELEASE(m_pAudioClient);
+  SAFE_RELEASE(m_pDevice);
 
-    m_CacheLen = 0;
-    m_uiChunkSize = 0;
-    m_uiBufferLen = 0;
+  m_CacheLen = 0;
+  m_uiChunkSize = 0;
+  m_uiBufferLen = 0;
 
-    m_Initialized = false;
+  m_Initialized = false;
 
-    return true;
+  return true;
 }
 
 //***********************************************************************************************
