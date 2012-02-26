@@ -104,15 +104,16 @@ class CCoreAudioMixMap
 {
 public:
   CCoreAudioMixMap();
-  CCoreAudioMixMap(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout);
+  CCoreAudioMixMap(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout, bool forceExplicit=false);
   virtual ~CCoreAudioMixMap();
   operator Float32*() const {return m_pMap;} 
   const Float32* GetBuffer() {return m_pMap;}
   UInt32 GetInputChannels() {return m_inChannels;}
   UInt32 GetOutputChannels() {return m_outChannels;}  
   bool IsValid() {return m_isValid;}
-  void Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout);
+  void Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout, bool forceExplicit=false);
 private:
+  bool BuildExplicit(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout);
   Float32* m_pMap;
   UInt32 m_inChannels;
   UInt32 m_outChannels;
@@ -164,8 +165,7 @@ private:
   bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap, bool allowMixing = true);
   bool InitializePCMEncoded(UInt32 sampleRate);
   
-  bool CreateMixMap();
-  
+  AudioChannelLayoutTag GetDefaultLayout(UInt32 channelCount);
   static OSStatus HardwareListenerProc(AudioHardwarePropertyID property, void *clientref);
   static OSStatus DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref);
 

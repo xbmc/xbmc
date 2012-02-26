@@ -284,7 +284,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
         // nothing is returned back by the server.
         // Unless we were told to stop after reaching a certain amount to avoid
         // length delays
-        if ((browse_data->info.tm && browse_data->info.tm == list->GetItemCount()) ||
+        if ((browse_data->info.tm && browse_data->info.tm <= list->GetItemCount()) ||
             (max_results && list->GetItemCount() >= max_results))
             break;
 

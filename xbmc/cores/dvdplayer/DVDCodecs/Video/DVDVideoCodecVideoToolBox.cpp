@@ -1071,6 +1071,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
+    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
+        __FUNCTION__, width, height, profile, level);
+      return false;
+    }
+    
     switch (hints.codec)
     {
       case CODEC_ID_MPEG4:

@@ -217,6 +217,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
+      CGUIDialogContextMenu* pDlg = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+      if (pDlg && pDlg->IsActive())
+        pDlg->Close();
+      
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
       ClearFileItems();

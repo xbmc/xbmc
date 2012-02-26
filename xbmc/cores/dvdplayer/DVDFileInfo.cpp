@@ -202,7 +202,9 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         {
           {
             int nWidth = g_advancedSettings.m_thumbSize;
-            double aspect = (double)picture.iWidth / (double)picture.iHeight;
+            double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
+            if(hint.forced_aspect)
+              aspect = hint.aspect;
             int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
 
             DllSwScale dllSwScale;

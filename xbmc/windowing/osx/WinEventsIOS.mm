@@ -73,7 +73,7 @@ bool CWinEventsIOS::MessagePump()
       // the user.code will be the keyID to translate using joystick.AppleRemote.xml
       std::string joystickName = "AppleRemote";
       bool isAxis = false;
-      float fAmount = 0.0;
+      float fAmount = 1.0;
       unsigned short wKeyID = pumpEvent.user.code;
 
       CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);

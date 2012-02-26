@@ -87,12 +87,8 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
 {
   m_uiDataChannels = iChannels;
 
-  if(!bAudioPassthrough)
+  if(!bAudioPassthrough && channelMap)
   {
-    //If no channel map is specified, use the default.
-    if(!channelMap)
-      channelMap = (PCMChannels *)dsound_default_channel_layout[iChannels - 1];
-
     PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(iChannels = 0; outLayout[iChannels] != PCM_INVALID;) ++iChannels;

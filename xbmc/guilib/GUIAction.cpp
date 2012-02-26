@@ -105,7 +105,7 @@ bool CGUIAction::HasActionsMeetingCondition() const
 {
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
   {
-    if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->action))
+    if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
       return true;
   }
   return false;

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="weather.wunderground" name="Weather Underground" version="0.0.4" provider-name="Team XBMC">
+<addon id="weather.wunderground" name="Weather Underground" version="0.0.5" provider-name="Team XBMC">
 	<requires>
 		<import addon="xbmc.python" version="2.0"/>
 		<import addon="script.module.simplejson" version="2.0.10"/>

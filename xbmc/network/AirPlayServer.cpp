@@ -679,6 +679,31 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         }
       }
   }
+  
+  // The volume command is used to change playback volume.
+  // A value argument should be supplied which indicates how loud we should get.
+  // 0.000000 => silent
+  // 1.000000 => loud
+  else if (uri == "/volume")
+  {
+      const char* found = strstr(queryString.c_str(), "volume=");
+      double volume = found ? (double)(atof(found + strlen("volume="))) : 0;
+
+      CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
+
+      if (needAuth && !checkAuthorization(authorization, method, uri))
+      {
+        status = AIRPLAY_STATUS_NEED_AUTH;
+      }
+      else if (volume >= 0 && volume <= 1)
+      {
+        int oldVolume = g_application.GetVolume();
+        volume *= 100;
+        g_application.SetVolume(volume);
+        g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+      }
+  }
+
 
   // Contains a header like format in the request body which should contain a
   // Content-Location and optionally a Start-Position

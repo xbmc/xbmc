@@ -2,8 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Idan Bushari-->
 <!--Email: bushari2003@hotmail.com-->
-<!--Date of translation: 01/25/2012-->
-<!--Based on English 3978ce61ee897fab5daf83c345f3a8183aae0b22 (26.01.2012)-->
+<!--Date of translation: 02/20/2012-->
+<!--Based on English 0ee1ef09238e4d913cf6c47fa18138c3654cd33e (08.02.2012)-->
 <strings>
   <string id="0">תוכנות</string>
   <string id="1">תמונות</string>
@@ -812,8 +812,11 @@
   <string id="10019">הגדרות - מראה</string>
   <string id="10020">סקריפטים</string>
   <string id="10021">דפדפן אינטרנט</string>
+  <string id="10025">וידאו</string>
   <string id="10028">וידאו/רשימת ניגון</string>
+  <string id="10029">מסך כניסה</string>
   <string id="10034">הגדרות - פרופילים</string>
+  <string id="10040">דפדפן הרחבות</string>
   <string id="10100">דיאלוג לא/כן</string>
   <string id="10101">דיאלוג התקדמות</string>
   <string id="10210">מחפש כתוביות...</string>
@@ -1389,16 +1392,16 @@
   <string id="20042">נעל מנהל קבצים</string>
   <string id="20043">נעל הגדרות</string>
   <string id="20044">התחל מחדש</string>
-  <string id="20045">היכנס למצב מומחה</string>
-  <string id="20046">צא ממצב מומחה</string>
+  <string id="20045">היכנס למצב ראשי</string>
+  <string id="20046">צא ממצב ראשי</string>
   <string id="20047">צור פרופיל '%s' ?</string>
   <string id="20048">התחל עם הגדרות חדשות</string>
   <string id="20049">הזמין הטוב ביותר</string>
   <string id="20050">החלף אוטומטית בין 16x9 ו 4x3</string>
   <string id="20051">התייחס לערימת קבצים כקובץ אחד</string>
   <string id="20052">זהירות</string>
-  <string id="20053">עזב מצב מומחה</string>
-  <string id="20054">נכנס למצב מומחה</string>
+  <string id="20053">עזב מצב ראשי</string>
+  <string id="20054">נכנס למצב ראשי</string>
   <string id="20055">תמונה ממוזערת Allmusic.com</string>
   <string id="20057">הסר תמונה ממוזערת</string>
   <string id="20058">הוסף פרופיל...</string>
@@ -1444,7 +1447,7 @@
   <string id="20098">משיג פרטים עבור האלבום</string>
   <string id="20099">לא יכול להעתיק דיסק או רצועה בזמן ניגון מהדיסק</string>
   <string id="20100">קוד נעילה ראשי והגדרות</string>
-  <string id="20101">הזנת קוד נעילה ראשי תמיד מאפשרת מצב מומחה</string>
+  <string id="20101">הזנת קוד נעילה ראשי תמיד מאפשרת מצב ראשי</string>
   <string id="20102">או העתק מברירת מחדל?</string>
   <string id="20103">שמור שינויים לפרופיל?</string>
   <string id="20104">הגדרות ישנות נמצאו</string>
@@ -1563,6 +1566,7 @@
   <string id="20326">זה יאפס את ערכי הכיול ל %s</string>
   <string id="20327">לערכי ברירת המחדל שלו</string>
   <string id="20328">עיין לנתיב יעד</string>
+  <string id="20329">סרטים נמצאים בתיקיות נפרדות עם כותרת הסרט</string>
   <string id="20330">השתמש בשמות תיקיות לחיפוש</string>
   <string id="20331">קובץ</string>
   <string id="20332">השתמש בשמות תיקיה או קובץ בחיפוש?</string>
@@ -1666,7 +1670,7 @@
   <string id="20432">אל תכלול נתיב זה בעידכוני ספריה</string>
   <string id="20433">חלץ תמונות ממוזערות ופרטי וידאו</string>
   <string id="20434">מארזים</string>
-  <string id="20435">קבע תמונות ממוזערת למארז סרטים</string>
+  <string id="20435">קבע תמונה ממוזערת למארז סרטים</string>
   <string id="20436">לייצא תמונות ממוזערות לשחקנים</string>
   <string id="20437">בחר פאנארט</string>
   <string id="20438">פאנארט מקומי</string>

@@ -176,6 +176,8 @@ void CGUIDialogPeripheralSettings::UpdatePeripheralSettings(void)
     peripheral->SetSetting((*stringItr).first, (*stringItr).second);
     ++stringItr;
   }
+
+  peripheral->PersistSettings();
 }
 
 bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage &message)
