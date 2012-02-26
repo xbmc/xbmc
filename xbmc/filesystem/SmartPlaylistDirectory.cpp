@@ -27,6 +27,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "FileItem.h"
+#include "utils/URIUtils.h"
 
 namespace XFILE
 {
@@ -150,6 +151,14 @@ namespace XFILE
         {
           if (playlist.GetName().CompareNoCase(name) == 0)
             return item->GetPath();
+        }
+      }
+      for (int i = 0; i < list.Size(); i++)
+      { // check based on filename
+        CFileItemPtr item = list[i];
+        if (URIUtils::GetFileName(item->GetPath()) == name)
+        { // found :)
+          return item->GetPath();
         }
       }
     }
