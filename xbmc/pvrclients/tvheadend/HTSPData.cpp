@@ -153,14 +153,21 @@ bool CHTSPData::GetDriveSpace(long long *total, long long *used)
 
   int64_t freespace;
   if (htsmsg_get_s64(msg, "freediskspace", &freespace) != 0)
+  {
+    htsmsg_destroy(msg);
     return false;
+  }
 
   int64_t totalspace;
   if (htsmsg_get_s64(msg, "totaldiskspace", &totalspace) != 0)
+  {
+    htsmsg_destroy(msg);
     return false;
+  }
 
   *total = totalspace / 1024;
   *used  = (totalspace - freespace) / 1024;
+  htsmsg_destroy(msg);
   return true;
 }
 
@@ -176,11 +183,17 @@ bool CHTSPData::GetBackendTime(time_t *utcTime, int *gmtOffset)
 
   unsigned int secs;
   if (htsmsg_get_u32(msg, "time", &secs) != 0)
+  {
+    htsmsg_destroy(msg);
     return false;
+  }
 
   int offset;
   if (htsmsg_get_s32(msg, "timezone", &offset) != 0)
+  {
+    htsmsg_destroy(msg);
     return false;
+  }
 
   XBMC->Log(LOG_DEBUG, "%s - tvheadend reported time=%u, timezone=%d, correction=%d"
       , __FUNCTION__, secs, offset);
@@ -188,6 +201,7 @@ bool CHTSPData::GetBackendTime(time_t *utcTime, int *gmtOffset)
   *utcTime = secs;
   *gmtOffset = offset;
 
+  htsmsg_destroy(msg);
   return true;
 }
 
@@ -377,10 +391,12 @@ PVR_ERROR CHTSPData::DeleteRecording(const PVR_RECORDING &recording)
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -495,6 +511,7 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   const char *strError = NULL;
   if ((strError = htsmsg_get_str(msg, "error")))
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Error deleting timer: '%s'", __FUNCTION__, strError);
     return PVR_ERROR_SERVER_ERROR;
   }
@@ -502,10 +519,12 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -552,6 +571,7 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
   const char *strError = NULL;
   if ((strError = htsmsg_get_str(msg, "error")))
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Error adding timer: '%s'", __FUNCTION__, strError);
     return PVR_ERROR_SERVER_ERROR;
   }
@@ -559,10 +579,12 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -586,10 +608,12 @@ PVR_ERROR CHTSPData::UpdateTimer(const PVR_TIMER &timer)
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
@@ -611,10 +635,12 @@ PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
+    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
@@ -773,13 +799,15 @@ bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
     return false;
   }
 
+  bool bReturn(false);
   if (ParseEvent(msg, id, event))
   {
     m_events[id] = event;
-    return true;
+    bReturn = true;
   }
 
-  return false;
+  htsmsg_destroy(msg);
+  return bReturn;
 }
 
 bool CHTSPData::SendEnableAsync()
