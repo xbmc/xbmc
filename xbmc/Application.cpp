@@ -3308,7 +3308,8 @@ void CApplication::Stop(int exitCode)
 {
   try
   {
-    CAnnouncementManager::Announce(System, "xbmc", "OnQuit");
+    CVariant vExitCode(exitCode);
+    CAnnouncementManager::Announce(System, "xbmc", "OnQuit", vExitCode);
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();

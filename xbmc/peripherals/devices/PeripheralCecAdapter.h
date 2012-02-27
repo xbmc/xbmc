@@ -116,6 +116,7 @@ namespace PERIPHERALS
     std::queue<CecVolumeChange>       m_volumeChangeQueue;
     unsigned int                      m_lastKeypress;
     CecVolumeChange                   m_lastChange;
+    int                               m_iExitCode;
     CPeripheralCecAdapterUpdateThread*m_queryThread;
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;

@@ -33,6 +33,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 
 #include <libcec/cec.h>
 
@@ -77,7 +78,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bHasConnectedAudioSystem(false),
   m_strMenuLanguage("???"),
   m_lastKeypress(0),
-  m_lastChange(VOLUME_CHANGE_NONE)
+  m_lastChange(VOLUME_CHANGE_NONE),
+  m_iExitCode(0)
 {
   m_button.iButton = 0;
   m_button.iDuration = 0;
@@ -107,6 +109,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
+    m_iExitCode = data.asInteger(0);
     StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
@@ -305,12 +308,25 @@ void CPeripheralCecAdapter::Process(void)
 
   delete m_queryThread;
 
-  if (m_cecAdapter->IsLibCECActiveSource())
+  if (m_iExitCode != EXITCODE_REBOOT)
   {
-    if (m_configuration.bPowerOffOnStandby == 1)
-      m_cecAdapter->StandbyDevices();
-    else if (m_configuration.bSendInactiveSource == 1)
-      m_cecAdapter->SetInactiveView();
+    if (m_cecAdapter->IsLibCECActiveSource())
+    {
+      if (!m_configuration.powerOffDevices.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG, "%s - sending standby commands", __FUNCTION__);
+        m_cecAdapter->StandbyDevices();
+      }
+      else if (m_configuration.bSendInactiveSource == 1)
+      {
+        CLog::Log(LOGDEBUG, "%s - sending inactive source commands", __FUNCTION__);
+        m_cecAdapter->SetInactiveView();
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - XBMC is not the active source, not sending any standby commands", __FUNCTION__);
+    }
   }
 
   m_cecAdapter->Close();
