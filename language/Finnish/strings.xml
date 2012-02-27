@@ -806,7 +806,7 @@
   <string id="1256">Pingauksen väli</string>
   <string id="1257">Yhdistetäänkö havaittuun järjestelmään?</string>
 
-  <string id="1260">Julkista nämä palvelut toisiin järjestelmiin Zeroconf publishing:in kautta</string>
+  <string id="1260">Julkista nämä palvelut toisiin järjestelmiin Zeroconf-julkaisujärjestelmän kautta</string>
   <string id="1270">Salli XBMC:n vastaanottaa AirPlay sisältöä</string>
   <string id="1271">Laitteen nimi</string>
   <string id="1272">- Käytä salasanaa</string>
@@ -877,9 +877,11 @@
   <string id="10019">Asetukset - Käyttöliittymä</string>
   <string id="10020">Skriptit</string>
   <string id="10021">Nettiselain</string>
-
+  <string id="10025">Videot</string>
   <string id="10028">Videot/Toistolista</string>
+  <string id="10029">Kirjautumisikkuna</string>
   <string id="10034">Asetukset - Profiilit</string>
+  <string id="10040">Lisäosaselain</string>
 
   <string id="10100">Kyllä/Ei -dialogi</string>
   <string id="10101">Tila -dialogi</string>
@@ -1775,7 +1777,7 @@
   <string id="20326">Tämä palauttaa asettamasi %s kalibroinnin arvot</string>
   <string id="20327">oletusarvoiksi</string>
   <string id="20328">Valitse kohdesijainti</string>
-
+  <string id="20329">Elokuvan tiedostot ovat eri kansioissa, jotka ovat nimetty elokuvan mukaan</string>
   <string id="20330">Hae kansionimiä</string>
   <string id="20331">Tiedostonimet</string>
   <string id="20332">Käytetäänkö haettaessa tiedosto- vai kansionimiä?</string>
@@ -1865,7 +1867,7 @@
   <string id="20416">Ensiesitys</string>
   <string id="20417">Käsikirjoittaja</string>
   <string id="20418"></string>
-  <string id="20419">Näytä metatiedot "Tiedostot"-näkymässä</string>
+  <string id="20419">Korvaa tiedostojen nimet kirjaston sisältämillä nimillä</string>
 
   <string id="20420">Ei koskaan</string>
   <string id="20421">Jos samalta tuotantokaudelta</string>
@@ -1905,6 +1907,7 @@
   <string id="20455">Kuuntelijat</string>
   <string id="20456">Aseta elokuvasetin fanitaide</string>
   <string id="20457">Elokuvasetti</string>
+  <string id="20458">Ryhmittele elokuvat settien mukaan/string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -2012,6 +2015,8 @@
   <string id="21451">Internet-yhteys vaaditaan.</string>
   <string id="21452">Nouda lisää...</string>
   <string id="21453">Juurikansio</string>
+  <string id="21454">Välimuisti täynnä</string>
+  <string id="21455">Välimuisti täyttyi ennen toistoon tarvittavaa määrää</string>
 
   <string id="21460">Tekstityksen sijainti</string>
   <string id="21461">Kiinteä</string>
@@ -2332,6 +2337,8 @@
   <string id="33102">Tapahtumapalvelin</string>
   <string id="33103">Etäviestipalvelin</string>
 
+  <string id="33200">Uusi yhteys tunnistettu</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2355,6 +2362,14 @@
 
   <string id="34201">Seuraavaa kohdetta ei löydy</string>
   <string id="34202">Edellistä kohdetta ei löydy</string>
+
+  <string id="34300">Zeroconf-palvelua ei voitu käynnistää</string>
+  <string id="34301">Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja.</string>
+
+  <string id="34400">Videon renreröintitapa</string>
+  <string id="34401">Ei voitu käyttää videon suodatin/skaalaus -asetuksia, otetaan käyttöön bilineaarinen skaalausmenetelmä</string>
+  <string id="34402">Äänilaitteen alustaminen epäonnistui</string>
+  <string id="34403">Tarkista ääniasetukset</string>
 
   <string id="35000">Oheislaitteet</string>
 
