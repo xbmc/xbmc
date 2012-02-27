@@ -107,16 +107,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
-    // only send power off and inactive source command when we're currently active
-    if (m_cecAdapter->IsLibCECActiveSource())
-    {
-      // if there are any devices to power off set, power them off
-      if (!m_configuration.powerOffDevices.IsEmpty())
-        m_cecAdapter->StandbyDevices(CECDEVICE_BROADCAST);
-      // send an inactive source command otherwise
-      else
-        m_cecAdapter->SetInactiveView();
-    }
+    StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
   {
