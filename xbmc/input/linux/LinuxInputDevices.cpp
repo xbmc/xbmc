@@ -92,6 +92,7 @@ typedef unsigned long kernel_ulong_t;
 #endif
 
 #include <linux/keyboard.h>
+#include <linux/kd.h>
 
 #include <string.h>
 #include <unistd.h>
@@ -101,7 +102,6 @@ typedef unsigned long kernel_ulong_t;
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
-#include <sys/kd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
