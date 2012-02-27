@@ -1153,9 +1153,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      SScanSettings settings;
-      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings);
-      OnAssignContent(item->GetPath(),0, info, settings);
+      OnAssignContent(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
@@ -1990,16 +1988,15 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const CStdString &path, int label1, 
   return false;
 }
 
-void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
+void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
 {
   bool bScan=false;
   CVideoDatabase db;
   db.Open();
-  if (iFound == 0)
-  {
-    info = db.GetScraperForPath(path, settings);
-  }
-  
+
+  SScanSettings settings;
+  ADDON::ScraperPtr info = db.GetScraperForPath(path, settings);
+
   ADDON::ScraperPtr info2(info);
   
   if (CGUIDialogContentSettings::Show(info, settings, bScan))
@@ -2013,14 +2010,14 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, AD
       if (OnUnAssignContent(path,20442,20443,20444))
         bScan = true;
     }
-    
-    db.SetScraperForPath(path,info,settings);
-    
-    if (bScan)
-    {
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog)
-        pDialog->StartScanning(path, true);
-    }
+  }
+
+  db.SetScraperForPath(path,info,settings);
+
+  if (bScan)
+  {
+    CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (pDialog)
+      pDialog->StartScanning(path, true);
   }
 }
