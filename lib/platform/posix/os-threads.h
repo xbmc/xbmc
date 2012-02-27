@@ -49,7 +49,14 @@ namespace PLATFORM
   inline struct timespec GetAbsTime(uint64_t iIncreaseBy = 0)
   {
     struct timespec now;
+    #ifdef __APPLE__
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    now.tv_sec  = tv.tv_sec + 0;
+    now.tv_nsec = 0;
+    #else
     clock_gettime(CLOCK_REALTIME, &now);
+    #endif
     now.tv_nsec += iIncreaseBy % 1000 * 1000000;
     now.tv_sec  += iIncreaseBy / 1000 + now.tv_nsec / 1000000000;
     now.tv_nsec %= 1000000000;
