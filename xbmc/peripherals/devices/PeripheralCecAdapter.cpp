@@ -309,7 +309,7 @@ void CPeripheralCecAdapter::Process(void)
   {
     if (m_configuration.bPowerOffOnStandby == 1)
       m_cecAdapter->StandbyDevices();
-    else
+    else if (m_configuration.bSendInactiveSource == 1)
       m_cecAdapter->SetInactiveView();
   }
 
@@ -956,23 +956,27 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   SetSetting("wake_devices", strPowerOffDevices.Trim());
 
   // set the boolean settings
-  m_configuration.bUseTVMenuLanguage = m_configuration.bUseTVMenuLanguage;
+  m_configuration.bUseTVMenuLanguage = config.bUseTVMenuLanguage;
   SetSetting("use_tv_menu_language", m_configuration.bUseTVMenuLanguage == 1);
 
-  m_configuration.bActivateSource = m_configuration.bActivateSource;
+  m_configuration.bActivateSource = config.bActivateSource;
   SetSetting("activate_source", m_configuration.bActivateSource == 1);
 
-  m_configuration.bPowerOffScreensaver = m_configuration.bPowerOffScreensaver;
+  m_configuration.bPowerOffScreensaver = config.bPowerOffScreensaver;
   SetSetting("cec_standby_screensaver", m_configuration.bPowerOffScreensaver == 1);
 
-  m_configuration.bPowerOffOnStandby = m_configuration.bPowerOffOnStandby;
+  m_configuration.bPowerOffOnStandby = config.bPowerOffOnStandby;
   SetSetting("standby_pc_on_tv_standby", m_configuration.bPowerOffOnStandby == 1);
+
+  if (config.serverVersion >= CEC_SERVER_VERSION_1_5_1)
+    m_configuration.bSendInactiveSource = config.bSendInactiveSource;
+  SetSetting("send_inactive_source", m_configuration.bSendInactiveSource == 1);
 }
 
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
   // client version 1.5.0
-  m_configuration.clientVersion = CEC_CLIENT_VERSION_1_5_0;
+  m_configuration.clientVersion = CEC_CLIENT_VERSION_1_5_1;
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
@@ -1030,6 +1034,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   m_configuration.bActivateSource      = GetSettingBool("activate_source") ? 1 : 0;
   m_configuration.bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver") ? 1 : 0;
   m_configuration.bPowerOffOnStandby   = GetSettingBool("standby_pc_on_tv_standby") ? 1 : 0;
+  m_configuration.bSendInactiveSource  = GetSettingBool("send_inactive_source") ? 1 : 0;
 }
 
 void CPeripheralCecAdapter::ReadLogicalAddresses(const CStdString &strString, cec_logical_addresses &addresses)

@@ -2407,4 +2407,7 @@
   <string id="36020">Maak XBMC de actieve bron bij het opstarten</string>
   <string id="36021">Physiek adres (overschrijft HDMI poort)</string>
   <string id="36022">COM poort (laat leeg, tenzij noodzakelijk)</string>
+  <string id="36023">Configuratie aangepast</string>
+  <string id="36024">Kon de nieuwe configuratie niet instellen. Controleer de instellingen.</string>
+  <string id="36025">Verstuur 'inactieve bron' commando bij het stoppen</string>
 </strings>

@@ -2414,4 +2414,5 @@
   <string id="36022">COM port (leave empty unless needed)</string>
   <string id="36023">Configuration updated</string>
   <string id="36024">Failed to set the new configuration. Please check your settings.</string>
+  <string id="36025">Send 'inactive source' command when stopping XBMC</string>
 </strings>
