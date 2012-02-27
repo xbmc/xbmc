@@ -54,6 +54,9 @@ CHTSPConnection::~CHTSPConnection()
 {
   Close();
   delete m_socket;
+  for (deque<htsmsg_t*>::iterator it = m_queue.begin(); it != m_queue.end();)
+    delete *(it++);
+  m_queue.clear();
 }
 
 bool CHTSPConnection::Connect()
