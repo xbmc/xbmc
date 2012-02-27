@@ -48,13 +48,12 @@ namespace PLATFORM
 
   inline struct timespec GetAbsTime(uint64_t iIncreaseBy = 0)
   {
-    struct timespec abstime;
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    iIncreaseBy += now.tv_usec / 1000;
-    abstime.tv_sec = now.tv_sec + (time_t)(iIncreaseBy / 1000);
-    abstime.tv_nsec = (int32_t)((iIncreaseBy % (uint32_t)1000) * (uint32_t)1000000);
-    return abstime;
+    struct timespec now;
+    clock_gettime(CLOCK_REALTIME, &now);
+    now.tv_nsec += iIncreaseBy % 1000 * 1000000;
+    now.tv_sec  += iIncreaseBy / 1000 + now.tv_nsec / 1000000000;
+    now.tv_nsec %= 1000000000;
+    return now;
   }
 
   typedef pthread_t thread_t;
