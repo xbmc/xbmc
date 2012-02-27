@@ -2010,14 +2010,14 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
       if (OnUnAssignContent(path,20442,20443,20444))
         bScan = true;
     }
-    
-    db.SetScraperForPath(path,info,settings);
-    
-    if (bScan)
-    {
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog)
-        pDialog->StartScanning(path, true);
-    }
+  }
+
+  db.SetScraperForPath(path,info,settings);
+
+  if (bScan)
+  {
+    CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (pDialog)
+      pDialog->StartScanning(path, true);
   }
 }
