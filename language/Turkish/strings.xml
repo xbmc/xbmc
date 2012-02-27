@@ -7,8 +7,8 @@
 <!--Date of translation: 22/04/2011-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 21/01/2012-->
-<!--Based on English strings commit e9bcfd0779 -->
+<!--Date of translation: 27/02/2012-->
+<!--Based on English strings commit 0ee1ef0923 -->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -555,7 +555,7 @@
   <string id="596">Tekrar: Birini</string>
   <string id="597">Tekrar: Hepsini</string>
 
-  <string id="600">Ses CD'sini Aktar</string>
+  <string id="600">Ses CD'sinden kopyala</string>
   <string id="601">Orta</string>
   <string id="602">Standart</string>
   <string id="603">Extreme</string>
@@ -563,9 +563,9 @@
   <string id="605">Kopyalanıyor...</string>
 
   <string id="607">Nereye:</string>
-  <string id="608">CD veya parça aktarılamıyor</string>
-  <string id="609">CDDA Aktarma Yolu ayarlanmamış</string>
-  <string id="610">Parçayı aktar</string>
+  <string id="608">CD veya parça kopyalanamıyor</string>
+  <string id="609">CDDA kopyalama yolu ayarlanmamış</string>
+  <string id="610">Parçayı kopyala</string>
   <string id="611">Numara gir</string>
   <string id="612">Bits/Sample</string>
   <string id="613">Sample Frequency</string>
@@ -883,9 +883,11 @@
   <string id="10019">Ayarlar - Görünüm</string>
   <string id="10020">Betikler</string>
   <string id="10021">Web Tarayıcısı</string>
-
+  <string id="10025">Videolar</string>
   <string id="10028">Videolar/Çalma Listesi</string>
+  <string id="10029">Giriş ekranı</string>
   <string id="10034">Ayarlar - Profiller</string>
+  <string id="10040">Eklenti tarayıcısı</string>
 
   <string id="10100">Evet/Hayır iletişim kutusu</string>
   <string id="10101">İlerleme iletişim kutusu</string>
@@ -962,7 +964,7 @@
   <string id="12340">Yeni parolayı girin</string>
   <string id="12341">Yeni parolayı tekrar girin</string>
   <string id="12342">Yanlış parola,</string>
-  <string id="12343"> deneme hakkı kaldı </string>
+  <string id="12343">deneme hakkı kaldı </string>
   <string id="12344">Girilen parola aynı değil.</string>
   <string id="12345">Giriş reddedildi</string>
   <string id="12346">Parola deneme hakkı tükendi.</string>
@@ -1071,7 +1073,7 @@
   <string id="13171">Hemen</string>
   <string id="13172">%i saniye sonra</string>
   <string id="13173">HDD yükleme tarihi:</string>
-  <string id="13174">HDD power cycle count:</string>
+  <string id="13174">HDD güç döngüsü sayısı:</string>
 
   <string id="13200">Profiller</string>
   <string id="13201">'%s' profili silinsin mi?</string>
@@ -1125,7 +1127,7 @@
   <string id="13302">Fan hızı ayarı</string>
   <string id="13303">- Yazı tipleri</string>
   <string id="13304">Enable flipping bi-directional strings</string>
-  <string id="13305">RSS haber beslemelerini göster</string>
+  <string id="13305">RSS haber akışlarını göster</string>
   <string id="13306">Geri gitme simgesini göster</string>
   <string id="13307">Parça isim kalıbı</string>
   <string id="13308">XBMC'yi yeniden başlatmak yerine sistemi</string>
@@ -1763,7 +1765,7 @@
   <string id="20301">Web sunucu dizini (HTTPS)</string>
   <string id="20302">Klasöre yazılamıyor:</string>
   <string id="20303">Bu adımı atlayıp devam etme istiyor musunuz?</string>
-  <string id="20304">RSS Beslemesi</string>
+  <string id="20304">RSS Akışı</string>
 
   <string id="20307">İkincil DNS</string>
   <string id="20308">DHCP sunucusu:</string>
@@ -1781,7 +1783,7 @@
   <string id="20326">Bu %s için olan ayarlama değerlerini</string>
   <string id="20327">varsayılana sıfırlayacak.</string>
   <string id="20328">Hedefe gözat</string>
-
+  <string id="20329">Filmler ayrı klasörlerde film başlığı ile eşleşecek şekilde bulunuyor</string>
   <string id="20330">Arama için klasör adlarını kullan</string>
   <string id="20331">Dosya</string>
   <string id="20332">Aramalarda dosya veya klasör adları kullanılsın mı?</string>
@@ -1911,6 +1913,7 @@
   <string id="20455">Dinleyiciler</string>
   <string id="20456">Set movieset fanart</string>
   <string id="20457">Movie set</string>
+  <string id="20458">Group movies in sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -2015,7 +2018,7 @@
   <string id="21448">Altyazı dili</string>
   <string id="21449">Remote control sends keyboard presses</string>
   <string id="21450">- Düzenle</string>
-  <string id="21451">Internet bağlantısı gereklidir.</string>
+  <string id="21451">İnternet bağlantısı gereklidir.</string>
   <string id="21452">Daha Fazla...</string>
   <string id="21453">Kök dosya sistemi</string>
   <string id="21454">Önbellek dolu</string>
