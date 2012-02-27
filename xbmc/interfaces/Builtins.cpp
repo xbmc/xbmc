@@ -865,7 +865,11 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("setvolume"))
   {
-    g_application.SetVolume(atoi(parameter.c_str()));
+    int oldVolume = g_application.GetVolume();
+    int volume = atoi(parameter.c_str());
+  
+    g_application.SetVolume(volume);
+    g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);  
   }
   else if (execute.Equals("playlist.playoffset"))
   {

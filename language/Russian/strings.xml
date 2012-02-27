@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Russian – current edition by Roman_V_M -->
+<!--Based on English cd69c7030b0caec990b6143fac65ca8168dccf71 (23.01.2012)-->
 <strings>
   <string id="0">Программы</string>
   <string id="1">Фотографии</string>
@@ -43,7 +44,7 @@
 
   <string id="51">янв.</string>
   <string id="52">фев.</string>
-  <string id="53">мар.</string>
+  <string id="53">марта</string>
   <string id="54">апр.</string>
   <string id="55">мая</string>
   <string id="56">июня</string>
@@ -53,7 +54,7 @@
   <string id="60">окт.</string>
   <string id="61">нояб.</string>
   <string id="62">дек.</string>
-  
+
   <string id="71">С</string>
   <string id="72">ССВ</string>
   <string id="73">СВ</string>
@@ -70,23 +71,23 @@
   <string id="84">ЗСЗ</string>
   <string id="85">СЗ</string>
   <string id="86">ССЗ</string>
-  <string id="87">Переменный</string>
+  <string id="87">Перем.</string>
 
-  <string id="98">Вид: автоматически</string>
+  <string id="98">Вид: авто</string>
   <string id="99">Вид: авто крупн.</string>
   <string id="100">Вид: значки</string>
   <string id="101">Вид: список</string>
   <string id="102">Сканировать</string>
-  <string id="103">Сорт. по: названию</string>
-  <string id="104">Сорт. по: дате</string>
-  <string id="105">Сорт. по: размеру</string>
+  <string id="103">Сорт. по имени</string>
+  <string id="104">Сорт. по дате</string>
+  <string id="105">Сорт. по размеру</string>
   <string id="106">Нет</string>
   <string id="107">Да</string>
   <string id="108">Слайд-шоу</string>
   <string id="109">Создавать эскизы</string>
   <string id="110">Создавать эскизы</string>
   <string id="111">Ярлыки</string>
-  <string id="112">На паузе</string>
+  <string id="112">Пауза</string>
   <string id="113">Не удалось обновить</string>
   <string id="114">Не удалось установить</string>
   <string id="115">Копировать</string>
@@ -99,7 +100,7 @@
   <string id="122">Удалить файл?</string>
   <string id="123">Копировать файлы?</string>
   <string id="124">Переместить файлы?</string>
-  <string id="125">Удалить файлы? (Восстановление будет невозможно.)</string>
+  <string id="125">Удалить файлы? Восстановление будет невозможно!</string>
   <string id="126">Состояние</string>
   <string id="127">Объектов</string>
   <string id="128">Общие</string>
@@ -167,7 +168,7 @@
   <string id="192">Очистить</string>
   <string id="193">Сканировать</string>
   <string id="194">Поиск…</string>
-  <string id="195">Информации не найдено.</string>
+  <string id="195">Информация не найдена.</string>
   <string id="196">Выберите фильм:</string>
   <string id="197">Запрос информации от %s</string>
   <string id="198">Загрузка данных о фильме</string>
@@ -183,7 +184,7 @@
   <string id="209">Следующий</string>
   <string id="210">Предыдущий</string>
   <string id="213">Калибровка интерфейса…</string>
-  <string id="214">Калибровка экрана…</string>
+  <string id="214">Калибровка дисплея…</string>
   <string id="215">Сглаживание</string>
   <string id="216">Степень увеличения</string>
   <string id="217">Соотношение сторон</string>
@@ -197,7 +198,7 @@
   <string id="226">Тестовые шаблоны…</string>
   <string id="227">Искать имена треков аудио-CD на freedb.org</string>
   <string id="228">Перемешать плейлист при загрузке</string>
-  <string id="229">Останавливать HDD через (мин)</string>
+  <string id="229">Останавливать HDD через (мин.)</string>
   <string id="230">Видеофильтры</string>
   <string id="231">Нет</string>
   <string id="232">Точка</string>
@@ -208,7 +209,7 @@
   <string id="237">Уменьшение</string>
   <string id="238">Увеличение</string>
   <string id="239">Очищать плейлист после проигрывания</string>
-  <string id="240">Режим экрана</string>
+  <string id="240">Режим дисплея</string>
   <string id="241">Полный экран #%d</string>
   <string id="242">В окне</string>
   <string id="243">Частота обновления</string>
@@ -220,11 +221,11 @@
   <string id="249">Музыка</string>
   <string id="250">Визуализация</string>
   <string id="251">Выберите папку назначения</string>
-  <string id="252">- Выводить стерео на все динамики</string>
+  <string id="252">Выводить стерео на все динамики</string>
   <string id="253">Количество каналов</string>
   <string id="254">- Выводить звук в формате DTS</string>
   <string id="255">CDDB</string>
-  <string id="256">Запрос данных о CD…</string>
+  <string id="256">Получение данных о CD…</string>
   <string id="257">Ошибка</string>
   <string id="258">Читать информацию из тэгов</string>
   <string id="259">Открытие…</string>
@@ -234,11 +235,11 @@
   <string id="263">Разрешить управление XBMC по HTTP</string>
   <string id="264">Запись</string>
   <string id="265">Остановить запись</string>
-  <string id="266">Сорт. по: № трека</string>
-  <string id="267">Сорт. по: времени</string>
-  <string id="268">Сорт. по: названию</string>
-  <string id="269">Сорт. по: исполнителю</string>
-  <string id="270">Сорт. по: альбому</string>
+  <string id="266">Сорт. по трекам</string>
+  <string id="267">Сорт. по времени</string>
+  <string id="268">Сорт. по названию</string>
+  <string id="269">Сорт. по исполнителю</string>
+  <string id="270">Сорт. по альбомам</string>
   <string id="271">Топ 100</string>
   <string id="272">Настройка размеров экрана (левый верхний угол)</string>
   <string id="273">Настройка размеров экрана (правый нижний угол)</string>
@@ -247,9 +248,9 @@
   <string id="276">Двигайте стрелки для регулировки размеров экрана</string>
   <string id="277">Двигайте полоску, чтобы изменить позицию субтитров</string>
   <string id="278">Измените прямоугольник так, чтобы добиться идеального квадрата</string>
-  <string id="279">Невозможно загрузить настройки</string>
+  <string id="279">Не удалось загрузить настройки</string>
   <string id="280">Используются стандартные настройки</string>
-  <string id="281">Пожалуйста, проверьте файлы XML</string>
+  <string id="281">Проверьте файлы XML</string>
   <string id="282">Найдено объектов: %i</string>
   <string id="283">Результаты поиска</string>
   <string id="284">Ничего не найдено</string>
@@ -322,40 +323,40 @@
   <string id="360">Заставка</string>
   <string id="361">Рекурс. слайд-шоу</string>
   <string id="362">Уровень затемнения экрана</string>
-  <string id="363">Сорт. по: файлам</string>
+  <string id="363">Сорт. по файлам</string>
   <string id="364">- Выводить звук в формате Dolby Digital (AC3)</string>
-  <string id="365">Сорт. по: названию</string>
-  <string id="366">Сорт. по: году</string>
-  <string id="367">Сорт. по: рейтингу</string>
+  <string id="365">Сорт. по имени</string>
+  <string id="366">Сорт. по году</string>
+  <string id="367">Сорт. по рейтингу</string>
   <string id="368">IMDb</string>
   <string id="369">Название</string>
-  <string id="370">Грозы</string>
-  <string id="371">Местами</string>
-  <string id="372">Преимущественно</string>
+  <string id="370">грозы</string>
+  <string id="371">местами</string>
+  <string id="372">преимущественно</string>
   <string id="373">солнечно</string>
   <string id="374">облачно</string>
   <string id="375">снег</string>
   <string id="376">дождь</string>
-  <string id="377">Небольшой</string>
+  <string id="377">небольш.</string>
   <string id="378">Утром</string>
   <string id="379">Днем</string>
-  <string id="380">ливни</string>
-  <string id="381">Немного</string>
-  <string id="382">Местами</string>
+  <string id="380"> </string>
+  <string id="381">немного</string>
+  <string id="382">местами</string>
   <string id="383">ветер</string>
-  <string id="384">Сильный</string>
-  <string id="385">Ясно</string>
-  <string id="386">Безоблачно</string>
+  <string id="384">сильный</string>
+  <string id="385">безоблачно</string>
+  <string id="386">ясно</string>
   <string id="387">облачно</string>
-  <string id="388">Ранние</string>
-  <string id="389">Ливень</string>
-  <string id="390">Шквалы</string>
+  <string id="388">ранние</string>
+  <string id="389">ливень</string>
+  <string id="390">снегопад</string>
   <string id="391">Мин.</string>
   <string id="392">Средн.</string>
   <string id="393">Макс.</string>
-  <string id="394">Туман</string>
-  <string id="395">Дымка</string>
-  <string id="396">Выберите расположение</string>
+  <string id="394">туман</string>
+  <string id="395">дымка</string>
+  <string id="396">Выберите местность</string>
   <string id="397">Время обновления</string>
   <string id="398">Единица измерения температуры</string>
   <string id="399">Единица измерения скорости ветра</string>
@@ -375,20 +376,20 @@
   <string id="414">Нет описания этого альбома</string>
   <string id="415">Загрузка эскизов…</string>
   <string id="416">Нет данных</string>
-  <string id="417">Вид: крупные значки</string>
-  <string id="418">Мин</string>
-  <string id="419">Макс</string>
+  <string id="417">Вид: крупн. значки</string>
+  <string id="418">Мин.</string>
+  <string id="419">Макс.</string>
   <string id="420">HDMI</string>
 
-  <string id="422">Удалить данные об альбоме</string>
-  <string id="423">Удалить данные о CD</string>
+  <string id="422">Удалить сведения об альбоме</string>
+  <string id="423">Удалить сведения о CD</string>
   <string id="424">Выбор</string>
-  <string id="425">Данные об альбоме не найдены</string>
-  <string id="426">Данные о CD не найдены</string>
+  <string id="425">Сведения об альбоме не найдены</string>
+  <string id="426">Сведения о CD не найдены</string>
   <string id="427">Диск</string>
   <string id="428">Вставьте правильный CD/DVD-диск</string>
-  <string id="429">Вставьте следующий CD/DVD-диск:</string>
-  <string id="430">Сорт. по: № DVD</string>
+  <string id="429">Вставьте следующий диск:</string>
+  <string id="430">Сорт. по № DVD</string>
   <string id="431">Не кэшировать</string>
   <string id="432">Удалить фильм из медиатеки</string>
   <string id="433">Действительно удалить[CR]"%s"?</string>
@@ -406,7 +407,7 @@
   <string id="446">DVD</string>
   <string id="447">Автозапуск</string>
   <string id="448">LCD-экран</string>
-  <string id="449">Включ.</string>
+  <string id="449">Вкл.</string>
   <string id="450">Количество знакомест в строке</string>
   <string id="451">Адрес 1-ой строки</string>
   <string id="452">Адрес 2-ой строки</string>
@@ -425,13 +426,13 @@
   <string id="466">Гамма</string>
   <string id="467">Тип</string>
   <string id="468">Двигайте полоску, чтобы изменить положение экранного меню (OSD)</string>
-  <string id="469">Позиция экранного меню (OSD)</string>
+  <string id="469">Положение экранного меню (OSD)</string>
   <string id="470">Создатели</string>
   <string id="471">МOD-чип</string>
   <string id="474">Выкл.</string>
   <string id="475">Только музыка</string>
   <string id="476">Музыка и видео</string>
-  <string id="477">Невозможно загрузить плейлист</string>
+  <string id="477">Не удалось загрузить плейлист</string>
   <string id="478">Экранное меню (OSD)</string>
   <string id="479">Обложка и язык</string>
   <string id="480">Внешний вид</string>
@@ -447,20 +448,20 @@
   <string id="492">Масштабировать субтитры</string>
   <string id="493">Расширенные параметры (только для экспертов!)</string>
   <string id="494">Общий уровень шума в комнате (dB)</string>
-  <string id="495">Пересчитывать видео до разрешения GUI</string>
+  <string id="495">Масштабировать видео до разрешения GUI</string>
   <string id="496">Калибровка</string>
   <string id="497">Показывать расширения файлов</string>
-  <string id="498">Сорт. по: типу</string>
-  <string id="499">Не удалось соединиться с поисковым сервисом</string>
+  <string id="498">Сорт. по типу</string>
+  <string id="499">Не удалось подключиться к поисковой службе</string>
   <string id="500">Не удалось загрузить данные об альбоме</string>
   <string id="501">Поиск названий альбомов…</string>
   <string id="502">Открыть</string>
   <string id="503">Ждите…</string>
   <string id="504">Пуст</string>
   <string id="505">Загрузка информации из файлов…</string>
-  <string id="507">Сорт. по: частоте</string>
-  <string id="510">Включить видеоэффекты</string>
-  <string id="511">Автопереключение PAL/NTSC</string>
+  <string id="507">Сорт. по частоте</string>
+  <string id="510">Включить визуализацию</string>
+  <string id="511">Автопереключение видеорежима</string>
   <string id="512">Стартовое окно</string>
   <string id="513">Главное меню</string>
   <string id="514">Настройки</string>
@@ -504,7 +505,7 @@
   <string id="552">Дата</string>
   <string id="553">Размер</string>
   <string id="554">№ трека</string>
-  <string id="555">Временя</string>
+  <string id="555">Время</string>
   <string id="556">Название</string>
   <string id="557">Исполнитель</string>
   <string id="558">Альбом</string>
@@ -524,7 +525,7 @@
   <string id="572">Студия</string>
   <string id="573">Путь</string>
   <string id="574">Страна</string>
-  <string id="575">Выполняется…</string>
+  <string id="575">Неоконченные</string>
   <string id="576">Кол-во проигрываний</string>
 
   <string id="580">Направление сортировки</string>
@@ -549,7 +550,7 @@
   <string id="600">Оцифровать аудио-CD</string>
   <string id="601">Среднее</string>
   <string id="602">Стандартное</string>
-  <string id="603">Экстремальное</string>
+  <string id="603">Максимальное</string>
   <string id="604">Постоянный битрейт</string>
   <string id="605">Оцифровка…</string>
 
@@ -571,7 +572,7 @@
   <string id="630">Нормальный</string>
   <string id="631">Увеличенный</string>
   <string id="632">Растянутый 4:3</string>
-  <string id="633">Растянутый 14:9</string>
+  <string id="633">Растянутый</string>
   <string id="634">Растянутый 16:9</string>
   <string id="635">Оригинальный размер</string>
   <string id="636">Заданный</string>
@@ -601,7 +602,7 @@
 
   <string id="660">Усиление громкости</string>
   <string id="661">Укажите папку для экспорта</string>
-  <string id="662">Этот файл больше недоступен.</string>
+  <string id="662">Этот файл больше не доступен.</string>
   <string id="663">Удалить его из медиатеки?</string>
   <string id="664">Выбрать скрипт</string>
   <string id="665">Степень сжатия</string>
@@ -624,8 +625,8 @@
 
   <string id="719">- IP-адрес</string>
   <string id="720">- Маска подсети</string>
-  <string id="721">- Адрес шлюза</string>
-  <string id="722">- Адрес DNS сервера</string>
+  <string id="721">- Шлюз по умолчанию</string>
+  <string id="722">- DNS-сервер</string>
   <string id="723">Сохранить и перезапустить</string>
   <string id="724">Неправильный адрес. Введите значение в виде AAA.BBB.CCC.DDD</string>
   <string id="725">с числами от 0 до 255.</string>
@@ -646,7 +647,7 @@
   <string id="740">Курсив</string>
   <string id="741">Жирный курсив</string>
   <string id="742">Белый</string>
-  <string id="743">Жёлтый</string>
+  <string id="743">Желтый</string>
   <string id="744">Файлы</string>
   <string id="745">Нет сканированных данных для этого вида</string>
   <string id="746">Выключите режим медиатеки</string>
@@ -672,7 +673,7 @@
   <string id="767">Серый</string>
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
-  <string id="770">Ошибка  %i: ресурс недоступен</string>
+  <string id="770">Ошибка %i: ресурс недоступен</string>
 
   <string id="772">Вывод звука</string>
   <string id="773">Поиск…</string>
@@ -687,10 +688,10 @@
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
   <string id="784">Применение сетевых настроек. Подождите…</string>
-  <string id="785">Сетевой интерфейс перезапущен успешно</string>
-  <string id="786">Не удалось запустить сетевой интерфейс</string>
+  <string id="785">Сетевой интерфейс перезапущен.</string>
+  <string id="786">Не удалось запустить сетевой интерфейс.</string>
   <string id="787">Интерфейс отключен</string>
-  <string id="788">Сетевой интерфейс успешно отключен</string>
+  <string id="788">Сетевой интерфейс отключен.</string>
   <string id="789">Имя беспроводной сети (ESSID)</string>
 
   <string id="791">Разрешить программам на этой системе управлять XBMC</string>
@@ -712,7 +713,7 @@
   <string id="1001">Не удалось подключиться</string>
   <string id="1002">XBMC не удалось подключиться к сети.</string>
   <string id="1003">Возможно, сеть не подключена.</string>
-  <string id="1004">Добавить в любом случае?</string>
+  <string id="1004">Все равно добавить?</string>
 
   <string id="1006">IP-адрес</string>
   <string id="1007">Добавить сетевой адрес</string>
@@ -720,24 +721,24 @@
   <string id="1009">Адрес сервера</string>
   <string id="1010">Имя сервера</string>
   <string id="1011">Сетевой путь</string>
-  <string id="1012">Доступная папка</string>
+  <string id="1012">Общая папка</string>
   <string id="1013">Порт</string>
   <string id="1014">Имя пользователя</string>
   <string id="1015">Укажите сетевой сервер</string>
   <string id="1016">Введите адрес сервера</string>
-  <string id="1017">Введите путь к серверу</string>
+  <string id="1017">Введите путь на сервере</string>
   <string id="1018">Введите номер порта</string>
   <string id="1019">Введите имя пользователя</string>
   <string id="1020">Добавление источника - %s</string>
   <string id="1021">Введите путь или укажите расположение файлов</string>
-  <string id="1022">Введите имя этого медиаисточника</string>
+  <string id="1022">Введите имя медиа-источника.</string>
   <string id="1023">Укажите новый ресурс</string>
   <string id="1024">Обзор</string>
   <string id="1025">Не удалось получить информацию о папке</string>
   <string id="1026">Добавить источник…</string>
   <string id="1027">Изменить источник…</string>
   <string id="1028">Изменение источника - %s</string>
-  <string id="1029">Введите новую метку</string>
+  <string id="1029">Введите новое название</string>
   <string id="1030">Укажите картинку</string>
   <string id="1031">Укажите папку с картинками</string>
   <string id="1032">Добавить сетевой адрес…</string>
@@ -782,7 +783,7 @@
   <string id="1220">Фото и файлы</string>
   <string id="1221">Музыка, видео и фото</string>
   <string id="1222">Музыка, видео, фото и файлы</string>
-  <string id="1223">Откл.</string>
+  <string id="1223">Отключено</string>
   <string id="1226">Файлы, музыка и видео</string>
   <string id="1227">Файлы, фото и музыка</string>
   <string id="1228">Файлы, фото и видео</string>
@@ -799,7 +800,7 @@
   <string id="1252">Псевдоним</string>
 
   <string id="1254">Запрашивать разрешение на подключение</string>
-  <string id="1255">Отправлять логин и пароль для FTP</string>
+  <string id="1255">Использовать логин и пароль для FTP</string>
   <string id="1256">Интервал опроса</string>
   <string id="1257">Подключиться к найденной системе?</string>
 
@@ -811,34 +812,34 @@
   <string id="1300">Другое аудио устройство</string>
   <string id="1301">Другое устройство прямого вывода звука</string>
 
-  <string id="1396">Гололед</string>
+  <string id="1396">гололед</string>
   <string id="1397">и</string>
-  <string id="1398">Заморозки</string>
-  <string id="1399">Поздний</string>
-  <string id="1400">Местами</string>
-  <string id="1401">Ливень с грозами</string>
-  <string id="1402">Гром</string>
-  <string id="1403">Солнце</string>
-  <string id="1404">Сильный</string>
+  <string id="1398">заморозки</string>
+  <string id="1399">поздний</string>
+  <string id="1400">местами</string>
+  <string id="1401">ливень с грозами</string>
+  <string id="1402">гроза</string>
+  <string id="1403">солнце</string>
+  <string id="1404">сильный</string>
   <string id="1405">в</string>
   <string id="1406"> </string>
-  <string id="1407">Окрестностях</string>
-  <string id="1408">Лед</string>
-  <string id="1409">Кристаллы</string>
-  <string id="1410">Спокойно</string>
+  <string id="1407">окрестностях</string>
+  <string id="1408">лед</string>
+  <string id="1409">кристаллы</string>
+  <string id="1410">спокойно</string>
   <string id="1411">с</string>
   <string id="1412">ветрено</string>
   <string id="1413">дождь</string>
   <string id="1414">гроза</string>
   <string id="1415">дождь</string>
-  <string id="1416">Туманно</string>
-  <string id="1417">Град</string>
-  <string id="1418">Грозы</string>
-  <string id="1419">Грозовые ливни</string>
-  <string id="1420">Умеренный</string>
-  <string id="1421">Очень высокий</string>
-  <string id="1422">Ветрено</string>
-  <string id="1423">Туман</string>
+  <string id="1416">туманно</string>
+  <string id="1417">град</string>
+  <string id="1418">грозы</string>
+  <string id="1419">Ливни с грозами</string>
+  <string id="1420">умеренный</string>
+  <string id="1421">очень высокий</string>
+  <string id="1422">ветрено</string>
+  <string id="1423">туман</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -847,7 +848,7 @@
 
   <string id="2050">Длительность</string>
 
-  <string id="2100">Ошибка скрипта : %s</string>
+  <string id="2100">Ошибка скрипта: %s</string>
   <string id="2101">Требуется более новая версия; см. журнал</string>
 
   <string id="4501">Включить LCD/VFD-дисплей</string>
@@ -863,14 +864,14 @@
   <string id="10008">Настройки - Основные</string>
   <string id="10009">Настройки - Экран</string>
   <string id="10010">Настройки - Внешний вид - Калибровка интерфейса</string>
-  <string id="10011">Настройки - Видео - Калибровка экрана</string>
+  <string id="10011">Настройки - Видео - Калибровка дисплея</string>
   <string id="10012">Настройки - Фотографии</string>
   <string id="10013">Настройки - Программы</string>
   <string id="10014">Настройки - Погода</string>
   <string id="10015">Настройки - Музыка</string>
   <string id="10016">Настройки - Система</string>
   <string id="10017">Настройки - Видео</string>
-  <string id="10018">Настройки > Сеть</string>
+  <string id="10018">Настройки - Сеть</string>
   <string id="10019">Настройки - Внешний вид</string>
   <string id="10020">Скрипты</string>
   <string id="10021">Веб-браузер</string>
@@ -891,8 +892,8 @@
   <string id="10501">Музыка/файлы</string>
   <string id="10502">Музыка/медиатека</string>
   <string id="10503">Редактор плейлиста</string>
-  <string id="10504">Top 100 - песни</string>
-  <string id="10505">Top 100 - альбомы</string>
+  <string id="10504">Топ 100 - песни</string>
+  <string id="10505">Топ 100 - альбомы</string>
   <string id="10506">Программы</string>
   <string id="10507">Настройка</string>
   <string id="10508">Прогноз погоды</string>
@@ -969,15 +970,15 @@
   <string id="12360">Общая защита</string>
   <string id="12362">Выключить систему, если количество неудачных попыток исчерпано</string>
   <string id="12367">Неправильный код защиты</string>
-  <string id="12368">Введите правильный код защиты!</string>
+  <string id="12368">Введите правильный код защиты</string>
   <string id="12373">Настройки и файл-менеджер</string>
   <string id="12376">Установить для всех фильмов</string>
   <string id="12377">Это сбросит сохраненные ранее значения.</string>
   <string id="12378">Время показа каждого слайда</string>
   <string id="12379">Эффекты панорамы и увеличения</string>
 
-  <string id="12383">12-х часовой</string>
-  <string id="12384">24-х часовой</string>
+  <string id="12383">12-часовой</string>
+  <string id="12384">24-часовой</string>
   <string id="12385">День/месяц</string>
   <string id="12386">Месяц/день</string>
 
@@ -1010,7 +1011,7 @@
   <string id="13015">Реакция на кнопку питания</string>
   <string id="13016">Выключить систему</string>
 
-  <string id="13020">Активна другая сессия; возможно, по SSH.</string>
+  <string id="13020">Проверьте, не активна ли другая сессия (напр., SSH).</string>
   <string id="13021">Подключен переносной жесткий диск</string>
   <string id="13022">Небезопасное отключение устройства</string>
   <string id="13023">Устройство отключено успешно</string>
@@ -1021,7 +1022,7 @@
 
   <string id="13100">Фильтр мерцания</string>
   <string id="13101">По выбору драйвера (требуется перезапуск)</string>
-  
+
   <string id="13105">Вертикальная синхронизация</string>
   <string id="13106">Отключена</string>
   <string id="13107">Только при просмотре видео</string>
@@ -1036,7 +1037,7 @@
   <string id="13115">Всегда включено</string>
 
   <string id="13116">Метод масштабирования</string>
-  <string id="13117">Бикубический</string>
+  <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
@@ -1047,7 +1048,7 @@
   <string id="13131">Отключено</string>
   <string id="13132">Погасить дисплеи</string>
 
-  <string id="13140">Обнаружено активное соединение.</string>
+  <string id="13140">Обнаружены активные соединения.</string>
   <string id="13141">В случае продолжения возможна потеря управления</string>
   <string id="13142">XBMC. Остановить сервер событий?</string>
 
@@ -1068,19 +1069,19 @@
   <string id="13174">Кол-во циклов включения/выключения HDD:</string>
 
   <string id="13200">Профили</string>
-  <string id="13201">Удалить профиль '%s'?</string>
-  
+  <string id="13201">Удалить профиль "%s"?</string>
+
   <string id="13204">Последний загруженный профиль:</string>
   <string id="13205">Неизвестно</string>
   <string id="13206">Перезаписать</string>
-  
+
   <string id="13208">Таймер напоминаний</string>
-  <string id="13209">Период таймера напоминаний (в минутах)</string>
-  <string id="13210">Запущен, сработает в %im</string>
+  <string id="13209">Период таймера напоминаний (в мин.)</string>
+  <string id="13210">Запущен; сработает через %i мин.</string>
   <string id="13211">НАПОМИНАНИЕ!</string>
-  <string id="13212">Отменено за %im%is до срабатывания</string>
-  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
-  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
+  <string id="13212">Отменено за %i мин. %i с. до срабатывания</string>
+  <string id="13213">%2.0f мин.</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0f с.</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Искать субтитры в архивах RAR</string>
   <string id="13250">Выбрать субтитры…</string>
@@ -1091,7 +1092,7 @@
   <string id="13270">Оборудование:</string>
   <string id="13271">Загрузка CPU:</string>
 
-  <string id="13274">Подключено, но DNS-сервер недоступен</string>
+  <string id="13274">Подключено, но DNS-сервер недоступен.</string>
   <string id="13275">Жесткий диск</string>
   <string id="13276">Привод DVD</string>
   <string id="13277">Накопители</string>
@@ -1135,8 +1136,8 @@
   <string id="13318">Рекурсивное слайд-шоу</string>
   <string id="13319">Случайно</string>
   <string id="13320">Стерео</string>
-  <string id="13321">только левый</string>
-  <string id="13322">только правый</string>
+  <string id="13321">Только левый</string>
+  <string id="13322">Только правый</string>
   <string id="13323">Разрешить поддержку караоке</string>
   <string id="13324">Уровень прозрачности фона</string>
   <string id="13325">Уровень прозрачности текста</string>
@@ -1145,10 +1146,10 @@
   <string id="13328">%s не найден</string>
   <string id="13329">Ошибка открытия %s</string>
   <string id="13330">Не удалось загрузить %s</string>
-  <string id="13331">Ошибка: не хватает памяти</string>
+  <string id="13331">Ошибка: недостаточно памяти</string>
   <string id="13332">Переместить вверх</string>
   <string id="13333">Переместить вниз</string>
-  <string id="13334">Изменить метку</string>
+  <string id="13334">Изменить название</string>
   <string id="13335">Сделать по умолчанию</string>
   <string id="13336">Убрать кнопку</string>
 
@@ -1157,10 +1158,10 @@
   <string id="13342">Оранжевый</string>
   <string id="13343">Красный</string>
   <string id="13344">Циклически</string>
-  <string id="13345">Выключать при проигрывании</string>
+  <string id="13345">Выключать индикатор при проигрывании</string>
   <string id="13346">Сведения о фильме</string>
   <string id="13347">Добавить в плейлист</string>
-  <string id="13348">Найти в IMDb…</string>
+  <string id="13348">Поиск в IMDb…</string>
   <string id="13349">Сканировать содержимое</string>
   <string id="13350">Текущий плейлист…</string>
   <string id="13351">Сведения об альбоме</string>
@@ -1170,11 +1171,11 @@
   <string id="13355">Пикс. шейдер низк. качества</string>
   <string id="13356">Аппаратное наложение</string>
   <string id="13357">Пикс. шейдер высок. качества</string>
-  <string id="13358">Воспроизвести объект</string>
-  <string id="13359">Установить эскиз исполнителя</string>
+  <string id="13358">Проиграть объект</string>
+  <string id="13359">Выбрать эскиз исполнителя</string>
   <string id="13360">Создавать эскизы</string>
   <string id="13361">Включить микрофон</string>
-  
+
   <string id="13375">Включить устройство</string>
   <string id="13376">Громкость</string>
   <string id="13377">Основной режим просмотра</string>
@@ -1189,27 +1190,27 @@
   <string id="13386">Позиционировать по времени</string>
   <string id="13387">Правая колонка в списке</string>
   <string id="13388">Предустановка</string>
-  <string id="13389">Нет предустановок&#10;для этого видео эффекта</string>
-  <string id="13390">Нет настроек&#10;для этого видео эффекта</string>
-  <string id="13391">Открыть / закрыть</string>
+  <string id="13389">Нет предустановок&#10;для этой визуализации</string>
+  <string id="13390">Нет настроек&#10;для этой визуализации</string>
+  <string id="13391">Открыть/закрыть</string>
   <string id="13392">Включить визуализацию при проигрывании музыки</string>
-  <string id="13393">Вычислить объем</string>
-  <string id="13394">Вычисляется объем папки…</string>
+  <string id="13393">Вычислить размер</string>
+  <string id="13394">Вычисляется размер папки…</string>
   <string id="13395">Настройки видео</string>
-  <string id="13396">Настройки субтитров и звука</string>
+  <string id="13396">Настройки звука и субтитров</string>
   <string id="13397">Включить субтитры</string>
   <string id="13398">Ярлыки</string>
-  <string id="13399">Не учитывать артикли при сортировке</string>
+  <string id="13399">Не учитывать артикли при сортировке (напр., "the")</string>
   <string id="13400">Переход между песнями в том же альбоме</string>
   <string id="13401">Выбрать %s</string>
   <string id="13402">Показать позицию трека</string>
   <string id="13403">Очистить по умолчанию</string>
   <string id="13404">Продолжить</string>
   <string id="13405">Эскиз</string>
-  <string id="13406">Данные о фотографии</string>
-  <string id="13407">%s предустановки</string>
+  <string id="13406">Сведения о фотографии</string>
+  <string id="13407">Предустановок: %s</string>
   <string id="13408">(Рейтинг пользователей IMDb)</string>
-  <string id="13409">Top 250</string>
+  <string id="13409">Топ 250</string>
   <string id="13410">Настройки Last.fm</string>
   <string id="13411">Минимальная скорость вентиляторов</string>
   <string id="13412">Проигрывать отсюда</string>
@@ -1234,13 +1235,13 @@
   <string id="13431">Пиксельные шейдеры</string>
   <string id="13432">Включить аппаратное ускорение (VideoToolbox)</string>
 
-  <string id="13500">Метод синхронизации А/В</string>
+  <string id="13500">Синхронизация А/В</string>
   <string id="13501">По частоте звука</string>
   <string id="13502">По частоте видео (пропуск/дублирование звука)</string>
   <string id="13503">По частоте видео (преобразование звука)</string>
   <string id="13504">Максимальная величина преобразования (%)</string>
   <string id="13505">Качество преобразования</string>
-  <string id="13506">Низкое</string>
+  <string id="13506">Низкое (быстро)</string>
   <string id="13507">Среднее</string>
   <string id="13508">Высокое</string>
   <string id="13509">Очень высокое (медленно!)</string>
@@ -1256,21 +1257,21 @@
   <string id="13602">Разрешить запуск XBMC с ДУ</string>
   <string id="13603">Интервал последовательности</string>
 
-  <string id="13610">Отключено</string>
+  <string id="13610">Откл.</string>
   <string id="13611">Стандартный</string>
-  <string id="13612">Универсальное ДУ</string>
+  <string id="13612">Универсальный пульт ДУ</string>
   <string id="13613">Мульти-ДУ (Harmony)</string>
 
   <string id="13620">Ошибка ДУ Apple</string>
-  <string id="13621">Можно включить поддержку ДУ Apple</string>
+  <string id="13621">Можно включить поддержку ДУ Apple.</string>
 
   <string id="14000">Сгруппировать</string>
   <string id="14001">Разгруппировать</string>
   <string id="14003">Загружается файл плейлиста…</string>
   <string id="14004">Загружается список потоков…</string>
   <string id="14005">Анализ списка потоков…</string>
-  <string id="14006">Ошибка загрузки списка потоков</string>
-  <string id="14007">Ошибка загрузки файла плейлиста</string>
+  <string id="14006">Не удалось загрузить список потоков</string>
+  <string id="14007">Не удалось загрузить файл плейлиста</string>
 
   <string id="14009">Папка с играми</string>
   <string id="14010">Автопереключение вида на эскизы по</string>
@@ -1282,9 +1283,9 @@
   <string id="14016">Хотя бы один файл и эскиз</string>
   <string id="14017">Процентное соотношение эскизов</string>
   <string id="14018">Настройки просмотра</string>
-  <string id="14019">Первая местность</string>
-  <string id="14020">Вторая местность</string>
-  <string id="14021">Третья местность</string>
+  <string id="14019">Местность 1</string>
+  <string id="14020">Местность 2</string>
+  <string id="14021">Местность 3</string>
   <string id="14022">Медиатека</string>
   <string id="14023">Без ТВ</string>
   <string id="14024">Введите ближайший крупный город</string>
@@ -1297,7 +1298,7 @@
   <string id="14032">- из Интернета</string>
   <string id="14034">Кэш DVD - с DVD-диска</string>
   <string id="14035">- Из локальной сети</string>
-  <string id="14036">Серверы</string>
+  <string id="14036">Службы</string>
 
   <string id="14038">Настройки локальной сети изменены.</string>
   <string id="14039">Для изменения настроек сети требуется</string>
@@ -1334,7 +1335,7 @@
   <string id="14070">Применить изменения сейчас</string>
   <string id="14071">Разрешить переименование и удаление файлов</string>
 
-  <string id="14074">Установить часовой пояс</string>
+  <string id="14074">Выбрать часовой пояс</string>
   <string id="14075">Учитывать летнее/зимнее время</string>
   <string id="14076">Добавить в "Избранное"</string>
   <string id="14077">Удалить из "Избранного"</string>
@@ -1342,15 +1343,15 @@
   <string id="14079">Страна в часовом поясе</string>
   <string id="14080">Часовой пояс</string>
   <string id="14081">Списки файлов</string>
-  <string id="14082">Показывать информацию о фото из EXIF</string>
+  <string id="14082">Показывать сведения о фото из EXIF</string>
   <string id="14083">Использовать окно на весь экран вместо полного экрана</string>
   <string id="14084">Добавлять треки в очередь при выборе</string>
   <string id="14085">Воспроизводить аудио-CD автоматически</string>
   <string id="14086">Воспроизведение</string>
   <string id="14087">DVD</string>
   <string id="14088">Воспроизводить DVD автоматически</string>
-  <string id="14089">Шрифт для текстовых субтитров</string>
-  <string id="14090">Языки[CR]и стандарты</string>
+  <string id="14089">Шрифт текстовых субтитров</string>
+  <string id="14090">Язык[CR]и стандарты</string>
   <string id="14091">Кодировка</string>
   <string id="14092">Отладка</string>
   <string id="14093">Безопасность</string>
@@ -1381,15 +1382,15 @@
   <string id="15201">Отправлять статистику на Last.fm</string>
   <string id="15202">Имя пользователя для Last.fm</string>
   <string id="15203">Пароль для Last.fm</string>
-  <string id="15204">Невозможно связаться: ожидание…</string>
+  <string id="15204">Не удалось связаться: ожидание…</string>
   <string id="15205">Обновите XBMC</string>
-  <string id="15206">Неверная авторизация: проверьте имя пользователя и пароль</string>
+  <string id="15206">Ошибка авторизации: проверьте имя пользователя и пароль</string>
   <string id="15207">Подключено</string>
   <string id="15208">Не подключено</string>
   <string id="15209">Интервал подключения %i</string>
-  <string id="15210">В кэше песен: %i</string>
+  <string id="15210">Песен в кэше: %i</string>
   <string id="15211">Подключение…</string>
-  <string id="15212">Подкл через %i с.</string>
+  <string id="15212">Подключение через %i с.</string>
   <string id="15213">Проиграть с помощью…</string>
   <string id="15214">Плавная синхронизация звука и видео</string>
   <string id="15215">Скрывать имена файлов в режиме эскизов</string>
@@ -1427,31 +1428,31 @@
   <string id="15274">Недельный чарт альбомов %name%</string>
   <string id="15275">Недельный чарт треков %name%</string>
   <string id="15276">Слушать выбор сообществ %name% на Last.fm</string>
-  <string id="15277">Слушать личный выбор %name%'а на Last.fm</string>
+  <string id="15277">Слушать личный выбор %name% на Last.fm</string>
   <string id="15278">Слушать любимые треки %name% на Last.fm</string>
   <string id="15279">Получение списка от Last.fm…</string>
-  <string id="15280">Не удалось получить список от Last.fm…</string>
+  <string id="15280">Не удается получить список от Last.fm…</string>
   <string id="15281">Введите имя исполнителя для поиска похожих</string>
   <string id="15282">Введите название тэга для поиска похожих</string>
   <string id="15283">Треки, недавно прослушанные %name%</string>
   <string id="15284">Слушать рекомендации %name% на Last.fm</string>
-  <string id="15285">Топ тэгов для %name%</string>
+  <string id="15285">Топ тэгов пользователя %name%</string>
 
-  <string id="15287">Вы хотите добавить этот трек к своим любимым трекам?</string>
-  <string id="15288">Вы хотите заблокировать этот трек?</string>
-  <string id="15289">Добавлено к вашим любимым трекам: '%s'.</string>
-  <string id="15290">Невозможно добавить '%s' к вашим любимым трекам.</string>
-  <string id="15291">Заблокировано: '%s'.</string>
-  <string id="15292">Не удалось заблокировать.</string>
+  <string id="15287">Добавить этот трек к вашим любимым трекам?</string>
+  <string id="15288">Заблокировать этот трек?</string>
+  <string id="15289">Добавлено к вашим любимым трекам: "%s".</string>
+  <string id="15290">Не удалось добавить "%s" к вашим любимым трекам.</string>
+  <string id="15291">Заблокировано: "%s".</string>
+  <string id="15292">Не удалось заблокировать "%s".</string>
   <string id="15293">Недавно полюбившиеся треки %name%</string>
   <string id="15294">Недавно заблокированные треки %name%</string>
   <string id="15295">Удалить из любимых треков</string>
   <string id="15296">Разблокировать</string>
-  <string id="15297">Вы хотите удалить этот трек из любимых треков?</string>
-  <string id="15298">Вы хотите разблокировать этот трек?</string>
+  <string id="15297">Удалить этот трек из ваших любимых треков?</string>
+  <string id="15298">Разблокировать этот трек?</string>
 
   <string id="15300">Неверный или несуществующий путь</string>
-  <string id="15301">Не удалось подключиться с серверу</string>
+  <string id="15301">Не удалось подключиться к серверу</string>
   <string id="15302">Серверы не найдены</string>
   <string id="15303">Рабочая группа не найдена</string>
 
@@ -1481,16 +1482,16 @@
   <string id="16022">Bob (обратный)</string>
   <string id="16023"></string>
   <string id="16024">Отмена…</string>
-  <string id="16025">Введите название исполнителя</string>
+  <string id="16025">Введите имя исполнителя</string>
   <string id="16026">Проигрывание плейлиста прервано</string>
   <string id="16027">Не удалось проиграть как минимум один файл.</string>
   <string id="16028">Введите значение</string>
-  <string id="16029">Для получения доп. сведений просмотрите журнал</string>
-  <string id="16030">Режим "party" отключен</string>
-  <string id="16031">Нет похожих песен в медиатеке</string>
-  <string id="16032">Не удалось инициализировать базу данных</string>
-  <string id="16033">Не удалось открыть базу данных</string>
-  <string id="16034">Не удалось получить песни из базы данных</string>
+  <string id="16029">Для получения доп. сведений просмотрите журнал.</string>
+  <string id="16030">Режим "party" отключен.</string>
+  <string id="16031">Нет похожих песен в медиатеке.</string>
+  <string id="16032">Не удалось инициализировать базу данных.</string>
+  <string id="16033">Не удалось открыть базу данных.</string>
+  <string id="16034">Не удалось получить песни из базы данных.</string>
   <string id="16035">Плейлист режима "party"</string>
   <string id="16036">Деинтерлейсинг (1 поле)</string>
   <string id="16037">Деинтерлейсинг</string>
@@ -1498,7 +1499,7 @@
   <string id="16039">Выкл.</string>
   <string id="16040">Авто</string>
   <string id="16041">Вкл.</string>
-  
+
   <string id="16100">Все видео</string>
   <string id="16101">Не просмотрено</string>
   <string id="16102">Просмотрено</string>
@@ -1539,10 +1540,10 @@
   <string id="16322">Spline36</string>
   <string id="16323">Оптимизир. Spline36</string>
   <string id="16324">Blend (программный)</string>
-  
+
   <string id="16400">Постобработка</string>
 
-  <string id="17500">Переход экрана в спящий режим через</string>
+  <string id="17500">Переход дисплея в спящий режим через</string>
 
 
   <string id="17997">%i MiByte</string>
@@ -1975,7 +1976,7 @@
   <string id="20011">Музыкальные плейлисты</string>
   <string id="20012">Плейлисты видео</string>
   <string id="20013">Запустить игру?</string>
-  <string id="20014">Сорт. по: плейлисту</string>
+  <string id="20014">Сорт. по плейлисту</string>
   <string id="20015">Внешний эскиз</string>
   <string id="20016">Текущий эскиз</string>
   <string id="20017">Локальный эскиз</string>
@@ -1995,13 +1996,13 @@
   <string id="20038">Заблокировать раздел "Музыка"</string>
   <string id="20039">Заблокировать раздел "Видео"</string>
   <string id="20040">Заблокировать раздел "Фотографии"</string>
-  <string id="20041">Заблокировать раздел "Программы" и "Скрипты"</string>
+  <string id="20041">Заблокировать разделы "Программы" и "Скрипты"</string>
   <string id="20042">Заблокировать "Файл-менеджер"</string>
-  <string id="20043">Заблокировать 'Настройки'</string>
+  <string id="20043">Заблокировать "Настройки"</string>
   <string id="20044">Чистый старт</string>
   <string id="20045">Включить режим полного доступа</string>
   <string id="20046">Выключить режим полного доступа</string>
-  <string id="20047">Создать профиль '%s' ?</string>
+  <string id="20047">Создать профиль "%s"?</string>
   <string id="20048">Запустить с чистыми параметрами</string>
   <string id="20049">Лучший из доступных</string>
   <string id="20050">Автоматический выбор 16:9 или 4:3</string>
@@ -2014,7 +2015,7 @@
   <string id="20057">Удалить эскиз</string>
   <string id="20058">Добавить профиль…</string>
   <string id="20059">Получить сведения обо всех альбомах</string>
-  <string id="20060">Сведения о файле</string>
+  <string id="20060">Информация</string>
   <string id="20061">Разделять</string>
   <string id="20062">Стандартные ресурсы</string>
   <string id="20063">Стандартные ресурсы (только чтение)</string>
@@ -2030,7 +2031,7 @@
   <string id="20073">и указано правильное имя новой папки</string>
   <string id="20074">Рейтинг MPAA</string>
   <string id="20075">Введите код защиты</string>
-  <string id="20076">Спрашивать код защиты при старте</string>
+  <string id="20076">Запрашивать код защиты при старте</string>
   <string id="20077">Настройки обложки</string>
   <string id="20078">- нет связи -</string>
   <string id="20079">Использовать анимацию</string>
@@ -2040,11 +2041,11 @@
   <string id="20083">Показывать сведения о музыке</string>
   <string id="20084">Показывать сведения о погоде</string>
   <string id="20085">Показывать сведения о системе</string>
-  <string id="20086">Показывать свободное место на C: E: F:</string>
-  <string id="20087">Показывать свободное место на E: F: G:</string>
+  <string id="20086">Показывать свободное место на дисках C: E: F:</string>
+  <string id="20087">Показывать свободное место на дисках E: F: G:</string>
   <string id="20088">Погода</string>
   <string id="20089">Свободное место на диске</string>
-  <string id="20090">Введите название существующего ресурса</string>
+  <string id="20090">Введите имя существующего ресурса</string>
   <string id="20091">Код защиты</string>
   <string id="20092">Загрузить профиль</string>
   <string id="20093">Название профиля</string>
@@ -2088,7 +2089,7 @@
   <string id="20132">Перезапустить видео</string>
   <string id="20133">Изменить сетевой ресурс</string>
   <string id="20134">Удалить сетевой ресурс</string>
-  <string id="20135">Просканировать папку?</string>
+  <string id="20135">Сканировать папку?</string>
   <string id="20136">Карта памяти</string>
   <string id="20137">Карта памяти подключена</string>
   <string id="20138">Не удалось подключить карту памяти</string>
@@ -2099,10 +2100,10 @@
   <string id="20143">Введите пароль для</string>
   <string id="20144">Таймер выключения</string>
   <string id="20145">Интервал выключения (мин.)</string>
-  <string id="20146">Запущен, выключение через %im</string>
+  <string id="20146">Запущен, выключение через %i мин.</string>
   <string id="20147">Выключение через 30 мин.</string>
-  <string id="20148">Выключение через 1 ч.</string>
-  <string id="20149">Выключение через 2 ч.</string>
+  <string id="20148">Выключение через 60 мин.</string>
+  <string id="20149">Выключение через 120 мин.</string>
   <string id="20150">Выключение по таймеру</string>
   <string id="20151">Отменить таймер выключения</string>
   <string id="20152">Заблокировать предпочтения для %s</string>
@@ -2127,14 +2128,14 @@
   <string id="20171">Сеть Windows (SMB)</string>
   <string id="20172">XBMSP-сервер</string>
   <string id="20173">FTP-сервер</string>
-  <string id="20174">iTunes (DAAP)</string>
+  <string id="20174">Ресурс iTunes (DAAP)</string>
   <string id="20175">UPnP-сервер</string>
   <string id="20176">Показывать сведения о видео</string>
   <string id="20177">Готово</string>
   <string id="20178">Shift</string>
   <string id="20179">Caps Lock</string>
   <string id="20180">Символы</string>
-  <string id="20181">← Backspace</string>
+  <string id="20181">&#60;- Backspace</string>
   <string id="20182">Пробел</string>
   <string id="20183">Обновить обложку</string>
   <string id="20184">Поворачивать фото по информации из EXIF</string>
@@ -2160,7 +2161,7 @@
   <string id="20252">Наполнение бокалов (видео)</string>
   <string id="20253">WebDAV-сервер (HTTP)</string>
   <string id="20254">WebDAV-сервер (HTTPS)</string>
-  <string id="20255">Первый вход, настройте свой профиль</string>
+  <string id="20255">Первый вход; настройте свой профиль</string>
   <string id="20256">Клиент HTS Tvheadend</string>
   <string id="20257">Клиент VDR Streamdev</string>
   <string id="20258">Клиент MythTV</string>
@@ -2174,21 +2175,21 @@
   <string id="20303">Пропустить и продолжить?</string>
   <string id="20304">RSS-лента</string>
 
-  <string id="20307">Вторичный DNS</string>
+  <string id="20307">Дополнительный DNS</string>
   <string id="20308">Сервер DHCP:</string>
   <string id="20309">Создать новую папку</string>
-  <string id="20310">Пригасить LCD-экран при проигрывании</string>
+  <string id="20310">Затемнять LCD-экран при проигрывании</string>
   <string id="20311">Неизвестный или встроенный (защищенный)</string>
-  <string id="20312">Пригасить LCD-экран при паузе</string>
+  <string id="20312">Затемнять LCD-экран на паузе</string>
 
   <string id="20314">Видео - Медиатека</string>
 
-  <string id="20316">Сорт. по: ID</string>
+  <string id="20316">Сорт. по ID</string>
 
   <string id="20324">Играть часть…</string>
   <string id="20325">Сброс калибровки</string>
   <string id="20326">Это сбросит калибровочные значения для %s</string>
-  <string id="20327">на значения по умолчанию</string>
+  <string id="20327">до значений по умолчанию</string>
   <string id="20328">Укажите назначение</string>
 
   <string id="20330">Использовать имена папок для поиска</string>
@@ -2216,7 +2217,7 @@
   <string id="20352">Сведения о серии</string>
   <string id="20353">Загрузка сведений о сериале…</string>
   <string id="20354">Получение расписания серий…</string>
-  <string id="20355">Загрузка данных о сериях в папке…</string>
+  <string id="20355">Загрузка сведений о сериях в папке…</string>
   <string id="20356">Выберите сериал:</string>
   <string id="20357">Введите название сериала</string>
   <string id="20358">Сезон %i</string>
@@ -2238,13 +2239,13 @@
   <string id="20374">Загрузка сведений о фильме…</string>
   <string id="20375">Не указывать содержимое</string>
   <string id="20376">Оригинальное название</string>
-  <string id="20377">Обновить информацию о сериале</string>
-  <string id="20378">Обновить информацию о всех сериях?</string>
+  <string id="20377">Обновить сведения о сериале</string>
+  <string id="20378">Обновить сведения обо всех сериях?</string>
   <string id="20379">Указанная папка содержит отдельный сериал</string>
   <string id="20380">Не сканировать выбранную папку</string>
   <string id="20381">Дополнения</string>
-  <string id="20382">Автоматически создавать эскизы для сезонов</string>
-  <string id="20383">Указанная папка содержит отдельное видео</string>
+  <string id="20382">Автоматически загружать эскизы для сезонов</string>
+  <string id="20383">Указанная папка содержит отдельный видеофайл</string>
   <string id="20384">Связать с сериалом</string>
   <string id="20385">Убрать связь с сериалом</string>
   <string id="20386">Последние фильмы</string>
@@ -2287,7 +2288,7 @@
   <string id="20422">Всегда</string>
   <string id="20423">Есть трейлер</string>
   <string id="20424">Нет</string>
-  <string id="20425">Слайдшоу фанартов</string>
+  <string id="20425">Слайд-шоу фанартов</string>
   <string id="20426">Экспортировать одним файлом или разделять</string>
   <string id="20427">на отдельные файлы для каждой записи?</string>
   <string id="20428">Одним файлом</string>
@@ -2306,20 +2307,21 @@
   <string id="20441">Внешний фанарт</string>
   <string id="20442">Изменить тип содержимого</string>
   <string id="20443">Обновить сведения для всех</string>
-  <string id="20444">элементов в данной папке?</string>
+  <string id="20444">объектов в данной папке?</string>
   <string id="20445">Фанарт</string>
-  <string id="20446">Найдена локальная информация.</string>
+  <string id="20446">Найдены локальные сведения.</string>
   <string id="20447">Игнорировать и обновить из Интернета?</string>
-  <string id="20448">Не удалось загрузить информацию</string>
-  <string id="20449">Сервер недоступен</string>
+  <string id="20448">Не удалось загрузить сведения</string>
+  <string id="20449">Сервер недоступен.</string>
   <string id="20450">Продолжить сканирование?</string>
   <string id="20451">Страны</string>
   <string id="20452">серия</string>
   <string id="20453">серий</string>
   <string id="20454">Слушатель</string>
-  <string id="20455">Слушатели</string>
+  <string id="20455">Слушателей</string>
   <string id="20456">Выбрать фанарт киноцикла</string>
   <string id="20457">Киноцикл</string>
+  <string id="20458">Объединять фильмы в циклы</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Показывать скрытые файлы и папки</string>
@@ -2327,7 +2329,7 @@
   <string id="21331">Клиент TuxBox</string>
   <string id="21332">ВНИМАНИЕ. Целевое устройство TuxBox находится в режиме записи!</string>
   <string id="21333">Поток будет остановлен!</string>
-  <string id="21334">Переключение каналов: ошибка %s</string>
+  <string id="21334">Не удалось переключиться на канал %s.</string>
   <string id="21335">Включить поток?</string>
   <string id="21336">Подключение к: %s</string>
   <string id="21337">Устройство TuxBox</string>
@@ -2341,7 +2343,7 @@
   <string id="21366">Папка субтитров</string>
   <string id="21367">Папка для фильмов и альтернативных субтитров</string>
   <string id="21368">Игнорировать шрифты субтитров ASS/SSA</string>
-  
+
   <string id="21369">Включить мышь и сенсорный экран</string>
   <string id="21370">Звуки интерфейса во время проигрывания</string>
   <string id="21371">Эскизы</string>
@@ -2362,13 +2364,13 @@
   <string id="21386">Управление уровнем шума</string>
   <string id="21387">Скорость</string>
   <string id="21388">Тишина</string>
-  <string id="21389">Разрешить свои фоновые изображения</string>
+  <string id="21389">Разрешить выбор фоновых изображений</string>
   <string id="21390">Управление питанием</string>
   <string id="21391">Полная мощность</string>
   <string id="21392">Пониженная мощность</string>
   <string id="21393">Полное ожидание</string>
   <string id="21394">Пониженное ожидание</string>
-  <string id="21395">Невозможно кэшировать файлы размером более 4 ГБ</string>
+  <string id="21395">Не удалось кэшировать файлы размером более 4 ГБ</string>
   <string id="21396">Глава</string>
   <string id="21397">Качественные пиксельные шейдеры в. 2</string>
   <string id="21398">Проигрывать плейлист при запуске</string>
@@ -2379,25 +2381,25 @@
   <string id="21403">не</string>
   <string id="21404">начинается с</string>
   <string id="21405">заканчивается на</string>
-  <string id="21406">больше чем</string>
-  <string id="21407">меньше чем</string>
+  <string id="21406">больше, чем</string>
+  <string id="21407">меньше, чем</string>
   <string id="21408">после</string>
   <string id="21409">перед</string>
   <string id="21410">в конце</string>
   <string id="21411">не в конце</string>
   <string id="21412">Инфоресурсы</string>
   <string id="21413">Инфоресурс для фильмов по умолчанию</string>
-  <string id="21414">Стандартный инфоресурс для сериалов</string>
+  <string id="21414">Инфоресурс для сериалов по умолчанию</string>
   <string id="21415">Инфоресурс для клипов по умолчанию</string>
   <string id="21416">Использовать язык инфоресурса при недоступности основного</string>
   <string id="21417">- Настройки</string>
-  <string id="21418">Мультиязычность</string>
+  <string id="21418">Многоязычность</string>
   <string id="21419">Инфоресурсы отсутствуют</string>
   <string id="21420">Значение для поиска</string>
   <string id="21421">Правило смарт-плейлиста</string>
   <string id="21422">Выбрать объекты, в которых</string>
   <string id="21423">Новое правило…</string>
-  <string id="21424">Объекты должны удовлетворять</string>
+  <string id="21424">Объекты должны соответствовать</string>
   <string id="21425">всем правилам</string>
   <string id="21426">одному или более правилам</string>
   <string id="21427">Ограничить до</string>
@@ -2417,16 +2419,18 @@
   <string id="21441">Количество просмотров</string>
   <string id="21442">Название серии</string>
   <string id="21443">Разрешение видео</string>
-  <string id="21444">Каналы аудио</string>
+  <string id="21444">Каналов аудио</string>
   <string id="21445">Кодек видео</string>
   <string id="21446">Кодек аудио</string>
   <string id="21447">Язык аудио</string>
   <string id="21448">Язык субтитров</string>
   <string id="21449">Пульт ДУ посылает коды нажатий клавиш</string>
   <string id="21450">- Изменить</string>
-  <string id="21451">Требуется соединение с Интернетом.</string>
+  <string id="21451">Требуется подключение к Интернету.</string>
   <string id="21452">Еще…</string>
   <string id="21453">Корневая ФС</string>
+  <string id="21454">Кэш заполнен</string>
+  <string id="21455">Объем кэша недостаточен для непрерывного проигрывания</string>
 
   <string id="21460">Расположение субтитров</string>
   <string id="21461">Фиксированное</string>
@@ -2445,7 +2449,7 @@
   <string id="21807">Цвет / Ч-Б</string>
   <string id="21808">Алгоритм JPEG</string>
 
-  <string id="21820">Дата съемки</string>
+  <string id="21820">Дата/время</string>
   <string id="21821">Описание</string>
   <string id="21822">Производитель</string>
   <string id="21823">Модель фотоаппарата</string>
@@ -2518,12 +2522,12 @@
   <string id="22001">Скрывать состояние обновления медиатеки</string>
   <string id="22002">- Суффикс DNS</string>
 
-  <string id="22003">%2.3fс</string>
-  <string id="22004">Задержка на: %2.3fс</string>
-  <string id="22005">Опережение на: %2.3fс</string>
+  <string id="22003">%2.3f с.</string>
+  <string id="22004">Задержка на %2.3f с.</string>
+  <string id="22005">Опережение на %2.3f с.</string>
   <string id="22006">Смещение субтитров</string>
   <string id="22007">Производитель OpenGL:</string>
-  <string id="22008">Рендерер OpenGL:</string>
+  <string id="22008">Обработчик OpenGL:</string>
   <string id="22009">Версия OpenGL:</string>
   <string id="22010">Температура GPU:</string>
   <string id="22011">Температура CPU:</string>
@@ -2566,15 +2570,15 @@
   <string id="23049">Телетекст недоступен</string>
   <string id="23050">Активировать телетекст</string>
   <string id="23051">Часть %i</string>
-  <string id="23052">Буферизация %i байт</string>
+  <string id="23052">Буферизация: %i байт</string>
   <string id="23053">Остановка…</string>
   <string id="23054">Запуск…</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Активирован внешний проигрыватель</string>
-  <string id="23101">Нажмите ОК, чтобы выйти плеера</string>
+  <string id="23101">Нажмите ОК, чтобы закрыть проигрыватель</string>
 
-  <string id="23104">Нажмите ОК когда проигрывание завершится</string>
+  <string id="23104">Нажмите ОК, когда проигрывание завершится</string>
 
   <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Дополнение</string>
@@ -2583,17 +2587,17 @@
   <string id="24003">Сведения о дополнении</string>
 
   <string id="24005">Источники данных</string>
-  <string id="24007">Сведения о фильме</string>
+  <string id="24007">Сведения о фильмах</string>
   <string id="24008">Заставка</string>
   <string id="24009">Скрипт</string>
   <string id="24010">Визуализация</string>
   <string id="24011">Репозиторий дополнений</string>
   <string id="24012">Субтитры</string>
-  <string id="24013">Тексты</string>
-  <string id="24014">Сведения о сериале</string>
-  <string id="24015">Сведения о клипе</string>
-  <string id="24016">Сведения об альбоме</string>
-  <string id="24017">Сведения об исполнителе</string>
+  <string id="24013">Тексты песен</string>
+  <string id="24014">Сведения о сериалах</string>
+  <string id="24015">Сведения о муз. клипах</string>
+  <string id="24016">Сведения об альбомах</string>
+  <string id="24017">Сведения об исполнителях</string>
   <string id="24018">Службы</string>
 
   <string id="24020">Настроить</string>
@@ -2602,7 +2606,7 @@
   <string id="24023">Дополнение отключено</string>
   <string id="24027">Погода</string>
   <string id="24028">Weather.com (стандартно)</string>
-  <string id="24030">Данное дополнение не может быть настроено</string>
+  <string id="24030">Невозможно настроить данное дополнение</string>
   <string id="24031">Ошибка при загрузке настроек</string>
   <string id="24032">Все дополнения</string>
   <string id="24033">Загрузить дополнения</string>
@@ -2614,7 +2618,7 @@
   <string id="24039">Отключенные дополнения</string>
   <string id="24040">(Очистить текущие настройки)</string>
   <string id="24041">Установить из файла ZIP</string>
-  <string id="24042">Загружается %i%%…</string>
+  <string id="24042">Загружается: %i%%…</string>
   <string id="24043">Доступные обновления</string>
   <string id="24044">Отсутствуют нужные компоненты</string>
   <string id="24045">Неправильная структура дополнения</string>
@@ -2627,8 +2631,8 @@
   <string id="24052">Соглашение</string>
   <string id="24053">Лицензия:</string>
   <string id="24054">Список изменений</string>
-  <string id="24059">Включить это Дополнение?</string>
-  <string id="24060">Отключить это Дополнение?</string>
+  <string id="24059">Включить это дополнение?</string>
+  <string id="24060">Отключить это дополнение?</string>
   <string id="24061">Доступны обновления для дополнений.</string>
   <string id="24062">Включенные дополнения</string>
   <string id="24063">Автообновление</string>
@@ -2639,10 +2643,10 @@
   <string id="24068">Доступно обновление</string>
   <string id="24069">Обновить</string>
 
-  <string id="24070">Невозможно загрузить дополнение</string>
+  <string id="24070">Не удалось загрузить дополнение</string>
   <string id="24071">Неизвестная ошибка.</string>
   <string id="24072">Требуется настройка</string>
-  <string id="24073">Невозможно подключиться</string>
+  <string id="24073">Не удалось подключиться</string>
   <string id="24074">Требуется перезапуск</string>
   <string id="24075">Отключить</string>
   <string id="24076">Требуемое дополнение</string>
@@ -2650,8 +2654,8 @@
   <string id="24089">Дополнение перезапускается</string>
   <string id="24090">Заблокировать менеджер дополнений</string>
 
-  <string id="24094">(текущие)</string>
-  <string id="24095">(заблокированные)</string>
+  <string id="24094">(текущ.)</string>
+  <string id="24095">(заблокирован.)</string>
   <string id="24096">Дополнение помечено в репозитории как испорченное.</string>
   <string id="24097">Отключить его в системе?</string>
   <string id="24098">Испорчено</string>
@@ -2663,7 +2667,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Режим медиатеки</string>
   <string id="29801">Клавиатура QWERTY</string>
-  <string id="29802">Прямой вывод аудио</string>
+  <string id="29802">Прямой вывод звука</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings --><!-- strings 31000 thru 31999 reserved for skins --><!-- strings 32000 thru 32999 reserved for scripts --><!-- strings 33000 thru 33999 reserved for common strings used in addons -->
   <string id="33001">Качество трейлера</string>
@@ -2674,22 +2678,22 @@
   <string id="33006">Сегодня</string>
   <string id="33007">Завтра</string>
   <string id="33008">Сохранение…</string>
-  <string id="33009">Копируем</string>
-  <string id="33010">Выбрать путь для загрузки</string>
+  <string id="33009">Копирование…</string>
+  <string id="33010">Выбрать папку для загрузки</string>
   <string id="33011">Длительность поиска</string>
   <string id="33012">Короткая</string>
   <string id="33013">Длинная</string>
   <string id="33014">Использовать проигрыватель DVD вместо обычного</string>
-  <string id="33015">Предлагать скачать видео перед проигрыванием</string>
+  <string id="33015">Предлагать загрузку видео перед проигрыванием</string>
   <string id="33016">Клипы</string>
   <string id="33017">Перезапустите дополнение, чтобы включить его</string>
   <string id="33018">Сегодня вечером</string>
   <string id="33019">Завтра вечером</string>
-  <string id="33020">Условие</string>
+  <string id="33020">Условия</string>
   <string id="33021">Осадки</string>
   <string id="33022">Осадки</string>
   <string id="33023">Влажность</string>
-  <string id="33024">Ощущается как</string>
+  <string id="33024">Ощущается</string>
   <string id="33025">Наблюдается</string>
   <string id="33026">Отклонение от нормы</string>
   <string id="33027">Восход</string>
@@ -2714,8 +2718,8 @@
   <string id="33056">Смотрите</string>
   <string id="33057">Слушайте</string>
   <string id="33058">Просматривайте</string>
-  <string id="33059">Настраивайте</string>
-  <string id="33060">Вкл/выкл</string>
+  <string id="33059">Настройте</string>
+  <string id="33060">Вкл./выкл.</string>
   <string id="33061">Меню</string>
   <string id="33062">Воспроизводите</string>
   <string id="33063">Параметры</string>
@@ -2728,8 +2732,8 @@
   <string id="33071">Свои фоны</string>
   <string id="33072">Просмотреть информацию</string>
   <string id="33073">Просмотреть список изменений</string>
-  <string id="33074">Данная версия %s требует</string>
-  <string id="33075">версию XBMC %s или новее.</string>
+  <string id="33074">Для данной версии %s требуется</string>
+  <string id="33075">версия XBMC %s или новее.</string>
   <string id="33076">Обновите XBMC.</string>
   <string id="33077">Данных не найдено.</string>
   <string id="33078">Следующая страница</string>
@@ -2737,12 +2741,14 @@
   <string id="33080">Не нравится</string>
   <string id="33081">Составной файл; выберите часть для проигрывания.</string>
   <string id="33082">Путь к скрипту</string>
-  <string id="33083">Включить свою кнопку скрипта</string>
+  <string id="33083">Включить кнопку выбранного скрипта</string>
 
   <string id="33100">Не удалось запустить</string>
   <string id="33101">Веб-сервер</string>
   <string id="33102">Сервер событий</string>
   <string id="33103">Сервер удаленного доступа</string>
+
+  <string id="33200">Обнаружено новое подключение</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
@@ -2765,15 +2771,23 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
-  <string id="34201">Следующий файл не найден</string>
-  <string id="34202">Предыдущий файл не найден</string>
+  <string id="34201">Не удается найти следующий файл</string>
+  <string id="34202">Не удается найти предыдущий файл</string>
+
+  <string id="34300">Не удалось запустить zeroconf</string>
+  <string id="34301">Проверьте, установлена ли служба Apple Bonjour. См. журнал.</string>
+
+  <string id="34400">Обработчик видео</string>
+  <string id="34401">Не удалось активировать фильтры видео. Используется масштабирование bilinear.</string>
+  <string id="34402">Не удалось активировать аудиоустройство</string>
+  <string id="34403">Проверьте настройки аудио</string>
 
   <string id="35000">Периферия</string>
 
   <string id="35001">Типовое HID-устройство</string>
   <string id="35002">Типовой сетевой адаптер</string>
   <string id="35003">Типовой диск</string>
-  <string id="35004">Для этой периферии&#10;нет настроек</string>
+  <string id="35004">Для этой периферии&#10;нет настроек.</string>
   <string id="35005">Настроено новое устройство</string>
   <string id="35006">Устройство удалено</string>
   <string id="35007">Раскладка для этого устройства</string>
@@ -2784,7 +2798,7 @@
   <string id="35502">Название</string>
   <string id="35503">Производитель</string>
   <string id="35504">ID продукта</string>
-  
+
   <string id="36000">Адаптер Pulse-Eight CEC</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
   <string id="36002">Включить дополнительные команды клавиатуры</string>
@@ -2796,12 +2810,12 @@
   <string id="36008">Выключать устройства при выходе из XBMC</string>
   <string id="36009">Переводить устройства в спящий режим при активной заставке</string>
   <string id="36010"></string>
-  <string id="36011">Не удалось обнаружить порт CEC. Настройте его вручную</string>
+  <string id="36011">Не удалось обнаружить порт CEC. Настройте его вручную.</string>
   <string id="36012">Не удалось обнаружить адаптер CEC.</string>
   <string id="36013">Неподдерживаемая версия интерфейса libcec. %d выше, чем версия, поддерживаемая XBMC (%d)</string>
-  <string id="36014">Переведите этот ПК в режим ожидания при выключении ТВ</string>
+  <string id="36014">Переводить этот ПК в режим ожидания при выключении ТВ</string>
   <string id="36015">Номер порта HDMI</string>
-  <string id="36016">Подключен</string> <!-- max. 13 characters -->
+  <string id="36016">Подключено</string> <!-- max. 13 characters -->
   <string id="36017">Адаптер найден, но libcec недоступен</string>
   <string id="36018">Использовать языковые настройки ТВ</string>
 </strings>

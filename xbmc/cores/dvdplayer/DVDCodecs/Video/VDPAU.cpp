@@ -413,9 +413,11 @@ int CVDPAU::Check(AVCodecContext* avctx)
     if (!m_DisplayEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
-      return VC_ERROR;
+      state = VDPAU_RESET;
     }
-    { CSharedLock lock(m_DisplaySection);
+    else
+    {
+      CSharedLock lock(m_DisplaySection);
       state = m_DisplayState;
     }
   }
@@ -1628,7 +1630,10 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
     if(m_DisplayState == VDPAU_OPEN)
     {
       if (vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
+      {
+        m_DisplayEvent.Reset();
         m_DisplayState = VDPAU_LOST;
+      }
       else
         m_DisplayState = VDPAU_ERROR;
     }

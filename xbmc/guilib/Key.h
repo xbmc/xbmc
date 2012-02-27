@@ -565,8 +565,8 @@ public:
   bool FromKeyboard() const;
   bool IsAnalogButton() const;
   bool IsIRRemote() const;
-  void SetFromHttpApi(bool);
-  bool GetFromHttpApi() const;
+  void SetFromService(bool fromService);
+  bool GetFromService() const { return m_fromService; }
 
   inline uint32_t GetButtonCode() const { return m_buttonCode; }
   inline uint8_t  GetVKey() const       { return m_vkey; }
@@ -600,7 +600,7 @@ private:
   float m_rightThumbX;
   float m_rightThumbY;
   float m_repeat; // time since last keypress
-  bool m_fromHttpApi;
+  bool m_fromService;
 };
 #endif
 

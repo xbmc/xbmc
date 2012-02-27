@@ -883,7 +883,9 @@
   <string id="10021">Webbrowser</string>
 
   <string id="10028">Videos/Playlisten</string>
+  <string id="10029">Anmeldebildschirm</string>
   <string id="10034">Einstellungen-&gt;Profile</string>
+  <string id="10040">Addon-Browser</string>
 
   <string id="10100">Ja/Nein Dialog</string>
   <string id="10101">Fortschrittsanzeige</string>
@@ -2239,6 +2241,7 @@
   <string id="20326">Dies setzt den Kalibrierwert für %s</string>
   <string id="20327">auf den Standardwert zurück</string>
   <string id="20328">Nach einem Speicherort durchsuchen...</string>
+  <string id="20329">Filme sind in seperaten Ordnern, welche Filmtitel entsprechen</string>
 
   <string id="20330">Ordnernamen für Anfragen verwenden</string>
   <string id="20331">Dateinamen</string>
@@ -2329,7 +2332,7 @@
   <string id="20416">Erstausstrahlung</string>
   <string id="20417">Autor</string>
   <string id="20418"></string>
-  <string id="20419">Metadaten im Datei-Modus anzeigen</string>
+  <string id="20419">Ersetze Dateinamen durch Datenbankeinträge</string>
 
   <string id="20420">Nie</string>
   <string id="20421">Nur bei einer Staffel</string>
@@ -2368,6 +2371,7 @@
 
   <string id="20456">Filmset Fanart setzen</string>
   <string id="20457">Zusammenstellung</string>
+  <string id="20458">Gruppiere Filme nach Zusammenstellungen</string>
 
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>

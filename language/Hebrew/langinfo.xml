@@ -12,13 +12,22 @@
   </dvd>
 
   <regions>
-    <region locale="IL">
+    <region name="ISRAEL (12h)" locale="IL">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD DD MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">hh:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+
+    <region name="ISRAEL (24h)" locale="US">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD DD MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
+
   </regions>
 </language>
 

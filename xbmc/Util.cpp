@@ -1610,7 +1610,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       return GetMatchingSource(strPath, VECSOURCES, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
+    CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource: no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
@@ -1672,11 +1672,13 @@ CStdString CUtil::VideoPlaylistsLocation()
 void CUtil::DeleteMusicDatabaseDirectoryCache()
 {
   CUtil::DeleteDirectoryCache("mdb-");
+  CUtil::DeleteDirectoryCache("sp-"); // overkill as it will delete video smartplaylists, but as we can't differentiate based on URL...
 }
 
 void CUtil::DeleteVideoDatabaseDirectoryCache()
 {
   CUtil::DeleteDirectoryCache("vdb-");
+  CUtil::DeleteDirectoryCache("sp-"); // overkill as it will delete music smartplaylists, but as we can't differentiate based on URL...
 }
 
 void CUtil::DeleteDirectoryCache(const CStdString &prefix)
@@ -2209,7 +2211,7 @@ CStdString CUtil::ResolveExecutablePath()
   CStdString strExecutablePath;
 #ifdef WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
 #elif defined(__APPLE__)

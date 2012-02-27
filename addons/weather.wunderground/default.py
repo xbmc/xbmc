@@ -28,8 +28,10 @@ from utilities import *
 
 LOCATION_URL    = 'http://autocomplete.wunderground.com/aq?query=%s&format=JSON'
 WEATHER_URL     = 'http://api.wunderground.com/api/%s/conditions/forecast7day/hourly%s.json'
+GEOIP_URL       = 'http://api.wunderground.com/api/%s/geolookup/q/autoip.json'
 A_I_K           = 'NDEzNjBkMjFkZjFhMzczNg=='
 WEATHER_WINDOW  = xbmcgui.Window(12600)
+MAXDAYS         = 6
 
 socket.setdefaulttimeout(10)
 
@@ -82,6 +84,16 @@ def location(string):
         locid.append(locationid)
     return loc, locid
 
+def geoip():
+    data = fetch(GEOIP_URL % aik[::-1])
+    if data != '' and data.has_key('location'):
+        location = data['location']['l']
+        __addon__.setSetting('Location1', data['location']['city'])
+        __addon__.setSetting('Location1id', location)
+    else:
+        location = ''
+    return location
+
 def forecast(city):
     data = fetch(WEATHER_URL % (aik[::-1], city))
     if data != '':
@@ -108,7 +120,7 @@ def properties(query):
         set_property('Day%i.Outlook'     % count, item['conditions'])
         set_property('Day%i.OutlookIcon' % count, '%s.png' % weathercode)
         set_property('Day%i.FanartCode'  % count, weathercode)
-        if count == 3:
+        if count == MAXDAYS:
             break
 
 if sys.argv[1].startswith('Location'):
@@ -129,9 +141,12 @@ if sys.argv[1].startswith('Location'):
 else:
     location = __addon__.getSetting('Location%sid' % sys.argv[1])
     aik = base64.b64decode(A_I_K)
+    if (location == '') and (sys.argv[1] != '1'):
+        location = __addon__.getSetting('Location1id')
+    if location == '':
+        location = geoip()
     if not location == '':
         forecast(location)
-        refresh_locations()
     else:
         # workaround to fix incrementing values on each weather refresh when no locations are set up:
         set_property('Current.Condition'     , 'N/A')
@@ -144,14 +159,13 @@ else:
         set_property('Current.DewPoint'      , '0')
         set_property('Current.OutlookIcon'   , 'na.png')
         set_property('Current.FanartCode'    , 'na')
-        for count in range (0, 3):
+        for count in range (0, MAXDAYS):
             set_property('Day%i.Title'       % count, 'N/A')
             set_property('Day%i.HighTemp'    % count, '0')
             set_property('Day%i.LowTemp'     % count, '0')
             set_property('Day%i.Outlook'     % count, 'N/A')
             set_property('Day%i.OutlookIcon' % count, 'na.png')
             set_property('Day%i.FanartCode'  % count, 'na')
-        # workaround to stop xbmc from running the script in a loop when no locations are set up:
-        set_property('Locations', '1')
 
+refresh_locations()
 set_property('WeatherProvider', 'Weather Underground')

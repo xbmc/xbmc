@@ -270,17 +270,20 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           else
             AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
 
-          AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-          AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
           AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
         }
+        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+        AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
         AddSortMethod(SORT_METHOD_VIDEO_RUNTIME,2050, LABEL_MASKS("%T", "%D"));
         AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%R"));
 
         if (g_settings.GetWatchMode(items.GetContent()) == VIDEO_SHOW_ALL)
           AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T", "%V"));
 
-        SetSortMethod(g_settings.m_viewStateVideoNavTitles.m_sortMethod);
+        if (params.GetSetId() > -1)
+          SetSortMethod(SORT_METHOD_YEAR);
+        else
+          SetSortMethod(g_settings.m_viewStateVideoNavTitles.m_sortMethod);
 
         SetViewAsControl(g_settings.m_viewStateVideoNavTitles.m_viewMode);
 
@@ -366,6 +369,8 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   if (m_items.IsVideoDb())
   {
     NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.GetPath());
+    CQueryParams params;
+    CVideoDatabaseDirectory::GetQueryParams(m_items.GetPath(),params);
     switch (NodeType)
     {
     case NODE_TYPE_ACTOR:
@@ -378,7 +383,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavGenres);
       break;
     case NODE_TYPE_TITLE_MOVIES:
-      SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavTitles);
+      SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, params.GetSetId() > -1 ? NULL : &g_settings.m_viewStateVideoNavTitles);
       break;
     case NODE_TYPE_EPISODES:
       SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavEpisodes);

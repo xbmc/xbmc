@@ -23,6 +23,7 @@
 #define XBPYTHREAD_H_
 
 #include "threads/Thread.h"
+#include "threads/Event.h"
 #include "addons/IAddon.h"
 
 class XBPython;
@@ -42,6 +43,7 @@ public:
 
 protected:
   XBPython *m_pExecuter;
+  CEvent stoppedEvent;
   void *m_threadState;
 
   char m_type;

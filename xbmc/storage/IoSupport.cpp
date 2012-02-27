@@ -494,7 +494,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
 
 #if WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   CStdString strPath;
   g_charsetConverter.wToUTF8(strPathW,strPath);

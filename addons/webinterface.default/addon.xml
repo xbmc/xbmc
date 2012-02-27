@@ -6,7 +6,7 @@
   provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.gui" version="3.00"/>
-    <import addon="xbmc.json" version="2.00"/>
+    <import addon="xbmc.json" version="4.00"/>
   </requires>
   <extension
     point="xbmc.gui.webinterface"/>

@@ -20,13 +20,14 @@
  *
  */
 #include "storage/IStorageProvider.h"
+#include "utils/Job.h"
 
 class CWin32StorageProvider : public IStorageProvider
 {
 public:
   virtual ~CWin32StorageProvider() { }
 
-  virtual void Initialize() { }
+  virtual void Initialize();
   virtual void Stop() { }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
@@ -41,3 +42,15 @@ public:
   static void SetEvent() { event = true; }
   static bool event;
 };
+
+class CDetectDisc : public CJob
+{
+public:
+  CDetectDisc(const CStdString &strPath, const bool bautorun);
+  bool DoWork();
+
+private:
+  CStdString  m_strPath;
+  bool        m_bautorun;
+};
+
