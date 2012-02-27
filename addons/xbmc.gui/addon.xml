@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="xbmc.gui" version="3.00" provider-name="Team XBMC">
-  <backwards-compatibility abi="2.1"/>
   <requires>
     <import addon="xbmc.core" version="0.1"/>
   </requires>

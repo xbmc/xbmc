@@ -149,7 +149,25 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
   
   return (ret == noErr);
 }
-                   
+
+bool CCoreAudioChannelLayout::SetLayout(AudioChannelLayoutTag layoutTag)
+{
+  UInt32 propSize = 0;
+  AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag, sizeof(layoutTag), &layoutTag, &propSize);
+  m_pLayout = (AudioChannelLayout*)malloc(propSize);
+  OSStatus ret = AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutForTag, sizeof(layoutTag), &layoutTag, &propSize, m_pLayout);
+  m_pLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
+  return (ret == noErr);  
+}
+
+AudioChannelLabel CCoreAudioChannelLayout::GetChannelLabel(UInt32 index)
+{
+  if (!m_pLayout || (index >= m_pLayout->mNumberChannelDescriptions))
+    return kAudioChannelLabel_Unknown;
+  
+  return m_pLayout->mChannelDescriptions[index].mChannelLabel;
+}
+
 UInt32 CCoreAudioChannelLayout::GetChannelCountForLayout(AudioChannelLayout& layout)
 {
     UInt32 channels = 0;
@@ -169,6 +187,13 @@ UInt32 CCoreAudioChannelLayout::GetChannelCountForLayout(AudioChannelLayout& lay
       channels = AudioChannelLayoutTag_GetNumberOfChannels(layout.mChannelLayoutTag);
     
     return channels;
+}
+
+UInt32 CCoreAudioChannelLayout::GetChannelCount()
+{
+  if (m_pLayout)
+    return GetChannelCountForLayout(*m_pLayout);
+  return 0;
 }
 
 const char* CCoreAudioChannelLayout::ChannelLabelToString(UInt32 label)
@@ -500,6 +525,13 @@ const char* CCoreAudioDevice::GetName(CStdString& name)
   }
   return name.c_str();
 }
+
+const char* CCoreAudioDevice::GetName()
+{
+  // Use internal storage
+  return GetName(m_Name);
+}
+
 
 UInt32 CCoreAudioDevice::GetTotalOutputChannels()
 {

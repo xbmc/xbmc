@@ -76,6 +76,9 @@ public:
   virtual ~CCoreAudioChannelLayout();
   operator AudioChannelLayout*() {return m_pLayout;}
   bool CopyLayout(AudioChannelLayout& layout);
+  bool SetLayout(AudioChannelLayoutTag layoutTag);
+  UInt32 GetChannelCount();
+  AudioChannelLabel GetChannelLabel(UInt32 index);
   static UInt32 GetChannelCountForLayout(AudioChannelLayout& layout);
   static const char* ChannelLabelToString(UInt32 label);
   static const char* ChannelLayoutToString(AudioChannelLayout& layout, CStdString& str);
@@ -100,6 +103,7 @@ public:
   
   AudioDeviceID GetId() {return m_DeviceId;}
   const char* GetName(CStdString& name);
+  const char* GetName();
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool IsRunning();
@@ -122,6 +126,7 @@ protected:
   AudioDeviceIOProc m_IoProc;
   Float64 m_SampleRateRestore;
   UInt32 m_BufferSizeRestore;
+  CStdString m_Name;
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
