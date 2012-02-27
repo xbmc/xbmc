@@ -176,17 +176,22 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 
 void CPVRRecording::UpdatePath(void)
 {
-  CStdString strTitle = m_strTitle;
-  CStdString strDatetime = m_recordingTime.GetAsSaveString();
-  strTitle.Replace('/','-');
-  strTitle.Remove('?');
-
-  if (m_strDirectory != StringUtils::EmptyString)
-    m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr",
-        m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
+  if (!m_strStreamURL.IsEmpty())
+  {
+    m_strFileNameAndPath = m_strStreamURL;
+  }
   else
-    m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr",
-        strDatetime.c_str(), strTitle.c_str());
+  {
+    CStdString strTitle(m_strTitle);
+    CStdString strDatetime(m_recordingTime.GetAsSaveString());
+    strTitle.Replace('/','-');
+    strTitle.Remove('?');
+
+    if (m_strDirectory != StringUtils::EmptyString)
+      m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr", m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
+    else
+      m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr", strDatetime.c_str(), strTitle.c_str());
+  }
 }
 
 const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
