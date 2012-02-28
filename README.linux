@@ -39,7 +39,7 @@ that are used to build XBMC packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
 Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
- autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
+ autotools-dev, autoconf, automake, autopoint, unzip, libboost-dev, zip, libtool,
  libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libglew-dev,
  libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev,
  libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
