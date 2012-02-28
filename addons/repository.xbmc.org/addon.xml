@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.0.1"
+		version="2.0.3"
 		provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.addon" version="11.0"/>
+  </requires>
 	<extension point="xbmc.addon.repository"
 		name="Official XBMC.org Add-on Repository">
-		<info compressed="true">http://mirrors.xbmc.org/addons/eden-pre/addons.xml</info>
-		<checksum>http://mirrors.xbmc.org/addons/eden-pre/addons.xml.md5</checksum>
-		<datadir zip="true">http://mirrors.xbmc.org/addons/eden-pre</datadir>
+		<info compressed="true">http://mirrors.xbmc.org/addons/eden/addons.xml</info>
+		<checksum>http://mirrors.xbmc.org/addons/eden/addons.xml.md5</checksum>
+		<datadir zip="true">http://mirrors.xbmc.org/addons/eden</datadir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
