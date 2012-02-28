@@ -327,8 +327,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
           pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);
           db.Close();
         }
-        if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
-          pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
+        pItem->GetVideoInfoTag()->m_type = "season";
       }
       break;
     default:

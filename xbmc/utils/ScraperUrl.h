@@ -23,6 +23,7 @@
  */
 
 #include <vector>
+#include <map>
 #include "StdString.h"
 
 class TiXmlElement;
@@ -60,6 +61,7 @@ public:
 
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
+  void GetSeasonThumbs(std::map<int, std::string> &thumbs) const;
 
   /*! \brief fetch the full URL (including referrer) of a thumb
    \param URL entry to use to create the full URL

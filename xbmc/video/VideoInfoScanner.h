@@ -135,6 +135,14 @@ namespace VIDEO
      */
     void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true);
 
+    /*! \brief Get season thumbs for a tvshow.
+     All seasons (regardless of whether the user has episodes) are added to the art map.
+     \param show     tvshow info tag
+     \param art      artwork map to which season thumbs are added.
+     \param useLocal whether to use local thumbs, defaults to true
+     */
+    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::string> &art, bool useLocal = true);
+
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);

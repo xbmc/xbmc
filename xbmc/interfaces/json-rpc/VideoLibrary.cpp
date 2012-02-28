@@ -401,12 +401,15 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
+  std::map<int, std::string> seasonArt;
+  videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
+
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos);
 
-  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
+  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
       videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);

@@ -473,8 +473,6 @@ namespace VIDEO
       long lResult = AddVideo(pItem.get(), info2->Content(), bDirNames, useLocal);
       if (lResult < 0)
         return INFO_ERROR;
-      if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-        FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
       {
         INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
@@ -506,9 +504,6 @@ namespace VIDEO
       if (ret == INFO_ADDED)
         m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     }
-    else
-      if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-        FetchSeasonThumbs(lResult);
     return INFO_ADDED;
   }
 
@@ -1064,7 +1059,10 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, pItem->GetArt());
+        // get season thumbs
+        map<int, string> seasonArt;
+        GetSeasonThumbs(movieDetails, seasonArt);
+        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, pItem->GetArt(), seasonArt);
         movieDetails.m_iDbId = lResult;
       }
       else
@@ -1373,8 +1371,6 @@ namespace VIDEO
                   file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }
-    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-      FetchSeasonThumbs(idShow);
     return INFO_ADDED;
   }
 
@@ -1576,6 +1572,39 @@ namespace VIDEO
     return "";
   }
 
+  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show, map<int, string> &art, bool useLocal)
+  {
+    show.m_strPictureURL.GetSeasonThumbs(art);
+    // override with any local thumbs
+    if (useLocal)
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(show.m_strPath, items, ".tbn");
+      // run through all these items and see which ones match
+      CRegExp reg;
+      if (items.Size() && reg.RegComp("season[ ._-]?([0-9]+)\\.tbn"))
+      {
+        for (int i = 0; i < items.Size(); i++)
+        {
+          CStdString name = URIUtils::GetFileName(items[i]->GetPath());
+          name.ToLower();
+          if (name == "season-all.tbn")
+            art.insert(make_pair(-1, items[i]->GetPath()));
+          else if (name == "season-specials.tbn")
+            art.insert(make_pair(0, items[i]->GetPath()));
+          else if (reg.RegFind(name) > -1)
+          {
+            int season = atoi(reg.GetReplaceString("\\1"));
+            art.insert(make_pair(season, items[i]->GetPath()));
+          }
+        }
+      }
+    }
+    // cache them
+    for (map<int, string>::iterator i = art.begin(); i != art.end(); ++i)
+      CTextureCache::Get().BackgroundCacheImage(i->second);
+  }
+  
   void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck, bool download, bool overwrite)
   {
     // ensure our database is open (this can get called via other classes)
