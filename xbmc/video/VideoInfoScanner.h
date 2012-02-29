@@ -117,16 +117,6 @@ namespace VIDEO
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
 
-    /*! \brief Fetch thumbs for seasons for a given show
-     Fetches and caches local season thumbs of the form season##.tbn and season-all.tbn for the current show,
-     and downloads online thumbs if they don't exist.
-     \param idTvShow database id of the tvshow.
-     \param folderToCheck folder to check for local thumbs, if other than the show folder.  Defaults to empty.
-     \param download whether we should download thumbs that don't exist.  Defaults to true.
-     \param overwrite whether to overwrite currently cached thumbs.  Defaults to false.
-     */
-    void FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck = "", bool download = true, bool overwrite = false);
-
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to find artwork for.
      \param content content type of the item.

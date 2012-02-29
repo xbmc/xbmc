@@ -1604,66 +1604,6 @@ namespace VIDEO
     for (map<int, string>::iterator i = art.begin(); i != art.end(); ++i)
       CTextureCache::Get().BackgroundCacheImage(i->second);
   }
-  
-  void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck, bool download, bool overwrite)
-  {
-    // ensure our database is open (this can get called via other classes)
-    if (!m_database.Open())
-      return;
-
-    CVideoInfoTag movie;
-    m_database.GetTvShowInfo("", movie, idTvShow);
-    CStdString showDir(folderToCheck.IsEmpty() ? movie.m_strPath : folderToCheck);
-    CFileItemList items;
-    CStdString strPath;
-    strPath.Format("videodb://2/2/%i/", idTvShow);
-    m_database.GetSeasonsNav(strPath, items, -1, -1, -1, -1, idTvShow);
-    CFileItemPtr pItem;
-    pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
-    CStdString path; path.Format("%s/-1/", strPath.c_str());
-    pItem->SetPath(path);
-    pItem->GetVideoInfoTag()->m_iSeason = -1;
-    pItem->GetVideoInfoTag()->m_strPath = movie.m_strPath;
-    if (overwrite || !XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
-      items.Add(pItem);
-
-    // used for checking for a season[ ._-](number).tbn
-    CFileItemList tbnItems;
-    CDirectory::GetDirectory(showDir, tbnItems, ".tbn");
-    for (int i=0;i<items.Size();++i)
-    {
-      if (overwrite || !items[i]->HasThumbnail())
-      {
-        CStdString strExpression;
-        int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
-        if (iSeason == -1)
-          strExpression = "season-all.tbn";
-        else if (iSeason == 0)
-          strExpression = "season-specials.tbn";
-        else
-          strExpression.Format("season[ ._-]?(0?%i)\\.tbn", items[i]->GetVideoInfoTag()->m_iSeason);
-        bool bDownload = download;
-        CRegExp reg;
-        if (reg.RegComp(strExpression.c_str()))
-        {
-          for (int j=0;j<tbnItems.Size();++j)
-          {
-            CStdString strCheck = URIUtils::GetFileName(tbnItems[j]->GetPath());
-            strCheck.ToLower();
-            if (reg.RegFind(strCheck.c_str()) > -1)
-            {
-              CPicture::CreateThumbnail(tbnItems[j]->GetPath(), items[i]->GetCachedSeasonThumb());
-              bDownload=false;
-              break;
-            }
-          }
-        }
-        if (bDownload)
-          DownloadImage(CScraperUrl::GetThumbURL(movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason)), items[i]->GetCachedSeasonThumb());
-      }
-    }
-    m_database.Close();
-  }
 
   void CVideoInfoScanner::FetchActorThumbs(vector<SActorInfo>& actors, const CStdString& strPath)
   {
