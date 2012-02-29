@@ -412,12 +412,12 @@ namespace VIDEO
 
     if (content == CONTENT_TVSHOWS && ! seenPaths.empty())
     {
-      vector<int> libPaths;
+      vector< pair<int,string> > libPaths;
       m_database.GetSubPaths(items.GetPath(), libPaths);
-      for (vector<int>::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
+      for (vector< pair<int,string> >::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
       {
-        if (find(seenPaths.begin(), seenPaths.end(), *i) == seenPaths.end())
-          m_pathsToClean.insert(*i);
+        if (find(seenPaths.begin(), seenPaths.end(), i->first) == seenPaths.end())
+          m_pathsToClean.insert(i->first);
       }
     }
     if(pDlgProgress)
