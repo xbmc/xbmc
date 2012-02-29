@@ -91,6 +91,7 @@ void CVideoInfoTag::Reset()
   m_iIdShow = -1;
   m_strShowPath.clear();
   m_dateAdded.Reset();
+  m_type.clear();
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -323,6 +324,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iIdShow;
     ar << m_strShowPath;
     ar << m_dateAdded.GetAsDBDateTime();
+    ar << m_type;
   }
   else
   {
@@ -399,6 +401,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     CStdString dateAdded;
     ar >> dateAdded;
     m_dateAdded.SetFromDBDateTime(dateAdded);
+    ar >> m_type;
   }
 }
 
@@ -468,6 +471,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["tvshowid"] = m_iIdShow;
   value["tvshowpath"] = m_strShowPath;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["type"] = m_type;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const

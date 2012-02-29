@@ -130,6 +130,7 @@ public:
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
+  CStdString m_type;
 
 private:
   /* \brief Parse our native XML format for video info.
