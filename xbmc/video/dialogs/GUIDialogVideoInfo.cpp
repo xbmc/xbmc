@@ -410,17 +410,17 @@ void CGUIDialogVideoInfo::Refresh()
     bool hasUpdatedThumb = false;
     CStdString thumbImage = m_movieItem->GetThumbnailImage();
     if (thumbImage.IsEmpty())
-      thumbImage = m_movieItem->GetCachedVideoThumb();
+      thumbImage = CThumbLoader::GetCachedImage(*m_movieItem, "thumb");
 
-    if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
+    if (thumbImage.IsEmpty() || m_movieItem->GetProperty("HasAutoThumb") == "1")
     { // don't have a thumb already, try and grab one
-      m_movieItem->SetUserVideoThumb();
-      if (m_movieItem->GetThumbnailImage() != thumbImage)
-        thumbImage = m_movieItem->GetThumbnailImage();
-      if (!CFile::Exists(thumbImage) && strImage.size() > 0)
-        CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
+      CStdString localThumb = m_movieItem->GetUserVideoThumb();
+      if (!localThumb.IsEmpty())
+        thumbImage = localThumb;
+      if (thumbImage.IsEmpty() && strImage.size() > 0)
+        thumbImage = CScraperUrl::GetThumbURL(m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
 
-      if (CFile::Exists(thumbImage))
+      if (!thumbImage.IsEmpty())
       {
         if (m_movieItem->HasProperty("set_folder_thumb"))
           VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), thumbImage);
@@ -679,38 +679,31 @@ void CGUIDialogVideoInfo::OnGetThumb()
   if (result == "thumb://Current")
     return;   // user chose the one they have
 
+  CStdString newThumb;
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedVideoThumb());
-  if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
-    cachedThumb = item.GetCachedEpisodeThumb();
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
 
   if (result.Left(14) == "thumb://Remote")
   {
     int number = atoi(result.Mid(14));
-    CFile::Cache(thumbs[number], cachedThumb);
+    newThumb = thumbs[number];
   }
   else if (result == "thumb://Local")
-    CFile::Cache(localThumb, cachedThumb);
+    newThumb = localThumb;
   else if (CFile::Exists(result))
-    CPicture::CreateThumbnail(result, cachedThumb);
-  else
-    result = "thumb://None";
+    newThumb = result;
+  else // none
+    newThumb = "-"; // force local thumbs to be ignored
 
-  if (result == "thumb://None")
-  {
-    CFile::Delete(m_movieItem->GetCachedVideoThumb());
-    CFile::Delete(m_movieItem->GetCachedEpisodeThumb());
-    cachedThumb.Empty();
-  }
+  // update any cached texture
+  CThumbLoader::SetCachedImage(item, "thumb", newThumb);
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  m_movieItem->SetThumbnailImage(cachedThumb);
+  m_movieItem->SetThumbnailImage(newThumb);
   if (m_movieItem->HasProperty("set_folder_thumb"))
   { // have a folder thumb to set as well
-    VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), cachedThumb);
+    VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
   }
   m_hasUpdatedThumb = true;
 

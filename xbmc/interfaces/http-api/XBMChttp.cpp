@@ -52,6 +52,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "ThumbnailCache.h"
+#include "ThumbLoader.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -1255,11 +1256,11 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
           cast += character;
         }*/
         output += closeTag+openTag+"Cast:" + cast;
-        item->SetVideoThumb();
-        if (!item->HasThumbnail())
+        thumb = CVideoThumbLoader::GetLocalThumb(*item);
+        if (thumb.IsEmpty())
           thumb = "[None]";
         else
-          thumb = item->GetCachedVideoThumb();
+          thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
         output += closeTag+openTag+"Thumb:" + thumb;
         m_database.Close();
         delete item;

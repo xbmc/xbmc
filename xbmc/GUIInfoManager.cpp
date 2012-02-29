@@ -3579,12 +3579,16 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
 
   // Find a thumb for this file.
-  item.SetVideoThumb();
   if (!item.HasThumbnail())
   {
-    CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(item);
-    if (!CTextureCache::Get().GetCachedImage(thumbURL).IsEmpty())
-      item.SetThumbnailImage(thumbURL);
+    CStdString thumb = CVideoThumbLoader::GetLocalThumb(item);
+    if (thumb.IsEmpty())
+    {
+      CStdString thumb = CVideoThumbLoader::GetEmbeddedThumbURL(item);
+      if (CTextureCache::Get().GetCachedImage(thumb).IsEmpty())
+        thumb.clear();
+    }
+    item.SetThumbnailImage(thumb);
   }
 
   // find a thumb for this stream
@@ -3602,9 +3606,9 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem thumbItem(g_application.m_strPlayListFile,false);
-      thumbItem.SetVideoThumb();
-      if (thumbItem.HasThumbnail())
-        item.SetThumbnailImage(thumbItem.GetThumbnailImage());
+      CStdString thumb = CVideoThumbLoader::GetLocalThumb(thumbItem);
+      if (!thumb.IsEmpty())
+        item.SetThumbnailImage(thumb);
     }
   }
 

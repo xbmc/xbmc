@@ -1763,22 +1763,6 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
-  if (!items.GetPath().Equals("plugin://video/"))
-    items.SetCachedVideoThumbs();
-
-  if (items.GetContent() != "episodes")
-  { // we don't set cached fanart for episodes, as this requires a db fetch per episode
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CFileItemPtr item = items[i];
-      if (!item->HasProperty("fanart_image"))
-      {
-        CStdString art = item->GetCachedFanart();
-        if (CFile::Exists(art))
-          item->SetProperty("fanart_image", art);
-      }
-    }
-  }
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
