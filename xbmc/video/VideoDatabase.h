@@ -320,6 +320,13 @@ public:
     int numWatched;
   };
 
+  class CSetInfo
+  {
+  public:
+    CStdString name;
+    int playcount;
+  };
+
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
