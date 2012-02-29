@@ -322,50 +322,18 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         // save the show description (showplot)
         items.SetProperty("showplot", details.m_strPlot);
 
-        // set the season thumb
-        CStdString strLabel;
-        if (params.GetSeason() == 0)
-          strLabel = g_localizeStrings.Get(20381);
-        else
-          strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
-
-        CFileItem item(strLabel);
-        item.SetPath(URIUtils::GetParentPath(items.GetPath()));
-        item.m_bIsFolder = true;
-        item.SetCachedSeasonThumb();
-        if (item.HasThumbnail())
-          items.SetProperty("seasonthumb",item.GetThumbnailImage());
-
         // the container folder thumb is the parent (i.e. season or show)
         if (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES)
         {
           items.SetContent("episodes");
           // grab the season thumb as the folder thumb
-          CStdString strLabel;
-          CStdString strPath;
-          if (params.GetSeason() <= -1 && items.Size() > 0)
+          int seasonID = m_database.GetSeasonId(details.m_iDbId, params.GetSeason());
+          string seasonThumb = m_database.GetArtForItem(seasonID, "season", "thumb");
+          if (!seasonThumb.empty())
           {
-            CQueryParams params2;
-            dir.GetQueryParams(items[0]->GetPath(),params2);
-            strLabel.Format(g_localizeStrings.Get(20358), params2.GetSeason());
-            strPath = URIUtils::GetParentPath(items.GetPath());
+            items.SetProperty("seasonthumb",seasonThumb);
+            items.SetThumbnailImage(seasonThumb);
           }
-          else
-          {
-            if (params.GetSeason() == 0)
-              strLabel = g_localizeStrings.Get(20381);
-            else
-              strLabel.Format(g_localizeStrings.Get(20358), params.GetSeason());
-            strPath = items.GetPath();
-          }
-
-          CFileItem item(strPath, true);
-          item.SetLabel(strLabel);
-          item.GetVideoInfoTag()->m_strPath = showItem.GetPath();
-          item.SetCachedSeasonThumb();
-
-          items.SetThumbnailImage(item.GetThumbnailImage());
-          items.SetProperty("seasonthumb",item.GetThumbnailImage());
         }
         else
         {
@@ -1125,9 +1093,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       XFILE::CDirectory::Create(strPath);
       CFileItemPtr noneitem(new CFileItem("thumb://None", false));
       CStdString cachedThumb;
-      if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
-      else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
       else
         cachedThumb = m_database.GetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb");
@@ -1247,7 +1213,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       else if (result == "thumb://None")
         result.clear();
       if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB ||
-          button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
+          button == CONTEXT_BUTTON_SET_ACTOR_THUMB ||
+          button == CONTEXT_BUTTON_SET_SEASON_THUMB)
         m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb", result);
       else
       {

@@ -281,20 +281,19 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       // retrieve the season thumb.
-      // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
-      //       rather than bothering with show path and the localized strings involved?
+      // TODO: should we use the thumbloader for this?
       if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
       {
-        CStdString label;
-        if (m_movieItem->GetVideoInfoTag()->m_iSeason == 0)
-          label = g_localizeStrings.Get(20381);
-        else
-          label.Format(g_localizeStrings.Get(20358), m_movieItem->GetVideoInfoTag()->m_iSeason);
-        CFileItem season(label);
-        season.m_bIsFolder = true;
-        season.GetVideoInfoTag()->m_strPath = item->GetVideoInfoTag()->m_strShowPath;
-        if (CFile::Exists(season.GetCachedSeasonThumb()))
-          m_movieItem->SetProperty("seasonthumb", season.GetCachedSeasonThumb());
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          int seasonID = db.GetSeasonId(m_movieItem->GetVideoInfoTag()->m_iIdShow,
+                                        m_movieItem->GetVideoInfoTag()->m_iSeason);
+          string thumb = db.GetArtForItem(seasonID, "season", "thumb");
+          if (!thumb.empty())
+            m_movieItem->SetProperty("seasonthumb", thumb);
+          db.Close();
+        }
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)
