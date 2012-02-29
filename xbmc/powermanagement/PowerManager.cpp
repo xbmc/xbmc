@@ -193,6 +193,7 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
+  g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
