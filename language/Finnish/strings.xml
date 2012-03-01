@@ -1011,6 +1011,8 @@
   <string id="13014">Pienennä</string>
   <string id="13015">Virtakytkimen toiminto</string>
   <string id="13016">Sammuta järjestelmä</string>
+  <string id="13017">Estä sammuttaminen toimettomana</string>
+  <string id="13018">Salli sammuttaminen toimettomana</string>
 
   <string id="13020">Onko toinen istunto käynnissä, ehkä ssh:n kautta?</string>
   <string id="13021">Liitetty siirrettävä kiintolevy</string>
@@ -1541,6 +1543,7 @@
   <string id="16322">Spline36</string>
   <string id="16323">Spline36 optimoitu</string>
   <string id="16324">Ohjelmistopohjainen sekoitus</string>
+  <string id="16325">Automaattinen - ION optimoitu</string>
 
   <string id="16400">Videon jälkikäsittely</string>
 
@@ -1793,6 +1796,13 @@
   <string id="19241">PVR-hallinta on otettu käyttöön ilman yhtään</string>
   <string id="19242">käytössä olevaa PVR-lisäosaa. Ota käyttöön vähintään</string>
   <string id="19243">yksi lisäosa mikäli haluat käyttää PVR toimintoja.</string>
+
+  <string id="19244">Taustaosan toimettomuusaika</string>
+  <string id="19245">Herätyskomento (komento [aikaleima])</string>
+  <string id="19246">Herätysaika ennen nauhoitusta</string>
+  <string id="19247">Päivittäinen herätys</string>
+  <string id="19248">Päivittäinen herätysaika (TT:MM:SS)</string>
+  <string id="19249">Suodata kanavia</string>
 
   <string id="19499">Muu/Tuntematon</string>
   <string id="19500">Elokuva/Draama</string>
@@ -2624,8 +2634,8 @@
   <string id="24015">Musiikkivideotiedot</string>
   <string id="24016">Albumitiedot</string>
   <string id="24017">Esittäjätiedot</string>
-  <string id="24019">PVR-asiakkaat</string>
   <string id="24018">Palvelut</string>
+  <string id="24019">PVR-asiakkaat</string>
 
   <string id="24020">Asetukset</string>
   <string id="24021">Poista käytöstä</string>
