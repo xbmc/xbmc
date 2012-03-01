@@ -169,7 +169,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   codec->extradata_size = hints.extrasize;
   memcpy(codec->extradata, hints.extradata, hints.extrasize);
 
-  muxer.m_WroteHeader = m_dllAvFormat.av_write_header(muxer.m_pFormat) == 0;
+  muxer.m_WroteHeader = m_dllAvFormat.avformat_write_header(muxer.m_pFormat, NULL) == 0;
   if (!muxer.m_WroteHeader)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SetupMuxer - Failed to write the frame header");

@@ -175,7 +175,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   SetTag("encoder"     , "XBMC FFmpeg Encoder");
 
   /* write the header */
-  if (m_dllAvFormat.av_write_header(m_Format) != 0)
+  if (m_dllAvFormat.avformat_write_header(m_Format, NULL) != 0)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to write the header");
     delete[] m_Buffer;
