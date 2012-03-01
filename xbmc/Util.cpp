@@ -2365,6 +2365,9 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
+        if (!strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+          continue;	//skip this item. it does not match the movie name, no need to further process it.
+
         // is this a rar or zip-file
         if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
         {
@@ -2375,7 +2378,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
           for (int i = 0; sub_exts[i]; i++)
           {
             //Cache subtitle with same name as movie
-            if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]) && strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+            if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]))
             {
               vecSubtitles.push_back( items[j]->GetPath() ); 
               CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
@@ -2445,6 +2448,9 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   {
    CStdString strPathInRar = ItemList[it]->GetPath();
    CStdString strExt = URIUtils::GetExtension(strPathInRar);
+   CStdString strItem;
+   CStdString strPath;
+   URIUtils::Split(strPathInRar, strPath, strItem);
    
    CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInRar.c_str());
    // always check any embedded rar archives
@@ -2460,10 +2466,12 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
    }
    // done checking if this is a rar-in-rar
    
+
+   const int fnl = strMovieFileNameNoExt.size();
    int iPos=0;
     while (sub_exts[iPos])
     {
-     if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
+     if ((strExt.CompareNoCase(sub_exts[iPos]) == 0) && (strItem.Left(fnl).Equals(strMovieFileNameNoExt)))
      {
       CStdString strSourceUrl;
       if (URIUtils::GetExtension(strArchivePath).Equals(".rar"))
