@@ -527,3 +527,8 @@ copy_last_3_and_return:
 
 #endif    /* __ARM_ARCH__ < 7 */
 #endif
+
+#if defined(__linux__) && defined(__ELF__)
+/* we don't need an executable stack */
+.section .note.GNU-stack,"",%progbits
+#endif
