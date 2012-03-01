@@ -44,13 +44,16 @@ extern "C" {
   #if (defined HAVE_LIBAVFILTER_AVFILTER_H)
     #include <libavfilter/avfiltergraph.h>
     #include <libavfilter/buffersink.h>
+    #include <libavfilter/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVFILTER_H)
     #include <ffmpeg/avfiltergraph.h>
     #include <ffmpeg/buffersink.h>
+    #include <ffmpeg/avcodec.h>
   #endif
 #else
   #include "libavfilter/avfiltergraph.h"
   #include "libavfilter/buffersink.h"
+  #include "libavfilter/avcodec.h"
 #endif
 }
 
