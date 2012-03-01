@@ -98,7 +98,7 @@ public:
   virtual int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void*, void*, int)) = 0;
   virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int)) = 0;
   virtual char *av_strdup(const char *s)=0;
-  virtual int av_get_bits_per_sample_fmt(enum AVSampleFormat p1) = 0;
+  virtual int av_get_bytes_per_sample(enum AVSampleFormat p1) = 0;
   virtual AVDictionaryEntry *av_dict_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags) = 0;
   virtual int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags)=0;
 };
@@ -131,8 +131,8 @@ public:
   virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int))
     { return ::av_fifo_generic_write(f, src, size, func); }
   virtual char *av_strdup(const char *s) { return ::av_strdup(s); }
-  virtual int av_get_bits_per_sample_fmt(enum AVSampleFormat p1)
-    { return ::av_get_bits_per_sample_fmt(p1); }
+  virtual int av_get_bytes_per_sample(enum AVSampleFormat p1)
+    { return ::av_get_bytes_per_sample(p1); }
   virtual AVDictionaryEntry *av_dict_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags){ return ::av_dict_get(m, key, prev, flags); }
   virtual int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_dict_set(pm, key, value, flags); }
 
@@ -171,7 +171,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD4(int, av_fifo_generic_read, (AVFifoBuffer *p1, void *p2, int p3, void (*p4)(void*, void*, int)))
   DEFINE_METHOD4(int, av_fifo_generic_write, (AVFifoBuffer *p1, void *p2, int p3, int (*p4)(void*, void*, int)))
   DEFINE_METHOD1(char*, av_strdup, (const char *p1))
-  DEFINE_METHOD1(int, av_get_bits_per_sample_fmt, (enum AVSampleFormat p1))
+  DEFINE_METHOD1(int, av_get_bytes_per_sample, (enum AVSampleFormat p1))
   DEFINE_METHOD4(AVDictionaryEntry *, av_dict_get, (AVDictionary *p1, const char *p2, const AVDictionaryEntry *p3, int p4))
   DEFINE_METHOD4(int, av_dict_set, (AVDictionary **p1, const char *p2, const char *p3, int p4));
 
@@ -195,7 +195,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_fifo_generic_read)
     RESOLVE_METHOD(av_fifo_generic_write)
     RESOLVE_METHOD(av_strdup)
-    RESOLVE_METHOD(av_get_bits_per_sample_fmt)
+    RESOLVE_METHOD(av_get_bytes_per_sample)
     RESOLVE_METHOD(av_dict_get)
     RESOLVE_METHOD(av_dict_set)
   END_METHOD_RESOLVE()
