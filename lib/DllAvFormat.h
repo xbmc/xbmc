@@ -74,7 +74,6 @@ public:
 #if (!defined USE_EXTERNAL_FFMPEG)
   virtual int avformat_find_stream_info_dont_call(AVFormatContext *ic, AVDictionary **options)=0;
 #endif
-  virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)=0;
   virtual int init_put_byte(AVIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -139,7 +138,6 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avformat_find_stream_info(ic, options);
   }
-  virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)
   { return ::avformat_open_input(ps, filename, fmt, options); }
   virtual int init_put_byte(AVIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
@@ -216,7 +214,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be24, AVIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, AVIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, AVIOContext*, unsigned int)
-  DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
   DEFINE_METHOD8(int, init_put_byte, (AVIOContext *p1, unsigned char *p2, int p3, int p4, void *p5,
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p7)(void *opaque, uint8_t *buf, int buf_size),
@@ -253,7 +250,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD_RENAME(avformat_find_stream_info, avformat_find_stream_info_dont_call)
-    RESOLVE_METHOD(url_set_interrupt_cb)
     RESOLVE_METHOD(avformat_open_input)
     RESOLVE_METHOD(init_put_byte)
     RESOLVE_METHOD(av_probe_input_format)

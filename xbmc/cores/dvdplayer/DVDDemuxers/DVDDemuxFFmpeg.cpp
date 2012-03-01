@@ -160,7 +160,7 @@ static TLS g_tls;
 #define g_demuxer (*((CDVDDemuxFFmpeg**)g_tls.Get()))
 #endif
 
-static int interrupt_cb(void)
+static int interrupt_cb(void* unused)
 {
   if(g_demuxer && g_demuxer->Aborted())
     return 1;
@@ -178,7 +178,7 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 
 static int dvd_file_read(void *h, uint8_t* buf, int size)
 {
-  if(interrupt_cb())
+  if(interrupt_cb(NULL))
     return -1;
 
   CDVDInputStream* pInputStream = (CDVDInputStream*)h;
@@ -192,7 +192,7 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
 */
 static offset_t dvd_file_seek(void *h, offset_t pos, int whence)
 {
-  if(interrupt_cb())
+  if(interrupt_cb(NULL))
     return -1;
 
   CDVDInputStream* pInputStream = (CDVDInputStream*)h;
@@ -236,6 +236,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_speed = DVD_PLAYSPEED_NORMAL;
   g_demuxer = this;
   m_program = UINT_MAX;
+  const AVIOInterruptCB int_cb = { interrupt_cb, NULL };
 
   if (!pInput) return false;
 
@@ -246,10 +247,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   // register codecs
   m_dllAvFormat.av_register_all();
-  m_dllAvFormat.url_set_interrupt_cb(interrupt_cb);
-
-  // could be used for interupting ffmpeg while opening a file (eg internet streams)
-  // url_set_interrupt_cb(NULL);
 
   m_pInput = pInput;
   strFile = m_pInput->GetFileName();
@@ -423,6 +420,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       return false;
     }
   }
+
+  // set the interrupt callback, appeared in libavformat 53.15.0
+  m_pFormatContext->interrupt_callback = int_cb;
 
   // analyse very short to speed up mjpeg playback start
   if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->seekable == 0)
