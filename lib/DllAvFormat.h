@@ -83,7 +83,6 @@ public:
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
   virtual int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
-  virtual int url_fdopen(AVIOContext **s, URLContext *h)=0;
   virtual int url_fopen(AVIOContext **s, const char *filename, int flags)=0;
   virtual int url_fclose(AVIOContext *s)=0;
   virtual int url_open_dyn_buf(AVIOContext **s)=0;
@@ -148,7 +147,6 @@ public:
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
   virtual int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return ::av_probe_input_buffer(pb, fmt, filename, logctx, offset, max_probe_size); }
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
-  virtual int url_fdopen(AVIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
   virtual int url_fopen(AVIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
   virtual int url_fclose(AVIOContext *s) { return ::url_fclose(s); }
   virtual int url_open_dyn_buf(AVIOContext **s) { return ::url_open_dyn_buf(s); }
@@ -219,7 +217,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
                   int (*p7)(void *opaque, uint8_t *buf, int buf_size),
                   offset_t (*p8)(void *opaque, offset_t offset, int whence)))
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
-  DEFINE_METHOD2(int, url_fdopen, (AVIOContext **p1, URLContext *p2))
   DEFINE_METHOD3(int, url_fopen, (AVIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (AVIOContext *p1))
   DEFINE_METHOD1(int, url_open_dyn_buf, (AVIOContext **p1))
@@ -256,7 +253,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(av_probe_input_buffer)
     RESOLVE_METHOD(dump_format)
-    RESOLVE_METHOD(url_fdopen)
     RESOLVE_METHOD(url_fopen)
     RESOLVE_METHOD(url_fclose)
     RESOLVE_METHOD(url_open_dyn_buf)
