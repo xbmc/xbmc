@@ -73,7 +73,7 @@ public:
   virtual int avformat_find_stream_info_dont_call(AVFormatContext *ic, AVDictionary **options)=0;
 #endif
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)=0;
-  virtual int init_put_byte(AVIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
+  virtual AVIOContext *avio_alloc_context(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                             offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
@@ -133,10 +133,10 @@ public:
   }
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)
   { return ::avformat_open_input(ps, filename, fmt, options); }
-  virtual int init_put_byte(AVIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
+  virtual AVIOContext *avio_alloc_context(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                            offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
+                            offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::avio_alloc_context(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
   virtual int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return ::av_probe_input_buffer(pb, fmt, filename, logctx, offset, max_probe_size); }
@@ -202,10 +202,10 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be24, AVIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, AVIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, AVIOContext*, unsigned int)
-  DEFINE_METHOD8(int, init_put_byte, (AVIOContext *p1, unsigned char *p2, int p3, int p4, void *p5,
+  DEFINE_METHOD7(AVIOContext *, avio_alloc_context, (unsigned char *p1, int p2, int p3, void *p4,
+                  int (*p5)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
-                  int (*p7)(void *opaque, uint8_t *buf, int buf_size),
-                  offset_t (*p8)(void *opaque, offset_t offset, int whence)))
+                  offset_t (*p7)(void *opaque, offset_t offset, int whence)))
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
   DEFINE_METHOD3(int, url_fopen, (AVIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (AVIOContext *p1))
@@ -234,7 +234,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD_RENAME(avformat_find_stream_info, avformat_find_stream_info_dont_call)
     RESOLVE_METHOD(avformat_open_input)
-    RESOLVE_METHOD(init_put_byte)
+    RESOLVE_METHOD(avio_alloc_context)
     RESOLVE_METHOD(av_probe_input_format)
     RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(av_probe_input_buffer)
