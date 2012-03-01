@@ -112,15 +112,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_pFormat->flags            |= AVFMT_NOFILE | AVFMT_FLAG_IGNIDX;
   muxer.m_pFormat->bit_rate          = hints.bitrate;
 
-  /* setup the muxer */
-  if (m_dllAvFormat.av_set_parameters(muxer.m_pFormat, NULL) != 0)
-  {
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to set the %s muxer parameters", muxerName.c_str());
-    Dispose();
-    return false;
-  }
-
-
   /* While this is strictly only needed on big-endian systems, we do it on
    * both to avoid as much dead code as possible.
    * CoreAudio (at least on the cases we've seen) wants IEC 61937 in
