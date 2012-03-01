@@ -143,8 +143,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
 
 
   /* set the stream's parameters */
-  muxer.m_pStream->stream_copy           = 1;
-
   m_SampleRate = hints.samplerate;
   if(!m_SampleRate && hints.codec == CODEC_ID_AC3)
     m_SampleRate = 48000;
