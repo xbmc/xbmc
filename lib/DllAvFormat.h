@@ -63,7 +63,6 @@ public:
   virtual void av_register_all_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual int url_feof(AVIOContext *s)=0;
-  virtual AVDictionaryEntry *av_metadata_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags)=0;
   virtual void av_close_input_file(AVFormatContext *s)=0;
   virtual void av_close_input_stream(AVFormatContext *s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
@@ -105,7 +104,6 @@ public:
   virtual int avformat_write_header (AVFormatContext *s, AVDictionary **options)=0;
   virtual int av_write_trailer(AVFormatContext *s)=0;
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt)=0;
-  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -123,7 +121,6 @@ public:
   virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual int url_feof(AVIOContext *s) { return ::url_feof(s); }
-  virtual AVDictionaryEntry *av_metadata_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags){ return ::av_metadata_get(m, key, prev, flags); }
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
   virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
@@ -168,7 +165,6 @@ public:
   virtual int avformat_write_header (AVFormatContext *s, AVDictionary **options) { return ::avformat_write_header (s, options); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
-  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -190,7 +186,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD0(void, av_register_all_dont_call)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (AVIOContext *p1))
-  DEFINE_METHOD4(AVDictionaryEntry*, av_metadata_get, (AVDictionary *p1, const char *p2, const AVDictionaryEntry *p3, int p4))
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
   DEFINE_METHOD1(void, av_close_input_stream, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
@@ -230,12 +225,10 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD2(int, avformat_write_header , (AVFormatContext *p1, AVDictionary **p2))
   DEFINE_METHOD1(int, av_write_trailer, (AVFormatContext *p1))
   DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
-  DEFINE_METHOD4(int, av_metadata_set2, (AVDictionary **p1, const char *p2, const char *p3, int p4));
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
     RESOLVE_METHOD(url_feof)
-    RESOLVE_METHOD(av_metadata_get)
     RESOLVE_METHOD(av_close_input_file)
     RESOLVE_METHOD(av_close_input_stream)
     RESOLVE_METHOD(av_read_frame)
@@ -269,7 +262,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(avformat_write_header)
     RESOLVE_METHOD(av_write_trailer)
     RESOLVE_METHOD(av_write_frame)
-    RESOLVE_METHOD(av_metadata_set2)
   END_METHOD_RESOLVE()
 
   /* dependencies of libavformat */
