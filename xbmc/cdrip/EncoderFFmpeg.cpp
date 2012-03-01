@@ -181,7 +181,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
 void CEncoderFFmpeg::SetTag(const CStdString tag, const CStdString value)
 {
-  m_dllAvFormat.av_metadata_set2(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
+  m_dllAvUtil.av_dict_set(&m_Format->metadata, tag.c_str(), value.c_str(), 0);
 }
 
 int CEncoderFFmpeg::MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size)
