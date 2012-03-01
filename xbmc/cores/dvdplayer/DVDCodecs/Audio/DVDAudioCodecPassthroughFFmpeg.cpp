@@ -99,7 +99,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_pFormat->oformat = fOut;
 
   /* allocate a put_byte struct so we can grab the output */
-  muxer.m_pFormat->pb = m_dllAvFormat.av_alloc_put_byte(muxer.m_BCBuffer, sizeof(muxer.m_BCBuffer), URL_RDONLY, &muxer,  NULL, MuxerReadPacket, NULL);
+  muxer.m_pFormat->pb = m_dllAvFormat.avio_alloc_context(muxer.m_BCBuffer, sizeof(muxer.m_BCBuffer), AVIO_FLAG_READ, &muxer,  NULL, MuxerReadPacket, NULL);
   if (!muxer.m_pFormat->pb)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to allocate ByteIOContext");
