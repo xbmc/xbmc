@@ -223,7 +223,6 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
 
   pic->type           = FF_BUFFER_TYPE_USER;
-  pic->age            = 1;
   pic->data[0]        = (uint8_t*)wrapper;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
