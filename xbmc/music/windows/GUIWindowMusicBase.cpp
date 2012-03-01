@@ -375,8 +375,8 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
   if (!CGUIDialogKeyboard::ShowAndGetInput(album.strAlbum, g_localizeStrings.Get(16011), false))
     return;
 
-  CStdString strNewArtist = "";
-  if (!CGUIDialogKeyboard::ShowAndGetInput(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator), g_localizeStrings.Get(16025), false))
+  CStdString strArtist = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
+  if (!CGUIDialogKeyboard::ShowAndGetInput(strArtist, g_localizeStrings.Get(16025), false))
     return;
 
   ShowAlbumInfo(album,"",true);
