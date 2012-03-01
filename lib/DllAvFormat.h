@@ -98,7 +98,6 @@ public:
   virtual AVFormatContext *avformat_alloc_context(void)=0;
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c)=0;
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
-  virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap)=0;
   virtual AVIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -162,7 +161,6 @@ public:
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c) { return ::avformat_new_stream(s, c); }
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
-  virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap) { return ::av_set_parameters(s, ap); }
   virtual AVIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -225,7 +223,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
   DEFINE_METHOD2(AVStream *, avformat_new_stream, (AVFormatContext *p1, AVCodec *p2))
   DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
-  DEFINE_METHOD2(int, av_set_parameters, (AVFormatContext *p1, AVFormatParameters *p2));
   DEFINE_METHOD7(AVIOContext *, av_alloc_put_byte, (unsigned char *p1, int p2, int p3, void *p4,
                   int(*p5)(void *opaque, uint8_t *buf, int buf_size),
                   int(*p6)(void *opaque, uint8_t *buf, int buf_size),
@@ -268,7 +265,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(avformat_alloc_context)
     RESOLVE_METHOD(avformat_new_stream)
     RESOLVE_METHOD(av_guess_format)
-    RESOLVE_METHOD(av_set_parameters)
     RESOLVE_METHOD(av_alloc_put_byte)
     RESOLVE_METHOD(avformat_write_header)
     RESOLVE_METHOD(av_write_trailer)
