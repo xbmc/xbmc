@@ -81,18 +81,17 @@ public:
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
   virtual int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size)=0;
   virtual void av_dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
-  virtual int url_fopen(AVIOContext **s, const char *filename, int flags)=0;
-  virtual int url_fclose(AVIOContext *s)=0;
-  virtual int url_open_dyn_buf(AVIOContext **s)=0;
-  virtual int url_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer)=0;
-  virtual offset_t url_fseek(AVIOContext *s, offset_t offset, int whence)=0;
-  virtual int get_buffer(AVIOContext *s, unsigned char *buf, int size)=0;
-  virtual int get_partial_buffer(AVIOContext *s, unsigned char *buf, int size)=0;
-  virtual void put_byte(AVIOContext *s, int b)=0;
-  virtual void put_buffer(AVIOContext *s, const unsigned char *buf, int size)=0;
-  virtual void put_be24(AVIOContext *s, unsigned int val)=0;
-  virtual void put_be32(AVIOContext *s, unsigned int val)=0;
-  virtual void put_be16(AVIOContext *s, unsigned int val)=0;
+  virtual int avio_open(AVIOContext **s, const char *filename, int flags)=0;
+  virtual int avio_close(AVIOContext *s)=0;
+  virtual int avio_open_dyn_buf(AVIOContext **s)=0;
+  virtual int avio_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer)=0;
+  virtual offset_t avio_seek(AVIOContext *s, offset_t offset, int whence)=0;
+  virtual int avio_read(AVIOContext *s, unsigned char *buf, int size)=0;
+  virtual void avio_w8(AVIOContext *s, int b)=0;
+  virtual void avio_write(AVIOContext *s, const unsigned char *buf, int size)=0;
+  virtual void avio_wb24(AVIOContext *s, unsigned int val)=0;
+  virtual void avio_wb32(AVIOContext *s, unsigned int val)=0;
+  virtual void avio_wb16(AVIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c)=0;
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
@@ -141,18 +140,17 @@ public:
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
   virtual int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return ::av_probe_input_buffer(pb, fmt, filename, logctx, offset, max_probe_size); }
   virtual void av_dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::av_dump_format(ic, index, url, is_output); }
-  virtual int url_fopen(AVIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
-  virtual int url_fclose(AVIOContext *s) { return ::url_fclose(s); }
-  virtual int url_open_dyn_buf(AVIOContext **s) { return ::url_open_dyn_buf(s); }
-  virtual int url_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer) { return ::url_close_dyn_buf(s, pbuffer); }
-  virtual offset_t url_fseek(AVIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
-  virtual int get_buffer(AVIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
-  virtual int get_partial_buffer(AVIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
-  virtual void put_byte(AVIOContext *s, int b) { ::put_byte(s, b); }
-  virtual void put_buffer(AVIOContext *s, const unsigned char *buf, int size) { ::put_buffer(s, buf, size); }
-  virtual void put_be24(AVIOContext *s, unsigned int val) { ::put_be24(s, val); }
-  virtual void put_be32(AVIOContext *s, unsigned int val) { ::put_be32(s, val); }
-  virtual void put_be16(AVIOContext *s, unsigned int val) { ::put_be16(s, val); }
+  virtual int avio_open(AVIOContext **s, const char *filename, int flags) { return ::avio_open(s, filename, flags); }
+  virtual int avio_close(AVIOContext *s) { return ::avio_close(s); }
+  virtual int avio_open_dyn_buf(AVIOContext **s) { return ::avio_open_dyn_buf(s); }
+  virtual int avio_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer) { return ::avio_close_dyn_buf(s, pbuffer); }
+  virtual offset_t avio_seek(AVIOContext *s, offset_t offset, int whence) { return ::avio_seek(s, offset, whence); }
+  virtual int avio_read(AVIOContext *s, unsigned char *buf, int size) { return ::avio_read(s, buf, size); }
+  virtual void avio_w8(AVIOContext *s, int b) { ::avio_w8(s, b); }
+  virtual void avio_write(AVIOContext *s, const unsigned char *buf, int size) { ::avio_write(s, buf, size); }
+  virtual void avio_wb24(AVIOContext *s, unsigned int val) { ::avio_wb24(s, val); }
+  virtual void avio_wb32(AVIOContext *s, unsigned int val) { ::avio_wb32(s, val); }
+  virtual void avio_wb16(AVIOContext *s, unsigned int val) { ::avio_wb16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
   virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c) { return ::avformat_new_stream(s, c); }
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
@@ -195,23 +193,22 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_FUNC_ALIGNED3(AVInputFormat*, __cdecl, av_probe_input_format2, AVProbeData*, int, int*)
   DEFINE_FUNC_ALIGNED6(int, __cdecl, av_probe_input_buffer, AVIOContext *, AVInputFormat **, const char *, void *, unsigned int, unsigned int)
-  DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, AVIOContext*, unsigned char *, int)
-  DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, AVIOContext*, unsigned char *, int)
-  DEFINE_FUNC_ALIGNED2(void, __cdecl, put_byte, AVIOContext*, int)
-  DEFINE_FUNC_ALIGNED3(void, __cdecl, put_buffer, AVIOContext*, const unsigned char *, int)
-  DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be24, AVIOContext*, unsigned int)
-  DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, AVIOContext*, unsigned int)
-  DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, AVIOContext*, unsigned int)
+  DEFINE_FUNC_ALIGNED3(int, __cdecl, avio_read, AVIOContext*, unsigned char *, int)
+  DEFINE_FUNC_ALIGNED2(void, __cdecl, avio_w8, AVIOContext*, int)
+  DEFINE_FUNC_ALIGNED3(void, __cdecl, avio_write, AVIOContext*, const unsigned char *, int)
+  DEFINE_FUNC_ALIGNED2(void, __cdecl, avio_wb24, AVIOContext*, unsigned int)
+  DEFINE_FUNC_ALIGNED2(void, __cdecl, avio_wb32, AVIOContext*, unsigned int)
+  DEFINE_FUNC_ALIGNED2(void, __cdecl, avio_wb16, AVIOContext*, unsigned int)
   DEFINE_METHOD7(AVIOContext *, avio_alloc_context, (unsigned char *p1, int p2, int p3, void *p4,
                   int (*p5)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
                   offset_t (*p7)(void *opaque, offset_t offset, int whence)))
   DEFINE_METHOD4(void, av_dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
-  DEFINE_METHOD3(int, url_fopen, (AVIOContext **p1, const char *p2, int p3))
-  DEFINE_METHOD1(int, url_fclose, (AVIOContext *p1))
-  DEFINE_METHOD1(int, url_open_dyn_buf, (AVIOContext **p1))
-  DEFINE_METHOD2(int, url_close_dyn_buf, (AVIOContext *p1, uint8_t **p2))
-  DEFINE_METHOD3(offset_t, url_fseek, (AVIOContext *p1, offset_t p2, int p3))
+  DEFINE_METHOD3(int, avio_open, (AVIOContext **p1, const char *p2, int p3))
+  DEFINE_METHOD1(int, avio_close, (AVIOContext *p1))
+  DEFINE_METHOD1(int, avio_open_dyn_buf, (AVIOContext **p1))
+  DEFINE_METHOD2(int, avio_close_dyn_buf, (AVIOContext *p1, uint8_t **p2))
+  DEFINE_METHOD3(offset_t, avio_seek, (AVIOContext *p1, offset_t p2, int p3))
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
   DEFINE_METHOD2(AVStream *, avformat_new_stream, (AVFormatContext *p1, AVCodec *p2))
   DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
@@ -239,18 +236,17 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(av_probe_input_buffer)
     RESOLVE_METHOD(av_dump_format)
-    RESOLVE_METHOD(url_fopen)
-    RESOLVE_METHOD(url_fclose)
-    RESOLVE_METHOD(url_open_dyn_buf)
-    RESOLVE_METHOD(url_close_dyn_buf)
-    RESOLVE_METHOD(url_fseek)
-    RESOLVE_METHOD(get_buffer)
-    RESOLVE_METHOD(get_partial_buffer)
-    RESOLVE_METHOD(put_byte)
-    RESOLVE_METHOD(put_buffer)
-    RESOLVE_METHOD(put_be24)
-    RESOLVE_METHOD(put_be32)
-    RESOLVE_METHOD(put_be16)
+    RESOLVE_METHOD(avio_open)
+    RESOLVE_METHOD(avio_close)
+    RESOLVE_METHOD(avio_open_dyn_buf)
+    RESOLVE_METHOD(avio_close_dyn_buf)
+    RESOLVE_METHOD(avio_seek)
+    RESOLVE_METHOD(avio_read)
+    RESOLVE_METHOD(avio_w8)
+    RESOLVE_METHOD(avio_write)
+    RESOLVE_METHOD(avio_wb24)
+    RESOLVE_METHOD(avio_wb32)
+    RESOLVE_METHOD(avio_wb16)
     RESOLVE_METHOD(avformat_alloc_context)
     RESOLVE_METHOD(avformat_new_stream)
     RESOLVE_METHOD(av_guess_format)

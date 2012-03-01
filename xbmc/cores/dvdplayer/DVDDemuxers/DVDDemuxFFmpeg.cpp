@@ -330,7 +330,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         pd.filename = strFile.c_str();
 
         // read data using avformat's buffers
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
+        pd.buf_size = m_dllAvFormat.avio_read(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
         if (pd.buf_size <= 0)
         {
           CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
@@ -339,7 +339,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         memset(pd.buf+pd.buf_size, 0, AVPROBE_PADDING_SIZE);
 
         // restore position again
-        m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
+        m_dllAvFormat.avio_seek(m_ioContext , 0, SEEK_SET);
 
         // the advancedsetting is for allowing the user to force outputting the
         // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
