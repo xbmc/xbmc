@@ -5,7 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = -ldl
+LIBS   = libmythxml/libmythxml.a
 LIBDIR = @abs_top_srcdir@/addons/pvr.mythtv
 LIB    = @abs_top_srcdir@/addons/pvr.mythtv/XBMC_Mythtv.pvr
 
