@@ -66,6 +66,7 @@ XBMCEAGLView  *m_glView;
 @synthesize lastGesturePoint;
 @synthesize lastPinchScale;
 @synthesize currentPinchScale;
+@synthesize screenScale;
 @synthesize lastEvent;
 @synthesize touchBeginSignaled;
 @synthesize screensize;
@@ -169,6 +170,8 @@ XBMCEAGLView  *m_glView;
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+    point.x *= screenScale;
+    point.y *= screenScale;
     currentPinchScale += [sender scale] - lastPinchScale;
     lastPinchScale = [sender scale];  
   
@@ -193,6 +196,8 @@ XBMCEAGLView  *m_glView;
     if( [sender state] == UIGestureRecognizerStateBegan )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+      point.x *= screenScale;
+      point.y *= screenScale;
       touchBeginSignaled = false;
       lastGesturePoint = point;
     }
@@ -200,6 +205,8 @@ XBMCEAGLView  *m_glView;
     if( [sender state] == UIGestureRecognizerStateChanged )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];    
+      point.x *= screenScale;
+      point.y *= screenScale;
       bool bNotify = false;
       CGFloat yMovement=point.y - lastGesturePoint.y;
       CGFloat xMovement=point.x - lastGesturePoint.x;
@@ -247,7 +254,8 @@ XBMCEAGLView  *m_glView;
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-  
+  point.x *= screenScale;
+  point.y *= screenScale;
   //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
   
   XBMC_Event newEvent;
@@ -278,6 +286,8 @@ XBMCEAGLView  *m_glView;
     if( [touches count] == 1 && [touch tapCount] == 1)
     {
       lastGesturePoint = [touch locationInView:m_glView];    
+      lastGesturePoint.x *= screenScale;
+      lastGesturePoint.y *= screenScale;  
       XBMC_Event newEvent;
       memset(&newEvent, 0, sizeof(newEvent));
       
@@ -332,6 +342,12 @@ XBMCEAGLView  *m_glView;
              selector: @selector(observeDefaultCenterStuff:)
                  name: nil
                object: nil];
+  
+  /* Check if screen is Retina */
+  if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+    screenScale = [[UIScreen mainScreen] scale];
+  else
+    screenScale = 1.0;
   
   /* We start in landscape mode */
   CGRect srect = frame;
@@ -426,8 +442,8 @@ XBMCEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (CGSize) getScreenSize
 {
-  screensize.width  = m_glView.bounds.size.width;
-  screensize.height = m_glView.bounds.size.height;  
+  screensize.width  = m_glView.bounds.size.width * screenScale;
+  screensize.height = m_glView.bounds.size.height * screenScale;  
   return screensize;
 }
 //--------------------------------------------------------------
