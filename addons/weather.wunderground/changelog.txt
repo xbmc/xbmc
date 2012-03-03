@@ -1,3 +1,6 @@
+v0.0.7
+- fix: import error on Windows with non/extended-ascii profile paths
+
 v0.0.6
 - ignore various n/a values in wu data
 - use kph value for windspeed
