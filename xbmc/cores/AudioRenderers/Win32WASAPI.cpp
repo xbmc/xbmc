@@ -107,12 +107,8 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   int layoutChannels = 0;
 
-  if(!bAudioPassthrough)
+  if(!bAudioPassthrough && channelMap)
   {
-    //If no channel map is specified, use the default.
-    if(!channelMap)
-      channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
-
     PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)

@@ -92,9 +92,9 @@ namespace PLATFORM
     }
     return -1;
   #else
-    timeval time;
-    gettimeofday(&time, NULL);
-    return (int64_t) (time.tv_sec * 1000 + time.tv_usec / 1000);
+    timespec time;
+    clock_gettime(CLOCK_MONOTONIC, &time);
+    return (int64_t)time.tv_sec * 1000 + time.tv_nsec / 1000000;
   #endif
   }
 

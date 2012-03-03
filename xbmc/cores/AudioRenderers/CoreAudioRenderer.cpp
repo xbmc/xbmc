@@ -540,6 +540,7 @@ bool CCoreAudioMixMap::BuildExplicit(AudioChannelLayout& inLayout, AudioChannelL
   // Initialize map
   // map[in][out] = mix-level of input_channel[in] into output_channel[out]
   m_pMap = (Float32*)calloc(sizeof(Float32), inLayout.mNumberChannelDescriptions * outLayout.mNumberChannelDescriptions);
+  int mappedChannels = 0;
   
   // Initialize array of output channel locations
   int outPos[MAX_AUDIO_CHANNEL_LABEL + 1];
@@ -570,6 +571,7 @@ bool CCoreAudioMixMap::BuildExplicit(AudioChannelLayout& inLayout, AudioChannelL
       // map[in][out] = map[in * outCount + out]
       CLog::Log(LOGDEBUG, "CCoreAudioMixMap::BuildExplicit:\tin[%d] -> out[%d] @ %0.02f", channel, outIndex, 1.0f);
       m_pMap[channel * outLayout.mNumberChannelDescriptions + outIndex] = 1.0f;
+      mappedChannels++;
     }
     else // The input channel does not exist in the output layout. Decide where to route it...
     {
@@ -603,12 +605,19 @@ bool CCoreAudioMixMap::BuildExplicit(AudioChannelLayout& inLayout, AudioChannelL
             int outIndex = outPos[patch->label];
             CLog::Log(LOGDEBUG, "CCoreAudioMixMap::BuildExplicit:\tin[%d] -> out[%d] @ %0.02f", channel, outIndex, patch->coeff);
             m_pMap[channel * outLayout.mNumberChannelDescriptions + outIndex] = patch->coeff;
+            mappedChannels++;
           }
           break;
         }
       }
     }
-  }    
+  }
+  if (!mappedChannels)
+  {
+    CLog::Log(LOGINFO, "CCoreAudioMixMap::BuildExplicit: No valid patches found.");
+    return false;
+  }
+
   CLog::Log(LOGINFO, "CCoreAudioMixMap::BuildExplicit: Completed explicit channel map.");
   return true;
 }
@@ -1249,7 +1258,39 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     CCoreAudioChannelLayout deviceLayout;
     if (!m_AudioDevice.GetPreferredChannelLayout(deviceLayout))
       return false;
-
+    
+    // Detect devices with no Speaker Configuration
+    bool undefinedLayout = true;
+    for (UInt32 c = 0; c < deviceLayout.GetChannelCount(); c++)
+    {
+      // If this is a known channel, then we can't have an undefined layout
+      if (deviceLayout.GetChannelLabel(c) != kAudioChannelLabel_Unknown)
+      {
+        undefinedLayout = false;
+        break;
+      }
+    }
+    if (undefinedLayout)
+    {
+      if (!g_sysinfo.IsAppleTV()) // AppleTV users cannot do this...
+      {
+        CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: The selected device (%s) does not have a speaker layout configured. Using the default layout.", m_AudioDevice.GetName());
+        CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: \tPlease go to Applications -> Utilities -> Audio MIDI Setup, and select 'Configure Speakers...'");
+      }
+      // Pick a default layout based on the number of channels
+      AudioChannelLayoutTag newLayoutTag = GetDefaultLayout(deviceLayout.GetChannelCount());
+      if (newLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Undefined, give up...
+      {
+        CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: Unable to find a suitable default layout for this device.");
+        return false;
+      }
+      if (!deviceLayout.SetLayout(newLayoutTag))
+      {
+        CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: Unable to set channel layout from tag.");
+        return false;        
+      }
+    }
+    
     CStdString strOutLayout;
     CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Output Device Layout: %s", CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)deviceLayout, strOutLayout));  
 
@@ -1266,7 +1307,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     //    if (CCoreAudioChannelLayout::GetChannelCountForLayout(guiLayout) < CCoreAudioChannelLayout::GetChannelCountForLayout(deviceLayout))
     //      deviceLayout.CopyLayout(guiLayout);
     
-    // TODO: Skip matrix mixer if input/output are compatible
+    // TODO: Skip matrix mixer if input/output are compatible -> Add a IsPurePassthrough() method to the CCoreAudioMixMap class
 
     AudioChannelLayout* layoutCandidates[] = {(AudioChannelLayout*)deviceLayout, (AudioChannelLayout*)userLayout, NULL};
 
@@ -1560,6 +1601,33 @@ void CCoreAudioRenderer::OnResetDevice()
     }
   }
 }
+
+AudioChannelLayoutTag CCoreAudioRenderer::GetDefaultLayout(UInt32 channelCount)
+{
+  switch(channelCount)
+  {
+    case 1:    
+      return kAudioChannelLayoutTag_Mono; // 1.0 
+    case 2:    
+      return kAudioChannelLayoutTag_Stereo; // 2.0
+    case 3:    
+      return kAudioChannelLayoutTag_DVD_4; // 2.1
+    case 4:    
+      return kAudioChannelLayoutTag_DVD_10; // 3.1
+    case 5:    
+      return kAudioChannelLayoutTag_DVD_6; // 4.1
+    case 6:    
+      return kAudioChannelLayoutTag_MPEG_5_1_A; // 5.1
+    case 7:
+      return kAudioChannelLayoutTag_AudioUnit_7_0; // 7.0
+    case 8:    
+      return kAudioChannelLayoutTag_MPEG_7_1_A; // 7.1
+    case 0:    
+    default:
+      return kAudioChannelLayoutTag_UseChannelBitmap; // Basically 'Undefined'
+  }
+}
+
 #endif
 #endif
 

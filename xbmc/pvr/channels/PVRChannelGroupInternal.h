@@ -44,6 +44,8 @@ namespace PVR
 
     CPVRChannelGroupInternal(const CPVRChannelGroup &group);
 
+    virtual ~CPVRChannelGroupInternal(void);
+
     /**
      * @brief The amount of channels in this container.
      * @return The amount of channels in this container.

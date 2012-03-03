@@ -103,7 +103,11 @@ namespace PLATFORM
       return bReturn;
     }
 
-    virtual bool StopThread(bool bWaitForExit = true)
+    /*!
+     * @brief Stop the thread
+     * @param iWaitMs negative = don't wait, 0 = infinite, or the amount of ms to wait
+     */
+    virtual bool StopThread(int iWaitMs = 5000)
     {
       bool bReturn(true);
       bool bRunning(false);
@@ -113,12 +117,17 @@ namespace PLATFORM
         m_bStop = true;
       }
 
-      if (bRunning && bWaitForExit)
+      if (bRunning && iWaitMs >= 0)
       {
-        void *retVal = NULL;
-        bReturn = ThreadsWait(m_thread, &retVal);
+        CLockObject lock(m_threadMutex);
+        bReturn = m_threadCondition.Wait(m_threadMutex, m_bStopped, iWaitMs);
       }
-      return true;
+      else
+      {
+        bReturn = true;
+      }
+
+      return bReturn;
     }
 
     virtual bool Sleep(uint32_t iTimeout)

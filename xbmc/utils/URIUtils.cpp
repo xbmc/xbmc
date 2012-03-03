@@ -361,7 +361,12 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
     if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+    {
+      if (strPath.size() > i->first.size())
+        return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+      else
+        return i->second;
+    }
   }
   return strPath;
 }
