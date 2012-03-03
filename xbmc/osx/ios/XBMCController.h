@@ -36,6 +36,7 @@
   CGPoint lastGesturePoint;
   CGFloat lastPinchScale;
   CGFloat currentPinchScale;  
+  CGFloat screenScale;
   bool touchBeginSignaled;
 	
   UIInterfaceOrientation orientation;
@@ -46,6 +47,7 @@
 @property CGPoint lastGesturePoint;
 @property CGFloat lastPinchScale;
 @property CGFloat currentPinchScale;
+@property CGFloat screenScale;
 @property bool touchBeginSignaled;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
