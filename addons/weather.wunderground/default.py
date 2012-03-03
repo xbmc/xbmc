@@ -68,7 +68,8 @@ def fetch(url):
     except:
         json_string = ''
     try:
-        parsed_json = simplejson.loads(json_string)
+        json_clean = json_string.replace('"-9999.00"','""').replace('"-9998"','""').replace('"NA"','""')
+        parsed_json = simplejson.loads(json_clean)
     except:
         parsed_json = ''
     return parsed_json
@@ -103,7 +104,7 @@ def properties(query):
     weathercode = WEATHER_CODES[query['current_observation']['icon_url'][31:-4]]
     set_property('Current.Condition'     , query['current_observation']['weather'])
     set_property('Current.Temperature'   , str(query['current_observation']['temp_c']))
-    set_property('Current.Wind'          , str(int(query['current_observation']['wind_mph'] * 1.609344)))
+    set_property('Current.Wind'          , str(query['current_observation']['wind_kph']))
     set_property('Current.WindDirection' , query['current_observation']['wind_dir'])
     set_property('Current.Humidity'      , query['current_observation']['relative_humidity'].rstrip('%'))
     set_property('Current.FeelsLike'     , str((int(query['hourly_forecast'][0]['feelslike']['english'])-32)*5/9))
