@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\GenreTable.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\epg.h" />
     <ClInclude Include="..\..\FileUtils.h" />
+    <ClInclude Include="..\..\GenreTable.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />

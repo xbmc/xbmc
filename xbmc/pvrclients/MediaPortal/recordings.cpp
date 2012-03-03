@@ -35,6 +35,11 @@ cRecording::cRecording()
   m_Duration        = 0;
   m_Index           = -1;
   m_cardSettings    = NULL;
+  m_channelID       = 0;
+  m_isRecording     = false;
+  m_genre_type      = 0;
+  m_genre_subtype   = 0;
+  m_genretable      = NULL;
 }
 
 
@@ -74,6 +79,9 @@ bool cRecording::ParseLine(const std::string& data)
     //[13] episodePart (string)
     //[14] seriesNumber (string)
     //[15] scheduleID (int)
+    //[16] genre (string)
+    //[17] idchannel (int)
+    //[18] isrecording (bool)
 
     m_Index = atoi(fields[0].c_str());
     m_StartTime = DateTimeToTimeT(fields[1]);
@@ -150,6 +158,14 @@ bool cRecording::ParseLine(const std::string& data)
       m_scheduleID = atoi( fields[15].c_str() );
     }
 
+    if (fields.size() >= 19) // Since TVServerXBMC 1.2.x.111
+    {
+      m_genre = fields[16];
+      m_channelID = atoi( fields[17].c_str() );
+      m_isRecording = stringtobool( fields[18].c_str() );
+
+      if (m_genretable) m_genretable->GenreToTypes(m_genre, m_genre_type, m_genre_subtype);
+    }
     return true;
   }
   else
@@ -265,4 +281,9 @@ void cRecording::SplitFilePath(void)
     m_directory = "";
     m_basePath = "";
   }
+}
+
+void cRecording::SetGenreTable(CGenreTable* genretable)
+{
+  m_genretable = genretable;
 }

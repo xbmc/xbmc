@@ -19,7 +19,8 @@ SRCS   = channels.cpp \
 	Socket.cpp \
 	uri.cpp \
 	utils.cpp \
-	Cards.cpp
+	Cards.cpp \
+	GenreTable.cpp
 
 include ../Makefile.include
 

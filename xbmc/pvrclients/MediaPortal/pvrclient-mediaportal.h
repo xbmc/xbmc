@@ -115,7 +115,7 @@ private:
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
   CCards                  m_cCards;
-  GenreMap                m_genremap;
+  CGenreTable*            m_genretable;
   PLATFORM::CMutex        m_mutex;
 #ifdef TSREADER
   CTsReader*              m_tsreader;

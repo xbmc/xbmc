@@ -21,6 +21,7 @@
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 #include "Cards.h"
+#include "GenreTable.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ class cRecording
 {
 private:
   int m_Index;
+  int m_channelID;
   string m_channelName;
   string m_filePath;          ///< The full recording path as returned by the backend
   string m_basePath;          ///< The base path shared by all recordings (to be determined from the Card settings)
@@ -51,6 +53,11 @@ private:
   int m_keepUntil;
   time_t m_keepUntilDate;     ///< MediaPortal keepUntilDate
   CCards* m_cardSettings;     ///< Pointer to the MediaPortal card settings. Will be used to determine the base path of the recordings
+  string m_genre;
+  int m_genre_type;
+  int m_genre_subtype;
+  bool m_isRecording;
+  CGenreTable* m_genretable;
 
 public:
   cRecording();
@@ -114,4 +121,8 @@ public:
    * \brief Parse Recording file path and divide it in 3 parts: base path, subdirectory and filename;
    */
   void SplitFilePath(void);
+
+  int GenreType(void) const { return m_genre_type; }
+  int GenreSubType(void) const { return m_genre_subtype; }
+  void SetGenreTable(CGenreTable* genremap);
 };

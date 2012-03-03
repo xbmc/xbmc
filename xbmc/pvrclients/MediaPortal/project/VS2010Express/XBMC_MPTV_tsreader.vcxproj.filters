@@ -107,6 +107,9 @@
     <ClCompile Include="..\..\windows\FileUtils.cpp">
       <Filter>Source Files\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\GenreTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\channels.h">
@@ -182,6 +185,9 @@
       <Filter>Header Files\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\FileUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GenreTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
