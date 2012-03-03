@@ -21,7 +21,6 @@
 #include "os-dependent.h"
 #include "MemorySink.h"
 #include "GroupsockHelper.hh"
-#include "SingleLock.h"
 #include "client.h"
 
 using namespace ADDON;
@@ -81,7 +80,7 @@ void CMemorySink::addData(unsigned char* data, unsigned dataSize,struct timeval 
     XBMC->Log(LOG_DEBUG, "REENTRANT IN MEMORYSINK.CPP");
     return;
   }
-  CSingleLock BufferLock(m_BufferLock);
+  PLATFORM::CLockObject BufferLock(m_BufferLock);
   m_bReEntrant=true;
 
   m_buffer.PutBuffer(data, dataSize);

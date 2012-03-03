@@ -74,9 +74,6 @@
     <ClCompile Include="..\..\windows\FileUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\windows\CriticalSection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\windows\WindowsUtils.cpp">
       <Filter>Source Files\windows</Filter>
     </ClCompile>
@@ -124,13 +121,7 @@
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h">
       <Filter>Header Files\tinyXML</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\CriticalSection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\NonCopyable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\SingleLock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\windows\os_windows.h">

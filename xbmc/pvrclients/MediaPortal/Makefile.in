@@ -6,9 +6,9 @@
 #
 
 LIBS_LIVE555 = lib/live555/BasicUsageEnvironment/libBasicUsageEnvironment.a lib/live555/UsageEnvironment/libUsageEnvironment.a lib/live555/libgroupsock.a lib/live555/liveMedia/libliveMedia.a
-LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a lib/tinyxml/tinyxml.a -ldl
+LIBS   = lib/tinyxml/tinyxml.a -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
-LIB    = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
+LIB    = $(LIBDIR)/XBMC_MPTV.pvr
 
 SRCS   = channels.cpp \
 	client.cpp \
@@ -19,7 +19,6 @@ SRCS   = channels.cpp \
 	Socket.cpp \
 	uri.cpp \
 	utils.cpp \
-	posix/CriticalSection.cpp \
 	Cards.cpp
 
 include ../Makefile.include
@@ -31,10 +30,8 @@ clean:
 	$(MAKE) -C lib/tinyxml clean
 	#$(MAKE) -C lib/live555 clean
 	#$(MAKE) -C lib/tsreader clean
-	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 
 $(LIB): $(OBJS)
-	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket
 	$(MAKE) -C lib/tinyxml
 	#$(MAKE) -C lib/live555
 	#$(MAKE) -C lib/tsreader

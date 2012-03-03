@@ -132,7 +132,6 @@
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
-    <ClCompile Include="..\..\windows\CriticalSection.cpp" />
     <ClCompile Include="..\..\windows\FileUtils.cpp" />
     <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
@@ -141,7 +140,6 @@
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
-    <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
     <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
@@ -150,7 +148,6 @@
     <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />
-    <ClInclude Include="..\..\SingleLock.h" />
     <ClInclude Include="..\..\Socket.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />
