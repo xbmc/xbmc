@@ -250,6 +250,9 @@
     <Filter Include="peripherals\dialogs">
       <UniqueIdentifier>{9571e2bc-891d-4496-bcba-2ec3eed45704}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\paplayer\windows">
+      <UniqueIdentifier>{62ff8f5d-67f5-49e5-82a5-3d3ab28d055f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="network\websocket">
       <UniqueIdentifier>{88e84682-dede-4bdf-9e33-a8023dd5ac78}</UniqueIdentifier>
     </Filter>
@@ -2313,6 +2316,9 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
 	</ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\windows\WMAcodec.cpp">
+      <Filter>cores\paplayer\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5247,6 +5253,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
+    <ClInclude Include="..\..\xbmc\cores\paplayer\windows\WMAcodec.h">
+      <Filter>cores\paplayer\windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
