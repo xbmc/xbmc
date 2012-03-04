@@ -66,10 +66,8 @@ void CPVRClient::ResetProperties(void)
   if (!m_pInfo)
     m_pInfo               = new PVR_PROPERTIES;
   m_pInfo->iClientId      = -1;
-  CStdString userpath     = _P(Profile());
-  m_pInfo->strUserPath    = userpath.c_str();
-  CStdString clientpath   = _P(Path());
-  m_pInfo->strClientPath  = clientpath.c_str();
+  m_pInfo->strClientPath  = "";
+  m_pInfo->strUserPath    = "";
 
   m_bReadyToUse           = false;
   m_bGotBackendName       = false;
@@ -103,6 +101,10 @@ void CPVRClient::ResetAddonCapabilities(void)
 bool CPVRClient::Create(int iClientId)
 {
   m_pInfo->iClientId = iClientId;
+  CStdString userpath     = _P(Profile());
+  m_pInfo->strUserPath    = userpath.c_str();
+  CStdString clientpath   = _P(Path());
+  m_pInfo->strClientPath  = clientpath.c_str();
 
   /* initialise the add-on */
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create())
