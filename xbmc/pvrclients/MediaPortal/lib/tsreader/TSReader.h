@@ -22,7 +22,7 @@
 #include "client.h"
 #include "FileReader.h"
 #include "MemoryBuffer.h"
-#include "utils/StdString.h"
+#include "platform/util/StdString.h"
 #include "Cards.h"
 
 class CTsReader
