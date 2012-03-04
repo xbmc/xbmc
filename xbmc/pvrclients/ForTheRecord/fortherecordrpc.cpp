@@ -579,9 +579,24 @@ namespace ForTheRecord
     XBMC->Log(LOG_DEBUG, "GetRecordingDisksInfo");
     int retval = ForTheRecordJSONRPC("ForTheRecord/Control/GetRecordingDisksInfo", "", response);
 
-    if (response < 0)
+    if (retval < 0)
     {
       XBMC->Log(LOG_ERROR, "GetRecordingDisksInfo failed");
+    }
+    return retval;
+  }
+
+  /**
+   * \brief Returns version information (for display only)
+   */
+  int GetDisplayVersion(Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "GetDisplayVersion");
+    int retval = ForTheRecordJSONRPC("ForTheRecord/Core/Version", "", response);
+
+    if (retval < 0)
+    {
+      XBMC->Log(LOG_ERROR, "GetDisplayVersion failed");
     }
     return retval;
   }
@@ -663,7 +678,7 @@ namespace ForTheRecord
   //Remember the last LiveStream object to be able to stop the stream again
   Json::Value g_current_livestream;
 
-  int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, std::string& stream)
+  int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, const std::string channelname, std::string& stream)
   {
     // Send the channel object in json format, *and* a LiveStream object when there is a current 
     // LiveStream present.
@@ -672,8 +687,8 @@ namespace ForTheRecord
 
     char command[512];
       
-    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":0,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true},\"LiveStream\":",
-      channel_id.c_str(), channeltype);
+    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"%s\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":null,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true},\"LiveStream\":",
+      channel_id.c_str(), channeltype, channelname.c_str());
     std::string arguments = command;
     if (!g_current_livestream.empty())
     {
@@ -857,15 +872,14 @@ namespace ForTheRecord
     return retval;
   }
 
-  int GetRecordingsForTitle(const std::string& title, Json::Value& response)
+  int GetRecordingsForTitleUsingURL(const std::string& title, Json::Value& response)
   {
     int retval = E_FAILED;
+    XBMC->Log(LOG_DEBUG, "GetRecordingsForTitleUsingURL");
     CURL *curl;
-    
-    XBMC->Log(LOG_DEBUG, "GetRecordingsForTitle");
 
     curl = curl_easy_init();
-    
+
     if(curl)
     {
       std::string command = "ForTheRecord/Control/RecordingsForProgramTitle/Television/";
@@ -879,17 +893,40 @@ namespace ForTheRecord
         if (response.type() != Json::arrayValue)
         {
           retval = E_FAILED;
-          XBMC->Log(LOG_NOTICE, "GetRecordingsForTitle did not return a Json::arrayValue [%d].", response.type());
+          XBMC->Log(LOG_NOTICE, "GetRecordingsForTitleUsingURL did not return a Json::arrayValue [%d].", response.type());
         }
       }
       else
       {
-        XBMC->Log(LOG_NOTICE, "GetRecordingsForTitle remote call failed.");
+        XBMC->Log(LOG_NOTICE, "GetRecordingsForTitleUsingURL remote call failed.");
       }
 
       curl_easy_cleanup(curl);
     }
     return retval;
+  }
+
+  int GetRecordingsForTitleUsingPOSTData(const std::string& title, Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "GetRecordingsForTitleUsingPOSTData(\"%s\")", title.c_str());
+    std::string command = "ForTheRecord/Control/GetRecordingsForProgramTitle/Television?includeNonExisting=false";
+    std::string arguments = "\"" + title + "\"";
+
+    int retval = ForTheRecord::ForTheRecordJSONRPC(command, arguments, response);
+    if (retval < 0)
+    {
+      XBMC->Log(LOG_NOTICE, "GetRecordingsForTitleUsingPOSTData remote call failed.");
+    }
+    return retval;
+  }
+
+  int GetRecordingsForTitle(const std::string& title, int iBackendversion, Json::Value& response)
+  {
+    XBMC->Log(LOG_DEBUG, "GetRecordingsForTitle");
+
+    // Does the FTR version support putting the title in the POST data or not?
+    if (iBackendversion < FTR_1_6_1_0) return GetRecordingsForTitleUsingURL(title, response);
+    else return GetRecordingsForTitleUsingPOSTData(title, response);
   }
 
   int GetRecordingById(const std::string& id, Json::Value& response)
@@ -914,25 +951,14 @@ namespace ForTheRecord
 
   int DeleteRecording(const std::string recordingfilename)
   {
-    int retval = E_FAILED;
-    CURL *curl;
     std::string response;
 
     XBMC->Log(LOG_DEBUG, "DeleteRecording");
 
-    curl = curl_easy_init();
+    std::string command = "ForTheRecord/Control/DeleteRecording?deleteRecordingFile=true";
+    std::string arguments = recordingfilename;
 
-    if(curl)
-    {
-      std::string command = "ForTheRecord/Control/DeleteRecording?deleteRecordingFile=true";
-      std::string arguments = recordingfilename;
-      
-      retval = ForTheRecord::ForTheRecordRPC(command, arguments, response);
-
-      curl_easy_cleanup(curl);
-    }
-
-    return retval;
+    return ForTheRecord::ForTheRecordRPC(command, arguments, response);
   }
 
   int GetScheduleById(const std::string& id, Json::Value& response)
@@ -1053,7 +1079,7 @@ namespace ForTheRecord
     XBMC->Log(LOG_DEBUG, "GetUpcomingPrograms");
 
     // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true
-    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true", "", response);
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false", "", response);
 
     if(retval >= 0)
     {
@@ -1384,27 +1410,19 @@ namespace ForTheRecord
 //TODO: implement all functionality for a XBMC PVR client
 // Misc:
 //------
-// -GetDriveSpace
-//   Return the Total and Free Drive space on the PVR Backend
 // -GetBackendTime
 //   The time at the PVR Backend side
 //
 // EPG
 //-----
-// -RequestEPGForChannel
 //
 // Channels
-// -GetNumChannels
-// -RequestChannelList
 // -DeleteChannel (optional)
 // -RenameChannel (optional)
 // -MoveChannel (optional)
 //
 // Recordings
 //------------
-// -GetNumRecordings
-// -RequestRecordingsList
-// -DeleteRecording
 // -RenameRecording
 // -Cutmark functions  (optional)
 // Playback:
@@ -1415,19 +1433,8 @@ namespace ForTheRecord
 //
 // Timers (schedules)
 //--------------------
-// -GetNumTimers 
-// -RequestTimerList
-// -AddTimer
-// -DeleteTimer
 // -RenameTimer
 // -UpdateTimer
 //
 // Live TV/Radio
-// -OpenLiveStream
-// -CloseLiveStream
-// -ReadLiveStream (from TS buffer file)
 // -PauseLiveStream
-// -GetCurrentClientChannel
-// -SwitchChannel
-// -SignalQuality (optional)
-// -GetLiveStreamURL (for RTSP based streaming)

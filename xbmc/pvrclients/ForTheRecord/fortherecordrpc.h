@@ -25,7 +25,7 @@
 
 #define FTR_1_5_0_3 (40)
 #define FTR_1_6_0_1 (45)
-#define FTR_1_6_1_0 (48)
+#define FTR_1_6_1_0 (49)
 #define FTR_REST_MINIMUM_API_VERSION FTR_1_6_0_1
 #define FTR_REST_MAXIMUM_API_VERSION FTR_1_6_1_0
 #define E_FAILED -1
@@ -127,6 +127,11 @@ namespace ForTheRecord
   int GetRecordingDisksInfo(Json::Value& response);
 
   /**
+   * \brief Returns version information (for display only)
+   */
+  int GetDisplayVersion(Json::Value& response);
+
+  /**
    * \brief GetPluginServices Get all configured plugin services. {activeOnly} = Set to true to only receive active plugins. 
    * \brief Returns an array containing zero or more plugin services.
    * \param activeonly  set to true to only receive active plugins
@@ -148,7 +153,7 @@ namespace ForTheRecord
    * \param channel_id  The ForTheRecord ChannelID of the channel
    * \param stream      Reference to a string that will point to the tsbuffer file/RTSP stream
    */
-  int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, std::string& stream);
+  int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, const std::string channelname, std::string& stream);
 
   /**
    * \brief Stops the last tuned live stream
@@ -195,7 +200,7 @@ namespace ForTheRecord
    * \param title Program title of recording
    * \param response Reference to a std::string used to store the json response string
    */
-  int GetRecordingsForTitle(const std::string& title, Json::Value& response);
+  int GetRecordingsForTitle(const std::string& title, int iBackendversion, Json::Value& response);
 
   /**
    * \brief Fetch the detailed information of a recorded show
