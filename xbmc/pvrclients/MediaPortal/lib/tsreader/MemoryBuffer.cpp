@@ -28,15 +28,12 @@ using namespace ADDON;
 
 #define MAX_MEMORY_BUFFER_SIZE (1024L*1024L*12L)
 
-CMemoryBuffer::CMemoryBuffer(void) :m_event(NULL,FALSE,FALSE,NULL)
+CMemoryBuffer::CMemoryBuffer(void)
 {
   //XBMC->Log(LOG_DEBUG, "CMemoryBuffer::ctor");
   m_bRunning=true;
   m_BytesInBuffer=0;
   m_pcallback=NULL;
-#ifndef TARGET_WINDOWS
-  m_BufferLock.Initialize(); //workaround for pthread mutex crash
-#endif
 }
 
 CMemoryBuffer::~CMemoryBuffer()
@@ -93,7 +90,6 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
   while (m_BytesInBuffer < (unsigned long) lDataLength)
   {
     if (!m_bRunning) return 0;
-    m_event.ResetEvent();
     m_event.Wait();
     if (!m_bRunning) return 0;
   }
@@ -166,7 +162,7 @@ long CMemoryBuffer::PutBuffer(unsigned char *pbData, long lDataLength)
     }
     if (m_BytesInBuffer>0)
     {
-      m_event.SetEvent();
+      m_event.Broadcast();
     }
   }
   if (m_pcallback)
