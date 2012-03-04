@@ -1153,7 +1153,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      OnAssignContent(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
+      OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
@@ -1928,7 +1928,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   }
 
   bool foundDirectly = false;
-  info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
+  info = m_database.GetScraperForPath(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.IsEmpty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath(), settings, foundDirectly);
   return foundDirectly ? 1 : 0;
 }
 
