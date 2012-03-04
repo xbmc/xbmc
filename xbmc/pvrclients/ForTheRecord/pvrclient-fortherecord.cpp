@@ -700,7 +700,7 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
       if (recordinggroup.Parse(recordinggroupresponse[recordinggroupindex]))
       {
         Json::Value recordingsbytitleresponse;
-        retval = ForTheRecord::GetRecordingsForTitle(recordinggroup.ProgramTitle(), recordingsbytitleresponse);
+        retval = ForTheRecord::GetRecordingsForTitle(recordinggroup.ProgramTitle(), m_iBackendVersion, recordingsbytitleresponse);
         if (retval >= 0)
         {
           // process list of recording summaries for this group
@@ -1104,7 +1104,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
         XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
       }
     }
-    int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
+    int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), channel->Name(), filename);
 
 #if defined(TARGET_LINUX) || defined(TARGET_OSX)
     // TODO FHo: merge this code and the code that translates names from recordings
