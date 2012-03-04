@@ -97,7 +97,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_confirmed = false;
-      m_bRunScan = false;
       m_bNameChanged=false;
       UpdateButtons();
     }
@@ -151,16 +150,6 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
       share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetThumbnailImage();
     }
     g_settings.AddShare(type, share);
-
-    if (type == "video")
-    {
-      if (dialog->m_bRunScan)
-      {
-        CGUIDialogVideoScan* scanner = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (scanner)
-          scanner->StartScanning(share.strPath, true);
-      }
-    }
   }
   dialog->m_paths->Clear();
   return confirmed;
@@ -277,14 +266,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "SAP Streams";
     extraShares.push_back(share1);
 
-    share1.strPath = "upnp://";
-    share1.strName = "UPnP Devices";
-    extraShares.push_back(share1);
-
-    share1.strPath = "zeroconf://";
-    share1.strName = "Zeroconf Browser";
-    extraShares.push_back(share1);
-
     // add the recordings dir as needed
     if (CPVRDirectory::HasRecordings())
     {
@@ -363,7 +344,7 @@ void CGUIDialogMediaSource::OnOK()
     if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath) && 
         !share.strPath.Left(6).Equals("rss://"))
     {
-      CGUIWindowVideoBase::OnAssignContent(share.strPath, 0, m_info, m_settings);
+      CGUIWindowVideoBase::OnAssignContent(share.strPath);
     }
   }
 

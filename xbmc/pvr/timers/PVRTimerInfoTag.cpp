@@ -497,7 +497,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   }
 
   /* check if a valid channel is set */
-  CPVRChannel *channel = (CPVRChannel *) tag.ChannelTag();
+  const CPVRChannel *channel = tag.ChannelTag();
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);

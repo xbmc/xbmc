@@ -37,7 +37,7 @@ public:
   cXVDRSession();
   virtual ~cXVDRSession();
 
-  virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
+  virtual bool      Open(const std::string& hostname, const char *name = NULL);
   virtual bool      Login();
   virtual void      Close();
   virtual void      Abort();
@@ -53,9 +53,13 @@ public:
   const std::string& GetServerName() { return m_server; }
   const std::string& GetVersion()    { return m_version; }
 
-protected:
+  void SetTimeout(int ms);
+  void SetCompressionLevel(int level);
+  void SetAudioType(int type);
 
-  void SleepMs(int ms);
+  static void SleepMs(int ms);
+
+protected:
 
   bool TryReconnect();
   bool IsOpen() { return m_fd != INVALID_SOCKET; }
@@ -69,6 +73,7 @@ protected:
   std::string     m_hostname;
   int             m_port;
   std::string     m_name;
+  int             m_timeout;
 
 private:
 
@@ -79,6 +84,8 @@ private:
   std::string m_server;
   std::string m_version;
   bool        m_connectionLost;
+  int         m_compressionlevel;
+  int         m_audiotype;
 
   struct {
         uint32_t opCodeID;

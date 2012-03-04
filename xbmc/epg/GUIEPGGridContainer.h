@@ -63,6 +63,7 @@ namespace EPG
     const int GetNumChannels()   { return m_channels; };
     virtual int GetSelectedItem() const;
     const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
+    virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
     virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     virtual void DoRender();
@@ -85,6 +86,8 @@ namespace EPG
     void GoToBegin();
     void GoToEnd();
     void SetStartEnd(CDateTime start, CDateTime end);
+    void SetChannel(const PVR::CPVRChannel &channel);
+    void SetChannel(const CStdString &channel);
 
   protected:
     bool OnClick(int actionID);

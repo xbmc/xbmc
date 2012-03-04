@@ -86,6 +86,7 @@ namespace EPG
     virtual PVR::CPVRChannel *Channel(void) const;
 
     virtual int ChannelID(void) const;
+    virtual int ChannelNumber(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
@@ -235,18 +236,18 @@ namespace EPG
      * @brief Get the start time of the first entry in this table.
      * @return The first date in UTC.
      */
-    virtual const CDateTime &GetFirstDate(void) const;
+    virtual CDateTime GetFirstDate(void) const;
 
     /*!
      * @brief Get the end time of the last entry in this table.
      * @return The last date in UTC.
      */
-    virtual const CDateTime &GetLastDate(void) const;
+    virtual CDateTime GetLastDate(void) const;
 
     /*!
      * @return The last time this table was scanned.
      */
-    virtual const CDateTime &GetLastScanTime(void);
+    virtual CDateTime GetLastScanTime(void);
 
     /*!
      * @brief Notify observers when the currently active tag changed.
@@ -326,11 +327,6 @@ namespace EPG
      */
     virtual bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
 
-    /*!
-     * @brief Update the cached first and last date.
-     */
-    virtual void UpdateFirstAndLastDates(void);
-
     virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
 
     std::map<CDateTime, CEpgInfoTag*> m_tags;
@@ -343,10 +339,9 @@ namespace EPG
     CDateTime                  m_nowActiveStart;  /*!< the start time of the tag that is currently active */
 
     CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
-    CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
-    CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
 
     int                        m_iPVRChannelId;   /*!< the channel this EPG belongs to */
+    int                        m_iPVRChannelNumber; /*!< the channel number in the "all channels" group. set on create and not updated */
 
     CCriticalSection           m_critSection;     /*!< critical section for changes in this table */
   };

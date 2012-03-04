@@ -40,24 +40,32 @@ namespace PLATFORM
     struct SyncedBuffer
     {
     public:
-      SyncedBuffer(size_t iMaxSize = 100)
-      {
-        m_maxSize = iMaxSize;
-      }
+      SyncedBuffer(size_t iMaxSize = 100) :
+          m_maxSize(iMaxSize) {}
 
       virtual ~SyncedBuffer(void)
       {
-        CLockObject lock(m_mutex, true);
         Clear();
       }
 
       void Clear(void)
       {
+        CLockObject lock(m_mutex);
         while (!m_buffer.empty())
           m_buffer.pop();
       }
 
-      size_t Size(void) const { return m_buffer.size(); }
+      size_t Size(void)
+      {
+        CLockObject lock(m_mutex);
+        return m_buffer.size();
+      }
+
+      bool IsEmpty(void)
+      {
+        CLockObject lock(m_mutex);
+        return m_buffer.empty();
+      }
 
       bool Push(_BType entry)
       {

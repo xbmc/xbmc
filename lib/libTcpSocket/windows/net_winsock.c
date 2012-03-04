@@ -296,3 +296,42 @@ tcp_send(socket_t fdSock, char *buf, int len, int flags)
   else
     return -1;
 }
+
+int
+tcp_send_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
+{
+  int x, tot = 0;
+  fd_set fd_write;
+  struct timeval tv;
+
+  if (nTimeout <= 0 || fdSock == INVALID_SOCKET)
+    return EINVAL;
+
+  while(tot != (int)nLen)
+  {
+    tv.tv_sec  =         nTimeout / 1000;
+    tv.tv_usec = 1000 * (nTimeout % 1000);
+
+    FD_ZERO(&fd_write);
+    FD_SET(fdSock, &fd_write);
+
+    x = select(fdSock + 1, NULL, &fd_write, NULL, &tv);
+
+    if (x == 0)
+      return ETIMEDOUT;
+
+    x = send(fdSock, (char*)buf + tot, nLen - tot, 0);
+    if (x == -1)
+    {
+      if (errno == EAGAIN)
+        continue;
+      return errno;
+    }
+
+    if (x == 0)
+      return ECONNRESET;
+
+    tot += x;
+  }
+  return 0;
+}

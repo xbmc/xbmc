@@ -23,7 +23,8 @@
   #include "MediaSink.hh" //Live555 header
 #endif
 
-#include "MemoryBuffer.h" 
+#include "MemoryBuffer.h"
+#include "platform/threads/mutex.h"
 
 class CMemorySink: public MediaSink
 {
@@ -45,7 +46,7 @@ class CMemorySink: public MediaSink
   private: // redefined virtual functions:
     virtual Boolean continuePlaying();
 
-    CCriticalSection m_BufferLock;
+    PLATFORM::CMutex m_BufferLock;
     unsigned char* m_pSubmitBuffer;
     int   m_iSubmitBufferPos;
     bool  m_bReEntrant;

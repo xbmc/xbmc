@@ -24,19 +24,12 @@
 #define __EPG_H
 
 #include <stdlib.h>
-#include <map>
 #include <string>
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
+#include "GenreTable.h"
 
 using namespace std;
-
-typedef struct genre {
-  int type;
-  int subtype;
-} genre_t;
-
-typedef std::map<std::string, genre_t> GenreMap;
 
 class cEpg
 {
@@ -58,8 +51,7 @@ private:
   int m_seriesNumber;
   int m_starRating;
   int m_parentalRating;
-  GenreMap* m_genremap;
-  void SetGenre(string& Genre, int genreType, int genreSubType);
+  CGenreTable* m_genretable;
 
 public:
   cEpg();
@@ -84,7 +76,7 @@ public:
   const char* EpisodePart(void) const { return m_episodePart.c_str(); };
   int StarRating(void) const { return m_starRating; };
   int ParentalRating(void) const { return m_parentalRating; };
-  void SetGenreMap(GenreMap* genremap);
+  void SetGenreTable(CGenreTable* genremap);
 };
 
 #endif //__EPG_H

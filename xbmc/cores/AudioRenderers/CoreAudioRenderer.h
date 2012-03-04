@@ -165,8 +165,7 @@ private:
   bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap, bool allowMixing = true);
   bool InitializePCMEncoded(UInt32 sampleRate);
   
-  bool CreateMixMap();
-  
+  AudioChannelLayoutTag GetDefaultLayout(UInt32 channelCount);
   static OSStatus HardwareListenerProc(AudioHardwarePropertyID property, void *clientref);
   static OSStatus DeviceListenerProc(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void *clientref);
 

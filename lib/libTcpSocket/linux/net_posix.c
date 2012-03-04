@@ -251,3 +251,38 @@ tcp_send(socket_t fdSock, void *buf, int len, int flags)
   else
     return -1;
 }
+
+int
+tcp_send_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
+{
+  int x, tot = 0;
+  struct pollfd fds;
+
+  if (nTimeout <= 0 || fdSock == INVALID_SOCKET)
+    return EINVAL;
+
+  fds.fd = fdSock;
+  fds.events = POLLOUT;
+  fds.revents = 0;
+
+  while(tot != (int)nLen)
+  {
+    x = poll(&fds, 1, nTimeout);
+    if (x == 0)
+      return ETIMEDOUT;
+
+    x = send(fdSock, buf + tot, nLen - tot, MSG_DONTWAIT);
+    if (x == -1)
+    {
+      if (errno == EAGAIN)
+        continue;
+      return errno;
+    }
+
+    if (x == 0)
+      return ECONNRESET;
+
+    tot += x;
+  }
+  return 0;
+}

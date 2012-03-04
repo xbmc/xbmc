@@ -45,7 +45,7 @@ public:
   cXVDRChannelScan();
   ~cXVDRChannelScan();
 
-  bool Open(const std::string& hostname, int port, const char* name = "XBMC channel scanner");
+  bool Open(const std::string& hostname, const char* name = "XBMC channel scanner");
 
   bool OnClick(int controlId);
   bool OnFocus(int controlId);

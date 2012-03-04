@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -16,39 +17,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CriticalSection.h"
+#include <map>
+#include <string>
 
-CCriticalSection::CCriticalSection(void): locked(0)
-{
-  Initialize();
-}
+typedef struct genre {
+  int type;
+  int subtype;
+} genre_t;
 
-void CCriticalSection::Initialize(void)
-{
-  InitializeCriticalSection(&m_CriticalSection);
-  locked = 0;
-}
+typedef std::map<std::string, genre_t> GenreMap;
 
-CCriticalSection::~CCriticalSection(void)
+class CGenreTable
 {
-  DeleteCriticalSection(&m_CriticalSection);
-}
+public:
+  CGenreTable(const std::string &filename) { LoadGenreXML(filename); };
+  bool LoadGenreXML(const std::string &filename);
 
-void CCriticalSection::lock(void)
-{
-  EnterCriticalSection(&m_CriticalSection);
-  locked++;
-}
-
-void CCriticalSection::unlock(void)
-{
-  if (!--locked)
-  {
-    LeaveCriticalSection(&m_CriticalSection);
-  }
-}
-
-bool CCriticalSection::try_lock()
-{
-  return TryEnterCriticalSection(&m_CriticalSection) ?  locked++, true : false;
-}
+  /**
+   * \brief Convert a genre string into a type/subtype combination using the data in the GenreMap
+   * \param strGenre (in)
+   * \param genreType (out)
+   * \param genreSubType (out)
+   */
+  void GenreToTypes(std::string& strGenre, int& genreType, int& genreSubType);
+private:
+  GenreMap m_genremap;
+};

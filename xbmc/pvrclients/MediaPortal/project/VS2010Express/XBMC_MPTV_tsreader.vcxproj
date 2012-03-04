@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\GenreTable.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
@@ -141,7 +142,6 @@
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
-    <ClCompile Include="..\..\windows\CriticalSection.cpp" />
     <ClCompile Include="..\..\windows\FileUtils.cpp" />
     <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
@@ -149,9 +149,9 @@
     <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
-    <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
     <ClInclude Include="..\..\FileUtils.h" />
+    <ClInclude Include="..\..\GenreTable.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
@@ -163,9 +163,7 @@
     <ClInclude Include="..\..\lib\tsreader\Thread.h" />
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
     <ClInclude Include="..\..\lib\tsreader\WaitEvent.h" />
-    <ClInclude Include="..\..\NonCopyable.h" />
     <ClInclude Include="..\..\os-dependent.h" />
-    <ClInclude Include="..\..\SingleLock.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\windows\os_windows.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />

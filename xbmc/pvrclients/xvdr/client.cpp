@@ -26,30 +26,18 @@
 #include "XVDRRecording.h"
 #include "XVDRData.h"
 #include "XVDRChannelScan.h"
+#include "XVDRSettings.h"
 
+#include <string.h>
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <stdint.h>
 
 using namespace std;
 using namespace ADDON;
 
-bool m_bCreated               = false;
 ADDON_STATUS m_CurStatus      = ADDON_STATUS_UNKNOWN;
-
-/* User adjustable settings are saved here.
- * Default values are defined inside client.h
- * and exported to the other source files.
- */
-std::string   g_szHostname              = DEFAULT_HOST;
-bool          g_bCharsetConv            = DEFAULT_CHARCONV;     ///< Convert VDR's incoming strings to UTF8 character set
-bool          g_bHandleMessages         = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
-int           g_iConnectTimeout         = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
-int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priority this client have in response to other clients
-bool          g_bAutoChannelGroups      = DEFAULT_AUTOGROUPS;
-int           g_iCompression            = DEFAULT_COMPRESSION;
-int           g_iAudioType              = DEFAULT_AUDIOTYPE;
-int           g_iUpdateChannels         = DEFAULT_UPDATECHANNELS;
 
 CHelper_libXBMC_addon *XBMC   = NULL;
 CHelper_libXBMC_gui   *GUI    = NULL;
@@ -58,11 +46,16 @@ CHelper_libXBMC_pvr   *PVR    = NULL;
 cXVDRDemux      *XVDRDemuxer       = NULL;
 cXVDRData       *XVDRData          = NULL;
 cXVDRRecording  *XVDRRecording     = NULL;
+cMutex          XVDRMutex;
+cMutex          XVDRMutexDemux;
+cMutex          XVDRMutexRec;
+
+static int priotable[] = { 0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,99,100 };
 
 extern "C" {
 
 /***********************************************************
- * Standart AddOn related public library functions
+ * Standard AddOn related public library functions
  ***********************************************************/
 
 ADDON_STATUS ADDON_Create(void* hdl, void* props)
@@ -94,91 +87,23 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   XBMC->Log(LOG_DEBUG, "Creating VDR XVDR PVR-Client");
 
-  m_CurStatus    = ADDON_STATUS_UNKNOWN;
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
 
-  /* Read setting "host" from settings.xml */
-  char * buffer = (char*) malloc(128);
-  buffer[0] = 0; /* Set the end of string */
-
-  if (XBMC->GetSetting("host", buffer))
-    g_szHostname = buffer;
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default", DEFAULT_HOST);
-    g_szHostname = DEFAULT_HOST;
-  }
-  free(buffer);
-
-  /* Read setting "compression" from settings.xml */
-  if (!XBMC->GetSetting("compression", &g_iCompression))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'compression' setting, falling back to %i as default", DEFAULT_COMPRESSION);
-    g_iCompression = DEFAULT_COMPRESSION;
-  }
-  else
-    g_iCompression *= 3;
-
-  /* Read setting "priority" from settings.xml */
-  if (!XBMC->GetSetting("priority", &g_iPriority))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'priority' setting, falling back to %i as default", DEFAULT_PRIORITY);
-    g_iPriority = DEFAULT_PRIORITY;
-  }
-
-  /* Read setting "convertchar" from settings.xml */
-  if (!XBMC->GetSetting("convertchar", &g_bCharsetConv))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
-    g_bCharsetConv = DEFAULT_CHARCONV;
-  }
-
-  /* Read setting "timeout" from settings.xml */
-  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
-    g_iConnectTimeout = DEFAULT_TIMEOUT;
-  }
-
-  /* Read setting "handlemessages" from settings.xml */
-  if (!XBMC->GetSetting("handlemessages", &g_bHandleMessages))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
-    g_bHandleMessages = DEFAULT_HANDLE_MSG;
-  }
-
-  /* Read setting "autochannelgroups" from settings.xml */
-  if (!XBMC->GetSetting("autochannelgroups", &g_bAutoChannelGroups))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'autochannelgroups' setting, falling back to 'false' as default");
-    g_bAutoChannelGroups = DEFAULT_AUTOGROUPS;
-  }
-
-  /* Read setting "audiotype" from settings.xml */
-  if (!XBMC->GetSetting("audiotype", &g_iAudioType))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'audiotype' setting, falling back to type %i as default", DEFAULT_AUDIOTYPE);
-    g_iAudioType = DEFAULT_TIMEOUT;
-  }
-
-  /* Read setting "updatechannels" from settings.xml */
-  if (!XBMC->GetSetting("updatechannels", &g_iUpdateChannels))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'updatechannels' setting, falling back to type %i as default", DEFAULT_UPDATECHANNELS);
-    g_iUpdateChannels = DEFAULT_UPDATECHANNELS;
-  }
+  cXVDRSettings& s = cXVDRSettings::GetInstance();
+  s.load();
 
   XVDRData = new cXVDRData;
-  if (!XVDRData->Open(g_szHostname, DEFAULT_PORT))
-  {
+  XVDRData->SetTimeout(s.ConnectTimeout() * 1000);
+  XVDRData->SetCompressionLevel(s.Compression() * 3);
+  XVDRData->SetAudioType(s.AudioType());
+
+  cTimeMs RetryTimeout;
+  bool bConnected = false;
+
+  while (!(bConnected = XVDRData->Open(s.Hostname())) && RetryTimeout.Elapsed() < (uint32_t)s.ConnectTimeout() * 1000)
+    cXVDRSession::SleepMs(100);
+
+  if (!bConnected){
     delete XVDRData;
     delete PVR;
     delete XBMC;
@@ -189,22 +114,23 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     return m_CurStatus;
   }
 
+
   if (!XVDRData->Login())
   {
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
 
-  if (!XVDRData->EnableStatusInterface(g_bHandleMessages))
+  if (!XVDRData->EnableStatusInterface(s.HandleMessages()))
   {
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
 
-  XVDRData->SetUpdateChannels(g_iUpdateChannels);
+  XVDRData->ChannelFilter(s.FTAChannels(), s.NativeLangOnly(), s.vcaids);
+  XVDRData->SetUpdateChannels(s.UpdateChannels());
 
   m_CurStatus = ADDON_STATUS_OK;
-  m_bCreated = true;
   return m_CurStatus;
 }
 
@@ -215,24 +141,13 @@ ADDON_STATUS ADDON_GetStatus()
 
 void ADDON_Destroy()
 {
-  if (m_bCreated)
-  {
-    delete XVDRData;
-    XVDRData = NULL;
-  }
+  delete XVDRData;
+  delete PVR;
+  delete XBMC;
 
-  if (PVR)
-  {
-    delete PVR;
-    PVR = NULL;
-  }
-
-  if (XBMC)
-  {
-    delete XBMC;
-    XBMC = NULL;
-  }
-
+  XVDRData = NULL;
+  PVR = NULL;
+  XBMC = NULL;
   m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 
@@ -248,67 +163,22 @@ unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 
 ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
 {
-  string str = settingName;
-  if (str == "host")
-  {
-    string tmp_sHostname;
-    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
-    tmp_sHostname = g_szHostname;
-    g_szHostname = (const char*) settingValue;
-    if (tmp_sHostname != g_szHostname)
-      return ADDON_STATUS_NEED_RESTART;
-  }
-  else if (str == "compression")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'compression' from %u to %u", g_iCompression, *(int*) settingValue);
-    int old_value = g_iCompression;
-    g_iCompression = (*(int*) settingValue) * 3;
+  bool bChanged = false;
+  cXVDRSettings& s = cXVDRSettings::GetInstance();
+  bChanged = s.set(settingName, settingValue);
 
-    if (old_value != g_iCompression)
-      return ADDON_STATUS_NEED_RESTART;
-  }
-  else if (str == "priority")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'priority' from %u to %u", g_iPriority, *(int*) settingValue);
-    g_iPriority = *(int*) settingValue;
-  }
-  else if (str == "convertchar")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", g_bCharsetConv, *(bool*) settingValue);
-    g_bCharsetConv = *(bool*) settingValue;
-  }
-  else if (str == "timeout")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", g_iConnectTimeout, *(int*) settingValue);
-    g_iConnectTimeout = *(int*) settingValue;
-  }
-  else if (str == "handlemessages")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", g_bHandleMessages, *(bool*) settingValue);
-    g_bHandleMessages = *(bool*) settingValue;
-    if (XVDRData) XVDRData->EnableStatusInterface(g_bHandleMessages);
-  }
-  else if (str == "autochannelgroups")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'autochannelgroups' from %u to %u", g_bAutoChannelGroups, *(bool*) settingValue);
-    if (g_bAutoChannelGroups != *(bool*) settingValue)
-    {
-      g_bAutoChannelGroups = *(bool*) settingValue;
-      return ADDON_STATUS_NEED_RESTART;
-    }
-  }
-  else if (str == "audiotype")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'audiotype' from %i to %i", g_iAudioType, *(int*) settingValue);
-    g_iAudioType = *(bool*) settingValue;
-  }
-  else if (str == "updatechannels")
-  {
-    XBMC->Log(LOG_INFO, "Changed Setting 'updatechannels' from %i to %i", g_iUpdateChannels, *(int*) settingValue);
-    g_iUpdateChannels = *(bool*) settingValue;
-    if (XVDRData != NULL)
-      XVDRData->SetUpdateChannels(g_iUpdateChannels);
-  }
+  if(bChanged && (strcmp(settingName, "host") == 0))
+    return ADDON_STATUS_NEED_RESTART;
+
+  s.load();
+
+  XVDRData->SetTimeout(s.ConnectTimeout() * 1000);
+  XVDRData->SetCompressionLevel(s.Compression() * 3);
+  XVDRData->SetAudioType(s.AudioType());
+
+  XVDRData->EnableStatusInterface(s.HandleMessages());
+  XVDRData->SetUpdateChannels(s.UpdateChannels());
+  XVDRData->ChannelFilter(s.FTAChannels(), s.NativeLangOnly(), s.vcaids);
 
   return ADDON_STATUS_OK;
 }
@@ -319,7 +189,6 @@ void ADDON_Stop()
 
 void ADDON_FreeSettings()
 {
-
 }
 
 /***********************************************************
@@ -328,6 +197,8 @@ void ADDON_FreeSettings()
 
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
+  cMutexLock lock(&XVDRMutex);
+
   pCapabilities->bSupportsTimeshift          = false;
   pCapabilities->bSupportsEPG                = true;
   pCapabilities->bSupportsRecordings         = true;
@@ -348,12 +219,16 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 
 const char * GetBackendName(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   static std::string BackendName = XVDRData ? XVDRData->GetServerName() : "unknown";
   return BackendName.c_str();
 }
 
 const char * GetBackendVersion(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   static std::string BackendVersion;
   if (XVDRData) {
     std::stringstream format;
@@ -365,14 +240,16 @@ const char * GetBackendVersion(void)
 
 const char * GetConnectionString(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   static std::string ConnectionString;
   std::stringstream format;
 
   if (XVDRData) {
-    format << g_szHostname << ":" << DEFAULT_PORT;
+    format << cXVDRSettings::GetInstance().Hostname();
   }
   else {
-    format << g_szHostname << ":" << DEFAULT_PORT << " (addon error!)";
+    format << cXVDRSettings::GetInstance().Hostname() << " (addon error!)";
   }
   ConnectionString = format.str();
   return ConnectionString.c_str();
@@ -380,6 +257,8 @@ const char * GetConnectionString(void)
 
 PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -388,8 +267,10 @@ PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 
 PVR_ERROR DialogChannelScan(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   cXVDRChannelScan scanner;
-  scanner.Open(g_szHostname, DEFAULT_PORT);
+  scanner.Open(cXVDRSettings::GetInstance().Hostname());
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -398,6 +279,8 @@ PVR_ERROR DialogChannelScan(void)
 
 PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -410,6 +293,8 @@ PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t
 
 int GetChannelsAmount(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return 0;
 
@@ -418,6 +303,8 @@ int GetChannelsAmount(void)
 
 PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -430,18 +317,22 @@ PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
 
 int GetChannelGroupsAmount()
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
-  return XVDRData->GetChannelGroupCount(g_bAutoChannelGroups);
+  return XVDRData->GetChannelGroupCount(cXVDRSettings::GetInstance().AutoChannelGroups());
 }
 
 PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
-  if(XVDRData->GetChannelGroupCount(g_bAutoChannelGroups) > 0)
+  if(XVDRData->GetChannelGroupCount(cXVDRSettings::GetInstance().AutoChannelGroups()) > 0)
     return XVDRData->GetChannelGroupList(handle, bRadio) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR;
 
   return PVR_ERROR_NO_ERROR;
@@ -449,6 +340,8 @@ PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
 
 PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -462,6 +355,8 @@ PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &gro
 
 int GetTimersAmount(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return 0;
 
@@ -470,6 +365,8 @@ int GetTimersAmount(void)
 
 PVR_ERROR GetTimers(PVR_HANDLE handle)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -478,6 +375,8 @@ PVR_ERROR GetTimers(PVR_HANDLE handle)
 
 PVR_ERROR AddTimer(const PVR_TIMER &timer)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -486,6 +385,8 @@ PVR_ERROR AddTimer(const PVR_TIMER &timer)
 
 PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForce)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -494,6 +395,8 @@ PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForce)
 
 PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -506,6 +409,8 @@ PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 
 int GetRecordingsAmount(void)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return 0;
 
@@ -514,6 +419,8 @@ int GetRecordingsAmount(void)
 
 PVR_ERROR GetRecordings(PVR_HANDLE handle)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -522,6 +429,8 @@ PVR_ERROR GetRecordings(PVR_HANDLE handle)
 
 PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -530,6 +439,8 @@ PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 
 PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 {
+  cMutexLock lock(&XVDRMutex);
+
   if (!XVDRData)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -541,14 +452,26 @@ PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 
 bool OpenLiveStream(const PVR_CHANNEL &channel)
 {
-  CloseLiveStream();
+  cMutexLock lock(&XVDRMutexDemux);
+
+  if (XVDRDemuxer)
+  {
+    XVDRDemuxer->Close();
+    delete XVDRDemuxer;
+  }
 
   XVDRDemuxer = new cXVDRDemux;
-  return XVDRDemuxer->OpenChannel(channel);
+  XVDRDemuxer->SetTimeout(cXVDRSettings::GetInstance().ConnectTimeout() * 1000);
+  XVDRDemuxer->SetAudioType(cXVDRSettings::GetInstance().AudioType());
+  XVDRDemuxer->SetPriority(priotable[cXVDRSettings::GetInstance().Priority()]);
+
+  return XVDRDemuxer->OpenChannel(cXVDRSettings::GetInstance().Hostname(), channel);
 }
 
 void CloseLiveStream(void)
 {
+  cMutexLock lock(&XVDRMutexDemux);
+
   if (XVDRDemuxer)
   {
     XVDRDemuxer->Close();
@@ -559,6 +482,8 @@ void CloseLiveStream(void)
 
 PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 {
+  cMutexLock lock(&XVDRMutexDemux);
+
   if (!XVDRDemuxer)
     return PVR_ERROR_SERVER_ERROR;
 
@@ -567,21 +492,26 @@ PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 
 void DemuxAbort(void)
 {
-  if (XVDRDemuxer) XVDRDemuxer->Abort();
+  cMutexLock lock(&XVDRMutexDemux);
+  XBMC->Log(LOG_DEBUG, "DemuxAbort");
 }
 
 void DemuxReset(void)
 {
+  cMutexLock lock(&XVDRMutexDemux);
   XBMC->Log(LOG_DEBUG, "DemuxReset");
 }
 
 void DemuxFlush(void)
 {
+  cMutexLock lock(&XVDRMutexDemux);
   XBMC->Log(LOG_DEBUG, "DemuxFlush");
 }
 
 DemuxPacket* DemuxRead(void)
 {
+  cMutexLock lock(&XVDRMutexDemux);
+
   if (!XVDRDemuxer)
     return NULL;
 
@@ -590,6 +520,8 @@ DemuxPacket* DemuxRead(void)
 
 int GetCurrentClientChannel(void)
 {
+  cMutexLock lock(&XVDRMutexDemux);
+
   if (XVDRDemuxer)
     return XVDRDemuxer->CurrentChannel();
 
@@ -598,19 +530,26 @@ int GetCurrentClientChannel(void)
 
 bool SwitchChannel(const PVR_CHANNEL &channel)
 {
-  if (XVDRDemuxer)
-    return XVDRDemuxer->SwitchChannel(channel);
+  cMutexLock lock(&XVDRMutexDemux);
 
-  return false;
+  if (XVDRDemuxer == NULL)
+    return false;
+
+  XVDRDemuxer->SetTimeout(cXVDRSettings::GetInstance().ConnectTimeout() * 1000);
+  XVDRDemuxer->SetAudioType(cXVDRSettings::GetInstance().AudioType());
+  XVDRDemuxer->SetPriority(priotable[cXVDRSettings::GetInstance().Priority()]);
+
+  return XVDRDemuxer->SwitchChannel(channel);
 }
 
 PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
+  cMutexLock lock(&XVDRMutexDemux);
+
   if (!XVDRDemuxer)
     return PVR_ERROR_SERVER_ERROR;
 
   return (XVDRDemuxer->GetSignalStatus(signalStatus) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
-
 }
 
 
@@ -619,17 +558,23 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 
 bool OpenRecordedStream(const PVR_RECORDING &recording)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if(!XVDRData)
     return false;
 
   CloseRecordedStream();
 
   XVDRRecording = new cXVDRRecording;
-  return XVDRRecording->OpenRecording(recording);
+  XVDRRecording->SetTimeout(cXVDRSettings::GetInstance().ConnectTimeout() * 1000);
+
+  return XVDRRecording->OpenRecording(cXVDRSettings::GetInstance().Hostname(), recording);
 }
 
 void CloseRecordedStream(void)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if (XVDRRecording)
   {
     XVDRRecording->Close();
@@ -640,6 +585,8 @@ void CloseRecordedStream(void)
 
 int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if (!XVDRRecording)
     return -1;
 
@@ -648,6 +595,8 @@ int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
 
 long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if (XVDRRecording)
     return XVDRRecording->Seek(iPosition, iWhence);
 
@@ -656,6 +605,8 @@ long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */)
 
 long long PositionRecordedStream(void)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if (XVDRRecording)
     return XVDRRecording->Position();
 
@@ -664,6 +615,8 @@ long long PositionRecordedStream(void)
 
 long long LengthRecordedStream(void)
 {
+  cMutexLock lock(&XVDRMutexRec);
+
   if (XVDRRecording)
     return XVDRRecording->Length();
 

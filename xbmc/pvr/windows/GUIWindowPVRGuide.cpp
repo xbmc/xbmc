@@ -225,10 +225,13 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
 bool CGUIWindowPVRGuide::SelectPlayingFile(void)
 {
-  bool bReturn(false);
-  // TODO
-
-  return bReturn;
+  if (m_iGuideView == GUIDE_VIEW_TIMELINE)
+  {
+    if (m_parent->m_guideGrid && g_PVRManager.IsPlaying())
+      m_parent->m_guideGrid->SetChannel(g_application.CurrentFile());
+    return true;
+  }
+  return false;
 }
 
 void CGUIWindowPVRGuide::UpdateData(void)

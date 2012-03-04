@@ -580,26 +580,6 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
     query = "idFile" + negate + " in (select distinct idFile from streamdetails where strSubtitleLanguage " + parameter + ")";
   else if (m_field == FIELD_VIDEOASPECT)
     query = "idFile" + negate + " in (select distinct idFile from streamdetails where fVideoAspect " + parameter + ")";
-  else if (m_field == FIELD_PLAYLIST)
-  { // playlist field - grab our playlist and add to our where clause
-    CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(m_parameter, strType);
-    if (!playlistFile.IsEmpty())
-    {
-      CSmartPlaylist playlist;
-      playlist.Load(playlistFile);
-      CStdString playlistQuery;
-      // only playlists of same type will be part of the query
-      if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
-      {
-        playlist.SetType(strType);
-        playlistQuery = playlist.GetWhereClause(db, false);
-      }
-      if (m_operator == OPERATOR_DOES_NOT_EQUAL && playlist.GetType().Equals(strType))
-        query.Format("NOT (%s)", playlistQuery.c_str());
-      else if (m_operator == OPERATOR_EQUALS && playlist.GetType().Equals(strType))
-        query = playlistQuery;
-    }
-  }
   if (m_field == FIELD_PLAYCOUNT && strType != "songs" && strType != "albums")
   { // playcount is stored as NULL or number in video db
     if ((m_operator == OPERATOR_EQUALS && m_parameter == "0") ||
@@ -931,7 +911,7 @@ void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
   m_playlistRules.push_back(rule);
 }
 
-CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, bool needWhere /* = true */)
+CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists, bool needWhere /* = true */)
 {
   CStdString rule, currentRule;
   for (vector<CSmartPlaylistRule>::iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
@@ -941,7 +921,33 @@ CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, bool needWhere /* = tru
     else if (needWhere)
       rule += "WHERE ";
     rule += "(";
-    currentRule = (*it).GetWhereClause(db, GetType());
+    CStdString currentRule;
+    if (it->m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
+    {
+      CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter, GetType());
+      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      {
+        referencedPlaylists.insert(playlistFile);
+        CSmartPlaylist playlist;
+        playlist.Load(playlistFile);
+        CStdString playlistQuery;
+        // only playlists of same type will be part of the query
+        if (playlist.GetType().Equals(GetType()) || (playlist.GetType().Equals("mixed") && (GetType() == "songs" || GetType() == "musicvideos")) || playlist.GetType().IsEmpty())
+        {
+          playlist.SetType(GetType());
+          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists, false);
+        }
+        if (playlist.GetType().Equals(GetType()))
+        {
+          if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
+            currentRule.Format("NOT (%s)", playlistQuery.c_str());
+          else
+            currentRule = playlistQuery;
+        }
+      }
+    }
+    else
+      currentRule = (*it).GetWhereClause(db, GetType());
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
     if (currentRule.IsEmpty())
       currentRule = m_matchAllRules ? "'1'" : "'0'";

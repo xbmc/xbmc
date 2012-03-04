@@ -43,10 +43,14 @@
 using namespace ADDON;
 
 cXVDRSession::cXVDRSession()
-  : m_fd(INVALID_SOCKET)
+  : m_timeout(3000)
+  , m_fd(INVALID_SOCKET)
   , m_protocol(0)
   , m_connectionLost(false)
+  , m_compressionlevel(0)
+  , m_audiotype(0)
 {
+  m_port = 34891;
 }
 
 cXVDRSession::~cXVDRSession()
@@ -68,12 +72,14 @@ void cXVDRSession::Close()
   m_fd = INVALID_SOCKET;
 }
 
-bool cXVDRSession::Open(const std::string& hostname, int port, const char *name)
+bool cXVDRSession::Open(const std::string& hostname, const char *name)
 {
   Close();
 
   char errbuf[128];
-  m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf), g_iConnectTimeout * 1000);
+  errbuf[0] = 0;
+
+  m_fd = tcp_connect(hostname.c_str(), m_port, errbuf, sizeof(errbuf), m_timeout);
 
   if (m_fd == INVALID_SOCKET)
   {
@@ -83,7 +89,6 @@ bool cXVDRSession::Open(const std::string& hostname, int port, const char *name)
 
   // store connection data
   m_hostname = hostname;
-  m_port = port;
 
   if(name != NULL)
     m_name = name;
@@ -93,64 +98,50 @@ bool cXVDRSession::Open(const std::string& hostname, int port, const char *name)
 
 bool cXVDRSession::Login()
 {
-  try
-  {
-    cRequestPacket vrp;
-    if (!vrp.init(XVDR_LOGIN))                  throw "Can't init cRequestPacket";
-    if (!vrp.add_U32(XVDRPROTOCOLVERSION))      throw "Can't add protocol version to RequestPacket";
+  cRequestPacket vrp;
+
+  if (!vrp.init(XVDR_LOGIN))
+    return false;
+  if (!vrp.add_U32(XVDRPROTOCOLVERSION))
+    return false;
 #ifdef HAVE_ZLIB
-    if (!vrp.add_U8(g_iCompression))            throw "Can't add compression parameter";
+  if (!vrp.add_U8(m_compressionlevel))
+    return false;
 #else
-    if (!vrp.add_U8(0))                         throw "Can't add compression parameter";
+  if (!vrp.add_U8(0))
+    return false;
 #endif
-    if (!m_name.empty())
-    {
-      if (!vrp.add_String(m_name.c_str()))      throw "Can't add client name to RequestPacket";
-    }
-    else
-    {
-      if (!vrp.add_String("XBMC Media Center")) throw "Can't add client name to RequestPacket";
-    }
+  if (!vrp.add_String(m_name.empty() ? "XBMC Media Center" : m_name.c_str()))
+    return false;
 
-    const char* code = XBMC->GetDVDMenuLanguage();
-    const char* lang = ISO639_FindLanguage(code);
+  const char* code = XBMC->GetDVDMenuLanguage();
+  const char* lang = ISO639_FindLanguage(code);
 
-    XBMC->Log(LOG_INFO, "Preferred Audio Language: %s", lang);
+  if (!vrp.add_String((lang != NULL) ? lang : ""))
+    return false;
+  if (!vrp.add_U8(m_audiotype))
+    return false;
 
-    if (!vrp.add_String((lang != NULL) ? lang : "")) throw "Can't language to RequestPacket";
-    if (!vrp.add_U8(g_iAudioType))              throw "Can't add audiotype parameter";
-
-    // read welcome
-    cResponsePacket* vresp = ReadResult(&vrp);
-    if (!vresp)
-      throw "failed to read greeting from server";
-
-    uint32_t    protocol      = vresp->extract_U32();
-    uint32_t    vdrTime       = vresp->extract_U32();
-    int32_t     vdrTimeOffset = vresp->extract_S32();
-    const char *ServerName    = vresp->extract_String();
-    const char *ServerVersion = vresp->extract_String();
-
-    m_server    = ServerName;
-    m_version   = ServerVersion;
-    m_protocol  = protocol;
-
-    if (m_name.empty())
-      XBMC->Log(LOG_NOTICE, "Logged in at '%u+%i' to '%s' Version: '%s' with protocol version '%u'",
-        vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
-
-    delete[] ServerName;
-    delete[] ServerVersion;
-
-    delete vresp;
-  }
-  catch (const char * str)
+  // read welcome
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
-    tcp_close(m_fd);
-    m_fd = INVALID_SOCKET;
+    XBMC->Log(LOG_ERROR, "failed to read greeting from server");
     return false;
   }
+
+  m_protocol                = vresp->extract_U32();
+  uint32_t    vdrTime       = vresp->extract_U32();
+  int32_t     vdrTimeOffset = vresp->extract_S32();
+                              vresp->extract_String(m_server);
+                              vresp->extract_String(m_version);
+
+  if (m_name.empty())
+    XBMC->Log(LOG_NOTICE, "Logged in at '%u+%i' to '%s' Version: '%s' with protocol version '%u'", vdrTime, vdrTimeOffset, m_server.c_str(), m_version.c_str(), m_protocol);
+
+  XBMC->Log(LOG_INFO, "Preferred Audio Language: %s", lang);
+
+  delete vresp;
 
   return true;
 }
@@ -174,7 +165,7 @@ cResponsePacket* cXVDRSession::ReadMessage()
 
   // Data was read
 
-  bool compressed = (channelID & htonl(0x80000000));
+  bool compressed = ((channelID & htonl(0x80000000)) != 0);
 
   if(compressed)
     channelID ^= htonl(0x80000000);
@@ -252,7 +243,7 @@ cResponsePacket* cXVDRSession::ReadMessage()
 
 bool cXVDRSession::SendMessage(cRequestPacket* vrp)
 {
-  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == (int)vrp->getLen());
+  return (tcp_send_timeout(m_fd, vrp->getPtr(), vrp->getLen(), m_timeout) == 0);
 }
 
 cResponsePacket* cXVDRSession::ReadResult(cRequestPacket* vrp)
@@ -281,8 +272,8 @@ cResponsePacket* cXVDRSession::ReadResult(cRequestPacket* vrp)
 }
 
 bool cXVDRSession::ReadSuccess(cRequestPacket* vrp) {
-	uint32_t rc;
-	return ReadSuccess(vrp, rc);
+  uint32_t rc;
+  return ReadSuccess(vrp, rc);
 }
 
 bool cXVDRSession::ReadSuccess(cRequestPacket* vrp, uint32_t& rc)
@@ -310,7 +301,7 @@ void cXVDRSession::OnDisconnect() {
 }
 
 bool cXVDRSession::TryReconnect() {
-  if(!Open(m_hostname, m_port))
+  if(!Open(m_hostname))
     return false;
 
   if(!Login())
@@ -340,7 +331,25 @@ void cXVDRSession::SignalConnectionLost()
 
 bool cXVDRSession::readData(uint8_t* buffer, int totalBytes)
 {
-  return (tcp_read_timeout(m_fd, buffer, totalBytes, g_iConnectTimeout * 1000) == 0);
+  return (tcp_read_timeout(m_fd, buffer, totalBytes, m_timeout) == 0);
+}
+
+void cXVDRSession::SetTimeout(int ms)
+{
+  m_timeout = ms;
+}
+
+void cXVDRSession::SetCompressionLevel(int level)
+{
+  if (level < 0 || level > 9)
+    return;
+
+  m_compressionlevel = level;
+}
+
+void cXVDRSession::SetAudioType(int type)
+{
+  m_audiotype = type;
 }
 
 void cXVDRSession::SleepMs(int ms)

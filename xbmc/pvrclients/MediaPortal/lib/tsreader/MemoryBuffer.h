@@ -20,7 +20,7 @@
 #if defined TSREADER && defined LIVE555
 
 #include "WaitEvent.h"
-#include "CriticalSection.h"
+#include "platform/threads/mutex.h"
 #include <vector>
 
 using namespace std;
@@ -55,7 +55,7 @@ class CMemoryBuffer
 
   protected:
     vector<BUFFERITEM *> m_Array;
-    CCriticalSection m_BufferLock;
+    PLATFORM::CMutex m_BufferLock;
     unsigned long    m_BytesInBuffer;
     CWaitEvent m_event;
     IMemoryCallback* m_pcallback;

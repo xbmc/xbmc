@@ -56,6 +56,7 @@ CAddonCallbacks::~CAddonCallbacks()
   m_helperGUI = NULL;
   delete m_helperPVR;
   m_helperPVR = NULL;
+  delete m_callbacks->libBasePath;
   delete m_callbacks;
   m_callbacks = NULL;
 }

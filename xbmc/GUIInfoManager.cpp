@@ -4611,7 +4611,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
       if (item->HasPVRChannelInfoTag())
         number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-        number.Format("%i", item->GetEPGInfoTag()->ChannelTag()->ChannelNumber());
+        number.Format("%i", item->GetEPGInfoTag()->PVRChannelNumber());
       if (item->HasPVRTimerInfoTag())
         number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
@@ -4622,7 +4622,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->ChannelName();
     if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
-      return item->GetEPGInfoTag()->ChannelTag()->ChannelName();
+      return item->GetEPGInfoTag()->PVRChannelName();
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->m_strChannelName;
     if (item->HasPVRTimerInfoTag())

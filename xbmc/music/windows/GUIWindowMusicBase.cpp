@@ -61,6 +61,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 #include "ThumbnailCache.h"
 
 using namespace std;

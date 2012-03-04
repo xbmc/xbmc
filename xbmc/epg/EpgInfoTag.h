@@ -24,6 +24,7 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "XBDateTime.h"
 #include "Epg.h"
+#include "utils/StringUtils.h"
 
 namespace PVR
 {
@@ -43,15 +44,9 @@ namespace EPG
 
   public:
     /*!
-     * @brief Create a new EPG event.
-     * @param iUniqueBroadcastId The unique broadcast ID for this event.
-     */
-    CEpgInfoTag(int iUniqueBroadcastId);
-
-    /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(void);
+    CEpgInfoTag(int iEpgId = -1, int iPVRChannelNumber = -1, int iPVRChannelID = -1, const CStdString &strTableName = StringUtils::EmptyString);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
@@ -385,6 +380,10 @@ namespace EPG
      */
     virtual bool HasPVRChannel(void) const;
 
+    virtual int PVRChannelNumber(void) const;
+
+    virtual CStdString PVRChannelName(void) const;
+
     /*!
      * @brief Get the channel that plays this event.
      * @return a pointer to the channel.
@@ -449,6 +448,10 @@ namespace EPG
     CDateTime              m_timerStart;         /*!< the start time of the timer (if any) */
     int                    m_iTimerId;           /*!< the id of the timer (if any) */
     int                    m_iEpgId;             /*!< the ID of the schedule that this event belongs to */
+
+    int                    m_iPVRChannelNumber;  /*!< the channel number in the "all channels" group */
+    int                    m_iPVRChannelID;      /*!< the ID of the PVR channel */
+    CStdString             m_strTableName;       /*!< the name of the EPG table (or PVR channel, if it's a PVR epg table */
     CCriticalSection       m_critSection;
   };
 }

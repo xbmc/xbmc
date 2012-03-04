@@ -46,11 +46,9 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
-    m_iPVRChannelId(-1)
+    m_iPVRChannelId(-1),
+    m_iPVRChannelNumber(-1)
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
@@ -60,11 +58,9 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
-    m_iPVRChannelId(channel->ChannelID())
+    m_iPVRChannelId(channel->ChannelID()),
+    m_iPVRChannelNumber(channel->ChannelNumber())
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::CEpg(void) :
@@ -74,11 +70,9 @@ CEpg::CEpg(void) :
     m_iEpgID(0),
     m_strName(StringUtils::EmptyString),
     m_strScraperName(StringUtils::EmptyString),
-    m_iPVRChannelId(-1)
+    m_iPVRChannelId(-1),
+    m_iPVRChannelNumber(-1)
 {
-  m_lastScanTime.SetValid(false);
-  m_firstDate.SetValid(false);
-  m_lastDate.SetValid(false);
 }
 
 CEpg::~CEpg(void)
@@ -88,17 +82,16 @@ CEpg::~CEpg(void)
 
 CEpg &CEpg::operator =(const CEpg &right)
 {
-  m_bChanged        = right.m_bChanged;
-  m_bTagsChanged    = right.m_bTagsChanged;
-  m_bLoaded         = right.m_bLoaded;
-  m_iEpgID          = right.m_iEpgID;
-  m_strName         = right.m_strName;
-  m_strScraperName  = right.m_strScraperName;
-  m_nowActiveStart  = right.m_nowActiveStart;
-  m_lastScanTime    = right.m_lastScanTime;
-  m_firstDate       = right.m_firstDate;
-  m_lastDate        = right.m_lastDate;
-  m_iPVRChannelId   = right.m_iPVRChannelId;
+  m_bChanged          = right.m_bChanged;
+  m_bTagsChanged      = right.m_bTagsChanged;
+  m_bLoaded           = right.m_bLoaded;
+  m_iEpgID            = right.m_iEpgID;
+  m_strName           = right.m_strName;
+  m_strScraperName    = right.m_strScraperName;
+  m_nowActiveStart    = right.m_nowActiveStart;
+  m_lastScanTime      = right.m_lastScanTime;
+  m_iPVRChannelId     = right.m_iPVRChannelId;
+  m_iPVRChannelNumber = right.m_iPVRChannelNumber;
 
   for (map<CDateTime, CEpgInfoTag *>::const_iterator it = right.m_tags.begin(); it != right.m_tags.end(); it++)
     m_tags.insert(make_pair(it->first, new CEpgInfoTag(*it->second)));
@@ -172,9 +165,6 @@ void CEpg::Cleanup(const CDateTime &Time)
       bTagsChanged = true;
     }
   }
-
-  if (bTagsChanged)
-    UpdateFirstAndLastDates();
 }
 
 bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
@@ -183,7 +173,7 @@ bool CEpg::InfoTagNow(CEpgInfoTag &tag, bool bUpdateIfNeeded /* = true */)
   if (m_nowActiveStart.IsValid())
   {
     map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.find(m_nowActiveStart);
-    if (it != m_tags.end())
+    if (it != m_tags.end() && it->second->IsActive())
     {
       tag = *it->second;
       return true;
@@ -322,17 +312,19 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
       newTag = itr->second;
     else
     {
-      newTag = new CEpgInfoTag;
+      newTag = new CEpgInfoTag(m_iEpgID, m_iPVRChannelNumber, m_iPVRChannelId, m_strName);
       m_tags.insert(make_pair(tag.StartAsUTC(), newTag));
-      newTag->m_iEpgId = m_iEpgID;
     }
   }
 
   if (newTag)
   {
     newTag->Update(tag);
-    newTag->m_iEpgId = m_iEpgID;
-    newTag->m_bChanged = false;
+    newTag->m_iEpgId            = m_iEpgID;
+    newTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
+    newTag->m_iPVRChannelID     = m_iPVRChannelId;
+    newTag->m_strTableName      = m_strName;
+    newTag->m_bChanged          = false;
   }
 }
 
@@ -351,14 +343,17 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   else
   {
     /* create a new tag if no tag with this ID exists */
-    infoTag = new CEpgInfoTag();
+    infoTag = new CEpgInfoTag(m_iEpgID, m_iPVRChannelNumber, m_iPVRChannelId, m_strName);
     infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
     bNewTag = true;
   }
 
   infoTag->Update(tag, bNewTag);
-  infoTag->m_iEpgId = m_iEpgID;
+  infoTag->m_iEpgId            = m_iEpgID;
+  infoTag->m_iPVRChannelNumber = m_iPVRChannelNumber;
+  infoTag->m_iPVRChannelID     = m_iPVRChannelId;
+  infoTag->m_strTableName      = m_strName;
 
   if (bUpdateDatabase)
     bReturn = infoTag->Persist();
@@ -390,30 +385,12 @@ bool CEpg::Load(void)
   {
     CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
         __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
-    UpdateFirstAndLastDates();
     bReturn = true;
   }
 
   m_bLoaded = true;
 
   return bReturn;
-}
-
-void CEpg::UpdateFirstAndLastDates(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* update the first and last date */
-  if (m_tags.size() > 0)
-  {
-    m_firstDate = m_tags.begin()->second->StartAsUTC();
-    m_lastDate = m_tags.rbegin()->second->EndAsUTC();
-  }
-  else
-  {
-    m_firstDate.SetValid(false);
-    m_lastDate.SetValid(false);
-  }
 }
 
 bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
@@ -445,9 +422,6 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     /* update the last scan time of this table */
     m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
-    /* update the first and last date */
-    UpdateFirstAndLastDates();
-
     //m_bTagsChanged = true;
     /* persist changes */
     if (bStoreInDb)
@@ -470,26 +444,30 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   return bReturn;
 }
 
-const CDateTime &CEpg::GetLastScanTime(void)
+CDateTime CEpg::GetLastScanTime(void)
 {
-  CSingleLock lock(m_critSection);
-
-  if (!m_lastScanTime.IsValid())
+  CDateTime lastScanTime;
   {
-    if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
-    {
-      CEpgDatabase *database = g_EpgContainer.GetDatabase();
-      CDateTime dtReturn; dtReturn.SetValid(false);
-
-      if (database && database->IsOpen())
-        database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
-    }
+    CSingleLock lock(m_critSection);
 
     if (!m_lastScanTime.IsValid())
     {
-      m_lastScanTime.SetDateTime(0, 0, 0, 0, 0, 0);
-      m_lastScanTime.SetValid(true);
+      if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
+      {
+        CEpgDatabase *database = g_EpgContainer.GetDatabase();
+        CDateTime dtReturn; dtReturn.SetValid(false);
+
+        if (database && database->IsOpen())
+          database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
+      }
+
+      if (!m_lastScanTime.IsValid())
+      {
+        m_lastScanTime.SetDateTime(0, 0, 0, 0, 0, 0);
+        m_lastScanTime.SetValid(true);
+      }
     }
+    lastScanTime = m_lastScanTime;
   }
 
   return m_lastScanTime;
@@ -624,18 +602,26 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
   return bReturn;
 }
 
-const CDateTime &CEpg::GetFirstDate(void) const
+CDateTime CEpg::GetFirstDate(void) const
 {
-  CSingleLock lock(m_critSection);
+  CDateTime first;
 
-  return m_firstDate;
+  CSingleLock lock(m_critSection);
+  if (m_tags.size() > 0)
+    first = m_tags.begin()->second->StartAsUTC();
+
+  return first;
 }
 
-const CDateTime &CEpg::GetLastDate(void) const
+CDateTime CEpg::GetLastDate(void) const
 {
-  CSingleLock lock(m_critSection);
+  CDateTime last;
 
-  return m_lastDate;
+  CSingleLock lock(m_critSection);
+  if (m_tags.size() > 0)
+    last = m_tags.rbegin()->second->StartAsUTC();
+
+  return last;
 }
 
 //@}
@@ -651,7 +637,10 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
   m_strName        = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
   if (m_iPVRChannelId == -1 || epg.m_iPVRChannelId != -1)
-    m_iPVRChannelId  = epg.m_iPVRChannelId;
+  {
+    m_iPVRChannelId     = epg.m_iPVRChannelId;
+    m_iPVRChannelNumber = epg.m_iPVRChannelNumber;
+  }
 
   if (bUpdateDb)
     bReturn = Persist();
@@ -666,9 +655,18 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 
 bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 {
-  bool bReturn(false);
+  bool bReturn(true);
   CEpgInfoTag *previousTag(NULL), *currentTag(NULL);
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database(NULL);
+  if (bUpdateDb)
+  {
+    database = g_EpgContainer.GetDatabase();
+    if (!database || !database->IsOpen())
+    {
+      CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+      return false;
+    }
+  }
 
   for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
@@ -679,20 +677,11 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     }
     currentTag = it->second;
 
-    if (previousTag->StartAsUTC() <= currentTag->StartAsUTC())
+    if (previousTag->EndAsUTC() >= currentTag->EndAsUTC())
     {
+      // delete the current tag. it's completely overlapped
       if (bUpdateDb)
-      {
-        if (!database || !database->IsOpen())
-        {
-          CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-          bReturn = false;
-          continue;
-        }
-        bReturn = database->Delete(*currentTag);
-      }
-      else
-        bReturn = true;
+        bReturn &= database->Delete(*currentTag);
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -700,13 +689,34 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
       delete currentTag;
       m_tags.erase(it++);
     }
-    else if (previousTag->StartAsUTC() < currentTag->EndAsUTC())
+    else if (previousTag->EndAsUTC() > currentTag->StartAsUTC())
     {
-      currentTag->SetEndFromUTC(previousTag->StartAsUTC());
+      currentTag->SetStartFromUTC(previousTag->EndAsUTC());
       if (bUpdateDb)
-        bReturn = currentTag->Persist();
-      else
-        bReturn = true;
+        bReturn &= currentTag->Persist();
+
+      previousTag = it->second;
+    }
+    else if (previousTag->EndAsUTC() < currentTag->StartAsUTC())
+    {
+      time_t start, end, middle;
+      previousTag->EndAsUTC().GetAsTime(start);
+      currentTag->StartAsUTC().GetAsTime(end);
+      middle = start + ((end - start) / 2);
+      CDateTime newTime(middle);
+
+      currentTag->SetStartFromUTC(newTime);
+      previousTag->SetEndFromUTC(newTime);
+
+      if (m_nowActiveStart == it->first)
+        m_nowActiveStart = currentTag->StartAsUTC();
+
+      if (bUpdateDb)
+      {
+        bReturn &= currentTag->Persist();
+        bReturn &= previousTag->Persist();
+      }
+
       previousTag = it->second;
     }
     else
@@ -761,9 +771,14 @@ bool CEpg::PersistTags(void) const
     return bReturn;
   }
 
-  time_t iStart, iEnd;
-  GetFirstDate().GetAsTime(iStart);
-  GetLastDate().GetAsTime(iEnd);
+  CDateTime first = GetFirstDate();
+  CDateTime last = GetLastDate();
+
+  time_t iStart(0), iEnd(0);
+  if (first.IsValid())
+    first.GetAsTime(iStart);
+  if (last.IsValid())
+    last.GetAsTime(iEnd);
   database->Delete(*this, iStart, iEnd);
 
   if (m_tags.size() > 0)
@@ -917,10 +932,22 @@ int CEpg::ChannelID(void) const
   return m_iPVRChannelId;
 }
 
+int CEpg::ChannelNumber(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_iPVRChannelNumber;
+}
+
 void CEpg::SetChannel(PVR::CPVRChannel *channel)
 {
   CSingleLock lock(m_critSection);
-  m_iPVRChannelId = channel->ChannelID();
+  m_iPVRChannelId     = channel->ChannelID();
+  m_iPVRChannelNumber = channel->ChannelNumber();
+  for (map<CDateTime, CEpgInfoTag *>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
+  {
+    it->second->m_iPVRChannelID     = m_iPVRChannelId;
+    it->second->m_iPVRChannelNumber = m_iPVRChannelNumber;
+  }
 }
 
 bool CEpg::HasPVRChannel(void) const

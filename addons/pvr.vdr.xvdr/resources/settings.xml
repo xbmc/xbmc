@@ -5,7 +5,7 @@
         <setting id="host" type="text" label="30000" default="127.0.0.1" />
         <setting id="timeout" type="enum" label="30004" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="3"/>
         <setting id="compression" type="enum" label="30001" lvalues="30053|30059|30060|30061" default="2" />
-        <setting id="priority" type="enum" label="30002" values="-1|0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95|99|100" default="99"/>
+        <setting id="priority" type="enum" label="30002" values="0|5|10|15|20|25|30|35|40|45|50|55|60|65|70|75|80|85|90|95|99|100" default="10"/>
         <setting id="convertchar" type="bool" label="30003" default="true" />
         <setting id="handlemessages" type="bool" label="30005" default="true" />
     </category>
@@ -15,5 +15,13 @@
         <setting id="autochannelgroups" type="bool" label="30046" default="false" />
         <setting id="audiotype" type="enum" label="30049" values="MP2|AC3|EAC3|AAC" default="0" />
         <setting id="updatechannels" type="enum" label="30052" lvalues="30053|30054|30055|30056|30057|30058" default="3" />
+    </category>
+
+    <!-- ChannelFilter -->
+    <category label="30067">
+        <setting id="ftachannels" type="bool" label="30068" default="true" />
+        <setting id="nativelangonly" type="bool" label="30069" default="false" />
+        <setting id="encryptedchannels" type="bool" label="30071" default="true" />
+        <setting id="caids" type="text" label="30070" default="" />
     </category>
 </settings>
