@@ -144,7 +144,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   if (strURL.Left(4).Equals("/vfs"))
   {
     strURL = strURL.Right(strURL.length() - 5);
-    CURL::Decode(strURL);
     return CreateFileDownloadResponse(connection, strURL, methodType);
   }
 
