@@ -104,70 +104,67 @@ bool CHTSPData::CheckConnection(void)
   return bReturn;
 }
 
-htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
+CHTSResult CHTSPData::ReadResult(htsmsg_t *m)
 {
-  if (!m_session->IsConnected())
-    return NULL;
+  CHTSResult retVal;
 
-  m_mutex.Lock();
+  if (!m_session->IsConnected())
+  {
+    htsmsg_destroy(m);
+    retVal.status = PVR_ERROR_NOT_POSSIBLE;
+    return retVal;
+  }
+
   uint32_t seq = mvp_atomic_inc(&g_iPacketSequence);
 
   SMessage &message(m_queue[seq]);
   message.event = new CEvent;
   message.msg   = NULL;
 
-  m_mutex.Unlock();
-
   htsmsg_add_u32(m, "seq", seq);
   if(!m_session->TransmitMessage(m))
   {
-    m_queue.erase(seq);
-    return NULL;
+    XBMC->Log(LOG_ERROR, "%s - failed to send command", __FUNCTION__);
+    retVal.status = PVR_ERROR_UNKNOWN;
   }
-
-  if(!message.event->Wait(g_iResponseTimeout * 1000))
+  else if(!message.event->Wait(g_iResponseTimeout * 1000))
   {
     XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
-    m_session->Close();
+    retVal.status = PVR_ERROR_SERVER_TIMEOUT;
   }
-  m_mutex.Lock();
+  else
+  {
+    retVal.message = message.msg;
+  }
 
-  m =    message.msg;
   delete message.event;
-
   m_queue.erase(seq);
 
-  m_mutex.Unlock();
-  return m;
+  return retVal;
 }
 
 bool CHTSPData::GetDriveSpace(long long *total, long long *used)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getDiskSpace");
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - failed to get getDiskSpace", __FUNCTION__);
     return false;
   }
 
   int64_t freespace;
-  if (htsmsg_get_s64(msg, "freediskspace", &freespace) != 0)
-  {
-    htsmsg_destroy(msg);
+  if (htsmsg_get_s64(result.message, "freediskspace", &freespace) != 0)
     return false;
-  }
 
   int64_t totalspace;
-  if (htsmsg_get_s64(msg, "totaldiskspace", &totalspace) != 0)
-  {
-    htsmsg_destroy(msg);
+  if (htsmsg_get_s64(result.message, "totaldiskspace", &totalspace) != 0)
     return false;
-  }
 
   *total = totalspace / 1024;
   *used  = (totalspace - freespace) / 1024;
-  htsmsg_destroy(msg);
   return true;
 }
 
@@ -175,25 +172,21 @@ bool CHTSPData::GetBackendTime(time_t *utcTime, int *gmtOffset)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getSysTime");
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_ERROR, "%s - failed to get sysTime", __FUNCTION__);
     return false;
   }
 
   unsigned int secs;
-  if (htsmsg_get_u32(msg, "time", &secs) != 0)
-  {
-    htsmsg_destroy(msg);
+  if (htsmsg_get_u32(result.message, "time", &secs) != 0)
     return false;
-  }
 
   int offset;
-  if (htsmsg_get_s32(msg, "timezone", &offset) != 0)
-  {
-    htsmsg_destroy(msg);
+  if (htsmsg_get_s32(result.message, "timezone", &offset) != 0)
     return false;
-  }
 
   XBMC->Log(LOG_DEBUG, "%s - tvheadend reported time=%u, timezone=%d, correction=%d"
       , __FUNCTION__, secs, offset);
@@ -201,7 +194,6 @@ bool CHTSPData::GetBackendTime(time_t *utcTime, int *gmtOffset)
   *utcTime = secs;
   *gmtOffset = offset;
 
-  htsmsg_destroy(msg);
   return true;
 }
 
@@ -240,6 +232,7 @@ PVR_ERROR CHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
 
 PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
+  PVR_ERROR retVal = PVR_ERROR_NO_ERROR;
   SChannels channels = GetChannels();
 
   if (channels.find(channel.iUniqueId) != channels.end())
@@ -249,12 +242,12 @@ PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
     SEvent event;
     event.id = channels[channel.iUniqueId].event;
     if (event.id == 0)
-      return PVR_ERROR_NO_ERROR;
+      return retVal;
 
     do
     {
-      bool success = GetEvent(event, event.id);
-      if (success)
+      PVR_ERROR result = GetEvent(event, event.id);
+      if (result == PVR_ERROR_NO_ERROR)
       {
         EPG_TAG broadcast;
         memset(&broadcast, 0, sizeof(EPG_TAG));
@@ -285,14 +278,19 @@ PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         stop = event.stop;
       }
       else
+      {
+        retVal = result;
         break;
+      }
 
     } while(iEnd > stop);
-
-    return PVR_ERROR_NO_ERROR;
+  }
+  else
+  {
+    retVal = PVR_ERROR_UNKNOWN;
   }
 
-  return PVR_ERROR_NO_ERROR;
+  return retVal;
 }
 
 SRecordings CHTSPData::GetDVREntries(bool recorded, bool scheduled)
@@ -382,21 +380,21 @@ PVR_ERROR CHTSPData::DeleteRecording(const PVR_RECORDING &recording)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
   htsmsg_add_u32(msg, "id", atoi(recording.strRecordingId));
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
-    return PVR_ERROR_SERVER_ERROR;
+    return result.status;
   }
 
   unsigned int success;
-  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  if (htsmsg_get_u32(result.message, "success", &success) != 0)
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -502,29 +500,28 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "cancelDvrEntry");
   htsmsg_add_u32(msg, "id", timer.iClientIndex);
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get cancelDvrEntry", __FUNCTION__);
-    return PVR_ERROR_SERVER_ERROR;
+    return result.status;
   }
 
   const char *strError = NULL;
-  if ((strError = htsmsg_get_str(msg, "error")))
+  if ((strError = htsmsg_get_str(result.message, "error")))
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Error deleting timer: '%s'", __FUNCTION__, strError);
     return PVR_ERROR_SERVER_ERROR;
   }
 
   unsigned int success;
-  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  if (htsmsg_get_u32(result.message, "success", &success) != 0)
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -562,29 +559,27 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
   htsmsg_add_str(msg, "description", timer.strSummary);
   htsmsg_add_str(msg, "creator",     "XBMC");
 
-  if ((msg = ReadResult(msg)) == NULL)
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get addDvrEntry", __FUNCTION__);
-    return PVR_ERROR_SERVER_ERROR;
+    return result.status;
   }
 
   const char *strError = NULL;
-  if ((strError = htsmsg_get_str(msg, "error")))
+  if ((strError = htsmsg_get_str(result.message, "error")))
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Error adding timer: '%s'", __FUNCTION__, strError);
     return PVR_ERROR_SERVER_ERROR;
   }
 
   unsigned int success;
-  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  if (htsmsg_get_u32(result.message, "success", &success) != 0)
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
@@ -598,22 +593,21 @@ PVR_ERROR CHTSPData::UpdateTimer(const PVR_TIMER &timer)
   htsmsg_add_str(msg, "title",  timer.strTitle);
   htsmsg_add_u32(msg, "start",  timer.startTime);
   htsmsg_add_u32(msg, "stop",   timer.endTime);
-  
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get updateDvrEntry", __FUNCTION__);
-    return PVR_ERROR_SERVER_ERROR;
+    return result.status;
   }
 
   unsigned int success;
-  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  if (htsmsg_get_u32(result.message, "success", &success) != 0)
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
@@ -625,22 +619,21 @@ PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
   htsmsg_add_str(msg, "method", "updateDvrEntry");
   htsmsg_add_u32(msg, "id",     atoi(recording.strRecordingId));
   htsmsg_add_str(msg, "title",  recording.strTitle);
-  
-  if ((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if (result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get updateDvrEntry", __FUNCTION__);
-    return PVR_ERROR_SERVER_ERROR;
+    return result.status;
   }
 
   unsigned int success;
-  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  if (htsmsg_get_u32(result.message, "success", &success) != 0)
   {
-    htsmsg_destroy(msg);
     XBMC->Log(LOG_DEBUG, "%s - Failed to parse param", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  htsmsg_destroy(msg);
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
@@ -775,39 +768,39 @@ STags CHTSPData::GetTags()
   return m_tags;
 }
 
-bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
+PVR_ERROR CHTSPData::GetEvent(SEvent& event, uint32_t id)
 {
   if(id == 0)
   {
     event.Clear();
-    return false;
+    return PVR_ERROR_UNKNOWN;
   }
 
   SEvents::iterator it = m_events.find(id);
   if(it != m_events.end())
   {
     event = it->second;
-    return true;
+    return PVR_ERROR_NO_ERROR;
   }
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
-  if((msg = ReadResult(msg)) == NULL)
+
+  CHTSResult result = ReadResult(msg);
+  if(result.status != PVR_ERROR_NO_ERROR)
   {
     XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
-    return false;
+    return result.status;
   }
 
-  bool bReturn(false);
-  if (ParseEvent(msg, id, event))
+  if (ParseEvent(result.message, id, event))
   {
     m_events[id] = event;
-    bReturn = true;
+    return PVR_ERROR_NO_ERROR;
   }
 
-  htsmsg_destroy(msg);
-  return bReturn;
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 bool CHTSPData::SendEnableAsync()
