@@ -728,13 +728,11 @@ case TMSG_POWERDOWN:
       }
       break;
 
-#ifdef HAS_DVD_DRIVE
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
-#endif
     case TMSG_VOLUME_SHOW:
       {
         CAction action((int)pMsg->dwParam1);
