@@ -60,13 +60,14 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
+    bool    Start();
+
     int64_t GetTime(bool interpolated = true);
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
     int     GetRefreshRate(double* interval = NULL);
     int64_t Wait(int64_t Target);
-    bool    WaitStarted(int MSecs);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged() { m_RefreshChanged = 1; }

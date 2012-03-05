@@ -123,6 +123,21 @@ CVideoReferenceClock::CVideoReferenceClock()
 #endif
 }
 
+bool CVideoReferenceClock::Start()
+{
+  if (ThreadHandle() && m_bStop)
+    StopThread(); //thread is busy stopping, wait for it to stop
+
+  if (ThreadHandle() == NULL)
+  {
+    Create();
+    //not waiting here can cause issues with alsa
+    return m_Started.WaitMSec(2000);
+  }
+  
+  return true;
+}
+
 void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
@@ -204,12 +219,6 @@ void CVideoReferenceClock::Process()
 #if defined(_WIN32) && defined(HAS_DX)
   g_Windowing.Unregister(&m_D3dCallback);
 #endif
-}
-
-bool CVideoReferenceClock::WaitStarted(int MSecs)
-{
-  //not waiting here can cause issues with alsa
-  return m_Started.WaitMSec(MSecs);
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
