@@ -25,6 +25,22 @@
 #include "../../../lib/platform/threads/threads.h"
 #include "HTSPConnection.h"
 
+class CHTSResult
+{
+public:
+  CHTSResult(void) : message(NULL), status(PVR_ERROR_NO_ERROR) {}
+  ~CHTSResult(void)
+  {
+    if (message != NULL)
+      htsmsg_destroy(message);
+  }
+
+  // the actual message
+  htsmsg *message;
+  // the return code
+  PVR_ERROR status;
+};
+
 class CHTSPData : public PLATFORM::CThread
 {
 public:
@@ -41,7 +57,7 @@ public:
    * @param message The message to send.
    * @return The returned message or NULL if an error occured or nothing was received.
    */
-  htsmsg_t *   ReadResult(htsmsg_t *message);
+  CHTSResult   ReadResult(htsmsg_t *message);
   int          GetProtocol(void) const   { return m_session->GetProtocol(); }
   const char * GetServerName(void) const { return m_session->GetServerName(); }
   const char * GetVersion(void) const    { return m_session->GetVersion(); }
@@ -78,7 +94,7 @@ private:
   SChannels GetChannels(int tag);
   SChannels GetChannels(STag &tag);
   STags GetTags();
-  bool GetEvent(SEvent& event, uint32_t id);
+  PVR_ERROR GetEvent(SEvent& event, uint32_t id);
   bool SendEnableAsync();
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 

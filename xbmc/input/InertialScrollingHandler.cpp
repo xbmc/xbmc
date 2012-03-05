@@ -75,6 +75,11 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   //on begin/tap stop all inertial scrolling
   if ( action->GetID() == ACTION_GESTURE_BEGIN )
   {
+    //release any former exclusive mouse mode
+    //for making switching between multiple lists
+    //possible
+    CGUIMessage message(GUI_MSG_EXCLUSIVE_MOUSE, 0, 0);
+    g_windowManager.SendMessage(message);     
     m_bScrolling = false;
     //wakeup screensaver on pan begin
     g_application.ResetScreenSaver();    

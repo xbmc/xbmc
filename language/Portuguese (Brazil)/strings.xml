@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator[wm] -->
 <!--Translator: Fabiano Santiago (fabianosan), bugre (wm) -->
 <!--Email: fabianosan@hotmail.com, wxxx333-nospam-at-gmail.com -->
-<!--Updated on 15/02/2012 by wcampos -->
+<!--Updated on 28/02/2012 by wcampos -->
 <!--Updated on 28/08/2011 by fabianosan -->
 <!--Updated on 15/11/2010 by bugre -->
 <!--Based on English 4a0e4931310c8957d73ffec0cf6fdfa9292bb8d4 (08.02.2012)-->
@@ -810,7 +810,7 @@
   <string id="1257">Gostaria de conectar ao sistema auto detectado?</string>
 
   <string id="1260">Anunciar estes serviços para outros sistemas via Zeroconf</string>
-  <string id="1270">Permitir ao XBMC receber contéudo AirPlay</string>
+  <string id="1270">Permitir ao XBMC receber conteúdo AirPlay</string>
   <string id="1271">Nome Equipamento</string>
   <string id="1272">- Usar senha para proteção</string>
 
