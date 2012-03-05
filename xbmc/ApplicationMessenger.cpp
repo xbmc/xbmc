@@ -733,16 +733,21 @@ case TMSG_POWERDOWN:
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
+      break;
+
     case TMSG_VOLUME_SHOW:
       {
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+      break;
+
     case TMSG_SPLASH_MESSAGE:
       {
         if (g_application.m_splash)
           g_application.m_splash->Show(pMsg->strParam);
       }
+      break;
   }
 }
 
