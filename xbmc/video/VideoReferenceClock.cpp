@@ -442,7 +442,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
 
   now = CurrentHostCounter();
   buffpos = 0;
-  while (CurrentHostCounter() - now < CurrentHostFrequency() * 5)
+  while (CurrentHostCounter() - now < CurrentHostFrequency() * 30)
   {
     fd_set set;
     FD_ZERO(&set);
