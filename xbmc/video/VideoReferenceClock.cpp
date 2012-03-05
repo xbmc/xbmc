@@ -31,6 +31,7 @@
   #include <sstream>
   #include <X11/extensions/Xrandr.h>
   #include "windowing/WindowingFactory.h"
+  #include "Application.h"
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(__APPLE__) && !defined(__arm__)
   #include <QuartzCore/CVDisplayLink.h>
@@ -370,6 +371,23 @@ bool CVideoReferenceClock::SetupGLX()
   m_MissedVblanks = 0;
 
   return true;
+}
+
+void CVideoReferenceClock::NvSettingsCallback(void* ptr)
+{
+  CVideoReferenceClock* videoreferenceclock = (CVideoReferenceClock*)ptr;
+
+  int refreshrate;
+  if (videoreferenceclock->ParseNvSettings(refreshrate))
+  {
+    CSingleLock SingleLock(videoreferenceclock->m_CritSection);
+    videoreferenceclock->m_RefreshRate = refreshrate;
+  }
+  else
+  {
+    CSingleLock SingleLock(videoreferenceclock->m_CritSection);
+    videoreferenceclock->m_UseNvSettings = false;
+  }
 }
 
 bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
@@ -1185,16 +1203,20 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings)
   {
-    int NvRefreshRate;
-    //if this fails we can't get the refreshrate from nvidia-settings
-    m_UseNvSettings = ParseNvSettings(NvRefreshRate);
+    //in the nvidia driver 295 series, nvidia's libGL overrides some functions in libc,
+    //which locks a mutex in the child process after fork() is called (for popen),
+    //since in the child process the main thread no longer exists,
+    //the mutex will never be unlocked, causing the child to hang,
+    //to work around this popen is called from app thread
+    ThreadMessageCallback callback = {NvSettingsCallback, this};
+    ThreadMessage msg = {};
+    msg.dwMessage = TMSG_CALLBACK;
+    msg.lpVoid = &callback;
+
+    g_application.getApplicationMessenger().SendMessage(msg, true);
 
     if (m_UseNvSettings)
-    {
-      CSingleLock SingleLock(m_CritSection);
-      m_RefreshRate = NvRefreshRate;
       return true;
-    }
 
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }

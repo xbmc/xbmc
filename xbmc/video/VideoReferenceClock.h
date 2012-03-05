@@ -109,6 +109,7 @@ class CVideoReferenceClock : public CThread
     bool SetupGLX();
     void RunGLX();
     void CleanupGLX();
+    static void NvSettingsCallback(void* ptr);
     bool ParseNvSettings(int& RefreshRate);
     int  GetRandRRate();
 

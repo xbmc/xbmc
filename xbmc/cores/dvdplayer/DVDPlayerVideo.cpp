@@ -157,7 +157,9 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
-  g_VideoReferenceClock.StopThread();
+
+  //don't wait on g_VideoReferenceClock to stop, since it might be waiting on the application messenger
+  g_VideoReferenceClock.StopThread(false);
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
