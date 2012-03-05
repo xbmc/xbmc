@@ -777,8 +777,8 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
   }
   else
   {
-    XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
-    if (!SendCommand2("ListRadioGroups\n", code, lines))
+    XBMC->Log(LOG_DEBUG, "GetChannelGroups for TV");
+    if (!SendCommand2("ListGroups\n", code, lines))
       return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -790,10 +790,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
 
     if (data.length() == 0)
     {
-      if(bRadio)
-        XBMC->Log(LOG_DEBUG, "TVServer returned no data. No radio groups found?");
-      else
-        XBMC->Log(LOG_DEBUG, "TVServer returned no data. No TVo groups found?");
+      XBMC->Log(LOG_DEBUG, "TVServer returned no data. No %s groups found?", ((bRadio) ? "radio" : "tv"));
       break;
     }
 
@@ -801,7 +798,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
 
     tag.bIsRadio = bRadio;
     tag.strGroupName = data.c_str();
-
+    XBMC->Log(LOG_DEBUG, "Adding %s group: %s", ((bRadio) ? "radio" : "tv"), tag.strGroupName);
     PVR->TransferChannelGroup(handle, &tag);
   }
 
