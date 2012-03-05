@@ -2,7 +2,7 @@
 <!--Translator: ezechiel1917-->
 <!--Date of translation: 26.09.2010-->
 <!--Updated 22.11.2011 by mirek-->
-<!--Updated 06.01.2012 by babča-->
+<!--Updated 06.01.2012 by babča: Live TV section-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Změnit</string>
@@ -166,8 +166,21 @@
   <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavení obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Možnosti úsporného režimu · Ukládání informací o ladění · Rodičovský zámek</string>
   <string id="31407">[B]MOŽNOSTI VZHLEDU[/B][CR][CR]Přizpůsobení vzhledu Confluence · Správa sekcí na úvodní obrazovce[CR]Nastavení pozadí vzhledu</string>
   <string id="31408">[B]MOŽNOSTI DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků</string>
+  <string id="31409">[B]MOŽNOSTI PŘEHRÁVÁNÍ TELEVIZNÍHO STREAMU[/B][CR][CR]Změnit zobrazení přes celou obrazovku · Správa EPG dat</string>
 
   <string id="31421">Přihlášení uživatele[CR]Pokračujte výběrem profilu</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Časovače</string>
+  <string id="31501">Naplánovaný čas</string>
+  <string id="31502">Televize</string>
+  <string id="31503">Přidat skupinu</string>
+  <string id="31504">Přejmenovat skupinu</string>
+  <string id="31505">Smazat skupinu</string>
+  <string id="31506">Dostupné[CR]skupiny</string>
+  <string id="31509">Skupina programů</string>
+  <string id="31510">Timer Set</string> <!-- check this later -->
+  <string id="31511">Nastavení programu</string>
 
   <!-- Weather plugin -->
   <string id="31900">Mapy počasí</string>
