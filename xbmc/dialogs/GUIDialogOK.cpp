@@ -59,3 +59,10 @@ void CGUIDialogOK::ShowAndGetInput(const CVariant &heading, const CVariant &line
   dialog->SetLine(2, line2);
   dialog->DoModal();
 }
+
+int CGUIDialogOK::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == ID_BUTTON_OK)
+    return 186;
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
+}
