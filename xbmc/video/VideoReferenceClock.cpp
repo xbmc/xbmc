@@ -398,17 +398,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     return false;
   }
 
-  //since nvidia's 295 series driver, popen will hang if there's a current GL context
-  //see trac ticket #12746
-  glXMakeCurrent(m_Dpy, None, NULL);
-
   NvSettings = popen(NVSETTINGSCMD, "r");
-
-  if (!m_bIsATI)
-    glXMakeCurrent(m_Dpy, m_Window, m_Context);
-  else
-    glXMakeCurrent(m_Dpy, m_glPixmap, m_Context);
-
   if (!NvSettings)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
