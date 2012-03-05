@@ -149,7 +149,7 @@
   <string id="170">Säädä näytön päivitysnopeus elokuvaan sopivaksi</string>
 
   <string id="172">Julkaistu</string>
-  <string id="173">4:3 videoiden näyttömuoto</string>
+  <string id="173">4:3-videoiden näyttömuoto</string>
 
   <string id="175">Musiikkityyli</string>
   <string id="176">Tyylilaji</string>
@@ -225,7 +225,7 @@
   <string id="251">Valitse kohdehakemisto</string>
   <string id="252">Syötä stereoääni kaikille kaiuttimille</string>
   <string id="253">Kanavien määrä</string>
-  <string id="254">- DTS yhteensopiva vastaanotin</string>
+  <string id="254">- DTS-yhteensopiva vastaanotin</string>
   <string id="255">CD-tietokanta</string>
   <string id="256">Noudetaan CD-tietoja</string>
   <string id="257">Virhe</string>
@@ -268,10 +268,10 @@
   <string id="296">Poista kirjanmerkit</string>
   <string id="297">Äänen ajoitus</string>
   <string id="298">Kirjanmerkit</string>
-  <string id="299">- AAC yhteensopiva vastaanotin</string>
-  <string id="300">- MP1 yhteensopiva vastaanotin</string>
-  <string id="301">- MP2 yhteensopiva vastaanotin</string>
-  <string id="302">- MP3 yhteensopiva vastaanotin</string>
+  <string id="299">- AAC-yhteensopiva vastaanotin</string>
+  <string id="300">- MP1-yhteensopiva vastaanotin</string>
+  <string id="301">- MP2-yhteensopiva vastaanotin</string>
+  <string id="302">- MP3-yhteensopiva vastaanotin</string>
   <string id="303">Viive</string>
   <string id="304">Kieli</string>
   <string id="305">Käytössä</string>
@@ -304,7 +304,7 @@
   <string id="336">Kuvataajuuden muunto</string>
   <string id="337">Äänilähtö</string>
   <string id="338">Analoginen</string>
-  <string id="339">Optinen/Koaksiaali</string>
+  <string id="339">Optinen/koaksiaali</string>
   <string id="340">Eri esittäjiä</string>
   <string id="341">Toista levy</string>
   <string id="342">Elokuvat</string>
@@ -326,7 +326,7 @@
   <string id="361">Kaikkien kuvaesitys</string>
   <string id="362">Näytönsäästäjän läpinäkyvyys</string>
   <string id="363">Järjestä: Tiedostonimi</string>
-  <string id="364">- Dolby Digital (AC3) yhteensopiva vastaanotin</string>
+  <string id="364">- Dolby Digital (AC3) -yhteensopiva vastaanotin</string>
   <string id="365">Järjestä: Nimi</string>
   <string id="366">Järjestä: Vuosi</string>
   <string id="367">Järjestä: Arvosana</string>
@@ -498,7 +498,7 @@
   <string id="543">DVD</string>
   <string id="544">Mediatiedot</string>
   <string id="545">Äänen ulostulo</string>
-  <string id="546">Äänen ulostulon laite</string>
+  <string id="546">Pakatun äänen ulostulo</string>
   <string id="547">Esittäjästä ei ole tietoja</string>
   <string id="548">Yhdistä monikanavaiset äänet stereoksi</string>
 
@@ -577,7 +577,7 @@
   <string id="633">Leveyden zoomaus</string>
   <string id="634">Venytä kokoon 16:9</string>
   <string id="635">Alkuperäinen koko</string>
-  <string id="636">Oma asetus</string>
+  <string id="636">Mukautettu</string>
   <string id="637">Tasonkorjaus</string>
   <string id="638">Tasonkorjaus-tilan säädöt</string>
   <string id="639">Käytä kappaletasoja</string>
@@ -696,18 +696,18 @@
   <string id="788">Verkkoliitäntä poistettu käytöstä.</string>
   <string id="789">Langattoman verkon nimi (ESSID)</string>
 
-  <string id="791">Tämän järjestelmän ohjelmat voi ohjata XBMC:aa</string>
+  <string id="791">Salli tämän järjestelmän ohjelmien ohjata XBMC:iä</string>
   <string id="792">Portti</string>
   <string id="793">Porttialue</string>
-  <string id="794">Muiden järjestelmien ohjelmat voi ohjata XBMC:aa</string>
+  <string id="794">Salli muiden järjestelmien ohjelmien ohjata XBMC:iä</string>
   <string id="795">Kertatapahtuman viive (ms)</string>
   <string id="796">Jatkuvan toiston viive (ms)</string>
   <string id="797">Yhteyksien enimmäismäärä</string>
   <string id="798">Internet-yhteys</string>
 
   <string id="850">Syötetty portin arvo on sopimaton</string>
-  <string id="851">Portti oltava väliltä 1-65535</string>
-  <string id="852">Portti oltava väliltä 1024-65535</string>
+  <string id="851">Portin oltava väliltä 1-65535</string>
+  <string id="852">Portin oltava väliltä 1024-65535</string>
 
   <string id="998">Lisää musiikkia...</string>
   <string id="999">Lisää videoita...</string>
@@ -807,12 +807,12 @@
   <string id="1257">Yhdistetäänkö havaittuun järjestelmään?</string>
 
   <string id="1260">Julkista nämä palvelut toisiin järjestelmiin Zeroconf-julkaisujärjestelmän kautta</string>
-  <string id="1270">Salli XBMC:n vastaanottaa AirPlay sisältöä</string>
+  <string id="1270">Salli XBMC:n vastaanottaa AirPlay-sisältöä</string>
   <string id="1271">Laitteen nimi</string>
   <string id="1272">- Käytä salasanaa</string>
 
-  <string id="1300">Valinnainen äänilaite</string>
-  <string id="1301">Valinnainen äänen ulostulon laite</string>
+  <string id="1300">Mukautettu äänilaite</string>
+  <string id="1301">Mukautettu pakatun äänen laite</string>
 
   <string id="1396">kasaantuvaa</string>
   <string id="1397">ja</string>
@@ -1045,7 +1045,7 @@
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU HQ skaalaustaso</string>
-  <string id="13122">VDPAU studiotasoinen värimuunnos</string>
+  <string id="13122">VDPAU:n studiotasoinen värimuunnos</string>
 
   <string id="13130">Tyhjennä muut näytöt</string>
   <string id="13131">Ei käytössä</string>
@@ -1221,14 +1221,14 @@
   <string id="13414">Sisällytä vain kokoelmilla olevat esittäjät</string>
   <string id="13415">Renderöintimenetelmä</string>
   <string id="13416">Automaattinen tunnistus</string>
-  <string id="13417">Basic Shaders (ARB)</string>
-  <string id="13418">Advanced Shaders (GLSL)</string>
+  <string id="13417">Yksinkertaiset varjostimet (ARB)</string>
+  <string id="13418">Edistyneet varjostimet (GLSL)</string>
   <string id="13419">Ohjelmallinen</string>
   <string id="13420">Poista turvallisesti</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Aloita kuvaesitys tästä</string>
   <string id="13423">Muista tämä polku</string>
-  <string id="13424">Pixel buffer objects käytössä</string>
+  <string id="13424">Käytä pikselipuskuriobjekteja</string>
   <string id="13425">Laitteistopohjainen kiihdytys (VDPAU)</string>
   <string id="13426">Laitteistopohjainen kiihdytys (VAAPI)</string>
   <string id="13427">Laitteistopohjainen kiihdytys (DXVA2)</string>
@@ -1240,14 +1240,14 @@
 
   <string id="13500">A/V-tahdistusmenetelmä</string>
   <string id="13501">Äänen kello</string>
-  <string id="13502">Videon kello (poista/lisää ääntä)</string>
+  <string id="13502">Videon kello (poista/kopioi ääninäytteitä)</string>
   <string id="13503">Videon kello (äänen uudelleennäytteistys)</string>
-  <string id="13504">Maksimi uudelleennäytteistys (%)</string>
+  <string id="13504">Maksimiuudelleennäytteistys (%)</string>
   <string id="13505">Uudellennäytteistyksen laatu</string>
-  <string id="13506">Matala(nopea)</string>
+  <string id="13506">Matala (nopea)</string>
   <string id="13507">Keski</string>
   <string id="13508">Korkea</string>
-  <string id="13509">Todella korkea(hidas)</string>
+  <string id="13509">Todella korkea (hidas)</string>
   <string id="13510">Tahdista toisto näyttöön</string>
 
   <string id="13550">Pysäytä toisto virkistystaajuuden vaihtamisen ajaksi</string>
@@ -1258,7 +1258,7 @@
   <string id="13600">Apple remote -kauko-ohjain</string>
 
   <string id="13602">XBMC voidaan käynnistää kauko-ohjaimella</string>
-  <string id="13603">Jaksottainen viive</string>
+  <string id="13603">Jaksoittainen viive</string>
 
   <string id="13610">Ei käytössä</string>
   <string id="13611">Normaali</string>
@@ -1306,7 +1306,7 @@
   <string id="14038">Verkkoasetuksia muutettu</string>
   <string id="14039">XBMC täytyy käynnistää uudelleen, jotta uudet</string>
   <string id="14040">asetukset tulevat käyttöön. Käynnistetäänkö uudelleen nyt?</string>
-  <string id="14041">Internet-yhteyden kaistan rajoitus</string>
+  <string id="14041">Internet-yhteyden kaistanrajoitus</string>
 
   <string id="14043">- Sammuta kesken toiston</string>
   <string id="14044">%i min</string>
@@ -1530,8 +1530,8 @@
   <string id="16309">Sinc (ohjelmallinen)</string>
   <string id="16310">Temporal</string>
   <string id="16311">Temporal/Spatial</string>
-  <string id="16312">(VDPAU)Kohinanvähennys</string>
-  <string id="16313">(VDPAU)Terävyys</string>
+  <string id="16312">(VDPAU) Kohinanvähennys</string>
+  <string id="16313">(VDPAU) Terävyys</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimoitu</string>
   <string id="16316">Automaattinen</string>
@@ -2562,14 +2562,14 @@
   <string id="22004">Viivästetty: %2.3fs</string>
   <string id="22005">Aiennettu: %2.3fs</string>
   <string id="22006">Tekstityksen ajoitus</string>
-  <string id="22007">OpenGL-valmistaja:</string>
-  <string id="22008">OpenGL-renderoija:</string>
+  <string id="22007">OpenGL-toimittaja:</string>
+  <string id="22008">OpenGL-renderöijä:</string>
   <string id="22009">OpenGL-versio:</string>
   <string id="22010">GPU:n lämpötila:</string>
   <string id="22011">CPU:n lämpötila:</string>
   <string id="22012">Kokonaismuisti</string>
   <string id="22013">Profiilin tiedot</string>
-  <string id="22014">Himmennä jos videon toisto keskeytetään</string>
+  <string id="22014">Himmennä keskeytettäessä videon toisto</string>
   <string id="22015">Kaikki tallennukset</string>
   <string id="22016">Nimet</string>
   <string id="22017">Ryhmät</string>
@@ -2578,8 +2578,8 @@
   <string id="22020">Ohjelmaopas</string>
   <string id="22021">Sallittu kuvasuhdevirhe mustien palkkien minimoimiseksi</string>
   <string id="22022">Näytä videotiedostot listauksissa</string>
-  <string id="22023">DirectX valmistaja:</string>
-  <string id="22024">Direct3D versio:</string>
+  <string id="22023">DirectX-toimittaja:</string>
+  <string id="22024">Direct3D-versio:</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Kirjasin</string>
@@ -2817,7 +2817,7 @@
   <string id="34300">Zeroconf-palvelua ei voitu käynnistää</string>
   <string id="34301">Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja.</string>
 
-  <string id="34400">Videon renreröintitapa</string>
+  <string id="34400">Videon renderöintitapa</string>
   <string id="34401">Ei voitu käyttää videon suodatin/skaalaus -asetuksia, otetaan käyttöön bilineaarinen skaalausmenetelmä</string>
   <string id="34402">Äänilaitteen alustaminen epäonnistui</string>
   <string id="34403">Tarkista ääniasetukset</string>

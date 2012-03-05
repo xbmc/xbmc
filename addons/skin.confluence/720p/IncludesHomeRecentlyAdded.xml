@@ -239,35 +239,35 @@
 			<item id="1">
 				<label>$INFO[Window.Property(LatestMovie.1.Title)]</label>
 				<label2></label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestMovie.1.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.1.Path)])</onclick>
 				<icon>$INFO[Window.Property(LatestMovie.1.Thumb)]</icon>
 				<thumb>-</thumb>
 			</item>
 			<item id="2">
 				<label>$INFO[Window.Property(LatestMovie.2.Title)]</label>
 				<label2></label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestMovie.2.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.2.Path)])</onclick>
 				<icon>$INFO[Window.Property(LatestMovie.2.Thumb)]</icon>
 				<thumb>-</thumb>
 			</item>
 			<item id="3">
 				<label>$INFO[Window.Property(LatestMovie.3.Title)]</label>
 				<label2></label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestMovie.3.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.3.Path)])</onclick>
 				<icon>$INFO[Window.Property(LatestMovie.3.Thumb)]</icon>
 				<thumb>-</thumb>
 			</item>
 			<item id="4">
 				<label>$INFO[Window.Property(LatestMovie.4.Title)]</label>
 				<label2></label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestMovie.4.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.4.Path)])</onclick>
 				<icon>$INFO[Window.Property(LatestMovie.4.Thumb)]</icon>
 				<thumb>-</thumb>
 			</item>
 			<item id="5">
 				<label>$INFO[Window.Property(LatestMovie.5.Title)]</label>
 				<label2></label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestMovie.5.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestMovie.5.Path)])</onclick>
 				<icon>$INFO[Window.Property(LatestMovie.5.Thumb)]</icon>
 				<thumb>-</thumb>
 			</item>
@@ -382,28 +382,28 @@
 			<item id="4">
 				<label>$INFO[Window.Property(LatestEpisode.4.EpisodeTitle)]</label>
 				<label2>$INFO[Window.Property(LatestEpisode.4.ShowTitle)] - $INFO[Window.Property(LatestEpisode.4.EpisodeNo)]</label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestEpisode.4.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.4.Path)])</onclick>
 				<icon>-</icon>
 				<thumb>$INFO[Window.Property(LatestEpisode.4.Thumb)]</thumb>
 			</item>
 			<item id="3">
 				<label>$INFO[Window.Property(LatestEpisode.3.EpisodeTitle)]</label>
 				<label2>$INFO[Window.Property(LatestEpisode.3.ShowTitle)] - $INFO[Window.Property(LatestEpisode.3.EpisodeNo)]</label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestEpisode.3.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.3.Path)])</onclick>
 				<icon>-</icon>
 				<thumb>$INFO[Window.Property(LatestEpisode.3.Thumb)]</thumb>
 			</item>
 			<item id="2">
 				<label>$INFO[Window.Property(LatestEpisode.2.EpisodeTitle)]</label>
 				<label2>$INFO[Window.Property(LatestEpisode.2.ShowTitle)] - $INFO[Window.Property(LatestEpisode.2.EpisodeNo)]</label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestEpisode.2.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.2.Path)])</onclick>
 				<icon>-</icon>
 				<thumb>$INFO[Window.Property(LatestEpisode.2.Thumb)]</thumb>
 			</item>
 			<item id="1">
 				<label>$INFO[Window.Property(LatestEpisode.1.EpisodeTitle)]</label>
 				<label2>$INFO[Window.Property(LatestEpisode.1.ShowTitle)] - $INFO[Window.Property(LatestEpisode.1.EpisodeNo)]</label2>
-				<onclick>PlayMedia($INFO[Window.Property(LatestEpisode.1.Path)])</onclick>
+				<onclick>PlayMedia($ESCINFO[Window.Property(LatestEpisode.1.Path)])</onclick>
 				<icon>-</icon>
 				<thumb>$INFO[Window.Property(LatestEpisode.1.Thumb)]</thumb>
 			</item>

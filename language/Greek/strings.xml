@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 12/25/2011 / Last update (by CutSickAss): 14/02/2012 / Based on english strings version 1E+42-->
+<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 03/04/2012 / Last update (by CutSickAss): 14/02/2012 / Based on english strings version 1E+42-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -77,9 +77,9 @@
   <string id="100">Προβολή: Εικονίδια</string>
   <string id="101">Προβολή: Λίστα</string>
   <string id="102">Σάρωση</string>
-  <string id="103">Ταξιν.: Όνομα</string>
-  <string id="104">Ταξιν.: Ημ/νία</string>
-  <string id="105">Ταξιν.: Μέγεθος</string>
+  <string id="103">Ταξ.: Όνομα</string>
+  <string id="104">Ταξ.: Ημ/νία</string>
+  <string id="105">Ταξ.: Μέγεθος</string>
   <string id="106">Όχι</string>
   <string id="107">Ναι</string>
   <string id="108">Παρουσίαση</string>
@@ -234,11 +234,11 @@
   <string id="263">Έγκριση ελέγχου του XBMC από το HTTP</string>
   <string id="264">Εγγραφή</string>
   <string id="265">Διακοπή εγγραφής</string>
-  <string id="266">Ταξιν.: Κομμάτι</string>
-  <string id="267">Ταξιν.: Έτος</string>
-  <string id="268">Ταξιν.: Τίτλος</string>
-  <string id="269">Ταξιν.: Καλλιτέχνης</string>
-  <string id="270">Ταξιν.: Άλμπουμ</string>
+  <string id="266">Ταξ.: Κομμάτι</string>
+  <string id="267">Ταξ.: Έτος</string>
+  <string id="268">Ταξ.: Τίτλος</string>
+  <string id="269">Ταξ.: Καλλιτέχνης</string>
+  <string id="270">Ταξ.: Άλμπουμ</string>
   <string id="271">100 κορυφαία</string>
   <string id="272">Επάνω αριστερή προσαρμογή του ορατού πλαισίου</string>
   <string id="273">Κάτω δεξιά προσαρμογή του ορατού πλαισίου</string>
@@ -322,11 +322,11 @@
   <string id="360">Προφύλαξη οθόνης</string>
   <string id="361">Παρουσίαση</string>
   <string id="362">Ποσοστό εξασθένισης της προφύλαξης οθόνης</string>
-  <string id="363">Ταξιν.: Αρχείο</string>
+  <string id="363">Ταξ.: Αρχείο</string>
   <string id="364">- Δέκτης με ικανότητα αναπαραγωγής Dolby Digital (AC3)</string>
-  <string id="365">Ταξιν.: Όνομα</string>
-  <string id="366">Ταξιν.: Έτος</string>
-  <string id="367">Ταξιν.: Βαθμολογία</string>
+  <string id="365">Ταξ.: Όνομα</string>
+  <string id="366">Ταξ.: Έτος</string>
+  <string id="367">Ταξ.: Βαθμολογία</string>
   <string id="368">IMDb</string>
   <string id="369">Τίτλος</string>
   <string id="370">Καταιγίδες</string>
@@ -388,7 +388,7 @@
   <string id="427">Δίσκος</string>
   <string id="428">Εισαγωγή ορθού CD/DVD</string>
   <string id="429">Παρακαλώ, εισάγετε τον ακόλουθο δίσκο:</string>
-  <string id="430">Ταξιν.: DVD#</string>
+  <string id="430">Ταξ.: DVD#</string>
   <string id="431">Δεν υπάρχει ελεύθερη λανθάνουσα μνήμη</string>
   <string id="432">Διαγραφή ταινίας από τη συλλογή</string>
   <string id="433">Να διαγραφεί '%s';</string>
@@ -1559,7 +1559,7 @@
   <string id="20011">Λίστες αναπαραγωγής μουσικής</string>
   <string id="20012">Λίστες αναπαραγωγής βίντεο</string>
   <string id="20013">Να εκτελεστεί το παιχνίδι;</string>
-  <string id="20014">Ταξιν.: Λίστα αναπαραγωγής</string>
+  <string id="20014">Ταξ.: Λίστα αναπαραγωγής</string>
   <string id="20015">Απομακρυσμένη μικρογραφία</string>
   <string id="20016">Τρέχουσα μικρογραφία</string>
   <string id="20017">Τοπική μικρογραφία</string>
@@ -2403,5 +2403,5 @@
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
   <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
-  <string id="36018">Χρήση της γλώσσας της τηλεόρασης</string>
+  <string id="36018">Χρήση των ρυθμίσεων γλώσσας της τηλεόρασης</string>
 </strings>

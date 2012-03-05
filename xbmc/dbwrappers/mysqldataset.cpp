@@ -258,7 +258,7 @@ int MysqlDatabase::copy(const char *backup_name) {
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
-        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), ret);
+        throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
     }
   }
 

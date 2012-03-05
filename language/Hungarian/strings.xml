@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa with a help of Zsolt Malecz-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Based on English 98d103ae66a1e81e379e65dd131341cd119cfcf2 (21.01.2012)-->
+<!--Based on English 0ee1ef09238e4d913cf6c47fa18138c3654cd33e (08.02.2012)-->
 <strings>
   <string id="0">Programok</string>
   <string id="1">Képek</string>
@@ -901,8 +901,12 @@
   <string id="10020">Programok</string>
   <string id="10021">Internet böngésző</string>
 
+  <string id="10025">Videók</string>
+
   <string id="10028">Videók/lejátszáslista</string>
+  <string id="10029">Bejelentkezési képernyő</string>
   <string id="10034">Beállítások - Profilok</string>
+  <string id="10040">Kiegészítő böngésző</string>
 
   <string id="10100">Igen/nem párbeszédpanel</string>
   <string id="10101">Folyamatjelző párbeszédpanel</string>
@@ -1797,7 +1801,7 @@
   <string id="20326">Kalibrációs értékek törlése %s számára</string>
   <string id="20327">az alapértelmezett értékekere.</string>
   <string id="20328">Tallózás</string>
-
+  <string id="20329">A filmcímnek megfelelő találatok külön mappákban találhatók</string>
   <string id="20330">Használja a mappanevet a keresésekhez</string>
   <string id="20331">Fájl</string>
   <string id="20332">Mappa- vagy fájlnevek használata kereséskor?</string>
@@ -1887,7 +1891,7 @@
   <string id="20416">Első adás</string>
   <string id="20417">Írta</string>
   <string id="20418"></string>
-  <string id="20419">Metaadatok mutatása a fájlnézetben</string>
+  <string id="20419">Fájlnevek helyett a médiatár címek mutatása</string>
 
   <string id="20420">Soha</string>
   <string id="20421">Csak, ha egy évad van</string>
@@ -1927,6 +1931,7 @@
   <string id="20455">Hallgató</string>
   <string id="20456">Filmgyűjtemény fanart beállítása</string>
   <string id="20457">Filmgyűjtemény</string>
+  <string id="20458">Filmek csoportosítása készletekbe</string>
   <!-- 21329-ig videó-adatbázisra fenntartva  !! !-->
 
   <string id="21330">Rejtett fájlok és mappák megjelenítése</string>

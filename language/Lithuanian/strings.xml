@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Artūras Griškonis (ArtX38)-->
 <!--Email: info@xbmc.lt-->
-<!--Date of translation: 21/01/2012-->
-<!--Based on english strings version 98d103ae66a1e81e379e65dd131341cd119cfcf2-->
+<!--Date of translation: 02/03/2012-->
+<!--Based on english strings version 4a0e4931310c8957d73ffec0cf6fdfa9292bb8d4 (08.02.2012)-->
 <strings>
   <string id="0">Programos</string>
   <string id="1">Foto</string>
@@ -144,11 +144,9 @@
   <string id="164">Grotuve nėra disko</string>
   <string id="165">Diskas grotuve</string>
   <string id="166">Viršeliai</string>
-  <string id="167">Įjungti FTP serverį</string>
-  <string id="168">Įjungti laiko sinhronizavimą internetu</string>
+
   <string id="169">Ekrano rezoliucija</string>
   <string id="170">Nustatyti ekrano atnaujinimo dažnį</string>
-  <string id="171">Išdidinti nuo 4:3 iki 16:9</string>
 
   <string id="172">Išleidimo data</string>
   <string id="173">Rodyti formatą 4:3 kaip</string>
@@ -184,7 +182,7 @@
   <string id="205">Balsų:</string>
   <string id="206">Artistai</string>
   <string id="207">Siužetas</string>
-  <string id="208">Atkurti</string>
+  <string id="208">Atkūrti</string>
   <string id="209">Sekantis</string>
   <string id="210">Ankstesnis</string>
   <string id="213">Kalibravimo sąsaja...</string>
@@ -259,7 +257,6 @@
   <string id="283">Paieškos rezultatai</string>
   <string id="284">Nieko nerasta</string>
 
-  <string id="286">Baigiamoji doroklė</string>
   <string id="287">Subtitrai</string>
   <string id="288">Šriftas</string>
   <string id="289">- Dydis</string>
@@ -279,11 +276,7 @@
   <string id="304">Kalba</string>
   <string id="305">Įjungta</string>
   <string id="306">Ne-formatas</string>
-  <string id="307">- automatinis baigiamasis apdorojimas</string>
-  <string id="308">- vertikalus Deblocking-filtras</string>
-  <string id="309">- horizontalus Deblocking-filtras</string>
-  <string id="310">- Autoryškumas/Kontrastas</string>
-  <string id="311">- Atspindžių slopinimas</string>
+
   <string id="312">(0=auto)</string>
   <string id="313">Duomenų bazės valymas</string>
   <string id="314">Paruošimas...</string>
@@ -402,9 +395,9 @@
   <string id="431">Nėra talpyklos</string>
   <string id="432">Pašalinti filmą iš bibliotekos</string>
   <string id="433">Ar tikrai ištrinti '%s'?</string>
-  <string id="434">C %s į %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">Iš %s į %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
-  <string id="437">Išimti diską</string>
+  <string id="437">Keičiamasis diskas</string>
   <string id="438">Failo atidarymas</string>
   <string id="439">Buferizacija</string>
   <string id="440">HDD diskas</string>
@@ -418,10 +411,10 @@
   <string id="448">LCD ekranas</string>
   <string id="449">Įjungta</string>
   <string id="450">Ženklų kiekis eilėje</string>
-  <string id="451">Eilutė 1 adresas</string>
-  <string id="452">Eilutė 2 adresas</string>
-  <string id="453">Eilutė 3 adresas</string>
-  <string id="454">Eilutė 4 adresas</string>
+  <string id="451">1 eilutė adresas</string>
+  <string id="452">2 eilutė adresas</string>
+  <string id="453">3 eilutė adresas</string>
+  <string id="454">4 eilutė adresas</string>
   <string id="455">Adresų eilių skaičius</string>
   <string id="456">Režimas</string>
   <string id="457">Pakeisti išvaizdą</string>
@@ -440,7 +433,7 @@
   <string id="471">МOD-čipas</string>
   <string id="474">Išjungta</string>
   <string id="475">Tiktai muzika</string>
-  <string id="476">Muzika &amp; Video</string>
+  <string id="476">Muzika ir Video</string>
   <string id="477">Nepavyko įkelti į grojaraštį</string>
   <string id="478">Erano meniu (OSD)</string>
   <string id="479">Kalba ir vaizdas</string>
@@ -618,10 +611,10 @@
   <string id="665">Suspaudimo laipsnis</string>
 
   <string id="700">Bibliotekos išvalymas</string>
-  <string id="701">Senų dainų valymas iš bibliotekos</string>
+  <string id="701">Senų dainų šalinimas iš bibliotekos</string>
   <string id="702">Šis aplankas buvo patikrintas seniau</string>
   <string id="705">Tinklas</string>
-  <string id="706">HTTP-proxy serverio adresas</string>
+  <string id="706">- Serveris</string>
 
   <string id="708">Naudoti HTTP-proxy serverį</string>
 
@@ -631,22 +624,22 @@
 
   <string id="715">- Paskyrimas</string>
   <string id="716">Automatiškai (DHCP)</string>
-  <string id="717">Rankiniu būdu (Static)</string>
-  <string id="718">Pagal nutylėjimą (iš Dashboard)</string>
+  <string id="717">Manualas (Static)</string>
+
   <string id="719">- IP adresas</string>
   <string id="720">- Tinklo kaukė</string>
   <string id="721">- Numatytas šliuzas</string>
   <string id="722">- ADNS serveris</string>
-  <string id="723">Išsaugoti &amp; paleisti</string>
+  <string id="723">Išsaugoti ir paleisti</string>
   <string id="724">Neteisingas adresas. Turėtų būti AAA.BBB.CCC.DDD</string>
   <string id="725">skaičiai nuo 0 iki 255.</string>
   <string id="726">Pakeitimai neišsaugoti. Vistiek tęsti?</string>
   <string id="727">Interneto serveris</string>
   <string id="728">FTP serveris</string>
-  <string id="729">Laikas pagal internetą</string>
+
   <string id="730">Interneto serverio portas</string>
-  <string id="731">Laiko serverio adresas</string>
-  <string id="732">Išsaugoti &amp; pritaikyti</string>
+
+  <string id="732">Išsaugoti ir pritaikyti</string>
   <string id="733">Prieigos slaptažodis prie interneto serverio</string>
   <string id="734">Be slaptažodžio</string>
   <string id="735">- Simbolių parinkimas</string>
@@ -785,29 +778,25 @@
   <string id="1212">Video</string>
   <string id="1213">Foto</string>
   <string id="1214">Failai</string>
-  <string id="1215">Muzika &amp; video</string>
-  <string id="1216">Muzika &amp; foto</string>
-  <string id="1217">Muzika &amp; failai</string>
-  <string id="1218">Video &amp; foto</string>
-  <string id="1219">Video &amp; failai</string>
-  <string id="1220">Foto &amp; failai</string>
-  <string id="1221">Muzika, video &amp; failai</string>
-  <string id="1222">Muzika, video, foto &amp; failai</string>
+  <string id="1215">Muzika ir video</string>
+  <string id="1216">Muzika ir foto</string>
+  <string id="1217">Muzika ir failai</string>
+  <string id="1218">Video ir foto</string>
+  <string id="1219">Video ir failai</string>
+  <string id="1220">Foto ir failai</string>
+  <string id="1221">Muzika, video ir failai</string>
+  <string id="1222">Muzika, video, foto ir failai</string>
   <string id="1223">Atjungta</string>
-  <string id="1226">Failai, muzika &amp; video</string>
-  <string id="1227">Failai, foto &amp; muzika</string>
-  <string id="1228">Failai, foto &amp; video</string>
-  <string id="1229">Muzika &amp; programos</string>
-  <string id="1230">Video &amp; programos</string>
-  <string id="1231">Foto &amp; programos</string>
-  <string id="1232">Muzika, video, foto &amp; programos</string>
-  <string id="1233">Programos, video &amp; muzika</string>
-  <string id="1234">Programos, foto &amp; muzika</string>
-  <string id="1235">Programos, foto &amp; video</string>
-
-  <string id="1245">FTP vartotojo vardas</string>
-  <string id="1246">FTP vartotojo slaptažodis</string>
-  <string id="1247">Slaptažodis išsaugotas</string>
+  <string id="1226">Failai, muzika ir video</string>
+  <string id="1227">Failai, foto ir muzika</string>
+  <string id="1228">Failai, foto ir video</string>
+  <string id="1229">Muzika ir programos</string>
+  <string id="1230">Video ir programos</string>
+  <string id="1231">Foto ir programos</string>
+  <string id="1232">Muzika, video, foto ir programos</string>
+  <string id="1233">Programos, video ir muzika</string>
+  <string id="1234">Programos, foto ir muzika</string>
+  <string id="1235">Programos, foto ir video</string>
 
   <string id="1250">Auto nustatymas</string>
   <string id="1251">Auto nustatymas sistemai</string>
@@ -891,7 +880,9 @@
   <string id="10021">Interneto Naršyklė</string>
 
   <string id="10028">Video/Grojaraštis</string>
+  <string id="10029">Prisijungimo langas</string>
   <string id="10034">Nustatymai - Profilis</string>
+  <string id="10040">Priedų naršyklė</string>
 
   <string id="10100">Dialogas 'Taip/Ne'</string>
   <string id="10101">Dialogas Vykdymas</string>
@@ -937,7 +928,6 @@
 
   <string id="12021">Pradėti nuo pradžios</string>
   <string id="12022">Tęsti nuo %s</string>
-  <string id="12023">Patikrinti esamą instruktciją...</string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1092,8 +1082,8 @@
   <string id="13210">Paleistas, suveiks %im</string>
   <string id="13211">PRIMINIMAS!</string>
   <string id="13212">Atšaukiama %im%is iki suveikimo</string>
-  <string id="13213">%2.fm</string> <!--minutes (left from countdown)-->
-  <string id="13214">%2.fs</string> <!--seconds (left from countdown)-->
+  <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
+  <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
 
   <string id="13249">Ieškoti subtitrų RARe</string>
   <string id="13250">Nurodykite subtitrus...</string>
@@ -1183,7 +1173,7 @@
   <string id="13355">Žemos kokybės Pixel Shader</string>
   <string id="13356">Aparatūros derinimas</string>
   <string id="13357">Aukštos kokybės Pixel Shader</string>
-  <string id="13358">Atkurti objektą</string>
+  <string id="13358">Atkūrti objektą</string>
   <string id="13359">Įdiegti atlikėjo eskizą</string>
   <string id="13360">Kurti eskizus</string>
   <string id="13361">Įjungti mikrofoną</string>
@@ -1247,10 +1237,10 @@
   <string id="13431">Pikseliniai šešėliai</string>
   <string id="13432">Leisti aparatūros spartinimą (VideoToolbox)</string>
 
-  <string id="13500">Sinchronizacijos metodas A/V</string>
-  <string id="13501">pagal dažnį garsas</string>
-  <string id="13502">pagal dažnį video (praleisti/dubliuoti garsą)</string>
-  <string id="13503">pagal dažnį video (konvertuoti garsą)</string>
+  <string id="13500">Sinchr. metodas A/V</string>
+  <string id="13501">Audio laikrodis</string>
+  <string id="13502">Video laikrodis (Drop/Dupe audio)</string>
+  <string id="13503">Video laikrodis (Resample audio)</string>
   <string id="13504">Maksimalus konvertavimo dydis (%)</string>
   <string id="13505">Konvertavimo kokybė</string>
   <string id="13506">Žema</string>
@@ -1285,15 +1275,15 @@
   <string id="14006">Klaida įkeliant sąrašo srautą</string>
   <string id="14007">Klaida įkeliant bibliotekos failą</string>
 
-  <string id="14009">Papkė su žaidimais</string>
+  <string id="14009">Žaidimų direktorija</string>
   <string id="14010">Vaizdo auto perjungimas į eskizus po</string>
   <string id="14011">Įjungti auto perjungimas į eskizus</string>
-  <string id="14012">- naudoti didelius ženkliukus</string>
+  <string id="14012">- Naudoti didelius ženkliukus</string>
   <string id="14013">- Perjungi po</string>
-  <string id="14014">- procentinių santykių</string>
-  <string id="14015">nėra failų ir nors vienas eskizas</string>
-  <string id="14016">nors vienas failas ir eskizas</string>
-  <string id="14017">procentinių santykių eskizų</string>
+  <string id="14014">- Procentinių santykių</string>
+  <string id="14015">Nėra failų ir nors vienas eskizas</string>
+  <string id="14016">Nors vienas failas ir eskizas</string>
+  <string id="14017">Procentinių santykių eskizų</string>
   <string id="14018">Peržiūros nustatymai</string>
   <string id="14019">1-as miestas</string>
   <string id="14020">2-as miestas</string>
@@ -1337,7 +1327,7 @@
   <string id="14060">Nežinomas talpyklos podėlis - Internetas</string>
   <string id="14061">Auto</string>
   <string id="14062">Įveskite vartotojo vardą</string>
-  <string id="14063">Data &amp; laikas</string>
+  <string id="14063">Data ir laikas</string>
   <string id="14064">Nustatyti datą</string>
   <string id="14065">Nustatyti laiką</string>
   <string id="14066">Įveskite laiką 24 valandų HH:MM</string>
@@ -1449,7 +1439,7 @@
   <string id="15283">Pastaruoju metu klausomos dainos %name%'</string>
   <string id="15284">Klausyti(is) rekomenduojamų %name%' Last.fm</string>
   <string id="15285">Top žymos %name%</string>
-  <string id="15286">Klausyti(is) iš grojaraščio %name%' Last.fm</string>
+
   <string id="15287">Ar norite pridėti šį takelį į savo mėgstami kūriniai?</string>
   <string id="15288">Norite užrakinti šį takelį?</string>
   <string id="15289">Pridėta prie Jūsų mėgstami kūriniai: '%s'.</string>
@@ -1499,12 +1489,12 @@
   <string id="16027">Per daug klaidų iš eilės</string>
   <string id="16028">Įveskite reikšmę</string>
   <string id="16029">Patikrinkite žurnalo bylą išsamiai informacijai</string>
-  <string id="16030">'Vakarėlis' atšauktas.</string>
+  <string id="16030">'Party' atšauktas.</string>
   <string id="16031">Nėra atitinkamų dainų bibliotekoje.</string>
   <string id="16032">Nepavyko inicijuoti duomenų bazės.</string>
   <string id="16033">Nepavyko atidaryti duomenų bazės.</string>
   <string id="16034">Nepavyko gauti dainų iš duomenų bazės.</string>
-  <string id="16035">Grojaraštis 'Vakarėlis'</string>
+  <string id="16035">Grojaraštis 'Party'</string>
   <string id="16036">De-interlace (Half)</string>
   <string id="16037">Deinterlace video</string>
   <string id="16038">Deinterlace method</string>
@@ -1551,12 +1541,9 @@
   <string id="16321">DXVA Best</string>
   <string id="16322">Spline36</string>
   <string id="16323">Spline36 optimizuotas(i)</string>
-  <string id="16324">Programinė įranga Blend</string>
+  <string id="16324">Programinė Blend</string>
 
   <string id="16400">Vaizdo pertvarkymas</string>
-  <string id="16401">Atjungta</string>
-  <string id="16402">Įjungti SD turinį</string>
-  <string id="16403">Visada įjungta</string>
 
   <string id="17500">Ekranas miego režime</string>
 
@@ -1596,7 +1583,7 @@
   <string id="20038">Blokuoti 'Muzika'</string>
   <string id="20039">Blokuoti 'Video'</string>
   <string id="20040">Blokuoti 'Foto'</string>
-  <string id="20041">Blokuoti 'Programos' &amp; 'Skriptai'</string>
+  <string id="20041">Blokuoti 'Programos' ir 'Skriptai'</string>
   <string id="20042">Blokuoti 'Failų tvarkyklė'</string>
   <string id="20043">Blokuoti 'Nustatymai'</string>
   <string id="20044">Švari paleistis</string>
@@ -1742,7 +1729,7 @@
   <string id="20185">Naudoti afišos vaizdą serialams</string>
   <string id="20186">Prašome palaukti</string>
 
-  <string id="20189">Įjungti automatinį slinktį, siužetams &amp; peržiūroms</string>
+  <string id="20189">Įjungti automatinį slinktį, siužetams ir peržiūroms</string>
   <string id="20190">Papildomai</string>
   <string id="20191">Įjungti žurnalo derinimą</string>
   <string id="20192">Ieškoti albumo info dedant į biblioteką</string>
@@ -1791,7 +1778,7 @@
   <string id="20326">Tai atstatys kalibravimą %s</string>
   <string id="20327">pagal numatytąją reikšmę</string>
   <string id="20328">Nurodykite tikslą</string>
-
+  <string id="20329">Filmai atskiruose aplankuose, kurie atitinka filmo pavadinimą</string>
   <string id="20330">Naudokite aplankų pavadinimus ieškant</string>
   <string id="20331">Failo</string>
   <string id="20332">Naudoti failų ar aplankų vardus ieškant?</string>
@@ -1921,6 +1908,7 @@
   <string id="20455">Klausytojų</string>
   <string id="20456">Nustatyti rodomo filmo Fanart</string>
   <string id="20457">Filmų rinkinys</string>
+  <string id="20458">Grupiniai filmų rinkiniai</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Rodyti paslėptus failus ir aplankus</string>
@@ -1940,7 +1928,7 @@
   <string id="21364">Pakeisti media resursai</string>
   <string id="21365">Pašalinti media resursai</string>
   <string id="21366">Ypatingas aplankas subtitrams</string>
-  <string id="21367">Aplankas filmams &amp; alternatyviems subtitrams</string>
+  <string id="21367">Aplankas filmams ir alternatyviems subtitrams</string>
   <string id="21368">Nepaisyti ASS/SSA subtitrų šriftų</string>
 
   <string id="21369">Įjungti pelę ir Touch Screen palaikymą</string>
@@ -2013,7 +2001,7 @@
   <string id="21436">%i objektą(-us,ai)</string>
   <string id="21437">Naujas išmoningas grojaraštis...</string>
   <string id="21438">%c Diskas</string>
-  <string id="21439">Keisti režimo taisykles 'Vakarėlis'</string>
+  <string id="21439">Keisti režimo taisykles 'Party'</string>
   <string id="21440">Namų papkė</string>
   <string id="21441">Peržiūros kiekis</string>
   <string id="21442">Epizodo pavadinimas</string>
@@ -2275,8 +2263,8 @@
   <string id="33001">Treilerio kokybė</string>
   <string id="33002">Srautas</string>
   <string id="33003">Atsisiųsti</string>
-  <string id="33004">Atsisiųsti &amp; groti</string>
-  <string id="33005">Atsisiųsti &amp; išsaugoti</string>
+  <string id="33004">Atsisiųsti ir groti</string>
+  <string id="33005">Atsisiųsti ir išsaugoti</string>
   <string id="33006">Šiandien</string>
   <string id="33007">Rytoj</string>
   <string id="33008">Išsaugojimas</string>
@@ -2323,7 +2311,7 @@
   <string id="33059">Pritaikykite</string>
   <string id="33060">Energija</string>
   <string id="33061">Meniu</string>
-  <string id="33062">Atkurti</string>
+  <string id="33062">Atkūrti</string>
   <string id="33063">Nustatymai</string>
   <string id="33065">Redaktorius</string>
   <string id="33066">Apie Jūsų</string>
@@ -2350,6 +2338,8 @@
   <string id="33102">Serverio įvykis</string>
   <string id="33103">Nuotolinio ryšio serveris</string>
 
+  <string id="33200">Aptiktas Naujas Pajungimas</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2371,7 +2361,6 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
-  <string id="33200">Aptiktas Naujas Pajungimas</string>
   <string id="34201">Nerasta kito failo grojimui</string>
   <string id="34202">Nerasta ankstesnio failo grojimui</string>
 
@@ -2384,6 +2373,7 @@
   <string id="34403">Patikrinkite savo garso nustatymus</string>
 
   <string id="35000">Periferija</string>
+
   <string id="35001">Bendras HID prietaisas</string>
   <string id="35002">Bendras tinklo adapteris</string>
   <string id="35003">Bendras diskas</string>
@@ -2415,7 +2405,7 @@
   <string id="36013">Nepalaikomas 'libec' sąsajos versija.%d atsisiuskite naujesnę  XBMC versiją (%d)</string>
   <string id="36014">Kompiuterį budėjimo režimu, kai televizorius yra išjungtas</string>
   <string id="36015">HDMI prievado numeris</string>
-  <string id="36016">Sujungtas</string>
+  <string id="36016">Sujungtas</string> <!-- max. 13 characters -->
   <string id="36017">Adapteris rastas, bet Libcec nėra</string>
   <string id="36018">Naudokite TV kalbos nustatymus</string>
 </strings>
