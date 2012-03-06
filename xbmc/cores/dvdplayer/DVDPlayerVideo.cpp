@@ -1095,12 +1095,15 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
     limited = true;
 
-  //correct any pattern in the timestamps
-  m_pullupCorrection.Add(pts);
-  pts += m_pullupCorrection.GetCorrection();
+  if (!(picture.iFlags & DVP_FLAG_IGNORE_PTS))
+  {
+    //correct any pattern in the timestamps
+    m_pullupCorrection.Add(pts);
+    pts += m_pullupCorrection.GetCorrection();
 
-  //try to calculate the framerate
-  CalcFrameRate();
+    //try to calculate the framerate
+    CalcFrameRate();
+  }
 
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
