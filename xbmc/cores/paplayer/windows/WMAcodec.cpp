@@ -26,7 +26,6 @@
 
 #pragma comment(lib, "wmvcore.lib")
 
-#define BUFFER_MAX_WRITE 20000
 #define BUFFER_SIZE 882000 //4*44100*5
 
 WMAcodec::WMAcodec()
@@ -52,7 +51,7 @@ WMAcodec::~WMAcodec()
 
 bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  hr  = WMCreateSyncReader(NULL,0,&m_ISyncReader);
+  hr  = WMCreateSyncReader(NULL, WMT_RIGHT_PLAYBACK, &m_ISyncReader);
 	if(hr!=S_OK)
 	{
     CLog::Log(LOGERROR,"WMAcodec: error creating WMCreateSyncReader");
@@ -128,14 +127,18 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
       wAudioStreamNum = wmStreamNum;
       break;
     }
+    SAFE_RELEASE(wmStreamConfig);
   }
 
   if(wAudioStreamNum == -1)
   {
     SAFE_RELEASE(wmProfile);
-    SAFE_RELEASE(wmStreamConfig);
     return false;
   }
+
+  m_ISyncReader->SetStreamsSelected(1, &wAudioStreamNum, &wmtSS);
+  m_ISyncReader->SetReadStreamSamples(wAudioStreamNum, false);
+
   
   wmStreamConfig->QueryInterface(&wmMediaProperties);
   wmMediaProperties->GetMediaType(NULL, &sizeMediaType);
@@ -158,9 +161,13 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     break;
   }
 
-  m_Channels = 2;       //inputFormat->nChannels;
+  // somehow I only get garbage if I use the formats provided
+  // from the header. Other sample rate or bits per sample
+  // don't work. dunno where my mistake is.
+  m_Channels = 2; //inputFormat->nChannels;
   m_SampleRate = 44100; //inputFormat->nSamplesPerSec;
   m_BitsPerSample = 16; //inputFormat->wBitsPerSample;
+  m_Bitrate = inputFormat->nAvgBytesPerSec/8;
 
   if(!m_pcmBuffer.Create(BUFFER_SIZE))
     return false;
@@ -171,9 +178,6 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   SAFE_RELEASE(wmHeaderInfo);
 
   LocalFree(mediaType);
-
-  m_ISyncReader->SetStreamsSelected(1, &wAudioStreamNum, &wmtSS);
-  m_ISyncReader->SetReadStreamSamples(wAudioStreamNum, false);
 
   return true;
 }
