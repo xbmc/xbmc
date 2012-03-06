@@ -31,6 +31,7 @@
   #include <sstream>
   #include <X11/extensions/Xrandr.h>
   #include "windowing/WindowingFactory.h"
+  #include "Application.h"
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(__APPLE__) && !defined(__arm__)
   #include <QuartzCore/CVDisplayLink.h>
@@ -122,6 +123,21 @@ CVideoReferenceClock::CVideoReferenceClock()
 #endif
 }
 
+bool CVideoReferenceClock::Start()
+{
+  if (ThreadHandle() && m_bStop)
+    StopThread(); //thread is busy stopping, wait for it to stop
+
+  if (ThreadHandle() == NULL)
+  {
+    Create();
+    //not waiting here can cause issues with alsa
+    return m_Started.WaitMSec(2000);
+  }
+  
+  return true;
+}
+
 void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
@@ -203,12 +219,6 @@ void CVideoReferenceClock::Process()
 #if defined(_WIN32) && defined(HAS_DX)
   g_Windowing.Unregister(&m_D3dCallback);
 #endif
-}
-
-bool CVideoReferenceClock::WaitStarted(int MSecs)
-{
-  //not waiting here can cause issues with alsa
-  return m_Started.WaitMSec(MSecs);
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
@@ -372,6 +382,23 @@ bool CVideoReferenceClock::SetupGLX()
   return true;
 }
 
+void CVideoReferenceClock::NvSettingsCallback(void* ptr)
+{
+  CVideoReferenceClock* videoreferenceclock = (CVideoReferenceClock*)ptr;
+
+  int refreshrate;
+  if (videoreferenceclock->ParseNvSettings(refreshrate))
+  {
+    CSingleLock SingleLock(videoreferenceclock->m_CritSection);
+    videoreferenceclock->m_RefreshRate = refreshrate;
+  }
+  else
+  {
+    CSingleLock SingleLock(videoreferenceclock->m_CritSection);
+    videoreferenceclock->m_UseNvSettings = false;
+  }
+}
+
 bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
 {
   double fRefreshRate;
@@ -415,7 +442,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
 
   now = CurrentHostCounter();
   buffpos = 0;
-  while (CurrentHostCounter() - now < CurrentHostFrequency() * 5)
+  while (CurrentHostCounter() - now < CurrentHostFrequency() * 30)
   {
     fd_set set;
     FD_ZERO(&set);
@@ -1185,16 +1212,20 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings)
   {
-    int NvRefreshRate;
-    //if this fails we can't get the refreshrate from nvidia-settings
-    m_UseNvSettings = ParseNvSettings(NvRefreshRate);
+    //in the nvidia driver 295 series, nvidia's libGL overrides some functions in libc,
+    //which locks a mutex in the child process after fork() is called (for popen),
+    //since in the child process the main thread no longer exists,
+    //the mutex will never be unlocked, causing the child to hang,
+    //to work around this popen is called from app thread
+    ThreadMessageCallback callback = {NvSettingsCallback, this};
+    ThreadMessage msg = {};
+    msg.dwMessage = TMSG_CALLBACK;
+    msg.lpVoid = &callback;
+
+    g_application.getApplicationMessenger().SendMessage(msg, true);
 
     if (m_UseNvSettings)
-    {
-      CSingleLock SingleLock(m_CritSection);
-      m_RefreshRate = NvRefreshRate;
       return true;
-    }
 
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }

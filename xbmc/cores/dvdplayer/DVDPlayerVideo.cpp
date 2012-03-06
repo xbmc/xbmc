@@ -157,7 +157,9 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
-  g_VideoReferenceClock.StopThread();
+
+  //don't wait on g_VideoReferenceClock to stop, since it might be waiting on the application messenger
+  g_VideoReferenceClock.StopThread(false);
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -189,11 +191,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
   {
-    g_VideoReferenceClock.Create();
-    //we have to wait for the clock to start otherwise alsa can cause trouble
-    if (!g_VideoReferenceClock.WaitStarted(2000))
+    if (!g_VideoReferenceClock.Start())
       CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
   }
 
