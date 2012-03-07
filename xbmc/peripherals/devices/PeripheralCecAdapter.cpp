@@ -139,8 +139,12 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && GetSettingBool("cec_standby_screensaver"))
   {
-    m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
-    m_cecAdapter->StandbyDevices();
+    // Don't put devices to standby if application is currently playing
+    if (!g_application.IsPlaying() || g_application.IsPaused())
+    {
+      m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
+      m_cecAdapter->StandbyDevices();
+    }
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
   {
