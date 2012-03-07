@@ -61,7 +61,7 @@ FIXME'S
 */
 
 #define WEATHER_BASE_PATH "special://temp/weather/"
-#define WEATHER_ICON_PATH "special://temp/weather/128x128/"
+#define WEATHER_ICON_PATH "special://temp/weather/"
 #define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
 
 bool CWeatherJob::m_imagesOkay = false;
