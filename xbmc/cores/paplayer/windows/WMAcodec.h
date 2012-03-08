@@ -40,7 +40,6 @@ public:
   virtual bool CanInit();
 
 private:
-  HRESULT hr;
   IWMSyncReader* m_ISyncReader;
   INSSBuffer* m_pINSSBuffer;
   CRingBuffer m_pcmBuffer;

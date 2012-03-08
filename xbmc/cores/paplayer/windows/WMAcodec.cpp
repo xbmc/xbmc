@@ -51,6 +51,21 @@ WMAcodec::~WMAcodec()
 
 bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 {
+  HRESULT hr;
+  IWMHeaderInfo* wmHeaderInfo;
+  IWMProfile* wmProfile;
+  IWMStreamConfig* wmStreamConfig;
+  IWMMediaProps* wmMediaProperties;
+  WMT_ATTR_DATATYPE wmAttrDataType;
+  QWORD durationInNano;
+  WORD lengthDataType = sizeof(QWORD);
+  WORD wAudioStreamNum = -1;
+  DWORD sizeMediaType;
+  DWORD dwStreams = 0;
+  WMT_STREAM_SELECTION	wmtSS = WMT_ON;
+  GUID pguidStreamType;
+  WORD wmStreamNum = 0;
+
   hr  = WMCreateSyncReader(NULL, WMT_RIGHT_PLAYBACK, &m_ISyncReader);
 	if(hr!=S_OK)
 	{
@@ -77,20 +92,6 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
     return false;
   }
-
-  IWMHeaderInfo* wmHeaderInfo;
-  IWMProfile* wmProfile;
-  IWMStreamConfig* wmStreamConfig;
-  IWMMediaProps* wmMediaProperties;
-  WMT_ATTR_DATATYPE wmAttrDataType;
-  QWORD durationInNano;
-  WORD lengthDataType = sizeof(QWORD);
-  WORD wAudioStreamNum = -1;
-  DWORD sizeMediaType;
-  DWORD dwStreams = 0;
-  WMT_STREAM_SELECTION	wmtSS = WMT_ON;
-  GUID pguidStreamType;
-  WORD wmStreamNum = 0;
 
   m_ISyncReader->QueryInterface(&wmHeaderInfo);
   wmHeaderInfo->GetAttributeByName(&wmStreamNum, L"Duration", &wmAttrDataType, (BYTE*)&durationInNano, &lengthDataType ) ;
@@ -198,6 +199,7 @@ void WMAcodec::DeInit()
     m_ISyncReader->Close();
 
   SAFE_RELEASE(m_ISyncReader);
+  SAFE_DELETE(m_pStream);
   m_pcmBuffer.Destroy();
   m_bnomoresamples = false;
 }
@@ -213,13 +215,13 @@ __int64 WMAcodec::Seek(__int64 iSeekTime)
 
 int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
+  HRESULT hr;
   QWORD cnsSampleTime = 0;
 	QWORD cnsSampleDuration = 0;
 	DWORD dwFlags = 0;
   DWORD dwOutputNum;
   WORD wStreamNum;
   DWORD dwBufferLength;
-
 
   if(!m_bnomoresamples && m_pcmBuffer.getMaxWriteSize() > m_uimaxwritebuffer)
   {
