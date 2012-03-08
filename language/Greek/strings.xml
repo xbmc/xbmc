@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 03/04/2012 / Last update (by CutSickAss): 14/02/2012 / Based on english strings version 1E+42-->
+<!--$Revision$--> <!--Translator: Ydatografida / Email: ydatografida@gmail.com / Date of translation: 03/04/2012 / Last update (by CutSickAss): 08/03/2012 / Based on english strings version 1E+42-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1575,7 +1575,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
-  <string id="20037">Συνολικές</string>
+  <string id="20037">Συνοπτικές</string>
   <string id="20038">Κλείδωμα της μουσικής</string>
   <string id="20039">Κλείδωμα των βίντεο</string>
   <string id="20040">Κλείδωμα των φωτογραφιών</string>
@@ -2402,6 +2402,6 @@
   <string id="36014">Βάλτε αυτόν τον υπολογιστή σε κατάσταση αναμονής όταν η τηλεόραση είναι απενεργοποιημένη</string>
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
-  <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
+  <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά η libcec δεν είναι διαθέσιμη</string>
   <string id="36018">Χρήση των ρυθμίσεων γλώσσας της τηλεόρασης</string>
 </strings>
