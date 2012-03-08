@@ -21,7 +21,6 @@
 
 #include "WMAcodec.h"
 #include "utils/log.h"
-#include "utils/CharsetConverter.h"
 #include "system.h"
 
 #pragma comment(lib, "wmvcore.lib")
@@ -38,6 +37,7 @@ WMAcodec::WMAcodec()
   m_CodecName = "WMA";
   m_bnomoresamples = false;
   m_uimaxwritebuffer = 0;
+  m_pStream   = NULL;
   
   ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	m_ISyncReader = NULL;
@@ -58,10 +58,20 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  CStdStringW strWFile;
-  g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  SAFE_DELETE(m_pStream);
 
-  hr = m_ISyncReader->Open(strWFile.c_str());
+  m_pStream = new XBMCistream();
+  if(m_pStream == NULL)
+    return false;
+
+  hr = m_pStream->Open(strFile);
+  if(hr!=S_OK)
+  {
+    CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
+    return false;
+  }
+
+  hr = m_ISyncReader->OpenStream(m_pStream);
   if(hr!=S_OK)
 	{
     CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());

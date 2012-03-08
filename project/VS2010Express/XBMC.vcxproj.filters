@@ -2319,6 +2319,9 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\windows\WMAcodec.cpp">
       <Filter>cores\paplayer\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\XBMCistream.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5255,6 +5258,9 @@
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\windows\WMAcodec.h">
       <Filter>cores\paplayer\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\XBMCistream.h">
+      <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
       <Filter>interfaces\python\xbmcmodule</Filter>

@@ -24,6 +24,7 @@
 #include "../CachingCodec.h"
 #include <wmsdk.h>
 #include "utils/RingBuffer.h"
+#include "win32/XBMCistream.h"
 
 class WMAcodec : public CachingCodec
 {
@@ -46,4 +47,5 @@ private:
   bool m_bnomoresamples;
   DWORD m_uimaxwritebuffer;
   __int64 m_iDataPos;
+  XBMCistream* m_pStream;
 };
