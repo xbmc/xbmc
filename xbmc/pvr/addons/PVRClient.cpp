@@ -87,17 +87,18 @@ void CPVRClient::ResetProperties(void)
 
 void CPVRClient::ResetAddonCapabilities(void)
 {
-  m_addonCapabilities.bSupportsChannelSettings = false;
-  m_addonCapabilities.bSupportsTimeshift       = false;
-  m_addonCapabilities.bSupportsEPG             = false;
-  m_addonCapabilities.bSupportsTV              = false;
-  m_addonCapabilities.bSupportsRadio           = false;
-  m_addonCapabilities.bSupportsRecordings      = false;
-  m_addonCapabilities.bSupportsTimers          = false;
-  m_addonCapabilities.bSupportsChannelGroups   = false;
-  m_addonCapabilities.bSupportsChannelScan     = false;
-  m_addonCapabilities.bHandlesInputStream      = false;
-  m_addonCapabilities.bHandlesDemuxing         = false;
+  m_addonCapabilities.bSupportsChannelSettings  = false;
+  m_addonCapabilities.bSupportsTimeshift        = false;
+  m_addonCapabilities.bSupportsEPG              = false;
+  m_addonCapabilities.bSupportsTV               = false;
+  m_addonCapabilities.bSupportsRadio            = false;
+  m_addonCapabilities.bSupportsRecordings       = false;
+  m_addonCapabilities.bSupportsTimers           = false;
+  m_addonCapabilities.bSupportsChannelGroups    = false;
+  m_addonCapabilities.bSupportsChannelScan      = false;
+  m_addonCapabilities.bHandlesInputStream       = false;
+  m_addonCapabilities.bHandlesDemuxing          = false;
+  m_addonCapabilities.bSupportsRecordingFolders = false;
 }
 
 bool CPVRClient::Create(int iClientId)

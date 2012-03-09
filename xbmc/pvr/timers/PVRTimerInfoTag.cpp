@@ -122,6 +122,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iLifetime          == right.m_iLifetime &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_strTitle           == right.m_strTitle &&
+          m_strDirectory       == right.m_strDirectory &&
           m_iClientId          == right.m_iClientId &&
           m_iMarginStart       == right.m_iMarginStart &&
           m_iMarginEnd         == right.m_iMarginEnd &&
@@ -144,6 +145,7 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iLifetime          = orig.m_iLifetime;
   m_strFileNameAndPath = orig.m_strFileNameAndPath;
   m_strTitle           = orig.m_strTitle;
+  m_strDirectory       = orig.m_strDirectory;
   m_iClientId          = orig.m_iClientId;
   m_iMarginStart       = orig.m_iMarginStart;
   m_iMarginEnd         = orig.m_iMarginEnd;
@@ -618,3 +620,9 @@ EPG::CEpgInfoTag *CPVRTimerInfoTag::GetEpgInfoTag(void) const
     return epg->GetTag(-1, m_epgStart);
   return NULL;
 }
+
+bool CPVRTimerInfoTag::SupportsFolders() const
+{
+  return g_PVRClients->GetAddonCapabilities(m_iClientId).bSupportsRecordingFolders;
+}
+
