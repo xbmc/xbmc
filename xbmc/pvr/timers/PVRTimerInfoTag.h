@@ -146,6 +146,8 @@ namespace PVR
     unsigned int MarginEnd(void) const { return m_iMarginEnd; }
     void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
+    bool SupportsFolders() const;
+
     /*!
      * @brief Show a notification for this timer in the UI
      */
