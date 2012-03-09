@@ -21,7 +21,6 @@
 
 #include "XMLUtils.h"
 #include "URL.h"
-#include "filesystem/SpecialProtocol.h"
 #include "StringUtils.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for strcasecmp
@@ -264,7 +263,7 @@ void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
-  newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+  newElement.SetAttribute("pathversion", path_version);
   TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
   if (pNewNode)
   {

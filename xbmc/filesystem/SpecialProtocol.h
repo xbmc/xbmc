@@ -68,7 +68,6 @@ public:
   static CStdString TranslatePath(const CStdString &path);
   static CStdString TranslatePath(const CURL &url);
   static CStdString TranslatePathConvertCase(const CStdString& path);
-  static const int path_version = 1;
 
 private:
   static void SetPath(const CStdString &key, const CStdString &path);

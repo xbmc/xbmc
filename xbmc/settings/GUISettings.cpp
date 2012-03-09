@@ -29,7 +29,6 @@
 #include "LinuxTimezone.h"
 #endif
 #include "Application.h"
-#include "filesystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -44,6 +43,7 @@
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
+#include "utils/XMLUtils.h"
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -1291,7 +1291,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
         if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+          newElement.SetAttribute("pathversion", XMLUtils::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {
