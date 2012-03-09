@@ -276,6 +276,6 @@ int WMAcodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
 
 bool WMAcodec::CanInit()
 {
-  return true;
+  return (LoadLibrary("WMVcore.dll") != NULL);
 }
 
