@@ -1258,12 +1258,6 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
         CStdString strValue = pGrandChild->FirstChild() ? pGrandChild->FirstChild()->Value() : "";
         if (strValue != "-")
         { // update our item
-          if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          { // check our path
-            int pathVersion = 0;
-            pGrandChild->Attribute("pathversion", &pathVersion);
-            strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
-          }
           (*it).second->FromString(strValue);
           if (advanced)
             (*it).second->SetAdvanced();

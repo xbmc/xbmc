@@ -196,8 +196,6 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   if (!pElement) return false;
 
-  int pathVersion = 0;
-  pElement->Attribute("pathversion", &pathVersion);
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
@@ -205,7 +203,6 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
     strStringValue = pNode->Value();
     if (encoded && strcasecmp(encoded,"yes") == 0)
       CURL::Decode(strStringValue);
-    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
     return true;
   }
   strStringValue.Empty();
