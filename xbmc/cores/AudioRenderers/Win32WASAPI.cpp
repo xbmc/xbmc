@@ -64,6 +64,7 @@ const enum PCMChannels wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT
 #define WASAPI_TOTAL_CHANNELS 11
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
+#define CLOSE_ON_INVALID(hr, action) if (hr == AUDCLNT_E_DEVICE_INVALIDATED) { Close(); action; }
 
 //This needs to be static since only one exclusive stream can exist at one time.
 bool CWin32WASAPI::m_bIsAllocated = false;
@@ -374,7 +375,12 @@ bool CWin32WASAPI::Pause()
     return true;
 
   m_bPause = true;
-  m_pAudioClient->Stop();
+  HRESULT hr = m_pAudioClient->Stop();
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Stop failed (%i)", hr);
+    CLOSE_ON_INVALID(hr,)
+  }
 
   return true;
 }
@@ -394,9 +400,18 @@ bool CWin32WASAPI::Resume()
 
   UpdateCacheStatus();
   if(m_CacheLen >= m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
-    m_pAudioClient->Start();
+  {
+    HRESULT hr = m_pAudioClient->Start();
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Start failed (%i)", hr);
+      CLOSE_ON_INVALID(hr,)
+    }
+  }
   else
+  {
     m_bPlaying = false;  // Trigger playback restart the next time data is added to the buffer.
+  }
 
   return true;
 }
@@ -410,9 +425,21 @@ bool CWin32WASAPI::Stop()
     return false;
 
   // Stop and reset WASAPI buffer
-  m_pAudioClient->Stop();
-  m_pAudioClient->Reset();
+  HRESULT hr;
+  
+  if (FAILED(hr=m_pAudioClient->Stop()))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Stop failed (%i)", hr);
+    CLOSE_ON_INVALID(hr, goto skipreset)
+  }
 
+  if (FAILED(hr=m_pAudioClient->Reset()))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Reset failed (%i)", hr);
+    CLOSE_ON_INVALID(hr,)
+  }
+
+skipreset:
   // Reset buffer management members
   m_CacheLen = 0;
   m_bPause = false;
@@ -491,23 +518,22 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
     if (FAILED(hr=m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags)))
     {
       CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%i)", hr);
-      if (hr == AUDCLNT_E_DEVICE_INVALIDATED)
-        Close();
-      return 0;
+      CLOSE_ON_INVALID(hr, goto failed)
     }
   }
   else
   {
     CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%i)", hr);
-    if (hr == AUDCLNT_E_DEVICE_INVALIDATED)
-      Close();
-    return 0;
+    CLOSE_ON_INVALID(hr, goto failed)
   }
   m_CacheLen += uiBytesToWrite;
 
   CheckPlayStatus();
 
   return uiSrcBytesToWrite; // Bytes used
+
+failed:
+  return 0;
 }
 
 void CWin32WASAPI::UpdateCacheStatus()
@@ -519,16 +545,34 @@ void CWin32WASAPI::UpdateCacheStatus()
   m_LastCacheCheck = time;
 
   // Callers to UpdateCacheStatus already verified m_Initialized == true
-  m_pAudioClient->GetCurrentPadding(&m_CacheLen);
-  m_CacheLen *= m_uiBytesPerFrame;
+  HRESULT hr = m_pAudioClient->GetCurrentPadding(&m_CacheLen);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": GetCurrentPadding failed (%i)", hr);
+    CLOSE_ON_INVALID(hr,)
+    // On error pretend the buffer is full.
+    m_CacheLen = m_uiBufferLen;
+  }
+  else
+  {
+    m_CacheLen *= m_uiBytesPerFrame;
+  }
 }
 
 void CWin32WASAPI::CheckPlayStatus()
 {
   if(m_Initialized && !m_bPause && !m_bPlaying && m_CacheLen >= m_PreCacheSize) // If we have some data, see if we can start playback
   {
-	  m_pAudioClient->Start();
-	  m_bPlaying = true;
+	  HRESULT hr = m_pAudioClient->Start();
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Start failed (%i)", hr);
+      CLOSE_ON_INVALID(hr,)
+    }
+    else
+    {
+	    m_bPlaying = true;
+    }
   }
 }
 
@@ -705,9 +749,21 @@ void CWin32WASAPI::WaitCompletion()
   dwTimeRemaining = (DWORD)(1000 * GetDelay());
   Sleep(dwTimeRemaining);
 
-  m_pAudioClient->Stop();
-  m_pAudioClient->Reset();
+  HRESULT hr;
 
+  if (FAILED(hr=m_pAudioClient->Stop()))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Stop failed (%i)", hr);
+    CLOSE_ON_INVALID(hr, goto skipreset)
+  }
+
+  if (FAILED(hr=m_pAudioClient->Reset()))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Reset failed (%i)", hr);
+    CLOSE_ON_INVALID(hr,)
+  }
+
+skipreset:
   m_CacheLen = 0;
   m_bPause = false;
   m_bPlaying = false;
