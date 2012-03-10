@@ -199,7 +199,8 @@ bool CWin32WASAPI::Initialize()
   IMMDeviceCollection* pEnumDevices = NULL;
 
   //Shut down Directsound.
-  g_audioContext.SetActiveDevice(CAudioContext::NONE);
+  if (!m_bIsAllocated)
+    g_audioContext.SetActiveDevice(CAudioContext::NONE);
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %i", hr)
@@ -312,7 +313,8 @@ failed:
   SAFE_RELEASE(m_pDevice);
 
   //Restart Directsound
-  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  if (!m_bIsAllocated)
+    g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
 
   return false;
 }
