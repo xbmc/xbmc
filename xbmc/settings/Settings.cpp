@@ -280,10 +280,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
   {
     if (pPathName->FirstChild())
     {
-      int pathVersion = 0;
-      pPathName->Attribute("pathversion", &pathVersion);
       CStdString strPath = pPathName->FirstChild()->Value();
-      strPath = CSpecialProtocol::ReplaceOldPath(strPath, pathVersion);
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
       //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
       if (!URIUtils::IsStack(strPath))

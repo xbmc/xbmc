@@ -66,5 +66,7 @@ public:
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
   static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
+
+  static const int path_version = 1;
 };
 
