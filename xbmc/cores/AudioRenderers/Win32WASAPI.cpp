@@ -250,6 +250,10 @@ bool CWin32WASAPI::Initialize()
 
   if(!m_pDevice)
   {
+    if (m_bIsAllocated)
+      // no fallback to default device when recovering from device loss
+      goto failed;
+
     CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", m_device.c_str());
     hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_pDevice);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
