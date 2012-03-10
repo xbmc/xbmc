@@ -328,6 +328,8 @@ CWin32WASAPI::~CWin32WASAPI()
 //***********************************************************************************************
 bool CWin32WASAPI::Deinitialize()
 {
+  CSingleLock lock (m_critSection);
+
   if (m_bIsAllocated)
   {
     CLog::Log(LOGDEBUG, __FUNCTION__": Cleaning up");
@@ -344,7 +346,8 @@ bool CWin32WASAPI::Deinitialize()
 //***********************************************************************************************
 bool CWin32WASAPI::Close()
 {
-  m_pAudioClient->Stop();
+  if (m_pAudioClient)
+    m_pAudioClient->Stop();
 
   SAFE_RELEASE(m_pRenderClient);
   SAFE_RELEASE(m_pAudioClient);
@@ -364,7 +367,7 @@ bool CWin32WASAPI::Pause()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return false;
 
   if (m_bPause) // Already paused
@@ -381,7 +384,7 @@ bool CWin32WASAPI::Resume()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return false;
 
   if(!m_bPause) // Already playing
@@ -403,7 +406,7 @@ bool CWin32WASAPI::Stop()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return false;
 
   // Stop and reset WASAPI buffer
@@ -437,7 +440,7 @@ bool CWin32WASAPI::SetCurrentVolume(long nVolume)
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return false;
 
   m_nCurrentVolume = nVolume;
@@ -515,13 +518,14 @@ void CWin32WASAPI::UpdateCacheStatus()
 
   m_LastCacheCheck = time;
 
+  // Callers to UpdateCacheStatus already verified m_Initialized == true
   m_pAudioClient->GetCurrentPadding(&m_CacheLen);
   m_CacheLen *= m_uiBytesPerFrame;
 }
 
 void CWin32WASAPI::CheckPlayStatus()
 {
-  if(!m_bPause && !m_bPlaying && m_CacheLen >= m_PreCacheSize) // If we have some data, see if we can start playback
+  if(m_Initialized && !m_bPause && !m_bPlaying && m_CacheLen >= m_PreCacheSize) // If we have some data, see if we can start playback
   {
 	  m_pAudioClient->Start();
 	  m_bPlaying = true;
@@ -532,7 +536,7 @@ unsigned int CWin32WASAPI::GetSpace()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return 0;
 
   // Make sure we know how much data is in the cache
@@ -546,7 +550,7 @@ float CWin32WASAPI::GetDelay()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return 0.0f;
 
   // Make sure we know how much data is in the cache
@@ -560,7 +564,7 @@ float CWin32WASAPI::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return 0.0f;
 
   // Make sure we know how much data is in the cache
@@ -574,7 +578,7 @@ float CWin32WASAPI::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return 0.0f;
 
   return (float)m_uiBufferLen / (float)m_uiAvgBytesPerSec;
@@ -689,7 +693,7 @@ void CWin32WASAPI::WaitCompletion()
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_Initialized)
     return;
 
   DWORD dwTimeRemaining;
