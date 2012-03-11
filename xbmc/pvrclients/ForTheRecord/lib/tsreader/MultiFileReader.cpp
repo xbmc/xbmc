@@ -33,6 +33,7 @@
 #include <string>
 #include "utils.h"
 #include <wchar.h>
+#include <limits.h>
 #if !defined(TARGET_WINDOWS)
 #include <sys/time.h>
 #include "PlatformInclude.h"
@@ -263,7 +264,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     unsigned long bytesRead = 0;
 
     int64_t bytesToRead = file->length - seekPosition;
-    if (lDataLength > bytesToRead)
+    if ((int64_t)lDataLength > bytesToRead)
     {
       // XBMC->Log(LOG_DEBUG, "%s: datalength %lu bytesToRead %lli.", __FUNCTION__, lDataLength, bytesToRead);
       hr = m_TSFile.Read(pbData, (unsigned long)bytesToRead, &bytesRead);
@@ -324,6 +325,13 @@ long MultiFileReader::get_ReadOnly(bool *ReadOnly)
         //ensures that there's always a back slash at the end
 //        wPathName[wcslen(wPathName)] = char(92*(int)(wPathName[wcslen(wPathName)-1]!=char(92)));
 
+#if ULONG_MAX == 4294967295
+#define TSBUFFERLONG long
+#elif UINT_MAX == 4294967295
+#define TSBUFFERLONG int 
+#else
+#error long and int are both longer than 32-bit
+#endif
 long MultiFileReader::RefreshTSBufferFile()
 {
   if (m_TSBufferFile.IsFileInvalid())
@@ -334,8 +342,8 @@ long MultiFileReader::RefreshTSBufferFile()
 
   long result;
   int64_t currentPosition;
-  long filesAdded, filesRemoved;
-  long filesAdded2, filesRemoved2;
+  TSBUFFERLONG filesAdded, filesRemoved;
+  TSBUFFERLONG filesAdded2, filesRemoved2;
   long Error;
   long Loop=10;
 
@@ -354,7 +362,7 @@ long MultiFileReader::RefreshTSBufferFile()
     int64_t fileLength = m_TSBufferFile.GetFileSize();
 
     // Min file length is Header ( int64_t + long + long ) + filelist ( > 0 ) + Footer ( long + long ) 
-    if (fileLength <= (sizeof(int64_t) + sizeof(long) + sizeof(long) + sizeof(wchar_t) + sizeof(long) + sizeof(long)))
+    if (fileLength <= (int64_t)(sizeof(int64_t) + sizeof(filesAdded) + sizeof(filesRemoved) + sizeof(wchar_t) + sizeof(filesAdded2) + sizeof(filesRemoved2)))
     {
       if (m_bDebugOutput)
       {
@@ -376,8 +384,8 @@ long MultiFileReader::RefreshTSBufferFile()
     if(Error == 0)
     {
       currentPosition = *((int64_t*)(readBuffer + 0));
-		  filesAdded = *((long*)(readBuffer + sizeof(int64_t)));
-		  filesRemoved = *((long*)(readBuffer + sizeof(int64_t) + sizeof(long)));
+		  filesAdded = *((TSBUFFERLONG*)(readBuffer + sizeof(int64_t)));
+		  filesRemoved = *((TSBUFFERLONG*)(readBuffer + sizeof(int64_t) + sizeof(filesAdded)));
       // XBMC->Log(LOG_DEBUG, "MultiFileReader::RefreshTSBufferFile() currentPosition %lli", currentPosition);
     }
 
@@ -387,7 +395,7 @@ long MultiFileReader::RefreshTSBufferFile()
     if ((m_filesAdded == filesAdded) && (m_filesRemoved == filesRemoved)) 
       break;
 
-    int64_t remainingLength = fileLength - sizeof(int64_t) - sizeof(long) - sizeof(long) - sizeof(long) - sizeof(long) ;
+    int64_t remainingLength = fileLength - sizeof(int64_t) - sizeof(filesAdded) - sizeof(filesRemoved) - sizeof(filesAdded2) - sizeof(filesRemoved2) ;
 
     // Above 100kb seems stupid and figure out a problem !!!
     if (remainingLength > 100000)
@@ -396,7 +404,7 @@ long MultiFileReader::RefreshTSBufferFile()
     pBuffer = (wchar_t*) new char[(unsigned int)remainingLength];
 
     result=m_TSBufferFile.Read((unsigned char*)pBuffer, (ULONG)remainingLength, &bytesRead);
-    if (!SUCCEEDED(result)||  bytesRead != remainingLength) Error=0x20;
+    if (!SUCCEEDED(result)||  (int64_t)bytesRead != remainingLength) Error=0x20;
 
     //unsigned char* pb = (unsigned char*) pBuffer;
     //for (unsigned long i = 0; i < bytesRead; i++)
@@ -415,8 +423,8 @@ long MultiFileReader::RefreshTSBufferFile()
 
     if(Error == 0)
 	  {
-		  filesAdded2 = *((long*)(readBuffer + 0));
-		  filesRemoved2 = *((long*)(readBuffer + sizeof(long)));
+		  filesAdded2 = *((TSBUFFERLONG*)(readBuffer + 0));
+		  filesRemoved2 = *((TSBUFFERLONG*)(readBuffer + sizeof(filesAdded2)));
 	  }
 
     delete[] readBuffer;
@@ -752,10 +760,9 @@ unsigned long MultiFileReader::setFilePointer(int64_t llDistanceToMove, unsigned
 
 int64_t MultiFileReader::getFilePointer()
 {
-  int64_t fileStart, fileEnd, fileLength;
+  int64_t fileStart, fileLength;
 
   GetFileSize(&fileStart, &fileLength);
-  fileEnd = fileLength + fileStart;
 
   return (int64_t)(GetFilePointer() - fileStart);
 }
