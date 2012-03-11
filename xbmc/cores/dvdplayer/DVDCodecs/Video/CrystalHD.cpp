@@ -23,6 +23,8 @@
 #if defined(_WIN32)
 #include "WIN32Util.h"
 #include "util.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -1104,9 +1106,8 @@ CCrystalHD::CCrystalHD() :
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_device && m_new_lib)
     {
-      BCM::BC_INFO_CRYSTAL bc_info_crystal;
-      m_dll->DtsCrystalHDVersion(m_device, &bc_info_crystal);
-      m_has_bcm70015 = (bc_info_crystal.device == 1);
+      m_dll->DtsCrystalHDVersion(m_device, (BCM::PBC_INFO_CRYSTAL)&m_bc_info_crystal);
+      m_has_bcm70015 = (m_bc_info_crystal.device == 1);
       // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
       // bcm70015 can do only yuy2 (422)
       if (m_has_bcm70015)
@@ -1228,6 +1229,19 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
   OpenDevice();
   if (!m_device)
     return false;
+
+#if (HAVE_LIBCRYSTALHD == 2) && defined(TARGET_WINDOWS)
+  // Drivers prior to 3.6.9.32 don't have proper support for CRYSTALHD_CODEC_ID_AVC1
+  // The internal version numbers are different for some reason...
+  if (   (m_bc_info_crystal.dilVersion.dilRelease < 3)
+      || (m_bc_info_crystal.dilVersion.dilRelease == 3 && m_bc_info_crystal.dilVersion.dilMajor < 22)
+      || (m_bc_info_crystal.drvVersion.drvRelease < 3)
+      || (m_bc_info_crystal.drvVersion.drvRelease == 3 && m_bc_info_crystal.drvVersion.drvMajor < 7) )
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "CrystalHD", g_localizeStrings.Get(2101));
+    CLog::Log(LOGWARNING, "CrystalHD drivers too old, please upgrade to 3.6.9 or later.");
+  }
+#endif
 
   uint32_t videoAlg = 0;
   switch (codec_type)
