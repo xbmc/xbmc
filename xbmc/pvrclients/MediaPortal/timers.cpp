@@ -265,11 +265,11 @@ int cTimer::SchedRecType2RepeatFlags(ScheduleRecordingType schedtype)
         int weekday = timeinfo.tm_wday; //days since Sunday [0-6]
         // bit 0 = monday, need to convert weekday value to bitnumber:
         if (weekday == 0)
-          weekday = 6; //sunday
+          weekday = 6; // sunday 0100 0000
         else
           weekday--;
 
-        weekdays = 2 << weekday;
+        weekdays = 1 << weekday;
         break;
       }
     case EveryTimeOnThisChannel:
