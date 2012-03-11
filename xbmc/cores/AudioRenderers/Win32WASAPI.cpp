@@ -518,22 +518,19 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
     if (FAILED(hr=m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags)))
     {
       CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%i)", hr);
-      CLOSE_ON_INVALID(hr, goto failed)
+      CLOSE_ON_INVALID(hr, return 0)
     }
   }
   else
   {
     CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%i)", hr);
-    CLOSE_ON_INVALID(hr, goto failed)
+    CLOSE_ON_INVALID(hr, return 0)
   }
   m_CacheLen += uiBytesToWrite;
 
   CheckPlayStatus();
 
   return uiSrcBytesToWrite; // Bytes used
-
-failed:
-  return 0;
 }
 
 void CWin32WASAPI::UpdateCacheStatus()
