@@ -44,7 +44,7 @@ private:
   INSSBuffer* m_pINSSBuffer;
   CRingBuffer m_pcmBuffer;
   bool m_bnomoresamples;
-  DWORD m_uimaxwritebuffer;
+  DWORD m_dmaxwritebuffer;
   __int64 m_iDataPos;
   XBMCistream* m_pStream;
 };

@@ -36,7 +36,7 @@ WMAcodec::WMAcodec()
   m_Bitrate = 0;
   m_CodecName = "WMA";
   m_bnomoresamples = false;
-  m_uimaxwritebuffer = 0;
+  m_dmaxwritebuffer = 0;
   m_pStream   = NULL;
   
   ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -92,6 +92,8 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
     return false;
   }
+
+  m_ISyncReader->GetMaxOutputSampleSize(dwStreams, &m_dmaxwritebuffer);
 
   m_ISyncReader->QueryInterface(&wmHeaderInfo);
   wmHeaderInfo->GetAttributeByName(&wmStreamNum, L"Duration", &wmAttrDataType, (BYTE*)&durationInNano, &lengthDataType ) ;
@@ -223,7 +225,7 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   WORD wStreamNum;
   DWORD dwBufferLength;
 
-  if(!m_bnomoresamples && m_pcmBuffer.getMaxWriteSize() > m_uimaxwritebuffer)
+  if(!m_bnomoresamples && m_pcmBuffer.getMaxWriteSize() > m_dmaxwritebuffer)
   {
     hr = m_ISyncReader->GetNextSample(0,
 		  									&m_pINSSBuffer,
@@ -235,9 +237,6 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
     if(hr== NS_E_NO_MORE_SAMPLES)
 		  m_bnomoresamples = true;
-
-    if(m_uimaxwritebuffer == 0)
-      m_pINSSBuffer->GetMaxLength(&m_uimaxwritebuffer);
 
     if(SUCCEEDED(hr))
 	  {
