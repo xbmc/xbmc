@@ -62,6 +62,8 @@
 #include "utils/AutoPtrHandle.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
+#include "ThumbnailCache.h"
+#include "pictures/Picture.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -261,7 +263,15 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
       idAlbumArtist = AddArtist(vecAlbumArtists[0]);
 
     int idPath = AddPath(strPath);
-    int idThumb = AddThumb(song.strThumb);
+    int idThumb; 
+    if (song.strThumb.compare(0, 4, "http") == 0) {
+      CStdString hash = CThumbnailCache::GetMusicThumbHashPath(song.strThumb.c_str(), true);
+      if (!CFile::Exists(hash)) 
+        CPicture::CreateThumbnail(song.strThumb.c_str(), hash.c_str(), true);
+      idThumb = AddThumb(hash); 
+    } else {
+            idThumb = AddThumb(song.strThumb);
+    }
     int idAlbum;
     if (idAlbumArtist > -1)  // have an album artist
       idAlbum = AddAlbum(song.strAlbum, idAlbumArtist, extraAlbumArtists, song.strAlbumArtist, idThumb, idGenre, extraGenres, song.iYear);

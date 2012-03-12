@@ -274,3 +274,17 @@ CStdString CThumbnailCache::GetMusicThumb(const CStdString& path)
   thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
   return URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
 }
+
+CStdString CThumbnailCache::GetMusicThumbHashPath(const CStdString &path, bool split) {
+  Crc32 crc;
+  crc.ComputeFromLowerCase(path);
+  CStdString thumb;
+  if (split) {
+    CStdString hex;
+    hex.Format("%08x", (__int32)crc);
+    thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetMusicThumbFolder(), hex[0], (unsigned __int32)crc);
+  } else {
+    thumb.Format("%s\\%08x.tbn", g_settings.GetMusicThumbFolder(), (unsigned __int32)crc);
+  }
+  return thumb;
+}

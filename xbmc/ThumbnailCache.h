@@ -63,6 +63,7 @@ public:
   static CStdString GetEpisodeThumb(const CVideoInfoTag *videoInfo);
   static CStdString GetVideoThumb(const CFileItem &item);
   static CStdString GetFanart(const CFileItem &item);
+  static CStdString GetMusicThumbHashPath(const CStdString &path, bool split = false);
   static CStdString GetThumb(const CStdString &path, const CStdString &path2, bool split = false);
 protected:
 
