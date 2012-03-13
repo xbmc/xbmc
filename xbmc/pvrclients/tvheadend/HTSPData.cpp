@@ -999,7 +999,6 @@ bool CHTSPData::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   {
     XBMC->Log(LOG_DEBUG, "%s - malformed event", __FUNCTION__);
     htsmsg_print(msg);
-    htsmsg_destroy(msg);
     return false;
   }
   event.Clear();
