@@ -662,9 +662,12 @@ namespace PYXBMC
 
     // add control to list and allocate recources for the control
     self->vecControls.push_back(pControl);
-    pControl->pGUIControl->AllocResources();
-    self->pWindow->AddControl(pControl->pGUIControl);
-
+    {
+      CPyThreadState state;
+      CGUIMessage msg(GUI_MSG_ADD_CONTROL, 0, 0);
+      msg.SetPointer(pControl->pGUIControl);
+      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, true);
+    }
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -809,9 +812,12 @@ namespace PYXBMC
       } else ++it;
     }
 
-    self->pWindow->RemoveControl(pControl->pGUIControl);
-    pControl->pGUIControl->FreeResources();
-    delete pControl->pGUIControl;
+    {
+      CPyThreadState state;
+      CGUIMessage msg(GUI_MSG_REMOVE_CONTROL, 0, 0);
+      msg.SetPointer(pControl->pGUIControl);
+      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, true);
+    }
 
     // initialize control to zero
     pControl->pGUIControl = NULL;
