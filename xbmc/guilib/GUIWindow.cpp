@@ -602,6 +602,27 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       message.SetParam1(result);
       return result != EVENT_RESULT_UNHANDLED;
     }
+  case GUI_MSG_ADD_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        control->AllocResources();
+        AddControl(control);
+      }
+      return true;
+    }
+  case GUI_MSG_REMOVE_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        RemoveControl(control);
+        control->FreeResources(true);
+        delete control;
+      }
+      return true;
+    }
   case GUI_MSG_NOTIFY_ALL:
     {
       // only process those notifications that come from this window, or those intended for every window
