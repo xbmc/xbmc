@@ -296,21 +296,34 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
 bool StringUtils::IsNaturalNumber(const CStdString& str)
 {
-  if (0 == (int)str.size())
-    return false;
-  for (int i = 0; i < (int)str.size(); i++)
+  size_t i = 0, n = 0;
+  // allow whitespace,digits,whitespace
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  while (i < str.size() && isdigit(str[i]))
   {
-    if ((str[i] < '0') || (str[i] > '9')) return false;
+    i++; n++;
   }
-  return true;
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  return i == str.size() && n > 0;
 }
 
 bool StringUtils::IsInteger(const CStdString& str)
 {
-  if (str.size() > 0 && str[0] == '-')
-    return IsNaturalNumber(str.Mid(1));
-  else
-    return IsNaturalNumber(str);
+  size_t i = 0, n = 0;
+  // allow whitespace,-,digits,whitespace
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  if (i < str.size() && str[i] == '-')
+    i++;
+  while (i < str.size() && isdigit(str[i]))
+  {
+    i++; n++;
+  }
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  return i == str.size() && n > 0;
 }
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
