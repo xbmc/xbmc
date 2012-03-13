@@ -721,9 +721,6 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (URIUtils::IsDOSPath(strText))
-      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
-
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());

@@ -51,6 +51,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
 #include "ThumbnailCache.h"
+#include "utils/LabelFormatter.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -5074,6 +5075,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 
     // get data from returned rows
     items.Reserve(iRowsFound);
+    CLabelFormatter formatter("%H. %T", "");
     while (!m_pDS->eof())
     {
       int idEpisode = m_pDS->fv("idEpisode").get_asInt();
@@ -5085,6 +5087,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
       {
         CFileItemPtr pItem(new CFileItem(movie));
+        formatter.FormatLabel(pItem.get());
         CStdString path;
         if (appendFullShowPath)
           path.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);

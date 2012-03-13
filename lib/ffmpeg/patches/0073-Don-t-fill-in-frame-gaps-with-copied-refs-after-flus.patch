@@ -1,0 +1,36 @@
+From 46d99a89aa16db1981441bf7103a30e7d28e5e26 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Fri, 18 Nov 2011 20:36:13 +0100
+Subject: [PATCH] Don't fill in frame gaps with copied refs after flush
+
+The filled in refs cause corruptions in the video frame
+for a long time after it should have recovered.
+---
+ lib/ffmpeg/libavcodec/h264.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+index 87ec292..0e002ce 100644
+--- a/lib/ffmpeg/libavcodec/h264.c
++++ b/lib/ffmpeg/libavcodec/h264.c
+@@ -1464,7 +1464,7 @@ static void implicit_weight_table(H264Context *h, int field){
+  */
+ static void idr(H264Context *h){
+     ff_h264_remove_all_refs(h);
+-    h->prev_frame_num= 0;
++    h->prev_frame_num= -1;
+     h->prev_frame_num_offset= 0;
+     h->prev_poc_msb=
+     h->prev_poc_lsb= 0;
+@@ -1892,7 +1892,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
+ 
+     if(h0->current_slice == 0){
+-        while(h->frame_num !=  h->prev_frame_num &&
++        while(h->frame_num !=  h->prev_frame_num && h->prev_frame_num >= 0 &&
+               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
+             Picture *prev = h->short_ref_count ? h->short_ref[0] : NULL;
+             av_log(h->s.avctx, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
+-- 
+1.7.7.2
+

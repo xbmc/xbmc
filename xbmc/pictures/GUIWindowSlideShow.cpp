@@ -766,13 +766,15 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     {
       if(m_bSlideShow && m_bPlayingVideo)
         g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-      m_bPlayingVideo = false;
     }
     break;
     case GUI_MSG_PLAYBACK_STOPPED:
     {
-      m_bSlideShow = false;
-      g_windowManager.PreviousWindow();
+      if (m_bSlideShow && m_bPlayingVideo)
+      {
+        m_bSlideShow = false;
+        g_windowManager.PreviousWindow();
+      }
     }
     break;
   }

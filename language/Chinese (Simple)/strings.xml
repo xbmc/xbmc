@@ -874,9 +874,11 @@
   <string id="10019">设置-&gt;用户界面</string>
   <string id="10020">脚本</string>
   <string id="10021">网页浏览器</string>
-
+  <string id="10025">视频</string>
   <string id="10028">视频/播放列表</string>
+  <string id="10029">登录屏</string>
   <string id="10034">设置-&gt;用户配置</string>
+  <string id="10040">扩展功能浏览器</string>
 
   <string id="10100">"是/否"对话框</string>
   <string id="10101">进度对话框</string>

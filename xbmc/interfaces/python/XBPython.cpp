@@ -521,7 +521,6 @@ int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
 int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
 {
   CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
   {
@@ -533,6 +532,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   if (g_settings.GetCurrentProfile().programsLocked() && !g_passwordManager.IsMasterLockUnlocked(true))
     return -1;
 
+  CSingleLock lock(m_critSection);
   Initialize();
 
   if (!m_bInitialized) return -1;

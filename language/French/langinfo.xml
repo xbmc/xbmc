@@ -19,7 +19,7 @@
   <regions>
     <region name="France" locale="FR">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
@@ -28,7 +28,7 @@
 
     <region name="Belgique" locale="BE">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
@@ -37,7 +37,7 @@
 
     <region name="Luxembourg" locale="LU">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
@@ -46,7 +46,7 @@
 
     <region name="Suisse" locale="CH">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
@@ -55,7 +55,7 @@
 
     <region name="Principauté de Monaco" locale="MC">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
@@ -64,7 +64,7 @@
 
     <region name="Canada" locale="CA">
       <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
+      <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>

@@ -268,7 +268,7 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   // skip children of the root element until <url> or <chain>
   while (xchain && strcmp(xchain->Value(),"url") && strcmp(xchain->Value(),"chain"))
       xchain = xchain->NextSiblingElement();
-  while (xchain && xchain->FirstChild())
+  while (xchain)
   {
     // <chain|url function="...">param</>
     const char* szFunction = xchain->Attribute("function");
@@ -278,7 +278,10 @@ vector<CStdString> CScraper::Run(const CStdString& function,
       vector<CStdString> extras;
       // for <chain>, pass the contained text as a parameter; for <url>, as URL content
       if (strcmp(xchain->Value(),"chain")==0)
-        extras.push_back(xchain->FirstChild()->Value());
+      {
+        if (xchain->FirstChild())
+          extras.push_back(xchain->FirstChild()->Value());
+      }
       else
         scrURL2.ParseElement(xchain);
       vector<CStdString> result2 = RunNoThrow(szFunction,scrURL2,http,&extras);

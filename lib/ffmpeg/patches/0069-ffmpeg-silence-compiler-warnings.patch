@@ -1,0 +1,24 @@
+From 5542a0c7e68d123b86f168ace00f7320b294fc39 Mon Sep 17 00:00:00 2001
+From: davilla <davilla@4pi.com>
+Date: Wed, 7 Sep 2011 00:14:34 -0400
+Subject: [PATCH] [ffmpeg] silence compiler warnings
+
+---
+ lib/ffmpeg/libavfilter/avfilter.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/ffmpeg/libavfilter/avfilter.h b/lib/ffmpeg/libavfilter/avfilter.h
+index ad8b1e5..daf43dc 100644
+--- a/lib/ffmpeg/libavfilter/avfilter.h
++++ b/lib/ffmpeg/libavfilter/avfilter.h
+@@ -159,6 +159,7 @@ static inline void avfilter_copy_buffer_ref_props(AVFilterBufferRef *dst, AVFilt
+     switch (src->type) {
+     case AVMEDIA_TYPE_VIDEO: *dst->video = *src->video; break;
+     case AVMEDIA_TYPE_AUDIO: *dst->audio = *src->audio; break;
++    default: break;
+     }
+ }
+ 
+-- 
+1.7.7.2
+

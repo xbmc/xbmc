@@ -1,0 +1,82 @@
+From 91efb0af6f80d82b104a810a1ccdc0ae6702d022 Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Sun, 3 Jul 2011 17:06:42 +0200
+Subject: [PATCH] changed: updated yadif patch to same as will be applied
+ upstream
+
+---
+ lib/ffmpeg/libavfilter/vf_yadif.c |   18 +++++++-----------
+ 1 files changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+index 28b1d3e..d7bed90 100644
+--- a/lib/ffmpeg/libavfilter/vf_yadif.c
++++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+@@ -43,7 +43,6 @@ typedef struct {
+     int parity;
+ 
+     int frame_pending;
+-    int skip;
+ 
+     /**
+      *  0: deinterlace all frames
+@@ -219,17 +218,14 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
+     yadif->prev = yadif->cur;
+     yadif->cur  = yadif->next;
+     yadif->next = picref;
+-    yadif->skip = 0;
+ 
+     if (!yadif->cur)
+         return;
+ 
+     if (yadif->auto_enable && !yadif->cur->video->interlaced) {
+-        yadif->out  = yadif->cur;
++        yadif->out  = avfilter_ref_buffer(yadif->cur, AV_PERM_READ);
+         avfilter_unref_buffer(yadif->prev);
+-        yadif->cur  = NULL;
+         yadif->prev = NULL;
+-        yadif->skip = 1;
+         avfilter_start_frame(ctx->outputs[0], yadif->out);
+         return;
+     }
+@@ -250,15 +246,15 @@ static void end_frame(AVFilterLink *link)
+     AVFilterContext *ctx = link->dst;
+     YADIFContext *yadif = ctx->priv;
+ 
+-    if (yadif->skip) {
++    if (!yadif->out)
++        return;
++
++    if (yadif->auto_enable && !yadif->cur->video->interlaced) {
+         avfilter_draw_slice(ctx->outputs[0], 0, link->h, 1);
+         avfilter_end_frame(ctx->outputs[0]);
+         return;
+     }
+ 
+-    if (!yadif->out)
+-        return;
+-
+     return_frame(ctx, 0);
+ }
+ 
+@@ -277,7 +273,7 @@ static int request_frame(AVFilterLink *link)
+ 
+         if ((ret = avfilter_request_frame(link->src->inputs[0])))
+             return ret;
+-    } while (!yadif->out);
++    } while (!yadif->cur);
+ 
+     return 0;
+ }
+@@ -299,7 +295,7 @@ static int poll_frame(AVFilterLink *link)
+     }
+     assert(yadif->next);
+ 
+-    if (yadif->skip)
++    if (yadif->auto_enable && yadif->next && !yadif->next->video->interlaced)
+         return val;
+ 
+     return val * ((yadif->mode&1)+1);
+-- 
+1.7.7.2
+
