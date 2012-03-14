@@ -74,6 +74,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
 
     if (pMsgTarget)
     {
+      CSingleExit exit(g_graphicsContext);
       if (pMsgTarget->OnMessage( message )) handled = true;
     }
   }
