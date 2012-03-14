@@ -191,7 +191,7 @@ void CPVRTimerInfoTag::UpdateSummary(void)
   CSingleLock lock(m_critSection);
   m_strSummary.clear();
 
-  if (!m_bIsRepeating)
+  if (!m_bIsRepeating || !m_iWeekdays)
   {
     m_strSummary.Format("%s %s %s %s %s",
         StartAsLocalTime().GetAsLocalizedDate(),
