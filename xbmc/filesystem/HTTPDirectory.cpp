@@ -75,7 +75,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       URIUtils::RemoveSlashAtEnd(strNameTemp);
       CURL::Decode(strLinkTemp);
 
-      if (strNameTemp == strLinkTemp)
+      if (strNameTemp == strLinkTemp && strLinkTemp != "..")
       {
         CStdStringW wName, wLink, wConverted;
 
