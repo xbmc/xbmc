@@ -383,6 +383,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_CLOSE:
     case WM_QUIT:
     case WM_DESTROY:
+      if (hDeviceNotify)
+        UnregisterDeviceNotification(hDeviceNotify);
       newEvent.type = XBMC_QUIT;
       m_pEventFunc(newEvent);
       break;
