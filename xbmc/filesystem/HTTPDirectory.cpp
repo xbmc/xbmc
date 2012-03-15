@@ -51,7 +51,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
   }
 
-  CRegExp reItem;
+  CRegExp reItem(true); // HTML is case-insensitive
   reItem.RegComp("<a href=\"(.*)\">(.*)</a>");
 
   /* read response from server into string buffer */
@@ -108,7 +108,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
         if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
         {
-          CRegExp reSize;
+          CRegExp reSize(true);
           reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
