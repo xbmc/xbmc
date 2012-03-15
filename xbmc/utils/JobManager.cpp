@@ -22,6 +22,7 @@
 #include "JobManager.h"
 #include <algorithm>
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -41,8 +42,8 @@ CJobWorker::CJobWorker(CJobManager *manager) : CThread("Jobworker")
 CJobWorker::~CJobWorker()
 {
   // while we should already be removed from the job manager, if an exception
-  // occurs during processing, we may skip over that step.  Thus, before we
-  // go out of scope, ensure the job manager knows we're gone.
+  // occurs during processing that we haven't caught, we may skip over that step.
+  // Thus, before we go out of scope, ensure the job manager knows we're gone.
   m_jobManager->RemoveWorker(this);
   if(!IsAutoDelete())
     StopThread();
@@ -58,8 +59,15 @@ void CJobWorker::Process()
     if (!job)
       break;
 
-    // we have a job to do
-    bool success = job->DoWork();
+    bool success = false;
+    try
+    {
+      success = job->DoWork();
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, job->GetType());
+    }
     m_jobManager->OnJobComplete(success, job);
   }
 }
@@ -295,8 +303,15 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
     lock.Leave();
-    if (item.m_callback)
-      item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    try
+    {
+      if (item.m_callback)
+        item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, item.m_job->GetType());
+    }
     lock.Enter();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())

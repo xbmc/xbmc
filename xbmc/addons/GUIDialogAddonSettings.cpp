@@ -1070,10 +1070,9 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
 {
   if (!value)
     return "";
-  int id = atoi(value);
   CStdString prefix(subSetting ? "- " : "");
-  if (id > 0)
-    return prefix + m_addon->GetString(id);
+  if (StringUtils::IsNaturalNumber(value))
+    return prefix + m_addon->GetString(atoi(value));
   return prefix + value;
 }
 
