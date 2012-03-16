@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include "DllLibPlist.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
@@ -699,8 +700,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         int oldVolume = g_application.GetVolume();
         volume *= 100;
-        g_application.SetVolume(volume);
-        g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+        if(oldVolume != (int)volume)
+        {
+          g_application.SetVolume(volume);          
+          g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+        }
       }
   }
 
@@ -790,7 +794,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
     if (status != AIRPLAY_STATUS_NEED_AUTH)
     {
-      CFileItem fileToPlay(location + "|User-Agent=AppleCoreMedia/1.0.0.8F455 (Apple†TV; U; CPU OS 4_3 like Mac OS X; de_de)", false);
+      CStdString userAgent="AppleCoreMedia/1.0.0.8F455 (AppleTV; U; CPU OS 4_3 like Mac OS X; de_de)";
+      CURL::Encode(userAgent);
+      location += "|User-Agent=" + userAgent;
+
+      CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
       g_application.getApplicationMessenger().MediaPlay(fileToPlay);
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);

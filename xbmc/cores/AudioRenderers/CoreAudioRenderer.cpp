@@ -1258,7 +1258,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     CCoreAudioChannelLayout deviceLayout;
     if (!m_AudioDevice.GetPreferredChannelLayout(deviceLayout))
       return false;
-    
+        
     // Detect devices with no Speaker Configuration
     bool undefinedLayout = true;
     for (UInt32 c = 0; c < deviceLayout.GetChannelCount(); c++)
@@ -1272,17 +1272,21 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     }
     if (undefinedLayout)
     {
-      if (!g_sysinfo.IsAppleTV()) // AppleTV users cannot do this...
+      AudioChannelLayoutTag newLayoutTag = kAudioChannelLayoutTag_UseChannelBitmap;
+      if (g_sysinfo.IsAppleTV()) // AppleTV is only Stereo
+        newLayoutTag = kAudioChannelLayoutTag_Stereo;
+      else  // AppleTV users cannot do this...
       {
         CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: The selected device (%s) does not have a speaker layout configured. Using the default layout.", m_AudioDevice.GetName());
         CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: \tPlease go to Applications -> Utilities -> Audio MIDI Setup, and select 'Configure Speakers...'");
-      }
-      // Pick a default layout based on the number of channels
-      AudioChannelLayoutTag newLayoutTag = GetDefaultLayout(deviceLayout.GetChannelCount());
-      if (newLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Undefined, give up...
-      {
-        CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: Unable to find a suitable default layout for this device.");
-        return false;
+
+        // Pick a default layout based on the number of channels
+        newLayoutTag = GetDefaultLayout(deviceLayout.GetChannelCount());
+        if (newLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Undefined, give up...
+        {
+          CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCM: Unable to find a suitable default layout for this device.");
+          return false;
+        }
       }
       if (!deviceLayout.SetLayout(newLayoutTag))
       {

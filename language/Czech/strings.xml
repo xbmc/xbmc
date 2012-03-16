@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 26/09/2010-->
-<!--updated 3/12/2011 by mirek-->
+<!--Date of translation: 26.09.2010-->
+<!--Updated 03.12.2011 by mirek-->
+<!--Updated 06.01.2012 by babča-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -56,7 +57,7 @@
   <string id="60">říj</string>
   <string id="61">lis</string>
   <string id="62">pro</string>
-  
+
   <string id="71">S</string>
   <string id="72">SSV</string>
   <string id="73">SV</string>
@@ -1021,7 +1022,7 @@
 
   <string id="13100">Filtr blikání</string>
   <string id="13101">Ponechat nastavení ovladače (vyžadován restart)</string>
-  
+
   <string id="13105">Vertikální synchronizace obrazovky (V-Sync)</string>
   <string id="13106">Vypnuto</string>
   <string id="13107">Zapnuto při přehrávání videa</string>
@@ -1069,11 +1070,11 @@
 
   <string id="13200">Profily</string>
   <string id="13201">Odstranit profil '%s'?</string>
-  
+
   <string id="13204">Naposledy načtený profil:</string>
   <string id="13205">Neznámý</string>
   <string id="13206">Přepsat</string>
-  
+
   <string id="13208">Budík</string>
   <string id="13209">Interval budíku (v min)</string>
   <string id="13210">Budík nastaven na %im</string>
@@ -1174,7 +1175,7 @@
   <string id="13359">Přiřadit ikonu interpreta</string>
   <string id="13360">Automaticky generovat náhledy</string>
   <string id="13361">Povolit úpravu hlasu</string>
-  
+
   <string id="13375">Povolit zařízení</string>
   <string id="13376">Hlasitost</string>
   <string id="13377">Výchozí nastavení zobrazení</string>
@@ -1343,7 +1344,7 @@
   <string id="14080">Časové pásmo</string>
   <string id="14081">Soubory a složky</string>
   <string id="14082">Zobrazovat EXIF informace o obrázku</string>
-  <string id="14083">Upřednostňovat režim celé obrazovky na velikost okna</string>
+  <string id="14083">Otevřít v okně přes celou obrazovku namísto pravého fullscreen režimu</string>
   <string id="14084">Přidávat skladby do fronty při jejich výběru</string>
   <string id="14085">Automaticky přehrávat Audio CD</string>
   <string id="14086">Přehrávání</string>
@@ -1498,7 +1499,7 @@
   <string id="16039">Off</string>
   <string id="16040">Auto</string>
   <string id="16041">On</string>
-  
+
   <string id="16100">Všechna videa</string>
   <string id="16101">Nezhlédnuté</string>
   <string id="16102">Zhlédnuté</string>
@@ -1539,7 +1540,7 @@
   <string id="16322">Spline36</string>
   <string id="16323">Spline36 optimized</string>
   <string id="16324">Software Blend</string>
-  
+
   <string id="16400">Post-processing</string>
 
   <string id="17500">Zobrazovat odpočet do uspání</string>
@@ -1611,7 +1612,7 @@
   <string id="20069">Nemohu vytvořit složku</string>
   <string id="20070">Složka profilu</string>
   <string id="20071">Chcete nastavit výchozí zdroje médií</string>
-  <string id="20072">Ujistěte se, zda je do vybráné složky možnost zápisu</string>
+  <string id="20072">Ujistěte se, zda je do vybrané složky možnost zápisu</string>
   <string id="20073">a nový název složky v pořádku</string>
   <string id="20074">Přístupnost</string>
   <string id="20075">Zadejte hlavní kód rodičovského zámku</string>
@@ -1926,7 +1927,7 @@
   <string id="21366">Složka s titulky</string>
   <string id="21367">Video a alternativní složka s titulky</string>
   <string id="21368">Přepsat písmo v ASS/SSA titulcích</string>
-  
+
   <string id="21369">Povolit kurzor myši</string>
   <string id="21370">Přehrávat zvuky při přehrávání multimediálních souborů</string>
   <string id="21371">Náhledy</string>
@@ -2028,13 +2029,13 @@
   <string id="21805">Rozlišení</string>
   <string id="21806">Komentář</string>
   <string id="21807">Barva/ČB</string>
-  <string id="21808">Zpracování Jpeg</string>
+  <string id="21808">Zpracování JPEG</string>
 
   <string id="21820">Datum/Čas</string>
   <string id="21821">Popis</string>
   <string id="21822">Značka fotoaparátu</string>
   <string id="21823">Model fotoaparátu</string>
-  <string id="21824">Exif komentář</string>
+  <string id="21824">EXIF komentář</string>
   <string id="21825">Firmware</string>
   <string id="21826">Clona</string>
   <string id="21827">Ohnisko objektivu</string>
@@ -2090,7 +2091,7 @@
   <string id="21892">Hudební nástroje</string>
   <string id="21893">Datum narození</string>
   <string id="21894">Datum seskupení</string>
-  <string id="21895">Tématické zaměření</string>
+  <string id="21895">Tematické zaměření</string>
   <string id="21896">Datum rozpuštění</string>
   <string id="21897">Datum úmrtí</string>
   <string id="21898">Aktivní v letech</string>
@@ -2372,7 +2373,7 @@
   <string id="35502">Název</string>
   <string id="35503">Výrobce</string>
   <string id="35504">ID produktu</string>
-  
+
   <string id="36000">Pulse-Eight CEC adaptér</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
   <string id="36002">Switch to keyboard side command</string>

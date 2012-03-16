@@ -8,6 +8,10 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
   PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
   PYTHON=$(PREFIX)/bin/python
 
+ifeq ( $(XBMC_DARWIN_RELEASE), 1)
+	CONFIGURE+= --disable-debug
+endif
+
 all: configure
 
 configure:

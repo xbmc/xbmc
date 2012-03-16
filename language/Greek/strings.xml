@@ -2403,5 +2403,5 @@
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
   <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά  η libcec δεν είναι διαθέσιμη</string>
-  <string id="36018">Χρήση της γλώσσας της τηλεόρασης</string>
+  <string id="36018">Χρήση των ρυθμίσεων γλώσσας της τηλεόρασης</string>
 </strings>
