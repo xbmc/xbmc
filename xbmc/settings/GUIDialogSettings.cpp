@@ -665,6 +665,15 @@ void CGUIDialogSettings::OnInitWindow()
   SetupPage();
   // set the default focus control
   m_lastControlID = CONTROL_START;
+
+  for (unsigned int i = 0; i < m_settings.size(); i++)
+  {
+    if (m_settings.at(i).enabled)
+    {
+      m_lastControlID = CONTROL_START + i;
+      break;
+    }
+  }
   CGUIDialog::OnInitWindow();
 }
 
