@@ -29,6 +29,7 @@
 
 #include <vector>
 #include "TextureBundle.h"
+#include "threads/CriticalSection.h"
 
 #pragma once
 
@@ -131,6 +132,7 @@ protected:
   CTextureBundle m_TexBundle[2];
 
   std::vector<CStdString> m_texturePaths;
+  CCriticalSection m_section;
 };
 
 /*!
