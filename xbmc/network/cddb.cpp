@@ -415,16 +415,19 @@ void Xcddb::addTitle(const char *buffer)
   }
   if (found)
   {
-    strncpy(artist, value, index);
-    artist[index] = '\0';
-    strncpy(title, value + index + 3, sizeof(title));
-    title[0] = '\0';
+    int artist_len = std::min(index, sizeof(artist) - 1);
+    strncpy(artist, value, artist_len);
+    artist[artist_len] = '\0';
+    int title_len = std::min(len - index - 3, sizeof(title)-1);
+    strncpy(title, value + index + 3, title_len);
+    title[title_len] = '\0';
   }
   else
   {
     artist[0] = '\0';
-    strncpy(title, value, sizeof(title));
-    title[0] = '\0';
+    int title_len = std::min(len, sizeof(title)-1);
+    strncpy(title, value, title_len);
+    title[title_len] = '\0';
   }
 
   CStdString strArtist=artist;
