@@ -119,7 +119,6 @@ class CVideoReferenceClock : public CThread
     bool SetupGLX();
     void RunGLX();
     void CleanupGLX();
-    bool ParseNvSettings(int& RefreshRate);
     int  GetRandRRate();
 
     int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
@@ -134,7 +133,6 @@ class CVideoReferenceClock : public CThread
     bool         m_xrrEvent;
     CEvent       m_releaseEvent, m_resetEvent;
 
-    bool         m_UseNvSettings;
     bool         m_bIsATI;
 
 #elif defined(TARGET_WINDOWS) && defined(HAS_DX)
