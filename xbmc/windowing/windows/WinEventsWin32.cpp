@@ -690,6 +690,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
               g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
         }
+        break;
       }
     case WM_PAINT:
       //some other app has painted over our window, mark everything as dirty
