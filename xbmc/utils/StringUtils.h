@@ -47,6 +47,12 @@ public:
   static long TimeStringToSeconds(const CStdString &timeString);
   static void RemoveCRLF(CStdString& strLine);
 
+  /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
+   \param s c-string to find the length of.
+   \return the number of utf8 characters in the string.
+   */
+  static size_t utf8_strlen(const char *s);
+
   /*! \brief convert a time in seconds to a string based on the given time format
    \param seconds time in seconds
    \param format the format we want the time in.
