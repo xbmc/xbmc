@@ -95,6 +95,7 @@ class CAdvancedSettings
     float m_limiterHold;
     float m_limiterRelease;
 
+    bool m_videoOSDOnMouseMove;
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
     int m_videoSmallStepBackSeconds;
