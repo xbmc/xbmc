@@ -569,7 +569,7 @@ namespace PYXBMC
     if (PyXBMCWindowIsNull(pDialog)) return NULL;
 
     {
-      PyThreadState state;
+      CPyThreadState state;
       pDialog->Close();
     }
 
@@ -582,7 +582,7 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= ((DialogProgress*)self)->dlg;
     if (pDialog)
     {
-      PyThreadState state;
+      CPyThreadState state;
       pDialog->Close();
     }
     
