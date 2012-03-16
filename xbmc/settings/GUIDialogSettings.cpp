@@ -600,6 +600,8 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vecto
   setting.type = SettingInfo::SPIN;
   setting.data = current;
   setting.entry = values;
+  if (values.size() <= 1)
+    setting.enabled = false;
   m_settings.push_back(setting);
 }
 
