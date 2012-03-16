@@ -1096,9 +1096,13 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
     }
 
-    // Always sort by label
-    items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-
+    // If it is a series sort by episode, else by label
+    if (parent_id.StartsWith("videodb://2")) { // Container for series
+            items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
+    } else {
+        items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    }
+    
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed
