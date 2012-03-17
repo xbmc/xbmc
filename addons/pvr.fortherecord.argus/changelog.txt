@@ -1,3 +1,9 @@
+v0.0.1.131 (16-03-2012)
+- Added many internal verifications to the <FTR GUID> to <XBMC number> 
+  channel mappings. External factors can break the mapping and these
+  checks will hopefully warn the user to reset the PVR database
+v0.0.1.130 (11-03-2012)
+- Fixed 64-bit Linux .tsbuffer processing
 v0.0.1.129 (04-03-2012)
 - Media Portal TV-Server will now work with the FTR - FTR Addon - XBMC combination
   Recording titles with trailing periods '...' will show up in XBMC,
