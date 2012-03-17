@@ -21,7 +21,6 @@
 
 #include "XMLUtils.h"
 #include "URL.h"
-#include "filesystem/SpecialProtocol.h"
 #include "StringUtils.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for strcasecmp
@@ -204,8 +203,6 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   if (!pElement) return false;
 
-  int pathVersion = 0;
-  pElement->Attribute("pathversion", &pathVersion);
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
@@ -213,7 +210,6 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
     strStringValue = pNode->Value();
     if (encoded && strcasecmp(encoded,"yes") == 0)
       CURL::Decode(strStringValue);
-    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
     return true;
   }
   strStringValue.Empty();
@@ -275,7 +271,7 @@ void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
-  newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+  newElement.SetAttribute("pathversion", path_version);
   TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
   if (pNewNode)
   {

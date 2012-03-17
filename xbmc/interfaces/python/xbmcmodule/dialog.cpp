@@ -568,9 +568,8 @@ namespace PYXBMC
     CGUIDialogProgress* pDialog= ((DialogProgress*)self)->dlg;
     if (PyXBMCWindowIsNull(pDialog)) return NULL;
 
-    PyXBMCGUILock();
+    PyThreadState state;
     pDialog->Close();
-    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;

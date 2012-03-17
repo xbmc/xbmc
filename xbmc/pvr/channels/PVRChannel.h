@@ -58,6 +58,7 @@ namespace PVR
     int              m_iChannelId;              /*!< the identifier given to this channel by the TV database */
     bool             m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
     bool             m_bIsHidden;               /*!< true if this channel is hidden, false if not */
+    bool             m_bIsUserSetIcon;          /*!< true if user set the icon via GUI, false if not */
     CStdString       m_strIconPath;             /*!< the path to the icon for this channel */
     CStdString       m_strChannelName;          /*!< the name for this channel used by XBMC */
     bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
@@ -181,12 +182,19 @@ namespace PVR
     const CStdString &IconPath(void) const { return m_strIconPath; }
 
     /*!
+     * @brief True if this user changed icon via GUI. False if not.
+     * @return True if this user changed icon via GUI. False if not.
+     */
+    bool IsUserSetIcon(void) const { return m_bIsUserSetIcon; }
+	  
+    /*!
      * @brief Set the path to the icon for this channel.
      * @param strIconPath The new path.
      * @param bSaveInDb Save in the database or not.
+     * @param bIsUserSetIcon true if user changed the icon via GUI, false otherwise.
      * @return True if the something changed, false otherwise.
      */
-    bool SetIconPath(const CStdString &strIconPath, bool bSaveInDb = false);
+    bool SetIconPath(const CStdString &strIconPath, bool bSaveInDb = false, bool bIsUserSetIcon = true);
 
     /*!
      * @brief The name for this channel used by XBMC.

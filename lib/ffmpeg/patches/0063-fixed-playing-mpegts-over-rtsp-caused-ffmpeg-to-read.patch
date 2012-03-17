@@ -1,0 +1,29 @@
+From 8ec66e240fe0a9f672d7ff1932022f22f8332ffb Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@xbmc.org>
+Date: Mon, 7 Mar 2011 22:53:30 +0100
+Subject: [PATCH] fixed: playing mpegts over rtsp caused ffmpeg to read
+ uninitialized stack values
+
+This is an amendment to cdfab91b9c4b7ed2560071f5630567db174d6084 the memleak
+fix for mpegts. It's questionable if that change is needed. Since
+the main issue it was for has been fixed correctly. However it
+doesn't hurt to avoid potential memleaks this way.
+---
+ lib/ffmpeg/libavformat/mpegts.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/mpegts.c b/lib/ffmpeg/libavformat/mpegts.c
+index 9c25e37..2dbd07e 100644
+--- a/lib/ffmpeg/libavformat/mpegts.c
++++ b/lib/ffmpeg/libavformat/mpegts.c
+@@ -1879,6 +1879,7 @@ int ff_mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
+ 
+     len1 = len;
+     ts->pkt = pkt;
++    ts->pkt->data = NULL;
+     ts->stop_parse = 0;
+     for(;;) {
+         if (ts->stop_parse>0)
+-- 
+1.7.7.2
+

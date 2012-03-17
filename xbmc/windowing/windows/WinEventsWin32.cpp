@@ -383,6 +383,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_CLOSE:
     case WM_QUIT:
     case WM_DESTROY:
+      if (hDeviceNotify)
+        UnregisterDeviceNotification(hDeviceNotify);
       newEvent.type = XBMC_QUIT;
       m_pEventFunc(newEvent);
       break;
@@ -678,14 +680,17 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_DEVICECHANGE:
       {
-        PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
-        switch (wParam)
+        if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
         {
-          case DBT_DEVICEARRIVAL:
-          case DBT_DEVICEREMOVECOMPLETE:
-          case DBT_DEVNODES_CHANGED:
-            g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
-            break;
+          PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+          switch (wParam)
+          {
+            case DBT_DEVICEARRIVAL:
+            case DBT_DEVICEREMOVECOMPLETE:
+            case DBT_DEVNODES_CHANGED:
+              g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
+              break;
+          }
         }
         break;
       }
