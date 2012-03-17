@@ -85,7 +85,8 @@ CWin32WASAPI::CWin32WASAPI() :
   m_pAudioClient(NULL),
   m_pRenderClient(NULL),
   m_pDevice(NULL),
-  m_Initialized(false)
+  m_Initialized(false),
+  m_LastInitializationAttempt(0)
 {
 }
 
@@ -119,6 +120,15 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 //***********************************************************************************************
 bool CWin32WASAPI::Initialize()
 {
+  if (m_bIsAllocated && !m_Initialized)
+  {
+    // Limit the attempts to initialize to 2 per second after a device loss
+    unsigned int Now = XbmcThreads::SystemClockMillis();
+    if (m_LastInitializationAttempt + 500 > Now)
+      return false;
+    m_LastInitializationAttempt = Now;
+  }
+
   CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", m_device.c_str());
 
   //First check if the version of Windows we are running on even supports WASAPI.
@@ -359,6 +369,7 @@ bool CWin32WASAPI::Close()
   m_uiBufferLen = 0;
 
   m_Initialized = false;
+  m_LastInitializationAttempt = 0;
 
   return true;
 }

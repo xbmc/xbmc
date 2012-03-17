@@ -107,6 +107,7 @@ private:
 
   // Initialization parameters
   bool              m_Initialized;
+  unsigned int      m_LastInitializationAttempt;
   IAudioCallback*   m_pCallback;
   CStdString        m_device;
   int               m_iChannels;
