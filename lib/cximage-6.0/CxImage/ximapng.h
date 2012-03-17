@@ -30,7 +30,8 @@ extern "C" {
 #endif
 }
 
-#if PNG_LIBPNG_VER > 10399
+//#if PNG_LIBPNG_VER > 10399
+#if 1
   #define USE_NEW_LIBPNG_API
 #endif
 
