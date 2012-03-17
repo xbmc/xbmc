@@ -319,6 +319,7 @@ void CAdvancedSettings::Initialize()
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
   m_initialized = true;
+  m_settingsHidden.clear();
 
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
@@ -922,6 +923,26 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
       // get next one
       pSubstitute = pSubstitute->NextSiblingElement("substitute");
+    }
+  }
+
+  TiXmlElement* pHideSettings = pRootElement->FirstChildElement("hidesettings");
+  if (pHideSettings)
+  {
+    m_settingsHidden.clear();
+    CLog::Log(LOGDEBUG,"Configuring hidden settings");
+    TiXmlNode* pSetting = pHideSettings->FirstChildElement("setting");
+    CStdString hiddenSetting;
+    while (pSetting)
+    {
+      hiddenSetting = pSetting->FirstChild()->Value();
+      if (!hiddenSetting.IsEmpty())
+      {
+        CLog::Log(LOGNOTICE,"Hiding:  [%s]", hiddenSetting.c_str());
+        m_settingsHidden.push_back(hiddenSetting);
+      }
+      // get next one
+      pSetting = pSetting->NextSiblingElement("setting");
     }
   }
 

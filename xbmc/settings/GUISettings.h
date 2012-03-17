@@ -526,6 +526,7 @@ private:
   std::map<std::string, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
+  bool CheckHiddenOverride(CSetting *setting);
 };
 
 XBMC_GLOBAL_REF(CGUISettings, g_guiSettings);
