@@ -77,6 +77,10 @@ typedef enum {
   XBMCK_GREATER     = 0x3E,
   XBMCK_QUESTION    = 0x3F,
   XBMCK_AT          = 0x40,
+
+  XBMCK_MEDIA_FASTFORWARD     = 0x46,
+  XBMCK_MEDIA_REWIND          = 0x52,
+
   // Skip uppercase letters
   XBMCK_LEFTBRACKET = 0x5B,
   XBMCK_BACKSLASH   = 0x5C,
