@@ -31,12 +31,15 @@
 #include "utils/URIUtils.h"
 #include "mysqldataset.h"
 #include "sqlitedataset.h"
+#include "threads/SingleLock.h"
 
 
 using namespace AUTOPTR;
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20
+
+CCriticalSection CDatabase::s_openGuard;
 
 CDatabase::CDatabase(void)
 {
@@ -288,6 +291,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   CStdString latestDb;
   latestDb.Format("%s%d", baseDBName, version);
 
+  CSingleLock lock(s_openGuard); // guard the db open/upgrade process - we don't want more than one thread in here at a time
   while (version >= 0)
   {
     if (version)
@@ -444,24 +448,32 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
 bool CDatabase::UpdateVersion(const CStdString &dbName)
 {
   int version = 0;
-  m_pDS->query("SELECT idVersion FROM version\n");
-  if (m_pDS->num_rows() > 0)
-    version = m_pDS->fv("idVersion").get_asInt();
-
-  if (version < GetMinVersion())
+  try
   {
-    CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
-    if (UpdateOldVersion(version) && UpdateVersionNumber())
-      CLog::Log(LOGINFO, "Update to version %i successfull", GetMinVersion());
-    else
+    m_pDS->query("SELECT idVersion FROM version\n");
+    if (m_pDS->num_rows() > 0)
+      version = m_pDS->fv("idVersion").get_asInt();
+
+    if (version < GetMinVersion())
     {
-      CLog::Log(LOGERROR, "Can't update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      CLog::Log(LOGNOTICE, "Attempting to update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+      if (UpdateOldVersion(version) && UpdateVersionNumber())
+        CLog::Log(LOGINFO, "Update to version %i successfull", GetMinVersion());
+      else
+      {
+        CLog::Log(LOGERROR, "Can't update the database %s from version %i to %i", dbName.c_str(), version, GetMinVersion());
+        return false;
+      }
+    }
+    else if (version > GetMinVersion())
+    {
+      CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
       return false;
     }
   }
-  else if (version > GetMinVersion())
+  catch (...)
   {
-    CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
+    CLog::Log(LOGERROR, "%s - failed", __FUNCTION__);
     return false;
   }
   return true;
