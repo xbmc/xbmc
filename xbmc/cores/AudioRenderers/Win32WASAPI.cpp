@@ -269,6 +269,27 @@ bool CWin32WASAPI::Initialize()
     CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", m_device.c_str());
     hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_pDevice);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
+
+    // Find the default device name, to use in the event of a device loss
+    IPropertyStore *pProperty = NULL;
+    PROPVARIANT varName;
+
+    hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+    EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.")
+
+    hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
+    if(FAILED(hr))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint device name failed.");
+      SAFE_RELEASE(pProperty);
+      goto failed;
+    }
+
+    CStdStringW strRawDevName(varName.pwszVal);
+    g_charsetConverter.wToUTF8(strRawDevName, m_device);
+
+    PropVariantClear(&varName);
+    SAFE_RELEASE(pProperty);
   }
 
   //We are done with the enumerator.
