@@ -75,6 +75,7 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_tsreader               = NULL;
 #endif
   m_genretable             = NULL;
+  m_iLastRecordingUpdate   = 0;
 }
 
 cPVRClientMediaPortal::~cPVRClientMediaPortal()
@@ -979,6 +980,8 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     }
   }
 
+  m_iLastRecordingUpdate = PLATFORM::GetTimeMs();
+
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -1084,6 +1087,11 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
     }
   }
 
+  if ( PLATFORM::GetTimeMs() >  m_iLastRecordingUpdate + 15000)
+  {
+    PVR->TriggerRecordingUpdate();
+  }
+
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -1169,8 +1177,6 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForce
   // Although XBMC deletes this timer, we still have to trigger XBMC to update its timer list to
   // remove the timer from the XBMC list
   PVR->TriggerTimerUpdate();
-  // When deleting a currently active (recording) timer, we need to refresh also the recording list
-  PVR->TriggerRecordingUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1201,7 +1207,6 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
   // Although XBMC changes this timer, we still have to trigger XBMC to update its timer list to
   // see the timer changes at the XBMC side
   PVR->TriggerTimerUpdate();
-  PVR->TriggerRecordingUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }

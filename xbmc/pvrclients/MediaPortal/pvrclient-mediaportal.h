@@ -117,6 +117,7 @@ private:
   CCards                  m_cCards;
   CGenreTable*            m_genretable;
   PLATFORM::CMutex        m_mutex;
+  int64_t                 m_iLastRecordingUpdate;
 #ifdef TSREADER
   CTsReader*              m_tsreader;
 
