@@ -398,7 +398,9 @@ bool CWin32WASAPI::Resume()
 
   m_bPause = false;
 
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    return false;
+
   if(m_CacheLen >= m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
   {
     HRESULT hr = m_pAudioClient->Start();
@@ -492,7 +494,8 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
   BYTE* pBuffer = NULL;
   HRESULT hr;
 
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    return 0;
 
   uiBytesToWrite  = std::min(m_uiBufferLen - m_CacheLen, (len / m_uiBytesPerSrcFrame) * m_uiBytesPerFrame);
   uiBytesToWrite /= m_uiChunkSize;
@@ -533,11 +536,11 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
   return uiSrcBytesToWrite; // Bytes used
 }
 
-void CWin32WASAPI::UpdateCacheStatus()
+bool CWin32WASAPI::UpdateCacheStatus()
 {
   unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
-    return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
+    return true; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
   m_LastCacheCheck = time;
 
@@ -549,11 +552,13 @@ void CWin32WASAPI::UpdateCacheStatus()
     CLOSE_ON_INVALID(hr,)
     // On error pretend the buffer is full.
     m_CacheLen = m_uiBufferLen;
+    return false;
   }
   else
   {
     m_CacheLen *= m_uiBytesPerFrame;
   }
+  return true;
 }
 
 void CWin32WASAPI::CheckPlayStatus()
@@ -581,7 +586,8 @@ unsigned int CWin32WASAPI::GetSpace()
     return 0;
 
   // Make sure we know how much data is in the cache
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    return 0;
 
   return ((m_uiBufferLen - m_CacheLen) / m_uiBytesPerFrame) * m_uiBytesPerSrcFrame;
 }
@@ -595,7 +601,8 @@ float CWin32WASAPI::GetDelay()
     return 0.0f;
 
   // Make sure we know how much data is in the cache
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    return 0.0f;
 
   return (float)m_CacheLen / (float)m_uiAvgBytesPerSec;
 }
@@ -609,7 +616,8 @@ float CWin32WASAPI::GetCacheTime()
     return 0.0f;
 
   // Make sure we know how much data is in the cache
-  UpdateCacheStatus();
+  if (!UpdateCacheStatus())
+    return 0.0f;
 
   return (float)m_CacheLen / (float)m_uiAvgBytesPerSec;
 }

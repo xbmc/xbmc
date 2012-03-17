@@ -70,7 +70,7 @@ private:
   bool Initialize();
   bool Close();
   void AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
-  void UpdateCacheStatus();
+  bool UpdateCacheStatus();
   void CheckPlayStatus();
   void BuildChannelMapping(int channels, enum PCMChannels* map);
 
