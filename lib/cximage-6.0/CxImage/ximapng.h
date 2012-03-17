@@ -69,13 +69,8 @@ protected:
 
     static void PNGAPI user_error_fn(png_structp png_ptr,png_const_charp error_msg)
 	{
-#if PNG_LIBPNG_VER > 10399
-		strncpy((char*)png_get_error_ptr(png_ptr),error_msg,255);
-		longjmp(png_jmpbuf(png_ptr), 1);
-#else
 		strncpy((char*)png_ptr->error_ptr,error_msg,255);
 		longjmp(png_ptr->jmpbuf, 1);
-#endif
 	}
 };
 
