@@ -612,7 +612,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
 	/* set the palette if there is one */
 #ifdef USE_NEW_LIBPNG_API
-	png_colorp _palette = NULL;
+	png_colorp _palette;
 #endif
 	if (GetPalette()){
 #ifndef USE_NEW_LIBPNG_API
