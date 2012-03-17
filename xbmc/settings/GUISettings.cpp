@@ -861,6 +861,9 @@ void CGUISettings::Initialize()
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
   AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  // PVR-related setting typically used by skins that are aimed at PVR and non-PVR builds
+  AddBool(NULL, "pvrmanager.enabled", 449, false);
 }
 
 CGUISettings::~CGUISettings(void)
