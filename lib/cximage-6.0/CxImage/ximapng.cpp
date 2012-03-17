@@ -15,7 +15,7 @@
 void CxImagePNG::ima_png_error(png_struct *png_ptr, char *message)
 {
 	strcpy(info.szLastError,message);
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	longjmp(png_jmpbuf(png_ptr), 1);
 #else
 	longjmp(png_ptr->jmpbuf, 1);
@@ -66,7 +66,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
     /* Set error handling if you are using the setjmp/longjmp method (this is
     * the normal method of doing things with libpng).  REQUIRED unless you
     * set up your own error handlers in the png_create_read_struct() earlier. */
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	if (setjmp(png_jmpbuf(png_ptr))) {
 #else
 	if (setjmp(png_ptr->jmpbuf)) {
@@ -86,7 +86,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
 	png_uint_32 _width,_height;
 	int _bit_depth,_color_type,_interlace_type,_compression_type,_filter_type;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	png_get_IHDR(png_ptr,info_ptr,&_width,&_height,&_bit_depth,&_color_type,
 		&_interlace_type,&_compression_type,&_filter_type);
 #else
@@ -103,7 +103,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 		head.biWidth = _width;
 		head.biHeight= _height;
 		info.dwType = CXIMAGE_FORMAT_PNG;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		longjmp(png_jmpbuf(png_ptr), 1);
 #else
 		longjmp(png_ptr->jmpbuf, 1);
@@ -128,7 +128,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 		break;
 	default:
 		strcpy(info.szLastError,"unknown PNG color type");
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		longjmp(png_jmpbuf(png_ptr), 1);
 #else
 		longjmp(png_ptr->jmpbuf, 1);
@@ -136,7 +136,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	}
 
 	//find the right pixel depth used for cximage
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	int pixel_depth = _bit_depth * png_get_channels(png_ptr,info_ptr);
 #else
 	int pixel_depth = info_ptr->pixel_depth;
@@ -146,7 +146,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	if (channels >= 3) pixel_depth=24;
 
 	if (!Create(_width, _height, pixel_depth, CXIMAGE_FORMAT_PNG)){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		longjmp(png_jmpbuf(png_ptr), 1);
 #else
 		longjmp(png_ptr->jmpbuf, 1);
@@ -156,7 +156,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	/* get metrics */
 	png_uint_32 _x_pixels_per_unit,_y_pixels_per_unit;
 	int _phys_unit_type;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	png_get_pHYs(png_ptr,info_ptr,&_x_pixels_per_unit,&_y_pixels_per_unit,&_phys_unit_type);
 #else
 	_x_pixels_per_unit=info_ptr->x_pixels_per_unit;
@@ -177,7 +177,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
 	int _num_palette;
 	png_colorp _palette;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	png_uint_32 _palette_ret;
 	_palette_ret = png_get_PLTE(png_ptr,info_ptr,&_palette,&_num_palette);
 	if (_palette_ret && _num_palette>0){
@@ -200,7 +200,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	png_bytep _trans_alpha;
 	int _num_trans;
 	png_color_16p _trans_color;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	png_uint_32 _trans_ret;
 	_trans_ret = png_get_tRNS(png_ptr,info_ptr,&_trans_alpha,&_num_trans,&_trans_color);
 	if (_trans_ret && _num_trans!=0){ //palette transparency
@@ -210,20 +210,20 @@ bool CxImagePNG::Decode(CxFile *hFile)
 #endif
 		if (_num_trans==1){
 			if (_color_type == PNG_COLOR_TYPE_PALETTE){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 				info.nBkgndIndex = _trans_color->index;
 #else
 				info.nBkgndIndex = info_ptr->trans_values.index;
 #endif
 			} else{
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 				info.nBkgndIndex = _trans_color->gray>>nshift;
 #else
 				info.nBkgndIndex = info_ptr->trans_values.gray>>nshift;
 #endif
 			}
 		}
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		if (_num_trans>1 && _trans_alpha!=NULL){
 #else
 		if (_num_trans>1){
@@ -232,7 +232,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 			if (pal){
 				DWORD ip;
 				for (ip=0;ip<min(head.biClrUsed,(unsigned long)_num_trans);ip++)
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 					pal[ip].rgbReserved=_trans_alpha[ip];
 #else
 					pal[ip].rgbReserved=info_ptr->trans[ip];
@@ -248,7 +248,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	if (channels == 3){ //check RGB binary transparency
 		/* seems unnecessary to call again, but the conditional must be important so... */
 		if (png_get_tRNS(png_ptr,info_ptr,&_trans_alpha,&_num_trans,&_trans_color)){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 			info.nBkgndColor.rgbRed   = (BYTE)(_trans_color->red>>nshift);
 			info.nBkgndColor.rgbGreen = (BYTE)(_trans_color->green>>nshift);
 			info.nBkgndColor.rgbBlue  = (BYTE)(_trans_color->blue>>nshift);
@@ -278,14 +278,14 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
 	// <vho> - handle cancel
 	if (info.nEscape)
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		longjmp(png_jmpbuf(png_ptr), 1);
 #else
 		longjmp(png_ptr->jmpbuf, 1);
 #endif
 
 	// row_bytes is the width x number of channels x (bit-depth / 8)
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	row_pointers = new BYTE[png_get_rowbytes(png_ptr,info_ptr) + 8];
 #else
 	row_pointers = new BYTE[info_ptr->rowbytes + 8];
@@ -301,7 +301,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	}
 
 	int chan_offset = _bit_depth >> 3;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	int pixel_offset = (_bit_depth * png_get_channels(png_ptr,info_ptr)) >> 3;
 #else
 	int pixel_offset = info_ptr->pixel_depth >> 3;
@@ -314,7 +314,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 
 			// <vho> - handle cancel
 			if (info.nEscape)
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 				longjmp(png_jmpbuf(png_ptr), 1);
 #else
 				longjmp(png_ptr->jmpbuf, 1);
@@ -367,7 +367,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 			{
 				//recover data from previous scan
 				if (_interlace_type && pass>0){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 					iter.GetRow(row_pointers, png_get_rowbytes(png_ptr,info_ptr));
 #else
 					iter.GetRow(row_pointers, info_ptr->rowbytes);
@@ -389,7 +389,7 @@ bool CxImagePNG::Decode(CxFile *hFile)
 				}
 
 				//copy the pixels
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 				iter.SetRow(row_pointers, png_get_rowbytes(png_ptr,info_ptr));
 #else
 				iter.SetRow(row_pointers, info_ptr->rowbytes);
@@ -457,7 +457,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
    /* Set error handling.  REQUIRED if you aren't supplying your own
     * error hadnling functions in the png_create_write_struct() call.
     */
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	if (setjmp(png_jmpbuf(png_ptr))){
 #else
 	if (setjmp(png_ptr->jmpbuf)){
@@ -475,7 +475,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	png_set_write_fn(png_ptr,hFile,/*(png_rw_ptr)*/user_write_data,/*(png_flush_ptr)*/user_flush_data);
 
 	/* set the file information here */
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	/* use variables to hold the values so it isnt necessary to png_get them later */
 	png_uint_32 _width,_height;
 	int _bit_depth,_color_type,_interlace_type,_compression_type,_filter_type;
@@ -500,14 +500,14 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
 	switch(GetCodecOption(CXIMAGE_FORMAT_PNG)){
 	case 1:
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		_interlace_type = PNG_INTERLACE_ADAM7;
 #else
 		info_ptr->interlace_type = PNG_INTERLACE_ADAM7;
 #endif
 		break;
 	default:
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		_interlace_type = PNG_INTERLACE_NONE;
 #else
 		info_ptr->interlace_type = PNG_INTERLACE_NONE;
@@ -521,20 +521,20 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
 	if (GetNumColors()){
 		if (bGrayScale){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 			_color_type = PNG_COLOR_TYPE_GRAY;
 #else
 			info_ptr->color_type = PNG_COLOR_TYPE_GRAY;
 #endif
 		} else {
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 			_color_type = PNG_COLOR_TYPE_PALETTE;
 #else
 			info_ptr->color_type = PNG_COLOR_TYPE_PALETTE;
 #endif
 		}
 	} else {
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		_color_type = PNG_COLOR_TYPE_RGB;
 #else
 		info_ptr->color_type = PNG_COLOR_TYPE_RGB;
@@ -542,7 +542,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	}
 #if CXIMAGE_SUPPORT_ALPHA
 	if (AlphaIsValid()){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		_color_type |= PNG_COLOR_MASK_ALPHA;
 		_channels++;
 		_bit_depth = 8;
@@ -556,7 +556,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	}
 #endif
 
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	/* set the header here, since we're done modifying these values */
 	png_set_IHDR(png_ptr,info_ptr,_width,_height,_bit_depth,_color_type,_interlace_type,
 		_compression_type,_filter_type);
@@ -575,7 +575,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	/* set metrics */
 	png_set_pHYs(png_ptr, info_ptr, head.biXPelsPerMeter, head.biYPelsPerMeter, PNG_RESOLUTION_METER);
 
-#ifndef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER <= 10399
 	png_set_IHDR(png_ptr, info_ptr, info_ptr->width, info_ptr->height, info_ptr->bit_depth,
 				info_ptr->color_type, info_ptr->interlace_type,
 				PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
@@ -583,7 +583,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
 	//<DP> simple transparency
 	if (info.nBkgndIndex >= 0){
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		png_color_16 _trans_color;
 		_trans_color.index = (BYTE)info.nBkgndIndex;
 		_trans_color.red   = tc.rgbRed;
@@ -605,17 +605,17 @@ bool CxImagePNG::Encode(CxFile *hFile)
 		if (!bGrayScale && head.biClrUsed && info.nBkgndIndex)
 			SwapIndex(0,(BYTE)info.nBkgndIndex);
 
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		png_set_tRNS(png_ptr,info_ptr,(png_bytep)trans,1,&_trans_color);
 #endif
 	}
 
 	/* set the palette if there is one */
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	png_colorp _palette;
 #endif
 	if (GetPalette()){
-#ifndef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER <= 10399
 		if (!bGrayScale){
 			info_ptr->valid |= PNG_INFO_PLTE;
 		}
@@ -625,14 +625,14 @@ bool CxImagePNG::Encode(CxFile *hFile)
 		if (nc==0) nc = GetNumColors();
 
 		// copy the palette colors
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 		_palette = new png_color[nc];
 #else
 		info_ptr->palette = new png_color[nc];
 		info_ptr->num_palette = (png_uint_16) nc;
 #endif
 		for (int i=0; i<nc; i++)
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 			GetPaletteColor(i, &_palette[i].red, &_palette[i].green, &_palette[i].blue);
 
 		png_set_PLTE(png_ptr,info_ptr,_palette,nc);
@@ -643,7 +643,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 		if (info.bAlphaPaletteEnabled){
 			for(WORD ip=0; ip<nc;ip++)
 				trans[ip]=GetPaletteColor((BYTE)ip).rgbReserved;
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 			png_set_tRNS(png_ptr,info_ptr,(png_bytep)trans,nc,NULL);
 #else
 			info_ptr->num_trans = (WORD)nc;
@@ -664,7 +664,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	}	}	}
 #endif // CXIMAGE_SUPPORT_ALPHA	// <vho>
 
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	int row_size = max(info.dwEffWidth, (_width * _channels * _bit_depth / 8));
 #else
 	int row_size = max(info.dwEffWidth, info_ptr->width*info_ptr->channels*(info_ptr->bit_depth/8));
@@ -687,7 +687,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 			if (AlphaIsValid()){
 				for (long ax=head.biWidth-1; ax>=0;ax--){
 					c = BlindGetPixelColor(ax,ay);
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 					int px = ax * _channels;
 #else
 					int px = ax * info_ptr->channels;
@@ -706,7 +706,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 #endif //CXIMAGE_SUPPORT_ALPHA	// <vho>
 			{
 				iter.GetRow(row_pointers, row_size);
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 				if (_color_type == PNG_COLOR_TYPE_RGB) //HACK BY OP
 #else
 				if (info_ptr->color_type == PNG_COLOR_TYPE_RGB) //HACK BY OP
@@ -727,7 +727,7 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	png_write_end(png_ptr, info_ptr);
 
 	/* if you malloced the palette, free it here */
-#ifdef USE_NEW_LIBPNG_API
+#if PNG_LIBPNG_VER > 10399
 	if (_palette){
 		delete [] (_palette);
 #else
