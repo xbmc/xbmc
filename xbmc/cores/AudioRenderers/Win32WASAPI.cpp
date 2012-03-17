@@ -64,7 +64,7 @@ const enum PCMChannels wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT
 #define WASAPI_TOTAL_CHANNELS 11
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
-#define CLOSE_ON_INVALID(hr, action) if (hr == AUDCLNT_E_DEVICE_INVALIDATED) { Close(); action; }
+#define CLOSE_ON_INVALID(hr, action) if (hr == AUDCLNT_E_DEVICE_INVALIDATED) { CLog::Log(LOGERROR, __FUNCTION__": lost device."); Close() ; action; }
 
 //This needs to be static since only one exclusive stream can exist at one time.
 bool CWin32WASAPI::m_bIsAllocated = false;
