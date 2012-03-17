@@ -254,7 +254,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
                                   { "friendlyname",     SYSTEM_FRIENDLY_NAME },
-                                  { "alarmpos",         SYSTEM_ALARM_POS }};
+                                  { "alarmpos",         SYSTEM_ALARM_POS },
+                                  { "haspvr",           SYSTEM_HAS_PVR }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "getbool",          SYSTEM_GET_BOOL },
@@ -1918,6 +1919,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SYSTEM_HASLOCKS)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+  else if (condition == SYSTEM_HAS_PVR)
+    bReturn = false;
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
