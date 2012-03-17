@@ -728,14 +728,14 @@ bool CxImagePNG::Encode(CxFile *hFile)
 
 	/* if you malloced the palette, free it here */
 #ifdef USE_NEW_LIBPNG_API
-	if (_palette){
-		delete [] (_palette);
+  delete [] (_palette);
 #else
-	if (info_ptr->palette){
+	if (info_ptr->palette)
+  {
 		delete [] (info_ptr->palette);
 		info_ptr->palette = NULL;
+  }
 #endif
-	}
 
 	/* clean up after the write, and free any memory allocated */
 	png_destroy_write_struct(&png_ptr, (png_infopp)&info_ptr);
