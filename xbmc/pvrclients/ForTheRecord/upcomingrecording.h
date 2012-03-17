@@ -44,6 +44,7 @@ public:
   bool Parse(const Json::Value& data);
 
   const std::string& ChannelId(void) const { return channelid; }
+  const std::string& ChannelDisplayname(void) const { return channeldisplayname; }
   time_t StartTime(void) const { return starttime; }
   time_t StopTime(void) const { return stoptime; }
   int PreRecordSeconds(void) const { return prerecordseconds; }
