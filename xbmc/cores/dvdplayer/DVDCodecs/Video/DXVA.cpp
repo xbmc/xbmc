@@ -951,6 +951,9 @@ CProcessor::CProcessor()
   m_context = NULL;
   m_index = 0;
   m_progressive = true;
+
+  m_deinterlace_mode = VS_DEINTERLACEMODE_OFF;
+  m_interlace_method = VS_INTERLACEMETHOD_NONE;
 }
 
 CProcessor::~CProcessor()
@@ -1409,12 +1412,17 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
 {
   CSingleLock lock(m_section);
 
+  // get the current renderer-determined deinterlace mode
+  EDEINTERLACEMODE mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+  if (!g_advancedSettings.m_DXVADeinterlaceProcessorAlwaysOnForAutoMode)
+    mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
+
   EINTERLACEMETHOD method = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);
   if(m_interlace_method != method
-  || m_deinterlace_mode != g_settings.m_currentVideoSettings.m_DeinterlaceMode
+  || m_deinterlace_mode != mode
   || !m_process)
   {
-    m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+    m_deinterlace_mode = mode;
     m_interlace_method = method;
 
     if (!OpenProcessor())
