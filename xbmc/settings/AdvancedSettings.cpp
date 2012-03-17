@@ -66,6 +66,7 @@ void CAdvancedSettings::Initialize()
   m_audioPlayCountMinimumPercent = 90.0f;
   m_audioHost = "default";
 
+  m_videoOSDOnMouseMove = true;
   m_videoSubsDelayRange = 10;
   m_videoAudioDelayRange = 10;
   m_videoSmallStepBackSeconds = 7;
@@ -401,6 +402,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "osdonmousemove", m_videoOSDOnMouseMove);
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
     XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
     XMLUtils::GetInt(pElement, "blackbarcolour", m_videoBlackBarColour, 0, 255);
