@@ -19,7 +19,6 @@
 
 #if defined TSREADER && defined LIVE555
 
-//#include "os-dependent.h"
 #include "Thread.h"
 
 #include "liveMedia.hh"
@@ -27,6 +26,8 @@
 #include "GroupsockHelper.hh"
 
 #include "MemoryBuffer.h"
+
+#define RTSP_URL_BUFFERSIZE 2048
 
 class CRTSPClient: public CThread
 {
@@ -49,44 +50,44 @@ public:
 
 protected:
   CMemoryBuffer* m_buffer;
-  Medium* createClient(UsageEnvironment& env,int verbosityLevel, char const* applicationName) ;
+  Medium* createClient(UsageEnvironment& env,int verbosityLevel, char const* applicationName);
   char* getSDPDescriptionFromURL(Medium* client, char const* url,
                char const* username, char const* password,
                char const* /*proxyServerName*/,
                unsigned short /*proxyServerPortNum*/,
-               unsigned short /*clientStartPort*/) ;
-  Boolean clientSetupSubsession(Medium* client, MediaSubsession* subsession,Boolean streamUsingTCP) ;
-  Boolean clientStartPlayingSession(Medium* client,MediaSession* session) ;
-  Boolean clientTearDownSession(Medium* client,MediaSession* session) ;
+               unsigned short /*clientStartPort*/);
+  bool clientSetupSubsession(Medium* client, MediaSubsession* subsession, bool streamUsingTCP);
+  bool clientStartPlayingSession(Medium* client, MediaSession* session);
+  bool clientTearDownSession(Medium* client, MediaSession* session);
   void closeMediaSinks();
   void tearDownStreams();
   bool setupStreams();
-  void checkForPacketArrival(void* /*clientData*/) ;
-  MediaSession* m_session ;
+  void checkForPacketArrival(void* /*clientData*/);
+  MediaSession* m_session;
 
-  Boolean allowProxyServers ;
-  Boolean controlConnectionUsesTCP ;
-  Boolean supportCodecSelection ;
-  char const* clientProtocolName ;
-  portNumBits tunnelOverHTTPPortNum ;
-  unsigned statusCode ;
-  char const* singleMedium ;
-  unsigned short desiredPortNum   ;
-  Boolean createReceivers ;
-  int simpleRTPoffsetArg ;
-  unsigned socketInputBufferSize ;
-  Boolean streamUsingTCP ;
-  unsigned fileSinkBufferSize ;
-  Boolean oneFilePerFrame ;
-  
+  bool allowProxyServers;
+  bool controlConnectionUsesTCP;
+  bool supportCodecSelection;
+  char const* clientProtocolName;
+  portNumBits tunnelOverHTTPPortNum;
+  unsigned statusCode;
+  char const* singleMedium;
+  unsigned short desiredPortNum;
+  bool createReceivers;
+  int simpleRTPoffsetArg;
+  unsigned socketInputBufferSize;
+  bool streamUsingTCP;
+  unsigned fileSinkBufferSize;
+  bool oneFilePerFrame;
+
 public:
   UsageEnvironment* m_env;
-  Medium* m_ourClient ;
-  char* getOptionsResponse(Medium* client, char const* url,char* username, char* password) ;
+  Medium* m_ourClient;
+  char* getOptionsResponse(Medium* client, char const* url,char* username, char* password);
   void shutdown();
   bool startPlayingStreams();
 
-  //thread
+  // Thread
   void StartBufferThread();
   void StopBufferThread();
   virtual void Run();
@@ -94,7 +95,7 @@ public:
   long m_duration;
   double m_fStart;
   double m_fDuration;
-  char m_url[2048];
+  char m_url[RTSP_URL_BUFFERSIZE];
   bool m_bRunning;
   bool m_bPaused;
   char m_outFileName[1000];

@@ -97,16 +97,16 @@ long FileReader::OpenFile()
   //char *pFileName = NULL;
   int Tmo=25 ; //5 in MediaPortal
   // Is the file already opened
-  if (m_hFile != INVALID_HANDLE_VALUE) 
+  if (!IsFileInvalid())
   {
-    XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() file already open");
+    XBMC->Log(LOG_NOTICE, "FileReader::OpenFile() file already open");
     return NOERROR;
   }
 
   // Has a filename been set yet
   if (m_pFileName == NULL) 
   {
-    XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() no filename");
+    XBMC->Log(LOG_ERROR, "FileReader::OpenFile() no filename");
     return ERROR_INVALID_NAME;
   }
 
@@ -114,7 +114,7 @@ long FileReader::OpenFile()
 
   do
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
     // do not try to open a tsbuffer file without SHARE_WRITE so skip this try if we have a buffer file
     if (strstr(m_pFileName, ".ts.tsbuffer") == NULL) 
     {
@@ -128,7 +128,7 @@ long FileReader::OpenFile()
              NULL);                            // Template
 
       m_bReadOnly = FALSE;
-      if (m_hFile != INVALID_HANDLE_VALUE) break;
+      if (!IsFileInvalid()) break;
     }
 
     //Test incase file is being recorded to
@@ -144,7 +144,7 @@ long FileReader::OpenFile()
 //              FILE_FLAG_RANDOM_ACCESS,        // More flags
 //              FILE_FLAG_SEQUENTIAL_SCAN,      // More flags
               NULL);                            // Template
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
     // Try to open the file
     m_hFile = open(m_pFileName,              // The filename
               O_RDONLY);                     // File access
@@ -152,7 +152,7 @@ long FileReader::OpenFile()
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif
     m_bReadOnly = TRUE;
-    if (m_hFile != INVALID_HANDLE_VALUE) break;
+    if (!IsFileInvalid()) break;
 
     Sleep(20) ;
   }
@@ -166,10 +166,10 @@ long FileReader::OpenFile()
   {
 #ifdef TARGET_WINDOWS
     DWORD dwErr = GetLastError();
-    XBMC->Log(LOG_DEBUG, "FileReader::OpenFile(), open file %s failed. Error code %d", m_pFileName, dwErr);
+    XBMC->Log(LOG_ERROR, "FileReader::OpenFile(), open file %s failed. Error code %d", m_pFileName, dwErr);
     return HRESULT_FROM_WIN32(dwErr);
 #else
-    XBMC->Log(LOG_DEBUG, "FileReader::OpenFile(), open file %s failed. Error %d: %s", m_pFileName, errno, strerror(errno));
+    XBMC->Log(LOG_ERROR, "FileReader::OpenFile(), open file %s failed. Error %d: %s", m_pFileName, errno, strerror(errno));
     return S_FALSE;
 #endif
   }
@@ -219,7 +219,7 @@ long FileReader::CloseFile()
   // Must lock this section to prevent problems related to
   // closing the file while still receiving data in Receive()
 
-  if (m_hFile == INVALID_HANDLE_VALUE) 
+  if (IsFileInvalid())
   {
     //XBMC->Log(LOG_DEBUG, "FileReader::CloseFile() no open file");
     return S_OK;
@@ -230,7 +230,7 @@ long FileReader::CloseFile()
 
 //  BoostThread Boost;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   ::CloseHandle(m_hFile);
 #elif defined TARGET_LINUX
   close(m_hFile);
@@ -255,7 +255,6 @@ long FileReader::CloseFile()
 
   m_llBufferPointer = 0;
   return NOERROR;
-
 } // CloseFile
 
 inline bool FileReader::IsFileInvalid()
@@ -270,7 +269,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
   
   GetStartPosition(pStartPosition);
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_fileSize) {
     
@@ -295,8 +294,10 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
     unsigned long dwSizeHigh;
 
     dwSizeLow = ::GetFileSize(m_hFile, &dwSizeHigh);
-    if ((dwSizeLow == 0xFFFFFFFF) && (GetLastError() != NO_ERROR ))
+    DWORD dwErr = GetLastError();
+    if ((dwSizeLow == 0xFFFFFFFF) && (dwErr != NO_ERROR ))
     {
+      XBMC->Log(LOG_ERROR, "%s: GetFileSize(File) failed. Error %d.", __FUNCTION__, dwErr);
       return E_FAIL;
     }
 
@@ -413,7 +414,7 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
 
 unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER li;
 
   if (dwMoveMethod == FILE_END && m_hInfoFile != INVALID_HANDLE_VALUE)
@@ -480,7 +481,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
 
 int64_t FileReader::GetFilePointer()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER li;
   li.QuadPart = 0;
   li.LowPart = ::SetFilePointer(m_hFile, 0, &li.HighPart, FILE_CURRENT);
@@ -512,7 +513,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   int64_t zeropos = 0;
 
   // If the file has already been closed, don't continue
-  if (m_hFile == INVALID_HANDLE_VALUE)
+  if (IsFileInvalid())
   {
     XBMC->Log(LOG_ERROR, "FileReader::Read() no open file");
     return E_FAIL;
@@ -685,8 +686,8 @@ void FileReader::setBufferPointer()
 
 int64_t FileReader::GetFileSize()
 {
-  int64_t pStartPosition =0;
-  int64_t pLength=0;
+  int64_t pStartPosition = 0;
+  int64_t pLength = 0;
   GetFileSize(&pStartPosition, &pLength);
   return pLength;
 }
