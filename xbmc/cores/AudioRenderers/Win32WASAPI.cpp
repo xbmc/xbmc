@@ -550,8 +550,6 @@ bool CWin32WASAPI::UpdateCacheStatus()
   {
     CLog::Log(LOGERROR, __FUNCTION__": GetCurrentPadding failed (%i)", hr);
     CLOSE_ON_INVALID(hr,)
-    // On error pretend the buffer is full.
-    m_CacheLen = m_uiBufferLen;
     return false;
   }
   else
