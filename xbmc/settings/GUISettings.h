@@ -253,7 +253,7 @@ public:
   int GetLabel() const { return m_iLabel; };
   int GetOrder() const { return m_iOrder; };
   void SetOrder(int iOrder) { m_iOrder = iOrder; };
-  void SetAdvanced() { m_advanced = true; };
+  void SetAdvanced(bool advanced = true) { m_advanced = advanced; };
   bool IsAdvanced() const { return m_advanced; };
   // A setting might be invisible in the current session, yet carried over
   // in the config file.
@@ -526,6 +526,7 @@ private:
   std::map<std::string, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
+  bool CheckHiddenOverride(CSetting *setting);
 };
 
 XBMC_GLOBAL_REF(CGUISettings, g_guiSettings);
