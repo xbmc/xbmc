@@ -304,13 +304,13 @@ long MultiFileReader::RefreshTSBufferFile()
 
   long result;
   int64_t currentPosition;
-  long filesAdded, filesRemoved;
-  long filesAdded2, filesRemoved2;
-  long Error;
-  long Loop=10;
+  int32_t filesAdded, filesRemoved;
+  int32_t filesAdded2, filesRemoved2;
+  long Error = 0;
+  long Loop = 10;
 
   //char* pBuffer;
-  wchar_t* pBuffer;
+  wchar_t* pBuffer = NULL;
 
   do
   {
@@ -324,13 +324,19 @@ long MultiFileReader::RefreshTSBufferFile()
     m_TSBufferFile.SetFilePointer(0, FILE_END);
     int64_t fileLength = m_TSBufferFile.GetFilePointer();
 
-    // Min file length is Header ( int64_t + long + long ) + filelist ( > 0 ) + Footer ( long + long ) 
-    if (fileLength <= (sizeof(int64_t) + sizeof(long) + sizeof(long) + sizeof(wchar_t) + sizeof(long) + sizeof(long)))
+    // Min file length is Header ( int64_t + int32_t + int32_t ) + filelist ( > 0 ) + Footer ( int32_t + int32_t )
+    if (fileLength <= (int64_t)(sizeof(currentPosition) + sizeof(filesAdded) + sizeof(filesRemoved) + sizeof(wchar_t) + sizeof(filesAdded2) + sizeof(filesRemoved2)))
+    {
+      if (m_bDebugOutput)
+      {
+        XBMC->Log(LOG_DEBUG, "MultiFileReader::RefreshTSBufferFile() TSBufferFile too short");
+      }
       return S_FALSE;
+    }
 
     m_TSBufferFile.SetFilePointer(0, FILE_BEGIN);
 
-    int readLength = sizeof(currentPosition) + sizeof(filesAdded) + sizeof(filesRemoved);
+    uint32_t readLength = sizeof(currentPosition) + sizeof(filesAdded) + sizeof(filesRemoved);
     unsigned char* readBuffer = new unsigned char[readLength];
 
     result = m_TSBufferFile.Read(readBuffer, readLength, &bytesRead);
@@ -341,8 +347,8 @@ long MultiFileReader::RefreshTSBufferFile()
     if(Error == 0)
     {
       currentPosition = *((int64_t*)(readBuffer + 0));
-		  filesAdded = *((long*)(readBuffer + sizeof(int64_t)));
-		  filesRemoved = *((long*)(readBuffer + sizeof(int64_t) + sizeof(long)));
+      filesAdded = *((int32_t*)(readBuffer + sizeof(currentPosition)));
+      filesRemoved = *((int32_t*)(readBuffer + sizeof(currentPosition) + sizeof(filesAdded)));
     }
 
     delete[] readBuffer;
@@ -351,16 +357,17 @@ long MultiFileReader::RefreshTSBufferFile()
     if ((m_filesAdded == filesAdded) && (m_filesRemoved == filesRemoved)) 
       break;
 
-    int64_t remainingLength = fileLength - sizeof(int64_t) - sizeof(long) - sizeof(long) - sizeof(long) - sizeof(long) ;
+    int64_t remainingLength = fileLength - sizeof(currentPosition) - sizeof(filesAdded) - sizeof(filesRemoved) - sizeof(filesAdded2) - sizeof(filesRemoved2);
 
     // Above 100kb seems stupid and figure out a problem !!!
     if (remainingLength > 100000)
-      Error=0x10;;
+      Error |= 0x10;;
   
     pBuffer = (wchar_t*) new char[(unsigned int)remainingLength];
 
-    result=m_TSBufferFile.Read((unsigned char*)pBuffer, (ULONG)remainingLength, &bytesRead);
-    if (!SUCCEEDED(result)||  bytesRead != remainingLength) Error=0x20;
+    result = m_TSBufferFile.Read((unsigned char*) pBuffer, (uint32_t) remainingLength, &bytesRead);
+    if ( !SUCCEEDED(result) || (int64_t) bytesRead != remainingLength)
+      Error |= 0x20;
 	
     readLength = sizeof(filesAdded) + sizeof(filesRemoved);
 
@@ -371,19 +378,20 @@ long MultiFileReader::RefreshTSBufferFile()
     if (!SUCCEEDED(result) || bytesRead != readLength) 
       Error |= 0x40;
 
-    if(Error == 0)
-	  {
-		  filesAdded2 = *((long*)(readBuffer + 0));
-		  filesRemoved2 = *((long*)(readBuffer + sizeof(long)));
-	  }
+    if (Error == 0)
+    {
+      filesAdded2 = *((int32_t*)(readBuffer + 0));
+      filesRemoved2 = *((int32_t*)(readBuffer + sizeof(filesAdded2)));
+    }
 
     delete[] readBuffer;
 
     if ((filesAdded2 != filesAdded) || (filesRemoved2 != filesRemoved))
     {
-      Error = 0x80;
+      Error |= 0x80;
 
-      XBMC->Log(LOG_DEBUG, "MultiFileReader has error 0x80 in Loop %d. Try to clear SMB Cache.", 10-Loop);
+      XBMC->Log(LOG_ERROR, "MultiFileReader has error 0x%x in Loop %d. Try to clear SMB Cache.", Error, 10-Loop);
+      XBMC->Log(LOG_DEBUG, "%s: filesAdded %d, filesAdded2 %d, filesRemoved %d, filesRemoved2 %d.", __FUNCTION__, filesAdded, filesAdded2, filesRemoved, filesRemoved2);
 
       // try to clear local / remote SMB file cache. This should happen when we close the filehandle
       m_TSBufferFile.CloseFile();
@@ -391,24 +399,25 @@ long MultiFileReader::RefreshTSBufferFile()
       Sleep(5);
     }
 
-    if (Error) delete[] pBuffer;
+    if (Error)
+      delete[] pBuffer;
 
-    Loop-- ;
-  } while ( Error && Loop ) ; // If Error is set, try again...until Loop reaches 0.
+    Loop--;
+  } while ( Error && Loop ); // If Error is set, try again...until Loop reaches 0.
  
   if (Loop < 8)
   {
-    XBMC->Log(LOG_DEBUG, "MultiFileReader has waited %d times for TSbuffer integrity.", 10-Loop) ;
+    XBMC->Log(LOG_DEBUG, "MultiFileReader has waited %d times for TSbuffer integrity.", 10-Loop);
 
-    if(Error)
+    if (Error)
     {
-      XBMC->Log(LOG_DEBUG, "MultiFileReader has failed for TSbuffer integrity. Error : %x", Error) ;
-      return E_FAIL ;
+      XBMC->Log(LOG_ERROR, "MultiFileReader has failed for TSbuffer integrity. Error : %x", Error);
+      return E_FAIL;
     }
   }
 
-  //randomly park the file pointer to help minimise HDD clogging
-  if(currentPosition&1)
+  // randomly park the file pointer to help minimise HDD clogging
+  if(currentPosition & 1)
     m_TSBufferFile.SetFilePointer(0, FILE_BEGIN);
   else
     m_TSBufferFile.SetFilePointer(0, FILE_END);
