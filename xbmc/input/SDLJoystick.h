@@ -64,6 +64,7 @@ public:
   float GetAmount(int axis);
   float GetAmount() { return GetAmount(m_AxisId); }
   float SetDeadzone(float val);
+  bool Reinitialize();
 
 private:
   void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
