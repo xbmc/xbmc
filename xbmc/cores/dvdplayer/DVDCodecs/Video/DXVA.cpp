@@ -249,6 +249,22 @@ static DWORD VP3DeviceID [] = {
   0x0000
 };
 
+typedef struct {
+    DWORD VendorID;
+    DWORD DeviceID;
+} pci_device;
+
+// List of devices that drop frames with a deinterlacing processor for progressive material.
+static const pci_device NoDeintProcForProgDevices[] = {
+  { PCIV_nVidia, 0x0865 }, // ION
+  { PCIV_nVidia, 0x0874 }, // ION
+  { PCIV_nVidia, 0x0876 }, // ION
+  { PCIV_nVidia, 0x087D }, // ION
+  { PCIV_nVidia, 0x087E }, // ION LE
+  { PCIV_nVidia, 0x087F }, // ION LE
+  { 0          , 0x0000 }
+};
+
 static CStdString GUIDToString(const GUID& guid)
 {
   CStdString buffer;
@@ -1151,8 +1167,15 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
       return false;
   }
 
+  // frame flags are not available to do the complete calculation of the deinterlacing mode, as done in Render()
+  // It's OK, as it doesn't make any difference for all hardware except the few GPUs on the quirk list.
+  // And for those GPUs, the correct values will be calculated with the first Render() and the correct processor
+  // will replace the one allocated here, before the user sees anything.
+  // It's a bit inefficient, that's all.
   m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   m_interlace_method = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);;
+
+  EvaluateQuirkNoDeintProcForProg();
 
   if (!OpenProcessor())
     return false;
@@ -1160,6 +1183,22 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   m_time = 0;
 
   return true;
+}
+
+void CProcessor::EvaluateQuirkNoDeintProcForProg()
+{
+  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
+
+  for (unsigned idx = 0; NoDeintProcForProgDevices[idx].VendorID != 0; idx++)
+  {
+    if(NoDeintProcForProgDevices[idx].VendorID == AIdentifier.VendorId
+    && NoDeintProcForProgDevices[idx].DeviceID == AIdentifier.DeviceId)
+    {
+      m_quirk_nodeintprocforprog = true;
+      return;
+    }
+  }
+  m_quirk_nodeintprocforprog = false;
 }
 
 bool CProcessor::SelectProcessor()
@@ -1412,12 +1451,18 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
 {
   CSingleLock lock(m_section);
 
+  // With auto deinterlacing, the Ion Gen. 1 drops some frames with deinterlacing processor + progressive flags for progressive material.
+  // For that GPU (or when specified by an advanced setting), use the progressive processor.
+  // This is at the expense of the switch speed when video interlacing flags change and a deinterlacing processor is actually required.
+  EDEINTERLACEMODE mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+  if (g_advancedSettings.m_DXVANoDeintProcForProgressive || m_quirk_nodeintprocforprog)
+    mode = (flags & RENDER_FLAG_FIELD0 || flags & RENDER_FLAG_FIELD1) ? VS_DEINTERLACEMODE_FORCE : VS_DEINTERLACEMODE_OFF;
   EINTERLACEMETHOD method = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);
   if(m_interlace_method != method
-  || m_deinterlace_mode != g_settings.m_currentVideoSettings.m_DeinterlaceMode
+  || m_deinterlace_mode != mode
   || !m_process)
   {
-    m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+    m_deinterlace_mode = mode;
     m_interlace_method = method;
 
     if (!OpenProcessor())
@@ -1482,7 +1527,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
       // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
       if (m_progressive)
         vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
-      else if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_FORCE && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
+      else if (m_deinterlace_mode == VS_DEINTERLACEMODE_FORCE && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
         vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
 
       valid++;
