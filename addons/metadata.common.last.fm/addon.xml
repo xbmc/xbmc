@@ -21,6 +21,7 @@
     <summary lang="nl">LastFM-scraperfuncties</summary>
     <summary lang="pl">Scraper biblioteki LastFM</summary>
     <summary lang="pt">Scraper de música LastFM</summary>
+    <summary lang="ro">Bibliotecă catalog LastFM</summary>
     <summary lang="ru">Обработчик для LastFM</summary>
     <summary lang="se">Skrapebibliotek för LastFM</summary>
     <summary lang="zh">LastFM刮削器代码库</summary>
@@ -34,6 +35,7 @@
     <description lang="nl">Muziekinfo ophalen van LastFM</description>
     <description lang="pl">Pobieraj informacje o muzyce z www.last.fm</description>
     <description lang="pt">Descarregar informação de música de www.last.fm</description>
+    <description lang="ro">Descărcați informații muzică de la www.last.fm</description>
     <description lang="ru">Загружать информацию о Музыке с www.last.fm</description>
     <description lang="se">Ladda ner musikinformation från www.last.fm</description>
     <description lang="zh">从www.last.fm下载音乐信息</description>

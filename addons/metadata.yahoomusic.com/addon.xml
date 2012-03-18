@@ -17,6 +17,7 @@
     <summary lang="kr">야후! 뮤직 비디오 스크래퍼</summary>
     <summary lang="pl">Scraper teledysków Yahoo!</summary>
     <summary lang="pt">Scraper de música Yahoo!</summary>
+    <summary lang="ro">Catalog de videoclipuri Yahoo!</summary>
     <summary lang="se">Skrapa för Yahoo! musik</summary>
     <description lang="bg">Сваля информация за музикални клипове</description>
     <description lang="en">Download Music Video information</description>
@@ -25,6 +26,7 @@
     <description lang="kr">뮤직 비디오 정보 다운로드</description>
     <description lang="pl">Pobieraj informacje o teledyskach z music.yahoo.com</description>
     <description lang="pt">Descarregar informação de filmes de music.yahoo.com</description>
+    <description lang="ro">Descarcă informații despre videoclipuri muzicale.</description>
     <description lang="se">Ladda ner musikvideoinformation från music.yahoo.com</description>
   </extension>
 </addon>
