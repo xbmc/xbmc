@@ -1,6 +1,6 @@
 #ifdef __APPLE__
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 #include "IOSAudioRingBuffer.h"
 #include "AudioContext.h"
 #include "GUISettings.h"
+#include "Settings/AdvancedSettings.h"
 #include "Settings.h"
 #include "utils/log.h"
 
@@ -34,6 +35,7 @@ CIOSAudioRenderer::CIOSAudioRenderer() :
   m_Pause(false),
   m_Initialized(false),
   m_CurrentVolume(0),
+  m_EnableVolumeControl(true),
   m_OutputBufferIndex(0),
   m_BytesPerSec(0),
   m_NumChunks(0),
@@ -128,7 +130,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   audioFormat.mReserved = 0;
 
   // Attach our output object to the device
-  if(!m_AudioDevice.Init(/*m_Passthrough*/ true, &audioFormat, RenderCallback, this))
+  if(!m_AudioDevice.Init(m_Passthrough, &audioFormat, RenderCallback, this))
   {
     CLog::Log(LOGDEBUG, "CIOSAudioRenderer::Init failed");
     return false;
@@ -158,8 +160,6 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     return false;
   }
 
-  m_EnableVolumeControl = true;
-
   /*
   if (!m_AudioDevice.SetSessionListener(kAudioSessionProperty_AudioRouteChange, PropertyChangeCallback, this))
     return false;
@@ -172,6 +172,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   // Suspend rendering. We will start once we have some data.
   m_Pause = true;
   m_Initialized = true;
+  m_EnableVolumeControl = !m_Passthrough;//no volume control on passthrough 
 
   CLog::Log(LOGDEBUG, "CIOSAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_PacketSize, m_BufferLen, 1000.0 *(float)m_BufferLen/(float)m_BytesPerSec);
   CLog::Log(LOGINFO, "CIOSAudioRenderer::Initialize: Successfully configured audio output.");
@@ -179,6 +180,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_DoRunout = 0;
 
   m_drc      = 0;
+  SetCurrentVolume(g_settings.m_nVolumeLevel);
 
   return true;
 }
@@ -201,6 +203,7 @@ bool CIOSAudioRenderer::Deinitialize()
   m_PacketSize  = 0;
   m_SamplesPerSec = 0;
   m_DoRunout    = 0;
+  m_EnableVolumeControl = true;
 
   CLog::Log(LOGINFO, "CIOSAudioRenderer::Deinitialize: Renderer has been shut down.");
 
@@ -260,10 +263,24 @@ LONG CIOSAudioRenderer::GetCurrentVolume() const
 
 void CIOSAudioRenderer::Mute(bool bMute)
 {
+  if (bMute)
+    SetCurrentVolume(0);
+  else
+    SetCurrentVolume(m_CurrentVolume);
 }
 
 bool CIOSAudioRenderer::SetCurrentVolume(LONG nVolume)
 {
+  if (m_EnableVolumeControl) // Don't change actual volume for encoded streams
+  {
+    // Convert milliBels to percent
+    Float32 volPct = pow(10.0f, (float)nVolume/2000.0f);
+    
+    // Try to set the volume. If it fails there is not a lot to be done.
+    if (!m_AudioDevice.SetCurrentVolume(volPct))
+      return false;
+  }
+  m_CurrentVolume = nVolume; // Store the volume setpoint. We need this to check for 'mute'
   return true;
 }
 
@@ -400,7 +417,11 @@ OSStatus CIOSAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
   m_Buffer->Read((unsigned char *)ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
 
   if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
+  {
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    if (ioActionFlags)
+      *ioActionFlags |=  kAudioUnitRenderAction_OutputIsSilence;
+  }  
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRequested;
 

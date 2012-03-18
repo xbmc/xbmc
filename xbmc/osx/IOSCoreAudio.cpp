@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include "IOSCoreAudio.h"
 #include "PlatformDefs.h"
 #include "utils/log.h"
+#include "settings/Settings.h"
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -73,48 +74,22 @@ const char* IOSStreamDescriptionToString(AudioStreamBasicDescription desc, CStdS
 // CIOSCoreAudioHardware
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-AudioComponentInstance CIOSCoreAudioHardware::FindAudioDevice(CStdString searchName)
+AudioUnit CIOSCoreAudioHardware::FindAudioDevice(CStdString searchName)
 {
   if (!searchName.length())
     return 0;
   
-  AudioComponentInstance defaultDevice = GetDefaultOutputDevice();
+  AudioUnit defaultDevice = GetDefaultOutputDevice();
   CLog::Log(LOGDEBUG, "CIOSCoreAudioHardware::FindAudioDevice: Returning default device [0x%04x].", (uint32_t)defaultDevice);
 
   return defaultDevice;  
 }
 
-AudioComponentInstance CIOSCoreAudioHardware::GetDefaultOutputDevice()
+AudioUnit CIOSCoreAudioHardware::GetDefaultOutputDevice()
 {
-  AudioComponentInstance ret = (AudioComponentInstance)1;
+  AudioUnit ret = (AudioUnit)1;
   
   return ret;
-  
-  /*
-  OSStatus ret;
-  AudioComponentInstance audioUnit;
-  
-  // Describe audio component
-  AudioComponentDescription desc;
-  desc.componentType = kAudioUnitType_Output;
-  desc.componentSubType = kAudioUnitSubType_RemoteIO;
-  desc.componentFlags = 0;
-  desc.componentFlagsMask = 0;
-  desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  
-  // Get component
-  AudioComponent inputComponent = AudioComponentFindNext(NULL, &desc);
-  
-  // Get audio units
-  ret = AudioComponentInstanceNew(inputComponent, &audioUnit);
-  
-  if (ret) {
-    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::GetDefaultOutputDevice: Unable to identify default output device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return 0;
-  }
-  
-  return audioUnit;
-  */
 }
 
 UInt32 CIOSCoreAudioHardware::GetOutputDevices(IOSCoreAudioDeviceList* pList)
@@ -129,13 +104,16 @@ UInt32 CIOSCoreAudioHardware::GetOutputDevices(IOSCoreAudioDeviceList* pList)
 // CIOSCoreAudioDevice
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CIOSCoreAudioDevice::CIOSCoreAudioDevice()  : 
-  m_AudioUnit(0),
+  m_AudioGraph(0),
+  m_OutputNode(0),
+  m_MixerNode(0),
+  m_OutputUnit(0),
   m_MixerUnit(0)
 {
   
 }
 
-CIOSCoreAudioDevice::CIOSCoreAudioDevice(AudioComponentInstance deviceId)
+CIOSCoreAudioDevice::CIOSCoreAudioDevice(AudioUnit deviceId)
 {
 }
 
@@ -149,272 +127,295 @@ void CIOSCoreAudioDevice::SetupInfo()
   AudioStreamBasicDescription pDesc;
   CStdString formatString;
 
-  if(m_AudioUnit) 
+  if(m_OutputUnit) 
   {
-    if(!GetFormat(m_AudioUnit, kAudioUnitScope_Output, kInputBus, &pDesc))
+    if(!GetFormat(m_OutputUnit, kAudioUnitScope_Output, kInputBus, &pDesc))
       return;
 
-     CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Remote/IO Output Stream Bus %d Format %s", 
+    CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Remote/IO Output Stream Bus %d Format %s", 
               kInputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
 
-    if(!GetFormat(m_AudioUnit, kAudioUnitScope_Input, kOutputBus, &pDesc))
+    if(!GetFormat(m_OutputUnit, kAudioUnitScope_Input, kOutputBus, &pDesc))
       return;
 
-     CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Remote/IO Input Stream Bus %d Format %s", 
-              kInputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
+    CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Remote/IO Input Stream Bus %d Format %s", 
+              kOutputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
   }
 
   if(m_MixerUnit) 
   {
-    if(!GetFormat(m_AudioUnit, kAudioUnitScope_Input, kOutputBus, &pDesc))
-      return;
-
-     CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Remote/IO Output Stream Bus %d Format %s", 
-              kInputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
-  
     if(!GetFormat(m_MixerUnit, kAudioUnitScope_Input, kOutputBus, &pDesc))
       return;
-  
-    CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Mixer Input Stream Bus %d Format %s", 
-              kOutputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
-  
-    if(!GetFormat(m_MixerUnit, kAudioUnitScope_Input, kInputBus, &pDesc))
-      return;
 
     CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Mixer Input Stream Bus %d Format %s", 
-              kInputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
+              kOutputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
+    if(!GetFormat(m_MixerUnit, kAudioUnitScope_Output, kOutputBus, &pDesc))
+      return;
+
+    CLog::Log(LOGDEBUG, "CIOSCoreAudioDevice::SetupInfo: Mixer Output Stream Bus %d Format %s", 
+              kOutputBus, (char*)IOSStreamDescriptionToString(pDesc, formatString));
   }
-  
 }
 
 bool CIOSCoreAudioDevice::Init(bool bPassthrough, AudioStreamBasicDescription* pDesc, AURenderCallback renderCallback, void *pClientData)
 {
   OSStatus ret;
-  AudioComponent audioComponent;
-  AudioComponentDescription desc;
-  
-  m_AudioUnit = 0;
-  m_MixerUnit = 0;
-  m_Passthrough = bPassthrough;
-  
-  /*
-  ret = AudioSessionInitialize(NULL, NULL, NULL, NULL);
-  if (ret) {
-    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to initialize session. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
-  }
-  
-  ret = AudioSessionSetActive(true);
-  if (ret) {
-    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to set session active. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
-  }
-  */
-  
-  // Describe audio component
-  desc.componentType = kAudioUnitType_Output;
-  desc.componentSubType = kAudioUnitSubType_RemoteIO;
-  desc.componentFlags = 0;
-  desc.componentFlagsMask = 0;
-  desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  
-  // Get component
-  audioComponent = AudioComponentFindNext(NULL, &desc);
-  
-  // Get audio unit
-  ret = AudioComponentInstanceNew(audioComponent, &m_AudioUnit);
-  
-  if (ret) {
-    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to open Remote/IO device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
-  }
-  
-  if(!EnableOutput(m_AudioUnit, kOutputBus))
+    
+  if(!pDesc)
     return false;
 
-  if(!SetFormat(m_AudioUnit, kAudioUnitScope_Input, kOutputBus, pDesc))
+  m_OutputUnit = 0;
+  m_MixerUnit = 0;
+  m_OutputNode = 0;
+  m_MixerNode = 0;
+  m_AudioGraph = 0;
+  m_Passthrough = bPassthrough;
+
+  //1. - create a audio graph
+  ret = NewAUGraph(&m_AudioGraph);
+  if(ret)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Open: Error create audio grpah. Error = %4.4s", CONVERT_OSSTATUS(ret));
+    return false;
+  }
+
+  //2. - open the audio graph
+  ret = AUGraphOpen(m_AudioGraph);
+  if(ret)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Open: Error open audio grpah. Error = %4.4s", CONVERT_OSSTATUS(ret));
+    return false;
+  }
+
+  //3. - create the remoteio unit and node (filled into m_OutputUnit and m_OutputNode)
+  if(!OpenUnit(kAudioUnitType_Output, kAudioUnitSubType_RemoteIO, kAudioUnitManufacturer_Apple, m_OutputUnit, m_OutputNode))
+    return false;
+
+  //4. enable output of output unit    
+  if(!EnableOutput(m_OutputUnit, kOutputBus, true))
     return false;
   
-  if(!SetFormat(m_AudioUnit, kAudioUnitScope_Output, kInputBus, pDesc))
+  //5. set input and output format to the passed pDesc (format of our raw data)
+  if(!SetFormat(m_OutputUnit, kAudioUnitScope_Input, kOutputBus, pDesc))
     return false;
-  
-  if(!m_Passthrough) { 
-    // Describe audio component
-    desc.componentType = kAudioUnitType_Mixer;
-    desc.componentSubType = kAudioUnitSubType_AU3DMixerEmbedded;
-    desc.componentFlags = 0;
-    desc.componentFlagsMask = 0;
-    desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  
-    // Get component
-    audioComponent = AudioComponentFindNext(NULL, &desc);
     
-    // Get mixer unit
-    ret = AudioComponentInstanceNew(audioComponent, &m_MixerUnit);
-    if (ret) {
-      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Init: Unable to open Mixer device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+  if(!SetFormat(m_OutputUnit, kAudioUnitScope_Output, kInputBus, pDesc))
+    return false;
+
+  //if not pass through - create a mixer unit and node and add it to the graph
+  //mixer unit is used for volume control in that case
+  if (!m_Passthrough)
+  {
+    UInt32 busCount = 1;
+
+    //6. create mixer unit and node (filled into m_MixerUnit and m_MixerNode    
+    if(!OpenUnit(kAudioUnitType_Mixer, kAudioUnitSubType_MultiChannelMixer, kAudioUnitManufacturer_Apple, m_MixerUnit, m_MixerNode))
+      return false;
+    
+    //7. set number of input buses for mixer unit to 1
+    ret = AudioUnitSetProperty(m_MixerUnit, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0, &busCount, sizeof(UInt32));
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::SetInputBusCount: Unable to set input bus count. Error = %4.4s", CONVERT_OSSTATUS(ret));
       return false;
     }
-  
-    if(!SetFormat(m_MixerUnit, kAudioUnitScope_Input, kOutputBus, pDesc))
+    
+    //8. set input and output format of mixerunit the passed pDesc (format of our raw data)
+    if(!SetFormat(m_MixerUnit,kAudioUnitScope_Input, kOutputBus,  pDesc))
       return false;
 
-    if(!SetFormat(m_MixerUnit, kAudioUnitScope_Input, kInputBus, pDesc))
+    if(!SetFormat(m_MixerUnit,kAudioUnitScope_Output, kOutputBus,  pDesc))
       return false;
-  
+    
+    //9. connect output of mixer to input of output unit
+    ret =  AUGraphConnectNodeInput(m_AudioGraph, m_MixerNode, 0, m_OutputNode, 0);
+    if(ret)
+    {
+      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Open: Error connecting m_m_mixerNode. Error = %4.4s", CONVERT_OSSTATUS(ret));
+      return false;
+    }
+    
+    //10. enable the input of our output unit (because it gets feed the sound from the mixer)
+    if(!EnableInput(m_OutputUnit, kInputBus, true))
+      return false;
+
+    //11. update the graph for beeing sure the changes are ok
+    ret = AUGraphUpdate(m_AudioGraph, NULL);
+    if(ret)
+    {
+      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Open: Error update graph. Error = %4.4s", CONVERT_OSSTATUS(ret));
+      return false;
+    }
+    
+    //12. hook our datacallback into the mixerunits input. (its the first unit in the chain)
     if(!SetRenderProc(m_MixerUnit, kOutputBus, renderCallback, pClientData))
       return false;
-  
-    // Connect mixer to output
-    AudioUnitConnection connection;
-    connection.sourceAudioUnit = m_MixerUnit;
-    connection.sourceOutputNumber = kOutputBus;
-    connection.destInputNumber = kOutputBus;
-  
-    ret = AudioUnitSetProperty(m_AudioUnit, kAudioUnitProperty_MakeConnection, 
-                               kAudioUnitScope_Input, kOutputBus, &connection, sizeof(connection));
-    if (ret)
-    { 
-      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Init: Unable to make IO connections. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-      return false; 
-    }
-
-  } else {
-    if(!SetRenderProc(m_AudioUnit, kOutputBus, renderCallback, pClientData))
-      return false;
   }
-
-  SetupInfo();
+  else//passthrough mode
+  {
+    //6.. hook our datacallback into the output units input. (its the only unit in the chain)
+    if(!SetRenderProc(m_OutputUnit, kOutputBus, renderCallback, pClientData))
+      return false;  
+  }
   
+  //prints the format info of the units in the graph
+  SetupInfo();   
+  //prints the graph into stdout
+  CAShow(m_AudioGraph);  
+  return true;
+}
+
+bool CIOSCoreAudioDevice::OpenUnit(OSType type, OSType subType, OSType manufacturer, AudioUnit &unit, AUNode &node)
+{ 
+  OSStatus ret;
+  AudioComponentDescription desc;
+  desc.componentType = type;
+  desc.componentSubType = subType;
+  desc.componentManufacturer = manufacturer;
+  desc.componentFlags = 0;
+  desc.componentFlagsMask = 0;
+  
+  if(!m_AudioGraph)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::OpenUnit: Error no audio graph.");
+    return false;
+  }
+  
+  ret = AUGraphAddNode(m_AudioGraph, &desc, &node);
+  if(ret)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::OpenUnit: Error add m_outputNode. Error = %4.4s", CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  
+  ret = AUGraphNodeInfo(m_AudioGraph, node, NULL, &unit);
+  if(ret)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::OpenUnit: Error getting m_outputNode. Error = %4.4s", CONVERT_OSSTATUS(ret));
+    return false;
+  }
+    
   return true;
 }
 
 bool CIOSCoreAudioDevice::Open()
 {
-  if(!m_AudioUnit)
+  OSStatus ret;
+  if(!m_AudioGraph)
     return false;
 
-  OSStatus ret;
-    
-  if(!m_Passthrough) {
-    ret = AudioUnitInitialize(m_MixerUnit);
-    if (ret)
-    { 
-      CLog::Log(LOGERROR, "CIOSCoreAudioUnit::Open: Unable to Open Mixer device. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-      return false; 
-    }
+  ret = AUGraphInitialize(m_AudioGraph);
+
+  if(ret)
+  {
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Open: Error initialize graph. Error = %4.4s", CONVERT_OSSTATUS(ret));
+    return false;
   }
-
-  ret = AudioUnitInitialize(m_AudioUnit);
-  if (ret)
-  { 
-    CLog::Log(LOGERROR, "CIOSCoreAudioUnit::Open: Unable to Open AudioUnit. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false; 
-  } 
-
   return true;
 }
 
 void CIOSCoreAudioDevice::Close()
 {
-  if (!m_AudioUnit)
+  OSStatus ret;
+
+  if (!m_AudioGraph)
     return;
- 
+
   Stop();
-  
-  OSStatus ret = AudioUnitUninitialize(m_AudioUnit);
-  
+
+  ret = AUGraphUninitialize(m_AudioGraph);
   if (ret)
-    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to close Audio device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    
-  ret = AudioComponentInstanceDispose(m_AudioUnit);
-  
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to close audiograph. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+
+  ret = DisposeAUGraph(m_AudioGraph);
+
   if (ret)
-    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to dispose Audio device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    
-  m_AudioUnit = 0;
-  
-  if(!m_Passthrough) { 
-    ret = AudioUnitUninitialize(m_MixerUnit);
-    if (ret)
-      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to close Mixer device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-  
-    ret = AudioComponentInstanceDispose(m_MixerUnit);
-  
-    if (ret)
-      CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to dispose Mixer device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    
-    m_MixerUnit = 0;
-  }
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to dispose audiograph. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+
+  m_AudioGraph = 0;
 }
 
 void CIOSCoreAudioDevice::Start()
 {
-  if (!m_AudioUnit) 
+  OSStatus ret;
+
+  if(!m_AudioGraph)
     return;
-  
-  OSStatus ret ;
-  
-  ret = AudioOutputUnitStart(m_AudioUnit);
+  ret = AUGraphStart(m_AudioGraph);
   if (ret)
-    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Start: Unable to start device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-  
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Start: Unable to start audiograph. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));    
 }
 
 void CIOSCoreAudioDevice::Stop()
 {
-  if (!m_AudioUnit)
+  OSStatus ret;
+
+  if (!m_AudioGraph)
     return;
   
-  OSStatus ret = AudioOutputUnitStop(m_AudioUnit);
+  ret = AUGraphStop(m_AudioGraph);
   if (ret)
-    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Stop: Unable to stop device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-  
+    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Stop: Unable to audiograph. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));  
 }
 
 const char* CIOSCoreAudioDevice::GetName(CStdString& name)
 {
-  if (!m_AudioUnit)
+  if (!m_AudioGraph)
     return NULL;
 
   return name.c_str();
 }
 
-bool CIOSCoreAudioDevice::EnableInput(AudioComponentInstance componentInstance, AudioUnitElement bus)
+bool CIOSCoreAudioDevice::EnableInput(AudioUnit audioUnit, AudioUnitElement bus, bool bEnable)
 {
-  if (!componentInstance)
-    return false;
+  UInt32 hasio;
+  UInt32 size=sizeof(UInt32);
+
+  if (!audioUnit)
+    return false; 
+
+  OSStatus  ret = AudioUnitGetProperty(audioUnit,kAudioOutputUnitProperty_HasIO,kAudioUnitScope_Input, 1, &hasio, &size);
   
-  UInt32 flag = 0;
-  OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioOutputUnitProperty_EnableIO, 
-                                kAudioUnitScope_Input, bus, &flag, sizeof(flag));
-  if (ret)
-  {
-    CLog::Log(LOGERROR, "CIOSCoreAudioUnit::EnableInput: Failed to enable input. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
+  if(hasio)
+  {  
+    UInt32 flag = bEnable ? 1 : 0;
+    ret = AudioUnitSetProperty(audioUnit, kAudioOutputUnitProperty_EnableIO, 
+                                        kAudioUnitScope_Input, bus, &flag, sizeof(flag));
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CIOSCoreAudioUnit::EnableInput: Failed to enable input. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+      return false;
+    }
   }
   return true;
 }
 
-bool CIOSCoreAudioDevice::EnableOutput(AudioComponentInstance componentInstance, AudioUnitElement bus)
+bool CIOSCoreAudioDevice::EnableOutput(AudioUnit audioUnit, AudioUnitElement bus, bool bEnable)
 {
-  if (!componentInstance)
+  UInt32 hasio;
+  UInt32 size=sizeof(UInt32);
+ 
+  if (!audioUnit)
     return false;
+
+  OSStatus ret = AudioUnitGetProperty(audioUnit,kAudioOutputUnitProperty_HasIO,kAudioUnitScope_Output, 1, &hasio, &size);
   
-  UInt32 flag = 1;
-  OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioOutputUnitProperty_EnableIO, 
-                                      kAudioUnitScope_Output, bus, &flag, sizeof(flag));
-  if (ret)
-  {
-    CLog::Log(LOGERROR, "CIOSCoreAudioUnit::EnableInput: Failed to enable output. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
+  if(hasio)
+  {  
+    UInt32 flag = bEnable ? 1 : 0;
+    ret = AudioUnitSetProperty(audioUnit, kAudioOutputUnitProperty_EnableIO, 
+                                        kAudioUnitScope_Output, bus, &flag, sizeof(flag));
+    if (ret)
+    {
+      CLog::Log(LOGERROR, "CIOSCoreAudioUnit::EnableInput: Failed to enable output. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+      return false;
+    }
   }
   return true;
 }
 
-Float32 CIOSCoreAudioDevice::GetCurrentVolume() 
+Float32 CIOSCoreAudioDevice::GetCurrentVolume() const
 {
-
   if (!m_MixerUnit)
     return false;
 
@@ -429,36 +430,30 @@ Float32 CIOSCoreAudioDevice::GetCurrentVolume()
  
 }
 
+//vol is passed in as value between 0.0 and 1.0
 bool CIOSCoreAudioDevice::SetCurrentVolume(Float32 vol) 
 {
-
-  if (!m_MixerUnit && m_Passthrough)
+  if (!m_MixerUnit || m_Passthrough)
     return false;
 
-  OSStatus ret = AudioUnitSetParameter(m_MixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, kInputBus, vol, 0);
+  OSStatus ret = AudioUnitSetParameter(m_MixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, kOutputBus, vol, 0); 
   if (ret)
   {
     CLog::Log(LOGERROR, "CIOSCoreAudioDevice::SetCurrentVolume: Unable to set Mixer volume. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
 
-  ret = AudioUnitSetParameter(m_MixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, kInputBus, vol, 0);
-  if (ret)
-  {
-    CLog::Log(LOGERROR, "CIOSCoreAudioDevice::SetCurrentVolume: Unable to set Mixer volume. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
-    return false;
-  }
   return true;
 }
 
-bool CIOSCoreAudioDevice::GetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope,
+bool CIOSCoreAudioDevice::GetFormat(AudioUnit audioUnit, AudioUnitScope scope,
                                     AudioUnitElement bus, AudioStreamBasicDescription* pDesc)
 {
-  if (!componentInstance || !pDesc)
+  if (!audioUnit || !pDesc)
     return false;
   
   UInt32 size = sizeof(AudioStreamBasicDescription);
-  OSStatus ret = AudioUnitGetProperty(componentInstance, kAudioUnitProperty_StreamFormat, 
+  OSStatus ret = AudioUnitGetProperty(audioUnit, kAudioUnitProperty_StreamFormat, 
                                       scope, bus, pDesc, &size);
   if (ret)
   {
@@ -469,14 +464,14 @@ bool CIOSCoreAudioDevice::GetFormat(AudioComponentInstance componentInstance, Au
   return true;
 }
 
-bool CIOSCoreAudioDevice::SetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope, 
+bool CIOSCoreAudioDevice::SetFormat(AudioUnit audioUnit, AudioUnitScope scope, 
                                     AudioUnitElement bus, AudioStreamBasicDescription* pDesc)
 {
-  if (!componentInstance || !pDesc)
+  if (!audioUnit || !pDesc)
     return false;
   
   UInt32 size = sizeof(AudioStreamBasicDescription);
-  OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioUnitProperty_StreamFormat, 
+  OSStatus ret = AudioUnitSetProperty(audioUnit, kAudioUnitProperty_StreamFormat, 
                                       scope, bus, pDesc, size);
   if (ret)
   {
@@ -489,25 +484,24 @@ bool CIOSCoreAudioDevice::SetFormat(AudioComponentInstance componentInstance, Au
 
 int CIOSCoreAudioDevice::FramesPerSlice(int nSlices)
 {
-  if (!m_AudioUnit)
+  if (!m_OutputUnit)
     return false;
   
   UInt32 maximumFramesPerSlice = nSlices;
-  OSStatus ret = AudioUnitSetProperty(m_AudioUnit, kAudioUnitProperty_MaximumFramesPerSlice, 
+  OSStatus ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_MaximumFramesPerSlice, 
                                       kAudioUnitScope_Global, kOutputBus, &maximumFramesPerSlice, sizeof (maximumFramesPerSlice));
   if (ret)
   {
     CLog::Log(LOGERROR, "CIOSCoreAudioUnit::FramesPerSlice: Unable to setFramesPerSlice. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
+  
   return maximumFramesPerSlice;  
-
-
 }
                       
 void CIOSCoreAudioDevice::AudioChannelLayout(int layoutTag)
 {
-  if (!m_AudioUnit)
+  if (!m_OutputUnit)
     return;
   
   struct AudioChannelLayout layout;
@@ -515,12 +509,12 @@ void CIOSCoreAudioDevice::AudioChannelLayout(int layoutTag)
   layout.mNumberChannelDescriptions = 0;
   layout.mChannelLayoutTag = layoutTag;
 
-  OSStatus ret = AudioUnitSetProperty(m_AudioUnit, kAudioUnitProperty_AudioChannelLayout, kAudioUnitScope_Input, kOutputBus, &layout, sizeof (layout));
+  OSStatus ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_AudioChannelLayout, kAudioUnitScope_Input, kOutputBus, &layout, sizeof (layout));
   if (ret)
     CLog::Log(LOGERROR, "CIOSCoreAudioUnit::AudioUnitSetProperty: Unable to set property kAudioUnitProperty_AudioChannelLayout. Error = 0x%08x (%4.4s)", (uint32_t)ret, CONVERT_OSSTATUS(ret));
 }
                       
-bool CIOSCoreAudioDevice::SetRenderProc(AudioComponentInstance componentInstance, AudioUnitElement bus,
+bool CIOSCoreAudioDevice::SetRenderProc(AudioUnit componentInstance, AudioUnitElement bus,
                                         AURenderCallback callback, void* pClientData)
 {
   if (!componentInstance)
@@ -530,7 +524,7 @@ bool CIOSCoreAudioDevice::SetRenderProc(AudioComponentInstance componentInstance
 	callbackInfo.inputProc = callback; // Function to be called each time the AudioUnit needs data
 	callbackInfo.inputProcRefCon = pClientData; // Pointer to be returned in the callback proc
 	OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioUnitProperty_SetRenderCallback, 
-                                      kAudioUnitScope_Global, bus, &callbackInfo, 
+                                      kAudioUnitScope_Input, bus, &callbackInfo, 
                                       sizeof(AURenderCallbackStruct));
   
   if (ret)
