@@ -502,7 +502,10 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
 
   if (bGrabSuccess)
   {
-    g_PVRManager.ResetPlayingTag();
+    CPVRChannel channel;
+    if (g_PVRManager.GetCurrentChannel(channel))
+      if (channel.EpgID() == m_iEpgID)
+        g_PVRManager.ResetPlayingTag();
     m_bLoaded = true;
   }
   else
