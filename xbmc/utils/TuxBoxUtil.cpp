@@ -25,7 +25,7 @@
 
 #include "TuxBoxUtil.h"
 #include "URIUtils.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "Application.h"
 #include "GUIInfoManager.h"

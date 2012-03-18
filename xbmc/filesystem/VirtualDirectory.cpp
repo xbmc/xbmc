@@ -22,11 +22,11 @@
 
 #include "system.h"
 #include "VirtualDirectory.h"
-#include "FactoryDirectory.h"
+#include "DirectoryFactory.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Directory.h"
-#include "DirectoryCache.h"
+#include "CacheDirectory.h"
 #include "SourcesDirectory.h"
 #include "storage/MediaManager.h"
 #include "File.h"

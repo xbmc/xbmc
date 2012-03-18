@@ -26,7 +26,7 @@
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif

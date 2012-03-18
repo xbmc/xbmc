@@ -20,13 +20,13 @@
  */
 
 #include "Directory.h"
-#include "FactoryDirectory.h"
-#include "FactoryFileDirectory.h"
+#include "DirectoryFactory.h"
+#include "FileDirectoryFactory.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
 #include "FileItem.h"
-#include "DirectoryCache.h"
+#include "CacheDirectory.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/Job.h"

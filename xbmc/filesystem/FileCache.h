@@ -29,12 +29,12 @@
 namespace XFILE
 {
 
-  class CFileCache : public IFile, public CThread
+  class CCacheFile : public IFile, public CThread
   {
   public:
-    CFileCache();
-    CFileCache(CCacheStrategy *pCache, bool bDeleteCache=true);
-    virtual ~CFileCache();
+    CCacheFile();
+    CCacheFile(CCacheStrategy *pCache, bool bDeleteCache=true);
+    virtual ~CCacheFile();
 
     void SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache=true);
 

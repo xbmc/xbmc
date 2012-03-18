@@ -21,7 +21,7 @@
 
 #include "DAVDirectory.h"
 #include "URL.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"

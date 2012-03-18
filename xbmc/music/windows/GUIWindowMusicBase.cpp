@@ -33,7 +33,7 @@
 #include "playlists/PlayListM3U.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "filesystem/DirectoryCache.h"
+#include "filesystem/CacheDirectory.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif

@@ -4,43 +4,30 @@ CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
      ASAPFileDirectory.cpp \
-     CacheCircular.cpp \
-     CacheMemBuffer.cpp \
      CacheStrategy.cpp \
+     CircularCache.cpp \
      CDDADirectory.cpp \
+     CDDAFile.cpp \
+     CurlFile.cpp \
      DAAPDirectory.cpp \
+     DAAPFile.cpp \
      DAVDirectory.cpp \
-     DirectoryCache.cpp \
      Directory.cpp \
+     DirectoryCache.cpp \
+     DirectoryFactory.cpp \
      DirectoryHistory.cpp \
-     DirectoryTuxBox.cpp \
      DllLibCurl.cpp \
-     FactoryDirectory.cpp \
-     FactoryFileDirectory.cpp \
-     FileCache.cpp \
-     FileCDDA.cpp \
      File.cpp \
-     FileCurl.cpp \
-     FileDAAP.cpp \
+     FileCache.cpp \
+     FileDirectoryFactory.cpp \
      FileFactory.cpp \
-     FileFileReader.cpp \
-     FileHD.cpp \
-     FileISO.cpp \
-     FileLastFM.cpp \
-     FileMusicDatabase.cpp \
-     FilePipe.cpp \
-     FileRTV.cpp \
-     FileShoutcast.cpp \
-     FileSFTP.cpp \
-     FileSpecialProtocol.cpp \
-     FileTuxBox.cpp \
-     FileUDF.cpp \
-     FileUPnP.cpp \
-     FileZip.cpp \
+     FileReaderFile.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
      HDDirectory.cpp \
-     HDHomeRun.cpp \
+     HDFile.cpp \
+     HDHomeRunDirectory.cpp \
+     HDHomeRunFile.cpp \
      HTSPDirectory.cpp \
      HTSPSession.cpp \
      HTTPDirectory.cpp \
@@ -48,10 +35,14 @@ SRCS=AddonsDirectory.cpp \
      IFile.cpp \
      iso9660.cpp \
      ISO9660Directory.cpp \
+     ISOFile.cpp \
      LastFMDirectory.cpp \
+     LastFMFile.cpp \
+     MemBufferCache.cpp \
      MultiPathDirectory.cpp \
      MultiPathFile.cpp \
      MusicDatabaseDirectory.cpp \
+     MusicDatabaseFile.cpp \
      MusicFileDirectory.cpp \
      MusicSearchDirectory.cpp \
      MythDirectory.cpp \
@@ -62,23 +53,33 @@ SRCS=AddonsDirectory.cpp \
      OGGFileDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
+     PipeFile.cpp \
      PipesManager.cpp \
      PluginDirectory.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
+     RTVFile.cpp \
      SAPDirectory.cpp \
      SAPFile.cpp \
      SFTPDirectory.cpp \
+     SFTPFile.cpp \
      SIDFileDirectory.cpp \
-     Slingbox.cpp \
+     ShoutcastFile.cpp \
+     SlingboxDirectory.cpp \
+     SlingboxFile.cpp \
      SmartPlaylistDirectory.cpp \
      SourcesDirectory.cpp \
      SpecialProtocol.cpp \
      SpecialProtocolDirectory.cpp \
+     SpecialProtocolFile.cpp \
      StackDirectory.cpp \
+     TuxBoxDirectory.cpp \
+     TuxBoxFile.cpp \
      udf25.cpp \
      UDFDirectory.cpp \
+     UDFFile.cpp \
      UPnPDirectory.cpp \
+     UPnPFile.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
      VTPDirectory.cpp \
@@ -86,26 +87,27 @@ SRCS=AddonsDirectory.cpp \
      VTPSession.cpp \
      ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
+     ZipFile.cpp \
      ZipManager.cpp
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
-SRCS+=FileRar.cpp
+SRCS+=RarFile.cpp
 SRCS+=RarDirectory.cpp
 SRCS+=RarManager.cpp
 endif
 
 ifeq (@USE_LIBSMBCLIENT@,1)
-SRCS+=FileSmb.cpp
+SRCS+=SmbFile.cpp
 SRCS+=SMBDirectory.cpp
 endif
 
 ifeq (@USE_LIBNFS@,1)
-SRCS+=FileNFS.cpp
+SRCS+=NFSFile.cpp
 SRCS+=NFSDirectory.cpp
 endif
 
 ifeq (@USE_LIBAFPCLIENT@,1)
-SRCS+=FileAFP.cpp
+SRCS+=AFPFile.cpp
 SRCS+=AFPDirectory.cpp
 endif
 

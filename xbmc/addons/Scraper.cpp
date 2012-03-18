@@ -21,7 +21,7 @@
 #include "Scraper.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "AddonManager.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"

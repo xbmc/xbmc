@@ -20,14 +20,14 @@
  */
 
 #include "LastFMDirectory.h"
-#include "DirectoryCache.h"
+#include "CacheDirectory.h"
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"

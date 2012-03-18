@@ -25,28 +25,28 @@
 #endif
 #include "system.h"
 #include "FileFactory.h"
-#include "FileHD.h"
-#include "FileCurl.h"
-#include "FileShoutcast.h"
-#include "FileLastFM.h"
-#include "FileFileReader.h"
+#include "HDFile.h"
+#include "CurlFile.h"
+#include "ShoutcastFile.h"
+#include "LastFMFile.h"
+#include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
 #include "windows/WINFileSmb.h"
 #else
-#include "FileSmb.h"
+#include "SmbFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
-#include "FileCDDA.h"
+#include "CDDAFile.h"
 #endif
 #ifdef HAS_FILESYSTEM
-#include "FileISO.h"
+#include "ISOFile.h"
 #ifdef HAS_FILESYSTEM_RTV
-#include "FileRTV.h"
+#include "RTVFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_DAAP
-#include "FileDAAP.h"
+#include "DAAPFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SAP
@@ -55,30 +55,30 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
-#include "FileZip.h"
+#include "ZipFile.h"
 #ifdef HAS_FILESYSTEM_RAR
-#include "FileRar.h"
+#include "RarFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
-#include "FileSFTP.h"
+#include "SFTPFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
-#include "FileNFS.h"
+#include "NFSFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_AFP
-#include "FileAFP.h"
+#include "AFPFile.h"
 #endif
-#include "FileUPnP.h"
+#include "UPnPFile.h"
 #include "PipesManager.h"
-#include "FilePipe.h"
-#include "FileMusicDatabase.h"
-#include "FileSpecialProtocol.h"
+#include "PipeFile.h"
+#include "MusicDatabaseFile.h"
+#include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
-#include "FileTuxBox.h"
-#include "FileUDF.h"
+#include "TuxBoxFile.h"
+#include "UDFFile.h"
 #include "MythFile.h"
-#include "HDHomeRun.h"
-#include "Slingbox.h"
+#include "HDHomeRunFile.h"
+#include "SlingboxFile.h"
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"

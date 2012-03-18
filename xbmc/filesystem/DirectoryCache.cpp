@@ -19,7 +19,7 @@
  *
  */
 
-#include "DirectoryCache.h"
+#include "CacheDirectory.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "threads/SingleLock.h"
@@ -30,7 +30,7 @@
 using namespace std;
 using namespace XFILE;
 
-CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
+CCacheDirectory::CDir::CDir(DIR_CACHE_TYPE cacheType)
 {
   m_cacheType = cacheType;
   m_lastAccess = 0;
@@ -38,17 +38,17 @@ CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
   m_Items->SetFastLookup(true);
 }
 
-CDirectoryCache::CDir::~CDir()
+CCacheDirectory::CDir::~CDir()
 {
   delete m_Items;
 }
 
-void CDirectoryCache::CDir::SetLastAccess(unsigned int &accessCounter)
+void CCacheDirectory::CDir::SetLastAccess(unsigned int &accessCounter)
 {
   m_lastAccess = accessCounter++;
 }
 
-CDirectoryCache::CDirectoryCache(void)
+CCacheDirectory::CCacheDirectory(void)
 {
   m_iThumbCacheRefCount = 0;
   m_iMusicThumbCacheRefCount = 0;
@@ -59,11 +59,11 @@ CDirectoryCache::CDirectoryCache(void)
 #endif
 }
 
-CDirectoryCache::~CDirectoryCache(void)
+CCacheDirectory::~CCacheDirectory(void)
 {
 }
 
-bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &items, bool retrieveAll)
+bool CCacheDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool retrieveAll)
 {
   CSingleLock lock (m_cs);
 
@@ -88,7 +88,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
   return false;
 }
 
-void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType)
+void CCacheDirectory::SetDirectory(const CStdString& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType)
 {
   if (cacheType == DIR_CACHE_NEVER)
     return; // nothing to do
@@ -98,7 +98,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   // processing on the items (stacking, transparent rars/zips for instance) that
   // alters the URL of the items.  If we shared the pointers, we'd have problems
   // as the URLs in the cache would have changed, so things such as
-  // CDirectoryCache::FileExists() would fail for files that really do exist (just their
+  // CCacheDirectory::FileExists() would fail for files that really do exist (just their
   // URL's have been altered).  This is called from CFile::Exists() which causes
   // all sorts of hassles.
   // IDEALLY, any further processing on the item would actually create a new item
@@ -119,14 +119,14 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   m_cache.insert(pair<CStdString, CDir*>(storedPath, dir));
 }
 
-void CDirectoryCache::ClearFile(const CStdString& strFile)
+void CCacheDirectory::ClearFile(const CStdString& strFile)
 {
   CStdString strPath;
   URIUtils::GetDirectory(strFile, strPath);
   ClearDirectory(strPath);
 }
 
-void CDirectoryCache::ClearDirectory(const CStdString& strPath)
+void CCacheDirectory::ClearDirectory(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);
 
@@ -138,7 +138,7 @@ void CDirectoryCache::ClearDirectory(const CStdString& strPath)
     Delete(i);
 }
 
-void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
+void CCacheDirectory::ClearSubPaths(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);
 
@@ -156,7 +156,7 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   }
 }
 
-void CDirectoryCache::AddFile(const CStdString& strFile)
+void CCacheDirectory::AddFile(const CStdString& strFile)
 {
   CSingleLock lock (m_cs);
 
@@ -174,7 +174,7 @@ void CDirectoryCache::AddFile(const CStdString& strFile)
   }
 }
 
-bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
+bool CCacheDirectory::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CSingleLock lock (m_cs);
   bInCache = false;
@@ -200,7 +200,7 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
   return false;
 }
 
-void CDirectoryCache::Clear()
+void CCacheDirectory::Clear()
 {
   // this routine clears everything except things we always cache
   CSingleLock lock (m_cs);
@@ -215,7 +215,7 @@ void CDirectoryCache::Clear()
   }
 }
 
-void CDirectoryCache::InitCache(set<CStdString>& dirs)
+void CCacheDirectory::InitCache(set<CStdString>& dirs)
 {
   set<CStdString>::iterator it;
   for (it = dirs.begin(); it != dirs.end(); ++it)
@@ -227,7 +227,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   }
 }
 
-void CDirectoryCache::ClearCache(set<CStdString>& dirs)
+void CCacheDirectory::ClearCache(set<CStdString>& dirs)
 {
   iCache i = m_cache.begin();
   while (i != m_cache.end())
@@ -239,7 +239,7 @@ void CDirectoryCache::ClearCache(set<CStdString>& dirs)
   }
 }
 
-bool CDirectoryCache::IsCacheDir(const CStdString &strPath) const
+bool CCacheDirectory::IsCacheDir(const CStdString &strPath) const
 {
   if (m_thumbDirs.find(strPath) == m_thumbDirs.end())
     return false;
@@ -249,7 +249,7 @@ bool CDirectoryCache::IsCacheDir(const CStdString &strPath) const
   return true;
 }
 
-void CDirectoryCache::InitThumbCache()
+void CCacheDirectory::InitThumbCache()
 {
   CSingleLock lock (m_cs);
 
@@ -276,7 +276,7 @@ void CDirectoryCache::InitThumbCache()
   InitCache(m_thumbDirs);
 }
 
-void CDirectoryCache::ClearThumbCache()
+void CCacheDirectory::ClearThumbCache()
 {
   CSingleLock lock (m_cs);
 
@@ -290,7 +290,7 @@ void CDirectoryCache::ClearThumbCache()
   ClearCache(m_thumbDirs);
 }
 
-void CDirectoryCache::InitMusicThumbCache()
+void CCacheDirectory::InitMusicThumbCache()
 {
   CSingleLock lock (m_cs);
 
@@ -317,7 +317,7 @@ void CDirectoryCache::InitMusicThumbCache()
   InitCache(m_musicThumbDirs);
 }
 
-void CDirectoryCache::ClearMusicThumbCache()
+void CCacheDirectory::ClearMusicThumbCache()
 {
   CSingleLock lock (m_cs);
 
@@ -331,7 +331,7 @@ void CDirectoryCache::ClearMusicThumbCache()
   ClearCache(m_musicThumbDirs);
 }
 
-void CDirectoryCache::CheckIfFull()
+void CCacheDirectory::CheckIfFull()
 {
   CSingleLock lock (m_cs);
   static const unsigned int max_cached_dirs = 10;
@@ -353,7 +353,7 @@ void CDirectoryCache::CheckIfFull()
     Delete(lastAccessed);
 }
 
-void CDirectoryCache::Delete(iCache it)
+void CCacheDirectory::Delete(iCache it)
 {
   CDir* dir = it->second;
   delete dir;
@@ -361,7 +361,7 @@ void CDirectoryCache::Delete(iCache it)
 }
 
 #ifdef _DEBUG
-void CDirectoryCache::PrintStats() const
+void CCacheDirectory::PrintStats() const
 {
   CSingleLock lock (m_cs);
   CLog::Log(LOGDEBUG, "%s - total of %u cache hits, and %u cache misses", __FUNCTION__, m_cacheHits, m_cacheMisses);

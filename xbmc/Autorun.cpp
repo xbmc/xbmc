@@ -31,7 +31,7 @@
 #include "PlayListPlayer.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"

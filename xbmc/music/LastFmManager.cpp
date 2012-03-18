@@ -29,7 +29,7 @@
 #include "pictures/Picture.h"
 #include "utils/md5.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "GUIInfoManager.h"
 #include "MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"

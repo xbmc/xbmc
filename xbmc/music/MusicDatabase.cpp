@@ -23,7 +23,7 @@
 #include "system.h"
 #include "MusicDatabase.h"
 #include "network/cddb.h"
-#include "filesystem/DirectoryCache.h"
+#include "filesystem/CacheDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "filesystem/MusicDatabaseDirectory.h"

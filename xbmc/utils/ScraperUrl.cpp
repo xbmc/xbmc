@@ -25,8 +25,8 @@
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
-#include "filesystem/FileCurl.h"
-#include "filesystem/FileZip.h"
+#include "filesystem/CurlFile.h"
+#include "filesystem/ZipFile.h"
 #include "pictures/Picture.h"
 #include "URIUtils.h"
 

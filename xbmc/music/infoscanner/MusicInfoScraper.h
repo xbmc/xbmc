@@ -25,7 +25,7 @@
 #include "MusicArtistInfo.h"
 #include "addons/Scraper.h"
 #include "threads/Thread.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 namespace MUSIC_GRABBER
 {

@@ -30,7 +30,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
-#include "filesystem/FileMusicDatabase.h"
+#include "filesystem/MusicDatabaseFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"

@@ -26,7 +26,7 @@
 #include "addons/Scraper.h"
 #include "Episode.h"
 #include "XBDateTime.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 // forward declarations
 class TiXmlDocument;

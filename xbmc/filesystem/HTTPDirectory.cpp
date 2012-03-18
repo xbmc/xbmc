@@ -21,7 +21,7 @@
 
 #include "HTTPDirectory.h"
 #include "URL.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "settings/AdvancedSettings.h"

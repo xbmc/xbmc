@@ -31,7 +31,7 @@
 #include "utils/StdString.h"
 #include "network/Zeroconf.h"
 #include "ApplicationMessenger.h"
-#include "filesystem/FilePipe.h"
+#include "filesystem/PipeFile.h"
 #include "Application.h"
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"

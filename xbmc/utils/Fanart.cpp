@@ -23,7 +23,7 @@
 #include "tinyXML/tinyxml.h"
 #include "URIUtils.h"
 #include "pictures/Picture.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "StringUtils.h"
 #include "filesystem/File.h"
 
