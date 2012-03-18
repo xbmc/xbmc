@@ -23,19 +23,20 @@
 
 #include "GUIWindowPVRCommon.h"
 #include "utils/Observer.h"
+#include "threads/Thread.h"
 
 namespace PVR
 {
   class CPVRChannelGroup;
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer
+  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon, private Observer, private CThread
   {
     friend class CGUIWindowPVR;
 
   public:
     CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
-    virtual ~CGUIWindowPVRChannels(void) {};
+    virtual ~CGUIWindowPVRChannels(void);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -48,6 +49,7 @@ namespace PVR
     virtual void UnregisterObservers(void);
 
   private:
+    virtual void Process(void);
     virtual bool OnClickButton(CGUIMessage &message);
     virtual bool OnClickList(CGUIMessage &message);
 
@@ -66,5 +68,6 @@ namespace PVR
     CPVRChannelGroup *m_selectedGroup;
     bool              m_bShowHiddenChannels;
     bool              m_bRadio;
+    bool              m_bThreadCreated;
   };
 }
