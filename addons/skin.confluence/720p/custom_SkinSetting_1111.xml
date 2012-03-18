@@ -793,6 +793,13 @@
 								<icon>special://skin/backgrounds/Addons.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Addons_Folder)]</thumb>
 							</item>
+							<item id="9">
+								<label>341</label>
+								<label2>Home_Custom_Back_PlayDisc_Folder</label2>
+								<onclick>-</onclick>
+								<icon>special://skin/backgrounds/playdisc.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_PlayDisc_Folder)]</thumb>
+							</item>							
 						</content>
 					</control>
 					<control type="image">
