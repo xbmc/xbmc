@@ -222,7 +222,7 @@
   <string id="251">Selectează dosarul destinație</string>
   <string id="252">Scoate stereo în toate difuzoarele</string>
   <string id="253">Număr de canale</string>
-  <string id="254">- Receptor capabil de DTS</string>
+  <string id="254">- Receptor capabil DTS</string>
   <string id="255">CDDB</string>
   <string id="256">Culegere informații CD</string>
   <string id="257">Eroare</string>
@@ -741,7 +741,7 @@
   <string id="1030">Alegere imagine</string>
   <string id="1031">Alegere dosar de imagini</string>
   <string id="1032">Adaugă locație rețea...</string>
-  <string id="1033">Caută fișier</string>
+  <string id="1033">Căutare fișier</string>
   <string id="1034">Submeniu</string>
   <string id="1035">Activează butoane submeniu</string>
   <string id="1036">Favorite</string>
@@ -762,7 +762,7 @@
   <string id="1051">Introduceți adresă web</string>
 
   <string id="1200">Client SMB</string>
-  <string id="1202">Workgroup</string>
+  <string id="1202">Grup de lucru</string>
   <string id="1203">Nume utilizator implicit</string>
   <string id="1204">Parolă implicită</string>
 
@@ -850,7 +850,7 @@
   <string id="2100">Scriptul a eșuat! : %s</string>
   <string id="2101">Este necesară o versiune mai nouă - Vedeți istoric modificări</string>
 
-  <string id="4501">Activează LCD/VFD</string>
+  <string id="4501">Activează LCD / VFD</string>
 
   <string id="10000">Acasă</string>
   <string id="10001">Programe</string>
@@ -1211,7 +1211,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Prinde radio Last.fm</string>
   <string id="13411">Viteză minimă ventilator</string>
-  <string id="13412">Redă de aici</string>
+  <string id="13412">Redă începând de aici</string>
   <string id="13413">Se descarcă</string>
   <string id="13414">Include artiști care apar doar pe compilații</string>
   <string id="13415">Metodă de redare</string>
@@ -1503,7 +1503,7 @@
   <string id="16102">privite</string>
   <string id="16103">Marchează ca privit</string>
   <string id="16104">Marchează ca neprivit</string>
-  <string id="16105">Modifică titlul</string>
+  <string id="16105">Modifică numele</string>
 
   <string id="16200">Operațiunea a fost anulată</string>
   <string id="16201">Copierea a eșuat</string>
@@ -1525,8 +1525,8 @@
   <string id="16309">Sinc (software)</string>
   <string id="16310">Temporal</string>
   <string id="16311">Temporal/Spațial</string>
-  <string id="16312">(VDPAU)Reducere zgomot</string>
-  <string id="16313">(VDPAU)Claritate</string>
+  <string id="16312">(VDPAU) Reducere zgomot</string>
+  <string id="16313">(VDPAU) Claritate</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimizat</string>
   <string id="16316">Automat</string>
@@ -1774,7 +1774,7 @@
   <string id="20326">Vor fi resetate valorile de calibrare pentru %s</string>
   <string id="20327">către valorile implicite.</string>
   <string id="20328">Alege destinație</string>
-  <string id="20329">Filmele sunt în dosare separate care se potrivesc cu titlul filmului</string>
+  <string id="20329">Filmele sunt în dosare separate care se potrivesc cu numele filmului</string>
   <string id="20330">Folosește nume dosare la căutări</string>
   <string id="20331">Fișier</string>
   <string id="20332">Folosește nume fișier sau nume dosar la căutări?</string>
@@ -1821,7 +1821,7 @@
   <string id="20373">Sezon</string>
   <string id="20374">Descărcare informații filme</string>
   <string id="20375">Eliminare atribuire conținut</string>
-  <string id="20376">Titlu original</string>
+  <string id="20376">Nume original</string>
   <string id="20377">Actualizare informații serial</string>
   <string id="20378">Actualizați informațiile pentru toate episoadele?</string>
   <string id="20379">Dosarul selectat conține un singur serial</string>
@@ -2243,7 +2243,7 @@
   <string id="24097">Doriți să îl dezactivați pe sistemul dumneavoastră?</string>
   <string id="24098">Defect</string>
   <string id="24099">Doriți să folosiți acest costum?</string>
-  <string id="24100">Pentru a folosi această funcționalitate trebuie să descărcați un supliment:</string>
+  <string id="24100">Pentru aceasta trebuie să descărcați un supliment:</string>
   <string id="24101">Doriți să descărcați acest supliment?</string>
   <string id="25000">Notificări</string>
 
