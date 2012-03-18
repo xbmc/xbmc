@@ -511,19 +511,9 @@ void CHALManager::AddDevice(const char *udi)
         if(m_Joysticks.size() < 2 || m_bMultipleJoysticksSupport)
         {
           // Restart SDL joystick subsystem
-          SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-          if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
-          {
-            CLog::Log(LOGERROR, "HAL: Stop joystick subsystem failed");
+          if (!g_Joystick.Reinitialize())
             break;
-          }
-          if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
-          {
-            CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
-            break;
-          }
 
-          g_Joystick.Initialize();
           if (m_Notifications)
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13024), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         }
@@ -576,20 +566,11 @@ bool CHALManager::RemoveDevice(const char *udi)
       if(m_Joysticks.size() < 3 || m_bMultipleJoysticksSupport)
       {
         // Restart SDL joystick subsystem
-        SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-        if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
-        {
-          CLog::Log(LOGERROR, "HAL: Stop joystick subsystem failed");
+        if (!g_Joystick.Reinitialize())
           return false;
-        }
-        if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
-        {
-          CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
-          return false;
-        }
 
-        g_Joystick.Initialize();
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
+        if (m_Notifications)
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
       }
       m_Joysticks.erase(m_Joysticks.begin() + i);
       return true;
