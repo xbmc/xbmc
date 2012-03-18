@@ -809,7 +809,9 @@ if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 else
-  AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
+  if test "$host_os" = "linux" ; then
+    AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
+  fi
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
