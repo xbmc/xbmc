@@ -1151,6 +1151,9 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
       return false;
   }
 
+  m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+  m_interlace_method = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);;
+
   if (!OpenProcessor())
     return false;
 
