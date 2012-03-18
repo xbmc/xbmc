@@ -1239,7 +1239,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hi
       || (m_bc_info_crystal.drvVersion.drvRelease == 3 && m_bc_info_crystal.drvVersion.drvMajor < 7) )
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "CrystalHD", g_localizeStrings.Get(2101));
-    CLog::Log(LOGWARNING, "CrystalHD drivers too old, please upgrade to 3.6.9 or later.");
+    CLog::Log(LOGWARNING, "CrystalHD drivers too old, please upgrade to 3.6.9 or later. Make sure to uninstall the old version first or the upgrade won't work.");
 
     if (codec_type == CRYSTALHD_CODEC_ID_AVC1)
       return false;

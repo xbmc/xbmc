@@ -383,6 +383,7 @@ bool CEpg::Load(void)
   }
   else
   {
+    m_lastScanTime = GetLastScanTime();
     CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
         __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
     bReturn = true;
@@ -501,7 +502,10 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
 
   if (bGrabSuccess)
   {
-    g_PVRManager.ResetPlayingTag();
+    CPVRChannel channel;
+    if (g_PVRManager.GetCurrentChannel(channel))
+      if (channel.EpgID() == m_iEpgID)
+        g_PVRManager.ResetPlayingTag();
     m_bLoaded = true;
   }
   else

@@ -399,43 +399,21 @@ void Xcddb::addTitle(const char *buffer)
   }
 
   // track artist" / "track title
-  char artist[1024];
-  char title[1024];
-  unsigned int len = (unsigned int)strlen(value);
-  bool found = false;
-  unsigned int index;
-  for (index = 0;index < len;index++)
+  CStdString strValue = value;
+  CStdStringArray values;
+  StringUtils::SplitString(value, " / ", values);
+  if (values.size() > 1)
   {
-    if ((index + 2) <= len && value[index] == ' ' && value[index + 1] == '/' && value[index + 2] == ' ')
-    {
-      // Jep found
-      found = true;
-      break;
-    }
-  }
-  if (found)
-  {
-    strncpy(artist, value, index);
-    artist[index] = '\0';
-    strncpy(title, value + index + 3, sizeof(title));
-    title[0] = '\0';
+    g_charsetConverter.unknownToUTF8(values[0]);
+    m_mapArtists[trk_nr] += values[0];
+    g_charsetConverter.unknownToUTF8(values[1]);
+    m_mapTitles[trk_nr] += values[1];
   }
   else
   {
-    artist[0] = '\0';
-    strncpy(title, value, sizeof(title));
-    title[0] = '\0';
+    g_charsetConverter.unknownToUTF8(values[0]);
+    m_mapTitles[trk_nr] += values[0];
   }
-
-  CStdString strArtist=artist;
-  // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(artist, strArtist);
-  m_mapArtists[trk_nr] += strArtist;
-
-  CStdString strTitle=title;
-  // You never know if you really get UTF-8 strings from cddb
-  g_charsetConverter.unknownToUTF8(title, strTitle);
-  m_mapTitles[trk_nr] += strTitle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

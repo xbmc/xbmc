@@ -5479,6 +5479,9 @@
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

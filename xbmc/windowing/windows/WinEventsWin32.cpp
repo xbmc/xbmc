@@ -680,17 +680,15 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_DEVICECHANGE:
       {
-        if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
+        switch(wParam)
         {
-          PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
-          switch (wParam)
-          {
-            case DBT_DEVICEARRIVAL:
-            case DBT_DEVICEREMOVECOMPLETE:
-            case DBT_DEVNODES_CHANGED:
+          case DBT_DEVNODES_CHANGED:
+            g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
+            break;
+          case DBT_DEVICEARRIVAL:
+          case DBT_DEVICEREMOVECOMPLETE:
+            if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
               g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
-              break;
-          }
         }
         break;
       }

@@ -769,7 +769,7 @@ bool CApplication::Create()
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
 
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
