@@ -135,6 +135,7 @@ void CGUIWindowPVRCommon::SetInvalid()
 {
   for (int iItemPtr = 0; iItemPtr < m_parent->m_vecItems->Size(); iItemPtr++)
     m_parent->m_vecItems->Get(iItemPtr)->SetInvalid();
+  m_parent->SetInvalid();
 }
 
 void CGUIWindowPVRCommon::OnInitWindow()
