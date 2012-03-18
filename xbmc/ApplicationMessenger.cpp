@@ -724,6 +724,17 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_GUI_MESSAGE:
+      {
+        if (pMsg->lpVoid)
+        {
+          CGUIMessage *message = (CGUIMessage *)pMsg->lpVoid;
+          g_windowManager.SendMessage(*message, pMsg->dwParam1);
+          delete message;
+        }
+      }
+      break;
+
     case TMSG_GUI_INFOLABEL:
       {
         if (pMsg->lpVoid)
@@ -1159,6 +1170,14 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
   tMsg.dwParam1 = windowID;
   tMsg.lpVoid = new CAction(action);
+  SendMessage(tMsg, waitResult);
+}
+
+void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windowID, bool waitResult)
+{
+  ThreadMessage tMsg = {TMSG_GUI_MESSAGE};
+  tMsg.dwParam1 = windowID == WINDOW_INVALID ? 0 : windowID;
+  tMsg.lpVoid = new CGUIMessage(message);
   SendMessage(tMsg, waitResult);
 }
 

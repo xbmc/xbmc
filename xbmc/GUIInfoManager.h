@@ -181,6 +181,7 @@ namespace INFO
 #define SYSTEM_ISSTANDALONE         183
 #define SYSTEM_ISINHIBIT            184
 #define SYSTEM_HAS_SHUTDOWN         185
+#define SYSTEM_HAS_PVR              186
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
