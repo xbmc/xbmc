@@ -283,7 +283,7 @@ PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         break;
       }
 
-    } while(iEnd > stop);
+    } while(iEnd > stop && event.id != 0);
   }
   else
   {
