@@ -171,8 +171,9 @@ namespace EPG
 
     /*!
      * @brief Show the progress bar
+     * @param bUpdating True if updating epg entries, false if just loading them from db
      */
-    virtual void ShowProgressDialog(void);
+    virtual void ShowProgressDialog(bool bUpdating = true);
 
     /*!
      * @brief Update the progress bar.
@@ -270,6 +271,7 @@ namespace EPG
     //@{
     bool         m_bIsUpdating;            /*!< true while an update is running */
     bool         m_bIsInitialising;        /*!< true while the epg manager hasn't loaded all tables */
+    bool         m_bLoaded;                /*!< true after epg data is initially loaded from the database */
     bool         m_bPreventUpdates;        /*!< true to prevent EPG updates */
     time_t       m_iLastEpgCleanup;        /*!< the time the EPG was cleaned up */
     time_t       m_iNextEpgUpdate;         /*!< the time the EPG will be updated */
