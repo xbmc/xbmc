@@ -1177,6 +1177,9 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 
   EvaluateQuirkNoDeintProcForProg();
 
+  if (g_advancedSettings.m_DXVANoDeintProcForProgressive || m_quirk_nodeintprocforprog)
+    CLog::Log(LOGNOTICE, "DXVA: Auto deinterlacing mode workaround activated. Deinterlacing processor will be used only for interlaced frames.");
+
   if (!OpenProcessor())
     return false;
 
