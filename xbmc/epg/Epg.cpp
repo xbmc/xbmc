@@ -383,6 +383,7 @@ bool CEpg::Load(void)
   }
   else
   {
+    m_lastScanTime = GetLastScanTime();
     CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
         __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
     bReturn = true;
