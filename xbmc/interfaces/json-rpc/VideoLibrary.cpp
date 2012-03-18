@@ -351,7 +351,9 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
+  CStdString cmd;
+  cmd.Format("updatelibrary(video, %s)", parameterObject["path"].asString());
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
 }
 

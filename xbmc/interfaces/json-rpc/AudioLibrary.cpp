@@ -238,7 +238,9 @@ JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
+  CStdString cmd;
+  cmd.Format("updatelibrary(music, %s)", parameterObject["path"].asString());
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
 }
 
