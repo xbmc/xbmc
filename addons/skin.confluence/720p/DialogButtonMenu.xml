@@ -34,7 +34,7 @@
 			<posx>470</posx>
 			<posy>0</posy>
 			<width>340</width>
-			<height>720</height>
+			<height>760</height>
 			<onleft>9000</onleft>
 			<onright>9000</onright>
 			<onup>9000</onup>
@@ -63,8 +63,8 @@
 					<onclick>PreviousMenu</onclick>
 					<texturefocus>DialogCloseButton-focus.png</texturefocus>
 					<texturenofocus>DialogCloseButton.png</texturenofocus>
-					<onleft>13</onleft>
-					<onright>13</onright>
+					<onleft>14</onleft>
+					<onright>14</onright>
 					<onup>9</onup>
 					<ondown>2</ondown>
 					<visible>system.getbool(input.enablemouse)</visible>
@@ -103,6 +103,38 @@
 				<label>13016</label>
 			</control>
 			<control type="button" id="4">
+				<description>Shutdown after playback</description>
+				<width>340</width>
+				<height>40</height>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+				<textwidth>290</textwidth>
+				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
+				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
+				<onclick>XBMC.PowerdownAfterPlay(true)</onclick>
+				<pulseonselect>no</pulseonselect>
+				<font>font13</font>
+				<label>13017</label>
+				<visible>System.CanPowerDown + !System.PowerdownAfterPlay + [Player.Paused | Player.Playing]</visible>
+			</control>
+			<control type="button" id="5">
+				<description>Cancel shutdown after playback</description>
+				<width>340</width>
+				<height>40</height>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+				<textwidth>290</textwidth>
+				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
+				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
+				<onclick>XBMC.PowerdownAfterPlay(false)</onclick>
+				<pulseonselect>no</pulseonselect>
+				<font>font13</font>
+				<label>13018</label>
+				<visible>System.CanPowerDown + System.PowerdownAfterPlay + [Player.Paused | Player.Playing]</visible>
+			</control>
+			<control type="button" id="6">
 				<description>Custom Shutdown Timer</description>
 				<width>340</width>
 				<height>40</height>
@@ -119,7 +151,7 @@
 				<visible>!System.HasAlarm(shutdowntimer)</visible>
 				<visible>System.CanPowerDown</visible>
 			</control>
-			<control type="button" id="5">
+			<control type="button" id="7">
 				<description>Cancel Shutdown Timer</description>
 				<width>340</width>
 				<height>40</height>
@@ -135,7 +167,7 @@
 				<label>20151</label>
 				<visible>System.HasAlarm(shutdowntimer)</visible>
 			</control>
-			<control type="button" id="6">
+			<control type="button" id="8">
 				<description>Suspend button</description>
 				<width>340</width>
 				<height>40</height>
@@ -151,7 +183,7 @@
 				<font>font13</font>
 				<label>13011</label>
 			</control>
-			<control type="button" id="7">
+			<control type="button" id="9">
 				<description>Hibernate button</description>
 				<width>340</width>
 				<height>40</height>
@@ -167,7 +199,7 @@
 				<font>font13</font>
 				<label>13010</label>
 			</control>
-			<control type="button" id="8">
+			<control type="button" id="10">
 				<description>Reboot button</description>
 				<width>340</width>
 				<height>40</height>
@@ -183,7 +215,7 @@
 				<font>font13</font>
 				<label>13013</label>
 			</control>
-			<control type="button" id="9">
+			<control type="button" id="11">
 				<description>Logoff button</description>
 				<width>340</width>
 				<height>40</height>
@@ -201,7 +233,7 @@
 				<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
 				<visible>System.Loggedon</visible>
 			</control>
-			<control type="togglebutton" id="10">
+			<control type="togglebutton" id="12">
 				<description>Master mode button</description>
 				<width>340</width>
 				<height>40</height>
@@ -222,7 +254,7 @@
 				<font>font13</font>
 				<visible>System.HasLocks</visible>
 			</control>
-			<control type="group" id="11">
+			<control type="group" id="13">
 				<width>340</width>
 				<height>70</height>
 				<visible>System.HasAlarm(shutdowntimer)</visible>
@@ -246,7 +278,7 @@
 					<label>$LOCALIZE[31329] [B]$INFO[System.Alarmpos][/B]</label>
 				</control>
 			</control>
-			<control type="image" id="12">
+			<control type="image" id="14">
 				<description>background bottom image</description>
 				<posx>0</posx>
 				<width>340</width>

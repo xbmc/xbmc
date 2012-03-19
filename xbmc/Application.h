@@ -284,6 +284,10 @@ public:
   bool ToggleDPMS(bool manual);
 
   float GetDimScreenSaverLevel() const;
+
+  void SetPowerdownAfterPlay(bool bOnOff);
+  bool GetPowerdownAfterPlay() const;
+
 protected:
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -310,6 +314,8 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
+
+  bool m_bPowerdownAfterPlay;
 
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;
