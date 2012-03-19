@@ -16,10 +16,6 @@ SRCS=ConvUtils.cpp \
      XMemUtils.cpp \
      XTimeUtils.cpp \
 
-ifeq ($(findstring freebsd,$(ARCH)), freebsd)
-  SRCS+=FreeBSDGNUReplacements.cpp
-endif
-
 LIB=linux.a
 
 include @abs_top_srcdir@/Makefile.include

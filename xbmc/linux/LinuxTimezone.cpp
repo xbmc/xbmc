@@ -28,7 +28,7 @@
 #include "OSXGNUReplacements.h"
 #endif
 #ifdef __FreeBSD__
-#include "FreeBSDGNUReplacements.h"
+#include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 
 #include "Util.h"
