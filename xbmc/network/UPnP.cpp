@@ -1100,12 +1100,6 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     }
 
     // // If it is a series sort by episode, else by label
-    // if (parent_id.StartsWith("videodb://2")) { // Container for series
-        // items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
-    // } else { // This is a Movie Container
-        // items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-    // }
-
     VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(items.GetPath());
 
     if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) { // Sort by episode
