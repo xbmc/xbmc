@@ -1108,9 +1108,9 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 
     VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(items.GetPath());
 
-    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) {
+    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) { // Sort by episode
         items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
-    } else {
+    } else { // Normal sorting
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     }
     
