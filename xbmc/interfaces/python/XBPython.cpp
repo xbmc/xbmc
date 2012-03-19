@@ -414,11 +414,14 @@ void XBPython::Finalize()
   {
     CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
 
-    PyEval_AcquireLock();
-    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
+    {
+      CSingleExit exit(m_critSection);
+      PyEval_AcquireLock();
+      PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
-    Py_Finalize();
-    PyEval_ReleaseLock();
+      Py_Finalize();
+      PyEval_ReleaseLock();
+    }
 
 #if !(defined(__APPLE__) || defined(_WIN32))
     UnloadExtensionLibs();
