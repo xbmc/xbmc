@@ -32,7 +32,7 @@
 #ifdef isset
 #undef isset
 #endif
-#include <cectypes.h>
+#include <libcec/cectypes.h>
 
 class DllLibCEC;
 
@@ -68,8 +68,6 @@ namespace PERIPHERALS
     virtual ~CPeripheralCecAdapter(void);
 
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-    virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
-    virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
     virtual bool HasConnectedAudioSystem(void);
     virtual void SetAudioSystemConnected(bool bSetTo);
     virtual void ScheduleVolumeUp(void);
@@ -79,9 +77,6 @@ namespace PERIPHERALS
     virtual void ScheduleMute(void);
     virtual void Mute(void);
 
-    virtual bool SendPing(void);
-    virtual bool SetHdmiPort(int iDevice, int iHdmiPort);
-
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
     virtual WORD GetButton(void);
@@ -90,10 +85,14 @@ namespace PERIPHERALS
     virtual CStdString GetComPort(void);
 
   protected:
-    virtual void EnableCallbacks(void);
+    virtual bool OpenConnection(void);
+    virtual void SetConfigurationFromSettings(void);
+    virtual void SetConfigurationFromLibCEC(const CEC::libcec_configuration &config);
+    static void ReadLogicalAddresses(const CStdString &strString, CEC::cec_logical_addresses &addresses);
     static int CecKeyPress(void *cbParam, const CEC::cec_keypress &key);
     static int CecLogMessage(void *cbParam, const CEC::cec_log_message &message);
     static int CecCommand(void *cbParam, const CEC::cec_command &command);
+    static int CecConfiguration(void *cbParam, const CEC::libcec_configuration &config);
 
     virtual bool GetNextKey(void);
     virtual bool GetNextCecKey(CEC::cec_keypress &key);
@@ -120,12 +119,13 @@ namespace PERIPHERALS
     CPeripheralCecAdapterQueryThread *m_queryThread;
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
+    CEC::libcec_configuration         m_configuration;
   };
 
   class CPeripheralCecAdapterQueryThread : public CThread
   {
   public:
-    CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter);
+    CPeripheralCecAdapterQueryThread(CPeripheralCecAdapter *adapter, bool bGetMenuLanguage);
     virtual ~CPeripheralCecAdapterQueryThread(void);
 
     virtual void Signal(void);
@@ -135,6 +135,7 @@ namespace PERIPHERALS
 
     CPeripheralCecAdapter *m_adapter;
     CEvent                 m_event;
+    bool                   m_bGetMenuLanguage;
   };
 }
 

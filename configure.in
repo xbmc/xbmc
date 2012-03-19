@@ -1173,7 +1173,7 @@ if test "x$use_libcec" != "xno"; then
 
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   if test "x$use_libcec" != "xno"; then
-    PKG_CHECK_MODULES([CEC],[libcec >= 1.1.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+    PKG_CHECK_MODULES([CEC],[libcec >= 1.5.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
 
     if test "x$use_libcec" != "xno"; then
       INCLUDES="$INCLUDES $CEC_CFLAGS"
