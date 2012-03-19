@@ -12,6 +12,13 @@
 		<value condition="substring(listitem.mpaa,Rated PG-13)">mpaa_pg13</value>
 		<value condition="substring(Listitem.mpaa,Rated R)">mpaa_restricted</value>
 		<value condition="substring(Listitem.mpaa,Rated NC)">mpaa_nc17</value>
+		<value condition="substring(listitem.mpaa,U)">bbfc_U</value>
+    		<value condition="substring(listitem.mpaa,PG) + !substring(listitem.mpaa,Rated PG-13)">bbfc_PG</value>
+    		<value condition="substring(listitem.mpaa,12) + !substring(listitem.mpaa,12A)">bbfc_12</value>
+    		<value condition="substring(Listitem.mpaa,12A)">bbfc_12A</value>
+    		<value condition="substring(Listitem.mpaa,15)">bbfc_15</value>
+    		<value condition="substring(Listitem.mpaa,18) + !substring(listitem.mpaa,R18)">bbfc_18</value>
+    		<value condition="substring(Listitem.mpaa,R18)">bbfc_R18</value>
 	</variable>
 		<variable name="videocodec">
 		<value condition="[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]">divx</value>
