@@ -132,6 +132,9 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
 
     if (!bFound)
       bFound = ReadBeyondTV(strMovie);
+
+    if (!bFound)
+      bFound = Readvdrmarks(strMovie, fFramesPerSecond);
   }
   /*
    * Or if the movie points to MythTV and isn't live TV.
@@ -1081,4 +1084,66 @@ void CEdl::MergeShortCommBreaks()
     }
   }
   return;
+}
+
+bool CEdl::Readvdrmarks(const CStdString& strMovie, const float fFramesPerSecond)
+{
+  Clear();
+
+  CStdString vdrFilename(URIUtils::GetParentPath(strMovie) + "marks");
+  if (!CFile::Exists(vdrFilename))
+  {
+    vdrFilename+=".vdr";
+    if (!CFile::Exists(vdrFilename))
+      return false;
+  }
+
+  CFile vdrFile;
+  if (!vdrFile.Open(vdrFilename))
+  {
+    CLog::Log(LOGERROR, "%s - Could not open vdr marks file: %s", __FUNCTION__, vdrFilename.c_str());
+    return false;
+  }
+
+  int iLine = 0;
+  CStdString strBuffer;
+
+  while (vdrFile.ReadString(strBuffer.GetBuffer(1024), 1024))
+  {
+    strBuffer.ReleaseBuffer();
+
+    iLine++;
+
+    CStdString strtime, strComment;
+    int iff=0;
+    int iFieldsRead = sscanf(strBuffer, "%7c.%2i %512c", strtime.GetBuffer(7), &iff, strComment.GetBuffer(512));
+    strtime.ReleaseBuffer();
+    strComment.ReleaseBuffer();
+
+    if (iFieldsRead != 3)
+    {
+      CLog::Log(LOGWARNING, "%s - Error on line %i in vdr marks file: %s", __FUNCTION__, iLine, vdrFilename.c_str());
+      continue;
+    }
+
+    if(!AddSceneMarker((int64_t)(StringUtils::TimeStringToSeconds(strtime)*1000 + iff/fFramesPerSecond*1000)))
+      CLog::Log(LOGWARNING, "%s - Error adding scene markers: %s and %d frames", __FUNCTION__, strtime.c_str(), iff);
+  }
+
+  strBuffer.ReleaseBuffer();
+
+  vdrFile.Close();
+
+  if (HasSceneMarker())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %"PRIuS" scene markers in vdr marks file: %s", __FUNCTION__,
+              m_vecSceneMarkers.size(), vdrFilename.c_str());
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No scene markers found in vdr marks file: %s", __FUNCTION__,
+              vdrFilename.c_str());
+    return false;
+  }
 }
