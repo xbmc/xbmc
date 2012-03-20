@@ -30,7 +30,7 @@
 using namespace XFILE;
 
 
-Pipe::Pipe(const CStdString &name, int nMaxSize)
+Pipe::Pipe(const std::string &name, int nMaxSize)
 {
   m_buffer.Create(nMaxSize);
   m_nRefCount = 1;
@@ -52,7 +52,7 @@ void Pipe::SetOpenThreashold(int threashold)
   m_nOpenThreashold = threashold;
 }
 
-const CStdString &Pipe::GetName() 
+const std::string &Pipe::GetName() 
 {
   return m_strPipeName;
 }
@@ -281,7 +281,7 @@ PipesManager &PipesManager::GetInstance()
   return instance;
 }
 
-CStdString   PipesManager::GetUniquePipeName()
+std::string   PipesManager::GetUniquePipeName()
 {
   CSingleLock lock(m_lock);
   CStdString id;
@@ -289,10 +289,10 @@ CStdString   PipesManager::GetUniquePipeName()
   return id;
 }
 
-XFILE::Pipe *PipesManager::CreatePipe(const CStdString &name, int nMaxPipeSize)
+XFILE::Pipe *PipesManager::CreatePipe(const std::string &name, int nMaxPipeSize)
 {
-  CStdString pName = name;
-  if (pName.IsEmpty())
+  std::string pName = name;
+  if (pName.empty())
     pName = GetUniquePipeName();
   
   CSingleLock lock(m_lock);
@@ -304,7 +304,7 @@ XFILE::Pipe *PipesManager::CreatePipe(const CStdString &name, int nMaxPipeSize)
   return p;
 }
 
-bool         PipesManager::OpenPipeForWrite(const CStdString &name)
+bool         PipesManager::OpenPipeForWrite(const std::string &name)
 {
   bool ret = true;
   CSingleLock lock(m_lock);
@@ -314,38 +314,42 @@ bool         PipesManager::OpenPipeForWrite(const CStdString &name)
   return ret;
 }
 
-bool         PipesManager::Write(const CStdString &name, const char *buf, int nSize)
+bool         PipesManager::Write(const std::string &name, const char *buf, int nSize)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return false;
-  return m_pipes[name]->Write(buf,nSize, INFINITE);
+  return i->second->Write(buf,nSize, INFINITE);
 }
 
-bool         PipesManager::Read(const CStdString &name, char *buf, int nSize)
+bool         PipesManager::Read(const std::string &name, char *buf, int nSize)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return false;
-  return m_pipes[name]->Read(buf,nSize, INFINITE);
+  return i->second->Read(buf,nSize, INFINITE);
 }
 
-XFILE::Pipe *PipesManager::OpenPipe(const CStdString &name)
+XFILE::Pipe *PipesManager::OpenPipe(const std::string &name)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return NULL;
-  m_pipes[name]->AddRef();
-  return m_pipes[name];
+  i->second->AddRef();
+  return i->second;
 }
 
-void         PipesManager::ClosePipe(const CStdString &name)
+void         PipesManager::ClosePipe(const std::string &name)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return;
   lock.Leave();
-  ClosePipe(m_pipes[name]);
+  ClosePipe(i->second);
 }
 
 void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
@@ -363,32 +367,35 @@ void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
   }
 }
 
-bool         PipesManager::Exists(const CStdString &name)
+bool         PipesManager::Exists(const std::string &name)
 {
   CSingleLock lock(m_lock);
   return (m_pipes.find(name) != m_pipes.end());
 }
 
-void         PipesManager::SetOpenThreashold(const CStdString &name, int threashold)
+void         PipesManager::SetOpenThreashold(const std::string &name, int threashold)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return;
-  m_pipes[name]->SetOpenThreashold(threashold);
+  i->second->SetOpenThreashold(threashold);
 }
 
-void         PipesManager::SetEof(const CStdString &name)
+void         PipesManager::SetEof(const std::string &name)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);
+  if (i == m_pipes.end())
     return;
-  m_pipes[name]->SetEof();
+  i->second->SetEof();
 }
 
-void         PipesManager::Flush(const CStdString &name)
+void         PipesManager::Flush(const std::string &name)
 {
   CSingleLock lock(m_lock);
-  if (m_pipes.find(name) == m_pipes.end())
+  std::map<std::string, XFILE::Pipe *>::iterator i = m_pipes.find(name);  
+  if (i == m_pipes.end())
     return;
-  m_pipes[name]->Flush();
+  i->second->Flush();
 }

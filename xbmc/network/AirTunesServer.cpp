@@ -95,7 +95,7 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   ao_device_xbmc* device = new ao_device_xbmc();
 
   device->pipe = new XFILE::CFilePipe;
-  device->pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
+  device->pipe->OpenForWrite(CStdString(XFILE::PipesManager::GetInstance().GetUniquePipeName()));
   device->pipe->SetOpenThreashold(300);
 
   BXA_FmtHeader header;

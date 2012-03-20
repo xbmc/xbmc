@@ -27,7 +27,7 @@
 
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
-#include "utils/StdString.h"
+#include <string>
 #include "utils/RingBuffer.h"
 
 #include <map>
@@ -48,9 +48,9 @@ public:
 class Pipe
   {
   public:
-    Pipe(const CStdString &name, int nMaxSize = PIPE_DEFAULT_MAX_SIZE ); 
+    Pipe(const std::string &name, int nMaxSize = PIPE_DEFAULT_MAX_SIZE ); 
     virtual ~Pipe();
-    const CStdString &GetName();
+    const std::string &GetName();
     
     void AddRef();
     void DecRef();   // a pipe does NOT delete itself with ref-count 0. 
@@ -81,7 +81,7 @@ class Pipe
 
     bool        m_bEof;
     CRingBuffer m_buffer;
-    CStdString  m_strPipeName;  
+    std::string  m_strPipeName;  
     int         m_nRefCount;
     int         m_nOpenThreashold;
 
@@ -100,23 +100,23 @@ public:
   virtual ~PipesManager();
   static PipesManager &GetInstance();
 
-  CStdString   GetUniquePipeName();
-  XFILE::Pipe *CreatePipe(const CStdString &name="", int nMaxPipeSize = PIPE_DEFAULT_MAX_SIZE);
-  XFILE::Pipe *OpenPipe(const CStdString &name);
-  bool         OpenPipeForWrite(const CStdString &name);
-  bool         Write(const CStdString &name, const char *buf, int nSize);
-  bool         Read(const CStdString &name, char *buf, int nSize);
+  std::string   GetUniquePipeName();
+  XFILE::Pipe *CreatePipe(const std::string &name="", int nMaxPipeSize = PIPE_DEFAULT_MAX_SIZE);
+  XFILE::Pipe *OpenPipe(const std::string &name);
+  bool         OpenPipeForWrite(const std::string &name);
+  bool         Write(const std::string &name, const char *buf, int nSize);
+  bool         Read(const std::string &name, char *buf, int nSize);
   void         ClosePipe(XFILE::Pipe *pipe);
-  void         ClosePipe(const CStdString &name);
-  bool         Exists(const CStdString &name);
-  void         SetOpenThreashold(const CStdString &name, int threashold);
-  void         SetEof(const CStdString &name);
-  void         Flush(const CStdString &name);
+  void         ClosePipe(const std::string &name);
+  bool         Exists(const std::string &name);
+  void         SetOpenThreashold(const std::string &name, int threashold);
+  void         SetEof(const std::string &name);
+  void         Flush(const std::string &name);
   
 protected:
   PipesManager();
   int    m_nGenIdHelper;
-  std::map<CStdString, XFILE::Pipe *> m_pipes;  
+  std::map<std::string, XFILE::Pipe *> m_pipes;  
   
   CCriticalSection m_lock;
 };

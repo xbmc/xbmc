@@ -25,9 +25,6 @@
 #include <map>
 #include <string>
 
-//PyByteArray_FromStringAndSize is only available in python 2.6 and up
-#if PY_VERSION_HEX >= 0x02060000 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,7 +44,3 @@ namespace PYXBMC
 #ifdef __cplusplus
 }
 #endif
-
-#endif //PY_VERSION_HEX >= 0x02060000
-
-
