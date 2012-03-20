@@ -26,6 +26,7 @@
     <summary lang="ko">projectM 은 사운드웨이브 속으로 날아가는듯한 효과를 보여줍니다.</summary>
     <summary lang="pl">projectM zabiera Cię w niesamowity lot w chmurach aktualnie słuchanych dźwięków</summary>
     <summary lang="pt">O projectM leva-o a voar nas ondas sonoras que está a ouvir</summary>
+    <summary lang="ro">projectM te plimbă printre undele sonore pe care le asculți</summary>
     <summary lang="se">projectM tar dig flygande genom ljudvågorna du hör</summary>
     <summary lang="zh">projectM带你与声波一起飞翔</summary>
     <description lang="bg">projectM е страхотна визуализация, плод на упорит труд от страна на общността. В света на Unix не съществува нищо по-добро. Потребители, като вас, създават предварително комбинации от настройки, които ползват като модел за визуализацията и така свързват звука с невероятни визуални ефекти. Пробвайте!
@@ -54,6 +55,9 @@ projectM jest reimplementacją Milkdropa na licencji LGPL i używa OpenGL
 Wszystko czego wymaga projectM, to karta graficzna wspierająca akcelerację 3D oraz zasoby Twojej muzyki.</description>
     <description lang="pt">O projectM é um fantástico visualizador de música. Não existe nenhum melhor no mundo Unix. A grandeza do projectM advém do trabalho árduo da comunidade. Utilizadores como você podem criar pré-definições que ligam a música a visualizações incríveis. Experimente!
 O visualizador projectM é uma reimplementação do Milkdrop OpenGL sob uma licença LGPL. Tudo o que o projectM necessita é de uma placa gráfica com aceleração 3D e a sua música favorita.</description>
+	<description lang="ro">projectM este o vizualizare de muzică uimitoare. Nu există nimic mai bun în lumea Unix. Măreția projectM vine din munca întregii comunități. Utilizatori ca și tine pot crea presetări care conectează muzica cu vizualizări incredibile. Încearcă și tu!
+Vizualizarea projectM este o reimplementare LGPL a lui Milkdrop sub OpenGL.
+Tot ceea ce necesită projectM este o placă video cu accelerare 3D și muzica ta favorită.</description>
     <description lang="se">projectM är en fantastisk musikvisualisering. Det finns inget bättre i Unixvärlden. projectM's storhet kommer från hårt arbete i gemenskapen. Användare som dig kan skapa förval som anluter musiken med dom otroliga visualiseringarna. Prova det!
 projectM visualiseringen är en LGPL återskapning av Milkdrop från OpenGL
 Alla projectM kräver ett grafikkort med 3D-acceleration och din favoritmusik.</description>

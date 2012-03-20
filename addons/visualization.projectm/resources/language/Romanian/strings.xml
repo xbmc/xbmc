@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Calitate randare</string>
+    <string id="30001">Mică</string>
+    <string id="30002">Medie</string>
+    <string id="30003">Mare</string>
+    <string id="30004">Maximă</string>
+    <string id="30005">Mod amestecare</string>
+    <string id="30006">Durată presetare fină</string>
+    <string id="30007">Durată presetare</string>
+    <string id="30008">Senzitivitate bătaie</string>
+    <string id="30009">Pachet presetări</string>
+    <string id="30010">Pachet implicit</string>
+    <string id="30011">Dosar presetări definite de utilizator</string>
+    <string id="30012">Dosar presetări utilizator</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f sec</string>
+    <string id="30051">%2.0f %%</string>
+</strings>
