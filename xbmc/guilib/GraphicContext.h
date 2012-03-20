@@ -235,6 +235,9 @@ private:
   std::stack<TransformMatrix> m_groupTransform;
 
   CRect m_scissors;
+
+  bool m_bNeedOverscanClip;
+  CRect m_overscanRect;
 };
 
 /*!

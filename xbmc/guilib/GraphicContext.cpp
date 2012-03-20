@@ -50,6 +50,7 @@ CGraphicContext::CGraphicContext(void) :
   m_bFullScreenRoot(false), 
   m_bFullScreenVideo(false),
   m_bCalibrating(false), 
+  m_bNeedOverscanClip(false),
   m_Resolution(RES_INVALID), 
   /*m_windowResolution,*/
   m_guiScaleX(1.0f), 
@@ -121,16 +122,27 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
-  if (m_clipRegions.size())
+  if (m_clipRegions.size() || m_bNeedOverscanClip)
   {
-    // take a copy of the vertex rectangle and intersect
-    // it with our clip region (moved to the same coordinate system)
-    CRect clipRegion(m_clipRegions.top());
-    if (m_origins.size())
-      clipRegion -= m_origins.top();
+    // store original vertex to determine if we need to compute texture coords
     CRect original(vertex);
-    vertex.Intersect(clipRegion);
-    // and use the original to compute the texture coordinates
+    if (m_clipRegions.size())
+    {
+      // intersect vertex with our clip region (moved to the same coordinate system)
+      CRect clipRegion(m_clipRegions.top());
+      if (m_origins.size())
+        clipRegion -= m_origins.top();
+      vertex.Intersect(clipRegion);
+    }
+    if (m_bNeedOverscanClip)
+    {
+      // intersect vertex with our overscan rect
+      CRect overscanRect(m_overscanRect);
+      InvertFinalCoords(overscanRect.x1, overscanRect.y1);
+      InvertFinalCoords(overscanRect.x2, overscanRect.y2);
+      vertex.Intersect(overscanRect); 
+    }
+    // use the original to compute the texture coordinates
     if (original != vertex)
     {
       float scaleX = texture.Width() / original.Width();
@@ -607,12 +619,26 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler;
+
+    // check if we need clip because of overscan and store it in m_bNeedOverscanClip
+    m_bNeedOverscanClip = g_settings.m_ResInfo[m_Resolution].Overscan.left != 0 ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.top != 0 ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.right != m_iScreenWidth ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.bottom != m_iScreenHeight;
+    if (m_bNeedOverscanClip)
+    {
+      m_overscanRect.x1 = g_settings.m_ResInfo[m_Resolution].Overscan.left;
+      m_overscanRect.y1 = g_settings.m_ResInfo[m_Resolution].Overscan.top;
+      m_overscanRect.x2 = g_settings.m_ResInfo[m_Resolution].Overscan.right;
+      m_overscanRect.y2 = g_settings.m_ResInfo[m_Resolution].Overscan.bottom;
+    }
   }
   else
   {
     m_guiTransform.Reset();
     m_guiScaleX = 1.0f;
     m_guiScaleY = 1.0f;
+    m_bNeedOverscanClip = false;
   }
   // reset our origin and camera
   while (m_origins.size())
