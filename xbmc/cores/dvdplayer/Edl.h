@@ -78,7 +78,7 @@ private:
   bool ReadBeyondTV(const CStdString& strMovie);
   bool ReadMythCommBreakList(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadMythCutList(const CStdString& strMovie, const float fFramesPerSecond);
-  bool Readvdrmarks(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadVdrMarks(const CStdString& strMovie, const float fFramesPerSecond);
 
   bool AddCut(Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);

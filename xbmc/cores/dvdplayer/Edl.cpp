@@ -134,7 +134,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
       bFound = ReadBeyondTV(strMovie);
 
     if (!bFound)
-      bFound = Readvdrmarks(strMovie, fFramesPerSecond);
+      bFound = ReadVdrMarks(strMovie, fFramesPerSecond);
   }
   /*
    * Or if the movie points to MythTV and isn't live TV.
@@ -1086,7 +1086,7 @@ void CEdl::MergeShortCommBreaks()
   return;
 }
 
-bool CEdl::Readvdrmarks(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadVdrMarks(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
