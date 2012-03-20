@@ -41,12 +41,6 @@ namespace PYXBMC
     if (!self)
       return NULL;
 
-    self->zeroconf = CZeroconf::GetInstance();
-    if (!self->zeroconf)
-    {
-        return PyErr_NoMemory();    //we will never hit this imho
-    }
-    
     self->txt_records = new std::map<std::string, std::string>();
 
     return (PyObject*)self;
@@ -81,7 +75,7 @@ namespace PYXBMC
 
     if (PyArg_ParseTuple(args, (char*)"ss", &key, &value))
     {
-      self->txt_records->insert(std::make_pair(CStdString(key), CStdString(value)));
+      self->txt_records->insert(std::make_pair(std::string(key), std::string(value)));
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -93,8 +87,7 @@ namespace PYXBMC
 
   PyObject* Zeroconf_IsEnabled(Zeroconf *self, PyObject *args)
   {
-    bool ret = false;
-    ret = g_guiSettings.GetBool("services.zeroconf");
+    bool ret = g_guiSettings.GetBool("services.zeroconf");
     return Py_BuildValue((char*)"b", ret);
   }
 
@@ -109,7 +102,7 @@ namespace PYXBMC
     
     if (PyArg_ParseTuple(args, (char*)"s", &fcr_identifier))
     {
-      ret = self->zeroconf->RemoveService(fcr_identifier);
+      ret = CZeroconf::GetInstance()->RemoveService(fcr_identifier);
     }
     return Py_BuildValue((char*)"b", ret);
   }
@@ -135,7 +128,7 @@ namespace PYXBMC
     
     if (PyArg_ParseTuple(args, (char*)"sssi", &fcr_identifier, &fcr_type, &fcr_name, &f_port))
     {
-      ret = self->zeroconf->PublishService(fcr_identifier, fcr_type, fcr_name, f_port, *self->txt_records);
+      ret = CZeroconf::GetInstance()->PublishService(fcr_identifier, fcr_type, fcr_name, f_port, *self->txt_records);
       self->txt_records->clear();
     }
     return Py_BuildValue((char*)"b", ret);

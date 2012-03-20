@@ -35,7 +35,6 @@ namespace PYXBMC
 {
   typedef struct {
     PyObject_HEAD
-    CZeroconf* zeroconf;
     std::map<std::string, std::string> *txt_records;
   } Zeroconf;
 
