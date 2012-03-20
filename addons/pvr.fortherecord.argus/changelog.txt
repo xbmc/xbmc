@@ -1,3 +1,5 @@
+v0.0.1.132 (20-03-2012)
+- Small fix to correct one invalid GUID error message at start 
 v0.0.1.131 (16-03-2012)
 - Added many internal verifications to the <FTR GUID> to <XBMC number> 
   channel mappings. External factors can break the mapping and these

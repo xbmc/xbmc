@@ -104,8 +104,8 @@ public:
   const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
 private:
-  cChannel* FetchChannel(int channel_uid, bool ErrorIfNotFound = true);
-  cChannel* FetchChannel(std::string channelid, bool ErrorIfNotFound = true);
+  cChannel* FetchChannel(int channel_uid, bool LogError = true);
+  cChannel* FetchChannel(std::string channelid, bool LogError = true);
   void Close();
   bool FetchRecordingDetails(const Json::Value& data, cRecording& recording);
   bool FetchGuideProgramDetails(std::string Id, cGuideProgram& guideprogram);
