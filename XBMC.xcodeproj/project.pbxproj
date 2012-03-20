@@ -637,6 +637,8 @@
 		DF448460140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
 		DF4484EE140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
 		DF4484EF140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
+		DF4B7B2614E1908D000E8004 /* pyzeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4B7B2414E1908D000E8004 /* pyzeroconf.cpp */; };
+		DF4B7B2714E1908D000E8004 /* pyzeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4B7B2414E1908D000E8004 /* pyzeroconf.cpp */; };
 		DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
 		DF85BAB51443669A000686BE /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF85BAB41443669A000686BE /* FileUPnP.cpp */; };
 		DF85BAB61443669A000686BE /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF85BAB41443669A000686BE /* FileUPnP.cpp */; };
@@ -644,6 +646,8 @@
 		DF98D98D1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAB049913F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
+		DFED3A1B14E436D400CE6232 /* pypipesmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFED3A1914E436D400CE6232 /* pypipesmanager.cpp */; };
+		DFED3A1C14E436D400CE6232 /* pypipesmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFED3A1914E436D400CE6232 /* pypipesmanager.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -2613,12 +2617,16 @@
 		DF44845C140048C80069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4484EC140054530069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
 		DF4484ED140054530069344B /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
+		DF4B7B2414E1908D000E8004 /* pyzeroconf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyzeroconf.cpp; sourceTree = "<group>"; };
+		DF4B7B2514E1908D000E8004 /* pyzeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyzeroconf.h; sourceTree = "<group>"; };
 		DF85BAB31443669A000686BE /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
 		DF85BAB41443669A000686BE /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
 		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFED3A1914E436D400CE6232 /* pypipesmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pypipesmanager.cpp; sourceTree = "<group>"; };
+		DFED3A1A14E436D400CE6232 /* pypipesmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pypipesmanager.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -6048,6 +6056,8 @@
 				E38E19FA0D25F9FB00618676 /* listitem.h */,
 				E38E25930D263CE000618676 /* player.cpp */,
 				E38E19FE0D25F9FB00618676 /* player.h */,
+				DFED3A1914E436D400CE6232 /* pypipesmanager.cpp */,
+				DFED3A1A14E436D400CE6232 /* pypipesmanager.h */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
 				E38E1A000D25F9FB00618676 /* pyplaylist.h */,
 				F5E1125C14356B2400175026 /* pyrendercapture.cpp */,
@@ -6058,6 +6068,8 @@
 				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
 				E38E25960D263CE000618676 /* pyutil.cpp */,
 				E38E1A040D25F9FB00618676 /* pyutil.h */,
+				DF4B7B2414E1908D000E8004 /* pyzeroconf.cpp */,
+				DF4B7B2514E1908D000E8004 /* pyzeroconf.h */,
 				E38E25970D263CE000618676 /* window.cpp */,
 				E38E1A060D25F9FB00618676 /* window.h */,
 				E38E25980D263CE000618676 /* winxml.cpp */,
@@ -8050,6 +8062,8 @@
 				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */,
+				DF4B7B2614E1908D000E8004 /* pyzeroconf.cpp in Sources */,
+				DFED3A1B14E436D400CE6232 /* pypipesmanager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8971,6 +8985,8 @@
 				DF85BAB61443669A000686BE /* FileUPnP.cpp in Sources */,
 				F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				7CCFD98C151494E100211D82 /* PCMCodec.cpp in Sources */,
+				DF4B7B2714E1908D000E8004 /* pyzeroconf.cpp in Sources */,
+				DFED3A1C14E436D400CE6232 /* pypipesmanager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
