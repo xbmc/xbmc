@@ -21,6 +21,7 @@
     <summary lang="nl">HTBackdrops-scraperfuncties</summary>
     <summary lang="pl">Scraper biblioteki HTBackdrops</summary>
     <summary lang="pt">Biblioteca de fundos HTBackdrops</summary>
+    <summary lang="ro">Biblicotecă catalog HTBackdrops</summary>
     <summary lang="ru">Обработчик Фоновых изображений с HTBackdrops</summary>
     <summary lang="se">Skrapa för HTBackdrops</summary>
     <summary lang="zh">HTBackdrops刮削器代码库</summary>
@@ -34,6 +35,7 @@
     <description lang="nl">Achtergronden ophalen van www.htbackdrops.com</description>
     <description lang="pl">Pobieraj tła z www.htbackdrops.com</description>
     <description lang="pt">Descarregar fundos de www.htbackdrops.com</description>
+    <description lang="ro">Descărcați fundale de la www.htbackdrops.com</description>
     <description lang="ru">Загружать фоновые изображения с www.htbackdrops.com</description>
     <description lang="se">Ladda ner bakgrundsbilder från www.htbackdrops.com</description>
     <description lang="zh">从www.htbackdrops.com下载背景图</description>

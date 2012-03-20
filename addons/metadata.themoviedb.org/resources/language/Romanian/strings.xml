@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <strings>
-    <string id="30000">Activează Fanart</string>
-    <string id="30001">Activează trailere de la HD-Trailers.net</string>
+    <string id="30000">Activează fundal (Fanart)</string>
+    <string id="30001">Activează secvențe de la HD-Trailers.net</string>
     <string id="30002">Limbă preferată</string>
+    <string id="30003">Obține nota de la IMDb</string>
+    <string id="30004">Activează secvențe (YouTube trailer)</string>
+    <string id="30005">Păstrează numele original</string>
 </strings>

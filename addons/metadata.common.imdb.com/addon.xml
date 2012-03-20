@@ -19,6 +19,7 @@
     <summary lang="nl">IMDB Scraper Bibliotheek</summary>
     <summary lang="pl">Scraper IMDb</summary>
     <summary lang="pt">Scraper de filmes IMDb</summary>
+    <summary lang="ro">Bibliotecă catalog IMDB</summary>
     <summary lang="se">Skrapa för IMDB</summary>
     <description lang="bg">Сваля информация за филми от www.imdb.com</description>
     <description lang="en">Download Movie information from www.imdb.com</description>
@@ -28,6 +29,7 @@
     <description lang="nl">Download film informatie van www.imdb.com</description>
     <description lang="pl">Pobieraj informacje o filmach z www.imdb.com</description>
     <description lang="pt">Descarregar informação de filmes de www.imdb.com</description>
+    <description lang="ro">Descărcați informații filme de la www.imdb.com</description>
     <description lang="se">Ladda ner filminformation från www.imdb.com</description>
   </extension>
 </addon>
