@@ -1197,6 +1197,8 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
     // update received
     if (m_event.WaitMSec(500) || bUpdate)
     {
+      if (m_bStop)
+        return;
       // set the new configuration
       bool bConfigSet(m_adapter->m_cecAdapter->SetConfiguration(&m_configuration));
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), g_localizeStrings.Get(bConfigSet ? 36023 : 36024));
