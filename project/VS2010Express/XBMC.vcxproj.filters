@@ -2565,6 +2565,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\FileUPnP.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5153,6 +5156,9 @@
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
+      <Filter>cores\paplayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
