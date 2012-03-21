@@ -27,7 +27,7 @@ sys.path.append (__resource__)
 from utilities import *
 
 LOCATION_URL    = 'http://autocomplete.wunderground.com/aq?query=%s&format=JSON'
-WEATHER_URL     = 'http://api.wunderground.com/api/%s/conditions/forecast7day/hourly%s.json'
+WEATHER_URL     = 'http://api.wunderground.com/api/%s/conditions/forecast7day/hourly/q/%s.json'
 GEOIP_URL       = 'http://api.wunderground.com/api/%s/geolookup/q/autoip.json'
 A_I_K           = 'NDEzNjBkMjFkZjFhMzczNg=='
 WEATHER_WINDOW  = xbmcgui.Window(12600)
@@ -78,17 +78,18 @@ def location(string):
     loc   = []
     locid = []
     query = fetch(LOCATION_URL % (urllib2.quote(string)))
-    for item in query['RESULTS']:
-        location   = item['name']
-        locationid = item['l']
-        loc.append(location)
-        locid.append(locationid)
+    if query != '':
+        for item in query['RESULTS']:
+            location   = item['name']
+            locationid = item['l'][3:]
+            loc.append(location)
+            locid.append(locationid)
     return loc, locid
 
 def geoip():
     data = fetch(GEOIP_URL % aik[::-1])
     if data != '' and data.has_key('location'):
-        location = data['location']['l']
+        location = data['location']['l'][3:]
         __addon__.setSetting('Location1', data['location']['city'])
         __addon__.setSetting('Location1id', location)
     else:
@@ -147,9 +148,10 @@ else:
     if location == '':
         location = geoip()
     if not location == '':
+        if location.startswith('/q/'): # backwards compatibility
+            location = location[3:]
         forecast(location)
     else:
-        # workaround to fix incrementing values on each weather refresh when no locations are set up:
         set_property('Current.Condition'     , 'N/A')
         set_property('Current.Temperature'   , '0')
         set_property('Current.Wind'          , '0')
@@ -160,7 +162,7 @@ else:
         set_property('Current.DewPoint'      , '0')
         set_property('Current.OutlookIcon'   , 'na.png')
         set_property('Current.FanartCode'    , 'na')
-        for count in range (0, MAXDAYS):
+        for count in range (0, MAXDAYS+1):
             set_property('Day%i.Title'       % count, 'N/A')
             set_property('Day%i.HighTemp'    % count, '0')
             set_property('Day%i.LowTemp'     % count, '0')
