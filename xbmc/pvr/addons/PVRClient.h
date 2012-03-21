@@ -491,5 +491,9 @@ namespace PVR
      * @brief Reset all add-on capabilities to false.
      */
     void ResetAddonCapabilities(void);
+
+  private:
+    const char *ToString(const PVR_ERROR error) const;
+    bool LogError(const PVR_ERROR error, const char *strMethod);
   };
 }
