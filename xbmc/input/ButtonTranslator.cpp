@@ -440,6 +440,25 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
         for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
           if (files[fileIndex]->GetPath().Right(4) == ".xml")
             success |= LoadKeymap(files[fileIndex]->GetPath());
+
+      // Load mappings for any HID devices we have connected
+      std::list<CStdString>::iterator it;
+      for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
+      {
+        CStdString devicedir = DIRS_TO_CHECK[dirIndex];
+        devicedir.append(*it);
+        devicedir.append("/");
+        if( XFILE::CDirectory::Exists(devicedir) )
+        {
+          CFileItemList files;
+          XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
+          // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+          files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+          for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+            if (files[fileIndex]->GetPath().Right(4) == ".xml")
+              success |= LoadKeymap(files[fileIndex]->GetPath());
+        }
+      }
       }
     }
 
@@ -473,29 +492,6 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
     // don't return false - it is to only indicate a fatal error (which this is not)
 #endif
-  }
-
-  // Load mappings for any HID devices we have connected
-  std::list<CStdString>::iterator it;
-  for (it = m_deviceList.begin(); it != m_deviceList.end(); it++)
-  {
-    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
-    {
-      CStdString devicedir = DIRS_TO_CHECK[dirIndex];
-      devicedir.append(*it);
-      devicedir.append("/");
-      if( XFILE::CDirectory::Exists(devicedir) )
-      {
-        CFileItemList files;
-        XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
-        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-        // In (at least) Windows the GetDirectory returns all files not just *.xml files
-        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-          if (files[fileIndex]->GetPath().Right(4) == ".xml")
-            success |= LoadKeymap(files[fileIndex]->GetPath());
-      }
-    }
   }
 
   // Done!
