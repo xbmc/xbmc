@@ -224,9 +224,8 @@ timemapdone:
 
     if(found) {
 
-      length = cell->last_sector - cell->first_sector + 1;
-      /* target is in absolute sectors */
-      if (target <= cell->last_sector)
+      if (target >= cell->first_sector
+      &&  target <= cell->last_sector)
          break;
 
     } else {
