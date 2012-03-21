@@ -225,13 +225,9 @@ timemapdone:
     if(found) {
 
       length = cell->last_sector - cell->first_sector + 1;
-      if (target >= length) {
-        target -= length;
-      } else {
-        /* convert the target sector from Cell-relative to absolute physical sector */
-        target += cell->first_sector;
-        break;
-      }
+      /* target is in absolute sectors */
+      if (target <= cell->last_sector)
+         break;
 
     } else {
 
