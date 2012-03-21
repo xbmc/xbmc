@@ -428,16 +428,16 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   };
   bool success = false;
 
+  for (unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
   {
-    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
-      if( XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
-      {
-        CFileItemList files;
-        XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
-        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-          success |= LoadKeymap(files[fileIndex]->GetPath());
+    if (XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]))
+    {
+      CFileItemList files;
+      XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
+      // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+      for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+        success |= LoadKeymap(files[fileIndex]->GetPath());
 
       // Load mappings for any HID devices we have connected
       std::list<CStdString>::iterator it;
@@ -456,14 +456,14 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
             success |= LoadKeymap(files[fileIndex]->GetPath());
         }
       }
-      }
     }
+  }
 
-    if (!success)
-    {
-      CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
-      return false;
-    }
+  if (!success)
+  {
+    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
+    return false;
+  }
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 #ifdef _LINUX
@@ -471,25 +471,24 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
 #else
 #define REMOTEMAP "IRSSmap.xml"
 #endif
-    CStdString lircmapPath;
-    URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
-    lircRemotesMap.clear();
-    if(CFile::Exists(lircmapPath))
-      success |= LoadLircMap(lircmapPath);
-    else
-      CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
+  CStdString lircmapPath;
+  URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  lircRemotesMap.clear();
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
 
-    lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
-    if(CFile::Exists(lircmapPath))
-      success |= LoadLircMap(lircmapPath);
-    else
-      CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
+  lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
 
-    if (!success)
-      CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
-    // don't return false - it is to only indicate a fatal error (which this is not)
+  if (!success)
+    CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
+  // don't return false - it is to only indicate a fatal error (which this is not)
 #endif
-  }
 
   // Done!
   m_Loaded = true;
