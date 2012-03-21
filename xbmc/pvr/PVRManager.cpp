@@ -174,15 +174,14 @@ void CPVRManager::Stop(void)
 
 ManagerState CPVRManager::GetState(void) const
 {
-  return (ManagerState)cas((volatile long*)(&m_managerState), 0, 0);
+  CSingleLock lock(m_managerStateMutex);
+  return m_managerState;
 }
 
 void CPVRManager::SetState(ManagerState state) 
 {
-  long oldstate = m_managerState;
-  while(oldstate != cas((volatile long*)(&m_managerState), oldstate, state))
-    oldstate = cas((volatile long*)(&m_managerState), oldstate, state);
-  return;
+  CSingleLock lock(m_managerStateMutex);
+  m_managerState = state;
 }
 
 void CPVRManager::Process(void)
@@ -197,13 +196,9 @@ void CPVRManager::Process(void)
   }
 
   if (GetState() == ManagerStateStarting)
-  {
     SetState(ManagerStateStarted);
-  }
   else
-  {
     return;
-  }
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
@@ -947,6 +942,11 @@ bool CPVRManager::IsInitialising(void) const
   return GetState() == ManagerStateStarting;
 }
 
+bool CPVRManager::IsStarted(void) const
+{
+  return GetState() == ManagerStateStarted;
+}
+
 bool CPVRManager::IsPlayingTV(void) const
 {
   return IsStarted() && m_addons && m_addons->IsPlayingTV();
@@ -1083,9 +1083,4 @@ void CPVRManager::ExecutePendingJobs(void)
   }
 
   m_triggerEvent.Reset();
-}
-
-bool CPVRManager::IsStarted(void) const
-{
-  return GetState() == ManagerStateStarted;
 }
