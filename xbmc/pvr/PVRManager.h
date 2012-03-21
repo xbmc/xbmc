@@ -532,6 +532,7 @@ namespace PVR
     int                             m_LastChannel;
     unsigned int                    m_LastChannelChanged;
 
+    CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
   };
 
