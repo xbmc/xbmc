@@ -68,6 +68,9 @@
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
+#include "utils/JobManager.h"
+#include "storage/DetectDVDType.h"
+
 using namespace std;
 
 CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
@@ -704,6 +707,17 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_MESSAGE:
+      {
+        if (pMsg->lpVoid)
+        {
+          CGUIMessage *message = (CGUIMessage *)pMsg->lpVoid;
+          g_windowManager.SendMessage(*message, pMsg->dwParam1);
+          delete message;
+        }
+      }
+      break;
+
     case TMSG_GUI_INFOLABEL:
       {
         if (pMsg->lpVoid)
@@ -725,48 +739,26 @@ case TMSG_POWERDOWN:
       }
       break;
 
-#ifdef HAS_DVD_DRIVE
-    case TMSG_OPTICAL_MOUNT:
-      {
-        CMediaSource share;
-        share.strPath = pMsg->strParam;
-        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
-        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
-        if(g_mediaManager.IsAudio(share.strPath))
-          share.strStatus = "Audio-CD";
-        else if(share.strStatus == "")
-          share.strStatus = g_localizeStrings.Get(446);
-        share.strName = share.strPath;
-        share.m_ignore = true;
-        share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
-      }
-      break;
-
-    case TMSG_OPTICAL_UNMOUNT:
-      {
-        CMediaSource share;
-        share.strPath = pMsg->strParam;
-        share.strName = share.strPath;
-        g_mediaManager.RemoveAutoSource(share);
-      }
-      break;
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
-#endif
+      break;
+
     case TMSG_VOLUME_SHOW:
       {
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+      break;
+
     case TMSG_SPLASH_MESSAGE:
       {
         if (g_application.m_splash)
           g_application.m_splash->Show(pMsg->strParam);
       }
+      break;
   }
 }
 
@@ -1158,6 +1150,14 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool
   SendMessage(tMsg, waitResult);
 }
 
+void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windowID, bool waitResult)
+{
+  ThreadMessage tMsg = {TMSG_GUI_MESSAGE};
+  tMsg.dwParam1 = windowID == WINDOW_INVALID ? 0 : windowID;
+  tMsg.lpVoid = new CGUIMessage(message);
+  SendMessage(tMsg, waitResult);
+}
+
 vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
 {
   vector<CStdString> infoLabels;
@@ -1178,21 +1178,6 @@ vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &pr
   tMsg.lpVoid = (void*)&infoLabels;
   SendMessage(tMsg, true);
   return infoLabels;
-}
-
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
-{
-  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
-  tMsg.strParam = device;
-  tMsg.dwParam1 = (DWORD)bautorun;
-  SendMessage(tMsg, false);
-}
-
-void CApplicationMessenger::OpticalUnMount(CStdString device)
-{
-  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
-  tMsg.strParam = device;
-  SendMessage(tMsg, false);
 }
 
 void CApplicationMessenger::ShowVolumeBar(bool up)

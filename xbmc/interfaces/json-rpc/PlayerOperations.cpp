@@ -485,7 +485,7 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
       bool slideshow = true;
       for (int index = 0; index < list.Size(); index++)
       {
-        if (!list[index]->HasPictureInfoTag())
+        if (!list[index]->IsPicture())
         {
           slideshow = false;
           break;
@@ -819,7 +819,7 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
 JSON_STATUS CPlayerOperations::StartSlideshow()
 {
   CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!slideshow && slideshow->NumSlides() <= 0)
+  if (!slideshow || slideshow->NumSlides() <= 0)
     return FailedToExecute;
 
   if (g_application.IsPlayingVideo())

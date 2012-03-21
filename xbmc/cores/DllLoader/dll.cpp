@@ -277,6 +277,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
   if (sName)
   {
     strncpy(lpFilename, sName, nSize);
+    lpFilename[nSize] = 0;
     return strlen(lpFilename);
   }
 

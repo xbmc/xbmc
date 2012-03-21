@@ -246,7 +246,7 @@
 					<label>$LOCALIZE[31329] [B]$INFO[System.Alarmpos][/B]</label>
 				</control>
 			</control>
-			<control type="image" id="10">
+			<control type="image" id="12">
 				<description>background bottom image</description>
 				<posx>0</posx>
 				<width>340</width>

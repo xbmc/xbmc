@@ -22,7 +22,6 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "video/VideoInfoScanner.h"
 
 class CFileItemList;
 class CMediaSource;
@@ -61,9 +60,5 @@ protected:
   CStdString m_name;
   CFileItemList* m_paths;
   bool m_confirmed;
-  ADDON::ScraperPtr m_info;
-  bool m_bRunScan;
   bool m_bNameChanged;
-
-  VIDEO::SScanSettings m_settings;
 };

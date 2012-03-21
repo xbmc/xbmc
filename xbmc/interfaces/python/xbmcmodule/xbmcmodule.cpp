@@ -478,6 +478,8 @@ namespace PYXBMC
     "getInfoLabel(infotag) -- Returns an InfoLabel as a string.\n"
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
+    "                 Also multiple InfoLabels are possible e.x.:\n"
+    "                 label = xbmc.getInfoLabel('$INFO[Weather.Conditions] - thats the weather')\n"
     "\n"
     "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
@@ -495,7 +497,17 @@ namespace PYXBMC
       CPyThreadState gilRelease;
 
       int ret = g_infoManager.TranslateString(cLine);
-      cret = g_infoManager.GetLabel(ret);
+      //doesn't seem to be a single InfoTag?
+      //try full blown GuiInfoLabel then
+      if (ret == 0)
+      {
+        CGUIInfoLabel label(cLine);
+        cret = label.GetLabel(0);
+      }
+      else
+      {
+        cret = g_infoManager.GetLabel(ret);
+      }
     }
     return Py_BuildValue((char*)"s", cret.c_str());
   }
@@ -597,11 +609,15 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyXBMCGUILock();
-    int id = g_windowManager.GetTopMostModalDialogID();
-    if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    bool ret = g_infoManager.EvaluateBool(cLine,id);
-    PyXBMCGUIUnlock();
+    bool ret;
+    {
+      CPyThreadState gilRelease;
+      CSingleLock gc(g_graphicsContext);
+
+      int id = g_windowManager.GetTopMostModalDialogID();
+      if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+      ret = g_infoManager.EvaluateBool(cLine,id);
+    }
 
     return Py_BuildValue((char*)"b", ret);
   }
@@ -706,9 +722,6 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (URIUtils::IsDOSPath(strText))
-      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
-
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());

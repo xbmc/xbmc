@@ -93,11 +93,15 @@ void CAdvancedSettings::Initialize()
   m_videoEnableHighQualityHwScalers = false;
   m_videoAutoScaleMaxFps = 30.0f;
   m_videoAllowMpeg4VDPAU = false;
+  m_videoAllowMpeg4VAAPI = false;  
   m_videoDisableBackgroundDeinterlace = false;
   m_videoCaptureUseOcclusionQuery = -1; //-1 is auto detect
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_DXVAForceProcessorRenderer = true;
+  m_DXVANoDeintProcForProgressive = false;
+  m_videoFpsDetect = 1;
+  m_videoDefaultLatency = 0.0;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -114,12 +118,6 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_lcdRows = 4;
-  m_lcdColumns = 20;
-  m_lcdAddress1 = 0;
-  m_lcdAddress2 = 0x40;
-  m_lcdAddress3 = 0x14;
-  m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
@@ -454,6 +452,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement,"enablehighqualityhwscalers", m_videoEnableHighQualityHwScalers);
     XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
     XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
+    XMLUtils::GetBoolean(pElement,"allowmpeg4vaapi",m_videoAllowMpeg4VAAPI);    
     XMLUtils::GetBoolean(pElement, "disablebackgrounddeinterlace", m_videoDisableBackgroundDeinterlace);
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
 
@@ -541,6 +540,46 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
     XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
+    XMLUtils::GetBoolean(pElement,"dxvanodeintforprogressive", m_DXVANoDeintProcForProgressive);
+    //0 = disable fps detect, 1 = only detect on timestamps with uniform spacing, 2 detect on all timestamps
+    XMLUtils::GetInt(pElement, "fpsdetect", m_videoFpsDetect, 0, 2);
+
+    // Store global display latency settings
+    TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
+    if (pVideoLatency)
+    {
+      float refresh, refreshmin, refreshmax, delay;
+      TiXmlElement* pRefreshVideoLatency = pVideoLatency->FirstChildElement("refresh");
+
+      while (pRefreshVideoLatency)
+      {
+        RefreshVideoLatency videolatency = {0};
+
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "rate", refresh))
+        {
+          videolatency.refreshmin = refresh - 0.01f;
+          videolatency.refreshmax = refresh + 0.01f;
+        }
+        else if (XMLUtils::GetFloat(pRefreshVideoLatency, "min", refreshmin) &&
+                 XMLUtils::GetFloat(pRefreshVideoLatency, "max", refreshmax))
+        {
+          videolatency.refreshmin = refreshmin;
+          videolatency.refreshmax = refreshmax;
+        }
+        if (XMLUtils::GetFloat(pRefreshVideoLatency, "delay", delay, -600.0f, 600.0f))
+          videolatency.delay = delay;
+
+        if (videolatency.refreshmin > 0.0f && videolatency.refreshmax >= videolatency.refreshmin)
+          m_videoRefreshLatency.push_back(videolatency);
+        else
+          CLog::Log(LOGWARNING, "Ignoring malformed display latency <refresh> entry, min:%f max:%f", videolatency.refreshmin, videolatency.refreshmax);
+
+        pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
+      }
+
+      // Get default global display latency
+      XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -593,12 +632,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "rows", m_lcdRows, 1, 4);
-    XMLUtils::GetInt(pElement, "columns", m_lcdColumns, 1, 40);
-    XMLUtils::GetInt(pElement, "address1", m_lcdAddress1, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address2", m_lcdAddress2, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
-    XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
@@ -1055,4 +1088,17 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
 void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 {
   m_settingsFiles.push_back(filename);
+}
+
+float CAdvancedSettings::GetDisplayLatency(float refreshrate)
+{
+  float delay = m_videoDefaultLatency / 1000.0f;
+  for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
+  {
+    RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
+    if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
+      delay = videolatency.delay / 1000.0f;
+  }
+
+  return delay; // in seconds
 }

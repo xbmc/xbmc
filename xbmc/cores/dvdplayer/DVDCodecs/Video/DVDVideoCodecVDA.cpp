@@ -669,6 +669,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
     
+    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
+        __FUNCTION__, width, height, profile, level);
+      return false;
+    }
+    
     if (Cocoa_GPUForDisplayIsNvidiaPureVideo3() && !CDVDCodecUtils::IsVP3CompatibleWidth(width))
     {
       CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
@@ -774,10 +781,11 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         m_max_ref_frames = 2;
     }
 
-    if (hints.profile == 77 && hints.level == 32 && (m_max_ref_frames > 4))
+    if (hints.profile == FF_PROFILE_H264_MAIN && hints.level == 32 && m_max_ref_frames > 4)
     {
       // Main@L3.2, VDA cannot handle greater than 4 reference frames
       CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VDA cannot decode.", __FUNCTION__);
+      CFRelease(avcCData);
       return false;
     }
  
@@ -993,7 +1001,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < m_max_ref_frames)
   {
     return VC_BUFFER;
   }

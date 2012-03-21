@@ -40,6 +40,8 @@ public:
   virtual void Resume();
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
+  virtual int  GetColumns();
+  virtual int  GetRows(); 
 
 protected:
   virtual void Process();
@@ -48,10 +50,6 @@ protected:
   void         CloseSocket();
   unsigned int m_iColumns;        // display columns for each line
   unsigned int m_iRows;           // total number of rows
-  unsigned int m_iRow1adr;
-  unsigned int m_iRow2adr;
-  unsigned int m_iRow3adr;
-  unsigned int m_iRow4adr;
   unsigned int m_iActualpos;      // actual cursor possition
   int          m_iBackLight;
   int          m_iLCDContrast;

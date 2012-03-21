@@ -42,7 +42,7 @@
 				<expression noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">
-				<expression>http://www.allmusic.com/artist/([^&amp;&quot;/]*)</expression>
+				<expression>http://www.allmusic.com/artist/([^&amp;&quot;/]*)/</expression>
 			</RegExp>
 			<RegExp input="$$7" conditional="htbthumbs" output="&lt;chain function=&quot;GetHTBThumbs&quot;&gt;\1&lt;/chain&gt;" dest="5">
 				<expression/>

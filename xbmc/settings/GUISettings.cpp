@@ -29,7 +29,6 @@
 #include "LinuxTimezone.h"
 #endif
 #include "Application.h"
-#include "filesystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -44,6 +43,7 @@
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
+#include "utils/XMLUtils.h"
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -421,8 +421,8 @@ void CGUISettings::Initialize()
   // Todo: Implement test pattern for DX
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddBool(NULL, "videoscreen.haslcd", 4501, false);
+#if defined(HAS_LCD)
+  AddBool(vs, "videoscreen.haslcd", 4501, false);
 #endif
 
   CSettingsCategory* ao = AddCategory(4, "audiooutput", 772);
@@ -554,7 +554,7 @@ void CGUISettings::Initialize()
   flattenTVShowOptions.insert(make_pair(20422, 2));
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
 
-  AddBool(NULL, "videolibrary.flattenmoviesets", 22002, false);
+  AddBool(vdl, "videolibrary.groupmoviesets", 20458, false);
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(vdl, "videolibrary.sep3");
@@ -670,7 +670,7 @@ void CGUISettings::Initialize()
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
-  AddBool(vid, "myvideos.filemetadata", 20419, true);
+  AddBool(vid, "myvideos.replacelabels", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
@@ -861,6 +861,9 @@ void CGUISettings::Initialize()
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
   AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  // PVR-related setting typically used by skins that are aimed at PVR and non-PVR builds
+  AddBool(NULL, "pvrmanager.enabled", 449, false);
 }
 
 CGUISettings::~CGUISettings(void)
@@ -1258,12 +1261,6 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
         CStdString strValue = pGrandChild->FirstChild() ? pGrandChild->FirstChild()->Value() : "";
         if (strValue != "-")
         { // update our item
-          if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          { // check our path
-            int pathVersion = 0;
-            pGrandChild->Attribute("pathversion", &pathVersion);
-            strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
-          }
           (*it).second->FromString(strValue);
           if (advanced)
             (*it).second->SetAdvanced();
@@ -1297,7 +1294,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
         if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+          newElement.SetAttribute("pathversion", XMLUtils::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {

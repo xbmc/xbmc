@@ -1,0 +1,30 @@
+From 919a875b4bc4ea2a8ddc0aab98ea74c6475f9525 Mon Sep 17 00:00:00 2001
+From: spiff <spiff@xbmc.org>
+Date: Tue, 17 Jan 2012 22:47:36 +0100
+Subject: [PATCH] fixed: playback from mmst:// urls would halt after some
+ time.
+
+this backports upstream 275189a2bd71cf49d66374c44d3de2262d323460
+
+thanks to johoja for doing the ground work
+---
+ lib/ffmpeg/libavformat/mmst.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/mmst.c b/lib/ffmpeg/libavformat/mmst.c
+index 8464d3b..385f017 100644
+--- a/lib/ffmpeg/libavformat/mmst.c
++++ b/lib/ffmpeg/libavformat/mmst.c
+@@ -290,8 +290,7 @@ static MMSSCPacketType get_tcp_server_response(MMSTContext *mmst)
+                 return read_result < 0 ? read_result : AVERROR_IO;
+             }
+             packet_type= AV_RL16(mms->in_buffer+36);
+-            hr = AV_RL32(mms->in_buffer + 40);
+-            if (hr) {
++            if (read_result >= 44 && (hr = AV_RL32(mms->in_buffer + 40))) {
+                 av_log(NULL, AV_LOG_ERROR,
+                        "Server sent an error status code: 0x%08x\n", hr);
+                 return AVERROR_UNKNOWN;
+-- 
+1.7.7.2
+

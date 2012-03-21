@@ -35,6 +35,7 @@
 #include "utils/TimeUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/LocalizeStrings.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -335,13 +336,13 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   m_bGreeted = true;
   if (m_eLogoType == LT_NONE)
   {
-    CGUIDialogKaiToast::QueueNotification("Detected New Connection",
+    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(33200),
                                           m_deviceName.c_str());
   }
   else
   {
     CGUIDialogKaiToast::QueueNotification(iconfile.c_str(),
-                                          "Detected New Connection",
+                                          g_localizeStrings.Get(33200),
                                           m_deviceName.c_str());
   }
   return true;

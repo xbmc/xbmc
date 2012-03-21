@@ -107,12 +107,8 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   int layoutChannels = 0;
 
-  if(!bAudioPassthrough)
+  if(!bAudioPassthrough && channelMap)
   {
-    //If no channel map is specified, use the default.
-    if(!channelMap)
-      channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
-
     PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
@@ -418,7 +414,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 {
   CSingleLock lock (m_critSection);
 
-  if (!m_bIsAllocated)
+  if (!m_bIsAllocated || m_bPause)
     return 0;
 
   DWORD dwFlags = m_bMuting || m_nCurrentVolume == VOLUME_MINIMUM ? AUDCLNT_BUFFERFLAGS_SILENT : 0; 

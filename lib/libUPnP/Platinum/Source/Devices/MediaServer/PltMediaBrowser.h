@@ -95,7 +95,7 @@ public:
                               NPT_UInt32               start_index,
                               NPT_UInt32               count = 30, // DLNA recommendations
                               bool                     browse_metadata = false,
-                              const char*              filter = "dc:date,upnp:genre,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
+                              const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
                               const char*              sort_criteria = "",
                               void*                    userdata = NULL);
 
@@ -104,7 +104,7 @@ public:
 							  const char*              search_criteria,
 				              NPT_UInt32               start_index,
 					          NPT_UInt32               count = 30, // DLNA recommendations
-						      const char*              filter = "dc:date,upnp:genre,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
+						      const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
 						  	  void*                    userdata = NULL);
 	//BBMOD END
 

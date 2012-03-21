@@ -1,0 +1,133 @@
+From 42bedafe92b2921ec63024a825d4297ba39888e9 Mon Sep 17 00:00:00 2001
+From: Michael Niedermayer <michaelni@gmx.at>
+Date: Fri, 18 Feb 2011 19:10:33 +0100
+Subject: [PATCH] Change yadif to not use out of picture lines. Fixes
+ issue2272.
+
+Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+---
+ lib/ffmpeg/libavfilter/vf_yadif.c           |   31 ++++++++++++++-------------
+ lib/ffmpeg/libavfilter/x86/yadif_template.c |    6 ++--
+ lib/ffmpeg/libavfilter/yadif.h              |    6 ++--
+ 3 files changed, 22 insertions(+), 21 deletions(-)
+
+diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+index da91600..1ed8807 100644
+--- a/lib/ffmpeg/libavfilter/vf_yadif.c
++++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+@@ -56,42 +56,42 @@ typedef struct {
+     AVFilterBufferRef *out;
+     void (*filter_line)(uint8_t *dst,
+                         uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                        int w, int refs, int parity, int mode);
++                        int w, int prefs, int mrefs, int parity, int mode);
+ } YADIFContext;
+ 
+ static void filter_line_c(uint8_t *dst,
+                           uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                          int w, int refs, int parity, int mode)
++                          int w, int prefs, int mrefs, int parity, int mode)
+ {
+     int x;
+     uint8_t *prev2 = parity ? prev : cur ;
+     uint8_t *next2 = parity ? cur  : next;
+     for (x = 0;  x < w; x++) {
+-        int c = cur[-refs];
++        int c = cur[mrefs];
+         int d = (prev2[0] + next2[0])>>1;
+-        int e = cur[+refs];
++        int e = cur[prefs];
+         int temporal_diff0 = FFABS(prev2[0] - next2[0]);
+-        int temporal_diff1 =(FFABS(prev[-refs] - c) + FFABS(prev[+refs] - e) )>>1;
+-        int temporal_diff2 =(FFABS(next[-refs] - c) + FFABS(next[+refs] - e) )>>1;
++        int temporal_diff1 =(FFABS(prev[mrefs] - c) + FFABS(prev[prefs] - e) )>>1;
++        int temporal_diff2 =(FFABS(next[mrefs] - c) + FFABS(next[prefs] - e) )>>1;
+         int diff = FFMAX3(temporal_diff0>>1, temporal_diff1, temporal_diff2);
+         int spatial_pred = (c+e)>>1;
+-        int spatial_score = FFABS(cur[-refs-1] - cur[+refs-1]) + FFABS(c-e)
+-                          + FFABS(cur[-refs+1] - cur[+refs+1]) - 1;
++        int spatial_score = FFABS(cur[mrefs-1] - cur[prefs-1]) + FFABS(c-e)
++                          + FFABS(cur[mrefs+1] - cur[prefs+1]) - 1;
+ 
+ #define CHECK(j)\
+-    {   int score = FFABS(cur[-refs-1+j] - cur[+refs-1-j])\
+-                  + FFABS(cur[-refs  +j] - cur[+refs  -j])\
+-                  + FFABS(cur[-refs+1+j] - cur[+refs+1-j]);\
++    {   int score = FFABS(cur[mrefs-1+j] - cur[prefs-1-j])\
++                  + FFABS(cur[mrefs  +j] - cur[prefs  -j])\
++                  + FFABS(cur[mrefs+1+j] - cur[prefs+1-j]);\
+         if (score < spatial_score) {\
+             spatial_score= score;\
+-            spatial_pred= (cur[-refs  +j] + cur[+refs  -j])>>1;\
++            spatial_pred= (cur[mrefs  +j] + cur[prefs  -j])>>1;\
+ 
+         CHECK(-1) CHECK(-2) }} }}
+         CHECK( 1) CHECK( 2) }} }}
+ 
+         if (mode < 2) {
+-            int b = (prev2[-2*refs] + next2[-2*refs])>>1;
+-            int f = (prev2[+2*refs] + next2[+2*refs])>>1;
++            int b = (prev2[2*mrefs] + next2[2*mrefs])>>1;
++            int f = (prev2[2*prefs] + next2[2*prefs])>>1;
+ #if 0
+             int a = cur[-3*refs];
+             int g = cur[+3*refs];
+@@ -139,7 +139,8 @@ static void filter(AVFilterContext *ctx, AVFilterBufferRef *dstpic,
+                 uint8_t *cur  = &yadif->cur ->data[i][y*refs];
+                 uint8_t *next = &yadif->next->data[i][y*refs];
+                 uint8_t *dst  = &dstpic->data[i][y*dstpic->linesize[i]];
+-                yadif->filter_line(dst, prev, cur, next, w, refs, parity ^ tff, yadif->mode);
++                int     mode  = y==1 || y+2==h ? 2 : yadif->mode;
++                yadif->filter_line(dst, prev, cur, next, w, y+1<h ? refs : -refs, y ? -refs : refs, parity ^ tff, mode);
+             } else {
+                 memcpy(&dstpic->data[i][y*dstpic->linesize[i]],
+                        &yadif->cur->data[i][y*refs], w);
+diff --git a/lib/ffmpeg/libavfilter/x86/yadif_template.c b/lib/ffmpeg/libavfilter/x86/yadif_template.c
+index 3e520cb..50ea843 100644
+--- a/lib/ffmpeg/libavfilter/x86/yadif_template.c
++++ b/lib/ffmpeg/libavfilter/x86/yadif_template.c
+@@ -105,7 +105,7 @@
+ 
+ void RENAME(ff_yadif_filter_line)(uint8_t *dst,
+                                   uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                                  int w, int refs, int parity, int mode)
++                                  int w, int prefs, int mrefs, int parity, int mode)
+ {
+     DECLARE_ALIGNED(16, uint8_t, tmp0[16]);
+     DECLARE_ALIGNED(16, uint8_t, tmp1[16]);
+@@ -226,8 +226,8 @@ void RENAME(ff_yadif_filter_line)(uint8_t *dst,
+             :[prev] "r"(prev),\
+              [cur]  "r"(cur),\
+              [next] "r"(next),\
+-             [prefs]"r"((x86_reg)refs),\
+-             [mrefs]"r"((x86_reg)-refs),\
++             [prefs]"r"((x86_reg)prefs),\
++             [mrefs]"r"((x86_reg)mrefs),\
+              [mode] "g"(mode)\
+         );\
+         __asm__ volatile(MOV" "MM"1, %0" :"=m"(*dst));\
+diff --git a/lib/ffmpeg/libavfilter/yadif.h b/lib/ffmpeg/libavfilter/yadif.h
+index 072812c..ff574da 100644
+--- a/lib/ffmpeg/libavfilter/yadif.h
++++ b/lib/ffmpeg/libavfilter/yadif.h
+@@ -23,14 +23,14 @@
+ 
+ void ff_yadif_filter_line_mmx(uint8_t *dst,
+                               uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                              int w, int refs, int parity, int mode);
++                              int w, int prefs, int mrefs, int parity, int mode);
+ 
+ void ff_yadif_filter_line_sse2(uint8_t *dst,
+                                uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                               int w, int refs, int parity, int mode);
++                               int w, int prefs, int mrefs, int parity, int mode);
+ 
+ void ff_yadif_filter_line_ssse3(uint8_t *dst,
+                                 uint8_t *prev, uint8_t *cur, uint8_t *next,
+-                                int w, int refs, int parity, int mode);
++                                int w, int prefs, int mrefs, int parity, int mode);
+ 
+ #endif /* AVFILTER_YADIF_H */
+-- 
+1.7.7.2
+

@@ -264,12 +264,15 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_AIRDATE);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_LASTPLAYED);
-    fields.push_back(FIELD_INPROGRESS);
     if (!sortOrders)
+    {
+      fields.push_back(FIELD_INPROGRESS);
       fields.push_back(FIELD_GENRE);
+    }
     fields.push_back(FIELD_YEAR); // premiered
     fields.push_back(FIELD_DIRECTOR);
-    fields.push_back(FIELD_ACTOR);
+    if (!sortOrders)
+      fields.push_back(FIELD_ACTOR);
     fields.push_back(FIELD_EPISODE);
     fields.push_back(FIELD_SEASON);
     fields.push_back(FIELD_FILENAME);
@@ -291,7 +294,8 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_WRITER);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_LASTPLAYED);
-    fields.push_back(FIELD_INPROGRESS);
+    if (!sortOrders)
+      fields.push_back(FIELD_INPROGRESS);
     fields.push_back(FIELD_GENRE);
     fields.push_back(FIELD_COUNTRY);
     fields.push_back(FIELD_YEAR); // premiered
@@ -304,7 +308,8 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_HASTRAILER);
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
-    fields.push_back(FIELD_SET);
+    if (!sortOrders)
+      fields.push_back(FIELD_SET);
     isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
@@ -575,26 +580,6 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
     query = "idFile" + negate + " in (select distinct idFile from streamdetails where strSubtitleLanguage " + parameter + ")";
   else if (m_field == FIELD_VIDEOASPECT)
     query = "idFile" + negate + " in (select distinct idFile from streamdetails where fVideoAspect " + parameter + ")";
-  else if (m_field == FIELD_PLAYLIST)
-  { // playlist field - grab our playlist and add to our where clause
-    CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(m_parameter, strType);
-    if (!playlistFile.IsEmpty())
-    {
-      CSmartPlaylist playlist;
-      playlist.Load(playlistFile);
-      CStdString playlistQuery;
-      // only playlists of same type will be part of the query
-      if (playlist.GetType().Equals(strType) || (playlist.GetType().Equals("mixed") && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().IsEmpty())
-      {
-        playlist.SetType(strType);
-        playlistQuery = playlist.GetWhereClause(db, false);
-      }
-      if (m_operator == OPERATOR_DOES_NOT_EQUAL && playlist.GetType().Equals(strType))
-        query.Format("NOT (%s)", playlistQuery.c_str());
-      else if (m_operator == OPERATOR_EQUALS && playlist.GetType().Equals(strType))
-        query = playlistQuery;
-    }
-  }
   if (m_field == FIELD_PLAYCOUNT && strType != "songs" && strType != "albums")
   { // playcount is stored as NULL or number in video db
     if ((m_operator == OPERATOR_EQUALS && m_parameter == "0") ||
@@ -658,7 +643,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PLOTOUTLINE) result.Format("c%02d", VIDEODB_ID_PLOTOUTLINE);
     else if (field == FIELD_TAGLINE) result.Format("c%02d", VIDEODB_ID_TAGLINE);
     else if (field == FIELD_VOTES) result.Format("c%02d", VIDEODB_ID_VOTES);
-    else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_RATING);
+    else if (field == FIELD_RATING) result.Format("CAST(c%02d as DECIMAL(5,3))", VIDEODB_ID_RATING);
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_CREDITS);   // join required
     else if (field == FIELD_PLAYCOUNT) result = "playCount";
@@ -677,7 +662,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idMovie";       // only used for order clauses
-    else if (field == FIELD_SET) result = "idSet";  // only used for order clauses
+    else if (field == FIELD_SET) result = "cant_order_by_set";
     return result;
   }
   else if (type == "musicvideos")
@@ -711,6 +696,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
     else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_TV_MPAA);
+    else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_TV_STUDIOS);
     else if (field == FIELD_DIRECTOR) result = "cant_order_by_director"; // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_NUMEPISODES) result = "totalcount";
@@ -718,7 +704,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PLAYCOUNT) result = "watched";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
-    else if (field == FIELD_PATH) return "strPath";
+    else if (field == FIELD_PATH) result = "strPath";
     return result;
   }
   if (type == "episodes")
@@ -925,7 +911,7 @@ void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
   m_playlistRules.push_back(rule);
 }
 
-CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, bool needWhere /* = true */)
+CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists, bool needWhere /* = true */)
 {
   CStdString rule, currentRule;
   for (vector<CSmartPlaylistRule>::iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
@@ -935,7 +921,33 @@ CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, bool needWhere /* = tru
     else if (needWhere)
       rule += "WHERE ";
     rule += "(";
-    currentRule = (*it).GetWhereClause(db, GetType());
+    CStdString currentRule;
+    if (it->m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
+    {
+      CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(it->m_parameter, GetType());
+      if (!playlistFile.IsEmpty() && referencedPlaylists.find(playlistFile) == referencedPlaylists.end())
+      {
+        referencedPlaylists.insert(playlistFile);
+        CSmartPlaylist playlist;
+        playlist.Load(playlistFile);
+        CStdString playlistQuery;
+        // only playlists of same type will be part of the query
+        if (playlist.GetType().Equals(GetType()) || (playlist.GetType().Equals("mixed") && (GetType() == "songs" || GetType() == "musicvideos")) || playlist.GetType().IsEmpty())
+        {
+          playlist.SetType(GetType());
+          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists, false);
+        }
+        if (playlist.GetType().Equals(GetType()))
+        {
+          if (it->m_operator == CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL)
+            currentRule.Format("NOT (%s)", playlistQuery.c_str());
+          else
+            currentRule = playlistQuery;
+        }
+      }
+    }
+    else
+      currentRule = (*it).GetWhereClause(db, GetType());
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail
     if (currentRule.IsEmpty())
       currentRule = m_matchAllRules ? "'1'" : "'0'";

@@ -528,5 +528,4 @@ const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }
-
 #endif

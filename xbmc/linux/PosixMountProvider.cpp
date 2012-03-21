@@ -101,14 +101,26 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
 #elif defined(__FreeBSD__)
   FILE* pipe = popen("df -h -t ufs,cd9660,hfs,udf,zfs", "r");
 #else
-  FILE* pipe = popen("df -hx tmpfs", "r");
+  FILE* pipe = popen("df -h", "r");
 #endif
+  
+  static const char* excludes[] = {"rootfs","devtmpfs","tmpfs","none","/dev/loop", "udev", NULL};
 
   if (pipe)
   {
     while (fgets(line, sizeof(line) - 1, pipe))
     {
-      result.push_back(line);
+      bool ok=true;
+      for (int i=0;excludes[i];++i)
+      {
+        if (strstr(line,excludes[i]))
+        {
+          ok=false;
+          break;
+        }
+      }
+      if (ok)
+        result.push_back(line);
     }
     pclose(pipe);
   }

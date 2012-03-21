@@ -60,17 +60,8 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     PCM_FRONT_CENTER, PCM_LOW_FREQUENCY,
     PCM_SIDE_LEFT   , PCM_SIDE_RIGHT
   };
-  static enum PCMChannels HDMIChannelMap[] = { PCM_FRONT_LEFT, PCM_FRONT_RIGHT
-                                             , PCM_FRONT_CENTER, PCM_LOW_FREQUENCY
-                                             , PCM_BACK_LEFT, PCM_BACK_RIGHT
-                                             , PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER
-                                             , PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
-  CStdString deviceuse(device);
 
-
-  enum PCMChannels *output_map = ALSAChannelMap;
-  if((deviceuse + ":").Left(5) == "hdmi:")
-    output_map = HDMIChannelMap;
+  CStdString deviceuse;
 
   /* setup the channel mapping */
   m_uiDataChannels = iChannels;
@@ -85,7 +76,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     while(outLayout[ch] != PCM_INVALID)
     {
       for(map = 0; map < 8; ++map)
-        if (outLayout[ch] == output_map[map])
+        if (outLayout[ch] == ALSAChannelMap[map])
         {
           if (map > outChannels)
             outChannels = map;
@@ -94,7 +85,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
       ++ch;
     }
 
-    m_remap.SetOutputFormat(++outChannels, output_map);
+    m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
     if (m_remap.CanRemap())
     {
       iChannels = outChannels;
@@ -136,6 +127,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     snd_config_update();
 
   snd_config_t *config = snd_config;
+  deviceuse = device;
 
   nErr = snd_config_copy(&config, snd_config);
   CHECK_ALSA_RETURN(LOGERROR,"config_copy",nErr);
@@ -404,11 +396,19 @@ bool CALSADirectSound::Resume()
   if(state == SND_PCM_STATE_PAUSED)
     snd_pcm_pause(m_pPlayHandle,0);
 
-  if(state == SND_PCM_STATE_PREPARED)
+  else if(state == SND_PCM_STATE_PREPARED)
   {
     snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
     if(avail >= 0 && avail < (snd_pcm_sframes_t)m_uiBufferSize)
       snd_pcm_start(m_pPlayHandle);
+  }
+  else if(state == SND_PCM_STATE_RUNNING)
+  {}
+  else
+  {
+    CLog::Log(LOGWARNING, "CALSADirectSound::Resume - unexpected device state %d flushing", state);
+    Flush();
+    snd_pcm_start(m_pPlayHandle);
   }
 
   m_bPause = false;

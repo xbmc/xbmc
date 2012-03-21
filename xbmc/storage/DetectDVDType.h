@@ -92,5 +92,4 @@ private:
   CLibcdio* m_cdio;
 };
 }
-
 #endif

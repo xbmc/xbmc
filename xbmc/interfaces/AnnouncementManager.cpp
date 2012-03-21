@@ -39,12 +39,18 @@ vector<IAnnouncer *> CAnnouncementManager::m_announcers;
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
+  if (!listener)
+    return;
+
   CSingleLock lock (m_critSection);
   m_announcers.push_back(listener);
 }
 
 void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 {
+  if (!listener)
+    return;
+
   CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
   {
@@ -78,6 +84,12 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 
 void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
+  if (!item.get())
+  {
+    Announce(flag, sender, message, data);
+    return;
+  }
+
   // Extract db id of item
   CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
   CStdString type;

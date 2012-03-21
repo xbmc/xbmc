@@ -266,7 +266,7 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
 #endif
@@ -747,7 +747,7 @@ bool CApplication::Create()
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
 
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
@@ -1022,19 +1022,6 @@ bool CApplication::InitDirectoriesWin32()
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
-  // check for a DVD drive
-  VECSOURCES vShare;
-  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  // Can be removed once the StorageHandler supports optical media
-  VECSOURCES::const_iterator it;
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
-  // remove end
-
   return true;
 #else
   return false;
@@ -1071,6 +1058,18 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
   }
+
+  // Load curl so curl_global_init gets called before any service threads
+  // are started. Unloading will have no effect as curl is never fully unloaded.
+  // To quote man curl_global_init:
+  //  "This function is not thread safe. You must not call it when any other
+  //  thread in the program (i.e. a thread sharing the same memory) is running.
+  //  This doesn't just mean no other thread that is using libcurl. Because
+  //  curl_global_init() calls functions of other libraries that are similarly
+  //  thread unsafe, it could conflict with any other thread that
+  //  uses these other libraries."
+  g_curlInterface.Load();
+  g_curlInterface.Unload();
 
   StartServices();
 
@@ -1203,6 +1202,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
 #endif
+    ADDON::CAddonMgr::Get().StartServices(false);
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
@@ -1255,6 +1255,7 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
+
   return true;
 }
 
@@ -2246,7 +2247,7 @@ bool CApplication::OnKey(const CKey& key)
       if (!action.GetID())
       {
         // keyboard entry - pass the keys through directly
-        if (key.GetFromHttpApi())
+        if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
@@ -2263,7 +2264,7 @@ bool CApplication::OnKey(const CKey& key)
         return true;
       // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromHttpApi())
+    if (key.GetFromService())
     {
       if (key.GetButtonCode() != KEY_INVALID)
         action = CButtonTranslator::GetInstance().GetAction(iWin, key);
@@ -2983,7 +2984,10 @@ bool CApplication::ProcessJsonRpcButtons()
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
   if (tempKey.GetButtonCode() != KEY_INVALID)
+  {
+    tempKey.SetFromService(true);
     return OnKey(tempKey);
+  }
 #endif
   return false;
 }
@@ -3009,6 +3013,11 @@ bool CApplication::ProcessEventServer(float frameTime)
   bool isAxis = false;
   float fAmount = 0.0;
 
+  // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
+  // when the action exits XBMC
+  es = CEventServer::GetInstance();
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
+    return false;
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
   if (wKeyID)
@@ -3050,6 +3059,7 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
+      key.SetFromService(true);
       return OnKey(key);
     }
   }
@@ -3670,7 +3680,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   
   if( item.HasProperty("StartPercent") )
   {
-    options.startpercent = item.GetProperty("StartPercent").asDouble();
+    double fallback = 0.0f;
+    if(item.GetProperty("StartPercent").isString())
+      fallback = (double)atof(item.GetProperty("StartPercent").asString().c_str());
+    options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
   
   PLAYERCOREID eNewCore = EPC_NONE;
@@ -3791,7 +3804,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(_LINUX)
   g_audioManager.Enable(false);
 #endif
 
@@ -3855,7 +3868,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 #endif
 
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(_LINUX)
     g_audioManager.Enable(false);
 #endif
   }
@@ -4370,6 +4383,12 @@ void CApplication::CheckScreenSaverAndDPMS()
   {
     m_bScreenSave = true;
     maybeScreensaver = false;
+  }
+
+  if (m_bScreenSave && IsPlayingVideo() && !m_pPlayer->IsPaused())
+  {
+    WakeUpScreenSaverAndDPMS();
+    return;
   }
 
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.

@@ -86,10 +86,29 @@
   return new rendererClass(); \
 }
 
+/* windows channel order */
+static const enum PCMChannels dsound_default_channel_layout[][8] =
+{
+  {PCM_FRONT_CENTER},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_SIDE_LEFT, PCM_SIDE_RIGHT}
+};
+
 IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, IAudioRenderer::EEncoded encoded)
 {
   IAudioRenderer* audioSink = NULL;
   CStdString renderer;
+
+  if(channelMap == NULL)
+  {
+    CLog::Log(LOGINFO, "CAudioRendererFactory: no input channel map specified assume windows\n");
+    channelMap = (enum PCMChannels *)dsound_default_channel_layout[iChannels - 1];
+  }
 
   CStdString deviceString, device;
   if (encoded)

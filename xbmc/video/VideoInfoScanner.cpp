@@ -247,7 +247,7 @@ namespace VIDEO
           if (hash.IsEmpty() && !dbHash.IsEmpty())
           {
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
-            m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           }
           else
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
@@ -296,13 +296,13 @@ namespace VIDEO
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
           m_database.SetPathHash(strDirectory, hash);
-          m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", strDirectory.c_str());
         }
       }
       else
       {
-        m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+        m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", strDirectory.c_str());
       }
     }
@@ -417,7 +417,7 @@ namespace VIDEO
       for (vector<int>::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
       {
         if (find(seenPaths.begin(), seenPaths.end(), *i) == seenPaths.end())
-          m_pathsToClean.push_back(*i);
+          m_pathsToClean.insert(*i);
       }
     }
     if(pDlgProgress)
@@ -651,7 +651,7 @@ namespace VIDEO
         }
         return;
       }
-      m_pathsToClean.push_back(m_database.GetPathId(item->GetPath()));
+      m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
       m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
       item->SetProperty("hash", hash);
     }
@@ -1164,7 +1164,12 @@ namespace VIDEO
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, cachedThumb);
 
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*pItem)));
+    CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
+    // Hack to make sure CVideoInfoTag::m_strShowTitle is set for tvshows
+    // to make sure CAnnouncementManager provides the correct type for the item
+    if (content == CONTENT_TVSHOWS && !isEpisode && itemCopy->HasVideoInfoTag())
+      itemCopy->GetVideoInfoTag()->m_strShowTitle = itemCopy->GetVideoInfoTag()->m_strTitle;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy);
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)

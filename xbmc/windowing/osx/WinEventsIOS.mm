@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "WindowingFactory.h"
 #include "threads/CriticalSection.h"
+#include "utils/log.h"
 
 static CCriticalSection g_inputCond;
 
@@ -72,9 +73,10 @@ bool CWinEventsIOS::MessagePump()
       // the user.code will be the keyID to translate using joystick.AppleRemote.xml
       std::string joystickName = "AppleRemote";
       bool isAxis = false;
-      float fAmount = 0.0;
+      float fAmount = 1.0;
       unsigned short wKeyID = pumpEvent.user.code;
 
+      CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
       ret |= g_application.ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount);
     }
     else

@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "network/DNSNameCache.h"
+#include "threads/SystemClock.h"
 
 #include <nfsc/libnfs-raw-mount.h>
 
@@ -44,6 +45,9 @@
 //so when no read was done for 4mins and files are open
 //do the nfs keep alive for the open files
 #define KEEP_ALIVE_TIMEOUT 480
+
+//4 mins cached context timeout
+#define CONTEXT_TIMEOUT 240000
 
 //return codes for getContextForExport
 #define CONTEXT_INVALID  0    //getcontext failed
@@ -128,19 +132,38 @@ void CNfsConnection::destroyOpenContexts()
 {
   for(tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();it++)
   {
-    m_pLibNfs->nfs_destroy_context(it->second);
+    m_pLibNfs->nfs_destroy_context(it->second.pContext);
   }
   m_openContextMap.clear();
 }
 
 struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname)
 {
+  struct nfs_context *pRet = NULL;
+
   tOpenContextMap::iterator it = m_openContextMap.find(exportname.c_str());
   if(it != m_openContextMap.end())
   {
-    return it->second;
+    //check if context has timed out already
+    uint64_t now = XbmcThreads::SystemClockMillis();
+    if((now - it->second.lastAccessedTime) < CONTEXT_TIMEOUT)
+    {
+      //its not timedout yet
+      //refresh access time of that
+      //context and return it
+      CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %"PRId64", new: %"PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
+      it->second.lastAccessedTime = now;
+      pRet = it->second.pContext;
+    }
+    else 
+    {
+      //context is timed out
+      //destroy it and return NULL
+      CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
+      m_pLibNfs->nfs_destroy_context(it->second.pContext);
+    }
   }
-  return NULL;
+  return pRet;
 }
 
 int CNfsConnection::getContextForExport(const CStdString &exportname)
@@ -164,7 +187,10 @@ int CNfsConnection::getContextForExport(const CStdString &exportname)
       }
       else 
       {
-        m_openContextMap[exportname] = m_pNfsContext; //add context to list of all contexts      
+        struct contextTimeout tmp;
+        tmp.pContext = m_pNfsContext;
+        tmp.lastAccessedTime = XbmcThreads::SystemClockMillis();
+        m_openContextMap[exportname] = tmp; //add context to list of all contexts      
         ret = CONTEXT_NEW;
       }
     }

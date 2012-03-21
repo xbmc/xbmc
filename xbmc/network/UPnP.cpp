@@ -221,7 +221,7 @@ class CUPnPServer : public PLT_MediaConnect
 {
 public:
     CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0) :
-        PLT_MediaConnect("", friendly_name, true, uuid, port) {
+        PLT_MediaConnect("", friendly_name, false, uuid, port) {
         // hack: override path to make sure it's empty
         // urls will contain full paths to local files
         m_Path = "";
@@ -929,14 +929,15 @@ CUPnPServer::Build(CFileItemPtr                  item,
         }
     }
 
-    // remap Root virtualpath://upnproot/ to id "0"
-    if (object->m_ObjectID == "virtualpath://upnproot/")
-        object->m_ObjectID = "0";
+    if (object) {
+        // remap Root virtualpath://upnproot/ to id "0"
+        if (object->m_ObjectID == "virtualpath://upnproot/")
+            object->m_ObjectID = "0";
 
-    // remap Parent Root virtualpath://upnproot/ to id "0"
-    if (object->m_ParentID == "virtualpath://upnproot/")
-        object->m_ParentID = "0";
-
+        // remap Parent Root virtualpath://upnproot/ to id "0"
+        if (object->m_ParentID == "virtualpath://upnproot/")
+            object->m_ParentID = "0";
+    }
     return object;
 
 failure:

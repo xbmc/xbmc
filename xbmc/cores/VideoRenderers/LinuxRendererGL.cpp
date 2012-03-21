@@ -37,6 +37,7 @@
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
+#include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "DllSwScale.h"
 #include "utils/log.h"
@@ -871,7 +872,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
   }
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -3026,6 +3027,13 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
   }
 
+#ifdef TARGET_DARWIN
+  // YADIF too slow for HD but we have no methods to fall back
+  // to something that works so just turn it off.
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return false;
+#endif
+  
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
   || method == VS_INTERLACEMETHOD_SW_BLEND)

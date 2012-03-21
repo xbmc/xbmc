@@ -200,15 +200,6 @@
 
 #define _stdfunction 
 
-#ifdef _APPLE
-  #ifndef BIG_ENDIAN
-    #define BIG_ENDIAN
-  #endif
-  #ifdef LITTLE_ENDIAN
-    #undef LITTLE_ENDIAN
-  #endif
-#endif
-
 #if defined(__sparc) || defined(sparc) || defined(__hpux)
   #ifndef BIG_ENDIAN
      #define BIG_ENDIAN

@@ -144,13 +144,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
     if (ID)
     {
-      if (stricmp(ID, "genreid") == 0)
-      {
-        CStdString genre = item->GetPath();
-        genre.TrimRight('/');
-        object[ID] = atoi(genre.c_str());
-      }
-      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
@@ -178,6 +172,10 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
             case VIDEODB_CONTENT_MOVIES:
               object["type"] = "movie";
+              break;
+
+            case VIDEODB_CONTENT_TVSHOWS:
+              object["type"] = "tvshow";
               break;
 
             default:
@@ -262,8 +260,8 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
       if (item->IsPicture())
       {
         CPictureInfoTag picture;
-        if (picture.Load(item->GetPath()))
-          *item->GetPictureInfoTag() = picture;
+        picture.Load(item->GetPath());
+        *item->GetPictureInfoTag() = picture;
       }
       if (item->GetLabel().IsEmpty())
         item->SetLabel(CUtil::GetTitleFromPath(file, false));
@@ -339,8 +337,6 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = SORT_METHOD_PLAYCOUNT;
   else if (method.Equals("unsorted"))
     sortmethod = SORT_METHOD_UNSORTED;
-  else if (method.Equals("max"))
-    sortmethod = SORT_METHOD_MAX;
   else
     return false;
 

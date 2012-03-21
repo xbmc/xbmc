@@ -471,7 +471,7 @@ public:
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::set<CStdString> &paths);
-  bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
+  bool GetPathsForTvShow(int idShow, std::set<int>& paths);
 
   /*! \brief retrieve subpaths of a given path.  Assumes a heirarchical folder structure
    \param basepath the root path to retrieve subpaths for
@@ -548,7 +548,7 @@ public:
   bool HasContent(VIDEODB_CONTENT_TYPE type);
   bool HasSets() const;
 
-  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
+  void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::set<int>* paths=NULL);
 
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
@@ -698,16 +698,17 @@ private:
   int RunQuery(const CStdString &sql);
 
   /*! \brief Update routine for base path of videos
-   Only required for videodb version < 44
+   Only required for videodb version < 59
    \param table the table to update
    \param id the primary id in the given table
    \param column the basepath column to update
    \param shows whether we're fetching shows (defaults to false)
+   \param where restrict updating of items that match the where clause
    */
-  void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
+  void UpdateBasePath(const char *table, const char *id, int column, bool shows = false, const CStdString &where = "");
 
   /*! \brief Update routine for base path id of videos
-   Only required for videodb version < 52
+   Only required for videodb version < 59
    \param table the table to update
    \param id the primary id in the given table
    \param column the column of the basepath
@@ -721,7 +722,7 @@ private:
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const { return 58; };
+  virtual int GetMinVersion() const { return 60; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
