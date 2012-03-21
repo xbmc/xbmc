@@ -236,24 +236,6 @@ CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)
 #endif
 }
 
-CStdString CSpecialProtocol::ReplaceOldPath(const CStdString &oldPath, int pathVersion)
-{
-  if (pathVersion < 1)
-  {
-    if (oldPath.Left(2).CompareNoCase("P:") == 0)
-      return URIUtils::AddFileToFolder("special://profile/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("Q:") == 0)
-      return URIUtils::AddFileToFolder("special://xbmc/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("T:") == 0)
-      return URIUtils::AddFileToFolder("special://masterprofile/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("U:") == 0)
-      return URIUtils::AddFileToFolder("special://home/", oldPath.Mid(2));
-    else if (oldPath.Left(2).CompareNoCase("Z:") == 0)
-      return URIUtils::AddFileToFolder("special://temp/", oldPath.Mid(2));
-  }
-  return oldPath;
-}
-
 void CSpecialProtocol::LogPaths()
 {
   CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());

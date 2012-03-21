@@ -780,8 +780,8 @@ void CGUIWindowMusicNav::FrameMove()
   // update our searching
   if (m_searchTimer.IsRunning() && m_searchTimer.GetElapsedMilliseconds() > search_timeout)
   {
-    OnSearchUpdate();
     m_searchTimer.Stop();
+    OnSearchUpdate();
   }
   if (m_bDisplayEmptyDatabaseMessage)
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));

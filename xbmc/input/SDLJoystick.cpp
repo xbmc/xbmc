@@ -408,4 +408,24 @@ float CJoystick::SetDeadzone(float val)
   return val;
 }
 
+bool CJoystick::Reinitialize()
+{
+  // Restart SDL joystick subsystem
+  SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+  if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+  {
+    CLog::Log(LOGERROR, "Stop joystick subsystem failed");
+    return false;
+  }
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
+  {
+    CLog::Log(LOGERROR, "Restart joystick subsystem failed : %s",SDL_GetError());
+    return false;
+  }
+
+  Initialize();
+
+  return true;
+}
+
 #endif

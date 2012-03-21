@@ -881,7 +881,17 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     else if (m_httpParser->getContentLength() > 0)
     {
       XFILE::CFile tmpFile;
-      if (tmpFile.OpenForWrite("special://temp/airplay_photo.jpg", true))
+      CStdString tmpFileName = "special://temp/airplay_photo.jpg";
+
+      if( m_httpParser->getContentLength() > 3 &&
+          m_httpParser->getBody()[1] == 'P' &&
+          m_httpParser->getBody()[2] == 'N' &&
+          m_httpParser->getBody()[3] == 'G')
+      {
+        tmpFileName = "special://temp/airplay_photo.png";
+      }
+
+      if (tmpFile.OpenForWrite(tmpFileName, true))
       {
         int writtenBytes=0;
         writtenBytes = tmpFile.Write(m_httpParser->getBody(), m_httpParser->getContentLength());
@@ -889,7 +899,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
         if (writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength())
         {
-          g_application.getApplicationMessenger().PictureShow("special://temp/airplay_photo.jpg");
+          g_application.getApplicationMessenger().PictureShow(tmpFileName);
         }
         else
         {

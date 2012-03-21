@@ -87,8 +87,8 @@
   <string id="110">Créer vignettes</string>
   <string id="111">Raccourcis</string>
   <string id="112">PAUSE</string>
-  <string id="113">Echec Mise-à-jour</string>
-  <string id="114">Echec Installation</string>
+  <string id="113">Échec mise-à-jour</string>
+  <string id="114">Échec installation</string>
   <string id="115">Copier</string>
   <string id="116">Déplacer</string>
   <string id="117">Effacer</string>
@@ -210,7 +210,7 @@
   <string id="238">Optique (+)</string>
   <string id="239">Effacer la playliste à la fin de la lecture</string>
   <string id="240">Mode d'affichage</string>
-  <string id="241">Plein Ecran #%d</string>
+  <string id="241">Plein écran #%d</string>
   <string id="242">Fenêtré</string>
   <string id="243">Taux de rafraîchissement</string>
   <string id="244">Plein écran</string>
@@ -273,7 +273,7 @@
   <string id="303">Délai</string>
   <string id="304">Langue</string>
   <string id="305">Activé</string>
-  <string id="306">Non Entrelacé</string>
+  <string id="306">Non entrelacé</string>
 
   <string id="312">(0=auto)</string>
   <string id="313">Nettoyage de la base de données</string>
@@ -342,7 +342,7 @@
   <string id="379">Après-midi</string>
   <string id="380">Averses</string>
   <string id="381">Quelques</string>
-  <string id="382">Eparse</string>
+  <string id="382">Éparse</string>
   <string id="383">Vent</string>
   <string id="384">Fort</string>
   <string id="385">Beau</string>
@@ -582,7 +582,7 @@
   <string id="640">Utiliser le volume de l'album</string>
   <string id="641">Amplification des fichiers Replay gain</string>
   <string id="642">Amplification des fichiers non Replay gain</string>
-  <string id="643">Eviter les coupures sur les fichiers replay gain</string>
+  <string id="643">Éviter les coupures sur les fichiers replay gain</string>
   <string id="644">Couper les barres noires</string>
   <string id="645">Besoin de décompresser un gros fichier. Continuer ?</string>
   <string id="646">Retirer de la médiathèque</string>
@@ -598,7 +598,7 @@
   <string id="656">Recherche d'une playliste</string>
   <string id="657">Recherche d'un dossier</string>
   <string id="658">Information de la chanson</string>
-  <string id="659">Etirement non-linéaire</string>
+  <string id="659">Étirement non-linéaire</string>
 
   <string id="660">Volume d'amplification</string>
   <string id="661">Choisissez le dossier d'exportation</string>
@@ -967,7 +967,7 @@
   <string id="12357">Verrou sources</string>
   <string id="12358">Le mot de passe entré est vide. Recommencez.</string>
   <string id="12360">Verrou admin.</string>
-  <string id="12362">Eteindre le système après trop de tentatives</string>
+  <string id="12362">Éteindre le système après trop de tentatives</string>
   <string id="12367">Le code Admin n'est pas valide</string>
   <string id="12368">Merci d'entrer un code Admin valide</string>
   <string id="12373">Paramètres &amp; Fichiers</string>
@@ -998,7 +998,7 @@
   <string id="13002">Vidéo seulement</string>
   <string id="13003">- Délai</string>
   <string id="13004">- Durée minimale du fichier</string>
-  <string id="13005">Eteindre</string>
+  <string id="13005">Éteindre</string>
 
   <string id="13008">Mode d'arrêt par défaut</string>
   <string id="13009">Quitter</string>
@@ -1049,7 +1049,7 @@
 
   <string id="13140">Connexions actives détectées !</string>
   <string id="13141">Si vous continuez vous ne serez plus en mesure de</string>
-  <string id="13142"> contrôler XBMC. Etes-vous sur d'arréter le serveur ?</string>
+  <string id="13142"> contrôler XBMC. Êtes-vous sûr d'arrêter le serveur ?</string>
 
   <string id="13144">Changer le mode Apple Remote ?</string>
   <string id="13145">Si vous utilisez actuellement la télécommande Apple pour contrôler</string>
@@ -1155,7 +1155,7 @@
   <string id="13342">Orange</string>
   <string id="13343">Rouge</string>
   <string id="13344">Cyclique</string>
-  <string id="13345">Eteindre la LED pendant la lecture</string>
+  <string id="13345">Éteindre la LED pendant la lecture</string>
   <string id="13346">Informations du film</string>
   <string id="13347">Ajouter</string>
   <string id="13348">Chercher sur IMDb...</string>
@@ -1302,7 +1302,7 @@
   <string id="14040">Redémarrer XBMC pour appliquer les changements ?</string>
   <string id="14041">Limiter la bande passante de la connexion Internet</string>
 
-  <string id="14043">- Eteindre pendant la lecture</string>
+  <string id="14043">- Éteindre pendant la lecture</string>
   <string id="14044">%i min</string>
   <string id="14045">%i sec</string>
   <string id="14046">%i ms</string>
@@ -2173,7 +2173,7 @@
 
   <string id="24005">Sources media</string>
   <string id="24007">Infos Film</string>
-  <string id="24008">Ecran de veille</string>
+  <string id="24008">Écran de veille</string>
   <string id="24009">Script</string>
   <string id="24010">Visualisation</string>
   <string id="24011">Dépots d'add-ons</string>
@@ -2331,7 +2331,7 @@
   <string id="33082">Chemin du script</string>
   <string id="33083">Activer le bouton de script personnalisé</string>
 
-  <string id="33100">Echec du lancement</string>
+  <string id="33100">Échec du lancement</string>
   <string id="33101">Serveur Web</string>
   <string id="33102">Serveur d'évènement</string>
   <string id="33103">Communication à distance avec le serveur</string>
@@ -2395,7 +2395,7 @@
   <string id="36005">Activer les contrôles de bascule</string>
   <string id="36006">Impossible d'ouvrir l'adaptateur</string>
   <string id="36007">Allumer la TV au démarrage de XBMC</string>
-  <string id="36008">Eteindre les dispositifs à l'arrêt de XBMC</string>
+  <string id="36008">Éteindre les dispositifs à l'arrêt de XBMC</string>
   <string id="36009">Placer les dispositifs en veille si l'écran de veille est activé</string>
   <string id="36010"></string>
   <string id="36011">Impossible de détecter le port CEC. Le paramétrer manuellement.</string>

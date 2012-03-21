@@ -178,6 +178,7 @@ namespace INFO
 #define SYSTEM_PROFILECOUNT         181
 #define SYSTEM_ISFULLSCREEN         182
 #define SYSTEM_ISSTANDALONE         183
+#define SYSTEM_HAS_PVR              184
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191

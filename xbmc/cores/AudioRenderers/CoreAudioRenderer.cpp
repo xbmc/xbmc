@@ -521,7 +521,7 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
     if (!ret)
     {
       m_isValid = true;
-      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild: Unable to locate pre-defined mixing matrix. Trying to build one explicitly...");
+      CLog::Log(LOGDEBUG, "CCoreAudioMixMap::Rebuild: Using pre-defined mixing matrix.");
       return; // Nothing else to do...a map already exists
     }
     

@@ -272,7 +272,7 @@ int SqliteDatabase::copy(const char *backup_name) {
   if (active == false)
     throw DbErrors("Can't copy database: no active connection...");
 
-  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", backup_name, db.c_str(), host.c_str());
+  CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", db.c_str(), backup_name, host.c_str());
 
   int rc;
   string backup_db = backup_name;

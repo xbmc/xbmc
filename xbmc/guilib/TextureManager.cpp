@@ -525,18 +525,21 @@ unsigned int CGUITextureManager::GetMemoryUsage() const
 
 void CGUITextureManager::SetTexturePath(const CStdString &texturePath)
 {
+  CSingleLock lock(m_section);
   m_texturePaths.clear();
   AddTexturePath(texturePath);
 }
 
 void CGUITextureManager::AddTexturePath(const CStdString &texturePath)
 {
+  CSingleLock lock(m_section);
   if (!texturePath.IsEmpty())
     m_texturePaths.push_back(texturePath);
 }
 
 void CGUITextureManager::RemoveTexturePath(const CStdString &texturePath)
 {
+  CSingleLock lock(m_section);
   for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
@@ -553,6 +556,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
     return textureName;
   else
   { // texture doesn't include the full path, so check all fallbacks
+    CSingleLock lock(m_section);
     for (vector<CStdString>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
     {
       CStdString path = URIUtils::AddFileToFolder(it->c_str(), "media");

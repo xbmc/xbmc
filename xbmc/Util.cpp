@@ -2459,7 +2459,12 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
     ScanArchiveForSubtitles(strRarInRar,strMovieFileNameNoExt,vecSubtitles);
    }
    // done checking if this is a rar-in-rar
-   
+
+   // check that the found filename matches the movie filename
+   int fnl = strMovieFileNameNoExt.size();
+   if (!URIUtils::GetFileName(strPathInRar).Left(fnl).Equals(strMovieFileNameNoExt))
+     continue;
+
    int iPos=0;
     while (sub_exts[iPos])
     {
