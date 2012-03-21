@@ -87,10 +87,16 @@ static __inline__ uint64_t Endian_Swap64(uint64_t x) {
 #define Endian_SwapLE16(X) (X)
 #define Endian_SwapLE32(X) (X)
 #define Endian_SwapLE64(X) (X)
+#define Endian_SwapBE16(X) Endian_Swap16(X)
+#define Endian_SwapBE32(X) Endian_Swap32(X)
+#define Endian_SwapBE64(X) Endian_Swap64(X)
 #else
 #define Endian_SwapLE16(X) Endian_Swap16(X)
 #define Endian_SwapLE32(X) Endian_Swap32(X)
 #define Endian_SwapLE64(X) Endian_Swap64(X)
+#define Endian_SwapBE16(X) (X)
+#define Endian_SwapBE32(X) (X)
+#define Endian_SwapBE64(X) (X)
 #endif
 
 /* Ends C function definitions when using C++ */

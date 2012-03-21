@@ -469,18 +469,28 @@ namespace PYXBMC
         return NULL;
     }
 
-    PyXBMCGUILock();
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (PyXBMCWindowIsNull(pDialog)) return NULL;
-    ((DialogProgress*)self)->dlg = pDialog;
+    CGUIDialogProgress* pDialog;
+    {
+      CPyThreadState releaseGil;
+      CSingleLock glock(g_graphicsContext);
 
-    pDialog->SetHeading(utf8Line[0]);
+      pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      if (!pDialog)
+      {
+        glock.Leave();
+        releaseGil.Restore();
+        PyErr_SetString(PyExc_SystemError, "Error: Window is NULL, this is not possible :-)");
+        return NULL;
+      }
+      ((DialogProgress*)self)->dlg = pDialog;
 
-    for (int i = 1; i < 4; i++)
-      pDialog->SetLine(i - 1,utf8Line[i]);
+      pDialog->SetHeading(utf8Line[0]);
 
-    PyXBMCGUIUnlock();
-    pDialog->StartModal();
+      for (int i = 1; i < 4; i++)
+        pDialog->SetLine(i - 1,utf8Line[i]);
+
+      pDialog->StartModal();
+    }
 
     Py_INCREF(Py_None);
     return Py_None;

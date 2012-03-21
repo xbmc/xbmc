@@ -1164,7 +1164,12 @@ namespace VIDEO
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, cachedThumb);
 
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*pItem)));
+    CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
+    // Hack to make sure CVideoInfoTag::m_strShowTitle is set for tvshows
+    // to make sure CAnnouncementManager provides the correct type for the item
+    if (content == CONTENT_TVSHOWS && !isEpisode && itemCopy->HasVideoInfoTag())
+      itemCopy->GetVideoInfoTag()->m_strShowTitle = itemCopy->GetVideoInfoTag()->m_strTitle;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy);
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)

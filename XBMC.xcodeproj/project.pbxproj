@@ -623,6 +623,8 @@
 		7CCF7F1E1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
+		7CCFD98C151494E100211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
+		7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD98A151494E100211D82 /* PCMCodec.cpp */; };
 		7CD2C3AA11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
 		7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
 		7CD2CD0111B38B000009EFC1 /* PythonAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */; };
@@ -2675,6 +2677,8 @@
 		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
+		7CCFD98A151494E100211D82 /* PCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMCodec.cpp; sourceTree = "<group>"; };
+		7CCFD98B151494E100211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
 		7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeCountry.cpp; sourceTree = "<group>"; };
 		7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeCountry.h; sourceTree = "<group>"; };
 		7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonAddon.cpp; sourceTree = "<group>"; };
@@ -6022,6 +6026,8 @@
 				E38E16240D25F9FA00618676 /* OGGcodec.h */,
 				F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */,
 				F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */,
+				7CCFD98A151494E100211D82 /* PCMCodec.cpp */,
+				7CCFD98B151494E100211D82 /* PCMCodec.h */,
 				E38E162A0D25F9FA00618676 /* ReplayGain.cpp */,
 				E38E162B0D25F9FA00618676 /* ReplayGain.h */,
 				E38E16310D25F9FA00618676 /* SIDCodec.cpp */,
@@ -8698,36 +8704,8 @@
 				7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
 				7C89674613C03B22003631FE /* InfoBool.cpp in Sources */,
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
-				1835C6501492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */,
-				1835C6581492A25800ADD1BA /* pyrendercapture.cpp in Sources */,
-				1835C6631492A28800ADD1BA /* SkinVariable.cpp in Sources */,
-				1835C66C1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */,
-				1835C66D1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */,
-				1835C6761492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */,
-				1835C67E1492A32F00ADD1BA /* AFPDirectory.cpp in Sources */,
-				1835C67F1492A32F00ADD1BA /* FileAFP.cpp in Sources */,
-				1835C6881492A35C00ADD1BA /* FilePipe.cpp in Sources */,
-				1835C6891492A35C00ADD1BA /* FileUPnP.cpp in Sources */,
-				1835C6931492A39F00ADD1BA /* PipesManager.cpp in Sources */,
-				1835C69B1492A3DA00ADD1BA /* GUIAction.cpp in Sources */,
-				1835C6A01492A3F700ADD1BA /* JpegIO.cpp in Sources */,
-				1835C6B31492A45F00ADD1BA /* Peripheral.cpp in Sources */,
-				1835C6B41492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */,
-				1835C6B51492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */,
-				1835C6B61492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */,
-				1835C6B71492A45F00ADD1BA /* PeripheralHID.cpp in Sources */,
-				1835C6B81492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */,
-				1835C6B91492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */,
-				1835C6BA1492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */,
-				1835C6CE1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */,
-				1835C6D21492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */,
-				1835C6DB1492A4FE00ADD1BA /* HttpParser.cpp in Sources */,
-				1835C6E21492A52800ADD1BA /* BXAcodec.cpp in Sources */,
-				1835C6EA1492A56500ADD1BA /* HotKeyController.m in Sources */,
-				1835C6F21492A5A700ADD1BA /* Peripherals.cpp in Sources */,
-				1835C6FA1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
-				1835C6FB1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
 				1835C8221496A5F200ADD1BA /* PVROperations.cpp in Sources */,
+				7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9669,36 +9647,8 @@
 				4308681213E3F66600698436 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				7C89674813C03B22003631FE /* InfoBool.cpp in Sources */,
 				F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
-				1835C6511492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */,
-				1835C6591492A25800ADD1BA /* pyrendercapture.cpp in Sources */,
-				1835C6641492A28800ADD1BA /* SkinVariable.cpp in Sources */,
-				1835C66E1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */,
-				1835C66F1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */,
-				1835C6771492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */,
-				1835C6801492A32F00ADD1BA /* AFPDirectory.cpp in Sources */,
-				1835C6811492A32F00ADD1BA /* FileAFP.cpp in Sources */,
-				1835C68A1492A35C00ADD1BA /* FilePipe.cpp in Sources */,
-				1835C68B1492A35C00ADD1BA /* FileUPnP.cpp in Sources */,
-				1835C6941492A39F00ADD1BA /* PipesManager.cpp in Sources */,
-				1835C69C1492A3DA00ADD1BA /* GUIAction.cpp in Sources */,
-				1835C6A11492A3F700ADD1BA /* JpegIO.cpp in Sources */,
-				1835C6BB1492A45F00ADD1BA /* Peripheral.cpp in Sources */,
-				1835C6BC1492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */,
-				1835C6BD1492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */,
-				1835C6BE1492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */,
-				1835C6BF1492A45F00ADD1BA /* PeripheralHID.cpp in Sources */,
-				1835C6C01492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */,
-				1835C6C11492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */,
-				1835C6C21492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */,
-				1835C6CF1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */,
-				1835C6D31492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */,
-				1835C6DC1492A4FE00ADD1BA /* HttpParser.cpp in Sources */,
-				1835C6E31492A52800ADD1BA /* BXAcodec.cpp in Sources */,
-				1835C6EB1492A56500ADD1BA /* HotKeyController.m in Sources */,
-				1835C6F31492A5A700ADD1BA /* Peripherals.cpp in Sources */,
-				1835C6FC1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
-				1835C6FD1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
 				1835C8231496A5F200ADD1BA /* PVROperations.cpp in Sources */,
+				7CCFD98C151494E100211D82 /* PCMCodec.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
