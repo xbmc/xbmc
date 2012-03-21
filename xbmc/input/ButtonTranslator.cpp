@@ -363,7 +363,6 @@ CButtonTranslator& CButtonTranslator::GetInstance()
 
 CButtonTranslator::CButtonTranslator()
 {
-  m_baseMap.clear();
   m_deviceList.clear();
   m_Loaded = false;
 }
@@ -429,17 +428,6 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
   };
   bool success = false;
 
-  // If we've already loaded the m_baseMap we don't need to load it
-  // again - this speeds up reloads caused by plugging and unplugging
-  // HID devices. However if AlwaysLoad is true always load the keymaps
-  // from scratch.
-  if (m_Loaded && !AlwaysLoad)
-  {
-    m_translatorMap = m_baseMap;
-  }
-
-  // Else load the standard mappings
-  else
   {
     for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
       if( XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
@@ -485,10 +473,6 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
     // don't return false - it is to only indicate a fatal error (which this is not)
 #endif
-
-    // Standard mappings have been loaded into m_translatorMap, copy them to
-    // m_baseMap for future reuse.
-    m_baseMap = m_translatorMap;
   }
 
   // Load mappings for any HID devices we have connected
