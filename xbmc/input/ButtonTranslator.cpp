@@ -437,7 +437,10 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-        success |= LoadKeymap(files[fileIndex]->GetPath());
+      {
+        if (!files[fileIndex]->m_bIsFolder)
+          success |= LoadKeymap(files[fileIndex]->GetPath());
+      }
 
       // Load mappings for any HID devices we have connected
       std::list<CStdString>::iterator it;
@@ -453,7 +456,10 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
           // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
           files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
           for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-            success |= LoadKeymap(files[fileIndex]->GetPath());
+          {
+            if (!files[fileIndex]->m_bIsFolder)
+              success |= LoadKeymap(files[fileIndex]->GetPath());
+          }
         }
       }
     }
