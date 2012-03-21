@@ -120,7 +120,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   if( strContent.Equals("audio/mpeg")
   ||  strContent.Equals("audio/mp3") )
     return new MP3Codec();
-  else if (strContent.Left(9).Equals("audio/l16") == 0)
+  else if (strContent.Left(9).Equals("audio/l16"))
   {
     PCMCodec * pcm_codec = new PCMCodec();
     pcm_codec->SetMimeParams(strContent);
