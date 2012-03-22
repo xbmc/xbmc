@@ -56,14 +56,15 @@ public:
 
    Check and return URL to cached image if it exists; If not, return empty string.
    If the image is cached, return URL (for original image or .dds version if requested)
-   Created .dds of image if requested as per settings.
+   Creates a .dds of image if requested via returnDDS and the image doesn't need recaching.
 
    \param image url of the image to check
    \param returnDDS if we're allowed to return a DDS version, defaults to true
+   \param needsRecaching [out] whether the image needs recaching.
    \return cached url of this image
    \sa GetCachedImage
    */ 
-   CStdString CheckCachedImage(const CStdString &image, bool returnDDS = true);
+  CStdString CheckCachedImage(const CStdString &image, bool returnDDS, bool &needsRecaching);
 
   /*! \brief This function is a wrapper around CheckCacheImage and CacheImageFile.
   
@@ -77,6 +78,15 @@ public:
    */
   CStdString CheckAndCacheImage(const CStdString &image, bool returnDDS = true);
 
+  /*! \brief Cache image (if required) using a background job
+
+   Essentially a threaded version of CheckAndCacheImage.
+
+   \param image url of the image to cache
+   \sa CheckAndCacheImage
+   */
+  void BackgroundCacheImage(const CStdString &image);
+
   /*! \brief Take image URL and add it to image cache
 
    Takes the URL to an image. Caches and adds to the database.
@@ -86,7 +96,7 @@ public:
    \sa CCacheJob::CacheImage
    */  
   CStdString CacheImageFile(const CStdString &url);
-  
+
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
    \return cached url of this image, empty if none exists
@@ -189,13 +199,22 @@ private:
    */
   bool IsCachedImage(const CStdString &image) const;
 
+  /*! \brief retrieve the cached version of the given image (if it exists)
+   \param image url of the image
+   \param cacheHash [out] set to the hash of the cached image if it needs checking
+   \return cached url of this image, empty if none exists
+   \sa ClearCachedImage
+   */
+  CStdString GetCachedImage(const CStdString &image, CStdString &cacheHash);
+
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
    \param image url of the original image
    \param cacheFile [out] url of the cached original (if available)
+   \param cacheHash [out] the hash of the cached image if it requires recaching, empty otherwise.
    \return true if we have a cached version of this image, false otherwise.
    */
-  bool GetCachedTexture(const CStdString &url, CStdString &cacheFile);
+  bool GetCachedTexture(const CStdString &url, CStdString &cacheFile, CStdString &cacheHash);
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture

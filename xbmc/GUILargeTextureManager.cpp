@@ -48,9 +48,11 @@ CImageLoader::~CImageLoader()
 
 bool CImageLoader::DoWork()
 {
+  bool needsCaching = false;
+
   CStdString texturePath = g_TextureManager.GetTexturePath(m_path);
-  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath); 
-  
+  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath, true, needsCaching); 
+
   // If empty, then go on to validate and cache image as appropriate
   // If hit, continue down and load image
   if (loadPath.IsEmpty())
@@ -61,15 +63,11 @@ bool CImageLoader::DoWork()
     if ((file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() )) 
        || file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
     { 
-      // Cache the image if necessary
-      loadPath = CTextureCache::Get().CacheImageFile(texturePath);
-      if (loadPath.IsEmpty())
-        return false;
+      needsCaching = true;
+      loadPath = texturePath;
     }
-    else
-      return true;
   }
- 
+
   m_texture = new CTexture();
   unsigned int start = XbmcThreads::SystemClockMillis();
   if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
@@ -77,8 +75,15 @@ bool CImageLoader::DoWork()
     delete m_texture;
     m_texture = NULL;
   }
-  else if (XbmcThreads::SystemClockMillis() - start > 100)
-    CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
+  else
+  {
+    if (needsCaching)
+    { // fire off a caching job
+      CTextureCache::Get().BackgroundCacheImage(texturePath);
+    }
+    if (XbmcThreads::SystemClockMillis() - start > 100)
+      CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
+  }
 
   return true;
 }
