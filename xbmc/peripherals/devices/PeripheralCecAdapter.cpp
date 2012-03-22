@@ -160,7 +160,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
 
 bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
 {
-  if (feature == FEATURE_CEC && !m_bStarted)
+  if (feature == FEATURE_CEC && !m_bStarted && GetSettingBool("enabled"))
   {
     SetConfigurationFromSettings();
     m_callbacks.CBCecLogMessage           = &CecLogMessage;
