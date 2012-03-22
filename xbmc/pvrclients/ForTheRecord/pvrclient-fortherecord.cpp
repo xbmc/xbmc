@@ -638,11 +638,12 @@ PVR_ERROR cPVRClientForTheRecord::GetChannelGroupMembers(PVR_HANDLE handle, cons
   for (int index = 0; index < size; index++)
   {
     std::string channelId = response[index]["ChannelId"].asString();
+    std::string channelName = response[index]["DisplayName"].asString();
     cChannel* pChannel    = FetchChannel(channelId);
     if (pChannel == NULL)
     {
       XBMC->Log(LOG_ERROR, "Unable to translate channel \"%s\" (\"%s\") to XBMC channel number, channel group member skipped.",
-        channelId.c_str());
+        channelId.c_str(), channelName.c_str());
       XBMC->QueueNotification(QUEUE_ERROR, "GUID to XBMC Channel");
       continue;
     }
