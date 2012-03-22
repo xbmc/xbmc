@@ -1802,7 +1802,7 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMovie /* = -1 */)
+int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idMovie /* = -1 */)
 {
   try
   {
@@ -1854,7 +1854,14 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
 
     // add sets...
     for (unsigned int i = 0; i < details.m_set.size(); i++)
-      AddSetToMovie(idMovie, AddSet(details.m_set[i]));
+    {
+      int idSet = AddSet(details.m_set[i]);
+      // add art if not available
+      map<string, string> setArt;
+      if (!GetArtForItem(idSet, "set", setArt))
+        SetArtForItem(idSet, "set", artwork);
+      AddSetToMovie(idMovie, idSet);
+    }
 
     // add countries...
     for (unsigned int i = 0; i < details.m_country.size(); i++)
@@ -1862,6 +1869,8 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+
+    SetArtForItem(idMovie, "movie", artwork);
 
     // update our movie table (we know it was added already above)
     // and insert the new row
@@ -1879,7 +1888,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, int idTvShow /*= -1 */)
+int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idTvShow /*= -1 */)
 {
   try
   {
@@ -1932,6 +1941,8 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     // add "all seasons" - the rest are added in SetDetailsForEpisode
     AddSeason(idTvShow, -1);
 
+    SetArtForItem(idTvShow, "tvshow", artwork);
+
     // and insert the new row
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += PrepareSQL("where idShow=%i", idTvShow);
@@ -1949,7 +1960,7 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode)
+int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idShow, int idEpisode)
 {
   try
   {
@@ -2005,6 +2016,8 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     // ensure we have this season already added
     AddSeason(idShow, details.m_iSeason);
 
+    SetArtForItem(idEpisode, "episode", artwork);
+
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     sql += PrepareSQL("where idEpisode=%i", idEpisode);
@@ -2040,7 +2053,7 @@ int CVideoDatabase::AddSeason(int showID, int season)
   return seasonId;
 }
 
-int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMVideo /* = -1 */)
+int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const map<string, string> &artwork, int idMVideo /* = -1 */)
 {
   try
   {
@@ -2099,6 +2112,8 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
+
+    SetArtForItem(idMVideo, "musicvideo", artwork);
 
     // update our movie table (we know it was added already above)
     // and insert the new row

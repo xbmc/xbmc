@@ -406,10 +406,10 @@ public:
 
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
-  int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMovie = -1);
-  int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, int idTvShow = -1);
-  int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode=-1);
-  int SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMVideo = -1);
+  int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMovie = -1);
+  int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idTvShow = -1);
+  int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idShow, int idEpisode=-1);
+  int SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, int idMVideo = -1);
   void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
   void SetDetail(const CStdString& strDetail, int id, int field, VIDEODB_CONTENT_TYPE type);

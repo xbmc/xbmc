@@ -364,12 +364,15 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
     return InvalidParams;
   }
 
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos);
 
-  if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, id) > 0)
+  if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
       videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
@@ -395,12 +398,15 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
     return InvalidParams;
   }
 
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos);
 
-  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, id) > 0)
+  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
       videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
@@ -433,12 +439,15 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
     return InvalidParams;
   }
 
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos);
 
-  if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, tvshowid, id) > 0)
+  if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, artwork, tvshowid, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
       videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
@@ -464,12 +473,15 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
     return InvalidParams;
   }
 
+  std::map<std::string, std::string> artwork;
+  videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
+
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos);
 
-  if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, id) > 0)
+  if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) > 0)
   {
     if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
       videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);

@@ -1821,7 +1821,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Open();
   int idMovie = m_database.AddMovie(pItem->GetPath());
   movie.m_strIMDBNumber.Format("xx%08i", idMovie);
-  m_database.SetDetailsForMovie(pItem->GetPath(), movie);
+  m_database.SetDetailsForMovie(pItem->GetPath(), movie, pItem->GetArt());
   m_database.Close();
 
   // done...

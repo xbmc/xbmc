@@ -1046,7 +1046,7 @@ namespace VIDEO
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
 
-      lResult = m_database.SetDetailsForMovie(pItem->GetPath(), movieDetails);
+      lResult = m_database.SetDetailsForMovie(pItem->GetPath(), movieDetails, pItem->GetArt());
       movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
@@ -1064,7 +1064,7 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails);
+        lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, pItem->GetArt());
         movieDetails.m_iDbId = lResult;
       }
       else
@@ -1072,7 +1072,7 @@ namespace VIDEO
         // we add episode then set details, as otherwise set details will delete the
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->GetPath());
-        lResult = m_database.SetDetailsForEpisode(pItem->GetPath(), movieDetails, idShow, idEpisode);
+        lResult = m_database.SetDetailsForEpisode(pItem->GetPath(), movieDetails, pItem->GetArt(), idShow, idEpisode);
         movieDetails.m_iDbId = lResult;
         if (movieDetails.m_fEpBookmark > 0)
         {
@@ -1087,7 +1087,7 @@ namespace VIDEO
     }
     else if (content == CONTENT_MUSICVIDEOS)
     {
-      lResult = m_database.SetDetailsForMusicVideo(pItem->GetPath(), movieDetails);
+      lResult = m_database.SetDetailsForMusicVideo(pItem->GetPath(), movieDetails, pItem->GetArt());
       movieDetails.m_iDbId = lResult;
     }
 
