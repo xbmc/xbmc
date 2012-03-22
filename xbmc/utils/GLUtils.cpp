@@ -121,3 +121,21 @@ void LogGraphicsInfo()
 #endif /* !HAS_GL */
 }
 
+int glFormatElementByteCount(GLenum format)
+{
+  switch (format)
+  {
+#ifndef HAS_GLES
+  case GL_BGRA:
+#endif
+  case GL_RGBA:
+    return 4;
+#ifndef HAS_GLES
+  case GL_BGR:
+#endif
+  case GL_RGB:
+    return 3;
+  default:
+    return 1;
+  }
+}
