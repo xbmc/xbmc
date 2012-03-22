@@ -182,6 +182,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie, const float fFramesPerSecond)
     if (bError)
       CLog::Log(LOGWARNING, "%s - Error on line %i in EDL file: %s", __FUNCTION__, iLine, edlFilename.c_str());
 
+    bError = false;
+
     iLine++;
 
     CStdStringArray strFields(2);
