@@ -194,6 +194,13 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)
 {
+  CStdString cachedHash;
+  return GetCachedImage(url, cachedHash);
+}
+
+CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cachedHash)
+{
+  cachedHash.clear();
   if (url.compare(0, 8, "image://") == 0)
   {
     CStdString image = CURL(url).GetHostName();
@@ -206,7 +213,7 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url)
 
   // lookup the item in the database
   CStdString cacheFile;
-  if (GetCachedTexture(url, cacheFile))
+  if (GetCachedTexture(url, cacheFile, cachedHash))
     return GetCachedPath(cacheFile);
   return "";
 }
@@ -225,12 +232,14 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
   return "image://" + url + "/transform?size=thumb";
 }
 
-CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS)
+CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
-  CStdString path(GetCachedImage(url));
+  CStdString cachedHash;
+  CStdString path(GetCachedImage(url, cachedHash));
+  needsRecaching = !cachedHash.IsEmpty();
   if (!path.IsEmpty())
   {
-    if (returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
+    if (!needsRecaching && returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
       CStdString ddsPath = URIUtils::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
@@ -245,12 +254,24 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
 
 CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
 {
-  CStdString path(CheckCachedImage(url,returnDDS));
+  bool needsRecaching = false;
+  CStdString path(CheckCachedImage(url, returnDDS, needsRecaching));
   if (!path.IsEmpty())
   {
     return path;
   }
   return CacheImageFile(url);
+}
+
+void CTextureCache::BackgroundCacheImage(const CStdString &url)
+{
+  CStdString cacheHash;
+  CStdString path(GetCachedImage(url, cacheHash));
+  if (!path.IsEmpty() && cacheHash.IsEmpty())
+    return; // image is already cached and doesn't need to be checked further
+
+  // needs (re)caching
+  AddJob(new CCacheJob(url, cacheHash));
 }
 
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
@@ -322,17 +343,10 @@ void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*
     CFile::Delete(path);
 }
 
-bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL)
+bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL, CStdString &cachedHash)
 {
   CSingleLock lock(m_databaseSection);
-  CStdString imageHash;
-  if (m_database.GetCachedTexture(url, cachedURL, imageHash))
-  {
-    if (!imageHash.IsEmpty()) // check for an updated image
-      AddJob(new CCacheJob(url, imageHash));
-    return true;
-  }
-  return false;
+  return m_database.GetCachedTexture(url, cachedURL, cachedHash);
 }
 
 bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &hash)
