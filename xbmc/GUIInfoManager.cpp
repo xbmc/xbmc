@@ -4059,10 +4059,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
-      if(!strThumb.IsEmpty() && !g_TextureManager.CanLoad(strThumb))
-        strThumb = "";
-
-      if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
+      if (strThumb.IsEmpty())
         strThumb = item->GetIconImage();
       if (fallback)
         *fallback = item->GetIconImage();

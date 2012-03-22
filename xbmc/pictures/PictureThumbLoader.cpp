@@ -51,9 +51,6 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (pItem->IsParentFolder()) return true;
 
-  if (CheckAndCacheThumb(*pItem))
-    return true;
-
   if (pItem->HasThumbnail() && m_regenerateThumbs)
   {
     CTextureCache::Get().ClearCachedImage(pItem->GetThumbnailImage());
@@ -98,17 +95,8 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   }
   if (!thumb.IsEmpty())
   {
-    // TODO: In future, do we want the thumbnail image to be the actual URL, and have the caching
-    //       either done here in a job or done at load time (or both).
-    //
-    //       If so, we need to alter GUIInfoManager::GetItemLabel() to return the thumb image
-    //       even if it can't be loaded by the non-background texture manager.
-    //
-    //       In addition, we'd need to hook up a method for the skinner to display either a fallback
-    //       or preferably the icon image while the thumb loads. This would need support in the
-    //       texture control to load directly-load fallback images before loading slow-load images
-    //       In addition, ideally the infomanager could return a (vector of?) fallbacks
-    pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+    CTextureCache::Get().BackgroundCacheImage(thumb);
+    pItem->SetThumbnailImage(thumb);
   }
   pItem->FillInDefaultIcon();
   return true;
@@ -146,7 +134,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(strTBN))
     {
       db.SetTextureForPath(pItem->GetPath(), strTBN);
-      pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(strTBN));
+      CTextureCache::Get().BackgroundCacheImage(strTBN);
+      pItem->SetThumbnailImage(strTBN);
       return;
     }
   }
@@ -171,7 +160,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(thumb))
     {
       db.SetTextureForPath(pItem->GetPath(), thumb);
-      pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+      CTextureCache::Get().BackgroundCacheImage(thumb);
+      pItem->SetThumbnailImage(thumb);
       return;
     }
     if (!pItem->IsPlugin())
@@ -224,7 +214,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
         CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), thumb);
-        pItem->SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+        CTextureCache::Get().BackgroundCacheImage(thumb);
+        pItem->SetThumbnailImage(thumb);
       }
       else
       {

@@ -69,13 +69,6 @@ public:
 
   bool LoadRemoteThumb(CFileItem *pItem);
 
-  /*! \brief Checks whether the given item has a thumb that needs caching, and if so caches it.
-   \param item CFileItem to check for a cachable thumb.
-   \return true if we successfully cache a thumb, false otherwise.
-   \sa GetCachedThumb
-   */
-  static bool CheckAndCacheThumb(CFileItem &item);
-
   /*! \brief Checks whether the given item has a thumb listed in the texture database
    \param item CFileItem to check for a thumb
    \return the thumb associated with this item
