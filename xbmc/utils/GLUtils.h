@@ -41,3 +41,4 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 
 void LogGraphicsInfo();
 
+int glFormatElementByteCount(GLenum format);
