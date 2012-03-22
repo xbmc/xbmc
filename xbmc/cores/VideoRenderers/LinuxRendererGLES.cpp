@@ -348,6 +348,8 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
   glBindTexture(m_textureTarget, plane.id);
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
 
+  int bps = glFormatElementByteCount(type);
+
   /* check if we need to load any border pixels */
   if(height < plane.texheight)
     glTexSubImage2D( m_textureTarget, 0
@@ -359,7 +361,7 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     glTexSubImage2D( m_textureTarget, 0
                    , width, 0, 1, height
                    , type, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixelData + stride - 1);
+                   , (unsigned char*)pixelData + bps * (width-1));
 
   glBindTexture(m_textureTarget, 0);
 

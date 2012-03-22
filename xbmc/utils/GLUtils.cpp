@@ -135,7 +135,13 @@ int glFormatElementByteCount(GLenum format)
 #endif
   case GL_RGB:
     return 3;
+  case GL_LUMINANCE_ALPHA:
+    return 2;
+  case GL_LUMINANCE:
+  case GL_ALPHA:
+    return 1;
   default:
+    CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
     return 1;
   }
 }
