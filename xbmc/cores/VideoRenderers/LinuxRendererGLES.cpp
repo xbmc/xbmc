@@ -326,30 +326,20 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     return;
 
   const GLvoid *pixelData = data;
-  char *pixelVector = NULL;
 
   int bps = glFormatElementByteCount(type);
 
-  // OpenGL ES does not support strided texture input. Make a copy without stride
+  glBindTexture(m_textureTarget, plane.id);
+
+  // OpenGL ES does not support strided texture input.
   if(stride != width * bps)
   {
-    pixelVector = (char *)malloc(width * height * bps);
-    
-    const char *src = (const char *)data;
-    char *dst = pixelVector;
-    for (int y = 0;y < height;++y)
-    {
-      fast_memcpy(dst, src, width * bps);
-      src += stride;
-      dst += width * bps;
-    }
-    pixelData = pixelVector;
-    stride = width * bps;
+    unsigned char* src = (unsigned char*)data;
+    for (int y = 0; y < height;++y, src += stride)
+      glTexSubImage2D(m_textureTarget, 0, 0, y, width, 1, type, GL_UNSIGNED_BYTE, src);
+  } else {
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
   }
-
-  glBindTexture(m_textureTarget, plane.id);
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
-
 
   /* check if we need to load any border pixels */
   if(height < plane.texheight)
@@ -367,9 +357,6 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
   glBindTexture(m_textureTarget, 0);
 
   plane.flipindex = flipindex;
-
-  if(pixelVector)
-    free(pixelVector);
 }
 
 void CLinuxRendererGLES::Reset()
