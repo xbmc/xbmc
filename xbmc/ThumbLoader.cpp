@@ -78,17 +78,6 @@ CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
   return "";
 }
 
-bool CThumbLoader::CheckAndCacheThumb(CFileItem &item)
-{
-  if (item.HasThumbnail() && !g_TextureManager.CanLoad(item.GetThumbnailImage()))
-  {
-    CStdString thumb = CTextureCache::Get().CheckAndCacheImage(item.GetThumbnailImage());
-    item.SetThumbnailImage(thumb);
-    return !thumb.IsEmpty();
-  }
-  return false;
-}
-
 CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
 {
   m_listpath = listpath;
@@ -311,7 +300,7 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 bool CProgramThumbLoader::FillThumb(CFileItem &item)
 {
   // no need to do anything if we already have a thumb set
-  if (CheckAndCacheThumb(item) || item.HasThumbnail())
+  if (item.HasThumbnail())
     return true;
 
   // see whether we have a cached image for this item
@@ -327,7 +316,10 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
     }
   }
   if (!thumb.IsEmpty())
-    item.SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+  {
+    CTextureCache::Get().BackgroundCacheImage(thumb);
+    item.SetThumbnailImage(thumb);
+  }
   return true;
 }
 
