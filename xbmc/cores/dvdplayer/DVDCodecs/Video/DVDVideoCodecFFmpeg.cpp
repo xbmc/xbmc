@@ -129,6 +129,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_pFilterIn     = NULL;
   m_pFilterOut    = NULL;
   m_pFilterLink   = NULL;
+  m_pFilterBufferRef = NULL;
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
@@ -579,10 +580,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iWidth = m_pCodecContext->width;
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
 
-  if(m_pFilterLink)
+  if(m_pFilterBufferRef)
   {
-    pDvdVideoPicture->iWidth  = m_pFilterLink->cur_buf->video->w;
-    pDvdVideoPicture->iHeight = m_pFilterLink->cur_buf->video->h;
+    pDvdVideoPicture->iWidth  = m_pFilterBufferRef->video->w;
+    pDvdVideoPicture->iHeight = m_pFilterBufferRef->video->h;
   }
 
   /* crop of 10 pixels if demuxer asked it */
@@ -598,11 +599,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
-  if (m_pFilterLink)
+  if (m_pFilterBufferRef)
 #ifdef HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
-    pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
+    pixel_aspect = m_pFilterBufferRef->video->sample_aspect_ratio;
 #else
-    pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
+    pixel_aspect = m_pFilterBufferRef->video->pixel_aspect;
 #endif
 
   if (pixel_aspect.num == 0)
@@ -715,17 +716,13 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     return -1;
   }
 
-  // CrHasher HACK (if an alternative becomes available use it!): In order to display the output
-  // produced by a combination of filters we insert "nullsink" as the last filter and we use
-  // its input pin as our output pin.
-  //
-  // input --> .. --> last_filter --> [in] nullsink [null]     [in] --> output
-  //                                   |                        |
-  //                                   |                        |
-  //                                   +------------------------+
-  //
   AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
-  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("nullsink"); // should be last filter in the graph for now
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+  enum PixelFormat pix_fmts[] = { m_pCodecContext->pix_fmt, PIX_FMT_NONE };
+  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink");
+#else
+  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("nullsink");
+#endif
 
   CStdString args;
 
@@ -744,7 +741,11 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     return result;
   }
 
-  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, NULL/*nullsink=>NULL*/, m_pFilterGraph)) < 0)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, pix_fmts/*buffersink*/, m_pFilterGraph)) < 0)
+#else
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, NULL/*nullsink*/, m_pFilterGraph)) < 0)
+#endif
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: out");
     return result;
@@ -796,6 +797,12 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 {
   if (m_pFilterGraph)
   {
+    if (m_pFilterBufferRef)
+    {
+      m_dllAvFilter.avfilter_unref_buffer(m_pFilterBufferRef); // call this before avfilter_graph_free
+      m_pFilterBufferRef = NULL;
+    }
+
     m_dllAvFilter.avfilter_graph_free(&m_pFilterGraph);
 
     // Disposed by above code
@@ -838,21 +845,32 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frames > 0)
   {
-    if (m_pFilterLink->cur_buf)
+    if (m_pFilterBufferRef)
     {
-      m_dllAvFilter.avfilter_unref_buffer(m_pFilterLink->cur_buf);
-      m_pFilterLink->cur_buf = NULL;
+      m_dllAvFilter.avfilter_unref_buffer(m_pFilterBufferRef);
+      m_pFilterBufferRef = NULL;
     }
 
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+    if ((result = m_dllAvFilter.av_vsink_buffer_get_video_buffer_ref(m_pFilterOut, &m_pFilterBufferRef, 0)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsink_buffer_get_video_buffer_ref");
+#else
     if ((result = m_dllAvFilter.avfilter_request_frame(m_pFilterLink)) < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_request_frame");
+#endif
       return VC_ERROR;
     }
 
-    if (!m_pFilterLink->cur_buf)
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(2,21,0)
+    m_pFilterBufferRef = m_pFilterLink->cur_buf;
+    m_pFilterLink->cur_buf = NULL;
+#endif
+
+    if (!m_pFilterBufferRef)
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - cur_buf");
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - BufferRef");
       return VC_ERROR;
     }
 
@@ -861,11 +879,11 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
     else
       m_pFrame->repeat_pict      = -(frames - 1);
 
-    m_pFrame->interlaced_frame = m_pFilterLink->cur_buf->video->interlaced;
-    m_pFrame->top_field_first  = m_pFilterLink->cur_buf->video->top_field_first;
+    m_pFrame->interlaced_frame = m_pFilterBufferRef->video->interlaced;
+    m_pFrame->top_field_first  = m_pFilterBufferRef->video->top_field_first;
 
-    memcpy(m_pFrame->linesize, m_pFilterLink->cur_buf->linesize, 4*sizeof(int));
-    memcpy(m_pFrame->data    , m_pFilterLink->cur_buf->data    , 4*sizeof(uint8_t*));
+    memcpy(m_pFrame->linesize, m_pFilterBufferRef->linesize, 4*sizeof(int));
+    memcpy(m_pFrame->data    , m_pFilterBufferRef->data    , 4*sizeof(uint8_t*));
 
     if(frames > 1)
       return VC_PICTURE;
