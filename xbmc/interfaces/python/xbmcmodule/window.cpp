@@ -573,28 +573,68 @@ namespace PYXBMC
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
   {
-    Control* pControl;
+    PyObject* object;
 
-    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
-    // type checking, object should be of type Control
-    if(!Control_Check(pControl))
+    if (!PyArg_ParseTuple(args, (char*)"O", &object)) return NULL;
+
+    if (!Window_AddSingleControl(self, object, true))
+      return NULL;
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(addControls__doc__,
+    "addControls(self, List) -- Add a list of Controls to this window.\n"
+    "\n"
+    "Throws: TypeError, if supplied argument is not of List type, or a control is not of Control type\n"
+    "        ReferenceError, if control is already used in another window\n"
+    "        RuntimeError, should not happen :-)\n");
+
+  PyObject* Window_AddControls(Window *self, PyObject *args)
+  {
+    PyObject* object;
+
+    if (!PyArg_ParseTuple(args, (char*)"O", &object)) return NULL;
+
+    if (!PyList_Check(object))
     {
       PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
       return NULL;
     }
+    for (int i = 0; i < PyList_Size(object); i++)
+    {
+      if (!Window_AddSingleControl(self, PyList_GetItem(object,i), i+1 == PyList_Size(object)))
+        return NULL;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  bool Window_AddSingleControl(Window *self, PyObject *control, bool wait)
+  {
+    // type checking, object should be of type Control
+    if(!Control_Check(control))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
+      return false;
+    }
+    Control *pControl = (Control *)control;
 
     if(pControl->iControlId != 0)
     {
       PyErr_SetString(PyExc_ReferenceError, "Control is already used");
-      return NULL;
+      return false;
     }
 
-    // lock xbmc GUI before accessing data from it
-    GilSafeSingleLock lock(g_graphicsContext);
     pControl->iParentId = self->iWindowId;
-    // assign control id, if id is already in use, try next id
-    do pControl->iControlId = ++self->iCurrentControlId;
-    while (self->pWindow->GetControl(pControl->iControlId));
+
+    { // assign control id, if id is already in use, try next id
+      GilSafeSingleLock lock(g_graphicsContext);
+      do pControl->iControlId = ++self->iCurrentControlId;
+      while (self->pWindow->GetControl(pControl->iControlId));
+    }
 
     // Control Label
     if (ControlLabel_Check(pControl))
@@ -646,7 +686,7 @@ namespace PYXBMC
     else
     {
       PyErr_SetString(PyExc_RuntimeError, "Object is a Control, but can't be added to a window");
-      return NULL;
+      return false;
     }
 
     Py_INCREF(pControl);
@@ -658,18 +698,60 @@ namespace PYXBMC
     pControl->iControlRight = pControl->iControlId;
 
     pControl->pGUIControl->SetNavigation(pControl->iControlUp,
-      pControl->iControlDown, pControl->iControlLeft, pControl->iControlRight);
+                                         pControl->iControlDown, pControl->iControlLeft, pControl->iControlRight);
 
-    // add control to list and allocate recources for the control
     self->vecControls.push_back(pControl);
     {
       CPyThreadState state;
       CGUIMessage msg(GUI_MSG_ADD_CONTROL, 0, 0);
       msg.SetPointer(pControl->pGUIControl);
-      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, true);
+      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, wait);
     }
-    Py_INCREF(Py_None);
-    return Py_None;
+    return true;
+  }
+
+  bool Window_RemoveSingleControl(Window *self, PyObject *object, bool wait)
+  {
+    // type checking, object should be of type Control
+    if(!Control_Check(object))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
+      return false;
+    }
+    Control *pControl = (Control *)object;
+
+    {
+      GilSafeSingleLock lock(g_graphicsContext);
+      if(!self->pWindow->GetControl(pControl->iControlId))
+      {
+        PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
+        return false;
+      }
+    }
+
+    // delete control from vecControls in window object
+    for (vector<Control*>::iterator it = self->vecControls.begin(); it != self->vecControls.end(); ++it)
+    {
+      if ((*it)->iControlId == pControl->iControlId)
+      {
+        self->vecControls.erase(it);
+        break;
+      }
+    }
+
+    {
+      CPyThreadState state;
+      CGUIMessage msg(GUI_MSG_REMOVE_CONTROL, 0, 0);
+      msg.SetPointer(pControl->pGUIControl);
+      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, wait);
+    }
+
+    // initialize control to zero
+    pControl->pGUIControl = NULL;
+    pControl->iControlId = 0;
+    pControl->iParentId = 0;
+    Py_DECREF(pControl);
+    return true;
   }
 
   PyDoc_STRVAR(getControl__doc__,
@@ -786,44 +868,38 @@ namespace PYXBMC
 
   PyObject* Window_RemoveControl(Window *self, PyObject *args)
   {
-    Control* pControl;
-    if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
-    // type checking, object should be of type Control
-    if(!Control_Check(pControl))
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, (char*)"O", &object)) return NULL;
+
+    if (!Window_RemoveSingleControl(self, object, true))
+      return NULL;
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+  PyDoc_STRVAR(removeControls__doc__,
+    "removeControls(self, List) -- Removes a list of controls from this window.\n"
+    "\n"
+    "Throws: TypeError, if supplied argument is not a Control type\n"
+    "        RuntimeError, if control is not added to this window\n"
+    "\n"
+    "This will not delete the controls. They are only removed from the window.");
+
+  PyObject* Window_RemoveControls(Window *self, PyObject *args)
+  {
+    PyObject* object;
+    if (!PyArg_ParseTuple(args, (char*)"O", &object)) return NULL;
+
+    if (!PyList_Check(object))
     {
-      PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
       return NULL;
     }
-    GilSafeSingleLock lock(g_graphicsContext);
-    if(!self->pWindow->GetControl(pControl->iControlId))
+    for (int i = 0; i < PyList_Size(object); i++)
     {
-      PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
-      return NULL;
+      if (!Window_RemoveSingleControl(self, PyList_GetItem(object,i), i+1 == PyList_Size(object)))
+        return NULL;
     }
-
-    // delete control from vecControls in window object
-    vector<Control*>::iterator it = self->vecControls.begin();
-    while (it != self->vecControls.end())
-    {
-      Control* control = *it;
-      if (control->iControlId == pControl->iControlId)
-      {
-        it = self->vecControls.erase(it);
-      } else ++it;
-    }
-
-    {
-      CPyThreadState state;
-      CGUIMessage msg(GUI_MSG_REMOVE_CONTROL, 0, 0);
-      msg.SetPointer(pControl->pGUIControl);
-      g_application.getApplicationMessenger().SendGUIMessage(msg, self->iWindowId, true);
-    }
-
-    // initialize control to zero
-    pControl->pGUIControl = NULL;
-    pControl->iControlId = 0;
-    pControl->iParentId = 0;
-    Py_DECREF(pControl);
 
     Py_INCREF(Py_None);
     return Py_None;
