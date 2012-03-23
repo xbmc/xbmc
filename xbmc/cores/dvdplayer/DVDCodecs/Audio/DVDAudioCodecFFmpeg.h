@@ -50,7 +50,7 @@ protected:
   enum AVSampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
 
-  BYTE *m_pBuffer1;
+  AVFrame* m_pFrame1;
   int   m_iBufferSize1;
 
   BYTE *m_pBuffer2;
