@@ -176,6 +176,7 @@ void CAdvancedSettings::Initialize()
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
 
+  m_useExifThumbnails = false;
   m_thumbSize = DEFAULT_THUMB_SIZE;
   m_fanartHeight = DEFAULT_FANART_HEIGHT;
   m_useDDSFanart = false;
@@ -862,6 +863,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
+  XMLUtils::GetBoolean(pRootElement, "useexifthumbnails", m_useExifThumbnails);
   XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
   XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);

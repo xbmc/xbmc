@@ -195,6 +195,7 @@ class CAdvancedSettings
     bool m_playlistAsFolders;
     bool m_detectAsUdf;
 
+    bool m_useExifThumbnails;
     int m_thumbSize;
     int m_fanartHeight;
     bool m_useDDSFanart;

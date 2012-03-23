@@ -65,7 +65,7 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
       return false;
     }
 
-    if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+    if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation"), g_advancedSettings.m_useExifThumbnails))
     {
       CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
       return false;
