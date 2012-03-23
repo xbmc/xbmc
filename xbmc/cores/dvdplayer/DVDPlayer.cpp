@@ -3307,14 +3307,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
       switch (action.GetID())
       {
       case ACTION_NEXT_ITEM:
-      case ACTION_PAGE_UP:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
         pStream->OnNext();
         g_infoManager.SetDisplayAfterSeek();
         return true;
       case ACTION_PREV_ITEM:
-      case ACTION_PAGE_DOWN:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
         pStream->OnPrevious();
@@ -3417,14 +3415,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
     switch (action.GetID())
     {
       case ACTION_NEXT_ITEM:
-      case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
 
       case ACTION_PREV_ITEM:
-      case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
         g_infoManager.SetDisplayAfterSeek();
         return true;
@@ -3445,7 +3441,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
-    case ACTION_PAGE_UP:
       if(GetChapterCount() > 0)
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
@@ -3455,7 +3450,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
       else
         break;
     case ACTION_PREV_ITEM:
-    case ACTION_PAGE_DOWN:
       if(GetChapterCount() > 0)
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
