@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$--> <!--Translator: Ydatografida (ydatografida@gmail.com) / Date of translation: 03/04/2012 / Last update (by CutSickAss): 22/03/2012 / Based on english strings version 1E+42-->
+<!--$Revision$--> <!--Original translator: Ydatografida (ydatografida@gmail.com) / Last update (by CutSickAss): 23/03/2012 -->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Εικόνες</string>
@@ -1548,8 +1548,8 @@
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
   <string id="20001">Χρήση εξωτερικού αναπαραγωγέα DVD</string>
   <string id="20002">Εξωτερικός αναπαραγωγέας DVD</string>
-  <string id="20003">Φάκελος trainers</string>
-  <string id="20004">Φάκελος στιγμιότυπου</string>
+  <string id="20003">Φάκελος trainer</string>
+  <string id="20004">Φάκελος στιγμιότυπων</string>
 
   <string id="20006">Φάκελος λίστας αναπαραγωγής</string>
   <string id="20007">Εγγραφές</string>
@@ -2090,11 +2090,11 @@
   <string id="21890">Επιλογή καλλιτέxνη</string>
   <string id="21891">Πληροφορίες καλλιτέχνη</string>
   <string id="21892">Όργανα</string>
-  <string id="21893">Γέννηση</string>
+  <string id="21893">Γεννήθηκε</string>
   <string id="21894">Δημιουργία</string>
   <string id="21895">Θεματολόγιο</string>
   <string id="21896">Διαλύθηκε</string>
-  <string id="21897">Θάνατος</string>
+  <string id="21897">Πέθανε</string>
   <string id="21898">Έτη ενεργής σταδιοδρομίας</string>
   <string id="21899">Ετικέτα</string>
   <string id="21900">Γέννηση/Δημιουργία</string>
