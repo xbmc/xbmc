@@ -60,6 +60,8 @@
 
 // For sorting items as defined in GUI
 #include "filesystem/VideoDatabaseDirectory.h"
+// #include "guilib/GUIWindow.h"
+#include "GUIViewState.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1100,10 +1102,19 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     }
 
     // If it is a series sort by episode, else by label
-    VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(items.GetPath());
+    // VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(items.GetPath());
 
-    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) {
-        items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
+    // if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_EPISODES) {
+        // items.Sort(SORT_METHOD_EPISODE, SORT_ORDER_ASC);
+    // } else {
+        // items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+    // }
+    
+    // Let's try to use CGUIViewState
+    auto_ptr<CGUIViewState> guiState(CGUIViewState::GetViewState(0, items));
+    if (guiState.get())
+    {
+        items.Sort(guiState->GetSortMethod(), guiState->GetDisplaySortOrder());
     } else {
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     }
@@ -1136,7 +1147,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
                            const PLT_HttpRequestContext& context,
                            const char*                   parent_id /* = NULL */)
 {
-    NPT_COMPILER_UNUSED(sort_criteria);
+    // NPT_COMPILER_UNUSED(sort_criteria);
 
     CLog::Log(LOGDEBUG, "Building UPnP response with filter '%s', starting @ %d with %d requested",
         (const char*)filter,
