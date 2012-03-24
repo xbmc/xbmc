@@ -52,8 +52,8 @@ namespace PLATFORM
     #ifdef __APPLE__
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    now.tv_sec  = tv.tv_sec + 0;
-    now.tv_nsec = 0;
+    now.tv_sec  = tv.tv_sec;
+    now.tv_nsec = tv.tv_usec * 1000;
     #else
     clock_gettime(CLOCK_REALTIME, &now);
     #endif
