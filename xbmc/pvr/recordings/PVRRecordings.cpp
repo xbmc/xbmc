@@ -27,6 +27,8 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "video/VideoDatabase.h"
+
 
 #include "utils/URIUtils.h"
 #include "pvr/PVRManager.h"
@@ -104,6 +106,10 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
+    CVideoDatabase db;
+    if (db.Open())
+      pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
+    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
     results->Add(pFileItem);
   }
 }
