@@ -57,7 +57,7 @@ public:
    * @param message The message to send.
    * @return The returned message or NULL if an error occured or nothing was received.
    */
-  CHTSResult   ReadResult(htsmsg_t *message);
+  void         ReadResult(htsmsg_t *message, CHTSResult &result);
   int          GetProtocol(void) const   { return m_session->GetProtocol(); }
   const char * GetServerName(void) const { return m_session->GetServerName(); }
   const char * GetVersion(void) const    { return m_session->GetVersion(); }
