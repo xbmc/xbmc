@@ -326,27 +326,20 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     return;
 
   const GLvoid *pixelData = data;
-  char *pixelVector = NULL;
 
-  // OpenGL ES does not support strided texture input. Make a copy without stride
-  if(stride != width)
-  {
-    pixelVector = (char *)malloc(width * height * width);
-    
-    const char *src = (const char *)data;
-    char *dst = pixelVector;
-    for (int y = 0;y < height;++y)
-    {
-      fast_memcpy(dst, src, width);
-      src += stride;
-      dst += width;
-    }
-    pixelData = pixelVector;
-    stride = width;
-  }
+  int bps = glFormatElementByteCount(type);
 
   glBindTexture(m_textureTarget, plane.id);
-  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
+
+  // OpenGL ES does not support strided texture input.
+  if(stride != width * bps)
+  {
+    unsigned char* src = (unsigned char*)data;
+    for (int y = 0; y < height;++y, src += stride)
+      glTexSubImage2D(m_textureTarget, 0, 0, y, width, 1, type, GL_UNSIGNED_BYTE, src);
+  } else {
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, pixelData);
+  }
 
   /* check if we need to load any border pixels */
   if(height < plane.texheight)
@@ -359,14 +352,11 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     glTexSubImage2D( m_textureTarget, 0
                    , width, 0, 1, height
                    , type, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixelData + stride - 1);
+                   , (unsigned char*)pixelData + bps * (width-1));
 
   glBindTexture(m_textureTarget, 0);
 
   plane.flipindex = flipindex;
-
-  if(pixelVector)
-    free(pixelVector);
 }
 
 void CLinuxRendererGLES::Reset()
@@ -1369,17 +1359,17 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     {
       LoadPlane( fields[FIELD_TOP][0] , GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
-               , m_sourceWidth*2, m_rgbBuffer );
+               , m_sourceWidth*8, m_rgbBuffer );
 
       LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
-               , m_sourceWidth*2, m_rgbBuffer + m_sourceWidth*4);      
+               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);      
     }
     else
     {
       LoadPlane( fields[FIELD_FULL][0], GL_RGBA, buf.flipindex
                , im->width, im->height
-               , m_sourceWidth, m_rgbBuffer );
+               , m_sourceWidth*4, m_rgbBuffer );
     }
   }
   else

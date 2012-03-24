@@ -66,15 +66,15 @@ $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread
 
 endif
 
-libdvdcss/src/.libs/libdvdcss.a: libdvdcss
+libdvdcss/src/.libs/libdvdcss.a: libdvdcss;
 libdvdcss: compile
 	$(MAKE) -C $@
 
-libdvdread/obj/libdvdread.a: libdvdread
+libdvdread/obj/libdvdread.a: libdvdread;
 libdvdread: compile
 	$(MAKE) -C $@
 
-libdvdnav/obj/libdvdnav.a: libdvdnav
+libdvdnav/obj/libdvdnav.a: libdvdnav;
 libdvdnav: compile
 	$(MAKE) -C $@
 
