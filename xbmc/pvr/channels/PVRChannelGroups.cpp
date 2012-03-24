@@ -261,9 +261,15 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
       __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
 
   iSize = size();
-  GetGroupsFromClients();
-  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d new user defined %s channel groups fetched from clients",
-      __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
+  if (g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
+  {
+    GetGroupsFromClients();
+    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d new user defined %s channel groups fetched from clients",
+        __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
+  }
+  else
+    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - 'synchannelgroups' is disabled; skipping groups from clients",
+        __FUNCTION__);
 
   /* load group members */
   for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)

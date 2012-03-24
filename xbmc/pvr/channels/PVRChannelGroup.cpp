@@ -116,14 +116,11 @@ int CPVRChannelGroup::Load(void)
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
-  if (g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
+  Update();
+  if (size() - iChannelCount > 0)
   {
-    Update();
-    if (size() - iChannelCount > 0)
-    {
-      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-          __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
-    }
+    CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
+        __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
   SortByChannelNumber();
