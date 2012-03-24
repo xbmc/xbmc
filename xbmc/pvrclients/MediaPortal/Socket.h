@@ -22,11 +22,11 @@ namespace MPTV //Prevent name clash with Live555 Socket
 {
 
 //Include platform specific datatypes, header files, defines and constants:
-#if defined __WINDOWS__ || defined WIN32 || defined _WINDOWS
-  #ifdef _WINSOCKAPI_
-    #undef _WINSOCKAPI_
-  #endif
+#if defined TARGET_WINDOWS
+  #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+  #pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
   #include <winsock2.h>
+  #pragma warning(default:4005)
   #include <windows.h>
 
   #ifndef NI_MAXHOST
@@ -42,7 +42,7 @@ namespace MPTV //Prevent name clash with Live555 Socket
   #ifndef port_t
     typedef unsigned short port_t;
   #endif
-#elif defined _LINUX
+#elif defined TARGET_LINUX || defined TARGET_DARWIN
   #include <sys/types.h>     /* for socket,connect */
   #include <sys/socket.h>    /* for socket,connect */
   #include <sys/un.h>        /* for Unix socket */
@@ -56,7 +56,8 @@ namespace MPTV //Prevent name clash with Live555 Socket
   typedef int SOCKET;
   typedef sockaddr SOCKADDR;
   typedef sockaddr_in SOCKADDR_IN;
-
+  #define INVALID_SOCKET (-1)
+  #define SOCKET_ERROR (-1)
 #else
   #error Platform specific socket support is not yet available on this platform!
 #endif
@@ -79,7 +80,7 @@ enum SocketFamily
 
 enum SocketDomain
 {
-  #if defined _LINUX
+  #if defined TARGET_LINUX || defined TARGET_DARWIN
     pf_unix  = PF_UNIX,
     pf_local = PF_LOCAL,
   #endif
@@ -287,7 +288,7 @@ class Socket
     enum SocketType _type;              ///< Socket Type
     enum SocketDomain _domain;          ///< Socket domain
 
-    #ifdef _WINDOWS
+    #ifdef TARGET_WINDOWS
       WSADATA _wsaData;                 ///< Windows Socket data
       static int win_usage_count;       ///< Internal Windows usage counter used to prevent a global WSACleanup when more than one Socket object is used
     #endif

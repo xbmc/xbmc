@@ -51,8 +51,8 @@
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.pvr</TargetExt>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC_MPTV_win32</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.pvr</TargetExt>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath);..\..\</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath);..\..\</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -118,13 +118,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\AutoLock.cpp" />
     <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
-    <ClCompile Include="..\..\CriticalSection.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\GenreTable.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
@@ -135,15 +134,16 @@
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
+    <ClCompile Include="..\..\windows\FileUtils.cpp" />
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\AutoLock.h" />
     <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
-    <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\os-dependent.h" />
@@ -155,6 +155,7 @@
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\utils.h" />
     <ClInclude Include="..\..\windows\os_windows.h" />
+    <ClInclude Include="..\..\windows\WindowsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

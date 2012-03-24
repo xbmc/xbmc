@@ -1,3 +1,28 @@
+v1.2.2.11:
+- Fixed: Day of the week mismatch for timers between MePo and XBMC. Credits: jajoflo
+- Added: Trigger recording update on timer retrieval so the recording list is kept up to date when there is a new recording. Credits: jajoflo
+- Fixed: tv group retrieval requested radio groups
+- Added: add support for recording genre field
+- Fixed: fixes for recording filepath split-up
+- Added: show an error message when the recording filename or playback URL is empty
+
+v1.2.2.110:
+- Added: use channel icons from MediaPortal (Windows, localhost only)
+- Changed: switch from libPlatform + libTcpSocket to platform library
+
+v1.2.2.109:
+- Fixed: fix mimetype for tv channels
+- Fixed: make sure that OpenLiveStream does not return true due to m_iCurrentChannel when the TSReader fails in a later stage
+- Fixed: compilation IOS/OSX/Linux
+- Fixed: compile fixes for API move into ADDON namespace
+- Added: show localized error messages when OpenLiveStream fails
+- Added: signal status support
+- Fixed: Don't return encrypted channels as group members when FTA only option is turned on
+- Added: add more debug log information about the addon settings and status
+- Added: add support for direct recording playback from network shares (smb, Windows only)
+- Added: implement support for recording subdirectories
+- Fixed: don't return radio channels/channelgroup/channelgroup mappings when radio support is disabled
+
 v1.1.3.107:
 - Added: add additional checks for communication errors
 - Fixed: trigger also a recording list update on timer changes

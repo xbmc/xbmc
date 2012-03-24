@@ -31,7 +31,7 @@ using namespace ADDON;
 
 cEpg::cEpg()
 {
-  m_genremap        = NULL;
+  m_genretable       = NULL;
   Reset();
 }
 
@@ -108,7 +108,8 @@ bool cEpg::ParseLine(string& data)
       m_title = epgfields[2];
       m_description = epgfields[3];
       m_shortText = epgfields[2];
-      SetGenre(epgfields[4], 0, 0);
+      m_genre = epgfields[4];
+      if (m_genretable) m_genretable->GenreToTypes(m_genre, m_genre_type, m_genre_subtype);
 
       if( epgfields.size() >= 15 )
       {
@@ -142,40 +143,7 @@ bool cEpg::ParseLine(string& data)
   return false;
 }
 
-void cEpg::SetGenreMap(GenreMap* genremap)
+void cEpg::SetGenreTable(CGenreTable* genretable)
 {
-  m_genremap = genremap;
-}
-
-void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
-{
-  // The xmltv plugin from the MediaPortal TV Server can return genre
-  // strings in local language (depending on the external TV guide source).
-  // The only way to solve this at the XMBC side is to transfer the
-  // genre string to XBMC or to let this plugin (or the TVServerXBMC
-  // plugin) translate it into XBMC compatible (numbered) genre types
-  m_genre = Genre;
-  m_genre_subtype = 0;
-
-  if(g_bReadGenre && m_genremap && m_genre.length() > 0)
-  {
-    std::map<std::string, genre_t>::iterator it;
-
-    std::transform(m_genre.begin(), m_genre.end(), m_genre.begin(), ::tolower);
-
-    it = m_genremap->find(m_genre);
-    if (it != m_genremap->end())
-    {
-      m_genre_type = it->second.type;
-      m_genre_subtype = it->second.subtype;
-    }
-    else
-    {
-      XBMC->Log(LOG_DEBUG, "EPG: No mapping of '%s' to genre type/subtype found.", Genre.c_str());
-      m_genre_type     = EPG_GENRE_USE_STRING;
-      m_genre_subtype  = 0;
-    }
-  } else {
-    m_genre_type = 0;
-  }
+  m_genretable = genretable;
 }
