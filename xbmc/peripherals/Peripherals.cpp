@@ -331,9 +331,16 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
     PeripheralDeviceMapping mapping = m_mappings.at(iMappingPtr);
 
     bool bProductMatch = false;
-    for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
-      if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
-        bProductMatch = true;
+    if (mapping.m_PeripheralID.size() == 0)
+    {
+      bProductMatch = true;
+    }
+    else
+    {
+      for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
+        if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
+          bProductMatch = true;
+    }
 
     bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
     bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == classType);
@@ -359,9 +366,16 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
     const PeripheralDeviceMapping *mapping = &m_mappings.at(iMappingPtr);
 
     bool bProductMatch = false;
-    for (unsigned int i = 0; i < mapping->m_PeripheralID.size(); i++)
-      if (mapping->m_PeripheralID[i].m_iVendorId == peripheral.VendorId() && mapping->m_PeripheralID[i].m_iProductId == peripheral.ProductId())
-        bProductMatch = true;
+    if (mapping->m_PeripheralID.size() == 0)
+    {
+      bProductMatch = true;
+    }
+    else
+    {
+      for (unsigned int i = 0; i < mapping->m_PeripheralID.size(); i++)
+        if (mapping->m_PeripheralID[i].m_iVendorId == peripheral.VendorId() && mapping->m_PeripheralID[i].m_iProductId == peripheral.ProductId())
+          bProductMatch = true;
+    }
 
     bool bBusMatch = (mapping->m_busType == PERIPHERAL_BUS_UNKNOWN || mapping->m_busType == peripheral.GetBusType());
     bool bClassMatch = (mapping->m_class == PERIPHERAL_UNKNOWN || mapping->m_class == peripheral.Type());
@@ -399,29 +413,24 @@ bool CPeripherals::LoadMappings(void)
     mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
 
     // If there is no vendor_product attribute ignore this entry
-    if (!currentNode->Attribute("vendor_product"))
+    if (currentNode->Attribute("vendor_product"))
     {
-      CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with missing vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
-      continue;
-    }
-
-    // The vendor_product attribute is a list of comma separated vendor:product pairs
-    StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
-    for (unsigned int i = 0; i < vpArray.size(); i++)
-    {
-      StringUtils::SplitString(vpArray[i], ":", idArray);
-      if (idArray.size() != 2)
+      // The vendor_product attribute is a list of comma separated vendor:product pairs
+      StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
+      for (unsigned int i = 0; i < vpArray.size(); i++)
       {
-        CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
-        continue;
-      }
+        StringUtils::SplitString(vpArray[i], ":", idArray);
+        if (idArray.size() != 2)
+        {
+          CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
+          continue;
+        }
 
-      id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
-      id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
-      mapping.m_PeripheralID.push_back(id);
+        id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
+        id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
+        mapping.m_PeripheralID.push_back(id);
+      }
     }
-    if (mapping.m_PeripheralID.size() == 0)
-      continue;
 
     mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
     mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));

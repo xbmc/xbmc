@@ -115,6 +115,16 @@
  */
 #define GUI_MSG_GESTURE_NOTIFY  38
 
+/*!
+ \brief A request to add a control
+ */
+#define GUI_MSG_ADD_CONTROL     39
+
+/*!
+ \brief A request to remove a control
+ */
+#define GUI_MSG_REMOVE_CONTROL  40
+
 #define GUI_MSG_USER         1000
 
 /*!

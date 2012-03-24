@@ -181,6 +181,7 @@ namespace INFO
 #define SYSTEM_ISSTANDALONE         183
 #define SYSTEM_ISINHIBIT            184
 #define SYSTEM_HAS_SHUTDOWN         185
+#define SYSTEM_HAS_PVR              186
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -495,7 +496,7 @@ namespace INFO
 
 #define VERSION_MAJOR 11
 #define VERSION_MINOR 0
-#define VERSION_TAG "-RC2"
+#define VERSION_TAG ""
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

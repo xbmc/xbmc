@@ -724,6 +724,17 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_GUI_MESSAGE:
+      {
+        if (pMsg->lpVoid)
+        {
+          CGUIMessage *message = (CGUIMessage *)pMsg->lpVoid;
+          g_windowManager.SendMessage(*message, pMsg->dwParam1);
+          delete message;
+        }
+      }
+      break;
+
     case TMSG_GUI_INFOLABEL:
       {
         if (pMsg->lpVoid)
@@ -745,23 +756,26 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-#ifdef HAS_DVD_DRIVE
     case TMSG_CALLBACK:
       {
         ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
         callback->callback(callback->userptr);
       }
-#endif
+      break;
+
     case TMSG_VOLUME_SHOW:
       {
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+      break;
+
     case TMSG_SPLASH_MESSAGE:
       {
         if (g_application.m_splash)
           g_application.m_splash->Show(pMsg->strParam);
       }
+      break;
   }
 }
 
@@ -1156,6 +1170,14 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
   tMsg.dwParam1 = windowID;
   tMsg.lpVoid = new CAction(action);
+  SendMessage(tMsg, waitResult);
+}
+
+void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windowID, bool waitResult)
+{
+  ThreadMessage tMsg = {TMSG_GUI_MESSAGE};
+  tMsg.dwParam1 = windowID == WINDOW_INVALID ? 0 : windowID;
+  tMsg.lpVoid = new CGUIMessage(message);
   SendMessage(tMsg, waitResult);
 }
 

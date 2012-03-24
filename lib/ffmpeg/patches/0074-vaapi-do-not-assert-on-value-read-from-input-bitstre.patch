@@ -1,0 +1,41 @@
+From 425b9a373384813d2fe513d42b1d585ecbea6ca5 Mon Sep 17 00:00:00 2001
+From: Diego Biurrun <diego@biurrun.de>
+Date: Fri, 15 Jul 2011 01:06:16 +0200
+Subject: [PATCH] vaapi: do not assert on value read from input bitstream
+
+User-provided data should never trigger an assert; return error instead.
+Also fix an instance of get_bits where get_bits_long should have been used.
+
+This eliminates the following warning:
+libavcodec/vaapi_mpeg2.c:112:14: warning: variable 'start_code' set but not used
+
+Signed-off-by: elupus <elupus@xbmc.org>
+---
+ lib/ffmpeg/libavcodec/vaapi_mpeg2.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/vaapi_mpeg2.c b/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
+index 17d82b7..8d456ba 100644
+--- a/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
++++ b/lib/ffmpeg/libavcodec/vaapi_mpeg2.c
+@@ -109,14 +109,14 @@ static int vaapi_mpeg2_decode_slice(AVCodecContext *avctx, const uint8_t *buffer
+     MpegEncContext * const s = avctx->priv_data;
+     VASliceParameterBufferMPEG2 *slice_param;
+     GetBitContext gb;
+-    uint32_t start_code, quantiser_scale_code, intra_slice_flag, macroblock_offset;
++    uint32_t quantiser_scale_code, intra_slice_flag, macroblock_offset;
+ 
+     av_dlog(avctx, "vaapi_mpeg2_decode_slice(): buffer %p, size %d\n", buffer, size);
+ 
+     /* Determine macroblock_offset */
+     init_get_bits(&gb, buffer, 8 * size);
+-    start_code = get_bits(&gb, 32);
+-    assert((start_code & 0xffffff00) == 0x00000100);
++    if (get_bits_long(&gb, 32) >> 8 != 1) /* start code */
++        return AVERROR_INVALIDDATA;
+     quantiser_scale_code = get_bits(&gb, 5);
+     intra_slice_flag = get_bits1(&gb);
+     if (intra_slice_flag) {
+-- 
+1.7.7.2
+

@@ -1,0 +1,92 @@
+From 321c5e668f2c213a33cef6c7c9fe11ee2850665f Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Tue, 5 Jul 2011 00:14:52 +0200
+Subject: [PATCH] changed: updated dxva zigzag workaround for ATI based on
+ comments on xbmc.org and ffmpeg.org
+
+---
+ lib/ffmpeg/libavcodec/avcodec.h               |    1 -
+ lib/ffmpeg/libavcodec/dxva2.h                 |    2 ++
+ lib/ffmpeg/libavcodec/dxva2_h264.c            |   23 +++++++++++++----------
+ xbmc/cores/dvdplayer/DVDCodecs/Video/DXVA.cpp |   14 +++-----------
+ 4 files changed, 18 insertions(+), 22 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/avcodec.h b/lib/ffmpeg/libavcodec/avcodec.h
+index cb96c6f..4745980 100644
+--- a/lib/ffmpeg/libavcodec/avcodec.h
++++ b/lib/ffmpeg/libavcodec/avcodec.h
+@@ -1429,7 +1429,6 @@ typedef struct AVCodecContext {
+ #define FF_BUG_DC_CLIP          4096
+ #define FF_BUG_MS               8192 ///< Work around various bugs in Microsoft's broken decoders.
+ #define FF_BUG_TRUNCATED       16384
+-#define FF_BUG_DXVA2_SCALING_LIST_ZIGZAG 32768 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
+ //#define FF_BUG_FAKE_SCALABILITY 16 //Autodetection should work 100%.
+ 
+     /**
+diff --git a/lib/ffmpeg/libavcodec/dxva2.h b/lib/ffmpeg/libavcodec/dxva2.h
+index 5c5fe21..6eb494b 100644
+--- a/lib/ffmpeg/libavcodec/dxva2.h
++++ b/lib/ffmpeg/libavcodec/dxva2.h
+@@ -27,6 +27,8 @@
+ 
+ #include <dxva2api.h>
+ 
++#define FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG 1 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
++
+ /**
+  * This structure is used to provides the necessary configurations and data
+  * to the DXVA2 FFmpeg HWAccel implementation.
+diff --git a/lib/ffmpeg/libavcodec/dxva2_h264.c b/lib/ffmpeg/libavcodec/dxva2_h264.c
+index 7b81c8e..4e3370c 100644
+--- a/lib/ffmpeg/libavcodec/dxva2_h264.c
++++ b/lib/ffmpeg/libavcodec/dxva2_h264.c
+@@ -113,6 +113,9 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context
+ 
+     pp->bit_depth_luma_minus8         = h->sps.bit_depth_luma - 8;
+     pp->bit_depth_chroma_minus8       = h->sps.bit_depth_chroma - 8;
++    if (ctx->workaround & FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG)
++        pp->Reserved16Bits            = 0;
++    else
+     pp->Reserved16Bits                = 3; /* FIXME is there a way to detect the right mode ? */
+     pp->StatusReportFeedbackNumber    = 1 + ctx->report_id++;
+     pp->CurrFieldOrderCnt[0] = 0;
+@@ -150,18 +153,18 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context
+     //pp->SliceGroupMap[810];               /* XXX not implemented by FFmpeg */
+ }
+ 
+-static void fill_scaling_lists(AVCodecContext *avctx, const H264Context *h, DXVA_Qmatrix_H264 *qm)
++static void fill_scaling_lists(struct dxva_context *ctx, const H264Context *h, DXVA_Qmatrix_H264 *qm)
+ {
+     unsigned i, j;
+     memset(qm, 0, sizeof(*qm));
+-    if (avctx->workaround_bugs & FF_BUG_DXVA2_SCALING_LIST_ZIGZAG) {  // For old UVD/UVD+ ATI cards
+-    for (i = 0; i < 6; i++)
+-        for (j = 0; j < 16; j++)
+-            qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][j];
+-
+-    for (i = 0; i < 2; i++)
+-        for (j = 0; j < 64; j++)
+-            qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][j];
++    if (ctx->workaround & FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG) {
++        for (i = 0; i < 6; i++)
++            for (j = 0; j < 16; j++)
++                qm->bScalingLists4x4[i][j] = h->pps.scaling_matrix4[i][j];
++
++        for (i = 0; i < 2; i++)
++            for (j = 0; j < 64; j++)
++                qm->bScalingLists8x8[i][j] = h->pps.scaling_matrix8[i][j];
+     } else {
+     for (i = 0; i < 6; i++)
+         for (j = 0; j < 16; j++)
+@@ -380,7 +383,7 @@ static int start_frame(AVCodecContext *avctx,
+     fill_picture_parameters(ctx, h, &ctx_pic->pp);
+ 
+     /* Fill up DXVA_Qmatrix_H264 */
+-    fill_scaling_lists(avctx, h, &ctx_pic->qm);
++    fill_scaling_lists(ctx, h, &ctx_pic->qm);
+ 
+     ctx_pic->slice_count    = 0;
+     ctx_pic->bitstream_size = 0;
+-- 
+1.7.7.2
+

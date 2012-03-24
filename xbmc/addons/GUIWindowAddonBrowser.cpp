@@ -395,11 +395,10 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
   dialog->SetHeading(heading);
   dialog->Reset();
   dialog->SetUseDetails(true);
-  if (multipleSelection || iTypes > 1)
-  {
+  if (multipleSelection)
     showNone = false;
+  if (multipleSelection || iTypes > 1)
     dialog->EnableButton(true, 186);
-  }
   else
     dialog->EnableButton(true, 21452);
   if (showNone)

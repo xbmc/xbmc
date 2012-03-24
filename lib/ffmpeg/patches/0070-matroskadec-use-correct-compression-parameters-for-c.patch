@@ -1,0 +1,33 @@
+From 8efe4d01dcd2f89ad012b8f1dd71192e09fa3e82 Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Sun, 16 Oct 2011 03:16:26 -0400
+Subject: [PATCH] matroskadec: use correct compression parameters for current
+ track CodecPrivate
+
+backport of ffmpeg dc6c36ce46d4c4d7cb63503afc2ee44f00bf3725 on 2011-08-17
+
+fixes a bitmap sub color problem exposed by mkclean --optimize foo.mkv.
+The compressed private data could not be extracted, resulting in a bad color
+palette and wrong colors on screen.
+
+problem described in forum thread http://forum.xbmc.org/showthread.php?t=108942
+---
+ lib/ffmpeg/libavformat/matroskadec.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/matroskadec.c b/lib/ffmpeg/libavformat/matroskadec.c
+index 1a87f4a..14b96d4 100644
+--- a/lib/ffmpeg/libavformat/matroskadec.c
++++ b/lib/ffmpeg/libavformat/matroskadec.c
+@@ -1220,7 +1220,7 @@ static int matroska_read_header(AVFormatContext *s, AVFormatParameters *ap)
+     for (i=0; i < matroska->tracks.nb_elem; i++) {
+         MatroskaTrack *track = &tracks[i];
+         enum CodecID codec_id = CODEC_ID_NONE;
+-        EbmlList *encodings_list = &tracks->encodings;
++        EbmlList *encodings_list = &track->encodings;
+         MatroskaTrackEncoding *encodings = encodings_list->elem;
+         uint8_t *extradata = NULL;
+         int extradata_size = 0;
+-- 
+1.7.7.2
+

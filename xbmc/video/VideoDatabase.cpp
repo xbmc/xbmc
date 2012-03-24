@@ -51,6 +51,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
 #include "ThumbnailCache.h"
+#include "utils/LabelFormatter.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -5074,6 +5075,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 
     // get data from returned rows
     items.Reserve(iRowsFound);
+    CLabelFormatter formatter("%H. %T", "");
     while (!m_pDS->eof())
     {
       int idEpisode = m_pDS->fv("idEpisode").get_asInt();
@@ -5085,6 +5087,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
       {
         CFileItemPtr pItem(new CFileItem(movie));
+        formatter.FormatLabel(pItem.get());
         CStdString path;
         if (appendFullShowPath)
           path.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
@@ -7552,7 +7555,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         scanner.AddVideo(&item, CONTENT_MOVIES, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strTitle);
-        if (GetExportVersion() >= 1 && info.m_iYear > 0)
+        if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
         CStdString file(GetSafeFile(moviesDir, strFileName));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
@@ -7569,7 +7572,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
-        if (GetExportVersion() >= 1 && info.m_iYear > 0)
+        if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
         CStdString file(GetSafeFile(musicvideosDir, strFileName));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());

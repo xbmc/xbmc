@@ -33,7 +33,7 @@
   <string id="31033">Informacija</string>
 
   <!-- Extra labels -->
-  <string id="31040">Dabar grojami</string>
+  <string id="31040">Aktualus failas</string>
 
   <string id="31042">RODOMA</string>
   <string id="31043">PAUZĖ</string>
@@ -53,7 +53,7 @@
   <string id="31057">Uždaryti grojaraštį</string>
   <string id="31058">Sisteminiai audio failai</string>
   <string id="31059">Aktualus grojaraštis</string>
-  <string id="31060">Šis failas yra sugrupuotas, pasirinkite dalį katrą norite atkurti.</string>
+  <string id="31060">Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkurti.</string>
   <string id="31061">Dabartinis Pasirinkimas</string>
 
   <!-- Skin Settings labels -->
@@ -134,7 +134,7 @@
   <string id="31323">Nauji Filmai</string>
   <string id="31324">Nauji Epizodai</string>
   <string id="31325">Sąrašo Opcijos</string>
-  <string id="31326">Sukūrta</string>
+  <string id="31326">Sukurta</string>
   <string id="31327">Leidimas</string>
   <string id="31328">Neseniai Dadėta</string>
   <string id="31329">[B]NUSTATYTAS LAIKRODIS![/B] [COLOR=red] - AUTOMATIŠKAI ATSIJUNGS PO[/COLOR]</string>
@@ -156,18 +156,17 @@
   <string id="31392">Arial Pagrindu</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B][COLOR=blue]IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Pakeisti išvaizdą · Nustatyti kalbą ir regioną · Pakeisti failų sarašą.[CR]Nustatyti ekrano vaizdą.[/COLOR]</string>
+  <string id="31400">[B][COLOR=blue]IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Pakeisti išvaizdą · Nustatyti kalbą ir regioną[CR]Pakeisti failų sarašą · Nustatyti ekrano vaizdą.[/COLOR]</string>
   <string id="31401">[B][COLOR=blue]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas.[CR]Nustatyti video sarašą · Nustatyti subtitrų šriftą.[/COLOR]</string>
   <string id="31402">[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas.[CR]Nustatyti audio sarašą · Nustatyti audio pridėjimą · Nustatyti karaoke.[/COLOR]</string>
   <string id="31403">[B][COLOR=blue]PAVEIKSLŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją.[/COLOR]</string>
   <string id="31404">[B][COLOR=blue]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti trys Miestus gauti informacijai apie orus.[/COLOR]</string>
   <string id="31405">[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti XBMC valdymą  per UPnP ir HTTP · Nustatyti failų apsikeitimą.[CR]Nustatyi prieigą prie interneto.[/COLOR]</string>
-  <string id="31406">[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red] Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą.[CR]Nustatyti energijos sąnaudas · Nustatyti derinimą · Nustatyti blokavimą.[/COLOR]</string>
-  <string id="31407">[B][COLOR=red]ŠABLONŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=blue]www.xbmc.lt . www.xbmc.org . info@xbmc.lt[/COLOR][CR][COLOR=red]Nustatyti pasirinktą šabloną. Pakeisti šablono foną.[CR]Pridėti ir (arba) pašalinti pagrindinius menių punktus.[/COLOR]</string>
+  <string id="31406">[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą.[CR]Nustatyti energijos sąnaudas · Nustatyti derinimą · Nustatyti blokavimą.[/COLOR]</string>
+  <string id="31407">[B][COLOR=blue]ŠABLONŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti pasirinktą šabloną. Pakeisti šablono foną.[CR]Pridėti ir (arba) pašalinti pagrindinius menių punktus.[/COLOR]</string>
   <string id="31408">[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti parametrų valdymą · Nustatymų diegimą iš xbmc.org[CR]Nustatyti priedų pakeitimą.[/COLOR]</string>
 
   <string id="31421">Pasirinkite XBMC vartotojo profilį[CR]įeiti į sistemą ir tęsti.</string>
-
 
   <!-- Weather plugin -->
   <string id="31900">Orų Žemėlapiai</string>
@@ -176,7 +175,7 @@
   <string id="31903">Savaitgalio Prognozė</string>
   <string id="31904">10 Dienų Prognozė</string>
   <string id="31905">Prognozė</string>
-  <string id="31906">Žemėlapiai &amp; Video</string>
+  <string id="31906">Žemėlapiai ir Video</string>
   <string id="31907">Video Prognozė [COLOR=grey2](Pilnaekranis Atkūrimas)[/COLOR]</string>
   <string id="31908">Kritulių Tikimybė</string>
   <string id="31909">Parsiunčiama Prognozės Informacija...</string>

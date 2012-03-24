@@ -876,7 +876,7 @@ void CGUIBaseContainer::CalculateLayout()
   if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
     return; // nothing has changed, so don't update stuff
 
-  m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
+  m_itemsPerPage = std::max((int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1, 1);
 
   // ensure that the scroll offset is a multiple of our size
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));

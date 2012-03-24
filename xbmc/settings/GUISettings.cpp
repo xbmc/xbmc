@@ -29,7 +29,6 @@
 #include "LinuxTimezone.h"
 #endif
 #include "Application.h"
-#include "filesystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -45,6 +44,7 @@
 #include "utils/Weather.h"
 #include "LangInfo.h"
 #include "pvr/PVRManager.h"
+#include "utils/XMLUtils.h"
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -1338,12 +1338,6 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
         CStdString strValue = pGrandChild->FirstChild() ? pGrandChild->FirstChild()->Value() : "";
         if (strValue != "-")
         { // update our item
-          if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          { // check our path
-            int pathVersion = 0;
-            pGrandChild->Attribute("pathversion", &pathVersion);
-            strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
-          }
           (*it).second->FromString(strValue);
           if (advanced)
             (*it).second->SetAdvanced();
@@ -1379,7 +1373,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
         if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-          newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+          newElement.SetAttribute("pathversion", XMLUtils::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {

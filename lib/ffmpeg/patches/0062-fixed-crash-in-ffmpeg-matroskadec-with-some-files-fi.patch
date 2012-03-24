@@ -1,0 +1,50 @@
+From e138f82d2b066a47262ce0f06df106665761ac43 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi@xbmc.org>
+Date: Wed, 7 Mar 2012 15:08:41 +0200
+Subject: [PATCH] fixed: crash in ffmpeg matroskadec with some files (fixes
+ #12741)
+
+Backport 2851b1f6566580485dceb67cbb6b93f64ee9a9bd from upstream FFmpeg,
+it fixes a rare matroskadec crash:
+
+matroskadec: check that pointers were initialized before accessing them
+
+fix ticket #14
+
+Signed-off-by: Aurelien Jacobs <aurel@gnuage.org>
+---
+ lib/ffmpeg/libavformat/matroskadec.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/matroskadec.c b/lib/ffmpeg/libavformat/matroskadec.c
+index 14b96d4..70489e8 100644
+--- a/lib/ffmpeg/libavformat/matroskadec.c
++++ b/lib/ffmpeg/libavformat/matroskadec.c
+@@ -1066,19 +1066,21 @@ static void matroska_convert_tags(AVFormatContext *s)
+         if (tags[i].target.attachuid) {
+             MatroskaAttachement *attachment = matroska->attachments.elem;
+             for (j=0; j<matroska->attachments.nb_elem; j++)
+-                if (attachment[j].uid == tags[i].target.attachuid)
++                if (attachment[j].uid == tags[i].target.attachuid
++                    && attachment[j].stream)
+                     matroska_convert_tag(s, &tags[i].tag,
+                                          &attachment[j].stream->metadata, NULL);
+         } else if (tags[i].target.chapteruid) {
+             MatroskaChapter *chapter = matroska->chapters.elem;
+             for (j=0; j<matroska->chapters.nb_elem; j++)
+-                if (chapter[j].uid == tags[i].target.chapteruid)
++                if (chapter[j].uid == tags[i].target.chapteruid
++                    && chapter[j].chapter)
+                     matroska_convert_tag(s, &tags[i].tag,
+                                          &chapter[j].chapter->metadata, NULL);
+         } else if (tags[i].target.trackuid) {
+             MatroskaTrack *track = matroska->tracks.elem;
+             for (j=0; j<matroska->tracks.nb_elem; j++)
+-                if (track[j].uid == tags[i].target.trackuid)
++                if (track[j].uid == tags[i].target.trackuid && track[j].stream)
+                     matroska_convert_tag(s, &tags[i].tag,
+                                          &track[j].stream->metadata, NULL);
+         } else {
+-- 
+1.7.7.2
+

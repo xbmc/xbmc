@@ -42,11 +42,14 @@
 #include "URL.h"
 #include "DVDPlayerCodec.h"
 #include "BXAcodec.h" 
+#include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
   if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
+  else if (strFileType.Equals("pcm") || strFileType.Equals("l16"))
+    return new PCMCodec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("cdda"))
@@ -118,6 +121,12 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   if( strContent.Equals("audio/mpeg")
   ||  strContent.Equals("audio/mp3") )
     return new MP3Codec();
+  else if (strContent.Left(9).Equals("audio/l16"))
+  {
+    PCMCodec * pcm_codec = new PCMCodec();
+    pcm_codec->SetMimeParams(strContent);
+    return pcm_codec;
+  }
   else if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {

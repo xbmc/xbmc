@@ -99,6 +99,46 @@ enum _CRYSTALHD_CODEC_TYPES
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
+
+#if (HAVE_LIBCRYSTALHD == 2)
+
+  typedef struct _BC_INFO_CRYSTAL_ {
+	  uint8_t device;
+	  union {
+		  struct {
+			  uint32_t dilRelease:8;
+			  uint32_t dilMajor:8;
+			  uint32_t dilMinor:16;
+		  };
+		  uint32_t version;
+	  } dilVersion;
+
+	  union {
+		  struct {
+			  uint32_t drvRelease:4;
+			  uint32_t drvMajor:8;
+			  uint32_t drvMinor:12;
+			  uint32_t drvBuild:8;
+		  };
+		  uint32_t version;
+	  } drvVersion;
+
+	  union {
+		  struct {
+			  uint32_t fwRelease:4;
+			  uint32_t fwMajor:8;
+			  uint32_t fwMinor:12;
+			  uint32_t fwBuild:8;
+		  };
+		  uint32_t version;
+	  } fwVersion;
+
+	  uint32_t Reserved1; // For future expansion
+	  uint32_t Reserved2; // For future expansion
+  } BC_INFO_CRYSTAL, *PBC_INFO_CRYSTAL;
+
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 #define CRYSTALHD_FIELD_FULL        0x00
@@ -163,6 +203,9 @@ protected:
 
   CMPCOutputThread *m_pOutputThread;
   CSyncPtrQueue<CPictureBuffer> m_BusyList;
+#if (HAVE_LIBCRYSTALHD == 2)
+  BC_INFO_CRYSTAL m_bc_info_crystal;
+#endif
 
 private:
   CCrystalHD();

@@ -612,11 +612,15 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyXBMCGUILock();
-    int id = g_windowManager.GetTopMostModalDialogID();
-    if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    bool ret = g_infoManager.EvaluateBool(cLine,id);
-    PyXBMCGUIUnlock();
+    bool ret;
+    {
+      CPyThreadState gilRelease;
+      CSingleLock gc(g_graphicsContext);
+
+      int id = g_windowManager.GetTopMostModalDialogID();
+      if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+      ret = g_infoManager.EvaluateBool(cLine,id);
+    }
 
     return Py_BuildValue((char*)"b", ret);
   }
@@ -721,9 +725,6 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
-    if (URIUtils::IsDOSPath(strText))
-      strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
-
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());

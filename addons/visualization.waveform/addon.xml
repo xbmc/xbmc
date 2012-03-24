@@ -35,7 +35,7 @@
     <description lang="nl">Waveform is een simpele muziekvisualisatie die twee golfvormen op het scherm toont, respectievelijk voor het linker- en rechtergeluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
     <description lang="pl">Waveform jest prostą wizualizacją pokazującą dwie fale dźwiękowe na ekranie. Każda na jeden kanał dźwięku.</description>
     <description lang="pt">O Waveform é um visualizador simples que mostra 2 gráficos ondulantes no ecrã, um para cada canal estéreo.</description>
-    <description lang="ro">Waveform este o vizualizare simplă care arată 2 grafice Waveform pe ecran, câte unul pentru fiecare canal stâng și drept și care se mișcă după bătăile muzicii</description>
+    <description lang="ro">Waveform este o vizualizare simplă care arată 2 grafice în formă de undă pe ecran, câte unul pentru fiecare canal stâng și drept și care se mișcă după bătăile muzicii.</description>
     <description lang="se">Waveform är en enkel visualisering som visar 2 vågformsgrafer på skärmen, en för vänster och en för höger kanal som rör sig i takt med musiken</description>
     <description lang="zh">Waveform是一个简单的可视化效果，它在屏幕上显示两个波形图，分别与音乐左右声道的节拍相呼应。</description>
     <platform>all</platform>

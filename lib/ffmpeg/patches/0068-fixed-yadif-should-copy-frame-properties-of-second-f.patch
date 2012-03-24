@@ -1,0 +1,31 @@
+From 793f3e0bfcaadaccd0b5db2a37a60da42a6b207e Mon Sep 17 00:00:00 2001
+From: elupus <elupus@xbmc.org>
+Date: Thu, 14 Jul 2011 22:07:22 +0200
+Subject: [PATCH] fixed: yadif should copy frame properties of second frame as
+ well
+
+---
+ lib/ffmpeg/libavfilter/vf_yadif.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavfilter/vf_yadif.c b/lib/ffmpeg/libavfilter/vf_yadif.c
+index d7bed90..da91600 100644
+--- a/lib/ffmpeg/libavfilter/vf_yadif.c
++++ b/lib/ffmpeg/libavfilter/vf_yadif.c
+@@ -182,9 +182,12 @@ static void return_frame(AVFilterContext *ctx, int is_second)
+         tff = yadif->parity^1;
+     }
+ 
+-    if (is_second)
++    if (is_second) {
+         yadif->out = avfilter_get_video_buffer(link, AV_PERM_WRITE | AV_PERM_PRESERVE |
+                                                AV_PERM_REUSE, link->w, link->h);
++        avfilter_copy_buffer_ref_props(yadif->out, yadif->cur);
++        yadif->out->video->interlaced = 0;
++    }
+ 
+     filter(ctx, yadif->out, tff ^ !is_second, tff);
+ 
+-- 
+1.7.7.2
+

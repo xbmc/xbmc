@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- Translated by Daniel Alămiță, based on english revision 35193 -->
+<!-- Translated by Daniel Alămiță, based on english revision 0ee1ef0923 -->
 <strings>
   <string id="0">Programe</string>
   <string id="1">Imagini</string>
@@ -141,11 +141,9 @@
   <string id="164">Niciun disc</string>
   <string id="165">Disc prezent</string>
   <string id="166">Costum</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Rezoluție</string>
   <string id="170">Ajustează rată reîmprospătare ecran pentru potrivire cu video</string>
-  <string id="171"></string>
 
   <string id="172">Dată de lansare</string>
   <string id="173">Afișează filmele 4:3 ca</string>
@@ -195,7 +193,7 @@
   <string id="221">Nu există conectare la rețea</string>
   <string id="222">Renunță</string>
   <string id="224">Viteză</string>
-
+  <string id="225">Deplasare verticală</string>
   <string id="226">Modele de testare...</string>
   <string id="227">Caută nume piste CD audio pe freedb.org</string>
   <string id="228">Amestecă lista de redare la încărcare</string>
@@ -215,7 +213,7 @@
   <string id="242">În fereastră</string>
   <string id="243">Rată de reîmprospătare</string>
   <string id="244">Ecran complet</string>
-  <string id="245">Dimensionare: (%i,%i)->(%i,%i) (zoom x%2.2f) AR:%2.2f:1 (pixeli: %2.2f:1)</string>
+  <string id="245">Dimensionare: (%i,%i)->(%i,%i) (zoom x%2.2f) AR:%2.2f:1 (pixeli: %2.2f:1) (DeplasareV: %2.2f)</string>
 
   <string id="247">Scripturi</string>
   <string id="248">Limbă</string>
@@ -224,7 +222,7 @@
   <string id="251">Selectează dosarul destinație</string>
   <string id="252">Scoate stereo în toate difuzoarele</string>
   <string id="253">Număr de canale</string>
-  <string id="254">- Receptor capabil de DTS</string>
+  <string id="254">- Receptor capabil DTS</string>
   <string id="255">CDDB</string>
   <string id="256">Culegere informații CD</string>
   <string id="257">Eroare</string>
@@ -255,7 +253,7 @@
   <string id="282">S-au găsit %i elemente</string>
   <string id="283">Rezultate căutare</string>
   <string id="284">Nu s-au găsit rezultate.</string>
-  <string id="286"></string>
+
   <string id="287">Subtitrări</string>
   <string id="288">Font</string>
   <string id="289">- Dimensiune</string>
@@ -275,11 +273,7 @@
   <string id="304">Limbă</string>
   <string id="305">Activat</string>
   <string id="306">Non-intercalat</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
+
   <string id="312">(0=automat)</string>
   <string id="313">Curățare bază de date</string>
   <string id="314">Pregătire...</string>
@@ -372,8 +366,7 @@
   <string id="404">Vânt</string>
   <string id="405">Punct de rouă</string>
   <string id="406">Umiditate</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Implicit</string>
   <string id="410">Se accesează serviciul de prognoză</string>
   <string id="411">Se obține prognoza pentru:</string>
@@ -394,7 +387,7 @@
   <string id="426">Nu s-au găsit informații CD</string>
   <string id="427">Disc</string>
   <string id="428">Inserați CD-ul/DVD-ul corect</string>
-  <string id="429">Inserați următorul CD/DVD</string>
+  <string id="429">Inserați următorul disc:</string>
   <string id="430">Sortează după: DVD#</string>
   <string id="431">Fără cache</string>
   <string id="432">Eliminare film din mediatecă</string>
@@ -476,7 +469,7 @@
   <string id="517">Albume redate recent</string>
   <string id="518">Lansează</string>
   <string id="519">Lansează în...</string>
-  <string id="520"></string>
+
   <string id="521">Compilații</string>
   <string id="522">Elimină sursa</string>
   <string id="523">Schimbă media</string>
@@ -532,6 +525,7 @@
   <string id="573">Cale</string>
   <string id="574">Țară</string>
   <string id="575">În progres</string>
+  <string id="576">Număr redări</string>
 
   <string id="580">Direcție de sortare</string>
   <string id="581">Metodă de sortare</string>
@@ -627,7 +621,7 @@
   <string id="715">- Atribuire</string>
   <string id="716">Automat (DHCP)</string>
   <string id="717">Manual (static)</string>
-  <string id="718"></string>
+
   <string id="719">- Adresă IP</string>
   <string id="720">- Mască de rețea</string>
   <string id="721">- Gateway implicit</string>
@@ -638,9 +632,9 @@
   <string id="726">Modificările nu au fost salvate. Continuați fără a le salva?</string>
   <string id="727">Server Web</string>
   <string id="728">Server FTP</string>
-  <string id="729"></string>
+
   <string id="730">- Port</string>
-  <string id="731"></string>
+
   <string id="732">Salvează și aplică</string>
   <string id="733">- Parolă</string>
   <string id="734">Nicio parolă</string>
@@ -679,7 +673,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Eroare %i: partajarea nu este disponibilă</string>
-  <string id="771"></string>
+
   <string id="772">Ieșire audio</string>
   <string id="773">Salt</string>
   <string id="774">Dosar prezentare diapozitive</string>
@@ -712,6 +706,8 @@
   <string id="851">Interval valid de porturi este 1-65535</string>
   <string id="852">Interval valid de porturi este 1024-65535</string>
 
+  <string id="998">Adaugă muzică...</string>
+  <string id="999">Adaugă filme...</string>
   <string id="1000">- Previzualizare</string>
   <string id="1001">Imposibil de conectat</string>
   <string id="1002">XBMC nu s-a putut conecta la locația rețelei.</string>
@@ -745,7 +741,7 @@
   <string id="1030">Alegere imagine</string>
   <string id="1031">Alegere dosar de imagini</string>
   <string id="1032">Adaugă locație rețea...</string>
-  <string id="1033">Caută fișier</string>
+  <string id="1033">Căutare fișier</string>
   <string id="1034">Submeniu</string>
   <string id="1035">Activează butoane submeniu</string>
   <string id="1036">Favorite</string>
@@ -766,7 +762,7 @@
   <string id="1051">Introduceți adresă web</string>
 
   <string id="1200">Client SMB</string>
-  <string id="1202">Workgroup</string>
+  <string id="1202">Grup de lucru</string>
   <string id="1203">Nume utilizator implicit</string>
   <string id="1204">Parolă implicită</string>
 
@@ -798,10 +794,6 @@
   <string id="1234">Programe, imagini și muzică</string>
   <string id="1235">Programe, imagini și video</string>
 
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-
   <string id="1250">Detectare automată</string>
   <string id="1251">Detectează automat sistemul</string>
   <string id="1252">Pseudonim</string>
@@ -812,6 +804,9 @@
   <string id="1257">Doriți să vă conectați cu sistemul detectat automat?</string>
 
   <string id="1260">Anunță aceste servicii către celelalte sisteme prin Zeroconf</string>
+  <string id="1270">Permite XBMC să primească conținut AirPlay</string>
+  <string id="1271">Nume dispozitiv</string>
+  <string id="1272">- Folosește protecție prin parolă</string>
 
   <string id="1300">Dispozitiv audio specific</string>
   <string id="1301">Dispozitiv de traversare specific</string>
@@ -854,10 +849,8 @@
 
   <string id="2100">Scriptul a eșuat! : %s</string>
   <string id="2101">Este necesară o versiune mai nouă - Vedeți istoric modificări</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
 
-  <string id="4501">Activează LCD/VFD</string>
+  <string id="4501">Activează LCD / VFD</string>
 
   <string id="10000">Acasă</string>
   <string id="10001">Programe</string>
@@ -881,9 +874,11 @@
   <string id="10019">Setări - Aspect</string>
   <string id="10020">Scripturi</string>
   <string id="10021">Navigator web</string>
-
+  <string id="10025">Filme</string>
   <string id="10028">Filme/Listă de redare</string>
+  <string id="10029">Ecran de autentificare</string>
   <string id="10034">Setări - Profile</string>
+  <string id="10040">Navigator de suplimente</string>
 
   <string id="10100">Dialog Da/Nu</string>
   <string id="10101">Dialog de progres</string>
@@ -926,18 +921,9 @@
   <string id="12009">Se reface indexul...</string>
   <string id="12010">Revino la fereastra de muzică</string>
   <string id="12011">Revino la fereastra de filme</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+
   <string id="12021">Pornește de la început</string>
   <string id="12022">Reia de la %s</string>
-  <string id="12023"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -988,9 +974,7 @@
   <string id="12377">Vor fi resetate toate valorile salvate anterior.</string>
   <string id="12378">Durată de afișare pentru fiecare imagine</string>
   <string id="12379">Folosește efecte de mișcare și mărire</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">Ceas 12 ore</string>
   <string id="12384">Ceas 24 ore</string>
   <string id="12385">Zi/Lună</string>
@@ -1001,6 +985,7 @@
   <string id="12392">ore</string>
   <string id="12393">zile</string>
   <string id="12394">Timp total de funcționare</string>
+  <string id="12395">Nivel baterie</string>
 
   <string id="12600">Meteo</string>
 
@@ -1013,8 +998,7 @@
   <string id="13003">- Întârziere</string>
   <string id="13004">- Durată minimă fișier</string>
   <string id="13005">Închidere</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Tip de închidere</string>
   <string id="13009">Ieșire</string>
   <string id="13010">Hibernare</string>
@@ -1036,6 +1020,7 @@
 
   <string id="13100">Filtru pâlpâire</string>
   <string id="13101">Permite driverului să aleagă (necesită repornire)</string>
+
   <string id="13105">Sincronizare verticală goală</string>
   <string id="13106">Dezactivat</string>
   <string id="13107">Activată în timpul redării video</string>
@@ -1070,28 +1055,10 @@
   <string id="13146">XBMC, modificând această setare vă poate afecta abilitatea</string>
   <string id="13147">de a continua să îl controlați. Doriți să continuați?</string>
 
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
-  <string id="13159">Mască subrețea</string>
+  <string id="13159">Mască de rețea</string>
   <string id="13160">Gateway</string>
   <string id="13161">DNS primar</string>
   <string id="13162">Inițializarea a eșuat</string>
-
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-
 
   <string id="13170">Niciodată</string>
   <string id="13171">Imediat</string>
@@ -1101,9 +1068,11 @@
 
   <string id="13200">Profile</string>
   <string id="13201">Ștergeți profilul '%s'?</string>
+  
   <string id="13204">Ultimul profil încărcat:</string>
   <string id="13205">Necunoscut</string>
   <string id="13206">Suprascrie</string>
+
   <string id="13208">Ceas alarmă</string>
   <string id="13209">Interval ceas alarmă (în minute)</string>
   <string id="13210">Pornit, alarmă în %i minute</string>
@@ -1132,20 +1101,17 @@
 
   <string id="13283">Sistem de operare:</string>
   <string id="13284">Viteză CPU:</string>
-  <string id="13285"></string>
+
   <string id="13286">Codor video:</string>
   <string id="13287">Rezoluție ecran:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">Cablu A/V:</string>
-  <string id="13293"></string>
+
   <string id="13294">Regiune DVD:</string>
   <string id="13295">Internet:</string>
   <string id="13296">conectat</string>
   <string id="13297">Neconectat. Verificați setările rețelei.</string>
-  <string id="13298"></string>
+
   <string id="13299">Temperatură țintă</string>
   <string id="13300">Viteză ventilator</string>
   <string id="13301">Control temperatură automat</string>
@@ -1184,8 +1150,7 @@
   <string id="13334">Modifică eticheta</string>
   <string id="13335">Setează ca implicit</string>
   <string id="13336">Elimină buton</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
+
   <string id="13340">Lasă-l așa</string>
   <string id="13341">Verde</string>
   <string id="13342">Portocaliu</string>
@@ -1208,6 +1173,7 @@
   <string id="13359">Setează poză artist</string>
   <string id="13360">Generează miniaturi automat</string>
   <string id="13361">Activează voce</string>
+
   <string id="13375">Activează dispozitiv</string>
   <string id="13376">Volum</string>
   <string id="13377">Mod de vizualizare implicit</string>
@@ -1245,7 +1211,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Prinde radio Last.fm</string>
   <string id="13411">Viteză minimă ventilator</string>
-
+  <string id="13412">Redă începând de aici</string>
   <string id="13413">Se descarcă</string>
   <string id="13414">Include artiști care apar doar pe compilații</string>
   <string id="13415">Metodă de redare</string>
@@ -1265,6 +1231,7 @@
   <string id="13429">Permite accelerare hardware (VDADecoder)</string>
   <string id="13430">Permite accelerare hardware (OpenMax)</string>
   <string id="13431">Pixel shaders</string>
+  <string id="13432">Permite accelerare hardware (VideoToolbox)</string>
 
   <string id="13500">Metodă sincronizare A/V</string>
   <string id="13501">ceas audio</string>
@@ -1334,7 +1301,7 @@
   <string id="14038">Setările de rețea au fost schimbate</string>
   <string id="14039">XBMC trebuie repornit pentru a putea modifica</string>
   <string id="14040">setăriile rețelei.  Doriți să reporniți XBMC acum?</string>
-  <string id="14041"></string>
+  <string id="14041">Limitare bandă conexiune Internet</string>
 
   <string id="14043">- Oprire în timpul redării</string>
   <string id="14044">%i min</string>
@@ -1460,7 +1427,7 @@
   <string id="15275">Grafic piste săptămânal pentru %name%</string>
   <string id="15276">Ascultă radio Last.fm al veciniilor lui %name%</string>
   <string id="15277">Ascultă radio personal Last.fm al lui %name%'s</string>
-  <string id="15278">Ascultă radio Last.fm piste plăcute de %name%</string>
+  <string id="15278">Ascultă radio Last.fm mix %name%</string>
   <string id="15279">Se obține lista de la Last.fm...</string>
   <string id="15280">Nu se poate obține lista de la Last.fm...</string>
   <string id="15281">Introduceți un nume de artist pentru a găsii artiști similari</string>
@@ -1468,7 +1435,7 @@
   <string id="15283">Piese ascultate recent de %name%</string>
   <string id="15284">Ascultă recomandăriile lui %name% pe radio Last.fm</string>
   <string id="15285">Top etichete pentru utilizator %name%</string>
-  <string id="15286">Ascultă lista de redare a lui %name% pe radio Last.fm</string>
+
   <string id="15287">Doriți să adăugați piesa curentă la piesele îndrăgite?</string>
   <string id="15288">Doriți să blocați piesa curentă?</string>
   <string id="15289">Adaugată la piesele îndrăgite: '%s'.</string>
@@ -1511,7 +1478,7 @@
   <string id="16020">De-întrețesere</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (inversat)</string>
-  <string id="16023">Tratare video întrețesut</string>
+  <string id="16023"></string>
   <string id="16024">Renunțare...</string>
   <string id="16025">Introduceți nume artist</string>
   <string id="16026">Redarea a eșuat</string>
@@ -1524,18 +1491,19 @@
   <string id="16033">Baza de date nu poate fi deschisă.</string>
   <string id="16034">Nu pot fi preluate cântece din baza de date.</string>
   <string id="16035">Listă de redare mod petrecere</string>
-
+  <string id="16036">Deîntrețesere (jumătate)</string>
+  <string id="16037">Deîntrețesere video</string>
+  <string id="16038">Metodă de deîntrețesere</string>
+  <string id="16039">Oprită</string>
+  <string id="16040">Automat</string>
+  <string id="16041">Pornită</string>
+  
   <string id="16100">Toate filmele</string>
   <string id="16101">neprivite</string>
   <string id="16102">privite</string>
   <string id="16103">Marchează ca privit</string>
   <string id="16104">Marchează ca neprivit</string>
-  <string id="16105">Modifică titlul</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
+  <string id="16105">Modifică numele</string>
 
   <string id="16200">Operațiunea a fost anulată</string>
   <string id="16201">Copierea a eșuat</string>
@@ -1557,19 +1525,21 @@
   <string id="16309">Sinc (software)</string>
   <string id="16310">Temporal</string>
   <string id="16311">Temporal/Spațial</string>
-  <string id="16312">(VDPAU)Reducere zgomot</string>
-  <string id="16313">(VDPAU)Claritate</string>
+  <string id="16312">(VDPAU) Reducere zgomot</string>
+  <string id="16313">(VDPAU) Claritate</string>
   <string id="16314">Inverse Telecine</string>
-  <string id="16315">Lanczos3 optimized</string>
+  <string id="16315">Lanczos3 optimizat</string>
   <string id="16316">Automat</string>
   <string id="16317">Temporal (jumătate)</string>
   <string id="16318">Temporal/Spațial (jumătate)</string>
   <string id="16319">DXVA</string>
-
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA maxim</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimizat</string>
+  <string id="16324">Software Blend</string>
+  
   <string id="16400">Post-procesare video</string>
-  <string id="16401">Dezactivată</string>
-  <string id="16402">Activată pentru conținut SD</string>
-  <string id="16403">Activată întotdeauna</string>
 
   <string id="17500">Timp de așteptare repaus ecran</string>
 
@@ -1711,14 +1681,14 @@
   <string id="20141">Setează</string>
   <string id="20142">Nume utilizator</string>
   <string id="20143">Introduceți parola pentru</string>
-  <string id="20144">Cronometru de închidere</string>
-  <string id="20145">Interval de închidere&#10;(în minute)</string>
-  <string id="20146">Pornit, închidere în %i minute</string>
+  <string id="20144">Planificare închidere</string>
+  <string id="20145">Planificare închidere&#10;(în minute)</string>
+  <string id="20146">Pornită, închidere în %i minute</string>
   <string id="20147">Închidere în 30 de minute</string>
   <string id="20148">Închidere în 60 de minute</string>
   <string id="20149">Închidere în 120 de minute</string>
-  <string id="20150">Cronometru personalizat de închidere</string>
-  <string id="20151">Renunțare la cronomentru de închidere</string>
+  <string id="20150">Planificare închidere</string>
+  <string id="20151">Renunță la plan. închidere</string>
   <string id="20152">Blochează preferințele pentru %s</string>
   <string id="20153">Alege...</string>
   <string id="20154">Rezumat informații</string>
@@ -1754,8 +1724,7 @@
   <string id="20184">Rotește imaginile folosind informațiile EXIF</string>
   <string id="20185">Folosește stiluri vizualizare afiș pentru serialele TV</string>
   <string id="20186">Vă rugăm așteptați</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Activează derulare automată pentru intrigă și recenzie</string>
   <string id="20190">Particularizat</string>
   <string id="20191">Activează jurnalizare depanare</string>
@@ -1779,6 +1748,9 @@
   <string id="20256">Client HTS Tvheadend</string>
   <string id="20257">Client VDR Streamdev</string>
   <string id="20258">Client MythTV</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filing Protocol (AFP)</string>
 
   <string id="20300">Director server Web (HTTP)</string>
   <string id="20301">Director server Web (HTTPS)</string>
@@ -1786,30 +1758,23 @@
   <string id="20303">Doriți să săriți și să continuați?</string>
   <string id="20304">Flux RSS</string>
 
-  <string id="20306"></string>
   <string id="20307">DNS secundar</string>
   <string id="20308">Server DHCP:</string>
   <string id="20309">Creează dosar nou</string>
   <string id="20310">Întunecă LCD la redare</string>
   <string id="20311">Necunoscut sau integrat (protejat)</string>
   <string id="20312">Întunecă LCD în pauză</string>
-  <string id="20313"></string>
+
   <string id="20314">Mediatecă video</string>
-  <string id="20315"></string>
+
   <string id="20316">Sort. după: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Redă parte...</string>
   <string id="20325">Resetare calibrare</string>
   <string id="20326">Vor fi resetate valorile de calibrare pentru %s</string>
   <string id="20327">către valorile implicite.</string>
   <string id="20328">Alege destinație</string>
-
+  <string id="20329">Filmele sunt în dosare separate care se potrivesc cu numele filmului</string>
   <string id="20330">Folosește nume dosare la căutări</string>
   <string id="20331">Fișier</string>
   <string id="20332">Folosește nume fișier sau nume dosar la căutări?</string>
@@ -1856,7 +1821,7 @@
   <string id="20373">Sezon</string>
   <string id="20374">Descărcare informații filme</string>
   <string id="20375">Eliminare atribuire conținut</string>
-  <string id="20376">Titlu original</string>
+  <string id="20376">Nume original</string>
   <string id="20377">Actualizare informații serial</string>
   <string id="20378">Actualizați informațiile pentru toate episoadele?</string>
   <string id="20379">Dosarul selectat conține un singur serial</string>
@@ -1890,15 +1855,16 @@
   <string id="20407">Setări scraper</string>
   <string id="20408">Descărcare informații videoclipuri</string>
   <string id="20409">Descărcare informații serial</string>
-  <string id="20410">Trailer</string>
+  <string id="20410">Secvențe</string>
   <string id="20411">Netezește</string>
   <string id="20412">Netezește seriale</string>
-  <string id="20413">Obține Fanart</string>
-  <string id="20414">Arată Fanart în mediateciile de filme și muzică</string>
+  <string id="20413">Obține fundal</string>
+  <string id="20414">Arată fundale în mediateciile de filme și muzică</string>
   <string id="20415">Se scanează pentru conținut nou</string>
   <string id="20416">Prima difuzare</string>
   <string id="20417">Scenarist</string>
-  <string id="20418">Curăță numele fișierelor și al dosarelor</string>
+  <string id="20418"></string>
+  <string id="20419">Înlocuiește numele fișierelor cu titlurile din mediatecă</string>
 
   <string id="20420">niciodată</string>
   <string id="20421">doar dacă este un singur sezon</string>
@@ -1936,6 +1902,9 @@
   <string id="20453">episoade</string>
   <string id="20454">Ascultător</string>
   <string id="20455">Ascultători</string>
+  <string id="20456">Alege fundal set de filme</string>
+  <string id="20457">Set de filme</string>
+  <string id="20458">Grupează filmele în seturi</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Arată dosarele și fișierele ascunse</string>
@@ -1956,8 +1925,9 @@
   <string id="21365">Elimină partajare media</string>
   <string id="21366">Dosar de subtitrări</string>
   <string id="21367">Director de film și subtitrare alternativă</string>
+  <string id="21368">Ignoră fonturi subtitrări ASS/SSA</string>
 
-  <string id="21369">Activare mouse</string>
+  <string id="21369">Activează suport mouse și ecran sensibil la atingere</string>
   <string id="21370">Emite sunete de navigare în timpul redării media</string>
   <string id="21371">Miniaturi</string>
   <string id="21372">Regiune forțată lector DVD</string>
@@ -2042,6 +2012,15 @@
   <string id="21451">Este necesară o conexiune la Internet.</string>
   <string id="21452">Obține mai multe...</string>
   <string id="21453">Sistem de fișiere rădăcină</string>
+  <string id="21454">Cache plin</string>
+  <string id="21455">Cache împlinit înainte de a ajunge la nivelul necesar pentru redare continuă</string>
+  
+  <string id="21460">Locație subtitrare</string>
+  <string id="21461">Fixă</string>
+  <string id="21462">Jos pe video</string>
+  <string id="21463">Jos sub video</string>
+  <string id="21464">Sus pe video</string>
+  <string id="21465">Sus peste video</string>
 
   <string id="21800">Nume fișier</string>
   <string id="21801">Cale fișier</string>
@@ -2202,6 +2181,7 @@
   <string id="24015">Informații videoclipuri</string>
   <string id="24016">Informații albume</string>
   <string id="24017">Informații artiști</string>
+  <string id="24018">Servicii</string>
 
   <string id="24020">Configurează</string>
   <string id="24021">Dezactivează</string>
@@ -2223,6 +2203,11 @@
   <string id="24041">Instalare din fișier zip</string>
   <string id="24042">Se descarcă %i%%</string>
   <string id="24043">Actualizări disponibile</string>
+  <string id="24044">Dependențele nu au fost îndeplinite</string>
+  <string id="24045">Suplimentul nu are structura corectă</string>
+  <string id="24046">%s este folosit de următoarele suplimente instalate</string>
+  <string id="24047">Acest supliment nu poate fi dezinstalat</string>
+  <string id="24048">Revino</string>
 
   <string id="24050">Suplimente disponibile</string>
   <string id="24051">Versiune:</string>
@@ -2247,20 +2232,19 @@
   <string id="24073">Imposibil de conectat</string>
   <string id="24074">Trebuie să fie repornit</string>
   <string id="24075">Dezactivează</string>
+  <string id="24076">Supliment necesar</string>
   <string id="24080">Încercați reconectarea?</string>
   <string id="24089">Reporniri supliment</string>
   <string id="24090">Blochează gestionarul de suplimente</string>
 
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
-
+  <string id="24094">(curent)</string>
+  <string id="24095">(pe lista neagră)</string>
   <string id="24096">Suplimentul a fost marcat ca defect în depozit.</string>
   <string id="24097">Doriți să îl dezactivați pe sistemul dumneavoastră?</string>
   <string id="24098">Defect</string>
   <string id="24099">Doriți să folosiți acest costum?</string>
+  <string id="24100">Pentru aceasta trebuie să descărcați un supliment:</string>
+  <string id="24101">Doriți să descărcați acest supliment?</string>
   <string id="25000">Notificări</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2268,13 +2252,11 @@
   <string id="29801">Tastatură QWERTY</string>
   <string id="29802">Traversare Audio în folosință</string>
 
-  <string id="29999"></string>
-
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
   <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
-  <string id="33001">Calitate trailer</string>
+  <string id="33001">Calitate secvențe</string>
   <string id="33002">Flux</string>
   <string id="33003">Descarcă</string>
   <string id="33004">Descarcă și redă</string>
@@ -2347,6 +2329,13 @@
   <string id="33082">Cale către script</string>
   <string id="33083">Activează buton personalizat script</string>
 
+  <string id="33100">Nu poate fi pornit</string>
+  <string id="33101">Server web</string>
+  <string id="33102">Server evenimente</string>
+  <string id="33103">Server comunicare la distanță</string>
+  
+  <string id="33200">Conexiune nouă detectată</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2368,4 +2357,51 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Următorul element de redat nu poate fi găsit</string>
+  <string id="34202">Elementul anterior de redat nu poate fi găsit</string>
+  
+  <string id="34300">Zeroconf nu poate fi pornit</string>
+  <string id="34301">Serviciul Bonjour de la Apple este instalat? Vedeți jurnalul pentru mai multe informații.</string>
+  
+  <string id="34400">Randare video</string>
+  <string id="34401">Filtre/scalori video nu pot fi inițializați, revenim la scalare bilineară</string>
+  <string id="34402">Dispozitivul audio nu poate fi inițializat</string>
+  <string id="34403">Verificați setările audio</string>
+
+  <string id="35000">Periferice</string>
+
+  <string id="35001">Dispozitiv HID generic</string>
+  <string id="35002">Adaptor de rețea generic</string>
+  <string id="35003">Disc generic</string>
+  <string id="35004">Nu există setări disponibile&#10;pentru acest periferic.</string>
+  <string id="35005">Dispozitiv nou configurat</string>
+  <string id="35006">Dispozitiv eliminat</string>
+  <string id="35007">Hartă de taste de folosit pentru acest dispozitiv</string>
+  <string id="35008">Hartă de taste activată</string>
+
+  <string id="35500">Locație</string>
+  <string id="35501">Clasă</string>
+  <string id="35502">Nume</string>
+  <string id="35503">Furnizor</string>
+  <string id="35504">ID produs</string>
+  
+  <string id="36000">Adaptor Pulse-Eight CEC</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Comandă de comutare la parte tastatură</string>
+  <string id="36003">Comandă de comutare la parte telecomandă</string>
+  <string id="36004">Comandă apasă buton „utilizator”</string>
+  <string id="36005">Activează comenzi de schimbare a părții</string>
+  <string id="36006">Adapotorul nu poate fi deschis</string>
+  <string id="36007">Aprinde televizorul atunci când XBMC este pornit</string>
+  <string id="36008">Oprește dispozitivele atunci când XBMC este oprit</string>
+  <string id="36009">Pune dispozitivele în modul repaus când protector ecran este activat</string>
+  <string id="36010"></string>
+  <string id="36011">Portul CEC nu poate fi detectat. Setați-l manual.</string>
+  <string id="36012">Adaptorul CEC nu poate fi detectat.</string>
+  <string id="36013">Versiune interfață libcec nesuportată. %d este mai mare decât versiunea pe care XBMC o suportă (%d)</string>
+  <string id="36014">Pune acest calculator în repaus când televizorul este oprit</string>
+  <string id="36015">Număr port HDMI</string>
+  <string id="36016">Conectat</string> <!-- max. 13 characters -->
+  <string id="36017">Adaptor găsit, dar librăria libcec nu este disponibilă</string>
+  <string id="36018">Folosește setările de limbă ale televizorului</string>
 </strings>
