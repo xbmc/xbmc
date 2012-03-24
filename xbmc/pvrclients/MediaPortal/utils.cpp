@@ -16,13 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#if defined(_WIN32) || defined(_WIN64)
+#ifdef TARGET_WINDOWS
 #pragma warning(disable:4244) //wchar to char = loss of data
 #endif
 
 #include "utils.h"
 #include <string>
 #include <stdio.h>
+#include "platform/util/StdString.h"
 
 using namespace std;
 
@@ -45,6 +46,7 @@ void Tokenize(const string& str, vector<string>& tokens, const string& delimiter
     // Find next "non-delimiter"
   }
 }
+
 
 std::string WStringToString(const std::wstring& s)
 {
@@ -117,4 +119,15 @@ time_t DateTimeToTimeT(const std::string& datetime)
     retval = 0;
 
   return retval;
+}
+
+std::string ToThumbFileName(const char* strChannelName)
+{
+  CStdString strThumbName = strChannelName;
+
+  strThumbName.Replace(":","_");
+  strThumbName.Replace("/","_");
+  strThumbName.Replace("\\","_");
+
+  return strThumbName;
 }

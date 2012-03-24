@@ -35,6 +35,11 @@ cRecording::cRecording()
   m_Duration        = 0;
   m_Index           = -1;
   m_cardSettings    = NULL;
+  m_channelID       = 0;
+  m_isRecording     = false;
+  m_genre_type      = 0;
+  m_genre_subtype   = 0;
+  m_genretable      = NULL;
 }
 
 
@@ -74,6 +79,9 @@ bool cRecording::ParseLine(const std::string& data)
     //[13] episodePart (string)
     //[14] seriesNumber (string)
     //[15] scheduleID (int)
+    //[16] genre (string)
+    //[17] idchannel (int)
+    //[18] isrecording (bool)
 
     m_Index = atoi(fields[0].c_str());
     m_StartTime = DateTimeToTimeT(fields[1]);
@@ -121,49 +129,11 @@ bool cRecording::ParseLine(const std::string& data)
 
     if( m_filePath.length() > 0 )
     {
-      size_t found = string::npos;
-
-      if ((m_cardSettings) && (m_cardSettings->size() > 0))
-      {
-        for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
-        {
-          // Determine whether the first part of the recording file name is shared with this card
-          found = m_filePath.find(it->RecordingFolder);
-          if (found != string::npos)
-          {
-            m_basePath = it->RecordingFolder + "\\";
-            // Remove the base path
-            m_fileName = m_filePath.substr(it->RecordingFolder.length()+1);
-
-            // Extract subdirectories below the base path
-            size_t found2 = m_fileName.find_last_of("/\\");
-            if (found2 != string::npos)
-            {
-              m_directory = m_fileName.substr(0, found2+1);
-              m_fileName = m_fileName.substr(found2+1);
-            }
-
-            break;
-          }
-        }
-      }
-
-      if (found == string::npos)
-      {
-        if (found != string::npos)
-        {
-          m_fileName = m_filePath.substr(found+1);
-          m_directory = m_filePath.substr(0, found+1);
-        }
-        else
-        {
-          m_fileName = m_filePath;
-          m_directory = "";
-        }
-      }
+      SplitFilePath();
     }
     else
     {
+      m_basePath = "";
       m_fileName = "";
       m_directory = "";
     }
@@ -188,6 +158,14 @@ bool cRecording::ParseLine(const std::string& data)
       m_scheduleID = atoi( fields[15].c_str() );
     }
 
+    if (fields.size() >= 19) // Since TVServerXBMC 1.2.x.111
+    {
+      m_genre = fields[16];
+      m_channelID = atoi( fields[17].c_str() );
+      m_isRecording = stringtobool( fields[18].c_str() );
+
+      if (m_genretable) m_genretable->GenreToTypes(m_genre, m_genre_type, m_genre_subtype);
+    }
     return true;
   }
   else
@@ -196,11 +174,12 @@ bool cRecording::ParseLine(const std::string& data)
   }
 }
 
+
 void cRecording::SetDirectory( string& directory )
 {
   CStdString tmp;
   m_basePath = directory;
-  tmp = m_basePath + m_directory + m_fileName;
+  tmp = m_basePath + m_directory + "\\" + m_fileName;
 
   if( m_basePath.find("smb://") != string::npos )
   {
@@ -252,4 +231,59 @@ int cRecording::Lifetime(void) const
     default:
       return MAXLIFETIME;
   }
+}
+
+void cRecording::SplitFilePath(void)
+{
+  size_t found = string::npos;
+
+  // Try to find the base path used for this recording by searching for the
+  // card recording folder name in the the recording file name.
+  if ((m_cardSettings) && (m_cardSettings->size() > 0))
+  {
+    for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
+    {
+      // Determine whether the first part of the recording file name is shared with this card
+      // Minimal name length of the RecordingFolder should be 3 (drive letter + :\)
+      if (it->RecordingFolder.length() >= 3)
+      {
+        found = m_filePath.find(it->RecordingFolder);
+        if (found != string::npos)
+        {
+          m_basePath = it->RecordingFolder;
+          if (m_basePath.at(m_basePath.length() - 1) != '\\')
+            m_basePath += "\\";
+
+          // Remove the base path
+          m_fileName = m_filePath.substr(it->RecordingFolder.length()+1);
+
+          // Extract subdirectories below the base path
+          size_t found2 = m_fileName.find_last_of("/\\");
+          if (found2 != string::npos)
+          {
+            m_directory = m_fileName.substr(0, found2);
+            m_fileName = m_fileName.substr(found2+1);
+          }
+          else
+          {
+            m_directory = "";
+          }
+
+          break;
+        }
+      }
+    }
+  }
+
+  if (found == string::npos)
+  {
+    m_fileName = m_filePath;
+    m_directory = "";
+    m_basePath = "";
+  }
+}
+
+void cRecording::SetGenreTable(CGenreTable* genretable)
+{
+  m_genretable = genretable;
 }

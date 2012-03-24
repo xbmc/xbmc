@@ -14,4 +14,8 @@
     <string id="30010">Wartezeit, nachdem ein Kanal abgestimmt worden ist (ms)</string>
     <string id="30011">Aufnahmen aus Ordner lesen</string>
     <string id="30012">Mediaportal Aufnahmeordner</string>
+
+    <!-- on-screen error messages -->
+    <string id="30050">Ihre TVServerXBMC plugin v%s ist zu alt. Sie brauchen mindestens Version v%s!</string>
+    <string id="30051">Ihre TVServerXBMC plugin Version ist zu alt. Sie brauchen mindestens Version v%s!</string>
 </strings>

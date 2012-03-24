@@ -4,7 +4,7 @@
   <category label="30040">
     <setting id="host" type="text" label="30000" option="urlencoded" default="127.0.0.1" />
     <setting id="port" type="number" label="30001" default="9596" />
-    <setting id="timeout" type="enum" label="30005" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="6"/>
+    <setting id="timeout" type="enum" label="30005" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20" default="10"/>
   </category>
 
   <!-- Mediaportal -->
@@ -15,7 +15,7 @@
     <setting id="radiogroup" type="text" label="30007" default="" />
     <setting id="resolvertsphostname" type="bool" label="30008" default="true" />
     <setting id="readgenre" type="bool" label="30009" default="false" />
-    <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500" default="0"/>
+    <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500|3000" default="0"/>
     <setting id="userecordingsdir" type="bool" label="30011" default="false" />
     <setting id="recordingsdir" type="folder" option="smb" label="30012" default="" />
   </category>

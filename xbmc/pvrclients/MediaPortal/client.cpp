@@ -248,7 +248,7 @@ void ADDON_ReadSettings(void)
   if (!XBMC->GetSetting("readgenre", &g_bReadGenre))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'readgenre' setting, falling back to 'true' as default");
     g_bReadGenre = DEFAULT_READ_GENRE;
   }
 
@@ -416,7 +416,10 @@ PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES *pProperties)
 //-----------------------------------------------------------------------------
 const char * GetBackendName(void)
 {
-  return g_client->GetBackendName();
+  if (g_client)
+    return g_client->GetBackendName();
+  else
+    return "";
 }
 
 //-- GetBackendVersion --------------------------------------------------------
@@ -457,7 +460,7 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   if (!g_client)
     return PVR_ERROR_SERVER_ERROR;
   else
-    return g_client->GetMPTVTime(localTime, gmtOffset);
+    return g_client->GetBackendTime(localTime, gmtOffset);
 }
 
 PVR_ERROR DialogChannelScan()
@@ -677,7 +680,7 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
   if (!g_client)
     return PVR_ERROR_SERVER_ERROR;
   else
-    return g_client->GetSignalStatus(signalStatus);
+    return g_client->SignalStatus(signalStatus);
 }
 
 /*******************************************/
