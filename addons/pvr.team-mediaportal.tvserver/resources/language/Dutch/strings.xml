@@ -20,6 +20,25 @@
     <string id="30041">MediaPortal</string>
 
     <!-- on-screen error messages -->
-    <string id="30050">Uw TVServerXBMC plugin v%s is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
-    <string id="30050">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>	
+    <string id="30050">Uw TVServerXBMC plugin '%s' is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
+    <string id="30051">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>
+    <string id="30052">Afspelen opname mislukt. Lege URL of bestandsnaam.</string>
+
+    <!-- Status message strings corresponding to the MediaPortal TvResult enum -->
+    <string id="30060">Alle kaarten zijn bezet</string>
+    <string id="30061">Kanaal is gecodeerd</string>
+    <string id="30062">Geen video of audio gedetecteerd</string>
+    <string id="30063">Geen signaal</string>
+    <string id="30064">Onbekende fout</string>
+    <string id="30065">Graph starten mislukt</string>
+    <string id="30066">Onbekend kanaal</string>
+    <string id="30067">Geen tuning details</string>
+    <string id="30068">Kanaal is niet gekoppeld aan een kaart</string>
+    <string id="30069">Kaart is uitgeschakeld</string>
+    <string id="30070">Verbinding met slave verbroken</string>
+    <string id="30071">Niet de eigenaar</string>
+    <string id="30072">Aanmaken Graph mislukt</string>
+    <string id="30073">SW Encoder ontbreekt</string>
+    <string id="30074">Geen vrije diskruimte</string>
+    <string id="30075">Geen PMT gevonden</string>
 </strings>

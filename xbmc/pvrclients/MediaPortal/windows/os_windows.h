@@ -21,9 +21,8 @@
 #ifdef TARGET_WINDOWS
 
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+#define NOMINMAX                      // don't define min() and max() to prevent a clash with std::min() and std::max
 #include <windows.h>
-
-typedef CRITICAL_SECTION criticalsection_t;
 
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '\\'

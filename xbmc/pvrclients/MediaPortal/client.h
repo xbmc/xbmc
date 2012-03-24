@@ -23,7 +23,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "utils/StdString.h"
+#include "platform/util/StdString.h"
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 
@@ -31,7 +31,7 @@
 #define DEFAULT_PORT                  9596
 #define DEFAULT_FTA_ONLY              false
 #define DEFAULT_RADIO                 true
-#define DEFAULT_TIMEOUT               6
+#define DEFAULT_TIMEOUT               10
 #define DEFAULT_HANDLE_MSG            false
 #define DEFAULT_RESOLVE_RTSP_HOSTNAME true
 #define DEFAULT_READ_GENRE            false
@@ -64,7 +64,7 @@ extern std::string  g_szTVGroup;
 extern std::string  g_szRadioGroup;
 
 extern ADDON::CHelper_libXBMC_addon *XBMC;
-extern CHelper_libXBMC_pvr   *PVR;
+extern CHelper_libXBMC_pvr          *PVR;
 
 extern int          g_iTVServerXBMCBuild;
 

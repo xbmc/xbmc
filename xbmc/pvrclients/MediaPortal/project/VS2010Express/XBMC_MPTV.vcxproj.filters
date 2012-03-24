@@ -18,6 +18,9 @@
     <Filter Include="Header Files\windows">
       <UniqueIdentifier>{cdeb5df5-f5b2-482d-9cb4-9e13a05233bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\windows">
+      <UniqueIdentifier>{a514608f-59ee-4524-b1bc-2ca2ad6dde70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channels.cpp">
@@ -65,10 +68,13 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp">
       <Filter>Source Files\tinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\AutoLock.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\windows\FileUtils.cpp">
+      <Filter>Source Files\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\CriticalSection.cpp">
+    <ClCompile Include="..\..\windows\WindowsUtils.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GenreTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -112,12 +118,6 @@
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h">
       <Filter>Header Files\tinyXML</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\AutoLock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\CriticalSection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\os-dependent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -126,6 +126,12 @@
     </ClInclude>
     <ClInclude Include="..\..\posix\os_posix.h">
       <Filter>Header Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windows\WindowsUtils.h">
+      <Filter>Header Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FileUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
