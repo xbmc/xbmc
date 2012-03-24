@@ -78,17 +78,14 @@ namespace PLATFORM
   inline int64_t GetTimeMs()
   {
   #if defined(__APPLE__)
-    return (int64_t) (CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency());
+    return (int64_t) (CVGetCurrentHostTime() / (int64_t)(CVGetHostClockFrequency() * 0.001));
   #elif defined(__WINDOWS__)
-    time_t rawtime;
-    time(&rawtime);
-
     LARGE_INTEGER tickPerSecond;
     LARGE_INTEGER tick;
     if (QueryPerformanceFrequency(&tickPerSecond))
     {
       QueryPerformanceCounter(&tick);
-      return (int64_t) (tick.QuadPart / 1000.);
+      return (int64_t) (tick.QuadPart / (tickPerSecond.QuadPart / 1000.));
     }
     return -1;
   #else
