@@ -102,15 +102,14 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
   CPVRClient* client      = (CPVRClient*) handle->callerAddress;
   CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
   CPVRChannel *channel    = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
-  if (group != NULL && channel != NULL && group->IsRadio() == channel->IsRadio())
+  if (!group || !channel)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
+  }
+  else if (group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
     group->AddToGroup(*channel, member->iChannelNumber, false);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find group '%s' or channel '%d'",
-        __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
   }
 }
 

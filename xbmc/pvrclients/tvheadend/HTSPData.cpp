@@ -442,6 +442,8 @@ PVR_ERROR CHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL
     for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
     {
       SChannel& channel = it->second;
+      if (channel.radio != group.bIsRadio)
+        continue;
 
       PVR_CHANNEL_GROUP_MEMBER tag;
       memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
