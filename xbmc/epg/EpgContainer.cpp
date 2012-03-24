@@ -208,7 +208,7 @@ void CEpgContainer::Process(void)
     }
 
     /* update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG(m_bIsInitialising))
+    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG())
       m_bIsInitialising = false;
 
     /* clean up old entries */
@@ -404,10 +404,11 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
   m_updateEvent.Wait();
 }
 
-bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
+bool CEpgContainer::UpdateEPG()
 {
   bool bInterrupted(false);
   unsigned int iUpdatedTables(0);
+  bool bShowProgress(false);
 
   /* set start and end time */
   time_t start;
@@ -415,6 +416,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start + m_iDisplayTime;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
+  bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
     CSingleLock lock(m_critSection);
