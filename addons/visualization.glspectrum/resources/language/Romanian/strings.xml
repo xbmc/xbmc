@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mod</string>
+    <string id="30001">umplere</string>
+    <string id="30002">contur</string>
+    <string id="30003">puncte</string>
+    <string id="30004">Înălțime bară</string>
+    <string id="30005">mică</string>
+    <string id="30006">standard</string>
+    <string id="30007">mare</string>
+    <string id="30008">foarte mare</string>
+    <string id="30009">Viteză</string>
+    <string id="30010">foarte încet</string>
+    <string id="30011">încet</string>
+    <string id="30012">standard</string>
+    <string id="30013">repede</string>
+    <string id="30014">foarte repede</string>
+</strings>

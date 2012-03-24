@@ -61,7 +61,7 @@
   <string id="31104">Redă secvențele intr-o fereastră [COLOR=grey3](doar în dialogul de informații video)[/COLOR]</string>
   <string id="31105">Butonul „Video” duce întotdeauna către „Fișiere” video</string>
   <string id="31106">Opțiuni diverse</string>
-  <string id="31107">Ascunde marcare citit în nume de fișiere video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+  <string id="31107">Ascunde marcare citită din numele fișierelor video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ascundere butoane meniu principal</string>
   <string id="31109">Fundale media</string>
   <string id="31110">Modificare fundal pentru</string>
@@ -134,7 +134,7 @@
   <string id="31327">Rezoluție</string>
   <string id="31328">Adăugate recent</string>
   <string id="31329">[B]Planificare închidere activată![/B] [COLOR=grey2] Închidere sistem în[/COLOR]</string>
-  <string id="31330">Clic pe buton pentru redare[CR][CR]Trailer film</string>
+  <string id="31330">Clic pe buton pentru redare[CR][CR]secvențe din film (trailer)</string>
   <string id="31331">Detalii album</string>
 
   <!-- Video and Music OSD Labels  -->

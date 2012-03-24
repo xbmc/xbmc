@@ -31,7 +31,7 @@
 	<ParseTMDBPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="9">
-				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,</expression>
+				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBPlot&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;http://api.themoviedb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
@@ -45,7 +45,7 @@
 	<ParseFallbackTMDBPlot dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,</expression>
+				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -174,7 +174,7 @@
 	<GetTMDBTrailerByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTrailer&quot; cache=&quot;tmdb-trailer-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1/trailers?api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
-				<expression>^([0-9]+)$</expression>
+				<expression />
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

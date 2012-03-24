@@ -121,3 +121,27 @@ void LogGraphicsInfo()
 #endif /* !HAS_GL */
 }
 
+int glFormatElementByteCount(GLenum format)
+{
+  switch (format)
+  {
+#ifndef HAS_GLES
+  case GL_BGRA:
+#endif
+  case GL_RGBA:
+    return 4;
+#ifndef HAS_GLES
+  case GL_BGR:
+#endif
+  case GL_RGB:
+    return 3;
+  case GL_LUMINANCE_ALPHA:
+    return 2;
+  case GL_LUMINANCE:
+  case GL_ALPHA:
+    return 1;
+  default:
+    CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
+    return 1;
+  }
+}

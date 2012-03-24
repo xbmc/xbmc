@@ -148,6 +148,7 @@ void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
 
 void CEpgContainer::LoadFromDB(void)
 {
+  bool bLoaded(true);
   unsigned int iCounter(0);
   if (!m_bIgnoreDbForClient && m_database.IsOpen())
   {
@@ -158,6 +159,11 @@ void CEpgContainer::LoadFromDB(void)
 
     for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
     {
+      if (InterruptUpdate())
+      {
+        bLoaded = false;
+        break;
+      }
       UpdateProgressDialog(++iCounter, m_epgs.size(), it->second->Name());
       it->second->Load();
     }
@@ -166,7 +172,7 @@ void CEpgContainer::LoadFromDB(void)
   }
 
   CSingleLock lock(m_critSection);
-  m_bLoaded = true;
+  m_bLoaded = bLoaded;
 }
 
 bool CEpgContainer::PersistAll(void)
@@ -191,13 +197,12 @@ void CEpgContainer::Process(void)
 
   bool bUpdateEpg(true);
 
-  CSingleLock lock(m_critSection);
   if (!m_bLoaded)
   {
+    CSingleLock lock(m_critSection);
     LoadFromDB();
     CheckPlayingEvents();
   }
-  lock.Leave();
 
   while (!m_bStop && !g_application.m_bStop)
   {
@@ -208,7 +213,7 @@ void CEpgContainer::Process(void)
     }
 
     /* update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG(m_bIsInitialising))
+    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG())
       m_bIsInitialising = false;
 
     /* clean up old entries */
@@ -404,10 +409,11 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
   m_updateEvent.Wait();
 }
 
-bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
+bool CEpgContainer::UpdateEPG()
 {
   bool bInterrupted(false);
   unsigned int iUpdatedTables(0);
+  bool bShowProgress(false);
 
   /* set start and end time */
   time_t start;
@@ -415,6 +421,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start + m_iDisplayTime;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
+  bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
 
   {
     CSingleLock lock(m_critSection);

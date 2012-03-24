@@ -25,7 +25,9 @@
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
 #include "utils/log.h"
+#ifdef HAS_GL
 #include "utils/GLUtils.h"
+#endif
 
 #include <string>
 #include <sstream>

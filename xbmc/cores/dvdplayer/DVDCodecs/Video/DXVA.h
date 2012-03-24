@@ -137,6 +137,7 @@ protected:
   bool CreateSurfaces();
   bool OpenProcessor();
   bool SelectProcessor();
+  void EvaluateQuirkNoDeintProcForProg();
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -171,6 +172,8 @@ protected:
 
   LPDIRECT3DSURFACE9* m_surfaces;
   CSurfaceContext* m_context;
+
+  bool             m_quirk_nodeintprocforprog;
 };
 
 };

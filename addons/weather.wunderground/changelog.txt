@@ -1,3 +1,10 @@
+v0.0.9
+- clear 7 day labels not 6
+- save only the actual location code
+
+v0.0.8
+- fix error if no internet connection is available when searching for a location
+
 v0.0.7
 - fix: import error on Windows with non/extended-ascii profile paths
 
