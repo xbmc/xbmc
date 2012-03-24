@@ -313,7 +313,6 @@ bool CPVRChannelGroups::PersistAll(void)
 
 CPVRChannelGroupInternal *CPVRChannelGroups::GetGroupAll(void) const
 {
-  CSingleLock lock(m_critSection);
   if (size() > 0)
     return (CPVRChannelGroupInternal *) at(0);
   else
