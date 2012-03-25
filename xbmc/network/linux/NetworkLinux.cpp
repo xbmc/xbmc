@@ -166,7 +166,24 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 {
    CStdString result = "";
 
-#ifndef __APPLE__
+#if defined(TARGET_DARWIN)
+  FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
+  if (pipe)
+  {
+    CStdString tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = buffer;
+      result = tmpStr.Mid(11);
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Unable to determine gateway");
+    }
+    pclose(pipe);
+  }
+#else
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
    {
@@ -394,7 +411,26 @@ void CNetworkLinux::queryInterfaceList()
 std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 {
    std::vector<CStdString> result;
-#ifndef __APPLE__
+
+#if defined(TARGET_DARWIN)
+  //only finds the primary dns (0 :)
+  FILE* pipe = popen("echo \"show State:/Network/Global/DNS\" | scutil | grep \"0 :\" | tail -n1", "r");
+  if (pipe)
+  {
+    CStdString tmpStr;
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    {
+      tmpStr = buffer;
+      result.push_back(tmpStr.Mid(8));
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Unable to determine nameserver");
+    }
+    pclose(pipe);
+  } 
+#else
    res_init();
 
    for (int i = 0; i < _res.nscount; i ++)
