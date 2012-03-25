@@ -54,12 +54,13 @@ public:
     unsigned code() const { return mCode; };
     virtual void writelog(const char *prefix) const;
 protected:
-    win32_exception(const EXCEPTION_RECORD& info);
+    win32_exception(EXCEPTION_POINTERS* info);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     const char* mWhat;
     Address mWhere;
     unsigned mCode;
+    EXCEPTION_POINTERS *mExceptionPointers;
 };
 
 class access_violation: public win32_exception
@@ -80,6 +81,6 @@ protected:
 private:
     access_type mAccessType;
     Address mBadAddress;
-    access_violation(const EXCEPTION_RECORD& info);
+    access_violation(EXCEPTION_POINTERS* info);
 };
 #endif
