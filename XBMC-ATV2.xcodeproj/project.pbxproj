@@ -36,6 +36,12 @@
 		DF4485341400651B0069344B /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485301400651B0069344B /* FilePipe.cpp */; };
 		DF4485351400651B0069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485321400651B0069344B /* PipesManager.cpp */; };
 		DF4485381400654A0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485361400654A0069344B /* AirTunesServer.cpp */; };
+		DF527780151BAFD600B5B63B /* WebSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527777151BAFD600B5B63B /* WebSocket.cpp */; };
+		DF527781151BAFD600B5B63B /* WebSocketManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527779151BAFD600B5B63B /* WebSocketManager.cpp */; };
+		DF527782151BAFD600B5B63B /* WebSocketV13.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52777B151BAFD600B5B63B /* WebSocketV13.cpp */; };
+		DF527783151BAFD600B5B63B /* WebSocketV8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52777D151BAFD600B5B63B /* WebSocketV8.cpp */; };
+		DF527788151BAFEE00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527784151BAFEE00B5B63B /* Base64.cpp */; };
+		DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527786151BAFEE00B5B63B /* HttpResponse.cpp */; };
 		DF673A251443769300A5A509 /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF673A231443769300A5A509 /* FileUPnP.cpp */; };
 		DF98D9A81434F4B400A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D9A61434F4B400A6EBE1 /* SkinVariable.cpp */; };
 		DFA6BE8713FED2A10048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */; };
@@ -1008,6 +1014,18 @@
 		DF4485331400651B0069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4485361400654A0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
 		DF4485371400654A0069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
+		DF527777151BAFD600B5B63B /* WebSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebSocket.cpp; sourceTree = "<group>"; };
+		DF527778151BAFD600B5B63B /* WebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocket.h; sourceTree = "<group>"; };
+		DF527779151BAFD600B5B63B /* WebSocketManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebSocketManager.cpp; sourceTree = "<group>"; };
+		DF52777A151BAFD600B5B63B /* WebSocketManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketManager.h; sourceTree = "<group>"; };
+		DF52777B151BAFD600B5B63B /* WebSocketV13.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebSocketV13.cpp; sourceTree = "<group>"; };
+		DF52777C151BAFD600B5B63B /* WebSocketV13.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketV13.h; sourceTree = "<group>"; };
+		DF52777D151BAFD600B5B63B /* WebSocketV8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebSocketV8.cpp; sourceTree = "<group>"; };
+		DF52777E151BAFD600B5B63B /* WebSocketV8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebSocketV8.h; sourceTree = "<group>"; };
+		DF527784151BAFEE00B5B63B /* Base64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Base64.cpp; sourceTree = "<group>"; };
+		DF527785151BAFEE00B5B63B /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		DF527786151BAFEE00B5B63B /* HttpResponse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpResponse.cpp; sourceTree = "<group>"; };
+		DF527787151BAFEE00B5B63B /* HttpResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResponse.h; sourceTree = "<group>"; };
 		DF673A231443769300A5A509 /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
 		DF673A241443769300A5A509 /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
 		DF98D9A61434F4B400A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
@@ -3017,6 +3035,21 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
+		DF527775151BAFD600B5B63B /* websocket */ = {
+			isa = PBXGroup;
+			children = (
+				DF527777151BAFD600B5B63B /* WebSocket.cpp */,
+				DF527778151BAFD600B5B63B /* WebSocket.h */,
+				DF527779151BAFD600B5B63B /* WebSocketManager.cpp */,
+				DF52777A151BAFD600B5B63B /* WebSocketManager.h */,
+				DF52777B151BAFD600B5B63B /* WebSocketV13.cpp */,
+				DF52777C151BAFD600B5B63B /* WebSocketV13.h */,
+				DF52777D151BAFD600B5B63B /* WebSocketV8.cpp */,
+				DF52777E151BAFD600B5B63B /* WebSocketV8.h */,
+			);
+			path = websocket;
+			sourceTree = "<group>";
+		};
 		DFD4D20C13D7286E00A47C47 /* platform */ = {
 			isa = PBXGroup;
 			children = (
@@ -4847,6 +4880,7 @@
 				F56C7648131EC153000AD0F6 /* libscrobbler */,
 				F56C7650131EC153000AD0F6 /* linux */,
 				F56C7653131EC153000AD0F6 /* osx */,
+				DF527775151BAFD600B5B63B /* websocket */,
 				DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */,
 				DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */,
 				DF4485361400654A0069344B /* AirTunesServer.cpp */,
@@ -5144,6 +5178,8 @@
 				F56C7724131EC154000AD0F6 /* AsyncFileCopy.h */,
 				F56C7725131EC154000AD0F6 /* AutoPtrHandle.cpp */,
 				F56C7726131EC154000AD0F6 /* AutoPtrHandle.h */,
+				DF527784151BAFEE00B5B63B /* Base64.cpp */,
+				DF527785151BAFEE00B5B63B /* Base64.h */,
 				F56C7727131EC154000AD0F6 /* BitstreamStats.cpp */,
 				F56C7728131EC154000AD0F6 /* BitstreamStats.h */,
 				F56C7729131EC154000AD0F6 /* CharsetConverter.cpp */,
@@ -5182,6 +5218,8 @@
 				F56C7740131EC154000AD0F6 /* HttpHeader.h */,
 				DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */,
 				DFA6BE8913FED2B40048CC11 /* HttpParser.h */,
+				DF527786151BAFEE00B5B63B /* HttpResponse.cpp */,
+				DF527787151BAFEE00B5B63B /* HttpResponse.h */,
 				F56C7741131EC154000AD0F6 /* InfoLoader.cpp */,
 				F56C7742131EC154000AD0F6 /* InfoLoader.h */,
 				F56C7747131EC154000AD0F6 /* Job.h */,
@@ -6940,6 +6978,12 @@
 				DF673A251443769300A5A509 /* FileUPnP.cpp in Sources */,
 				F5BD033A148D4923001B5583 /* CryptThreading.cpp in Sources */,
 				7CCFD9AA1514952700211D82 /* PCMCodec.cpp in Sources */,
+				DF527780151BAFD600B5B63B /* WebSocket.cpp in Sources */,
+				DF527781151BAFD600B5B63B /* WebSocketManager.cpp in Sources */,
+				DF527782151BAFD600B5B63B /* WebSocketV13.cpp in Sources */,
+				DF527783151BAFD600B5B63B /* WebSocketV8.cpp in Sources */,
+				DF527788151BAFEE00B5B63B /* Base64.cpp in Sources */,
+				DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

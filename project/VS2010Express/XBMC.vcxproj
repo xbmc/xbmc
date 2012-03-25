@@ -691,6 +691,10 @@
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp" />
     <ClCompile Include="..\..\xbmc\network\UPnP.cpp" />
     <ClCompile Include="..\..\xbmc\network\WebServer.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocket.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp" />
     <ClCompile Include="..\..\xbmc\network\windows\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp" />
     <ClCompile Include="..\..\xbmc\network\Zeroconf.cpp" />
@@ -783,6 +787,10 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV8.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
@@ -795,6 +803,7 @@
     <ClCompile Include="..\..\xbmc\utils\Archive.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AsyncFileCopy.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AutoPtrHandle.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\Base64.cpp" />
     <ClCompile Include="..\..\xbmc\utils\BitstreamStats.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CharsetConverter.cpp" />
     <ClCompile Include="..\..\xbmc\utils\CPUInfo.cpp" />
@@ -820,6 +829,7 @@
     <ClCompile Include="..\..\xbmc\utils\HTMLUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HttpHeader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HttpParser.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\HttpResponse.cpp" />
     <ClCompile Include="..\..\xbmc\utils\InfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\utils\JobManager.cpp" />
     <ClCompile Include="..\..\xbmc\utils\JSONVariantParser.cpp" />
@@ -1707,6 +1717,7 @@
     <ClInclude Include="..\..\xbmc\utils\Archive.h" />
     <ClInclude Include="..\..\xbmc\utils\AsyncFileCopy.h" />
     <ClInclude Include="..\..\xbmc\utils\AutoPtrHandle.h" />
+    <ClInclude Include="..\..\xbmc\utils\Base64.h" />
     <ClInclude Include="..\..\xbmc\utils\BitstreamStats.h" />
     <ClInclude Include="..\..\xbmc\utils\CharsetConverter.h" />
     <ClInclude Include="..\..\xbmc\utils\CPUInfo.h" />
@@ -1728,6 +1739,7 @@
     <ClInclude Include="..\..\xbmc\utils\HTMLUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\HttpHeader.h" />
     <ClInclude Include="..\..\xbmc\utils\HttpParser.h" />
+    <ClInclude Include="..\..\xbmc\utils\HttpResponse.h" />
     <ClInclude Include="..\..\xbmc\utils\InfoLoader.h" />
     <ClInclude Include="..\..\xbmc\utils\ISerializable.h" />
     <ClInclude Include="..\..\xbmc\utils\Job.h" />
