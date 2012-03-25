@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/Base64.h"
 #include "threads/SingleLock.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
@@ -479,44 +480,12 @@ bool CWebServer::IsStarted()
   return m_running;
 }
 
-void CWebServer::StringToBase64(const char *input, CStdString &output)
-{
-  const char *lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-  unsigned long l;
-  size_t length = strlen (input);
-  output = "";
-
-  for (unsigned int i = 0; i < length; i += 3)
-  {
-    l = (((unsigned long) input[i]) << 16)
-      | (((i + 1) < length) ? (((unsigned long) input[i + 1]) << 8) : 0)
-      | (((i + 2) < length) ? ((unsigned long) input[i + 2]) : 0);
-
-
-    output.push_back(lookup[(l >> 18) & 0x3F]);
-    output.push_back(lookup[(l >> 12) & 0x3F]);
-
-    if (i + 1 < length)
-      output.push_back(lookup[(l >> 6) & 0x3F]);
-    if (i + 2 < length)
-      output.push_back(lookup[l & 0x3F]);
-  }
-
-  int left = 3 - (length % 3);
-
-  if (length % 3)
-  {
-    for (int i = 0; i < left; i++)
-      output.push_back('=');
-  }
-}
-
 void CWebServer::SetCredentials(const CStdString &username, const CStdString &password)
 {
   CSingleLock lock (m_critSection);
   CStdString str = username + ":" + password;
 
-  StringToBase64(str.c_str(), m_Credentials64Encoded);
+  Base64::Encode(str.c_str(), m_Credentials64Encoded);
   m_needcredentials = !password.IsEmpty();
 }
 

@@ -250,6 +250,9 @@
     <Filter Include="peripherals\dialogs">
       <UniqueIdentifier>{9571e2bc-891d-4496-bcba-2ec3eed45704}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\websocket">
+      <UniqueIdentifier>{88e84682-dede-4bdf-9e33-a8023dd5ac78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2567,6 +2570,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Base64.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\HttpResponse.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocket.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp">
+      <Filter>network\websocket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5159,6 +5180,24 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
       <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Base64.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\HttpResponse.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV8.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h">
+      <Filter>network\websocket</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
