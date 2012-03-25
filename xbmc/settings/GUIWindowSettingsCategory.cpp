@@ -346,7 +346,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   if (!group)
     return;
   vecSettings settings;
-  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
+  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection], settings);
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {

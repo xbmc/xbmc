@@ -158,10 +158,11 @@
   <string id="31402">[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options</string>
   <string id="31403">[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows</string>
   <string id="31404">[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information</string>
-  <string id="31405">[B]CONFIGURE NETWORK SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
+
   <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
   <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
   <string id="31408">[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings</string>
+  <string id="31409">[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay</string>
 
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
   
