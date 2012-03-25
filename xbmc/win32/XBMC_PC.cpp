@@ -23,79 +23,18 @@
 #include "settings/AppParamParser.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "WIN32Util.h"
+#include "utils/Win32Exception.h"
 #include "shellapi.h"
 #include "dbghelp.h"
 #include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "Application.h"
-
-typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
-                                        CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
-                                        CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
-                                        CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
-
+#include "GUIInfoManager.h"
 
 // Minidump creation function 
 LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp ) 
 {
-  // Create the dump file where the xbmc.exe resides
-  CStdString errorMsg;
-  CStdString dumpFile;
-  CDateTime now(CDateTime::GetCurrentDateTime());
-  dumpFile.Format("%s\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
-  HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
-
-  // Call MiniDumpWriteDump api with the dump file
-  if ( hFile && ( hFile != INVALID_HANDLE_VALUE ) ) 
-  {
-    // Load the DBGHELP DLL
-    HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");       
-    if (hDbgHelpDll)
-    {
-      MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
-      if (pDump)
-      {
-        // Initialize minidump structure
-        MINIDUMP_EXCEPTION_INFORMATION mdei; 
-        mdei.ThreadId           = CThread::GetCurrentThreadId();
-        mdei.ExceptionPointers  = pEp; 
-        mdei.ClientPointers     = FALSE; 
-
-        // Call the minidump api with normal dumping
-        // We can get more detail information by using other minidump types but the dump file will be
-        // extermely large.
-        BOOL rv = pDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &mdei, 0, NULL); 
-        if( !rv ) 
-        {
-          errorMsg.Format("MiniDumpWriteDump failed with error id %d", GetLastError());
-          MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
-        } 
-      }
-      else
-      {
-        errorMsg.Format("MiniDumpWriteDump failed to load with error id %d", GetLastError());
-        MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
-      }
-      
-      // Close the DLL
-      FreeLibrary(hDbgHelpDll);
-    }
-    else
-    {
-      errorMsg.Format("LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
-      MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
-    }
-
-    // Close the file 
-    CloseHandle( hFile ); 
-  }
-  else 
-  {
-    errorMsg.Format("CreateFile '%s' failed with error id %d", dumpFile.c_str(), GetLastError());
-    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
-  }
-
+  win32_exception::write_minidump(pEp);
   return pEp->ExceptionRecord->ExceptionCode;;
 }
 
@@ -117,6 +56,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   // Initializes CreateMiniDump to handle exceptions.
+  win32_exception::set_version(g_infoManager.GetVersion());
   SetUnhandledExceptionFilter( CreateMiniDump );
 
   // check if XBMC is already running
