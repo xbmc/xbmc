@@ -692,7 +692,7 @@
   <string id="787">Interface disabled</string>
   <string id="788">Network interface disabled successfully.</string>
   <string id="789">Wireless network name (ESSID)</string>
-
+  <string id="790">Remote control</string>
   <string id="791">Allow programs on this system to control XBMC</string>
   <string id="792">Port</string>
   <string id="793">Port range</string>
@@ -803,10 +803,12 @@
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">Announce these services to other systems via Zeroconf</string>
   <string id="1270">Allow XBMC to receive AirPlay content</string>
   <string id="1271">Device name</string>
   <string id="1272">- Use password protection</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -1724,6 +1726,7 @@
   <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
