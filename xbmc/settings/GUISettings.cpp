@@ -1170,7 +1170,7 @@ void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &setting
   for (unsigned int index = 0; index < cat->m_settings.size(); index++)
   {
     if (!cat->m_settings.at(index)->IsAdvanced())
-      unorderedSettings.insert(unorderedSettings.begin(), cat->m_settings.begin(), cat->m_settings.end());
+      unorderedSettings.push_back(cat->m_settings.at(index));
   }
 
   // now order them...
