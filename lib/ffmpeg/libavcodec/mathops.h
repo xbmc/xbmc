@@ -23,6 +23,7 @@
 #define AVCODEC_MATHOPS_H
 
 #include "libavutil/common.h"
+#include "config.h"
 
 #if   ARCH_ARM
 #   include "arm/mathops.h"
@@ -40,16 +41,17 @@
 
 /* generic implementation */
 
+#ifndef MUL64
+#   define MUL64(a,b) ((int64_t)(a) * (int64_t)(b))
+#endif
+
 #ifndef MULL
-#   define MULL(a,b,s) (((int64_t)(a) * (int64_t)(b)) >> (s))
+#   define MULL(a,b,s) (MUL64(a, b) >> (s))
 #endif
 
 #ifndef MULH
-//gcc 3.4 creates an incredibly bloated mess out of this
-//#    define MULH(a,b) (((int64_t)(a) * (int64_t)(b))>>32)
-
 static av_always_inline int MULH(int a, int b){
-    return ((int64_t)(a) * (int64_t)(b))>>32;
+    return MUL64(a, b) >> 32;
 }
 #endif
 
@@ -57,10 +59,6 @@ static av_always_inline int MULH(int a, int b){
 static av_always_inline unsigned UMULH(unsigned a, unsigned b){
     return ((uint64_t)(a) * (uint64_t)(b))>>32;
 }
-#endif
-
-#ifndef MUL64
-#   define MUL64(a,b) ((int64_t)(a) * (int64_t)(b))
 #endif
 
 #ifndef MAC64
@@ -118,7 +116,9 @@ static inline av_const int mid_pred(int a, int b, int c)
 #ifndef sign_extend
 static inline av_const int sign_extend(int val, unsigned bits)
 {
-    return (val << ((8 * sizeof(int)) - bits)) >> ((8 * sizeof(int)) - bits);
+    unsigned shift = 8 * sizeof(int) - bits;
+    union { unsigned u; int s; } v = { (unsigned) val << shift };
+    return v.s >> shift;
 }
 #endif
 

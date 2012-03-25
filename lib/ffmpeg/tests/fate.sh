@@ -29,15 +29,13 @@ checkout(){
     case "$repo" in
         file:*|/*) src="${repo#file:}"      ;;
         git:*)     git clone "$repo" "$src" ;;
-        svn:*)     svn co    "$repo" "$src" ;;
     esac
 }
 
 update()(
     cd ${src} || return
     case "$repo" in
-        git:*) git pull ;;
-        svn:*) svn up   ;;
+        git:*) git pull --quiet ;;
     esac
 )
 
@@ -72,12 +70,12 @@ fate()(
 )
 
 clean(){
-    rm -r ${build} ${inst}
+    rm -rf ${build} ${inst}
 }
 
 report(){
     date=$(date -u +%Y%m%d%H%M%S)
-    echo "fate:0:${date}:${slot}:${version}:$1:$2" >report
+    echo "fate:0:${date}:${slot}:${version}:$1:$2:${comment}" >report
     cat ${build}/config.fate ${build}/tests/data/fate/*.rep >>report
     test -n "$fate_recv" && $tar report *.log | gzip | $fate_recv
 }
@@ -93,8 +91,8 @@ lock ${workdir}     || die "${workdir} locked"
 cd ${workdir}       || die "cd ${workdir} failed"
 
 src=${workdir}/src
-build=${workdir}/build
-inst=${workdir}/install
+: ${build:=${workdir}/build}
+: ${inst:=${workdir}/install}
 
 test -d "$src" && update || checkout || die "Error fetching source"
 

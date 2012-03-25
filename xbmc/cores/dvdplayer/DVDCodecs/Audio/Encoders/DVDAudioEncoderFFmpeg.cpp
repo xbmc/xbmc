@@ -55,7 +55,7 @@ CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
 bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels *channelMap, unsigned int bitsPerSample, unsigned int sampleRate)
 {
   Reset();
-  if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCore.Load() || !m_dllAvCodec.Load())
+  if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
 
   m_dllAvCodec.avcodec_register_all();
@@ -149,7 +149,7 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
 
   if (m_AudioConvert)
       m_TmpBuffer2   = new uint8_t[m_NeededFrames * m_CodecCtx->channels *
-                                   m_dllAvCore.av_get_bits_per_sample_fmt(m_CodecCtx->sample_fmt) / 8];
+                                   m_dllAvUtil.av_get_bits_per_sample_fmt(m_CodecCtx->sample_fmt) / 8];
 
   return true;
 }
@@ -186,7 +186,7 @@ int CDVDAudioEncoderFFmpeg::Encode(uint8_t *data, int size)
     void *convInBuf[] = { m_TmpBuffer };
     int convInStr[] = { m_BitsPerSample / 8 };
     void *convOutBuf[] = { m_TmpBuffer2 };
-    int convOutStr[] = { m_dllAvCore.av_get_bits_per_sample_fmt(m_CodecCtx->sample_fmt) / 8 };
+    int convOutStr[] = { m_dllAvUtil.av_get_bits_per_sample_fmt(m_CodecCtx->sample_fmt) / 8 };
     if (m_dllAvCodec.av_audio_convert(m_AudioConvert, convOutBuf, convOutStr,
                                       convInBuf, convInStr, m_NeededFrames * m_CodecCtx->channels) < 0) {
       CLog::Log(LOGERROR, "CDVDAudioEncoderFFmpeg: Audio conversion failed");

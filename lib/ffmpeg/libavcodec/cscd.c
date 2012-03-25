@@ -149,7 +149,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
     if (c->pic.data[0])
         avctx->release_buffer(avctx, &c->pic);
-    c->pic.reference = 1;
+    c->pic.reference = 3;
     c->pic.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_READABLE |
                           FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
     if (avctx->get_buffer(avctx, &c->pic) < 0) {
@@ -183,7 +183,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
     // flip upside down, add difference frame
     if (buf[0] & 1) { // keyframe
-        c->pic.pict_type = FF_I_TYPE;
+        c->pic.pict_type = AV_PICTURE_TYPE_I;
         c->pic.key_frame = 1;
         switch (c->bpp) {
           case 16:
@@ -197,7 +197,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
                                  c->linelen, c->height);
         }
     } else {
-        c->pic.pict_type = FF_P_TYPE;
+        c->pic.pict_type = AV_PICTURE_TYPE_P;
         c->pic.key_frame = 0;
         switch (c->bpp) {
           case 16:
@@ -228,9 +228,10 @@ static av_cold int decode_init(AVCodecContext *avctx) {
             av_log(avctx, AV_LOG_ERROR,
                    "CamStudio codec error: invalid depth %i bpp\n",
                    avctx->bits_per_coded_sample);
-            return 1;
+            return AVERROR_INVALIDDATA;
     }
     c->bpp = avctx->bits_per_coded_sample;
+    avcodec_get_frame_defaults(&c->pic);
     c->pic.data[0] = NULL;
     c->linelen = avctx->width * avctx->bits_per_coded_sample / 8;
     c->height = avctx->height;
@@ -241,7 +242,7 @@ static av_cold int decode_init(AVCodecContext *avctx) {
     c->decomp_buf = av_malloc(c->decomp_size + AV_LZO_OUTPUT_PADDING);
     if (!c->decomp_buf) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate decompression buffer.\n");
-        return 1;
+        return AVERROR(ENOMEM);
     }
     return 0;
 }
@@ -255,15 +256,14 @@ static av_cold int decode_end(AVCodecContext *avctx) {
 }
 
 AVCodec ff_cscd_decoder = {
-    "camstudio",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CSCD,
-    sizeof(CamStudioContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "camstudio",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_CSCD,
+    .priv_data_size = sizeof(CamStudioContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("CamStudio"),
 };
 

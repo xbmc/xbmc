@@ -22,7 +22,7 @@
 
 //#define DEBUG
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "lzw.h"
@@ -96,11 +96,11 @@ static int gif_read_image(GifState *s)
     n = (1 << bits_per_pixel);
     spal = palette;
     for(i = 0; i < n; i++) {
-        s->image_palette[i] = (0xff << 24) | AV_RB24(spal);
+        s->image_palette[i] = (0xffu << 24) | AV_RB24(spal);
         spal += 3;
     }
     for(; i < 256; i++)
-        s->image_palette[i] = (0xff << 24);
+        s->image_palette[i] = (0xffu << 24);
     /* handle transparency */
     if (s->transparent_color_index >= 0)
         s->image_palette[s->transparent_color_index] = 0;
@@ -326,14 +326,13 @@ static av_cold int gif_decode_close(AVCodecContext *avctx)
 }
 
 AVCodec ff_gif_decoder = {
-    "gif",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_GIF,
-    sizeof(GifState),
-    gif_decode_init,
-    NULL,
-    gif_decode_close,
-    gif_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "gif",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_GIF,
+    .priv_data_size = sizeof(GifState),
+    .init           = gif_decode_init,
+    .close          = gif_decode_close,
+    .decode         = gif_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
 };

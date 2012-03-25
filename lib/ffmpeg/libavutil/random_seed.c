@@ -20,10 +20,10 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <math.h>
+#include <time.h>
 #include "timer.h"
-#include "time.h"
 #include "random_seed.h"
-#include "avutil.h"
 
 static int read_random(uint32_t *dst, const char *file)
 {
@@ -40,24 +40,24 @@ static int read_random(uint32_t *dst, const char *file)
 
 static uint32_t get_generic_seed(void)
 {
-    clock_t last_t=0;
-    int bits=0;
-    uint64_t random=0;
+    clock_t last_t  = 0;
+    int bits        = 0;
+    uint64_t random = 0;
     unsigned i;
-    float s=0.000000000001;
+    float s = 0.000000000001;
 
-    for(i=0;bits<64;i++){
-        clock_t t= clock();
-        if(last_t && fabs(t-last_t)>s || t==(clock_t)-1){
-            if(i<10000 && s<(1<<24)){
-                s+=s;
-                i=t=0;
-            }else{
-                random= 2*random + (i&1);
+    for (i = 0; bits < 64; i++) {
+        clock_t t = clock();
+        if (last_t && fabs(t - last_t) > s || t == (clock_t) -1) {
+            if (i < 10000 && s < (1 << 24)) {
+                s += s;
+                i = t = 0;
+            } else {
+                random = 2 * random + (i & 1);
                 bits++;
             }
         }
-        last_t= t;
+        last_t = t;
     }
 #ifdef AV_READ_TIME
     random ^= AV_READ_TIME();
@@ -65,7 +65,7 @@ static uint32_t get_generic_seed(void)
     random ^= clock();
 #endif
 
-    random += random>>32;
+    random += random >> 32;
 
     return random;
 }
@@ -80,11 +80,3 @@ uint32_t av_get_random_seed(void)
         return seed;
     return get_generic_seed();
 }
-
-#if LIBAVUTIL_VERSION_MAJOR < 51
-attribute_deprecated uint32_t ff_random_get_seed(void);
-uint32_t ff_random_get_seed(void)
-{
-    return av_get_random_seed();
-}
-#endif

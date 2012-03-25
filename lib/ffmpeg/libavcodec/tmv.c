@@ -20,10 +20,10 @@
  */
 
 /**
- * 8088flex TMV video decoder
  * @file
+ * 8088flex TMV video decoder
  * @author Daniel Verkamp
- * @sa http://www.oldskool.org/pc/8088_Corruption
+ * @see http://www.oldskool.org/pc/8088_Corruption
  */
 
 #include "avcodec.h"
@@ -59,7 +59,7 @@ static int tmv_decode_frame(AVCodecContext *avctx, void *data,
         return -1;
     }
 
-    tmv->pic.pict_type = FF_I_TYPE;
+    tmv->pic.pict_type = AV_PICTURE_TYPE_I;
     tmv->pic.key_frame = 1;
     dst                = tmv->pic.data[0];
 
@@ -82,6 +82,14 @@ static int tmv_decode_frame(AVCodecContext *avctx, void *data,
     return avpkt->size;
 }
 
+static av_cold int tmv_decode_init(AVCodecContext *avctx)
+{
+    TMVContext *tmv = avctx->priv_data;
+    avctx->pix_fmt = PIX_FMT_PAL8;
+    avcodec_get_frame_defaults(&tmv->pic);
+    return 0;
+}
+
 static av_cold int tmv_decode_close(AVCodecContext *avctx)
 {
     TMVContext *tmv = avctx->priv_data;
@@ -97,6 +105,7 @@ AVCodec ff_tmv_decoder = {
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_TMV,
     .priv_data_size = sizeof(TMVContext),
+    .init           = tmv_decode_init,
     .close          = tmv_decode_close,
     .decode         = tmv_decode_frame,
     .capabilities   = CODEC_CAP_DR1,

@@ -1,5 +1,4 @@
 /*
- * Memory buffer source filter
  * Copyright (c) 2008 Vitor Sessak
  *
  * This file is part of FFmpeg.
@@ -19,9 +18,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/avcodec.h" /* AVFrame */
+#ifndef AVFILTER_VSRC_BUFFER_H
+#define AVFILTER_VSRC_BUFFER_H
+
+/**
+ * @file
+ * memory buffer source API for video
+ */
+
 #include "avfilter.h"
 
-int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame,
-                             int64_t pts, AVRational pixel_aspect);
+/**
+ * Tell av_vsrc_buffer_add_video_buffer_ref() to overwrite the already
+ * cached video buffer with the new added one, otherwise the function
+ * will complain and exit.
+ */
+#define AV_VSRC_BUF_FLAG_OVERWRITE 1
 
+/**
+ * Add video buffer data in picref to buffer_src.
+ *
+ * @param buffer_src pointer to a buffer source context
+ * @param flags a combination of AV_VSRC_BUF_FLAG_* flags
+ * @return >= 0 in case of success, a negative AVERROR code in case of
+ * failure
+ */
+int av_vsrc_buffer_add_video_buffer_ref(AVFilterContext *buffer_src,
+                                        AVFilterBufferRef *picref, int flags);
+
+#endif /* AVFILTER_VSRC_BUFFER_H */
