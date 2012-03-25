@@ -54,6 +54,9 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->HasThumbnail() && m_regenerateThumbs)
   {
     CTextureCache::Get().ClearCachedImage(pItem->GetThumbnailImage());
+    CTextureDatabase db;
+    if (db.Open())
+      db.ClearTextureForPath(pItem->GetPath(), "thumb");
     pItem->SetThumbnailImage("");
   }
 

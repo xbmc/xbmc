@@ -54,6 +54,14 @@ public:
    */
   void SetTextureForPath(const CStdString &url, const CStdString &type, const CStdString &texture);
 
+  /*! \brief Clear a texture associated with the given path
+   \param url path that was used to find the texture
+   \param type type of image to associate
+   \param texture URL of the texture to associate with the path
+   \sa GetTextureForPath, SetTextureForPath
+   */
+  void ClearTextureForPath(const CStdString &url, const CStdString &type);
+
 protected:
   /*! \brief retrieve a hash for the given url
    Computes a hash of the current url to use for lookups in the database

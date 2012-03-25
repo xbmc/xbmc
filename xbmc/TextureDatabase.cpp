@@ -280,3 +280,20 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
   }
   return;
 }
+
+void CTextureDatabase::ClearTextureForPath(const CStdString &url, const CStdString &type)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString sql = PrepareSQL("DELETE FROM path WHERE url='%s' and type='%s'", url.c_str(), type.c_str());
+    m_pDS->exec(sql.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
+  }
+  return;
+}
