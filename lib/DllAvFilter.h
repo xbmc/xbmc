@@ -24,8 +24,8 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
-#include "DllAvCore.h"
 #include "DllAvCodec.h"
+#include "DllSwResample.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -61,6 +61,7 @@ extern "C" {
   #endif
 #else
   #include "libavfilter/avfiltergraph.h"
+#define HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
 #endif
 }
 
@@ -264,6 +265,7 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 
   /* dependencies of libavfilter */
   DllAvUtil m_dllAvUtil;
+  DllSwResample m_dllSwResample;
 
 public:
   int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
@@ -332,6 +334,8 @@ public:
   virtual bool Load()
   {
     if (!m_dllAvUtil.Load())
+      return false;
+    if (!m_dllSwResample.Load())
       return false;
     return DllDynamic::Load();
   }

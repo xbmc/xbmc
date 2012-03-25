@@ -24,9 +24,8 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 #include "apetag.h"
-
-#define ENABLE_DEBUG 0
 
 /* The earliest and latest file formats supported by this library */
 #define APE_MIN_VERSION 3950
@@ -96,19 +95,19 @@ static int ape_probe(AVProbeData * p)
 
 static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
 {
-#if ENABLE_DEBUG
+#ifdef DEBUG
     int i;
 
     av_log(s, AV_LOG_DEBUG, "Descriptor Block:\n\n");
     av_log(s, AV_LOG_DEBUG, "magic                = \"%c%c%c%c\"\n", ape_ctx->magic[0], ape_ctx->magic[1], ape_ctx->magic[2], ape_ctx->magic[3]);
-    av_log(s, AV_LOG_DEBUG, "fileversion          = %d\n", ape_ctx->fileversion);
-    av_log(s, AV_LOG_DEBUG, "descriptorlength     = %d\n", ape_ctx->descriptorlength);
-    av_log(s, AV_LOG_DEBUG, "headerlength         = %d\n", ape_ctx->headerlength);
-    av_log(s, AV_LOG_DEBUG, "seektablelength      = %d\n", ape_ctx->seektablelength);
-    av_log(s, AV_LOG_DEBUG, "wavheaderlength      = %d\n", ape_ctx->wavheaderlength);
-    av_log(s, AV_LOG_DEBUG, "audiodatalength      = %d\n", ape_ctx->audiodatalength);
-    av_log(s, AV_LOG_DEBUG, "audiodatalength_high = %d\n", ape_ctx->audiodatalength_high);
-    av_log(s, AV_LOG_DEBUG, "wavtaillength        = %d\n", ape_ctx->wavtaillength);
+    av_log(s, AV_LOG_DEBUG, "fileversion          = %"PRId16"\n", ape_ctx->fileversion);
+    av_log(s, AV_LOG_DEBUG, "descriptorlength     = %"PRIu32"\n", ape_ctx->descriptorlength);
+    av_log(s, AV_LOG_DEBUG, "headerlength         = %"PRIu32"\n", ape_ctx->headerlength);
+    av_log(s, AV_LOG_DEBUG, "seektablelength      = %"PRIu32"\n", ape_ctx->seektablelength);
+    av_log(s, AV_LOG_DEBUG, "wavheaderlength      = %"PRIu32"\n", ape_ctx->wavheaderlength);
+    av_log(s, AV_LOG_DEBUG, "audiodatalength      = %"PRIu32"\n", ape_ctx->audiodatalength);
+    av_log(s, AV_LOG_DEBUG, "audiodatalength_high = %"PRIu32"\n", ape_ctx->audiodatalength_high);
+    av_log(s, AV_LOG_DEBUG, "wavtaillength        = %"PRIu32"\n", ape_ctx->wavtaillength);
     av_log(s, AV_LOG_DEBUG, "md5                  = ");
     for (i = 0; i < 16; i++)
          av_log(s, AV_LOG_DEBUG, "%02x", ape_ctx->md5[i]);
@@ -116,14 +115,14 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
 
     av_log(s, AV_LOG_DEBUG, "\nHeader Block:\n\n");
 
-    av_log(s, AV_LOG_DEBUG, "compressiontype      = %d\n", ape_ctx->compressiontype);
-    av_log(s, AV_LOG_DEBUG, "formatflags          = %d\n", ape_ctx->formatflags);
-    av_log(s, AV_LOG_DEBUG, "blocksperframe       = %d\n", ape_ctx->blocksperframe);
-    av_log(s, AV_LOG_DEBUG, "finalframeblocks     = %d\n", ape_ctx->finalframeblocks);
-    av_log(s, AV_LOG_DEBUG, "totalframes          = %d\n", ape_ctx->totalframes);
-    av_log(s, AV_LOG_DEBUG, "bps                  = %d\n", ape_ctx->bps);
-    av_log(s, AV_LOG_DEBUG, "channels             = %d\n", ape_ctx->channels);
-    av_log(s, AV_LOG_DEBUG, "samplerate           = %d\n", ape_ctx->samplerate);
+    av_log(s, AV_LOG_DEBUG, "compressiontype      = %"PRIu16"\n", ape_ctx->compressiontype);
+    av_log(s, AV_LOG_DEBUG, "formatflags          = %"PRIu16"\n", ape_ctx->formatflags);
+    av_log(s, AV_LOG_DEBUG, "blocksperframe       = %"PRIu32"\n", ape_ctx->blocksperframe);
+    av_log(s, AV_LOG_DEBUG, "finalframeblocks     = %"PRIu32"\n", ape_ctx->finalframeblocks);
+    av_log(s, AV_LOG_DEBUG, "totalframes          = %"PRIu32"\n", ape_ctx->totalframes);
+    av_log(s, AV_LOG_DEBUG, "bps                  = %"PRIu16"\n", ape_ctx->bps);
+    av_log(s, AV_LOG_DEBUG, "channels             = %"PRIu16"\n", ape_ctx->channels);
+    av_log(s, AV_LOG_DEBUG, "samplerate           = %"PRIu32"\n", ape_ctx->samplerate);
 
     av_log(s, AV_LOG_DEBUG, "\nSeektable\n\n");
     if ((ape_ctx->seektablelength / sizeof(uint32_t)) != ape_ctx->totalframes) {
@@ -131,27 +130,31 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
     } else {
         for (i = 0; i < ape_ctx->seektablelength / sizeof(uint32_t); i++) {
             if (i < ape_ctx->totalframes - 1) {
-                av_log(s, AV_LOG_DEBUG, "%8d   %d (%d bytes)\n", i, ape_ctx->seektable[i], ape_ctx->seektable[i + 1] - ape_ctx->seektable[i]);
+                av_log(s, AV_LOG_DEBUG, "%8d   %"PRIu32" (%"PRIu32" bytes)\n",
+                       i, ape_ctx->seektable[i],
+                       ape_ctx->seektable[i + 1] - ape_ctx->seektable[i]);
             } else {
-                av_log(s, AV_LOG_DEBUG, "%8d   %d\n", i, ape_ctx->seektable[i]);
+                av_log(s, AV_LOG_DEBUG, "%8d   %"PRIu32"\n", i, ape_ctx->seektable[i]);
             }
         }
     }
 
     av_log(s, AV_LOG_DEBUG, "\nFrames\n\n");
     for (i = 0; i < ape_ctx->totalframes; i++)
-        av_log(s, AV_LOG_DEBUG, "%8d   %8lld %8d (%d samples)\n", i, ape_ctx->frames[i].pos, ape_ctx->frames[i].size, ape_ctx->frames[i].nblocks);
+        av_log(s, AV_LOG_DEBUG, "%8d   %8"PRId64" %8d (%d samples)\n", i,
+               ape_ctx->frames[i].pos, ape_ctx->frames[i].size,
+               ape_ctx->frames[i].nblocks);
 
     av_log(s, AV_LOG_DEBUG, "\nCalculated information:\n\n");
-    av_log(s, AV_LOG_DEBUG, "junklength           = %d\n", ape_ctx->junklength);
-    av_log(s, AV_LOG_DEBUG, "firstframe           = %d\n", ape_ctx->firstframe);
-    av_log(s, AV_LOG_DEBUG, "totalsamples         = %d\n", ape_ctx->totalsamples);
+    av_log(s, AV_LOG_DEBUG, "junklength           = %"PRIu32"\n", ape_ctx->junklength);
+    av_log(s, AV_LOG_DEBUG, "firstframe           = %"PRIu32"\n", ape_ctx->firstframe);
+    av_log(s, AV_LOG_DEBUG, "totalsamples         = %"PRIu32"\n", ape_ctx->totalsamples);
 #endif
 }
 
 static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     APEContext *ape = s->priv_data;
     AVStream *st;
     uint32_t tag;
@@ -159,65 +162,66 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     int total_blocks;
     int64_t pts;
 
-    /* TODO: Skip any leading junk such as id3v2 tags */
-    ape->junklength = 0;
+    /* Skip any leading junk such as id3v2 tags */
+    ape->junklength = avio_tell(pb);
 
-    tag = get_le32(pb);
+    tag = avio_rl32(pb);
     if (tag != MKTAG('M', 'A', 'C', ' '))
         return -1;
 
-    ape->fileversion = get_le16(pb);
+    ape->fileversion = avio_rl16(pb);
 
     if (ape->fileversion < APE_MIN_VERSION || ape->fileversion > APE_MAX_VERSION) {
-        av_log(s, AV_LOG_ERROR, "Unsupported file version - %d.%02d\n", ape->fileversion / 1000, (ape->fileversion % 1000) / 10);
+        av_log(s, AV_LOG_ERROR, "Unsupported file version - %d.%02d\n",
+               ape->fileversion / 1000, (ape->fileversion % 1000) / 10);
         return -1;
     }
 
     if (ape->fileversion >= 3980) {
-        ape->padding1             = get_le16(pb);
-        ape->descriptorlength     = get_le32(pb);
-        ape->headerlength         = get_le32(pb);
-        ape->seektablelength      = get_le32(pb);
-        ape->wavheaderlength      = get_le32(pb);
-        ape->audiodatalength      = get_le32(pb);
-        ape->audiodatalength_high = get_le32(pb);
-        ape->wavtaillength        = get_le32(pb);
-        get_buffer(pb, ape->md5, 16);
+        ape->padding1             = avio_rl16(pb);
+        ape->descriptorlength     = avio_rl32(pb);
+        ape->headerlength         = avio_rl32(pb);
+        ape->seektablelength      = avio_rl32(pb);
+        ape->wavheaderlength      = avio_rl32(pb);
+        ape->audiodatalength      = avio_rl32(pb);
+        ape->audiodatalength_high = avio_rl32(pb);
+        ape->wavtaillength        = avio_rl32(pb);
+        avio_read(pb, ape->md5, 16);
 
         /* Skip any unknown bytes at the end of the descriptor.
            This is for future compatibility */
         if (ape->descriptorlength > 52)
-            url_fseek(pb, ape->descriptorlength - 52, SEEK_CUR);
+            avio_skip(pb, ape->descriptorlength - 52);
 
         /* Read header data */
-        ape->compressiontype      = get_le16(pb);
-        ape->formatflags          = get_le16(pb);
-        ape->blocksperframe       = get_le32(pb);
-        ape->finalframeblocks     = get_le32(pb);
-        ape->totalframes          = get_le32(pb);
-        ape->bps                  = get_le16(pb);
-        ape->channels             = get_le16(pb);
-        ape->samplerate           = get_le32(pb);
+        ape->compressiontype      = avio_rl16(pb);
+        ape->formatflags          = avio_rl16(pb);
+        ape->blocksperframe       = avio_rl32(pb);
+        ape->finalframeblocks     = avio_rl32(pb);
+        ape->totalframes          = avio_rl32(pb);
+        ape->bps                  = avio_rl16(pb);
+        ape->channels             = avio_rl16(pb);
+        ape->samplerate           = avio_rl32(pb);
     } else {
         ape->descriptorlength = 0;
         ape->headerlength = 32;
 
-        ape->compressiontype      = get_le16(pb);
-        ape->formatflags          = get_le16(pb);
-        ape->channels             = get_le16(pb);
-        ape->samplerate           = get_le32(pb);
-        ape->wavheaderlength      = get_le32(pb);
-        ape->wavtaillength        = get_le32(pb);
-        ape->totalframes          = get_le32(pb);
-        ape->finalframeblocks     = get_le32(pb);
+        ape->compressiontype      = avio_rl16(pb);
+        ape->formatflags          = avio_rl16(pb);
+        ape->channels             = avio_rl16(pb);
+        ape->samplerate           = avio_rl32(pb);
+        ape->wavheaderlength      = avio_rl32(pb);
+        ape->wavtaillength        = avio_rl32(pb);
+        ape->totalframes          = avio_rl32(pb);
+        ape->finalframeblocks     = avio_rl32(pb);
 
         if (ape->formatflags & MAC_FORMAT_FLAG_HAS_PEAK_LEVEL) {
-            url_fseek(pb, 4, SEEK_CUR); /* Skip the peak level */
+            avio_skip(pb, 4); /* Skip the peak level */
             ape->headerlength += 4;
         }
 
         if (ape->formatflags & MAC_FORMAT_FLAG_HAS_SEEK_ELEMENTS) {
-            ape->seektablelength = get_le32(pb);
+            ape->seektablelength = avio_rl32(pb);
             ape->headerlength += 4;
             ape->seektablelength *= sizeof(int32_t);
         } else
@@ -239,12 +243,23 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
 
         /* Skip any stored wav header */
         if (!(ape->formatflags & MAC_FORMAT_FLAG_CREATE_WAV_HEADER))
-            url_fskip(pb, ape->wavheaderlength);
+            avio_skip(pb, ape->wavheaderlength);
     }
 
+    if(!ape->totalframes){
+        av_log(s, AV_LOG_ERROR, "No frames in the file!\n");
+        return AVERROR(EINVAL);
+    }
     if(ape->totalframes > UINT_MAX / sizeof(APEFrame)){
-        av_log(s, AV_LOG_ERROR, "Too many frames: %d\n", ape->totalframes);
+        av_log(s, AV_LOG_ERROR, "Too many frames: %"PRIu32"\n",
+               ape->totalframes);
         return -1;
+    }
+    if (ape->seektablelength && (ape->seektablelength / sizeof(*ape->seektable)) < ape->totalframes) {
+        av_log(s, AV_LOG_ERROR,
+               "Number of seek entries is less than number of frames: %zu vs. %"PRIu32"\n",
+               ape->seektablelength / sizeof(*ape->seektable), ape->totalframes);
+        return AVERROR_INVALIDDATA;
     }
     ape->frames       = av_malloc(ape->totalframes * sizeof(APEFrame));
     if(!ape->frames)
@@ -259,15 +274,17 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
 
     if (ape->seektablelength > 0) {
         ape->seektable = av_malloc(ape->seektablelength);
+        if (!ape->seektable)
+            return AVERROR(ENOMEM);
         for (i = 0; i < ape->seektablelength / sizeof(uint32_t); i++)
-            ape->seektable[i] = get_le32(pb);
+            ape->seektable[i] = avio_rl32(pb);
     }
 
     ape->frames[0].pos     = ape->firstframe;
     ape->frames[0].nblocks = ape->blocksperframe;
     ape->frames[0].skip    = 0;
     for (i = 1; i < ape->totalframes; i++) {
-        ape->frames[i].pos      = ape->seektable[i]; //ape->frames[i-1].pos + ape->blocksperframe;
+        ape->frames[i].pos      = ape->seektable[i] + ape->junklength;
         ape->frames[i].nblocks  = ape->blocksperframe;
         ape->frames[i - 1].size = ape->frames[i].pos - ape->frames[i - 1].pos;
         ape->frames[i].skip     = (ape->frames[i].pos - ape->frames[0].pos) & 3;
@@ -287,15 +304,17 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     ape_dumpinfo(s, ape);
 
     /* try to read APE tags */
-    if (!url_is_streamed(pb)) {
+    if (pb->seekable) {
         ff_ape_parse_tag(s);
-        url_fseek(pb, 0, SEEK_SET);
+        avio_seek(pb, 0, SEEK_SET);
     }
 
-    av_log(s, AV_LOG_DEBUG, "Decoding file - v%d.%02d, compression level %d\n", ape->fileversion / 1000, (ape->fileversion % 1000) / 10, ape->compressiontype);
+    av_log(s, AV_LOG_DEBUG, "Decoding file - v%d.%02d, compression level %"PRIu16"\n",
+           ape->fileversion / 1000, (ape->fileversion % 1000) / 10,
+           ape->compressiontype);
 
     /* now we are ready: build format streams */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return -1;
 
@@ -312,7 +331,7 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     st->nb_frames = ape->totalframes;
     st->start_time = 0;
     st->duration  = total_blocks / MAC_SUBFRAME_SIZE;
-    av_set_pts_info(st, 64, MAC_SUBFRAME_SIZE, ape->samplerate);
+    avpriv_set_pts_info(st, 64, MAC_SUBFRAME_SIZE, ape->samplerate);
 
     st->codec->extradata = av_malloc(APE_EXTRADATA_SIZE);
     st->codec->extradata_size = APE_EXTRADATA_SIZE;
@@ -342,7 +361,7 @@ static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
     if (ape->currentframe > ape->totalframes)
         return AVERROR(EIO);
 
-    url_fseek (s->pb, ape->frames[ape->currentframe].pos, SEEK_SET);
+    avio_seek (s->pb, ape->frames[ape->currentframe].pos, SEEK_SET);
 
     /* Calculate how many blocks there are in this frame */
     if (ape->currentframe == (ape->totalframes - 1))
@@ -355,7 +374,7 @@ static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
 
     AV_WL32(pkt->data    , nblocks);
     AV_WL32(pkt->data + 4, ape->frames[ape->currentframe].skip);
-    ret = get_buffer(s->pb, pkt->data + extra_size, ape->frames[ape->currentframe].size);
+    ret = avio_read(s->pb, pkt->data + extra_size, ape->frames[ape->currentframe].size);
 
     pkt->pts = ape->frames[ape->currentframe].pts;
     pkt->stream_index = 0;
@@ -392,13 +411,13 @@ static int ape_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
 }
 
 AVInputFormat ff_ape_demuxer = {
-    "ape",
-    NULL_IF_CONFIG_SMALL("Monkey's Audio"),
-    sizeof(APEContext),
-    ape_probe,
-    ape_read_header,
-    ape_read_packet,
-    ape_read_close,
-    ape_read_seek,
+    .name           = "ape",
+    .long_name      = NULL_IF_CONFIG_SMALL("Monkey's Audio"),
+    .priv_data_size = sizeof(APEContext),
+    .read_probe     = ape_probe,
+    .read_header    = ape_read_header,
+    .read_packet    = ape_read_packet,
+    .read_close     = ape_read_close,
+    .read_seek      = ape_read_seek,
     .extensions = "ape,apl,mac"
 };

@@ -1,6 +1,4 @@
-/**
- * VP8 compatible video decoder
- *
+/*
  * Copyright (C) 2010 David Conrad
  * Copyright (C) 2010 Ronald S. Bultje
  *
@@ -21,47 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-// TODO: move these #define and enum to a better header...
+/**
+ * @file
+ * VP8 compatible video decoder
+ */
 
-#define VP8_MAX_QUANT 127
+#ifndef AVCODEC_VP8DATA_H
+#define AVCODEC_VP8DATA_H
 
-enum dct_token {
-    DCT_0,
-    DCT_1,
-    DCT_2,
-    DCT_3,
-    DCT_4,
-    DCT_CAT1,
-    DCT_CAT2,
-    DCT_CAT3,
-    DCT_CAT4,
-    DCT_CAT5,
-    DCT_CAT6,
-    DCT_EOB,
-
-    NUM_DCT_TOKENS
-};
-
+#include "vp8.h"
 #include "h264pred.h"
-
-// used to signal 4x4 intra pred in luma MBs
-#define MODE_I4x4 4
-
-enum inter_mvmode {
-    VP8_MVMODE_NEAREST = MODE_I4x4 + 1,
-    VP8_MVMODE_NEAR,
-    VP8_MVMODE_ZERO,
-    VP8_MVMODE_NEW,
-    VP8_MVMODE_SPLIT
-};
-
-enum inter_splitmvmode {
-    VP8_SPLITMVMODE_16x8 = 0,    ///< 2 16x8 blocks (vertical)
-    VP8_SPLITMVMODE_8x16,        ///< 2 8x16 blocks (horizontal)
-    VP8_SPLITMVMODE_8x8,         ///< 2x2 blocks of 8x8px each
-    VP8_SPLITMVMODE_4x4,         ///< 4x4 blocks of 4x4px each
-    VP8_SPLITMVMODE_NONE,        ///< (only used in prediction) no split MVs
-};
 
 static const uint8_t vp8_pred4x4_mode[] =
 {
@@ -315,7 +282,7 @@ static const uint8_t vp8_dct_cat5_prob[] = { 180, 157, 141, 134, 130, 0 };
 static const uint8_t vp8_dct_cat6_prob[] = { 254, 254, 243, 230, 196, 177, 153, 140, 133, 130, 129, 0 };
 
 // only used for cat3 and above; cat 1 and 2 are referenced directly
-static const uint8_t * const vp8_dct_cat_prob[] =
+const uint8_t * const ff_vp8_dct_cat_prob[] =
 {
     vp8_dct_cat3_prob,
     vp8_dct_cat4_prob,
@@ -720,3 +687,5 @@ static const uint8_t vp8_mv_default_prob[2][19] = {
       204, 170, 119, 235, 140, 230, 228,
       128, 130, 130,  74, 148, 180, 203, 236, 254, 254 }
 };
+
+#endif /* AVCODEC_VP8DATA_H */

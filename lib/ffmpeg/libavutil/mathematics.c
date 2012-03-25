@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <limits.h>
 #include "mathematics.h"
+#include "libavutil/common.h"
 
 const uint8_t ff_sqrt_tab[256]={
   0, 16, 23, 28, 32, 36, 40, 43, 46, 48, 51, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 77, 79, 80, 82, 84, 85, 87, 88, 90,
@@ -139,6 +140,8 @@ int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq){
 int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b){
     int64_t a= tb_a.num * (int64_t)tb_b.den;
     int64_t b= tb_b.num * (int64_t)tb_a.den;
+    if((FFABS(ts_a)|a|FFABS(ts_b)|b)<=INT_MAX)
+        return (ts_a*a > ts_b*b) - (ts_a*a < ts_b*b);
     if (av_rescale_rnd(ts_a, a, b, AV_ROUND_DOWN) < ts_b) return -1;
     if (av_rescale_rnd(ts_b, b, a, AV_ROUND_DOWN) < ts_a) return  1;
     return 0;
@@ -150,32 +153,3 @@ int64_t av_compare_mod(uint64_t a, uint64_t b, uint64_t mod){
         c-= mod;
     return c;
 }
-
-#ifdef TEST
-#include "integer.h"
-#undef printf
-int main(void){
-    int64_t a,b,c,d,e;
-
-    for(a=7; a<(1LL<<62); a+=a/3+1){
-        for(b=3; b<(1LL<<62); b+=b/4+1){
-            for(c=9; c<(1LL<<62); c+=(c*2)/5+3){
-                int64_t r= c/2;
-                AVInteger ai;
-                ai= av_mul_i(av_int2i(a), av_int2i(b));
-                ai= av_add_i(ai, av_int2i(r));
-
-                d= av_i2int(av_div_i(ai, av_int2i(c)));
-
-                e= av_rescale(a,b,c);
-
-                if((double)a * (double)b / (double)c > (1LL<<63))
-                    continue;
-
-                if(d!=e) printf("%"PRId64"*%"PRId64"/%"PRId64"= %"PRId64"=%"PRId64"\n", a, b, c, d, e);
-            }
-        }
-    }
-    return 0;
-}
-#endif

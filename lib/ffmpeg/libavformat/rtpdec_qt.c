@@ -26,6 +26,8 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
+#include "avio_internal.h"
 #include "rtp.h"
 #include "rtpdec.h"
 #include "isom.h"
@@ -42,7 +44,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
                                uint32_t *timestamp, const uint8_t *buf,
                                int len, int flags)
 {
-    ByteIOContext pb;
+    AVIOContext pb;
     GetBitContext gb;
     int packing_scheme, has_payload_desc, has_packet_info, alen,
         has_marker_bit = flags & RTP_FLAG_MARKER;
@@ -69,7 +71,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
      * http://developer.apple.com/quicktime/icefloe/dispatch026.html
      */
     init_get_bits(&gb, buf, len << 3);
-    init_put_byte(&pb, buf, len, 0, NULL, NULL, NULL, NULL);
+    ffio_init_context(&pb, buf, len, 0, NULL, NULL, NULL, NULL);
 
     if (len < 4)
         return AVERROR_INVALIDDATA;
@@ -97,27 +99,27 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
         if (!is_start || !is_finish) {
             av_log_missing_feature(s, "RTP-X-QT with payload description "
                                       "split over several packets", 1);
-            return AVERROR_NOTSUPP;
+            return AVERROR(ENOSYS);
         }
         skip_bits(&gb, 12); // reserved
         data_len = get_bits(&gb, 16);
 
-        url_fseek(&pb, pos + 4, SEEK_SET);
-        tag = get_le32(&pb);
-        if ((st->codec->codec_type == CODEC_TYPE_VIDEO &&
+        avio_seek(&pb, pos + 4, SEEK_SET);
+        tag = avio_rl32(&pb);
+        if ((st->codec->codec_type == AVMEDIA_TYPE_VIDEO &&
                  tag != MKTAG('v','i','d','e')) ||
-            (st->codec->codec_type == CODEC_TYPE_AUDIO &&
+            (st->codec->codec_type == AVMEDIA_TYPE_AUDIO &&
                  tag != MKTAG('s','o','u','n')))
             return AVERROR_INVALIDDATA;
-        av_set_pts_info(st, 32, 1, get_be32(&pb));
+        avpriv_set_pts_info(st, 32, 1, avio_rb32(&pb));
 
         if (pos + data_len > len)
             return AVERROR_INVALIDDATA;
         /* TLVs */
-        while (url_ftell(&pb) + 4 < pos + data_len) {
-            int tlv_len = get_be16(&pb);
-            tag = get_le16(&pb);
-            if (url_ftell(&pb) + tlv_len > pos + data_len)
+        while (avio_tell(&pb) + 4 < pos + data_len) {
+            int tlv_len = avio_rb16(&pb);
+            tag = avio_rl16(&pb);
+            if (avio_tell(&pb) + tlv_len > pos + data_len)
                 return AVERROR_INVALIDDATA;
 
 #define MKTAG16(a,b) MKTAG(a,b,0,0)
@@ -148,22 +150,22 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
                 break;
             }
             default:
-                url_fskip(&pb, tlv_len);
+                avio_skip(&pb, tlv_len);
                 break;
             }
         }
 
         /* 32-bit alignment */
-        url_fskip(&pb, ((url_ftell(&pb) + 3) & ~3) - url_ftell(&pb));
+        avio_skip(&pb, ((avio_tell(&pb) + 3) & ~3) - avio_tell(&pb));
     } else
-        url_fseek(&pb, 4, SEEK_SET);
+        avio_seek(&pb, 4, SEEK_SET);
 
     if (has_packet_info) {
         av_log_missing_feature(s, "RTP-X-QT with packet specific info", 1);
-        return AVERROR_NOTSUPP;
+        return AVERROR(ENOSYS);
     }
 
-    alen = len - url_ftell(&pb);
+    alen = len - avio_tell(&pb);
     if (alen <= 0)
         return AVERROR_INVALIDDATA;
 
@@ -181,7 +183,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
         }
         if (!qt->pkt.data)
             return AVERROR(ENOMEM);
-        memcpy(qt->pkt.data + qt->pkt.size, buf + url_ftell(&pb), alen);
+        memcpy(qt->pkt.data + qt->pkt.size, buf + avio_tell(&pb), alen);
         qt->pkt.size += alen;
         if (has_marker_bit) {
             *pkt = qt->pkt;
@@ -202,7 +204,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
         qt->remaining = (alen / qt->bytes_per_frame) - 1;
         if (av_new_packet(pkt, qt->bytes_per_frame))
             return AVERROR(ENOMEM);
-        memcpy(pkt->data, buf + url_ftell(&pb), qt->bytes_per_frame);
+        memcpy(pkt->data, buf + avio_tell(&pb), qt->bytes_per_frame);
         pkt->flags = flags & RTP_FLAG_KEY ? AV_PKT_FLAG_KEY : 0;
         pkt->stream_index = st->index;
         if (qt->remaining > 0) {
@@ -214,7 +216,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
             }
             qt->pkt.size = qt->remaining * qt->bytes_per_frame;
             memcpy(qt->pkt.data,
-                   buf + url_ftell(&pb) + qt->bytes_per_frame,
+                   buf + avio_tell(&pb) + qt->bytes_per_frame,
                    qt->remaining * qt->bytes_per_frame);
             qt->pkt.flags = pkt->flags;
             return 1;
@@ -223,7 +225,7 @@ static int qt_rtp_parse_packet(AVFormatContext *s, PayloadContext *qt,
 
     default:  /* unimplemented */
         av_log_missing_feature(NULL, "RTP-X-QT with packing scheme 2", 1);
-        return AVERROR_NOTSUPP;
+        return AVERROR(ENOSYS);
     }
 }
 
@@ -243,12 +245,12 @@ RTPDynamicProtocolHandler ff_ ## m ## _rtp_ ## n ## _handler = { \
     .enc_name         = s, \
     .codec_type       = t, \
     .codec_id         = CODEC_ID_NONE, \
-    .open             = qt_rtp_new,    \
-    .close            = qt_rtp_free,   \
+    .alloc            = qt_rtp_new,    \
+    .free             = qt_rtp_free,   \
     .parse_packet     = qt_rtp_parse_packet, \
-};
+}
 
-RTP_QT_HANDLER(qt,        vid, "X-QT",        CODEC_TYPE_VIDEO);
-RTP_QT_HANDLER(qt,        aud, "X-QT",        CODEC_TYPE_AUDIO);
-RTP_QT_HANDLER(quicktime, vid, "X-QUICKTIME", CODEC_TYPE_VIDEO);
-RTP_QT_HANDLER(quicktime, aud, "X-QUICKTIME", CODEC_TYPE_AUDIO);
+RTP_QT_HANDLER(qt,        vid, "X-QT",        AVMEDIA_TYPE_VIDEO);
+RTP_QT_HANDLER(qt,        aud, "X-QT",        AVMEDIA_TYPE_AUDIO);
+RTP_QT_HANDLER(quicktime, vid, "X-QUICKTIME", AVMEDIA_TYPE_VIDEO);
+RTP_QT_HANDLER(quicktime, aud, "X-QUICKTIME", AVMEDIA_TYPE_AUDIO);

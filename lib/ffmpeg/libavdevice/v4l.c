@@ -19,11 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "avdevice.h"
+
 #undef __STRICT_ANSI__ //workaround due to broken kernel headers
 #include "config.h"
 #include "libavutil/rational.h"
-#include "libavcore/imgutils.h"
-#include "libavformat/avformat.h"
+#include "libavutil/imgutils.h"
+#include "libavutil/log.h"
+#include "libavutil/opt.h"
+#include "libavformat/internal.h"
 #include "libavcodec/dsputil.h"
 #include <unistd.h>
 #include <fcntl.h>
@@ -33,9 +37,10 @@
 #define _LINUX_TIME_H 1
 #include <linux/videodev.h>
 #include <time.h>
-#include <strings.h>
+#include "avdevice.h"
 
 typedef struct {
+    AVClass *class;
     int fd;
     int frame_format; /* see VIDEO_PALETTE_xxx */
     int use_mmap;
@@ -49,6 +54,7 @@ typedef struct {
     struct video_mbuf gb_buffers;
     struct video_mmap gb_buf;
     int gb_frame;
+    int standard;
 } VideoData;
 
 static const struct {
@@ -79,6 +85,8 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     int j;
     int vformat_num = FF_ARRAY_ELEMS(video_formats);
 
+    av_log(s1, AV_LOG_WARNING, "V4L input device is deprecated and will be removed in the next release.");
+
     if (ap->time_base.den <= 0) {
         av_log(s1, AV_LOG_ERROR, "Wrong time base (%d)\n", ap->time_base.den);
         return -1;
@@ -88,10 +96,10 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     s->video_win.width = ap->width;
     s->video_win.height = ap->height;
 
-    st = av_new_stream(s1, 0);
+    st = avformat_new_stream(s1, NULL);
     if (!st)
         return AVERROR(ENOMEM);
-    av_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in us */
+    avpriv_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in us */
 
     video_fd = open(s1->filename, O_RDWR);
     if (video_fd < 0) {
@@ -131,13 +139,8 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     }
 
     /* set tv standard */
-    if (ap->standard && !ioctl(video_fd, VIDIOCGTUNER, &tuner)) {
-        if (!strcasecmp(ap->standard, "pal"))
-            tuner.mode = VIDEO_MODE_PAL;
-        else if (!strcasecmp(ap->standard, "secam"))
-            tuner.mode = VIDEO_MODE_SECAM;
-        else
-            tuner.mode = VIDEO_MODE_NTSC;
+    if (!ioctl(video_fd, VIDIOCGTUNER, &tuner)) {
+        tuner.mode = s->standard;
         ioctl(video_fd, VIDIOCSTUNER, &tuner);
     }
 
@@ -149,14 +152,8 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     ioctl(video_fd, VIDIOCSAUDIO, &audio);
 
     ioctl(video_fd, VIDIOCGPICT, &pict);
-#if 0
-    printf("v4l: colour=%d hue=%d brightness=%d constrast=%d whiteness=%d\n",
-           pict.colour,
-           pict.hue,
-           pict.brightness,
-           pict.contrast,
-           pict.whiteness);
-#endif
+    av_dlog(s1, "v4l: colour=%d hue=%d brightness=%d constrast=%d whiteness=%d\n",
+            pict.colour, pict.hue, pict.brightness, pict.contrast, pict.whiteness);
     /* try to choose a suitable video format */
     pict.palette = desired_palette;
     pict.depth= desired_depth;
@@ -339,13 +336,28 @@ static int grab_read_close(AVFormatContext *s1)
     return 0;
 }
 
+static const AVOption options[] = {
+    { "standard", "", offsetof(VideoData, standard), AV_OPT_TYPE_INT, {.dbl = VIDEO_MODE_NTSC}, VIDEO_MODE_PAL, VIDEO_MODE_NTSC, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "PAL",   "", 0, AV_OPT_TYPE_CONST, {.dbl = VIDEO_MODE_PAL},   0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "SECAM", "", 0, AV_OPT_TYPE_CONST, {.dbl = VIDEO_MODE_SECAM}, 0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "NTSC",  "", 0, AV_OPT_TYPE_CONST, {.dbl = VIDEO_MODE_NTSC},  0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { NULL },
+};
+
+static const AVClass v4l_class = {
+    .class_name = "V4L indev",
+    .item_name  = av_default_item_name,
+    .option     = options,
+    .version    = LIBAVUTIL_VERSION_INT,
+};
+
 AVInputFormat ff_v4l_demuxer = {
-    "video4linux",
-    NULL_IF_CONFIG_SMALL("Video4Linux device grab"),
-    sizeof(VideoData),
-    NULL,
-    grab_read_header,
-    grab_read_packet,
-    grab_read_close,
-    .flags = AVFMT_NOFILE,
+    .name           = "video4linux,v4l",
+    .long_name      = NULL_IF_CONFIG_SMALL("Video4Linux device grab"),
+    .priv_data_size = sizeof(VideoData),
+    .read_header    = grab_read_header,
+    .read_packet    = grab_read_packet,
+    .read_close     = grab_read_close,
+    .flags          = AVFMT_NOFILE,
+    .priv_class     = &v4l_class,
 };

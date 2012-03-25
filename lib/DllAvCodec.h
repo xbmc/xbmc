@@ -24,7 +24,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
-#include "DllAvCore.h"
+#include "DllAvUtil.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -339,7 +339,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   END_METHOD_RESOLVE()
 
   /* dependencies of libavcodec */
-  DllAvCore m_dllAvCore;
+  DllAvUtil m_dllAvUtil;
   // DllAvUtil loaded implicitely by m_dllAvCore
 
 public:
@@ -361,7 +361,7 @@ public:
     }
     virtual bool Load()
     {
-      if (!m_dllAvCore.Load())
+      if (!m_dllAvUtil.Load())
 	return false;
       return DllDynamic::Load();
     }
