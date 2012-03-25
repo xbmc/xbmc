@@ -2567,6 +2567,11 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyzeroconf.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pypipesmanager.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5159,6 +5164,11 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
       <Filter>cores\paplayer</Filter>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pypipesmanager.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyzeroconf.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,7 @@ SRCS=action.cpp \
      player.cpp \
      pyplaylist.cpp \
      pyrendercapture.cpp \
+     pypipesmanager.cpp \
      PythonAddon.cpp \
      PythonPlayer.cpp \
      pyutil.cpp \
@@ -36,6 +37,11 @@ SRCS=action.cpp \
      xbmcmodule.cpp \
      xbmcplugin.cpp \
      xbmcvfsmodule.cpp \
+
+ifeq (@USE_AVAHI@, 1)
+SRCS+=pyzeroconf.cpp
+endif
+
 
 LIB=xbmcmodule.a
 

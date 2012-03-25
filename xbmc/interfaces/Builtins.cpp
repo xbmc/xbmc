@@ -128,6 +128,7 @@ const BUILT_IN commands[] = {
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
+  { "ShowPicture",                true,   "Show the picture from the specified path" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "UnloadSkin",                 false,  "Unload XBMC's skin" },
   { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
@@ -590,6 +591,15 @@ int CBuiltins::Execute(const CStdString& execString)
     msg.SetStringParam(params[0]);
     CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
+  }
+  else if (execute.Equals("ShowPicture"))
+  {
+    if (!params.size())
+    {
+      CLog::Log(LOGERROR, "XBMC.ShowPicture called with empty parameter");
+      return -2;
+    }
+    g_application.getApplicationMessenger().PictureShow(params[0]);
   }
   else if (execute.Equals("reloadskin"))
   {

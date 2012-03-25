@@ -1132,10 +1132,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       g_application.m_pPlayer->GetChapterName(strLabel);
     break;
+  case PLAYER_PROGRESS:
+  case PLAYER_PROGRESS_CACHE:
+  case PLAYER_SEEKBAR:
   case PLAYER_CACHELEVEL:
     {
       int iLevel = 0;
-      if(g_application.IsPlaying() && GetInt(iLevel, PLAYER_CACHELEVEL) && iLevel >= 0)
+      if(g_application.IsPlaying() && GetInt(iLevel, info) && iLevel >= 0)
         strLabel.Format("%i", iLevel);
     }
     break;

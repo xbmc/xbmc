@@ -47,6 +47,8 @@
 		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
 		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
 		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
+		DFDFB4C614E2E8280012E41F /* pyzeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDFB4C414E2E8280012E41F /* pyzeroconf.cpp */; };
+		DFED3C1114E4842200CE6232 /* pypipesmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFED3C0F14E4842200CE6232 /* pypipesmanager.cpp */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
 		F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */; };
@@ -1032,6 +1034,10 @@
 		DFD4D1E613D7263000A47C47 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		DFD4D1FD13D7283500A47C47 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
+		DFDFB4C414E2E8280012E41F /* pyzeroconf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyzeroconf.cpp; sourceTree = "<group>"; };
+		DFDFB4C514E2E8280012E41F /* pyzeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyzeroconf.h; sourceTree = "<group>"; };
+		DFED3C0F14E4842200CE6232 /* pypipesmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pypipesmanager.cpp; sourceTree = "<group>"; };
+		DFED3C1014E4842200CE6232 /* pypipesmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pypipesmanager.h; sourceTree = "<group>"; };
 		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -4972,6 +4978,8 @@
 				F56C856F131F42EA000AD0F6 /* listitem.h */,
 				F56C8570131F42EA000AD0F6 /* player.cpp */,
 				F56C8571131F42EA000AD0F6 /* player.h */,
+				DFED3C0F14E4842200CE6232 /* pypipesmanager.cpp */,
+				DFED3C1014E4842200CE6232 /* pypipesmanager.h */,
 				F56C8572131F42EA000AD0F6 /* pyplaylist.cpp */,
 				F56C8573131F42EA000AD0F6 /* pyplaylist.h */,
 				F5E1127A14356C4600175026 /* pyrendercapture.cpp */,
@@ -4982,6 +4990,8 @@
 				F56C8575131F42EA000AD0F6 /* PythonPlayer.h */,
 				F56C8576131F42EA000AD0F6 /* pyutil.cpp */,
 				F56C8577131F42EA000AD0F6 /* pyutil.h */,
+				DFDFB4C414E2E8280012E41F /* pyzeroconf.cpp */,
+				DFDFB4C514E2E8280012E41F /* pyzeroconf.h */,
 				F56C8578131F42EA000AD0F6 /* window.cpp */,
 				F56C8579131F42EA000AD0F6 /* window.h */,
 				F56C857A131F42EA000AD0F6 /* winxml.cpp */,
@@ -6955,6 +6965,8 @@
 				DF6739E21443765F00A5A509 /* FileUPnP.cpp in Sources */,
 				F5BD034F148D496A001B5583 /* CryptThreading.cpp in Sources */,
 				7CCFD9991514950700211D82 /* PCMCodec.cpp in Sources */,
+				DFDFB4C614E2E8280012E41F /* pyzeroconf.cpp in Sources */,
+				DFED3C1114E4842200CE6232 /* pypipesmanager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

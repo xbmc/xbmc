@@ -900,6 +900,7 @@ else
 fi
 
 # avahi
+USE_AVAHI=0
 if test "$host_vendor" = "apple" ; then
   use_avahi="no"
   AC_MSG_RESULT($avahi_disabled)
@@ -911,6 +912,9 @@ else
       #either both libs or none
       AC_CHECK_LIB([avahi-client], [main],,
         use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+    fi
+    if test "$use_avahi" = "yes"; then
+      USE_AVAHI=1
     fi
   else
     AC_MSG_RESULT($avahi_disabled)
@@ -1959,7 +1963,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
-
+AC_SUBST(USE_AVAHI)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
