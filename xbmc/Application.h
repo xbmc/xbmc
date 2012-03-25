@@ -167,7 +167,6 @@ public:
   void SetVolume(long iValue, bool isPercentage = true);
   bool IsMuted() const;
   void ToggleMute(void);
-  bool CecMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;

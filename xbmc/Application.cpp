@@ -160,9 +160,6 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
-#ifdef HAVE_LIBCEC
-#include "peripherals/devices/PeripheralCecAdapter.h"
-#endif
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
@@ -2556,6 +2553,10 @@ bool CApplication::OnAction(const CAction &action)
       }
     }
   }
+
+  if (g_peripherals.OnAction(action))
+    return true;
+
   if (action.GetID() == ACTION_MUTE)
   {
     ToggleMute();
@@ -2583,26 +2584,6 @@ bool CApplication::OnAction(const CAction &action)
   // Check for global volume control
   if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
   {
-    /* try to set the volume on a connected amp */
-  #ifdef HAVE_LIBCEC
-    vector<CPeripheral *> peripherals;
-    if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-    {
-      for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-      {
-        CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-        if (cecDevice && cecDevice->HasConnectedAudioSystem())
-        {
-          if (action.GetID() == ACTION_VOLUME_UP)
-            cecDevice->ScheduleVolumeUp();
-          else
-            cecDevice->ScheduleVolumeDown();
-          return true;
-        }
-      }
-    }
-  #endif
-
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
       // increase or decrease the volume
@@ -2851,23 +2832,9 @@ bool CApplication::ProcessRemote(float frameTime)
 
 bool CApplication::ProcessPeripherals(float frameTime)
 {
-#ifdef HAVE_LIBCEC
-  vector<CPeripheral *> peripherals;
-  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-    {
-      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-      if (cecDevice && cecDevice->GetButton())
-      {
-        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
-        cecDevice->ResetButton();
-        return OnKey(key);
-      }
-    }
-  }
-#endif
-
+  CKey key;
+  if (g_peripherals.GetNextKeypress(frameTime, key))
+    return OnKey(key);
   return false;
 }
 
@@ -5048,49 +5015,13 @@ void CApplication::ShowVolumeBar(const CAction *action)
 
 bool CApplication::IsMuted() const
 {
-  /* try to set the mute setting on a connected amp */
-#ifdef HAVE_LIBCEC
-  vector<CPeripheral *> peripherals;
-  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-    {
-      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-      if (cecDevice && cecDevice->HasConnectedAudioSystem())
-        return false;
-    }
-  }
-#endif
+  if (g_peripherals.IsMuted())
+    return true;
   return g_settings.m_bMute;
-}
-
-bool CApplication::CecMute(void)
-{
-  /* try to set the mute setting on a connected amp */
-#ifdef HAVE_LIBCEC
-  vector<CPeripheral *> peripherals;
-  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-    {
-      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-      if (cecDevice && cecDevice->HasConnectedAudioSystem())
-      {
-        cecDevice->ScheduleMute();
-        return true;
-      }
-    }
-  }
-#endif
-
-  return false;
 }
 
 void CApplication::ToggleMute(void)
 {
-  if (CecMute())
-    return;
-
   if (g_settings.m_bMute)
     UnMute();
   else
@@ -5099,7 +5030,7 @@ void CApplication::ToggleMute(void)
 
 void CApplication::Mute()
 {
-  if (CecMute())
+  if (g_peripherals.Mute())
     return;
 
   g_settings.m_iPreMuteVolumeLevel = GetVolume();
@@ -5109,7 +5040,7 @@ void CApplication::Mute()
 
 void CApplication::UnMute()
 {
-  if (CecMute())
+  if (g_peripherals.UnMute())
     return;
 
   SetVolume(g_settings.m_iPreMuteVolumeLevel);

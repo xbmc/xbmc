@@ -43,6 +43,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
+#include "guilib/Key.h"
 
 using namespace PERIPHERALS;
 using namespace XFILE;
@@ -554,4 +555,98 @@ CPeripheral *CPeripherals::GetByPath(const CStdString &strPath) const
   }
 
   return NULL;
+}
+
+bool CPeripherals::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_MUTE)
+  {
+    return ToggleMute();
+  }
+
+  if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+  {
+#ifdef HAVE_LIBCEC
+    vector<CPeripheral *> peripherals;
+    if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+    {
+      for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+      {
+        CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+        if (cecDevice && cecDevice->HasConnectedAudioSystem())
+        {
+          if (action.GetID() == ACTION_VOLUME_UP)
+            cecDevice->ScheduleVolumeUp();
+          else
+            cecDevice->ScheduleVolumeDown();
+          return true;
+        }
+      }
+    }
+#endif
+  }
+
+  return false;
+}
+
+bool CPeripherals::IsMuted(void)
+{
+#ifdef HAVE_LIBCEC
+  vector<CPeripheral *> peripherals;
+  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->IsMuted())
+        return true;
+    }
+  }
+#endif
+
+  return false;
+}
+
+bool CPeripherals::ToggleMute(void)
+{
+#ifdef HAVE_LIBCEC
+  vector<CPeripheral *> peripherals;
+  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->HasConnectedAudioSystem())
+      {
+        cecDevice->ScheduleMute();
+        return true;
+      }
+    }
+  }
+#endif
+
+  return false;
+}
+
+bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
+{
+#ifdef HAVE_LIBCEC
+  vector<CPeripheral *> peripherals;
+  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->GetButton())
+      {
+        CKey newKey(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        cecDevice->ResetButton();
+        key = newKey;
+        return true;
+      }
+    }
+  }
+#endif
+
+  return false;
 }

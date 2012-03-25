@@ -79,7 +79,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_strMenuLanguage("???"),
   m_lastKeypress(0),
   m_lastChange(VOLUME_CHANGE_NONE),
-  m_iExitCode(0)
+  m_iExitCode(0),
+  m_bIsMuted(false) // TODO fetch the correct initial value when system audiostatus is implemented in libCEC
 {
   m_button.iButton = 0;
   m_button.iDuration = 0;
@@ -426,6 +427,10 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
     break;
   case VOLUME_CHANGE_MUTE:
     m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_MUTE, false);
+    {
+      CSingleLock lock(m_critSection);
+      m_bIsMuted = !m_bIsMuted;
+    }
     break;
   case VOLUME_CHANGE_NONE:
     if (bSendRelease)
@@ -459,6 +464,16 @@ void CPeripheralCecAdapter::Mute(void)
     CSingleLock lock(m_critSection);
     m_volumeChangeQueue.push(VOLUME_CHANGE_MUTE);
   }
+}
+
+bool CPeripheralCecAdapter::IsMuted(void)
+{
+  if (HasConnectedAudioSystem())
+  {
+    CSingleLock lock(m_critSection);
+    return m_bIsMuted;
+  }
+  return false;
 }
 
 void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)

@@ -76,6 +76,7 @@ namespace PERIPHERALS
     virtual void VolumeDown(void);
     virtual void ScheduleMute(void);
     virtual void Mute(void);
+    virtual bool IsMuted(void);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
@@ -117,6 +118,7 @@ namespace PERIPHERALS
     unsigned int                      m_lastKeypress;
     CecVolumeChange                   m_lastChange;
     int                               m_iExitCode;
+    bool                              m_bIsMuted;
     CPeripheralCecAdapterUpdateThread*m_queryThread;
     CEC::ICECCallbacks                m_callbacks;
     CCriticalSection                  m_critSection;
