@@ -42,7 +42,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<texture>special://skin/backgrounds/background.jpg</texture>
-			<animation effect="fade" start="100" end="80" time="200" condition="!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))">Conditional</animation>
+			<animation effect="fade" start="100" end="60" time="200" condition="!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))">Conditional</animation>
 		</control>
 	</include>
 	<include name="ContentPanelBackgrounds">
