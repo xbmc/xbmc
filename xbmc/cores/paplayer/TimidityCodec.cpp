@@ -114,7 +114,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     url.Parse(file);
   }
 
-  m_mid = m_dll.LoadMID(_P(url.Get()).c_str());
+  m_mid = m_dll.LoadMID(CSpecialProtocol::TranslatePath(url.Get()).c_str());
   if (!m_mid)
   {
     CLog::Log(LOGERROR,"TimidityCodec: error opening file %s: %s",strFile.c_str(), m_dll.ErrorMsg());

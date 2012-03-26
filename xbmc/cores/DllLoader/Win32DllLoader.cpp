@@ -158,7 +158,7 @@ bool Win32DllLoader::Load()
   CStdString strFileName = GetFileName();
 
   CStdStringW strDllW;
-  g_charsetConverter.utf8ToW(_P(strFileName), strDllW);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW);
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
@@ -166,7 +166,7 @@ bool Win32DllLoader::Load()
     DWORD dw = GetLastError(); 
 
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, 0, (LPTSTR) &lpMsgBuf, 0, NULL );
-    CLog::Log(LOGERROR, "%s: Failed to load %s with error %d:%s", __FUNCTION__, _P(strFileName).c_str(), dw, lpMsgBuf);
+    CLog::Log(LOGERROR, "%s: Failed to load %s with error %d:%s", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, lpMsgBuf);
     LocalFree(lpMsgBuf);
     return false;
   }
@@ -234,7 +234,7 @@ bool Win32DllLoader::HasSymbols()
 void Win32DllLoader::OverrideImports(const CStdString &dll)
 {
   CStdStringW strdllW;
-  g_charsetConverter.utf8ToW(_P(dll), strdllW, false);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(dll), strdllW, false);
   BYTE* image_base = (BYTE*)GetModuleHandleW(strdllW.c_str());
 
   if (!image_base)
@@ -329,7 +329,7 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
     }
   }
   CStdStringW strdllNameW;
-  g_charsetConverter.utf8ToW(_P(dllName), strdllNameW, false);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(dllName), strdllNameW, false);
   HMODULE hModule = GetModuleHandleW(strdllNameW.c_str());
   wchar_t filepathW[MAX_PATH];
   GetModuleFileNameW(hModule, filepathW, MAX_PATH);
@@ -337,9 +337,9 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
   g_charsetConverter.wToUTF8(filepathW, dllPath);
 
   // compare this filepath with some special directories
-  CStdString xbmcPath = _P("special://xbmc");
-  CStdString homePath = _P("special://home");
-  CStdString tempPath = _P("special://temp");
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc");
+  CStdString homePath = CSpecialProtocol::TranslatePath("special://home");
+  CStdString tempPath = CSpecialProtocol::TranslatePath("special://temp");
   return ((strncmp(xbmcPath.c_str(), dllPath.c_str(), xbmcPath.GetLength()) == 0) ||
     (strncmp(homePath.c_str(), dllPath.c_str(), homePath.GetLength()) == 0) ||
     (strncmp(tempPath.c_str(), dllPath.c_str(), tempPath.GetLength()) == 0));

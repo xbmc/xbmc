@@ -76,9 +76,6 @@ private:
   static std::map<CStdString, CStdString> m_pathMap;
 };
 
-#define _P(x)     CSpecialProtocol::TranslatePath(x)
-#define PTH_IC(x) CSpecialProtocol::TranslatePathConvertCase(x)
-
 #ifdef _WIN32
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR_STRING "\\"

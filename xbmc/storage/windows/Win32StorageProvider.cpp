@@ -46,7 +46,7 @@ void CWin32StorageProvider::Initialize()
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
-  share.strPath = _P("special://home");
+  share.strPath = CSpecialProtocol::TranslatePath("special://home");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
