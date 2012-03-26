@@ -550,11 +550,23 @@
 						<width>290</width>
 						<height>60</height>
 						<font>font_MainMenu</font>
-						<textcolor>white</textcolor>
+						<textcolor>blue</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
-						<animation effect="fade" start="100" end="50" time="200" condition="!Control.HasFocus(9000)">conditional</animation>
+						<visible>Control.HasFocus(9000)</visible>
+					</control>
+					<control type="label">
+						<posx>150</posx>
+						<posy>0</posy>
+						<width>290</width>
+						<height>60</height>
+						<font>font_MainMenu</font>
+						<textcolor>grey3</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+						<visible>!Control.HasFocus(9000)</visible>
 					</control>
 				</focusedlayout>
 				<content>
