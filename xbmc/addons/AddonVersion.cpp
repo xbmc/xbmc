@@ -163,11 +163,8 @@ namespace ADDON
     ret &= (v1_0 != v1_0_0) && (v1_0 < v1_0_0) && (v1_0_0 > v1_0) &&
            (v1_00 != v1_0_0) && (v1_00 < v1_0_0) && (v1_0_0 > v1_00);
 
-    // These aren't totally sane
-    // BEWARE: neither (v1_0 == v1_00) nor (v1_0 < v1_00) nor (v1_0 > v1_00) are true
-    ret &= (v1_0 != v1_00) && !(v1_0 < v1_00) && !(v1_0 > v1_00);
-    // BEWARE: neither (v1_1 == v1_01) nor (v1_1 < v1_01) nor (v1_1 > v1_01) are true
-    ret &= (v1_1 != v1_01) && !(v1_1 < v1_01) && !(v1_1 > v1_01);
+    ret &= (v1_0 == v1_00) && !(v1_0 < v1_00) && !(v1_0 > v1_00);
+    ret &= (v1_1 == v1_01) && !(v1_1 < v1_01) && !(v1_1 > v1_01);
 
     return ret;
   }
