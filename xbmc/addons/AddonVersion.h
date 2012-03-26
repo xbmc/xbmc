@@ -62,13 +62,6 @@ namespace ADDON
     free(mRevision);
   }
 
-  inline bool AddonVersion::operator==(const AddonVersion& other) const
-  {
-    return Epoch() == other.Epoch()
-      && strcmp(Upstream(), other.Upstream()) == 0
-      && strcmp(Revision(), other.Revision()) == 0;
-  }
-
   inline AddonVersion& AddonVersion::operator=(const AddonVersion& other)
   {
     free(mUpstream);

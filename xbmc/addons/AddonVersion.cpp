@@ -117,6 +117,13 @@ namespace ADDON
     return (CompareComponent(Revision(), other.Revision()) < 0);
   }
 
+  bool AddonVersion::operator==(const AddonVersion& other) const
+  {
+    return Epoch() == other.Epoch()
+      && CompareComponent(Upstream(), other.Upstream()) == 0
+      && CompareComponent(Revision(), other.Revision()) == 0;
+  }
+
   CStdString AddonVersion::Print() const
   {
     CStdString out;
