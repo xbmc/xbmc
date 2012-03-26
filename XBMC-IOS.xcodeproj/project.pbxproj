@@ -962,6 +962,8 @@
 		1840B7771399616D007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
 		1840B7781399616D007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
 		1840B7791399616D007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
+		188F7535152117AA009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
+		188F7536152117B2009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
 		18968DDC14155E01005BA742 /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
 		18968DDD14155E01005BA742 /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
 		18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
@@ -997,7 +999,6 @@
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80711AB135DB85F002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C80711AC135DB85F002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
-		C80711AE135DB865002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
 		C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D25136953E100CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileNFS.cpp; sourceTree = "<group>"; };
@@ -4945,7 +4946,6 @@
 				F56C8547131F42E9000AD0F6 /* python */,
 				F56C8586131F42EA000AD0F6 /* AnnouncementManager.cpp */,
 				F56C8587131F42EA000AD0F6 /* AnnouncementManager.h */,
-				C80711AE135DB865002F601B /* AnnouncementUtils.h */,
 				F56C8588131F42EA000AD0F6 /* Builtins.cpp */,
 				F56C8589131F42EA000AD0F6 /* Builtins.h */,
 				F56C858A131F42EA000AD0F6 /* IAnnouncer.h */,
@@ -5868,11 +5868,13 @@
 				F5AE4148134175520004BD79 /* FileOperations.cpp */,
 				F5AE4149134175520004BD79 /* FileOperations.h */,
 				F5AE414A134175520004BD79 /* IClient.h */,
+				188F7535152117AA009870CE /* IJSONRPCAnnouncer.h */,
 				C80711AB135DB85F002F601B /* InputOperations.cpp */,
 				C80711AC135DB85F002F601B /* InputOperations.h */,
 				F5AE414B134175520004BD79 /* ITransportLayer.h */,
 				F5AE414C134175520004BD79 /* JSONRPC.cpp */,
 				F5AE414D134175520004BD79 /* JSONRPC.h */,
+				188F7536152117B2009870CE /* JSONRPCUtils.h */,
 				F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */,
 				F5AE452F134D2E3E0004BD79 /* JSONServiceDescription.h */,
 				F5AE414E134175520004BD79 /* JSONUtils.h */,

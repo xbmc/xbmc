@@ -1969,6 +1969,8 @@
 		1840B75213993DA0007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
+		188F751815211733009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
+		188F751915211743009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
 		189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcvfsmodule.cpp; sourceTree = "<group>"; };
 		18968DC614155D7C005BA742 /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
 		18968DC714155D7C005BA742 /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
@@ -2595,7 +2597,6 @@
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
-		C807114A135DB5BF002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
 		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONServiceDescription.cpp; sourceTree = "<group>"; };
@@ -4836,7 +4837,6 @@
 				E38E19820D25F9FB00618676 /* python */,
 				F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */,
 				F5A7A701112893E50059D6AA /* AnnouncementManager.h */,
-				C807114A135DB5BF002F601B /* AnnouncementUtils.h */,
 				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
 				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
 				436721A612D66A09002508E6 /* IAnnouncer.h */,
@@ -6819,11 +6819,13 @@
 				F5AE408813415D9E0004BD79 /* FileOperations.cpp */,
 				F5AE408913415D9E0004BD79 /* FileOperations.h */,
 				F5AE408A13415D9E0004BD79 /* IClient.h */,
+				188F751815211733009870CE /* IJSONRPCAnnouncer.h */,
 				C807114B135DB5CC002F601B /* InputOperations.cpp */,
 				C807114C135DB5CC002F601B /* InputOperations.h */,
 				F5AE408B13415D9E0004BD79 /* ITransportLayer.h */,
 				F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */,
 				F5AE408D13415D9E0004BD79 /* JSONRPC.h */,
+				188F751915211743009870CE /* JSONRPCUtils.h */,
 				C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */,
 				C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */,
 				F5AE408E13415D9E0004BD79 /* JSONUtils.h */,
