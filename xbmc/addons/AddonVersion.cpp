@@ -112,9 +112,9 @@ namespace ADDON
 
     int result = CompareComponent(Upstream(), other.Upstream());
     if (result)
-      return (-1 == result);
+      return (result < 0);
 
-    return (-1 == CompareComponent(Revision(), other.Revision()));
+    return (CompareComponent(Revision(), other.Revision()) < 0);
   }
 
   CStdString AddonVersion::Print() const
