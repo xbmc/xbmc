@@ -28,8 +28,8 @@
 		<!-- Music Info -->
 		<control type="group">
 			<posx>0</posx>
-			<posy>20</posy>
-			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + ![Container(9000).HasFocus(2) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)] + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<posy>60</posy>
+			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
@@ -37,7 +37,7 @@
 				<posx>20</posx>
 				<posy>45</posy>
 				<width>130</width>
-				<height>300</height>
+				<height>295</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[MusicPlayer.Cover]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
@@ -86,7 +86,7 @@
 		<!-- Video Info -->
 		<control type="group">
 			<posx>0</posx>
-			<posy>20</posy>
+			<posy>50</posy>
 			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + ![Container(9000).HasFocus(2) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)] + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
@@ -257,7 +257,7 @@
 		<control type="group">
 			<description>Controls for currently playing media</description>
 			<posx>400r</posx>
-			<posy>340</posy>
+			<posy>370</posy>
 			<visible>Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
 			<animation type="WindowOpen" reversible="false">
@@ -408,7 +408,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<posy>370</posy>
+			<posy>400</posy>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
 				<effect type="fade" start="0" end="100" time="300" />
