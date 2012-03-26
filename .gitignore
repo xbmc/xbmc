@@ -29,7 +29,6 @@ config.log
 *.rej
 *.orig
 *.bak
-*~
 
 # Windows specific generated files
 *.exp

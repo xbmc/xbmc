@@ -59,8 +59,6 @@
 #include "guilib/Key.h"
 
 // For sorting items as defined in GUI
-#include "filesystem/VideoDatabaseDirectory.h"
-// #include "guilib/GUIWindow.h"
 #include "GUIViewState.h"
 
 using namespace std;
