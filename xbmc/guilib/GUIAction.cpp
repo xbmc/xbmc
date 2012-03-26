@@ -32,6 +32,12 @@ CGUIAction::CGUIAction()
   m_sendThreadMessages = false;
 }
 
+CGUIAction::CGUIAction(int controlID)
+{
+  m_sendThreadMessages = false;
+  SetNavigation(controlID);
+}
+
 bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) const
 {
   if (m_actions.size() == 0) return false;
