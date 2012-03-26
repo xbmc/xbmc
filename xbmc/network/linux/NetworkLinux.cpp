@@ -23,20 +23,20 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#ifndef __APPLE__
-#include <linux/if.h>
-#include <linux/wireless.h>
-#include <linux/sockios.h>
+#if defined(TARGET_LINUX)
+  #include <linux/if.h>
+  #include <linux/wireless.h>
+  #include <linux/sockios.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
-#if defined(__APPLE__)
-#include <sys/sockio.h>
-#include <net/if.h>
-#include <net/if_dl.h>
-#include <ifaddrs.h>
+#if defined(TARGET_DARWIN)
+  #include <sys/sockio.h>
+  #include <net/if.h>
+  #include <net/if_dl.h>
+  #include <ifaddrs.h>
 #else
-#include <net/if_arp.h>
+  #include <net/if_arp.h>
 #endif
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
@@ -64,7 +64,7 @@ CStdString& CNetworkInterfaceLinux::GetName(void)
 
 bool CNetworkInterfaceLinux::IsWireless()
 {
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   return false;
 #else
   struct iwreq wrq;
@@ -144,7 +144,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
 {
    CStdString result = "";
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    char essid[IW_ESSID_MAX_SIZE + 1];
    memset(&essid, 0, sizeof(essid));
 
@@ -259,7 +259,7 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
    return m_interfaces;
 }
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 // on iOS, overwrite the GetFirstConnectedInterface and requery
 // the interface list if no connected device is found
 // this fixes a bug when no network is available after first start of xbmc after reboot
@@ -284,9 +284,9 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 {
   CStdString result = "00:00:00:00:00:00";
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 
-#if ! defined(IFT_ETHER)
+#if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6/* Ethernet CSMACD */
 #endif
   const struct sockaddr_dl* dlAddr = NULL;
@@ -350,7 +350,7 @@ void CNetworkLinux::queryInterfaceList()
   CStdString macAddr = "";
   m_interfaces.clear();
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 
    // Query the list of interfaces.
    struct ifaddrs *list;
@@ -466,7 +466,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    if (!IsWireless())
       return result;
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    // Query the wireless extentsions version number. It will help us when we
    // parse the resulting events
    struct iwreq iwr;
@@ -652,7 +652,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    encryptionMode = ENC_NONE;
    assignment = NETWORK_DISABLED;
 
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    FILE* fp = fopen("/etc/network/interfaces", "r");
    if (!fp)
    {
@@ -728,7 +728,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
 
 void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-#ifndef __APPLE__
+#if defined(TARGET_LINUX)
    FILE* fr = fopen("/etc/network/interfaces", "r");
    if (!fr)
    {
