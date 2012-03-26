@@ -32,7 +32,7 @@
 #include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
-#include "WINFileSmb.h"
+#include "windows/WINFileSmb.h"
 #else
 #include "FileSmb.h"
 #endif

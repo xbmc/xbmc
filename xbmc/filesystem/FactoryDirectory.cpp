@@ -46,7 +46,7 @@
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
-#include "WINSMBDirectory.h"
+#include "windows/WINSMBDirectory.h"
 #else
 #include "SMBDirectory.h"
 #endif

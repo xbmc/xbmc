@@ -253,6 +253,9 @@
     <Filter Include="network\websocket">
       <UniqueIdentifier>{88e84682-dede-4bdf-9e33-a8023dd5ac78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="filesystem\windows">
+      <UniqueIdentifier>{1cc693eb-11ad-4f53-8640-198d5ab9bcc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -268,12 +271,6 @@
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINFileSMB.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINSMBDirectory.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
@@ -2589,6 +2586,12 @@
     <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp">
       <Filter>network\websocket</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp">
+      <Filter>filesystem\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp">
+      <Filter>filesystem\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -2604,12 +2607,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINFileSMB.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
@@ -5198,6 +5195,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h">
       <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h">
+      <Filter>filesystem\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h">
+      <Filter>filesystem\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
