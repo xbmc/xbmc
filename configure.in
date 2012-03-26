@@ -2023,7 +2023,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-amd3dnow \
       --disable-armv5te \
       --disable-armv6t2 \
-      --disable-static \
+      --enable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --enable-muxer=spdif \
@@ -2037,7 +2037,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --enable-shared \
       --disable-doc \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
@@ -2045,6 +2044,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-protocol=http \
       --enable-pthreads \
       --enable-runtime-cpudetect \
+      --disable-openmp \
       --cc="$CC" &&
     sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
