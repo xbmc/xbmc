@@ -21,7 +21,6 @@
 
 #include <string>
 #include <sstream>
-#include <boost/uuid/sha1.hpp>
 
 #include "WebSocketV13.h"
 #include "WebSocket.h"
