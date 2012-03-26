@@ -1,7 +1,7 @@
 <window id="1111">
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
-		<include>CommonSettingsBackground</include>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>
