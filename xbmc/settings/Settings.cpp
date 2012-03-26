@@ -161,6 +161,7 @@ bool CSettings::Reset()
 {
   CLog::Log(LOGINFO, "Resetting settings");
   CFile::Delete(GetSettingsFile());
+  LoadSettings("special://xbmc/system/guisettings.xml");
   Save();
   return LoadSettings(GetSettingsFile());
 }
