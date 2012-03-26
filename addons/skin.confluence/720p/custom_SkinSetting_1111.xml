@@ -97,7 +97,7 @@
 						<posy>42</posy>
 						<width>870</width>
 						<height>25</height>
-						<font>font13caps</font>
+						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -129,7 +129,7 @@
 						<posy>42</posy>
 						<width>870</width>
 						<height>25</height>
-						<font>font13caps</font>
+						<font>font13</font>
 						<textcolor>grey2</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -180,7 +180,7 @@
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font16caps</font>
+				<font>font16</font>
 				<label>$LOCALIZE[20077] - $INFO[Container(9000).ListItem.Label]</label>
 				<align>left</align>
 				<aligny>center</aligny>

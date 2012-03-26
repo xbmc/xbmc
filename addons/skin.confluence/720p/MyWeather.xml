@@ -121,7 +121,7 @@
 					<posy>185</posy>
 					<width>100</width>
 					<height>40</height>
-					<font>font16caps</font>
+					<font>font16</font>
 					<align>left</align>
 					<aligny>top</aligny>
 					<label>$INFO[System.TemperatureUnits]</label>
@@ -800,7 +800,7 @@
 				<control type="label" id="200">
 					<width>250</width>
 					<height>35</height>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>31006</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>
@@ -876,7 +876,7 @@
 				<control type="label" id="201">
 					<width>250</width>
 					<height>35</height>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>31026</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>

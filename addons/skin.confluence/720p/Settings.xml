@@ -193,7 +193,7 @@
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font16caps</font>
+				<font>font16</font>
 				<label>$LOCALIZE[31000] $LOCALIZE[5]</label>
 				<align>left</align>
 				<aligny>center</aligny>

@@ -12,22 +12,12 @@
 			<size>17</size>
 		</font>
 	 	<font>
-			<name>font12caps</name>
-			<filename>Roboto-Regular.ttf</filename>
-			<size>17</size>
-		</font>
-	 	<font>
 			<name>font13</name>
 			<filename>Roboto-Regular.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps</name>
-			<filename>Roboto-Regular.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font16caps</name>
+			<name>font16</name>
 			<filename>Roboto-Regular.ttf</filename>
 			<size>25</size>
 		</font>
@@ -80,16 +70,16 @@
 			<size>35</size>
 		</font>
 	 	<font>
-			<name>font50caps_title</name>
-			<filename>Roboto-Bold.ttf</filename>
-			<size>40</size>
-		</font>
-	 	<font>
 			<name>font45caps_title</name>
 			<filename>Roboto-Bold.ttf</filename>
 			<size>45</size>
 		</font>
 
+	 	<font>
+			<name>font_MainMenu</name>
+			<filename>Roboto-Bold.ttf</filename>
+			<size>40</size>
+		</font>
 	 	<font>
 			<name>WeatherTemp</name>
 			<filename>Roboto-Bold.ttf</filename>

@@ -35,7 +35,7 @@
 		<posy>0</posy>
 		<width>1060</width>
 		<height>28</height>
-		<font>font12caps</font>
+		<font>font12</font>
 		<textcolor>white</textcolor>
 		<scroll>false</scroll>
 		<align>right</align>
@@ -501,7 +501,7 @@
 		<control type="label" id="202">
 			<width>250</width>
 			<height>35</height>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>31023</label>
 			<textcolor>blue</textcolor>
 			<align>center</align>

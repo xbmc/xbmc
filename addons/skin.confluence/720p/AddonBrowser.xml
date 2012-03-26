@@ -34,7 +34,7 @@
 				<control type="label" id="200">
 					<width>250</width>
 					<height>35</height>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>31006</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>
@@ -63,7 +63,7 @@
 				<control type="label" id="201">
 					<width>250</width>
 					<height>35</height>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>31026</label>
 					<textcolor>blue</textcolor>
 					<align>center</align>

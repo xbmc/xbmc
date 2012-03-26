@@ -88,7 +88,7 @@
 				<posy>135</posy>
 				<width>240</width>
 				<height>25</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>grey2</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -100,7 +100,7 @@
 				<posy>135</posy>
 				<width>240</width>
 				<height>25</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>grey2</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -136,7 +136,7 @@
 					<posy>245</posy>
 					<width>240</width>
 					<height>20</height>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -158,7 +158,7 @@
 					<posy>305</posy>
 					<width>240</width>
 					<height>30</height>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
