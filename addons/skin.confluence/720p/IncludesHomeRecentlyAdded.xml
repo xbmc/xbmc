@@ -321,6 +321,186 @@
 					</content>
 				</control>
 			</control>
+			<control type="group">
+				<posx>0</posx>
+				<posy>50</posy>
+				<visible>Library.HasContent(Music)</visible>
+				<visible>Container(9000).Hasfocus(3) + !Skin.HasSetting(HomeMenuNoMusicButton)</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="label">
+					<description>Title label</description>
+					<posx>400</posx>
+					<posy>220</posy>
+					<height>20</height>
+					<width>480</width>
+					<label>359</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="list" id="8001">
+					<posx>140</posx>
+					<posy>0</posy>
+					<width>1000</width>
+					<height>240</height>
+					<onleft>8001</onleft>
+					<onright>8001</onright>
+					<onup>20</onup>
+					<ondown>600</ondown>
+					<viewtype label="535">list</viewtype>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>0</scrolltime>
+					<orientation>Horizontal</orientation>
+					<itemlayout height="220" width="200">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>200</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>180</width>
+							<height>155</height>
+							<aspectratio>keep</aspectratio>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+						</control>
+						<control type="label">
+							<posx>100</posx>
+							<posy>170</posy>
+							<width>180</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+						<control type="label">
+							<posx>100</posx>
+							<posy>190</posy>
+							<width>180</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="220" width="200">
+						<control type="image">
+							<description>background</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>200</width>
+							<height>220</height>
+							<texture border="15">RecentAddedBack.png</texture>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>180</width>
+							<height>155</height>
+							<aspectratio>keep</aspectratio>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">folder-focus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>Control.HasFocus(8001)</visible>
+						</control>
+						<control type="image">
+							<posx>10</posx>
+							<posy>10</posy>
+							<width>180</width>
+							<height>155</height>
+							<aspectratio>keep</aspectratio>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<bordertexture border="5">button-nofocus.png</bordertexture>
+							<bordersize>5</bordersize>
+							<visible>!Control.HasFocus(8001)</visible>
+						</control>
+						<control type="label">
+							<posx>100</posx>
+							<posy>170</posy>
+							<width>180</width>
+							<height>20</height>
+							<font>font10</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+						<control type="label">
+							<posx>100</posx>
+							<posy>190</posy>
+							<width>180</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>$INFO[Window.Property(LatestAlbum.1.Title)]</label>
+							<label2>$INFO[Window.Property(LatestAlbum.1.Artist)]</label2>
+							<onclick>PlayList.Clear</onclick>
+							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.1.Path)]&quot;)</onclick>
+							<icon>-</icon>
+							<thumb>$INFO[Window.Property(LatestAlbum.1.Thumb)]</thumb>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestAlbum.2.Title)]</label>
+							<label2>$INFO[Window.Property(LatestAlbum.2.Artist)]</label2>
+							<onclick>PlayList.Clear</onclick>
+							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.2.Path)]&quot;)</onclick>
+							<icon>-</icon>
+							<thumb>$INFO[Window.Property(LatestAlbum.2.Thumb)]</thumb>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestAlbum.3.Title)]</label>
+							<label2>$INFO[Window.Property(LatestAlbum.3.Artist)]</label2>
+							<onclick>PlayList.Clear</onclick>
+							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.3.Path)]&quot;)</onclick>
+							<icon>-</icon>
+							<thumb>$INFO[Window.Property(LatestAlbum.3.Thumb)]</thumb>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestAlbum.4.Title)]</label>
+							<label2>$INFO[Window.Property(LatestAlbum.4.Artist)]</label2>
+							<onclick>PlayList.Clear</onclick>
+							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.4.Path)]&quot;)</onclick>
+							<icon>-</icon>
+							<thumb>$INFO[Window.Property(LatestAlbum.4.Thumb)]</thumb>
+						</item>
+						<item>
+							<label>$INFO[Window.Property(LatestAlbum.5.Title)]</label>
+							<label2>$INFO[Window.Property(LatestAlbum.5.Artist)]</label2>
+							<onclick>PlayList.Clear</onclick>
+							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.5.Path)]&quot;)</onclick>
+							<icon>-</icon>
+							<thumb>$INFO[Window.Property(LatestAlbum.5.Thumb)]</thumb>
+						</item>
+					</content>
+				</control>
+			</control>
 		</control>
 	</include>
 </includes>
