@@ -25,9 +25,7 @@
 #pragma once
 
 #include <vector>
-#if defined(_LINUX) // for memcpy
 #include <string.h>
-#endif
 
 using namespace std;
 
