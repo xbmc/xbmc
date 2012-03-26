@@ -188,6 +188,15 @@ namespace PERIPHERALS
      */
     virtual bool GetNextKeypress(float frameTime, CKey &key);
 
+    bool SupportsCEC(void) const
+    {
+#if defined(HAVE_LIBCEC)
+      return true;
+#else
+      return false;
+#endif
+    }
+
   private:
     CPeripherals(void);
     bool LoadMappings(void);

@@ -27,9 +27,7 @@
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#if defined(HAVE_LIBCEC)
 #include "devices/PeripheralCecAdapter.h"
-#endif
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
@@ -564,9 +562,8 @@ bool CPeripherals::OnAction(const CAction &action)
     return ToggleMute();
   }
 
-  if (action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
+  if (SupportsCEC() && action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN))
   {
-#ifdef HAVE_LIBCEC
     vector<CPeripheral *> peripherals;
     if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
     {
@@ -583,7 +580,6 @@ bool CPeripherals::OnAction(const CAction &action)
         }
       }
     }
-#endif
   }
 
   return false;
@@ -591,9 +587,8 @@ bool CPeripherals::OnAction(const CAction &action)
 
 bool CPeripherals::IsMuted(void)
 {
-#ifdef HAVE_LIBCEC
   vector<CPeripheral *> peripherals;
-  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
     for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
     {
@@ -602,16 +597,14 @@ bool CPeripherals::IsMuted(void)
         return true;
     }
   }
-#endif
 
   return false;
 }
 
 bool CPeripherals::ToggleMute(void)
 {
-#ifdef HAVE_LIBCEC
   vector<CPeripheral *> peripherals;
-  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
     for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
     {
@@ -623,16 +616,14 @@ bool CPeripherals::ToggleMute(void)
       }
     }
   }
-#endif
 
   return false;
 }
 
 bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
 {
-#ifdef HAVE_LIBCEC
   vector<CPeripheral *> peripherals;
-  if (GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  if (SupportsCEC() && GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
     for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
     {
@@ -646,7 +637,6 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
       }
     }
   }
-#endif
 
   return false;
 }

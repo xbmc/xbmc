@@ -20,7 +20,28 @@
  *
  */
 
-#if defined(HAVE_LIBCEC)
+#if !defined(HAVE_LIBCEC)
+#include "Peripheral.h"
+
+// an empty implementation, so CPeripherals can be compiled without a bunch of #ifdef's when libCEC is not available
+namespace PERIPHERALS
+{
+  class CPeripheralCecAdapter : public CPeripheral
+  {
+  public:
+    bool HasConnectedAudioSystem(void) { return false; }
+    void ScheduleVolumeUp(void) {}
+    void ScheduleVolumeDown(void) {}
+    bool IsMuted(void) { return false; }
+    void ScheduleMute(void) {}
+
+    WORD GetButton(void) { return 0; }
+    unsigned int GetHoldTime(void) { return 0; }
+    void ResetButton(void) {}
+  };
+}
+
+#else
 
 #include "PeripheralHID.h"
 #include "interfaces/AnnouncementManager.h"
