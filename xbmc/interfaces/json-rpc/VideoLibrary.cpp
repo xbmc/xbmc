@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
+#include "video/VideoInfoScanner.h"
 
 using namespace JSONRPC;
 
@@ -41,6 +42,48 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
   videodatabase.Close();
   return ret;
+}
+
+JSON_STATUS CVideoLibrary::SetMovieDetailsFromInternet(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["movieid"].asInteger();
+  CScraperUrl pURL(parameterObject["url"].asString());
+  pURL.strId = parameterObject["imdbnumber"].asString();
+  
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  /* get Item from movieid */
+  CVideoInfoTag infos;
+  videodatabase.GetMovieInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  CFileItemList list;
+
+  CFileItemPtr item(new CFileItem(infos));
+  list.Add(item);
+  CStdString strPath = item->GetPath();
+ 
+  CStdString path;
+  URIUtils::GetDirectory(strPath, path);
+  list.SetPath(path);
+  
+  /*Need to delete item for rescapping */
+  videodatabase.DeleteMovie(item->GetPath());
+  
+  /*Retreive the details */
+  VIDEO::CVideoInfoScanner myVideo;
+  bool ret = myVideo.RetrieveVideoInfo(list, false, CONTENT_MOVIES, false, &pURL, false, NULL);
+
+  if (ret)
+    return ACK;
+  else
+    return FailedToExecute;
 }
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
