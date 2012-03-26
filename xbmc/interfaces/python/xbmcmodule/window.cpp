@@ -721,9 +721,12 @@ namespace PYXBMC
     Control *pControl = (Control *)object;
 
     {
-      GilSafeSingleLock lock(g_graphicsContext);
+      CPyThreadState state;
+      CSingleLock lock(g_graphicsContext);
       if(!self->pWindow->GetControl(pControl->iControlId))
       {
+        lock.Leave();
+        state.Restore();
         PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
         return false;
       }
