@@ -8,6 +8,15 @@
 		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>
+			<posy>-40</posy>
+			<width>1280</width>
+			<height>120</height>
+			<texture flipy="true">HomeNowPlayingBack.png</texture>
+			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] | [Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)]</visible>
+			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
+		</control>
+		<control type="image">
+			<posx>0</posx>
 			<posy>90r</posy>
 			<width>1280</width>
 			<height>90</height>
@@ -98,7 +107,7 @@
 					<description>Cover image</description>
 					<posx>20</posx>
 					<posy>45</posy>
-					<width>150</width>
+					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<texture>$INFO[VideoPlayer.Cover]</texture>
@@ -107,7 +116,7 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>190</posx>
+					<posx>160</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
@@ -120,7 +129,7 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>190</posx>
+					<posx>160</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>300</width>
@@ -190,17 +199,17 @@
 				<control type="image">
 					<description>Cover image</description>
 					<posx>20</posx>
-					<posy>45</posy>
-					<width>200</width>
-					<height>300</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
+					<posy>225</posy>
+					<width>180</width>
+					<height>120</height>
+					<aspectratio>scale</aspectratio>
 					<texture>$INFO[VideoPlayer.Cover]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
 				<control type="label">
 					<description>TV Show Season Ep Label</description>
-					<posx>240</posx>
+					<posx>210</posx>
 					<posy>265</posy>
 					<height>25</height>
 					<width>1000</width>
@@ -213,7 +222,7 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>240</posx>
+					<posx>210</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
@@ -226,7 +235,7 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>240</posx>
+					<posx>210</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>300</width>
@@ -972,70 +981,87 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>520r</posx>
+			<posx>20</posx>
 			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
-			<animation effect="slide" start="0,0" end="550,0" delay="0" time="300">WindowClose</animation>
-			<animation effect="slide" start="550,0" end="0,0" delay="0" time="300">WindowOpen</animation>
 			<visible>!Skin.HasSetting(homepageWeatherinfo) + Weather.IsFetched</visible>
-			<control type="image">
-				<description>time background</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>180</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
-			</control>
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<description>Weather image</description>
-				<posx>25</posx>
+				<posx>0</posx>
 				<posy>0</posy>
-				<width>30</width>
-				<height>30</height>
+				<width>60</width>
+				<height>60</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[Window(Weather).Property(Current.ConditionIcon)]</texture>
 			</control>
 			<control type="label">
-				<description>time label</description>
-				<posx>60</posx>
-				<posy>0</posy>
-				<width>100</width>
-				<height>28</height>
+				<description>Location label</description>
+				<posx>70</posx>
+				<posy>5</posy>
+				<width>500</width>
+				<height>15</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12</font>
+				<font>font10</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
-				<label>[B]$INFO[Weather.Temperature][/B]</label>
+				<label>$INFO[Window(Weather).Property(Location)]</label>
+			</control>
+			<control type="grouplist">
+				<posx>70</posx>
+				<posy>20</posy>
+				<width>1000</width>
+				<height>30</height>
+				<orientation>horizontal</orientation>
+				<align>left</align>
+				<itemgap>5</itemgap>
+				<control type="label">
+					<description>Temp label</description>
+					<width min="0" max="300">auto</width>
+					<height>30</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font28_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>[B]$INFO[Window(Weather).Property(Current.Temperature)][/B]</label>
+				</control>
+				<control type="label">
+					<description>Temp Units</description>
+					<width min="0" max="100">auto</width>
+					<height>22</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<label>$INFO[System.TemperatureUnits]</label>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Temp Units</description>
+					<width>500</width>
+					<height>30</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<label> $INFO[Window(Weather).Property(Current.Condition)]</label>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
 			</control>
 		</control>
-		<control type="group">
-			<posx>390r</posx>
-			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
-			<animation effect="slide" start="0,0" end="420,0" delay="0" time="300">WindowClose</animation>
-			<animation effect="slide" start="420,0" end="0,0" delay="0" time="300">WindowOpen</animation>
-			<control type="image">
-				<description>time background</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>440</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
-			</control>
-			<control type="label">
-				<description>time label</description>
-				<posx>30</posx>
-				<posy>0</posy>
-				<width>400</width>
-				<height>28</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<label>[COLOR=grey]$INFO[System.Date][/COLOR] | $INFO[System.Time]</label>
-			</control>
+		<include>Clock</include>
+		<control type="label">
+			<description>Date label</description>
+			<posx>20r</posx>
+			<posy>35</posy>
+			<width>200</width>
+			<height>15</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font10</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[System.Date]</label>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 	</controls>	
 </window>

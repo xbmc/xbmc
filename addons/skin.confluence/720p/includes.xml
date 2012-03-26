@@ -748,32 +748,18 @@
 		</control>
 	</include>
 	<include name="Clock">
-		<control type="group">
-			<posx>140r</posx>
-			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
-			<animation effect="slide" start="0,0" end="210,0" delay="0" time="300" condition="Window.Next(Home) + ![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
-			<animation effect="slide" start="210,0" end="0,0" delay="0" time="300" condition="Window.Previous(Home) + ![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
-			<control type="image">
-				<description>time background</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>150</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
-			</control>
-			<control type="label">
-				<description>time label</description>
-				<posx>30</posx>
-				<posy>0</posy>
-				<width>400</width>
-				<height>28</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<label>$INFO[System.Time]</label>
-			</control>
+		<control type="label">
+			<description>time label</description>
+			<posx>20r</posx>
+			<posy>5</posy>
+			<width>200</width>
+			<height>30</height>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font28_title</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[System.Time]</label>
 		</control>
 	</include>
 	<include name="backgroundfade">
