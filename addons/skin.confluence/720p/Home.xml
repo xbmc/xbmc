@@ -89,7 +89,7 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>50</posy>
-			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + ![Container(9000).HasFocus(2) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)] + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
@@ -138,7 +138,7 @@
 					<description>Cover image</description>
 					<posx>20</posx>
 					<posy>45</posy>
-					<width>150</width>
+					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<texture>$INFO[VideoPlayer.Cover]</texture>
@@ -147,7 +147,7 @@
 				</control>
 				<control type="label">
 					<description>Studio label</description>
-					<posx>180</posx>
+					<posx>160</posx>
 					<posy>265</posy>
 					<height>25</height>
 					<width>1000</width>
@@ -160,7 +160,7 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>180</posx>
+					<posx>160</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
@@ -173,7 +173,7 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>180</posx>
+					<posx>160</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>300</width>
@@ -550,11 +550,10 @@
 						<width>290</width>
 						<height>60</height>
 						<font>font_MainMenu</font>
-						<textcolor>blue</textcolor>
+						<textcolor>grey3</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
-						<visible>Control.HasFocus(9000)</visible>
 					</control>
 					<control type="label">
 						<posx>150</posx>
@@ -562,11 +561,12 @@
 						<width>290</width>
 						<height>60</height>
 						<font>font_MainMenu</font>
-						<textcolor>grey3</textcolor>
+						<textcolor>blue</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
 						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
-						<visible>!Control.HasFocus(9000)</visible>
+						<visible>Control.HasFocus(9000)</visible>
+						<include>VisibleFadeEffect</include>
 					</control>
 				</focusedlayout>
 				<content>
