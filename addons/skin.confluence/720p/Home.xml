@@ -1,6 +1,8 @@
 <window id="0">
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
+	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
+	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
 	<controls>
 		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
@@ -572,8 +574,8 @@
 					</item>
 					<item id="2">
 						<label>3</label>
-						<onclick condition="!Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos)</onclick>
-						<onclick condition="Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos,Files,Return)</onclick>
+						<onclick condition="StringCompare(Window.Property(VideosDirectLink),True)">ActivateWindow(Videos)</onclick>
+						<onclick condition="!StringCompare(Window.Property(VideosDirectLink),True)">ActivateWindow(Videos,root)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
