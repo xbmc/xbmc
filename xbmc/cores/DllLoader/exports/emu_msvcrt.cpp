@@ -1936,7 +1936,12 @@ extern "C"
 
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
-        strupr(var);
+        char* temp = var;
+        while (*temp)
+        {
+          *temp = (char)toupper(*temp);
+          temp++;
+        }
 
         strncpy(value, value_start + 1, size);
         if (size)

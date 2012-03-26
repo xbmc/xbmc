@@ -67,13 +67,14 @@ int CXbmcConfiguration::BookmarkSize( int eid, webs_t wp, CStdString& response, 
   if (pShares)
   {
     char buffer[10];
+    sprintf(buffer,"%i",pShares->size());
 
-    if (eid!=-1) 
-      ejSetResult( eid, itoa(pShares->size(), buffer, 10));
+    if (eid!=-1)
+      ejSetResult( eid, buffer);
     else
     {
       CStdString tmp;
-      tmp.Format("%s", itoa(pShares->size(), buffer, 10));
+      tmp.Format("%i", pShares->size());
       response="" + tmp;
     }
 
