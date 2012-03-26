@@ -128,7 +128,7 @@ public:
   virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
 
 // Use direct layer
 class DllAvCodec : public DllDynamic, DllAvCodecInterface

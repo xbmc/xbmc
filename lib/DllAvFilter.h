@@ -84,7 +84,7 @@ public:
   virtual int av_buffersink_poll_frame(AVFilterContext *ctx)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
 // Use direct mapping
 class DllAvFilter : public DllDynamic, DllAvFilterInterface
 {

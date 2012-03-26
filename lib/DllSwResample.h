@@ -43,7 +43,7 @@ extern "C" {
 }
 
 
-#if (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
 
 // Use direct mapping
 class DllSwResample : public DllDynamic

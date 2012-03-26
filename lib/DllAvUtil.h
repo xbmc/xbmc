@@ -104,8 +104,7 @@ public:
   virtual int av_samples_get_buffer_size (int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG)
-
+#if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
 // Use direct layer
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
