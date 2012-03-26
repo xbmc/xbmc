@@ -2,9 +2,9 @@
 mingwrt-3.20-mingw32-dev.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.20/
 mingwrt-3.20-mingw32-dll.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.20/
 w32api-3.17-2-mingw32-dev.tar.lzma          http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/Win32-API/w32api-3.17/
-gcc-core-4.5.2-1-mingw32-bin.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
-gcc-c++-4.5.2-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
-libstdc++-4.5.2-1-mingw32-dll-6.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
+gcc-core-4.6.2-1-mingw32-bin.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.6.2-1/
+gcc-c++-4.6.2-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.6.2-1/
+libstdc++-4.6.2-1-mingw32-dll-6.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.6.2-1/
 binutils-2.22-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.22/
 yasm-1.1.0-win32.exe                        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://www.tortall.net/projects/yasm/releases/
 dlfcn-win32-static-r19.tar.bz2              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://dlfcn-win32.googlecode.com/files/
@@ -21,6 +21,7 @@ libintl-0.17-1-mingw32-dll-8.tar.lzma       http://mirrors.xbmc.org/build-deps/w
 libiconv-1.13.1-1-mingw32-dll-2.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
 libiconv-1.13.1-1-mingw32-dev.tar.lzma      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
 plibc-0.1.5.zip                             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/plibc/files/plibc/0.1.5/
-pthreads-w32-2.8.0-3-mingw32-dev.tar.lzma   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/pthreads-w32/pthreads-w32-2.8.0-3/pthreads-w32-2.8.0-3-mingw32-dev.tar.lzma
+pthreads-w32-2.9.0-mingw32-pre-20110507-2-dev.tar.lzma   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/pthreads-w32/pthreads-w32-2.9.0-pre-20110507-2/pthreads-w32-2.9.0-mingw32-pre-20110507-2-dev.tar.lzma
 gnutls-dev_2.4.2-1_win32.zip                http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://ftp.acc.umu.se/pub/gnome/binaries/win32/dependencies/gnutls-dev_2.4.2-1_win32.zip
 gettext-0.17-1-mingw32-dev.tar.lzma         http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/gettext-0.17-1-mingw32-dev.tar.lzma
+libpthreadgc-2.9.0-mingw32-pre-20110507-2-dll-2.tar.lzma	http://mirrors.xbmc.org/build-deps/win32/mingw-msys/	http://downloads.sourceforge.net/project/mingw/MinGW/Base/pthreads-w32/pthreads-w32-2.9.0-pre-20110507-2/libpthreadgc-2.9.0-mingw32-pre-20110507-2-dll-2.tar.lzma
