@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,7 +22,6 @@
 
 #include "system.h"
 #ifdef HAS_WEB_SERVER
-#include "utils/StdString.h"
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -35,8 +34,11 @@
 #else
 #include <microhttpd.h>
 #endif
+
+#include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 
 class CWebServer : public JSONRPC::ITransportLayer
 {

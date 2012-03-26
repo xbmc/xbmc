@@ -125,7 +125,7 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
   }
 }
 
-void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {

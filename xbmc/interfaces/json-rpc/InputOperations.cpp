@@ -55,7 +55,7 @@ bool CInputOperations::handleScreenSaver()
   return screenSaverBroken;
 }
 
-JSON_STATUS CInputOperations::sendKey(uint32_t keyCode)
+JSONRPC_STATUS CInputOperations::sendKey(uint32_t keyCode)
 {
   if (keyCode == KEY_INVALID)
     return InternalError;
@@ -65,7 +65,7 @@ JSON_STATUS CInputOperations::sendKey(uint32_t keyCode)
   return ACK;
 }
 
-JSON_STATUS CInputOperations::sendAction(int actionID)
+JSONRPC_STATUS CInputOperations::sendAction(int actionID)
 {
   if(!handleScreenSaver())
   {
@@ -76,7 +76,7 @@ JSON_STATUS CInputOperations::sendAction(int actionID)
   return ACK;
 }
 
-JSON_STATUS CInputOperations::activateWindow(int windowID)
+JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
     g_application.getApplicationMessenger().ActivateWindow(windowID, std::vector<CStdString>(), false);
@@ -84,37 +84,37 @@ JSON_STATUS CInputOperations::activateWindow(int windowID)
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_LEFT);
 }
 
-JSON_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_RIGHT);
 }
 
-JSON_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_DOWN);
 }
 
-JSON_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_UP);
 }
 
-JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_RETURN);
 }
 
-JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return sendKey(XBMCVK_BACK);
 }
 
-JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return activateWindow(WINDOW_HOME);
 }
