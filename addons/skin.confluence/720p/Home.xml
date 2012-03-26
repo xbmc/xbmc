@@ -16,13 +16,12 @@
 		</control>
 		<control type="image">
 			<description>LOGO</description>
-			<posx>512</posx>
-			<posy>145r</posy>
-			<width>256</width>
-			<height>128</height>
-			<aspectratio aligny="bottom">keep</aspectratio>
+			<posx>0</posx>
+			<posy>5</posy>
+			<width>170</width>
+			<height>100</height>
+			<aspectratio aligny="top" align="left">keep</aspectratio>
 			<texture>xbmc-logo.png</texture>
-			<visible>!IntegerGreaterThan(Container(9002).NumItems,0)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
@@ -673,7 +672,7 @@
 					<height>120</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<bordersize>3</bordersize>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="image">
@@ -973,7 +972,7 @@
 		<control type="group">
 			<posx>20</posx>
 			<posy>0</posy>
-			<visible>!Skin.HasSetting(homepageWeatherinfo) + Weather.IsFetched</visible>
+			<visible>false</visible>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<description>Weather image</description>
