@@ -30,14 +30,14 @@
 
 using namespace JSONRPC;
 
-JSON_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVariant properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     CStdString propertyName = parameterObject["properties"][index].asString();
     CVariant property;
-    JSON_STATUS ret;
+    JSONRPC_STATUS ret;
     if ((ret = GetPropertyValue(propertyName, property)) != OK)
       return ret;
 
@@ -49,7 +49,7 @@ JSON_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITra
   return OK;
 }
 
-JSON_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int oldVolume = g_application.GetVolume();
   int volume = (int)parameterObject["volume"].asInteger();
@@ -61,7 +61,7 @@ JSON_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITranspo
   return GetPropertyValue("volume", result);
 }
 
-JSON_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
@@ -72,13 +72,13 @@ JSON_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransport
   return GetPropertyValue("muted", result);
 }
 
-JSON_STATUS CApplicationOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().Quit();
   return ACK;
 }
 
-JSON_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property, CVariant &result)
+JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
   if (property.Equals("volume"))
     result = g_application.GetVolume();

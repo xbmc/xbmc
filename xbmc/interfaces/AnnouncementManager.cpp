@@ -62,13 +62,13 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   }
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message)
 {
   CVariant data;
   Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CVariant &data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcement: %s from %s", message, sender);
   CSingleLock lock (m_critSection);
@@ -76,13 +76,13 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
     m_announcers[i]->Announce(flag, sender, message, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
 {
   CVariant data;
   Announce(flag, sender, message, item, data);
 }
 
-void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
+void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
 {
   if (!item.get())
   {

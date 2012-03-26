@@ -5202,6 +5202,12 @@
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h">
       <Filter>filesystem\windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONRPCUtils.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\IJSONRPCAnnouncer.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
