@@ -80,8 +80,9 @@ bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport)
   if (iport)
   {
     char buffer[10];
+    sprintf(buffer,"%i",iport);
     strHostAndPort += ':';
-    strHostAndPort += itoa(iport, buffer, 10);
+    strHostAndPort += buffer;
   }
 
   // Get the file size of strFileName.  If size is 0 or negative, file doesn't exist so exit.
