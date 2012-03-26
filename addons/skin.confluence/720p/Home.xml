@@ -2,26 +2,8 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<controls>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath background="true">$INFO[Container(9000).ListItem.Icon]</imagepath>
-			<timeperimage>8000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
-		<control type="image">
-			<posx>0</posx>
-			<posy>340r</posy>
-			<width>1280</width>
-			<height>250</height>
-			<colordiffuse>AAFFFFFF</colordiffuse>
-			<texture>HomeNowPlayingBack.png</texture>
-			<include>Window_OpenClose_Animation</include>
-		</control>
 		<control type="image">
 			<posx>0</posx>
 			<posy>90r</posy>
@@ -41,16 +23,6 @@
 			<texture>xbmc-logo.png</texture>
 			<visible>!IntegerGreaterThan(Container(9002).NumItems,0)</visible>
 			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>125</posy>
-			<width>1280</width>
-			<height>250</height>
-			<colordiffuse>AAFFFFFF</colordiffuse>
-			<texture>HomeNowPlayingBack.png</texture>
-			<visible>[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)] | [Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)] | [Container(9000).HasFocus(10) + Skin.HasSetting(homepageShowRecentlyAdded)] | [Container(9000).HasFocus(11) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<!-- Music Info -->
@@ -552,7 +524,7 @@
 						<textcolor>grey3</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
 					</control>
 				</itemlayout>
 				<focusedlayout height="60" width="300">
@@ -579,7 +551,7 @@
 						<textcolor>white</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
+						<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
 						<animation effect="fade" start="100" end="50" time="200" condition="!Control.HasFocus(9000)">conditional</animation>
 					</control>
 				</focusedlayout>
@@ -587,8 +559,8 @@
 					<item id="7">
 						<label>8</label>
 						<onclick>ActivateWindow(Weather)</onclick>
-						<icon>special://skin/backgrounds/weather.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
 					</item>
 					<item id="4">
@@ -602,50 +574,50 @@
 						<label>3</label>
 						<onclick condition="!Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos)</onclick>
 						<onclick condition="Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos,Files,Return)</onclick>
-						<icon>special://skin/backgrounds/videos.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
 					</item>
 					<item id="10">
 						<label>20342</label>
 						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
-						<icon>special://skin/backgrounds/videos.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>Skin.HasSetting(HomeMenuNoMoviesButton) + Library.HasContent(Movies)</visible>
 					</item>
 					<item id="11">
 						<label>20343</label>
 						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
-						<icon>special://skin/backgrounds/videos.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>Skin.HasSetting(HomeMenuNoTVShowsButton) + Library.HasContent(TVShows)</visible>
 					</item>
 					<item id="3">
 						<label>2</label>
 						<onclick>ActivateWindow(Music)</onclick>
-						<icon>special://skin/backgrounds/music.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
 					<item id="1">
 						<label>0</label>
 						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
-						<icon>special://skin/backgrounds/programs.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
 					</item>
 					<item id="6">
 						<label>341</label>
 						<onclick>XBMC.PlayDVD()</onclick>
-						<icon>special://skin/backgrounds/playdisc.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_PlayDisc_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>System.HasMediaDVD</visible>
 					</item>
 					<item id="5">
 						<label>13000</label>
 						<onclick>ActivateWindow(Settings)</onclick>
-						<icon>special://skin/backgrounds/settings.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 					</item>
 				</content>
 			</control>
@@ -719,7 +691,7 @@
 					<height>120</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<bordersize>3</bordersize>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<visible>!Control.HasFocus(9002)</visible>
 				</control>
@@ -730,7 +702,7 @@
 					<height>120</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<bordersize>3</bordersize>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<visible>Control.HasFocus(9002)</visible>
 				</control>

@@ -3,7 +3,7 @@
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,550,551,500,506</views>
 	<controls>
-		<include>CommonMusicBackground</include>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">

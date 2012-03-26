@@ -2,7 +2,7 @@
 	<defaultcontrol allways="true">6</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonMusicBackground</include>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="group">
 			<posy>10</posy>

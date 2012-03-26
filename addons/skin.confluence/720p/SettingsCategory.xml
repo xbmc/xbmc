@@ -2,7 +2,7 @@
 	<defaultcontrol>3</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonSettingsBackground</include>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>

@@ -3,7 +3,7 @@
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,550,551,500,514,510</views>
 	<controls>
-		<include>CommonPictureBackground</include>
+		<include>CommonBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>
