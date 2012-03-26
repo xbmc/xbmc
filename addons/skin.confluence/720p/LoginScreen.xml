@@ -7,17 +7,7 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/videos.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-			<animation effect="fade" time="400">WindowClose</animation>
-		</control>
+		<include>CommonBackground</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>		
 			<control type="image">
@@ -224,49 +214,18 @@
 				</control>
 			</control>
 		</control>
-		<control type="group">
-			<posx>400r</posx>
-			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="400,0" delay="0" time="300">WindowClose</animation>
-			<animation effect="slide" start="400,0" end="0,0" delay="0" time="300">WindowOpen</animation>
-			<control type="image">
-				<description>time background</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>440</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
-			</control>
-			<control type="label">
-				<description>time label</description>
-				<posx>30</posx>
-				<posy>0</posy>
-				<width>400</width>
-				<height>28</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<label>[COLOR=grey]$INFO[System.Date][/COLOR] | $INFO[System.Time]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>0</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
+		<include>Clock</include>
+		<control type="grouplist">
+			<posx>10</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[20096]</label>
+				<label>$LOCALIZE[2096]</label>
 			</control>
 		</control>
 	</controls>

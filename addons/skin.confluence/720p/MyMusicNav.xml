@@ -4,7 +4,6 @@
 	<views>50,51,500,550,551,509,506,511,512,513</views>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonMediaPlayingBackground</include>
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>		
@@ -23,6 +22,25 @@
 		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
+		<include>WindowTitleHomeButton</include>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[10516]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$INFO[Container.FolderName]</label>
+				<visible>!IsEmpty(Container.FolderName)</visible>
+			</control>
+		</control>
 		<control type="group">
 			<posx>-250</posx>
 			<include>SideBladeLeft</include>
@@ -110,105 +128,6 @@
 				<include>CommonNowPlaying_Controls</include>
 			</control>
 		</control>
-		<control type="group">
-			<posx>240</posx>
-			<posy>0</posy>
-			<visible>Container.Content(MusicVideos)</visible>
-			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-510,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-510,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[20389]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>240</posx>
-			<posy>0</posy>
-			<visible>Container.Content(Artists)</visible>
-			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-510,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-510,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[133]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>240</posx>
-			<posy>0</posy>
-			<visible>Container.Content(Songs)</visible>
-			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-510,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-510,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[134]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>240</posx>
-			<posy>0</posy>
-			<visible>Container.Content(Albums)</visible>
-			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-510,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-510,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[132]</label>
-			</control>
-		</control>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[10516]</label>
-			</control>
-		</control>
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

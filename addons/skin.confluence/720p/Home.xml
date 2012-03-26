@@ -5,16 +5,6 @@
 	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonMediaPlayingBackground</include>
-		<control type="image">
-			<posx>0</posx>
-			<posy>-40</posy>
-			<width>1280</width>
-			<height>120</height>
-			<texture flipy="true">HomeNowPlayingBack.png</texture>
-			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] | [Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)]</visible>
-			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
-		</control>
 		<control type="image">
 			<posx>0</posx>
 			<posy>90r</posy>

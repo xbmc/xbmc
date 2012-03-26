@@ -32,39 +32,28 @@
 		</control>
 	</include>
 	<include name="WindowTitleCommons">
+		<posx>0</posx>
 		<posy>0</posy>
-		<width>1060</width>
-		<height>28</height>
-		<font>font12</font>
+		<width min="0" max="800">auto</width>
+		<height>30</height>
+		<font>font14</font>
 		<textcolor>white</textcolor>
+		<shadowcolor>black</shadowcolor>
 		<scroll>false</scroll>
-		<align>right</align>
+		<align>left</align>
 		<aligny>center</aligny>
 	</include>
 	<include name="WindowTitleHomeButton">
-		<control type="group">
-			<posx>0</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home)">WindowClose</animation>
-			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home)">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>80</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="button">
-				<hitrect x="0" y="0" w="60" h="30" />
-				<posx>20</posx>
-				<posy>5</posy>
-				<width>25</width>
-				<height>20</height>
-				<texturenofocus>HomeIcon.png</texturenofocus>
-				<texturefocus>HomeIcon-Focus.png</texturefocus>
-				<label>-</label>
-				<onclick>ActivateWindow(Home)</onclick>
-			</control>
+		<control type="button">
+			<hitrect x="0" y="0" w="60" h="45" />
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<texturenofocus>icon_home.png</texturenofocus>
+			<texturefocus>icon_home_focus.png</texturefocus>
+			<label>-</label>
+			<onclick>ActivateWindow(Home)</onclick>
 		</control>
 	</include>
 	<include name="ButtonCommonValues">

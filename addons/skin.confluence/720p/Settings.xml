@@ -3,7 +3,6 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>
 			<posy>100r</posy>
@@ -247,25 +246,20 @@
 		</control>
 		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home) | Window.Next(1111) | Window.Next(AddonBrowser)">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home) | Window.Previous(1111) | Window.Previous(AddonBrowser)">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
+		<include>WindowTitleHomeButton</include>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
 				<label>$LOCALIZE[5]</label>
 			</control>
 		</control>
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

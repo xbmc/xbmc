@@ -1,5 +1,27 @@
 <includes>
 	<include name="CommonMediaPlayingBackground">
+	</include>
+	<include name="CommonBackground">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<include>backgroundfade</include>
+			<fadetime>FanartCrossfadeTime</fadetime>
+			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
+			<include>Window_OpenClose_Animation</include>
+			<visible>![Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] + ![Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)]</visible>
+		</control>
+		<control type="Image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>special://skin/backgrounds/background.jpg</texture>
+			<animation effect="fade" start="100" end="60" time="200" condition="!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))">Conditional</animation>
+		</control>
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -23,26 +45,14 @@
 			<height>720</height>
 			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
 		</control>
-	</include>
-	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>
-			<posy>0</posy>
+			<posy>-40</posy>
 			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="Image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture>special://skin/backgrounds/background.jpg</texture>
-			<animation effect="fade" start="100" end="60" time="200" condition="!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))">Conditional</animation>
+			<height>120</height>
+			<texture flipy="true">HomeNowPlayingBack.png</texture>
+			<visible>[Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)] | [Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)]</visible>
+			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
 		</control>
 	</include>
 	<include name="ContentPanelBackgrounds">
