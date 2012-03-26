@@ -570,6 +570,27 @@
       }
     }
   },
+  "VideoLibrary.SearchForDetails": {
+    "type": "method",
+    "description": "Refresh movie from Internet",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "file", "type": "string", "required": true },
+      { "name": "title", "type": "string", "required": true },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "movies": { "type": "array",
+         "items": { "$ref": "Video.Details.Movie" }
+        }
+      }
+    }
+  },
   "AudioLibrary.GetArtists": {
     "type": "method",
     "description": "Retrieve all artists",
