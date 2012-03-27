@@ -341,9 +341,9 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="list" id="8001">
-					<posx>140</posx>
+					<posx>240</posx>
 					<posy>0</posy>
-					<width>1000</width>
+					<width>800</width>
 					<height>240</height>
 					<onleft>8001</onleft>
 					<onright>8001</onright>
@@ -489,14 +489,6 @@
 							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.4.Path)]&quot;)</onclick>
 							<icon>-</icon>
 							<thumb>$INFO[Window.Property(LatestAlbum.4.Thumb)]</thumb>
-						</item>
-						<item>
-							<label>$INFO[Window.Property(LatestAlbum.5.Title)]</label>
-							<label2>$INFO[Window.Property(LatestAlbum.5.Artist)]</label2>
-							<onclick>PlayList.Clear</onclick>
-							<onclick>PlayMedia(&quot;$INFO[Window.Property(LatestAlbum.5.Path)]&quot;)</onclick>
-							<icon>-</icon>
-							<thumb>$INFO[Window.Property(LatestAlbum.5.Thumb)]</thumb>
 						</item>
 					</content>
 				</control>
