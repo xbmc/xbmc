@@ -44,7 +44,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -1671,7 +1671,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
   // if its not a picture type, test to see if its a folder
   if (!pItem->IsPicture())
   {
-    IDirectory *pDirectory = CFactoryDirectory::Create(pItem->GetPath());
+    IDirectory *pDirectory = CDirectoryFactory::Create(pItem->GetPath());
     if (!pDirectory)
       return SetResponse(openTag+"Error");  
     bool bResult=pDirectory->Exists(pItem->GetPath());
@@ -2303,7 +2303,7 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
     try
     {
       CMusicAlbumInfo musicInfo;//("", "") ;
-      XFILE::CFileCurl http;
+      XFILE::CCurlFile http;
       ScraperPtr info; // TODO - WTF is this code supposed to do?
       if (musicInfo.Load(http,info))
       {
@@ -2345,7 +2345,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
           tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
         if (numParas>2)
           tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
-        XFILE::CFileCurl http;
+        XFILE::CCurlFile http;
         http.Download(src, dest);
         CStdString encoded="";
         encoded=encodeFileToBase64(dest, 80);

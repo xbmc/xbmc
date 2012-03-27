@@ -26,7 +26,7 @@
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif
@@ -126,7 +126,7 @@ void CRssReader::Process()
     m_strFeed[iFeed] = "";
     m_strColors[iFeed] = "";
 
-    CFileCurl http;
+    CCurlFile http;
     http.SetUserAgent(g_settings.m_userAgent);
     http.SetTimeout(2);
     CStdString strXML;
