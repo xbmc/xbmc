@@ -3,7 +3,6 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
-		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<description>Section header image</description>
 			<posx>20</posx>
