@@ -99,6 +99,7 @@ public:
 
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();
+  static int MonthStringToMonthNum(const CStdString& month);
 
   const CDateTime& operator =(const SYSTEMTIME& right);
   const CDateTime& operator =(const FILETIME& right);
