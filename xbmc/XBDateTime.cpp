@@ -1089,19 +1089,15 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
     }
     else if (c=='x') // add meridiem symbol
     {
-      int partLength=0;
-
       int pos=strFormat.find_first_not_of(c,i+1);
       if (pos>-1)
       {
         // Get length of the meridiem mask
-        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
         i=length;
       }
 
