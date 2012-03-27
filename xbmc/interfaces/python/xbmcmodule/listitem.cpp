@@ -677,7 +677,7 @@ namespace PYXBMC
             continue;
         }
         else if (strcmpi(PyString_AsString(key), "aspect") == 0)
-          video->m_fAspect = PyFloat_AsDouble(value);
+          video->m_fAspect = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "width") == 0)
           video->m_iWidth = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "height") == 0)
