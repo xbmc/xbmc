@@ -12,6 +12,8 @@
 		18404DFD1396C44F00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DFC1396C44F00863BBA /* SlingboxLib.a */; };
 		1840B796139968DB007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B792139968DB007C848B /* JSONVariantParser.cpp */; };
 		1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B794139968DB007C848B /* JSONVariantWriter.cpp */; };
+		188F761015221809009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F760E15221809009870CE /* GUIOperations.cpp */; };
+		188F76291522186C009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F76271522186C009870CE /* Mime.cpp */; };
 		18968DE814155E1D005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DE614155E1D005BA742 /* ApplicationOperations.cpp */; };
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
@@ -964,6 +966,10 @@
 		1840B795139968DB007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
 		188F752615211773009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
 		188F752715211780009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
+		188F760E15221809009870CE /* GUIOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIOperations.cpp; sourceTree = "<group>"; };
+		188F760F15221809009870CE /* GUIOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIOperations.h; sourceTree = "<group>"; };
+		188F76271522186C009870CE /* Mime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mime.cpp; sourceTree = "<group>"; };
+		188F76281522186C009870CE /* Mime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mime.h; sourceTree = "<group>"; };
 		18968DE614155E1D005BA742 /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
 		18968DE714155E1D005BA742 /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
 		18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
@@ -5240,6 +5246,8 @@
 				F56C770F131EC153000AD0F6 /* MathUtils.h */,
 				F56C774C131EC154000AD0F6 /* md5.cpp */,
 				F56C774D131EC154000AD0F6 /* md5.h */,
+				188F76271522186C009870CE /* Mime.cpp */,
+				188F76281522186C009870CE /* Mime.h */,
 				F56C774E131EC154000AD0F6 /* PCMAmplifier.cpp */,
 				F56C774F131EC154000AD0F6 /* PCMAmplifier.h */,
 				F56C7750131EC154000AD0F6 /* PCMRemap.cpp */,
@@ -5867,6 +5875,8 @@
 				F5AE40F41341751E0004BD79 /* FileItemHandler.h */,
 				F5AE40F51341751E0004BD79 /* FileOperations.cpp */,
 				F5AE40F61341751E0004BD79 /* FileOperations.h */,
+				188F760E15221809009870CE /* GUIOperations.cpp */,
+				188F760F15221809009870CE /* GUIOperations.h */,
 				F5AE40F71341751E0004BD79 /* IClient.h */,
 				188F752615211773009870CE /* IJSONRPCAnnouncer.h */,
 				C807119D135DB842002F601B /* InputOperations.cpp */,
@@ -6986,6 +6996,8 @@
 				DF527783151BAFD600B5B63B /* WebSocketV8.cpp in Sources */,
 				DF527788151BAFEE00B5B63B /* Base64.cpp in Sources */,
 				DF527789151BAFEE00B5B63B /* HttpResponse.cpp in Sources */,
+				188F761015221809009870CE /* GUIOperations.cpp in Sources */,
+				188F76291522186C009870CE /* Mime.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

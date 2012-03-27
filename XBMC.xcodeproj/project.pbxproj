@@ -53,6 +53,10 @@
 		1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		184C47301296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
+		188F75FE152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
+		188F75FF152217BC009870CE /* Mime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F75FC152217BC009870CE /* Mime.cpp */; };
+		188F7602152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
+		188F7603152217DF009870CE /* GUIOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 188F7600152217DF009870CE /* GUIOperations.cpp */; };
 		18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
 		18968DC914155D7C005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
 		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
@@ -1971,6 +1975,10 @@
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
 		188F751815211733009870CE /* IJSONRPCAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJSONRPCAnnouncer.h; sourceTree = "<group>"; };
 		188F751915211743009870CE /* JSONRPCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPCUtils.h; sourceTree = "<group>"; };
+		188F75FC152217BC009870CE /* Mime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mime.cpp; sourceTree = "<group>"; };
+		188F75FD152217BC009870CE /* Mime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mime.h; sourceTree = "<group>"; };
+		188F7600152217DF009870CE /* GUIOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIOperations.cpp; sourceTree = "<group>"; };
+		188F7601152217DF009870CE /* GUIOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIOperations.h; sourceTree = "<group>"; };
 		189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcvfsmodule.cpp; sourceTree = "<group>"; };
 		18968DC614155D7C005BA742 /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
 		18968DC714155D7C005BA742 /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
@@ -6692,6 +6700,8 @@
 				18B7C9E7129447B9009E7A26 /* MathUtils.h */,
 				F5F8E1E60E427F6700A8E96F /* md5.cpp */,
 				F5F8E1E70E427F6700A8E96F /* md5.h */,
+				188F75FC152217BC009870CE /* Mime.cpp */,
+				188F75FD152217BC009870CE /* Mime.h */,
 				E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */,
 				E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */,
 				18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */,
@@ -6818,6 +6828,8 @@
 				F5AE408713415D9E0004BD79 /* FileItemHandler.h */,
 				F5AE408813415D9E0004BD79 /* FileOperations.cpp */,
 				F5AE408913415D9E0004BD79 /* FileOperations.h */,
+				188F7600152217DF009870CE /* GUIOperations.cpp */,
+				188F7601152217DF009870CE /* GUIOperations.h */,
 				F5AE408A13415D9E0004BD79 /* IClient.h */,
 				188F751815211733009870CE /* IJSONRPCAnnouncer.h */,
 				C807114B135DB5CC002F601B /* InputOperations.cpp */,
@@ -8108,6 +8120,8 @@
 				DF527735151BAF4C00B5B63B /* WebSocketManager.cpp in Sources */,
 				DF527736151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
 				DF527737151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
+				188F75FE152217BC009870CE /* Mime.cpp in Sources */,
+				188F7602152217DF009870CE /* GUIOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9035,6 +9049,8 @@
 				DF52773A151BAF4C00B5B63B /* WebSocketManager.cpp in Sources */,
 				DF52773B151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
 				DF52773C151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
+				188F75FF152217BC009870CE /* Mime.cpp in Sources */,
+				188F7603152217DF009870CE /* GUIOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
