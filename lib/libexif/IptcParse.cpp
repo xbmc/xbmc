@@ -133,9 +133,6 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
 
   if (pos + 4 >= maxpos) return false;
 
-  // Get length (Motorola format)
-  //unsigned long length = CExifParse::Get32(pos);
-
   pos += 4;                                   // move data pointer to the next field
 
   // Now read IPTC data
@@ -145,13 +142,13 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
 
     short signature = (*pos << 8) + (*(pos+1));
 
-    pos += sizeof(short);
+    pos += 2;
     if (signature != 0x1C01 && signature != 0x1C02)
       break;
 
     unsigned char  type = *pos++;
     unsigned short length  = (*pos << 8) + (*(pos+1));
-    pos += sizeof(short);                   // Skip tag length
+    pos += 2;                   // Skip tag length
 
     if (pos + length > maxpos) return false;
 
