@@ -38,9 +38,9 @@ namespace XFILE
  \ingroup filesystem
  \brief Interface to the directory on a file system.
 
- This Interface is retrieved from CFactoryDirectory and can be used to
+ This Interface is retrieved from CDirectoryFactory and can be used to
  access the directories on a filesystem.
- \sa CFactoryDirectory
+ \sa CDirectoryFactory
  */
 class IDirectory
 {
@@ -52,21 +52,21 @@ public:
    \param strPath Directory to read.
    \param items Retrieves the directory entries.
    \return Returns \e true, if successfull.
-   \sa CFactoryDirectory
+   \sa CDirectoryFactory
    */
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
   /*!
   \brief Create the directory
   \param strPath Directory to create.
   \return Returns \e true, if directory is created or if it already exists
-  \sa CFactoryDirectory
+  \sa CDirectoryFactory
   */
   virtual bool Create(const char* strPath) { return false; }
   /*!
   \brief Check for directory existence
   \param strPath Directory to check.
   \return Returns \e true, if directory exists
-  \sa CFactoryDirectory
+  \sa CDirectoryFactory
   */
   virtual bool Exists(const char* strPath) { return false; }
   /*!

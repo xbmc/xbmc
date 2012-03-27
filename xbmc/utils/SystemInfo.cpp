@@ -28,7 +28,7 @@
 #include <sys/utsname.h>
 #endif
 #include "GUIInfoManager.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "network/Network.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
@@ -81,7 +81,7 @@ CStdString CSysInfoJob::GetCPUFreqInfo()
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 {
   // Internet connection state!
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   if (http.IsInternet())
     return CSysData::CONNECTED;
   if (http.IsInternet(false))

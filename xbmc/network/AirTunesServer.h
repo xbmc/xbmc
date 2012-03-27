@@ -37,7 +37,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"
 #include "utils/StdString.h"
-#include "filesystem/FilePipe.h"
+#include "filesystem/PipeFile.h"
 
 class DllLibShairport;
 

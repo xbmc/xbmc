@@ -26,7 +26,7 @@
 #include "File.h"
 #include "URL.h"
 
-#include "CacheCircular.h"
+#include "CircularCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -89,7 +89,7 @@ CFileCache::CFileCache()
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
-     m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize
+     m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
                                  , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
    m_seekPossible = 0;
    m_cacheFull = false;

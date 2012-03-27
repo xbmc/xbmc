@@ -22,7 +22,7 @@
 
 #include "AddonsDirectory.h"
 #include "addons/AddonDatabase.h"
-#include "FactoryDirectory.h"
+#include "DirectoryFactory.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "FileItem.h"
