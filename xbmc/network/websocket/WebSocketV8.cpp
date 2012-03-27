@@ -70,7 +70,7 @@ bool CWebSocketV8::Handshake(const char* data, size_t length, std::string &respo
   }
 
   // The request must be HTTP/1.1 or higher
-  int pos;
+  size_t pos;
   if ((pos = strHeader.find(WS_HTTP_TAG)) == string::npos)
   {
     CLog::Log(LOGINFO, "WebSocket [hybi-10]: invalid handshake received");

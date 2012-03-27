@@ -69,7 +69,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   }
 
   // The request must be HTTP/1.1 or higher
-  int pos;
+  size_t pos;
   if ((pos = strHeader.find(WS_HTTP_TAG)) == string::npos)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid handshake received");
