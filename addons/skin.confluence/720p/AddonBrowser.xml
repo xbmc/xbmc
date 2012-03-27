@@ -16,7 +16,15 @@
 		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
-		<include>WindowTitleHomeButton</include>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_addons.png</texture>
+		</control>
 		<control type="grouplist">
 			<posx>65</posx>
 			<posy>5</posy>
