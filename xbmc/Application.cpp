@@ -347,11 +347,11 @@ CApplication::CApplication(void)
 #ifdef HAS_WEB_SERVER
   , m_WebServer(*new CWebServer)
   , m_httpVfsHandler(*new CHTTPVfsHandler)
-#ifdef HAS_HTTPAPI
-  , m_httpApiHandler(*new CHTTPApiHandler)
-#endif
 #ifdef HAS_JSONRPC
   , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
+#endif
+#ifdef HAS_HTTPAPI
+  , m_httpApiHandler(*new CHTTPApiHandler)
 #endif
 #ifdef HAS_WEB_INTERFACE
   , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
