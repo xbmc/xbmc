@@ -256,10 +256,9 @@
 		</control>
 		<control type="group">
 			<description>Controls for currently playing media</description>
-			<posx>400r</posx>
+			<posx>545r</posx>
 			<posy>370</posy>
-			<visible>Player.HasMedia</visible>
-			<include>VisibleFadeEffect</include>
+			<animation effect="slide" start="0,0" end="365,0" time="300" condition="!Player.HasMedia">conditional</animation>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
 				<effect type="fade" start="0" end="100" time="300" />
@@ -277,11 +276,38 @@
 				<colordiffuse>CCFFFFFF</colordiffuse>
 				<texture flipy="true" border="0,5,0,0" flipx="true">HomeSubEnd.png</texture>
 			</control>
-			<control type="group" id="600">
+			<control type="radiobutton" id="608">
+				<colordiffuse>CCFFFFFF</colordiffuse>
+				<description>Global Search</description>
 				<posx>35</posx>
+				<posy>0</posy>
+				<height>35</height>
+				<width>145</width>
+				<textwidth>150</textwidth>
+				<textoffsetx>10</textoffsetx>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<texturefocus flipy="true" border="5">HomeSubFO.png</texturefocus>
+				<texturenofocus flipy="true" border="5">HomeSubNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<label>137</label>
+				<onclick>RunScript(script.globalsearch)</onclick>
+				<textureradiofocus>icon_search.png</textureradiofocus>
+				<textureradionofocus>icon_search.png</textureradionofocus>
+				<onleft>607</onleft>
+				<onright>601</onright>
 				<onup>9003</onup>
 				<ondown>9000</ondown>
-				<defaultcontrol>603</defaultcontrol>
+			</control>
+			<control type="group" id="600">
+				<posx>180</posx>
+				<onup>9003</onup>
+				<ondown>9000</ondown>
+				<defaultcontrol>-</defaultcontrol>
+				<enable>Player.HasMedia</enable>
 				<control type="image">
 					<description>Background image</description>
 					<posx>0</posx>
@@ -299,7 +325,7 @@
 					<label>-</label>
 					<texturefocus>OSDPrevTrackFO.png</texturefocus>
 					<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
-					<onleft>607</onleft>
+					<onleft>608</onleft>
 					<onright>602</onright>
 					<onup>9003</onup>
 					<ondown>9000</ondown>
@@ -383,7 +409,7 @@
 			<control type="radiobutton" id="607">
 				<colordiffuse>CCFFFFFF</colordiffuse>
 				<description>Go to fullscreen Playback</description>
-				<posx>240</posx>
+				<posx>385</posx>
 				<posy>0</posy>
 				<height>35</height>
 				<width>160</width>
@@ -402,9 +428,10 @@
 				<textureradiofocus>GoFullscreen.png</textureradiofocus>
 				<textureradionofocus>GoFullscreen.png</textureradionofocus>
 				<onleft>606</onleft>
-				<onright>601</onright>
+				<onright>608</onright>
 				<onup>9003</onup>
 				<ondown>9000</ondown>
+				<enable>Player.HasMedia</enable>
 			</control>
 		</control>
 		<control type="group">
@@ -493,7 +520,7 @@
 				<height>60</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
-				<onup>600</onup>
+				<onup>608</onup>
 				<ondown>9001</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>

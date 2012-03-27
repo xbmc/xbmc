@@ -34,7 +34,7 @@
 					<onleft>8000</onleft>
 					<onright>8000</onright>
 					<onup>20</onup>
-					<ondown>600</ondown>
+					<ondown>608</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>200</scrolltime>
@@ -180,7 +180,7 @@
 					<onleft>8001</onleft>
 					<onright>8001</onright>
 					<onup>20</onup>
-					<ondown>600</ondown>
+					<ondown>608</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>0</scrolltime>
@@ -348,7 +348,7 @@
 					<onleft>8001</onleft>
 					<onright>8001</onright>
 					<onup>20</onup>
-					<ondown>600</ondown>
+					<ondown>608</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>0</scrolltime>
