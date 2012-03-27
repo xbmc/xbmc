@@ -21,6 +21,7 @@
 
 #include "SystemOperations.h"
 #include "Application.h"
+#include "interfaces/Builtins.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 
@@ -43,6 +44,11 @@ JSONRPC_STATUS CSystemOperations::GetProperties(const CStdString &method, ITrans
   result = properties;
 
   return OK;
+}
+
+JSONRPC_STATUS CSystemOperations::EjectOpticalDrive(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return CBuiltins::Execute("EjectTray") == 0 ? ACK : FailedToExecute;
 }
 
 JSONRPC_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

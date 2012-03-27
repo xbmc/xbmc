@@ -76,5 +76,8 @@ namespace JSONRPC
     static void SendSlideshowAction(int actionID);
     static void OnPlaylistChanged();
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const CStdString &property, CVariant &result);
+
+    static int ParseRepeatState(const CVariant &repeat);
+    static double ParseTimeInSeconds(const CVariant &time);
   };
 }
