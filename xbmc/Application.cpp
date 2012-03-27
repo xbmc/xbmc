@@ -160,9 +160,6 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
-#ifdef HAVE_LIBCEC
-#include "peripherals/devices/PeripheralCecAdapter.h"
-#endif
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
@@ -2556,6 +2553,10 @@ bool CApplication::OnAction(const CAction &action)
       }
     }
   }
+
+  if (g_peripherals.OnAction(action))
+    return true;
+
   if (action.GetID() == ACTION_MUTE)
   {
     ToggleMute();
@@ -2831,23 +2832,9 @@ bool CApplication::ProcessRemote(float frameTime)
 
 bool CApplication::ProcessPeripherals(float frameTime)
 {
-#ifdef HAVE_LIBCEC
-  vector<CPeripheral *> peripherals;
-  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-    {
-      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-      if (cecDevice && cecDevice->GetButton())
-      {
-        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
-        cecDevice->ResetButton();
-        return OnKey(key);
-      }
-    }
-  }
-#endif
-
+  CKey key;
+  if (g_peripherals.GetNextKeypress(frameTime, key))
+    return OnKey(key);
   return false;
 }
 
@@ -3288,7 +3275,8 @@ void CApplication::Stop(int exitCode)
 {
   try
   {
-    CAnnouncementManager::Announce(System, "xbmc", "OnQuit");
+    CVariant vExitCode(exitCode);
+    CAnnouncementManager::Announce(System, "xbmc", "OnQuit", vExitCode);
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
@@ -5027,6 +5015,8 @@ void CApplication::ShowVolumeBar(const CAction *action)
 
 bool CApplication::IsMuted() const
 {
+  if (g_peripherals.IsMuted())
+    return true;
   return g_settings.m_bMute;
 }
 
@@ -5040,6 +5030,9 @@ void CApplication::ToggleMute(void)
 
 void CApplication::Mute()
 {
+  if (g_peripherals.Mute())
+    return;
+
   g_settings.m_iPreMuteVolumeLevel = GetVolume();
   SetVolume(0);
   g_settings.m_bMute = true;
@@ -5047,6 +5040,9 @@ void CApplication::Mute()
 
 void CApplication::UnMute()
 {
+  if (g_peripherals.UnMute())
+    return;
+
   SetVolume(g_settings.m_iPreMuteVolumeLevel);
   g_settings.m_iPreMuteVolumeLevel = 0;
   g_settings.m_bMute = false;
