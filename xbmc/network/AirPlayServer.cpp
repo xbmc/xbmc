@@ -840,7 +840,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       
       if (found && g_application.m_pPlayer)
       {
-        __int64 position = (__int64) (atof(found + strlen("position=")) * 1000.0);
+        int64_t position = (int64_t) (atof(found + strlen("position=")) * 1000.0);
         g_application.m_pPlayer->SeekTime(position);
         CLog::Log(LOGDEBUG, "AIRPLAY: got POST request %s with pos %"PRId64, uri.c_str(), position);
       }
