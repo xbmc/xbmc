@@ -573,7 +573,7 @@ void iso9660::Reset()
   }
   m_vecDirsAndFiles.erase(m_vecDirsAndFiles.begin(), m_vecDirsAndFiles.end());
 
-  for (int i = 0; i < MAX_ISO_FILES;++i)
+  for (intptr_t i = 0; i < MAX_ISO_FILES;++i)
   {
     FreeFileContext( (HANDLE)i);
   }
@@ -1007,7 +1007,7 @@ void iso9660::FreeFileContext(HANDLE hFile)
 //************************************************************************************
 HANDLE iso9660::AllocFileContext()
 {
-  for (int i = 1; i < MAX_ISO_FILES; ++i)
+  for (intptr_t i = 1; i < MAX_ISO_FILES; ++i)
   {
     if (m_isoFiles[i] == NULL)
     {
