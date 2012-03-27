@@ -93,6 +93,12 @@ public:
    */
   static bool TranslateResolution(const CStdString &name, RESOLUTION_INFO &res);
 
+  /*! \brief Add the includes loaded from another skin to the current includes.
+      \param startedSkin the skin (should have already been loaded via Start(), otherwise
+             nothing will happen)
+   */
+  void AddIncludes(const CSkinInfo &startedSkin);
+
   void ResolveIncludes(TiXmlElement *node);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };

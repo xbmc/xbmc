@@ -42,6 +42,7 @@ public:
   void ClearIncludes();
   bool LoadIncludes(const CStdString &includeFile);
   bool LoadIncludesFromXML(const TiXmlElement *root);
+  bool IsEmpty() const {return !m_includes.size() && !m_defaults.size() && !m_constants.size();};
 
   /*! \brief Resolve <include>name</include> tags recursively for the given XML element
    Replaces any instances of <include file="foo">bar</include> with the value of the include
