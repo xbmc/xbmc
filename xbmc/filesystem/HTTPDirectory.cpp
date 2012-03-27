@@ -155,16 +155,15 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             double Size = atof(reSizeNginx.GetReplaceString("\\1"));
             pItem->m_dwSize = (int64_t)Size;
           }
+          else
+          if (g_advancedSettings.m_bHTTPDirectoryStatFilesize) // As a fallback get the size by stat-ing the file (slow)
+          {
+            CFileCurl file;
+            file.Open(url);
+            pItem->m_dwSize=file.GetLength();
+            file.Close();
+          }
         }
-
-        if (!pItem->m_bIsFolder && pItem->m_dwSize == 0 && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
-        {
-          CFileCurl file;
-          file.Open(url);
-          pItem->m_dwSize= file.GetLength();
-          file.Close();
-        }
-
         items.Add(pItem);
       }
     }
