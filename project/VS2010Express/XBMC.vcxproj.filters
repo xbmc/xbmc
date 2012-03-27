@@ -256,6 +256,9 @@
     <Filter Include="filesystem\windows">
       <UniqueIdentifier>{1cc693eb-11ad-4f53-8640-198d5ab9bcc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\httprequesthandler">
+      <UniqueIdentifier>{9029e610-aa5a-4414-9e96-1d69f03b3bd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2568,6 +2571,12 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Base64.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2597,6 +2606,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Mime.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5219,6 +5240,24 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Mime.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h">
+      <Filter>network\httprequesthandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
