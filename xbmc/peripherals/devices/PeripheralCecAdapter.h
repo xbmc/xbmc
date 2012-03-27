@@ -20,7 +20,28 @@
  *
  */
 
-#if defined(HAVE_LIBCEC)
+#if !defined(HAVE_LIBCEC)
+#include "Peripheral.h"
+
+// an empty implementation, so CPeripherals can be compiled without a bunch of #ifdef's when libCEC is not available
+namespace PERIPHERALS
+{
+  class CPeripheralCecAdapter : public CPeripheral
+  {
+  public:
+    bool HasConnectedAudioSystem(void) { return false; }
+    void ScheduleVolumeUp(void) {}
+    void ScheduleVolumeDown(void) {}
+    bool IsMuted(void) { return false; }
+    void ScheduleMute(void) {}
+
+    WORD GetButton(void) { return 0; }
+    unsigned int GetHoldTime(void) { return 0; }
+    void ResetButton(void) {}
+  };
+}
+
+#else
 
 #include "PeripheralHID.h"
 #include "interfaces/AnnouncementManager.h"
@@ -32,7 +53,7 @@
 #ifdef isset
 #undef isset
 #endif
-#include <cectypes.h>
+#include <libcec/cectypes.h>
 
 class DllLibCEC;
 
@@ -43,25 +64,40 @@ namespace CEC
 
 namespace PERIPHERALS
 {
+  class CPeripheralCecAdapterUpdateThread;
+
   typedef struct
   {
     WORD         iButton;
     unsigned int iDuration;
   } CecButtonPress;
 
+  typedef enum
+  {
+    VOLUME_CHANGE_NONE,
+    VOLUME_CHANGE_UP,
+    VOLUME_CHANGE_DOWN,
+    VOLUME_CHANGE_MUTE
+  } CecVolumeChange;
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
+    friend class CPeripheralCecAdapterUpdateThread;
+
   public:
     CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);
     virtual ~CPeripheralCecAdapter(void);
 
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-    virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
-    virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
-
-    virtual bool SendPing(void);
-    virtual bool SetHdmiPort(int iHdmiPort);
+    virtual bool HasConnectedAudioSystem(void);
+    virtual void SetAudioSystemConnected(bool bSetTo);
+    virtual void ScheduleVolumeUp(void);
+    virtual void VolumeUp(void);
+    virtual void ScheduleVolumeDown(void);
+    virtual void VolumeDown(void);
+    virtual void ScheduleMute(void);
+    virtual void Mute(void);
+    virtual bool IsMuted(void);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
@@ -71,27 +107,66 @@ namespace PERIPHERALS
     virtual CStdString GetComPort(void);
 
   protected:
-    virtual void FlushLog(void);
-    virtual bool GetNextCecKey(CEC::cec_keypress &key);
+    virtual bool OpenConnection(void);
+    virtual void SetConfigurationFromSettings(void);
+    virtual void SetConfigurationFromLibCEC(const CEC::libcec_configuration &config);
+    static void ReadLogicalAddresses(const CStdString &strString, CEC::cec_logical_addresses &addresses);
+    static int CecKeyPress(void *cbParam, const CEC::cec_keypress &key);
+    static int CecLogMessage(void *cbParam, const CEC::cec_log_message &message);
+    static int CecCommand(void *cbParam, const CEC::cec_command &command);
+    static int CecConfiguration(void *cbParam, const CEC::libcec_configuration &config);
+
     virtual bool GetNextKey(void);
+    virtual bool GetNextCecKey(CEC::cec_keypress &key);
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
-    virtual void ProcessNextCommand(void);
+    virtual void ProcessVolumeChange(void);
     virtual void SetMenuLanguage(const char *strLanguage);
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
-    DllLibCEC*                    m_dll;
-    CEC::ICECAdapter*             m_cecAdapter;
-    bool                          m_bStarted;
-    bool                          m_bHasButton;
-    bool                          m_bIsReady;
-    CStdString                    m_strMenuLanguage;
-    CDateTime                     m_screensaverLastActivated;
-    CecButtonPress                m_button;
-    std::queue<CEC::cec_keypress> m_buttonQueue;
-    unsigned int                  m_lastKeypress;
-    CCriticalSection              m_critSection;
+    DllLibCEC*                        m_dll;
+    CEC::ICECAdapter*                 m_cecAdapter;
+    bool                              m_bStarted;
+    bool                              m_bHasButton;
+    bool                              m_bIsReady;
+    bool                              m_bHasConnectedAudioSystem;
+    CStdString                        m_strMenuLanguage;
+    CDateTime                         m_screensaverLastActivated;
+    CecButtonPress                    m_button;
+    std::queue<CEC::cec_keypress>     m_buttonQueue;
+    std::queue<CecVolumeChange>       m_volumeChangeQueue;
+    unsigned int                      m_lastKeypress;
+    CecVolumeChange                   m_lastChange;
+    int                               m_iExitCode;
+    bool                              m_bIsMuted;
+    CPeripheralCecAdapterUpdateThread*m_queryThread;
+    CEC::ICECCallbacks                m_callbacks;
+    CCriticalSection                  m_critSection;
+    CEC::libcec_configuration         m_configuration;
+  };
+
+  class CPeripheralCecAdapterUpdateThread : public CThread
+  {
+  public:
+    CPeripheralCecAdapterUpdateThread(CPeripheralCecAdapter *adapter, CEC::libcec_configuration *configuration);
+    virtual ~CPeripheralCecAdapterUpdateThread(void);
+
+    virtual void Signal(void);
+    virtual bool UpdateConfiguration(CEC::libcec_configuration *configuration);
+
+  protected:
+    virtual bool WaitReady(void);
+    virtual bool SetInitialConfiguration(void);
+    virtual void Process(void);
+
+    CPeripheralCecAdapter *    m_adapter;
+    CEvent                     m_event;
+    CCriticalSection           m_critSection;
+    CEC::libcec_configuration  m_configuration;
+    CEC::libcec_configuration  m_nextConfiguration;
+    bool                       m_bNextConfigurationScheduled;
+    bool                       m_bIsUpdating;
   };
 }
 
