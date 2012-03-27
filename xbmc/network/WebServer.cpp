@@ -21,33 +21,28 @@
 
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
-#include "interfaces/http-api/HttpApi.h"
-#include "interfaces/json-rpc/JSONRPC.h"
 #include "filesystem/File.h"
-#include "filesystem/Directory.h"
-#include "URL.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/Base64.h"
 #include "threads/SingleLock.h"
 #include "XBDateTime.h"
-#include "addons/AddonManager.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
 
-#define MAX_STRING_POST_SIZE 20000
-#define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
-#define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
-#define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
-#define DEFAULT_PAGE        "index.html"
+#define MAX_POST_BUFFER_SIZE 2048
 
-using namespace ADDON;
+#define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
+#define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
+
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
+
+vector<IHTTPRequestHandler *> CWebServer::m_requestHandlers;
 
 CWebServer::CWebServer()
 {
@@ -59,8 +54,15 @@ CWebServer::CWebServer()
 
 int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
-  map<CStdString, CStdString> *arguments = (map<CStdString, CStdString> *)cls;
-  arguments->insert( pair<CStdString,CStdString>(key,value) );
+  map<string, string> *arguments = (map<string, string> *)cls;
+  arguments->insert(pair<string,string>(key,value));
+  return MHD_YES; 
+}
+
+int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
+{
+  multimap<string, string> *arguments = (multimap<string, string> *)cls;
+  arguments->insert(pair<string,string>(key,value));
   return MHD_YES; 
 }
 
@@ -101,7 +103,7 @@ bool CWebServer::IsAuthenticated(CWebServer *server, struct MHD_Connection *conn
   if (strncmp (headervalue, strbase, strlen(strbase)))
     return false;
 
-  return server->m_Credentials64Encoded.Equals(headervalue + strlen(strbase));
+  return (server->m_Credentials64Encoded.compare(headervalue + strlen(strbase)) == 0);
 }
 
 #if (MHD_VERSION >= 0x00040001)
@@ -117,99 +119,215 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 #endif
 {
   CWebServer *server = (CWebServer *)cls;
-  CStdString strURL = url;
-  CStdString originalURL = url;
   HTTPMethod methodType = GetMethod(method);
-  
+  HTTPRequest request = { connection, url, methodType, version, server };
+
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
 
-//  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
-//    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
-
-#ifdef HAS_JSONRPC
-  if (strURL.Equals("/jsonrpc"))
+  // Check if this is the first call to
+  // AnswerToConnection for this request
+  if (*con_cls == NULL)
   {
-    if (methodType == POST)
-      return JSONRPC(server, con_cls, connection, upload_data, upload_data_size);
-    else
-      return CreateMemoryDownloadResponse(connection, (void *)PAGE_JSONRPC_INFO, strlen(PAGE_JSONRPC_INFO));
-  }
-#endif
-
-#ifdef HAS_HTTPAPI
-  if ((methodType == GET || methodType == POST) && strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
-    return HttpApi(connection);
-#endif
-
-  if (strURL.Left(4).Equals("/vfs"))
-  {
-    strURL = strURL.Right(strURL.length() - 5);
-    return CreateFileDownloadResponse(connection, strURL, methodType);
-  }
-
-#ifdef HAS_WEB_INTERFACE
-  AddonPtr addon;
-  CStdString addonPath;
-  bool useDefaultWebInterface = true;
-  if (strURL.Left(8).Equals("/addons/") || (strURL == "/addons"))
-  {
-    CStdStringArray components;
-    CUtil::Tokenize(strURL,components,"/");
-    if (components.size() > 1)
+    // Look for a IHTTPRequestHandler which can
+    // take care of the current request
+    for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
     {
-      CAddonMgr::Get().GetAddon(components.at(1),addon);
-      if (addon)
+      IHTTPRequestHandler *requestHandler = *it;
+      if (requestHandler->CheckHTTPRequest(request))
       {
-        size_t pos;
-        pos = strURL.find('/', 8); // /addons/ = 8 characters +1 to start behind the last slash
-        if (pos != CStdString::npos)
-          strURL = strURL.substr(pos);
-        else // missing trailing slash
-          return CreateRedirect(connection, originalURL += "/");
+        // We found a matching IHTTPRequestHandler
+        // so let's get a new instance for this request
+        IHTTPRequestHandler *handler = requestHandler->GetInstance();
 
-        useDefaultWebInterface = false;
-        addonPath = addon->Path();
-        if (addon->Type() != ADDON_WEB_INTERFACE) // No need to append /htdocs for web interfaces
-          addonPath = URIUtils::AddFileToFolder(addonPath, "/htdocs/");
+        // If we got a POST request we need to take
+        // care of the POST data
+        if (methodType == POST)
+        {
+          ConnectionHandler *conHandler = new ConnectionHandler();
+          conHandler->requestHandler = handler;
+
+          // Get the content-type of the POST data
+          const char *contentType = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+          // If the content-type is application/x-ww-form-urlencoded or multipart/form-data
+          // we can use MHD's POST processor
+          if (contentType != NULL && 
+             (stricmp(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) == 0 || stricmp(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA) == 0))
+          {
+            // Get a new MHD_PostProcessor
+            conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler);
+
+            // MHD doesn't seem to be able to handle
+            // this post request
+            if (conHandler->postprocessor == NULL)
+            {
+              delete conHandler->requestHandler;
+              delete conHandler;
+
+              return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+            }
+          }
+          // otherwise we need to handle the POST data ourselves
+          // which is done in the next call to AnswerToConnection
+
+          *con_cls = (void*)conHandler;
+          return MHD_YES;
+        }
+        // No POST request so nothing special to handle
+        else
+          return HandleRequest(handler, request);
       }
     }
+  }
+  // This is a subsequent call to
+  // AnswerToConnection for this request
+  else
+  {
+    // Again we need to take special care
+    // of the POST data
+    if (methodType == POST)
+    {
+      ConnectionHandler *conHandler = (ConnectionHandler *)*con_cls;
+      if (conHandler->requestHandler == NULL)
+        return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+
+      // We only need to handle POST data
+      // if there actually is data left to handle
+      if (*upload_data_size > 0)
+      {
+        // Either use MHD's POST processor
+        if (conHandler->postprocessor != NULL)
+          MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size);
+        // or simply copy the data to the handler
+        else
+          conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+
+        // Signal that we have handled the data
+        *upload_data_size = 0;
+
+        return MHD_YES;
+      }
+      // We have handled all POST data
+      // so it's time to invoke the IHTTPRequestHandler
+      else
+      {
+        if (conHandler->postprocessor != NULL)
+          MHD_destroy_post_processor(conHandler->postprocessor);
+        *con_cls = NULL;
+
+        int ret = HandleRequest(conHandler->requestHandler, request);
+        delete conHandler;
+        return ret;
+      }
+    }
+    // It's unusual to get more than one call
+    // to AnswerToConnection for none-POST
+    // requests, but let's handle it anyway
     else
     {
-      if (strURL.length() < 8) // missing trailing slash
-        return CreateRedirect(connection, originalURL += "/");
-      else
-        return CreateAddonsListResponse(connection);
+      for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+      {
+        IHTTPRequestHandler *requestHandler = *it;
+        if (requestHandler->CheckHTTPRequest(request))
+          return HandleRequest(requestHandler->GetInstance(), request);
+      }
     }
   }
 
-  if (strURL.Equals("/"))
-    strURL.Format("/%s", DEFAULT_PAGE);
-
-  if (useDefaultWebInterface)
-  {
-    CAddonMgr::Get().GetDefault(ADDON_WEB_INTERFACE,addon);
-    if (addon)
-      addonPath = addon->Path();
-  }
-
-  if (addon)
-    strURL = URIUtils::AddFileToFolder(addon->Path(),strURL);
-  if (CDirectory::Exists(strURL))
-  {
-    if (strURL.Right(1).Equals("/"))
-      strURL += DEFAULT_PAGE;
-    else
-      return CreateRedirect(connection, originalURL += "/");
-  }
-  return CreateFileDownloadResponse(connection, strURL, methodType);
-
-#endif
-
-  return MHD_NO;
+  return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
 }
 
-CWebServer::HTTPMethod CWebServer::GetMethod(const char *method)
+#if (MHD_VERSION >= 0x00040001)
+int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                                const char *filename, const char *content_type,
+                                const char *transfer_encoding, const char *data, uint64_t off,
+                                size_t size)
+#else
+int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                                const char *filename, const char *content_type,
+                                const char *transfer_encoding, const char *data, uint64_t off,
+                                unsigned int size)
+#endif
+{
+  ConnectionHandler *conHandler = (ConnectionHandler *)cls;
+
+  if (conHandler == NULL || conHandler->requestHandler == NULL || size == 0)
+    return MHD_NO;
+
+  conHandler->requestHandler->AddPostField(key, string(data, size));
+  return MHD_YES;
+}
+
+int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request)
+{
+  if (handler == NULL)
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
+
+  int ret = handler->HandleHTTPRequest(request);
+  if (ret == MHD_NO)
+  {
+    delete handler;
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
+  }
+
+  struct MHD_Response *response = NULL;
+  switch (handler->GetHTTPResponseType())
+  {
+    case HTTPNone:
+      delete handler;
+      return MHD_NO;
+
+    case HTTPRedirect:
+      ret = CreateRedirect(request.connection, handler->GetHTTPRedirectUrl(), response);
+      break;
+
+    case HTTPFileDownload:
+      ret = CreateFileDownloadResponse(request.connection, handler->GetHTTPResponseFile(), request.method, response);
+      break;
+
+    case HTTPMemoryDownloadNoFreeNoCopy:
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
+      break;
+
+    case HTTPMemoryDownloadNoFreeCopy:
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
+      break;
+
+    case HTTPMemoryDownloadFreeNoCopy:
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
+      break;
+
+    case HTTPMemoryDownloadFreeCopy:
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
+      break;
+
+    case HTTPError:
+      ret = CreateErrorResponse(request.connection, handler->GetHTTPResonseCode(), request.method, response);
+      break;
+
+    default:
+      delete handler;
+      return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
+  }
+
+  if (ret == MHD_NO)
+  {
+    delete handler;
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
+  }
+
+  multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
+  for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
+    MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
+
+  MHD_queue_response(request.connection, handler->GetHTTPResonseCode(), response);
+  MHD_destroy_response(response);
+  delete handler;
+
+  return MHD_YES;
+}
+
+HTTPMethod CWebServer::GetMethod(const char *method)
 {
   if (strcmp(method, "GET") == 0)
     return GET;
@@ -221,102 +339,42 @@ CWebServer::HTTPMethod CWebServer::GetMethod(const char *method)
   return UNKNOWN;
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
-#else
-int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size)
-#endif
+int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &strURL, struct MHD_Response *&response)
 {
-#ifdef HAS_JSONRPC
-  if ((*con_cls) == NULL)
+  response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+  if (response)
   {
-    *con_cls = new CStdString();
-
+    MHD_add_response_header(response, "Location", strURL.c_str());
     return MHD_YES;
   }
-  if (*upload_data_size) 
-  {
-    CStdString *post = (CStdString *)(*con_cls);
-    if (*upload_data_size + post->size() > MAX_STRING_POST_SIZE)
-    {
-      CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
-      return MHD_NO;
-    }
-    else
-    {
-      post->append(upload_data, *upload_data_size);
-      *upload_data_size = 0;
-      return MHD_YES;
-    }
-  }
-  else
-  {
-    CStdString *jsoncall = (CStdString *)(*con_cls);
-
-    CHTTPClient client;
-    CStdString jsonresponse = CJSONRPC::MethodCall(*jsoncall, server, &client);
-
-    struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
-    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-    MHD_add_response_header(response, "Content-Type", "application/json");
-    MHD_destroy_response(response);
-
-    delete jsoncall;
-    return ret;
-  }
-#else
-  return MHD_NO;
-#endif
-}
-
-int CWebServer::HttpApi(struct MHD_Connection *connection)
-{
-#ifdef HAS_HTTPAPI
-  map<CStdString, CStdString> arguments;
-  if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, FillArgumentMap, &arguments) > 0)
-  {
-    CStdString httpapiresponse = CHttpApi::WebMethodCall(arguments["command"], arguments["parameter"]);
-
-    struct MHD_Response *response = MHD_create_response_from_data(httpapiresponse.length(), (void *) httpapiresponse.c_str(), MHD_NO, MHD_YES);
-    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-    MHD_destroy_response(response);
-
-    return ret;
-  }
-#endif
   return MHD_NO;
 }
 
-int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response)
 {
-  struct MHD_Response *response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
-  int ret = MHD_queue_response (connection, MHD_HTTP_FOUND, response);
-  MHD_add_response_header(response, "Location", strURL);
-  MHD_destroy_response (response);
-  return ret;
-}
-
-int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType)
-{
-  int ret = MHD_NO;
   CFile *file = new CFile();
 
   if (file->Open(strURL, READ_NO_CACHE))
   {
-    struct MHD_Response *response;
     if (methodType != HEAD)
     {
       response = MHD_create_response_from_callback ( file->GetLength(),
                                                      2048,
                                                      &CWebServer::ContentReaderCallback, file,
-                                                     &CWebServer::ContentReaderFreeCallback); 
-    } else {
+                                                     &CWebServer::ContentReaderFreeCallback);
+      if (response == NULL)
+        return MHD_NO;
+    }
+    else
+    {
       CStdString contentLength;
       contentLength.Format("%I64d", file->GetLength());
       file->Close();
       delete file;
 
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      if (response == NULL)
+        return MHD_NO;
       MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
@@ -329,23 +387,18 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
     CDateTime expiryTime = CDateTime::GetCurrentDateTime();
     expiryTime += CDateTimeSpan(1, 0, 0, 0);
     MHD_add_response_header(response, "Expires", expiryTime.GetAsRFC1123DateTime());
-
-    ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-
-    MHD_destroy_response(response);
   }
   else
   {
     delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    return CreateErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
+    return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, GET); /* GET Assumed Temporarily */
   }
-  return ret;
+  return MHD_YES;
 }
 
-int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method)
+int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response)
 {
-  int ret = MHD_NO;
   size_t payloadSize = 0;
   void *payload = NULL;
 
@@ -364,37 +417,30 @@ int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int respo
     }
   }
 
-  struct MHD_Response *response = MHD_create_response_from_data (payloadSize, payload, MHD_NO, MHD_NO);
-  ret = MHD_queue_response (connection, MHD_HTTP_NOT_FOUND, response);
-  MHD_destroy_response (response);
-  return ret;
+  response = MHD_create_response_from_data (payloadSize, payload, MHD_NO, MHD_NO);
+  if (response)
+    return MHD_YES;
+  return MHD_NO;
 }
 
-int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size)
+int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response)
 {
-  struct MHD_Response *response = MHD_create_response_from_data (size, data, MHD_NO, MHD_NO);
-  int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
-  MHD_destroy_response (response);
-  return ret;
+  response = MHD_create_response_from_data (size, data, free ? MHD_YES : MHD_NO, copy ? MHD_YES : MHD_NO);
+  if (response)
+    return MHD_YES;
+  return MHD_NO;
 }
 
-int CWebServer::CreateAddonsListResponse(struct MHD_Connection *connection)
+int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method)
 {
-  CStdString responseData = "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n";
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
-  IVECADDONS addons_it;
-  for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
-    responseData += "<li><a href=/addons/"+ (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
+  struct MHD_Response *response = NULL;
+  int ret = CreateErrorResponse(connection, errorType, method, response);
+  if (ret == MHD_YES)
+  {
+    ret = MHD_queue_response (connection, errorType, response);
+    MHD_destroy_response (response);
+  }
 
-  responseData += "</ul>\n</body></html>";
-
-  struct MHD_Response *response = MHD_create_response_from_data (responseData.length(), (void *)responseData.c_str(), MHD_NO, MHD_YES);
-  if (!response)
-    return MHD_NO;
-
-  int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
-  MHD_destroy_response (response);
   return ret;
 }
 
@@ -439,14 +485,14 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           &CWebServer::AnswerToConnection,
                           this,
 #if (MHD_VERSION >= 0x00040002)
-                          MHD_OPTION_THREAD_POOL_SIZE, 1,
+                          MHD_OPTION_THREAD_POOL_SIZE, 4,
 #endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
                           MHD_OPTION_END);
 }
 
-bool CWebServer::Start(int port, const CStdString &username, const CStdString &password)
+bool CWebServer::Start(int port, const string &username, const string &password)
 {
   SetCredentials(username, password);
   if (!m_running)
@@ -480,13 +526,13 @@ bool CWebServer::IsStarted()
   return m_running;
 }
 
-void CWebServer::SetCredentials(const CStdString &username, const CStdString &password)
+void CWebServer::SetCredentials(const string &username, const string &password)
 {
   CSingleLock lock (m_critSection);
   CStdString str = username + ":" + password;
 
   Base64::Encode(str.c_str(), m_Credentials64Encoded);
-  m_needcredentials = !password.IsEmpty();
+  m_needcredentials = !password.empty();
 }
 
 bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
@@ -522,6 +568,65 @@ bool CWebServer::Download(const char *path, CVariant &result)
 int CWebServer::GetCapabilities()
 {
   return Response | FileDownloadRedirect;
+}
+
+void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
+{
+  if (handler == NULL)
+    return;
+
+  for (vector<IHTTPRequestHandler *>::iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+  {
+    if (*it == handler)
+      return;
+
+    if ((*it)->GetPriority() < handler->GetPriority())
+    {
+      m_requestHandlers.insert(it, handler);
+      return;
+    }
+  }
+
+  m_requestHandlers.push_back(handler);
+}
+
+void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
+{
+  if (handler == NULL)
+    return;
+
+  for (vector<IHTTPRequestHandler *>::iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+  {
+    if (*it == handler)
+    {
+      m_requestHandlers.erase(it);
+      return;
+    }
+  }
+}
+
+std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
+{
+  if (connection == NULL)
+    return "";
+
+  return MHD_lookup_connection_value(connection, kind, key.c_str());
+}
+
+int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues)
+{
+  if (connection == NULL)
+    return -1;
+
+  return MHD_get_connection_values(connection, kind, FillArgumentMap, &headerValues);
+}
+
+int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues)
+{
+  if (connection == NULL)
+    return -1;
+
+  return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
 }
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
@@ -579,21 +684,5 @@ const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
   if (strcmp(ext, ".js") == 0)    return "application/javascript";
   if (strcmp(ext, ".css") == 0)   return "text/css";
   return NULL;
-}
-
-int CWebServer::CHTTPClient::GetPermissionFlags()
-{
-  return OPERATION_PERMISSION_ALL;
-}
-
-int CWebServer::CHTTPClient::GetAnnouncementFlags()
-{
-  // Does not support broadcast
-  return 0;
-}
-
-bool CWebServer::CHTTPClient::SetAnnouncementFlags(int flags)
-{
-  return false;
 }
 #endif
