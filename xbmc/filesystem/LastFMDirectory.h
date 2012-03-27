@@ -62,7 +62,7 @@ protected:
   bool m_Downloaded;
   TiXmlDocument m_xmlDoc;
 
-  XFILE::CFileCurl m_http;
+  XFILE::CCurlFile m_http;
 
   CStdString m_objtype;
   CStdString m_objname;

@@ -146,7 +146,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
     else
       thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-    XFILE::CFileCurl http;
+    XFILE::CCurlFile http;
     if (http.Download(thumbURL, strDestination))
       return true;
   }

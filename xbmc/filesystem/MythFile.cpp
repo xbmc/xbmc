@@ -26,7 +26,7 @@
 #include "utils/URIUtils.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
-#include "CacheDirectory.h"
+#include "DirectoryCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

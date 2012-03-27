@@ -31,7 +31,7 @@
 #include "utils/DownloadQueueManager.h"
 #include "GUIInfoManager.h"
 #include "filesystem/DllLibCurl.h"
-#include "filesystem/CacheDirectory.h"
+#include "filesystem/DirectoryCache.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "utils/LangCodeExpander.h"

@@ -82,7 +82,7 @@ protected:
   int m_iArtist;
   bool m_bSucceeded;
   bool m_bCanceled;
-  XFILE::CFileCurl m_http;
+  XFILE::CCurlFile m_http;
   ADDON::ScraperPtr m_scraper;
 };
 

@@ -81,7 +81,7 @@ CStdString CSysInfoJob::GetCPUFreqInfo()
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 {
   // Internet connection state!
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   if (http.IsInternet())
     return CSysData::CONNECTED;
   if (http.IsInternet(false))

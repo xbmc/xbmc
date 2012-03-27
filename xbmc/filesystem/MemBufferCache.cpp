@@ -24,7 +24,7 @@
 #include "linux/PlatformDefs.h"
 #endif
 #include "settings/AdvancedSettings.h"
-#include "CacheMemBuffer.h"
+#include "MemBufferCache.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
@@ -35,7 +35,7 @@ using namespace XFILE;
 
 #define SEEK_CHECK_RET(x) if (!(x)) return -1;
 
-CacheMemBuffer::CacheMemBuffer()
+MemBufferCache::MemBufferCache()
  : CCacheStrategy()
 {
   m_nStartPosition = 0;
@@ -45,14 +45,14 @@ CacheMemBuffer::CacheMemBuffer()
 }
 
 
-CacheMemBuffer::~CacheMemBuffer()
+MemBufferCache::~MemBufferCache()
 {
   m_buffer.Destroy();
   m_HistoryBuffer.Destroy();
   m_forwardBuffer.Destroy();
 }
 
-int CacheMemBuffer::Open()
+int MemBufferCache::Open()
 {
   m_nStartPosition = 0;
   m_buffer.Clear();
@@ -61,14 +61,14 @@ int CacheMemBuffer::Open()
   return CACHE_RC_OK;
 }
 
-void CacheMemBuffer::Close()
+void MemBufferCache::Close()
 {
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
 }
 
-int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
+int MemBufferCache::WriteToCache(const char *pBuffer, size_t iSize)
 {
   CSingleLock lock(m_sync);
   unsigned int nToWrite = m_buffer.getMaxWriteSize() ;
@@ -92,7 +92,7 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
   return nToWrite;
 }
 
-int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
+int MemBufferCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   CSingleLock lock(m_sync);
   if ( m_buffer.getMaxReadSize() == 0 ) {
@@ -132,7 +132,7 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return nRead;
 }
 
-int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
+int64_t MemBufferCache::WaitForData(unsigned int iMinAvail, unsigned int millis)
 {
   if (millis == 0 || IsEndOfInput())
     return m_buffer.getMaxReadSize();
@@ -144,7 +144,7 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   return m_buffer.getMaxReadSize();
 }
 
-int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
+int64_t MemBufferCache::Seek(int64_t iFilePosition)
 {
   CSingleLock lock(m_sync);
 
@@ -207,7 +207,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
   return CACHE_RC_ERROR;
 }
 
-void CacheMemBuffer::Reset(int64_t iSourcePosition)
+void MemBufferCache::Reset(int64_t iSourcePosition)
 {
   CSingleLock lock(m_sync);
   m_nStartPosition = iSourcePosition;

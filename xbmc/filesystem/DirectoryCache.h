@@ -31,7 +31,7 @@ class CFileItem;
 
 namespace XFILE
 {
-  class CCacheDirectory
+  class CDirectoryCache
   {
     class CDir
     {
@@ -48,8 +48,8 @@ namespace XFILE
       unsigned int m_lastAccess;
     };
   public:
-    CCacheDirectory(void);
-    virtual ~CCacheDirectory(void);
+    CDirectoryCache(void);
+    virtual ~CDirectoryCache(void);
     bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool retrieveAll = false);
     void SetDirectory(const CStdString& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType);
     void ClearDirectory(const CStdString& strPath);
@@ -90,4 +90,4 @@ namespace XFILE
 #endif
   };
 }
-extern XFILE::CCacheDirectory g_directoryCache;
+extern XFILE::CDirectoryCache g_directoryCache;

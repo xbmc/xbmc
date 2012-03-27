@@ -175,7 +175,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
@@ -222,7 +222,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFil
 
   if (scrURL.m_url.Find(".zip") > -1 )
   {
-    XFILE::CFileZip file;
+    XFILE::CZipFile file;
     CStdString strBuffer;
     int iSize = file.UnpackFromMemory(strBuffer,strHTML,scrURL.m_isgz);
     if (iSize)
@@ -265,7 +265,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     return false;
   }
 
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   http.SetReferer(entry.m_spoof);
   CStdString thumbData;
   if (http.Get(entry.m_url, thumbData))

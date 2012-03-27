@@ -45,7 +45,7 @@
 #include "storage/IoSupport.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/CacheDirectory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
 #include "ThumbnailCache.h"

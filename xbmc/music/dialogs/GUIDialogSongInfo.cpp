@@ -212,7 +212,7 @@ bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // TODO: Obtain the source...
   CStdString source;
-  CFileCurl http;
+  CCurlFile http;
   http.Download(source, thumbFile);
   return true;
 }

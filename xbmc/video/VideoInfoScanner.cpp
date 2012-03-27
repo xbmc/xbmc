@@ -23,7 +23,7 @@
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
 #include "addons/AddonManager.h"
-#include "filesystem/CacheDirectory.h"
+#include "filesystem/DirectoryCache.h"
 #include "Util.h"
 #include "NfoFile.h"
 #include "utils/RegExp.h"

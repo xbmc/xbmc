@@ -126,7 +126,7 @@ void CRssReader::Process()
     m_strFeed[iFeed] = "";
     m_strColors[iFeed] = "";
 
-    CFileCurl http;
+    CCurlFile http;
     http.SetUserAgent(g_settings.m_userAgent);
     http.SetTimeout(2);
     CStdString strXML;

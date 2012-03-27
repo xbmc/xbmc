@@ -21,12 +21,12 @@
 
 #include "threads/SystemClock.h"
 #include "utils/AutoPtrHandle.h"
-#include "CacheFile.h"
+#include "FileCache.h"
 #include "threads/Thread.h"
 #include "File.h"
 #include "URL.h"
 
-#include "CacheCircular.h"
+#include "CircularCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -79,7 +79,7 @@ private:
 };
 
 
-CCacheFile::CCacheFile()
+CFileCache::CFileCache()
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -89,13 +89,13 @@ CCacheFile::CCacheFile()
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
-     m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize
+     m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
                                  , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
    m_seekPossible = 0;
    m_cacheFull = false;
 }
 
-CCacheFile::CCacheFile(CCacheStrategy *pCache, bool bDeleteCache)
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -106,7 +106,7 @@ CCacheFile::CCacheFile(CCacheStrategy *pCache, bool bDeleteCache)
   m_chunkSize = 0;
 }
 
-CCacheFile::~CCacheFile()
+CFileCache::~CFileCache()
 {
   Close();
 
@@ -116,7 +116,7 @@ CCacheFile::~CCacheFile()
   m_pCache = NULL;
 }
 
-void CCacheFile::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache)
+void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache)
 {
   if (m_bDeleteCache && m_pCache)
     delete m_pCache;
@@ -125,22 +125,22 @@ void CCacheFile::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache)
   m_bDeleteCache = bDeleteCache;
 }
 
-IFile *CCacheFile::GetFileImp()
+IFile *CFileCache::GetFileImp()
 {
   return m_source.GetImplemenation();
 }
 
-bool CCacheFile::Open(const CURL& url)
+bool CFileCache::Open(const CURL& url)
 {
   Close();
 
   CSingleLock lock(m_sync);
 
-  CLog::Log(LOGDEBUG,"CCacheFile::Open - opening <%s> using cache", url.GetFileName().c_str());
+  CLog::Log(LOGDEBUG,"CFileCache::Open - opening <%s> using cache", url.GetFileName().c_str());
 
   if (!m_pCache)
   {
-    CLog::Log(LOGERROR,"CCacheFile::Open - no cache strategy defined");
+    CLog::Log(LOGERROR,"CFileCache::Open - no cache strategy defined");
     return false;
   }
 
@@ -149,7 +149,7 @@ bool CCacheFile::Open(const CURL& url)
   // open cache strategy
   if (m_pCache->Open() != CACHE_RC_OK)
   {
-    CLog::Log(LOGERROR,"CCacheFile::Open - failed to open cache");
+    CLog::Log(LOGERROR,"CFileCache::Open - failed to open cache");
     Close();
     return false;
   }
@@ -179,11 +179,11 @@ bool CCacheFile::Open(const CURL& url)
   return true;
 }
 
-void CCacheFile::Process()
+void CFileCache::Process()
 {
   if (!m_pCache)
   {
-    CLog::Log(LOGERROR,"CCacheFile::Process - sanity failed. no cache strategy");
+    CLog::Log(LOGERROR,"CFileCache::Process - sanity failed. no cache strategy");
     return;
   }
 
@@ -245,7 +245,7 @@ void CCacheFile::Process()
     int iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)
     {
-      CLog::Log(LOGINFO, "CCacheFile::Process - Hit eof.");
+      CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
 
       // The thread event will now also cause the wait of an event to return a false.
@@ -270,7 +270,7 @@ void CCacheFile::Process()
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
       if (iWrite < 0)
       {
-        CLog::Log(LOGERROR,"CCacheFile::Process - error writing to cache");
+        CLog::Log(LOGERROR,"CFileCache::Process - error writing to cache");
         m_bStop = true;
         break;
       }
@@ -302,7 +302,7 @@ void CCacheFile::Process()
   }
 }
 
-void CCacheFile::OnExit()
+void CFileCache::OnExit()
 {
   m_bStop = true;
 
@@ -314,17 +314,17 @@ void CCacheFile::OnExit()
   m_seekEnded.Set();
 }
 
-bool CCacheFile::Exists(const CURL& url)
+bool CFileCache::Exists(const CURL& url)
 {
   return CFile::Exists(url.Get());
 }
 
-int CCacheFile::Stat(const CURL& url, struct __stat64* buffer)
+int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 {
   return CFile::Stat(url.Get(), buffer);
 }
 
-unsigned int CCacheFile::Read(void* lpBuf, int64_t uiBufSize)
+unsigned int CFileCache::Read(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_sync);
   if (!m_pCache)
@@ -365,7 +365,7 @@ retry:
   return 0;
 }
 
-int64_t CCacheFile::Seek(int64_t iFilePosition, int iWhence)
+int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
 {
   CSingleLock lock(m_sync);
 
@@ -422,7 +422,7 @@ int64_t CCacheFile::Seek(int64_t iFilePosition, int iWhence)
   return m_nSeekResult;
 }
 
-void CCacheFile::Close()
+void CFileCache::Close()
 {
   StopThread();
 
@@ -433,17 +433,17 @@ void CCacheFile::Close()
   m_source.Close();
 }
 
-int64_t CCacheFile::GetPosition()
+int64_t CFileCache::GetPosition()
 {
   return m_readPos;
 }
 
-int64_t CCacheFile::GetLength()
+int64_t CFileCache::GetLength()
 {
   return m_source.GetLength();
 }
 
-void CCacheFile::StopThread(bool bWait /*= true*/)
+void CFileCache::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;
   //Process could be waiting for seekEvent
@@ -451,7 +451,7 @@ void CCacheFile::StopThread(bool bWait /*= true*/)
   CThread::StopThread(bWait);
 }
 
-CStdString CCacheFile::GetContent()
+CStdString CFileCache::GetContent()
 {
   if (!m_source.GetImplemenation())
     return IFile::GetContent();
@@ -459,7 +459,7 @@ CStdString CCacheFile::GetContent()
   return m_source.GetImplemenation()->GetContent();
 }
 
-int CCacheFile::IoControl(EIoControl request, void* param)
+int CFileCache::IoControl(EIoControl request, void* param)
 {
   if (request == IOCTRL_CACHE_STATUS)
   {

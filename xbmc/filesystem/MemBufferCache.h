@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef CACHEMEMBUFFER_H
-#define CACHEMEMBUFFER_H
+#ifndef MemBufferCache_H
+#define MemBufferCache_H
 
 #include "CacheStrategy.h"
 #include "threads/CriticalSection.h"
@@ -32,11 +32,11 @@
 */
 namespace XFILE {
 
-class CacheMemBuffer : public CCacheStrategy
+class MemBufferCache : public CCacheStrategy
 {
 public:
-    CacheMemBuffer();
-    virtual ~CacheMemBuffer();
+    MemBufferCache();
+    virtual ~MemBufferCache();
 
     virtual int Open() ;
     virtual void Close();

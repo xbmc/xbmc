@@ -26,7 +26,7 @@
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 class CDVDInputStreamHttp : public CDVDInputStream
@@ -44,7 +44,7 @@ public:
   CHttpHeader* GetHttpHeader();
 
 protected:
-  XFILE::CFileCurl* m_pFile;
+  XFILE::CCurlFile* m_pFile;
   CHttpHeader m_httpHeader;
   bool m_eof;
 };

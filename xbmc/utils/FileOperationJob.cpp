@@ -95,7 +95,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
+  IFileDirectory *file = CFileDirectoryFactory::Create(strPath, &item);
   if (file)
   {
     delete file;

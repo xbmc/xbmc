@@ -28,7 +28,7 @@
 
 class TiXmlDocument;
 
-namespace XFILE { class CFileCurl; }
+namespace XFILE { class CCurlFile; }
 
 namespace MUSIC_GRABBER
 {
@@ -52,7 +52,7 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetRelevance(float relevance) { m_relevance = relevance; }
 
-  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
+  bool Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper);
 
 protected:
   bool m_bLoaded;

@@ -39,7 +39,7 @@ CHTTPDirectory::~CHTTPDirectory(void){}
 
 bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CFileCurl http;
+  CCurlFile http;
   CURL url(strPath);
 
   CStdString strName, strLink;
@@ -158,7 +158,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           else
           if (g_advancedSettings.m_bHTTPDirectoryStatFilesize) // As a fallback get the size by stat-ing the file (slow)
           {
-            CFileCurl file;
+            CCurlFile file;
             file.Open(url);
             pItem->m_dwSize=file.GetLength();
             file.Close();
@@ -177,7 +177,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
 bool CHTTPDirectory::Exists(const char* strPath)
 {
-  CFileCurl http;
+  CCurlFile http;
   CURL url(strPath);
   struct __stat64 buffer;
 

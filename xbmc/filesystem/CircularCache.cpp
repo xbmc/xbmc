@@ -24,11 +24,11 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
-#include "CacheCircular.h"
+#include "CircularCache.h"
 
 using namespace XFILE;
 
-CCacheCircular::CCacheCircular(size_t front, size_t back)
+CCircularCache::CCircularCache(size_t front, size_t back)
  : CCacheStrategy()
  , m_beg(0)
  , m_end(0)
@@ -42,12 +42,12 @@ CCacheCircular::CCacheCircular(size_t front, size_t back)
 {
 }
 
-CCacheCircular::~CCacheCircular()
+CCircularCache::~CCircularCache()
 {
   Close();
 }
 
-int CCacheCircular::Open()
+int CCircularCache::Open()
 {
 #ifdef _WIN32
   m_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, m_size, NULL);
@@ -65,7 +65,7 @@ int CCacheCircular::Open()
   return CACHE_RC_OK;
 }
 
-void CCacheCircular::Close()
+void CCircularCache::Close()
 {
 #ifdef _WIN32
   UnmapViewOfFile(m_buf);
@@ -96,7 +96,7 @@ void CCacheCircular::Close()
  *
  * Multiple calls may be needed to fill buffer completely.
  */
-int CCacheCircular::WriteToCache(const char *buf, size_t len)
+int CCircularCache::WriteToCache(const char *buf, size_t len)
 {
   CSingleLock lock(m_sync);
 
@@ -137,7 +137,7 @@ int CCacheCircular::WriteToCache(const char *buf, size_t len)
  * the buffer wrap point. So multiple calls
  * may be needed to empty the whole cache
  */
-int CCacheCircular::ReadFromCache(char *buf, size_t len)
+int CCircularCache::ReadFromCache(char *buf, size_t len)
 {
   CSingleLock lock(m_sync);
 
@@ -167,7 +167,7 @@ int CCacheCircular::ReadFromCache(char *buf, size_t len)
   return len;
 }
 
-int64_t CCacheCircular::WaitForData(unsigned int minumum, unsigned int millis)
+int64_t CCircularCache::WaitForData(unsigned int minumum, unsigned int millis)
 {
   CSingleLock lock(m_sync);
   uint64_t avail = m_end - m_cur;
@@ -190,7 +190,7 @@ int64_t CCacheCircular::WaitForData(unsigned int minumum, unsigned int millis)
   return avail;
 }
 
-int64_t CCacheCircular::Seek(int64_t pos)
+int64_t CCircularCache::Seek(int64_t pos)
 {
   CSingleLock lock(m_sync);
 
@@ -212,7 +212,7 @@ int64_t CCacheCircular::Seek(int64_t pos)
   return CACHE_RC_ERROR;
 }
 
-void CCacheCircular::Reset(int64_t pos)
+void CCircularCache::Reset(int64_t pos)
 {
   CSingleLock lock(m_sync);
   m_end = pos;

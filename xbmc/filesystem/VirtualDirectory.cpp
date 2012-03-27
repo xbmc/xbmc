@@ -26,7 +26,7 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Directory.h"
-#include "CacheDirectory.h"
+#include "DirectoryCache.h"
 #include "SourcesDirectory.h"
 #include "storage/MediaManager.h"
 #include "File.h"

@@ -51,7 +51,7 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
 
     if (URIUtils::IsInternetStream(sourceUrl, true))
     {
-      CFileCurl http;
+      CCurlFile http;
       CStdString data;
       if (http.Get(sourceUrl, data))
       {

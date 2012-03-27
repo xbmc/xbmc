@@ -21,7 +21,7 @@
 
 
 #include "TuxBoxDirectory.h"
-#include "CacheDirectory.h"
+#include "DirectoryCache.h"
 #include "CurlFile.h"
 #include "utils/HttpHeader.h"
 #include "utils/TuxBoxUtil.h"

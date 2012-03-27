@@ -149,7 +149,7 @@ void CExternalPlayer::Process()
       archiveContent = url.GetFileName();
     }
     if (protocol == "musicdb")
-      mainFile = CFileMusicDatabase::TranslateUrl(url);
+      mainFile = CMusicDatabaseFile::TranslateUrl(url);
   }
 
   if (m_filenameReplacers.size() > 0) 

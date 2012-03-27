@@ -28,11 +28,11 @@
 
 namespace XFILE {
 
-class CCacheCircular : public CCacheStrategy
+class CCircularCache : public CCacheStrategy
 {
 public:
-    CCacheCircular(size_t front, size_t back);
-    virtual ~CCacheCircular();
+    CCircularCache(size_t front, size_t back);
+    virtual ~CCircularCache();
 
     virtual int Open() ;
     virtual void Close();

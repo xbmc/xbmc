@@ -24,7 +24,7 @@
 #include "addons/AddonDatabase.h"
 #include "DirectoryFactory.h"
 #include "Directory.h"
-#include "CacheDirectory.h"
+#include "DirectoryCache.h"
 #include "FileItem.h"
 #include "addons/Repository.h"
 #include "addons/AddonInstaller.h"

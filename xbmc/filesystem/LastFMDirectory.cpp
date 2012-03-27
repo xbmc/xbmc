@@ -20,7 +20,7 @@
  */
 
 #include "LastFMDirectory.h"
-#include "CacheDirectory.h"
+#include "DirectoryCache.h"
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 #include "guilib/GUIWindowManager.h"
@@ -627,7 +627,7 @@ DIR_CACHE_TYPE CLastFMDirectory::GetCacheType(const CStdString& strPath) const
 
 void CLastFMDirectory::Run()
 {
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   if (!http.Download(m_strSource, m_strDestination))
     m_Error=true;
 

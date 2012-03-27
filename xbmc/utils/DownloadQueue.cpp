@@ -124,7 +124,7 @@ void CDownloadQueue::Process()
 {
   CLog::Log(LOGNOTICE, "DownloadQueue ready.");
 
-  CFileCurl http;
+  CCurlFile http;
   bool bSuccess;
 
   while ( !m_bStop )
