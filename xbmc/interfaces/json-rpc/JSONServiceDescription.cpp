@@ -30,6 +30,7 @@
 #include "FileOperations.h"
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
+#include "GUIOperations.h"
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
@@ -140,6 +141,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
   { "AudioLibrary.GetRecentlyAddedAlbums",          CAudioLibrary::GetRecentlyAddedAlbums },
   { "AudioLibrary.GetRecentlyAddedSongs",           CAudioLibrary::GetRecentlyAddedSongs },
+  { "AudioLibrary.GetRecentlyPlayedAlbums",         CAudioLibrary::GetRecentlyPlayedAlbums },
+  { "AudioLibrary.GetRecentlyPlayedSongs",          CAudioLibrary::GetRecentlyPlayedSongs },
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.Scan",                            CAudioLibrary::Scan },
   { "AudioLibrary.Export",                          CAudioLibrary::Export },
@@ -165,8 +168,14 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
+// GUI operations
+  { "GUI.GetProperties",                            CGUIOperations::GetProperties },
+  { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
+  { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
+
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
+  { "System.EjectOpticalDrive",                     CSystemOperations::EjectOpticalDrive },
   { "System.Shutdown",                              CSystemOperations::Shutdown },
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
@@ -179,6 +188,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Up",                                     CInputOperations::Up },
   { "Input.Select",                                 CInputOperations::Select },
   { "Input.Back",                                   CInputOperations::Back },
+  { "Input.ContextMenu",                            CInputOperations::ContextMenu },
+  { "Input.Info",                                   CInputOperations::Info },
   { "Input.Home",                                   CInputOperations::Home },
 
 // Application operations

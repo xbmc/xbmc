@@ -369,7 +369,7 @@ namespace JSONRPC
           value = CVariant(CVariant::VariantTypeObject);
           break;
         default:
-          value = CVariant(CVariant::VariantTypeConstNull);
+          value = CVariant(CVariant::VariantTypeNull);
       }
     }
 

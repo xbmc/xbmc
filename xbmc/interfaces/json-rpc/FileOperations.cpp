@@ -79,7 +79,6 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
 
-  CDirectory directory;
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
 
@@ -112,7 +111,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
     extensions = g_settings.m_pictureExtensions;
   }
 
-  if (directory.GetDirectory(strPath, items, extensions))
+  if (CDirectory::GetDirectory(strPath, items, extensions))
   {
     CFileItemList filteredDirectories, filteredFiles;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
@@ -127,7 +126,9 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
       }
 
       if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-          (media == "music" && items[i]->HasMusicInfoTag()))
+          (media == "music" && items[i]->HasMusicInfoTag()) ||
+          (media == "picture" && items[i]->HasPictureInfoTag()) ||
+           media == "files")
       {
         if (items[i]->m_bIsFolder)
           filteredDirectories.Add(items[i]);
@@ -139,6 +140,11 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
         CFileItem fileItem;
         if (FillFileItem(items[i], fileItem, media))
         {
+          fileItem.m_bIsFolder = items[i]->m_bIsFolder;
+          fileItem.m_dateTime = items[i]->m_dateTime;
+          fileItem.m_dwSize = items[i]->m_dwSize;
+          fileItem.SetMimeType(items[i]->GetMimeType());
+
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
           else
