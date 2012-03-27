@@ -18,12 +18,14 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "mysqldataset.h"
+
+#ifdef HAS_MYSQL
 
 #include <iostream>
 #include <string>
 #include <set>
 
-#include "mysqldataset.h"
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
 #include "mysql/errmsg.h"
@@ -1562,3 +1564,4 @@ void MysqlDataset::interrupt() {
 
 }//namespace
 
+#endif

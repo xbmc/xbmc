@@ -132,12 +132,16 @@ endif
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
-	lib/cmyth \
 	lib/libhdhomerun \
 	lib/libid3tag \
 	lib/libapetag \
 	lib/cpluff \
 	lib/xbmc-dll-symbols
+
+ifeq (@USE_MYSQL@,1)
+LIB_DIRS+= \
+	lib/cmyth
+endif
 
 SS_DIRS=
 ifneq (@DISABLE_RSXS@,1)
@@ -268,7 +272,9 @@ endif
 libexif: dllloader
 	$(MAKE) -C lib/libexif
 cmyth: dllloader
+ifeq (@USE_MYSQL@,1)
 	$(MAKE) -C lib/cmyth
+endif
 libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
 libid3tag: dllloader

@@ -831,10 +831,14 @@ bool CFileItem::IsTuxBox() const
   return URIUtils::IsTuxBox(m_strPath);
 }
 
+#ifdef HAS_MYSQL
+
 bool CFileItem::IsMythTV() const
 {
   return URIUtils::IsMythTV(m_strPath);
 }
+
+#endif
 
 bool CFileItem::IsHDHomeRun() const
 {

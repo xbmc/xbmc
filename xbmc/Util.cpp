@@ -1902,12 +1902,14 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (URIUtils::IsMythTV(strPath))
   {
+#ifdef HAS_MYSQL
     /*
      * Can't use CFile::Exists() to check whether the myth:// path supports file operations because
      * it hits the directory cache on the way through, which has the Live Channels and Guide
      * items cached.
      */
     return CMythDirectory::SupportsFileOperations(strPath);
+#endif
   }
   if (URIUtils::IsStack(strPath))
     return SupportsFileOperations(CStackDirectory::GetFirstStackedFile(strPath));

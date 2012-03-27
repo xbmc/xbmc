@@ -735,8 +735,10 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   || strFile.Left(4).Equals("sap:"))
     return true;
 
+#ifdef HAS_MYSQL
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
+#endif
 
   return false;
 }

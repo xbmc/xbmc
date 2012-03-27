@@ -175,8 +175,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
     if (strProtocol == "sling") return new CSlingboxDirectory();
+#ifdef HAS_MYSQL
     if (strProtocol == "myth") return new CMythDirectory();
     if (strProtocol == "cmyth") return new CMythDirectory();
+#endif
     if (strProtocol == "rss") return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (strProtocol == "sap") return new CSAPDirectory();

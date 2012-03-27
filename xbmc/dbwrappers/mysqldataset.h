@@ -18,6 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "system.h"
+
+#ifdef HAS_MYSQL
 
 #ifndef _MYSQLDATASET_H
 #define _MYSQLDATASET_H
@@ -179,4 +182,5 @@ or insert() operations default = false) */
   virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
+#endif
 #endif

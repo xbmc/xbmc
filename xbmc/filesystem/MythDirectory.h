@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_MYSQL
+
 #include "IDirectory.h"
 #include "MythSession.h"
 #include "XBDateTime.h"
@@ -71,3 +73,4 @@ private:
 };
 
 }
+#endif

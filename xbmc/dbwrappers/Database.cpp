@@ -266,6 +266,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 
   m_sqlite = true;
 
+#ifdef HAS_MYSQL
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
@@ -277,10 +278,13 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   }
   else
   {
+#endif
     dbSettings.type = "sqlite3";
     dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
     dbSettings.name = GetBaseDBName();
+#ifdef HAS_MYSQL
   }
+#endif
 
   // use separate, versioned database
   int version = GetMinVersion();
@@ -369,10 +373,12 @@ bool CDatabase::Connect(const DatabaseSettings &dbSettings, bool create)
   {
     m_pDB.reset( new SqliteDatabase() ) ;
   }
+#ifdef HAS_MYSQL
   else if (dbSettings.type.Equals("mysql"))
   {
     m_pDB.reset( new MysqlDatabase() ) ;
   }
+#endif
   else
   {
     CLog::Log(LOGERROR, "Unable to determine database type: %s", dbSettings.type.c_str());
