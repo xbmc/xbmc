@@ -832,25 +832,6 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
     }
   }
 
-  // find minimum in each season
-  map<int, int> mpMin;
-  for (EPISODELIST::const_iterator i = vcep.begin(); i != vcep.end(); ++i)
-  {
-    map<int, int>::iterator iMin = mpMin.find(i->key.first);
-    if (iMin == mpMin.end())
-      mpMin.insert(i->key);
-    else if (i->key.second < iMin->second)
-      iMin->second = i->key.second;
-  }
-
-  // correct episode numbers
-  for (EPISODELIST::iterator i = vcep.begin(); i != vcep.end(); ++i)
-  {
-    i->key.second -= mpMin[i->key.first];
-    if (mpMin[i->key.first] > 0)
-      ++i->key.second;
-  }
-
   return vcep;
 }
 
