@@ -51,6 +51,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"
+#include "settings/GUISettings.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -282,7 +283,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   CFileItemPtr pItem;
 
   // always hide "all" items
-  if (g_advancedSettings.m_bVideoLibraryHideAllItems)
+  if (g_guiSettings.GetBool("videolibrary.hideallitems"))
     return;
 
   // no need for "all" item when only one item

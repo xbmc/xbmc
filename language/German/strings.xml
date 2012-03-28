@@ -1267,7 +1267,8 @@
   <string id="13430">Hardwarebeschleunigung erlauben (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
   <string id="13432">Hardwarebeschleunigung erlauben (VideoToolbox)</string>
-
+  <string id="13433">Verstecke "Alle-Items" Einträge</string>
+  
   <string id="13500">A/V Sync Methode</string>
   <string id="13501">Audio Takt</string>
   <string id="13502">Video Takt (Verwerfe/Dupliziere Audio)</string>
