@@ -19,11 +19,11 @@
  *
  */
  
-#include "DllHDHomeRun.h"
 #include "HDHomeRunDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
 #include "utils/URIUtils.h"
+#include "DllHDHomeRun.h"
 
 using namespace XFILE;
 using namespace std;
