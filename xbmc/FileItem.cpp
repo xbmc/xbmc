@@ -1869,7 +1869,7 @@ void CFileItemList::FilterCueItems()
       if (pItem->IsCUESheet())
       {
         CCueDocument cuesheet;
-        if (cuesheet.Parse(pItem->GetPath()))
+        if (cuesheet.ParseFile(pItem->GetPath()))
         {
           VECSONGS newitems;
           cuesheet.GetSongs(newitems);
@@ -1987,6 +1987,66 @@ void CFileItemList::FilterCueItems()
     }
   }
   // and add the files from the .CUE sheet
+  itemstodelete.clear();
+
+  // now filter out media files with embedded cue sheet
+  // Any remaining media files will not be referenced by the .CUE files in the same directory.
+  // Although unusual, .CUE files in other locations may still refer to the remaining media
+   // files, and will result in duplicated entries.
+  for (int i = 0; i < (int)m_items.size(); i++)
+   {
+    CFileItemPtr pItem = m_items[i];
+	if (pItem->m_bIsFolder)
+	      continue;
+		  
+    CMusicInfoTag tag;
+    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+    if (NULL != pLoader.get())
+    {
+      pLoader->Load(pItem->m_strPath, tag);
+	}
+	
+    CCueDocument cuesheet;
+    if (cuesheet.ParseData(pItem->m_strPath, tag.GetCueSheet()))
+	{
+      VECSONGS newitems;
+      cuesheet.GetSongs(newitems);
+
+      // only add the songs from this media file which contains the embedded cue sheet since
+      // 1) it makes no sense that an embedded cue sheet reference other media files, and
+      // 2) it may complicate the code otherwise.
+      for (int j = 0; j < (int)newitems.size(); j++)
+	{
+		CSong &song = newitems[j];
+
+        if (song.strFileName == pItem->m_strPath)
+		{
+			// patch up the duration of the last song
+			if (!song.iDuration && tag.GetDuration() > 0)
+			{
+			song.iDuration = (tag.GetDuration() * 75 - song.iStartOffset + 37) / 75;
+			}
+		itemstoadd.push_back(song);
+        }
+      }
+
+      itemstodelete.push_back(pItem->m_strPath);
+	}
+  }
+  // now delete references to the media files with embedded cue sheet
+  for (int i = 0; i < (int)itemstodelete.size(); i++)
+  {
+    for (int j = 0; j < (int)m_items.size(); j++)
+	  {
+      CFileItemPtr pItem = m_items[j];
+      if (stricmp(pItem->m_strPath.c_str(), itemstodelete[i].c_str()) == 0)
+      {
+        m_items.erase(m_items.begin() + j);
+        break;
+	      }
+    }
+  }
+  // and add the files from all the cue sheets
   for (int i = 0; i < (int)itemstoadd.size(); i++)
   {
     // now create the file item, and add to the item list.

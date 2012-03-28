@@ -83,13 +83,32 @@ CCueDocument::~CCueDocument(void)
 {}
 
 ////////////////////////////////////////////////////////////////////////////////////
-// Function: Parse()
+// Function: ParseFile()
 // Opens the .cue file for reading, and constructs the track database information
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::Parse(const CStdString &strFile)
+bool CCueDocument::ParseFile(const CStdString &strFile)
 {
-  if (!m_file.Open(strFile))
+  XFILE::CFile file;
+  if (!file.Open(strFile))
     return false;
+
+  // A stream reader would be better in that bogus cue sheet with huge amount of
+  // data will not tax the memory usage. However, that requires non-trivial
+  // modifications to CFile and IFile classes.
+  char *buffer = m_buffer.SetBuf(static_cast<int>(file.GetLength()));
+  file.Read(buffer, m_buffer.GetLength());
+  file.Close();
+
+	  return ParseData(strFile, m_buffer);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+  // Function: ParseData()
+  // Read the cue sheet data, and constructs the track database information
+////////////////////////////////////////////////////////////////////////////////////
+bool CCueDocument::ParseData(const CStdString &strFile, const CStdString &strData)
+{
+  m_buffer = strData;
 
   CStdString strLine;
   m_iTotalTracks = -1;
@@ -210,7 +229,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
-  m_file.Close();
+  m_buffer.Close();
   if (m_iTotalTracks >= 0)
   {
     m_iTotalTracks++;
@@ -276,21 +295,14 @@ CStdString CCueDocument::GetMediaTitle()
 ////////////////////////////////////////////////////////////////////////////////////
 bool CCueDocument::ReadNextLine(CStdString &szLine)
 {
-  char *pos;
-  // Read the next line.
-  while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
-  {
-    // Remove the white space at the beginning of the line.
-    pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
-    if (pos)
-    {
-      szLine = pos;
-      return true;
-    }
-    // If we are here, we have an empty line so try the next line
-  }
-  return false;
+  // trim leading whitespaces for next line and trailing whitespaces from previous line
+    m_buffer.TrimLeft();
+	if (m_buffer.IsEmpty())
+	  return false;
+	  
+	szLine = m_buffer.SpanExcluding("\r\n");
+	m_buffer.Delete(0, szLine.GetLength());
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

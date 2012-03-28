@@ -61,6 +61,7 @@ public:
   const CStdString& GetMusicBrainzTRMID() const;
   const CStdString& GetComment() const;
   const CStdString& GetLyrics() const;
+  const CStdString& GetCueSheet() const;  
   const CStdString& GetLastPlayed() const;
   char  GetRating() const;
   int  GetListeners() const;
@@ -91,6 +92,7 @@ public:
   void SetMusicBrainzTRMID(const CStdString& strTRMID);
   void SetComment(const CStdString& comment);
   void SetLyrics(const CStdString& lyrics);
+  void SetCueSheet(const CStdString& cuesheet);
   void SetRating(char rating);
   void SetListeners(int listeners);
   void SetPlayCount(int playcount);
@@ -138,6 +140,7 @@ protected:
   CStdString m_strMusicBrainzTRMID;
   CStdString m_strComment;
   CStdString m_strLyrics;
+  CStdString m_strCueSheet; ///< embedded cue sheet data
   CStdString m_strLastPlayed;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits

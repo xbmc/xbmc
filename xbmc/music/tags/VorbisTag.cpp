@@ -122,6 +122,8 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
   if ( strTagType == "LYRICS" )
     tag.SetLyrics(strTagValue);
 
+  if ( strTagType == "CUESHEET" )	
+    tag.SetCueSheet(strTagValue);
 
   if ( strTagType == "RATING" && strTagValue.GetLength() == 1 && strTagValue[0] > '0' && strTagValue[0] < '6')
     tag.SetRating(strTagValue[0]);

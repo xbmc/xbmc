@@ -53,7 +53,8 @@ public:
   CCueDocument(void);
   ~CCueDocument(void);
   // USED
-  bool Parse(const CStdString &strFile);
+  bool ParseFile(const CStdString &strFile);
+  bool ParseData(const CStdString &strFile, const CStdString &strData);  
   void GetSongs(VECSONGS &songs);
   CStdString GetMediaPath();
   CStdString GetMediaTitle();
@@ -61,9 +62,7 @@ public:
 
 private:
 
-  // USED for file access
-  XFILE::CFile m_file;
-  char m_szBuffer[1024];
+  CStdString m_buffer;  ///< temporary buffer to hold cue sheet data for parsing 
 
   // Member variables
   CStdString m_strArtist;  // album artist
