@@ -2396,8 +2396,8 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Devices to power on the TV when starting XBMC</string>
-  <string id="36008">Devices to power off devices when stopping XBMC</string>
+  <string id="36007">Devices to power on when starting XBMC</string>
+  <string id="36008">Devices to power off when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010"></string>
   <string id="36011">Could not detect the CEC port. Set it up manually.</string>
