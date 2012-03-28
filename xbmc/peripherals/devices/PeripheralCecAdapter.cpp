@@ -148,15 +148,17 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
   {
-    // reconnect to the device
-    CSingleLock lock(m_critSection);
-    CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
+    {
+      // reconnect to the device
+      CSingleLock lock(m_critSection);
+      CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
 
-    // close the previous connection
-    m_cecAdapter->Close();
+      // close the previous connection
+      m_cecAdapter->Close();
+    }
 
     // and open a new one
-    m_bStop = false;
+    StopThread();
     Create();
   }
 }
