@@ -473,7 +473,6 @@ case $host in
      fi
      ARCH="arm-osx"
      use_arch="arm"
-     AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
      PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
@@ -510,7 +509,7 @@ case $host in
      use_texturepacker=no
      ARCH="arm"
      use_arch="arm"
-     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL")
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
