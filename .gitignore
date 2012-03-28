@@ -507,6 +507,9 @@ lib/cmyth/Makefile
 # /xbmc/linux/
 /xbmc/linux/Makefile
 
+# /xbmc/freebsd/
+/xbmc/freebsd/Makefile
+
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile
 
