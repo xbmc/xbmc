@@ -43,19 +43,6 @@
 		<align>left</align>
 		<aligny>center</aligny>
 	</include>
-	<include name="WindowTitleHomeButton">
-		<control type="button">
-			<hitrect x="0" y="0" w="60" h="45" />
-			<posx>20</posx>
-			<posy>3</posy>
-			<width>35</width>
-			<height>35</height>
-			<texturenofocus>icon_home.png</texturenofocus>
-			<texturefocus>icon_home_focus.png</texturefocus>
-			<label>-</label>
-			<onclick>ActivateWindow(Home)</onclick>
-		</control>
-	</include>
 	<include name="ButtonCommonValues">
 		<height>40</height>
 		<width>250</width>
@@ -158,18 +145,97 @@
 			<texture>Confluence_Logo.png</texture>
 		</control>
 	</include>
+	<include name="MainWindowMouseButtons">
+		<control type="group">
+			<posx>120r</posx>
+			<posy>55r</posy>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+			<visible>system.getbool(input.enablemouse)</visible>
+			<control type="button">
+				<description>Back push button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>1036</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>back</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Back Icon</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_back.png</texture>
+			</control>
+			<control type="button">
+				<description>Home push button</description>
+				<posx>55</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(home)</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Home Icon</description>
+				<posx>60</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_home.png</texture>
+			</control>
+		</control>
+	</include>
 	<include name="CommonNowPlaying">
 		<control type="group">
 			<visible>Player.HasMedia + !SubString(Window(videolibrary).Property(TvTunesIsAlive),TRUE)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<control type="image">
-				<description>Icon</description>
+			<control type="button">
+				<description>push button</description>
 				<posx>30</posx>
-				<posy>56r</posy>
-				<width>50</width>
-				<height>50</height>
-				<texture>NowPlayingIcon.png</texture>
+				<posy>55r</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(PlayerControls)</onclick>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+			</control>
+			<control type="image">
+				<description>Player Icon</description>
+				<posx>35</posx>
+				<posy>50r</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_player.png</texture>
 			</control>
 			<control type="label">
 				<posx>85</posx>
@@ -238,33 +304,36 @@
 		</control>
 	</include>
 	<include name="CommonPageCount">
-		<control type="label">
-			<description>Page Count Label</description>
-			<posx>40r</posx>
-			<posy>53r</posy>
-			<width>500</width>
-			<height>20</height>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<scroll>false</scroll>
-			<align>right</align>
-			<aligny>center</aligny>
-			<label>$INFO[Window.Property(filter),$LOCALIZE[587] ([COLOR=blue],[/COLOR]) - ]$INFO[Container.NumItems,([COLOR=blue],[/COLOR]) $LOCALIZE[31025]]$INFO[Container.CurrentPage, - $LOCALIZE[31024] ([COLOR=blue]]$INFO[Container.NumPages,/,[/COLOR])]</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>Container Duration Label</description>
-			<posx>40r</posx>
-			<posy>30r</posy>
-			<width>500</width>
-			<height>20</height>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<scroll>false</scroll>
-			<align>right</align>
-			<aligny>center</aligny>
-			<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
-			<include>Window_OpenClose_Animation</include>
+		<control type="group">
+			<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>40r</posx>
+				<posy>53r</posy>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Window.Property(filter),$LOCALIZE[587] ([COLOR=blue],[/COLOR]) - ]$INFO[Container.NumItems,([COLOR=blue],[/COLOR]) $LOCALIZE[31025]]$INFO[Container.CurrentPage, - $LOCALIZE[31024] ([COLOR=blue]]$INFO[Container.NumPages,/,[/COLOR])]</label>
+				<include>Window_OpenClose_Animation</include>
+			</control>
+			<control type="label">
+				<description>Container Duration Label</description>
+				<posx>40r</posx>
+				<posy>30r</posy>
+				<width>500</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
+				<include>Window_OpenClose_Animation</include>
+			</control>
 		</control>
 	</include>
 	<include name="SmallMusicInfo">

@@ -678,6 +678,7 @@
 		<control type="fixedlist" id="9002">
 			<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(9002).NumItems,2) | StringCompare(Container(9002).NumItems,4)">conditional</animation>
 			<include>Window_OpenClose_Animation</include>
+			<hitrect x="0" y="530" w="1280" h="120" />
 			<posx>0</posx>
 			<posy>190r</posy>
 			<width>1280</width>
@@ -951,49 +952,60 @@
 			</control>
 		</control>
 		<control type="group" id="10">
-			<posx>0</posx>
-			<posy>60r</posy>
+			<posx>20</posx>
+			<posy>55r</posy>
 			<include>Window_OpenClose_Animation</include>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>150</width>
-				<height>60</height>
-				<texture>HomeButtonsBack.png</texture>
-			</control>
 			<control type="button" id="20">
 				<description>Power push button</description>
 				<posx>55</posx>
-				<posy>15</posy>
-				<width>43</width>
-				<height>43</height>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
 				<label>31003</label>
 				<font>-</font>
 				<aligny>-</aligny>
 				<onclick>ActivateWindow(ShutdownMenu)</onclick>
-				<texturefocus>home-power-FO.png</texturefocus>
-				<texturenofocus>home-power.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<onup>9002</onup>
 				<ondown>9003</ondown>
 			</control>
+			<control type="image">
+				<description>Power Icon</description>
+				<posx>60</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_power.png</texture>
+			</control>
 			<control type="button" id="21">
 				<description>Favourites push button</description>
-				<posx>10</posx>
-				<posy>15</posy>
-				<width>43</width>
-				<height>43</height>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
 				<label>1036</label>
 				<font>-</font>
 				<aligny>-</aligny>
 				<onclick>ActivateWindow(Favourites)</onclick>
-				<texturefocus>home-favourites-FO.png</texturefocus>
-				<texturenofocus>home-favourites.png</texturenofocus>
+				<texturefocus border="5">floor_buttonFO.png</texturefocus>
+				<texturenofocus border="5">floor_button.png</texturenofocus>
 				<onleft>20</onleft>
 				<onright>20</onright>
 				<onup>9002</onup>
 				<ondown>9003</ondown>
+			</control>
+			<control type="image">
+				<description>Favourites Icon</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>35</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon_favourites.png</texture>
 			</control>
 		</control>
 		<control type="group">

@@ -804,6 +804,7 @@
 			</control>
 		</control>
 		<include>CommonNowPlaying</include>
+		<include>MainWindowMouseButtons</include>
 		<control type="group">
 			<posx>-250</posx>
 			<include>SideBladeLeft</include>

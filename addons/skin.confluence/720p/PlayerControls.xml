@@ -228,5 +228,22 @@
 			<visible>Player.HasVideo</visible>
 			<include>SmallVideoInfo</include>
 		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>420</posx>
+			<posy>5</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>back</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>100</onleft>
+			<onright>100</onright>
+			<onup>100</onup>
+			<ondown>100</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
 	</controls>
 </window>

@@ -982,6 +982,7 @@
 			</control>
 		</control>
 		<include>CommonNowPlaying</include>
+		<include>MainWindowMouseButtons</include>
 		<include>BehindDialogFadeOut</include>
 		<include>Clock</include>
 	</controls>

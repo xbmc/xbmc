@@ -52,6 +52,7 @@
 				<onup>1</onup>
 				<ondown>1</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
+				<include>VisibleFadeEffect</include>
 			</control>
 			<control type="image">
 				<description>LOGO</description>
@@ -197,6 +198,7 @@
 			<visible>false</visible>
 		</control>
 		<include>CommonNowPlaying</include>
+		<include>MainWindowMouseButtons</include>
 		<control type="image">
 			<description>Section header image</description>
 			<posx>20</posx>
