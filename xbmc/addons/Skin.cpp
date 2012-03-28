@@ -174,7 +174,7 @@ double CSkinInfo::GetMinVersion()
 
 void CSkinInfo::LoadIncludes()
 {
-  CStdString includesPath = PTH_IC(GetSkinPath("includes.xml"));
+  CStdString includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath);

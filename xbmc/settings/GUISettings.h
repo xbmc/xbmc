@@ -404,13 +404,12 @@ public:
   {
     m_strCategory = strCategory;
     m_labelID = labelID;
-    m_entries = 0;
   }
   ~CSettingsCategory() {};
 
   CStdString m_strCategory;
   int m_labelID;
-  int m_entries;
+  std::vector<CSetting*> m_settings;
 };
 
 typedef std::vector<CSettingsCategory *> vecSettingsCategory;
@@ -460,6 +459,7 @@ public:
   CSettingsCategory* AddCategory(int groupID, const char *strCategory, int labelID);
   CSettingsGroup *GetGroup(int windowID);
 
+  void AddSetting(CSettingsCategory* cat, CSetting* setting);
   void AddBool(CSettingsCategory* cat, const char *strSetting, int iLabel, bool bSetting, int iControlType = CHECKMARK_CONTROL);
   bool GetBool(const char *strSetting) const;
   void SetBool(const char *strSetting, bool bSetting);
@@ -490,7 +490,7 @@ public:
 
   CSetting *GetSetting(const char *strSetting);
 
-  void GetSettingsGroup(const char *strGroup, vecSettings &settings);
+  void GetSettingsGroup(CSettingsCategory* cat, vecSettings &settings);
   void LoadXML(TiXmlElement *pRootElement, bool hideSettings = false);
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);

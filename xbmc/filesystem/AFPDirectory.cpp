@@ -23,7 +23,7 @@
 
 #if defined(HAS_FILESYSTEM_AFP)
 #include "AFPDirectory.h"
-#include "FileAFP.h"
+#include "AFPFile.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"

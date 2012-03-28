@@ -20,7 +20,7 @@
  *
  */
 
-#include <vector>
+#include <set>
 #include "utils/StdString.h"
 #include "peripherals/PeripheralTypes.h"
 
@@ -128,6 +128,8 @@ namespace PERIPHERALS
      */
     virtual const CStdString GetSettingString(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual void SetSettingVisible(const CStdString &strKey, bool bSetTo);
+    virtual bool IsSettingVisible(const CStdString &strKey) const;
 
     virtual int GetSettingInt(const CStdString &strKey) const;
     virtual void SetSetting(const CStdString &strKey, int iValue);
@@ -141,6 +143,8 @@ namespace PERIPHERALS
     virtual void PersistSettings(bool bExiting = false);
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
+
+    virtual std::vector<CSetting *> GetSettings(void) const;
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
@@ -163,6 +167,6 @@ namespace PERIPHERALS
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;
-    std::vector<CStdString>          m_changedSettings;
+    std::set<CStdString>             m_changedSettings;
   };
 }

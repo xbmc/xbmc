@@ -47,7 +47,7 @@ typedef enum
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 class CScraperUrl;
@@ -121,19 +121,19 @@ public:
   // scraper media functions
   CScraperUrl NfoUrl(const CStdString &sNfoContent);
 
-  std::vector<CScraperUrl> FindMovie(XFILE::CFileCurl &fcurl,
+  std::vector<CScraperUrl> FindMovie(XFILE::CCurlFile &fcurl,
     const CStdString &sMovie, bool fFirst);
-  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CFileCurl &fcurl,
+  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl,
     const CStdString &sAlbum, const CStdString &sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
-    XFILE::CFileCurl &fcurl, const CStdString &sArtist);
-  EPISODELIST GetEpisodeList(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl);
+    XFILE::CCurlFile &fcurl, const CStdString &sArtist);
+  EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
-  bool GetVideoDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     bool fMovie/*else episode*/, CVideoInfoTag &video);
-  bool GetAlbumDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetAlbumDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     CAlbum &album);
-  bool GetArtistDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     const CStdString &sSearch, CArtist &artist);
 
 private:
@@ -144,15 +144,15 @@ private:
   bool Load();
   std::vector<CStdString> Run(const CStdString& function,
                               const CScraperUrl& url,
-                              XFILE::CFileCurl& http,
+                              XFILE::CCurlFile& http,
                               const std::vector<CStdString>* extras = NULL);
   std::vector<CStdString> RunNoThrow(const CStdString& function,
                               const CScraperUrl& url,
-                              XFILE::CFileCurl& http,
+                              XFILE::CCurlFile& http,
                               const std::vector<CStdString>* extras = NULL);
   CStdString InternalRun(const CStdString& function,
                          const CScraperUrl& url,
-                         XFILE::CFileCurl& http,
+                         XFILE::CCurlFile& http,
                          const std::vector<CStdString>* extras);
 
   bool m_fLoaded;

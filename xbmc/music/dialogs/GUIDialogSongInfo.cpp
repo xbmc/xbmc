@@ -31,7 +31,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -212,7 +212,7 @@ bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // TODO: Obtain the source...
   CStdString source;
-  CFileCurl http;
+  CCurlFile http;
   http.Download(source, thumbFile);
   return true;
 }

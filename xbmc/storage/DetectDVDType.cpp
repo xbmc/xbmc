@@ -193,10 +193,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT)
           {
             m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-            // drive has been closed and is ready
-            OutputDebugString("Drive closed media present, remounting...\n");
-            CIoSupport::Dismount("Cdrom0");
-            CIoSupport::RemapDriveLetter('D', "Cdrom0");
             // Detect ISO9660(mode1/mode2) or CDDA filesystem
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);

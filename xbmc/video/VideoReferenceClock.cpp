@@ -651,6 +651,9 @@ void CVideoReferenceClock::RunGLX()
         return;
       }
 
+      //sleep here so we don't busy spin when this constantly happens, for example when the display went to sleep
+      Sleep(1000);
+
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
       if (!m_bIsATI)
         ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);

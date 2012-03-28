@@ -1192,6 +1192,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
+    if(m_fmt_desc == NULL)
+    {
+      CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
+      m_pFormatName = "";
+      return false;
+    }
+
     if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
     {
       // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
@@ -1201,12 +1208,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       return false;
     }
  
-    if(m_fmt_desc == NULL)
-    {
-      CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
-      m_pFormatName = "";
-      return false;
-    }
     if (m_max_ref_frames == 0)
       m_max_ref_frames = 2;
 

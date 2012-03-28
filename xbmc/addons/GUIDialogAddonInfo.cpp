@@ -130,7 +130,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls()
 {
-  CStdString xbmcPath = _P("special://xbmc/addons");
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
   bool isSystem = isInstalled && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath);
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();

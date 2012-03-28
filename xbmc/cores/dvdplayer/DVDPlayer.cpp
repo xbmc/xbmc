@@ -2991,7 +2991,7 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     {
       CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
       auto_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
-      if(!demux->Open(st.filename))
+      if(!demux->Open(st.filename, st.filename2))
         return false;
       m_pSubtitleDemuxer = demux.release();
     }
@@ -3810,6 +3810,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     m_SelectionStreams.Update(NULL, &v);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+    m_SelectionStreams.Get(STREAM_SUBTITLE, index).filename2 = vobsubfile;
     return index;
   }
   if(ext == ".sub")

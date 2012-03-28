@@ -140,7 +140,6 @@ namespace INFO
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_DVD_LABEL            138
-#define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN             142
@@ -150,7 +149,6 @@ namespace INFO
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
-#define SYSTEM_HAS_DRIVE_G          149
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
 #define SYSTEM_HDD_MODEL            152

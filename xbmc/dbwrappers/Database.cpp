@@ -278,7 +278,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   else
   {
     dbSettings.type = "sqlite3";
-    dbSettings.host = _P(g_settings.GetDatabaseFolder());
+    dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
     dbSettings.name = GetBaseDBName();
   }
 

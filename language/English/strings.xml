@@ -692,7 +692,7 @@
   <string id="787">Interface disabled</string>
   <string id="788">Network interface disabled successfully.</string>
   <string id="789">Wireless network name (ESSID)</string>
-
+  <string id="790">Remote control</string>
   <string id="791">Allow programs on this system to control XBMC</string>
   <string id="792">Port</string>
   <string id="793">Port range</string>
@@ -803,10 +803,12 @@
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">Announce these services to other systems via Zeroconf</string>
   <string id="1270">Allow XBMC to receive AirPlay content</string>
   <string id="1271">Device name</string>
   <string id="1272">- Use password protection</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -2176,6 +2178,7 @@
   <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
@@ -2831,6 +2834,7 @@
   <string id="35006">Device removed</string>
   <string id="35007">Keymap to use for this device</string>
   <string id="35008">Keymap enabled</string>
+  <string id="35009">Do not use the custom keymap for this device</string>
 
   <string id="35500">Location</string>
   <string id="35501">Class</string>
@@ -2845,16 +2849,23 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on the TV when starting XBMC</string>
-  <string id="36008">Power off devices when stopping XBMC</string>
+  <string id="36007">Devices to power on when starting XBMC</string>
+  <string id="36008">Devices to power off when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010"></string>
   <string id="36011">Could not detect the CEC port. Set it up manually.</string>
-  <string id="36012">Could not detect the CEC adapter.</string>
-  <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
+  <string id="36012">Could not initialise the CEC adapter. Check your settings.</string>
+  <string id="36013">Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
   <string id="36016">Connected</string> <!-- max. 13 characters -->
-  <string id="36017">Adapter found, but libcec is not available</string>
+  <string id="36017">Adapter found, but libCEC is not available</string>
   <string id="36018">Use the TV's language setting</string>
+  <string id="36019">Connected to HDMI device</string>
+  <string id="36020">Make XBMC the active source when starting</string>
+  <string id="36021">Physical address (overrules HDMI port)</string>
+  <string id="36022">COM port (leave empty unless needed)</string>
+  <string id="36023">Configuration updated</string>
+  <string id="36024">Failed to set the new configuration. Please check your settings.</string>
+  <string id="36025">Send 'inactive source' command when stopping XBMC</string>
 </strings>

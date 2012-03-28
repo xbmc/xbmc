@@ -28,7 +28,7 @@
 
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<CStdString> info;
 
@@ -54,7 +54,7 @@ JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportL
   return OK;
 }
 
-JSON_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<CStdString> info;
 

@@ -107,10 +107,21 @@ bool CRecentlyAddedJob::UpdateVideo()
       CStdString   EpisodeNo;
       CStdString   value;
       CStdString   strRating;
+      CStdString   strSeason;
       EpisodeNo.Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
       value.Format("%i", i + 1);
       strRating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
-      
+
+      if (EpisodeSeason == 0)
+        strSeason = g_localizeStrings.Get(20381);
+      else
+        strSeason.Format(g_localizeStrings.Get(20358), EpisodeSeason);
+
+      CFileItem season(strSeason);
+      season.GetVideoInfoTag()->m_strPath = item->GetVideoInfoTag()->m_strShowPath;
+
+      CFileItem show(item->GetVideoInfoTag()->m_strShowPath, true);
+
       home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
       home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
       home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);      
@@ -124,6 +135,8 @@ bool CRecentlyAddedJob::UpdateVideo()
         m_thumbLoader.LoadItem(item.get());
 
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
+      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , show.GetCachedVideoThumb());
+      home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , season.GetCachedSeasonThumb());
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
   } 
@@ -140,6 +153,8 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , "");
     home->SetProperty("LatestEpisode." + value + ".Path"          , "");
     home->SetProperty("LatestEpisode." + value + ".Thumb"         , "");
+    home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , "");
+    home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
   }  
 

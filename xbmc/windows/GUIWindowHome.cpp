@@ -56,7 +56,7 @@ void CGUIWindowHome::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   int ra_flag = 0;
 

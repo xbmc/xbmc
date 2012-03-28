@@ -30,7 +30,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
-#include "filesystem/FileMusicDatabase.h"
+#include "filesystem/MusicDatabaseFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -149,7 +149,7 @@ void CExternalPlayer::Process()
       archiveContent = url.GetFileName();
     }
     if (protocol == "musicdb")
-      mainFile = CFileMusicDatabase::TranslateUrl(url);
+      mainFile = CMusicDatabaseFile::TranslateUrl(url);
   }
 
   if (m_filenameReplacers.size() > 0) 
