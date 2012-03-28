@@ -140,8 +140,10 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
   {
     // this will also power off devices when we're the active source
-    CSingleLock lock(m_critSection);
-    m_bStop = true;
+    {
+      CSingleLock lock(m_critSection);
+      m_bStop = true;
+    }
     WaitForThreadExit(0);
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
