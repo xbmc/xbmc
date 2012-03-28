@@ -459,65 +459,38 @@ int           m_systemsleepTimeout;
 
     // PageUp
     case kBREventRemoteActionPageUp:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_PAGEUP;
 
     // PageDown
     case kBREventRemoteActionPageDown:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_PAGEDOWN;
 
     // Pause
     case kBREventRemoteActionPause:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_PAUSE;
 
     // Play2
     case kBREventRemoteActionPlay2:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_PLAY2;
 
     // Stop
     case kBREventRemoteActionStop:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_STOP;
 
     // Fast Forward
     case kBREventRemoteActionFastFwd:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_FASTFWD;
 
     // Rewind
     case kBREventRemoteActionRewind:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_REWIND;
 
     // Skip Forward
     case kBREventRemoteActionSkipFwd:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_SKIPFWD;
 
     // Skip Back
     case kBREventRemoteActionSkipBack:
-      isRepeatable = true;
-      if ([f_event value] == 1)
-        isPressed = true;
       return ATV_BUTTON_SKIPBACK;
 
     // Gesture Swipe Left
