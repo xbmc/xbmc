@@ -1,3 +1,4 @@
+#pragma once
 /*
 *      Copyright (C) 2005-2008 Team XBMC
 *      http://www.xbmc.org
@@ -19,15 +20,8 @@
 *
 */
 
-#ifndef MATRIX_GLES_H
-#define MATRIX_GLES_H
-
-#pragma once
-
 #include <vector>
 #include <string.h>
-
-using namespace std;
 
 enum EMATRIXMODE
 {
@@ -74,11 +68,9 @@ protected:
     float m_values[16];
   };
 
-  vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
+  std::vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
   GLfloat *m_pMatrix;
   EMATRIXMODE m_matrixMode;
 };
 
 extern CMatrixGLES g_matrices;
-
-#endif // MATRIX_GLES_H
