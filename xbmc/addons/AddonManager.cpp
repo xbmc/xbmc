@@ -388,7 +388,7 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */, bool bGetDisabledPVRAddons /* = true */)
 {
-  CStdString xbmcPath = _P("special://xbmc/addons");
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   CSingleLock lock(m_critSection);
   addons.clear();
   cp_status_t status;
@@ -425,7 +425,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 {
   CSingleLock lock(m_critSection);
 
-  CStdString xbmcPath = _P("special://xbmc/addons");
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)

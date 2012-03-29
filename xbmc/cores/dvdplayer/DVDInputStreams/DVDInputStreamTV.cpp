@@ -24,6 +24,7 @@
 #include "filesystem/VTPFile.h"
 #include "pvr/channels/PVRChannel.h"
 #include "filesystem/VTPFile.h"
+#include "filesystem/SlingboxFile.h"
 #include "URL.h"
 
 using namespace XFILE;

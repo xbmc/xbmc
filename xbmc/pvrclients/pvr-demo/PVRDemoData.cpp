@@ -44,7 +44,7 @@ PVRDemoData::~PVRDemoData(void)
 
 std::string PVRDemoData::GetSettingsFile() const
 {
-  return _P("special://xbmc/system/PVRDemoAddonSettings.xml");
+  return CSpecialProtocol::TranslatePath("special://xbmc/system/PVRDemoAddonSettings.xml");
 }
 
 bool PVRDemoData::LoadDemoData(void)

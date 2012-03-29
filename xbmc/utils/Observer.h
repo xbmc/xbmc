@@ -118,7 +118,7 @@ public:
    */
   virtual bool IsObserving(const Observer &obs) const;
 
-  virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+  virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
 protected:
   /*!
