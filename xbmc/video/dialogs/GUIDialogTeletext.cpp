@@ -117,29 +117,11 @@ void CGUIDialogTeletext::OnInitWindow()
   m_bClose            = false;
   m_windowLoaded      = true;
 
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  float left = (float)g_settings.m_ResInfo[res].Overscan.left;
-  float right = (float)g_settings.m_ResInfo[res].Overscan.right;
-  float top = (float)g_settings.m_ResInfo[res].Overscan.top;
-  float bottom = (float)g_settings.m_ResInfo[res].Overscan.bottom;
-
-  CSettingInt* guiSkinzoom = (CSettingInt*)g_guiSettings.GetSetting("lookandfeel.skinzoom");
-
-  if(guiSkinzoom) {
-    float width_original = right - left;
-    float height_original = bottom - top;
-    float fZoom = (100 + guiSkinzoom->GetData()) * 0.01f;
-    float width_scaled = width_original * fZoom;
-    float height_scaled = height_original * fZoom;
-
-    float x_offset = (width_original - width_scaled) / 2;
-    float y_offset = (height_original - height_scaled) / 2;
-
-    left += x_offset;
-    right -= x_offset;
-    top += y_offset;
-    bottom -= y_offset;
-  }
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
+  float left = g_graphicsContext.ScaleFinalXCoord(0, 0);
+  float right = g_graphicsContext.ScaleFinalXCoord(m_coordsRes.iWidth, 0);
+  float top = g_graphicsContext.ScaleFinalYCoord(0, 0);
+  float bottom = g_graphicsContext.ScaleFinalYCoord(0, m_coordsRes.iHeight);
 
   m_vertCoords.SetRect(left,
                        top,
