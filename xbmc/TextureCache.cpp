@@ -20,150 +20,16 @@
  */
 
 #include "TextureCache.h"
+#include "TextureCacheJob.h"
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
 #include "utils/Crc32.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
-
-#include "guilib/Texture.h"
-#include "guilib/DDSImage.h"
-#include "pictures/Picture.h"
-#include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
 
 using namespace XFILE;
-
-CTextureCache::CCacheJob::CCacheJob(const CStdString &url, const CStdString &oldHash)
-{
-  m_url = url;
-  m_oldHash = oldHash;
-  m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
-}
-
-bool CTextureCache::CCacheJob::operator==(const CJob* job) const
-{
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CCacheJob* cacheJob = dynamic_cast<const CCacheJob*>(job);
-    if (cacheJob && cacheJob->m_relativeCacheFile == m_relativeCacheFile)
-      return true;
-  }
-  return false;
-}
-
-bool CTextureCache::CCacheJob::DoWork()
-{
-  m_hash = CacheImage(m_url, m_relativeCacheFile, m_oldHash);
-  return !m_hash.IsEmpty();
-}
-
-CStdString CTextureCache::CCacheJob::CacheImage(const CStdString &url, const CStdString &cacheFile, const CStdString &oldHash)
-{
-  // unwrap the URL as required
-  CStdString image(url);
-  bool fullSize = true;
-  bool flipped = false;
-  if (url.compare(0, 8, "image://") == 0)
-  {
-    // format is image://[type@]<url_encoded_path>?options
-    CURL thumbURL(url);
-
-    if (!thumbURL.GetUserName().IsEmpty())
-      return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
-
-    image = thumbURL.GetHostName();
-    CURL::Decode(image);
-
-    CStdString optionString = thumbURL.GetOptions().Mid(1);
-    optionString.TrimRight('/'); // in case XBMC adds a slash
-
-    std::vector<CStdString> options;
-    StringUtils::SplitString(optionString, "&", options);
-    for (std::vector<CStdString>::iterator i = options.begin(); i != options.end(); i++)
-    {
-      CStdString option, value;
-      int pos = i->Find('=');
-      if (pos != -1)
-      {
-        option = i->Left(pos);
-        value  = i->Mid(pos + 1);
-      }
-      else
-      {
-        option = *i;
-        value = "";
-      }
-      if (option == "size" && value == "thumb")
-      {
-        fullSize = false;
-      }
-      else if (option == "flipped")
-      {
-        flipped = true;
-      }
-    }
-  }
-
-  // generate the hash
-  CStdString hash = CTextureCache::Get().GetImageHash(image);
-  if (hash.IsEmpty() || hash == oldHash)
-    return hash;
-
-  CStdString logMessage = oldHash.IsEmpty() ? "Caching" : "Recaching";
-  CStdString cacheURL = CTextureCache::GetCachedPath(cacheFile);
-  if (flipped)
-  {
-    CLog::Log(LOGDEBUG, "%s flipped image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::ConvertFile(image, cacheURL, 0, 1920, 1080, 90, true))
-      return hash;
-  }
-  else if (fullSize)
-  {
-    CLog::Log(LOGDEBUG, "%s full image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::CacheFanart(image, cacheURL))
-      return hash;
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "%s thumb image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::CacheThumb(image, cacheURL))
-      return hash;
-  }
-  return "";
-}
-
-CTextureCache::CDDSJob::CDDSJob(const CStdString &original)
-{
-  m_original = original;
-}
-
-bool CTextureCache::CDDSJob::operator==(const CJob* job) const
-{
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CDDSJob* ddsJob = dynamic_cast<const CDDSJob*>(job);
-    if (ddsJob && ddsJob->m_original == m_original)
-      return true;
-  }
-  return false;
-}
-
-bool CTextureCache::CDDSJob::DoWork()
-{
-  CTexture texture;
-  if (URIUtils::GetExtension(m_original).Equals(".dds"))
-    return false;
-  if (texture.LoadFromFile(m_original))
-  { // convert to DDS
-    CDDSImage dds;
-    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
-    return dds.Create(URIUtils::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
-  }
-  return false;
-}
 
 CTextureCache &CTextureCache::Get()
 {
@@ -256,7 +122,7 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
       if (CFile::Exists(ddsPath))
         return ddsPath;
       if (g_advancedSettings.m_useDDSFanart)
-        AddJob(new CDDSJob(path));
+        AddJob(new CTextureDDSJob(path));
     }
     return path;
   }
@@ -282,7 +148,7 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
-  AddJob(new CCacheJob(url, cacheHash));
+  AddJob(new CTextureCacheJob(url, cacheHash));
 }
 
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
@@ -290,12 +156,12 @@ CStdString CTextureCache::CacheImageFile(const CStdString &url)
   // Cache image so that the texture manager can load it.
   CStdString relativeCacheFile = GetCacheFile(url);
 
-  CStdString hash = CCacheJob::CacheImage(url, relativeCacheFile);
-  if (!hash.IsEmpty())
+  CTextureCacheJob job(url, "");
+  if (job.DoWork() && !job.m_hash.IsEmpty())
   {
-    AddCachedTexture(url, relativeCacheFile, hash);
+    AddCachedTexture(url, relativeCacheFile, job.m_hash);
     if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CDDSJob(GetCachedPath(relativeCacheFile)));
+      AddJob(new CTextureDDSJob(GetCachedPath(relativeCacheFile)));
     return GetCachedPath(relativeCacheFile);
   }
   return "";
@@ -372,25 +238,6 @@ bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cached
   return m_database.ClearCachedTexture(url, cachedURL);
 }
 
-CStdString CTextureCache::GetImageHash(const CStdString &url) const
-{
-  struct __stat64 st;
-  if (CFile::Stat(url, &st) == 0)
-  {
-    int64_t time = st.st_mtime;
-    if (!time)
-      time = st.st_ctime;
-    if (time || st.st_size)
-    {
-      CStdString hash;
-      hash.Format("d%"PRId64"s%"PRId64, time, st.st_size);
-      return hash;
-    }
-  }
-  CLog::Log(LOGDEBUG, "%s - unable to stat url %s", __FUNCTION__, url.c_str());
-  return "";
-}
-
 CStdString CTextureCache::GetCacheFile(const CStdString &url)
 {
   Crc32 crc;
@@ -411,11 +258,11 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   if (strcmp(job->GetType(), "cacheimage") == 0 && success)
   {
-    CCacheJob *cacheJob = (CCacheJob *)job;
+    CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
     AddCachedTexture(cacheJob->m_url, cacheJob->m_relativeCacheFile, cacheJob->m_hash);
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CDDSJob(GetCachedPath(cacheJob->m_relativeCacheFile)));
+      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_relativeCacheFile)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
