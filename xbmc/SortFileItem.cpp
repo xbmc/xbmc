@@ -175,7 +175,7 @@ void SSortFileItem::ByDateAdded(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%d", item->GetVideoInfoTag()->m_iFileId);
+  label.Format("%s %d", item->GetVideoInfoTag()->m_dateAdded.GetAsDBDateTime().c_str(), item->GetVideoInfoTag()->m_iFileId);
   item->SetSortLabel(label);
 }
 

@@ -22,6 +22,7 @@
 
 
 #include <vector>
+#include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
@@ -127,6 +128,7 @@ public:
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
+  CDateTime m_dateAdded;
 
 private:
   /* \brief Parse our native XML format for video info.

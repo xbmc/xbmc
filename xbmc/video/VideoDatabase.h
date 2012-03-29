@@ -65,17 +65,19 @@ namespace VIDEO
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
 #define VIDEODB_DETAILS_LASTPLAYED		VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME	VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO	VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID	VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED	VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA	VIDEODB_MAX_COLUMNS + 10
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH	VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_DATEADDED		VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME	VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO	VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID	VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED	VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA	VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH	VIDEODB_MAX_COLUMNS + 12
 						
 #define VIDEODB_DETAILS_TVSHOW_PATH		VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED	VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS	VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_TVSHOW_DATEADDED		VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED	VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS	VIDEODB_MAX_COLUMNS + 5
 
 
 #define VIDEODB_TYPE_STRING 1
@@ -567,9 +569,17 @@ public:
   /*! \brief Add a path to the database, if necessary
    If the path is already in the database, we simply return its id.
    \param strPath the path to add
+   \param strDateAdded datetime when the path was added to the filesystem/database
    \return id of the file, -1 if it could not be added.
    */
-  int AddPath(const CStdString& strPath);
+  int AddPath(const CStdString& strPath, const CStdString &strDateAdded = "");
+  
+  /*! \brief Updates the dateAdded field in the files table for the file
+   with the given idFile and the given path based on the files modification date
+   \param idFile id of the file in the files table
+   \param strFileNameAndPath path to the file
+   */
+  void UpdateFileDateAdded(int idFile, const CStdString& strFileNameAndPath);
 
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
@@ -722,7 +732,7 @@ private:
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const { return 60; };
+  virtual int GetMinVersion() const { return 61; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
