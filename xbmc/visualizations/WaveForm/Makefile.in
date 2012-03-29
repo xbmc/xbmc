@@ -5,7 +5,7 @@ OBJS=Main.o
 SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 
 ifeq (@USE_OPENGLES@,1)
-  OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o ../../guilib/MatrixGLES.o
+  OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o
   DEFINES+=-DHAS_GLES=2
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS+=-framework OpenGLES
