@@ -208,6 +208,7 @@ public:
   bool m_bStartVideoWindowed;
   bool m_bAddonAutoUpdate;
   bool m_bAddonNotifications;
+  bool m_bAddonGeolockFilter;
 
   int m_iVideoStartWindow;
 
