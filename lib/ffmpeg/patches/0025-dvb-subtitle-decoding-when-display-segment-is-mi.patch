@@ -1,26 +1,27 @@
-From 6373f33e5b12eb06e37d670c9bba4e7041cded79 Mon Sep 17 00:00:00 2001
+From 6261cbcd71e5cd192623434fa698e9f1e701f365 Mon Sep 17 00:00:00 2001
 From: Paul Kendall <paul@kcbbs.gen.nz>
 Date: Sun, 29 Jan 2012 14:50:19 +0100
-Subject: [PATCH] Fix dvb subtitle decoding when display segment is missing.
+Subject: [PATCH 1/1] Fix dvb subtitle decoding when display segment is
+ missing.
 
 closes ticket #8504
 ---
- lib/ffmpeg/libavcodec/dvbsubdec.c |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ libavcodec/dvbsubdec.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/lib/ffmpeg/libavcodec/dvbsubdec.c b/lib/ffmpeg/libavcodec/dvbsubdec.c
-index 7c37915..e8ef8ce 100644
---- a/lib/ffmpeg/libavcodec/dvbsubdec.c
-+++ b/lib/ffmpeg/libavcodec/dvbsubdec.c
-@@ -1409,6 +1409,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
+diff --git a/libavcodec/dvbsubdec.c b/libavcodec/dvbsubdec.c
+index e2a804a..503223f 100644
+--- a/libavcodec/dvbsubdec.c
++++ b/libavcodec/dvbsubdec.c
+@@ -1451,6 +1451,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
      int segment_type;
      int page_id;
      int segment_length;
 +    int got_segment = 0;
- 
- #ifdef DEBUG_PACKET_CONTENTS
      int i;
-@@ -1445,21 +1446,26 @@ static int dvbsub_decode(AVCodecContext *avctx,
+ 
+     av_dlog(avctx, "DVB sub packet:\n");
+@@ -1490,21 +1491,26 @@ static int dvbsub_decode(AVCodecContext *avctx,
              switch (segment_type) {
              case DVBSUB_PAGE_SEGMENT:
                  dvbsub_parse_page_segment(avctx, p, segment_length);
@@ -47,17 +48,18 @@ index 7c37915..e8ef8ce 100644
                  break;
              default:
                  av_dlog(avctx, "Subtitling segment type 0x%x, page id %d, length %d\n",
-@@ -1470,6 +1476,10 @@ static int dvbsub_decode(AVCodecContext *avctx,
- 
+@@ -1516,6 +1522,11 @@ static int dvbsub_decode(AVCodecContext *avctx,
          p += segment_length;
      }
+ 
 +    // Some streams do not send a display segment but if we have all the other
 +    // segments then we need no further data.
 +    if (got_segment == 15 && sub)
 +        *data_size = dvbsub_display_end_segment(avctx, p, 0, sub);
++
+     return p - buf;
+ }
  
-     if (p != p_end) {
-         av_dlog(avctx, "Junk at end of packet\n");
 -- 
-1.7.7.2
+1.7.9.4
 

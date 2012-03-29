@@ -1,7 +1,7 @@
-From 191bc00c62691c4e365ae8b56ed36a9002295961 Mon Sep 17 00:00:00 2001
+From 681f74b224e16a4df7f8c4e31a9be56975d57e10 Mon Sep 17 00:00:00 2001
 From: CrystalP <CrystalP@xbmc.org>
 Date: Mon, 10 Oct 2011 19:42:50 -0400
-Subject: [PATCH 2/6] dxva-mpeg2 speed up slice allocation
+Subject: [PATCH 19/24] dxva-mpeg2 speed up slice allocation
 
 The number of slices is not very likely to change from frame to frame, so
 at the beginning of a new frame, allocate memory for the amount of slices of
@@ -16,15 +16,15 @@ since on Windows we don't support external ffmpeg.
 dxva mpeg2 code also has access to MpegEncContext, but adding there would
 likely break ABI as well.
 ---
- lib/ffmpeg/libavcodec/dxva2.h       |    1 +
- lib/ffmpeg/libavcodec/dxva2_mpeg2.c |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
+ libavcodec/dxva2.h       |    1 +
+ libavcodec/dxva2_mpeg2.c |   12 ++++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/lib/ffmpeg/libavcodec/dxva2.h b/lib/ffmpeg/libavcodec/dxva2.h
-index 6eb494b..12dce47 100644
---- a/lib/ffmpeg/libavcodec/dxva2.h
-+++ b/lib/ffmpeg/libavcodec/dxva2.h
-@@ -65,6 +65,7 @@ struct dxva_context {
+diff --git a/libavcodec/dxva2.h b/libavcodec/dxva2.h
+index fc99560..16a6994 100644
+--- a/libavcodec/dxva2.h
++++ b/libavcodec/dxva2.h
+@@ -66,6 +66,7 @@ struct dxva_context {
       * Private to the FFmpeg AVHWAccel implementation
       */
      unsigned report_id;
@@ -32,10 +32,10 @@ index 6eb494b..12dce47 100644
  };
  
  #endif /* AVCODEC_DXVA_H */
-diff --git a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
-index 9ac2d17..2482c2f 100644
---- a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
-+++ b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
+diff --git a/libavcodec/dxva2_mpeg2.c b/libavcodec/dxva2_mpeg2.c
+index 8ba83b6..90507f9 100644
+--- a/libavcodec/dxva2_mpeg2.c
++++ b/libavcodec/dxva2_mpeg2.c
 @@ -224,6 +224,16 @@ static int start_frame(AVCodecContext *avctx,
      ctx_pic->slice_alloc    = 0;
      ctx_pic->bitstream_size = 0;
@@ -56,7 +56,7 @@ index 9ac2d17..2482c2f 100644
 @@ -258,6 +268,7 @@ static int end_frame(AVCodecContext *avctx)
      struct MpegEncContext *s = avctx->priv_data;
      struct dxva2_picture_context *ctx_pic =
-         s->current_picture_ptr->hwaccel_picture_private;
+         s->current_picture_ptr->f.hwaccel_picture_private;
 +    struct dxva_context *ctx = avctx->hwaccel_context;
  
      if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
@@ -70,5 +70,5 @@ index 9ac2d17..2482c2f 100644
  
  AVHWAccel ff_mpeg2_dxva2_hwaccel = {
 -- 
-1.7.3.1.msysgit.0
+1.7.9.4
 
