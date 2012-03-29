@@ -304,6 +304,7 @@ protected:
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
+  void UpdateReadRate();
   double m_UpdateApplication;
 
   bool m_bAbortRequest;
@@ -312,6 +313,8 @@ protected:
   std::string m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState m_caching;
   CFileItem   m_item;
+  unsigned    m_readrate;
+
 
 
   CCurrentStream m_CurrentAudio;
