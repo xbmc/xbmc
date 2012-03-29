@@ -5,7 +5,7 @@ OBJS=opengl_spectrum.o
 SLIB=@abs_top_srcdir@/addons/visualization.glspectrum/opengl_spectrum.vis
 
 ifeq (@USE_OPENGLES@,1)
-  OBJS+=../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o ../../guilib/MatrixGLES.o
+  OBJS+=../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o
   DEFINES+=-DHAS_GLES=2
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS+=-framework OpenGLES
