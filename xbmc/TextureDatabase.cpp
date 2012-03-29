@@ -118,6 +118,10 @@ bool CTextureDatabase::UpdateOldVersion(int version)
       m_pDS->exec("INSERT INTO texture SELECT * FROM texture_backup");
       m_pDS->exec("DROP TABLE texture_backup");
     }
+    if (version < 11)
+    { // get rid of cached URLs that don't have the correct extension
+      m_pDS->exec("DELETE FROM texture WHERE SUBSTR(cachedUrl,-4,4) NOT IN ('.jpg', '.png')");
+    }
   }
   catch (...)
   {
@@ -169,24 +173,27 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    CStdString cacheURL(cacheFile);
     CStdString date = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
 
-    CStdString sql = PrepareSQL("select id from texture where url='%s'", url.c_str());
+    CStdString sql = PrepareSQL("select id,cachedurl from texture where url='%s'", url.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update
       int textureID = m_pDS->fv(0).get_asInt();
       m_pDS->close();
+      if (cacheURL.IsEmpty())
+        cacheURL = m_pDS->fv(1).get_asString();
       if (!imageHash.IsEmpty())
-        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheFile.c_str(), imageHash.c_str(), date.c_str(), textureID);
+        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheURL.c_str(), imageHash.c_str(), date.c_str(), textureID);
       else
-        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP where id=%u", cacheFile.c_str(), textureID);        
+        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP where id=%u", cacheURL.c_str(), textureID);
       m_pDS->exec(sql.c_str());
     }
-    else
+    else if (!cacheURL.IsEmpty())
     { // add the texture
       m_pDS->close();
-      sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), cacheFile.c_str(), imageHash.c_str(), date.c_str());
+      sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), cacheURL.c_str(), imageHash.c_str(), date.c_str());
       m_pDS->exec(sql.c_str());
     }
   }

@@ -113,10 +113,10 @@ public:
    */
   void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
-  /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image
-   Use GetCachedPath(GetCacheFile(url)) for the full path to the file.
+  /*! \brief retrieve a cache file (relative to the cache path) to associate with the given image, excluding extension
+   Use GetCachedPath(GetCacheFile(url)+extension) for the full path to the file.
    \param url location of the image
-   \return a "unique" filename for the associated cache file.
+   \return a "unique" filename for the associated cache file, excluding extension
    */
   static CStdString GetCacheFile(const CStdString &url);
 

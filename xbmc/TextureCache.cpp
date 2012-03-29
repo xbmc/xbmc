@@ -159,15 +159,13 @@ void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTex
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
 {
   // Cache image so that the texture manager can load it.
-  CStdString relativeCacheFile = GetCacheFile(url);
-
   CTextureCacheJob job(url, "");
   if (job.DoWork() && !job.m_hash.IsEmpty())
   {
-    AddCachedTexture(url, relativeCacheFile, job.m_hash);
-    if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CTextureDDSJob(GetCachedPath(relativeCacheFile)));
-    return GetCachedPath(relativeCacheFile);
+    AddCachedTexture(url, job.m_cacheFile, job.m_hash);
+    if (g_advancedSettings.m_useDDSFanart && !job.m_cacheFile.IsEmpty())
+      AddJob(new CTextureDDSJob(GetCachedPath(job.m_cacheFile)));
+    return GetCachedPath(job.m_cacheFile);
   }
   return "";
 
@@ -250,7 +248,7 @@ CStdString CTextureCache::GetCacheFile(const CStdString &url)
   CStdString hex;
   hex.Format("%08x", (unsigned int)crc);
   CStdString hash;
-  hash.Format("%c/%s%s", hex[0], hex.c_str(), URIUtils::GetExtension(url).c_str());
+  hash.Format("%c/%s", hex[0], hex.c_str());
   return hash;
 }
 
@@ -264,10 +262,10 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (strcmp(job->GetType(), "cacheimage") == 0 && success)
   {
     CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    AddCachedTexture(cacheJob->m_url, cacheJob->m_relativeCacheFile, cacheJob->m_hash);
+    AddCachedTexture(cacheJob->m_url, cacheJob->m_cacheFile, cacheJob->m_hash);
     // TODO: call back to the UI indicating that it can update it's image...
-    if (g_advancedSettings.m_useDDSFanart)
-      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_relativeCacheFile)));
+    if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_cacheFile.IsEmpty())
+      AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_cacheFile)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
 }

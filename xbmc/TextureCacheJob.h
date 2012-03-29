@@ -66,7 +66,7 @@ public:
   static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped);
 
   CStdString m_url;
-  CStdString m_relativeCacheFile;
+  CStdString m_cacheFile;
   CStdString m_hash;
   CStdString m_oldHash;
 private:
@@ -80,6 +80,7 @@ private:
   unsigned int  m_maxWidth;
   unsigned int  m_maxHeight;
   CBaseTexture *m_texture;
+  CStdString    m_cachePath;
 };
 
 /* \brief Job class for creating .dds versions of textures

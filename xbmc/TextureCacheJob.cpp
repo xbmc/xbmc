@@ -38,7 +38,7 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
 {
   m_url = url;
   m_oldHash = oldHash;
-  m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
+  m_cachePath = CTextureCache::GetCacheFile(m_url);
   m_texture = NULL;
   m_maxWidth = m_maxHeight = 0;
 }
@@ -52,7 +52,7 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *te
     m_texture = NULL;
   m_maxWidth = max_width;
   m_maxHeight = max_height;
-  m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
+  m_cachePath = CTextureCache::GetCacheFile(m_url);
 }
 
 CTextureCacheJob::~CTextureCacheJob()
@@ -65,7 +65,7 @@ bool CTextureCacheJob::operator==(const CJob* job) const
   if (strcmp(job->GetType(),GetType()) == 0)
   {
     const CTextureCacheJob* cacheJob = dynamic_cast<const CTextureCacheJob*>(job);
-    if (cacheJob && cacheJob->m_relativeCacheFile == m_relativeCacheFile)
+    if (cacheJob && cacheJob->m_cachePath == m_cachePath)
       return true;
   }
   return false;
@@ -89,14 +89,19 @@ bool CTextureCacheJob::DoWork()
     m_texture = LoadImage(image, width, height, flipped);
   if (m_texture)
   {
+    if (m_texture->HasAlpha())
+      m_cacheFile = m_cachePath + ".png";
+    else
+      m_cacheFile = m_cachePath + ".jpg";
+
     if (width > 0 && height > 0)
       CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                width, height, texture->GetOrientation(), m_relativeCacheFile.c_str());
+                width, height, m_texture->GetOrientation(), m_cacheFile.c_str());
     else
       CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                texture->GetOrientation(), m_relativeCacheFile.c_str());
+                m_texture->GetOrientation(), m_cacheFile.c_str());
 
-    return CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_relativeCacheFile));
+    return CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_cacheFile));
   }
   return false;
 }

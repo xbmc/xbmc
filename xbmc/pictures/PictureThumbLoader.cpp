@@ -228,7 +228,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         for (int thumb = 0; thumb < 4; thumb++)
           files.push_back(items[thumb]->GetPath());
         CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
-        CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb);
+        CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
         if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
         {
           CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
