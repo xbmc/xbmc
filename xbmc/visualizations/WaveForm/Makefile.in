@@ -1,24 +1,26 @@
 ARCH=@ARCH@
 CXXFLAGS=-fPIC
-OBJS=Main.o
 
-SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
+SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 
 ifeq (@USE_OPENGLES@,1)
-  OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o
-  DEFINES+=-DHAS_GLES=2
+  DEFINES += -DHAS_GLES=2
+  OBJS  = Main_gles.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/GUIShader.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/Shader.o
   ifeq ($(findstring osx,$(ARCH)), osx)
-    LDFLAGS+=-framework OpenGLES
+    LDFLAGS += -framework OpenGLES
   else
-    LDFLAGS+=-lGLESv2
+    LDFLAGS += -lGLESv2
   endif
 else
-  DEFINES+=-DHAS_SDL
-  DEFINES+=-DHAS_SDL_OPENGL
+  OBJS  = Main.o
+  DEFINES += -DHAS_SDL
+  DEFINES += -DHAS_SDL_OPENGL
   ifeq ($(findstring osx,$(ARCH)), osx)
-    LDFLAGS+=-framework OpenGL
+    LDFLAGS += -framework OpenGL
   else
-    LDFLAGS+=-lGL -lGLU
+    LDFLAGS += -lGL -lGLU
   endif
 endif
 
