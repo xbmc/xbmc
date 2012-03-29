@@ -308,6 +308,7 @@ class CAdvancedSettings
     int  m_guiDirtyRegionNoFlipTimeout;
 
     unsigned int m_cacheMemBufferSize;
+    unsigned int m_maxCacheSize;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;

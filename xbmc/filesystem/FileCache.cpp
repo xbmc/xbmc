@@ -19,6 +19,7 @@
  *
  */
 
+#include <limits.h>
 #include "threads/SystemClock.h"
 #include "utils/AutoPtrHandle.h"
 #include "FileCache.h"
@@ -79,7 +80,7 @@ private:
 };
 
 
-CFileCache::CFileCache()
+CFileCache::CFileCache(bool adaptiveSize /*= false*/)
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -87,10 +88,33 @@ CFileCache::CFileCache()
    m_readPos = 0;
    m_writePos = 0;
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
+   {
      m_pCache = new CSimpleFileCache();
+   }
    else
-     m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
+   {
+     unsigned int cachesize;
+     if (adaptiveSize)
+     {
+       //set cache size of 50% of free ram, with m_cacheMemBufferSize as lower limit and m_maxCacheSize as upper
+       MEMORYSTATUSEX stat;
+       stat.dwLength = sizeof(MEMORYSTATUSEX);
+       GlobalMemoryStatusEx(&stat);
+       unsigned int cacheram = std::min(stat.ullAvailPhys / 2, (uint64_t)UINT_MAX);
+
+       cachesize = std::max(cacheram, g_advancedSettings.m_cacheMemBufferSize);
+       cachesize = std::min(cachesize, g_advancedSettings.m_maxCacheSize);
+
+       CLog::Log(LOGDEBUG,"CFileCache::Open - free ram:%" PRIi64 " MB, cache size set to %i MB",
+                 stat.ullAvailPhys / (1024 * 1024), cachesize / (1024 * 1024));
+     }
+     else
+     {
+       cachesize = g_advancedSettings.m_cacheMemBufferSize;
+     }
+     m_pCache = new CCircularCache(cachesize
                                  , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
+   }
    m_seekPossible = 0;
    m_cacheFull = false;
 }

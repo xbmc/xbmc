@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "settings/GUISettings.h"
 
 using namespace XFILE;
 
@@ -51,8 +52,12 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   if (!m_pFile)
     return false;
 
+  unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
+  if (URIUtils::IsOnLAN(strFile) && g_guiSettings.GetBool("videoplayer.slownetworkcache"))
+    flags |= READ_CACHED | READ_ADAPTIVE_CACHE_SIZE;
+
   // open file in binary mode
-  if (!m_pFile->Open(strFile, READ_TRUNCATED | READ_BITRATE | READ_CHUNKED))
+  if (!m_pFile->Open(strFile, flags))
   {
     delete m_pFile;
     m_pFile = NULL;

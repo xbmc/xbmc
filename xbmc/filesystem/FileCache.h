@@ -32,7 +32,7 @@ namespace XFILE
   class CFileCache : public IFile, public CThread
   {
   public:
-    CFileCache();
+    CFileCache(bool adaptiveSize = false);
     CFileCache(CCacheStrategy *pCache, bool bDeleteCache=true);
     virtual ~CFileCache();
 
