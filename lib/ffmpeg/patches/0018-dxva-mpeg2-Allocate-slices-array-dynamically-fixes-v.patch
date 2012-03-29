@@ -1,8 +1,9 @@
-From 87abcf002b55c8a26b6640ee55a56d3b79dd4740 Mon Sep 17 00:00:00 2001
+From 40f4c15370f7027dc5422edcb10e8a3b7e58e83d Mon Sep 17 00:00:00 2001
 From: CrystalP <CrystalP@xbmc.org>
 Date: Wed, 5 Oct 2011 12:38:30 -0400
-Subject: [PATCH 1/6] dxva-mpeg2 Allocate slices array dynamically - fixes videos with > 175 slices.
- They used to result in images with a black bottom.
+Subject: [PATCH 18/24] dxva-mpeg2 Allocate slices array dynamically - fixes
+ videos with > 175 slices. They used to result in
+ images with a black bottom.
 
 sample on team ftp samples/PR471/too_many_slices.ts
 
@@ -14,13 +15,13 @@ appropriate to free the memory at the end.
 Alternative is to allocate the proper size straight away for a new frame,
 instead of realloc'ing for each slice.
 ---
- lib/ffmpeg/libavcodec/dxva2_mpeg2.c |   14 +++++++++++---
- 1 files changed, 11 insertions(+), 3 deletions(-)
+ libavcodec/dxva2_mpeg2.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
-index 780542a..9ac2d17 100644
---- a/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
-+++ b/lib/ffmpeg/libavcodec/dxva2_mpeg2.c
+diff --git a/libavcodec/dxva2_mpeg2.c b/libavcodec/dxva2_mpeg2.c
+index 951305d..8ba83b6 100644
+--- a/libavcodec/dxva2_mpeg2.c
++++ b/libavcodec/dxva2_mpeg2.c
 @@ -22,12 +22,12 @@
  
  #include "dxva2_internal.h"
@@ -47,7 +48,7 @@ index 780542a..9ac2d17 100644
      return 0;
 @@ -232,9 +234,14 @@ static int decode_slice(AVCodecContext *avctx,
      struct dxva2_picture_context *ctx_pic =
-         s->current_picture_ptr->hwaccel_picture_private;
+         s->current_picture_ptr->f.hwaccel_picture_private;
      unsigned position;
 +    DXVA_SliceInfo* slice;
  
@@ -70,5 +71,5 @@ index 780542a..9ac2d17 100644
  
  AVHWAccel ff_mpeg2_dxva2_hwaccel = {
 -- 
-1.7.3.1.msysgit.0
+1.7.9.4
 

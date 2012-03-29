@@ -1,19 +1,19 @@
-From 3f7dbc76fbb3d13cc5816ef29771c125f701f142 Mon Sep 17 00:00:00 2001
-From: Cory Fields <theuni-nospam-@xbmc.org>
-Date: Fri, 9 Jul 2010 16:47:58 -0400
-Subject: [PATCH 24/36] get accurate estimate from the PTSes
+From 95926a84fe1369f796c916f72c50dd5b7d50b15a Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Sat, 22 Oct 2011 19:01:38 +0200
+Subject: [PATCH 11/24] Get stream durations using read_timestamp
 
 ---
- libavformat/utils.c |   41 +++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 41 insertions(+), 0 deletions(-)
+ libavformat/utils.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/libavformat/utils.c b/libavformat/utils.c
-index ad5fb83..fe3b453 100644
+index ebb8493..25fe38e 100644
 --- a/libavformat/utils.c
 +++ b/libavformat/utils.c
-@@ -1982,6 +1982,43 @@ static void av_estimate_timings_from_pts(AVFormatContext *ic, int64_t old_offset
-     }
- }
+@@ -2082,6 +2082,41 @@ static void estimate_timings_from_bit_rate(AVFormatContext *ic)
+ #define DURATION_MAX_READ_SIZE 250000
+ #define DURATION_MAX_RETRY 3
  
 +static void av_estimate_timings_from_pts2(AVFormatContext *ic, int64_t old_offset)
 +{
@@ -28,8 +28,7 @@ index ad5fb83..fe3b453 100644
 +        ts = ic->iformat->read_timestamp(ic, i, &pos, DURATION_MAX_READ_SIZE);
 +        if (ts == AV_NOPTS_VALUE)
 +            continue;
-+        if (st->start_time == AV_NOPTS_VALUE || 
-+            st->start_time > ts)
++        if (st->start_time > ts || st->start_time == AV_NOPTS_VALUE)
 +            st->start_time = ts;
 +
 +        pos = url_fsize(ic->pb) - 1;
@@ -42,30 +41,29 @@ index ad5fb83..fe3b453 100644
 +        if (ts == AV_NOPTS_VALUE)
 +            continue;
 +
-+        if (st->duration == AV_NOPTS_VALUE
-+        ||  st->duration < ts - st->start_time)
++        if (st->duration < ts - st->start_time || st->duration == AV_NOPTS_VALUE)
 +            st->duration = ts - st->start_time;
 +    }
 +
 +    fill_all_stream_timings(ic);
 +
-+    url_fseek(ic->pb, old_offset, SEEK_SET);
++    avio_seek(ic->pb, old_offset, SEEK_SET);
 +}
 +
- static void av_estimate_timings(AVFormatContext *ic, int64_t old_offset)
+ /* only usable for MPEG-PS streams */
+ static void estimate_timings_from_pts(AVFormatContext *ic, int64_t old_offset)
  {
-     int64_t file_size;
-@@ -2005,6 +2042,10 @@ static void av_estimate_timings(AVFormatContext *ic, int64_t old_offset)
+@@ -2184,6 +2219,10 @@ static void estimate_timings(AVFormatContext *ic, int64_t old_offset)
          /* at least one component has timings - we use them for all
             the components */
          fill_all_stream_timings(ic);
 +    } else if (ic->iformat->read_timestamp && 
-+        file_size && !url_is_streamed(ic->pb)) {
++        file_size && ic->pb->seekable) {
 +        /* get accurate estimate from the PTSes */
 +        av_estimate_timings_from_pts2(ic, old_offset);
      } else {
          av_log(ic, AV_LOG_WARNING, "Estimating duration from bitrate, this may be inaccurate\n");
          /* less precise: use bitrate info */
 -- 
-1.7.3
+1.7.9.4
 

@@ -1,14 +1,14 @@
-From d4fac342fd23faeb47a3f9c453a7af14c28de158 Mon Sep 17 00:00:00 2001
+From eaa6256c161f1f6d48b222b171f68869dace8f3f Mon Sep 17 00:00:00 2001
 From: Cory Fields <theuni-nospam-@xbmc.org>
 Date: Fri, 9 Jul 2010 16:49:01 -0400
-Subject: [PATCH 25/36] include stdint.h
+Subject: [PATCH 12/24] include stdint.h
 
 ---
  libavutil/common.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ 1 file changed, 1 insertion(+)
 
 diff --git a/libavutil/common.h b/libavutil/common.h
-index 6404076..b5cd8df 100644
+index 84290c6..5b73579 100644
 --- a/libavutil/common.h
 +++ b/libavutil/common.h
 @@ -29,6 +29,7 @@
@@ -20,5 +20,5 @@ index 6404076..b5cd8df 100644
  #include <math.h>
  #include <stdio.h>
 -- 
-1.7.3
+1.7.9.4
 
