@@ -150,6 +150,10 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    CStdString geolock;
+    geolock = CAddonMgr::Get().GetExtValue(metadata->configuration, "geolock");
+    if (!geolock.IsEmpty())
+      extrainfo.insert(make_pair("geolock",geolock));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
