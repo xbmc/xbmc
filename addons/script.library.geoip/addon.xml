@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.library.geoip" 
+       name="GeoIP script"
+       version="1.0.0"
+       provider-name="Team XBMC">
+	<requires>
+		<import addon="xbmc.python" version="2.0"/>
+		<import addon="script.module.simplejson" version="2.0.10"/>
+	</requires>
+	<extension point="xbmc.python.library" library="default.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary>GeoIP script</summary>
+		<description>Fetch GeoIP information</description>
+		<platform>all</platform>
+	</extension>
+</addon>
