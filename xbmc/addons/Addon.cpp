@@ -151,6 +151,10 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    CStdString language;
+    language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
+    if (!language.IsEmpty())
+      extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
