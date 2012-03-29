@@ -90,7 +90,13 @@ def geoip():
     data = fetch(GEOIP_URL % aik[::-1])
     if data != '' and data.has_key('location'):
         location = data['location']['l'][3:]
-        __addon__.setSetting('Location1', data['location']['city'])
+        location_name = data['location']['city']
+        # Add the state (if available) or country name to the city
+        if data['location']['state']:
+            location_name += ", " + data['location']['state']
+        elif data['location']['country_name']:
+            location_name += ", " + data['location']['country_name']
+        __addon__.setSetting('Location1', location_name)
         __addon__.setSetting('Location1id', location)
     else:
         location = ''
