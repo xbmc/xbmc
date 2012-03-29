@@ -154,45 +154,6 @@ public:
    */
   bool Export(const CStdString &image, const CStdString &destination);
 private:
-  /* \brief Job class for creating .dds versions of textures
-   */
-  class CDDSJob : public CJob
-  {
-  public:
-    CDDSJob(const CStdString &original);
-
-    virtual const char* GetType() const { return "ddscompress"; };
-    virtual bool operator==(const CJob *job) const;
-    virtual bool DoWork();
-
-    CStdString m_original;
-  };
-
-  /*! \brief Job class for caching textures
-   */
-  class CCacheJob : public CJob
-  {
-  public:
-    CCacheJob(const CStdString &url, const CStdString &oldHash);
-
-    virtual const char* GetType() const { return "cacheimage"; };
-    virtual bool operator==(const CJob *job) const;
-    virtual bool DoWork();
-
-    /*! \brief Cache an image either full size or thumb sized
-     \param url URL of image to cache
-     \param relativeCacheFile relative URL of cached version
-     \param oldHash hash of any previously cached version - if the hashes match, we don't cache the image
-     \return hash of the image that we cached, empty on failure
-     */
-    static CStdString CacheImage(const CStdString &url, const CStdString &relativeCacheFile, const CStdString &oldHash = "");
-
-    CStdString m_url;
-    CStdString m_relativeCacheFile;
-    CStdString m_hash;
-    CStdString m_oldHash;
-  };
-
   // private construction, and no assignements; use the provided singleton methods
   CTextureCache();
   CTextureCache(const CTextureCache&);
@@ -229,13 +190,6 @@ private:
    \return true if we had a cached version of this image, false otherwise.
    */
   bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
-
-  /*! \brief retrieve a hash for the given image
-   Combines the size, ctime and mtime of the image file into a "unique" hash
-   \param url location of the image
-   \return a hash string for this image
-   */
-  CStdString GetImageHash(const CStdString &url) const;
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
