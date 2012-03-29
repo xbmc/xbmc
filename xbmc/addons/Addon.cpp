@@ -154,6 +154,10 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     geolock = CAddonMgr::Get().GetExtValue(metadata->configuration, "geolock");
     if (!geolock.IsEmpty())
       extrainfo.insert(make_pair("geolock",geolock));
+    CStdString language;
+    language= CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
+    if (!language.IsEmpty())
+      extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
