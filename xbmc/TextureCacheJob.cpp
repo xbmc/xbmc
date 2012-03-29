@@ -24,6 +24,8 @@
 #include "guilib/Texture.h"
 #include "guilib/DDSImage.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "pictures/Picture.h"
@@ -60,8 +62,9 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
 {
   // unwrap the URL as required
   CStdString image(url);
-  bool fullSize = true;
   bool flipped = false;
+  unsigned int width = g_advancedSettings.m_fanartHeight * 16/9;
+  unsigned int height = g_advancedSettings.m_fanartHeight;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
@@ -94,7 +97,7 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
       }
       if (option == "size" && value == "thumb")
       {
-        fullSize = false;
+        width = height = g_advancedSettings.m_thumbSize;
       }
       else if (option == "flipped")
       {
@@ -114,27 +117,28 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
       && !file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
     return "";
 
-  CStdString logMessage = oldHash.IsEmpty() ? "Caching" : "Recaching";
-  CStdString cacheURL = CTextureCache::GetCachedPath(cacheFile);
+  CTexture *texture = new CTexture();
+  if (!texture->LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+  {
+    delete texture;
+    return "";
+  }
+  // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
+  // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
+  // When flipped = true we have an additional <flipX> on the left, which is equivalent to toggling the last bit
   if (flipped)
-  {
-    CLog::Log(LOGDEBUG, "%s flipped image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::ConvertFile(image, cacheURL, 0, 1920, 1080, 90, true))
-     return hash;
-  }
-  else if (fullSize)
-  {
-    CLog::Log(LOGDEBUG, "%s full image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::CacheFanart(image, cacheURL))
-      return hash;
-  }
+    texture->SetOrientation(texture->GetOrientation() ^ 1);
+
+  if (width > 0 && height > 0)
+    CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
+              width, height, texture->GetOrientation(), cacheFile.c_str());
   else
-  {
-    CLog::Log(LOGDEBUG, "%s thumb image '%s' as '%s'", logMessage.c_str(), image.c_str(), cacheFile.c_str());
-    if (CPicture::CacheThumb(image, cacheURL))
-      return hash;
-  }
-  return "";
+    CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
+              texture->GetOrientation(), cacheFile.c_str());
+
+  bool success = CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(cacheFile));
+  delete texture;
+  return success ? hash : "";
 }
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)

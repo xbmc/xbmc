@@ -166,6 +166,44 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
+bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest)
+{
+  // if no max width or height is specified, don't resize
+  if (max_width == 0)
+    max_width = texture->GetWidth();
+  if (max_height == 0)
+    max_height = texture->GetHeight();
+
+  if (texture->GetWidth() > max_width || texture->GetHeight() > max_height || texture->GetOrientation())
+  {
+    bool success = false;
+
+    unsigned int dest_width = std::min(texture->GetWidth(), max_width);
+    unsigned int dest_height = std::min(texture->GetHeight(), max_height);
+    // create a buffer large enough for the resulting image
+    GetScale(texture->GetWidth(), texture->GetHeight(), dest_width, dest_height);
+    uint32_t *buffer = new uint32_t[dest_width * dest_height];
+    if (buffer)
+    {
+      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+                     (uint8_t *)buffer, dest_width, dest_height, dest_width * 4))
+      {
+        if (!texture->GetOrientation() || OrientateImage(buffer, dest_width, dest_height, texture->GetOrientation()))
+        {
+          success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, dest_width * 4, dest);
+        }
+      }
+      delete[] buffer;
+    }
+    return success;
+  }
+  else
+  { // no orientation needed
+    return CreateThumbnailFromSurface(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(), dest);
+  }
+  return false;
+}
+
 bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb)
 {
   if (!files.size())

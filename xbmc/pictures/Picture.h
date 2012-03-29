@@ -22,6 +22,8 @@
 #include "utils/StdString.h"
 #include "utils/Job.h"
 
+class CBaseTexture;
+
 class CPicture
 {
 public:
@@ -39,6 +41,15 @@ public:
    \param thumb the filename of the thumb
    */
   static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
+
+  /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
+   \param texture a pointer to a CBaseTexture
+   \param max_width maximum width in pixels of cached version
+   \param max_height maximum height in pixels of cached version
+   \param dest the output cache file
+   \return true if successful, false otherwise
+   */
+  static bool CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest);
 
 private:
   static bool CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height);
