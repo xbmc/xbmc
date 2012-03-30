@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$--> <!--Original translator: Ydatografida (ydatografida@gmail.com) / Last update (by CutSickAss): 23/03/2012 -->
+<!--$Revision$--> <!--Original translator: Ydatografida (ydatografida@gmail.com) / Last update (by CutSickAss): 30/03/2012 -->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Εικόνες</string>
@@ -692,7 +692,7 @@
   <string id="787">Απενεργοποίηση Διασύνδεσης</string>
   <string id="788">Η Διασύνδεση δικτύου απενεργοποιήθηκε επιτυχώς.</string>
   <string id="789">Όνομα ασύρματου δικτύου (ESSID)</string>
-
+  <string id="790">Τηλεχειριστήριο</string>
   <string id="791">Έγκριση σε προγράμματα του συστήματος να ελέγχουν το XBMC</string>
   <string id="792">Θύρα</string>
   <string id="793">Εύρος θυρών</string>
@@ -742,7 +742,7 @@
   <string id="1031">Αναζήτηση φακέλου εικόνων</string>
   <string id="1032">Προσθήκη τοποθεσίας δικτύου...</string>
   <string id="1033">Αναζήτηση αρχείου</string>
-  <string id="1034">Yπομενού</string>
+  <string id="1034">Υπομενού</string>
   <string id="1035">Ενεργοποίηση πλήκτρων υπομενού</string>
   <string id="1036">Αγαπημένα</string>
   <string id="1037">Πρόσθετα Βίντεο</string>
@@ -803,10 +803,12 @@
   <string id="1256">Χρονικό διάστημα ping</string>
   <string id="1257">Επιθυμείτε να συνδεθείτε στο σύστημα που εντοπίστηκε;</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">Αναγγελία αυτών των υπηρεσιών σε άλλα συστήματα μέσω του Zeroconf</string>
   <string id="1270">Έγκριση στο XBMC να λαμβάνει περιεχόμενο AirPlay</string>
   <string id="1271">Όνομα συσκευής</string>
   <string id="1272">- Χρήση προστασίας με κωδικό</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">Ειδική συσκευή ήχου</string>
   <string id="1301">Ειδική συσκευή διέλευσης</string>
@@ -1355,6 +1357,7 @@
   <string id="14093">Ασφάλεια</string>
   <string id="14094">Συσκευές εισόδου</string>
   <string id="14095">Εξοικονόμηση ενέργειας</string>
+  <string id="14099">Εξαγωγή του δίσκου μετά την αντιγραφή του CD</string>
 
   <string id="15015">Απομάκρυνση</string>
   <string id="15016">Παιχνίδια</string>
@@ -1724,6 +1727,7 @@
   <string id="20184">Περιστροφή εικόνων που χρησιμοποιούν πληροφορίες EXIF</string>
   <string id="20185">Χρήση στυλ αφισών για τις τηλεοπτικές σειρές</string>
   <string id="20186">Απασχολημένο</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης για πλοκή &amp; κριτική</string>
   <string id="20190">Προσαρμογή</string>
@@ -2378,6 +2382,7 @@
   <string id="35006">Η συσκευή αφαιρέθηκε</string>
   <string id="35007">Keymap για χρήση με αυτή τη συσκευή</string>
   <string id="35008">Ενεργοποιημένο Keymap</string>
+  <string id="35009">Να μη γίνει χρήση του προσωπικού keymap για αυτή τη συσκευή</string>
 
   <string id="35500">Τοποθεσία</string>
   <string id="35501">Κλάση</string>
@@ -2392,16 +2397,23 @@
   <string id="36004">Πιέστε το "user" πλήκτρο εντολών</string>
   <string id="36005">Ενεργοποίηση διακόπτη εντολών</string>
   <string id="36006">Αδυναμία εκκίνησης του προσαρμογέα</string>
-  <string id="36007">Ενεργοποίηση της τηλεόρασης κατά την εκκίνηση του XBMC</string>
-  <string id="36008">Απενεργοποίηση συσκευών κατά τη διακοπή λειτουργίας του XBMC</string>
+  <string id="36007">Συσκευές που θα ενεργοποιούνται κατά την εκκίνηση του XBMC</string>
+  <string id="36008">Συσκευές που θα απενεργοποιούνται κατά τον τερματισμό του XBMC</string>
   <string id="36009">Συσκευές σε κατάσταση αναμονής κατά την προφύλαξη οθόνης</string>
   <string id="36010"></string>
   <string id="36011">Δεν εντοπίστηκε η θύρα CEC. Ρυθμίστε την χειροκίνητα.</string>
-  <string id="36012">Δεν εντοπίστηκε ο προσαρμογέας CEC.</string>
-  <string id="36013">Μη υποστηριζόμενη έκδοση libcec. Η %d είναι μεγαλύτερη από την έκδοση που το XBMC υποστηρίζει (%d)</string>
+  <string id="36012">Ο προσαρμογέας CEC δεν εκκίνησε. Ελέγξτε τις ρυθμίσεις σας.</string>
+  <string id="36013">Μη υποστηριζόμενη έκδοση libCEC. Η %d είναι μεγαλύτερη από την έκδοση που το XBMC υποστηρίζει (%d)</string>
   <string id="36014">Ο υπολογιστής σε κατάσταση αναμονής όταν κλείσει η τηλεόραση</string>
   <string id="36015">Αριθμός θύρας HDMI</string>
   <string id="36016">Συνδεδεμένη</string> <!-- max. 13 characters -->
-  <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά η libcec δεν είναι διαθέσιμη</string>
+  <string id="36017">O προσαρμογέας εντοπίσθηκε, αλλά η libCEC δεν είναι διαθέσιμη</string>
   <string id="36018">Χρήση των ρυθμίσεων γλώσσας της τηλεόρασης</string>
+  <string id="36019">Συνδέθηκε σε συσκευή HDMI</string>
+  <string id="36020">Το XBMC ως ενεργή πηγή κατά την εκκίνηση</string>
+  <string id="36021">Φυσική διεύθυνση (υπερισχύει της θύρας HDMI)</string>
+  <string id="36022">Θύρα COM (αφήστε κενή αν δεν χρειάζεται)</string>
+  <string id="36023">Ανανεώθηκαν οι ρυθμίσεις</string>
+  <string id="36024">Οι νέες ρυθμίσεις δεν ορίστηκαν. Επανελέγξτε τις.</string>
+  <string id="36025">Αποστολή εντολής 'ανενεργή πηγή' κατά τον τερματισμό του XBMC</string>
 </strings>
