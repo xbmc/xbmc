@@ -59,7 +59,7 @@
   <string id="31102">Fundo</string>
   <string id="31103">Exibir "Pausado" em exibição de imagens (slideshow)</string>
   <string id="31104">Tocar trailers em uma janela [COLOR=grey3](Só Diálogo de Informações do Vídeo)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Botão Videos" sempre vai para arquivos de vídeos</string>
   <string id="31106">Opções diversas</string>
   <string id="31107">Ocultar marcadores lidos do arquivo de vídeo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ocultar botões do Menu Principal</string>
@@ -72,6 +72,7 @@
   <string id="31115">Personalizador</string>
   <string id="31117">Exibir vídeos adicionados recentemente</string>
   <string id="31118">Submenu Programas da Página Principal</string>
+  <string id="31119">Ocultar fanart fundo da visualização</string>
   <string id="31120">RÓTULO DE BOTÃO</string>
   <string id="31122">Página do Tempo</string>
   <string id="31123">Usar "Pôsters" ao invés de "Faixas" para Seriados</string>
