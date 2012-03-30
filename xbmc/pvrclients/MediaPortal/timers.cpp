@@ -97,10 +97,10 @@ cTimer::~cTimer()
 void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
   tag.iClientIndex      = m_index;
-  if (m_active)
-    tag.state           = PVR_TIMER_STATE_SCHEDULED;
-  else if (IsRecording())
+  if (IsRecording())
     tag.state           = PVR_TIMER_STATE_RECORDING;
+  else if (m_active)
+    tag.state           = PVR_TIMER_STATE_SCHEDULED;
   else
     tag.state           = PVR_TIMER_STATE_CANCELLED;
   tag.iClientChannelUid = m_channel;
