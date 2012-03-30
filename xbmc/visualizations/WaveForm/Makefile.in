@@ -6,8 +6,6 @@ SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 ifeq (@USE_OPENGLES@,1)
   DEFINES += -DHAS_GLES=2
   OBJS  = Main_gles.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/GUIShader.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/Shader.o
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGLES
   else
