@@ -209,7 +209,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
       tag->m_strPlot          = program[i].description;
       // TODO: Strip out the subtitle from the description if it is present at the start?
       // TODO: Do we need to add the subtitle to the start of the plot if not already as it used to? Seems strange, should be handled by skin?
-      tag->m_strGenre         = program[i].category; // e.g. Sports
+      tag->m_genre            = StringUtils::Split(program[i].category, g_advancedSettings.m_videoItemSeparator); // e.g. Sports
       tag->m_strAlbum         = program[i].callsign; // e.g. TV3
 
       CDateTime start(program[i].starttime);

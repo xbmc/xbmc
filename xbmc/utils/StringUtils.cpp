@@ -58,6 +58,22 @@ void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& d
     result.Delete(result.size()-delimiter.size(), delimiter.size());
 }
 
+CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)
+{
+  CStdString result;
+  JoinString(strings, delimiter, result);
+  return result;
+}
+
+CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
+{
+  CStdStringArray strArray;
+  for (unsigned int index = 0; index < strings.size(); index++)
+    strArray.push_back(strings.at(index));
+
+  return JoinString(strArray, delimiter);
+}
+
 // Splits the string input into pieces delimited by delimiter.
 // if 2 delimiters are in a row, it will include the empty string between them.
 // added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
@@ -69,6 +85,9 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   int isize = input.GetLength();
 
   results.clear();
+
+  if (input.empty())
+    return 0;
 
   vector<unsigned int> positions;
 
@@ -119,6 +138,25 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   }
   // return the number of substrings
   return results.size();
+}
+
+CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+{
+  CStdStringArray result;
+  SplitString(input, delimiter, result, iMaxStrings);
+  return result;
+}
+
+vector<string> StringUtils::Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+{
+  CStdStringArray result;
+  SplitString(input, delimiter, result, iMaxStrings);
+
+  vector<string> strArray;
+  for (unsigned int index = 0; index < result.size(); index++)
+    strArray.push_back(result.at(index));
+
+  return strArray;
 }
 
 // returns the number of occurences of strFind in strInput.

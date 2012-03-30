@@ -23,11 +23,13 @@
 #include "scrobbler.h"
 #include "utils/md5.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "Util.h"
 #include "music/tags/MusicInfoTag.h"
 #include "errors.h"
 #include "threads/Atomics.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/XMLUtils.h"
 #include "Application.h"
 #include "threads/SingleLock.h"
@@ -84,12 +86,12 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
   if (!CanScrobble() || !tag.Loaded())
     return;
 
-  if (tag.GetArtist().IsEmpty() || tag.GetTitle().IsEmpty())
+  if (tag.GetArtist().empty() || tag.GetTitle().IsEmpty())
     return;
 
   // our tags are stored as UTF-8, so no conversion needed
   m_CurrentTrack.length           = tag.GetDuration();
-  m_CurrentTrack.strArtist        = tag.GetArtist();
+  m_CurrentTrack.strArtist        = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
   m_CurrentTrack.strAlbum         = tag.GetAlbum();
   m_CurrentTrack.strTitle         = tag.GetTitle();
   m_CurrentTrack.strMusicBrainzID = tag.GetMusicBrainzTrackID();

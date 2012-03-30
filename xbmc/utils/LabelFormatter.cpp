@@ -21,6 +21,7 @@
 
 #include "LabelFormatter.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "RegExp.h"
 #include "Util.h"
 #include "video/VideoInfoTag.h"
@@ -163,7 +164,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'A':
     if (music && music->GetArtist().size())
-      value = music->GetArtist();
+      value = StringUtils::Join(music->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     if (movie && movie->m_strArtist.size())
       value = movie->m_strArtist;
     break;
@@ -185,19 +186,19 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'G':
     if (music && music->GetGenre().size())
-      value = music->GetGenre();
-    if (movie && movie->m_strGenre.size())
-      value = movie->m_strGenre;
+      value = StringUtils::Join(music->GetGenre(), g_advancedSettings.m_musicItemSeparator);
+    if (movie && movie->m_genre.size())
+      value = StringUtils::Join(movie->m_genre, g_advancedSettings.m_videoItemSeparator);
     break;
   case 'Y':
     if (music)
       value = music->GetYearString();
     if (movie)
     {
-      if (!movie->m_strFirstAired.IsEmpty())
-        value = movie->m_strFirstAired;
-      else if (!movie->m_strPremiered.IsEmpty())
-        value = movie->m_strPremiered;
+      if (movie->m_firstAired.IsValid())
+        value = movie->m_firstAired.GetAsLocalizedDate();
+      else if (movie->m_premiered.IsValid())
+        value = movie->m_premiered.GetAsLocalizedDate();
       else if (movie->m_iYear > 0)
         value.Format("%i",movie->m_iYear);
     }
@@ -288,9 +289,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'U':
-    if (movie && movie->m_strStudio)
-    {// MPAA Rating
-      value = movie ->m_strStudio;
+    if (movie && movie->m_studio.size() > 0)
+    {// Studios
+      value = StringUtils::Join(movie ->m_studio, g_advancedSettings.m_videoItemSeparator);
     }
     break;
   case 'V': // Playcount

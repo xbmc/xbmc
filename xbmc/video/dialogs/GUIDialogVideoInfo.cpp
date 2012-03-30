@@ -178,7 +178,8 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_DIRECTOR)
       {
-        OnSearch(m_movieItem->GetVideoInfoTag()->m_strDirector);
+        CStdString strDirector = StringUtils::Join(m_movieItem->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
+        OnSearch(strDirector);
       }
       else if (iControl == CONTROL_LIST)
       {
@@ -271,7 +272,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     {
       m_castList->SetContent("tvshows");
       // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
-      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strPremiered);
+      m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_premiered;
       if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       m_movieItem->SetProperty("totalepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode);
@@ -284,7 +285,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     {
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
-      m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
+      m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_firstAired;
       if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
