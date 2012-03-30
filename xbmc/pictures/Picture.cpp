@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DllSwScale.h"
+#include "guilib/Texture.h"
 
 using namespace XFILE;
 
@@ -163,6 +164,60 @@ bool CThumbnailWriter::DoWork()
   delete [] m_buffer;
 
   return success;
+}
+
+bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb)
+{
+  if (!files.size())
+    return false;
+
+  unsigned int num_across = (unsigned int)ceil(sqrt(files.size()));
+  unsigned int num_down = (files.size() + num_across - 1) / num_across;
+
+  unsigned int tile_width = g_advancedSettings.m_thumbSize / num_across;
+  unsigned int tile_height = g_advancedSettings.m_thumbSize / num_down;
+  unsigned int tile_gap = std::max(1,g_advancedSettings.m_thumbSize / 512);
+
+  // create a buffer for the resulting thumb
+  uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.m_thumbSize * g_advancedSettings.m_thumbSize, 4);
+  for (unsigned int i = 0; i < files.size(); ++i)
+  {
+    int x = i % num_across;
+    int y = i / num_across;
+    // load in the image
+    CTexture texture;
+    unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
+    if (texture.LoadFromFile(files[i], width, height, g_guiSettings.GetBool("pictures.useexifrotation")) && texture.GetWidth() && texture.GetHeight())
+    {
+      GetScale(texture.GetWidth(), texture.GetHeight(), width, height);
+
+      // scale appropriately
+      uint32_t *scaled = new uint32_t[width * height];
+      if (ScaleImage(texture.GetPixels(), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(),
+                     (uint8_t *)scaled, width, height, width * 4))
+      {
+        if (!texture.GetOrientation() || OrientateImage(scaled, width, height, texture.GetOrientation()))
+        {
+          // drop into the texture
+          unsigned int posX = x*tile_width + (tile_width - width)/2;
+          unsigned int posY = y*tile_height + (tile_height - height)/2;
+          uint32_t *dest = buffer + posX + posY*g_advancedSettings.m_thumbSize;
+          for (unsigned int y = 0; y < height; ++y)
+          {
+            memcpy(dest, scaled, width*4);
+            dest += g_advancedSettings.m_thumbSize;
+            scaled += width;
+          }
+        }
+      }
+      delete[] scaled;
+    }
+  }
+  // now save to a file
+  bool ret = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize,
+                                        g_advancedSettings.m_thumbSize * 4, thumb);
+  free(buffer);
+  return ret;
 }
 
 void CPicture::GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height)

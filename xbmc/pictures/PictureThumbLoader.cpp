@@ -223,16 +223,18 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       else
       {
         // ok, now we've got the files to get the thumbs from, lets create it...
-        // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
-        CStdString strFiles[4];
+        // we basically load the 4 images and combine them
+        vector<string> files;
         for (int thumb = 0; thumb < 4; thumb++)
-          strFiles[thumb] = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(items[thumb]->GetPath()), false);
+          files.push_back(items[thumb]->GetPath());
         CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
         CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb);
-        CPicture::CreateFolderThumb(strFiles, CTextureCache::GetCachedPath(relativeCacheFile));
-        CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
-        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-        pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
+        if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
+        {
+          CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
+          db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+          pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
+        }
       }
     }
     // refill in the icon to get it to update
