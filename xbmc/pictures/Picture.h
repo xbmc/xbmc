@@ -34,6 +34,12 @@ public:
   static bool CacheThumb(const CStdString& sourceUrl, const CStdString& destFile);
   static bool CacheFanart(const CStdString& SourceUrl, const CStdString& destFile);
 
+  /*! \brief Create a tiled thumb of the given files
+   \param files the files to create the thumb from
+   \param thumb the filename of the thumb
+   */
+  static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
+
 private:
   static bool CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height);
   static void GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height);
