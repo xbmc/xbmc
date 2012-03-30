@@ -39,6 +39,25 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
   m_url = url;
   m_oldHash = oldHash;
   m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
+  m_texture = NULL;
+  m_maxWidth = m_maxHeight = 0;
+}
+
+CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
+{
+  m_url = url;
+  if (texture)
+    m_texture = new CTexture(*(CTexture *)texture);
+  else
+    m_texture = NULL;
+  m_maxWidth = max_width;
+  m_maxHeight = max_height;
+  m_relativeCacheFile = CTextureCache::GetCacheFile(m_url);
+}
+
+CTextureCacheJob::~CTextureCacheJob()
+{
+  delete m_texture;
 }
 
 bool CTextureCacheJob::operator==(const CJob* job) const
@@ -66,8 +85,9 @@ bool CTextureCacheJob::DoWork()
   else if (m_hash == m_oldHash)
     return true;
 
-  CBaseTexture *texture = LoadImage(image, width, height, flipped);
-  if (texture)
+  if (!m_texture)
+    m_texture = LoadImage(image, width, height, flipped);
+  if (m_texture)
   {
     if (width > 0 && height > 0)
       CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
@@ -76,9 +96,7 @@ bool CTextureCacheJob::DoWork()
       CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
                 texture->GetOrientation(), m_relativeCacheFile.c_str());
 
-    bool success = CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_relativeCacheFile));
-    delete texture;
-    return success;
+    return CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_relativeCacheFile));
   }
   return false;
 }
