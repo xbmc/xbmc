@@ -423,12 +423,15 @@ void CMusicInfoTag::SetSong(const CSong& song)
 
 void CMusicInfoTag::Serialize(CVariant& value)
 {
+  /* TODO:
+     All the StringUtils::Join() calls can be removed once backwards-compatibility to
+     JSON-RPC v4 can be broken */
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  value["artist"] = m_artist;
+  value["artist"] = StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
   value["album"] = m_strAlbum;
-  value["albumartist"] = m_albumArtist;
-  value["genre"] = m_genre;
+  value["albumartist"] = StringUtils::Join(m_albumArtist, g_advancedSettings.m_musicItemSeparator);
+  value["genre"] = StringUtils::Join(m_genre, g_advancedSettings.m_musicItemSeparator);
   value["duration"] = m_iDuration;
   value["track"] = m_iTrack;
   value["loaded"] = m_bLoaded;

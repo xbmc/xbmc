@@ -25,6 +25,7 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "ThumbnailCache.h"
@@ -404,16 +405,19 @@ void CVideoInfoTag::Archive(CArchive& ar)
 
 void CVideoInfoTag::Serialize(CVariant& value)
 {
-  value["director"] = m_director;
-  value["writer"] = m_writingCredits;
-  value["genre"] = m_genre;
-  value["country"] = m_country;
+  /* TODO:
+     All the StringUtils::Join() calls can be removed once backwards-compatibility to
+     JSON-RPC v4 can be broken */
+  value["director"] = StringUtils::Join(m_director, g_advancedSettings.m_videoItemSeparator);
+  value["writer"] = StringUtils::Join(m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+  value["genre"] = StringUtils::Join(m_genre, g_advancedSettings.m_videoItemSeparator);
+  value["country"] = StringUtils::Join(m_country, g_advancedSettings.m_videoItemSeparator);
   value["tagline"] = m_strTagLine;
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
   value["votes"] = m_strVotes;
-  value["studio"] = m_studio;
+  value["studio"] = StringUtils::Join(m_studio, g_advancedSettings.m_videoItemSeparator);
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
   for (unsigned int i = 0; i < m_cast.size(); ++i)
@@ -456,7 +460,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
-  value["showlink"] = m_showLink;
+  value["showlink"] = StringUtils::Join(m_showLink, g_advancedSettings.m_videoItemSeparator);
   m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = (float)m_resumePoint.timeInSeconds;
