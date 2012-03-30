@@ -856,6 +856,7 @@ namespace VIDEO
       episode.isFolder = false;
 
       bool byDate = expression[i].byDate ? true : false;
+      int defaultSeason = expression[i].defaultSeason;
 
       if (byDate)
       {
@@ -867,7 +868,7 @@ namespace VIDEO
       }
       else
       {
-        if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
+        if (!GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason))
           continue;
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(),
@@ -898,7 +899,7 @@ namespace VIDEO
         }
         else
         {
-          GetEpisodeAndSeasonFromRegExp(reg, parent);
+          GetEpisodeAndSeasonFromRegExp(reg, parent, defaultSeason);
           if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
             episode.isFolder = true;
         }
@@ -919,7 +920,7 @@ namespace VIDEO
           if (((regexppos <= regexp2pos) && regexppos != -1) ||
              (regexppos >= 0 && regexp2pos == -1))
           {
-            GetEpisodeAndSeasonFromRegExp(reg, episode);
+            GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason);
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
                       episode.iSeason, episode.iEpisode,
@@ -949,7 +950,7 @@ namespace VIDEO
     return false;
   }
 
-  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
+  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason)
   {
     char* season = reg.GetReplaceString("\\1");
     char* episode = reg.GetReplaceString("\\2");
@@ -957,14 +958,14 @@ namespace VIDEO
     if (season && episode)
     {
       if (strlen(season) == 0 && strlen(episode) > 0)
-      { // no season specified -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no season specified -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
           episodeInfo.iEpisode = atoi(episode);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
-      { // no episode specification -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no episode specification -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
           episodeInfo.iEpisode = atoi(season);
       }
