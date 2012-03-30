@@ -267,7 +267,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
 
 CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 {
-  *this << strArray.size();
+  *this << (unsigned int)strArray.size();
   for (unsigned int index = 0; index < strArray.size(); index++)
     *this << CStdString(strArray.at(index));
 
@@ -276,7 +276,7 @@ CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
 
 CArchive& CArchive::operator<<(const std::vector<int>& iArray)
 {
-  *this << iArray.size();
+  *this << (unsigned int)iArray.size();
   for (unsigned int index = 0; index < iArray.size(); index++)
     *this << iArray.at(index);
 
