@@ -77,7 +77,7 @@ bool CShoutcastFile::Open(const CURL& url)
     if (m_tag.GetTitle().IsEmpty())
       m_tag.SetTitle(m_file.GetHttpHeader().GetValue("ice-name")); // icecast
     m_tag.SetGenre(m_file.GetHttpHeader().GetValue("icy-genre"));
-    if (m_tag.GetGenre().IsEmpty())
+    if (m_tag.GetGenre().empty())
       m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast
     m_tag.SetLoaded(true);
     g_infoManager.SetCurrentSongTag(m_tag);

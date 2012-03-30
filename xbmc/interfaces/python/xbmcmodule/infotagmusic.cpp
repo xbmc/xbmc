@@ -21,6 +21,8 @@
 
 #include "infotagmusic.h"
 #include "pyutil.h"
+#include "../../../utils/StringUtils.h"
+#include "../../../settings/AdvancedSettings.h"
 
 
 #ifdef __cplusplus
@@ -75,7 +77,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetArtist().c_str());
+    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   }
 
   // InfoTagMusic_GetAlbumArtist
@@ -84,7 +86,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetAlbumArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetAlbumArtist().c_str());
+    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   }
 
   // InfoTagMusic_GetAlbum
@@ -102,7 +104,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetGenre(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetGenre().c_str());
+    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str());
   }
 
   // InfoTagMusic_GetDuration
@@ -174,7 +176,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetLastPlayed(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetLastPlayed().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetLastPlayed().GetAsLocalizedDate().c_str());
   }
 
   // InfoTagMusic_GetComment
