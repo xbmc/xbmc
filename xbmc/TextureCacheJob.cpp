@@ -54,17 +54,42 @@ bool CTextureCacheJob::operator==(const CJob* job) const
 
 bool CTextureCacheJob::DoWork()
 {
-  m_hash = CacheImage(m_url, m_relativeCacheFile, m_oldHash);
-  return !m_hash.IsEmpty();
+  // unwrap the URL as required
+  bool flipped;
+  unsigned int width, height;
+  CStdString image = DecodeImageURL(m_url, width, height, flipped);
+
+  // generate the hash
+  m_hash = GetImageHash(image);
+  if (m_hash.IsEmpty())
+    return false;
+  else if (m_hash == m_oldHash)
+    return true;
+
+  CBaseTexture *texture = LoadImage(image, width, height, flipped);
+  if (texture)
+  {
+    if (width > 0 && height > 0)
+      CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
+                width, height, texture->GetOrientation(), m_relativeCacheFile.c_str());
+    else
+      CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
+                texture->GetOrientation(), m_relativeCacheFile.c_str());
+
+    bool success = CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_relativeCacheFile));
+    delete texture;
+    return success;
+  }
+  return false;
 }
 
-CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString &cacheFile, const CStdString &oldHash)
+CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, bool &flipped)
 {
   // unwrap the URL as required
   CStdString image(url);
-  bool flipped = false;
-  unsigned int width = g_advancedSettings.m_fanartHeight * 16/9;
-  unsigned int height = g_advancedSettings.m_fanartHeight;
+  flipped = false;
+  width = g_advancedSettings.m_fanartHeight * 16/9;
+  height = g_advancedSettings.m_fanartHeight;
   if (url.compare(0, 8, "image://") == 0)
   {
     // format is image://[type@]<url_encoded_path>?options
@@ -105,23 +130,22 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
       }
     }
   }
+  return image;
+}
 
-  // generate the hash
-  CStdString hash = GetImageHash(image);
-  if (hash.IsEmpty() || hash == oldHash)
-    return hash;
-
+CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped)
+{
   // Validate file URL to see if it is an image
   CFileItem file(image, false);
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
       && !file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
-    return "";
+    return NULL;
 
   CTexture *texture = new CTexture();
   if (!texture->LoadFromFile(image, width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
     delete texture;
-    return "";
+    return NULL;
   }
   // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
@@ -129,16 +153,7 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
   if (flipped)
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
-  if (width > 0 && height > 0)
-    CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-              width, height, texture->GetOrientation(), cacheFile.c_str());
-  else
-    CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-              texture->GetOrientation(), cacheFile.c_str());
-
-  bool success = CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(cacheFile));
-  delete texture;
-  return success ? hash : "";
+  return texture;
 }
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)

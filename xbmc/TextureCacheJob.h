@@ -24,6 +24,8 @@
 #include "utils/StdString.h"
 #include "utils/Job.h"
 
+class CBaseTexture;
+
 /*!
  \ingroup textures
  \brief Job class for caching textures
@@ -39,13 +41,27 @@ public:
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
 
-  /*! \brief Cache an image either full size or thumb sized
-   \param url URL of image to cache
-   \param relativeCacheFile relative URL of cached version
-   \param oldHash hash of any previously cached version - if the hashes match, we don't cache the image
-   \return hash of the image that we cached, empty on failure
+  /*! \brief Decode an image URL to the underlying image, width, height and orientation
+   \param url wrapped URL of the image
+   \param width width derived from URL
+   \param height height derived from URL
+   \param flipped whether the image is flipped horizontally
+   \return URL of the underlying image file.
    */
-  static CStdString CacheImage(const CStdString &url, const CStdString &relativeCacheFile, const CStdString &oldHash = "");
+  static CStdString DecodeImageURL(const CStdString &url, unsigned int &width, unsigned int &height, bool &flipped);
+
+  /*! \brief Load an image at a given target size and orientation.
+
+   Doesn't necessarily load the image at the desired size - the loader *may* decide to load it slightly larger
+   or smaller than the desired size for speed reasons.
+
+   \param image the URL of the image file.
+   \param width the desired maximum width.
+   \param height the desired maximum height.
+   \param flipped whether the image should be flipped horizontally.
+   \return a pointer to a CBaseTexture object, NULL if failed.
+   */
+  static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped);
 
   CStdString m_url;
   CStdString m_relativeCacheFile;
