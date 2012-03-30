@@ -151,6 +151,11 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(url, cacheHash));
 }
 
+void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
+{
+  AddJob(new CTextureCacheJob(url, texture, max_width, max_height));
+}
+
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
 {
   // Cache image so that the texture manager can load it.

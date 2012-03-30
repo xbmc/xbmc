@@ -36,6 +36,8 @@ class CTextureCacheJob : public CJob
 {
 public:
   CTextureCacheJob(const CStdString &url, const CStdString &oldHash);
+  CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height);
+  virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return "cacheimage"; };
   virtual bool operator==(const CJob *job) const;
@@ -74,6 +76,10 @@ private:
    \return a hash string for this image
    */
   static CStdString GetImageHash(const CStdString &url);
+
+  unsigned int  m_maxWidth;
+  unsigned int  m_maxHeight;
+  CBaseTexture *m_texture;
 };
 
 /* \brief Job class for creating .dds versions of textures
