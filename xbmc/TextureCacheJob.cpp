@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
+#include "FileItem.h"
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)
 {
@@ -106,6 +107,12 @@ CStdString CTextureCacheJob::CacheImage(const CStdString &url, const CStdString 
   CStdString hash = GetImageHash(image);
   if (hash.IsEmpty() || hash == oldHash)
     return hash;
+
+  // Validate file URL to see if it is an image
+  CFileItem file(image, false);
+  if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
+      && !file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
+    return "";
 
   CStdString logMessage = oldHash.IsEmpty() ? "Caching" : "Recaching";
   CStdString cacheURL = CTextureCache::GetCachedPath(cacheFile);
