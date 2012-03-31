@@ -73,7 +73,6 @@ CMediaManager::CMediaManager()
 {
   m_bhasoptical = false;
   m_platformStorage = NULL;
-  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
 }
 
 void CMediaManager::Stop()
@@ -96,6 +95,7 @@ void CMediaManager::Initialize()
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
+  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
   m_platformStorage->Initialize();
 }
 
