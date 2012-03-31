@@ -961,6 +961,19 @@ namespace ForTheRecord
     return ForTheRecord::ForTheRecordRPC(command, arguments, response);
   }
 
+  int SetRecordingLastWatched(const std::string& recordingfilename)
+  {
+    std::string response;
+
+    XBMC->Log(LOG_DEBUG, "SetRecordingLastWatched");
+
+    std::string command = "ForTheRecord/Control/SetRecordingLastWatched";
+    std::string arguments = recordingfilename;
+
+    int retval = ForTheRecord::ForTheRecordRPC(command, arguments, response);
+    return retval;
+  }
+
   int GetScheduleById(const std::string& id, Json::Value& response)
   {
     int retval = E_FAILED;

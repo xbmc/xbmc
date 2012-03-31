@@ -1,3 +1,5 @@
+v0.0.1.133 (31-03-2012)
+- The add-on now sets the time a recording was last watched on the server
 v0.0.1.132 (20-03-2012)
 - Small fix to correct one invalid GUID error message at start 
 v0.0.1.131 (16-03-2012)

@@ -40,6 +40,7 @@ CTsReader::CTsReader()
   m_fileReader=NULL;
   m_bLiveTv = false;
   m_bTimeShifting = false;
+  liDelta.QuadPart = liCount.QuadPart = 0;
 }
 
 long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
@@ -67,8 +68,16 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
   }
 
   //open file
-  m_fileReader->SetFileName(m_fileName.c_str());
-  m_fileReader->OpenFile();
+  if (m_fileReader->SetFileName(m_fileName.c_str()) != S_OK)
+  {
+    XBMC->Log(LOG_ERROR, "CTsReader::SetFileName failed.");
+    return S_FALSE;
+  }
+  if (m_fileReader->OpenFile() != S_OK)
+  {
+    XBMC->Log(LOG_ERROR, "CTsReader::OpenFile failed.");
+    return S_FALSE;
+  }
   m_fileReader->SetFilePointer(0LL, FILE_BEGIN);
 
   return S_OK;
@@ -76,9 +85,28 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
 
 long CTsReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
+  LARGE_INTEGER liFrequency;
+  LARGE_INTEGER liCurrent;
+  LARGE_INTEGER liLast;
   if(m_fileReader)
   {
-    return m_fileReader->Read(pbData, lDataLength, dwReadBytes);
+    // Save the performance counter frequency for later use.
+    if (!QueryPerformanceFrequency(&liFrequency))
+      XBMC->Log(LOG_ERROR, "QPF() failed with error %d\n", GetLastError());
+
+    if (!QueryPerformanceCounter(&liCurrent))
+		  XBMC->Log(LOG_ERROR, "QPC() failed with error %d\n", GetLastError());
+    liLast = liCurrent;
+
+    long rc = m_fileReader->Read(pbData, lDataLength, dwReadBytes);
+
+    if (!QueryPerformanceCounter(&liCurrent))
+      XBMC->Log(LOG_ERROR, "QPC() failed with error %d\n", GetLastError());
+    
+    // Convert difference in performance counter values to nanoseconds.
+    liDelta.QuadPart += (((liCurrent.QuadPart - liLast.QuadPart) * 1000000) / liFrequency.QuadPart);
+    liCount.QuadPart++;
+    return rc;
   }
 
   dwReadBytes = 0;
@@ -94,9 +122,33 @@ void CTsReader::Close()
   }
 }
 
+unsigned long CTsReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
+{
+  return m_fileReader->SetFilePointer(llDistanceToMove, dwMoveMethod);
+}
+
+int64_t CTsReader::GetFileSize()
+{
+  return m_fileReader->GetFileSize();
+}
+
+int64_t CTsReader::GetFilePointer()
+{
+  return m_fileReader->GetFilePointer();
+}
+
 void CTsReader::OnZap(void)
 {
-  m_fileReader->SetFilePointer(0LL, FILE_END);
+  m_fileReader->OnZap();
+}
+
+long long CTsReader::sigmaTime()
+{
+  return liDelta.QuadPart;
+}
+long long CTsReader::sigmaCount()
+{
+  return liCount.QuadPart;
 }
 
 #endif //TSREADER

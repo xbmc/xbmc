@@ -719,13 +719,14 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
             cRecording recording;
             CStdString strRecordingId;
 
-            if (FetchRecordingDetails(recordingsbytitleresponse[recordingindex], recording))
+            cRecordingSummary recordingsummary;
+            if (recordingsummary.Parse(recordingsbytitleresponse[recordingindex]) && FetchRecordingDetails(recordingsummary.RecordingId(), recording))
             {
               PVR_RECORDING tag;
               memset(&tag, 0 , sizeof(tag));
 
               strRecordingId.Format("%i", iNumRecordings);
-              tag.strRecordingId = strRecordingId.c_str(); //TODO: check if we can use recording.RecordingId() directly. XBMC uses the id internally as path name
+              tag.strRecordingId = recording.RecordingId();
               tag.strChannelName = recording.ChannelDisplayName();
               tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
               tag.iPriority      = 0; //TODO? recording.Priority();
@@ -745,7 +746,11 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               tag.strTitle       = recording.Title();
               tag.strPlotOutline = recording.SubTitle();
 #ifdef _WIN32
-              tag.strStreamURL   = recording.RecordingFileName();
+
+              std::string emptystring;
+              emptystring.clear();
+              tag.strStreamURL   = emptystring.c_str();
+              //tag.strStreamURL   = recording.RecordingFileName();
 #else
               tag.strStreamURL   = recording.CIFSRecordingFileName();
 #endif
@@ -760,15 +765,13 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool cPVRClientForTheRecord::FetchRecordingDetails(const Json::Value& data, cRecording& recording)
+bool cPVRClientForTheRecord::FetchRecordingDetails(std::string recordingid, cRecording& recording)
 { 
   bool fRc = false;
   Json::Value recordingresponse;
 
   cRecordingSummary recordingsummary;
-  if (recordingsummary.Parse(data))
-  {
-    int retval = ForTheRecord::GetRecordingById(recordingsummary.RecordingId(), recordingresponse);
+    int retval = ForTheRecord::GetRecordingById(recordingid, recordingresponse);
     if (retval >= 0)
     {
       if (recordingresponse.type() == Json::objectValue)
@@ -776,7 +779,6 @@ bool cPVRClientForTheRecord::FetchRecordingDetails(const Json::Value& data, cRec
         fRc = recording.Parse(recordingresponse);
       }
     }
-  }
   return fRc;
 }
 
@@ -1201,6 +1203,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       //m_tsreader->OnZap();
       XBMC->Log(LOG_DEBUG, "Close existing and open new TsReader...");
       m_tsreader->Close();
+      SAFE_DELETE(m_tsreader);
       m_tsreader = new CTsReader();
       m_tsreader->Open(filename.c_str());
       m_tsreader->OnZap();
@@ -1289,6 +1292,25 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
 #endif //TSREADER
 }
 
+long long cPVRClientForTheRecord::PositionLiveStream(void)
+{
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFilePointer();
+}
+
+long long cPVRClientForTheRecord::LengthLiveStream(void)
+{
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFileSize();
+}
+
+
 void cPVRClientForTheRecord::CloseLiveStream()
 {
   string result;
@@ -1321,6 +1343,7 @@ void cPVRClientForTheRecord::CloseLiveStream()
     {
       XBMC->Log(LOG_DEBUG, "Close TsReader");
       m_tsreader->Close();
+      XBMC->Log(LOG_DEBUG, "ReadLiveStream: %I64d calls took %I64d nanoseconds.", m_tsreader->sigmaCount(), m_tsreader->sigmaTime());
       SAFE_DELETE(m_tsreader);
     }
 #endif
@@ -1413,18 +1436,96 @@ PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
 {
   XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%s)", recinfo.strRecordingId);
+  cRecording recording;
+  if (!FetchRecordingDetails(recinfo.strRecordingId, recording))
+  {
+    XBMC->Log(LOG_ERROR, "Unable to fetch recording details for %s", recinfo.strRecordingId);
+    return false;
+  }
 
-  return false;
+  if (m_tsreader != NULL)
+  {
+    XBMC->Log(LOG_DEBUG, "Close existing TsReader...");
+    m_tsreader->Close();
+    SAFE_DELETE(m_tsreader);
+  }
+  m_tsreader = new CTsReader();
+  if (m_tsreader->Open(recording.RecordingFileName()) != S_OK)
+  {
+    SAFE_DELETE(m_tsreader);
+    return false;
+  }
+
+  // JSONify the stream_url
+  Json::Value recordingname (recording.RecordingFileName());
+  Json::StyledWriter writer;
+  std::string jsonval = writer.write(recordingname);
+  int retval = ForTheRecord::SetRecordingLastWatched(jsonval);
+  if (retval < 0)
+  {
+    XBMC->Log(LOG_INFO, "Failed to set recording last watched");
+  }
+
+  return true;
 }
 
 
 void cPVRClientForTheRecord::CloseRecordedStream(void)
 {
+  XBMC->Log(LOG_DEBUG, "->CloseRecordedStream()");
+  if (m_tsreader)
+  {
+    XBMC->Log(LOG_DEBUG, "Close TsReader");
+    m_tsreader->Close();
+    SAFE_DELETE(m_tsreader);
+  }
 }
 
 int cPVRClientForTheRecord::ReadRecordedStream(unsigned char* pBuffer, unsigned int iBuffersize)
 {
-  return -1;
+  unsigned long read_done   = 0;
+
+  // XBMC->Log(LOG_DEBUG, "->ReadRecordedStream(buf_size=%i)", iBufferSize);
+  if (!m_tsreader)
+    return -1;
+
+  long lRc = 0;
+  if ((lRc = m_tsreader->Read(pBuffer, iBuffersize, &read_done)) > 0)
+  {
+    XBMC->Log(LOG_NOTICE, "ReadRecordedStream requested %d but only read %d bytes.", iBuffersize, read_done);
+  }
+  return read_done;
+}
+
+long long cPVRClientForTheRecord::SeekRecordedStream(long long iPosition, int iWhence)
+{
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  if (iPosition == 0 && iWhence == SEEK_CUR)
+  {
+    return m_tsreader->GetFilePointer();
+  }
+  return m_tsreader->SetFilePointer(iPosition, iWhence);
+}
+
+long long cPVRClientForTheRecord::PositionRecordedStream(void)
+{ 
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFilePointer();
+}
+
+long long cPVRClientForTheRecord::LengthRecordedStream(void)
+{
+  if (!m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFileSize();
 }
 
 /*

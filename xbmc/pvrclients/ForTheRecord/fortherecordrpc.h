@@ -210,6 +210,12 @@ namespace ForTheRecord
   int GetRecordingById(const std::string& id, Json::Value& response);
 
   /**
+   * \brief Mark this recording as watched
+   * \param recordingpath
+   */
+  int SetRecordingLastWatched(const std::string& recordingfilename);
+
+  /**
    * \brief Delete the recording on the pvr backend
    * \param recordingfilename UNC filename to delete
    */

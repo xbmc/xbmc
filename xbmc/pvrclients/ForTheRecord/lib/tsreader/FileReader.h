@@ -63,6 +63,7 @@ class FileReader
     virtual int64_t getFilePointer();
     virtual int64_t getBufferPointer();
     virtual void setBufferPointer();
+    virtual void OnZap(void);
 
     void SetDebugOutput(bool bDebugOutput);
 
