@@ -95,7 +95,9 @@ void CMediaManager::Initialize()
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
+#ifdef HAS_DVD_DRIVE
   strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
   m_platformStorage->Initialize();
 }
 
