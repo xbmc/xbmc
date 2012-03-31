@@ -7,7 +7,7 @@
 
 #include "MythXml.h"
 
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "utils/log.h"
 
 #include "libmythxml/GetNumChannelsParameters.h"
@@ -48,7 +48,7 @@ bool MythXml::open(CStdString hostname, int port, CStdString user, CStdString pa
 	strUrl.Format("http://%s:%i/Myth/GetConnectionInfo?Pin=%i", hostname.c_str(), port, pin);
 	CStdString strXML;
 
-	CFileCurl http;
+	CCurlFile http;
 
 	http.SetTimeout(timeout);
 	if(!http.Get(strUrl, strXML)){

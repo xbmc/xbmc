@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <inttypes.h>
+#include <ctype.h>
 
 #ifdef CONFIG_ICONV
 #include <iconv.h>
@@ -42,6 +43,7 @@
 #ifdef _WIN32
 #pragma comment(lib, "libiconv.lib")
 #pragma comment(lib, "freetype246MT.lib")
+#pragma comment(lib, "libfribidi.lib")
 #endif
 
 #define ass_atof(STR) (ass_strtod((STR),NULL))
@@ -76,6 +78,7 @@ void ass_free_track(ASS_Track *track)
     }
     free(track->style_format);
     free(track->event_format);
+    free(track->Language);
     if (track->styles) {
         for (i = 0; i < track->n_styles; ++i)
             ass_free_style(track, i);
@@ -602,6 +605,12 @@ static int process_info_line(ASS_Track *track, char *str)
         track->ScaledBorderAndShadow = parse_bool(str + 22);
     } else if (!strncmp(str, "Kerning:", 8)) {
         track->Kerning = parse_bool(str + 8);
+    } else if (!strncmp(str, "Language:", 9)) {
+        char *p = str + 9;
+        while (*p && isspace(*p)) p++;
+        track->Language = malloc(3);
+        strncpy(track->Language, p, 2);
+        track->Language[2] = 0;
     }
     return 0;
 }
@@ -1275,4 +1284,37 @@ ASS_Track *ass_new_track(ASS_Library *library)
     track->ScaledBorderAndShadow = 1;
     track->parser_priv = calloc(1, sizeof(ASS_ParserPriv));
     return track;
+}
+
+/**
+ * \brief Prepare track for rendering
+ */
+void ass_lazy_track_init(ASS_Library *lib, ASS_Track *track)
+{
+    if (track->PlayResX && track->PlayResY)
+        return;
+    if (!track->PlayResX && !track->PlayResY) {
+        ass_msg(lib, MSGL_WARN,
+               "Neither PlayResX nor PlayResY defined. Assuming 384x288");
+        track->PlayResX = 384;
+        track->PlayResY = 288;
+    } else {
+        if (!track->PlayResY && track->PlayResX == 1280) {
+            track->PlayResY = 1024;
+            ass_msg(lib, MSGL_WARN,
+                   "PlayResY undefined, setting to %d", track->PlayResY);
+        } else if (!track->PlayResY) {
+            track->PlayResY = track->PlayResX * 3 / 4;
+            ass_msg(lib, MSGL_WARN,
+                   "PlayResY undefined, setting to %d", track->PlayResY);
+        } else if (!track->PlayResX && track->PlayResY == 1024) {
+            track->PlayResX = 1280;
+            ass_msg(lib, MSGL_WARN,
+                   "PlayResX undefined, setting to %d", track->PlayResX);
+        } else if (!track->PlayResX) {
+            track->PlayResX = track->PlayResY * 4 / 3;
+            ass_msg(lib, MSGL_WARN,
+                   "PlayResX undefined, setting to %d", track->PlayResX);
+        }
+    }
 }

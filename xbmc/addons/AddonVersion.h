@@ -45,6 +45,8 @@ namespace ADDON
 
     static bool SplitFileName(CStdString& ID, CStdString& version,
                               const CStdString& filename);
+
+    static bool Test();
   protected:
     CStdString m_originalVersion;
     int mEpoch;

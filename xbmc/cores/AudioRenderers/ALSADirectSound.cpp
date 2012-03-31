@@ -175,7 +175,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     if(deviceuse != device)
     {
       snd_input_t* input;
-      nErr = snd_input_stdio_open(&input, _P("special://xbmc/system/asound.conf").c_str(), "r");
+      nErr = snd_input_stdio_open(&input, CSpecialProtocol::TranslatePath("special://xbmc/system/asound.conf").c_str(), "r");
       if(nErr >= 0)
       {
         nErr = snd_config_load(config, input);

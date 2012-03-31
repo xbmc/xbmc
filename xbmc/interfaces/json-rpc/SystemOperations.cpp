@@ -21,19 +21,20 @@
 
 #include "SystemOperations.h"
 #include "Application.h"
+#include "interfaces/Builtins.h"
 #include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 
 using namespace JSONRPC;
 
-JSON_STATUS CSystemOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CSystemOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVariant properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     CStdString propertyName = parameterObject["properties"][index].asString();
     CVariant property;
-    JSON_STATUS ret;
+    JSONRPC_STATUS ret;
     if ((ret = GetPropertyValue(client->GetPermissionFlags(), propertyName, property)) != OK)
       return ret;
 
@@ -45,7 +46,12 @@ JSON_STATUS CSystemOperations::GetProperties(const CStdString &method, ITranspor
   return OK;
 }
 
-JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CSystemOperations::EjectOpticalDrive(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return CBuiltins::Execute("EjectTray") == 0 ? ACK : FailedToExecute;
+}
+
+JSONRPC_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanPowerdown())
   {
@@ -56,7 +62,7 @@ JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLaye
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanSuspend())
   {
@@ -67,7 +73,7 @@ JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanHibernate())
   {
@@ -78,7 +84,7 @@ JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLay
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanReboot())
   {
@@ -89,7 +95,7 @@ JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer 
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::GetPropertyValue(int permissions, const CStdString &property, CVariant &result)
+JSONRPC_STATUS CSystemOperations::GetPropertyValue(int permissions, const CStdString &property, CVariant &result)
 {
   if (property.Equals("canshutdown"))
     result = g_powerManager.CanPowerdown() && (permissions & ControlPower);

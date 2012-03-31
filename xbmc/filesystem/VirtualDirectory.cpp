@@ -22,7 +22,7 @@
 
 #include "system.h"
 #include "VirtualDirectory.h"
-#include "FactoryDirectory.h"
+#include "DirectoryFactory.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Directory.h"

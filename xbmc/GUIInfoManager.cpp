@@ -221,8 +221,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "isstandalone",     SYSTEM_ISSTANDALONE },
                                   { "loggedon",         SYSTEM_LOGGEDON },
                                   { "showexitbutton",   SYSTEM_SHOW_EXIT_BUTTON },
-                                  { "hasdrivef",        SYSTEM_HAS_DRIVE_F },
-                                  { "hasdriveg",        SYSTEM_HAS_DRIVE_G },
                                   { "canpowerdown",     SYSTEM_CAN_POWERDOWN },
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
@@ -2047,10 +2045,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
 #ifdef HAS_DVD_DRIVE
-  else if (condition == SYSTEM_HAS_DRIVE_F)
-    bReturn = CIoSupport::DriveExists('F');
-  else if (condition == SYSTEM_HAS_DRIVE_G)
-    bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
     bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)

@@ -7,7 +7,7 @@
 
 #include "MythXmlCommand.h"
 
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 #include "utils/log.h"
 
@@ -22,7 +22,7 @@ MythXmlCommand::~MythXmlCommand() {
 void MythXmlCommand::execute(const CStdString& hostname, int port, const MythXmlCommandParameters& params, MythXmlCommandResult& result, int timeout){
 	CStdString strUrl = createRequestUrl(hostname, port, params);
 	CStdString strXML;
-	CFileCurl http;
+	CCurlFile http;
 	http.SetTimeout(timeout);
 	if (http.Get(strUrl, strXML))
 	{

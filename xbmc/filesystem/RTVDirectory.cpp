@@ -122,8 +122,9 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (url.HasPort())
   {
     char buffer[10];
+    sprintf(buffer,"%i",url.GetPort());
     strHostAndPort += ':';
-    strHostAndPort += itoa(url.GetPort(), buffer, 10);
+    strHostAndPort += buffer;
   }
 
   // No path given, list shows from ReplayGuide

@@ -20,8 +20,8 @@
  */
 
 #include "Directory.h"
-#include "FactoryDirectory.h"
-#include "FactoryFileDirectory.h"
+#include "DirectoryFactory.h"
+#include "FileDirectoryFactory.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -123,7 +123,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
-    boost::shared_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    boost::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (!pDirectory.get())
       return false;
 
@@ -232,7 +232,7 @@ bool CDirectory::Create(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Create(realPath.c_str()))
         return true;
@@ -256,7 +256,7 @@ bool CDirectory::Exists(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       return pDirectory->Exists(realPath.c_str());
   }
@@ -279,7 +279,7 @@ bool CDirectory::Remove(const CStdString& strPath)
   try
   {
     CStdString realPath = URIUtils::SubstitutePath(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    auto_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Remove(realPath.c_str()))
         return true;
@@ -305,7 +305,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
     CFileItemPtr pItem=items[i];
     if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
     {
-      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->GetPath(),pItem.get(),mask));
+      auto_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetPath(),pItem.get(),mask));
       if (pDirectory.get())
         pItem->m_bIsFolder = true;
       else

@@ -413,7 +413,13 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     // Extract useful components of tag
     switch(Tag)
     {
-//      case TAG_DESCRIPTION:       strncpy(m_ExifInfo->Description, ValuePtr, 5);    break;
+      case TAG_DESCRIPTION:
+      {
+        int length = max(ByteCount, 0);
+        length = min(length, MAX_COMMENT);
+        strncpy(m_ExifInfo->Description, (char *)ValuePtr, length);
+        break;
+      }
       case TAG_MAKE:              strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, 32);    break;
       case TAG_MODEL:             strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, 40);    break;
 //      case TAG_SOFTWARE:          strncpy(m_ExifInfo->Software, ValuePtr, 5);    break;
@@ -446,7 +452,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       {
         const int EXIF_COMMENT_HDR_LENGTH = 8;        // All comment tags have 8 bytes of header info
         int length = max(ByteCount - EXIF_COMMENT_HDR_LENGTH, 0);
-        length = min(length, 2000);
+        length = min(length, MAX_COMMENT);
         strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, length);
 //        FixComment(comment);                          // Ensure comment is printable
       }

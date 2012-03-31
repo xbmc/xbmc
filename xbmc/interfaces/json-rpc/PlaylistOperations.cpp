@@ -33,7 +33,7 @@ using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
-JSON_STATUS CPlaylistOperations::GetPlaylists(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   result = CVariant(CVariant::VariantTypeArray);
   CVariant playlist = CVariant(CVariant::VariantTypeObject);
@@ -53,14 +53,14 @@ JSON_STATUS CPlaylistOperations::GetPlaylists(const CStdString &method, ITranspo
   return OK;
 }
 
-JSON_STATUS CPlaylistOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
     CStdString propertyName = parameterObject["properties"][index].asString();
     CVariant property;
-    JSON_STATUS ret;
+    JSONRPC_STATUS ret;
     if ((ret = GetPropertyValue(playlist, propertyName, property)) != OK)
       return ret;
 
@@ -70,7 +70,7 @@ JSON_STATUS CPlaylistOperations::GetProperties(const CStdString &method, ITransp
   return OK;
 }
 
-JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList list;
   int playlist = GetPlaylist(parameterObject["playlistid"]);
@@ -95,7 +95,7 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   CFileItemList list;
@@ -145,7 +145,7 @@ JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   if (playlist == PLAYLIST_PICTURE)
@@ -169,7 +169,7 @@ JSON_STATUS CPlaylistOperations::Insert(const CStdString &method, ITransportLaye
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   if (playlist == PLAYLIST_PICTURE)
@@ -185,7 +185,7 @@ JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLaye
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   CGUIWindowSlideShow *slideshow = NULL;
@@ -209,7 +209,7 @@ JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(parameterObject["playlistid"]);
   if (playlist == PLAYLIST_PICTURE)
@@ -236,7 +236,7 @@ void CPlaylistOperations::NotifyAll()
   g_windowManager.SendThreadMessage(msg);
 }
 
-JSON_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const CStdString &property, CVariant &result)
+JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const CStdString &property, CVariant &result)
 {
   if (property.Equals("type"))
   {

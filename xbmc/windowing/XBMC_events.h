@@ -128,6 +128,7 @@ typedef struct XBMC_JoyButtonEvent {
 	unsigned char which;	/* The joystick device index */
 	unsigned char button;	/* The joystick button index */
 	unsigned char state;	/* XBMC_PRESSED or XBMC_RELEASED */
+  uint32_t      holdTime; /*holdTime of the pressed button*/
 } XBMC_JoyButtonEvent;
 
 /* The "window resized" event

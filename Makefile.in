@@ -63,6 +63,8 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/music/tags/musictags.a \
                    xbmc/music/windows/musicwindows.a \
                    xbmc/network/libscrobbler/scrobbler.a \
+                   xbmc/network/httprequesthandler/httprequesthandlers.a \
+                   xbmc/network/websocket/websocket.a \
                    xbmc/network/network.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
                    xbmc/peripherals/devices/peripheral-devices.a \

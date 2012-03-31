@@ -66,17 +66,15 @@ void CGUIDialogPeripheralSettings::CreateSettings()
 
   if (m_item)
   {
-    int iIndex = 1;
     CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
     if (peripheral)
     {
-      map<CStdString, CSetting *>::iterator it = peripheral->m_settings.begin();
-      while (it != peripheral->m_settings.end())
+      vector<CSetting *> settings = peripheral->GetSettings();
+      for (size_t iPtr = 0; iPtr < settings.size(); iPtr++)
       {
-        CSetting *setting = (*it).second;
+        CSetting *setting = settings[iPtr];
         if (!setting->IsVisible())
         {
-          ++it;
           CLog::Log(LOGDEBUG, "%s - invisible", __FUNCTION__);
           continue;
         }
@@ -89,7 +87,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (boolSetting)
             {
               m_boolSettings.insert(make_pair(CStdString(boolSetting->GetSetting()), boolSetting->GetData()));
-              AddBool(iIndex++, boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetSetting()], true);
+              AddBool(boolSetting->GetOrder(), boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetSetting()], true);
             }
           }
           break;
@@ -99,7 +97,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (intSetting)
             {
               m_intSettings.insert(make_pair(CStdString(intSetting->GetSetting()), (float) intSetting->GetData()));
-              AddSlider(iIndex++, intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
+              AddSlider(intSetting->GetOrder(), intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
             }
           }
           break;
@@ -109,7 +107,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (floatSetting)
             {
               m_floatSettings.insert(make_pair(CStdString(floatSetting->GetSetting()), floatSetting->GetData()));
-              AddSlider(iIndex++, floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetSetting()], floatSetting->m_fMin, floatSetting->m_fStep, floatSetting->m_fMax, CGUIDialogVideoSettings::FormatFloat, false);
+              AddSlider(floatSetting->GetOrder(), floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetSetting()], floatSetting->m_fMin, floatSetting->m_fStep, floatSetting->m_fMax, CGUIDialogVideoSettings::FormatFloat, false);
             }
           }
           break;
@@ -119,7 +117,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (stringSetting)
             {
               m_stringSettings.insert(make_pair(CStdString(stringSetting->GetSetting()), stringSetting->GetData()));
-              AddString(iIndex, stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetSetting()]);
+              AddString(stringSetting->GetOrder(), stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetSetting()]);
             }
           }
           break;
@@ -128,7 +126,6 @@ void CGUIDialogPeripheralSettings::CreateSettings()
           CLog::Log(LOGDEBUG, "%s - unknown type", __FUNCTION__);
           break;
         }
-        ++it;
       }
     }
     else
