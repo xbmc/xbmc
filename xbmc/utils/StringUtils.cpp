@@ -326,6 +326,37 @@ bool StringUtils::IsInteger(const CStdString& str)
   return i == str.size() && n > 0;
 }
 
+bool StringUtils::Test()
+{
+  bool ret = true;
+
+  ret |= IsNaturalNumber("10");
+  ret |= IsNaturalNumber(" 10");
+  ret |= IsNaturalNumber("0");
+  ret |= !IsNaturalNumber(" 1 0");
+  ret |= !IsNaturalNumber("1.0");
+  ret |= !IsNaturalNumber("1.1");
+  ret |= !IsNaturalNumber("0x1");
+  ret |= !IsNaturalNumber("blah");
+  ret |= !IsNaturalNumber("120 h");
+  ret |= !IsNaturalNumber(" ");
+  ret |= !IsNaturalNumber("");
+
+  ret |= IsInteger("10");
+  ret |= IsInteger(" -10");
+  ret |= IsInteger("0");
+  ret |= !IsInteger(" 1 0");
+  ret |= !IsInteger("1.0");
+  ret |= !IsInteger("1.1");
+  ret |= !IsInteger("0x1");
+  ret |= !IsInteger("blah");
+  ret |= !IsInteger("120 h");
+  ret |= !IsInteger(" ");
+  ret |= !IsInteger("");
+
+  return ret;
+}
+
 void StringUtils::RemoveCRLF(CStdString& strLine)
 {
   while ( strLine.size() && (strLine.Right(1) == "\n" || strLine.Right(1) == "\r") )
