@@ -159,23 +159,6 @@ typedef enum {
 XBMCController *g_xbmcController;
 
 //--------------------------------------------------------------
-//--------------------------------------------------------------
-@implementation UIWindow (limneos)
--(id)parent { return nil; }
--(void)removeFromParent {}
--(BOOL)active { return NO; } 
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
-@implementation UIView (limneos)
--(id)parent { return nil; }
--(BOOL)active { return NO; }
--(void)removeFromParent {}
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
 // so we don't have to include AppleTV.frameworks/PrivateHeaders/ATVSettingsFacade.h
 @interface ATVSettingsFacade : BRSettingsFacade {}
 -(int)screenSaverTimeout;
@@ -191,7 +174,6 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface XBMCController (PrivateMethods)
-UIWindow      *m_window;
 XBMCEAGLView  *m_glView;
 NSTimer       *m_keyTimer;
 int           m_screensaverTimeout;
@@ -225,8 +207,6 @@ int           m_systemsleepTimeout;
 {
   [m_glView stopAnimation];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
@@ -282,10 +262,11 @@ int           m_systemsleepTimeout;
     selector: @selector(observeDefaultCenterStuff:)
     name: nil
     object: nil];
-
-  m_window = [[UIWindow alloc] initWithFrame:[BRWindow interfaceFrame]];
-  m_glView = [[XBMCEAGLView alloc] initWithFrame:m_window.bounds];
-  [m_window addSubview:m_glView];
+  
+  CGRect interfaceFrame = [BRWindow interfaceFrame];
+  NSLog(@"XBMC: interfaceFrame: %f, %f, %f, %f", interfaceFrame.origin.x, interfaceFrame.origin.y, interfaceFrame.size.width, interfaceFrame.size.height);   
+  //init glview with interfaceframe (might be more the resolution - ios scales for us)
+  m_glView = [[XBMCEAGLView alloc] initWithFrame:interfaceFrame];
 
   g_xbmcController = self;
 
@@ -297,7 +278,6 @@ int           m_systemsleepTimeout;
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   [m_glView stopAnimation];
   [m_glView release];
-  [m_window release];
 
   NSNotificationCenter *center;
   // take us off the default center for our app
@@ -315,8 +295,9 @@ int           m_systemsleepTimeout;
 
   [self disableSystemSleep];
   [self disableScreenSaver];
-  [m_window makeKeyAndVisible];
-  [[[[BRWindow windowList] objectAtIndex:0] content] addControl: m_window];
+
+  //inject our gles layer into the backrow root layer
+  [[BRWindow rootLayer] addSublayer:m_glView.layer];
 
   [m_glView startAnimation];
 }
@@ -326,9 +307,8 @@ int           m_systemsleepTimeout;
   NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
   [m_glView stopAnimation];
+  [m_glView.layer removeFromSuperlayer];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
