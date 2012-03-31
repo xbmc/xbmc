@@ -40,8 +40,8 @@
 #include <GLES2/gl2ext.h>
 #endif
 
-#include "xbmc/guilib/GUIShader.h"
 #include "xbmc/guilib/MatrixGLES.h"
+#include "xbmc/visualizations/EGLHelpers/GUIShader.h"
 
 #define NUM_BANDS 16
 
@@ -59,6 +59,31 @@ GLenum  g_mode = GL_TRIANGLES;
 */
 float g_fWaveform[2][512];
 
+std::string frag = "precision mediump float; \n"
+                   "varying lowp vec4 m_colour; \n"
+                   "void main () \n"
+                   "{ \n"
+                   "  gl_FragColor = m_colour; \n"
+                   "}\n";
+
+std::string vert = "attribute vec4 m_attrpos;\n"
+                   "attribute vec4 m_attrcol;\n"
+                   "attribute vec4 m_attrcord0;\n"
+                   "attribute vec4 m_attrcord1;\n"
+                   "varying vec4   m_cord0;\n"
+                   "varying vec4   m_cord1;\n"
+                   "varying lowp   vec4 m_colour;\n"
+                   "uniform mat4   m_proj;\n"
+                   "uniform mat4   m_model;\n"
+                   "void main ()\n"
+                   "{\n"
+                   "  mat4 mvp    = m_proj * m_model;\n"
+                   "  gl_Position = mvp * m_attrpos;\n"
+                   "  m_colour    = m_attrcol;\n"
+                   "  m_cord0     = m_attrcord0;\n"
+                   "  m_cord1     = m_attrcord1;\n"
+                   "}\n";
+
 CGUIShader *m_shader = NULL;
 
 //-- Create -------------------------------------------------------------------
@@ -69,7 +94,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if (!props)
     return ADDON_STATUS_UNKNOWN;
 
-  m_shader = new CGUIShader("guishader_frag_default.glsl");
+  m_shader = new CGUIShader(vert, frag);
 
   if(!m_shader)
     return ADDON_STATUS_UNKNOWN;
