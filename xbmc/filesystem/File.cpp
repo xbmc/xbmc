@@ -447,14 +447,14 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
         {
-          return -1;
+          return 0;
         }
       }
       else     
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
-          return -1;
+          return 0;
         }
       }
     }
