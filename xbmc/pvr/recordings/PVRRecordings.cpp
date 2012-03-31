@@ -29,7 +29,6 @@
 #include "threads/SingleLock.h"
 #include "video/VideoDatabase.h"
 
-
 #include "utils/URIUtils.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -41,6 +40,7 @@ CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false),
     m_strDirectoryHistory("pvr://recordings/")
 {
+    m_thumbLoader.SetNumOfWorkers(1); 
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -94,7 +94,7 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
       (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
 }
 
-void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results) const
+void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results) 
 {
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
   {
@@ -110,6 +110,9 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     if (db.Open())
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+
+    if (!pFileItem->HasThumbnail())
+      m_thumbLoader.LoadItem(pFileItem.get());
     results->Add(pFileItem);
   }
 }
