@@ -195,7 +195,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (URIUtils::GetExtension(texturePath).Equals(".jpg") || URIUtils::GetExtension(texturePath).Equals(".tbn"))
   {
     CJpegIO jpegfile;
-    if (jpegfile.Open(texturePath))
+    if (jpegfile.Open(texturePath, maxWidth, maxHeight))
     {
       if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
       {
