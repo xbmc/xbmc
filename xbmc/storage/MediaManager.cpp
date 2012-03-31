@@ -96,6 +96,7 @@ void CMediaManager::Initialize()
     #endif
   }
   m_platformStorage->Initialize();
+  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
 }
 
 bool CMediaManager::LoadSources()
@@ -301,7 +302,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
-    strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+    strDevice = strFirstAvailDrive;
 #endif
 
 #ifdef _WIN32
