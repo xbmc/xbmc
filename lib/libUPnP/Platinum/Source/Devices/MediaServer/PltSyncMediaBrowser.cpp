@@ -239,7 +239,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
     NPT_Result res = NPT_FAILURE;
     NPT_Int32  index = start;
     NPT_UInt32 count = 0;
-    bool       cache = m_UseCache && metadata && start == 0 && max_results == 0;
+    bool       cache = m_UseCache && !metadata && start == 0 && max_results == 0;
 
     // reset output params
     list = NULL;
