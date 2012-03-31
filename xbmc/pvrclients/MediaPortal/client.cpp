@@ -385,12 +385,12 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "tvgroup")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'tvgroup' from %s to %s", g_szTVGroup.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed setting 'tvgroup' from '%s' to '%s'", g_szTVGroup.c_str(), (const char*) settingValue);
     g_szTVGroup = (const char*) settingValue;
   }
   else if (str == "radiogroup")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from %s to %s", g_szRadioGroup.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from '%s' to '%s'", g_szRadioGroup.c_str(), (const char*) settingValue);
     g_szRadioGroup = (const char*) settingValue;
   }
 #ifndef TSREADER
@@ -428,8 +428,9 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "timeshiftdir")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %u to %u", g_szTimeshiftDir.c_str(), *(bool*) settingValue);
-    g_szTimeshiftDir = *(bool*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %s to %s", g_szTimeshiftDir.c_str(), (const char*) settingValue);
+    g_szTimeshiftDir = (const char*) settingValue;
+  }
   }
   else if (str == "fastchannelswitch")
   {
