@@ -1090,6 +1090,7 @@
 			<shadowcolor>black</shadowcolor>
 			<label>$INFO[System.Date]</label>
 			<include>Window_OpenClose_Animation</include>
+			<animation effect="slide" start="0,0" end="-40,0" time="100" condition="Window.IsVisible(Mutebug)">conditional</animation>
 		</control>
 	</controls>	
 </window>
