@@ -239,6 +239,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
+  /* Only allow slice threading, since frame threading is more
+   * sensitive to changes in frame sizes, and it causes crashes
+   * during HW accell */
+  m_pCodecContext->thread_type = FF_THREAD_SLICE;
 
 #if defined(__APPLE__) && defined(__arm__)
   // ffmpeg with enabled neon will crash and burn if this is enabled
