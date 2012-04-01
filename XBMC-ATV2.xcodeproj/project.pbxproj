@@ -106,7 +106,6 @@
 		DF7E680013ED4E25003ED690 /* DVDInputStreamPVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E67FC13ED4E25003ED690 /* DVDInputStreamPVRManager.cpp */; };
 		DF7E680113ED4E25003ED690 /* DVDInputStreamStack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E67FE13ED4E25003ED690 /* DVDInputStreamStack.cpp */; };
 		DF7E680413ED4E42003ED690 /* DVDDemuxPVRClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E680213ED4E42003ED690 /* DVDDemuxPVRClient.cpp */; };
-		DF7E680813ED4F15003ED690 /* libTcpSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF7E680713ED4F15003ED690 /* libTcpSocket.a */; };
 		DF7E681613ED5152003ED690 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88787913E8912900B4ECE2 /* TimeSmoother.cpp */; };
 		DF7E683B13ED52B7003ED690 /* PVRDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E683713ED52B7003ED690 /* PVRDirectory.cpp */; };
 		DF7E683C13ED52B7003ED690 /* PVRFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E683913ED52B7003ED690 /* PVRFile.cpp */; };
@@ -1240,7 +1239,6 @@
 		DF7E67FF13ED4E25003ED690 /* DVDInputStreamStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamStack.h; sourceTree = "<group>"; };
 		DF7E680213ED4E42003ED690 /* DVDDemuxPVRClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxPVRClient.cpp; sourceTree = "<group>"; };
 		DF7E680313ED4E42003ED690 /* DVDDemuxPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxPVRClient.h; sourceTree = "<group>"; };
-		DF7E680713ED4F15003ED690 /* libTcpSocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTcpSocket.a; path = lib/libTcpSocket/libTcpSocket.a; sourceTree = "<group>"; };
 		DF7E683713ED52B7003ED690 /* PVRDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRDirectory.cpp; sourceTree = "<group>"; };
 		DF7E683813ED52B7003ED690 /* PVRDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRDirectory.h; sourceTree = "<group>"; };
 		DF7E683913ED52B7003ED690 /* PVRFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRFile.cpp; sourceTree = "<group>"; };
@@ -3255,7 +3253,6 @@
 				F56B161B12CD69DB009B4C96 /* ImageIO.framework in Frameworks */,
 				4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */,
 				18404DFD1396C44F00863BBA /* SlingboxLib.a in Frameworks */,
-				DF7E680813ED4F15003ED690 /* libTcpSocket.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6481,7 +6478,6 @@
 				F589AE7012890B9E00D8079E /* libapetag.a */,
 				F589AE7D12890BEF00D8079E /* libsquish.a */,
 				F589AE7E12890BEF00D8079E /* librtv.a */,
-				DF7E680713ED4F15003ED690 /* libTcpSocket.a */,
 				F589AE8012890BEF00D8079E /* libxdaap.a */,
 				18404DFC1396C44F00863BBA /* SlingboxLib.a */,
 			);
@@ -7703,7 +7699,6 @@
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/pvrclients/mythtv/libmythxml\"",
-					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
@@ -7802,7 +7797,6 @@
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/pvrclients/mythtv/libmythxml\"",
-					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
