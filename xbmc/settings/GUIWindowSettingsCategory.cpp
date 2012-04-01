@@ -97,6 +97,7 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #include "cores/AudioRenderers/AudioRendererFactory.h"
+#include "utils/SystemInfo.h"
 #endif
 #include <map>
 #include "Settings.h"
@@ -1446,7 +1447,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (g_graphicsContext.IsFullScreenRoot())
       g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+#ifdef _WIN32
+    // aero with fake fullscreen and adjust refresh rate is know to cause stutter for a lot of users; offer to disable auto refresh rate
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen") && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && !(g_sysinfo.IsAeroDisabled()))
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(14100, 14102, 14103, 14104))
+        g_guiSettings.SetBool("videoplayer.adjustrefreshrate", false);
+    }
+#endif
   }
+#ifdef _WIN32
+  else if (strSetting.Equals("videoplayer.adjustrefreshrate"))
+  {
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen") && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && !(g_sysinfo.IsAeroDisabled()))
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(14101, 14102, 14103, 14104))
+      {
+        g_guiSettings.SetBool("videoscreen.fakefullscreen", false);
+        if (g_graphicsContext.IsFullScreenRoot())
+          g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+      }
+    }
+  }
+#endif
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();

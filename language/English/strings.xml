@@ -1359,6 +1359,12 @@
   <string id="14095">Power saving</string>
   <string id="14099">Eject disc when CD ripping is complete</string>
 
+  <string id="14100">Disable adjust display refresh rate?</string>
+  <string id="14101">Enable true fullscreen mode?</string>
+  <string id="14102">Adjust display refresh rate to match video in</string>
+  <string id="14103">fullscreen window mode can result in stuttering</string>
+  <string id="14104">video playback.</string>
+
   <string id="15015">Remove</string>
   <string id="15016">Games</string>
 
