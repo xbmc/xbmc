@@ -19,17 +19,10 @@
  *
  */
 
-#include <stdint.h>
-#include <limits.h>
-#include "HTSPDemux.h"
+#include "client.h"
+#include "HTSPConnection.h"
 #include <libavcodec/avcodec.h> // For codec id's
-
-extern "C" {
-#include "libhts/net.h"
-#include "libhts/htsmsg.h"
-#include "libhts/htsmsg_binary.h"
-#include "libhts/sha1.h"
-}
+#include "HTSPDemux.h"
 
 using namespace ADDON;
 
