@@ -117,6 +117,19 @@
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 						</control>
+						<control type="label">
+							<posx>90</posx>
+							<posy>185</posy>
+							<width>150</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(8000)</visible>
+						</control>
 					</focusedlayout>
 					<content>
 						<item>
@@ -366,6 +379,19 @@
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 						</control>
+						<control type="label">
+							<posx>120</posx>
+							<posy>185</posy>
+							<width>200</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(8001)</visible>
+						</control>
 					</focusedlayout>
 					<content>
 						<item>
@@ -612,6 +638,19 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="label">
+							<posx>100</posx>
+							<posy>190</posy>
+							<width>180</width>
+							<height>20</height>
+							<font>font12</font>
+							<textcolor>blue</textcolor>
+							<selectedcolor>selected</selectedcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(8002)</visible>
 						</control>
 					</focusedlayout>
 					<content>
