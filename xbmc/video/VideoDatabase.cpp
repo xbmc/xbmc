@@ -386,7 +386,7 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    strSQL=PrepareSQL("select idPath from path where strPath like '%s'",strPath1.c_str());
+    strSQL=PrepareSQL("select idPath from path where strPath = '%s'",strPath1.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       idPath = m_pDS->fv("path.idPath").get_asInt();
