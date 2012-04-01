@@ -210,16 +210,9 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
   {
     g_PVRManager.StopUpdateThreads();
     if (bRestart)
-    {
       mappedClient->ReCreate();
-    }
     else
-    {
       mappedClient->Destroy();
-      CPVRDatabase *database = GetPVRDatabase();
-      if (database)
-        database->DeleteClient(mappedClient->ID());
-    }
     g_PVRManager.StartUpdateThreads();
   }
 

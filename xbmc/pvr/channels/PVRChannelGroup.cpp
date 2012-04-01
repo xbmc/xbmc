@@ -525,7 +525,7 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = size();
 
-  database->GetGroupMembers(*this);
+  database->Get(*this);
 
   return size() - iChannelCount;
 }
