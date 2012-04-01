@@ -124,6 +124,8 @@ namespace EPG
      */
     virtual bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
 
+    bool Persist(const CEpgContainer &epg);
+
     /*!
      * @brief Persist an EPG table. It's entries are not persisted.
      * @param epg The table to persist.

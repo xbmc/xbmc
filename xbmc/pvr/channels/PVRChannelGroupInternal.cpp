@@ -389,7 +389,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 
   if (HasChangedChannels())
   {
-    g_EpgContainer.PersistAll();
+    g_EpgContainer.PersistTables();
     return Persist();
   }
 

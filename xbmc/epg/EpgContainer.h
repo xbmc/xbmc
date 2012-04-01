@@ -211,6 +211,8 @@ namespace EPG
      */
     bool PersistAll(void);
 
+    bool PersistTables(void);
+
   protected:
     /*!
      * @brief Load the EPG settings.
