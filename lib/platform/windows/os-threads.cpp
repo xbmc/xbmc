@@ -30,6 +30,7 @@
  *     http://www.pulse-eight.net/
  */
 
+#include "../os.h"
 #include "os-threads.h"
 using namespace PLATFORM;
 
