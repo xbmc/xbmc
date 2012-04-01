@@ -3543,7 +3543,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ORIGINALTITLE:
       return tag->GetEPGNow(epgTag) ? epgTag.Title() : g_localizeStrings.Get(19055);
     case VIDEOPLAYER_GENRE:
-      return tag->GetEPGNow(epgTag) ? epgTag.Genre() : StringUtils::EmptyString;
+      return tag->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : StringUtils::EmptyString;
     case VIDEOPLAYER_PLOT:
       return tag->GetEPGNow(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
     case VIDEOPLAYER_PLOT_OUTLINE:
@@ -3557,7 +3557,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT_TITLE:
       return tag->GetEPGNext(epgTag) ? epgTag.Title() : g_localizeStrings.Get(19055);
     case VIDEOPLAYER_NEXT_GENRE:
-      return tag->GetEPGNext(epgTag) ? epgTag.Genre() : StringUtils::EmptyString;
+      return tag->GetEPGNext(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : StringUtils::EmptyString;
     case VIDEOPLAYER_NEXT_PLOT:
       return tag->GetEPGNext(epgTag) ? epgTag.Plot() : StringUtils::EmptyString;
     case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
@@ -4245,12 +4245,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasPVRChannelInfoTag())
     {
       CEpgInfoTag epgTag;
-      return item->GetPVRChannelInfoTag()->GetEPGNow(epgTag) ? epgTag.Genre() : "";
+      return item->GetPVRChannelInfoTag()->GetEPGNow(epgTag) ? StringUtils::Join(epgTag.Genre(), g_advancedSettings.m_videoItemSeparator) : StringUtils::EmptyString;
     }
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->m_strGenre;
+      return StringUtils::Join(item->GetPVRRecordingInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
     if (item->HasEPGInfoTag())
-      return item->GetEPGInfoTag()->Genre();
+      return StringUtils::Join(item->GetEPGInfoTag()->Genre(), g_advancedSettings.m_videoItemSeparator);
     break;
   case LISTITEM_FILENAME:
   case LISTITEM_FILE_EXTENSION:
@@ -4714,7 +4714,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
       const CPVRChannel *channel = item->HasPVRChannelInfoTag() ? item->GetPVRChannelInfoTag() : NULL;
       CEpgInfoTag tag;
       if (channel && channel->GetEPGNext(tag))
-        return tag.Genre();
+        return StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator);
     }
     return StringUtils::EmptyString;
   case LISTITEM_NEXT_TITLE:

@@ -293,7 +293,7 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag.m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
         newTag.m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
         newTag.m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
-        newTag.m_strGenre           = m_pDS->fv("sGenre").get_asString().c_str();
+        newTag.m_genre              = StringUtils::Split(m_pDS->fv("sGenre").get_asString().c_str(), g_advancedSettings.m_videoItemSeparator);
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
@@ -405,7 +405,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   CStdString strQuery;
   
   /* Only store the genre string when needed */
-  CStdString strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? tag.Genre() : "";
+  CStdString strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? StringUtils::Join(tag.Genre(), g_advancedSettings.m_videoItemSeparator) : "";
 
   if (iBroadcastId < 0)
   {

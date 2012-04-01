@@ -58,7 +58,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_channel            = NULL;
   m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
   m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
-  m_strGenre           = StringUtils::EmptyString;
   m_iGenreType         = 0;
   m_iGenreSubType      = 0;
   m_StartTime          = CDateTime::GetUTCDateTime();
@@ -85,7 +84,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_iLifetime          = timer.iLifetime;
   m_iMarginStart       = timer.iMarginStart;
   m_iMarginEnd         = timer.iMarginEnd;
-  m_strGenre           = CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
+  m_genre              = StringUtils::Split(CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_iGenreType         = timer.iGenreType;
   m_iGenreSubType      = timer.iGenreSubType;
   m_iEpgId             = -1;
@@ -336,7 +335,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iMarginEnd        = tag.m_iMarginEnd;
   m_iEpgId            = tag.m_iEpgId;
   m_epgStart          = tag.m_epgStart;
-  m_strGenre          = tag.m_strGenre;
+  m_genre             = tag.m_genre;
   m_iGenreType        = tag.m_iGenreType;
   m_iGenreSubType     = tag.m_iGenreSubType;
   m_strSummary        = tag.m_strSummary;
@@ -384,7 +383,7 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
     {
       m_iEpgId = epgTag->m_iEpgId;
       m_epgStart = epgTag->StartAsUTC();
-      m_strGenre = epgTag->Genre();
+      m_genre = epgTag->Genre();
       m_iGenreType = epgTag->GenreType();
       m_iGenreSubType = epgTag->GenreSubType();
       epgTag->SetTimer(this);

@@ -209,7 +209,8 @@ CFileItem::CFileItem(const CPVRChannel& channel)
       musictag->SetTitle(bHasEpgNow ? epgNow.Title() : g_localizeStrings.Get(19055));
       musictag->SetArtist(channel.ChannelName());
       musictag->SetAlbumArtist(channel.ChannelName());
-      musictag->SetGenre(bHasEpgNow ? epgNow.Genre() : "");
+      if (bHasEpgNow)
+        musictag->SetGenre(epgNow.Genre());
       musictag->SetDuration(bHasEpgNow ? epgNow.GetDuration() : 3600);
       musictag->SetLoaded(true);
       musictag->SetComment("");
