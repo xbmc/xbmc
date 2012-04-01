@@ -122,6 +122,7 @@
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
     <ClCompile Include="..\..\GenreTable.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
