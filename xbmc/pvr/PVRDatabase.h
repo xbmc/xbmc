@@ -144,6 +144,7 @@ namespace PVR
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
     bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
     bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
+    bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
 
     /*!

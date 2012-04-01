@@ -565,6 +565,13 @@ bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<
   return bReturn;
 }
 
+bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group)
+{
+  CStdString strWhereClause;
+  strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
+  return DeleteValues("map_channelgroups_channels", strWhereClause);
+}
+
 bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const vector<int> &channelsToDelete)
 {
   bool bDelete(true);
@@ -726,35 +733,49 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
 
 bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
-  bool bReturn(false);
+  bool bReturn(true);
   CStdString strQuery;
-  CSingleLock lock(group.m_critSection);
 
-  if (group.GroupID() <= 0)
   {
-    /* new group */
-    strQuery = FormatSQL("INSERT INTO channelgroups ("
-        "bIsRadio, sName) "
-        "VALUES (%i, '%s');",
-        (group.IsRadio() ? 1 :0), group.GroupName().c_str());
-  }
-  else
-  {
-    /* update group */
-    strQuery = FormatSQL("REPLACE INTO channelgroups ("
-        "idGroup, bIsRadio, sName) "
-        "VALUES (%i, %i, '%s');",
-        group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str());
-  }
+    CSingleLock lock(group.m_critSection);
 
-  if (ExecuteQuery(strQuery))
-  {
     if (group.GroupID() <= 0)
-      group.m_iGroupId = (int) m_pDS->lastinsertid();
-    lock.Leave();
+    {
+      /* new group */
+      strQuery = FormatSQL("INSERT INTO channelgroups (bIsRadio, sName) VALUES (%i, '%s')", (group.IsRadio() ? 1 :0), group.GroupName().c_str());
+    }
+    else
+    {
+      /* update group */
+      strQuery = FormatSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, sName) VALUES (%i, %i, '%s')", group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str());
+    }
 
-    bReturn = PersistGroupMembers(group);
+    if (ExecuteQuery(strQuery))
+    {
+      if (group.GroupID() <= 0)
+        group.m_iGroupId = (int) m_pDS->lastinsertid();
+    }
+    else
+      bReturn = false;
   }
+
+  if (group.IsInternalGroup())
+  {
+    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+    {
+      PVRChannelGroupMember member = group.at(iChannelPtr);
+      if (member.channel->IsChanged() || member.channel->IsNew())
+      {
+        int iChannelId = Persist(*member.channel, !member.channel->IsNew());
+        if (member.channel->IsNew())
+          member.channel->SetChannelID(iChannelId, false);
+      }
+    }
+    CommitInsertQueries();
+  }
+
+  if (bReturn)
+    bReturn = PersistGroupMembers(group);
 
   return bReturn;
 }
