@@ -78,7 +78,7 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
     if (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0)
       bFlatten = true; // flatten if one season + specials
 
-  if (!bFlatten && g_settings.GetWatchMode("tvshows") == VIDEO_SHOW_UNWATCHED) 
+  if (iFlatten > 0 && !bFlatten && g_settings.GetWatchMode("tvshows") == VIDEO_SHOW_UNWATCHED) 
   {
     int count = 0;
     for(int i = 0; i < items.Size(); i++) 
