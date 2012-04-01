@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <language locale="ru">
   <charsets>
     <gui unicodefont="true">utf-8</gui>
@@ -18,4 +18,24 @@
       <speedunit>mps</speedunit>
     </region>
   </regions>
+   <sorttokens>
+    <token>The</token>
+    <token>A</token>
+    <token>An</token>
+    <token>Der</token>
+    <token>Die</token>
+    <token>Das</token>
+    <token>Le</token>
+    <token>La</token>
+    <token>Les</token>
+    <token>Un</token>
+    <token>Une</token>
+    <token>Des</token>
+    <token>Il</token>
+    <token>Lo</token>
+    <token>La</token>
+    <token>Gli</token>
+    <token>Uno</token>
+    <token>Una</token>
+  </sorttokens>
 </language>
