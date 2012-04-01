@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Russian – current edition by Roman_V_M -->
-<!--Based on English cd69c7030b0caec990b6143fac65ca8168dccf71 (23.01.2012)-->
 <strings>
   <string id="0">Программы</string>
   <string id="1">Фотографии</string>
@@ -54,7 +53,7 @@
   <string id="60">окт.</string>
   <string id="61">нояб.</string>
   <string id="62">дек.</string>
-
+  
   <string id="71">С</string>
   <string id="72">ССВ</string>
   <string id="73">СВ</string>
@@ -876,8 +875,14 @@
   <string id="10020">Скрипты</string>
   <string id="10021">Веб-браузер</string>
 
+  <string id="10025">Видео</string>
+
   <string id="10028">Видео/плейлист</string>
+  <string id="10029">Экран входа</string>
+
   <string id="10034">Настройки - Профили</string>
+
+  <string id="10040">Браузер дополнений</string>
 
   <string id="10100">Диалог "Да/Нет"</string>
   <string id="10101">Диалог выполнения</string>
@@ -1019,7 +1024,7 @@
 
   <string id="13100">Фильтр мерцания</string>
   <string id="13101">По выбору драйвера (требуется перезапуск)</string>
-
+  
   <string id="13105">Вертикальная синхронизация</string>
   <string id="13106">Отключена</string>
   <string id="13107">Только при просмотре видео</string>
@@ -1067,11 +1072,11 @@
 
   <string id="13200">Профили</string>
   <string id="13201">Удалить профиль "%s"?</string>
-
+  
   <string id="13204">Последний загруженный профиль:</string>
   <string id="13205">Неизвестно</string>
   <string id="13206">Перезаписать</string>
-
+  
   <string id="13208">Таймер напоминаний</string>
   <string id="13209">Период таймера напоминаний (в мин.)</string>
   <string id="13210">Запущен; сработает через %i мин.</string>
@@ -1172,7 +1177,7 @@
   <string id="13359">Выбрать эскиз исполнителя</string>
   <string id="13360">Создавать эскизы</string>
   <string id="13361">Включить микрофон</string>
-
+  
   <string id="13375">Включить устройство</string>
   <string id="13376">Громкость</string>
   <string id="13377">Основной режим просмотра</string>
@@ -1496,7 +1501,7 @@
   <string id="16039">Выкл.</string>
   <string id="16040">Авто</string>
   <string id="16041">Вкл.</string>
-
+  
   <string id="16100">Все видео</string>
   <string id="16101">Не просмотрено</string>
   <string id="16102">Просмотрено</string>
@@ -1537,7 +1542,7 @@
   <string id="16322">Spline36</string>
   <string id="16323">Оптимизир. Spline36</string>
   <string id="16324">Blend (программный)</string>
-
+  
   <string id="16400">Постобработка</string>
 
   <string id="17500">Переход дисплея в спящий режим через</string>
@@ -1773,7 +1778,7 @@
   <string id="20326">Это сбросит калибровочные значения для %s</string>
   <string id="20327">до значений по умолчанию</string>
   <string id="20328">Укажите назначение</string>
-
+  <string id="20329">Файлы в отдельных папках с названием фильма</string>
   <string id="20330">Использовать имена папок для поиска</string>
   <string id="20331">Файл</string>
   <string id="20332">Использовать имена файлов или папок для поиска?</string>
@@ -1863,7 +1868,7 @@
   <string id="20416">Премьера</string>
   <string id="20417">Сценарий</string>
   <string id="20418"></string>
-  <string id="20419">Показывать метаданные в представлении файлов</string>
+  <string id="20419">Показывать названия из медиатеки вместо имен файлов</string>
 
   <string id="20420">Никогда</string>
   <string id="20421">Если один сезон</string>
@@ -1925,7 +1930,7 @@
   <string id="21366">Папка субтитров</string>
   <string id="21367">Папка для фильмов и альтернативных субтитров</string>
   <string id="21368">Игнорировать шрифты субтитров ASS/SSA</string>
-
+  
   <string id="21369">Включить мышь и сенсорный экран</string>
   <string id="21370">Звуки интерфейса во время проигрывания</string>
   <string id="21371">Эскизы</string>
@@ -2013,7 +2018,7 @@
   <string id="21453">Корневая ФС</string>
   <string id="21454">Кэш заполнен</string>
   <string id="21455">Объем кэша недостаточен для непрерывного проигрывания</string>
-
+  
   <string id="21460">Расположение субтитров</string>
   <string id="21461">Фиксированное</string>
   <string id="21462">Снизу видео</string>
@@ -2329,7 +2334,7 @@
   <string id="33101">Веб-сервер</string>
   <string id="33102">Сервер событий</string>
   <string id="33103">Сервер удаленного доступа</string>
-
+  
   <string id="33200">Обнаружено новое подключение</string>
 
   <!-- translators: no need to add these to your language files -->
@@ -2355,10 +2360,10 @@
 
   <string id="34201">Не удается найти следующий файл</string>
   <string id="34202">Не удается найти предыдущий файл</string>
-
+  
   <string id="34300">Не удалось запустить zeroconf</string>
   <string id="34301">Проверьте, установлена ли служба Apple Bonjour. См. журнал.</string>
-
+  
   <string id="34400">Обработчик видео</string>
   <string id="34401">Не удалось активировать фильтры видео. Используется масштабирование bilinear.</string>
   <string id="34402">Не удалось активировать аудиоустройство</string>
@@ -2380,7 +2385,7 @@
   <string id="35502">Название</string>
   <string id="35503">Производитель</string>
   <string id="35504">ID продукта</string>
-
+  
   <string id="36000">Адаптер Pulse-Eight CEC</string>
   <string id="36001">Pulse-Eight Nyxboard</string>
   <string id="36002">Включить дополнительные команды клавиатуры</string>
