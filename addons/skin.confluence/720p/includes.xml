@@ -251,7 +251,7 @@
 			</control>
 			<control type="label">
 				<posx>85</posx>
-				<posy>30r</posy>
+				<posy>32r</posy>
 				<width>700</width>
 				<height>20</height>
 				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
@@ -323,7 +323,7 @@
 			<control type="label">
 				<description>Container Duration Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>32r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
