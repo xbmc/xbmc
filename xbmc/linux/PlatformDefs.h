@@ -588,12 +588,6 @@ typedef struct _D3DMATRIX {
 #define FILE_SHARE_WRITE                 0x00000002
 #define FILE_SHARE_DELETE                0x00000004
 
-
-// String
-char *itoa(int i, char *a, int r);
-void strlwr(char* string);
-void strupr(char* string);
-
 // Audio stuff
 typedef struct tWAVEFORMATEX
 {

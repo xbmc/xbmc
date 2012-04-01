@@ -168,12 +168,12 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
 #ifdef _WIN32
   struct _WIN32_FIND_DATAW FindFileDataW;
   CStdStringW strwfile;
-  g_charsetConverter.utf8ToW(_P(p), strwfile, false);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(p), strwfile, false);
   HANDLE res = FindFirstFileW(strwfile.c_str(), &FindFileDataW);
   if (res != INVALID_HANDLE_VALUE)
     to_WIN32_FIND_DATA(&FindFileDataW, lpFindFileData);
 #else
-  HANDLE res = FindFirstFile(_P(p).c_str(), lpFindFileData);
+  HANDLE res = FindFirstFile(CSpecialProtocol::TranslatePath(p).c_str(), lpFindFileData);
 #endif
   free(p);
   return res;
@@ -891,7 +891,11 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
     destinationBuffer = (LPWSTR)malloc(destinationBufferSize * sizeof(WCHAR));
   }
 
+#ifdef _WIN32
   int ret = MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, cbMultiByte, destinationBuffer, destinationBufferSize);
+#else
+  int ret = 0;
+#endif
 
   if (ret > 0)
   {
@@ -929,7 +933,11 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
     destinationBuffer = (LPSTR)malloc(destinationBufferSize * sizeof(char));
   }
 
+#ifdef _WIN32
   int ret = WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, cchWideChar, destinationBuffer, destinationBufferSize, lpDefaultChar, lpUsedDefaultChar);
+#else
+  int ret = 0;
+#endif
 
   if (ret > 0)
   {
@@ -986,7 +994,7 @@ extern "C" HANDLE WINAPI dllCreateFileA(
     IN HANDLE hTemplateFile
     )
 {
-  return CreateFileA(_P(lpFileName), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+  return CreateFileA(CSpecialProtocol::TranslatePath(lpFileName), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 extern "C" BOOL WINAPI dllLockFile(HANDLE hFile, DWORD dwFileOffsetLow, DWORD dwFileOffsetHigh, DWORD nNumberOffBytesToLockLow, DWORD nNumberOffBytesToLockHigh)

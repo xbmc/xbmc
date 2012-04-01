@@ -17,13 +17,11 @@
  */
 
 #include <ft2build.h>
-#include FT_GLYPH_H
 #include FT_OUTLINE_H
 #include FT_BBOX_H
 #include <math.h>
 
 #include "ass_utils.h"
-#include "ass_font.h"
 #include "ass_drawing.h"
 
 #define CURVE_ACCURACY 64.0
@@ -31,35 +29,12 @@
 #define GLYPH_INITIAL_CONTOURS 5
 
 /*
- * \brief Get and prepare a FreeType glyph
- */
-static void drawing_make_glyph(ASS_Drawing *drawing, void *fontconfig_priv,
-                               ASS_Font *font)
-{
-    FT_OutlineGlyph glyph;
-
-    // This is hacky...
-    glyph = (FT_OutlineGlyph) ass_font_get_glyph(fontconfig_priv, font,
-                                                 (uint32_t) ' ', 0, 0);
-    if (glyph) {
-        FT_Outline_Done(drawing->ftlibrary, &glyph->outline);
-        FT_Outline_New(drawing->ftlibrary, GLYPH_INITIAL_POINTS,
-                       GLYPH_INITIAL_CONTOURS, &glyph->outline);
-
-        glyph->outline.n_contours = 0;
-        glyph->outline.n_points = 0;
-        glyph->root.advance.x = glyph->root.advance.y = 0;
-    }
-    drawing->glyph = glyph;
-}
-
-/*
  * \brief Add a single point to a contour.
  */
 static inline void drawing_add_point(ASS_Drawing *drawing,
                                      FT_Vector *point)
 {
-    FT_Outline *ol = &drawing->glyph->outline;
+    FT_Outline *ol = &drawing->outline;
 
     if (ol->n_points >= drawing->max_points) {
         drawing->max_points *= 2;
@@ -75,11 +50,11 @@ static inline void drawing_add_point(ASS_Drawing *drawing,
 }
 
 /*
- * \brief Close a contour and check glyph size overflow.
+ * \brief Close a contour and check outline size overflow.
  */
 static inline void drawing_close_shape(ASS_Drawing *drawing)
 {
-    FT_Outline *ol = &drawing->glyph->outline;
+    FT_Outline *ol = &drawing->outline;
 
     if (ol->n_contours >= drawing->max_contours) {
         drawing->max_contours *= 2;
@@ -107,13 +82,13 @@ static void drawing_prepare(ASS_Drawing *drawing)
 
 /*
  * \brief Finish a drawing.  This only sets the horizontal advance according
- * to the glyph's bbox at the moment.
+ * to the outline's bbox at the moment.
  */
 static void drawing_finish(ASS_Drawing *drawing, int raw_mode)
 {
     int i, offset;
     FT_BBox bbox = drawing->cbox;
-    FT_Outline *ol = &drawing->glyph->outline;
+    FT_Outline *ol = &drawing->outline;
 
     // Close the last contour
     drawing_close_shape(drawing);
@@ -126,7 +101,7 @@ static void drawing_finish(ASS_Drawing *drawing, int raw_mode)
     if (raw_mode)
         return;
 
-    drawing->glyph->root.advance.x = d6_to_d16(bbox.xMax - bbox.xMin);
+    drawing->advance.x = bbox.xMax - bbox.xMin;
 
     drawing->desc = double_to_d6(-drawing->pbo * drawing->scale_y);
     drawing->asc = bbox.yMax - bbox.yMin + drawing->desc;
@@ -356,8 +331,7 @@ static void drawing_evaluate_curve(ASS_Drawing *drawing,
 /*
  * \brief Create and initialize a new drawing and return it
  */
-ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
-                             FT_Library lib)
+ASS_Drawing *ass_drawing_new(ASS_Library *lib, FT_Library ftlib)
 {
     ASS_Drawing *drawing;
 
@@ -366,16 +340,17 @@ ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
     drawing->size = DRAWING_INITIAL_SIZE;
     drawing->cbox.xMin = drawing->cbox.yMin = INT_MAX;
     drawing->cbox.xMax = drawing->cbox.yMax = INT_MIN;
-    drawing->fontconfig_priv = fontconfig_priv;
-    drawing->font = font;
-    drawing->ftlibrary = lib;
-    if (font)
-        drawing->library = font->library;
-
+    drawing->ftlibrary = ftlib;
+    drawing->library   = lib;
     drawing->scale_x = 1.;
     drawing->scale_y = 1.;
     drawing->max_contours = GLYPH_INITIAL_CONTOURS;
     drawing->max_points = GLYPH_INITIAL_POINTS;
+
+    FT_Outline_New(drawing->ftlibrary, GLYPH_INITIAL_POINTS,
+            GLYPH_INITIAL_CONTOURS, &drawing->outline);
+    drawing->outline.n_contours = 0;
+    drawing->outline.n_points = 0;
 
     return drawing;
 }
@@ -387,6 +362,7 @@ void ass_drawing_free(ASS_Drawing* drawing)
 {
     if (drawing) {
         free(drawing->text);
+        FT_Outline_Done(drawing->ftlibrary, &drawing->outline);
     }
     free(drawing);
 }
@@ -417,16 +393,11 @@ void ass_drawing_hash(ASS_Drawing* drawing)
 /*
  * \brief Convert token list to outline.  Calls the line and curve evaluators.
  */
-FT_OutlineGlyph *ass_drawing_parse(ASS_Drawing *drawing, int raw_mode)
+FT_Outline *ass_drawing_parse(ASS_Drawing *drawing, int raw_mode)
 {
     int started = 0;
     ASS_DrawingToken *token;
     FT_Vector pen = {0, 0};
-
-    if (drawing->font)
-        drawing_make_glyph(drawing, drawing->fontconfig_priv, drawing->font);
-    if (!drawing->glyph)
-        return NULL;
 
     drawing->tokens = drawing_tokenize(drawing->text);
     drawing_prepare(drawing);
@@ -487,5 +458,5 @@ FT_OutlineGlyph *ass_drawing_parse(ASS_Drawing *drawing, int raw_mode)
 
     drawing_finish(drawing, raw_mode);
     drawing_free_tokens(drawing->tokens);
-    return &drawing->glyph;
+    return &drawing->outline;
 }

@@ -78,9 +78,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     // Reset iso reader and remount or
     // we can't access the dvd-rom
     m_isoReader.Reset();
-
-    CIoSupport::Dismount("Cdrom0");
-    CIoSupport::RemapDriveLetter('D', "Cdrom0");
   }
 
 #ifdef _WIN32

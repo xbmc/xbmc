@@ -101,9 +101,9 @@ void CPVRClient::ResetAddonCapabilities(void)
 bool CPVRClient::Create(int iClientId)
 {
   m_pInfo->iClientId = iClientId;
-  CStdString userpath     = _P(Profile());
+  CStdString userpath     = CSpecialProtocol::TranslatePath(Profile());
   m_pInfo->strUserPath    = userpath.c_str();
-  CStdString clientpath   = _P(Path());
+  CStdString clientpath   = CSpecialProtocol::TranslatePath(Path());
   m_pInfo->strClientPath  = clientpath.c_str();
 
   /* initialise the add-on */

@@ -70,6 +70,8 @@ namespace PYXBMC
   void initWindow_Type();
 
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog);
+  bool Window_AddSingleControl(Window* self, PyObject *object, bool wait = true);
+  bool Window_RemoveSingleControl(Window* self, PyObject *object, bool wait = true);
   void Window_Dealloc(Window* self);
   PyObject* Window_Close(Window *self, PyObject *args);
 }

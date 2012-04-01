@@ -50,7 +50,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/Directory.h"
 #include "utils/Crc32.h"
 

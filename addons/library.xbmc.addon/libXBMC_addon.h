@@ -49,7 +49,7 @@
 #define ADDON_HELPER_ARCH       "powerpc"
 #elif defined(_POWERPC64)
 #define ADDON_HELPER_ARCH       "powerpc64"
-#elif defined(_ARMEL)
+#elif defined(__ARMEL__)
 #define ADDON_HELPER_ARCH       "arm"
 #elif defined(_MIPSEL)
 #define ADDON_HELPER_ARCH       "mipsel"

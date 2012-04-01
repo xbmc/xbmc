@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_FILESYSTEM_SFTP
 #include "IDirectory.h"
-#include "FileSFTP.h"
+#include "SFTPFile.h"
 
 class CURL;
 class TiXmlElement;

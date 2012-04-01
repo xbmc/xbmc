@@ -160,10 +160,10 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   {
     char tmp[MAX_PATH];
 #ifndef _LINUX
-    GetTempFileName(_P("special://temp/"), "riptrack", 0, tmp);
+    GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"), "riptrack", 0, tmp);
 #else
     int fd;
-    strncpy(tmp, _P("special://temp/riptrackXXXXXX"), MAX_PATH);
+    strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX"), MAX_PATH);
     if ((fd = mkstemp(tmp)) == -1)
       strFilename = "";
     close(fd);

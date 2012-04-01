@@ -240,8 +240,43 @@ PLT_Service::SetSCPDXML(const char* scpd)
                 PLT_XmlHelper::GetChildText(allowedValueRange, "maximum", max);
                 PLT_XmlHelper::GetChildText(allowedValueRange, "step", step);
 
-                if (min.GetLength() == 0 || max.GetLength() == 0) {
-                    NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                // these are required but try to be nice
+                // in case bad devices provide nothing
+                if (min.GetLength() == 0) {
+                    if (variable->m_DataType == "ui1" ||
+                        variable->m_DataType == "ui2" ||
+                        variable->m_DataType == "ui4") {
+                        min = NPT_String::FromInteger(0);
+                    } else if (variable->m_DataType == "i1") {
+                        min = NPT_String::FromInteger(-128);
+                    } else if (variable->m_DataType == "i2") {
+                        min = NPT_String::FromInteger(-32768);
+                    } else if (variable->m_DataType == "i4" ||
+                               variable->m_DataType == "int") {
+                        min = NPT_String::FromInteger(-2147483647 - 1);
+                    } else {
+                        NPT_LOG_SEVERE_1("Invalid variable data type %s", variable->m_DataType.GetChars());
+                        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                    }
+                }
+                if (max.GetLength() == 0) {
+                    if (variable->m_DataType == "ui1") {
+                        max = NPT_String::FromInteger(0xff);
+                    } else if (variable->m_DataType == "ui2") {
+                        max = NPT_String::FromInteger(0xffff);
+                    } else if (variable->m_DataType == "ui4") {
+                        max = NPT_String::FromInteger(0xffffffff);
+                    } else if (variable->m_DataType == "i1") {
+                        max = NPT_String::FromInteger(0x7f);
+                    } else if (variable->m_DataType == "i2") {
+                        max = NPT_String::FromInteger(0x7fff);
+                    } else if (variable->m_DataType == "i4" ||
+                               variable->m_DataType == "int") {
+                        max = NPT_String::FromInteger(0x7fffffff);
+                    } else {
+                        NPT_LOG_SEVERE_1("Invalid variable data type %s", variable->m_DataType.GetChars());
+                        NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
+                    }
                 }
 
                 variable->m_AllowedValueRange = new NPT_AllowedValueRange;
@@ -706,7 +741,7 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
         return NPT_SUCCESS;
     }
 
-    NPT_XmlElementNode* top = new NPT_XmlElementNode("Event");
+    NPT_Reference<NPT_XmlElementNode> top(new NPT_XmlElementNode("Event"));
     NPT_CHECK_SEVERE(top->SetNamespaceUri("", m_LastChangeNamespace));
 
     NPT_XmlElementNode* instance = new NPT_XmlElementNode("InstanceID");
@@ -719,7 +754,6 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
     // serialize node
     NPT_String value;
     NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, value, false));
-    delete top;
 
     // set the state change direcly instead of calling SetValue
     // to avoid recursive lock, instead add var to publish here directly

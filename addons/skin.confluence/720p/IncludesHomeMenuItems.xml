@@ -58,25 +58,31 @@
 		</control>
 		<control type="button" id="90163">
 			<include>ButtonHomeSubCommonValues</include>
+			<label>20434</label>
+			<onclick>ActivateWindow(Videos,MovieSets,return)</onclick>
+			<visible>Library.HasContent(Sets)</visible>
+		</control>
+		<control type="button" id="90164">
+			<include>ButtonHomeSubCommonValues</include>
 			<label>369</label>
 			<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 		</control>
-		<control type="button" id="90164">
+		<control type="button" id="90165">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>135</label>
 			<onclick>ActivateWindow(Videos,MovieGenres,return)</onclick>
 		</control>
-		<control type="button" id="90165">
+		<control type="button" id="90166">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>652</label>
 			<onclick>ActivateWindow(Videos,MovieYears,return)</onclick>
 		</control>
-		<control type="button" id="90166">
+		<control type="button" id="90167">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>344</label>
 			<onclick>ActivateWindow(Videos,MovieActors,return)</onclick>
 		</control>
-		<control type="image" id="90167">
+		<control type="image" id="90168">
 			<width>35</width>
 			<height>35</height>
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>

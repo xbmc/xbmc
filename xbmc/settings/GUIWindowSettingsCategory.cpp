@@ -350,7 +350,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   if (!group)
     return;
   vecSettings settings;
-  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
+  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection], settings);
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
@@ -1596,15 +1596,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
-    CGUIDialogOK *dlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!dlg) return ;
-    dlg->SetHeading( g_localizeStrings.Get(14038) );
-    dlg->SetLine( 0, g_localizeStrings.Get(14039) );
-    dlg->SetLine( 1, g_localizeStrings.Get(14040));
-    dlg->SetLine( 2, "");
-    dlg->DoModal();
-
-    if (dlg->IsConfirmed())
+    if (CGUIDialogYesNo::ShowAndGetInput(14038, 14039, 14040, -1, -1))
     {
       g_settings.Save();
       g_application.getApplicationMessenger().RestartApp();
@@ -2547,7 +2539,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   URIUtils::AddFileToFolder(g_SkinInfo->Path(),"colors",strPath);
 
   CFileItemList items;
-  CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
+  CDirectory::GetDirectory(CSpecialProtocol::TranslatePathConvertCase(strPath), items, ".xml");
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {

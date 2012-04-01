@@ -51,9 +51,7 @@ is_id3v1 (ape_file * fp)
 {
     int n=0;
     char buf[16];
-    size_t savedFilePosition;
     
-    savedFilePosition = ape_ftell(fp);
     ape_fseek (fp, 0, SEEK_END);
     do {
         n++;
@@ -63,8 +61,7 @@ is_id3v1 (ape_file * fp)
         if (memcmp (buf, "APETAGEX",8) == 0) /*APE.TAG.EX*/
         break;
     } while (memcmp (buf+3, "TAG", 3) == 0);
-    
-    ape_fseek (fp, savedFilePosition, SEEK_SET);
+
     return (n-1)*128;
 }
 
@@ -83,7 +80,6 @@ is_id3v2 (ape_file * fp)
     size_t savedFilePosition;
     long id3v2size=0;
         
-    savedFilePosition = ape_ftell (fp);
     ape_fseek (fp, 0, SEEK_SET);
     do {    
         memset (buf, 0, sizeof (buf));
@@ -97,7 +93,6 @@ is_id3v2 (ape_file * fp)
         ((long) (buf[7]) << 14) | ((long) (buf[6]) << 21));
     } while(memcmp (buf, "ID3", 3) == 0);
     
-    ape_fseek (fp, savedFilePosition, SEEK_SET);
     return (int) id3v2size;
 }
 
@@ -112,19 +107,14 @@ int
 is_ape_ver (ape_file * fp)
 {
     char unsigned buf[32];
-    size_t savedFilePosition;
-        
-    savedFilePosition = ape_ftell (fp);
     memset (buf, 0, sizeof (buf));
         
     ape_fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
     ape_fread (&buf, 1, sizeof (buf), fp);
     if (memcmp (buf, "APETAGEX", 8) != 0) {
-        ape_fseek (fp, savedFilePosition, SEEK_SET);
         return 0;
     }
         
-    ape_fseek (fp, savedFilePosition, SEEK_SET);
     return (int) is_tag_ape2long (buf + 8);
 }
 
@@ -140,19 +130,14 @@ int
 is_ape (ape_file * fp)
 {
     char unsigned buf[32];
-    size_t savedFilePosition;
-        
-    savedFilePosition = ape_ftell(fp);
     memset (buf, 0, sizeof (buf));
         
     ape_fseek (fp, (is_id3v1 (fp) ? -32 - 128 : -32), SEEK_END);
     ape_fread (&buf, 1, sizeof (buf), fp);
     if (memcmp (buf, "APETAGEX", 8) != 0) {
-        ape_fseek (fp, savedFilePosition, SEEK_SET);
         return 0;
     }
         
-    ape_fseek (fp, savedFilePosition, SEEK_SET);
     /* WARNING! macabra code */
     return (int) (is_tag_ape2long (buf + 8 + 4) +
         ( 

@@ -182,7 +182,7 @@ void Observable::SetChanged(bool SetTo)
   m_bObservableChanged = SetTo;
 }
 
-void Observable::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void Observable::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "ApplicationStop"))
   {

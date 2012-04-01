@@ -1035,17 +1035,3 @@ bool CFileStream::Open(const CStdString& filename)
 {
   return Open(CURL(URIUtils::SubstitutePath(filename)));
 }
-
-#ifdef _ARMEL
-char* CFileStream::ReadFile()
-{
-  if(!m_file)
-    return NULL;
-
-  int64_t length = m_file->GetLength();
-  char *str = new char[length+1];
-  m_file->Read(str, length);
-  str[length] = '\0';
-  return str;
-}
-#endif

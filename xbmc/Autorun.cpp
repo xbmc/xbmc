@@ -31,7 +31,7 @@
 #include "PlayListPlayer.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -101,7 +101,7 @@ bool CAutorun::PlayDisc(const CStdString& path, bool bypassSettings, bool startF
     mediaPath = g_mediaManager.TranslateDevicePath("");
 #endif
 
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( mediaPath ));
+  auto_ptr<IDirectory> pDir ( CDirectoryFactory::Create( mediaPath ));
   bool bPlaying = RunDisc(pDir.get(), mediaPath, nAddedToPlaylist, true, bypassSettings, startFromBeginning);
 
   if ( !bPlaying && nAddedToPlaylist > 0 )

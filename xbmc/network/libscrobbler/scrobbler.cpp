@@ -33,7 +33,7 @@
 #include "threads/SingleLock.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 #define SCROBBLER_CLIENT              "xbm"
 //#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!
@@ -626,8 +626,8 @@ void CScrobbler::Process()
   CLog::Log(LOGDEBUG, "%s: Thread started.", m_strLogPrefix.c_str());
   if (!m_pHttp)
   {
-    // Hack since CFileCurl isn't threadsafe
-    if (!(m_pHttp = new XFILE::CFileCurl))
+    // Hack since CCurlFile isn't threadsafe
+    if (!(m_pHttp = new XFILE::CCurlFile))
       return;
   }
   while (!m_bStop)

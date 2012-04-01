@@ -821,9 +821,9 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
       (m_focusedLayout && !m_focusedLayout->CheckCondition()))
   {
     // and do it
-    int item = GetSelectedItem();
+    int itemIndex = GetSelectedItem();
     UpdateLayout(true); // true to refresh all items
-    SelectItem(item);
+    SelectItem(itemIndex);
   }
 
   if (m_staticContent)
@@ -843,21 +843,21 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
-      CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
-      if (item->UpdateVisibility(GetParentID()))
+      CGUIStaticItemPtr staticItem = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
+      if (staticItem->UpdateVisibility(GetParentID()))
         MarkDirtyRegion();
-      if (item->IsVisible())
+      if (staticItem->IsVisible())
       {
-        m_items.push_back(item);
-        if (item.get() == lastItem)
+        m_items.push_back(staticItem);
+        if (staticItem.get() == lastItem)
           m_lastItem = lastItem;
         // if item is selected and it changed position, re-select it
-        if (item.get() == selectedItem && selected != (int)m_items.size() - 1)
+        if (staticItem.get() == selectedItem && selected != (int)m_items.size() - 1)
           SelectItem(m_items.size() - 1);
       }
       // update any properties
       if (updateItems)
-        item->UpdateProperties(GetParentID());
+        staticItem->UpdateProperties(GetParentID());
     }
     UpdateScrollByLetter();
   }
