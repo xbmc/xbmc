@@ -27,6 +27,9 @@
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\HTSPConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
