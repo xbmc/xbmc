@@ -20,6 +20,9 @@
  *
  */
 
+#include "addons/Addon.h"
+#include "addons/AddonDll.h"
+#include "addons/DllPVRClient.h"
 #include "PVRManager.h"
 #include "dbwrappers/Database.h"
 #include "XBDateTime.h"
@@ -198,7 +201,7 @@ namespace PVR
      * @param strGuid The unique ID of the client.
      * @return The database ID of the client.
      */
-    int AddClient(const CStdString &strClientName, const CStdString &strGuid);
+    int Persist(const ADDON::AddonPtr addon);
 
     /*!
      * @brief Remove a client from the database
