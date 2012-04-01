@@ -224,14 +224,16 @@ namespace PVR
      * @brief Create the PVR database tables.
      * @return True if the tables were created successfully, false otherwise.
      */
-    virtual bool CreateTables();
+    bool CreateTables();
 
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
      * @return True if it was updated successfully, false otherwise.
      */
-    virtual bool UpdateOldVersion(int version);
+    bool UpdateOldVersion(int version);
+
+    int GetLastChannelId(void);
   };
 
   /*!

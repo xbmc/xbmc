@@ -274,6 +274,24 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
   return bReturn;
 }
 
+int CPVRDatabase::GetLastChannelId(void)
+{
+  int iReturn(0);
+
+  CStdString strQuery = FormatSQL("SELECT MAX(idChannel) as iMaxChannel FROM channels");
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      if (!m_pDS->eof())
+        iReturn = m_pDS->fv("iMaxChannel").get_asInt();
+    }
+    catch (...) {}
+  }
+
+  return iReturn;
+}
+
 /********** Channel methods **********/
 
 bool CPVRDatabase::DeleteChannels(void)
@@ -761,13 +779,19 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
   if (group.IsInternalGroup())
   {
+    int iLastChannel(0);
+    if (m_sqlite)
+      iLastChannel = GetLastChannelId();
+
     for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
     {
       PVRChannelGroupMember member = group.at(iChannelPtr);
       if (member.channel->IsChanged() || member.channel->IsNew())
       {
-        int iChannelId = Persist(*member.channel, !member.channel->IsNew());
-        if (member.channel->IsNew())
+        if (m_sqlite && member.channel->IsNew())
+          member.channel->SetChannelID(++iLastChannel, false);
+        int iChannelId = Persist(*member.channel, m_sqlite || !member.channel->IsNew());
+        if (!m_sqlite && member.channel->IsNew())
           member.channel->SetChannelID(iChannelId, false);
       }
     }
