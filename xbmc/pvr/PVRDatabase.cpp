@@ -849,23 +849,23 @@ bool CPVRDatabase::DeleteClients()
       //TODO && DeleteValues("map_channels_clients");
 }
 
-int CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
+int CPVRDatabase::Persist(const AddonPtr client)
 {
   int iReturn = -1;
 
   /* invalid client uid or name */
-  if (strClientName.IsEmpty() || strClientUid.IsEmpty())
+  if (client->Name().IsEmpty() || client->ID().IsEmpty())
   {
     CLog::Log(LOGERROR, "PVRDB - %s - invalid client uid or name", __FUNCTION__);
     return iReturn;
   }
 
   /* only add this client if it's not already in the database */
-  iReturn = GetClientId(strClientUid);
+  iReturn = GetClientId(client->ID());
   if (iReturn <= 0)
   {
     CStdString strQuery = FormatSQL("INSERT INTO clients (sName, sUid) VALUES ('%s', '%s');",
-        strClientName.c_str(), strClientUid.c_str());
+        client->Name().c_str(), client->ID().c_str());
 
     if (ExecuteQuery(strQuery))
     {
