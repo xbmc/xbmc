@@ -86,9 +86,6 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
 
   results.clear();
 
-  if (input.empty())
-    return 0;
-
   vector<unsigned int> positions;
 
   newPos = input.Find (delimiter, 0);
