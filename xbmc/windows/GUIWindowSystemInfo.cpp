@@ -167,7 +167,6 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "%s: %s", 19163, PVR_BACKEND_RECORDINGS);
     SetControlLabel(i++, "%s: %s", 19025, PVR_BACKEND_TIMERS);
   }
-  SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
 
   CGUIWindow::FrameMove();
 }
