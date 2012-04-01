@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: kyouhei-->
-<!--Email: Twitter: @kyouhei-->
-<!--Date of translation: 01/29/2011-->
+<!--Translator: Kohji 'Shaolin' MATSUBAYASHI (kohji405mi16)-->
+<!--Email: shaolin@vinelinux.org-->
+<!--Date of translation: 03/31/2012-->
 <!--$Revision$-->
-<!--Based on english strings version 35208-->
 <strings>
   <string id="0">プログラム</string>
   <string id="1">ピクチャ</string>
@@ -1237,7 +1236,7 @@
   <string id="13611">標準</string>
   <string id="13612">汎用リモコン</string>
   <string id="13620">Apple Remote エラー</string>
-  <string id="13621">Apple Remote support could be enabled.</string>
+  <string id="13621">Apple Remote サポートを有効にできません。</string>
 
   <string id="14000">スタック</string>
   <string id="14001">スタック解除</string>
@@ -2019,7 +2018,7 @@
   <string id="21840">GPS 緯度</string>
   <string id="21841">GPS 経度</string>
   <string id="21842">GPS 高度</string>
-  <string id="21843">方角</string>
+  <string id="21843">写真の向き</string>
   <string id="21860">追加カテゴリ</string>
   <string id="21861">キーワード</string>
   <string id="21862">キャプション</string>
