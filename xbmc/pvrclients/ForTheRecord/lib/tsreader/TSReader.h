@@ -43,7 +43,7 @@ private:
   bool            m_bLiveTv;
   CStdString      m_fileName;
   FileReader*     m_fileReader;
-#if defined(TAGERT_WINDOWS)
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER   liDelta; 
   LARGE_INTEGER   liCount; 
 #endif
