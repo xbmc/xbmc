@@ -48,6 +48,7 @@ bool CPVRDatabase::CreateTables()
     if (!CDatabase::CreateTables())
       return false;
 
+    BeginTransaction();
     CLog::Log(LOGINFO, "PVR - %s - creating tables", __FUNCTION__);
 
     CLog::Log(LOGDEBUG, "PVR - %s - creating table 'clients'", __FUNCTION__);
@@ -153,25 +154,30 @@ bool CPVRDatabase::CreateTables()
         ")"
     );
 
+    CommitTransaction();
     bReturn = true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "PVR - %s - unable to create PVR database tables (error %i)", __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
     bReturn = false;
   }
 
-  // disable all PVR add-on when started the first time
-  ADDON::VECADDONS addons;
-  if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
-    CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
-  else
+  if (bReturn)
   {
-    CAddonDatabase database;
-    database.Open();
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-      database.DisableAddon(it->get()->ID());
-    database.Close();
+    // disable all PVR add-on when started the first time
+    ADDON::VECADDONS addons;
+    if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true, false)) == false)
+      CLog::Log(LOGERROR, "PVR - %s - failed to get add-ons from the add-on manager", __FUNCTION__);
+    else
+    {
+      CAddonDatabase database;
+      database.Open();
+      for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+        database.DisableAddon(it->get()->ID());
+      database.Close();
+    }
   }
 
   return bReturn;
