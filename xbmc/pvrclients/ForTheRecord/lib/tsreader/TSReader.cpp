@@ -40,7 +40,9 @@ CTsReader::CTsReader()
   m_fileReader=NULL;
   m_bLiveTv = false;
   m_bTimeShifting = false;
+#if defined(TARGET_WINDOWS)
   liDelta.QuadPart = liCount.QuadPart = 0;
+#endif
 }
 
 long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
@@ -85,11 +87,14 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
 
 long CTsReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER liFrequency;
   LARGE_INTEGER liCurrent;
   LARGE_INTEGER liLast;
+#endif
   if(m_fileReader)
   {
+#if defined(TARGET_WINDOWS)
     // Save the performance counter frequency for later use.
     if (!QueryPerformanceFrequency(&liFrequency))
       XBMC->Log(LOG_ERROR, "QPF() failed with error %d\n", GetLastError());
@@ -97,15 +102,18 @@ long CTsReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned 
     if (!QueryPerformanceCounter(&liCurrent))
 		  XBMC->Log(LOG_ERROR, "QPC() failed with error %d\n", GetLastError());
     liLast = liCurrent;
+#endif
 
     long rc = m_fileReader->Read(pbData, lDataLength, dwReadBytes);
 
+#if defined(TARGET_WINDOWS)
     if (!QueryPerformanceCounter(&liCurrent))
       XBMC->Log(LOG_ERROR, "QPC() failed with error %d\n", GetLastError());
     
     // Convert difference in performance counter values to nanoseconds.
     liDelta.QuadPart += (((liCurrent.QuadPart - liLast.QuadPart) * 1000000) / liFrequency.QuadPart);
     liCount.QuadPart++;
+#endif
     return rc;
   }
 
@@ -142,6 +150,7 @@ void CTsReader::OnZap(void)
   m_fileReader->OnZap();
 }
 
+#if defined(TARGET_WINDOWS)
 long long CTsReader::sigmaTime()
 {
   return liDelta.QuadPart;
@@ -150,5 +159,6 @@ long long CTsReader::sigmaCount()
 {
   return liCount.QuadPart;
 }
+#endif
 
 #endif //TSREADER

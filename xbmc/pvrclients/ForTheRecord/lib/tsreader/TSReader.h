@@ -43,7 +43,9 @@ private:
   bool            m_bLiveTv;
   CStdString      m_fileName;
   FileReader*     m_fileReader;
+#if defined(TAGERT_WINDOWS)
   LARGE_INTEGER   liDelta; 
   LARGE_INTEGER   liCount; 
+#endif
 };
 #endif //TSREADER
