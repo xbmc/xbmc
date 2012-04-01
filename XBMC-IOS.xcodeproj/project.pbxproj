@@ -105,7 +105,6 @@
 		DF79146B13D4A0A20018E92E /* GUIEPGGridContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79146313D4A0A20018E92E /* GUIEPGGridContainer.cpp */; };
 		DF79147113D4A0E20018E92E /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79146F13D4A0E20018E92E /* Observer.cpp */; };
 		DF79147413D4A0F60018E92E /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79147213D4A0F60018E92E /* TextSearch.cpp */; };
-		DF79147C13D4A30A0018E92E /* libTcpSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF79147B13D4A30A0018E92E /* libTcpSocket.a */; };
 		DFAC338A13EC693E0020DDC0 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88796713E8997E00B4ECE2 /* TimeSmoother.cpp */; };
 		DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */; };
 		DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88795E13E8997000B4ECE2 /* Implementation.cpp */; };
@@ -1211,7 +1210,6 @@
 		DF79147013D4A0E20018E92E /* Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observer.h; sourceTree = "<group>"; };
 		DF79147213D4A0F60018E92E /* TextSearch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextSearch.cpp; sourceTree = "<group>"; };
 		DF79147313D4A0F60018E92E /* TextSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextSearch.h; sourceTree = "<group>"; };
-		DF79147B13D4A30A0018E92E /* libTcpSocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTcpSocket.a; path = lib/libTcpSocket/libTcpSocket.a; sourceTree = "<group>"; };
 		DF88795A13E8997000B4ECE2 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThreadLocal.h; path = platform/ThreadLocal.h; sourceTree = "<group>"; };
 		DF88795C13E8997000B4ECE2 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		DF88795D13E8997000B4ECE2 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
@@ -3186,7 +3184,6 @@
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
 				18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */,
-				DF79147C13D4A30A0018E92E /* libTcpSocket.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6226,7 +6223,6 @@
 		F589AE6D12890B6700D8079E /* Internal Libs */ = {
 			isa = PBXGroup;
 			children = (
-				DF79147B13D4A30A0018E92E /* libTcpSocket.a */,
 				F56C8C03131F47EA000AD0F6 /* libapetag.a */,
 				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
 				F56C8C0E131F4811000AD0F6 /* librtv.a */,
@@ -7437,7 +7433,6 @@
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
-					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
@@ -7531,7 +7526,6 @@
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
 					"\"$(SRCROOT)/lib/libapetag/.libs\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/libTcpSocket\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
