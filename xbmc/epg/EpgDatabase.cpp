@@ -346,6 +346,18 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
+bool CEpgDatabase::Persist(const CEpgContainer &epg)
+{
+  for (map<unsigned int, CEpg *>::const_iterator it = epg.m_epgs.begin(); it != epg.m_epgs.end(); it++)
+  {
+    CEpg *epg = it->second;
+    if (epg)
+      Persist(*epg, true);
+  }
+
+  return CommitInsertQueries();
+}
+
 int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
 {
   int iReturn(-1);
