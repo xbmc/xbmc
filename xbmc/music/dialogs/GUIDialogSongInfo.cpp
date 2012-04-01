@@ -22,6 +22,7 @@
 #include "GUIDialogSongInfo.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
@@ -195,7 +196,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   // set artist thumb as well
   if (m_song->HasMusicInfoTag())
   {
-    CFileItem artist(m_song->GetMusicInfoTag()->GetArtist());
+    CFileItem artist(StringUtils::Join(m_song->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator));
     artist.SetCachedArtistThumb();
     if (CFile::Exists(artist.GetThumbnailImage()))
       m_song->SetProperty("artistthumb", artist.GetThumbnailImage());

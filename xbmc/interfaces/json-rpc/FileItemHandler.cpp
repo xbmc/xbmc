@@ -56,16 +56,32 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
     {
       if (item->IsAlbum() && field.Equals("albumlabel"))
         field = "label";
-      if (item->IsAlbum() && item->HasProperty("album_" + field))
+      if (item->IsAlbum())
       {
         if (field == "label")
+        {
           result["albumlabel"] = item->GetProperty("album_label");
-        else
+          continue;
+        }
+        /* This would break backwards compatibility to JSON-RPC API v4
+        if (item->HasProperty("album_" + field + "_array"))
+        {
+          result[field] = item->GetProperty("album_" + field + "_array");
+          continue;
+        }*/
+        if (item->HasProperty("album_" + field))
+        {
           result[field] = item->GetProperty("album_" + field);
-
-        continue;
+          continue;
+        }
       }
 
+      /* This would break backwards compatibility to JSON-RPC API v4
+      if (item->HasProperty("artist_" + field + "_array"))
+      {
+        result[field] = item->GetProperty("artist_" + field + "_array");
+        continue;
+      }*/
       if (item->HasProperty("artist_" + field))
       {
         result[field] = item->GetProperty("artist_" + field);
@@ -106,7 +122,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       }
     }
 
-    if (serialization.isMember(field) && !result.isMember(field))
+    if (serialization.isMember(field) && (!result.isMember(field) || result[field].empty()))
       result[field] = serialization[field];
   }
 }

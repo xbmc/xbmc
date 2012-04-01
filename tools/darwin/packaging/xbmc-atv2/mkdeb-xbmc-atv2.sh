@@ -83,6 +83,7 @@ echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/po
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall Lowtide"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "  mkdir -p /Applications/AppleTV.app/Appliances"                                               >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall AppleTV"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst

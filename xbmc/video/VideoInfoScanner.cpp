@@ -770,7 +770,7 @@ namespace VIDEO
      * Next preference is the first aired date. If it exists use that for matching the TV Show
      * information. Also set the title in case there are multiple matches for the first aired date.
      */
-    if (!tag->m_strFirstAired.IsEmpty())
+    if (tag->m_firstAired.IsValid())
     {
       SEpisode episode;
       episode.strPath = item->GetPath();
@@ -784,10 +784,10 @@ namespace VIDEO
       /*
        * The first aired date string must be parseable.
        */
-      episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
+      episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
-                __FUNCTION__, episode.strPath.c_str(), tag->m_strFirstAired.c_str(),
+        __FUNCTION__, episode.strPath.c_str(), tag->m_firstAired.GetAsDBDateTime().c_str(),
                 episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
       return true;
     }
@@ -856,6 +856,7 @@ namespace VIDEO
       episode.isFolder = false;
 
       bool byDate = expression[i].byDate ? true : false;
+      int defaultSeason = expression[i].defaultSeason;
 
       if (byDate)
       {
@@ -867,7 +868,7 @@ namespace VIDEO
       }
       else
       {
-        if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
+        if (!GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason))
           continue;
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(),
@@ -898,7 +899,7 @@ namespace VIDEO
         }
         else
         {
-          GetEpisodeAndSeasonFromRegExp(reg, parent);
+          GetEpisodeAndSeasonFromRegExp(reg, parent, defaultSeason);
           if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
             episode.isFolder = true;
         }
@@ -919,7 +920,7 @@ namespace VIDEO
           if (((regexppos <= regexp2pos) && regexppos != -1) ||
              (regexppos >= 0 && regexp2pos == -1))
           {
-            GetEpisodeAndSeasonFromRegExp(reg, episode);
+            GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason);
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
                       episode.iSeason, episode.iEpisode,
@@ -949,7 +950,7 @@ namespace VIDEO
     return false;
   }
 
-  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
+  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason)
   {
     char* season = reg.GetReplaceString("\\1");
     char* episode = reg.GetReplaceString("\\2");
@@ -957,14 +958,14 @@ namespace VIDEO
     if (season && episode)
     {
       if (strlen(season) == 0 && strlen(episode) > 0)
-      { // no season specified -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no season specified -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
           episodeInfo.iEpisode = atoi(episode);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
-      { // no episode specification -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no episode specification -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
           episodeInfo.iEpisode = atoi(season);
       }
@@ -1050,19 +1051,14 @@ namespace VIDEO
       movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
-      if (!movieDetails.m_strShowLink.IsEmpty())
+      for (unsigned int i=0; i < movieDetails.m_showLink.size(); ++i)
       {
-        CStdStringArray list;
-        StringUtils::SplitString(movieDetails.m_strShowLink, g_advancedSettings.m_videoItemSeparator,list);
-        for (unsigned int i=0; i < list.size(); ++i)
-        {
-          CFileItemList items;
-          m_database.GetTvShowsByName(list[i], items);
-          if (items.Size())
-            m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), list[i].c_str());
-        }
+        CFileItemList items;
+        m_database.GetTvShowsByName(movieDetails.m_showLink[i], items);
+        if (items.Size())
+          m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
+        else
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), movieDetails.m_showLink[i].c_str());
       }
     }
     else if (content == CONTENT_TVSHOWS)

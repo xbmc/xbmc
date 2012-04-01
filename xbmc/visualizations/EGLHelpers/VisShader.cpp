@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,34 +19,26 @@
  *
  */
 
-#ifdef HAS_GLES
-
-#include "Shader.h"
-#include "utils/GLUtils.h"
+#include "VisShader.h"
 #include <stdio.h>
 
 #define LOG_SIZE 1024
 #define GLchar char
 
-using namespace VisShaders;
-using namespace std;
-
 //////////////////////////////////////////////////////////////////////
 // CShader
 //////////////////////////////////////////////////////////////////////
-bool CShader::LoadSource(const string& buffer)
+bool CVisShader::LoadSource(const char *buffer)
 {
-  fprintf(stderr, "GL: loadsource\n");
-
   m_source = buffer;
   return true;
 }
 
 //////////////////////////////////////////////////////////////////////
-// CGLSLVertexShader
+// CVisGLSLVertexShader
 //////////////////////////////////////////////////////////////////////
 
-bool CGLSLVertexShader::Compile()
+bool CVisGLSLVertexShader::Compile()
 {
   GLint params[4];
 
@@ -57,29 +49,24 @@ bool CGLSLVertexShader::Compile()
   glShaderSource(m_vertexShader, 1, &ptr, 0);
   glCompileShader(m_vertexShader);
   glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
-  VerifyGLState();
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    fprintf(stderr, "GL: Error compiling vertex shader ");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    printf("%s\n", log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
     GLchar log[LOG_SIZE];
-    fprintf(stderr, "GL: Vertex Shader compilation log: ");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    printf("%s\n", log);
     m_lastLog = log;
     m_compiled = true;
   }
   return m_compiled;
 }
 
-void CGLSLVertexShader::Free()
+void CVisGLSLVertexShader::Free()
 {
   if (m_vertexShader)
     glDeleteShader(m_vertexShader);
@@ -87,9 +74,9 @@ void CGLSLVertexShader::Free()
 }
 
 //////////////////////////////////////////////////////////////////////
-// CGLSLPixelShader
+// CVisGLSLPixelShader
 //////////////////////////////////////////////////////////////////////
-bool CGLSLPixelShader::Compile()
+bool CVisGLSLPixelShader::Compile()
 {
   GLint params[4];
 
@@ -97,10 +84,7 @@ bool CGLSLPixelShader::Compile()
 
   // Pixel shaders are not mandatory.
   if (m_source.length()==0)
-  {
-    fprintf(stderr, "GL: No pixel shader, fixed pipeline in use\n");
     return true;
-  }
 
   m_pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
   const char *ptr = m_source.c_str();
@@ -110,25 +94,21 @@ bool CGLSLPixelShader::Compile()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    fprintf(stderr, "GL: Error compiling pixel shader ");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    printf("%s \n", log);
     m_lastLog = log;
     m_compiled = false;
   }
   else
   {
     GLchar log[LOG_SIZE];
-    fprintf(stderr, "GL: Pixel Shader compilation log: ");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    fprintf(stderr, "%s \n", log);
     m_lastLog = log;
     m_compiled = true;
   }
   return m_compiled;
 }
 
-void CGLSLPixelShader::Free()
+void CVisGLSLPixelShader::Free()
 {
   if (m_pixelShader)
     glDeleteShader(m_pixelShader);
@@ -136,24 +116,20 @@ void CGLSLPixelShader::Free()
 }
 
 //////////////////////////////////////////////////////////////////////
-// CGLSLShaderProgram
+// CVisGLSLShaderProgram
 //////////////////////////////////////////////////////////////////////
-void CGLSLShaderProgram::Free()
+void CVisGLSLShaderProgram::Free()
 {
   m_pVP->Free();
-  VerifyGLState();
   m_pFP->Free();
-  VerifyGLState();
   if (m_shaderProgram)
-  {
     glDeleteProgram(m_shaderProgram);
-  }
   m_shaderProgram = 0;
   m_ok = false;
   m_lastProgram = 0;
 }
 
-bool CGLSLShaderProgram::CompileAndLink()
+bool CVisGLSLShaderProgram::CompileAndLink()
 {
   GLint params[4];
 
@@ -162,39 +138,26 @@ bool CGLSLShaderProgram::CompileAndLink()
 
   // compiled vertex shader
   if (!m_pVP->Compile())
-  {
-    fprintf(stderr, "GL: Error compiling vertex shader\n");
     return false;
-  }
-  fprintf(stderr, "GL: Vertex Shader compiled successfully\n");
 
   // compile pixel shader
   if (!m_pFP->Compile())
   {
     m_pVP->Free();
-    fprintf(stderr, "GL: Error compiling fragment shader\n");
     return false;
   }
-  fprintf(stderr, "GL: Fragment Shader compiled successfully\n");
 
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))
-  {
-    fprintf(stderr, "GL: Error creating shader program handle\n");
     goto error;
-  }
 
   // attach the vertex shader
   glAttachShader(m_shaderProgram, m_pVP->Handle());
-  VerifyGLState();
 
   // if we have a pixel shader, attach it. If not, fixed pipeline
   // will be used.
   if (m_pFP->Handle())
-  {
     glAttachShader(m_shaderProgram, m_pFP->Handle());
-    VerifyGLState();
-  }
 
   // link the program
   glLinkProgram(m_shaderProgram);
@@ -202,17 +165,13 @@ bool CGLSLShaderProgram::CompileAndLink()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    fprintf(stderr, "GL: Error linking shader ");
     glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-    fprintf(stderr, "%s\n", log);
     goto error;
   }
-  VerifyGLState();
 
   m_validated = false;
   m_ok = true;
   OnCompiledAndLinked();
-  VerifyGLState();
   return true;
 
  error:
@@ -221,7 +180,7 @@ bool CGLSLShaderProgram::CompileAndLink()
   return false;
 }
 
-bool CGLSLShaderProgram::Enable()
+bool CVisGLSLShaderProgram::Enable()
 {
   if (OK())
   {
@@ -237,13 +196,10 @@ bool CGLSLShaderProgram::Enable()
         if (params[0]!=GL_TRUE)
         {
           GLchar log[LOG_SIZE];
-          fprintf(stderr, "GL: Error validating shader ");
           glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-          fprintf(stderr, "%s \n", log);
         }
         m_validated = true;
       }
-      VerifyGLState();
       return true;
     }
     else
@@ -256,7 +212,7 @@ bool CGLSLShaderProgram::Enable()
   return false;
 }
 
-void CGLSLShaderProgram::Disable()
+void CVisGLSLShaderProgram::Disable()
 {
   if (OK())
   {
@@ -264,5 +220,3 @@ void CGLSLShaderProgram::Disable()
     OnDisabled();
   }
 }
-
-#endif

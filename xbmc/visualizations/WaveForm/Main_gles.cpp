@@ -27,21 +27,19 @@
  */
 
 
-#ifdef HAS_GLES
 
-#include "addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
 #if defined(__APPLE__)
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+  #include <OpenGLES/ES2/gl.h>
+  #include <OpenGLES/ES2/glext.h>
 #else
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+  #include <GLES2/gl2.h>
+  #include <GLES2/gl2ext.h>
 #endif
 
-#include "xbmc/guilib/MatrixGLES.h"
-#include "xbmc/visualizations/EGLHelpers/GUIShader.h"
+#include "addons/include/xbmc_vis_dll.h"
+#include "VisGUIShader.h"
 
 #define NUM_BANDS 16
 
@@ -59,14 +57,14 @@ GLenum  g_mode = GL_TRIANGLES;
 */
 float g_fWaveform[2][512];
 
-std::string frag = "precision mediump float; \n"
+const char *frag = "precision mediump float; \n"
                    "varying lowp vec4 m_colour; \n"
                    "void main () \n"
                    "{ \n"
                    "  gl_FragColor = m_colour; \n"
                    "}\n";
 
-std::string vert = "attribute vec4 m_attrpos;\n"
+const char *vert = "attribute vec4 m_attrpos;\n"
                    "attribute vec4 m_attrcol;\n"
                    "attribute vec4 m_attrcord0;\n"
                    "attribute vec4 m_attrcord1;\n"
@@ -84,7 +82,7 @@ std::string vert = "attribute vec4 m_attrpos;\n"
                    "  m_cord1     = m_attrcord1;\n"
                    "}\n";
 
-CGUIShader *m_shader = NULL;
+CVisGUIShader  *vis_shader = NULL;
 
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
@@ -94,14 +92,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if (!props)
     return ADDON_STATUS_UNKNOWN;
 
-  m_shader = new CGUIShader(vert, frag);
+  vis_shader = new CVisGUIShader(vert, frag);
 
-  if(!m_shader)
+  if(!vis_shader)
     return ADDON_STATUS_UNKNOWN;
 
-  if(!m_shader->CompileAndLink())
+  if(!vis_shader->CompileAndLink())
   {
-    delete m_shader;
+    delete vis_shader;
     return ADDON_STATUS_UNKNOWN;
   }
 
@@ -119,24 +117,24 @@ extern "C" void Render()
 
   glDisable(GL_BLEND);
 
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
-  //g_matrices.Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.5f, 10.0f);
-  g_matrices.MatrixMode(MM_MODELVIEW);
-  g_matrices.PushMatrix();
-  g_matrices.LoadIdentity();
+  vis_shader->MatrixMode(MM_PROJECTION);
+  vis_shader->PushMatrix();
+  vis_shader->LoadIdentity();
+  //vis_shader->Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.5f, 10.0f);
+  vis_shader->MatrixMode(MM_MODELVIEW);
+  vis_shader->PushMatrix();
+  vis_shader->LoadIdentity();
 
-  g_matrices.PushMatrix();
-  g_matrices.Translatef(0.0f ,0.0f ,-1.0f);
-  g_matrices.Rotatef(0.0f, 1.0f, 0.0f, 0.0f);
-  g_matrices.Rotatef(0.0f, 0.0f, 1.0f, 0.0f);
-  g_matrices.Rotatef(0.0f, 0.0f, 0.0f, 1.0f);
+  vis_shader->PushMatrix();
+  vis_shader->Translatef(0.0f ,0.0f ,-1.0f);
+  vis_shader->Rotatef(0.0f, 1.0f, 0.0f, 0.0f);
+  vis_shader->Rotatef(0.0f, 0.0f, 1.0f, 0.0f);
+  vis_shader->Rotatef(0.0f, 0.0f, 0.0f, 1.0f);
 
-  m_shader->Enable();
+  vis_shader->Enable();
 
-  GLint   posLoc = m_shader->GetPosLoc();
-  GLint   colLoc = m_shader->GetColLoc();
+  GLint   posLoc = vis_shader->GetPosLoc();
+  GLint   colLoc = vis_shader->GetColLoc();
 
   glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
@@ -179,13 +177,13 @@ extern "C" void Render()
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
 
-  m_shader->Disable();
+  vis_shader->Disable();
 
-  g_matrices.PopMatrix();
+  vis_shader->PopMatrix();
 
-  g_matrices.PopMatrix();
-  g_matrices.MatrixMode(MM_PROJECTION);
-  g_matrices.PopMatrix();
+  vis_shader->PopMatrix();
+  vis_shader->MatrixMode(MM_PROJECTION);
+  vis_shader->PopMatrix();
 
   glEnable(GL_BLEND);
   
@@ -193,7 +191,6 @@ extern "C" void Render()
 
 extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
 {
-  //printf("Got Start Command\n");
 }
 
 extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -277,10 +274,11 @@ extern "C" void ADDON_Stop()
 //-----------------------------------------------------------------------------
 extern "C" void ADDON_Destroy()
 {
-  if(m_shader) 
+  if (vis_shader) 
   {
-    m_shader->Free();
-    delete m_shader;
+    vis_shader->Free();
+    delete vis_shader;
+    vis_shader = NULL;
   }
 }
 
@@ -329,5 +327,3 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
 //    return ADDON_STATUS_OK;
   return ADDON_STATUS_UNKNOWN;
 }
-
-#endif

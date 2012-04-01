@@ -101,20 +101,8 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   if (!pDialog)
     return false;
 
-  // Figure out Line 1 of the dialog
-  CStdString strLine1;
-  if (item.GetVideoInfoTag())
-  {
-    strLine1 = item.GetVideoInfoTag()->m_strTitle;
-  }
-  else
-  {
-    strLine1 = URIUtils::GetFileName(item.GetPath());
-    URIUtils::RemoveExtension(strLine1);
-  }
-
-  // Figure out Line 2 of the dialog
-  CStdString strLine2;
+  // Figure out Lines 1 and 2 of the dialog
+  CStdString strLine1, strLine2;
   TiXmlDocument discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
@@ -122,8 +110,15 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
     else
+    {
+      XMLUtils::GetString(pRootElement, "title", strLine1);
       XMLUtils::GetString(pRootElement, "message", strLine2);
+    }
   }
+
+  // Use the label for Line 1 if not defined
+  if (strLine1.IsEmpty())
+    strLine1 = item.GetLabel();
 
   // Setup dialog parameters
   pDialog->SetHeading(219);

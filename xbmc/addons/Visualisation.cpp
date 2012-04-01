@@ -25,8 +25,10 @@
 #include "Application.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #ifdef _LINUX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"
@@ -234,10 +236,10 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
         VisTrack track;
         track.title       = tag->GetTitle().c_str();
-        track.artist      = tag->GetArtist().c_str();
+        track.artist      = StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
         track.album       = tag->GetAlbum().c_str();
-        track.albumArtist = tag->GetAlbumArtist().c_str();
-        track.genre       = tag->GetGenre().c_str();
+        track.albumArtist = StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
+        track.genre       = StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str();
         track.comment     = tag->GetComment().c_str();
         track.lyrics      = tag->GetLyrics().c_str();
         track.trackNumber = tag->GetTrackNumber();

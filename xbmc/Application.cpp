@@ -322,6 +322,7 @@
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
+#include "utils/StringUtils.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -3027,8 +3028,8 @@ void  CApplication::CheckForTitleChange()
         CStdString msg="";
         if (!tagVal->GetTitle().IsEmpty())
           msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-        if (!tagVal->GetArtist().IsEmpty())
-          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+        if (!tagVal->GetArtist().empty())
+          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+StringUtils::Join(tagVal->GetArtist(), g_advancedSettings.m_musicItemSeparator)+m_pXbmcHttp->GetCloseTag();
         if (m_prevMedia!=msg)
         {
           getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
