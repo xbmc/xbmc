@@ -331,7 +331,7 @@
 				<scroll>false</scroll>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
+				<label>$INFO[Container.TotalTime,$LOCALIZE[31009] ([COLOR=blue],[/COLOR])]</label>
 				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>
