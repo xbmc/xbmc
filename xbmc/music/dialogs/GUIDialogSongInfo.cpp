@@ -181,10 +181,13 @@ void CGUIDialogSongInfo::SetRating(char rating)
 {
   if (rating < '0') rating = '0';
   if (rating > '5') rating = '5';
-  m_song->GetMusicInfoTag()->SetRating(rating);
-  // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-  g_windowManager.SendMessage(msg);
+  if (rating != m_song->GetMusicInfoTag()->GetRating())
+  {
+    m_song->GetMusicInfoTag()->SetRating(rating);
+    // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
+    g_windowManager.SendMessage(msg);
+  }
 }
 
 void CGUIDialogSongInfo::SetSong(CFileItem *item)
