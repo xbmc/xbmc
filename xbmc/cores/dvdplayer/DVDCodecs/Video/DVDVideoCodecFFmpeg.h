@@ -68,8 +68,7 @@ public:
   {
     SAFE_RELEASE(m_pHardware);
     m_pHardware = hardware;
-    m_name += "-";
-    m_name += m_pHardware->Name();
+    UpdateName();
   }
 
 protected:
@@ -78,6 +77,17 @@ protected:
   int  FilterOpen(const CStdString& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
+
+  void UpdateName()
+  {
+    if(m_pCodecContext->codec->name)
+      m_name = CStdString("ff-") + m_pCodecContext->codec->name;
+    else
+      m_name = "ffmpeg";
+
+    if(m_pHardware)
+      m_name += "-" + m_pHardware->Name();
+  }
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
