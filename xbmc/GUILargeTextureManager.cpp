@@ -74,7 +74,7 @@ bool CImageLoader::DoWork()
     // direct route - load the image
     m_texture = new CTexture();
     unsigned int start = XbmcThreads::SystemClockMillis();
-    if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
+    if (!m_texture->LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       delete m_texture;
       m_texture = NULL;
