@@ -562,6 +562,9 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
                     addon->Props().extrainfo.find("geolock");
   if (it != addon->Props().extrainfo.end())
     pItem->SetProperty("Addon.GeoLocks", it->second);
+  it = addon->Props().extrainfo.find("language");
+  if (it != addon->Props().extrainfo.end())
+    pItem->SetProperty("Addon.Languages", it->second);
 }
 
 bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)

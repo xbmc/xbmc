@@ -2251,6 +2251,7 @@
   <string id="24101">Would you like to download this Add-on?</string>
   <string id="25000">Notifications</string>
   <string id="25001">Hide geolocked</string>
+  <string id="25002">Hide foreign</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
