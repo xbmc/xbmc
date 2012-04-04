@@ -209,7 +209,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
   if (!files.size())
     return false;
 
-  unsigned int num_across = (unsigned int)ceil(sqrt(files.size()));
+  unsigned int num_across = (unsigned int)ceil(sqrt((float)files.size()));
   unsigned int num_down = (files.size() + num_across - 1) / num_across;
 
   unsigned int tile_width = g_advancedSettings.m_thumbSize / num_across;
