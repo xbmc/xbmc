@@ -3034,9 +3034,10 @@ bool CFileItemList::UpdateItem(const CFileItem *item)
 {
   if (!item) return false;
 
-  for (int i = 0; i < Size(); i++)
+  CSingleLock lock(m_lock);
+  for (unsigned int i = 0; i < m_items.size(); i++)
   {
-    CFileItemPtr pItem = Get(i);
+    CFileItemPtr pItem = m_items[i];
     if (pItem->IsSamePath(item))
     {
       *pItem = *item;
