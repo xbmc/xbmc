@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VU+ IP</string>
+    <string id="30002">Streaming Port</string>
+    <string id="30003">Benutzername</string>
+    <string id="30004">Passwort</string>
+    <string id="30007">Antwort-Timeout in Sekunden</string>
+    <string id="30008">Picon-Pfad</string>
+    <string id="30009">Zeige abgeschlossene Timer</string>
+    <string id="30010">Aktualisierungsintervall (in Minuten)</string>
+    <string id="30011">Automatisches aufräen der Timerliste</string>
+    <string id="30012">Webinterface Port</string>
+    <string id="30013">Umschalten auf SatBox (z.B. bei SingleTuner Receivern)</string>
+    <string id="30014">Ort fuer Kanaldaten</string>
+    <string id="30015">Ueberpruefe auf Bouquettaktualisierungen</string>
+    <string id="30016">Ueberpruefe auf Kanalaktualisierungen</string>
+
+    <!-- notifications -->
+    <string id="30500">Verbindung '%s' unterbrochen</string>
+    <string id="30501">Verbindung zu '%s' wiederhergestellt</string>
+</strings>

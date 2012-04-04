@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VU+ hostname or IP address</string>
+    <string id="30002">Streaming Port</string>
+    <string id="30003">Username</string>
+    <string id="30004">Password</string>
+    <string id="30007">Response timeout in seconds</string>
+    <string id="30008">Icon Path</string>
+    <string id="30009">Show completed timers</string>
+    <string id="30010">Update Interval in minutes</string>
+    <string id="30011">Automatic Timerlist Cleanup</string>
+    <string id="30012">Webinterface Port</string>
+    <string id="30013">Zap before channelswitch (i.e. for Single Tuner boxes)</string>
+    <string id="30014">Folder for channeldata</string>
+    <string id="30015">Check for bouquett updates</string>
+    <string id="30016">Check for channel updates</string>
+
+    <!-- notifications -->
+    <string id="30500">Disconnected from '%s'</string>
+    <string id="30501">Reconnected to '%s'</string>
+</strings>

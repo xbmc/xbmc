@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.vuplus"
+  version="0.1.7"
+  name="VU+ Client"
+  provider-name="Joerg Dembski">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.pvrclient"
+    library_linux="XBMC_vuplus.pvr"
+    library_osx="XBMC_vuplus.pvr"
+    library_wingl="XBMC_vuplus_win32.pvr"
+    library_windx="XBMC_vuplus_win32.pvr"/>
+  <extension point="xbmc.addon.metadata">
+    <summary>XBMC's frontend for VU+</summary>
+    <description>VU+ frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers. For parsing the XML output from the VU+ webinterface it uses the xmlParser library developed by Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!
+</description>
+    <disclaimer>This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>

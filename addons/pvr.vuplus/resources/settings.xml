@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="host" type="text" label="30000" default="127.0.0.1" />
+    <setting id="streamport" type="number" label="30002" default="8001" />
+    <setting id="webport" type="number" label="30012" default="80" />
+    <setting id="user" type="text" label="30003" default="" />
+    <setting id="pass" type="text" label="30004" option="hidden" default="" />
+    <setting id="response_timeout" type="enum" label="30007" values="1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|56|57|58|59|60" default="1" />
+    <setting id="iconpath" type="folder" label="30008" default="" />
+    <setting id="channeldatapath" type="folder" label="30014" default="" />
+    <setting label="30009" type="bool" id="showcompleted" default="false"/>
+    <setting label="30013" type="bool" id="zap" default="false"/>
+    <setting id="updateint" type="number" label="30010" default="2" />
+    <setting label="30015" type="bool" id="checkgroups" default="true"/>
+    <setting label="30016" type="bool" id="checkchannels" default="true"/>
+    <setting label="30011" type="bool" id="timerlistcleanup" default="false"/>
+</settings>

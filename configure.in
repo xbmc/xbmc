@@ -1897,6 +1897,7 @@ OUTPUT_FILES="Makefile \
     xbmc/pvrclients/MediaPortal/Makefile \
     xbmc/pvrclients/mythtv/Makefile \
     xbmc/pvrclients/pvr-demo/Makefile \
+    xbmc/pvrclients/vuplus/Makefile \
     xbmc/pvrclients/tvheadend/Makefile \
     xbmc/pvrclients/vdr-vnsi/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
