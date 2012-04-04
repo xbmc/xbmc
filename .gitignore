@@ -373,11 +373,10 @@ lib/cmyth/Makefile
 /system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
-/system/players/dvdplayer/avcodec-52.dll
-/system/players/dvdplayer/avcore-0.dll
-/system/players/dvdplayer/avformat-52.dll
-/system/players/dvdplayer/avutil-50.dll
-/system/players/dvdplayer/avfilter-1.dll
+/system/players/dvdplayer/avcodec-53.dll
+/system/players/dvdplayer/avfilter-2.dll
+/system/players/dvdplayer/avformat-53.dll
+/system/players/dvdplayer/avutil-51.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
 /system/players/dvdplayer/libdvdcss-2.dll
@@ -385,8 +384,9 @@ lib/cmyth/Makefile
 /system/players/dvdplayer/libexpat-1.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
-/system/players/dvdplayer/postproc-51.dll
-/system/players/dvdplayer/swscale-0.dll
+/system/players/dvdplayer/postproc-52.dll
+/system/players/dvdplayer/swresample-0.dll
+/system/players/dvdplayer/swscale-2.dll
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
 /system/players/dvdplayer/libmad.dll
