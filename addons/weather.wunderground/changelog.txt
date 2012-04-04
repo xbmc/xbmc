@@ -1,3 +1,6 @@
+v0.0.10
+- add geo-wifi support
+
 v0.0.9
 - clear 7 day labels not 6
 - save only the actual location code

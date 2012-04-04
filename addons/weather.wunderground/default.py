@@ -15,7 +15,7 @@
 # *
 
 import os, sys, urllib2, base64, socket, simplejson
-import xbmcgui, xbmcaddon
+import xbmc, xbmcgui, xbmcaddon
 
 __addon__      = xbmcaddon.Addon()
 __provider__   = __addon__.getAddonInfo('name')
@@ -29,6 +29,8 @@ from utilities import *
 LOCATION_URL    = 'http://autocomplete.wunderground.com/aq?query=%s&format=JSON'
 WEATHER_URL     = 'http://api.wunderground.com/api/%s/conditions/forecast7day/hourly/q/%s.json'
 GEOIP_URL       = 'http://api.wunderground.com/api/%s/geolookup/q/autoip.json'
+GEOWIFI_URL     = 'http://www.google.com/loc/json'
+REV_GEOCODE_URL = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=false'
 A_I_K           = 'NDEzNjBkMjFkZjFhMzczNg=='
 WEATHER_WINDOW  = xbmcgui.Window(12600)
 MAXDAYS         = 6
@@ -60,9 +62,9 @@ def refresh_locations():
         set_property('Location3', '')
     set_property('Locations', str(locations))
 
-def fetch(url):
+def fetch(url, post_data = None):
     try:
-        req = urllib2.urlopen(url)
+        req = urllib2.urlopen(url, post_data)
         json_string = req.read()
         req.close()
     except:
@@ -86,11 +88,69 @@ def location(string):
             locid.append(locationid)
     return loc, locid
 
+def geowifi():
+    try:
+        # This function has been added post-Eden
+        aps = xbmc.getAccessPoints()
+    except:
+        return ''
+    
+    zip_code = ''
+    
+    wifi_towers = []
+    for ap in aps:
+        del ap['encryption'] # Not needed
+        # Note, we expect the MAC address to be in the form %02x-%02x-%02x-%02x-%02x-%02x
+        wifi_towers.append(simplejson.dumps(ap))
+    post_data = '{"host":"xbmc.org","version":"1.1.0","request_address":true,"wifi_towers":[%s]}' % (','.join(wifi_towers))
+    data = fetch(GEOWIFI_URL, post_data)
+    
+    try:
+        if len(data['location']['address']['postal_code']) > 0:
+            zip_code = data['location']['address']['postal_code']
+        else:
+            raise
+    except:
+        # Sometimes the query doesn't return a zip code. I have even observed this
+        # inconsistent behavior across identical queries. In this case, if we have
+        # a latitude & longitude to work with, do a reverse-geocode lookup
+        try:
+            data2 = fetch(REV_GEOCODE_URL % (data['location']['latitude'], data['location']['longitude']))
+            for result in data2['results']:
+                for address_component in result['address_components']:
+                    for type in address_component['types']:
+                        if type == 'postal_code':
+                            zip_code = address_component['long_name']
+                            break
+                    # Because we can't triple-break, and three embeded try's are too ugly
+                    if zip_code != '':
+                        break
+                if zip_code != '':
+                    break
+        except:
+            return '' # Couldn't obtain a postal code
+    
+    # Now, use wunderground to turn the postal code into a valid id
+    try:
+        locations, locationids = location(zip_code)
+        loc = locationids[0]
+        __addon__.setSetting('Location1', locations[0])
+        __addon__.setSetting('Location1id', loc)
+    except:
+        loc = ''
+    return loc
+
 def geoip():
     data = fetch(GEOIP_URL % aik[::-1])
     if data != '' and data.has_key('location'):
         location = data['location']['l'][3:]
-        __addon__.setSetting('Location1', data['location']['city'])
+        location_name = data['location']['city']
+        # Add the state (if available) or country name to the city
+        if data['location']['state']:
+            location_name += ", " + data['location']['state']
+        elif data['location']['country_name']:
+            location_name += ", " + data['location']['country_name']
+        __addon__.setSetting('Location1', location_name)
         __addon__.setSetting('Location1id', location)
     else:
         location = ''
@@ -141,16 +201,18 @@ if sys.argv[1].startswith('Location'):
             dialog.ok(__provider__, xbmc.getLocalizedString(284))
 
 else:
-    location = __addon__.getSetting('Location%sid' % sys.argv[1])
+    location_id = __addon__.getSetting('Location%sid' % sys.argv[1])
     aik = base64.b64decode(A_I_K)
-    if (location == '') and (sys.argv[1] != '1'):
-        location = __addon__.getSetting('Location1id')
-    if location == '':
-        location = geoip()
-    if not location == '':
-        if location.startswith('/q/'): # backwards compatibility
-            location = location[3:]
-        forecast(location)
+    if (location_id == '') and (sys.argv[1] != '1'):
+        location_id = __addon__.getSetting('Location1id')
+    if location_id == '':
+        location_id = geowifi()
+    #if location_id == '':
+    #    location_id = geoip()
+    if not location_id == '':
+        if location_id.startswith('/q/'): # backwards compatibility
+            location_id = location_id[3:]
+        forecast(location_id)
     else:
         set_property('Current.Condition'     , 'N/A')
         set_property('Current.Temperature'   , '0')

@@ -54,6 +54,7 @@
 #include "pythreadstate.h"
 #include "utils/log.h"
 #include "pyrendercapture.h"
+#include "network/Network.h"
 
 // include for constants
 #include "pyutil.h"
@@ -405,6 +406,52 @@ namespace PYXBMC
       return PyString_FromString(iface->GetCurrentIPAddress().c_str());
 
     return PyString_FromString(cTitleIP);
+  }
+
+  // getAccessPoints() method
+  PyDoc_STRVAR(getAccessPoints__doc__,
+    "getAccessPoints() -- Returns a list of visible wireless access points.\n"
+    "\n"
+    "List items are a dictionary with the following keys:\n"
+    " - ssid (string)         : The network name (ESSID)\n"
+    " - mac_address (string)  : The access point's MAC address\n"
+    " - channel (int)         : The channel of the wireless network\n"
+    " - encryption (int)      : The encryption mode: {None = 0, WEP = 1, WPA = 2, WPA2 = 3}\n"
+    " - signal_strength (int) : Signal strength (dBm; negative integer)\n"
+    "\n"
+    "example:\n"
+    "  - aps = xbmc.getAccessPoints()\n"
+    "  - xbmc.log(aps[0]['ssid'])\n");
+
+  PyObject* XBMC_GetAccessPoints(PyObject *self, PyObject *args)
+  {
+    PyObject *list = PyList_New(0);
+    if (!list)
+      return NULL;
+
+    // Scan for wireless networks
+    std::vector<CNetworkInterface*> vec_interfaces = g_application.getNetwork().GetInterfaceList();
+    for (std::vector<CNetworkInterface*>::iterator if_it = vec_interfaces.begin();
+            if_it != vec_interfaces.end(); if_it++)
+    {
+      std::vector<NetworkAccessPoint> interface_accesspoints = (*if_it)->GetAccessPoints();
+      for (std::vector<NetworkAccessPoint>::iterator ap_it = interface_accesspoints.begin();
+              ap_it != interface_accesspoints.end(); ap_it++)
+      {
+        PyObject *item = PyDict_New();
+        if (item)
+        {
+          PyDict_SetItemString(item, "ssid", PyString_FromString((*ap_it).getEssId().c_str()));
+          PyDict_SetItemString(item, "mac_address", PyString_FromString((*ap_it).getMacAddress().c_str()));
+          PyDict_SetItemString(item, "channel", PyInt_FromLong((*ap_it).getChannel()));
+          PyDict_SetItemString(item, "encryption", PyInt_FromLong((long)(*ap_it).getEncryptionMode()));
+          PyDict_SetItemString(item, "signal_strength", PyInt_FromLong((*ap_it).getSignalStrength()));
+          PyList_Append(list, item);
+        }
+      }
+    }
+
+    return list;
   }
 
   // getDVDState() method
@@ -981,6 +1028,7 @@ namespace PYXBMC
 
     {(char*)"getLanguage", (PyCFunction)XBMC_GetLanguage, METH_VARARGS, getLanguage__doc__},
     {(char*)"getIPAddress", (PyCFunction)XBMC_GetIPAddress, METH_VARARGS, getIPAddress__doc__},
+    {(char*)"getAccessPoints", (PyCFunction)XBMC_GetAccessPoints, METH_VARARGS, getAccessPoints__doc__},
     {(char*)"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
     {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
