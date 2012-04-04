@@ -333,7 +333,7 @@ CreateFormatDescription(VTFormatId format_id, int width, int height)
 static CMFormatDescriptionRef
 CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size, uint32_t atom)
 {
-  CMFormatDescriptionRef fmt_desc;
+  CMFormatDescriptionRef fmt_desc = NULL;
   OSStatus status;
 
   FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
@@ -1131,6 +1131,16 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
             return false;
 
+          // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+          // with a bogus m_fmt_desc returned that crashes on CFRelease.
+          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+          {
+            // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+            CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+              __FUNCTION__, m_max_ref_frames);
+            return false;
+          }
+
           if (extradata[4] == 0xFE)
           {
             // video content is from some silly encoder that think 3 byte NAL sizes
@@ -1170,6 +1180,17 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               return false;
             }
 
+            // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+            // with a bogus m_fmt_desc returned that crashes on CFRelease.
+            if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+            {
+              // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+              CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+                __FUNCTION__, m_max_ref_frames);
+              m_dllAvUtil->av_free(extradata);
+              return false;
+            }
+ 
             // CFDataCreate makes a copy of extradata contents
             m_fmt_desc = CreateFormatDescriptionFromCodecData(
               kVTFormatH264, width, height, extradata, extrasize, 'avcC');
@@ -1199,15 +1220,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       return false;
     }
 
-    if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
-    {
-      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-        __FUNCTION__, m_max_ref_frames);
-      CFRelease(m_fmt_desc);
-      return false;
-    }
- 
     if (m_max_ref_frames == 0)
       m_max_ref_frames = 2;
 
