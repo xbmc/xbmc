@@ -118,9 +118,11 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
       CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-      if (item && m_currentFile->GetPath().Equals(item->GetPath()))
+      if (m_currentFile->IsSamePath(item.get()))
+      {
         *m_currentFile = *item;
-      return true;
+        return true;
+      }
     }
   }
   return false;
