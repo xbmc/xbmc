@@ -2047,7 +2047,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-protocol=http \
       --enable-pthreads \
       --enable-runtime-cpudetect \
-      --disable-openmp \
       --cc="$CC" &&
     sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
