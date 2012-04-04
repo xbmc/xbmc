@@ -2093,6 +2093,9 @@
     <ClCompile Include="..\..\xbmc\TextureCache.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4685,6 +4688,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\TextureCache.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\TextureCacheJob.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Temperature.h">
