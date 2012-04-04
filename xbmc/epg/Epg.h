@@ -107,6 +107,23 @@ namespace EPG
     virtual void SetScraperName(const CStdString &strScraperName);
 
     /*!
+     * @brief Specify if EPG should be manually updated on the next cycle
+     * @param bUpdatePending True if EPG should be manually updated
+     */
+    virtual void SetUpdatePending(bool bUpdatePending = true);
+
+    /*!
+     * @brief Returns if there is a manual update pending for this EPG
+     * @returns True if there are is a manual update pending, false otherwise
+     */
+    virtual bool UpdatePending(void) const;
+
+    /*!
+     * @brief Clear the current tag and schedule manual update
+     */
+    virtual void ForceUpdate(void);
+
+    /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */
@@ -206,9 +223,10 @@ namespace EPG
      * @param start The start time.
      * @param end The end time.
      * @param iUpdateTime Update the table after the given amount of time has passed.
+     * @param bForceUpdate Force update from client even if it's not the time to
      * @return True if the update was successful, false otherwise.
      */
-    virtual bool Update(const time_t start, const time_t end, int iUpdateTime);
+    virtual bool Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate = false);
 
     /*!
      * @brief Get all EPG entries.
@@ -333,6 +351,7 @@ namespace EPG
     bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                       m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
     bool                       m_bLoaded;         /*!< true when the initial entries have been loaded */
+    bool                       m_bUpdatePending;  /*!< true if manual update is pending */
     int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
     CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
