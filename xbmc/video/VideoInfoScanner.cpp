@@ -125,7 +125,8 @@ namespace VIDEO
 
       tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
-
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+      
       m_bRunning = false;
       if (m_pObserver)
         m_pObserver->OnFinished();
