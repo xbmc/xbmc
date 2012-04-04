@@ -1498,13 +1498,6 @@ public:
   {
     if (!g_settings.GetCurrentProfile().canWriteDatabases())
       return false;
-    // dont allow update while scanning
-    CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (pDialogScan && pDialogScan->IsScanning())
-    {
-      CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-      return false;
-    }
 
     MarkWatched(m_item, m_bMark);
 
@@ -1560,9 +1553,9 @@ private:
   bool m_bMark;
 };
 
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &pItem, bool bMark)
 {
-  CJobManager::GetInstance().AddJob(new CMarkWatchedJob(item, bMark), 0);
+  CJobManager::GetInstance().AddJob(new CMarkWatchedJob(pItem, bMark), 0);
 }
 
 //Add change a title's name
