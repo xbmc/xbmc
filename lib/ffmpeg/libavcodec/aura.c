@@ -39,6 +39,7 @@ static av_cold int aura_decode_init(AVCodecContext *avctx)
     if (avctx->width & 0x3)
         return -1;
     avctx->pix_fmt = PIX_FMT_YUV422P;
+    avcodec_get_frame_defaults(&s->frame);
 
     return 0;
 }
@@ -123,16 +124,14 @@ static av_cold int aura_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_aura2_decoder = {
-    "aura2",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_AURA2,
-    sizeof(AuraDecodeContext),
-    aura_decode_init,
-    NULL,
-    aura_decode_end,
-    aura_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
+    .name           = "aura2",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_AURA2,
+    .priv_data_size = sizeof(AuraDecodeContext),
+    .init           = aura_decode_init,
+    .close          = aura_decode_end,
+    .decode         = aura_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Auravision Aura 2"),
 };
 

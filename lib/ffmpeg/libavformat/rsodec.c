@@ -29,16 +29,16 @@
 
 static int rso_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     int id, rate, bps;
     unsigned int size;
     enum CodecID codec;
     AVStream *st;
 
-    id   = get_be16(pb);
-    size = get_be16(pb);
-    rate = get_be16(pb);
-    get_be16(pb);   /* play mode ? (0x0000 = don't loop) */
+    id   = avio_rb16(pb);
+    size = avio_rb16(pb);
+    rate = avio_rb16(pb);
+    avio_rb16(pb);   /* play mode ? (0x0000 = don't loop) */
 
     codec = ff_codec_get_id(ff_codec_rso_tags, id);
 
@@ -54,7 +54,7 @@ static int rso_read_header(AVFormatContext *s, AVFormatParameters *ap)
     }
 
     /* now we are ready: build format streams */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
@@ -65,7 +65,7 @@ static int rso_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->channels     = 1;
     st->codec->sample_rate  = rate;
 
-    av_set_pts_info(st, 64, 1, rate);
+    avpriv_set_pts_info(st, 64, 1, rate);
 
     return 0;
 }
@@ -92,11 +92,8 @@ AVInputFormat ff_rso_demuxer = {
     .name           =   "rso",
     .long_name      =   NULL_IF_CONFIG_SMALL("Lego Mindstorms RSO format"),
     .extensions     =   "rso",
-    .priv_data_size =   0,
-    .read_probe     =   NULL, /* no magic value in this format */
     .read_header    =   rso_read_header,
     .read_packet    =   rso_read_packet,
-    .read_close     =   NULL,
     .read_seek      =   pcm_read_seek,
     .codec_tag      =   (const AVCodecTag* const []){ff_codec_rso_tags, 0},
 };

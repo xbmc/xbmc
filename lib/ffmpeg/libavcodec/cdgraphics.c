@@ -26,8 +26,8 @@
  * @file
  * @brief CD Graphics Video Decoder
  * @author Michael Tison
- * @sa http://wiki.multimedia.cx/index.php?title=CD_Graphics
- * @sa http://www.ccs.neu.edu/home/bchafy/cdb/info/cdg
+ * @see http://wiki.multimedia.cx/index.php?title=CD_Graphics
+ * @see http://www.ccs.neu.edu/home/bchafy/cdb/info/cdg
  */
 
 /// default screen sizes
@@ -126,7 +126,7 @@ static void cdg_load_palette(CDGraphicsContext *cc, uint8_t *data, int low)
         r = ((color >> 8) & 0x000F) * 17;
         g = ((color >> 4) & 0x000F) * 17;
         b = ((color     ) & 0x000F) * 17;
-        palette[i + array_offset] = r << 16 | g << 8 | b;
+        palette[i + array_offset] = 0xFF << 24 | r << 16 | g << 8 | b;
     }
     cc->frame.palette_has_changed = 1;
 }
@@ -368,15 +368,13 @@ static av_cold int cdg_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_cdgraphics_decoder = {
-    "cdgraphics",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CDGRAPHICS,
-    sizeof(CDGraphicsContext),
-    cdg_decode_init,
-    NULL,
-    cdg_decode_end,
-    cdg_decode_frame,
-    CODEC_CAP_DR1,
-    .max_lowres = 5,
+    .name           = "cdgraphics",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_CDGRAPHICS,
+    .priv_data_size = sizeof(CDGraphicsContext),
+    .init           = cdg_decode_init,
+    .close          = cdg_decode_end,
+    .decode         = cdg_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("CD Graphics video"),
 };

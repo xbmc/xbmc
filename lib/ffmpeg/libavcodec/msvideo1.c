@@ -25,9 +25,6 @@
  * For more information about the MS Video-1 format, visit:
  *   http://www.pcisys.net/~melanson/codecs/
  *
- * This decoder outputs either PAL8 or RGB555 data, depending on the
- * whether a RGB palette was passed through palctrl;
- * if it's present, then the data is PAL8; RGB555 otherwise.
  */
 
 #include <stdio.h>
@@ -55,6 +52,7 @@ typedef struct Msvideo1Context {
 
     int mode_8bit;  /* if it's not 8-bit, it's 16-bit */
 
+    uint32_t pal[256];
 } Msvideo1Context;
 
 static av_cold int msvideo1_decode_init(AVCodecContext *avctx)
@@ -64,7 +62,7 @@ static av_cold int msvideo1_decode_init(AVCodecContext *avctx)
     s->avctx = avctx;
 
     /* figure out the colorspace based on the presence of a palette */
-    if (s->avctx->palctrl) {
+    if (s->avctx->bits_per_coded_sample == 8) {
         s->mode_8bit = 1;
         avctx->pix_fmt = PIX_FMT_PAL8;
     } else {
@@ -72,6 +70,7 @@ static av_cold int msvideo1_decode_init(AVCodecContext *avctx)
         avctx->pix_fmt = PIX_FMT_RGB555;
     }
 
+    avcodec_get_frame_defaults(&s->frame);
     s->frame.data[0] = NULL;
 
     return 0;
@@ -173,13 +172,8 @@ static void msvideo1_decode_8bit(Msvideo1Context *s)
     }
 
     /* make the palette available on the way out */
-    if (s->avctx->pix_fmt == PIX_FMT_PAL8) {
-        memcpy(s->frame.data[1], s->avctx->palctrl->palette, AVPALETTE_SIZE);
-        if (s->avctx->palctrl->palette_changed) {
-            s->frame.palette_has_changed = 1;
-            s->avctx->palctrl->palette_changed = 0;
-        }
-    }
+    if (s->avctx->pix_fmt == PIX_FMT_PAL8)
+        memcpy(s->frame.data[1], s->pal, AVPALETTE_SIZE);
 }
 
 static void msvideo1_decode_16bit(Msvideo1Context *s)
@@ -302,11 +296,20 @@ static int msvideo1_decode_frame(AVCodecContext *avctx,
     s->buf = buf;
     s->size = buf_size;
 
-    s->frame.reference = 1;
+    s->frame.reference = 3;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
     if (avctx->reget_buffer(avctx, &s->frame)) {
         av_log(s->avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return -1;
+    }
+
+    if (s->mode_8bit) {
+        const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
+
+        if (pal) {
+            memcpy(s->pal, pal, AVPALETTE_SIZE);
+            s->frame.palette_has_changed = 1;
+        }
     }
 
     if (s->mode_8bit)
@@ -332,14 +335,13 @@ static av_cold int msvideo1_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_msvideo1_decoder = {
-    "msvideo1",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_MSVIDEO1,
-    sizeof(Msvideo1Context),
-    msvideo1_decode_init,
-    NULL,
-    msvideo1_decode_end,
-    msvideo1_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "msvideo1",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_MSVIDEO1,
+    .priv_data_size = sizeof(Msvideo1Context),
+    .init           = msvideo1_decode_init,
+    .close          = msvideo1_decode_end,
+    .decode         = msvideo1_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name= NULL_IF_CONFIG_SMALL("Microsoft Video 1"),
 };

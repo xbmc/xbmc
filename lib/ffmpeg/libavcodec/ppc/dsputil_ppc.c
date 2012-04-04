@@ -48,7 +48,6 @@ static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
 {
     register int misal = ((unsigned long)blocks & 0x00000010);
     register int i = 0;
-#if 1
     if (misal) {
         ((unsigned long*)blocks)[0] = 0L;
         ((unsigned long*)blocks)[1] = 0L;
@@ -66,9 +65,6 @@ static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
         ((unsigned long*)blocks)[191] = 0L;
         i += 16;
     }
-#else
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
-#endif
 }
 
 /* same as above, when dcbzl clear a whole 128B cache line
@@ -78,7 +74,6 @@ static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
 {
     register int misal = ((unsigned long)blocks & 0x0000007f);
     register int i = 0;
-#if 1
     if (misal) {
         // we could probably also optimize this case,
         // but there's not much point as the machines
@@ -89,9 +84,6 @@ static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
         for ( ; i < sizeof(DCTELEM)*6*64 ; i += 128) {
             __asm__ volatile("dcbzl %0,%1" : : "b" (blocks), "r" (i) : "memory");
         }
-#else
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
-#endif
 }
 #else
 static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
@@ -153,8 +145,19 @@ static void prefetch_ppc(void *mem, int stride, int h)
 
 void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
 {
+    const int high_bit_depth = avctx->bits_per_raw_sample > 8;
+    int mm_flags = av_get_cpu_flags();
+
+    if (avctx->dsp_mask) {
+        if (avctx->dsp_mask & AV_CPU_FLAG_FORCE)
+            mm_flags |= (avctx->dsp_mask & 0xffff);
+        else
+            mm_flags &= ~(avctx->dsp_mask & 0xffff);
+    }
+
     // Common optimizations whether AltiVec is available or not
     c->prefetch = prefetch_ppc;
+    if (!high_bit_depth) {
     switch (check_dcbzl_effect()) {
         case 32:
             c->clear_blocks = clear_blocks_dcbz32_ppc;
@@ -165,26 +168,26 @@ void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
         default:
             break;
     }
+    }
 
 #if HAVE_ALTIVEC
     if(CONFIG_H264_DECODER) dsputil_h264_init_ppc(c, avctx);
 
-    if (av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC) {
+    if (mm_flags & AV_CPU_FLAG_ALTIVEC) {
         dsputil_init_altivec(c, avctx);
-        if(CONFIG_VC1_DECODER)
-            vc1dsp_init_altivec(c, avctx);
         float_init_altivec(c, avctx);
         int_init_altivec(c, avctx);
         c->gmc1 = gmc1_altivec;
 
 #if CONFIG_ENCODERS
-        if (avctx->dct_algo == FF_DCT_AUTO ||
-            avctx->dct_algo == FF_DCT_ALTIVEC) {
+        if (avctx->bits_per_raw_sample <= 8 &&
+            (avctx->dct_algo == FF_DCT_AUTO ||
+             avctx->dct_algo == FF_DCT_ALTIVEC)) {
             c->fdct = fdct_altivec;
         }
 #endif //CONFIG_ENCODERS
 
-        if (avctx->lowres==0) {
+        if (avctx->lowres == 0 && avctx->bits_per_raw_sample <= 8) {
             if ((avctx->idct_algo == FF_IDCT_AUTO) ||
                 (avctx->idct_algo == FF_IDCT_ALTIVEC)) {
                 c->idct_put = idct_put_altivec;

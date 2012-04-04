@@ -23,6 +23,7 @@
 #define AVUTIL_PIXDESC_H
 
 #include <inttypes.h>
+#include "pixfmt.h"
 
 typedef struct AVComponentDescriptor{
     uint16_t plane        :2;            ///< which of the 4 planes contains the component
@@ -86,6 +87,8 @@ typedef struct AVPixFmtDescriptor{
 #define PIX_FMT_PAL       2 ///< Pixel format has a palette in data[1], values are indexes in this palette.
 #define PIX_FMT_BITSTREAM 4 ///< All values of a component are bit-wise packed end to end.
 #define PIX_FMT_HWACCEL   8 ///< Pixel format is an HW accelerated format.
+#define PIX_FMT_PLANAR   16 ///< At least one pixel component is not in the first data plane
+#define PIX_FMT_RGB      32 ///< The pixel format contains RGB-like data (as opposed to YUV/grayscale)
 
 /**
  * The array of all the pixel format descriptors.
@@ -140,6 +143,14 @@ void av_write_image_line(const uint16_t *src, uint8_t *data[4], const int linesi
  * Finally if no pixel format has been found, returns PIX_FMT_NONE.
  */
 enum PixelFormat av_get_pix_fmt(const char *name);
+
+/**
+ * Return the short name for a pixel format, NULL in case pix_fmt is
+ * unknown.
+ *
+ * @see av_get_pix_fmt(), av_get_pix_fmt_string()
+ */
+const char *av_get_pix_fmt_name(enum PixelFormat pix_fmt);
 
 /**
  * Print in buf the string corresponding to the pixel format with

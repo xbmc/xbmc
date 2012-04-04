@@ -23,8 +23,6 @@
 
         preserve8
 
-        .text
-
 #define ff_fft_calc_neon X(ff_fft_calc_neon)
 
 function ff_imdct_half_neon, export=1
@@ -191,7 +189,9 @@ function ff_mdct_calc_neon, export=1
         vadd.f32        d17, d17, d3            @ in2u+in1d     -I
 1:
         vmul.f32        d7,  d0,  d21           @  I*s
-        ldr             r10, [r3, lr, lsr #1]
+A       ldr             r10, [r3, lr, lsr #1]
+T       lsr             r10, lr,  #1
+T       ldr             r10, [r3, r10]
         vmul.f32        d6,  d1,  d20           @ -R*c
         ldr             r6,  [r3, #4]!
         vmul.f32        d4,  d1,  d21           @ -R*s

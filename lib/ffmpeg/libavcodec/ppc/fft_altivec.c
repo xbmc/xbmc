@@ -122,7 +122,7 @@ static void ff_imdct_calc_altivec(FFTContext *s, FFTSample *output, const FFTSam
     int n = 1 << s->mdct_bits;
     int n4 = n >> 2;
     int n16 = n >> 4;
-    vec_u32 sign = {1<<31,1<<31,1<<31,1<<31};
+    vec_u32 sign = {1U<<31,1U<<31,1U<<31,1U<<31};
     vec_u32 *p0 = (vec_u32*)(output+n4);
     vec_u32 *p1 = (vec_u32*)(output+n4*3);
 
@@ -141,7 +141,9 @@ av_cold void ff_fft_init_altivec(FFTContext *s)
 {
 #if HAVE_GNU_AS
     s->fft_calc   = ff_fft_calc_interleave_altivec;
-    s->imdct_calc = ff_imdct_calc_altivec;
-    s->imdct_half = ff_imdct_half_altivec;
+    if (s->mdct_bits >= 5) {
+        s->imdct_calc = ff_imdct_calc_altivec;
+        s->imdct_half = ff_imdct_half_altivec;
+    }
 #endif
 }

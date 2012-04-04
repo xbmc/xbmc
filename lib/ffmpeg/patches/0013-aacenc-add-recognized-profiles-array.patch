@@ -1,0 +1,35 @@
+From 8728e8bdef30313f1961d2687cfb0ffccf540797 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Fri, 21 Jan 2011 20:44:02 +0200
+Subject: [PATCH 13/24] aacenc: add recognized profiles array
+
+Submitted upstream.
+---
+ libavcodec/aacenc.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/libavcodec/aacenc.c b/libavcodec/aacenc.c
+index 2ff6f9c..4ffaa3d 100644
+--- a/libavcodec/aacenc.c
++++ b/libavcodec/aacenc.c
+@@ -777,6 +777,11 @@ static const AVClass aacenc_class = {
+     LIBAVUTIL_VERSION_INT,
+ };
+ 
++static const AVProfile profiles[] = {
++    { FF_PROFILE_AAC_LOW,  "Low"  },
++    { FF_PROFILE_UNKNOWN },
++};
++
+ AVCodec ff_aac_encoder = {
+     .name           = "aac",
+     .type           = AVMEDIA_TYPE_AUDIO,
+@@ -789,4 +794,5 @@ AVCodec ff_aac_encoder = {
+     .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_FLT,AV_SAMPLE_FMT_NONE},
+     .long_name = NULL_IF_CONFIG_SMALL("Advanced Audio Coding"),
+     .priv_class = &aacenc_class,
++    .profiles = profiles,
+ };
+-- 
+1.7.9.4
+

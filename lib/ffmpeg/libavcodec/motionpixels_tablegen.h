@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef MOTIONPIXELS_TABLEGEN_H
-#define MOTIONPIXELS_TABLEGEN_H
+#ifndef AVCODEC_MOTIONPIXELS_TABLEGEN_H
+#define AVCODEC_MOTIONPIXELS_TABLEGEN_H
 
 #include <stdint.h>
 
@@ -30,7 +30,7 @@ typedef struct YuvPixel {
 } YuvPixel;
 
 static int mp_yuv_to_rgb(int y, int v, int u, int clip_rgb) {
-    static const uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+    const uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     int r, g, b;
 
     r = (1000 * y + 701 * v) / 1000;
@@ -88,4 +88,4 @@ static void motionpixels_tableinit(void)
 }
 #endif /* CONFIG_HARDCODED_TABLES */
 
-#endif /* MOTIONPIXELS_TABLEGEN_H */
+#endif /* AVCODEC_MOTIONPIXELS_TABLEGEN_H */
