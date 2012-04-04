@@ -145,6 +145,11 @@ long MultiFileReader::CloseFile()
   long hr;
   hr = m_TSBufferFile.CloseFile();
   hr = m_TSFile.CloseFile();
+  std::vector<MultiFileReaderFile *>::iterator it;
+  for (it = m_tsFiles.begin(); it < m_tsFiles.end(); it++)
+  {
+    delete (*it);
+  }
   m_TSFileId = 0;
   m_llBufferPointer = 0;
   return hr;

@@ -113,6 +113,7 @@ namespace ForTheRecord
   {
     // due to lack of static constructors...
     communication_mutex.Initialize();
+    curl_global_init(CURL_GLOBAL_ALL);
   }
 
 
