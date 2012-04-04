@@ -1,0 +1,33 @@
+From 2ac62404c2f833d5aa64947819538ac354966ef0 Mon Sep 17 00:00:00 2001
+From: Michael Niedermayer <michaelni@gmx.at>
+Date: Sat, 12 Nov 2011 21:10:15 +0100
+Subject: [PATCH] h264: Use mismatching frame numbers in fields to synchronize
+ the first/second field state independant of them being
+ reference or not. Fixes Ticket354
+
+Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+---
+ lib/ffmpeg/libavcodec/h264.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/h264.c b/lib/ffmpeg/libavcodec/h264.c
+index 47b0073..87ec292 100644
+--- a/lib/ffmpeg/libavcodec/h264.c
++++ b/lib/ffmpeg/libavcodec/h264.c
+@@ -1936,11 +1936,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+                 s0->first_field = FIELD_PICTURE;
+ 
+             } else {
+-                if (h->nal_ref_idc &&
+-                        s0->current_picture_ptr->reference &&
+-                        s0->current_picture_ptr->frame_num != h->frame_num) {
++                if (s0->current_picture_ptr->frame_num != h->frame_num) {
+                     /*
+-                     * This and previous field were reference, but had
++                     * This and previous field had
+                      * different frame_nums. Consider this field first in
+                      * pair. Throw away previous field except for reference
+                      * purposes.
+-- 
+1.7.7.2
+

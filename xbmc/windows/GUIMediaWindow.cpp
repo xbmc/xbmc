@@ -53,7 +53,7 @@
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/TimeUtils.h"
-#include "filesystem/FactoryFileDirectory.h"
+#include "filesystem/FileDirectoryFactory.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "guilib/GUIEditControl.h"
@@ -217,6 +217,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       m_iSelectedItem = m_viewControl.GetSelectedItem();
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
+      CGUIDialogContextMenu* pDlg = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+      if (pDlg && pDlg->IsActive())
+        pDlg->Close();
+      
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
       ClearFileItems();
@@ -652,7 +656,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && items.GetPath() != m_startDirectory)
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
@@ -874,7 +878,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
-    pFileDirectory = XFILE::CFactoryFileDirectory::Create(pItem->GetPath(), pItem.get(), "");
+    pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetPath(), pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
     else if(pItem->m_bIsFolder)
@@ -967,16 +971,18 @@ bool CGUIMediaWindow::OnClick(int iItem)
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
-    if (pItem->IsPlugin())
+    if (m_vecItems->IsPlugin())
     {
-      CURL url(pItem->GetPath());
+      CURL url(m_vecItems->GetPath());
       AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO) && pItem->IsAudio())
+        if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
-          autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");
+          CFileItemList items;
+          auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
+          autoplay = state.get() && state->AutoPlayNextItem();
         }
       }
     }
@@ -1189,6 +1195,8 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem)
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
+
+  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, pItem->GetPath().c_str());
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())
@@ -1415,7 +1423,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->GetPath().Equals("add") && !item->GetPath().Equals("newplaylist://") &&
-      !item->GetPath().Left(19).Equals("newsmartplaylist://") && !item->IsAddonsPath())
+      !item->GetPath().Left(19).Equals("newsmartplaylist://"))
   {
     if (CFavourites::IsFavourite(item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

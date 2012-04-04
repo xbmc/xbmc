@@ -68,8 +68,6 @@ public:
   static CStdString TranslatePath(const CStdString &path);
   static CStdString TranslatePath(const CURL &url);
   static CStdString TranslatePathConvertCase(const CStdString& path);
-  static CStdString ReplaceOldPath(const CStdString &oldPath, int pathVersion);
-  static const int path_version = 1;
 
 private:
   static void SetPath(const CStdString &key, const CStdString &path);
@@ -77,9 +75,6 @@ private:
 
   static std::map<CStdString, CStdString> m_pathMap;
 };
-
-#define _P(x)     CSpecialProtocol::TranslatePath(x)
-#define PTH_IC(x) CSpecialProtocol::TranslatePathConvertCase(x)
 
 #ifdef _WIN32
 #define PATH_SEPARATOR_CHAR '\\'

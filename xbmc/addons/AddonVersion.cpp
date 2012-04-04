@@ -112,9 +112,16 @@ namespace ADDON
 
     int result = CompareComponent(Upstream(), other.Upstream());
     if (result)
-      return (-1 == result);
+      return (result < 0);
 
-    return (-1 == CompareComponent(Revision(), other.Revision()));
+    return (CompareComponent(Revision(), other.Revision()) < 0);
+  }
+
+  bool AddonVersion::operator==(const AddonVersion& other) const
+  {
+    return Epoch() == other.Epoch()
+      && CompareComponent(Upstream(), other.Upstream()) == 0
+      && CompareComponent(Revision(), other.Revision()) == 0;
   }
 
   CStdString AddonVersion::Print() const
@@ -135,5 +142,30 @@ namespace ADDON
     version = version.Mid(0,version.size()-4);
 
     return true;
+  }
+
+  bool AddonVersion::Test()
+  {
+    AddonVersion v1_0("1.0");
+    AddonVersion v1_00("1.00");
+    AddonVersion v1_0_0("1.0.0");
+    AddonVersion v1_1("1.1");
+    AddonVersion v1_01("1.01");
+    AddonVersion v1_0_1("1.0.1");
+
+    bool ret = false;
+
+    // These are totally sane
+    ret = (v1_0 < v1_1) && (v1_0 < v1_01) && (v1_0 < v1_0_1) &&
+          (v1_1 > v1_0_1) && (v1_01 > v1_0_1);
+
+    // These are rather sane
+    ret &= (v1_0 != v1_0_0) && (v1_0 < v1_0_0) && (v1_0_0 > v1_0) &&
+           (v1_00 != v1_0_0) && (v1_00 < v1_0_0) && (v1_0_0 > v1_00);
+
+    ret &= (v1_0 == v1_00) && !(v1_0 < v1_00) && !(v1_0 > v1_00);
+    ret &= (v1_1 == v1_01) && !(v1_1 < v1_01) && !(v1_1 > v1_01);
+
+    return ret;
   }
 }

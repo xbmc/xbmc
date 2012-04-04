@@ -25,24 +25,24 @@
 
 using namespace std;
 
-bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
+bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
 {
   if (!artist) return false;
-  if (!chained)
+  if (!append)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetAdditiveString(artist,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(artist,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(artist,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(artist,"yearsactive",g_advancedSettings.m_musicItemSeparator,strYearsActive);
-  XMLUtils::GetAdditiveString(artist,"instruments",g_advancedSettings.m_musicItemSeparator,strInstruments);
+  XMLUtils::GetStringArray(artist, "genre", genre, prioritise);
+  XMLUtils::GetStringArray(artist, "style", styles, prioritise);
+  XMLUtils::GetStringArray(artist, "mood", moods, prioritise);
+  XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise);
+  XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise);
 
-  XMLUtils::GetString(artist,"born",strBorn);
-  XMLUtils::GetString(artist,"formed",strFormed);
-  XMLUtils::GetString(artist,"biography",strBiography);
-  XMLUtils::GetString(artist,"died",strDied);
-  XMLUtils::GetString(artist,"disbanded",strDisbanded);
+  XMLUtils::GetString(artist, "born", strBorn);
+  XMLUtils::GetString(artist, "formed", strFormed);
+  XMLUtils::GetString(artist, "biography", strBiography);
+  XMLUtils::GetString(artist, "died", strDied);
+  XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
   size_t iThumbCount = thumbURL.m_url.size();
   CStdString xmlAdd = thumbURL.m_xml;
@@ -51,7 +51,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *thumb;
@@ -60,7 +60,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
     thumb = thumb->NextSiblingElement("thumb");
   }
   // prefix thumbs from nfos
-  if (prefix && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
   {
     rotate(thumbURL.m_url.begin(),
            thumbURL.m_url.begin()+iThumbCount, 
@@ -88,7 +88,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
   if (fanart2)
   {
     // we prefix to handle mixed-mode nfo's with fanart set
-    if (prefix)
+    if (prioritise)
     {
       CStdString temp;
       temp << *fanart2;
@@ -113,16 +113,11 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   if (!artist) return false;
 
   XMLUtils::SetString(artist,       "name", strArtist);
-  XMLUtils::SetAdditiveString(artist,       "genre",
-                            g_advancedSettings.m_musicItemSeparator, strGenre);
-  XMLUtils::SetAdditiveString(artist,      "style",
-                            g_advancedSettings.m_musicItemSeparator, strStyles);
-  XMLUtils::SetAdditiveString(artist,      "mood",
-                            g_advancedSettings.m_musicItemSeparator, strMoods);
-  XMLUtils::SetAdditiveString(artist, "yearsactive",
-                            g_advancedSettings.m_musicItemSeparator, strYearsActive);
-  XMLUtils::SetAdditiveString(artist, "instruments",
-                            g_advancedSettings.m_musicItemSeparator, strInstruments);
+  XMLUtils::SetStringArray(artist, "genre", genre);
+  XMLUtils::SetStringArray(artist, "style", styles);
+  XMLUtils::SetStringArray(artist,  "mood", moods);
+  XMLUtils::SetStringArray(artist, "yearsactive", yearsActive);
+  XMLUtils::SetStringArray(artist, "instruments", instruments);
   XMLUtils::SetString(artist,        "born", strBorn);
   XMLUtils::SetString(artist,      "formed", strFormed);
   XMLUtils::SetString(artist,   "biography", strBiography);

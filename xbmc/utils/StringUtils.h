@@ -41,7 +41,11 @@ class StringUtils
 {
 public:
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
+  static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
+  static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings = 0);
+  static CStdStringArray SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings = 0);
+  static std::vector<std::string> Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings = 0);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static long TimeStringToSeconds(const CStdString &timeString);
@@ -55,7 +59,18 @@ public:
    */
   static CStdString SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
 
+  /*! \brief check whether a string is a natural number.
+   Matches [ \t]*[0-9]+[ \t]*
+   \param str the string to check
+   \return true if the string is a natural number, false otherwise.
+   */
   static bool IsNaturalNumber(const CStdString& str);
+
+  /*! \brief check whether a string is an integer.
+   Matches [ \t]*[\-]*[0-9]+[ \t]*
+   \param str the string to check
+   \return true if the string is an integer, false otherwise.
+   */
   static bool IsInteger(const CStdString& str);
   static CStdString SizeToString(int64_t size);
   static const CStdString EmptyString;
@@ -67,6 +82,8 @@ public:
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
   static double CompareFuzzy(const CStdString &left, const CStdString &right);
   static int FindBestMatch(const CStdString &str, const CStdStringArray &strings, double &matchscore);
+
+  static bool Test();
 private:
   static CStdString m_lastUUID;
 };

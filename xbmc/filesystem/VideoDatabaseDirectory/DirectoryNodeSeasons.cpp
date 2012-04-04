@@ -48,6 +48,13 @@ CStdString CDirectoryNodeSeasons::GetLocalizedName() const
     return g_localizeStrings.Get(20381); // Specials
   case -1:
     return g_localizeStrings.Get(20366); // All Seasons
+  case -2:
+  {
+    CDirectoryNode *pParent = GetParent();
+    if (pParent)
+      return pParent->GetLocalizedName();
+    return "";
+  }
   default:
     CStdString season;
     season.Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
@@ -71,7 +78,7 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
     if (items[0]->GetVideoInfoTag()->m_iSeason == 0 || items[1]->GetVideoInfoTag()->m_iSeason == 0)
       bFlatten = true; // flatten if one season + specials
 
-  if (!bFlatten && g_settings.GetWatchMode("tvshows") == VIDEO_SHOW_UNWATCHED) 
+  if (iFlatten > 0 && !bFlatten && g_settings.GetWatchMode("tvshows") == VIDEO_SHOW_UNWATCHED) 
   {
     int count = 0;
     for(int i = 0; i < items.Size(); i++) 
@@ -85,8 +92,8 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
   if (bFlatten)
   { // flatten if one season or flatten always
     items.Clear();
-    bSuccess=videodatabase.GetEpisodesNav(BuildPath()+"-1/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
-    items.SetPath(BuildPath()+"-1/");
+    bSuccess=videodatabase.GetEpisodesNav(BuildPath()+"-2/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
+    items.SetPath(BuildPath()+"-2/");
   }
 
   videodatabase.Close();

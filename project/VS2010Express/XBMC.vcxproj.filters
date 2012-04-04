@@ -250,6 +250,15 @@
     <Filter Include="peripherals\dialogs">
       <UniqueIdentifier>{9571e2bc-891d-4496-bcba-2ec3eed45704}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\websocket">
+      <UniqueIdentifier>{88e84682-dede-4bdf-9e33-a8023dd5ac78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filesystem\windows">
+      <UniqueIdentifier>{1cc693eb-11ad-4f53-8640-198d5ab9bcc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network\httprequesthandler">
+      <UniqueIdentifier>{9029e610-aa5a-4414-9e96-1d69f03b3bd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -265,12 +274,6 @@
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WindowHelper.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINFileSMB.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WINSMBDirectory.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
@@ -651,243 +654,6 @@
     <ClCompile Include="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp">
       <Filter>cores\PlayerCoreFactory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\AddonsDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ASAPFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\CacheMemBuffer.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\CacheStrategy.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\CDDADirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DAAPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DAVDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\Directory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DirectoryCache.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DirectoryHistory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DirectoryTuxBox.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\DllLibCurl.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FactoryDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FactoryFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\File.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileCache.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileCDDA.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileCurl.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileDAAP.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileFactory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileFileReader.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileHD.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileISO.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileLastFM.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileMusicDatabase.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileRar.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileRTV.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileSFTP.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileShoutcast.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileTuxBox.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileZip.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FTPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FTPParse.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\HDDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\HDHomeRun.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\HTSPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\HTSPSession.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\IDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\IFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\LastFMDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MultiPathDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MultiPathFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MusicFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MusicSearchDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MythDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MythFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\MythSession.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\NptXbmcFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\NSFFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\OGGFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\PlaylistDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\PlaylistFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\PluginDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\RarDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\RarManager.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\RSSDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\RTVDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SAPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SAPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocol.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VTPFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VTPSession.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ZipDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ZipManager.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.cpp">
       <Filter>filesystem\MusicDatabaseDirectory</Filter>
     </ClCompile>
@@ -1233,9 +999,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogYesNo.cpp">
       <Filter>dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\ZeroconfDirectory.cpp">
-      <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\Application.cpp" />
     <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
@@ -2249,15 +2012,6 @@
     <ClCompile Include="..\..\xbmc\utils\LangCodeExpander.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\ApplicationMessenger.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2426,9 +2180,6 @@
     <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
       <Filter>libs\SlingboxLib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2447,9 +2198,6 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
-      <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
       <Filter>input</Filter>
@@ -2492,18 +2240,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp">
       <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\FileNFS.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\PipesManager.cpp">
-      <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
       <Filter>cores\paplayer</Filter>
@@ -2562,7 +2298,337 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\FileUPnP.cpp">
+    <ClCompile Include="..\..\xbmc\filesystem\AddonsDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
+      <Filter>cores\paplayer</Filter>
+	</ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Base64.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\HttpResponse.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocket.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV13.cpp">
+      <Filter>network\websocket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\windows\WINFileSMB.cpp">
+      <Filter>filesystem\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.cpp">
+      <Filter>filesystem\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\GUIOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Mime.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+	</ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\AFPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ASAPFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CacheStrategy.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CDDADirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CDDAFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CurlFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DAAPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DAAPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DAVDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\Directory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DirectoryFactory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DirectoryHistory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DllLibCurl.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\File.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileDirectoryFactory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileFactory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileReaderFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FTPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FTPParse.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HDDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HDFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HDHomeRunFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HTSPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HTSPSession.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HTTPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\IDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\IFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\iso9660.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ISO9660Directory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ISOFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\LastFMDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\LastFMFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MultiPathDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MultiPathFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicSearchDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MythDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MythFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MythSession.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\NFSFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\NptXbmcFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\NSFFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\OGGFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PipeFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PipesManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PlaylistDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PlaylistFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PluginDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RarDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RarFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RarManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RSSDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RTVDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\RTVFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SAPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SAPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SFTPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SFTPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ShoutcastFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SIDFileDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SlingboxDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SlingboxFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SourcesDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SpecialProtocol.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SpecialProtocolDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\SpecialProtocolFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\StackDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\TuxBoxDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\TuxBoxFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\udf25.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\UDFDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\UDFFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\UPnPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\UPnPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VideoDatabaseDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VirtualDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VTPDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VTPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\VTPSession.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ZeroconfDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ZipDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CircularCache.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DirectoryCache.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileCache.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MemBufferCache.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -3098,210 +3164,6 @@
     <ClInclude Include="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h">
       <Filter>cores\PlayerCoreFactory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\AddonsDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ASAPFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\CacheMemBuffer.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\CacheStrategy.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\CDDADirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DAAPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DAVDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DirectoryCache.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DirectoryTuxBox.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DllLibCMyth.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\DllLibCurl.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FactoryFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileCache.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileCDDA.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileCurl.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileDAAP.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileFileReader.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileISO.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileLastFM.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileMusicDatabase.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileRar.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileRTV.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileSFTP.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileShoutcast.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileSpecialProtocol.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileTuxBox.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileZip.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FTPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FTPParse.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\HDHomeRun.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\HTSPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\HTSPSession.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\HTTPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ISO9660Directory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\LastFMDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MultiPathDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MultiPathFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MusicFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MusicSearchDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MythDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MythFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\MythSession.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\NSFFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\OGGFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\PlaylistDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\PlaylistFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\PluginDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\RarDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\RarManager.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\RSSDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\RTVDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SAPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SAPFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SFTPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SIDFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SmartPlaylistDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocol.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\VTPFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\VTPSession.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ZipDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ZipManager.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.h">
       <Filter>filesystem\MusicDatabaseDirectory</Filter>
     </ClInclude>
@@ -3674,12 +3536,6 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogYesNo.h">
       <Filter>dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\Application.h" />
     <ClInclude Include="..\..\xbmc\system.h" />
     <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h">
@@ -3918,42 +3774,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\XBTFReader.h">
       <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\Directory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FactoryDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\File.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FileFactory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FileHD.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\HDDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\IDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\IFile.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\IFileDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\iso9660.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\VirtualDirectory.h">
-      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\ButtonTranslator.h">
       <Filter>input</Filter>
@@ -4789,15 +4609,6 @@
     <ClInclude Include="..\..\xbmc\utils\LangCodeExpander.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\udf25.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\ApplicationMessenger.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4978,12 +4789,6 @@
     <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
       <Filter>libs\SlingboxLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
     </ClInclude>
@@ -5069,18 +4874,6 @@
     <ClInclude Include="..\..\xbmc\guilib\JpegIO.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FileNFS.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FilePipe.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\PipesManager.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -5147,10 +4940,367 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
       <Filter>threads\platform\win</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h">
+    <ClInclude Include="..\..\xbmc\filesystem\ZipManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\AddonsDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\AFPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\AFPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ASAPFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\CacheStrategy.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\CDDADirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\CDDAFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\CurlFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DAAPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DAAPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DAVDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Directory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DirectoryFactory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllHDHomeRunDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllHDHomeRunFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllLibAfp.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllLibCMyth.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllLibCurl.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DllLibNfs.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\File.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileDirectoryFactory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileFactory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileReaderFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FTPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FTPParse.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HDDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HDFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HDHomeRunFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HTSPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HTSPSession.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HTTPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\IDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\IFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\IFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\iso9660.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ISO9660Directory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ISOFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\LastFMDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\LastFMFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MultiPathDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MultiPathFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicSearchDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MythDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MythFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MythSession.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\NFSFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\NSFFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\OGGFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PipeFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PipesManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PlaylistDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PlaylistFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PluginDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RarDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RarFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RarManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RSSDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RTVDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\RTVFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SAPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SAPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SFTPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SFTPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ShoutcastFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SIDFileDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SlingboxDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SlingboxFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SmartPlaylistDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SourcesDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocol.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocolDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\SpecialProtocolFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\StackDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\TuxBoxDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\TuxBoxFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\udf25.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\UDFDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\UDFFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\UPnPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\UPnPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VirtualDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VTPDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VTPFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\VTPSession.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ZipDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
+      <Filter>cores\paplayer</Filter>
+	</ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\CircularCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DirectoryCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Base64.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\HttpResponse.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV8.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h">
+      <Filter>network\websocket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h">
+      <Filter>filesystem\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h">
+      <Filter>filesystem\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONRPCUtils.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\IJSONRPCAnnouncer.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\GUIOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Mime.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

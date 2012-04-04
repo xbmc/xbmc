@@ -38,7 +38,7 @@ namespace MUSIC_INFO
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 /* The following structure describes an entry in the scrobbler submission
@@ -134,7 +134,7 @@ protected:
   CStdString m_strHandshakeTimeStamp;
   SubmissionJournalEntry m_CurrentTrack;
   CEvent m_hEvent;
-  XFILE::CFileCurl  *m_pHttp;
+  XFILE::CCurlFile  *m_pHttp;
   CCriticalSection  m_queueLock;
   CCriticalSection  m_actionLock;
   std::vector<SubmissionJournalEntry> m_vecSubmissionQueue;

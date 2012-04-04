@@ -49,6 +49,7 @@ private:
   int m_tVideo;
   int m_tInternetStream;
 
+  int m_tBD;
   int m_tDVD;
   int m_tDVDFile;
   int m_tDVDImage;

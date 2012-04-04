@@ -1002,10 +1002,10 @@
 			</control>
 			<control type="image">
 				<description>Weather image</description>
-				<posx>30</posx>
-				<posy>1</posy>
-				<width>25</width>
-				<height>25</height>
+				<posx>25</posx>
+				<posy>0</posy>
+				<width>30</width>
+				<height>30</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[Window(Weather).Property(Current.ConditionIcon)]</texture>
 			</control>

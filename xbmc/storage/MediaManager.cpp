@@ -50,7 +50,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/Directory.h"
 #include "utils/Crc32.h"
 
@@ -95,6 +95,9 @@ void CMediaManager::Initialize()
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
+#ifdef HAS_DVD_DRIVE
+  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
   m_platformStorage->Initialize();
 }
 
@@ -170,7 +173,7 @@ void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
   m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
-void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
+void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
 {
   // Load our xml file
   LoadSources();
@@ -180,6 +183,30 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
     share.strName = url.GetWithoutUserDetails();
+    locations.push_back(share);
+  }
+  if (autolocations)
+  {
+    CMediaSource share;
+    share.m_ignore = true;
+#ifdef HAS_FILESYSTEM_SMB
+    share.strPath = "smb://";
+    share.strName = g_localizeStrings.Get(20171);
+    locations.push_back(share);
+#endif
+
+#ifdef HAS_FILESYSTEM_NFS
+    share.strPath = "nfs://";
+    share.strName = g_localizeStrings.Get(20259);
+    locations.push_back(share);
+#endif// HAS_FILESYSTEM_NFS
+
+    share.strPath = "upnp://";
+    share.strName = "UPnP Devices";
+    locations.push_back(share);
+
+    share.strPath = "zeroconf://";
+    share.strName = "Zeroconf Browser";
     locations.push_back(share);
   }
 }
@@ -277,7 +304,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
-    strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+    strDevice = strFirstAvailDrive;
 #endif
 
 #ifdef _WIN32
@@ -301,9 +328,9 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   std::map<CStdString,CCdInfo*>::iterator it;
+  CSingleLock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
     return true;
@@ -349,7 +376,6 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   DWORD dwRet = DRIVE_NOT_READY;
   int status = CWIN32Util::GetDriveStatus(strDevice);
@@ -384,19 +410,24 @@ CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 #ifdef _WIN32
   if(!m_bhasoptical)
     return NULL;
-
-  CSingleLock waitLock(m_muAutoSource);
-  CCdInfo* pCdInfo=NULL;
+  
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   std::map<CStdString,CCdInfo*>::iterator it;
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
-    return it->second;
+  {
+    CSingleLock waitLock(m_muAutoSource);
+    it = m_mapCdInfo.find(strDevice);
+    if(it != m_mapCdInfo.end())
+      return it->second;
+  }
 
+  CCdInfo* pCdInfo=NULL;
   CCdIoSupport cdio;
   pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
   if(pCdInfo!=NULL)
+  {
+    CSingleLock waitLock(m_muAutoSource);
     m_mapCdInfo.insert(std::pair<CStdString,CCdInfo*>(strDevice,pCdInfo));
+  }
 
   return pCdInfo;
 #else
@@ -409,10 +440,10 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
 
   std::map<CStdString,CCdInfo*>::iterator it;
+  CSingleLock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
@@ -431,7 +462,6 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   if(!m_bhasoptical)
     return "";
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath);
   char cVolumenName[128];
   char cFSName[128];
@@ -594,7 +624,7 @@ void CMediaManager::ProcessEvents()
 
 std::vector<CStdString> CMediaManager::GetDiskUsage()
 {
-  CSingleLock waitLock(m_muAutoSource);
+  CSingleLock lock(m_CritSecStorageProvider);
   return m_platformStorage->GetDiskUsage();
 }
 

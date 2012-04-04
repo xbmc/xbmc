@@ -21,8 +21,9 @@
 
 #include "RSSDirectory.h"
 #include "FileItem.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/URIUtils.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/HTMLUtil.h"
@@ -204,7 +205,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
 
     /* okey this is silly, boxee what did you think?? */
     if     (scheme == "urn:boxee:genre")
-      vtag->m_strGenre = text;
+      vtag->m_genre = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
     else if(scheme == "urn:boxee:title-type")
     {
       if     (text == "tv")
@@ -223,7 +224,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     else if(scheme == "urn:boxee:source")
       item->SetProperty("boxee:provider_source", text);
     else
-      vtag->m_strGenre = text;
+      vtag->m_genre = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
   }
   else if(name == "rating")
   {
@@ -237,10 +238,10 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   {
     CStdString role = item_child->Attribute("role");
     if     (role == "director")
-      vtag->m_strDirector += ", " + text;
+      vtag->m_director.push_back(text);
     else if(role == "author"
          || role == "writer")
-      vtag->m_strWritingCredits += ", " + text;
+      vtag->m_writingCredits.push_back(text);
     else if(role == "actor")
     {
       SActorInfo actor;
@@ -249,7 +250,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     }
   }
   else if(name == "copyright")
-    vtag->m_strStudio = text;
+    vtag->m_studio = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 
@@ -273,7 +274,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   else if(name == "subtitle")
     vtag->m_strPlotOutline = text;
   else if(name == "author")
-    vtag->m_strWritingCredits += ", " + text;
+    vtag->m_writingCredits.push_back(text);
   else if(name == "duration")
     vtag->m_strRuntime = text;
   else if(name == "keywords")
@@ -402,7 +403,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "views")
     vtag->m_playCount = atoi(text);
   else if(name == "airdate")
-    vtag->m_strFirstAired = text;
+    vtag->m_firstAired.SetFromDateString(text);
   else if(name == "userrating")
     vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "duration")
@@ -561,9 +562,6 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   if(item->HasVideoInfoTag())
   {
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
-    // clean up ", " added during build
-    vtag->m_strDirector.Delete(0, 2);
-    vtag->m_strWritingCredits.Delete(0, 2);
 
     if(item->HasProperty("duration")    && vtag->m_strRuntime.IsEmpty())
       vtag->m_strRuntime = item->GetProperty("duration").asString();
@@ -659,7 +657,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
 
 bool CRSSDirectory::Exists(const char* strPath)
 {
-  CFileCurl rss;
+  CCurlFile rss;
   CURL url(strPath);
   return rss.Exists(url);
 }

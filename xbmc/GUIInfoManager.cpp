@@ -212,12 +212,11 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "isstandalone",     SYSTEM_ISSTANDALONE },
                                   { "loggedon",         SYSTEM_LOGGEDON },
                                   { "showexitbutton",   SYSTEM_SHOW_EXIT_BUTTON },
-                                  { "hasdrivef",        SYSTEM_HAS_DRIVE_F },
-                                  { "hasdriveg",        SYSTEM_HAS_DRIVE_G },
                                   { "canpowerdown",     SYSTEM_CAN_POWERDOWN },
                                   { "cansuspend",       SYSTEM_CAN_SUSPEND },
                                   { "canhibernate",     SYSTEM_CAN_HIBERNATE },
                                   { "canreboot",        SYSTEM_CAN_REBOOT },
+                                  { "screensaveractive",SYSTEM_SCREENSAVER_ACTIVE },
                                   { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
                                   { "cpuusage",         SYSTEM_CPU_USAGE },
                                   { "gputemperature",   SYSTEM_GPU_TEMPERATURE },
@@ -253,7 +252,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
                                   { "friendlyname",     SYSTEM_FRIENDLY_NAME },
-                                  { "alarmpos",         SYSTEM_ALARM_POS }};
+                                  { "alarmpos",         SYSTEM_ALARM_POS },
+                                  { "haspvr",           SYSTEM_HAS_PVR }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "getbool",          SYSTEM_GET_BOOL },
@@ -449,6 +449,21 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "picturepath",      LISTITEM_PICTURE_PATH },
                                   { "pictureresolution",LISTITEM_PICTURE_RESOLUTION },
                                   { "picturedatetime",  LISTITEM_PICTURE_DATETIME },
+                                  { "picturecomment",   LISTITEM_PICTURE_COMMENT },
+                                  { "picturecaption",   LISTITEM_PICTURE_CAPTION },
+                                  { "picturedesc",      LISTITEM_PICTURE_DESC },
+                                  { "picturekeywords",  LISTITEM_PICTURE_KEYWORDS },
+                                  { "picturecammake",   LISTITEM_PICTURE_CAM_MAKE },
+                                  { "picturecammodel",  LISTITEM_PICTURE_CAM_MODEL },
+                                  { "pictureaperture",  LISTITEM_PICTURE_APERTURE },
+                                  { "picturefocallen",  LISTITEM_PICTURE_FOCAL_LEN },
+                                  { "picturefocusdist", LISTITEM_PICTURE_FOCUS_DIST },
+                                  { "pictureexpmode",   LISTITEM_PICTURE_EXP_MODE },
+                                  { "pictureexptime",   LISTITEM_PICTURE_EXP_TIME },
+                                  { "pictureiso",       LISTITEM_PICTURE_ISO },
+                                  { "picturegpslat",    LISTITEM_PICTURE_GPS_LAT },
+                                  { "picturegpslon",    LISTITEM_PICTURE_GPS_LON },
+                                  { "picturegpsalt",    LISTITEM_PICTURE_GPS_ALT },
                                   { "studio",           LISTITEM_STUDIO },
                                   { "country",          LISTITEM_COUNTRY },
                                   { "mpaa",             LISTITEM_MPAA },
@@ -513,6 +528,24 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
                                   { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
+
+const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
+                                  /* LISTITEM_PICTURE_DATETIME   => */ SLIDE_EXIF_DATE_TIME,
+                                  /* LISTITEM_PICTURE_COMMENT    => */ SLIDE_COMMENT,
+                                  /* LISTITEM_PICTURE_CAPTION    => */ SLIDE_IPTC_CAPTION,
+                                  /* LISTITEM_PICTURE_DESC       => */ SLIDE_EXIF_DESCRIPTION,
+                                  /* LISTITEM_PICTURE_KEYWORDS   => */ SLIDE_IPTC_KEYWORDS,
+                                  /* LISTITEM_PICTURE_CAM_MAKE   => */ SLIDE_EXIF_CAMERA_MAKE,
+                                  /* LISTITEM_PICTURE_CAM_MODEL  => */ SLIDE_EXIF_CAMERA_MODEL,
+                                  /* LISTITEM_PICTURE_APERTURE   => */ SLIDE_EXIF_APERTURE,
+                                  /* LISTITEM_PICTURE_FOCAL_LEN  => */ SLIDE_EXIF_FOCAL_LENGTH,
+                                  /* LISTITEM_PICTURE_FOCUS_DIST => */ SLIDE_EXIF_FOCUS_DIST,
+                                  /* LISTITEM_PICTURE_EXP_MODE   => */ SLIDE_EXIF_EXPOSURE_MODE,
+                                  /* LISTITEM_PICTURE_EXP_TIME   => */ SLIDE_EXIF_EXPOSURE_TIME,
+                                  /* LISTITEM_PICTURE_ISO        => */ SLIDE_EXIF_ISO_EQUIV,
+                                  /* LISTITEM_PICTURE_GPS_LAT    => */ SLIDE_EXIF_GPS_LATITUDE,
+                                  /* LISTITEM_PICTURE_GPS_LON    => */ SLIDE_EXIF_GPS_LONGITUDE,
+                                  /* LISTITEM_PICTURE_GPS_ALT    => */ SLIDE_EXIF_GPS_ALTITUDE };
 
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
 : name(property)
@@ -1519,7 +1552,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 #ifdef HAS_LCD
   case LCD_PROGRESS_BAR:
-    if (g_lcd) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
+    if (g_lcd && g_lcd->IsConnected()) strLabel = g_lcd->GetProgressBar(g_application.GetTime(), g_application.GetTotalTime());
     break;
 #endif
   case NETWORK_IP_ADDRESS:
@@ -1887,10 +1920,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
 #ifdef HAS_DVD_DRIVE
-  else if (condition == SYSTEM_HAS_DRIVE_F)
-    bReturn = CIoSupport::DriveExists('F');
-  else if (condition == SYSTEM_HAS_DRIVE_G)
-    bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
     bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
@@ -1904,6 +1933,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_powerManager.CanHibernate();
   else if (condition == SYSTEM_CAN_REBOOT)
     bReturn = g_powerManager.CanReboot();
+  else if (condition == SYSTEM_SCREENSAVER_ACTIVE)
+    bReturn = g_application.IsInScreenSaver();
 
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
@@ -1915,6 +1946,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SYSTEM_HASLOCKS)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+  else if (condition == SYSTEM_HAS_PVR)
+    bReturn = false;
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_ISFULLSCREEN)
@@ -1968,7 +2001,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
-      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked")=="1";
+      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked").asBoolean();
   }
   else if (condition == CONTAINER_HAS_THUMB)
   {
@@ -3228,16 +3261,16 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtist(); }
+    if (tag.GetAlbumArtist().size()) { return StringUtils::Join(tag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
     break;
   case MUSICPLAYER_GENRE:
-    if (tag.GetGenre().size()) { return tag.GetGenre(); }
+    if (tag.GetGenre().size()) { return StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_LYRICS:
     if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
@@ -3302,10 +3335,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetVideoInfoTag()->m_strOriginalTitle;
       break;
     case VIDEOPLAYER_GENRE:
-      return m_currentFile->GetVideoInfoTag()->m_strGenre;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEOPLAYER_DIRECTOR:
-      return m_currentFile->GetVideoInfoTag()->m_strDirector;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEOPLAYER_RATING:
       {
@@ -3338,10 +3371,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
-        if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-          return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
-        if (!m_currentFile->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-          return m_currentFile->GetVideoInfoTag()->m_strPremiered;
+        if (m_currentFile->GetVideoInfoTag()->m_firstAired.IsValid())
+          return m_currentFile->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
+        if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
+          return m_currentFile->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
       }
       break;
     case VIDEOPLAYER_PLOT:
@@ -3374,9 +3407,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetVideoInfoTag()->m_strShowTitle;
 
     case VIDEOPLAYER_STUDIO:
-      return m_currentFile->GetVideoInfoTag()->m_strStudio;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_COUNTRY:
-      return m_currentFile->GetVideoInfoTag()->m_strCountry;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_MPAA:
       return m_currentFile->GetVideoInfoTag()->m_strMPAARating;
     case VIDEOPLAYER_TOP250:
@@ -3396,11 +3429,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
-      return m_currentFile->GetVideoInfoTag()->m_strWritingCredits;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
     case VIDEOPLAYER_LASTPLAYED:
-      return m_currentFile->GetVideoInfoTag()->m_lastPlayed;
+      return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
     case VIDEOPLAYER_PLAYCOUNT:
       {
         CStdString strPlayCount;
@@ -3802,6 +3835,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     return item->GetProperty(property).asString();
   }
 
+  if (info >= LISTITEM_PICTURE_START && info <= LISTITEM_PICTURE_END && item->HasPictureInfoTag())
+    return item->GetPictureInfoTag()->GetInfo(picture_slide_map[info - LISTITEM_PICTURE_START]);
+
   switch (info)
   {
   case LISTITEM_LABEL:
@@ -3831,9 +3867,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     {
       CStdString strLastPlayed;
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_lastPlayed;
+        return item->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDate();
       if (item->HasMusicInfoTag())
-        return item->GetMusicInfoTag()->GetLastPlayed();
+        return item->GetMusicInfoTag()->GetLastPlayed().GetAsLocalizedDate();
       break;
     }
   case LISTITEM_TRACKNUMBER:
@@ -3855,15 +3891,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strArtist;
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtist();
+      return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbumArtist();
+      return StringUtils::Join(item->GetMusicInfoTag()->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strDirector;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
   case LISTITEM_ALBUM:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
@@ -3884,17 +3920,17 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
-      if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        return item->GetVideoInfoTag()->m_strFirstAired;
-      if (!item->GetVideoInfoTag()->m_strPremiered.IsEmpty())
-        return item->GetVideoInfoTag()->m_strPremiered;
+      if (item->GetVideoInfoTag()->m_firstAired.IsValid())
+        return item->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
+      if (item->GetVideoInfoTag()->m_premiered.IsValid())
+        return item->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
     }
     break;
   case LISTITEM_GENRE:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strGenre;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetGenre();
+      return StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_FILENAME:
   case LISTITEM_FILE_EXTENSION:
@@ -4071,21 +4107,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->GetPath();
     break;
-  case LISTITEM_PICTURE_DATETIME:
-    if (item->HasPictureInfoTag())
-      return item->GetPictureInfoTag()->GetInfo(SLIDE_EXIF_DATE_TIME);
-    break;
-  case LISTITEM_PICTURE_RESOLUTION:
-    if (item->HasPictureInfoTag())
-      return item->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
-    break;
   case LISTITEM_STUDIO:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strStudio;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
     break;
   case LISTITEM_COUNTRY:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strCountry;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator);
     break;
   case LISTITEM_MPAA:
     if (item->HasVideoInfoTag())
@@ -4101,7 +4129,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     break;
   case LISTITEM_WRITER:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strWritingCredits;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
@@ -4280,18 +4308,20 @@ void CGUIInfoManager::UpdateFromTuxBox()
     !g_tuxbox.sCurSrvData.current_event_description.Equals("-") &&
     !g_tuxbox.sCurSrvData.next_event_description.Equals("-"))
   {
-    m_currentFile->GetVideoInfoTag()->m_strGenre.Format("%s %s  -  (%s: %s)",
+    CStdString genre;
+    genre.Format("%s %s  -  (%s: %s)",
       g_localizeStrings.Get(143),
       g_tuxbox.sCurSrvData.current_event_description,
       g_localizeStrings.Get(209),
       g_tuxbox.sCurSrvData.next_event_description);
+    m_currentFile->GetVideoInfoTag()->m_genre = StringUtils::Split(genre, g_advancedSettings.m_videoItemSeparator);
   }
 
-  //Set m_currentMovie.m_strDirector
+  //Set m_currentMovie.m_director
   if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
     !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
-    m_currentFile->GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
+    m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);
   }
 }
 

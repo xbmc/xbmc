@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "FileSmb.h"
+#include "SmbFile.h"
 #include "MediaSource.h"
 
 namespace XFILE

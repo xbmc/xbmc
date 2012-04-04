@@ -1,0 +1,68 @@
+From 400b84bb8d3d2a9c202fa3da4fb01279230a87ce Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi@xbmc.org>
+Date: Wed, 7 Mar 2012 23:08:54 +0200
+Subject: [PATCH] fixed: ffmpeg build with gcc 4.7 on x86
+
+Backport da4c7cce2100a4e4f9276b4f17e260be47b53f41 from FFmpeg git:
+
+> From: Mans Rullgard <mans@mansr.com>
+> Date: Tue, 26 Jul 2011 11:23:43 +0000 (+0100)
+>
+> x86: fix build with gcc 4.7
+>
+> The upcoming gcc 4.7 has more advanced constant propagation
+> resulting some inline asm operands becoming constants and thus
+> emitted as literals, sometimes in contexts where this results
+> in invalid instructions.
+>
+> This patch changes the constraints of the relevant operands
+> to "rm" thus forcing a valid type.  While obviously suboptimal,
+> this is what older gcc versions already did, and there is no
+> change to the code generated with these.
+---
+ lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c b/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
+index d8ceca1..f5af44e 100644
+--- a/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
++++ b/lib/ffmpeg/libavcodec/x86/h264_qpel_mmx.c
+@@ -398,7 +398,7 @@ static av_noinline void OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(uint8_t *dst,
+             "2:                         \n\t"\
+             \
+             : "+a"(src), "+c"(dst)\
+-            : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "g"(h)\
++            : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "rm"(h)\
+             : "memory"\
+         );\
+         src += 4-(h+5)*srcStride;\
+@@ -446,7 +446,7 @@ static av_always_inline void OPNAME ## h264_qpel8or16_hv1_lowpass_ ## MMX(int16_
+             QPEL_H264HV(%%mm3, %%mm4, %%mm5, %%mm0, %%mm1, %%mm2, 15*48)\
+             "2:                     \n\t"\
+             : "+a"(src)\
+-            : "c"(tmp), "S"((x86_reg)srcStride), "g"(size)\
++            : "c"(tmp), "S"((x86_reg)srcStride), "rm"(size)\
+             : "memory"\
+             );\
+         tmp += 4;\
+@@ -823,7 +823,7 @@ static av_noinline void OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(uint8_t *dst,
+         "2:                          \n\t"\
+         \
+         : "+a"(src), "+c"(dst)\
+-        : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "g"(h)\
++        : "S"((x86_reg)srcStride), "D"((x86_reg)dstStride), "rm"(h)\
+         : XMM_CLOBBERS("%xmm0", "%xmm1", "%xmm2", "%xmm3", \
+                        "%xmm4", "%xmm5", "%xmm6", "%xmm7",)\
+           "memory"\
+@@ -878,7 +878,7 @@ static av_always_inline void put_h264_qpel8or16_hv1_lowpass_sse2(int16_t *tmp, u
+             QPEL_H264HV_XMM(%%xmm3, %%xmm4, %%xmm5, %%xmm0, %%xmm1, %%xmm2, 15*48)
+             "2:                         \n\t"
+             : "+a"(src)
+-            : "c"(tmp), "S"((x86_reg)srcStride), "g"(size)
++            : "c"(tmp), "S"((x86_reg)srcStride), "rm"(size)
+             : XMM_CLOBBERS("%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                            "%xmm4", "%xmm5", "%xmm6", "%xmm7",)
+               "memory"
+-- 
+1.7.7.2
+

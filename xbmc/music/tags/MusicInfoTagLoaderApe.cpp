@@ -20,6 +20,7 @@
  */
 
 #include "MusicInfoTagLoaderApe.h"
+#include "cores/paplayer/DVDPlayerCodec.h"
 #include "DllLibapetag.h"
 #include "MusicInfoTag.h"
 #include "utils/log.h"
@@ -39,6 +40,12 @@ bool CMusicInfoTagLoaderApe::Load(const CStdString& strFileName, CMusicInfoTag& 
     // retrieve the APE Tag info from strFileName
     // and put it in tag
     tag.SetURL(strFileName);
+    DVDPlayerCodec codec;
+    if (codec.Init(strFileName, 4096))
+    {
+      tag.SetDuration((int)(codec.m_TotalTime/1000));
+      codec.DeInit();
+    }
     CAPEv2Tag myTag;
     if (myTag.ReadTag((char*)strFileName.c_str())) // true to check ID3 tag as well
     {

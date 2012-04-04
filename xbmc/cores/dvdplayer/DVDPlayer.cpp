@@ -703,6 +703,15 @@ void CDVDPlayer::OpenDefaultStreams()
       CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_settings.m_currentVideoSettings.m_SubtitleStream);
   }
 
+  // check if there are external subtitles available
+  for(int i = 0;i<count && !valid; i++)
+  {
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+    if ((s.source == STREAM_SOURCE_DEMUX_SUB || s.source == STREAM_SOURCE_TEXT)
+    && OpenSubtitleStream(s.id, s.source))
+      valid = true;
+  }
+
   // select default
   if(!valid
   && m_SelectionStreams.Get(STREAM_SUBTITLE, CDemuxStream::FLAG_DEFAULT, st))
@@ -1393,7 +1402,7 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       if(level  < 0.0)
       {
-        CGUIDialogKaiToast::QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
         caching = CACHESTATE_INIT;
       }
       if(level >= 1.0)
@@ -2424,7 +2433,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   if (!m_bStop)
   {
-    double dDelay = (double)m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE;
+    double dDelay = m_dvdPlayerVideo.GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
 
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();
@@ -2731,7 +2740,10 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     /* set aspect ratio as requested by navigator for dvd's */
     float aspect = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio();
     if(aspect != 0.0)
+    {
       hint.aspect = aspect;
+      hint.forced_aspect = true;
+    }
     hint.software = true;
     hint.stills   = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->IsInMenu();
   }
@@ -2798,7 +2810,7 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
     {
       CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
       auto_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
-      if(!demux->Open(st.filename))
+      if(!demux->Open(st.filename, st.filename2))
         return false;
       m_pSubtitleDemuxer = demux.release();
     }
@@ -3295,14 +3307,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
       switch (action.GetID())
       {
       case ACTION_NEXT_ITEM:
-      case ACTION_PAGE_UP:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
         pStream->OnNext();
         g_infoManager.SetDisplayAfterSeek();
         return true;
       case ACTION_PREV_ITEM:
-      case ACTION_PAGE_DOWN:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
         pStream->OnPrevious();
@@ -3405,14 +3415,12 @@ bool CDVDPlayer::OnAction(const CAction &action)
     switch (action.GetID())
     {
       case ACTION_NEXT_ITEM:
-      case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
         g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
 
       case ACTION_PREV_ITEM:
-      case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
         g_infoManager.SetDisplayAfterSeek();
         return true;
@@ -3433,7 +3441,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
   switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
-    case ACTION_PAGE_UP:
       if(GetChapterCount() > 0)
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()+1));
@@ -3443,7 +3450,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
       else
         break;
     case ACTION_PREV_ITEM:
-    case ACTION_PAGE_DOWN:
       if(GetChapterCount() > 0)
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter()-1));
@@ -3603,6 +3609,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
     m_SelectionStreams.Update(NULL, &v);
     int index = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
     m_SelectionStreams.Get(STREAM_SUBTITLE, index).flags = flags;
+    m_SelectionStreams.Get(STREAM_SUBTITLE, index).filename2 = vobsubfile;
     return index;
   }
   if(ext == ".sub")

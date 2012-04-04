@@ -32,7 +32,9 @@
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/Crc32.h"
+#include "utils/StringUtils.h"
 #include "filesystem/StackDirectory.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -120,12 +122,12 @@ CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
   if (!musicInfo)
     return CStdString();
 
-  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetArtist().empty() ? musicInfo->GetArtist() : musicInfo->GetAlbumArtist());
+  return GetAlbumThumb(musicInfo->GetAlbum(), StringUtils::Join(!musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : musicInfo->GetArtist(), g_advancedSettings.m_musicItemSeparator));
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)
 {
-  return GetAlbumThumb(album.strAlbum, album.strArtist);
+  return GetAlbumThumb(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CStdString& album, const CStdString& artist)
@@ -209,7 +211,7 @@ CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
 {
   // get the locally cached thumb
-  if (item.IsVideoDb() || item.HasVideoInfoTag())
+  if (item.IsVideoDb() || (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->IsEmpty()))
   {
     if (!item.HasVideoInfoTag())
       return "";
@@ -232,13 +234,13 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
-    CStdString path = item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath;
+    CStdString path = item.GetVideoInfoTag()->GetPath();
     if (path.empty())
       return "";
     return GetThumb(path,g_settings.GetVideoFanartFolder());
   }
   if (item.HasMusicInfoTag())
-    return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+    return GetThumb(StringUtils::Join(item.GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),g_settings.GetMusicFanartFolder());
 
   return GetThumb(item.GetPath(),g_settings.GetVideoFanartFolder());
 }

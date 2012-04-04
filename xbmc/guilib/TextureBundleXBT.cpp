@@ -75,7 +75,7 @@ bool CTextureBundleXBT::OpenBundle()
     strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xbt");
   }
 
-  strPath = PTH_IC(strPath);
+  strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 
   // Load the texture file
   if (!m_XBTFReader.Open(strPath))

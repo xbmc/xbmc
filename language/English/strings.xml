@@ -692,7 +692,7 @@
   <string id="787">Interface disabled</string>
   <string id="788">Network interface disabled successfully.</string>
   <string id="789">Wireless network name (ESSID)</string>
-
+  <string id="790">Remote control</string>
   <string id="791">Allow programs on this system to control XBMC</string>
   <string id="792">Port</string>
   <string id="793">Port range</string>
@@ -803,10 +803,12 @@
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">Announce these services to other systems via Zeroconf</string>
   <string id="1270">Allow XBMC to receive AirPlay content</string>
   <string id="1271">Device name</string>
   <string id="1272">- Use password protection</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -874,9 +876,11 @@
   <string id="10019">Settings - Appearance</string>
   <string id="10020">Scripts</string>
   <string id="10021">Web Browser</string>
-
+  <string id="10025">Videos</string>
   <string id="10028">Videos/Playlist</string>
+  <string id="10029">Login screen</string>
   <string id="10034">Settings - Profiles</string>
+  <string id="10040">Addon browser</string>
 
   <string id="10100">Yes/No dialog</string>
   <string id="10101">Progress dialog</string>
@@ -1353,6 +1357,7 @@
   <string id="14093">Security</string>
   <string id="14094">Input devices</string>
   <string id="14095">Power saving</string>
+  <string id="14099">Eject disc when CD ripping is complete</string>
 
   <string id="15015">Remove</string>
   <string id="15016">Games</string>
@@ -1722,6 +1727,7 @@
   <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
@@ -1772,7 +1778,7 @@
   <string id="20326">This will reset the calibration values for %s</string>
   <string id="20327">to it's default values.</string>
   <string id="20328">Browse for destination</string>
-
+  <string id="20329">Movies are in separate folders that match the movie title</string>
   <string id="20330">Use folder names for lookups</string>
   <string id="20331">File</string>
   <string id="20332">Use file or folder names in lookups?</string>
@@ -1862,7 +1868,7 @@
   <string id="20416">First aired</string>
   <string id="20417">Writer</string>
   <string id="20418"></string>
-  <string id="20419">Show metadata in files view</string>
+  <string id="20419">Replace file names with library titles</string>
 
   <string id="20420">Never</string>
   <string id="20421">If only one season</string>
@@ -1902,6 +1908,7 @@
   <string id="20455">Listeners</string>
   <string id="20456">Set movieset fanart</string>
   <string id="20457">Movie set</string>
+  <string id="20458">Group movies in sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2009,7 +2016,9 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
-
+  <string id="21454">Cache full</string>
+  <string id="21455">Cache filled before reaching required amount for continous playback</string>
+  
   <string id="21460">Subtitle location</string>
   <string id="21461">Fixed</string>
   <string id="21462">Bottom of video</string>
@@ -2328,6 +2337,8 @@
   <string id="33101">Webserver</string>
   <string id="33102">Event Server</string>
   <string id="33103">Remote communication server</string>
+  
+  <string id="33200">Detected New Connection</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
@@ -2352,6 +2363,14 @@
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>
+  
+  <string id="34300">Failed to start zeroconf</string>
+  <string id="34301">Is Apple's Bonjour Service installed? See log for more info.</string>
+  
+  <string id="34400">Video Rendering</string>
+  <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
+  <string id="34402">Failed to initialize audio device</string>
+  <string id="34403">Check your audiosettings</string>
 
   <string id="35000">Peripherals</string>
 
@@ -2363,6 +2382,7 @@
   <string id="35006">Device removed</string>
   <string id="35007">Keymap to use for this device</string>
   <string id="35008">Keymap enabled</string>
+  <string id="35009">Do not use the custom keymap for this device</string>
 
   <string id="35500">Location</string>
   <string id="35501">Class</string>
@@ -2377,16 +2397,23 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on the TV when starting XBMC</string>
-  <string id="36008">Power off devices when stopping XBMC</string>
+  <string id="36007">Devices to power on when starting XBMC</string>
+  <string id="36008">Devices to power off when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010"></string>
   <string id="36011">Could not detect the CEC port. Set it up manually.</string>
-  <string id="36012">Could not detect the CEC adapter.</string>
-  <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
+  <string id="36012">Could not initialise the CEC adapter. Check your settings.</string>
+  <string id="36013">Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
   <string id="36016">Connected</string> <!-- max. 13 characters -->
-  <string id="36017">Adapter found, but libcec is not available</string>
+  <string id="36017">Adapter found, but libCEC is not available</string>
   <string id="36018">Use the TV's language setting</string>
+  <string id="36019">Connected to HDMI device</string>
+  <string id="36020">Make XBMC the active source when starting</string>
+  <string id="36021">Physical address (overrules HDMI port)</string>
+  <string id="36022">COM port (leave empty unless needed)</string>
+  <string id="36023">Configuration updated</string>
+  <string id="36024">Failed to set the new configuration. Please check your settings.</string>
+  <string id="36025">Send 'inactive source' command when stopping XBMC</string>
 </strings>

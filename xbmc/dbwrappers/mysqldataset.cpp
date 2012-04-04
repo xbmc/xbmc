@@ -258,7 +258,7 @@ int MysqlDatabase::copy(const char *backup_name) {
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
-        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), ret);
+        throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
     }
   }
 
@@ -1198,9 +1198,9 @@ MYSQL* MysqlDataset::handle(){
 void MysqlDataset::make_query(StringList &_sql) {
   string query;
   int result = 0;
+  if (db == NULL) throw DbErrors("No Database Connection");
   try
   {
-    if (db == NULL) throw DbErrors("No Database Connection");
     if (autocommit) db->start_transaction();
 
     for (list<string>::iterator i =_sql.begin(); i!=_sql.end(); i++)

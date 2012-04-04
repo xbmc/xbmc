@@ -36,6 +36,17 @@
 #include "video/Bookmark.h"
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPVfsHandler.h"
+#ifdef HAS_HTTPAPI
+#include "network/httprequesthandler/HTTPApiHandler.h"
+#endif
+#ifdef HAS_JSONRPC
+#include "network/httprequesthandler/HTTPJsonRpcHandler.h"
+#endif
+#ifdef HAS_WEB_INTERFACE
+#include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
+#include "network/httprequesthandler/HTTPWebinterfaceAddonsHandler.h"
+#endif
 #endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -107,13 +118,13 @@
 #include "filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
-#include "filesystem/FileNFS.h"
+#include "filesystem/NFSFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_AFP
-#include "filesystem/FileAFP.h"
+#include "filesystem/AFPFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
-#include "filesystem/FileSFTP.h"
+#include "filesystem/SFTPFile.h"
 #endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -160,9 +171,6 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
-#ifdef HAVE_LIBCEC
-#include "peripherals/devices/PeripheralCecAdapter.h"
-#endif
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
@@ -266,7 +274,7 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
 #endif
@@ -295,6 +303,7 @@
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
+#include "utils/StringUtils.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -338,6 +347,17 @@ CApplication::CApplication(void)
   : m_pPlayer(NULL)
 #ifdef HAS_WEB_SERVER
   , m_WebServer(*new CWebServer)
+  , m_httpVfsHandler(*new CHTTPVfsHandler)
+#ifdef HAS_JSONRPC
+  , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
+#endif
+#ifdef HAS_HTTPAPI
+  , m_httpApiHandler(*new CHTTPApiHandler)
+#endif
+#ifdef HAS_WEB_INTERFACE
+  , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
+  , m_httpWebinterfaceAddonsHandler(*new CHTTPWebinterfaceAddonsHandler)
+#endif
 #endif
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
@@ -387,6 +407,17 @@ CApplication::~CApplication(void)
 {
 #ifdef HAS_WEB_SERVER
   delete &m_WebServer;
+  delete &m_httpVfsHandler;
+#ifdef HAS_HTTPAPI
+  delete &m_httpApiHandler;
+#endif
+#ifdef HAS_JSONRPC
+  delete &m_httpJsonRpcHandler;
+#endif
+#ifdef HAS_WEB_INTERFACE
+  delete &m_httpWebinterfaceHandler;
+  delete &m_httpWebinterfaceAddonsHandler;
+#endif
 #endif
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
@@ -543,10 +574,10 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
-  if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
+  if (!CLog::Init(CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
-      _P(g_settings.m_logFolder).c_str());
+      CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str());
     return false;
   }
 
@@ -747,7 +778,7 @@ bool CApplication::Create()
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
 
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   bool bFullScreen = false;
@@ -1015,25 +1046,12 @@ bool CApplication::InitDirectoriesWin32()
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
 
-  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
+  SetEnvironmentVariable("XBMC_PROFILE_USERDATA",CSpecialProtocol::TranslatePath("special://masterprofile/").c_str());
 
   CreateUserDirs();
 
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
-
-  // check for a DVD drive
-  VECSOURCES vShare;
-  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  // Can be removed once the StorageHandler supports optical media
-  VECSOURCES::const_iterator it;
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
-  // remove end
 
   return true;
 #else
@@ -1071,6 +1089,32 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
   }
+
+  // Load curl so curl_global_init gets called before any service threads
+  // are started. Unloading will have no effect as curl is never fully unloaded.
+  // To quote man curl_global_init:
+  //  "This function is not thread safe. You must not call it when any other
+  //  thread in the program (i.e. a thread sharing the same memory) is running.
+  //  This doesn't just mean no other thread that is using libcurl. Because
+  //  curl_global_init() calls functions of other libraries that are similarly
+  //  thread unsafe, it could conflict with any other thread that
+  //  uses these other libraries."
+  g_curlInterface.Load();
+  g_curlInterface.Unload();
+
+#ifdef HAS_WEB_SERVER
+  CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
+#ifdef HAS_JSONRPC
+  CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
+#endif
+#ifdef HAS_HTTPAPI
+  CWebServer::RegisterRequestHandler(&m_httpApiHandler);
+#endif
+#ifdef HAS_WEB_INTERFACE
+  CWebServer::RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
+  CWebServer::RegisterRequestHandler(&m_httpWebinterfaceHandler);
+#endif
+#endif
 
   StartServices();
 
@@ -1203,6 +1247,7 @@ bool CApplication::Initialize()
 #ifdef HAS_JSONRPC
     CJSONRPC::Initialize();
 #endif
+    ADDON::CAddonMgr::Get().StartServices(false);
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
@@ -1255,6 +1300,7 @@ bool CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
+
   return true;
 }
 
@@ -2246,7 +2292,7 @@ bool CApplication::OnKey(const CKey& key)
       if (!action.GetID())
       {
         // keyboard entry - pass the keys through directly
-        if (key.GetFromHttpApi())
+        if (key.GetFromService())
           action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
         else
         { // see if we've got an ascii key
@@ -2263,7 +2309,7 @@ bool CApplication::OnKey(const CKey& key)
         return true;
       // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromHttpApi())
+    if (key.GetFromService())
     {
       if (key.GetButtonCode() != KEY_INVALID)
         action = CButtonTranslator::GetInstance().GetAction(iWin, key);
@@ -2555,6 +2601,10 @@ bool CApplication::OnAction(const CAction &action)
       }
     }
   }
+
+  if (g_peripherals.OnAction(action))
+    return true;
+
   if (action.GetID() == ACTION_MUTE)
   {
     ToggleMute();
@@ -2623,7 +2673,7 @@ bool CApplication::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
-    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().SetOutputFile(CSpecialProtocol::TranslatePath("special://home/guiprofiler.xml"));
     CGUIControlProfiler::Instance().Start();
     return true;
   }
@@ -2830,23 +2880,9 @@ bool CApplication::ProcessRemote(float frameTime)
 
 bool CApplication::ProcessPeripherals(float frameTime)
 {
-#ifdef HAVE_LIBCEC
-  vector<CPeripheral *> peripherals;
-  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
-  {
-    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
-    {
-      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
-      if (cecDevice && cecDevice->GetButton())
-      {
-        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
-        cecDevice->ResetButton();
-        return OnKey(key);
-      }
-    }
-  }
-#endif
-
+  CKey key;
+  if (g_peripherals.GetNextKeypress(frameTime, key))
+    return OnKey(key);
   return false;
 }
 
@@ -2931,8 +2967,8 @@ void  CApplication::CheckForTitleChange()
         CStdString msg="";
         if (!tagVal->GetTitle().IsEmpty())
           msg=m_pXbmcHttp->GetOpenTag()+"AudioTitle:"+tagVal->GetTitle()+m_pXbmcHttp->GetCloseTag();
-        if (!tagVal->GetArtist().IsEmpty())
-          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+tagVal->GetArtist()+m_pXbmcHttp->GetCloseTag();
+        if (!tagVal->GetArtist().empty())
+          msg+=m_pXbmcHttp->GetOpenTag()+"AudioArtist:"+StringUtils::Join(tagVal->GetArtist(), g_advancedSettings.m_musicItemSeparator)+m_pXbmcHttp->GetCloseTag();
         if (m_prevMedia!=msg)
         {
           getApplicationMessenger().HttpApi("broadcastlevel; MediaChanged:"+msg+";1");
@@ -2983,7 +3019,10 @@ bool CApplication::ProcessJsonRpcButtons()
 #ifdef HAS_JSONRPC
   CKey tempKey(JSONRPC::CInputOperations::GetKey());
   if (tempKey.GetButtonCode() != KEY_INVALID)
+  {
+    tempKey.SetFromService(true);
     return OnKey(tempKey);
+  }
 #endif
   return false;
 }
@@ -3009,6 +3048,11 @@ bool CApplication::ProcessEventServer(float frameTime)
   bool isAxis = false;
   float fAmount = 0.0;
 
+  // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
+  // when the action exits XBMC
+  es = CEventServer::GetInstance();
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
+    return false;
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
   if (wKeyID)
@@ -3050,6 +3094,7 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(wKeyID, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
       else
         key = CKey(wKeyID);
+      key.SetFromService(true);
       return OnKey(key);
     }
   }
@@ -3073,7 +3118,7 @@ bool CApplication::ProcessEventServer(float frameTime)
   return false;
 }
 
-bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
+bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount, unsigned int holdTime /*=0*/)
 {
 #if defined(HAS_EVENT_SERVER)
   m_idleTimer.StartZero();
@@ -3109,7 +3154,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // Translate using regular joystick translator.
    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, actionID, actionName, fullRange))
    {
-     CAction action(actionID, fAmount, 0.0f, actionName);
+     CAction action(actionID, fAmount, 0.0f, actionName, holdTime);
      g_audioManager.PlayActionSound(action);
      return OnAction(action);
    }
@@ -3206,7 +3251,7 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_SETTINGS_MYMUSIC);
     g_windowManager.Remove(WINDOW_SETTINGS_SYSTEM);
     g_windowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
-    g_windowManager.Remove(WINDOW_SETTINGS_NETWORK);
+    g_windowManager.Remove(WINDOW_SETTINGS_SERVICE);
     g_windowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
     g_windowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
@@ -3278,7 +3323,8 @@ void CApplication::Stop(int exitCode)
 {
   try
   {
-    CAnnouncementManager::Announce(System, "xbmc", "OnQuit");
+    CVariant vExitCode(exitCode);
+    CAnnouncementManager::Announce(System, "xbmc", "OnQuit", vExitCode);
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
@@ -3329,6 +3375,20 @@ void CApplication::Stop(int exitCode)
 
     StopServices();
     //Sleep(5000);
+
+#ifdef HAS_WEB_SERVER
+  CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
+#ifdef HAS_JSONRPC
+  CWebServer::UnregisterRequestHandler(&m_httpJsonRpcHandler);
+#endif
+#ifdef HAS_HTTPAPI
+  CWebServer::UnregisterRequestHandler(&m_httpApiHandler);
+#endif
+#ifdef HAS_WEB_INTERFACE
+  CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
+  CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceHandler);
+#endif
+#endif
 
 #if defined(__APPLE__) && !defined(__arm__)
     XBMCHelper::GetInstance().ReleaseAllInput();
@@ -3638,7 +3698,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsStack())
     return PlayStack(item, bRestart);
 
-  //Is TuxBox, this should probably be moved to CFileTuxBox
+  //Is TuxBox, this should probably be moved to CTuxBoxFile
   if(item.IsTuxBox())
   {
     CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.GetPath().c_str());
@@ -3670,7 +3730,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   
   if( item.HasProperty("StartPercent") )
   {
-    options.startpercent = item.GetProperty("StartPercent").asDouble();
+    double fallback = 0.0f;
+    if(item.GetProperty("StartPercent").isString())
+      fallback = (double)atof(item.GetProperty("StartPercent").asString().c_str());
+    options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
   
   PLAYERCOREID eNewCore = EPC_NONE;
@@ -3791,7 +3854,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(_LINUX)
   g_audioManager.Enable(false);
 #endif
 
@@ -3855,7 +3918,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 #endif
 
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(_LINUX)
     g_audioManager.Enable(false);
 #endif
   }
@@ -4129,6 +4192,13 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
+bool CApplication::IsFullScreen()
+{
+  return IsPlayingFullScreenVideo() ||
+        (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION) ||
+         g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW;
+}
+
 void CApplication::SaveFileState()
 {
   if (!g_settings.GetCurrentProfile().canWriteDatabases())
@@ -4370,6 +4440,12 @@ void CApplication::CheckScreenSaverAndDPMS()
   {
     m_bScreenSave = true;
     maybeScreensaver = false;
+  }
+
+  if (m_bScreenSave && IsPlayingVideo() && !m_pPlayer->IsPaused())
+  {
+    WakeUpScreenSaverAndDPMS();
+    return;
   }
 
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
@@ -5008,6 +5084,8 @@ void CApplication::ShowVolumeBar(const CAction *action)
 
 bool CApplication::IsMuted() const
 {
+  if (g_peripherals.IsMuted())
+    return true;
   return g_settings.m_bMute;
 }
 
@@ -5021,16 +5099,22 @@ void CApplication::ToggleMute(void)
 
 void CApplication::Mute()
 {
+  if (g_peripherals.Mute())
+    return;
+
   g_settings.m_iPreMuteVolumeLevel = GetVolume();
-  SetVolume(0);
   g_settings.m_bMute = true;
+  SetVolume(0);
 }
 
 void CApplication::UnMute()
 {
+  if (g_peripherals.UnMute())
+    return;
+
+  g_settings.m_bMute = false;
   SetVolume(g_settings.m_iPreMuteVolumeLevel);
   g_settings.m_iPreMuteVolumeLevel = 0;
-  g_settings.m_bMute = false;
 }
 
 void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
@@ -5045,6 +5129,13 @@ void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
 #else
   g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
 #endif
+
+  CVariant data(CVariant::VariantTypeObject);
+  data["volume"] = (int)(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 100.0f + 0.5f);
+  /* TODO: add once DRC is available
+  data["drc"] = (int)(((float)(g_settings.m_dynamicRangeCompressionLevel - VOLUME_DRC_MINIMUM)) / (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 100.0f + 0.5f);*/
+  data["muted"] = g_settings.m_bMute;
+  CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
 
 void CApplication::SetHardwareVolume(long hardwareVolume)
@@ -5489,3 +5580,4 @@ CPerformanceStats &CApplication::GetPerformanceStats()
   return m_perfStats;
 }
 #endif
+

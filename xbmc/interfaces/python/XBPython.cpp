@@ -344,10 +344,10 @@ void XBPython::Initialize()
       {
         // using external python, it's build looking for xxx/lib/python2.6
         // so point it to frameworks which is where python2.6 is located
-        setenv("PYTHONHOME", _P("special://frameworks").c_str(), 1);
-        setenv("PYTHONPATH", _P("special://frameworks").c_str(), 1);
-        CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", _P("special://frameworks").c_str());
-        CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks").c_str());
+        setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+        setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+        CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
+        CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
       }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
 #elif defined(_WIN32)
@@ -356,11 +356,11 @@ void XBPython::Initialize()
       // buf is corrupted after putenv and might need a strdup but it seems to
       // work this way
       CStdString buf;
-      buf = "PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib");
+      buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
       pgwin32_putenv(buf.c_str());
       buf = "PYTHONOPTIMIZE=1";
       pgwin32_putenv(buf.c_str());
-      buf = "PYTHONHOME=" + _P("special://xbmc/system/python");
+      buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
       pgwin32_putenv(buf.c_str());
       buf = "OS=win32";
       pgwin32_putenv(buf.c_str());
@@ -465,7 +465,7 @@ void XBPython::Process()
     m_bLogin = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = _P("special://profile/autoexec.py");
+    CStdString strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy,ADDON::AddonPtr());
@@ -521,7 +521,6 @@ int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
 int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
 {
   CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
   {
@@ -533,6 +532,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   if (g_settings.GetCurrentProfile().programsLocked() && !g_passwordManager.IsMasterLockUnlocked(true))
     return -1;
 
+  CSingleLock lock(m_critSection);
   Initialize();
 
   if (!m_bInitialized) return -1;

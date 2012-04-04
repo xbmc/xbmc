@@ -772,7 +772,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           if(duration > stream->duration)
           {
             stream->duration = duration;
-            duration = m_dllAvUtil.av_rescale_rnd(stream->duration, stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
+            duration = m_dllAvUtil.av_rescale_rnd(stream->duration, (int64_t)stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
             if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE && m_pFormatContext->file_size > 0)
                 ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
               m_pFormatContext->duration = duration;
@@ -952,14 +952,16 @@ int CDVDDemuxFFmpeg::GetNrOfStreams()
   return i;
 }
 
-static double SelectAspect(AVStream* st)
+static double SelectAspect(AVStream* st, bool* forced)
 {
+  *forced = false;
   /* if stream aspect is 1:1 or 0:0 use codec aspect */
   if((st->sample_aspect_ratio.den == 1 || st->sample_aspect_ratio.den == 0)
   && (st->sample_aspect_ratio.num == 1 || st->sample_aspect_ratio.num == 0)
   && st->codec->sample_aspect_ratio.num != 0)
     return av_q2d(st->codec->sample_aspect_ratio);
 
+  *forced = true;
   if(st->sample_aspect_ratio.num != 0)
     return av_q2d(st->sample_aspect_ratio);
 
@@ -1031,7 +1033,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        st->fAspect = SelectAspect(pStream) * pStream->codec->width / pStream->codec->height;
+        st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
 
@@ -1188,7 +1190,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
 std::string CDVDDemuxFFmpeg::GetFileName()
 {
-  if(m_pInput && m_pInput)
+  if(m_pInput)
     return m_pInput->GetFileName();
   else
     return "";

@@ -31,7 +31,7 @@
 #include "utils/StdString.h"
 #include "network/Zeroconf.h"
 #include "ApplicationMessenger.h"
-#include "filesystem/FilePipe.h"
+#include "filesystem/PipeFile.h"
 #include "Application.h"
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
@@ -48,7 +48,7 @@ CStdString CAirTunesServer::m_macAddress;
 
 struct ao_device_xbmc
 {
-  XFILE::CFilePipe *pipe;
+  XFILE::CPipeFile *pipe;
 };
 
 //audio output interface
@@ -94,7 +94,7 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
 {
   ao_device_xbmc* device = new ao_device_xbmc();
 
-  device->pipe = new XFILE::CFilePipe;
+  device->pipe = new XFILE::CPipeFile;
   device->pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   device->pipe->SetOpenThreashold(300);
 
@@ -115,9 +115,6 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   CFileItem item;
   item.SetPath(device->pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
-  item.SetProperty("isradio", true);
-  item.SetProperty("no-skip", true);
-  item.SetProperty("no-pause", true);
 
   if (ao_get_option(option, "artist"))
     item.GetMusicInfoTag()->SetArtist(ao_get_option(option, "artist"));

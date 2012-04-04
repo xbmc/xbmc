@@ -51,6 +51,7 @@ public:
   CVariant(const char *str);
   CVariant(const char *str, unsigned int length);
   CVariant(const std::string &str);
+  CVariant(const std::vector<std::string> &strArray);
   CVariant(const CVariant &variant);
 
   bool isInteger() const;

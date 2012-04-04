@@ -101,7 +101,9 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   }
 #endif
 #ifdef HAVE_LIBVA
-    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi"))
+    // mpeg4 vaapi decoding is disabled
+    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi") 
+    && (avctx->codec_id != CODEC_ID_MPEG4 || g_advancedSettings.m_videoAllowMpeg4VAAPI)) 
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur))
@@ -447,8 +449,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   avpkt.flags = AV_PKT_FLAG_KEY;
   len = m_dllAvCodec.avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
 
-  if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 1)
-    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+  if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 2)
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
 
   if (len < 0)
   {
@@ -465,8 +467,16 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if(m_pFrame->key_frame)
   {
     m_started = true;
-    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
+
+  /* put a limit on convergence count to avoid huge mem usage on streams without keyframes */
+  if(m_iLastKeyframe > 300)
+    m_iLastKeyframe = 300;
+
+  /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
+  if(m_pCodecContext->codec_id == CODEC_ID_H264)
+    m_started = true;
 
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P

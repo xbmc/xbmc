@@ -37,6 +37,7 @@
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
+#include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "DllSwScale.h"
 #include "utils/log.h"
@@ -438,7 +439,9 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   if(currPbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, currPbo);
 
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  int bps = glFormatElementByteCount(type);
+
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bps);
   glBindTexture(m_textureTarget, plane.id);
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
 
@@ -453,7 +456,7 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
     glTexSubImage2D( m_textureTarget, 0
                    , width, 0, 1, height
                    , type, GL_UNSIGNED_BYTE
-                   , (unsigned char*)data + stride - 1);
+                   , (unsigned char*)data + bps * (width-1));
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
@@ -871,7 +874,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
   }
 
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -1916,12 +1919,12 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
     // Load Odd UV Fields
     LoadPlane( fields[FIELD_TOP][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1], im->plane[1] );
+             , im->stride[1]*2, im->plane[1] );
 
     // Load Even UV Fields
     LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1], im->plane[1] + im->stride[1] );
+             , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
   }
   else
@@ -1934,7 +1937,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
     // Load UV plane
     LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> im->cshift_y
-             , im->stride[1]/2, im->plane[1] );
+             , im->stride[1], im->plane[1] );
   }
 
   m_eventTexturesDone[source]->Set();
@@ -2379,18 +2382,18 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
     // Load YUYV fields
     LoadPlane( fields[FIELD_TOP][0], GL_BGRA, buf.flipindex
              , im->width / 2, im->height >> 1
-             , im->stride[0] / 2, im->plane[0] );
+             , im->stride[0] * 2, im->plane[0] );
 
     LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
              , im->width / 2, im->height >> 1
-             , im->stride[0] / 2, im->plane[0] + im->stride[0]) ;
+             , im->stride[0] * 2, im->plane[0] + im->stride[0]) ;
   }
   else
   {
     // Load YUYV plane
     LoadPlane( fields[FIELD_FULL][0], GL_BGRA, buf.flipindex
              , im->width / 2, im->height
-             , im->stride[0] / 4, im->plane[0] );
+             , im->stride[0], im->plane[0] );
   }
 
   m_eventTexturesDone[source]->Set();
@@ -2861,17 +2864,17 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   {
     LoadPlane( fields[FIELD_TOP][0] , GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
+             , m_sourceWidth*4, m_rgbBuffer, &m_rgbPbo );
 
     LoadPlane( fields[FIELD_BOT][0], GL_BGRA, buf.flipindex
              , im->width, im->height >> 1
-             , m_sourceWidth, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2, &m_rgbPbo );
+             , m_sourceWidth*4, m_rgbBuffer + m_sourceWidth*m_sourceHeight*2, &m_rgbPbo );
   }
   else
   {
     LoadPlane( fields[FIELD_FULL][0], GL_BGRA, buf.flipindex
              , im->width, im->height
-             , m_sourceWidth, m_rgbBuffer, &m_rgbPbo );
+             , m_sourceWidth*4, m_rgbBuffer, &m_rgbPbo );
   }
 
   //after using the pbo to upload, allocate a new buffer so we don't have to wait
@@ -3026,6 +3029,13 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
   }
 
+#ifdef TARGET_DARWIN
+  // YADIF too slow for HD but we have no methods to fall back
+  // to something that works so just turn it off.
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return false;
+#endif
+  
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
   || method == VS_INTERLACEMETHOD_SW_BLEND)

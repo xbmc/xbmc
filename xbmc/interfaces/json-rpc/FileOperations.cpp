@@ -34,7 +34,10 @@
 using namespace XFILE;
 using namespace JSONRPC;
 
-JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+static const unsigned int SourcesSize = 5;
+static CStdString SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+
+JSONRPC_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
@@ -44,7 +47,13 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   {
     CFileItemList items;
     for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
+    {
+      // Do not show sources which are locked
+      if (sources->at(i).m_iHasLock == 2)
+        continue;
+
       items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
+    }
 
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
@@ -65,14 +74,24 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   return OK;
 }
 
-JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
 
-  CDirectory directory;
   CFileItemList items;
   CStdString strPath = parameterObject["directory"].asString();
+
+  // Check if this directory is part of a source and whether it's locked
+  VECSOURCES *sources;
+  bool isSource;
+  for (unsigned int index = 0; index < SourcesSize; index++)
+  {
+    sources = g_settings.GetSourcesFromType(SourceNames[index]);
+    int sourceIndex = CUtil::GetMatchingSource(strPath, *sources, isSource);
+    if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock == 2)
+      return InvalidParams;
+  }
 
   CStdStringArray regexps;
   CStdString extensions = "";
@@ -92,7 +111,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     extensions = g_settings.m_pictureExtensions;
   }
 
-  if (directory.GetDirectory(strPath, items, extensions))
+  if (CDirectory::GetDirectory(strPath, items, extensions))
   {
     CFileItemList filteredDirectories, filteredFiles;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
@@ -107,7 +126,9 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       }
 
       if ((media == "video" && items[i]->HasVideoInfoTag()) ||
-          (media == "music" && items[i]->HasMusicInfoTag()))
+          (media == "music" && items[i]->HasMusicInfoTag()) ||
+          (media == "picture" && items[i]->HasPictureInfoTag()) ||
+           media == "files")
       {
         if (items[i]->m_bIsFolder)
           filteredDirectories.Add(items[i]);
@@ -119,6 +140,11 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         CFileItem fileItem;
         if (FillFileItem(items[i], fileItem, media))
         {
+          fileItem.m_bIsFolder = items[i]->m_bIsFolder;
+          fileItem.m_dateTime = items[i]->m_dateTime;
+          fileItem.m_dwSize = items[i]->m_dwSize;
+          fileItem.SetMimeType(items[i]->GetMimeType());
+
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
           else
@@ -177,7 +203,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   return InvalidParams;
 }
 
-JSON_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string protocol;
   if (transport->PrepareDownload(parameterObject["path"].asString().c_str(), result["details"], protocol))
@@ -195,7 +221,7 @@ JSON_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITranspor
   return InvalidParams;
 }
 
-JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;
 }

@@ -23,7 +23,7 @@
 #include "tinyXML/tinyxml.h"
 #include "URIUtils.h"
 #include "pictures/Picture.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "StringUtils.h"
 #include "filesystem/File.h"
 
@@ -146,7 +146,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
     else
       thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-    XFILE::CFileCurl http;
+    XFILE::CCurlFile http;
     if (http.Download(thumbURL, strDestination))
       return true;
   }

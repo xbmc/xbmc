@@ -275,6 +275,13 @@ extern "C" {
       PyObject* pXbmcvfsModule;
       pXbmcvfsModule = Py_InitModule((char*)"xbmcvfs", xbmcvfsMethods);
       if (pXbmcvfsModule == NULL) return;
+     
+      // constants
+      PyModule_AddStringConstant(pXbmcvfsModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
+      PyModule_AddStringConstant(pXbmcvfsModule, (char*)"__date__", (char*)"19 July 2011");
+      PyModule_AddStringConstant(pXbmcvfsModule, (char*)"__version__", (char*)"1.3");
+      PyModule_AddStringConstant(pXbmcvfsModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
+      PyModule_AddStringConstant(pXbmcvfsModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
     }    
   }
   

@@ -145,10 +145,10 @@
   <string id="31402">[B]KONFIGURIERE MUSIK EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik DB · Setze die Musik Abspiel Optionen · Wechsel die Musik Auflistungs Optionen · Einrichten der Lied Vorlage · Setze Karaoke Optionen</string>
   <string id="31403">[B]KONFIGURIERE BILDER EINSTELLUNGEN[/B][CR][CR]Setze Bild Auflistungs Optionen · Konfiguriere Diaschau</string>
   <string id="31404">[B]KONFIGURIERE WETTER EINSTELLUNGEN[/B][CR][CR]Wähle drei Städte zum sammeln der Wetter Informationen</string>
-  <string id="31405">[B]KONFIGURIERE NETZWERK EINSTELLUNGEN[/B][CR][CR]Einrichten der Steuerung von XBMC via UPnP und HTTP · Konfiguriere Datei Zugriff[CR]Setze Internet Zugriffs Optionen</string>
   <string id="31406">[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Setze und kalibriere Displays · Konfiguriere Audioausgabe · Setze Fernbedienungs Einstellungen · Setze Energiespar Optionen · Aktiviere Debugging · Einrichten Master Sperre</string>
   <string id="31407">[B]KONFIGURIERE SKIN EINSTELLUNGEN[/B][CR][CR]Einrichten des Confluence Skin · Hinzufügen und entfernen der Home Menü Einträge[CR]Wechseln der Skin Hintergründe</string>
   <string id="31408">[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen</string>
+  <string id="31409">[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und HTTP ein · Konfiguriere die Dateifreigabe[CR]Aktiviere Zeroconf · Konfiguriere AirPlay</string>
   <string id="31421">Wähle Dein XBMC Benutzer Profil[CR]Zum Anmelden und Weitermachen</string>
 
   <string id="31900">Wetterkarten</string>

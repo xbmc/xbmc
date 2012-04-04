@@ -19,6 +19,13 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#ifdef _WIN32
+#include "system.h"
+#endif
+
 #include "DllDvdNav.h"
 #include "tinyXML/tinyxml.h"
 

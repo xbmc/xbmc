@@ -25,7 +25,7 @@
 
 #include "TuxBoxUtil.h"
 #include "URIUtils.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
@@ -439,7 +439,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
   }
 
   //Send ZAP Command
-  CFileCurl http;
+  CCurlFile http;
   if(http.Open(strZapUrl+strPostUrl))
   {
     //DEBUG LOG
@@ -590,7 +590,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       strTitle.Format("%s",sCurSrvData.current_event_details);
       int iDuration = atoi(sCurSrvData.current_event_duration.c_str());
 
-      items.GetVideoInfoTag()->m_strGenre = strGenre;  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
+      items.GetVideoInfoTag()->m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
       items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
       items.GetVideoInfoTag()->m_strRuntime = StringUtils::SecondsToTimeString(iDuration); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
 
@@ -611,7 +611,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
 bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
 {
   CURL url(strPath);
-  CFileCurl http;
+  CCurlFile http;
   int iTryConnect = 0;
   int iTimeout = 2;
 
@@ -655,7 +655,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
 bool CTuxBoxUtil::SetAudioChannel( const CStdString& strPath, const AUDIOCHANNEL& sAC )
 {
   CURL url(strPath);
-  CFileCurl http;
+  CCurlFile http;
   int iTryConnect = 0;
   int iTimeout = 2;
 
@@ -723,7 +723,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   url.SetFileName("");
 
   //Open
-  CFileCurl http;
+  CCurlFile http;
   http.SetTimeout(20);
   if(http.Open(url))
   {

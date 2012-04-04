@@ -37,21 +37,18 @@ class CAlbum
 {
 public:
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; };
-  bool operator<(const CAlbum &a) const
-  {
-    return strAlbum + strArtist < a.strAlbum + a.strArtist;
-  }
+  bool operator<(const CAlbum &a) const;
 
   void Reset()
   {
     idAlbum = -1;
     strAlbum.Empty();
-    strArtist.Empty();
-    strGenre.Empty();
+    artist.clear();
+    genre.clear();
     thumbURL.Clear();
-    strMoods.Empty();
-    strStyles.Empty();
-    strThemes.Empty();
+    moods.clear();
+    styles.clear();
+    themes.clear();
     strReview.Empty();
     strLabel.Empty();
     strType.Empty();
@@ -62,17 +59,24 @@ public:
     songs.clear();
   }
 
-  bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
+  /*! \brief Load album information from an XML file.
+   See CVideoInfoTag::Load for a description of the types of elements we load.
+   \param element    the root XML element to parse.
+   \param append     whether information should be added to the existing tag, or whether it should be reset first.
+   \param prioritise if appending, whether additive tags should be prioritised (i.e. replace or prepend) over existing values. Defaults to false.
+   \sa CVideoInfoTag::Load
+   */
+  bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   long idAlbum;
   CStdString strAlbum;
-  CStdString strArtist;
-  CStdString strGenre;
+  std::vector<std::string> artist;
+  std::vector<std::string> genre;
   CScraperUrl thumbURL;
-  CStdString strMoods;
-  CStdString strStyles;
-  CStdString strThemes;
+  std::vector<std::string> moods;
+  std::vector<std::string> styles;
+  std::vector<std::string> themes;
   CStdString strReview;
   CStdString strLabel;
   CStdString strType;

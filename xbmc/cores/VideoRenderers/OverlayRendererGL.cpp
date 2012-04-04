@@ -62,22 +62,7 @@ static void LoadTexture(GLenum target
   char *pixelVector = NULL;
   const GLvoid *pixelData = pixels;
 
-  int bytesPerPixel;
-  switch (externalFormat)
-  {
-  case GL_BGRA:
-  case GL_RGBA:
-    bytesPerPixel = 4;
-    break;
-#ifndef HAS_GLES
-  case GL_BGR:
-#endif
-  case GL_RGB:
-    bytesPerPixel = 3;
-    break;
-  default:
-    bytesPerPixel = 1;
-  }
+  int bytesPerPixel = glFormatElementByteCount(externalFormat);
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/

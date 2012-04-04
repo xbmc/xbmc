@@ -227,7 +227,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
 
     CURL url(URIUtils::SubstitutePath(strFileName));
-    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url) && !CUtil::IsPicture(strFileName) )
+    if ( (flags & READ_NO_CACHE) == 0 && URIUtils::IsInternetStream(url, true) && !CUtil::IsPicture(strFileName) )
       m_flags |= READ_CACHED;
 
     if (m_flags & READ_CACHED)
@@ -423,7 +423,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
     
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
-      return false;
+      return -1;
     return pFile->Stat(url, buffer);
   }
 #ifndef _LINUX
@@ -447,14 +447,14 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
         {
-          return false;
+          return 0;
         }
       }
       else     
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
-          return false;
+          return 0;
         }
       }
     }
@@ -827,8 +827,9 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
 int CFile::IoControl(EIoControl request, void* param)
 {
   int result = -1;
-  if (m_pFile)
-    result = m_pFile->IoControl(request, param);
+  if (m_pFile == NULL)
+    return -1;
+  result = m_pFile->IoControl(request, param);
 
   if(result == -1 && request == IOCTRL_SEEK_POSSIBLE)
   {
@@ -1034,17 +1035,3 @@ bool CFileStream::Open(const CStdString& filename)
 {
   return Open(CURL(URIUtils::SubstitutePath(filename)));
 }
-
-#ifdef _ARMEL
-char* CFileStream::ReadFile()
-{
-  if(!m_file)
-    return NULL;
-
-  int64_t length = m_file->GetLength();
-  char *str = new char[length+1];
-  m_file->Read(str, length);
-  str[length] = '\0';
-  return str;
-}
-#endif

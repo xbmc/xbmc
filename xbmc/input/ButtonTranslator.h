@@ -69,7 +69,7 @@ public:
   void RemoveDevice(CStdString& strDevice);
 
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load(void);
+  bool Load(bool AlwaysLoad = false);
   /// clears the maps
   void Clear();
 
@@ -101,8 +101,6 @@ public:
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
 
-  // m_baseMap contains all the standard mappings
-  std::map<int, buttonMap> m_baseMap;
   // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
   std::map<int, buttonMap> m_translatorMap;
   // m_deviceList contains the list of connected HID devices

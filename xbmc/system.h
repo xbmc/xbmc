@@ -220,14 +220,6 @@
 #include "PlatformInclude.h"
 #endif
 
-// ARM does not support certain features... disable them here!
-#ifdef _ARMEL
-#undef HAS_AVAHI
-#undef HAS_ZEROCONF
-#undef HAS_VISUALISATION
-#undef HAS_FILESYSTEM_HTSP
-#endif
-
 // EGL detected. Dont use GLX!
 #ifdef HAVE_LIBEGL
 #undef HAS_GLX

@@ -1071,6 +1071,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
+    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
+        __FUNCTION__, width, height, profile, level);
+      return false;
+    }
+    
     switch (hints.codec)
     {
       case CODEC_ID_MPEG4:
@@ -1185,20 +1192,22 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    if (profile == 77 && level == 32 && m_max_ref_frames > 4)
-    {
-      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-        __FUNCTION__, m_max_ref_frames);
-      return false;
-    }
- 
     if(m_fmt_desc == NULL)
     {
       CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
       m_pFormatName = "";
       return false;
     }
+
+    if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+    {
+      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+        __FUNCTION__, m_max_ref_frames);
+      CFRelease(m_fmt_desc);
+      return false;
+    }
+ 
     if (m_max_ref_frames == 0)
       m_max_ref_frames = 2;
 
@@ -1378,7 +1387,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
 
   // TODO: queue depth is related to the number of reference frames in encoded h.264.
   // so we need to buffer until we get N ref frames + 1.
-  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE | VC_BUFFER;

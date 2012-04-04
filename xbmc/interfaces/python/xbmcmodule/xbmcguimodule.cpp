@@ -229,8 +229,8 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlEdit", (PyObject*)&ControlEdit_Type);
 
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__date__", (char*)"14 July 2006");
-    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__version__", (char*)"1.2");
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__date__", (char*)"16 June 2011");
+    PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__version__", (char*)"1.5");
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
     PyModule_AddStringConstant(pXbmcGuiModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 

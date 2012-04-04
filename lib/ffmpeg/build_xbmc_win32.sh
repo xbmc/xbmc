@@ -47,7 +47,7 @@ OPTIONS="
 --enable-avfilter \
 --disable-doc"
 
-./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
 make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&

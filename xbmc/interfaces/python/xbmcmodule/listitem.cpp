@@ -28,6 +28,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "utils/Variant.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -474,9 +476,9 @@ namespace PYXBMC
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
-            self->item->GetVideoInfoTag()->m_strGenre = tmp;
+            self->item->GetVideoInfoTag()->m_genre = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "director") == 0)
-            self->item->GetVideoInfoTag()->m_strDirector = tmp;
+            self->item->GetVideoInfoTag()->m_director = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "mpaa") == 0)
             self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
           else if (strcmpi(PyString_AsString(key), "plot") == 0)
@@ -490,25 +492,25 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "duration") == 0)
             self->item->GetVideoInfoTag()->m_strRuntime = tmp;
           else if (strcmpi(PyString_AsString(key), "studio") == 0)
-            self->item->GetVideoInfoTag()->m_strStudio = tmp;
+            self->item->GetVideoInfoTag()->m_studio = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "tagline") == 0)
             self->item->GetVideoInfoTag()->m_strTagLine = tmp;
           else if (strcmpi(PyString_AsString(key), "writer") == 0)
-            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+            self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "tvshowtitle") == 0)
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
-            self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+            self->item->GetVideoInfoTag()->m_premiered.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "status") == 0)
             self->item->GetVideoInfoTag()->m_strStatus = tmp;
           else if (strcmpi(PyString_AsString(key), "code") == 0)
             self->item->GetVideoInfoTag()->m_strProductionCode = tmp;
           else if (strcmpi(PyString_AsString(key), "aired") == 0)
-            self->item->GetVideoInfoTag()->m_strFirstAired = tmp;
+            self->item->GetVideoInfoTag()->m_firstAired.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "credits") == 0)
-            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+            self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
-            self->item->GetVideoInfoTag()->m_lastPlayed = tmp;
+            self->item->GetVideoInfoTag()->m_lastPlayed.SetFromDBDateTime(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
             self->item->GetVideoInfoTag()->m_strAlbum = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)
@@ -603,6 +605,122 @@ namespace PYXBMC
         }
         self->item->GetPictureInfoTag()->SetLoaded(true);
       }
+    }
+    PyXBMCGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  PyDoc_STRVAR(addStreamInfo__doc__,
+    "addStreamInfo(type, values) -- Add a stream with details.\n"
+    "\n"
+    "type              : string - type of stream(video/audio/subtitle).\n"
+    "values            : dictionary - pairs of { label: value }.\n"
+    "\n"
+    "Video Values:\n"
+    "    codec         : string (h264)\n"
+    "    aspect        : float (1.78)\n"
+    "    width         : integer (1280)\n"
+    "    height        : integer (720)\n"
+    "    duration      : integer (seconds)\n"
+    "\n"
+    "Audio Values:\n"
+    "    codec         : string (dts)\n"
+    "    language      : string (en)\n"
+    "    channels      : integer (2)\n"
+    "\n"
+    "Subtitle Values:\n"
+    "    language      : string (en)\n"
+    "\n"
+    "example:\n"
+    "  - self.list.getSelectedItem().addStreamInfo('video', { 'Codec': 'h264', 'Width' : 1280 })\n");
+
+  PyObject* ListItem_AddStreamInfo(ListItem *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "type", "values", NULL };
+    char *cType = NULL;
+    PyObject *pValues = NULL;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"sO",
+      (char**)keywords,
+      &cType,
+      &pValues))
+    {
+      return NULL;
+    }
+    if (!PyObject_TypeCheck(pValues, &PyDict_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "values object should be of type Dict");
+      return NULL;
+    }
+    if (PyDict_Size(pValues) == 0)
+    {
+      PyErr_SetString(PyExc_ValueError, "Empty values dictionary");
+      return NULL;
+    }
+
+    PyObject *key, *value;
+    Py_ssize_t pos = 0;
+
+    PyXBMCGUILock();
+
+    CStdString tmp;
+    if (strcmpi(cType, "video") == 0)
+    {
+      CStreamDetailVideo* video = new CStreamDetailVideo;
+      while (PyDict_Next(pValues, &pos, &key, &value))
+      {
+        if (strcmpi(PyString_AsString(key), "codec") == 0)
+        {
+          if (!PyXBMCGetUnicodeString(video->m_strCodec, value, 1)) 
+            continue;
+        }
+        else if (strcmpi(PyString_AsString(key), "aspect") == 0)
+          video->m_fAspect = (float)PyFloat_AsDouble(value);
+        else if (strcmpi(PyString_AsString(key), "width") == 0)
+          video->m_iWidth = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "height") == 0)
+          video->m_iHeight = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "duration") == 0)
+          video->m_iDuration = PyInt_AsLong(value);
+      }
+      self->item->GetVideoInfoTag()->m_streamDetails.AddStream(video);
+    }
+    else if (strcmpi(cType, "audio") == 0)
+    {
+      CStreamDetailAudio* audio = new CStreamDetailAudio;
+      while (PyDict_Next(pValues, &pos, &key, &value))
+      {
+        if (strcmpi(PyString_AsString(key), "codec") == 0)
+        {
+          if (!PyXBMCGetUnicodeString(audio->m_strCodec, value, 1)) 
+            continue;
+        }
+        else if (strcmpi(PyString_AsString(key), "language") == 0)
+        {
+          if (!PyXBMCGetUnicodeString(audio->m_strLanguage, value, 1)) 
+            continue;
+        }
+        else if (strcmpi(PyString_AsString(key), "channels") == 0)
+          audio ->m_iChannels = PyInt_AsLong(value);
+      }
+      self->item->GetVideoInfoTag()->m_streamDetails.AddStream(audio);
+    }
+    else if (strcmpi(cType, "subtitle") == 0)
+    {
+      CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
+      while (PyDict_Next(pValues, &pos, &key, &value))
+      {
+        if (strcmpi(PyString_AsString(key), "language") == 0)
+        {
+          if (!PyXBMCGetUnicodeString(subtitle->m_strLanguage, value, 1)) 
+            continue;
+        }
+      }
+      self->item->GetVideoInfoTag()->m_streamDetails.AddStream(subtitle);
     }
     PyXBMCGUIUnlock();
 
@@ -858,6 +976,7 @@ namespace PYXBMC
     {(char*)"setProperty", (PyCFunction)ListItem_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
     {(char*)"getProperty", (PyCFunction)ListItem_GetProperty, METH_VARARGS|METH_KEYWORDS, getProperty__doc__},
     {(char*)"addContextMenuItems", (PyCFunction)ListItem_AddContextMenuItems, METH_VARARGS|METH_KEYWORDS, addContextMenuItems__doc__},
+    {(char*)"addStreamInfo", (PyCFunction)ListItem_AddStreamInfo, METH_VARARGS|METH_KEYWORDS, addStreamInfo__doc__},
     {(char*)"setPath" , (PyCFunction)ListItem_SetPath, METH_VARARGS|METH_KEYWORDS, setPath__doc__},
     {NULL, NULL, 0, NULL}
   };
