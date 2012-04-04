@@ -6,7 +6,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture>special://skin/backgrounds/background.jpg</texture>
+			<texture fallback="special://skin/backgrounds/background.jpg">special://skin/backgrounds/$INFO[Skin.CurrentTheme].jpg</texture>
 		</control>
 		<control type="image">
 			<posx>0</posx>
