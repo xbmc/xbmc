@@ -34,8 +34,10 @@ public:
   int64_t GetFileSize();
   int64_t GetFilePointer();
   void OnZap(void);
+#if defined(TARGET_WINDOWS)
   long long sigmaTime();
   long long  sigmaCount();
+#endif
 
 private:
   bool            m_bTimeShifting;

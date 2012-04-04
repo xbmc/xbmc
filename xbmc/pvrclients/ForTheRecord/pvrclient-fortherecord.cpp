@@ -1343,7 +1343,9 @@ void cPVRClientForTheRecord::CloseLiveStream()
     {
       XBMC->Log(LOG_DEBUG, "Close TsReader");
       m_tsreader->Close();
+#if defined(TARGET_WINDOWS)
       XBMC->Log(LOG_DEBUG, "ReadLiveStream: %I64d calls took %I64d nanoseconds.", m_tsreader->sigmaCount(), m_tsreader->sigmaTime());
+#endif
       SAFE_DELETE(m_tsreader);
     }
 #endif
