@@ -265,7 +265,7 @@ static unsigned count_bits(int64_t value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
-  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
+  if (m_channels == m_pCodecContext->channels && m_layout == (int64_t)m_pCodecContext->channel_layout)
     return; //nothing to do here
 
   m_channels = m_pCodecContext->channels;
