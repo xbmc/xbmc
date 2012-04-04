@@ -240,11 +240,12 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
           unsigned int posX = x*tile_width + (tile_width - width)/2;
           unsigned int posY = y*tile_height + (tile_height - height)/2;
           uint32_t *dest = buffer + posX + posY*g_advancedSettings.m_thumbSize;
+          uint32_t *src = scaled;
           for (unsigned int y = 0; y < height; ++y)
           {
-            memcpy(dest, scaled, width*4);
+            memcpy(dest, src, width*4);
             dest += g_advancedSettings.m_thumbSize;
-            scaled += width;
+            src += width;
           }
         }
       }
