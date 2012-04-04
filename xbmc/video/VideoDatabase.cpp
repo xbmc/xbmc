@@ -2809,7 +2809,6 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
-  details.Reset();
 
   DWORD time = XbmcThreads::SystemClockMillis();
   int idMovie = pDS->fv(0).get_asInt();

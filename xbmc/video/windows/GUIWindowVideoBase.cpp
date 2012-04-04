@@ -367,7 +367,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   bool bHasInfo=false;
 
   CVideoInfoTag movieDetails;
-  movieDetails.Reset();
   if (info)
   {
     m_database.Open(); // since we can be called from the music library
