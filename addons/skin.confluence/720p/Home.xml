@@ -675,255 +675,57 @@
 				<texture flipx="true">SideFade.png</texture>
 			</control>
 		</control>
-		<control type="fixedlist" id="9002">
-			<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(9002).NumItems,2) | StringCompare(Container(9002).NumItems,4)">conditional</animation>
-			<include>Window_OpenClose_Animation</include>
-			<hitrect x="0" y="530" w="1280" h="120" />
-			<posx>0</posx>
-			<posy>190r</posy>
-			<width>1280</width>
-			<height>200</height>
-			<onleft>9002</onleft>
-			<onright>9002</onright>
+		<control type="group" id="9002">
 			<onup>9001</onup>
 			<ondown>20</ondown>
-			<pagecontrol>-</pagecontrol>
-			<scrolltime>300</scrolltime>
-			<focusposition>3</focusposition>
-			<movement>2</movement>
-			<orientation>Horizontal</orientation>
-			<itemlayout height="200" width="182">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>180</width>
-					<height>120</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>3</bordersize>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
-				</control>
-				<control type="image">
-					<posx>5</posx>
-					<posy>120</posy>
-					<width>170</width>
-					<height>110</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
-				</control>
-				<control type="label">
-					<posx>91</posx>
-					<posy>125</posy>
-					<width>180</width>
-					<height>20</height>
-					<font>font12</font>
-					<textcolor>grey2</textcolor>
-					<align>center</align>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-				</control>
-			</itemlayout>
-			<focusedlayout height="200" width="182">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>180</width>
-					<height>120</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>3</bordersize>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
-					<visible>!Control.HasFocus(9002)</visible>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>180</width>
-					<height>120</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>3</bordersize>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
-					<visible>Control.HasFocus(9002)</visible>
-				</control>
-				<control type="image">
-					<posx>5</posx>
-					<posy>120</posy>
-					<width>170</width>
-					<height>110</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
-				</control>
-				<control type="label">
-					<posx>91</posx>
-					<posy>125</posy>
-					<width>180</width>
-					<height>20</height>
-					<font>font12</font>
-					<textcolor>white</textcolor>
-					<align>center</align>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-					<visible>Control.HasFocus(9002)</visible>
-				</control>
-				<control type="label">
-					<posx>91</posx>
-					<posy>125</posy>
-					<width>180</width>
-					<height>20</height>
-					<font>font12</font>
-					<textcolor>grey2</textcolor>
-					<align>center</align>
-					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
-					<visible>!Control.HasFocus(9002)</visible>
-				</control>
-			</focusedlayout>
-			<content>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton1))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton1)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton1))]</icon>
-					<thumb>-</thumb>
-					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton1))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton2))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton2)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton2))]</icon>
-					<thumb>-</thumb>
-					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton2))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton3))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton3)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton3))]</icon>
-					<thumb>-</thumb>
-					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton3))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton4))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton4)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton4))]</icon>
-					<thumb>-</thumb>
-					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton4))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeVideosButton5))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeVideosButton5)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton5))]</icon>
-					<thumb>-</thumb>
-					<visible>[Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)] + !IsEmpty(Skin.String(HomeVideosButton5))</visible>
-				</item>
-
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton1))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton1)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton1))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton1))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton2))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton2)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton2))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton2))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton3))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton3)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton3))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton3))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton4))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton4)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton4))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton4))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton5))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton5)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton5))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton5))</visible>
-				</item>
-
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomePictureButton1))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomePictureButton1)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton1))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton1))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomePictureButton2))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomePictureButton2)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton2))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton2))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomePictureButton3))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomePictureButton3)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton3))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton3))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomePictureButton4))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomePictureButton4)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton4))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton4))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomePictureButton5))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomePictureButton5)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton5))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton5))</visible>
-				</item>
-
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton1))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton1)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton1))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton1))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton2))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton2)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton2))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton2))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton3))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton3)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton3))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton3))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton4))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton4)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton4))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton4))</visible>
-				</item>
-				<item>
-					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton5))]</label>
-					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton5)])</onclick>
-					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton5))]</icon>
-					<thumb>-</thumb>
-					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton5))</visible>
-				</item>
-			</content>
+			<control type="fixedlist" id="700">
+				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(700).NumItems,2) | StringCompare(Container(700).NumItems,4)">conditional</animation>
+				<visible>Container(9000).HasFocus(2) | Container(9000).HasFocus(10) | Container(9000).HasFocus(11)</visible>
+				<onleft>700</onleft>
+				<onright>700</onright>
+				<onup>9001</onup>
+				<ondown>20</ondown>
+				<include>HomeAddonsCommonLayout</include>
+				<content>
+					<include>HomeAddonItemsVideos</include>
+				</content>
+			</control>
+			<control type="fixedlist" id="703">
+				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(703).NumItems,2) | StringCompare(Container(703).NumItems,4)">conditional</animation>
+				<visible>Container(9000).HasFocus(3)</visible>
+				<onleft>703</onleft>
+				<onright>703</onright>
+				<onup>9001</onup>
+				<ondown>20</ondown>
+				<include>HomeAddonsCommonLayout</include>
+				<content>
+					<include>HomeAddonItemsMusic</include>
+				</content>
+			</control>
+			<control type="fixedlist" id="704">
+				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(704).NumItems,2) | StringCompare(Container(704).NumItems,4)">conditional</animation>
+				<visible>Container(9000).HasFocus(4)</visible>
+				<onleft>704</onleft>
+				<onright>704</onright>
+				<onup>9001</onup>
+				<ondown>20</ondown>
+				<include>HomeAddonsCommonLayout</include>
+				<content>
+					<include>HomeAddonItemsPictures</include>
+				</content>
+			</control>
+			<control type="fixedlist" id="705">
+				<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(705).NumItems,2) | StringCompare(Container(705).NumItems,4)">conditional</animation>
+				<visible>Container(9000).HasFocus(1)</visible>
+				<onleft>705</onleft>
+				<onright>705</onright>
+				<onup>9001</onup>
+				<ondown>20</ondown>
+				<include>HomeAddonsCommonLayout</include>
+				<content>
+					<include>HomeAddonItemsPrograms</include>
+				</content>
+			</control>
 		</control>
 		<control type="group">
 			<posx>0</posx>

@@ -821,6 +821,114 @@
 			<animation effect="slide" start="0,0" end="-40,0" time="100" condition="Window.IsVisible(Mutebug)">conditional</animation>
 		</control>
 	</include>
+	<include name="HomeAddonsCommonLayout">
+		<include>Window_OpenClose_Animation</include>
+		<animation type="Visible">
+			<effect type="slide" start="0,30" end="0,0" delay="200" easing="out" tween="quadratic" time="200" />
+			<effect type="fade" start="0" end="100" delay="200" time="200" />
+		</animation>
+		<animation type="Hidden">
+			<effect type="zoom" start="100" end="70" center="auto" easing="in" tween="quadratic" time="300" />
+			<effect type="fade" start="100" end="0" time="300" />
+		</animation>
+		<hitrect x="0" y="530" w="1280" h="120" />
+		<posx>0</posx>
+		<posy>190r</posy>
+		<width>1280</width>
+		<height>200</height>
+		<pagecontrol>-</pagecontrol>
+		<scrolltime>300</scrolltime>
+		<focusposition>3</focusposition>
+		<movement>2</movement>
+		<orientation>Horizontal</orientation>
+		<itemlayout height="200" width="182">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">button-nofocus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>120</posy>
+				<width>170</width>
+				<height>110</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</itemlayout>
+		<focusedlayout height="200" width="182">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">button-nofocus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<visible>!ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>120</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="5">folder-focus.png</bordertexture>
+				<bordersize>3</bordersize>
+				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<visible>ControlGroup(9002).HasFocus</visible>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>120</posy>
+				<width>170</width>
+				<height>110</height>
+				<aspectratio aligny="top">keep</aspectratio>
+				<texture diffuse="diffuse_mirror2.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>Control.HasFocus(9002)</visible>
+			</control>
+			<control type="label">
+				<posx>91</posx>
+				<posy>125</posy>
+				<width>180</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey2</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<visible>!Control.HasFocus(9002)</visible>
+			</control>
+		</focusedlayout>
+	</include>
 	<include name="TVNextAiredListCommonLayout">
 		<itemlayout height="150" width="280">
 			<control type="image">
