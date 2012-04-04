@@ -27,8 +27,9 @@
 #include <dlfcn.h>
 #include <frei0r.h>
 #include "libavutil/avstring.h"
-#include "libavcore/imgutils.h"
-#include "libavcore/parseutils.h"
+#include "libavutil/imgutils.h"
+#include "libavutil/mathematics.h"
+#include "libavutil/parseutils.h"
 #include "avfilter.h"
 
 typedef f0r_instance_t (*f0r_construct_f)(unsigned int width, unsigned int height);
@@ -215,7 +216,7 @@ static av_cold int frei0r_init(AVFilterContext *ctx,
     /* see: http://piksel.org/frei0r/1.2/spec/1.2/spec/group__pluglocations.html */
     if ((path = av_strdup(getenv("FREI0R_PATH")))) {
         char *p, *ptr = NULL;
-        for (p = path; p = strtok_r(p, ":", &ptr); p = NULL)
+        for (p = path; p = av_strtok(p, ":", &ptr); p = NULL)
             if (frei0r->dl_handle = load_path(ctx, p, dl_name))
                 break;
         av_free(path);
@@ -332,7 +333,7 @@ static int query_formats(AVFilterContext *ctx)
     if (!formats)
         return AVERROR(ENOMEM);
 
-    avfilter_set_common_formats(ctx, formats);
+    avfilter_set_common_pixel_formats(ctx, formats);
     return 0;
 }
 
@@ -364,7 +365,7 @@ AVFilter avfilter_vf_frei0r = {
 
     .priv_size = sizeof(Frei0rContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .draw_slice       = null_draw_slice,
                                     .config_props     = config_input_props,
@@ -372,7 +373,7 @@ AVFilter avfilter_vf_frei0r = {
                                     .min_perms        = AV_PERM_READ },
                                   { .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO, },
                                   { .name = NULL}},
 };
@@ -430,7 +431,7 @@ static int source_request_frame(AVFilterLink *outlink)
 {
     Frei0rContext *frei0r = outlink->src->priv;
     AVFilterBufferRef *picref = avfilter_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
-    picref->video->pixel_aspect = (AVRational) {1, 1};
+    picref->video->sample_aspect_ratio = (AVRational) {1, 1};
     picref->pts = frei0r->pts++;
     picref->pos = -1;
 
@@ -454,9 +455,9 @@ AVFilter avfilter_vsrc_frei0r_src = {
 
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name = NULL}},
+    .inputs    = (const AVFilterPad[]) {{ .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO,
                                     .request_frame   = source_request_frame,
                                     .config_props    = source_config_props },

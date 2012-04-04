@@ -43,7 +43,6 @@ public:
   virtual int GetData(uint8_t **data);
 private:
   DllAvCodec m_dllAvCodec;
-  DllAvCore  m_dllAvCore;
   DllAvUtil  m_dllAvUtil;
 
   AVCodecContext   *m_CodecCtx;

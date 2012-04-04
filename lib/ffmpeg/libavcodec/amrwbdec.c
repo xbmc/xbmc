@@ -41,6 +41,7 @@
 #include "amrwbdata.h"
 
 typedef struct {
+    AVFrame                              avframe; ///< AVFrame for decoded samples
     AMRWBFrame                             frame; ///< AMRWB parameters decoded from bitstream
     enum Mode                        fr_cur_mode; ///< mode index of current frame
     uint8_t                           fr_quality; ///< frame quality index (FQI)
@@ -89,7 +90,7 @@ static av_cold int amrwb_decode_init(AVCodecContext *avctx)
     AMRWBContext *ctx = avctx->priv_data;
     int i;
 
-    avctx->sample_fmt = SAMPLE_FMT_FLT;
+    avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
 
     av_lfg_init(&ctx->prng, 1);
 
@@ -102,12 +103,15 @@ static av_cold int amrwb_decode_init(AVCodecContext *avctx)
     for (i = 0; i < 4; i++)
         ctx->prediction_error[i] = MIN_ENERGY;
 
+    avcodec_get_frame_defaults(&ctx->avframe);
+    avctx->coded_frame = &ctx->avframe;
+
     return 0;
 }
 
 /**
  * Decode the frame header in the "MIME/storage" format. This format
- * is simpler and does not carry the auxiliary information of the frame
+ * is simpler and does not carry the auxiliary frame information.
  *
  * @param[in] ctx                  The Context
  * @param[in] buf                  Pointer to the input buffer
@@ -129,7 +133,7 @@ static int decode_mime_header(AMRWBContext *ctx, const uint8_t *buf)
 }
 
 /**
- * Decodes quantized ISF vectors using 36-bit indexes (6K60 mode only)
+ * Decode quantized ISF vectors using 36-bit indexes (6K60 mode only).
  *
  * @param[in]  ind                 Array of 5 indexes
  * @param[out] isf_q               Buffer for isf_q[LP_ORDER]
@@ -156,7 +160,7 @@ static void decode_isf_indices_36b(uint16_t *ind, float *isf_q)
 }
 
 /**
- * Decodes quantized ISF vectors using 46-bit indexes (except 6K60 mode)
+ * Decode quantized ISF vectors using 46-bit indexes (except 6K60 mode).
  *
  * @param[in]  ind                 Array of 7 indexes
  * @param[out] isf_q               Buffer for isf_q[LP_ORDER]
@@ -189,8 +193,8 @@ static void decode_isf_indices_46b(uint16_t *ind, float *isf_q)
 }
 
 /**
- * Apply mean and past ISF values using the prediction factor
- * Updates past ISF vector
+ * Apply mean and past ISF values using the prediction factor.
+ * Updates past ISF vector.
  *
  * @param[in,out] isf_q            Current quantized ISF
  * @param[in,out] isf_past         Past quantized ISF
@@ -211,7 +215,7 @@ static void isf_add_mean_and_past(float *isf_q, float *isf_past)
 
 /**
  * Interpolate the fourth ISP vector from current and past frames
- * to obtain a ISP vector for each subframe
+ * to obtain an ISP vector for each subframe.
  *
  * @param[in,out] isp_q            ISPs for each subframe
  * @param[in]     isp4_past        Past ISP for subframe 4
@@ -228,9 +232,9 @@ static void interpolate_isp(double isp_q[4][LP_ORDER], const double *isp4_past)
 }
 
 /**
- * Decode an adaptive codebook index into pitch lag (except 6k60, 8k85 modes)
- * Calculate integer lag and fractional lag always using 1/4 resolution
- * In 1st and 3rd subframes the index is relative to last subframe integer lag
+ * Decode an adaptive codebook index into pitch lag (except 6k60, 8k85 modes).
+ * Calculate integer lag and fractional lag always using 1/4 resolution.
+ * In 1st and 3rd subframes the index is relative to last subframe integer lag.
  *
  * @param[out]    lag_int          Decoded integer pitch lag
  * @param[out]    lag_frac         Decoded fractional pitch lag
@@ -267,9 +271,9 @@ static void decode_pitch_lag_high(int *lag_int, int *lag_frac, int pitch_index,
 }
 
 /**
- * Decode a adaptive codebook index into pitch lag for 8k85 and 6k60 modes
- * Description is analogous to decode_pitch_lag_high, but in 6k60 relative
- * index is used for all subframes except the first
+ * Decode an adaptive codebook index into pitch lag for 8k85 and 6k60 modes.
+ * The description is analogous to decode_pitch_lag_high, but in 6k60 the
+ * relative index is used for all subframes except the first.
  */
 static void decode_pitch_lag_low(int *lag_int, int *lag_frac, int pitch_index,
                                  uint8_t *base_lag_int, int subframe, enum Mode mode)
@@ -294,7 +298,7 @@ static void decode_pitch_lag_low(int *lag_int, int *lag_frac, int pitch_index,
 
 /**
  * Find the pitch vector by interpolating the past excitation at the
- * pitch delay, which is obtained in this function
+ * pitch delay, which is obtained in this function.
  *
  * @param[in,out] ctx              The context
  * @param[in]     amr_subframe     Current subframe data
@@ -347,10 +351,10 @@ static void decode_pitch_vector(AMRWBContext *ctx,
 /**
  * The next six functions decode_[i]p_track decode exactly i pulses
  * positions and amplitudes (-1 or 1) in a subframe track using
- * an encoded pulse indexing (TS 26.190 section 5.8.2)
+ * an encoded pulse indexing (TS 26.190 section 5.8.2).
  *
  * The results are given in out[], in which a negative number means
- * amplitude -1 and vice versa (i.e., ampl(x) = x / abs(x) )
+ * amplitude -1 and vice versa (i.e., ampl(x) = x / abs(x) ).
  *
  * @param[out] out                 Output buffer (writes i elements)
  * @param[in]  code                Pulse index (no. of bits varies, see below)
@@ -466,7 +470,7 @@ static void decode_6p_track(int *out, int code, int m, int off) ///code: 6m-2 bi
 
 /**
  * Decode the algebraic codebook index to pulse positions and signs,
- * then construct the algebraic codebook vector
+ * then construct the algebraic codebook vector.
  *
  * @param[out] fixed_vector        Buffer for the fixed codebook excitation
  * @param[in]  pulse_hi            MSBs part of the pulse index array (higher modes only)
@@ -537,7 +541,7 @@ static void decode_fixed_vector(float *fixed_vector, const uint16_t *pulse_hi,
 }
 
 /**
- * Decode pitch gain and fixed gain correction factor
+ * Decode pitch gain and fixed gain correction factor.
  *
  * @param[in]  vq_gain             Vector-quantized index for gains
  * @param[in]  mode                Mode of the current frame
@@ -555,7 +559,7 @@ static void decode_gains(const uint8_t vq_gain, const enum Mode mode,
 }
 
 /**
- * Apply pitch sharpening filters to the fixed codebook vector
+ * Apply pitch sharpening filters to the fixed codebook vector.
  *
  * @param[in]     ctx              The context
  * @param[in,out] fixed_vector     Fixed codebook excitation
@@ -576,7 +580,7 @@ static void pitch_sharpening(AMRWBContext *ctx, float *fixed_vector)
 }
 
 /**
- * Calculate the voicing factor (-1.0 = unvoiced to 1.0 = voiced)
+ * Calculate the voicing factor (-1.0 = unvoiced to 1.0 = voiced).
  *
  * @param[in] p_vector, f_vector   Pitch and fixed excitation vectors
  * @param[in] p_gain, f_gain       Pitch and fixed gains
@@ -595,8 +599,8 @@ static float voice_factor(float *p_vector, float p_gain,
 }
 
 /**
- * Reduce fixed vector sparseness by smoothing with one of three IR filters
- * Also known as "adaptive phase dispersion"
+ * Reduce fixed vector sparseness by smoothing with one of three IR filters,
+ * also known as "adaptive phase dispersion".
  *
  * @param[in]     ctx              The context
  * @param[in,out] fixed_vector     Unfiltered fixed vector
@@ -666,7 +670,7 @@ static float *anti_sparseness(AMRWBContext *ctx,
 
 /**
  * Calculate a stability factor {teta} based on distance between
- * current and past isf. A value of 1 shows maximum signal stability
+ * current and past isf. A value of 1 shows maximum signal stability.
  */
 static float stability_factor(const float *isf, const float *isf_past)
 {
@@ -683,7 +687,7 @@ static float stability_factor(const float *isf, const float *isf_past)
 
 /**
  * Apply a non-linear fixed gain smoothing in order to reduce
- * fluctuation in the energy of excitation
+ * fluctuation in the energy of excitation.
  *
  * @param[in]     fixed_gain       Unsmoothed fixed gain
  * @param[in,out] prev_tr_gain     Previous threshold gain (updated)
@@ -714,7 +718,7 @@ static float noise_enhancer(float fixed_gain, float *prev_tr_gain,
 }
 
 /**
- * Filter the fixed_vector to emphasize the higher frequencies
+ * Filter the fixed_vector to emphasize the higher frequencies.
  *
  * @param[in,out] fixed_vector     Fixed codebook vector
  * @param[in]     voice_fac        Frame voicing factor
@@ -738,7 +742,7 @@ static void pitch_enhancer(float *fixed_vector, float voice_fac)
 }
 
 /**
- * Conduct 16th order linear predictive coding synthesis from excitation
+ * Conduct 16th order linear predictive coding synthesis from excitation.
  *
  * @param[in]     ctx              Pointer to the AMRWBContext
  * @param[in]     lpc              Pointer to the LPC coefficients
@@ -798,7 +802,7 @@ static void de_emphasis(float *out, float *in, float m, float mem[1])
 
 /**
  * Upsample a signal by 5/4 ratio (from 12.8kHz to 16kHz) using
- * a FIR interpolation filter. Uses past data from before *in address
+ * a FIR interpolation filter. Uses past data from before *in address.
  *
  * @param[out] out                 Buffer for interpolated signal
  * @param[in]  in                  Current signal data (length 0.8*o_size)
@@ -828,7 +832,7 @@ static void upsample_5_4(float *out, const float *in, int o_size)
 
 /**
  * Calculate the high-band gain based on encoded index (23k85 mode) or
- * on the low-band speech signal and the Voice Activity Detection flag
+ * on the low-band speech signal and the Voice Activity Detection flag.
  *
  * @param[in] ctx                  The context
  * @param[in] synth                LB speech synthesis at 12.8k
@@ -853,7 +857,7 @@ static float find_hb_gain(AMRWBContext *ctx, const float *synth,
 
 /**
  * Generate the high-band excitation with the same energy from the lower
- * one and scaled by the given gain
+ * one and scaled by the given gain.
  *
  * @param[in]  ctx                 The context
  * @param[out] hb_exc              Buffer for the excitation
@@ -876,7 +880,7 @@ static void scaled_hb_excitation(AMRWBContext *ctx, float *hb_exc,
 }
 
 /**
- * Calculate the auto-correlation for the ISF difference vector
+ * Calculate the auto-correlation for the ISF difference vector.
  */
 static float auto_correlation(float *diff_isf, float mean, int lag)
 {
@@ -892,12 +896,12 @@ static float auto_correlation(float *diff_isf, float mean, int lag)
 
 /**
  * Extrapolate a ISF vector to the 16kHz range (20th order LP)
- * used at mode 6k60 LP filter for the high frequency band
+ * used at mode 6k60 LP filter for the high frequency band.
  *
- * @param[out] out                 Buffer for extrapolated isf
- * @param[in]  isf                 Input isf vector
+ * @param[out] isf Buffer for extrapolated isf; contains LP_ORDER
+ *                 values on input
  */
-static void extrapolate_isf(float out[LP_ORDER_16k], float isf[LP_ORDER])
+static void extrapolate_isf(float isf[LP_ORDER_16k])
 {
     float diff_isf[LP_ORDER - 2], diff_mean;
     float *diff_hi = diff_isf - LP_ORDER + 1; // diff array for extrapolated indexes
@@ -905,8 +909,7 @@ static void extrapolate_isf(float out[LP_ORDER_16k], float isf[LP_ORDER])
     float est, scale;
     int i, i_max_corr;
 
-    memcpy(out, isf, (LP_ORDER - 1) * sizeof(float));
-    out[LP_ORDER_16k - 1] = isf[LP_ORDER - 1];
+    isf[LP_ORDER_16k - 1] = isf[LP_ORDER - 1];
 
     /* Calculate the difference vector */
     for (i = 0; i < LP_ORDER - 2; i++)
@@ -927,16 +930,16 @@ static void extrapolate_isf(float out[LP_ORDER_16k], float isf[LP_ORDER])
     i_max_corr++;
 
     for (i = LP_ORDER - 1; i < LP_ORDER_16k - 1; i++)
-        out[i] = isf[i - 1] + isf[i - 1 - i_max_corr]
+        isf[i] = isf[i - 1] + isf[i - 1 - i_max_corr]
                             - isf[i - 2 - i_max_corr];
 
     /* Calculate an estimate for ISF(18) and scale ISF based on the error */
-    est   = 7965 + (out[2] - out[3] - out[4]) / 6.0;
-    scale = 0.5 * (FFMIN(est, 7600) - out[LP_ORDER - 2]) /
-            (out[LP_ORDER_16k - 2] - out[LP_ORDER - 2]);
+    est   = 7965 + (isf[2] - isf[3] - isf[4]) / 6.0;
+    scale = 0.5 * (FFMIN(est, 7600) - isf[LP_ORDER - 2]) /
+            (isf[LP_ORDER_16k - 2] - isf[LP_ORDER - 2]);
 
     for (i = LP_ORDER - 1; i < LP_ORDER_16k - 1; i++)
-        diff_hi[i] = scale * (out[i] - out[i - 1]);
+        diff_hi[i] = scale * (isf[i] - isf[i - 1]);
 
     /* Stability insurance */
     for (i = LP_ORDER; i < LP_ORDER_16k - 1; i++)
@@ -948,11 +951,11 @@ static void extrapolate_isf(float out[LP_ORDER_16k], float isf[LP_ORDER])
         }
 
     for (i = LP_ORDER - 1; i < LP_ORDER_16k - 1; i++)
-        out[i] = out[i - 1] + diff_hi[i] * (1.0f / (1 << 15));
+        isf[i] = isf[i - 1] + diff_hi[i] * (1.0f / (1 << 15));
 
     /* Scale the ISF vector for 16000 Hz */
     for (i = 0; i < LP_ORDER_16k - 1; i++)
-        out[i] *= 0.8;
+        isf[i] *= 0.8;
 }
 
 /**
@@ -977,7 +980,7 @@ static void lpc_weighting(float *out, const float *lpc, float gamma, int size)
 
 /**
  * Conduct 20th order linear predictive coding synthesis for the high
- * frequency band excitation at 16kHz
+ * frequency band excitation at 16kHz.
  *
  * @param[in]     ctx              The context
  * @param[in]     subframe         Current subframe index (0 to 3)
@@ -999,7 +1002,7 @@ static void hb_synthesis(AMRWBContext *ctx, int subframe, float *samples,
         ff_weighted_vector_sumf(e_isf, isf_past, isf, isfp_inter[subframe],
                                 1.0 - isfp_inter[subframe], LP_ORDER);
 
-        extrapolate_isf(e_isf, e_isf);
+        extrapolate_isf(e_isf);
 
         e_isf[LP_ORDER_16k - 1] *= 2.0;
         ff_acelp_lsf2lspd(e_isp, e_isf, LP_ORDER_16k);
@@ -1015,8 +1018,8 @@ static void hb_synthesis(AMRWBContext *ctx, int subframe, float *samples,
 }
 
 /**
- * Apply to high-band samples a 15th order filter
- * The filter characteristic depends on the given coefficients
+ * Apply a 15th order filter to high-band samples.
+ * The filter characteristic depends on the given coefficients.
  *
  * @param[out]    out              Buffer for filtered output
  * @param[in]     fir_coef         Filter coefficients
@@ -1044,7 +1047,7 @@ static void hb_fir_filter(float *out, const float fir_coef[HB_FIR_SIZE + 1],
 }
 
 /**
- * Update context state before the next subframe
+ * Update context state before the next subframe.
  */
 static void update_sub_state(AMRWBContext *ctx)
 {
@@ -1062,15 +1065,15 @@ static void update_sub_state(AMRWBContext *ctx)
             LP_ORDER_16k * sizeof(float));
 }
 
-static int amrwb_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                              AVPacket *avpkt)
+static int amrwb_decode_frame(AVCodecContext *avctx, void *data,
+                              int *got_frame_ptr, AVPacket *avpkt)
 {
     AMRWBContext *ctx  = avctx->priv_data;
     AMRWBFrame   *cf   = &ctx->frame;
     const uint8_t *buf = avpkt->data;
     int buf_size       = avpkt->size;
     int expected_fr_size, header_size;
-    float *buf_out = data;
+    float *buf_out;
     float spare_vector[AMRWB_SFR_SIZE];      // extra stack space to hold result from anti-sparseness processing
     float fixed_gain_factor;                 // fixed gain correction factor (gamma)
     float *synth_fixed_vector;               // pointer to the fixed vector that synthesis should use
@@ -1080,26 +1083,38 @@ static int amrwb_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     float hb_exc[AMRWB_SFR_SIZE_16k];        // excitation for the high frequency band
     float hb_samples[AMRWB_SFR_SIZE_16k];    // filtered high-band samples from synthesis
     float hb_gain;
-    int sub, i;
+    int sub, i, ret;
+
+    /* get output buffer */
+    ctx->avframe.nb_samples = 4 * AMRWB_SFR_SIZE_16k;
+    if ((ret = avctx->get_buffer(avctx, &ctx->avframe)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+    buf_out = (float *)ctx->avframe.data[0];
 
     header_size      = decode_mime_header(ctx, buf);
+    if (ctx->fr_cur_mode > MODE_SID) {
+        av_log(avctx, AV_LOG_ERROR,
+               "Invalid mode %d\n", ctx->fr_cur_mode);
+        return AVERROR_INVALIDDATA;
+    }
     expected_fr_size = ((cf_sizes_wb[ctx->fr_cur_mode] + 7) >> 3) + 1;
 
     if (buf_size < expected_fr_size) {
         av_log(avctx, AV_LOG_ERROR,
             "Frame too small (%d bytes). Truncated file?\n", buf_size);
-        *data_size = 0;
-        return buf_size;
+        *got_frame_ptr = 0;
+        return AVERROR_INVALIDDATA;
     }
 
     if (!ctx->fr_quality || ctx->fr_cur_mode > MODE_SID)
         av_log(avctx, AV_LOG_ERROR, "Encountered a bad or corrupted frame\n");
 
-    if (ctx->fr_cur_mode == MODE_SID) /* Comfort noise frame */
+    if (ctx->fr_cur_mode == MODE_SID) { /* Comfort noise frame */
         av_log_missing_feature(avctx, "SID mode", 1);
-
-    if (ctx->fr_cur_mode >= MODE_SID)
         return -1;
+    }
 
     ff_amr_bit_reorder((uint16_t *) &ctx->frame, sizeof(AMRWBFrame),
         buf + header_size, amr_bit_orderings_by_mode[ctx->fr_cur_mode]);
@@ -1219,19 +1234,20 @@ static int amrwb_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     memcpy(ctx->isp_sub4_past, ctx->isp[3], LP_ORDER * sizeof(ctx->isp[3][0]));
     memcpy(ctx->isf_past_final, ctx->isf_cur, LP_ORDER * sizeof(float));
 
-    /* report how many samples we got */
-    *data_size = 4 * AMRWB_SFR_SIZE_16k * sizeof(float);
+    *got_frame_ptr   = 1;
+    *(AVFrame *)data = ctx->avframe;
 
     return expected_fr_size;
 }
 
 AVCodec ff_amrwb_decoder = {
     .name           = "amrwb",
-    .type           = CODEC_TYPE_AUDIO,
+    .type           = AVMEDIA_TYPE_AUDIO,
     .id             = CODEC_ID_AMR_WB,
     .priv_data_size = sizeof(AMRWBContext),
     .init           = amrwb_decode_init,
     .decode         = amrwb_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name      = NULL_IF_CONFIG_SMALL("Adaptive Multi-Rate WideBand"),
-    .sample_fmts    = (enum AVSampleFormat[]){SAMPLE_FMT_FLT,SAMPLE_FMT_NONE},
+    .sample_fmts    = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_FLT,AV_SAMPLE_FMT_NONE},
 };

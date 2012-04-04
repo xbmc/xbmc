@@ -19,8 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/mathematics.h"
 #include "avformat.h"
 #include "ffmeta.h"
+#include "internal.h"
+#include "libavutil/dict.h"
 
 static int probe(AVProbeData *p)
 {
@@ -29,17 +32,17 @@ static int probe(AVProbeData *p)
     return 0;
 }
 
-static void get_line(ByteIOContext *s, uint8_t *buf, int size)
+static void get_line(AVIOContext *s, uint8_t *buf, int size)
 {
     do {
         uint8_t c;
         int i = 0;
 
-        while ((c = get_byte(s))) {
+        while ((c = avio_r8(s))) {
             if (c == '\\') {
                 if (i < size - 1)
                     buf[i++] = c;
-                c = get_byte(s);
+                c = avio_r8(s);
             } else if (c == '\n')
                 break;
 
@@ -60,19 +63,19 @@ static AVChapter *read_chapter(AVFormatContext *s)
 
     if (sscanf(line, "TIMEBASE=%d/%d", &tb.num, &tb.den))
         get_line(s->pb, line, sizeof(line));
-    if (!sscanf(line, "START=%lld", &start)) {
+    if (!sscanf(line, "START=%"SCNd64, &start)) {
         av_log(s, AV_LOG_ERROR, "Expected chapter start timestamp, found %s.\n", line);
         start = (s->nb_chapters && s->chapters[s->nb_chapters - 1]->end != AV_NOPTS_VALUE) ?
                  s->chapters[s->nb_chapters - 1]->end : 0;
     } else
         get_line(s->pb, line, sizeof(line));
 
-    if (!sscanf(line, "END=%lld", &end)) {
+    if (!sscanf(line, "END=%"SCNd64, &end)) {
         av_log(s, AV_LOG_ERROR, "Expected chapter end timestamp, found %s.\n", line);
         end = AV_NOPTS_VALUE;
     }
 
-    return ff_new_chapter(s, s->nb_chapters, tb, start, end, NULL);
+    return avpriv_new_chapter(s, s->nb_chapters, tb, start, end, NULL);
 }
 
 static uint8_t *unescape(uint8_t *buf, int size)
@@ -92,7 +95,7 @@ static uint8_t *unescape(uint8_t *buf, int size)
     return ret;
 }
 
-static int read_tag(uint8_t *line, AVMetadata **m)
+static int read_tag(uint8_t *line, AVDictionary **m)
 {
     uint8_t *key, *value, *p = line;
 
@@ -116,20 +119,20 @@ static int read_tag(uint8_t *line, AVMetadata **m)
         return AVERROR(ENOMEM);
     }
 
-    av_metadata_set2(m, key, value, AV_METADATA_DONT_STRDUP_KEY | AV_METADATA_DONT_STRDUP_VAL);
+    av_dict_set(m, key, value, AV_DICT_DONT_STRDUP_KEY | AV_DICT_DONT_STRDUP_VAL);
     return 0;
 }
 
 static int read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-    AVMetadata **m = &s->metadata;
+    AVDictionary **m = &s->metadata;
     uint8_t line[1024];
 
     while(!url_feof(s->pb)) {
         get_line(s->pb, line, sizeof(line));
 
         if (!memcmp(line, ID_STREAM, strlen(ID_STREAM))) {
-            AVStream *st = av_new_stream(s, 0);
+            AVStream *st = avformat_new_stream(s, NULL);
 
             if (!st)
                 return -1;

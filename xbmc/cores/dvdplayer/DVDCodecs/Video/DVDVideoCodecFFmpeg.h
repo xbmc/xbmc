@@ -68,27 +68,36 @@ public:
   {
     SAFE_RELEASE(m_pHardware);
     m_pHardware = hardware;
-    m_name += "-";
-    m_name += m_pHardware->Name();
+    UpdateName();
   }
 
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
 
-  int  FilterOpen(const CStdString& filters);
+  int  FilterOpen(const CStdString& filters, bool scale);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
+
+  void UpdateName()
+  {
+    if(m_pCodecContext->codec->name)
+      m_name = CStdString("ff-") + m_pCodecContext->codec->name;
+    else
+      m_name = "ffmpeg";
+
+    if(m_pHardware)
+      m_name += "-" + m_pHardware->Name();
+  }
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  AVPicture* m_pConvertFrame;
   CStdString       m_filters;
   CStdString       m_filters_next;
   AVFilterGraph*   m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
-  AVFilterLink*    m_pFilterLink;
+  AVFilterBufferRef* m_pBufferRef;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
@@ -109,4 +118,5 @@ protected:
   int m_iLastKeyframe;
   double m_dts;
   bool   m_started;
+  std::vector<PixelFormat> m_formats;
 };

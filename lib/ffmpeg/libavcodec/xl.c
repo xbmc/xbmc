@@ -60,7 +60,7 @@ static int decode_frame(AVCodecContext *avctx,
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
-    p->pict_type= FF_I_TYPE;
+    p->pict_type= AV_PICTURE_TYPE_I;
     p->key_frame= 1;
 
     Y = a->pic.data[0];
@@ -68,6 +68,12 @@ static int decode_frame(AVCodecContext *avctx,
     V = a->pic.data[2];
 
     stride = avctx->width - 4;
+
+    if (buf_size < avctx->width * avctx->height) {
+        av_log(avctx, AV_LOG_ERROR, "Packet is too small\n");
+        return AVERROR_INVALIDDATA;
+    }
+
     for (i = 0; i < avctx->height; i++) {
         /* lines are stored in reversed order */
         buf += stride;
@@ -121,8 +127,9 @@ static int decode_frame(AVCodecContext *avctx,
 }
 
 static av_cold int decode_init(AVCodecContext *avctx){
-//    VideoXLContext * const a = avctx->priv_data;
+    VideoXLContext * const a = avctx->priv_data;
 
+    avcodec_get_frame_defaults(&a->pic);
     avctx->pix_fmt= PIX_FMT_YUV411P;
 
     return 0;
@@ -139,14 +146,13 @@ static av_cold int decode_end(AVCodecContext *avctx){
 }
 
 AVCodec ff_xl_decoder = {
-    "xl",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_VIXL,
-    sizeof(VideoXLContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "xl",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_VIXL,
+    .priv_data_size = sizeof(VideoXLContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Miro VideoXL"),
 };

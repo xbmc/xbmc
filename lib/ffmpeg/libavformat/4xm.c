@@ -28,7 +28,9 @@
  */
 
 #include "libavutil/intreadwrite.h"
+#include "libavutil/intfloat.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define     RIFF_TAG MKTAG('R', 'I', 'F', 'F')
 #define  FOURXMV_TAG MKTAG('4', 'X', 'M', 'V')
@@ -54,11 +56,11 @@
 #define strk_SIZE 0x28
 
 #define GET_LIST_HEADER() \
-    fourcc_tag = get_le32(pb); \
-    size = get_le32(pb); \
+    fourcc_tag = avio_rl32(pb); \
+    size = avio_rl32(pb); \
     if (fourcc_tag != LIST_TAG) \
         return AVERROR_INVALIDDATA; \
-    fourcc_tag = get_le32(pb);
+    fourcc_tag = avio_rl32(pb);
 
 typedef struct AudioTrack {
     int sample_rate;
@@ -92,7 +94,7 @@ static int fourxm_probe(AVProbeData *p)
 static int fourxm_read_header(AVFormatContext *s,
                               AVFormatParameters *ap)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     unsigned int fourcc_tag;
     unsigned int size;
     int header_size;
@@ -106,7 +108,7 @@ static int fourxm_read_header(AVFormatContext *s,
     fourxm->fps = 1.0;
 
     /* skip the first 3 32-bit numbers */
-    url_fseek(pb, 12, SEEK_CUR);
+    avio_skip(pb, 12);
 
     /* check for LIST-HEAD */
     GET_LIST_HEADER();
@@ -118,7 +120,7 @@ static int fourxm_read_header(AVFormatContext *s,
     header = av_malloc(header_size);
     if (!header)
         return AVERROR(ENOMEM);
-    if (get_buffer(pb, header, header_size) != header_size){
+    if (avio_read(pb, header, header_size) != header_size){
         av_free(header);
         return AVERROR(EIO);
     }
@@ -129,7 +131,7 @@ static int fourxm_read_header(AVFormatContext *s,
         size = AV_RL32(&header[i + 4]);
 
         if (fourcc_tag == std__TAG) {
-            fourxm->fps = av_int2flt(AV_RL32(&header[i + 12]));
+            fourxm->fps = av_int2float(AV_RL32(&header[i + 12]));
         } else if (fourcc_tag == vtrk_TAG) {
             /* check that there is enough data */
             if (size != vtrk_SIZE) {
@@ -140,12 +142,12 @@ static int fourxm_read_header(AVFormatContext *s,
             fourxm->height = AV_RL32(&header[i + 40]);
 
             /* allocate a new AVStream */
-            st = av_new_stream(s, 0);
+            st = avformat_new_stream(s, NULL);
             if (!st){
                 ret= AVERROR(ENOMEM);
                 goto fail;
             }
-            av_set_pts_info(st, 60, 1, fourxm->fps);
+            avpriv_set_pts_info(st, 60, 1, fourxm->fps);
 
             fourxm->video_stream_index = st->index;
 
@@ -172,13 +174,16 @@ static int fourxm_read_header(AVFormatContext *s,
                 goto fail;
             }
             if (current_track + 1 > fourxm->track_count) {
-                fourxm->track_count = current_track + 1;
-                fourxm->tracks = av_realloc(fourxm->tracks,
-                    fourxm->track_count * sizeof(AudioTrack));
+                fourxm->tracks = av_realloc_f(fourxm->tracks,
+                                              sizeof(AudioTrack),
+                                              current_track + 1);
                 if (!fourxm->tracks) {
-                    ret=  AVERROR(ENOMEM);
+                    ret = AVERROR(ENOMEM);
                     goto fail;
                 }
+                memset(&fourxm->tracks[fourxm->track_count], 0,
+                       sizeof(AudioTrack) * (current_track + 1 - fourxm->track_count));
+                fourxm->track_count = current_track + 1;
             }
             fourxm->tracks[current_track].adpcm       = AV_RL32(&header[i + 12]);
             fourxm->tracks[current_track].channels    = AV_RL32(&header[i + 36]);
@@ -195,13 +200,14 @@ static int fourxm_read_header(AVFormatContext *s,
             i += 8 + size;
 
             /* allocate a new AVStream */
-            st = av_new_stream(s, current_track);
+            st = avformat_new_stream(s, NULL);
             if (!st){
                 ret= AVERROR(ENOMEM);
                 goto fail;
             }
 
-            av_set_pts_info(st, 60, 1, fourxm->tracks[current_track].sample_rate);
+            st->id = current_track;
+            avpriv_set_pts_info(st, 60, 1, fourxm->tracks[current_track].sample_rate);
 
             fourxm->tracks[current_track].stream_index = st->index;
 
@@ -244,9 +250,9 @@ static int fourxm_read_packet(AVFormatContext *s,
                               AVPacket *pkt)
 {
     FourxmDemuxContext *fourxm = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     unsigned int fourcc_tag;
-    unsigned int size, out_size;
+    unsigned int size;
     int ret = 0;
     unsigned int track_number;
     int packet_read = 0;
@@ -255,7 +261,7 @@ static int fourxm_read_packet(AVFormatContext *s,
 
     while (!packet_read) {
 
-        if ((ret = get_buffer(s->pb, header, 8)) < 0)
+        if ((ret = avio_read(s->pb, header, 8)) < 0)
             return ret;
         fourcc_tag = AV_RL32(&header[0]);
         size = AV_RL32(&header[4]);
@@ -268,7 +274,7 @@ static int fourxm_read_packet(AVFormatContext *s,
             fourxm->video_pts ++;
 
             /* skip the LIST-* tag and move on to the next fourcc */
-            get_le32(pb);
+            avio_rl32(pb);
             break;
 
         case ifrm_TAG:
@@ -283,9 +289,9 @@ static int fourxm_read_packet(AVFormatContext *s,
                 return AVERROR(EIO);
             pkt->stream_index = fourxm->video_stream_index;
             pkt->pts = fourxm->video_pts;
-            pkt->pos = url_ftell(s->pb);
+            pkt->pos = avio_tell(s->pb);
             memcpy(pkt->data, header, 8);
-            ret = get_buffer(s->pb, &pkt->data[8], size);
+            ret = avio_read(s->pb, &pkt->data[8], size);
 
             if (ret < 0){
                 av_free_packet(pkt);
@@ -294,8 +300,8 @@ static int fourxm_read_packet(AVFormatContext *s,
             break;
 
         case snd__TAG:
-            track_number = get_le32(pb);
-            out_size= get_le32(pb);
+            track_number = avio_rl32(pb);
+            avio_skip(pb, 4);
             size-=8;
 
             if (track_number < fourxm->track_count && fourxm->tracks[track_number].channels>0) {
@@ -322,12 +328,12 @@ static int fourxm_read_packet(AVFormatContext *s,
                 fourxm->tracks[track_number].audio_pts += audio_frame_count;
 
             } else {
-                url_fseek(pb, size, SEEK_CUR);
+                avio_skip(pb, size);
             }
             break;
 
         default:
-            url_fseek(pb, size, SEEK_CUR);
+            avio_skip(pb, size);
             break;
         }
     }
@@ -344,11 +350,11 @@ static int fourxm_read_close(AVFormatContext *s)
 }
 
 AVInputFormat ff_fourxm_demuxer = {
-    "4xm",
-    NULL_IF_CONFIG_SMALL("4X Technologies format"),
-    sizeof(FourxmDemuxContext),
-    fourxm_probe,
-    fourxm_read_header,
-    fourxm_read_packet,
-    fourxm_read_close,
+    .name           = "4xm",
+    .long_name      = NULL_IF_CONFIG_SMALL("4X Technologies format"),
+    .priv_data_size = sizeof(FourxmDemuxContext),
+    .read_probe     = fourxm_probe,
+    .read_header    = fourxm_read_header,
+    .read_packet    = fourxm_read_packet,
+    .read_close     = fourxm_read_close,
 };

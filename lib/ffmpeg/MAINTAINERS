@@ -4,6 +4,19 @@ FFmpeg maintainers
 Below is a list of the people maintaining different parts of the
 FFmpeg code.
 
+Please try to keep entries where you are the maintainer upto date!
+
+Names in () mean that the maintainer currently has no time to maintain the code.
+A CC after the name means that the maintainer prefers to be CC-ed on patches
+and related discussions.
+
+
+Project Leader
+==============
+
+Michael Niedermayer
+  final design decisions
+
 
 Applications
 ============
@@ -12,7 +25,7 @@ ffmpeg:
   ffmpeg.c                              Michael Niedermayer
 
 ffplay:
-  ffplay.c                              Michael Niedermayer
+  ffplay.c                              Marton Balint
 
 ffprobe:
   ffprobe.c                             Stefano Sabatini
@@ -31,13 +44,13 @@ Miscellaneous Areas
 ===================
 
 documentation                           Mike Melanson
-website                                 Robert Swain
+website                                 Robert Swain, Lou Logan
 build system (configure,Makefiles)      Diego Biurrun, Mans Rullgard
-project server                          Diego Biurrun, Mans Rullgard
-mailinglists                            Michael Niedermayer, Baptiste Coudurier
+project server                          Árpád Gereöffy, Michael Niedermayer, Reimar Döffinger
+mailinglists                            Michael Niedermayer, Baptiste Coudurier, Lou Logan
 presets                                 Robert Swain
 metadata subsystem                      Aurelien Jacobs
-release management                      Diego Biurrun, Reinhard Tartler
+release management                      Michael Niedermayer
 
 
 libavutil
@@ -74,6 +87,8 @@ Generic Parts:
     bitstream.c, bitstream.h            Michael Niedermayer
   CABAC:
     cabac.h, cabac.c                    Michael Niedermayer
+  codec names:
+    codec_names.sh                      Nicolas George
   DSP utilities:
     dsputils.c, dsputils.h              Michael Niedermayer
   entropy coding:
@@ -118,6 +133,7 @@ Codecs:
   cinepak.c                             Roberto Togni
   cljr                                  Alex Beregszaszi
   cook.c, cookdata.h                    Benjamin Larsson
+  crystalhd.c                           Philip Langdale
   cscd.c                                Reimar Doeffinger
   dca.c                                 Kostya Shishkov, Benjamin Larsson
   dnxhd*                                Baptiste Coudurier
@@ -126,6 +142,7 @@ Codecs:
   dv.c                                  Roman Shaposhnik
   eacmv*, eaidct*, eat*                 Peter Ross
   ffv1.c                                Michael Niedermayer
+  ffwavesynth.c                         Nicolas George
   flac*                                 Justin Ruggles
   flashsv*                              Benjamin Larsson
   flicvideo.c                           Mike Melanson
@@ -143,11 +160,14 @@ Codecs:
   interplayvideo.c                      Mike Melanson
   ivi*                                  Kostya Shishkov
   jpeg_ls.c                             Kostya Shishkov
+  jvdec.c                               Peter Ross
   kmvc.c                                Kostya Shishkov
   lcl*.c                                Roberto Togni, Reimar Doeffinger
+  libcelt_dec.c                         Nicolas George
   libgsm.c                              Michel Bardiaux
   libdirac*                             David Conrad
   libopenjpeg.c                         Jaikrishnan Menon
+  libopenjpegenc.c                      Michael Bradshaw
   libschroedinger*                      David Conrad
   libspeexdec.c                         Justin Ruggles
   libtheoraenc.c                        David Conrad
@@ -190,7 +210,7 @@ Codecs:
   smc.c                                 Mike Melanson
   snow.c                                Michael Niedermayer, Loren Merritt
   sonic.c                               Alex Beregszaszi
-  srtdec.c                              Aurelien Jacobs
+  srt*                                  Aurelien Jacobs
   sunrast.c                             Ivo van Poorten
   svq3.c                                Michael Niedermayer
   targa.c                               Kostya Shishkov
@@ -202,7 +222,9 @@ Codecs:
   tta.c                                 Alex Beregszaszi, Jaikrishnan Menon
   txd.c                                 Ivo van Poorten
   ulti*                                 Kostya Shishkov
+  v410*.c                               Derek Buitenhuis
   vb.c                                  Kostya Shishkov
+  vble.c                                Derek Buitenhuis
   vc1*                                  Kostya Shishkov
   vcr1.c                                Michael Niedermayer
   vmnc.c                                Kostya Shishkov
@@ -224,8 +246,11 @@ Codecs:
   zmbv*                                 Kostya Shishkov
 
 Hardware acceleration:
+  crystalhd.c                           Philip Langdale
   dxva2*                                Laurent Aimar
+  libstagefright.cpp                    Mohamed Naufal
   vaapi*                                Gwenole Beauchesne
+  vda*                                  Sebastien Zwickert
   vdpau*                                Carl Eugen Hoyos
 
 
@@ -238,6 +263,18 @@ libavdevice
   libdc1394.c                           Roman Shaposhnik
   v4l2.c                                Luca Abeni
   vfwcap.c                              Ramiro Polla
+
+
+libavfilter
+===========
+
+Video filters:
+  graphdump.c                           Nicolas George
+  af_amerge.c                           Nicolas George
+  af_astreamsync.c                      Nicolas George
+  af_pan.c                              Nicolas George
+  vsrc_mandelbrot.c                     Michael Niedermayer
+  vf_yadif.c                            Michael Niedermayer
 
 
 libavformat
@@ -276,6 +313,8 @@ Muxers/Demuxers:
   ipmovie.c                             Mike Melanson
   img2.c                                Michael Niedermayer
   iss.c                                 Stefan Gehrer
+  jvdec.c                               Peter Ross
+  libmodplug.c                          Clément Bœsch
   libnut.c                              Oded Shimon
   lmlm4.c                               Ivo van Poorten
   lxfdec.c                              Tomas Härdin
@@ -283,6 +322,7 @@ Muxers/Demuxers:
   matroskadec.c                         Aurelien Jacobs
   matroskaenc.c                         David Conrad
   metadata*                             Aurelien Jacobs
+  microdvd*                             Aurelien Jacobs
   mm.c                                  Peter Ross
   mov.c                                 Michael Niedermayer, Baptiste Coudurier
   movenc.c                              Michael Niedermayer, Baptiste Coudurier
@@ -293,6 +333,7 @@ Muxers/Demuxers:
   msnwc_tcp.c                           Ramiro Polla
   mtv.c                                 Reynaldo H. Verdejo Pinochet
   mxf*                                  Baptiste Coudurier
+  mxfdec.c                              Tomas Härdin
   nsvdec.c                              Francois Revol
   nut.c                                 Michael Niedermayer
   nuv.c                                 Reimar Doeffinger
@@ -312,6 +353,7 @@ Muxers/Demuxers:
   rtpdec_asf.*                          Ronald S. Bultje
   rtpenc_mpv.*, rtpenc_aac.*            Martin Storsjo
   rtsp.c                                Luca Barbato
+  sbgdec.c                              Nicolas George
   sdp.c                                 Martin Storsjo
   segafilm.c                            Mike Melanson
   siff.c                                Kostya Shishkov
@@ -350,8 +392,15 @@ Sparc                                   Roman Shaposhnik
 x86                                     Michael Niedermayer
 
 
-GnuPG Fingerprints of maintainers and others who have svn write access
-======================================================================
+Releases
+========
+
+0.9                                     Michael Niedermayer
+
+
+
+GnuPG Fingerprints of maintainers and contributors
+==================================================
 
 Anssi Hannula                 1A92 FF42 2DD9 8D2E 8AF7 65A9 4278 C520 513D F3CB
 Anton Khirnov                 6D0C 6625 56F8 65D1 E5F5 814B B50A 1241 C067 07AB
@@ -361,12 +410,15 @@ Ben Littler                   3EE3 3723 E560 3214 A8CD 4DEB 2CDB FCE7 768C 8D2C
 Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
 Daniel Verkamp                78A6 07ED 782C 653E C628 B8B9 F0EB 8DD8 2F0E 21C7
 Diego Biurrun                 8227 1E31 B6D9 4994 7427 E220 9CAE D6CC 4757 FCC5
+Gwenole Beauchesne            2E63 B3A6 3E44 37E2 017D 2704 53C7 6266 B153 99C4
 Jaikrishnan Menon             61A1 F09F 01C9 2D45 78E1 C862 25DC 8831 AF70 D368
 Justin Ruggles                3136 ECC0 C10D 6C04 5F43 CA29 FCBE CD2A 3787 1EBF
 Loren Merritt                 ABD9 08F4 C920 3F65 D8BE 35D7 1540 DAA7 060F 56DE
+Lou Logan                     7D68 DC73 CBEF EABB 671A B6CF 621C 2E28 82F8 DC3A
 Luca Barbato                  6677 4209 213C 8843 5B67 29E7 E84C 78C2 84E9 0E34
 Michael Niedermayer           9FF2 128B 147E F673 0BAD F133 611E C787 040B 0FAB
-Panagiotis Issaris            515C E262 10A8 FDCE 5481 7B9C 3AD7 D9A5 071D B3A9
+Nicolas George                24CE 01CE 9ACC 5CEB 74D8 8D9D B063 D997 36E5 4C93
+Panagiotis Issaris            6571 13A3 33D9 3726 F728 AA98 F643 B12E ECF3 E029
 Peter Ross                    A907 E02F A6E5 0CD2 34CD 20D2 6760 79C5 AC40 DD6B
 Reimar Döffinger              C61D 16E5 9E2C D10C 8958 38A4 0899 A2B9 06D4 D9C7
 Reinhard Tartler              9300 5DC2 7E87 6C37 ED7B CA9A 9808 3544 9453 48A4

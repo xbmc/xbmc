@@ -23,7 +23,6 @@
 
 #include "DVDAudioCodec.h"
 #include "DllAvCodec.h"
-#include "DllAvCore.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
 
@@ -51,7 +50,7 @@ protected:
   enum AVSampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
 
-  BYTE *m_pBuffer1;
+  AVFrame* m_pFrame1;
   int   m_iBufferSize1;
 
   BYTE *m_pBuffer2;
@@ -64,7 +63,6 @@ protected:
   int64_t m_layout;
 
   DllAvCodec m_dllAvCodec;
-  DllAvCore m_dllAvCore;
   DllAvUtil m_dllAvUtil;
 
   void BuildChannelMap();

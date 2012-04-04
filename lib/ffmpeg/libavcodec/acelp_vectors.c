@@ -93,16 +93,6 @@ const uint8_t ff_fc_4pulses_8bits_track_4[32] =
     78, 79,
 };
 
-#if 0
-static uint8_t gray_decode[32] =
-{
-    0,  1,  3,  2,  7,  6,  4,  5,
-   15, 14, 12, 13,  8,  9, 11, 10,
-   31, 30, 28, 29, 24, 25, 27, 26,
-   16, 17, 19, 18, 23, 22, 20, 21
-};
-#endif
-
 const float ff_pow_0_7[10] = {
     0.700000, 0.490000, 0.343000, 0.240100, 0.168070,
     0.117649, 0.082354, 0.057648, 0.040354, 0.028248
@@ -247,11 +237,12 @@ void ff_set_fixed_vector(float *out, const AMRFixed *in, float scale, int size)
         int x   = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
         float y = in->y[i] * scale;
 
-        do {
-            out[x] += y;
-            y *= in->pitch_fac;
-            x += in->pitch_lag;
-        } while (x < size && repeats);
+        if (in->pitch_lag > 0)
+            do {
+                out[x] += y;
+                y *= in->pitch_fac;
+                x += in->pitch_lag;
+            } while (x < size && repeats);
     }
 }
 
@@ -262,9 +253,10 @@ void ff_clear_fixed_vector(float *out, const AMRFixed *in, int size)
     for (i=0; i < in->n; i++) {
         int x  = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
 
-        do {
-            out[x] = 0.0;
-            x += in->pitch_lag;
-        } while (x < size && repeats);
+        if (in->pitch_lag > 0)
+            do {
+                out[x] = 0.0;
+                x += in->pitch_lag;
+            } while (x < size && repeats);
     }
 }

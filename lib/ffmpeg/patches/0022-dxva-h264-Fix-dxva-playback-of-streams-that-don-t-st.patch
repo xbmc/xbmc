@@ -1,0 +1,75 @@
+From 3b6417ff1e86c2aa72fc5360f67be2db8b83b80d Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Wed, 5 Oct 2011 13:13:25 -0400
+Subject: [PATCH 22/24] dxva-h264 Fix dxva playback of streams that don't
+ start with an I-Frame.
+
+GPUs with ATI UVDa and UVD+ have trouble when decoding doesn't start on an
+I-Frame, and they don't recover on later I-Frames.
+
+The variable to track the first I-Frame is in H264Context so that it can be
+reset by code in h264 when initializing the context or flushing.
+
+credits isidrogar, see ticket #11772.
+sample on team ftp, samples/11772/CSI_ New York - TV3 - 2008-09-16_1.ts
+---
+ libavcodec/dxva2_h264.c |    8 ++++++++
+ libavcodec/h264.c       |    2 ++
+ libavcodec/h264.h       |    2 ++
+ 3 files changed, 12 insertions(+)
+
+diff --git a/libavcodec/dxva2_h264.c b/libavcodec/dxva2_h264.c
+index af91e02..b7e0251 100644
+--- a/libavcodec/dxva2_h264.c
++++ b/libavcodec/dxva2_h264.c
+@@ -432,6 +432,14 @@ static int end_frame(AVCodecContext *avctx)
+ 
+     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
+         return -1;
++
++    // Wait for an I-frame before start decoding. Workaround for ATI UVD and UVD+ GPUs
++    if (!h->got_first_iframe) {
++        if (!(ctx_pic->pp.wBitFields & (1 << 15)))
++            return -1;
++        h->got_first_iframe = 1;
++    }
++
+     return ff_dxva2_common_end_frame(avctx, s,
+                                      &ctx_pic->pp, sizeof(ctx_pic->pp),
+                                      &ctx_pic->qm, sizeof(ctx_pic->qm),
+diff --git a/libavcodec/h264.c b/libavcodec/h264.c
+index d010b55..98c7a5d 100644
+--- a/libavcodec/h264.c
++++ b/libavcodec/h264.c
+@@ -2372,6 +2372,7 @@ static void flush_dpb(AVCodecContext *avctx){
+             h->delayed_pic[i]->f.reference = 0;
+         h->delayed_pic[i]= NULL;
+     }
++	h->got_first_iframe = 0;
+     h->outputed_poc=h->next_outputed_poc= INT_MIN;
+     h->prev_interlaced_frame = 1;
+     idr(h);
+@@ -2819,6 +2820,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
+         }
+         s->first_field = 0;
+         h->prev_interlaced_frame = 1;
++        h->got_first_iframe = 0;
+ 
+         init_scan_tables(h);
+         if (ff_h264_alloc_tables(h) < 0) {
+diff --git a/libavcodec/h264.h b/libavcodec/h264.h
+index d0dfca3..f4df997 100644
+--- a/libavcodec/h264.h
++++ b/libavcodec/h264.h
+@@ -584,6 +584,8 @@ typedef struct H264Context{
+     int luma_weight_flag[2];   ///< 7.4.3.2 luma_weight_lX_flag
+     int chroma_weight_flag[2]; ///< 7.4.3.2 chroma_weight_lX_flag
+ 
++    int got_first_iframe;
++
+     // Timestamp stuff
+     int sei_buffering_period_present;  ///< Buffering period SEI flag
+     int initial_cpb_removal_delay[32]; ///< Initial timestamps for CPBs
+-- 
+1.7.9.4
+

@@ -92,7 +92,7 @@ public:
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
 
 // We call into this library directly.
 class DllSwScale : public DllDynamic, public DllSwScaleInterface

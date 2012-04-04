@@ -26,13 +26,14 @@
 
 #include "avcodec.h"
 #include "dsputil.h"
+#include "rv34dsp.h"
 
 #define RV30_LOWPASS(OPNAME, OP) \
 static av_unused void OPNAME ## rv30_tpel8_h_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, const int C1, const int C2){\
-    const int h=8;\
+    const int h = 8;\
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     int i;\
-    for(i=0; i<h; i++)\
+    for(i = 0; i < h; i++)\
     {\
         OP(dst[0], (-(src[-1]+src[2]) + src[0]*C1 + src[1]*C2 + 8)>>4);\
         OP(dst[1], (-(src[ 0]+src[3]) + src[1]*C1 + src[2]*C2 + 8)>>4);\
@@ -42,28 +43,28 @@ static av_unused void OPNAME ## rv30_tpel8_h_lowpass(uint8_t *dst, uint8_t *src,
         OP(dst[5], (-(src[ 4]+src[7]) + src[5]*C1 + src[6]*C2 + 8)>>4);\
         OP(dst[6], (-(src[ 5]+src[8]) + src[6]*C1 + src[7]*C2 + 8)>>4);\
         OP(dst[7], (-(src[ 6]+src[9]) + src[7]*C1 + src[8]*C2 + 8)>>4);\
-        dst+=dstStride;\
-        src+=srcStride;\
+        dst += dstStride;\
+        src += srcStride;\
     }\
 }\
 \
 static void OPNAME ## rv30_tpel8_v_lowpass(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, const int C1, const int C2){\
-    const int w=8;\
+    const int w = 8;\
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;\
     int i;\
-    for(i=0; i<w; i++)\
+    for(i = 0; i < w; i++)\
     {\
-        const int srcA= src[-1*srcStride];\
-        const int src0= src[0 *srcStride];\
-        const int src1= src[1 *srcStride];\
-        const int src2= src[2 *srcStride];\
-        const int src3= src[3 *srcStride];\
-        const int src4= src[4 *srcStride];\
-        const int src5= src[5 *srcStride];\
-        const int src6= src[6 *srcStride];\
-        const int src7= src[7 *srcStride];\
-        const int src8= src[8 *srcStride];\
-        const int src9= src[9 *srcStride];\
+        const int srcA = src[-1*srcStride];\
+        const int src0 = src[0 *srcStride];\
+        const int src1 = src[1 *srcStride];\
+        const int src2 = src[2 *srcStride];\
+        const int src3 = src[3 *srcStride];\
+        const int src4 = src[4 *srcStride];\
+        const int src5 = src[5 *srcStride];\
+        const int src6 = src[6 *srcStride];\
+        const int src7 = src[7 *srcStride];\
+        const int src8 = src[8 *srcStride];\
+        const int src9 = src[9 *srcStride];\
         OP(dst[0*dstStride], (-(srcA+src2) + src0*C1 + src1*C2 + 8)>>4);\
         OP(dst[1*dstStride], (-(src0+src3) + src1*C1 + src2*C2 + 8)>>4);\
         OP(dst[2*dstStride], (-(src1+src4) + src2*C1 + src3*C2 + 8)>>4);\
@@ -251,41 +252,49 @@ RV30_MC(put_, 16)
 RV30_MC(avg_, 8)
 RV30_MC(avg_, 16)
 
-av_cold void ff_rv30dsp_init(DSPContext* c, AVCodecContext *avctx) {
-    c->put_rv30_tpel_pixels_tab[0][ 0] = c->put_h264_qpel_pixels_tab[0][0];
-    c->put_rv30_tpel_pixels_tab[0][ 1] = put_rv30_tpel16_mc10_c;
-    c->put_rv30_tpel_pixels_tab[0][ 2] = put_rv30_tpel16_mc20_c;
-    c->put_rv30_tpel_pixels_tab[0][ 4] = put_rv30_tpel16_mc01_c;
-    c->put_rv30_tpel_pixels_tab[0][ 5] = put_rv30_tpel16_mc11_c;
-    c->put_rv30_tpel_pixels_tab[0][ 6] = put_rv30_tpel16_mc21_c;
-    c->put_rv30_tpel_pixels_tab[0][ 8] = put_rv30_tpel16_mc02_c;
-    c->put_rv30_tpel_pixels_tab[0][ 9] = put_rv30_tpel16_mc12_c;
-    c->put_rv30_tpel_pixels_tab[0][10] = put_rv30_tpel16_mc22_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 0] = c->avg_h264_qpel_pixels_tab[0][0];
-    c->avg_rv30_tpel_pixels_tab[0][ 1] = avg_rv30_tpel16_mc10_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 2] = avg_rv30_tpel16_mc20_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 4] = avg_rv30_tpel16_mc01_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 5] = avg_rv30_tpel16_mc11_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 6] = avg_rv30_tpel16_mc21_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 8] = avg_rv30_tpel16_mc02_c;
-    c->avg_rv30_tpel_pixels_tab[0][ 9] = avg_rv30_tpel16_mc12_c;
-    c->avg_rv30_tpel_pixels_tab[0][10] = avg_rv30_tpel16_mc22_c;
-    c->put_rv30_tpel_pixels_tab[1][ 0] = c->put_h264_qpel_pixels_tab[1][0];
-    c->put_rv30_tpel_pixels_tab[1][ 1] = put_rv30_tpel8_mc10_c;
-    c->put_rv30_tpel_pixels_tab[1][ 2] = put_rv30_tpel8_mc20_c;
-    c->put_rv30_tpel_pixels_tab[1][ 4] = put_rv30_tpel8_mc01_c;
-    c->put_rv30_tpel_pixels_tab[1][ 5] = put_rv30_tpel8_mc11_c;
-    c->put_rv30_tpel_pixels_tab[1][ 6] = put_rv30_tpel8_mc21_c;
-    c->put_rv30_tpel_pixels_tab[1][ 8] = put_rv30_tpel8_mc02_c;
-    c->put_rv30_tpel_pixels_tab[1][ 9] = put_rv30_tpel8_mc12_c;
-    c->put_rv30_tpel_pixels_tab[1][10] = put_rv30_tpel8_mc22_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 0] = c->avg_h264_qpel_pixels_tab[1][0];
-    c->avg_rv30_tpel_pixels_tab[1][ 1] = avg_rv30_tpel8_mc10_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 2] = avg_rv30_tpel8_mc20_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 4] = avg_rv30_tpel8_mc01_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 5] = avg_rv30_tpel8_mc11_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 6] = avg_rv30_tpel8_mc21_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 8] = avg_rv30_tpel8_mc02_c;
-    c->avg_rv30_tpel_pixels_tab[1][ 9] = avg_rv30_tpel8_mc12_c;
-    c->avg_rv30_tpel_pixels_tab[1][10] = avg_rv30_tpel8_mc22_c;
+av_cold void ff_rv30dsp_init(RV34DSPContext *c, DSPContext* dsp) {
+
+    ff_rv34dsp_init(c, dsp);
+
+    c->put_pixels_tab[0][ 0] = dsp->put_h264_qpel_pixels_tab[0][0];
+    c->put_pixels_tab[0][ 1] = put_rv30_tpel16_mc10_c;
+    c->put_pixels_tab[0][ 2] = put_rv30_tpel16_mc20_c;
+    c->put_pixels_tab[0][ 4] = put_rv30_tpel16_mc01_c;
+    c->put_pixels_tab[0][ 5] = put_rv30_tpel16_mc11_c;
+    c->put_pixels_tab[0][ 6] = put_rv30_tpel16_mc21_c;
+    c->put_pixels_tab[0][ 8] = put_rv30_tpel16_mc02_c;
+    c->put_pixels_tab[0][ 9] = put_rv30_tpel16_mc12_c;
+    c->put_pixels_tab[0][10] = put_rv30_tpel16_mc22_c;
+    c->avg_pixels_tab[0][ 0] = dsp->avg_h264_qpel_pixels_tab[0][0];
+    c->avg_pixels_tab[0][ 1] = avg_rv30_tpel16_mc10_c;
+    c->avg_pixels_tab[0][ 2] = avg_rv30_tpel16_mc20_c;
+    c->avg_pixels_tab[0][ 4] = avg_rv30_tpel16_mc01_c;
+    c->avg_pixels_tab[0][ 5] = avg_rv30_tpel16_mc11_c;
+    c->avg_pixels_tab[0][ 6] = avg_rv30_tpel16_mc21_c;
+    c->avg_pixels_tab[0][ 8] = avg_rv30_tpel16_mc02_c;
+    c->avg_pixels_tab[0][ 9] = avg_rv30_tpel16_mc12_c;
+    c->avg_pixels_tab[0][10] = avg_rv30_tpel16_mc22_c;
+    c->put_pixels_tab[1][ 0] = dsp->put_h264_qpel_pixels_tab[1][0];
+    c->put_pixels_tab[1][ 1] = put_rv30_tpel8_mc10_c;
+    c->put_pixels_tab[1][ 2] = put_rv30_tpel8_mc20_c;
+    c->put_pixels_tab[1][ 4] = put_rv30_tpel8_mc01_c;
+    c->put_pixels_tab[1][ 5] = put_rv30_tpel8_mc11_c;
+    c->put_pixels_tab[1][ 6] = put_rv30_tpel8_mc21_c;
+    c->put_pixels_tab[1][ 8] = put_rv30_tpel8_mc02_c;
+    c->put_pixels_tab[1][ 9] = put_rv30_tpel8_mc12_c;
+    c->put_pixels_tab[1][10] = put_rv30_tpel8_mc22_c;
+    c->avg_pixels_tab[1][ 0] = dsp->avg_h264_qpel_pixels_tab[1][0];
+    c->avg_pixels_tab[1][ 1] = avg_rv30_tpel8_mc10_c;
+    c->avg_pixels_tab[1][ 2] = avg_rv30_tpel8_mc20_c;
+    c->avg_pixels_tab[1][ 4] = avg_rv30_tpel8_mc01_c;
+    c->avg_pixels_tab[1][ 5] = avg_rv30_tpel8_mc11_c;
+    c->avg_pixels_tab[1][ 6] = avg_rv30_tpel8_mc21_c;
+    c->avg_pixels_tab[1][ 8] = avg_rv30_tpel8_mc02_c;
+    c->avg_pixels_tab[1][ 9] = avg_rv30_tpel8_mc12_c;
+    c->avg_pixels_tab[1][10] = avg_rv30_tpel8_mc22_c;
+
+    c->put_chroma_pixels_tab[0] = dsp->put_h264_chroma_pixels_tab[0];
+    c->put_chroma_pixels_tab[1] = dsp->put_h264_chroma_pixels_tab[1];
+    c->avg_chroma_pixels_tab[0] = dsp->avg_h264_chroma_pixels_tab[0];
+    c->avg_chroma_pixels_tab[1] = dsp->avg_h264_chroma_pixels_tab[1];
 }
