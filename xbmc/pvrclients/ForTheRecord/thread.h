@@ -26,7 +26,7 @@
 #include <sys/types.h>
 #include "tools.h"
 #include "utils/StdString.h"
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
 
 class cCondWait {
 private:

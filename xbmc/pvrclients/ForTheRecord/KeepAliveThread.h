@@ -16,20 +16,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "thread.h"
+#include "platform/threads/threads.h"
 
-class CKeepAliveThread : cThread
+class CKeepAliveThread : public PLATFORM::CThread
 {
 public:
   CKeepAliveThread();
   virtual ~CKeepAliveThread(void);
-
-  bool IsThreadRunning() { return Active(); }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return 0; }
-  long StartThread(void) { Start(); return 0; }
-
-
 private:
-  virtual void Action();
+  virtual void *Process(void);
 };
 

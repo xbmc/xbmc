@@ -21,6 +21,9 @@
     <Filter Include="Header Files\tsreader">
       <UniqueIdentifier>{f37aa152-f1e2-4d22-a1b1-34c708ae8562}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\windows">
+      <UniqueIdentifier>{0dc85510-f4cd-4ead-958c-fcb2be5052c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channel.cpp">
@@ -86,16 +89,10 @@
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\thread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\AutoLock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\CriticalSection.cpp">
+    <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -154,17 +151,14 @@
     <ClInclude Include="..\..\lib\tsreader\TSReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\thread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\AutoLock.h">
+    <ClInclude Include="..\..\os-dependent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\CriticalSection.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\windows\os_windows.h">
+      <Filter>Source Files\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,9 +24,11 @@
  */
 
 #include "tools.h"
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
+#include "platform/util/timeutils.h"
 
 using namespace ADDON;
+using namespace PLATFORM;
 
 // --- cTimeMs ---------------------------------------------------------------
 

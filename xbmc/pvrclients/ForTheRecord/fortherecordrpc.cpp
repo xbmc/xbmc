@@ -26,14 +26,13 @@
 
 #include <stdio.h>
 #include <sys/stat.h>
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
 #include "curl/curl.h"
 #include "client.h"
 #include "pvrclient-fortherecord.h"
 #include "utils.h"
 #include "fortherecordrpc.h"
-#include "CriticalSection.h"
-#include "AutoLock.h"
+#include "platform/threads/mutex.h"
 
 using namespace ADDON;
 
@@ -104,7 +103,7 @@ static int my_curl_debug_callback(CURL* curl, curl_infotype infotype, char* data
  */
 namespace ForTheRecord
 {
-  CCriticalSection communication_mutex;
+  PLATFORM::CMutex communication_mutex;
 
   /**
    * \brief Do some internal housekeeping at the start
@@ -112,7 +111,6 @@ namespace ForTheRecord
   void Initialize(void)
   {
     // due to lack of static constructors...
-    communication_mutex.Initialize();
     curl_global_init(CURL_GLOBAL_ALL);
   }
 
@@ -130,7 +128,7 @@ namespace ForTheRecord
     CURL *curl;
     CURLcode res;
     std::string url = g_szBaseURL + command;
-    CAutoLock critsec(&communication_mutex);
+    PLATFORM::CLockObject critsec(communication_mutex);
 
     XBMC->Log(LOG_DEBUG, "URL: %s\n", url.c_str());
 
@@ -189,7 +187,7 @@ namespace ForTheRecord
     CURL *curl;
     CURLcode res;
     std::string url = g_szBaseURL + command;
-    CAutoLock critsec(&communication_mutex);
+    PLATFORM::CLockObject critsec(communication_mutex);
 
     XBMC->Log(LOG_DEBUG, "URL: %s writing to file %s\n", url.c_str(), filename.c_str());
 

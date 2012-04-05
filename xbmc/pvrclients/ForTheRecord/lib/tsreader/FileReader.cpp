@@ -30,12 +30,11 @@
 
 #include "FileReader.h"
 #include "client.h" //for XBMC->Log
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
+#include <algorithm> //std::min, std::max
+
 #if !defined(TARGET_WINDOWS)
 #include "PlatformInclude.h"
-#include "limits.h"
-#define ERROR_FILENAME_EXCED_RANGE (206)
-#define ERROR_INVALID_NAME (123)
 using namespace XFILE;
 #endif
 
@@ -520,9 +519,9 @@ unsigned long FileReader::setFilePointer(int64_t llDistanceToMove, unsigned long
   GetFileSize(&fileStart, &fileLength);
   fileEnd = fileLength;
   if (dwMoveMethod == FILE_BEGIN)
-    return SetFilePointer((int64_t)min(fileEnd, llDistanceToMove), FILE_BEGIN);
+    return SetFilePointer((int64_t) std::min(fileEnd, llDistanceToMove), FILE_BEGIN);
   else
-    return SetFilePointer((int64_t)max((int64_t)-fileLength, llDistanceToMove), FILE_END);
+    return SetFilePointer((int64_t) std::max((int64_t)-fileLength, llDistanceToMove), FILE_END);
 }
 
 int64_t FileReader::getFilePointer()
