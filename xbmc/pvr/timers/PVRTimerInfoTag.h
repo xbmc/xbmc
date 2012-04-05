@@ -86,7 +86,7 @@ namespace PVR
     const CPVRChannel *   m_channel;
     unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
-    CStdString            m_strGenre;           /*!< @brief genre of the timer */
+    std::vector<std::string> m_genre;           /*!< @brief genre of the timer */
     int                   m_iGenreType;         /*!< @brief genre type of the timer */
     int                   m_iGenreSubType;      /*!< @brief genre subtype of the timer */
 
@@ -145,6 +145,8 @@ namespace PVR
 
     unsigned int MarginEnd(void) const { return m_iMarginEnd; }
     void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
+
+    bool SupportsFolders() const;
 
     /*!
      * @brief Show a notification for this timer in the UI

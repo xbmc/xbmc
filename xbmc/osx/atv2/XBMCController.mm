@@ -25,6 +25,7 @@
 #import "WinEventsIOS.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -34,6 +35,12 @@
 #import "XBMCController.h"
 #import "XBMCEAGLView.h"
 #import "XBMCDebugHelpers.h"
+
+// This is defined in Math.h
+#define M_PI   3.14159265358979323846264338327950288   /* pi */
+ 
+// Our conversion definition
+#define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
 
 //start repeating after 0.5s
 #define REPEATED_KEYPRESS_DELAY_S     0.5
@@ -307,6 +314,24 @@ int           m_systemsleepTimeout;
   [super dealloc];
 }
 
+- (void)rotateView:(UIView *)view duration:(NSTimeInterval)duration 
+       curve:(UIViewAnimationCurve)curve degrees:(CGFloat)degrees
+{
+  // Setup the animation
+  [UIView beginAnimations:nil context:NULL];
+  [UIView setAnimationDuration:duration];
+  [UIView setAnimationCurve:curve];
+  [UIView setAnimationBeginsFromCurrentState:YES];
+ 
+  // The transform matrix
+  CGAffineTransform transform = 
+      CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(degrees));
+  view.transform = transform;
+ 
+  // Commit the changes
+  [UIView commitAnimations];
+}
+
 - (void)controlWasActivated
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
@@ -316,7 +341,18 @@ int           m_systemsleepTimeout;
   [self disableSystemSleep];
   [self disableScreenSaver];
   [m_window makeKeyAndVisible];
-  [[[[BRWindow windowList] objectAtIndex:0] content] addControl: m_window];
+
+  //atv2 ios5.1 doesn't like to get our window added as a BRControl
+  //so we better leave it there...
+  if( GetIOSVersion() < (float)5.1 )
+  {
+    [[[[BRWindow windowList] objectAtIndex:0] content] addControl: m_window];
+  }
+  else//instead on ios 5.1 we rotate our window 90degrees ourself (remember ios is portrait based overall)
+  {
+    [self rotateView:m_window duration:0 
+      curve:UIViewAnimationCurveEaseIn degrees:90];
+  }
 
   [m_glView startAnimation];
 }

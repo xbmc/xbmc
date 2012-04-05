@@ -193,7 +193,8 @@ cResponsePacket* cVNSISession::ReadMessage(int iInitialTimeout /*= 10000*/, int 
     dts = ntohll(*(int64_t*)m_streamPacketHeader.dts);
     userDataLength = ntohl(m_streamPacketHeader.userDataLength);
 
-    if(opCodeID == VNSI_STREAM_MUXPKT) {
+    if(opCodeID == VNSI_STREAM_MUXPKT) 
+    {
       DemuxPacket* p = PVR->AllocateDemuxPacket(userDataLength);
       userData = (uint8_t*)p;
       if (userDataLength > 0)
@@ -206,7 +207,8 @@ cResponsePacket* cVNSISession::ReadMessage(int iInitialTimeout /*= 10000*/, int 
         }
       }
     }
-    else if (userDataLength > 0) {
+    else if (userDataLength > 0)
+    {
       userData = (uint8_t*)malloc(userDataLength);
       if (!userData) return NULL;
       if (!readData(userData, userDataLength, iDatapacketTimeout))

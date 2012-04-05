@@ -58,7 +58,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_channel            = NULL;
   m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
   m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
-  m_strGenre           = StringUtils::EmptyString;
   m_iGenreType         = 0;
   m_iGenreSubType      = 0;
   m_StartTime          = CDateTime::GetUTCDateTime();
@@ -85,7 +84,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_iLifetime          = timer.iLifetime;
   m_iMarginStart       = timer.iMarginStart;
   m_iMarginEnd         = timer.iMarginEnd;
-  m_strGenre           = CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
+  m_genre              = StringUtils::Split(CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_iGenreType         = timer.iGenreType;
   m_iGenreSubType      = timer.iGenreSubType;
   m_iEpgId             = -1;
@@ -122,6 +121,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iLifetime          == right.m_iLifetime &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_strTitle           == right.m_strTitle &&
+          m_strDirectory       == right.m_strDirectory &&
           m_iClientId          == right.m_iClientId &&
           m_iMarginStart       == right.m_iMarginStart &&
           m_iMarginEnd         == right.m_iMarginEnd &&
@@ -144,6 +144,7 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iLifetime          = orig.m_iLifetime;
   m_strFileNameAndPath = orig.m_strFileNameAndPath;
   m_strTitle           = orig.m_strTitle;
+  m_strDirectory       = orig.m_strDirectory;
   m_iClientId          = orig.m_iClientId;
   m_iMarginStart       = orig.m_iMarginStart;
   m_iMarginEnd         = orig.m_iMarginEnd;
@@ -334,7 +335,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iMarginEnd        = tag.m_iMarginEnd;
   m_iEpgId            = tag.m_iEpgId;
   m_epgStart          = tag.m_epgStart;
-  m_strGenre          = tag.m_strGenre;
+  m_genre             = tag.m_genre;
   m_iGenreType        = tag.m_iGenreType;
   m_iGenreSubType     = tag.m_iGenreSubType;
   m_strSummary        = tag.m_strSummary;
@@ -382,7 +383,7 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
     {
       m_iEpgId = epgTag->m_iEpgId;
       m_epgStart = epgTag->StartAsUTC();
-      m_strGenre = epgTag->Genre();
+      m_genre = epgTag->Genre();
       m_iGenreType = epgTag->GenreType();
       m_iGenreSubType = epgTag->GenreSubType();
       epgTag->SetTimer(this);
@@ -618,3 +619,9 @@ EPG::CEpgInfoTag *CPVRTimerInfoTag::GetEpgInfoTag(void) const
     return epg->GetTag(-1, m_epgStart);
   return NULL;
 }
+
+bool CPVRTimerInfoTag::SupportsFolders() const
+{
+  return g_PVRClients->GetAddonCapabilities(m_iClientId).bSupportsRecordingFolders;
+}
+

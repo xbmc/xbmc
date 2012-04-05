@@ -41,6 +41,7 @@ using namespace PVR;
 #define CONTROL_TMR_LIFETIME            27
 #define CONTROL_TMR_FIRST_DAY           28
 #define CONTROL_TMR_NAME                29
+#define CONTROL_TMR_DIR                 30
 #define CONTROL_TMR_RADIO               50
 #define CONTROL_TMR_CHNAME_RADIO        51
 
@@ -140,6 +141,10 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
   m_bTimerActive = tag->IsActive();
   AddBool(CONTROL_TMR_ACTIVE, 19074, &m_bTimerActive);
   AddButton(CONTROL_TMR_NAME, 19075, &tag->m_strTitle, true);
+
+  if (tag->SupportsFolders())
+    AddButton(CONTROL_TMR_DIR, 19076, &tag->m_strDirectory, true);
+
   AddBool(CONTROL_TMR_RADIO, 19077, &tag->m_bIsRadio);
 
   /// Channel names
@@ -240,6 +245,8 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
       UpdateSetting(CONTROL_TMR_NAME);
     }
   }
+  if (setting.id == CONTROL_TMR_DIR && CGUIDialogKeyboard::ShowAndGetInput(tag->m_strDirectory, g_localizeStrings.Get(19104), false))
+      UpdateSetting(CONTROL_TMR_DIR);
   else if (setting.id == CONTROL_TMR_RADIO)
   {
     const CPVRChannel* channeltag = NULL;

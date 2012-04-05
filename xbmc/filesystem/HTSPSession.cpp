@@ -24,6 +24,8 @@
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -192,14 +194,14 @@ CHTSPSession::~CHTSPSession()
 
 void CHTSPSession::Abort()
 {
-  tcp_shutdown(m_fd);
+  shutdown(m_fd, SHUT_RDWR);
 }
 
 void CHTSPSession::Close()
 {
   if(m_fd != INVALID_SOCKET)
   {
-    tcp_close(m_fd);
+    closesocket(m_fd);
     m_fd = INVALID_SOCKET;
   }
 
@@ -225,7 +227,7 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
   if(port == 0)
     port = 9982;
 
-  m_fd = tcp_connect(hostname.c_str()
+  m_fd = htsp_tcp_connect(hostname.c_str()
                         , port
                         , errbuf, errlen, 3000);
   if(m_fd == INVALID_SOCKET)
@@ -306,7 +308,7 @@ htsmsg_t* CHTSPSession::ReadMessage(int timeout)
     return m;
   }
 
-  x = tcp_read_timeout(m_fd, &l, 4, timeout);
+  x = htsp_tcp_read_timeout(m_fd, &l, 4, timeout);
   if(x == ETIMEDOUT)
     return htsmsg_create_map();
 
@@ -322,7 +324,7 @@ htsmsg_t* CHTSPSession::ReadMessage(int timeout)
 
   buf = malloc(l);
 
-  x = tcp_read(m_fd, buf, l);
+  x = htsp_tcp_read(m_fd, buf, l);
   if(x)
   {
     CLog::Log(LOGERROR, "CHTSPSession::ReadMessage - Failed to read packet (%d)\n", x);
@@ -345,7 +347,7 @@ bool CHTSPSession::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(tcp_send(m_fd, (char*)buf, len, 0) < 0)
+  if(send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
     return false;
@@ -633,7 +635,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;
   tag->m_strStatus    = "livetv";
-  tag->m_strGenre     = GetGenre(event.content);
+  tag->m_genre        = StringUtils::Split(GetGenre(event.content), g_advancedSettings.m_videoItemSeparator);
 
   tag->m_strTitle = tag->m_strAlbum;
   if(tag->m_strShowTitle.length() > 0)

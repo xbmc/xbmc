@@ -25,6 +25,7 @@
 #include "responsepacket.h"
 #include "vnsicommand.h"
 #include "tools.h"
+#include "client.h"
 #include "../../../lib/platform/sockets/tcp.h"
 
 
@@ -43,7 +44,13 @@ cResponsePacket::~cResponsePacket()
 {
   if (!ownBlock) return; // don't free if it's a getblock
 
-  if (userData) free(userData);
+  if (userData)
+  {
+    if (channelID == VNSI_CHANNEL_STREAM && opcodeID == VNSI_STREAM_MUXPKT)
+      PVR->FreeDemuxPacket((DemuxPacket*)userData); 
+    else
+      free(userData);
+  }
 }
 
 void cResponsePacket::setResponse(uint32_t trequestID, uint8_t* tuserData, uint32_t tuserDataLength)

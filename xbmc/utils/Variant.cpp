@@ -113,6 +113,14 @@ CVariant::CVariant(const string &str)
   m_string = str;
 }
 
+CVariant::CVariant(const std::vector<std::string> &strArray)
+{
+  m_type = VariantTypeArray;
+  m_array.clear();
+  for (unsigned int index = 0; index < strArray.size(); index++)
+    m_array.push_back(strArray.at(index));
+}
+
 CVariant::CVariant(const CVariant &variant)
 {
   m_type = variant.m_type;
