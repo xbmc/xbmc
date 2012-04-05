@@ -975,7 +975,7 @@
   <string id="12357">Kaynak kilidi</string>
   <string id="12358">Boş parola girildi. Yeniden deneyin.</string>
   <string id="12360">Yönetici kilidi</string>
-  <string id="12362">Eğer Yönetici Kilidi denemesi aşılırsa sistemi Kapat</string>
+  <string id="12362">Eğer Yönetici Kilidi denemesi aşılırsa sistemi kapat</string>
   <string id="12367">Geçersiz yönetici şifresi</string>
   <string id="12368">Lütfen doğru yönetici şifresini girin</string>
   <string id="12373">Ayarlar ve dosya yöneticisi</string>
@@ -1016,7 +1016,7 @@
   <string id="13013">Yeniden Başlat</string>
   <string id="13014">Simge Durumuna</string>
   <string id="13015">Güç düğmesi eylemi</string>
-  <string id="13016">Sistemi Kapatma</string>
+  <string id="13016">Sistemi Kapat</string>
 
   <string id="13020">Başka bir oturum mu etkin, ssh üzerinden olabilir mi?</string>
   <string id="13021">Çıkarılabilir sabit disk bağlandı</string>
