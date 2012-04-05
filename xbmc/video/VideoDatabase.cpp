@@ -421,7 +421,7 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
 
     URIUtils::AddSlashAtEnd(strPath1);
 
-    strSQL=PrepareSQL("select idPath from path where strPath like '%s'",strPath1.c_str());
+    strSQL=PrepareSQL("select idPath from path where strPath='%s'",strPath1.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       idPath = m_pDS->fv("path.idPath").get_asInt();
@@ -544,7 +544,7 @@ int CVideoDatabase::RunQuery(const CStdString &sql)
   return rows;
 }
 
-bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector<int>& subpaths)
+bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector< pair<int,string> >& subpaths)
 {
   CStdString sql;
   try
@@ -552,11 +552,13 @@ bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector<int>& subpat
     if (!m_pDB.get() || !m_pDS.get())
       return false;
 
-    sql = PrepareSQL("SELECT idPath FROM path WHERE strPath LIKE '%s%%'", basepath.c_str());
+    CStdString path(basepath);
+    URIUtils::AddSlashAtEnd(path);
+    sql = PrepareSQL("SELECT idPath,strPath FROM path WHERE SUBSTR(strPath,1,%i)='%s'", StringUtils::utf8_strlen(path.c_str()), path.c_str());
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
-      subpaths.push_back(m_pDS->fv(0).get_asInt());
+      subpaths.push_back(make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -610,7 +612,7 @@ bool CVideoDatabase::GetPathHash(const CStdString &path, CStdString &hash)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=PrepareSQL("select strHash from path where strPath like '%s'", path.c_str());
+    CStdString strSQL=PrepareSQL("select strHash from path where strPath='%s'", path.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() == 0)
       return false;
@@ -921,7 +923,7 @@ int CVideoDatabase::GetTvShowId(const CStdString& strPath)
 
     while (iFound == 0 && URIUtils::GetParentPath(strPath1, strParent))
     {
-      strSQL=PrepareSQL("select idShow from path,tvshowlinkpath where tvshowlinkpath.idPath=path.idPath and strPath like '%s'",strParent.c_str());
+      strSQL=PrepareSQL("select idShow from path,tvshowlinkpath where tvshowlinkpath.idPath=path.idPath and strPath='%s'",strParent.c_str());
       m_pDS->query(strSQL.c_str());
       if (!m_pDS->eof())
       {
@@ -1067,7 +1069,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString strSQL=PrepareSQL("select tvshowlinkpath.idShow from path,tvshowlinkpath where path.strPath like '%s' and path.idPath=tvshowlinkpath.idPath",strPath.c_str());
+    CStdString strSQL=PrepareSQL("select tvshowlinkpath.idShow from path,tvshowlinkpath where path.strPath='%s' and path.idPath=tvshowlinkpath.idPath",strPath.c_str());
     m_pDS->query(strSQL.c_str());
     if (m_pDS->num_rows() != 0)
       return m_pDS->fv("tvshowlinkpath.idShow").get_asInt();
@@ -3012,7 +3014,7 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
     if (NULL == m_pDS.get()) return false;
     CStdString strPath, strFileName;
     URIUtils::Split(strFilenameAndPath, strPath, strFileName);
-    CStdString strSQL=PrepareSQL("select * from settings, files, path where settings.idFile=files.idFile and path.idPath=files.idPath and path.strPath like '%s' and files.strFileName like '%s'", strPath.c_str() , strFileName.c_str());
+    CStdString strSQL=PrepareSQL("select * from settings, files, path where settings.idFile=files.idFile and path.idPath=files.idPath and path.strPath='%s' and files.strFileName like '%s'", strPath.c_str() , strFileName.c_str());
 #else
     int idFile = GetFileId(strFilenameAndPath);
     if (idFile < 0) return false;
@@ -3205,11 +3207,6 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
-    CStdString strPath1(strPath);
-    CStdString strSQL = PrepareSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
-    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pDS->query(strSQL.c_str());
     if (progress)
     {
       progress->SetHeading(700);
@@ -3220,27 +3217,27 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
       progress->StartModal();
       progress->ShowProgressBar(true);
     }
-    int iCurr=0;
-    int iMax = pDS->num_rows();
-    while (!pDS->eof())
+    vector< pair<int,string> > paths;
+    GetSubPaths(strPath, paths);
+    int iCurr = 0;
+    for (vector< pair<int, string> >::const_iterator i = paths.begin(); i != paths.end(); ++i)
     {
       bool bMvidsChecked=false;
       if (progress)
       {
-        progress->SetPercentage((int)((float)(iCurr++)/iMax*100.f));
+        progress->SetPercentage((int)((float)(iCurr++)/paths.size()*100.f));
         progress->Progress();
       }
-      int idPath = pDS->fv("path.idPath").get_asInt();
-      CStdString strCurrPath = pDS->fv("path.strPath").get_asString();
-      if (HasTvShowInfo(strCurrPath))
-        DeleteTvShow(strCurrPath);
+
+      if (HasTvShowInfo(i->second))
+        DeleteTvShow(i->second);
       else
       {
-        strSQL=PrepareSQL("select files.strFilename from files join movie on movie.idFile=files.idFile where files.idPath=%i",idPath);
+        CStdString strSQL = PrepareSQL("select files.strFilename from files join movie on movie.idFile=files.idFile where files.idPath=%i", i->first);
         m_pDS2->query(strSQL.c_str());
         if (m_pDS2->eof())
         {
-          strSQL=PrepareSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%i",idPath);
+          strSQL = PrepareSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%i", i->first);
           m_pDS2->query(strSQL.c_str());
           bMvidsChecked = true;
         }
@@ -3248,7 +3245,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
         {
           CStdString strMoviePath;
           CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
-          ConstructPath(strMoviePath, strCurrPath, strFileName);
+          ConstructPath(strMoviePath, i->second, strFileName);
           if (HasMovieInfo(strMoviePath))
             DeleteMovie(strMoviePath);
           if (HasMusicVideoInfo(strMoviePath))
@@ -3256,17 +3253,15 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
           m_pDS2->next();
           if (m_pDS2->eof() && !bMvidsChecked)
           {
-            strSQL=PrepareSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%i",idPath);
+            strSQL =PrepareSQL("select files.strFilename from files join musicvideo on musicvideo.idFile=files.idFile where files.idPath=%i", i->first);
             m_pDS2->query(strSQL.c_str());
             bMvidsChecked = true;
           }
         }
         m_pDS2->close();
+        m_pDS2->exec(PrepareSQL("update path set strContent='', strScraper='', strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where idPath=%i", i->first));
       }
-      pDS->next();
     }
-    strSQL = PrepareSQL("update path set strContent = '', strScraper='', strHash='',strSettings='',useFolderNames=0,scanRecursive=0 where strPath like '%%%s%%'",strPath1.c_str());
-    pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
@@ -5423,7 +5418,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
       {
         iFound++;
 
-        CStdString strSQL=PrepareSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
+        CStdString strSQL=PrepareSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath='%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
 
         CONTENT_TYPE content = CONTENT_NONE;
