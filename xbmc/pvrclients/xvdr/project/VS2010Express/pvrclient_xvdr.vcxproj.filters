@@ -38,6 +38,9 @@
     <ClCompile Include="..\..\XVDRSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\libPlatform\windows\net_winsock.c">
+      <Filter>Source Files\libPlatform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -45,6 +48,9 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{8f6400e9-2d4f-4132-a6d0-81f39e820f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libPlatform">
+      <UniqueIdentifier>{2969f508-332a-4f04-a0c1-ddf4405415a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

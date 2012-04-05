@@ -25,7 +25,7 @@
 #include <string>
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
+#include "lib/libPlatform/os-dependent_socket.h"
 }
 
 class cResponsePacket;

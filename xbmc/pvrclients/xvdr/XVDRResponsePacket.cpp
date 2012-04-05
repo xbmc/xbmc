@@ -30,7 +30,7 @@
 #include "client.h"
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
+#include "lib/libPlatform/os-dependent_socket.h"
 }
 
 #ifdef HAVE_ZLIB

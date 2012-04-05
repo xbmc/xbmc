@@ -24,9 +24,13 @@
  * Most of this code is taken from tools.c in the Video Disk Recorder ('VDR')
  */
 
+#include <stdint.h>
 #include "tools.h"
-#include "libPlatform/os-dependent.h"
+#include "lib/libPlatform/os-dependent.h"
+#include "platform/util/timeutils.h"
 #include "client.h"
+
+using namespace PLATFORM;
 
 /* Byte order (just for windows)*/
 #ifdef __WINDOWS__
