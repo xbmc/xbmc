@@ -7,8 +7,8 @@
 <!--Date of translation: 22/04/2011-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 27/02/2012-->
-<!--Based on English strings commit 0ee1ef0923 -->
+<!--Date of translation: 05/04/2012-->
+<!--Based on English strings commit af46070895 -->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -701,7 +701,7 @@
   <string id="787">Arabirim devre dışı</string>
   <string id="788">Ağ arabirimi başarıyla devre dışı bırakıldı.</string>
   <string id="789">Kablosuz ağın adı (ESSID)</string>
-
+  <string id="790">Uzaktan kontrol</string>
   <string id="791">Bu sistemdeki programların XBMC'yi kontrol etmesine izin ver</string>
   <string id="792">Port</string>
   <string id="793">Port aralığı</string>
@@ -812,10 +812,12 @@
   <string id="1256">Ping süresi</string>
   <string id="1257">Otomatik olarak tanımlanan sisteme bağlanmak ister misiniz?</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">Bu hizmetleri Zeroconf üzerinden diğer sistemlere bildir</string>
   <string id="1270">XBMC'nin AirPlay içeriğini almasına izin ver</string>
   <string id="1271">Aygıt adı</string>
   <string id="1272">- Parola koruması kullan</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">Özel ses aygıtı</string>
   <string id="1301">Özel passthrough aygıtı</string>
@@ -975,7 +977,7 @@
   <string id="12357">Kaynak kilidi</string>
   <string id="12358">Boş parola girildi. Yeniden deneyin.</string>
   <string id="12360">Yönetici kilidi</string>
-  <string id="12362">Eğer Yönetici Kilidi denemesi aşılırsa sistemi Kapat</string>
+  <string id="12362">Eğer Yönetici Kilidi denemesi aşılırsa sistemi kapat</string>
   <string id="12367">Geçersiz yönetici şifresi</string>
   <string id="12368">Lütfen doğru yönetici şifresini girin</string>
   <string id="12373">Ayarlar ve dosya yöneticisi</string>
@@ -1016,7 +1018,7 @@
   <string id="13013">Yeniden Başlat</string>
   <string id="13014">Simge Durumuna</string>
   <string id="13015">Güç düğmesi eylemi</string>
-  <string id="13016">Sistemi Kapatma</string>
+  <string id="13016">Sistemi Kapat</string>
 
   <string id="13020">Başka bir oturum mu etkin, ssh üzerinden olabilir mi?</string>
   <string id="13021">Çıkarılabilir sabit disk bağlandı</string>
@@ -1353,7 +1355,7 @@
   <string id="14082">EXIF resim bilgilerini göster</string>
   <string id="14083">Gerçek tam ekran yerine tam ekran penceresini kullan</string>
   <string id="14084">Seçilen şarkıları kuyruğa ekle</string>
-  <string id="14085">Ses CD'lerini otomatik olarak çal</string>
+  <string id="14085"></string>
   <string id="14086">Oynatım</string>
   <string id="14087">DVD'ler</string>
   <string id="14088">DVD'leri otomatik olarak oynat</string>
@@ -1364,7 +1366,10 @@
   <string id="14093">Güvenlik</string>
   <string id="14094">Giriş aygıtları</string>
   <string id="14095">Güç tasarrufu</string>
-
+  <string id="14096">Kopyala</string>
+  <string id="14097">Ses CD'si Takılınca Yapılacak Eylem</string>
+  <string id="14098">Çal</string>
+  <string id="14099">CD kopyalama işlemi bitince diski çıkar</string>
   <string id="15015">Kaldır</string>
   <string id="15016">Oyunlar</string>
 
@@ -1733,6 +1738,7 @@
   <string id="20184">EXIF bilgilerini kullanarak resmi çevir</string>
   <string id="20185">TV programları için poster görünümünü kullan</string>
   <string id="20186">Lütfen bekleyin</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">İçerik ve yorum için otomatik kaydırmayı etkinleştir</string>
   <string id="20190">Özel</string>
@@ -2387,6 +2393,7 @@
   <string id="35006">Aygıt kaldırıldı</string>
   <string id="35007">Bu aygıt için kullanılacak keymap</string>
   <string id="35008">Keymap etkin</string>
+  <string id="35009">Bu aygıt için özel keymap kullanma</string>
 
   <string id="35500">Konum</string>
   <string id="35501">Sınıf</string>
@@ -2401,8 +2408,8 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Bağdaştırıcı açılamıyor</string>
-  <string id="36007">XBMC başlatılınca Televizyonu aç</string>
-  <string id="36008">XBMC durdurulunca aygıtı kapat</string>
+  <string id="36007">XBMC başlatılınca aygıtları aç</string>
+  <string id="36008">XBMC durdurulunca aygıtları kapat</string>
   <string id="36009">Ekran koruyucu devreye girince aygıtı bekleme moduna geçir</string>
   <string id="36010"></string>
   <string id="36011">CEC portu algılanamadı. El ile ayarla.</string>
@@ -2413,4 +2420,11 @@
   <string id="36016">Bağlandı</string> <!-- max. 13 characters -->
   <string id="36017">Bağdaştırıcı bulundu, fakat libcec kullanılamıyor</string>
   <string id="36018">Televizyonun dil ayarlarını kullan</string>
+  <string id="36019">HDMI aygıtına bağlandı</string>
+  <string id="36020">Başlatırken XBMC aktif kaynak olsun</string>
+  <string id="36021">Fiziksel adres (overrules HDMI port)</string>
+  <string id="36022">COM port (gerekmedikçe boş bırakın)</string>
+  <string id="36023">Yapılandırma güncellendi</string>
+  <string id="36024">Yeni yapılandırma değeri ayarlanamadı. Lütfen ayarlarınızı kontrol edin.</string>
+  <string id="36025">XBMC durdurulunca 'etkin olmayan kaynak' komutu yolla</string>
 </strings>
