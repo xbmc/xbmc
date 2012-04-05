@@ -709,8 +709,8 @@ bool CApplication::Create()
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "recording folder: %s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder: %s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
   CDirectory::Create(g_settings.GetUserDataFolder());
   CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
@@ -733,7 +733,7 @@ bool CApplication::Create()
   CStdString strLanguagePath;
   strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+  CLog::Log(LOGINFO, "load language file: %s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
@@ -1721,7 +1721,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   UnloadSkin();
 
-  CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
+  CLog::Log(LOGINFO, "  load skin from: %s", skin->Path().c_str());
   g_SkinInfo = skin;
   g_SkinInfo->Start();
 
@@ -1770,7 +1770,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     // fallback to default skin
     if ( strcmpi(skin->ID().c_str(), DEFAULT_SKIN) != 0)
     {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
+      CLog::Log(LOGERROR, "failed to load home.xml for skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
       g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
       LoadSkin(DEFAULT_SKIN);
       return ;
@@ -1878,7 +1878,7 @@ bool CApplication::LoadUserWindows()
           TiXmlDocument xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
-            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "unable to load: %s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1887,7 +1887,7 @@ bool CApplication::LoadUserWindows()
           CStdString strValue = pRootElement->Value();
           if (!strValue.Equals("window"))
           {
-            CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
+            CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
             continue;
           }
 
