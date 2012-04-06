@@ -34,6 +34,14 @@ public:
   bool SetViewState(const CStdString &path, int windowID, const CViewState &state, const CStdString &skin);
   bool ClearViewStates(int windowID);
 
+  /*! \brief Arbirtary queries are disabled for this database.
+   */
+  virtual bool GetArbitraryQuery(const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, CStdString&) { return false; }
+  virtual bool ArbitraryExec(const CStdString& strExec) { return false; }
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);

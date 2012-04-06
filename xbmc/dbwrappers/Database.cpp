@@ -247,6 +247,72 @@ bool CDatabase::CommitInsertQueries()
   return bReturn;
 }
 
+bool CDatabase::GetArbitraryQuery(const CStdString& strQuery,          const CStdString& strOpenRecordSet,
+                                  const CStdString& strCloseRecordSet, const CStdString& strOpenRecord,
+                                  const CStdString& strCloseRecord,    const CStdString& strOpenField,
+                                  const CStdString& strCloseField,     CStdString& strResult)
+{
+  try
+  {
+    strResult = "";
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+    CStdString strSQL = strQuery;
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      strResult = m_pDB->getErrorMsg();
+      return false;
+    }
+    strResult = strOpenRecordSet;
+    while (!m_pDS->eof())
+    {
+      strResult += strOpenRecord;
+      for (int i = 0; i < m_pDS->fieldCount(); i++)
+      {
+        strResult += strOpenField + CStdString(m_pDS->fv(i).get_asString()) + strCloseField;
+      }
+      strResult += strCloseRecord;
+      m_pDS->next();
+    }
+    strResult += strCloseRecordSet;
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strQuery.c_str());
+  }
+  try
+  {
+    if (NULL == m_pDB.get())
+      return false;
+    strResult = m_pDB->getErrorMsg();
+  }
+  catch (...)
+  {
+  }
+
+  return false;
+}
+
+bool CDatabase::ArbitraryExec(const CStdString& strExec)
+{
+  try
+  {
+    if (NULL == m_pDB.get() || NULL == m_pDS.get())
+      return false;
+    CStdString strSQL = strExec;
+    m_pDS->exec(strSQL.c_str());
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CDatabase::Open()
 {
   DatabaseSettings db_fallback;

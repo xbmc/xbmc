@@ -106,6 +106,12 @@ public:
    */
   bool CommitInsertQueries();
 
+  virtual bool GetArbitraryQuery(const CStdString& strQuery,          const CStdString& strOpenRecordSet,
+                                 const CStdString& strCloseRecordSet, const CStdString& strOpenRecord,
+                                 const CStdString& strCloseRecord,    const CStdString& strOpenField,
+                                 const CStdString& strCloseField,     CStdString& strResult);
+  virtual bool ArbitraryExec(const CStdString& strExec);
+
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
