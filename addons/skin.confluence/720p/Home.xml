@@ -237,7 +237,7 @@
 				</control>
 			</control>
 		</control>
-		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
+		<include condition="!Skin.HasSetting(HomepageHideRecentlyAddedVideo) | !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)">HomeRecentlyAddedInfo</include>
 		<control type="button" id="9003">
 			<description>Hidden Button to pass through navigation when recently added is disabled</description>
 			<posx>-20</posx>
@@ -251,7 +251,7 @@
 			<onleft>9000</onleft>
 			<onright>9000</onright>
 			<onup>20</onup>
-			<ondown>9000</ondown>
+			<ondown>608</ondown>
 			<visible>false</visible>
 		</control>
 		<control type="group">

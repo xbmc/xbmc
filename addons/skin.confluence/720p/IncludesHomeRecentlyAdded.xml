@@ -2,7 +2,7 @@
 	<include name="HomeRecentlyAddedInfo">
 		<control type="group" id="9003">
 			<onup>20</onup>
-			<ondown>9000</ondown>
+			<ondown>608</ondown>
 			<visible>!Window.IsVisible(Favourites)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="fade" time="300" delay="1000">WindowOpen</animation>
@@ -11,7 +11,7 @@
 				<posx>190</posx>
 				<posy>50</posy>
 				<visible>Library.HasContent(Movies)</visible>
-				<visible>Container(9000).Hasfocus(10)</visible>
+				<visible>Container(9000).Hasfocus(10) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Title label</description>
@@ -243,7 +243,7 @@
 				<posx>160</posx>
 				<posy>50</posy>
 				<visible>Library.HasContent(TVShows)</visible>
-				<visible>Container(9000).Hasfocus(11)</visible>
+				<visible>Container(9000).Hasfocus(11) + !Skin.HasSetting(HomepageHideRecentlyAddedVideo)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Title label</description>
@@ -505,7 +505,7 @@
 				<posx>240</posx>
 				<posy>50</posy>
 				<visible>Library.HasContent(Music)</visible>
-				<visible>Container(9000).Hasfocus(3) + !Skin.HasSetting(HomeMenuNoMusicButton)</visible>
+				<visible>Container(9000).Hasfocus(3) + !Skin.HasSetting(HomepageHideRecentlyAddedAlbums)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Title label</description>
