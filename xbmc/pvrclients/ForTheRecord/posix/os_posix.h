@@ -40,9 +40,6 @@
 #define MAX_PATH 256
 #endif
 
-#include <string.h>
-#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
-
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"

@@ -26,18 +26,15 @@ SRCS   = utils.cpp \
         recording.cpp \
         recordingsummary.cpp \
         recordinggroup.cpp \
-        thread.cpp \
         tools.cpp \
         upcomingrecording.cpp \
         uri.cpp \
-	CriticalSection.cpp \
-	AutoLock.cpp \
         lib/jsoncpp/src/lib_json/json_reader.cpp \
         lib/jsoncpp/src/lib_json/json_writer.cpp \
         lib/jsoncpp/src/lib_json/json_value.cpp \
-	lib/tsreader/FileReader.cpp \
-	lib/tsreader/MultiFileReader.cpp \
-	lib/tsreader/TSReader.cpp \
+        lib/tsreader/FileReader.cpp \
+        lib/tsreader/MultiFileReader.cpp \
+        lib/tsreader/TSReader.cpp \
         KeepAliveThread.cpp \
         fortherecordrpc.cpp \
         pvrclient-fortherecord.cpp \
