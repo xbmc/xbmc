@@ -132,7 +132,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     if (afpError == CAfpConnection::AfpAuth)
     {
-       if (m_allowPrompting)
+       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
        {
          RequireAuthentication(url.Get());
        }
@@ -200,7 +200,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       {
         struct stat info = {0};
 
-        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
+        if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strDirName + strFile;

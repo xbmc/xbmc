@@ -39,7 +39,7 @@ bool CSpecialProtocolDirectory::GetDirectory(const CStdString& strPath, CFileIte
 {
   CStdString untranslatedPath = strPath;  // Why do I need a copy??? - the GetDirectory() call below will override strPath???
   CStdString translatedPath = CSpecialProtocol::TranslatePath(strPath);
-  if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo, false, true))
+  if (CDirectory::GetDirectory(translatedPath, items, m_strFileMask, m_flags | DIR_FLAG_GET_HIDDEN))
   { // replace our paths as necessary
     items.SetPath(untranslatedPath);
     for (int i = 0; i < items.Size(); i++)

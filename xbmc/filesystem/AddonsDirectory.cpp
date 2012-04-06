@@ -40,8 +40,6 @@ namespace XFILE
 
 CAddonsDirectory::CAddonsDirectory(void)
 {
-  m_allowPrompting = true;
-  m_cacheDirectory = DIR_CACHE_ONCE;
 }
 
 CAddonsDirectory::~CAddonsDirectory(void)

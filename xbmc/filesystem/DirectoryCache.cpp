@@ -222,7 +222,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   {
     const CStdString& strDir = *it;
     CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, "", false);
+    CDirectory::GetDirectory(strDir, items, "", DIR_FLAG_NO_FILE_DIRS);
     items.Clear();
   }
 }

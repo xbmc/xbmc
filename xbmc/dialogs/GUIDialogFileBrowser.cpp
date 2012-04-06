@@ -893,7 +893,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
   {
     // verify the path by doing a GetDirectory.
     CFileItemList items;
-    if (CDirectory::GetDirectory(path, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004))
+    if (CDirectory::GetDirectory(path, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1002,1003,1004))
     { // add the network location to the shares list
       CMediaSource share;
       share.strPath = path; //setPath(path);
