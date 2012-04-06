@@ -181,9 +181,9 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString 
     if (!m_pDS->eof())
     { // update
       int textureID = m_pDS->fv(0).get_asInt();
-      m_pDS->close();
       if (cacheURL.IsEmpty())
         cacheURL = m_pDS->fv(1).get_asString();
+      m_pDS->close();
       if (!imageHash.IsEmpty())
         sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheURL.c_str(), imageHash.c_str(), date.c_str(), textureID);
       else
