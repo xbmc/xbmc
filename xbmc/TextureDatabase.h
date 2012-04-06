@@ -34,6 +34,13 @@ public:
   bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
+  /*! \brief Invalidate a previously cached texture
+   Invalidates the texture hash, and sets the texture update time to the current time so that
+   next texture load it will be re-cached.
+   \param url texture path
+   */
+  bool InvalidateCachedTexture(const CStdString &originalURL);
+
   /*! \brief Get a texture associated with the given path
    Used for retrieval of previously discovered images to save
    stat() on the filesystem all the time

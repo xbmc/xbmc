@@ -233,6 +233,13 @@ bool CTextureDatabase::ClearCachedTexture(const CStdString &url, CStdString &cac
   return false;
 }
 
+bool CTextureDatabase::InvalidateCachedTexture(const CStdString &url)
+{
+  CStdString date = (CDateTime::GetCurrentDateTime() - CDateTimeSpan(2, 0, 0, 0)).GetAsDBDateTime();
+  CStdString sql = PrepareSQL("UPDATE texture SET lasthashcheck='%s' WHERE url='%s'", date.c_str(), url.c_str());
+  return ExecuteQuery(sql);
+}
+
 CStdString CTextureDatabase::GetTextureForPath(const CStdString &url, const CStdString &type)
 {
   try
