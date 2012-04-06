@@ -48,7 +48,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
-#include "interfaces/python/XBPython.h"
 
 using namespace std;
 using namespace ADDON;
@@ -537,7 +536,6 @@ void CGUIDialogAddonSettings::SaveSettings(void)
   if (m_saveToDisk)
   { 
     m_addon->SaveSettings();
-    g_pythonParser.OnSettingsChanged(m_addon->ID());
   } 
 }
 
