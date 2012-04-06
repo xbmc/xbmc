@@ -616,6 +616,10 @@
 		C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
 		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C8936052152C86CF00812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936050152C86CF00812418 /* monitor.cpp */; };
+		C8936053152C86CF00812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936050152C86CF00812418 /* monitor.cpp */; };
+		C8936056152C86D800812418 /* PythonMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936054152C86D800812418 /* PythonMonitor.cpp */; };
+		C8936057152C86D800812418 /* PythonMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936054152C86D800812418 /* PythonMonitor.cpp */; };
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
@@ -2627,6 +2631,10 @@
 		C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
 		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Repository.cpp; sourceTree = "<group>"; };
 		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Repository.h; sourceTree = "<group>"; };
+		C8936050152C86CF00812418 /* monitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = monitor.cpp; sourceTree = "<group>"; };
+		C8936051152C86CF00812418 /* monitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = monitor.h; sourceTree = "<group>"; };
+		C8936054152C86D800812418 /* PythonMonitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonMonitor.cpp; sourceTree = "<group>"; };
+		C8936055152C86D800812418 /* PythonMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonMonitor.h; sourceTree = "<group>"; };
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
@@ -6164,6 +6172,8 @@
 				E38E19F80D25F9FB00618676 /* keyboard.h */,
 				E38E25920D263CE000618676 /* listitem.cpp */,
 				E38E19FA0D25F9FB00618676 /* listitem.h */,
+				C8936050152C86CF00812418 /* monitor.cpp */,
+				C8936051152C86CF00812418 /* monitor.h */,
 				E38E25930D263CE000618676 /* player.cpp */,
 				E38E19FE0D25F9FB00618676 /* player.h */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
@@ -6172,6 +6182,8 @@
 				F5E1125D14356B2400175026 /* pyrendercapture.h */,
 				7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */,
 				7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */,
+				C8936054152C86D800812418 /* PythonMonitor.cpp */,
+				C8936055152C86D800812418 /* PythonMonitor.h */,
 				E38E25950D263CE000618676 /* PythonPlayer.cpp */,
 				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
 				E38E25960D263CE000618676 /* pyutil.cpp */,
@@ -8195,6 +8207,8 @@
 				DF93D7F21444B54A007C6459 /* HDHomeRunFile.cpp in Sources */,
 				DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */,
 				7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */,
+				C8936052152C86CF00812418 /* monitor.cpp in Sources */,
+				C8936056152C86D800812418 /* PythonMonitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9133,6 +9147,8 @@
 				DF93D7F31444B54A007C6459 /* HDHomeRunFile.cpp in Sources */,
 				DF93D7F71444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */,
 				7C1A85651520522500C63311 /* TextureCacheJob.cpp in Sources */,
+				C8936053152C86CF00812418 /* monitor.cpp in Sources */,
+				C8936057152C86D800812418 /* PythonMonitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
