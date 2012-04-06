@@ -650,6 +650,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\player.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -661,6 +664,9 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.cpp">
@@ -1604,11 +1610,13 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagvideo.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\keyboard.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\player.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyjsonrpc.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyplaylist.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\window.h" />
