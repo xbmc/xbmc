@@ -162,7 +162,7 @@ CStdString CTextureCache::CacheImageFile(const CStdString &url)
   CTextureCacheJob job(url, "");
   if (job.DoWork() && !job.m_hash.IsEmpty())
   {
-    AddCachedTexture(url, job.m_cacheFile, job.m_hash);
+    AddCachedTexture(url, job.m_cacheFile, job.m_hash, job.m_updateable);
     if (g_advancedSettings.m_useDDSFanart && !job.m_cacheFile.IsEmpty())
       AddJob(new CTextureDDSJob(GetCachedPath(job.m_cacheFile)));
     return GetCachedPath(job.m_cacheFile);
@@ -229,10 +229,10 @@ bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedUR
   return m_database.GetCachedTexture(url, cachedURL, cachedHash);
 }
 
-bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &hash)
+bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &hash, bool updateable)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.AddCachedTexture(url, cachedURL, hash);
+  return m_database.AddCachedTexture(url, cachedURL, hash, updateable);
 }
 
 bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
@@ -262,7 +262,7 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (strcmp(job->GetType(), "cacheimage") == 0 && success)
   {
     CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    AddCachedTexture(cacheJob->m_url, cacheJob->m_cacheFile, cacheJob->m_hash);
+    AddCachedTexture(cacheJob->m_url, cacheJob->m_cacheFile, cacheJob->m_hash, cacheJob->m_updateable);
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_cacheFile.IsEmpty())
       AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_cacheFile)));

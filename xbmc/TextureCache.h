@@ -146,9 +146,10 @@ public:
    \param image url of the original image
    \param cacheFile url of the cached image
    \param hash hash of the original image
+   \param updateable whether this image is updateable
    \return true if we successfully added to the database, false otherwise.
    */
-  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash);
+  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash, bool updateable = false);
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image

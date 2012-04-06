@@ -31,7 +31,7 @@ public:
   virtual bool Open();
 
   bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &imageHash);
-  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
+  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "", bool updateable = true);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
   /*! \brief Invalidate a previously cached texture

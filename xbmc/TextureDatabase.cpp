@@ -149,7 +149,7 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CStdString &cache
       cacheFile = m_pDS->fv(1).get_asString();
       CDateTime lastCheck;
       lastCheck.SetFromDBDateTime(m_pDS->fv(2).get_asString());
-      if (!lastCheck.IsValid() || lastCheck + CDateTimeSpan(1,0,0,0) < CDateTime::GetCurrentDateTime())
+      if (lastCheck.IsValid() && lastCheck + CDateTimeSpan(1,0,0,0) < CDateTime::GetCurrentDateTime())
         imageHash = m_pDS->fv(3).get_asString();
       m_pDS->close();
       // update the use count
@@ -166,7 +166,7 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CStdString &cache
   return false;
 }
 
-bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString &cacheFile, const CStdString &imageHash)
+bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString &cacheFile, const CStdString &imageHash, bool updateable)
 {
   try
   {
@@ -174,7 +174,7 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString 
     if (NULL == m_pDS.get()) return false;
 
     CStdString cacheURL(cacheFile);
-    CStdString date = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
+    CStdString date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
 
     CStdString sql = PrepareSQL("select id,cachedurl from texture where url='%s'", url.c_str());
     m_pDS->query(sql.c_str());
