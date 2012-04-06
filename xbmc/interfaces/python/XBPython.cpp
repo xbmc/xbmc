@@ -41,6 +41,10 @@
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/python/xbmcmodule/PythonMonitor.h"
+
+using namespace ANNOUNCEMENT;
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -71,10 +75,13 @@ XBPython::XBPython()
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
   m_vecPlayerCallbackList.clear();
+  m_vecMonitorCallbackList.clear();
+  CAnnouncementManager::AddAnnouncer(this);
 }
 
 XBPython::~XBPython()
 {
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 // message all registered callbacks that xbmc stopped playing
@@ -89,6 +96,27 @@ void XBPython::OnPlayBackEnded()
       ((IPlayerCallback*)(*it))->OnPlayBackEnded();
       it++;
     }
+  }
+}
+
+void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag & VideoLibrary)
+  {
+   if (strcmp(message, "OnScanFinished") == 0)
+    OnDatabaseUpdated("video");
+  }
+  else if (flag & AudioLibrary)
+  {
+   if (strcmp(message, "OnScanFinished") == 0)
+    OnDatabaseUpdated("music");
+  }
+  else if (flag & GUI)
+  {
+   if (strcmp(message, "OnScreensaverDeactivated") == 0)
+     OnScreensaverDeactivated();   
+   else if (strcmp(message, "OnScreensaverActivated") == 0)
+     OnScreensaverActivated();
   }
 }
 
@@ -170,6 +198,82 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
       it++;
   }
 }
+
+void XBPython::RegisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  m_vecMonitorCallbackList.push_back(pCallback);
+}
+
+void XBPython::UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  while (it != m_vecMonitorCallbackList.end())
+  {
+    if (*it == pCallback)
+      it = m_vecMonitorCallbackList.erase(it);
+    else
+      it++;
+  }
+}
+
+void XBPython::OnSettingsChanged(const CStdString &ID)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    { 
+      if (((CPythonMonitor*)(*it))->Id == ID.c_str())  
+        ((CPythonMonitor*)(*it))->OnSettingsChanged();
+      it++;
+    }
+  }  
+}  
+
+void XBPython::OnScreensaverActivated()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((CPythonMonitor*)(*it))->OnScreensaverActivated();
+      it++;
+    }
+  }  
+} 
+
+void XBPython::OnScreensaverDeactivated()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((CPythonMonitor*)(*it))->OnScreensaverDeactivated();
+      it++;
+    }
+  }  
+} 
+
+void XBPython::OnDatabaseUpdated(const std::string &database)
+{
+ CSingleLock lock(m_critSection);
+ if (m_bInitialized)
+ {
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  while (it != m_vecMonitorCallbackList.end())
+  {
+   ((CPythonMonitor*)(*it))->OnDatabaseUpdated(database);
+   it++;
+  }
+ }  
+} 
 
 /**
 * Check for file and print an error if needed

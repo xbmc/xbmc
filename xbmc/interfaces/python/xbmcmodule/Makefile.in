@@ -22,10 +22,12 @@ SRCS=action.cpp \
      infotagvideo.cpp \
      keyboard.cpp \
      listitem.cpp \
+     monitor.cpp \
      player.cpp \
      pyplaylist.cpp \
      pyrendercapture.cpp \
      PythonAddon.cpp \
+     PythonMonitor.cpp \
      PythonPlayer.cpp \
      pyutil.cpp \
      window.cpp \
