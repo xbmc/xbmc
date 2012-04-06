@@ -61,7 +61,7 @@
   <string id="31102">Sfondo</string>
   <string id="31103">Mostra "In pausa" durante la visualizzazione delle immagini</string>
   <string id="31104">Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]</string>
-  <string id="31105">Il pulsante "Video" porta sempre ai "files" video</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Opzioni Varie</string>
   <string id="31107">Nascondi la spunta letto dai nomi dei file video [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Nascondi i bottoni del menù principale</string>

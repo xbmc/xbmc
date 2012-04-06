@@ -61,7 +61,7 @@
   <string id="31102">Háttér</string>
   <string id="31103">"Megállítva" mutatása a diavetítés közben</string>
   <string id="31104">Filmelőzetesek lejátszása ablakban [COLOR=grey3](csak a videóinfó ablakban)[/COLOR]</string>
-  <string id="31105">A "Videók" gomb mindíg közvetlenül a fájlokra ugrik</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Vegyes beállítások</string>
   <string id="31107">Fájlnevekből olvasott filmjellemzők elrejtése [COLOR=grey3](BR, HD-DVD)[/COLOR]</string>
   <string id="31108">Főmenügombok láthatósága</string>

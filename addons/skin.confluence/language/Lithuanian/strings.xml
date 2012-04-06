@@ -62,7 +62,7 @@
   <string id="31102">Fonas</string>
   <string id="31103">Rodyti "Pauzė" prezentacijos režime</string>
   <string id="31104">Rodyti treilerį lange [COLOR=red](Tik dėl informacijos apie video dialogą)[/COLOR]</string>
-  <string id="31105">Rodyti pavadinimus foniniame nuskaityme</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Įvairios opcijos</string>
   <string id="31107">Paslėpti nuorodas iš skaitomo failo [COLOR=red](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Slėpti  Pagrindinio Menių Nuorodas</string>

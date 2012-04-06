@@ -50,7 +50,7 @@
   <string id="31102">Tło</string>
   <string id="31103">Wyświetlaj "Pauza" podczas pokazu slajdów</string>
   <string id="31104">Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]</string>
-  <string id="31105">Przycisk "wideo" przenosi zawsze do plików wideo</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Różne opcje</string>
   <string id="31107">Ukryj ikony właściwości wideo z nazw plików [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ukryj przyciski głównego menu</string>

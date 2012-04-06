@@ -62,7 +62,7 @@
   <string id="31102">Pozadí</string>
   <string id="31103">Zobrazovat "Pozastaveno" při prezentaci obrázků</string>
   <string id="31104">Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]</string>
-  <string id="31105">V nabídce "Video" vždy zobrazit "Soubory"</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Různé</string>
   <string id="31107">Nezobrazovat ikony zdroje videí [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Zobrazení sekcí úvodní obrazovky</string>

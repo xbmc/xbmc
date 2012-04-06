@@ -58,7 +58,7 @@
   <string id="31102">배경</string>
   <string id="31103">사진 슬라이드쇼에 "일시중지됨" 보이기</string>
   <string id="31104">윈도우에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/COLOR]</string>
-  <string id="31105">"비디오" 버튼은 항상 비디오 "파일"로 이동</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">기타 옵션</string>
   <string id="31107">비디오 파일명에서 읽은 플래그 숨기기 [COLOR=grey3](블루레이, HD-DVD)[/COLOR]</string>
   <string id="31108">메인 메뉴 버튼 숨기기</string>
