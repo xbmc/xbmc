@@ -2966,10 +2966,10 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
 
     CStdString sql = PrepareSQL("SELECT actors.strActor,"
                                 "  actorlink%s.strRole,"
-                                "  actors.strThumb, "
+                                "  actors.strThumb "
                                 "FROM actorlink%s"
                                 "  JOIN actors ON"
-                                "    actorlink%s.idActor=actors.idActor"
+                                "    actorlink%s.idActor=actors.idActor "
                                 "WHERE actorlink%s.%s=%i "
                                 "ORDER BY actorlink%s.iOrder",table.c_str(), table.c_str(), table.c_str(), table.c_str(), table_id.c_str(), type_id, table.c_str());
     m_pDS2->query(sql.c_str());
