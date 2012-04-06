@@ -69,6 +69,7 @@ public:
   CStdString m_cacheFile;
   CStdString m_hash;
   CStdString m_oldHash;
+  bool       m_updateable;
 private:
   /*! \brief retrieve a hash for the given image
    Combines the size, ctime and mtime of the image file into a "unique" hash
@@ -76,6 +77,15 @@ private:
    \return a hash string for this image
    */
   static CStdString GetImageHash(const CStdString &url);
+
+  /*! \brief Check whether a given URL represents an image that can be updated
+   We currently don't check http:// and https:// URLs for updates, under the assumption that
+   a image URL is much more likely to be static and the actual image at the URL is unlikely
+   to change, so no point checking all the time.
+   \param url the url to check
+   \return true if the image given by the URL should be checked for updates, false otehrwise
+   */
+  bool UpdateableURL(const CStdString &url) const;
 
   unsigned int  m_maxWidth;
   unsigned int  m_maxHeight;

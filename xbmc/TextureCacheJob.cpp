@@ -41,6 +41,7 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
   m_cachePath = CTextureCache::GetCacheFile(m_url);
   m_texture = NULL;
   m_maxWidth = m_maxHeight = 0;
+  m_updateable = false;
 }
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
@@ -53,6 +54,7 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *te
   m_maxWidth = max_width;
   m_maxHeight = max_height;
   m_cachePath = CTextureCache::GetCacheFile(m_url);
+  m_updateable = false;
 }
 
 CTextureCacheJob::~CTextureCacheJob()
@@ -77,6 +79,8 @@ bool CTextureCacheJob::DoWork()
   bool flipped;
   unsigned int width, height;
   CStdString image = DecodeImageURL(m_url, width, height, flipped);
+
+  m_updateable = UpdateableURL(image);
 
   // generate the hash
   m_hash = GetImageHash(image);
@@ -177,6 +181,15 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;
+}
+
+bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
+{
+  // we don't constantly check online images
+  if (url.compare(0, 7, "http://") == 0 ||
+      url.compare(0, 8, "https://") == 0)
+    return false;
+  return true;
 }
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)
