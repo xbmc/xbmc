@@ -50,6 +50,7 @@ public:
    \return true if successful, false otherwise
    */
   static bool CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest);
+  static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t max_width, uint32_t max_height, const std::string &dest);
 
 private:
   static bool CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height);

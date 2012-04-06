@@ -168,27 +168,33 @@ bool CThumbnailWriter::DoWork()
 
 bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest)
 {
+  return CacheTexture(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+                      texture->GetOrientation(), max_width, max_height, dest);
+}
+
+bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t max_width, uint32_t max_height, const std::string &dest)
+{
   // if no max width or height is specified, don't resize
   if (max_width == 0)
-    max_width = texture->GetWidth();
+    max_width = width;
   if (max_height == 0)
-    max_height = texture->GetHeight();
+    max_height = height;
 
-  if (texture->GetWidth() > max_width || texture->GetHeight() > max_height || texture->GetOrientation())
+  if (width > max_width || height > max_height || orientation)
   {
     bool success = false;
 
-    unsigned int dest_width = std::min(texture->GetWidth(), max_width);
-    unsigned int dest_height = std::min(texture->GetHeight(), max_height);
+    unsigned int dest_width = std::min(width, max_width);
+    unsigned int dest_height = std::min(height, max_height);
     // create a buffer large enough for the resulting image
-    GetScale(texture->GetWidth(), texture->GetHeight(), dest_width, dest_height);
+    GetScale(width, height, dest_width, dest_height);
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
     if (buffer)
     {
-      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+      if (ScaleImage(pixels, width, height, pitch,
                      (uint8_t *)buffer, dest_width, dest_height, dest_width * 4))
       {
-        if (!texture->GetOrientation() || OrientateImage(buffer, dest_width, dest_height, texture->GetOrientation()))
+        if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
           success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, dest_width * 4, dest);
         }
@@ -199,7 +205,7 @@ bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t 
   }
   else
   { // no orientation needed
-    return CreateThumbnailFromSurface(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(), dest);
+    return CreateThumbnailFromSurface(pixels, width, height, pitch, dest);
   }
   return false;
 }
