@@ -40,19 +40,16 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
   m_oldHash = oldHash;
   m_cachePath = CTextureCache::GetCacheFile(m_url);
   m_texture = NULL;
-  m_maxWidth = m_maxHeight = 0;
   m_updateable = false;
 }
 
-CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
+CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture)
 {
   m_url = url;
   if (texture)
     m_texture = new CTexture(*(CTexture *)texture);
   else
     m_texture = NULL;
-  m_maxWidth = max_width;
-  m_maxHeight = max_height;
   m_cachePath = CTextureCache::GetCacheFile(m_url);
   m_updateable = false;
 }

@@ -88,7 +88,7 @@ public:
    \sa CheckAndCacheImage
    */
   void BackgroundCacheImage(const CStdString &image);
-  void BackgroundCacheTexture(const CStdString &image, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height);
+  void BackgroundCacheTexture(const CStdString &image, const CBaseTexture *texture);
 
   /*! \brief Take image URL and add it to image cache
 

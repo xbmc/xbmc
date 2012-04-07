@@ -36,7 +36,7 @@ class CTextureCacheJob : public CJob
 {
 public:
   CTextureCacheJob(const CStdString &url, const CStdString &oldHash);
-  CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height);
+  CTextureCacheJob(const CStdString &url, const CBaseTexture *texture);
   virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return "cacheimage"; };
@@ -87,8 +87,6 @@ private:
    */
   bool UpdateableURL(const CStdString &url) const;
 
-  unsigned int  m_maxWidth;
-  unsigned int  m_maxHeight;
   CBaseTexture *m_texture;
   CStdString    m_cachePath;
 };

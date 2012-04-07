@@ -67,7 +67,7 @@ bool CImageLoader::DoWork()
     m_texture = CTextureCacheJob::LoadImage(image, width, height, flipped);
 
     if (m_texture)
-      CTextureCache::Get().BackgroundCacheTexture(texturePath, m_texture, width, height);
+      CTextureCache::Get().BackgroundCacheTexture(texturePath, m_texture);
   }
   else
   {

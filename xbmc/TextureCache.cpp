@@ -151,9 +151,9 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(url, cacheHash));
 }
 
-void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
+void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTexture *texture)
 {
-  AddJob(new CTextureCacheJob(url, texture, max_width, max_height));
+  AddJob(new CTextureCacheJob(url, texture));
 }
 
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
