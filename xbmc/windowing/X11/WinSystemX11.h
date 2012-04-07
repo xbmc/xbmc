@@ -63,6 +63,7 @@ public:
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
+  GLXContext GetGlxContext() { return m_glContext; }
 
 protected:
   bool RefreshGlxContext();

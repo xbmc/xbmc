@@ -5775,7 +5775,17 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr ""
 
-#empty strings from id 13437 to 13499
+#: system/settings/settings.xml
+msgctxt "#13437"
+msgid "Allow Vdpau OpenGL interop"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13438"
+msgid "Allow Vdpau OpenGL interop YUV"
+msgstr ""
+
+#empty strings from id 13439 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6850,7 +6860,7 @@ msgid "Software Blend"
 msgstr ""
 
 msgctxt "#16325"
-msgid "Auto - ION Optimized"
+msgid "VDPAU - Bob"
 msgstr ""
 
 #empty strings from id 16326 to 16399
