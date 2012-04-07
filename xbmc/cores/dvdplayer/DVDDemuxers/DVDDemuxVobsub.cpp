@@ -138,11 +138,10 @@ bool CDVDDemuxVobsub::SeekTime(int time, bool backwords, double* startpts)
     if(m_Timestamp->pts > pts)
       break;
   }
-  if(backwords)
-    return true;
-
-  if(m_Timestamps.begin() != m_Timestamp)
+  for(unsigned i=0;i<m_Streams.size() && m_Timestamps.begin() != m_Timestamp;i++)
+  {
     m_Timestamp--;
+  }
   return true;
 }
 
