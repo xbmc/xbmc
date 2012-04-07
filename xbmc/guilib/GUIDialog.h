@@ -56,6 +56,8 @@ public:
   virtual bool IsModalDialog() const { return m_bModal; };
 
   void SetAutoClose(unsigned int timeoutMs);
+  void ResetAutoClose(void);
+  bool IsAutoClosed(void) const { return m_bAutoClosed; };
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
   virtual bool IsSoundEnabled() const { return m_enableSound; };
 
@@ -74,4 +76,5 @@ protected:
   bool m_enableSound;
   unsigned int m_showStartTime;
   unsigned int m_showDuration;
+  bool m_bAutoClosed;
 };
