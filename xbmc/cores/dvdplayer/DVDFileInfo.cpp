@@ -203,11 +203,11 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            int nWidth = g_advancedSettings.m_thumbSize;
+            unsigned int nWidth = g_advancedSettings.m_thumbSize;
             double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
             if(hint.forced_aspect && hint.aspect != 0)
               aspect = hint.aspect;
-            int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
+            unsigned int nHeight = (unsigned int)((double)g_advancedSettings.m_thumbSize / aspect);
 
             DllSwScale dllSwScale;
             dllSwScale.Load();
@@ -225,7 +225,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
               dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
               dllSwScale.sws_freeContext(context);
 
-              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, 0, 0, 0, strTarget);
+              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, 0, nWidth, nHeight, strTarget);
               bOk = true;
             }
 

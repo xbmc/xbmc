@@ -44,13 +44,13 @@ public:
 
   /*! \brief Cache a texture, resizing, rotating and flipping as needed, and saving as a JPG or PNG
    \param texture a pointer to a CBaseTexture
-   \param max_width maximum width in pixels of cached version
-   \param max_height maximum height in pixels of cached version
+   \param dest_width [in/out] maximum width in pixels of cached version - replaced with actual cached width
+   \param dest_height [in/out] maximum height in pixels of cached version - replaced with actual cached height
    \param dest the output cache file
    \return true if successful, false otherwise
    */
-  static bool CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest);
-  static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t max_width, uint32_t max_height, const std::string &dest);
+  static bool CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
+  static bool CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest);
 
 private:
   static bool CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height);

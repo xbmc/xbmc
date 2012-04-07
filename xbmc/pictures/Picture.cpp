@@ -166,26 +166,26 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
-bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest)
+bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
 {
   return CacheTexture(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
-                      texture->GetOrientation(), max_width, max_height, dest);
+                      texture->GetOrientation(), dest_width, dest_height, dest);
 }
 
-bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t max_width, uint32_t max_height, const std::string &dest)
+bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
 {
   // if no max width or height is specified, don't resize
-  if (max_width == 0)
-    max_width = width;
-  if (max_height == 0)
-    max_height = height;
+  if (dest_width == 0)
+    dest_width = width;
+  if (dest_height == 0)
+    dest_height = height;
 
-  if (width > max_width || height > max_height || orientation)
+  if (width > dest_width || height > dest_height || orientation)
   {
     bool success = false;
 
-    unsigned int dest_width = std::min(width, max_width);
-    unsigned int dest_height = std::min(height, max_height);
+    dest_width = std::min(width, dest_width);
+    dest_height = std::min(height, dest_height);
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
@@ -205,6 +205,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   }
   else
   { // no orientation needed
+    dest_width = width;
+    dest_height = height;
     return CreateThumbnailFromSurface(pixels, width, height, pitch, dest);
   }
   return false;
