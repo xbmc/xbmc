@@ -157,6 +157,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoPercentSeekBackwardBig;
     CStdString m_videoPPFFmpegDeint;
     CStdString m_videoPPFFmpegPostProc;
+    bool m_videoVDPAUtelecine;
+    bool m_videoVDPAUdeintSkipChromaHD;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -172,7 +174,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
-    bool  m_videoVDPAUScaling;
+    int   m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
     bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;

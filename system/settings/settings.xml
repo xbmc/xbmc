@@ -375,6 +375,16 @@
           <level>2</level>
           <default>true</default>
         </setting>
+        <setting id="videoplayer.usevdpaumixer" type="boolean" label="13437" help="36421">
+          <visible>HAVE_LIBVDPAU</visible>
+          <level>2</level>
+          <default>true</default>
+          <control>
+            <dependencies>
+              <dependency type="enable" setting="videoplayer.usevdpau" operator="is">true</dependency> <!-- USE VDPAU -->
+            </dependencies>
+          </control>
+        </setting>
         <setting id="videoplayer.usevaapi" type="boolean" label="13426" help="36156">
           <requirement>HAVE_LIBVA</requirement>
           <level>2</level>

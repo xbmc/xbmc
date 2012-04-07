@@ -29,7 +29,6 @@
 #include "DllAvFilter.h"
 #include "DllPostProc.h"
 
-class CVDPAU;
 class CCriticalSection;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec

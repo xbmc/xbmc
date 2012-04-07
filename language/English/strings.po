@@ -5791,7 +5791,17 @@ msgctxt "#13436"
 msgid "Allow hardware acceleration (libstagefright)"
 msgstr ""
 
-#empty strings from id 13437 to 13499
+#: system/settings/settings.xml
+msgctxt "#13437"
+msgid "Allow Vdpau OpenGL interop"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13438"
+msgid "Allow Vdpau OpenGL interop YUV"
+msgstr ""
+
+#empty strings from id 13439 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"
@@ -6874,7 +6884,7 @@ msgid "Software Blend"
 msgstr ""
 
 msgctxt "#16325"
-msgid "Auto - ION Optimised"
+msgid "VDPAU - Bob"
 msgstr ""
 
 #empty strings from id 16326 to 16399
@@ -14186,7 +14196,12 @@ msgctxt "#36420"
 msgid "No info available yet."
 msgstr ""
 
-#empty strings from id 36421 to 36499
+#: system/settings/settings.xml
+msgctxt "#36421"
+msgid "Bypassing VDPAU mixer saves resources on low power systems but slightly reduces picture quality"
+msgstr ""
+
+#empty strings from id 36422 to 36499
 #end reservation
 
 #: system/settings/settings.xml
