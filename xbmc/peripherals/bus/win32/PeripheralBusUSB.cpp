@@ -96,6 +96,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
       SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, NULL, 0, &required, NULL);
 
+      if (buffer != NULL) delete[] buffer;
       buffer = new TCHAR[required];
       devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA) buffer;
       devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
