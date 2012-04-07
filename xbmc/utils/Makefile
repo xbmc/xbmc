@@ -3,7 +3,7 @@ SRCS=AlarmClock.cpp \
      Archive.cpp \
      AsyncFileCopy.cpp \
      AutoPtrHandle.cpp \
-		 Base64.cpp \
+     Base64.cpp \
      BitstreamStats.cpp \
      CharsetConverter.cpp \
      CPUInfo.cpp \
@@ -23,7 +23,7 @@ SRCS=AlarmClock.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
      HttpParser.cpp \
-		 HttpResponse.cpp \
+     HttpResponse.cpp \
      InfoLoader.cpp \
      JobManager.cpp \
      JSONVariantParser.cpp \
