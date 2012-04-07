@@ -98,6 +98,14 @@ public:
   bool RemoveAddonFromBlacklist(const CStdString& addonID,
                                 const CStdString& version);
 
+  /*! \brief Arbirtary queries are disabled for this database.
+   */
+  virtual bool GetArbitraryQuery(const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, CStdString&) { return false; }
+  virtual bool ArbitraryExec(const CStdString& strExec) { return false; }
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);

@@ -62,6 +62,14 @@ public:
   uint32_t GetProgramInfo(CFileItem *item);
   bool AddProgramInfo(CFileItem *item, unsigned int titleID);
 
+  /*! \brief Arbirtary queries are disabled for this database.
+   */
+  virtual bool GetArbitraryQuery(const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, const CStdString&,
+                                 const CStdString&, CStdString&) { return false; }
+  virtual bool ArbitraryExec(const CStdString& strExec) { return false; }
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
