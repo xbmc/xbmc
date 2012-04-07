@@ -53,6 +53,7 @@ SRCS=AlarmClock.cpp \
      StreamUtils.cpp \
      StringUtils.cpp \
      SystemInfo.cpp \
+     TextSearch.cpp \
      TimeSmoother.cpp \
      TimeUtils.cpp \
      TuxBoxUtil.cpp \

@@ -1733,6 +1733,9 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
       <Filter>utils</Filter>
     </ClCompile>
