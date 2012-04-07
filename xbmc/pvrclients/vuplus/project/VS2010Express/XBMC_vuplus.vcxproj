@@ -34,8 +34,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>
-    </LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <LibraryPath>..\..\..\..\..\addons\pvr.vuplus\;$(LibraryPath)</LibraryPath>
     <OutDir>..\..\..\..\..\addons\pvr.vuplus\</OutDir>
     <TargetName>XBMC_vuplus_win32</TargetName>
@@ -43,7 +42,7 @@
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(SolutionDir)\..\..\xbmc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)\addons\pvr.vuplus\</OutDir>
     <TargetName>XBMC_vuplus_win32</TargetName>
     <TargetExt>.pvr</TargetExt>
@@ -51,7 +50,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>_USE_32BIT_TIME_T;__STDC_CONSTANT_MACROS;__WINDOWS__;_WINSOCKAPI_;WIN32;_DEBUG;_USRDLL;CURL_STATICLIB;XBMCADDONVUPLUS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;_WINSOCKAPI_;WIN32;_DEBUG;_USRDLL;CURL_STATICLIB;XBMCADDONVUPLUS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -73,19 +72,22 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>_WINSOCKAPI_;WIN32;NDEBUG;_WINDOWS;_USRDLL;XBMCADDONVUPLUS_EXPORTS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>_USE_32BIT_TIME_T;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;_WINSOCKAPI_;WIN32;NDEBUG;_USRDLL;CURL_STATICLIB;XBMCADDONVUPLUS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>$(ProjectDir)\include\;$(ProjectDir)\include\xbmc\;$(ProjectDir)\addons\library.xbmc.pvr\;$(ProjectDir)\addons\library.xbmc.addon\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <OptimizeReferences>
+      </OptimizeReferences>
       <AdditionalDependencies>libcurl.lib;advapi32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

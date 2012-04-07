@@ -1,9 +1,9 @@
 #pragma once 
 
-#include "../../../lib/platform/util/StdString.h"
+#include "../platform/util/StdString.h"
 #include "xmlParser.h"
 #include "client.h"
-#include "../../../lib/platform/threads/threads.h"
+#include "../platform/threads/threads.h"
     
 struct VuWebResponse {
   char *response;
@@ -121,10 +121,13 @@ private:
   int m_iNumRecordings;
   int m_iNumChannelGroups;
   int m_iCurrentChannel;
+  unsigned int m_iUpdateTimer;
   std::vector<VuChannel> m_channels;
   std::vector<VuTimer> m_timers;
   std::vector<VuRecording> m_recordings;
   std::vector<VuChannelGroup> m_groups;
+  std::vector<std::string> m_locations;
+
   bool m_bInitial;
 
   PLATFORM::CMutex m_mutex;
@@ -144,6 +147,7 @@ private:
   bool LoadChannels(CStdString strServerReference, CStdString strGroupName);
   bool LoadChannels();
   bool LoadChannelGroups();
+  bool LoadLocations();
 
   // helper functions
   static bool GetInt(XMLNode xRootNode, const char* strTag, int& iIntValue);
@@ -174,6 +178,7 @@ public:
   PVR_ERROR AddTimer(const PVR_TIMER &timer);
   PVR_ERROR UpdateTimer(const PVR_TIMER &timer);
   PVR_ERROR DeleteTimer(const PVR_TIMER &timer);
+  bool GetRecordingFromLocation(PVR_HANDLE handle, CStdString strRecordingFolder);
   unsigned int GetRecordingsAmount();
   PVR_ERROR    GetRecordings(PVR_HANDLE handle);
   PVR_ERROR    DeleteRecording(const PVR_RECORDING &recinfo);

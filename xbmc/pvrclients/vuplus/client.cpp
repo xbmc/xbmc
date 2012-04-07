@@ -43,13 +43,15 @@ int         g_iPortWeb                = DEFAULT_WEB_PORT;
 int         g_iUpdateInterval         = DEFAULT_UPDATE_INTERVAL;
 std::string g_strUsername             = "";
 std::string g_strPassword             = "";
-std::string g_szUserPath             = "";
+std::string g_szUserPath              = "";
 std::string g_strIconPath             = "";
+std::string g_strRecordingPath        = "";
 bool        g_bShowTimersCompleted    = false;
 bool        g_bAutomaticTimerlistCleanup = false;
 bool        g_bZap                    = false;
 bool        g_bCheckForGroupUpdates   = true;
 bool        g_bCheckForChannelUpdates = true;
+bool        g_bOnlyCurrentLocation    = false;
 std::string g_szClientPath            = "";
 std::string g_strChannelDataPath      = "/tmp/";
 
@@ -78,6 +80,13 @@ void ADDON_ReadSettings(void)
   else
     g_strUsername = "";
   buffer[0] = 0; /* Set the end of string */
+  
+  /* read setting "recordingpath" from settings.xml */
+  if (XBMC->GetSetting("recordingpath", buffer))
+    g_strRecordingPath = buffer;
+  else
+    g_strRecordingPath = "";
+
 
   /* read setting "pass" from settings.xml */
   if (XBMC->GetSetting("pass", buffer))
@@ -92,6 +101,10 @@ void ADDON_ReadSettings(void)
   /* read setting "webport" from settings.xml */
   if (!XBMC->GetSetting("webport", &g_iPortWeb))
     g_iPortWeb = DEFAULT_WEB_PORT;
+
+  /* read setting "onlycurrent" from settings.xml */
+  if (!XBMC->GetSetting("onlycurrent", &g_bOnlyCurrentLocation))
+    g_bOnlyCurrentLocation = false;
   
   /* read setting "showcompleted" from settings.xml */
   if (!XBMC->GetSetting("showcompleted", &g_bShowTimersCompleted))
