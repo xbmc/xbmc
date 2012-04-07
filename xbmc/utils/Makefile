@@ -35,6 +35,7 @@ SRCS=AlarmClock.cpp \
      log.cpp \
      md5.cpp \
      Mime.cpp \
+     Observer.cpp \
      PCMAmplifier.cpp \
      PCMRemap.cpp \
      PerformanceSample.cpp \
