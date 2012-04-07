@@ -756,9 +756,8 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   // check if we should read from subtitle demuxer
   if(m_dvdPlayerSubtitle.AcceptsData() && m_pSubtitleDemuxer )
   {
-    int time = DVD_TIME_TO_MSEC(m_clock.GetClock());
-    m_pSubtitleDemuxer->SeekTime(time, false);
-    packet = m_pSubtitleDemuxer->Read();
+    if(m_pSubtitleDemuxer)
+      packet = m_pSubtitleDemuxer->Read();
 
     if(packet)
     {
@@ -1974,6 +1973,11 @@ void CDVDPlayer::HandleMessages()
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {
           CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
+          if(m_pSubtitleDemuxer)
+          {
+            if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
+              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
+          }
           FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
         }
         else
