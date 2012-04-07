@@ -1378,7 +1378,7 @@
   <string id="14082">EXIF Bildinformationen zeigen</string>
   <string id="14083">Benutze Vollbild Fenster anstatt echtes Vollbild</string>
   <string id="14084">Reihenfolge der Lieder nach Auswahl</string>
-  <string id="14085">Musik CDs automatisch wiedergeben</string>
+  <string id="14085"></string>
   <string id="14086">Wiedergabe</string>
   <string id="14087">DVDs</string>
   <string id="14088">DVDs automatisch wiedergeben</string>
@@ -1389,6 +1389,9 @@
   <string id="14093">Sicherheit</string>
   <string id="14094">Eingabegeräte</string>
   <string id="14095">Energiesparen</string>
+  <string id="14096">Rippen</string>
+  <string id="14097">Aktion beim Einlegen einer Audio CD</string>
+  <string id="14098">Wiedergeben</string>
   <string id="14099">Disk auswerfen wenn Rippen fertig gestellt wurde</string>
 
   <string id="15015">Entfernen</string>
