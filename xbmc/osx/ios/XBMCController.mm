@@ -306,10 +306,36 @@ IOSEAGLView  *m_glView;
   
 }
 //--------------------------------------------------------------
+- (void)postMouseMotionEvent:(CGPoint)point
+{
+  XBMC_Event newEvent;
+
+  point.x *= screenScale;
+  point.y *= screenScale;
+
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_MOUSEMOTION;
+  newEvent.motion.type = XBMC_MOUSEMOTION;
+  newEvent.motion.which = 0;
+  newEvent.motion.state = 0;      
+  newEvent.motion.x = point.x;
+  newEvent.motion.y = point.y;
+  newEvent.motion.xrel = 0;
+  newEvent.motion.yrel = 0;
+  CWinEventsIOS::MessagePush(&newEvent);
+}
+//--------------------------------------------------------------
 - (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
 {
   if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
+    if (sender.state == UIGestureRecognizerStateBegan)
+    {
+      CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+      [self postMouseMotionEvent:point];
+    }
+
     if (sender.state == UIGestureRecognizerStateEnded)
     {
       [self handleDoubleFingerSingleTap:sender];
@@ -326,6 +352,8 @@ IOSEAGLView  *m_glView;
     if( [touches count] == 1 && [touch tapCount] == 1)
     {
       lastGesturePoint = [touch locationInView:m_glView];    
+      [self postMouseMotionEvent:lastGesturePoint];
+
       lastGesturePoint.x *= screenScale;
       lastGesturePoint.y *= screenScale;  
       XBMC_Event newEvent;
