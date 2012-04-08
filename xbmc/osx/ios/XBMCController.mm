@@ -277,33 +277,38 @@ IOSEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (IBAction)handleSwipeLeft:(UISwipeGestureRecognizer *)sender 
 {
-  [self sendKey:XBMCK_BACKSPACE];
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    [self sendKey:XBMCK_BACKSPACE];
+  }
 }
 //--------------------------------------------------------------
 - (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
-  CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-  point.x *= screenScale;
-  point.y *= screenScale;
-  //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
-  
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-  
-  newEvent.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.button = XBMC_BUTTON_RIGHT;
-  newEvent.button.x = point.x;
-  newEvent.button.y = point.y;
-  
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
-  newEvent.type = XBMC_MOUSEBUTTONUP;
-  newEvent.button.type = XBMC_MOUSEBUTTONUP;
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
-  memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
-  
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];
+    point.x *= screenScale;
+    point.y *= screenScale;
+    //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
+    
+    XBMC_Event newEvent;
+    memset(&newEvent, 0, sizeof(newEvent));
+    
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.button = XBMC_BUTTON_RIGHT;
+    newEvent.button.x = point.x;
+    newEvent.button.y = point.y;
+    
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    newEvent.type = XBMC_MOUSEBUTTONUP;
+    newEvent.button.type = XBMC_MOUSEBUTTONUP;
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
+  }
 }
 //--------------------------------------------------------------
 - (void)postMouseMotionEvent:(CGPoint)point
@@ -379,20 +384,23 @@ IOSEAGLView  *m_glView;
 //--------------------------------------------------------------
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
 {
-  UITouch *touch = [touches anyObject];
-  
-  if( [touches count] == 1 && [touch tapCount] == 1 )
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
-    XBMC_Event newEvent = lastEvent;
+    UITouch *touch = [touches anyObject];
     
-    newEvent.type = XBMC_MOUSEBUTTONUP;
-    newEvent.button.type = XBMC_MOUSEBUTTONUP;
-    newEvent.button.button = XBMC_BUTTON_LEFT;
-    newEvent.button.x = lastGesturePoint.x;
-    newEvent.button.y = lastGesturePoint.y;
-    CWinEventsIOS::MessagePush(&newEvent);    
-    
-    memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
+    if( [touches count] == 1 && [touch tapCount] == 1 )
+    {
+      XBMC_Event newEvent = lastEvent;
+      
+      newEvent.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.type = XBMC_MOUSEBUTTONUP;
+      newEvent.button.button = XBMC_BUTTON_LEFT;
+      newEvent.button.x = lastGesturePoint.x;
+      newEvent.button.y = lastGesturePoint.y;
+      CWinEventsIOS::MessagePush(&newEvent);    
+      
+      memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
+    }
   }
 }
 //--------------------------------------------------------------
