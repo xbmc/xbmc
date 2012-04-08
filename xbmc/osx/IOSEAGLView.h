@@ -26,7 +26,7 @@
 // This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
 // The view content is basically an EAGL surface you render your OpenGL scene into.
 // Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
-@interface XBMCEAGLView : UIView
+@interface IOSEAGLView : UIView
 {    
 @private
   EAGLContext *context;
@@ -45,17 +45,22 @@
   BOOL pause;
   NSConditionLock* animationThreadLock;
   NSThread* animationThread;
+  UIScreen *currentScreen;
 
 	// Use of the CADisplayLink class is the preferred method for controlling the animation timing.
 	// CADisplayLink will link to the main display and fire every vsync when added to a given run-loop.
 	CADisplayLink *displayLink;
   CFTimeInterval displayFPS;
 	BOOL displayLinkSupported;
+  BOOL framebufferResizeRequested;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property (readonly, nonatomic, getter=isXBMCAlive) BOOL xbmcAlive;
 @property (readonly, nonatomic, getter=isPause) BOOL pause;
+@property (readonly, getter=getCurrentScreen) UIScreen *currentScreen;
+@property BOOL framebufferResizeRequested;
 
+- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
 - (void) initDisplayLink;
 - (void) deinitDisplayLink;
 - (double) getDisplayLinkFPS;
@@ -65,5 +70,6 @@
 - (void) stopAnimation;
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
-
+- (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize;
+- (CGFloat) getScreenScale:(UIScreen *)screen;
 @end
