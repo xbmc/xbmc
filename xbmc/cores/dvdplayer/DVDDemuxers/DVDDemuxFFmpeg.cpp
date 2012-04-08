@@ -1006,7 +1006,12 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->fAspect = SelectAspect(pStream, &st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
+        st->iOrientation = 0;
 
+        AVDictionaryEntry *rtag = m_dllAvUtil.av_dict_get(pStream->metadata, "rotate", NULL, 0);
+        if (rtag) 
+          st->iOrientation = atoi(rtag->value); 
+        
         if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
         {
           if (pStream->codec->codec_id == CODEC_ID_PROBE)
