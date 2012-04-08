@@ -55,7 +55,7 @@ typedef enum {
     PLT_DOWNLOADER_DOWNLOADING,
     PLT_DOWNLOADER_ERROR,
     PLT_DOWNLOADER_SUCCESS
-} Plt_DowloaderState;
+} Plt_DownloaderState;
 
 /*----------------------------------------------------------------------
 |   PLT_Downloader class
@@ -70,7 +70,7 @@ public:
 
     NPT_Result Start();
     NPT_Result Stop();
-    Plt_DowloaderState GetState() { return m_State; }
+    Plt_DownloaderState GetState() { return m_State; }
 
     // PLT_HttpClientTask method
     NPT_Result ProcessResponse(NPT_Result                    res, 
@@ -85,7 +85,7 @@ private:
     NPT_OutputStreamReference m_Output;
     PLT_TaskManager*          m_TaskManager;
     PLT_HttpDownloadTask*     m_Task;
-    Plt_DowloaderState        m_State;
+    Plt_DownloaderState        m_State;
 };
 
 #endif /* _PLT_DOWNLOADER_H_ */
