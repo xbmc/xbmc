@@ -111,23 +111,163 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
+  CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i",m_nWidth, m_nHeight, res.iScreen);
+#ifndef TARGET_DARWIN_IOS_ATV2
+  SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+#endif//TARGET_DARWIN_IOS_ATV2
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   
   return true;
 }
 
+UIScreenMode *getModeForResolution(int width, int height, int screenIdx)
+{
+  if( screenIdx >= [[UIScreen screens] count])
+    return NULL;
+    
+  UIScreen *aScreen = [[UIScreen screens]objectAtIndex:screenIdx];
+  for ( UIScreenMode *mode in [aScreen availableModes] )
+  {
+    //for main screen also find modes where width and height are
+    //exchanged (because of the 90°degree rotated buildinscreens)
+    if((mode.size.width == width && mode.size.height == height) || 
+        (screenIdx == 0 && mode.size.width == height && mode.size.height == width))
+    {
+      CLog::Log(LOGDEBUG,"Found matching mode");
+      return mode;
+    }
+  }
+  CLog::Log(LOGERROR,"No matching mode found!");
+  return NULL;
+}
+
+bool CWinSystemIOS::SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx)
+{
+  bool ret = false;
+  // SwitchToVideoMode will not return until the display has actually switched over.
+  // This can take several seconds.
+  if( screenIdx >= GetNumScreens())
+    return false;
+  
+  //get the mode to pass to the controller
+  UIScreenMode *newMode = getModeForResolution(width, height, screenIdx);
+
+  if(newMode)
+  {
+    ret = [g_xbmcController changeScreen:screenIdx withMode:newMode];
+  }
+  return ret;
+}
+
+int CWinSystemIOS::GetNumScreens()
+{
+  return [[UIScreen screens] count];
+}
+
+bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)
+{
+  // Figure out the screen size. (default to main screen)
+  if(screenIdx >= GetNumScreens())
+    return false;
+  UIScreen *screen = [[UIScreen screens] objectAtIndex:screenIdx];
+  CGSize screenSize = [screen currentMode].size;
+  *w = screenSize.width;
+  *h = screenSize.height;
+  *fps = 0.0;
+  //if current mode is 0x0 (happens with external screens which arn't active)
+  //then use the preferred mode
+  if(*h == 0 || *w ==0)
+  {
+    UIScreenMode *firstMode = [screen preferredMode];
+    *w = firstMode.size.width;
+    *h = firstMode.size.height;
+  }
+  
+  //for mainscreen use the eagl bounds
+  //because mainscreen is build in
+  //in 90° rotated
+  if(screenIdx == 0)
+  {
+    *w = [g_xbmcController getScreenSize].width;
+    *h = [g_xbmcController getScreenSize].height;
+  }
+  CLog::Log(LOGDEBUG,"Current resolution Screen: %i with %i x %i",screenIdx, *w, *h);  
+  return true;
+}
+
 void CWinSystemIOS::UpdateResolutions()
 {
+  // Add display resolution
+  int w, h;
+  double fps;
   CWinSystemBase::UpdateResolutions();
+
+  //first screen goes into the current desktop mode
+  if(GetScreenResolution(&w, &h, &fps, 0))
+  {
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
+  }
+
+#ifndef TARGET_DARWIN_IOS_ATV2
+  //see resolution.h enum RESOLUTION for how the resolutions
+  //have to appear in the g_settings.m_ResInfo vector
+  //add the desktop resolutions of the other screens
+  for(int i = 1; i < GetNumScreens(); i++)
+  {
+    RESOLUTION_INFO res;      
+    //get current resolution of screen i
+    if(GetScreenResolution(&w, &h, &fps, i))
+    {
+      UpdateDesktopResolution(res, i, w, h, fps);
+      g_settings.m_ResInfo.push_back(res);
+    }
+  }
   
-  CGSize screensize = [g_xbmcController getScreenSize];
-  //double fps = [g_xbmcController getDisplayLinkFPS];
-  double fps = 0;
+  //now just fill in the possible reolutions for the attached screens
+  //and push to the m_ResInfo vector
+  FillInVideoModes();
+#endif //TARGET_DARWIN_IOS_ATV2
+}
 
-  //NSLog(@"%s UpdateResolutions width=%f, height=%f, fps=%f", 
-	//	__PRETTY_FUNCTION__, screensize.width, screensize.height, fps);
+void CWinSystemIOS::FillInVideoModes()
+{
+  // Add full screen settings for additional monitors
+  int numDisplays = GetNumScreens();
 
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, screensize.width, screensize.height, fps);
+  for (int disp = 0; disp < numDisplays; disp++)
+  {
+    RESOLUTION_INFO res;
+    int w, h;
+    // atm we don't get refreshrate info from iOS
+    // but this may change in the future. In that case
+    // we will adapt this code for filling some
+    // usefull info into this local var :)
+    double refreshrate = 0.0;
+    //screen 0 is mainscreen - 1 has to be the external one...
+    UIScreen *aScreen = [[UIScreen screens]objectAtIndex:disp];
+    //found external screen
+    for ( UIScreenMode *mode in [aScreen availableModes] )
+    {
+      w = mode.size.width;
+      h = mode.size.height;
+      UpdateDesktopResolution(res, disp, w, h, refreshrate);
+      CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d\n", disp, w, h);      
+
+      //overwrite the mode str because  UpdateDesktopResolution adds a
+      //"Full Screen". Since the current resolution is there twice
+      //this would lead to 2 identical resolution entrys in the guisettings.xml.
+      //That would cause problems with saving screen overscan calibration
+      //because the wrong entry is picked on load.
+      //So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
+      //in UpdateResolutions. And on all othere resolutions make a unique
+      //mode str by doing it without appending "Full Screen".
+      //this is what linux does - though it feels that there shouldn't be
+      //the same resolution twice... - thats why i add a FIXME here.
+      res.strMode.Format("%dx%d @ %.2f", w, h, refreshrate);
+      g_graphicsContext.ResetOverscan(res);
+      g_settings.m_ResInfo.push_back(res);
+    }
+  }
 }
 
 bool CWinSystemIOS::IsExtSupported(const char* extension)
