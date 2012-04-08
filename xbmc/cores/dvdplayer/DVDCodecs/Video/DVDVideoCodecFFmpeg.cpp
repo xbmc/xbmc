@@ -162,6 +162,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dllAvFilter.avfilter_register_all();
 
   m_bSoftware     = hints.software;
+  m_iOrientation  = hints.orientation;
 
   m_formats.push_back(PIX_FMT_YUV420P);
   m_formats.push_back(PIX_FMT_YUVJ420P);
