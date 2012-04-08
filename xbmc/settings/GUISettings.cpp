@@ -368,12 +368,6 @@ void CGUISettings::Initialize()
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
 
-#if (defined(__APPLE__) && defined(__arm__))
-  // define but hide display, resolution and blankdisplays settings on atv2/ios, they are not user controlled
-  AddInt(NULL, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
-  AddInt(NULL, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
-  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);
-#else
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
@@ -409,9 +403,12 @@ void CGUISettings::Initialize()
   showSetting = false;
 #endif
   AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+#ifdef TARGET_DARWIN_IOS
+  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);  
+#else
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
-  AddSeparator(vs, "videoscreen.sep1");
 #endif
+  AddSeparator(vs, "videoscreen.sep1");
 #endif
 
   map<int,int> vsync;
@@ -446,13 +443,8 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
-#if (defined(__APPLE__) && defined(__arm__))
-  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.ac3passthrough", 364, false);
-  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.dtspassthrough", 254, false);
-#else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
-#endif
   AddBool(NULL, "audiooutput.passthroughaac", 299, false);
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
