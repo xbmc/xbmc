@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -2368,6 +2368,15 @@
   <string id="34401">Videofilter/-scaler konnte nicht initialisiert werden! Verwende Bilineares Scaling</string>
   <string id="34402">Audiogerät konnte nicht initialisiert werden</string>
   <string id="34403">Audio-Einstellungen überprüfen</string>
+  
+  <!-- Beschreibung für den Touchscreen, bei der Benutzung des TV-Out Features mit iDevices -->
+  <string id="34404">Benutze folgende Gesten zur Navigation:</string>
+  <string id="34405">1 Finger: links,rechts,hoch,runter wischen (cursor Tasten)</string>
+  <string id="34406">2 Finger: links wischen für Backspace</string>
+  <string id="34407">1 Finger: tippen für Enter</string>
+  <string id="34408">2 Finger: tippen für Context Menü</string>
+
+  
   <string id="35000">Geräte</string>
 
   <string id="35001">HID-Gerät</string>
