@@ -157,6 +157,15 @@ IOSEAGLView  *m_glView;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
   [self.view addGestureRecognizer:doubleFingerSingleTap];
   [doubleFingerSingleTap release];
+
+  //1 finger single long tab - right mouse - alernative
+  UITapGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+                                                        initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+  singleFingerSingleLongTap.delaysTouchesBegan = YES;
+  singleFingerSingleLongTap.delaysTouchesEnded = YES;
+  [self.view addGestureRecognizer:singleFingerSingleLongTap];
+  [singleFingerSingleLongTap release];
+
   
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
@@ -295,6 +304,17 @@ IOSEAGLView  *m_glView;
   
   memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
   
+}
+//--------------------------------------------------------------
+- (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+      [self handleDoubleFingerSingleTap:sender];
+    }
+  }
 }
 //--------------------------------------------------------------
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
