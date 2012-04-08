@@ -49,28 +49,14 @@ class FileReader
     virtual long OpenFile();
     virtual long CloseFile();
     virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes);
-    virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod);
-    virtual long get_ReadOnly(bool *ReadOnly);
-    virtual long get_DelayMode(bool *DelayMode);
-    virtual long set_DelayMode(bool DelayMode);
-    virtual long get_ReaderMode(unsigned short *ReaderMode);
-    virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
-    long GetStartPosition(int64_t *lpllpos);
     virtual bool IsFileInvalid();
     virtual unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual int64_t GetFilePointer();
-    virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
-    virtual int64_t getFilePointer();
-    virtual int64_t getBufferPointer();
-    virtual void setBufferPointer();
     virtual void OnZap(void);
-
-    void SetDebugOutput(bool bDebugOutput);
-
     virtual int64_t GetFileSize();
     virtual bool IsBuffer(){return false;};
-    virtual bool HasMoreData(int bytes){return false;};
-    virtual int HasData(){return 0; } ;
+
+    void SetDebugOutput(bool bDebugOutput);
 
   protected:
 #if defined(TARGET_WINDOWS)

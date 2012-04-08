@@ -160,16 +160,6 @@ bool MultiFileReader::IsFileInvalid()
   return m_TSBufferFile.IsFileInvalid();
 }
 
-long MultiFileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
-{
-//  RefreshTSBufferFile();
-//  CheckPointer(pStartPosition,E_POINTER);
-//  CheckPointer(pLength,E_POINTER);
-  *pStartPosition = m_startPosition;
-  *pLength = (int64_t)(m_endPosition - m_startPosition);
-  return S_OK;
-}
-
 unsigned long MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
 //  RefreshTSBufferFile();
@@ -306,30 +296,6 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
   return S_OK;
 }
 
-long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod)
-{
-  //If end method then we want llDistanceToMove to be the end of the buffer that we read.
-  if (dwMoveMethod == FILE_END)
-    llDistanceToMove = 0 - llDistanceToMove - lDataLength;
-
-  SetFilePointer(llDistanceToMove, dwMoveMethod);
-
-  return Read(pbData, lDataLength, dwReadBytes);
-}
-
-long MultiFileReader::get_ReadOnly(bool *ReadOnly)
-{
-//  CheckPointer(ReadOnly, E_POINTER);
-
-  if (!m_TSBufferFile.IsFileInvalid())
-    return m_TSBufferFile.get_ReadOnly(ReadOnly);
-
-  *ReadOnly = m_bReadOnly;
-  return S_OK;
-}
-        //ensures that there's always a back slash at the end
-//        wPathName[wcslen(wPathName)] = char(92*(int)(wPathName[wcslen(wPathName)-1]!=char(92)));
-
 #if ULONG_MAX == 4294967295
 #define TSBUFFERLONG long
 #elif UINT_MAX == 4294967295
@@ -464,10 +430,10 @@ long MultiFileReader::RefreshTSBufferFile()
   }
 
   //randomly park the file pointer to help minimise HDD clogging
-  if(currentPosition&1)
-    m_TSBufferFile.SetFilePointer(0, FILE_BEGIN);
-  else
-    m_TSBufferFile.SetFilePointer(0, FILE_END);
+  //if(currentPosition&1)
+  //  m_TSBufferFile.SetFilePointer(0, FILE_BEGIN);
+  //else
+  //  m_TSBufferFile.SetFilePointer(0, FILE_END);
 
   if ((m_filesAdded != filesAdded) || (m_filesRemoved != filesRemoved))
   {
@@ -729,60 +695,6 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 #endif
 }
 
-long MultiFileReader::get_DelayMode(bool *DelayMode)
-{
-  *DelayMode = m_bDelay;
-  return S_OK;
-}
-
-long MultiFileReader::set_DelayMode(bool DelayMode)
-{
-  m_bDelay = DelayMode;
-  return S_OK;
-}
-
-long MultiFileReader::get_ReaderMode(unsigned short *ReaderMode)
-{
-  *ReaderMode = TRUE;
-  return S_OK;
-}
-
-unsigned long MultiFileReader::setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
-{
-  //Get the file information
-  int64_t fileStart, fileEnd, fileLength;
-  GetFileSize(&fileStart, &fileLength);
-  fileEnd = (int64_t)(fileLength + fileStart);
-  if (dwMoveMethod == FILE_BEGIN)
-  {
-    return SetFilePointer((int64_t)min(fileEnd,(int64_t)(llDistanceToMove + fileStart)), FILE_BEGIN);
-  }
-  else
-  {
-    return SetFilePointer((int64_t)max((int64_t)-fileLength, llDistanceToMove), FILE_END);
-  }
-}
-
-int64_t MultiFileReader::getFilePointer()
-{
-  int64_t fileStart, fileLength;
-
-  GetFileSize(&fileStart, &fileLength);
-
-  return (int64_t)(GetFilePointer() - fileStart);
-}
-
-int64_t MultiFileReader::getBufferPointer()
-{
-  return m_llBufferPointer;
-}
-
-void MultiFileReader::setBufferPointer()
-{
-  m_llBufferPointer = getFilePointer();
-}
-
-
 int64_t MultiFileReader::GetFileSize()
 {
   RefreshTSBufferFile();
@@ -841,5 +753,10 @@ size_t MultiFileReader::WcsToMbs(char *s, const void *w, size_t n)
   return (i);
 #else
 #endif
+}
+
+void MultiFileReader::OnZap(void)
+{
+  SetFilePointer(0, FILE_END);
 }
 #endif //TSREADER
