@@ -112,8 +112,9 @@ bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_bFullScreen = fullScreen;
 
   CLog::Log(LOGDEBUG, "About to switch to %i x %i on screen %i",m_nWidth, m_nHeight, res.iScreen);
+#ifndef TARGET_DARWIN_IOS_ATV2
   SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-
+#endif//TARGET_DARWIN_IOS_ATV2
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   
   return true;
@@ -206,7 +207,8 @@ void CWinSystemIOS::UpdateResolutions()
   {
     UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
   }
-  
+
+#ifndef TARGET_DARWIN_IOS_ATV2
   //see resolution.h enum RESOLUTION for how the resolutions
   //have to appear in the g_settings.m_ResInfo vector
   //add the desktop resolutions of the other screens
@@ -224,6 +226,7 @@ void CWinSystemIOS::UpdateResolutions()
   //now just fill in the possible reolutions for the attached screens
   //and push to the m_ResInfo vector
   FillInVideoModes();
+#endif //TARGET_DARWIN_IOS_ATV2
 }
 
 void CWinSystemIOS::FillInVideoModes()
