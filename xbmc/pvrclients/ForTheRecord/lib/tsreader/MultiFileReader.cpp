@@ -59,28 +59,12 @@ MultiFileReader::MultiFileReader():
   m_TSFileId = 0;
   m_bReadOnly = 1;
   m_bDelay = 0;
-  m_llBufferPointer = 0;
-  m_cachedFileSize = 0;
   m_bDebugOutput = false;
 }
 
 MultiFileReader::~MultiFileReader()
 {
   //CloseFile called by ~FileReader
-/*  USES_CONVERSION;
-
-  std::vector<MultiFileReaderFile *>::iterator it = m_tsFiles.begin();
-  for ( ; it < m_tsFiles.end() ; it++ )
-  {
-    if((*it)->filename)
-    {
-      DeleteFile(W2T((*it)->filename));
-      delete[] (*it)->filename;
-    }
-
-    delete *it;
-  };
-*/
 }
 
 
@@ -132,7 +116,6 @@ long MultiFileReader::OpenFile()
   }
 
   m_currentPosition = 0;
-  m_llBufferPointer = 0;
 
   return hr;
 }
@@ -151,7 +134,6 @@ long MultiFileReader::CloseFile()
     delete (*it);
   }
   m_TSFileId = 0;
-  m_llBufferPointer = 0;
   return hr;
 }
 
@@ -204,7 +186,6 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     return S_FALSE;
 
   RefreshTSBufferFile();
-  RefreshFileSize();
 
   if (m_currentPosition < m_startPosition)
   {
@@ -618,10 +599,6 @@ long MultiFileReader::RefreshTSBufferFile()
       int64_t curPos = m_currentPosition;
       XBMC->Log(LOG_DEBUG, "StartPosition %lli, EndPosition %lli, CurrentPosition %lli\n", stPos, endPos, curPos);
     }
-    // int64_t stPos = m_startPosition;
-    // int64_t endPos = m_endPosition;
-    // int64_t curPos = m_currentPosition;
-    // XBMC->Log(LOG_DEBUG, "StartPosition %lli, EndPosition %lli, CurrentPosition %lli\n", stPos, endPos, curPos);
   }
   else
   {
@@ -632,7 +609,6 @@ long MultiFileReader::RefreshTSBufferFile()
   return S_OK;
 }
 
-//TODO: make OS independent. Currently Windows specific
 long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 {
 #if defined(TARGET_WINDOWS)
@@ -699,25 +675,6 @@ int64_t MultiFileReader::GetFileSize()
 {
   RefreshTSBufferFile();
   return m_endPosition - m_startPosition;
-  //if (m_cachedFileSize==0)
-  //{
-  //  RefreshTSBufferFile();
-  //  RefreshFileSize();
-  //}
-  //return m_cachedFileSize;
-}
-
-void MultiFileReader::RefreshFileSize()
-{
-  int64_t fileLength = 0;
-  std::vector<MultiFileReaderFile *>::iterator it = m_tsFiles.begin();
-  for ( ; it < m_tsFiles.end() ; it++ )
-  {
-    MultiFileReaderFile *file =*it;
-    fileLength+=file->length;
-  }
-  m_cachedFileSize= fileLength;
-  // XBMC->Log(LOG_DEBUG, "%s: m_cachedFileSize %d.", __FUNCTION__, m_cachedFileSize);
 }
 
 // The ts.tsbuffer file will contain 'Windows' wchars which are

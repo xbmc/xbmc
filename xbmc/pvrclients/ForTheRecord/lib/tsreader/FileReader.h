@@ -66,10 +66,8 @@ class FileReader
 #endif
     char*    m_pFileName;           // The filename where we stream
     bool     m_bReadOnly;
-    bool     m_bDelay;
     int64_t  m_fileSize;
     int64_t  m_fileStartPos;
-    int64_t  m_llBufferPointer;
 
     bool     m_bDebugOutput;
 };

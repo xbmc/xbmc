@@ -70,7 +70,6 @@ class MultiFileReader : public FileReader
   protected:
     long RefreshTSBufferFile();
     long GetFileLength(const char* pFilename, int64_t &length);
-    void RefreshFileSize();
     size_t WcsLen(const void *str);
     size_t WcsToMbs(char *s, const void *w, size_t n);
 
@@ -79,7 +78,6 @@ class MultiFileReader : public FileReader
     int64_t m_startPosition;
     int64_t m_endPosition;
     int64_t m_currentPosition;
-    int64_t m_llBufferPointer;  
     long m_filesAdded;
     long m_filesRemoved;
 
@@ -90,7 +88,6 @@ class MultiFileReader : public FileReader
     bool     m_bReadOnly;
     bool     m_bDelay;
     bool     m_bDebugOutput;
-    int64_t  m_cachedFileSize;
 };
 
 #endif
