@@ -25,6 +25,9 @@
 #import "WinEventsIOS.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
+#include "threads/Event.h"
+#include "Application.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -32,7 +35,7 @@
 #import <BackRow/BackRow.h>
 
 #import "XBMCController.h"
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
 #import "XBMCDebugHelpers.h"
 
 //start repeating after 0.5s
@@ -170,12 +173,12 @@ XBMCController *g_xbmcController;
 // notification messages
 extern NSString* kBRScreenSaverActivated;
 extern NSString* kBRScreenSaverDismissed;
-
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface XBMCController (PrivateMethods)
-XBMCEAGLView  *m_glView;
 NSTimer       *m_keyTimer;
+IOSEAGLView  *m_glView;
+
 int           m_screensaverTimeout;
 int           m_systemsleepTimeout;
 
@@ -188,6 +191,7 @@ int           m_systemsleepTimeout;
 //
 //
 @implementation XBMCController
+
 /*
 + (XBMCController*) sharedInstance
 {
@@ -244,6 +248,11 @@ int           m_systemsleepTimeout;
 
   return screensize;
 }
+- (void) sendKey: (XBMCKey) key
+{
+  //empty because its not used here. Only implemented for getting rid
+  //of "may not respond to selector" compile warnings in IOSExternalTouchController
+}
 
 
 - (id) init
@@ -262,11 +271,9 @@ int           m_systemsleepTimeout;
     selector: @selector(observeDefaultCenterStuff:)
     name: nil
     object: nil];
-  
-  CGRect interfaceFrame = [BRWindow interfaceFrame];
-  NSLog(@"XBMC: interfaceFrame: %f, %f, %f, %f", interfaceFrame.origin.x, interfaceFrame.origin.y, interfaceFrame.size.width, interfaceFrame.size.height);   
-  //init glview with interfaceframe (might be more the resolution - ios scales for us)
-  m_glView = [[XBMCEAGLView alloc] initWithFrame:interfaceFrame];
+
+  m_glView = [[IOSEAGLView alloc] initWithFrame:[BRWindow interfaceFrame] withScreen:[UIScreen mainScreen]];
+  [[IOSScreenManager sharedInstance] setView:m_glView];
 
   g_xbmcController = self;
 
@@ -278,6 +285,7 @@ int           m_systemsleepTimeout;
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   [m_glView stopAnimation];
   [m_glView release];
+
 
   NSNotificationCenter *center;
   // take us off the default center for our app
@@ -1021,5 +1029,53 @@ int           m_systemsleepTimeout;
   return newEvent;
 }
 
+//--------------------------------------------------------------
+- (void)pauseAnimation
+{
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
+  CWinEventsIOS::MessagePush(&newEvent);
+  
+  /* Give player time to pause */
+  Sleep(2000);
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  [m_glView pauseAnimation];
+  
+}
+//--------------------------------------------------------------
+- (void)resumeAnimation
+{  
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+  CWinEventsIOS::MessagePush(&newEvent);    
+  
+  [m_glView resumeAnimation];
+}
+//--------------------------------------------------------------
+- (void)startAnimation
+{
+  [m_glView startAnimation];
+}
+//--------------------------------------------------------------
+- (void)stopAnimation
+{
+  [m_glView stopAnimation];
+}
+//--------------------------------------------------------------
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode
+{
+  return [[IOSScreenManager sharedInstance] changeScreen: screenIdx withMode: mode];
+}
+//--------------------------------------------------------------
+- (void) activateScreen: (UIScreen *)screen
+{
+}
 @end
 

@@ -2374,6 +2374,13 @@
   <string id="34402">Failed to initialize audio device</string>
   <string id="34403">Check your audiosettings</string>
 
+  <!-- description for the touchscreen when using the tvout feature on iDevices -->
+  <string id="34404">Use gestures for navigation:</string>
+  <string id="34405">1 finger swipe left,right,up,down for cursors</string>
+  <string id="34406">2 finger swipe left for backspace</string>
+  <string id="34407">1 finger single tap for enter</string>
+  <string id="34408">2 finger single tap for contextmenu</string>
+
   <string id="35000">Peripherals</string>
 
   <string id="35001">Generic HID device</string>
