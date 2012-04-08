@@ -38,9 +38,9 @@ WMAcodec::WMAcodec()
   m_bnomoresamples = false;
   m_dmaxwritebuffer = 0;
   m_pStream   = NULL;
-  
+
   ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	m_ISyncReader = NULL;
+  m_ISyncReader = NULL;
 }
 
 WMAcodec::~WMAcodec()
@@ -62,13 +62,13 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   WORD wAudioStreamNum = -1;
   DWORD sizeMediaType;
   DWORD dwStreams = 0;
-  WMT_STREAM_SELECTION	wmtSS = WMT_ON;
+  WMT_STREAM_SELECTION    wmtSS = WMT_ON;
   GUID pguidStreamType;
   WORD wmStreamNum = 0;
 
   hr  = WMCreateSyncReader(NULL, WMT_RIGHT_PLAYBACK, &m_ISyncReader);
-	if(hr!=S_OK)
-	{
+  if(hr!=S_OK)
+  {
     CLog::Log(LOGERROR,"WMAcodec: error creating WMCreateSyncReader");
     return false;
   }
@@ -88,7 +88,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 
   hr = m_ISyncReader->OpenStream(m_pStream);
   if(hr!=S_OK)
-	{
+  {
     CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
     return false;
   }
@@ -96,14 +96,14 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   m_ISyncReader->GetMaxOutputSampleSize(dwStreams, &m_dmaxwritebuffer);
 
   m_ISyncReader->QueryInterface(&wmHeaderInfo);
-  wmHeaderInfo->GetAttributeByName(&wmStreamNum, L"Duration", &wmAttrDataType, (BYTE*)&durationInNano, &lengthDataType ) ;
+  wmHeaderInfo->GetAttributeByName(&wmStreamNum, L"Duration", &wmAttrDataType, (BYTE*)&durationInNano, &lengthDataType );
   m_TotalTime = (long long)(durationInNano/10000);
 
   m_ISyncReader->QueryInterface(&wmProfile);
 
   hr = wmProfile->GetStreamCount(&dwStreams);
   if(hr!=S_OK)
-	{
+  {
     CLog::Log(LOGERROR,"WMAcodec: GetStreamCount failed (hr=0x%08x).", hr );
     SAFE_RELEASE(wmProfile);
     return false;
@@ -113,7 +113,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   {
     hr = wmProfile->GetStream(i, &wmStreamConfig);
     if(hr!=S_OK)
-	  {
+    {
       CLog::Log(LOGERROR,"WMAcodec: GetStream failed (hr=0x%08x).", hr );
       SAFE_RELEASE(wmProfile);
       return false;
@@ -121,7 +121,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 
     hr = wmStreamConfig->GetStreamNumber( &wmStreamNum );
     if(hr!=S_OK)
-	  {
+    {
       CLog::Log(LOGERROR,"WMAcodec: GetStreamNumber failed (hr=0x%08x).", hr );
       SAFE_RELEASE(wmProfile);
       SAFE_RELEASE(wmStreamConfig);
@@ -129,7 +129,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     }
     hr = wmStreamConfig->GetStreamType( &pguidStreamType );
     if(hr!=S_OK)
-	  {
+    {
       CLog::Log(LOGERROR,"WMAcodec: GetStreamNumber failed (hr=0x%08x).", hr );
       SAFE_RELEASE(wmProfile);
       SAFE_RELEASE(wmStreamConfig);
@@ -152,7 +152,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   m_ISyncReader->SetStreamsSelected(1, &wAudioStreamNum, &wmtSS);
   m_ISyncReader->SetReadStreamSamples(wAudioStreamNum, false);
 
-  
+
   wmStreamConfig->QueryInterface(&wmMediaProperties);
   wmMediaProperties->GetMediaType(NULL, &sizeMediaType);
 
@@ -219,8 +219,8 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   HRESULT hr;
   QWORD cnsSampleTime = 0;
-	QWORD cnsSampleDuration = 0;
-	DWORD dwFlags = 0;
+  QWORD cnsSampleDuration = 0;
+  DWORD dwFlags = 0;
   DWORD dwOutputNum;
   WORD wStreamNum;
   DWORD dwBufferLength;
@@ -228,30 +228,30 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if(!m_bnomoresamples && m_pcmBuffer.getMaxWriteSize() > m_dmaxwritebuffer)
   {
     hr = m_ISyncReader->GetNextSample(0,
-		  									&m_pINSSBuffer,
-			  								&cnsSampleTime,
-				  							&cnsSampleDuration,
-					  						&dwFlags,
-						  					&dwOutputNum,
-							  				&wStreamNum);
+                                      &m_pINSSBuffer,
+                                      &cnsSampleTime,
+                                      &cnsSampleDuration,
+                                      &dwFlags,
+                                      &dwOutputNum,
+                                      &wStreamNum);
 
     if(hr== NS_E_NO_MORE_SAMPLES)
-		  m_bnomoresamples = true;
+      m_bnomoresamples = true;
 
     if(SUCCEEDED(hr))
-	  {
-	    unsigned char *buffer;
-		  m_pINSSBuffer->GetBufferAndLength(&buffer,&dwBufferLength);
+    {
+      unsigned char *buffer;
+      m_pINSSBuffer->GetBufferAndLength(&buffer,&dwBufferLength);
 
       m_pcmBuffer.WriteData((char *)buffer, dwBufferLength);
 
-		  //cleaning up before reading next sample
-		  SAFE_RELEASE(m_pINSSBuffer);
-	  }
+      //cleaning up before reading next sample
+      SAFE_RELEASE(m_pINSSBuffer);
+    }
   }
 
   if ((unsigned int)size < m_pcmBuffer.getMaxReadSize())
-  { 
+  {
     m_pcmBuffer.ReadData((char *)pBuffer, size);
     *actualsize=size;
   }
