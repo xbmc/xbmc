@@ -1,0 +1,576 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-FRODO_GIT953c09c336\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "تغيير"
+
+#: id:31001
+msgid "Love"
+msgstr "حب"
+
+#: id:31002
+msgid "Hate"
+msgstr "كراهية"
+
+#: id:31003
+msgid "Power Options"
+msgstr "خيارات الطاقة"
+
+#: id:31004
+msgid "Working..."
+msgstr "...جاري التشغيل"
+
+#: id:31005
+msgid "Hide Information"
+msgstr "إخفاء المعلومات"
+
+#: id:31006
+msgid "View Options"
+msgstr "خيارات العرض"
+
+#: id:31007
+msgid "Plugins"
+msgstr "الملحقات"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "شاشة كاملة"
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "أضيفت مؤخرا"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "الفيديو - ملفات"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "الموسيقى - ملفات"
+
+#: id:31023
+msgid "Playing"
+msgstr "يشتغل الان"
+
+#: id:31024
+msgid "Page"
+msgstr "عناصر"
+
+#: id:31025
+msgid "Items"
+msgstr "صفحة"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "خيارات متنوعه"
+
+#: id:31027
+msgid "Location"
+msgstr "الموقع"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "ملصق التفاف"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:31030
+msgid "Full list"
+msgstr "قائمة كاملة"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "مصغرات الصورة"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "صورة التفاف"
+
+#: id:31033
+msgid "Info"
+msgstr "معلومات"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "يشتغل الان"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "يشتغل الان"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "متوقف"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "تقديم سريع"
+
+#: id:31045
+msgid "REWIND"
+msgstr "إرجاع"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "خصائص الصوت"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "القيمة الحالية"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "التصور المسبقة"
+
+#: id:31049
+msgid "End Time"
+msgstr "وقت الانتهاء"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "الفرز:تصاعدي"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "الفرز:تنازلي"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "فتح قائمة التشغيل"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "حفظ قائمة التشغيل"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "إغلاق قائمة التشغيل"
+
+#: id:31058
+msgid "System music files"
+msgstr "ملفات موسيقى النظام"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "قائمة التشغيل الحالية"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr ".هذا الملف مكدس، حدد الجزء الذي تريد تشغيله"
+
+#: id:31061
+msgid "Current Selected"
+msgstr "مختارة حاليا"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "خيارات الصفحة الرئيسية"
+
+#: id:31102
+msgid "Background"
+msgstr "الخلفية"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "إظهار \"إيقاف مؤقت\" في عرض شرائح الصور"
+
+#: id:31104
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "[COLOR=grey3] (صندوق حوار معلومات الفيديو فقط)[/COLOR]تشغيل مقطع الفيديو في نافذة"
+
+#: id:31105
+msgid "\"Videos\" button always goes to video \"Files\""
+msgstr "\"الفيديو\" الزر يذهب دائما الى \"ملفات الفيديو\""
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "خيارات متنوعة"
+
+#: id:31107
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "[COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]إخفاء وضع علامة القراءة من أسماء الفيديو"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "إخفاء أزرار القائمة الرئيسية"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "خلفيات الوسائط"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "تعديل خلفية نوع الوسائط"
+
+#: id:31111
+msgid "Hide"
+msgstr "إخفاء"
+
+#: id:31112
+msgid "Options"
+msgstr "خيارات"
+
+#: id:31113
+msgid "Single Image"
+msgstr "صورة واحدة"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "عدة صورة"
+
+#: id:31115
+msgid "Customizer"
+msgstr "مخصص"
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "إظهار الفيديوات المضافة مؤخراً"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "القائمة الفرعية لقائمة البرامج الرئيسية"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Fanart إخفاء خلفية"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "علامة الزر"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "صفحة الطقس"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "استخدام \"ملصقات\" بدلا من \"لافتات\" للمسلسلات التلفزيونية"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "إظهار خلفية \"التشغيل الآن\" للفيديو"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "إظهار خلفية \"التشغيل الآن\" للتصور"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "(TvTunes ملحق) تشغيل أغاني سمة التلفزيون في مكتبة الفيديو"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "TvTunes"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "كلمات الأغاني"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "ملحق كلمات الأغاني"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "ملحق الترجمات"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "القائمة الفرعية لقائمة الفيديو الرئيسية"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "القائمة الفرعية لقائمة الموسيقى الرئيسية"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "القائمة الفرعية لقائمة الصور الرئيسية"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "عرض الموسيقى على الشاشة"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "عرض الفيديو على الشاشة"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "اختصارات"
+
+#: id:31201
+msgid "Categories"
+msgstr "الفئات"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "إظهار الرواية"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "اختر أغنيتك"
+
+#: id:31204
+msgid "Section Links"
+msgstr "روابط ذات صلة"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "مصدر كلمات الأغنية"
+
+#: id:31300
+msgid "Current Temp"
+msgstr "درجة الحرارة الحالية"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "اخر تحديث"
+
+#: id:31302
+msgid "Menu"
+msgstr "القائمة"
+
+#: id:31303
+msgid "Data provider"
+msgstr ": مزود البيانات"
+
+#: id:31304
+msgid "Picture"
+msgstr "الصور"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "لم يتم الكشف عن قرص وسائط"
+
+#: id:31306
+msgid "Eject"
+msgstr "إخراج"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Fanart إخفاء"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "تفاصيل الفلم"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "الذاكرة المستخدمة:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "رقم المسار"
+
+#: id:31311
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "انقر الزر للتعيين[CR][CR]غير متوفرة[CR][CR]Fanart صورة"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Current Scraper"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Choose a Scraper"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "خيارات فحص المحتوى"
+
+#: id:31315
+msgid "Basic"
+msgstr "أساسي"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Fanart تعيين مسار"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Fanart صغيرة"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "الملف الشخصي المحدد"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "آخر تسجيل دخول في"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "محدد أغاني الكاريوكي"
+
+#: id:31322
+msgid "Aired"
+msgstr "المبث"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "أحدث الأفلام"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "أحدث الحلقات"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "خيارات قائمة التشغيل"
+
+#: id:31326
+msgid "Created"
+msgstr "أنشئ"
+
+#: id:31327
+msgid "Resolution"
+msgstr "الدقة"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "أضيف مؤخراً"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[COLOR=grey2] إغلاق النظام تلقائيا في - [/COLOR][B]!تعيين مؤقت[B]"
+
+#: id:31330
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "مقطع الفلم [CR][CR] انقر على الزر لتشغيل"
+
+#: id:31331
+msgid "Album Details"
+msgstr "تفاصبل الألبوم"
+
+#: id:31351
+msgid "Pause"
+msgstr "توقيف مؤقت"
+
+#: id:31352
+msgid "Stop"
+msgstr "توقف كامل"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "تقديم سريع"
+
+#: id:31354
+msgid "Rewind"
+msgstr "ترجيع"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "قائمة الفلم"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "تحميل الترجمات"
+
+#: id:31390
+msgid "Skin default"
+msgstr "الخلفية الاإفتراضية"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Skin default with no Caps"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Arial based"
+
+#: id:31400
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin � Set language and region � Change file listing options[CR]Set up a screensaver"
+msgstr "[B]تكوين إعدادات المظهر[/B][CR][CR]تغيير الخلفية · تعيين اللغة والمنطقة · تغيير خيارات قائمة الملف[CR]ضبط شاشة التوقف"
+
+#: id:31401
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library � Set video playback options � Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]تكوين إعدادات الفيديو[/B][CR][CR]إدارة مكتبة الفيديو · تعيين خيارات تشغيل الفيديو · تغيير خيارات قائمة الفيديو[CR]تعيين خطوط الترجمة"
+
+#: id:31402
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library � Set music playback options � Change music listing options[CR]Setup song submission � Set karaoke options"
+msgstr "[B]تكوين إعدادات الموسيقى[/B][CR][CR]إدارة مكتبة الموسيقي · تعيين خيارات تشغيل الموسيقى · تغيير خيارات قائمة الموسيقى · تعيين خيارات الكارويوكي"
+
+#: id:31403
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options � Configure slideshows"
+msgstr "[B]تكوين إعدادات الصور[/B][CR][CR]ضبط عرض الشرائح · تغيير خيارات قائمة الصور"
+
+#: id:31404
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]تكوين إعدادات الطقس[/B][CR][CR]تعيين ثلاث مدن لجمع معلومات عن الطقس"
+
+#: id:31406
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays � Configure audio output � Setup remote controls[CR]Set power saving options � Enable debugging � Setup master lock"
+msgstr "[B]تكوين إعدادات النظام[/B][CR][CR]ضبط المعايرة والعرض· تكوين مخرج الصوت · ضبط التحكم عن بعد[CR]تعيين خيارات توفير الطاقة · تمكين التصحيح · ضبط القفل الرئيسي"
+
+#: id:31407
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin � Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]تكوين إعدادات الخلفيات [/B][CR][CR]Setup the Confluence skin · أضف وإزالة عناصر القائمة الرئيسية[CR]تغيير الخلفيات"
+
+#: id:31408
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons � Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]تكوين الملحقات [/B][CR][CR]xbmc.org إدارة الملحقات المثبتة · تصفح وتثبيت الملحقات من[CR] تعديل إعدادت الملحق"
+
+#: id:31409
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP � Configure file sharing[CR]Enable Zeroconf � Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "للدخول والإستمرارا [CR]XBMC حدد ملفك الشخصي الخاص بـ"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "خرائط الطقس"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36 hour توقعات طقس"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "توقعات الطقس لكل ساعة"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "توقعات طقس نهاية الأسبوع"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10 Days توقعات طقس"
+
+#: id:31905
+msgid "Forecast"
+msgstr "توقعات الطقس"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "الخرائط والفيديو"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "[COLOR=grey2](Fullscreen Playback)[/COLOR]توقعات الطقس فيديو"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "فرصة هطول الأمطار"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "...جلب معلومات توقعات الطقس"
+

@@ -1,0 +1,9093 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-FRODO_GIT3ed1604ad7\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: no\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Programmer"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Bilder"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Musikk"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Videoer"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "TV-guide"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Filbehandler"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Vær"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc media center"
+
+#: id:11
+msgid "Monday"
+msgstr "Mandag"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Tirsdag"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Onsdag"
+
+#: id:14
+msgid "Thursday"
+msgstr "Torsdag"
+
+#: id:15
+msgid "Friday"
+msgstr "Fredag"
+
+#: id:16
+msgid "Saturday"
+msgstr "Lørdag"
+
+#: id:17
+msgid "Sunday"
+msgstr "Søndag"
+
+#: id:21
+msgid "January"
+msgstr "januar"
+
+#: id:22
+msgid "February"
+msgstr "februar"
+
+#: id:23
+msgid "March"
+msgstr "mars"
+
+#: id:24
+msgid "April"
+msgstr "april"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "mai"
+
+#: id:26
+msgid "June"
+msgstr "juni"
+
+#: id:27
+msgid "July"
+msgstr "juli"
+
+#: id:28
+msgid "August"
+msgstr "august"
+
+#: id:29
+msgid "September"
+msgstr "september"
+
+#: id:30
+msgid "October"
+msgstr "oktober"
+
+#: id:31
+msgid "November"
+msgstr "november"
+
+#: id:32
+msgid "December"
+msgstr "desember"
+
+#: id:41
+msgid "Mon"
+msgstr "Man"
+
+#: id:42
+msgid "Tue"
+msgstr "Tir"
+
+#: id:43
+msgid "Wed"
+msgstr "Ons"
+
+#: id:44
+msgid "Thu"
+msgstr "Tor"
+
+#: id:45
+msgid "Fri"
+msgstr "Fre"
+
+#: id:46
+msgid "Sat"
+msgstr "Lør"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Søn"
+
+#: id:51
+msgid "Jan"
+msgstr "Jan"
+
+#: id:52
+msgid "Feb"
+msgstr "Feb"
+
+#: id:53
+msgid "Mar"
+msgstr "Mar"
+
+#: id:54
+msgid "Apr"
+msgstr "Apr"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "Mai"
+
+#: id:56
+msgid "Jun"
+msgstr "Jun"
+
+#: id:57
+msgid "Jul"
+msgstr "Jul"
+
+#: id:58
+msgid "Aug"
+msgstr "Aug"
+
+#: id:59
+msgid "Sep"
+msgstr "Sep"
+
+#: id:60
+msgid "Oct"
+msgstr "Okt"
+
+#: id:61
+msgid "Nov"
+msgstr "Nov"
+
+#: id:62
+msgid "Dec"
+msgstr "Des"
+
+#: id:71
+msgid "N"
+msgstr "N"
+
+#: id:72
+msgid "NNE"
+msgstr "NNØ"
+
+#: id:73
+msgid "NE"
+msgstr "NØ"
+
+#: id:74
+msgid "ENE"
+msgstr "ØNØ"
+
+#: id:75
+msgid "E"
+msgstr "Ø"
+
+#: id:76
+msgid "ESE"
+msgstr "ØSØ"
+
+#: id:77
+msgid "SE"
+msgstr "SØ"
+
+#: id:78
+msgid "SSE"
+msgstr "SSØ"
+
+#: id:79
+msgid "S"
+msgstr "S"
+
+#: id:80
+msgid "SSW"
+msgstr "SSV"
+
+#: id:81
+msgid "SW"
+msgstr "SV"
+
+#: id:82
+msgid "WSW"
+msgstr "VSV"
+
+#: id:83
+msgid "W"
+msgstr "V"
+
+#: id:84
+msgid "WNW"
+msgstr "VNV"
+
+#: id:85
+msgid "NW"
+msgstr "NV"
+
+#: id:86
+msgid "NNW"
+msgstr "NNV"
+
+#: id:87
+msgid "VAR"
+msgstr "VAR"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Visning: Auto"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Visning: Auto stor"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Visning: Ikoner"
+
+#: id:101
+msgid "View: List"
+msgstr "Visning: Liste"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Skann"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Sorter etter: Navn"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Sorter etter: Dato"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Sorter etter: Størr."
+
+#: id:106
+msgid "No"
+msgstr "Nei"
+
+#: id:107
+msgid "Yes"
+msgstr "Ja"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Bildefremvisning"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Lag miniatyrer"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Lag miniatyrbilder"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Snarveier"
+
+#: id:112
+msgid "Paused"
+msgstr "Pause"
+
+#: id:113
+msgid "Update failed"
+msgstr "Oppdatering feilet"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Installering feilet"
+
+#: id:115
+msgid "Copy"
+msgstr "Kopier"
+
+#: id:116
+msgid "Move"
+msgstr "Flytt"
+
+#: id:117
+msgid "Delete"
+msgstr "Slett"
+
+#: id:118
+msgid "Rename"
+msgstr "Nytt navn"
+
+#: id:119
+msgid "New folder"
+msgstr "Ny mappe"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Bekreft kopiering"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Bekreft flytting"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Bekrefte sletting av fil?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Kopier disse filene?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Flytt disse filene?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Slett disse filene? Dette kan ikke angres."
+
+#: id:126
+msgid "Status"
+msgstr "Status"
+
+#: id:127
+msgid "Objects"
+msgstr "objekter"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Generelt"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Bildefremvisning"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Systeminformasjon"
+
+#: id:131
+msgid "Display"
+msgstr "Skjerm"
+
+#: id:132
+msgid "Albums"
+msgstr "Album"
+
+#: id:133
+msgid "Artists"
+msgstr "Artister"
+
+#: id:134
+msgid "Songs"
+msgstr "Sanger"
+
+#: id:135
+msgid "Genres"
+msgstr "Sjanger"
+
+#: id:136
+msgid "Playlists"
+msgstr "Spillelister"
+
+#: id:137
+msgid "Search"
+msgstr "Søk"
+
+#: id:138
+msgid "System Information"
+msgstr "Systeminformasjon"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Temperaturer:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Tid:"
+
+#: id:143
+msgid "Current:"
+msgstr "Nå:"
+
+#: id:144
+msgid "Build:"
+msgstr "Byggeversjon:"
+
+#: id:145
+msgid "Network:"
+msgstr "Nettverk:"
+
+#: id:146
+msgid "Type:"
+msgstr "Type:"
+
+#: id:147
+msgid "Static"
+msgstr "Statisk"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC-adresse"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP-adresse"
+
+#: id:151
+msgid "Link:"
+msgstr "Forbindelse:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Halv dupleks"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Full dupleks"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Lagring"
+
+#: id:155
+msgid "Drive"
+msgstr "Stasjon"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Ledig"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Video"
+
+#: id:158
+msgid "Free memory"
+msgstr "Ledig minne"
+
+#: id:159
+msgid "No link"
+msgstr "Ingen forbindelse"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Ledig"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Utilgjengelig"
+
+#: id:162
+msgid "Tray open"
+msgstr "Skuff åpen"
+
+#: id:163
+msgid "Reading"
+msgstr "Leser"
+
+#: id:164
+msgid "No disc"
+msgstr "Ingen disk"
+
+#: id:165
+msgid "Disc present"
+msgstr "Disk tilstede"
+
+#: id:166
+msgid "Skin"
+msgstr "Skinn"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Oppløsning"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Sett oppdateringsfrekvens til å samsvare med video"
+
+#: id:172
+msgid "Release date"
+msgstr "Utgitt"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Vis 4:3-videoer som"
+
+#: id:175
+msgid "Moods"
+msgstr "Stemninger"
+
+#: id:176
+msgid "Styles"
+msgstr "Stiler"
+
+#: id:179
+msgid "Song"
+msgstr "Sang"
+
+#: id:180
+msgid "Duration"
+msgstr "Lengde"
+
+#: id:181
+msgid "Select album"
+msgstr "Velg album"
+
+#: id:182
+msgid "Tracks"
+msgstr "Spor"
+
+#: id:183
+msgid "Review"
+msgstr "Anmeldelse"
+
+#: id:184
+msgid "Refresh"
+msgstr "Oppdater"
+
+#: id:185
+msgid "Searching album"
+msgstr "Søker i album"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Ingen album funnet!"
+
+#: id:188
+msgid "Select all"
+msgstr "Merk alt"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Skanner mediainformasjon"
+
+#: id:190
+msgid "Save"
+msgstr "Lagre"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Bland"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Fjern"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Skann"
+
+#: id:194
+msgid "Searching..."
+msgstr "Søker..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Ingen informasjon funnet!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Velg film:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Spør etter %s informasjon"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Laster filmdetaljer"
+
+#: id:199
+msgid "Web interface"
+msgstr "Webgrensesnitt"
+
+#: id:202
+msgid "Tagline"
+msgstr "Slagord"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Handling"
+
+#: id:205
+msgid "Votes"
+msgstr "Stemmer"
+
+#: id:206
+msgid "Cast"
+msgstr "Skuesp."
+
+#: id:207
+msgid "Plot"
+msgstr "Plott"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Spill"
+
+#: id:209
+msgid "Next"
+msgstr "Neste"
+
+#: id:210
+msgid "Previous"
+msgstr "Forrige"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Kalibrer grensesnitt..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Kalibrer bilde..."
+
+#: id:215
+msgid "Soften"
+msgstr "Gjør mykere"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Zoom"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Pikselforhold"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD-stasjon"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Vennligst sett inn plate"
+
+#: id:220
+msgid "Remote share"
+msgstr "Nettverksstasjon"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Ingen nettverkstilkobling"
+
+#: id:222
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: id:224
+msgid "Speed"
+msgstr "Hastighet"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Vertikalt skift"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Testbilder..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Hent CD-informasjon fra freedb.org"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Bland spillelisten ved lasting"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Tid før harddisk spinner ned (min)"
+
+#: id:230
+msgid "Video filters"
+msgstr "Videofiltre"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Ingen"
+
+#: id:232
+msgid "Point"
+msgstr "Punkt"
+
+#: id:233
+msgid "Linear"
+msgstr "Lineært"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropisk"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussisk kubisk"
+
+#: id:237
+msgid "Minification"
+msgstr "Forminsking"
+
+#: id:238
+msgid "Magnification"
+msgstr "Forstørring"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Tøm spilleliste når ferdigspilt"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Visningsmodus"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Fullskjerm #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "Vindu"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Oppdateringsfrekvens"
+
+#: id:244
+msgid "Full screen"
+msgstr "Fullskjerm"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Skalering: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Piksler: %2.2f:1) (Vskift: %2.2f)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Skript"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Språk"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Musikk"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Visualisering"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Velg destinasjonsmappe"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Send stereolyd til alle høyttalere"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Antall kanaler"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- Forsterker med DTS"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Henter CD-informasjon"
+
+#: id:257
+msgid "Error"
+msgstr "Feil"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Aktiver tagginformasjon"
+
+#: id:259
+msgid "Opening"
+msgstr "Åpner"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Internettradio"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Venter på oppstart...."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Utskrift fra skript"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Tillat å styre XBMC via HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "Opptak"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Stopp opptak"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Sorter etter: Spor"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Sorter etter: Tid"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Sorter etter: Tittel"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Sorter etter: Artist"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Sorter etter: Album"
+
+#: id:271
+msgid "Top 100"
+msgstr "Topp 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Venstre hjørne oppe"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Høyre hjørne nede"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Plassering av undertekst"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Justering av pikselforhold"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Juster pilen for å endre overskanning"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Juster linjen for å endre plassering av undertekster"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Juster firkanten til den blir helt kvadratisk"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Kunne ikke laste innstillinger"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Bruker standardinnstillinger"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Vennligst sjekk XML-filene"
+
+#: id:282
+msgid "Found %i items"
+msgstr "Fant %i treff"
+
+#: id:283
+msgid "Search results"
+msgstr "Søkeresultater"
+
+#: id:284
+msgid "No results found"
+msgstr "Ingen resultater funnet"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Undertekster"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Font"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Størrelse"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Volumutjevning (DNR)"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Video"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Lyd"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Bla etter undertekster"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Lag bokmerke"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Slett bokmerker"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Lydforsinkelse"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Bokmerker"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- Forsterker kan håndtere AAC"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- Forsterker kan håndtere MP1"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- Forsterker kan håndtere MP2"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- Forsterker kan håndtere MP3"
+
+#: id:303
+msgid "Delay"
+msgstr "Forsinkelse"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Språk"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Aktivert"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Ikke-innfelt"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Renser database"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Forbereder..."
+
+#: id:315
+msgid "Database error"
+msgstr "Databasefeil"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Søker i sanger..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Opprensking av database fullført"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Renser opp i sanger"
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Feil ved rensing av sanger"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Renser opp i artister"
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Feil ved rensing av artister"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Renser opp i sjangre"
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Feil ved rensing av sjangre"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Renser opp i filstier"
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Feil ved rensing av filstier"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Renser opp i album"
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Feil ved rensing av album"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Skriver endringer..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Feil under skriving"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Dette kan ta en stund..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Komprimerer database..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Feil under komprimering av database"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Vil du rense biblioteket?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Rens biblioteket"
+
+#: id:335
+msgid "Start"
+msgstr "Start"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Konverter bildefrekvens"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Lydutgang"
+
+#: id:338
+msgid "Analog"
+msgstr "Analog"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Optisk/koaks"
+
+#: id:340
+msgid "Various artists"
+msgstr "Diverse artister"
+
+#: id:341
+msgid "Play disc"
+msgstr "Spill plate"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Filmer"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Juster bildehastighet"
+
+#: id:344
+msgid "Actors"
+msgstr "Skuespillere"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "År"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Øk volumet ved nedmiks"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Programmer"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Av"
+
+#: id:352
+msgid "Dim"
+msgstr "Dimme"
+
+#: id:353
+msgid "Black"
+msgstr "Svart"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrise"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Aktiver skjermbeskytter etter"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Skjermbeskyttermodus"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Skru av automatisk etter"
+
+#: id:358
+msgid "All albums"
+msgstr "Alle album"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Album nylig lagt til"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Skjermbeskytter"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Bildefremvisning"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Uttoningsnivå på skjermbeskytter (%)"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Sorter etter: Fil"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Forsterker med Dolby Digital (AC3)"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Sorter etter: Navn"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Sorter etter: År"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Sorter etter: Vurdering"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Tittel"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "lyn og torden"
+
+#: id:371
+msgid "Partly"
+msgstr "delvis"
+
+#: id:372
+msgid "Mostly"
+msgstr "stort sett"
+
+#: id:373
+msgid "Sunny"
+msgstr "sol"
+
+#: id:374
+msgid "Cloudy"
+msgstr "skyet"
+
+#: id:375
+msgid "Snow"
+msgstr "snø"
+
+#: id:376
+msgid "Rain"
+msgstr "regn"
+
+#: id:377
+msgid "Light"
+msgstr "lett"
+
+#: id:378
+msgid "AM"
+msgstr "formiddag"
+
+#: id:379
+msgid "PM"
+msgstr "ettermiddag"
+
+#: id:380
+msgid "Showers"
+msgstr "byger"
+
+#: id:381
+msgid "Few"
+msgstr "få"
+
+#: id:382
+msgid "Scattered"
+msgstr "spredte"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "vind"
+
+#: id:384
+msgid "Strong"
+msgstr "sterk"
+
+#: id:385
+msgid "Fair"
+msgstr "lettskyet"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "klart"
+
+#: id:387
+msgid "Clouds"
+msgstr "skyer"
+
+#: id:388
+msgid "Early"
+msgstr "tidlig"
+
+#: id:389
+msgid "Shower"
+msgstr "byge"
+
+#: id:390
+msgid "Flurries"
+msgstr "snøbyger"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Lav"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Middels"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Høy"
+
+#: id:394
+msgid "Fog"
+msgstr "Tåke"
+
+#: id:395
+msgid "Haze"
+msgstr "Dis"
+
+#: id:396
+msgid "Select location"
+msgstr "Velg sted"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Oppdateringsintervall"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Temperaturskala"
+
+#: id:399
+msgid "Speed units"
+msgstr "Hastighetskala"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Vær"
+
+#: id:401
+msgid "Temp"
+msgstr "Temperatur"
+
+#: id:402
+msgid "Feels like"
+msgstr "Føles som"
+
+#: id:403
+msgid "UV index"
+msgstr "UV-indeks"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Vind"
+
+#: id:405
+msgid "Dew point"
+msgstr "Duggpunkt"
+
+#: id:406
+msgid "Humidity"
+msgstr "Fuktighet"
+
+#: id:409
+msgid "Defaults"
+msgstr "Standard"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Kobler til værtjeneste"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Henter værdata for:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Kunne ikke hente værdata"
+
+#: id:413
+msgid "Manual"
+msgstr "Manuelt"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Ingen anmeldelse av dette albumet"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Laster ned miniatyrbilde..."
+
+#: id:416
+msgid "Not available"
+msgstr "Ikke tilgjengelig"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Viser: Store ikoner"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Lav"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Høy"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Slett albuminformasjon"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Slett CD-informasjon"
+
+#: id:424
+msgid "Select"
+msgstr "Velg"
+
+#: id:425
+msgid "No album information found"
+msgstr "Ingen albuminformasjon funnet."
+
+#: id:426
+msgid "No CD information found"
+msgstr "Ingen CD-informasjon funnet."
+
+#: id:427
+msgid "Disc"
+msgstr "Disk"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Sett inn riktig CD/DVD"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Vennligst sett i følgende CD/DVD"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Sorter etter: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Ingen mellomlagring"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Slett film fra bibliotek"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Er du sikker på at du vil slette '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "Fra %s, %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Flyttbar media"
+
+#: id:438
+msgid "Opening file"
+msgstr "Åpner filen"
+
+#: id:439
+msgid "Cache"
+msgstr "Mellomlagring"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Harddisk"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Lokalt nettverk"
+
+#: id:443
+msgid "Internet"
+msgstr "Internett"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Film"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Lyd"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Autokjør"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Aktivert"
+
+#: id:450
+msgid "Columns"
+msgstr "Kolonner"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Rad 1 adresse"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Rad 2 adresse"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Rad 3 adresse"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Rad 4 adresse"
+
+#: id:455
+msgid "Rows"
+msgstr "Rader"
+
+#: id:456
+msgid "Mode"
+msgstr "Modus"
+
+#: id:457
+msgid "Switch view"
+msgstr "Skift visning"
+
+#: id:459
+msgid "Subs"
+msgstr "Undertekster"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Lydkilde"
+
+#: id:461
+msgid "[active]"
+msgstr "[aktiv]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Undertekst"
+
+#: id:463
+msgid "Backlight"
+msgstr "Bakgrunnslys"
+
+#: id:464
+msgid "Brightness"
+msgstr "Lysstyrke"
+
+#: id:465
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Type"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Flytt linjen for å endre OSD-plassering"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSD-plassering"
+
+#: id:470
+msgid "Credits"
+msgstr "Anerkjennelser"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Av"
+
+#: id:475
+msgid "Music only"
+msgstr "Bare musikk"
+
+#: id:476
+msgctxt "Auto context with id 476"
+msgid "Music & video"
+msgstr "Musikk og film"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Kan ikke laste spilleliste"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Skinn og språk"
+
+#: id:480
+msgid "Appearance"
+msgstr "Utseende"
+
+#: id:481
+msgid "Audio options"
+msgstr "Lydinnstillinger"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Om XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Slett album"
+
+#: id:486
+msgid "Repeat"
+msgstr "Gjenta"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Gjenta én"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Gjenta mapper"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Spill automatisk av neste fil"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Bruke store ikoner"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Endre størrelse på VobSub"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Avanserte innstillinger (kun eksperter)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Gjennomsnittlig headroom (dB)"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Oppskaler film til grensesnittets oppløsning"
+
+#: id:496
+msgid "Calibration"
+msgstr "Kalibrering"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Skjul filtetternavn"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Sorter etter: Type"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Kunne ikke koble til oppslagstjeneste"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Nedlasting av albuminformasjon mislyktes"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Søker etter albumnavn..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Åpne"
+
+#: id:503
+msgid "Busy"
+msgstr "Opptatt"
+
+#: id:504
+msgid "Empty"
+msgstr "Tom"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Laster informasjon fra filer..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Sorter etter: Bruk"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Aktiver visualisering"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Muliggjør bytting av videoformat"
+
+#: id:512
+msgid "Startup window"
+msgstr "Oppstartsmeny"
+
+#: id:513
+msgid "Home window"
+msgstr "Hovedmeny"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Manuelle innstillinger"
+
+#: id:515
+msgid "Genre"
+msgstr "Sjanger"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Nylig spilte album"
+
+#: id:518
+msgid "Launch"
+msgstr "Start"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Start som.."
+
+#: id:521
+msgid "Compilations"
+msgstr "Samlinger"
+
+#: id:522
+msgid "Remove source"
+msgstr "Fjern kilde"
+
+#: id:523
+msgid "Switch media"
+msgstr "Bytt media"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Velg spilleliste"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Ny spilleliste"
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Legg til i spilleliste"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Legg til i biblioteket manuelt"
+
+#: id:528
+msgid "Enter title"
+msgstr "Skriv inn tittel"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Feil: Eksisterende tittel"
+
+#: id:530
+msgid "Select genre"
+msgstr "Velg sjanger"
+
+#: id:531
+msgid "New genre"
+msgstr "Ny sjanger"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Manuelt tillegg"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Skriv inn sjanger"
+
+#: id:534
+msgid "View: %s"
+msgstr "Visning: %s"
+
+#: id:535
+msgid "List"
+msgstr "Liste"
+
+#: id:536
+msgid "Icons"
+msgstr "Ikoner"
+
+#: id:537
+msgid "Big list"
+msgstr "Stor liste"
+
+#: id:538
+msgid "Big icons"
+msgstr "Store ikoner"
+
+#: id:539
+msgid "Wide"
+msgstr "Bred"
+
+#: id:540
+msgid "Big wide"
+msgstr "Stor og bred"
+
+#: id:541
+msgid "Album icons"
+msgstr "Albumikoner"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD-ikoner"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Mediainfo"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Lydenhet"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Passthrough lydenhet"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Ingen biografi for denne artist"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Miks multikanals audio til stereo"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Sort.: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Navn"
+
+#: id:552
+msgid "Date"
+msgstr "Dato"
+
+#: id:553
+msgid "Size"
+msgstr "Størrelse"
+
+#: id:554
+msgid "Track"
+msgstr "Spor"
+
+#: id:555
+msgid "Time"
+msgstr "Tid"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Tittel"
+
+#: id:557
+msgid "Artist"
+msgstr "Artist"
+
+#: id:558
+msgid "Album"
+msgstr "Album"
+
+#: id:559
+msgid "Playlist"
+msgstr "Spilleliste"
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Fil"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "År"
+
+#: id:563
+msgid "Rating"
+msgstr "Vurdering"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Type"
+
+#: id:565
+msgid "Usage"
+msgstr "Bruk"
+
+#: id:566
+msgid "Album artist"
+msgstr "Albumartist"
+
+#: id:567
+msgid "Play count"
+msgstr "Antall avspillinger"
+
+#: id:568
+msgid "Last played"
+msgstr "Sist avspilt"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Kommentar"
+
+#: id:570
+msgid "Date added"
+msgstr "Dato lagt til"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Standard"
+
+#: id:572
+msgid "Studio"
+msgstr "Studio"
+
+#: id:573
+msgid "Path"
+msgstr "Sti"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Land"
+
+#: id:575
+msgid "In progress"
+msgstr "Pågår"
+
+#: id:576
+msgid "Times played"
+msgstr "Ganger spilt"
+
+#: id:580
+msgid "Sort direction"
+msgstr "Sorteringsretning"
+
+#: id:581
+msgid "Sort method"
+msgstr "Sorteringsmetode"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Visningsmodus"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Husk visninger for forskjellige mapper"
+
+#: id:584
+msgid "Ascending"
+msgstr "Stigende"
+
+#: id:585
+msgid "Descending"
+msgstr "Synkende"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Rediger spilleliste"
+
+#: id:587
+msgid "Filter"
+msgstr "Filtrer"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Avbryt partymodus"
+
+#: id:589
+msgid "Party mode"
+msgstr "Partymodus"
+
+#: id:590
+msgid "Random"
+msgstr "Tilfeldig"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Av"
+
+#: id:592
+msgid "One"
+msgstr "En"
+
+#: id:593
+msgid "All"
+msgstr "Alle"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Av"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Gjenta: Av"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Gjenta: En"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Gjenta: Alle"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Ripp musikk-CD"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Middels"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Standard"
+
+#: id:603
+msgid "Extreme"
+msgstr "Ekstrem"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Konstant bitrate"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Ripper fra CD..."
+
+#: id:607
+msgid "To:"
+msgstr "Til:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Kunne ikke rippe CD eller spor"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDA-sti for ripping er ikke satt"
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Ripp musikkspor"
+
+#: id:611
+msgid "Enter number"
+msgstr "Skriv inn nummer"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bits/Sample"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Samplingsfrekvens"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "CD-ripping"
+
+#: id:621
+msgid "Encoder"
+msgstr "Koder"
+
+#: id:622
+msgid "Quality"
+msgstr "Kvalitet"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bitrate"
+
+#: id:624
+msgid "Include track number"
+msgstr "Inkluder spornummer"
+
+#: id:625
+msgid "All songs of"
+msgstr "Alle sanger fra"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Visningsmodus"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zoom"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Strekk 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Bred zoom"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Strekk 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Originalstørrelse"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Egendefinert"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay Gain"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Replay Gain-modus"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Bruk spornivåer"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Bruk albumnivåer"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "PreAmp nivå - filer med Replay Gain"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "PreAmp nivå - filer uten Replay Gain"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Unngå klipping i filer med Replay Gain"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Fjern sorte felt"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Må pakke opp en stor fil. Fortsette?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Fjern fra bibliotek"
+
+#: id:647
+msgid "Export video library"
+msgstr "Eksporter filmbibliotek"
+
+#: id:648
+msgid "Import video library"
+msgstr "Importer filmbibliotek"
+
+#: id:649
+msgid "Importing"
+msgstr "Importerer"
+
+#: id:650
+msgid "Exporting"
+msgstr "Eksporterer"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Bla etter bibliotek"
+
+#: id:652
+msgid "Years"
+msgstr "År"
+
+#: id:653
+msgid "Update library"
+msgstr "Oppdater bibliotek"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Vis feilsøkingsinformasjon"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Bla etter kjørbar fil"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Bla etter spilleliste"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Bla etter mappe"
+
+#: id:658
+msgid "Song information"
+msgstr "Sanginformasjon"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Ikke-lineær strekking"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Lydforsterkning"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Velg eksportmappe"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Denne filen er ikke lenger tilgjengelig."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Vil du fjerne den fra biblioteket?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Let etter script"
+
+#: id:665
+msgid "Compression level"
+msgstr "Komprimeringsnivå"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Renser bibliotek"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Fjerner gamle sanger fra biblioteket"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Denne katalogen har blitt skannet før"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Nettverk"
+
+#: id:706
+msgid "- Server"
+msgstr "- Server"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Bruk HTTP proxy for å få tilgang til Internett"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internettprotokoll (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Ugyldig port spesifisert. Verdien må være mellom 1 og 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP proxy"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Tilordning"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Automatisk (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Manuell (statisk)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP adresse"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Nettmaske"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Standard gateway"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS server"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Lagre og starte på nytt"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Ugyldig adresse spesifisert. Verdien må være på formen AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "med tall mellom 0 og 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Forandringer er ikke lagret. Vil du fortsette uten å lagre?"
+
+#: id:727
+msgid "Web server"
+msgstr "Webserver"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP-server"
+
+#: id:730
+msgid "- Port"
+msgstr "- Port"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Lagre og aktiver"
+
+#: id:733
+msgid "- Password"
+msgstr "- Passord"
+
+#: id:734
+msgid "No pass"
+msgstr "Intet passord"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Tegnsett"
+
+#: id:736
+msgid "- Style"
+msgstr "- Stil"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Farge"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:739
+msgid "Bold"
+msgstr "Fet"
+
+#: id:740
+msgid "Italics"
+msgstr "Kursiv"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Fet kursiv"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Hvit"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Gul"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Filer"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Ingen skannet informasjon for denne visningen"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Skru av biblioteksmodus"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Feil ved lasting av bilde"
+
+#: id:748
+msgid "Edit path"
+msgstr "Endre sti"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Speil bilde"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Er du sikker?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Fjerner kilde"
+
+#: id:754
+msgid "Add program link"
+msgstr "Legg til programlenke"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Rediger programsti"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Rediger programnavn"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Rediger stidybden"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Vis: Stor liste"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Gul"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Hvit"
+
+#: id:762
+msgid "Blue"
+msgstr "Blå"
+
+#: id:763
+msgid "Bright green"
+msgstr "Lysegrønn"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Gul/grønn"
+
+#: id:765
+msgid "Cyan"
+msgstr "Blå/grønn"
+
+#: id:766
+msgid "Light grey"
+msgstr "Lys grå"
+
+#: id:767
+msgid "Grey"
+msgstr "Grå"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Feil %i: delt mappe ikke tilgjengelig"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Lydmaskinvare"
+
+#: id:773
+msgid "Seeking"
+msgstr "Søker"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Mappe for bildefremvisning"
+
+#: id:775
+msgid "Network interface"
+msgstr "Nettverksenhet"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Trådløst nettverksnavn (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Trådløst passord"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Trådløst sikkerhet"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Lagre og bruk nettverksinnstillingene"
+
+#: id:780
+msgid "No encryption"
+msgstr "Ingen kryptering"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Lagrer innstillingene for nettverksenheten. Vennligst vent."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Nettverksenheten startet uten feil."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Nettverksenheten startet ikke korrekt."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Enheten deaktivert"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Nettverksenheten deaktivert uten feil."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Trådløst nettverknavn (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Tillat programmer på dette systemet å styre XBMC"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Port"
+
+#: id:793
+msgid "Port range"
+msgstr "Portområde"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Tillat programmer på andre systemer å styre XBMC"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Forsinkelse for innledende repetisjon (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Forsinkelse for kontinuerlig repetisjon (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Maksimalt antall klienter"
+
+#: id:798
+msgid "Internet access"
+msgstr "Internettilgang"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Ugyldig portnummer"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Gyldig område er 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Gyldig område er 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "Legg til musikk.."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Legg til video.."
+
+#: id:1000
+msgid "- Preview"
+msgstr "Forhåndsvisning"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Kan ikke koble til"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC kunne ikke koble til nettverksplasseringen."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Dette kan være fordi nettverket ikke er tilkoblet."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Ønsker du å legge den til likevel?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP-adresse"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Legg til nettverksplassering"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protokoll"
+
+#: id:1009
+msgid "Server address"
+msgstr "Serveradresse"
+
+#: id:1010
+msgid "Server name"
+msgstr "Servernavn"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Nettverkssti"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Delt mappe"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Port"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Brukernavn"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Bla etter nettverksserver"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Skriv inn adressen til serveren"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Skriv inn stien til serveren"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Skriv inn portnummeret"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Skriv inn brukernavn"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Legg til %s kilde"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Skriv inn stiene eller let etter plassering."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Skriv inn et navn for denne kilden."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Bla etter ny delt mappe"
+
+#: id:1024
+msgid "Browse"
+msgstr "Bla"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Kunne ikke hente mappeinformasjon."
+
+#: id:1026
+msgid "Add source"
+msgstr "Legg til kilde"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Rediger kilde"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Rediger %s kilde"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Skriv inn et nytt navn"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Bla etter bilde"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Bla etter bildemappe"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Legg til nettverkssted..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Bla etter fil"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Undermeny"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Aktiver undermenyknapper"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Favoritter"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Videotillegg"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Musikktillegg"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Bildetillegg"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Laster katalog"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "Gjenopprettet %i deler"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "Gjenopprettet %i av %i deler"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Programtillegg"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Velg miniatyrbilde for tillegg"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Innstillinger for tillegg"
+
+#: id:1046
+msgid "Access points"
+msgstr "Aksesspunkt"
+
+#: id:1047
+msgid "Other..."
+msgstr "Andre.."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Brukernavn"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Skript-innstillinger"
+
+#: id:1050
+msgid "Singles"
+msgstr "Singler"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Skriv inn webadresse"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB-klient"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Arbeidsgruppe"
+
+#: id:1203
+msgid "Default username"
+msgstr "Standard brukernavn"
+
+#: id:1204
+msgid "Default password"
+msgstr "Standard passord"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS-server"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Monter delte SMB-mapper"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Fjern"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Musikk"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Video"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Bilder"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Filer"
+
+#: id:1215
+msgctxt "Auto context with id 1215"
+msgid "Music & video"
+msgstr "Musikk & video"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Musikk & bilder"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Musikk & filer"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Video & bilder"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Video & filer"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Bilder & filer"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Musikk & video & bilder"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Musikk & video & bilder & filer"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Skrudd av"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Filer & musikk & video"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Filer & bilder & musikk"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Filer & bilder & video"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Musikk & programmer"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Video & programmer"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Bilder & programmer"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Musikk & video & bilder & programmer"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programmer & video & musikk"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programmer & bilder & musikk"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programmer & bilder & video"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Autooppdagelse"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Autooppdag system"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Kallenavn"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Spør om det skal kobles til"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Send FTP brukernavn og passord"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Ping-intervall"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Ønsker du å koble til det oppdagede systemet?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Annonser disse tjenestene med Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Tillat XBMC å motta AirPlay-innhold"
+
+#: id:1271
+msgid "Device name"
+msgstr "Enhetsnavn"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Egendefinert lydenhet"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Egendefinert passthrough-enhet"
+
+#: id:1396
+msgid "Drifting"
+msgstr "forbigående"
+
+#: id:1397
+msgid "and"
+msgstr "og"
+
+#: id:1398
+msgid "Freezing"
+msgstr "kjølig"
+
+#: id:1399
+msgid "Late"
+msgstr "sent"
+
+#: id:1400
+msgid "Isolated"
+msgstr "isolerte"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "tordenbyger"
+
+#: id:1402
+msgid "Thunder"
+msgstr "torden"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "sol"
+
+#: id:1404
+msgid "Heavy"
+msgstr "mye"
+
+#: id:1405
+msgid "in"
+msgstr "i"
+
+#: id:1406
+msgid "the"
+msgstr ""
+
+#: id:1407
+msgid "Vicinity"
+msgstr "nærheten"
+
+#: id:1408
+msgid "Ice"
+msgstr "is"
+
+#: id:1409
+msgid "Crystals"
+msgstr "krystaller"
+
+#: id:1410
+msgid "Calm"
+msgstr "stille"
+
+#: id:1411
+msgid "with"
+msgstr "med"
+
+#: id:1412
+msgid "windy"
+msgstr "vind"
+
+#: id:1413
+msgid "drizzle"
+msgstr "yr"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "lyn og torden"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "duskregn"
+
+#: id:1416
+msgid "Foggy"
+msgstr "tåkete"
+
+#: id:1417
+msgid "Grains"
+msgstr "kornete"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "tordenvær"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "tordenvær"
+
+#: id:1420
+msgid "Moderate"
+msgstr "moderat"
+
+#: id:1421
+msgid "Very High"
+msgstr "mye"
+
+#: id:1422
+msgid "Windy"
+msgstr "vind"
+
+#: id:1423
+msgid "Mist"
+msgstr "disig"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Slukk skjerm når ikke i bruk"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Spilletid"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Skript mislyktes! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Nyere versjon trengs - se logg"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Aktiver LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Hjem"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Programmer"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Bilder"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Filbehandler"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Musikk"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Videoer"
+
+#: id:10007
+msgid "System information"
+msgstr "Systeminformasjon"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Innstillinger - Generelt"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Innstillinger - Skjerm"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Innstillinger - Utseende - GUI-kalibrering"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Innstillinger - Videoer - Kalibrering av skjerm"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Innstillinger - Bilder"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Innstillinger - Programmer"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Innstillinger - Været"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Innstillinger - Musikk"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Innstillinger - System"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Innstillinger - Videoer"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Innstillinger - Nettverk"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Innstillinger - Utseende"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Skript"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Nettleser"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Videoer/Spilleliste"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Innstillinger - Profiler"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Ja/Nei dialog"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Forløpsdialgboks"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Leter etter undertekster..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Leter etter eller henter undertekster..."
+
+#: id:10212
+msgid "terminating"
+msgstr "avslutter"
+
+#: id:10213
+msgid "buffering"
+msgstr "mellomlagrer"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Åpner datastrøm"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Musikk/Spilleliste"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Musikk/Filer"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Musikk/Bibliotek"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Spillelisteredigering"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Topp 100 sanger"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Topp 100 album"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Programmer"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Konfigurasjon"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Værmelding"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Spilling over nettverk"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Tillegg"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Systeminformasjon"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Musikk - bibliotek"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Spilles nå - Musikk"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Spilles nå - Videoer"
+
+#: id:10523
+msgid "Album info"
+msgstr "Albuminformasjon"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Informasjon om film"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Velg dialog"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Musikk/Info"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Dialog OK"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Videoer/Info"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Skript/Info"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Fullskjermsvideo"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Lydvisualisering"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Filstablingsdialog"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Gjenoppbygg indeks..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Returner til musikkvindu"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Returner til videovindu"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Start fra begynnelsen"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Fortsett fra %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "Ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Låst! Skriv inn kode..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Skriv inn passord"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Skriv inn masterkode"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Skriv inn kode"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "eller trykk C for å avbryte"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Skriv inn knappekombinasjon og trykk start"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "trykk Ok, eller Tilbake for å avbryte"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Lås"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Lås opp"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Nullstill lås"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Fjern lås"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Numerisk passord"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Knappekombinasjon"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Fulltekstpassord"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Skriv inn nytt passord"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Skriv det nye passordet om igjen"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Feil passord,"
+
+#: id:12343
+msgid "retries left"
+msgstr "forsøk igjen"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Passordene samsvarer ikke."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Tilgang nektet"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Grense for antall forsøk er nådd."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Systemet skrur seg nå av."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Låst oppføring"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Reaktiver lås"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Endre lås"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Lås"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Blankt passord. Prøv igjen."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Masterlås"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Skru av maskin hvis masterlåsen forsøkes for mange ganger"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Masterkoden er ikke gyldig!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Vennligst skriv inn en gyldig masterkode!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Innstillinger & filbehandler"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Sett som standard for alle filmer"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Dette vil slette alle tidligere innstillinger"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Vis hvert bilde i"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Bruk effekter med panorering og zooming"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12-timers klokke"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24-timers klokke"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Dag/måned"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Måned/dag"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Systemets oppetid"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Minutter"
+
+#: id:12392
+msgid "Hours"
+msgstr "Timer"
+
+#: id:12393
+msgid "Days"
+msgstr "Dager"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Total oppetid"
+
+#: id:12395
+msgid "Battery level"
+msgstr "Batterinivå"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Vær"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Skjermbeskytter"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Fullskjerm OSD"
+
+#: id:13000
+msgid "System"
+msgstr "System"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Spinn ned harddisk umiddelbart"
+
+#: id:13002
+msgid "Video only"
+msgstr "Kun video"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Forsinkelse"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Minimum filvarighet"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Slå av"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Standardinnstilling for avslutning"
+
+#: id:13009
+msgid "Quit"
+msgstr "Avslutt"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Dvalemodus"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Ventemodus"
+
+#: id:13012
+msgid "Exit"
+msgstr "Avslutt"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Omstart"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minimer"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Av/på-knapp funksjon"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Slå av system"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Er en annen sesjon aktiv, kanskje over ssh?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Montert utskiftbar harddisk"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Usikker fjerning av enhet"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Enhet ble fjernet"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Joystick ble plugget inn"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Joystick ble plugget ut"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Lavt batterinivå"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flimmerfilter"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "La skjermdriver velge (krever omstart)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Vertical blank sync"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Aktivert under filmavspilling"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Alltid aktivert"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Test oppløsning"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Lagre oppløsning?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Vil du beholde denne oppløsningen?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Høy kvalitet oppskalering"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Aktivert for SD materiale"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Alltid aktivert"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Oppskaleringsmetode"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bikubisk"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU-"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ oppskaleringsnivå"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU studionivå fargekonvertering"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Blank andre skjermer"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Blank skjermer"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Aktive tilkoblinger oppdaget!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Om du fortsetter kan det hende du ikke greier kontrollere XBMC"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "lengre. Er du sikker på du vil stoppe hendelseserveren?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Endre Apple fjernkontrollmodus?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Hvis du bruker Apple fjernkontroll til å styre"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC nå, kan denne innstillingen påvirke muligheten"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "for fortsette styring. Ønsker du å gå videre?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Nettverksmaske"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Gateway"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "Primær DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Initialisering mislyktes"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Aldri"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Umiddelbart"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Etter %i sek"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Harddisk installert dato:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "Harddisk antall oppstarter:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Profiler"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Slett profil '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Sist lastede profil:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Overskriv"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Alarm"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Alarmintervall (i minutter)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Startet, alarm om %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarm!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Avbrutt med %im%is igjen"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Søk etter undertekster i RAR-filer"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Bla etter undertekst..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Flytt oppføring"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Flytt hit"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Avbryt flytting"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Maskinvare:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Prosessorbruk:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Tilkoblet, men ingen DNS er tilgjengelig."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Harddisk"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD spiller"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Lagring"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Standard"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Nettverk"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Skjermkort"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Maskinvare"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Operativsystem:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Prosessorhastighet:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Videoprosessor:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Skjermoppløsning:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V kabel:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD region:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internett:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Tilkoblet"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Ikke tilkoblet. Sjekk nettverksinnstillinger."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Temperaturmål"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Viftehastighet"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Automatisk temperaturkontroll"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Hastighetskontroll for vifte"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Fonter"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Snu tekststrenger"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Vis RSS-nyhetsstrømmer"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Vis oppføring i overordnet mappe"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Spornavnformat"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Ønsker du å starte systemet på nytt"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "istedenfor bare XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Zoomeffekt"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Flyteffekt"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Reduksjon av sort felt"
+
+#: id:13313
+msgid "Restart"
+msgstr "Omstart"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Overtoning"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Regenerer miniatyrbilder"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Rekursive miniatyrbilder"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Vis bildefremvisning"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Rekursiv bildefremvisning"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Tilfeldig"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Kun venstre"
+
+#: id:13322
+msgid "Right only"
+msgstr "Kun høyre"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Aktiver karaokestøtte"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Gjennomsiktighet bakgrunn"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Gjennomsiktighet forgrunn"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "A/V forsinkelse"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s ikke funnet"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Feil ved åpning av %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Kunne ikke laste %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Feil: Tom for minne"
+
+#: id:13332
+msgid "Move up"
+msgstr "Flytt opp"
+
+#: id:13333
+msgid "Move down"
+msgstr "Flytt ned"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Rediger knapp"
+
+#: id:13335
+msgid "Make default"
+msgstr "Gjør til standard"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Fjern knapp"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Standard"
+
+#: id:13341
+msgid "Green"
+msgstr "Grønn"
+
+#: id:13342
+msgid "Orange"
+msgstr "Oransje"
+
+#: id:13343
+msgid "Red"
+msgstr "Rød"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Varier"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Skru av LED ved avspilling"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Informasjon om film"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Legg i kø"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Søk IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Søk etter nytt innhold"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Nå spilles..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Albuminformasjon"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Skann til bibliotek"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Stopp skanning"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Rendringsmetode"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Lavkvalitets pikselshader"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Hardware overlays"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Høykvalitets pikselshader"
+
+#: id:13358
+msgid "Play item"
+msgstr "Spill av"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Sett artistbilde"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Generer miniatyrbilder automatisk"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Aktiver tale"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Aktiver enhet"
+
+#: id:13376
+msgid "Volume"
+msgstr "Volum"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Standard visningsmodus"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Standard lysstyrke"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Standard kontrast"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Standard gamma"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Fortsett avspilling"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Voice mask - Port 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Voice mask - Port 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Voice mask - Port 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Voice mask - Port 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Bruk tidsbasert søking"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Format på høyre del av musikkliste"
+
+#: id:13388
+msgid "Preset"
+msgstr "%s forhåndsinnstillinger"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "Det er ingen forhåndsinnstillinger tilgjengelig&#10;for denne visualiseringen"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "Det er ingen innstillinger tilgjengelige&#10;for denne visualiseringen"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Løs ut/last inn"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Bruk visualisering ved musikkavspilling"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Kalkuler størrelse"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Kalkulerer mappestørrelse"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Filminnstillinger"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Lyd- og tekstinnstillinger"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Aktiver undertekster"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Snarveier"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Ignorer \"the\" ved sortering"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Overtoning for spor av samme album"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Bla etter %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Vis sporposisjon"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Fjern standard"
+
+#: id:13404
+msgid "Resume"
+msgstr "Fortsett"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Hent miniatyr"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Bildeinformasjon"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s forhåndsinnstillinger"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(IMDb brukervurdering)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Topp 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Still inn på Last.FM"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Minimum viftehastighet"
+
+#: id:13412
+msgid "Play from here"
+msgstr "Spill herfra"
+
+#: id:13413
+msgid "Downloading"
+msgstr "Laster ned"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Inkluder artister som bare opptrer i samlinger"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Rendringsmetode"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Oppdag automatisk"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Basic shaders (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Advanced shaders (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Programvare"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Sikker fjerning"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Start bildefremvisning her"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Husk for denne katalogen"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Bruk 'Pixel buffer objects'"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Tillat maskinvareakselerasjon (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Tillat maskinvareakselerasjon (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Tillat maskinvareakselerasjon (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Tillat maskinvareakselerasjon (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Tillat maskinvareakselerasjon (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Tillat maskinvareakselerasjon (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Piksel Shaders"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Tillat maskinvareakselerasjon (VideoToolbox)"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V synkmetode"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Lydklokking"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Videoklokking (dropp/dupliser lyd)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Videoklokking (resample lyd)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Maksimum resamplingsnivå (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Resamplingskvalitet"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Lav (rask)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Medium"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Høy"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Veldig høy (treg!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Synkroniser avspilling til skjerm"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Pause under endring av oppdateringsfrekvens"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Av"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f sekund"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f sekunder"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple fjernkontroll"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Tillat oppstart av XBMC fra fjernkontrollen"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Sekvensforsinkelse"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Standard"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Universal fjernkontroll"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Multifjernkontroll (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Feil med Apple fjernkontroll"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Apple fjernkontroll kunne aktiveres"
+
+#: id:14000
+msgid "Stack"
+msgstr "Stable"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Avstable"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Laster ned spilleliste..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Laster ned liste av strømmer..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Analyserer liste av strømmer..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Kunne ikke laste ned liste av strømmer"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Kunne ikke laste ned spilleliste"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Spillmappe"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Bytt automatisk til miniatyrbilder ved"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Aktiver automatisk bytte til miniatyrvisning"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Bruk store ikoner"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Bytte basert på"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Prosent"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Ingen filer og minst et miniatyrbilde"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Minst én fil og et miniatyrbilde"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Prosentandel av miniatyrbilder"
+
+#: id:14018
+msgid "View options"
+msgstr "Visningsalt."
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Endre retningsnummer 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Endre retningsnummer 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Endre retningsnummer 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Bibliotek"
+
+#: id:14023
+msgid "No TV"
+msgstr "Ingen TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Skriv inn nærmeste store by"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Video/Lyd/DVD mellomlager - Harddisk"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Video mellomlager - DVD-spiller"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Lokalt nettverk"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internett"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Lyd-mellomlager - DVD-spiller"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Lokalt nettverk"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internett"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD-mellomlager - DVD-spiller"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Lokalt nettverk"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Tjenester"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Nettverksinnstillingene er forandret"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC må starte på nytt for å forandre"
+
+#: id:14040
+msgid "network setup. Would you like to restart now?"
+msgstr "nettverksinnstillingene. Vil du starte på nytt nå?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Båndbreddebegrensning"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Skru av maskin under spilling"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i min"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i sek"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Tidsformat"
+
+#: id:14052
+msgid "Date format"
+msgstr "Datoformat"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI-filtre"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Bruk bakgrunnsskanning"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Stopp skanning"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Ikke mulig når det skannes etter mediainformasjon"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Filmstøyeffekt"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Se etter miniatyrbilder i nettverksmapper"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Mellomlager med ukjent type - Internett"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Skriv inn brukernavn for"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Dato & tid"
+
+#: id:14064
+msgid "Set date"
+msgstr "Sett dato"
+
+#: id:14065
+msgid "Set time"
+msgstr "Sett tid"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Skriv inn tiden i 24 timers HH:MM format"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Skriv inn datoen i DD/MM/ÅÅÅÅ format"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Skriv inn IP-adressen"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Bruk disse innstillingene nå?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Lagre endringer nå"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Tillat endring av filnavn og sletting"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Sett tidssone"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Bruk sommertid"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Legg til favoritter"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Fjern fra favoritter"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Farger"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Tidssone land"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Tidssone"
+
+#: id:14081
+msgid "File lists"
+msgstr "Fillister"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Vis EXIF-bildeinformasjon"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Bruk ett fullskjermsvindu istedenfor sann fullskjerm"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Kø sanger ved valg"
+
+#: id:14086
+msgid "Playback"
+msgstr "Avspilling"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD-er"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Spill DVD-er automatisk"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Skrifttype for undertekster"
+
+#: id:14090
+msgid "International"
+msgstr "Språk og lokalisering"
+
+#: id:14091
+msgid "Character set"
+msgstr "Tegnsett"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Debugging"
+
+#: id:14093
+msgid "Security"
+msgstr "Sikkerhet"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Inn-enheter"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Strømsparing"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Fjern"
+
+#: id:15016
+msgid "Games"
+msgstr "Spill"
+
+#: id:15019
+msgid "Add"
+msgstr "Legg til"
+
+#: id:15052
+msgid "Password"
+msgstr "Passord"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Bibliotek"
+
+#: id:15101
+msgid "Database"
+msgstr "Database"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Alle album"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Alle artister"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Alle sanger"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Alle sjangre"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Mellomlagrer..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Navigasjonslyder"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Standard for skinnet"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Tema"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Standardtema"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Send sanger til Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm brukernavn"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm passord"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Kunne ikke utføre håndtrykk: i dvale..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Vennligst oppdater XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Feil ved autorisasjon: Sjekk brukernavn og passord"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Tilkoblet"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Ikke tilkoblet"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Innsendingsintervall %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Cachet %i sanger"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Sender..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Sender om %i sekunder"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Spill med..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Bruk utjevnet A/V synkronisering"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Skjul filnavn i miniatyrvisning"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Spill av i partymodus"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Send inn sanger til Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm brukernavn"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm passord"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Innsending av sang"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Send inn Last.fm-radio til Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Kobler til Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Velger stasjon..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Søk etter liknende artister..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Søk etter liknende tagger..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Din profil (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Mest brukte tagger generelt"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Høyest rangerte artister for tagg %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Høyest rangerte albumer for tagg %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Høyest rangerte spor for tagg %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Hør på tagg %name% Last.fm radio"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Liknende artister som %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Topp %name% album"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Topp %name% spor"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Topp %name% tagger"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Største fans av %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Hør på fans av %name% fra Last.fm"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Hør på artister som likner på %name% fra Last.fm"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Toppartister for bruker %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Toppalbum for bruker %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Toppspor for bruker %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Venner av bruker %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Naboer av bruker %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Ukentlig artistliste for %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Ukentlig albumliste for %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Ukentlig sporliste for %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Hør på %name%'s nabo fra Last.fm"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Hør på %name%'s personlige Last.fm"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Hør på %name%'s favorittspor Last.fm"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Mottar liste fra Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Kan ikke motta liste fra Last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Skriv inn et artistnavn for å finne relaterte"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Skriv inn et tagg-navn for å finne liknende"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Spor nylig lyttet til av %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Hør på %name%'s anbefalinger for Last.fm radio"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Topp tagger for bruker %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Legge valgte sang til favoritter?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Vil du sperre valgte sang?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Lagt til dine favoritter: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Kunne ikke legge '%s' til dine favoritter."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Sperret: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Kunne ikke sperre '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Nylig favoritt til %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Nylig sperret av %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Fjern fra favoritter."
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Opphev sperre."
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Ønsker du å fjerne denne sangen fra dine favoritter?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Ønsker du å oppheve sperringen av denne sangen?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Sti ble ikke funnet eller er ugyldig"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Kunne ikke koble til nettverksserver"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Ingen servere funnet"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Arbeidsgruppe ikke funnet"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Åpner kilde med flere stier"
+
+#: id:15311
+msgid "Path:"
+msgstr "Sti:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Generelt"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Internettoppslag"
+
+#: id:16003
+msgid "Player"
+msgstr "Spiller"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Spill media fra plate"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Skriv inn ny tittel"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Skriv inn filmens navn"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Skriv inn profilnavnet"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Skriv inn albumets navn"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Skriv inn navnet på spillelisten"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Skriv inn nytt filnavn"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Skriv inn mappennavn"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Skriv inn katalog"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Tilgjengelige valg: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Skriv inn søketekst"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Ingen"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Velg automatisk"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "Fjern sammenfletting"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (invertert)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Avbryter..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Skriv inn artistnavn"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Avspilling mislyktes"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "En eller flere elementer kunne ikke spilles"
+
+#: id:16028
+msgid "Enter value"
+msgstr "Skriv inn verdi"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Sjekk loggfilen for detaljer"
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Partymodus avbrutt."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Ingen samsvarende sanger i bibliotek."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Kunne ikke initialisere databasen."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Kunne ikke åpne databasen."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Kunne ikke hente sanger fra databasen."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Partymode spilleliste"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr "De-interlace (Halve)"
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "Alle filmer"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Usette"
+
+#: id:16102
+msgid "Watched"
+msgstr "Sette"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Merk som sett"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Merk som usett"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Rediger tittel"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Handlingen ble avbrutt"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Kopiering mislykket"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Kunne ikke kopiere en eller flere filer"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Flytting mislykket"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Kunne ikke flytte en eller flere filer"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Sletting mislykket"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Kunne ikke slette en eller flere filer"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Videoskaleringsmetode"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Nærmeste nabo"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilineær"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bikubisk"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bikubisk (programvare)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (programvare)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (programvare)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Temporær"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Temporær/romlig"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)Støyreduksjon"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)Skarphet"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Omvendt telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3-optimalisert"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Automatisk"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Temporær (halv)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Temporær/romlig (halv)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+#: id:16321
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+#: id:16322
+msgid "Spline36"
+msgstr "Spline36"
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr "Spline36 optimert"
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Post-prosessering"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Slå av skjerm etter"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Bytt til kanal"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Mappe for lagret musikk"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Bruk ekstern DVD-spiller"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Ekstern DVD-spiller"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Mappe for trainere"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Mappe for skjermbilder"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Mappe for spillelister"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Opptak"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Skjermbilder"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Bruk XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Musikkspillelister"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Videospillelister"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Ønsker du å starte spillet?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Sorter etter: Spilleliste"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Ekstern miniatyr"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Nåværende miniatyr"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Lokal miniatyr"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Ingen miniatyr"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Velg miniatyr"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Konflikt"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Skann nye"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Skann alle"
+
+#: id:20026
+msgid "Region"
+msgstr "Region"
+
+#: id:20037
+msgid "Summary"
+msgstr "Sammendrag"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Lås musikksekjson"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Lås filmseksjon"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Lås bildeseksjon"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Lås program- og scriptseksjon"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Lås filbehandler"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Lås innstillinger"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Start på nytt"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Gå i mastermodus"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Forlat mastermodus"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Lag profil '%s' ?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Start med ferske innstillinger"
+
+#: id:20049
+msgid "Best available"
+msgstr "Beste tilgjengelige"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Bytt automatisk mellom 16x9 og 4x3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Behandle stablede filer som én fil"
+
+#: id:20052
+msgid "Caution"
+msgstr "Advarsel"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Forlot mastermodus"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Gikk i mastermodus"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com miniatyr"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Fjern miniatyrbilde"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Legg til profil..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Spør etter info for alle album"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Mediainfo"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Separate"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Delte filer med standard"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Delte filer med standard (kun lesing)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Kopier standard"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Profilbilde"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Lås innstillinger"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Rediger profil"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Profillås"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Kunne ikke lage mappe"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Profilmappe"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Start med nye mediakilder"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Sørg for at den valgte mappen er skrivbar"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "og at det nye mappenavnet er gyldig"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "Aldersgrense"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Skriv inn masterlåskode"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Spør etter masterlåskode ved oppstart"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Skinn-innstillinger"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- ingen link satt -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Aktiver animasjoner"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Deaktiver RSS ved musikkavspilling"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Aktiver knapper for snarveier"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Vis programmer i hovedmeny"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Vis musikkinformasjon"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Vis værinformasjon"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Vis systeminformasjon"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Vis tilgjengelig diskplass C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Vis tilgjengelig diskplass E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Værinformasjon"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Ledig diskplass"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Skriv inn navnet på en eksisterende delt mappe"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Låskode"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Last profil"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Profilnavn"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Mediakilder"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Skriv inn profillåskode"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Innloggingsbilde"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Henter albuminfo"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Henter info for album"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Kan ikke rippe CD eller spor ved avspilling av CD"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Masterkode og låser"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Angivelse av masterkode aktiverer alltid mastermodus"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "eller kopier fra standard?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Lagre innstillinger i profil?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Gamle innstillinger funnet."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Vil du bruke dem?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Gamle mediakilder funnet."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Separer (låst)"
+
+#: id:20108
+msgid "Root"
+msgstr "Rot"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Zoom"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP-innstillinger"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Start UPnP-klient automatisk"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Siste innlogging: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Aldri pålogget"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Profil %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Brukerpålogging / Velg en profil"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Bruk lås på innloggingsbildet"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Ugyldig kode."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Dette krever at masterkoden blir satt."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Vil du angi den nå?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Laster programinformasjon"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Party on!"
+
+#: id:20122
+msgid "True"
+msgstr "Sant"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Mikser drinker"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Fyller glass"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Logget på som"
+
+#: id:20126
+msgid "Log off"
+msgstr "Logg av"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Gå til rot"
+
+#: id:20129
+msgid "Weave"
+msgstr "Weave"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Weave (invertert)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Blend"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Start video på nytt"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Endre nettverkssteder"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Fjern nettverkssted"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Vil du skanne mappen?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Minneenhet"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Minneenhet montert"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Kan ikke montere minneenhet"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "I port %i, plass %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Lås skjermbeskytter"
+
+#: id:20141
+msgid "Set"
+msgstr "Sett"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Brukernavn"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Skriv inn passord for"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Slå-av-timer"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Slå-av intervall (i minutter)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Startet, slår av om %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Slår av om 30 minutter"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Slår av om 60 minutter"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Slår av om 120 minutter"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Egendefinert slå-av-timer"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Avbryt slå-av-timer"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Lås innstillinger for %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Bla..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Grunnleggende informasjon"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Lagringsinformasjon"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Harddiskinformasjon"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "DVD-spillerinformasjon"
+
+#: id:20158
+msgid "Network information"
+msgstr "Nettverksinformasjon"
+
+#: id:20159
+msgid "Video information"
+msgstr "Videoinformasjon"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Maskinvareinformasjon"
+
+#: id:20161
+msgid "Total"
+msgstr "Totalt"
+
+#: id:20162
+msgid "Used"
+msgstr "Brukt"
+
+#: id:20163
+msgid "of"
+msgstr "av"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Låsing ikke støttet"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Ikke låst"
+
+#: id:20166
+msgid "Locked"
+msgstr "Låst"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Fryst"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Krever omstart"
+
+#: id:20169
+msgid "Week"
+msgstr "Uke"
+
+#: id:20170
+msgid "Line"
+msgstr "Serie"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windows nettverk (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP server"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP server"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes musikkdeling (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP server"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Vis informasjon om film"
+
+#: id:20177
+msgid "Done"
+msgstr "Ferdig"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Caps Lock"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Symboler"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Tilbake"
+
+#: id:20182
+msgid "Space"
+msgstr "Mellomrom"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Last skinn på ny"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Roter bilde i henhold til EXIF-informasjon"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Bruk plakatvisninger for TV-serier"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Vennligst vent"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Aktiver autorulling for plott og anmeldelse"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Egendefinert"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Aktiver feilsøkingslogging"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Last ned ekstra informasjon under oppdateringer"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Standardtjener for albuminformasjon"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Standardtjener for artistinformasjon"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Bytt skraper"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Eksporter musikkbibliotek"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Importer musikkbibliotek"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Ingen artist funnet!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Nedlasting av artistinfo mislyktes"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Party on! (filmer)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Mikser drinker (filmer)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Fyller glassene (filmer)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV-server (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV-server (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Første pålogging, editer profilen din"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend-klient"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev-klient"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV-klient"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "Nettverksfilsystem (NFS)"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filprotokoll (AFP)"
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Webserverkatalog (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Webserverkatalog (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Kunne ikke skrive til mappe:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Vil du ignorere og fortsette?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS-strøm"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Sekundær DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP-server:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Lag ny mappe"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Dim LCD ved avspilling"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Ukjent eller integrert (beskyttet)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Dim LCD ved pause"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Videoer - Bibliotek"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Sorter etter: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Spill del..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Nullstill kalibrering"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Dette vil sette kalibreringen for %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "til standardverdiene."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Bla etter mål"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Bruk mappenavn ved oppslag"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Fil"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Bruk fil- eller mappenavn ved oppslag?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Sett innhold"
+
+#: id:20334
+msgid "Folder"
+msgstr "Mappe"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Søk etter innhold rekursivt?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Lås opp kilder"
+
+#: id:20337
+msgid "Actor"
+msgstr "Skuespiller"
+
+#: id:20338
+msgid "Movie"
+msgstr "Film"
+
+#: id:20339
+msgid "Director"
+msgstr "Regissør"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Vil du slette alle oppføringer fra"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "denne stien fra XBMC-biblioteket?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Filmer"
+
+#: id:20343
+msgid "TV shows"
+msgstr "TV-serier"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Denne mappen inneholder"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Kjør automatisk skanning"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Søk rekursivt"
+
+#: id:20347
+msgid "as"
+msgstr "som"
+
+#: id:20348
+msgid "Directors"
+msgstr "Regissører"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "Ingen videofiler funnet i denne mappen!"
+
+#: id:20350
+msgid "votes"
+msgstr "stemmer"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Informasjon om TV-serier"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Informasjon om episode"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Laster TV-seriedetaljer"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Henter episodeguide"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Laster info for episoder i mappen"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Velg TV-serie:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Skriv inn navn på TV-serie"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Sesong %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Episode"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Episoder"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Laster episodedetaljer"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Fjern episode fra bibliotek"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Fjern TV-serie fra bibliotek"
+
+#: id:20364
+msgid "TV show"
+msgstr "TV-serie"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Episodeplott"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Alle sesonger"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Skjul sette"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Prod. kode"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Vis omtale for videoer som ikke er sett"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Skjult for ikke å røpe handling *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Sett miniatyrbilde for sesong"
+
+#: id:20372
+msgid "Season image"
+msgstr "Bilde for sesong"
+
+#: id:20373
+msgid "Season"
+msgstr "Sesong"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Laster ned informasjon om film"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Opphev tilordning av innhold"
+
+#: id:20376
+msgid "Original title"
+msgstr "Original tittel"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Oppdater informasjon om TV-serie"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Oppdater informasjon for alle episoder?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Valgt mappe inneholder kun én TV-serie"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Ekskluder valgt mappe fra skanning"
+
+#: id:20381
+msgid "Specials"
+msgstr "Ekstra"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Hent miniatyrer for sesong automatisk"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Valgt mappe inneholder kun én film"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Linke til TV-serie"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Fjern link til TV-serie"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Filmer nylig lagt til"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Episoder nylig lagt til"
+
+#: id:20388
+msgid "Studios"
+msgstr "Studioer"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Musikkvideoer"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Musikkvideoer nylig lagt til"
+
+#: id:20391
+msgid "Music video"
+msgstr "Musikkvideo"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Fjern musikkvideo fra bibliotek"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Informasjon om musikkvideo"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Laster musikkvideoinformasjon"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Mikset"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Gå til album av artist"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Gå til album"
+
+#: id:20398
+msgid "Play song"
+msgstr "Spill sang"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Gå til musikkvideoer fra album"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Gå til musikkvideoer av artist"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Spill musikkvideo"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Hent bilder for skuespiller automatisk når en legger til i bibliotek"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Sett miniatyr for skuespiller"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Fjern bokmerke for episode"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Sett bokmerke for episode"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Skraperinnstillinger"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Last ned musikkvideoinformasjon"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Laster ned informasjon om TV-serie"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Trailer"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Flate ut"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Flat ut TV-serier"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Hent FanArt"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Vis FanArt i video- og musikkbibliotek"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Søker etter nytt innhold"
+
+#: id:20416
+msgid "First aired"
+msgstr "Første gang sendt"
+
+#: id:20417
+msgid "Writer"
+msgstr "Forfatter"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "Vis metadata i filvisning"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Aldri"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Bare hvis én sesong"
+
+#: id:20422
+msgid "Always"
+msgstr "Alltid"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Har trailer"
+
+#: id:20424
+msgid "False"
+msgstr "Usann"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Bildefremvisning av FanArt"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Eksporter til én fil, eller én"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "separat fil for hvert oppføring?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Én fil"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Separer"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Eksporter miniatyrbilder og FanArt?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Overskriv gamle filer?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Ekskluder sti fra biblioteksoppdateringer"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Ekstraher miniatyrer og videoinformasjon"
+
+#: id:20434
+msgid "Sets"
+msgstr "Sett"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Sett filmsettminiatyr"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Eksporter skuespiller bilder?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Velg FanArt"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Lokal FanArt"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Ingen FanArt"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Nåværende FanArt"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Ekstern FanArt"
+
+#: id:20442
+msgid "Change content"
+msgstr "Endre innhold"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Ønsker du å fornye info for alle"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "elementer innenfor denne stien?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "FanArt"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Lokalt lagret informasjon funnet."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Ignorer og hent på nytt fra internett?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Kunne ikke laste ned informasjon"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Fikk ikke kontakt med tjener."
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Vil du fortsette skanning?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Land"
+
+#: id:20452
+msgid "episode"
+msgstr "episode"
+
+#: id:20453
+msgid "episodes"
+msgstr "episoder"
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "Sett FanArt for filmsett"
+
+#: id:20457
+msgid "Movie set"
+msgstr "Filmsett"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Vis skjulte filer og mapper"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox klient"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "ADVARSEL: TuxBoxen er i opptaksmodus!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Streamingen vil bli stoppet!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Zap til kanal: %s mislyktes!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Vil du starte streamingen?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Kobler til: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox enhet"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Legg til delt media...."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Del video- og musikkbibliotek gjennom UPnP"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Rediger delt media"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Fjern delt media"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Mappe for undertekst"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Film & alternativ mappe for undertekst"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Aktiver mus"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Aktiver navigasjonslyder under medieavspilling"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Miniatyr"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Tving DVD-spillerens regionkoding"
+
+#: id:21373
+msgid "Video output"
+msgstr "Utgående video"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Høyde/bredde-forhold"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Widescreen"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Aktiver 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Aktiver 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Aktiver 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Skriv inn navn på ny spilleliste"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Vis \"Legg til kilde\" i fillisten"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Aktiver rullefelt"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Aktiver av/på-knapp for 'sett/ikke sett' i videobiblioteket"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Åpne"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Acoustic management level"
+
+#: id:21387
+msgid "Fast"
+msgstr "Rask"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Stille"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Aktiver egendefinert bakgrunn"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Strøminnstillingsnivå"
+
+#: id:21391
+msgid "High power"
+msgstr "Høyt nivå"
+
+#: id:21392
+msgid "Low power"
+msgstr "Lavt nivå"
+
+#: id:21393
+msgid "High standby"
+msgstr "Ventemodus høyt"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Ventemodus lavt"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Ikke i stand til å mellomlagre filer større en 4GB"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Kapittel"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Høykvalitets pikselshader v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Aktiver spilleliste ved oppstart"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Bruk tween-animasjoner"
+
+#: id:21400
+msgid "contains"
+msgstr "inneholder"
+
+#: id:21401
+msgid "does not contain"
+msgstr "inneholder ikke"
+
+#: id:21402
+msgid "is"
+msgstr "er"
+
+#: id:21403
+msgid "is not"
+msgstr "er ikke"
+
+#: id:21404
+msgid "starts with"
+msgstr "starter med"
+
+#: id:21405
+msgid "ends with"
+msgstr "ender med"
+
+#: id:21406
+msgid "greater than"
+msgstr "større en"
+
+#: id:21407
+msgid "less than"
+msgstr "mindre en"
+
+#: id:21408
+msgid "after"
+msgstr "etter"
+
+#: id:21409
+msgid "before"
+msgstr "før"
+
+#: id:21410
+msgid "in the last"
+msgstr "etter siste"
+
+#: id:21411
+msgid "not in the last"
+msgstr "ikke etter siste"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Skrapere"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Standardskraper for film"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Standardskraper for TV-serie"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Standardskraper for musikkvideo"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Aktiver fallback basert på skraper-språk"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Innstillinger"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Flerspråklig"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Ingen skrapere tilstede"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Verdi å sammenligne"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Smart spillelisteoppsett"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Sammenligne oppføringer hvor"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Ny søkeregel"
+
+#: id:21424
+msgid "Items must match"
+msgstr "Oppføring må samsvare med"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "alle søkekriteriene"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "en av søkekriteriene"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Begrens til"
+
+#: id:21428
+msgid "No limit"
+msgstr "Ingen begrensninger"
+
+#: id:21429
+msgid "Order by"
+msgstr "Sorter etter"
+
+#: id:21430
+msgid "ascending"
+msgstr "stigende"
+
+#: id:21431
+msgid "descending"
+msgstr "synkende"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Rediger smart spilleliste"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Navn på spilleliste"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Finn oppføring der"
+
+#: id:21435
+msgid "Edit"
+msgstr "Rediger"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i oppføringer"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Ny smart spilleliste"
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c Stasjon"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Rediger regler for partymodus"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Hjem-mappen"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Antall ganger sett"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Episodetittel"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Videooppløsning"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Lydkanalers"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Videokodek"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Lydkodek"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Lydspråk"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Språk for undertekster"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Fjernkontroll sender tastetrykk (tastatur)"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Editer"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Internettilkobling kreves."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Hent flere..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Rotfilsystem"
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "Plassering av undertittel"
+
+#: id:21461
+msgid "Fixed"
+msgstr "Fikset"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "Bunnen av video"
+
+#: id:21463
+msgid "Below video"
+msgstr "Under video"
+
+#: id:21464
+msgid "Top of video"
+msgstr "Toppen av video"
+
+#: id:21465
+msgid "Above video"
+msgstr "Over video"
+
+#: id:21800
+msgid "File name"
+msgstr "Filnavn"
+
+#: id:21801
+msgid "File path"
+msgstr "Filsti"
+
+#: id:21802
+msgid "File size"
+msgstr "Filstørrelse"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Fildato/filtid"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Glideindeks"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Oppløsning"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Kommentar"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Farge/svart-hvit"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG-prosess"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Dato/tid"
+
+#: id:21821
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Kameramerke"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Kameramodell"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF-kommentar"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Fastvare"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Blenderåpning"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Brennvidde"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Fokusdistanse"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Eksponering"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Eksponeringstid"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Eksponeringsvinkel"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Eksponeringsmetode"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Blits brukt"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Hvitbalanse"
+
+#: id:21835
+msgid "Light source"
+msgstr "Lyskilde"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Målemetode"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Digital zoom"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD-bredde"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "Breddegrad (GPS)"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "Lengdegrad (GPS)"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "Høyde over havet (GPS)"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Orientering"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Tilleggskategorier"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Nøkkelord"
+
+#: id:21862
+msgid "Caption"
+msgstr "Bildetekst"
+
+#: id:21863
+msgid "Author"
+msgstr "Forfatter"
+
+#: id:21864
+msgid "Headline"
+msgstr "Overskrift"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Spesielle opplysninger"
+
+#: id:21866
+msgid "Category"
+msgstr "Kategori"
+
+#: id:21867
+msgid "Byline"
+msgstr "Signatur"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Signaturtittel"
+
+#: id:21869
+msgid "Credit"
+msgstr "Kreditering"
+
+#: id:21870
+msgid "Source"
+msgstr "Kilde"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Opphavsrettproklama"
+
+#: id:21872
+msgid "Object name"
+msgstr "Objektnavn"
+
+#: id:21873
+msgid "City"
+msgstr "By"
+
+#: id:21874
+msgid "State"
+msgstr "Region"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Land"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Original Tx Referanse"
+
+#: id:21877
+msgid "Date created"
+msgstr "Dato opprettet"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Opphavsrettflagg"
+
+#: id:21879
+msgid "Country code"
+msgstr "Landskode"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Referansetjeneste"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Tillat styring av XBMC via UPnP"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Prøv å hoppe over intro før DVD-menyen"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Lagret musikk"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Spør etter info for alle artister"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Laster ned albuminformasjon"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Laster ned artistinformasjon"
+
+#: id:21887
+msgid "Biography"
+msgstr "Biografi"
+
+#: id:21888
+msgid "Discography"
+msgstr "Diskografi"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Søker etter artist"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Velg artist"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Artistinformasjon"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Instrumenter"
+
+#: id:21893
+msgid "Born"
+msgstr "Født"
+
+#: id:21894
+msgid "Formed"
+msgstr "Startet"
+
+#: id:21895
+msgid "Themes"
+msgstr "Tema"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Oppløst"
+
+#: id:21897
+msgid "Died"
+msgstr "Døde"
+
+#: id:21898
+msgid "Years active"
+msgstr "År aktiv"
+
+#: id:21899
+msgid "Label"
+msgstr "Plateselskap"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Etablert/startet"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Oppdater bibliotek ved oppstart"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Ikke vis biblioteksoppdateringer som skjer i bakgrunnen"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS suffiks"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Forsinket med: %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Fremskyndet: %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Tidsforskyvning for undertekst"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL leverandør:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL versjon:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPU-temperatur:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPU-temperatur:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Totalt minne"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Profildata"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Dim ned hvis pause under filmavspilling"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Alle innspillinger"
+
+#: id:22016
+msgid "By title"
+msgstr "Etter tittel"
+
+#: id:22017
+msgid "By group"
+msgstr "Etter gruppe"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Live-kanaler"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Innspillinger etter tittel"
+
+#: id:22020
+msgid "Guide"
+msgstr "Guide"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Tillatt avvik i høyde/bredde-forhold for reduksjon av sort felt"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Vis filmfiler i lister"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX forhandler:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D versjon:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Font"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Størrelse"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Farger"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Tegnsett"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Eksporter karaoketitler som HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Eksporter karaoketitler som CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Importer karaoketitler..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Automatisk sprett-opp-sangvelger"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Eksporter karaoketitler..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Skriv inn sangnummer"
+
+#: id:22040
+msgid "white/green"
+msgstr "hvitt/grønt"
+
+#: id:22041
+msgid "white/red"
+msgstr "hvitt/rødt"
+
+#: id:22042
+msgid "white/blue"
+msgstr "hvitt/blått"
+
+#: id:22043
+msgid "black/white"
+msgstr "svart/hvitt"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Standardhandling for «velg»"
+
+#: id:22080
+msgid "Choose"
+msgstr "Velg"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Vis informasjon"
+
+#: id:22082
+msgid "More..."
+msgstr "Mer..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Spill alle"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Tekst-tv utilgjengelig"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Aktiver tekst-tv"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Del %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "Bufrer %i byte"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Stopper"
+
+#: id:23054
+msgid "Running"
+msgstr "Kjører"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Ekstern spiller aktiv"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Trykk OK for å avslutte spilleren"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Trykk OK når avspilling er ferdig"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Tillegg"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Tillegg"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Alternativer for tillegg"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Informasjon om tillegg"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Mediekilder"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Filminformasjon"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Skjermsparer"
+
+#: id:24009
+msgid "Script"
+msgstr "Skript"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Visualisering"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Pakkebrønn for tillegg"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Undertekster"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Sangtekster"
+
+#: id:24014
+msgid "TV information"
+msgstr "TV-informasjon"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Musikkvideoinformasjon"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Albuminformasjon"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Artistinformasjon"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "Tjenester"
+
+#: id:24020
+msgid "Configure"
+msgstr "Konfigurer"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Deaktiver"
+
+#: id:24022
+msgid "Enable"
+msgstr "Aktiver"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Tillegg deaktivert"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Vær"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (standard)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Dette tillegget kan ikke konfigureres"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Feil ved henting av innstillinger"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Alle tillegg"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Hent tillegg"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Se etter oppdateringer"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Tvungen oppdatering"
+
+#: id:24036
+msgid "Change log"
+msgstr "Endringslogg"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Avinstaller"
+
+#: id:24038
+msgid "Install"
+msgstr "Installer"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Deaktiverte tillegg"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Tilbakestill innstilling)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Installer fra zip-fil"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Laster ned %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Tilgjengelige oppdateringer"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Programkrav ikke møtt"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "Tillegg har ikke den korrekte strukturen"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s benyttes av følgende tillegg"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "Dette tillegget kan ikke bli avinstallert"
+
+#: id:24048
+msgid "Rollback"
+msgstr "Tilbakestill"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Tilgjengelige tillegg"
+
+#: id:24051
+msgid "Version:"
+msgstr "Versjon:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Fraskrivelse:"
+
+#: id:24053
+msgid "License:"
+msgstr "Lisens:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Endringslogg"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Vil du aktivere dette tillegget?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Vil du deaktivere dette tillegget?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Oppdatering for tillegg tilgjengelig!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Aktiverte tillegg"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Automatisk oppdatering"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Tillegg aktivert"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Tillegg oppdatert"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Avbryt nedlasting av tillegg?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Laster ned tillegg"
+
+#: id:24068
+msgid "Update available"
+msgstr "Oppdatering tilgjengelig"
+
+#: id:24069
+msgid "Update"
+msgstr "Oppdater"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Tillegg kunne ikke lastes inn."
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "En ukjent feil har oppstått."
+
+#: id:24072
+msgid "Settings required"
+msgstr "Innstillinger påkrevet"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Kunne ikke koble til"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Må startes på nytt"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Deaktivere"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Forsøk ny oppkobling?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Tillegg starter på nytt"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Lås tilleggsbehandler"
+
+#: id:24094
+msgid "(current)"
+msgstr "(nåværende)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "(svartelistet)"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Tillegget er markert som ødelagt i pakkebrønnen."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Vil du deaktivere tillegget?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Ødelagt"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Ønsker du å bytte til dette skinnet nå?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr "Varslinger"
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Biblioteksmodus"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY-tastatur"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Passthrough-lyd i bruk"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Kvalitet på trailer"
+
+#: id:33002
+msgid "Stream"
+msgstr "Strøm"
+
+#: id:33003
+msgid "Download"
+msgstr "Last ned"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Last ned og spill av"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Last ned og lagre"
+
+#: id:33006
+msgid "Today"
+msgstr "I dag"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "I morgen"
+
+#: id:33008
+msgid "Saving"
+msgstr "Lagrer"
+
+#: id:33009
+msgid "Copying"
+msgstr "Kopierer"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Sett nedlastingsmappe"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Søkelengde"
+
+#: id:33012
+msgid "Short"
+msgstr "Kort"
+
+#: id:33013
+msgid "Long"
+msgstr "Lang"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Bruk DVD-avspiller i stedet for vanlig avspiller"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Spør om nedlasting før filmer spilles"
+
+#: id:33016
+msgid "Clips"
+msgstr "Klipp"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Omstart tillegg for å aktivere"
+
+#: id:33018
+msgid "Tonight"
+msgstr "I kveld"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "I morgen kveld"
+
+#: id:33020
+msgid "Condition"
+msgstr "Forhold"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Nedbør"
+
+#: id:33022
+msgid "Precip"
+msgstr "Nedbør"
+
+#: id:33023
+msgid "Humid"
+msgstr "Fuktig"
+
+#: id:33024
+msgid "Feels"
+msgstr "Føles"
+
+#: id:33025
+msgid "Observed"
+msgstr "Observert"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Avvik fra normal"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Soloppgang"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Solnedgang"
+
+#: id:33029
+msgid "Details"
+msgstr "Detaljer"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Outlook"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Oversett tekst"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Kartliste %s kategori"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 timer"
+
+#: id:33035
+msgid "Maps"
+msgstr "Kart"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Pr. time"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Helg"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s dag"
+
+#: id:33049
+msgid "Alert"
+msgstr "Alarm"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Alarmer"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Velg dine"
+
+#: id:33052
+msgid "Check"
+msgstr "Kontroller"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Konfigurer"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Sesonger"
+
+#: id:33055
+msgid "Use your"
+msgstr "Bruk din"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Se dine"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Hør på"
+
+#: id:33058
+msgid "View your"
+msgstr "Vis dine"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Konfigurer"
+
+#: id:33060
+msgid "Power"
+msgstr "Strøm"
+
+#: id:33061
+msgid "Menu"
+msgstr "Meny"
+
+#: id:33062
+msgid "Play the"
+msgstr "Spill"
+
+#: id:33063
+msgid "Options"
+msgstr "Valg"
+
+#: id:33065
+msgid "Editor"
+msgstr "Editor"
+
+#: id:33066
+msgid "About your"
+msgstr "Om din"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Stjernerangering"
+
+#: id:33068
+msgid "Background"
+msgstr "Bakgrunn"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Bakgrunner"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Egendefinert bakgrunn"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Egendefinerte bakgrunner"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Vis Lesmeg"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Vis endringslogg"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Denne versjonen av %s krever XBMC"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "versjon %s eller høyere for å kunne kjøre."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Vennligst oppdater XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Fant ingen data!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Neste side"
+
+#: id:33079
+msgid "Love"
+msgstr "Elsker"
+
+#: id:33080
+msgid "Hate"
+msgstr "Hater"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Denne filen er stablet, velg den delen du vil spille fra."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Sti til skript"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Aktiver knapp for egendefinert skript"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "Kunne ikke starte"
+
+#: id:33101
+msgid "Webserver"
+msgstr "Webserver"
+
+#: id:33102
+msgid "Event Server"
+msgstr "Event Server"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "Remote communication server"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Høyttalerkonfigurasjon"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7,0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "Kan ikke finne neste ting å spille"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "Kan ikke finne tidligere ting å spille"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

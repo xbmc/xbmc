@@ -1,0 +1,9093 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-FRODO_GIT3ed1604ad7\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Programma's"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Afbeeldingen"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Muziek"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Video's"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "TV-gids"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Bestandsbeheer"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Weer"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "XBMC Media Center"
+
+#: id:11
+msgid "Monday"
+msgstr "Maandag"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Dinsdag"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Woensdag"
+
+#: id:14
+msgid "Thursday"
+msgstr "Donderdag"
+
+#: id:15
+msgid "Friday"
+msgstr "Vrijdag"
+
+#: id:16
+msgid "Saturday"
+msgstr "Zaterdag"
+
+#: id:17
+msgid "Sunday"
+msgstr "Zondag"
+
+#: id:21
+msgid "January"
+msgstr "januari"
+
+#: id:22
+msgid "February"
+msgstr "februari"
+
+#: id:23
+msgid "March"
+msgstr "maart"
+
+#: id:24
+msgid "April"
+msgstr "april"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "mei"
+
+#: id:26
+msgid "June"
+msgstr "juni"
+
+#: id:27
+msgid "July"
+msgstr "juli"
+
+#: id:28
+msgid "August"
+msgstr "augustus"
+
+#: id:29
+msgid "September"
+msgstr "september"
+
+#: id:30
+msgid "October"
+msgstr "oktober"
+
+#: id:31
+msgid "November"
+msgstr "november"
+
+#: id:32
+msgid "December"
+msgstr "december"
+
+#: id:41
+msgid "Mon"
+msgstr "Ma"
+
+#: id:42
+msgid "Tue"
+msgstr "Di"
+
+#: id:43
+msgid "Wed"
+msgstr "Wo"
+
+#: id:44
+msgid "Thu"
+msgstr "Do"
+
+#: id:45
+msgid "Fri"
+msgstr "Vr"
+
+#: id:46
+msgid "Sat"
+msgstr "Za"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Zo"
+
+#: id:51
+msgid "Jan"
+msgstr "jan"
+
+#: id:52
+msgid "Feb"
+msgstr "feb"
+
+#: id:53
+msgid "Mar"
+msgstr "mrt"
+
+#: id:54
+msgid "Apr"
+msgstr "apr"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "mei"
+
+#: id:56
+msgid "Jun"
+msgstr "jun"
+
+#: id:57
+msgid "Jul"
+msgstr "jul"
+
+#: id:58
+msgid "Aug"
+msgstr "aug"
+
+#: id:59
+msgid "Sep"
+msgstr "sep"
+
+#: id:60
+msgid "Oct"
+msgstr "okt"
+
+#: id:61
+msgid "Nov"
+msgstr "nov"
+
+#: id:62
+msgid "Dec"
+msgstr "dec"
+
+#: id:71
+msgid "N"
+msgstr "N"
+
+#: id:72
+msgid "NNE"
+msgstr "NNO"
+
+#: id:73
+msgid "NE"
+msgstr "NO"
+
+#: id:74
+msgid "ENE"
+msgstr "ONO"
+
+#: id:75
+msgid "E"
+msgstr "O"
+
+#: id:76
+msgid "ESE"
+msgstr "OZO"
+
+#: id:77
+msgid "SE"
+msgstr "ZO"
+
+#: id:78
+msgid "SSE"
+msgstr "ZZO"
+
+#: id:79
+msgid "S"
+msgstr "Z"
+
+#: id:80
+msgid "SSW"
+msgstr "ZZW"
+
+#: id:81
+msgid "SW"
+msgstr "ZW"
+
+#: id:82
+msgid "WSW"
+msgstr "WZW"
+
+#: id:83
+msgid "W"
+msgstr "W"
+
+#: id:84
+msgid "WNW"
+msgstr "WNW"
+
+#: id:85
+msgid "NW"
+msgstr "NW"
+
+#: id:86
+msgid "NNW"
+msgstr "NNW"
+
+#: id:87
+msgid "VAR"
+msgstr "variabele"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Layout: Automatisch"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Layout: Autom. groot"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Layout: Klein"
+
+#: id:101
+msgid "View: List"
+msgstr "Layout: Lijst"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Scannen"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Sorteer: Naam"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Sorteer: Datum"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Sorteer: Grootte"
+
+#: id:106
+msgid "No"
+msgstr "Nee"
+
+#: id:107
+msgid "Yes"
+msgstr "Ja"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Diavoorstelling"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Miniaturen aanmaken"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Miniaturen aanmaken"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Snelkoppelingen"
+
+#: id:112
+msgid "Paused"
+msgstr "Pauze"
+
+#: id:113
+msgid "Update failed"
+msgstr "Update mislukt"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Installatie mislukt"
+
+#: id:115
+msgid "Copy"
+msgstr "Kopieer"
+
+#: id:116
+msgid "Move"
+msgstr "Verplaats"
+
+#: id:117
+msgid "Delete"
+msgstr "Verwijder"
+
+#: id:118
+msgid "Rename"
+msgstr "Hernoem"
+
+#: id:119
+msgid "New folder"
+msgstr "Nieuwe map"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Bevestig kopieeropdracht"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Bevestig verplaatsopdracht"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Bevestig verwijderingsopdracht"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Deze bestanden kopiëren?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Deze bestanden verplaatsen?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Deze bestanden verwijderen? Dit kan niet meer ongedaan worden gemaakt!"
+
+#: id:126
+msgid "Status"
+msgstr "Status"
+
+#: id:127
+msgid "Objects"
+msgstr "Items"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Algemeen"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Voorstelling"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Systeeminformatie"
+
+#: id:131
+msgid "Display"
+msgstr "Beeldscherm"
+
+#: id:132
+msgid "Albums"
+msgstr "Albums"
+
+#: id:133
+msgid "Artists"
+msgstr "Artiesten"
+
+#: id:134
+msgid "Songs"
+msgstr "Alle nummers"
+
+#: id:135
+msgid "Genres"
+msgstr "Genres"
+
+#: id:136
+msgid "Playlists"
+msgstr "Afspeellijsten"
+
+#: id:137
+msgid "Search"
+msgstr "Zoeken"
+
+#: id:138
+msgid "System Information"
+msgstr "Systeeminformatie"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Temperaturen:"
+
+#: id:140
+msgid "CPU:"
+msgstr "Processor:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Tijd:"
+
+#: id:143
+msgid "Current:"
+msgstr "Huidige:"
+
+#: id:144
+msgid "Build:"
+msgstr "Versie:"
+
+#: id:145
+msgid "Network:"
+msgstr "Netwerk:"
+
+#: id:146
+msgid "Type:"
+msgstr "Type:"
+
+#: id:147
+msgid "Static"
+msgstr "Statisch"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC-adres"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP-adres"
+
+#: id:151
+msgid "Link:"
+msgstr "Verbinding:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Half-duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Full-duplex"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Opslag"
+
+#: id:155
+msgid "Drive"
+msgstr "Schijf"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Vrij"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Video"
+
+#: id:158
+msgid "Free memory"
+msgstr "Beschikbaar geheugen"
+
+#: id:159
+msgid "No link"
+msgstr "Geen verbinding"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Vrij"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Niet beschikbaar"
+
+#: id:162
+msgid "Tray open"
+msgstr "Lade open"
+
+#: id:163
+msgid "Reading"
+msgstr "Inlezen"
+
+#: id:164
+msgid "No disc"
+msgstr "Geen schijf"
+
+#: id:165
+msgid "Disc present"
+msgstr "Schijf aanwezig"
+
+#: id:166
+msgid "Skin"
+msgstr "Skin"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Resolutie"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Verversingsfrequentie scherm aanpassen aan video"
+
+#: id:172
+msgid "Release date"
+msgstr "Releasedatum:"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Geef 4:3 video's weer als"
+
+#: id:175
+msgid "Moods"
+msgstr "Stemmingen"
+
+#: id:176
+msgid "Styles"
+msgstr "Stijlen"
+
+#: id:179
+msgid "Song"
+msgstr "Tracklist"
+
+#: id:180
+msgid "Duration"
+msgstr "Tijdsduur"
+
+#: id:181
+msgid "Select album"
+msgstr "Selecteer album"
+
+#: id:182
+msgid "Tracks"
+msgstr "Nummer"
+
+#: id:183
+msgid "Review"
+msgstr "Beschrijving"
+
+#: id:184
+msgid "Refresh"
+msgstr "Vernieuwen"
+
+#: id:185
+msgid "Searching album"
+msgstr "Albuminformatie ophalen"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Geen albums gevonden!"
+
+#: id:188
+msgid "Select all"
+msgstr "Alles selecteren"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Scannen media-informatie"
+
+#: id:190
+msgid "Save"
+msgstr "Opslaan"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Willekeurig"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Wissen"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Scannen"
+
+#: id:194
+msgid "Searching..."
+msgstr "Zoeken..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Geen informatie gevonden"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Kies film:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "%s raadplegen voor informatie"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Filmgegevens ophalen"
+
+#: id:199
+msgid "Web interface"
+msgstr "Webinterface"
+
+#: id:202
+msgid "Tagline"
+msgstr "Slagzin"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Plot"
+
+#: id:205
+msgid "Votes"
+msgstr "Stemmen"
+
+#: id:206
+msgid "Cast"
+msgstr "Acteurs"
+
+#: id:207
+msgid "Plot"
+msgstr "Plot"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Afspelen"
+
+#: id:209
+msgid "Next"
+msgstr "Volgende"
+
+#: id:210
+msgid "Previous"
+msgstr "Vorige"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Gebruikersomgeving kalibreren"
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Beeldscherm kalibreren..."
+
+#: id:215
+msgid "Soften"
+msgstr "Verzachten"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Zoomen"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Uitrekken"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD-station"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Plaats een schijf"
+
+#: id:220
+msgid "Remote share"
+msgstr "Gedeeld op afstand"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Netwerk is niet verbonden"
+
+#: id:222
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: id:224
+msgid "Speed"
+msgstr "Snelheid"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Verticale verschuiving"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Testbeeld..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Bij muziek CD's namen van nummers via internet opzoeken"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Afspeellijst willekeurig afspelen"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Schakel harde schijf uit na"
+
+#: id:230
+msgid "Video filters"
+msgstr "Videofilters"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Geen"
+
+#: id:232
+msgid "Point"
+msgstr "Punt"
+
+#: id:233
+msgid "Linear"
+msgstr "Lineair"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropisch"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussian Cubic"
+
+#: id:237
+msgid "Minification"
+msgstr "Verkleinen"
+
+#: id:238
+msgid "Magnification"
+msgstr "Vergroten"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Afspeellijst wissen na afspelen"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Weergavemodus"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Volledig scherm #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "Venster"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Verversingsfrequentie"
+
+#: id:244
+msgid "Full screen"
+msgstr "Volledig scherm"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Formaat: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Taal"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Muziek"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Visualisatie"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Selecteer doelmap"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Geluid naar alle luidsprekers"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Aantal kanalen"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- Versterker ondersteunt DTS"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "CD-informatie opzoeken"
+
+#: id:257
+msgid "Error"
+msgstr "Fout"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Metadata uitlezen (ID3v2, APEv2)"
+
+#: id:259
+msgid "Opening"
+msgstr "Openen"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Wachten op start..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Uitvoer scripts"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Webserver"
+
+#: id:264
+msgid "Record"
+msgstr "Opnemen"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Stop opname"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Sorteer: Naam"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Sorteer: Tijd"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Sorteer: Titel"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Sorteer: Artiest"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Sorteer: Album"
+
+#: id:271
+msgid "Top 100"
+msgstr "Top 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Beeldpositie linksboven"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Beeldpositie rechtsonder"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Positie ondertitels"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Aanpassing pixelratio"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Beweeg de pijlen om de overscan aan te passen"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Beweeg de balk om de ondertitels te verplaatsen"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Pas de rechthoek aan zodat deze precies vierkant is"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Fout tijdens het laden van de instellingen"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Standaardinstellingen actief"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Controleer de XML-bestanden"
+
+#: id:282
+msgid "Found %i items"
+msgstr "%i items gevonden"
+
+#: id:283
+msgid "Search results"
+msgstr "Zoekresultaten"
+
+#: id:284
+msgid "No results found"
+msgstr "Niets gevonden"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Ondertiteling"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Lettertype"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Formaat"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Dynamic Range-compressie"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Beeld"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Geluid"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Ondertitels zoeken"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Positie opslaan"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Posities verwijderen"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Geluid synchroniseren"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Favorieten"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- Versterker ondersteunt AAC"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- Versterker ondersteunt MP1"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- Versterker ondersteunt MP2"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- Versterker ondersteunt MP3"
+
+#: id:303
+msgid "Delay"
+msgstr "Vertraging"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Taal"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Non-Interleaved"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Bibliotheek opschonen"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Voorbereiden..."
+
+#: id:315
+msgid "Database error"
+msgstr "Blbliotheekfout"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Zoeken op nummers..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Klaar met bibliotheek opschonen"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Verwijderde nummers markeren"
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Fout tijdens reorganiseren nummers"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Artiesten opschonen..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Fout tijdens opschonen artiesten"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Genres opschonen..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Fout tijdens opschonen genres"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Locaties opschonen..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Fout tijdens opschonen locaties"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Albums opschonen..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Fout tijdens opschonen albums"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Aanpassingen opslaan..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Fout tijdens opslaan aanpassingen"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Een moment geduld a.u.b."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Bibliotheek comprimeren..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Fout tijdens comprimeren bibliotheek"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Wilt u de mediabibliotheek opschonen?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Bibliotheek opschonen..."
+
+#: id:335
+msgid "Start"
+msgstr "Start"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Framerateconversie"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Geluidsuitvoer"
+
+#: id:338
+msgid "Analog"
+msgstr "Analoog"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Digitaal"
+
+#: id:340
+msgid "Various artists"
+msgstr "Diverse artiesten"
+
+#: id:341
+msgid "Play disc"
+msgstr "DVD afspelen"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Speelfilms"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Framerate aanpassen"
+
+#: id:344
+msgid "Actors"
+msgstr "Acteurs"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Jaar"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Volume verhogen bij downmixen"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Programma's"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Uit"
+
+#: id:352
+msgid "Dim"
+msgstr "Dimmen"
+
+#: id:353
+msgid "Black"
+msgstr "Zwart"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix Sporen"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Schermbeveiliging inschakelen na:"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Type schermbeveiliging"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Standaard afsluitmethode toepassen na"
+
+#: id:358
+msgid "All albums"
+msgstr "Alle albums"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Onlangs toegevoegde albums"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Schermbeveiliging"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Map Diavoorst."
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Doorzichtigheid schermbeveiliging"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Sorteer: Bestand"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Versterker ondersteunt AC3"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Sorteer: Naam"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Sorteer: Jaar"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Sorteer: Waardering"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Titel"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Onweer"
+
+#: id:371
+msgid "Partly"
+msgstr "Gedeeltelijk"
+
+#: id:372
+msgid "Mostly"
+msgstr "Overwegend"
+
+#: id:373
+msgid "Sunny"
+msgstr "Zonnig"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Bewolkt"
+
+#: id:375
+msgid "Snow"
+msgstr "Sneeuw"
+
+#: id:376
+msgid "Rain"
+msgstr "Regen"
+
+#: id:377
+msgid "Light"
+msgstr "Lichte"
+
+#: id:378
+msgid "AM"
+msgstr "'s Ochtends"
+
+#: id:379
+msgid "PM"
+msgstr "'s Middags"
+
+#: id:380
+msgid "Showers"
+msgstr "Buien"
+
+#: id:381
+msgid "Few"
+msgstr "Lichte"
+
+#: id:382
+msgid "Scattered"
+msgstr "Verstrooide"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Wind"
+
+#: id:384
+msgid "Strong"
+msgstr "Sterk"
+
+#: id:385
+msgid "Fair"
+msgstr "Mooi"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Helder"
+
+#: id:387
+msgid "Clouds"
+msgstr "Wolken"
+
+#: id:388
+msgid "Early"
+msgstr "Vroeg"
+
+#: id:389
+msgid "Shower"
+msgstr "Buien"
+
+#: id:390
+msgid "Flurries"
+msgstr "Natte Sneeuw"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Min"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Gem."
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Max."
+
+#: id:394
+msgid "Fog"
+msgstr "Mist"
+
+#: id:395
+msgid "Haze"
+msgstr "Nevel"
+
+#: id:396
+msgid "Select location"
+msgstr "Locatie selecteren"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Vernieuwingstijd"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Eenheid temperatuur"
+
+#: id:399
+msgid "Speed units"
+msgstr "Eenheid windsnelheid"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Het weer"
+
+#: id:401
+msgid "Temp"
+msgstr "Temperatuur"
+
+#: id:402
+msgid "Feels like"
+msgstr "Gevoelstemp."
+
+#: id:403
+msgid "UV index"
+msgstr "UV-index"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Wind"
+
+#: id:405
+msgid "Dew point"
+msgstr "Dauwpunt"
+
+#: id:406
+msgid "Humidity"
+msgstr "Vochtigheid"
+
+#: id:409
+msgid "Defaults"
+msgstr "Standaard"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Weersverwachting opzoeken"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Weersverwachting ophalen voor"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Fout tijdens ophalen gegevens"
+
+#: id:413
+msgid "Manual"
+msgstr "Handmatig"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Geen recensie voor dit album"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Miniatuur downloaden..."
+
+#: id:416
+msgid "Not available"
+msgstr "Niet beschikbaar"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Layout: Groot"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Min"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Max"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Albuminformatie wissen"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "CDDB-informatie wissen"
+
+#: id:424
+msgid "Select"
+msgstr "Selecteer"
+
+#: id:425
+msgid "No album information found"
+msgstr "Geen albuminformatie gevonden."
+
+#: id:426
+msgid "No CD information found"
+msgstr "Geen CDDB-informatie gevonden."
+
+#: id:427
+msgid "Disc"
+msgstr "Schijf:"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Voer de juiste CD/DVD in"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Voer de volgende CD/DVD in"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Sorteer: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Data niet bufferen"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Speelfilm uit bibliotheek verwijderen"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "'%s' zeker verwijderen?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "Uit het %s met %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Verwisselbare schijf"
+
+#: id:438
+msgid "Opening file"
+msgstr "Bestand openen"
+
+#: id:439
+msgid "Cache"
+msgstr "Buffer"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Harde schijf"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "LAN"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Video"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Geluid"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Autom. starten"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Geactiveerd"
+
+#: id:450
+msgid "Columns"
+msgstr "Kolommen"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Begin rij 1:"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Begin rij 2:"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Begin rij 3:"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Begin rij 4:"
+
+#: id:455
+msgid "Rows"
+msgstr "Rijen"
+
+#: id:456
+msgid "Mode"
+msgstr "Modus"
+
+#: id:457
+msgid "Switch view"
+msgstr "Layout wijzigen"
+
+#: id:459
+msgid "Subs"
+msgstr "Ondertitels"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Geluidskanaal"
+
+#: id:461
+msgid "[active]"
+msgstr "[actief]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Ondertitels"
+
+#: id:463
+msgid "Backlight"
+msgstr "Verlichting"
+
+#: id:464
+msgid "Brightness"
+msgstr "Helderheid"
+
+#: id:465
+msgid "Contrast"
+msgstr "Contrast"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Type"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Verplaats de balk om het OSD te verplaatsen"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSD-positie"
+
+#: id:470
+msgid "Credits"
+msgstr "Credits"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Uit"
+
+#: id:475
+msgid "Music only"
+msgstr "Alleen geluid"
+
+#: id:476
+msgctxt "Auto context with id 476"
+msgid "Music & video"
+msgstr "Geluid en video"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Afspeellijst kon niet worden geladen"
+
+#: id:478
+msgid "OSD"
+msgstr "On Screen Display"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Skin en taal"
+
+#: id:480
+msgid "Appearance"
+msgstr "Uiterlijk"
+
+#: id:481
+msgid "Audio options"
+msgstr "Geluidsinstellingen"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Over XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Album verwijderen"
+
+#: id:486
+msgid "Repeat"
+msgstr "Herhalen"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Nummer herhalen"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Mappen herhalen"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Automatisch het volgende nummer in de lijst afspelen"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Grote iconen gebruiken"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Ondertitels vergroten"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Geavanceerde opties (alleen experts!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Algemene audio headroom"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Video naar GUI-resolutie upsamplen"
+
+#: id:496
+msgid "Calibration"
+msgstr "Kalibratie"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Extensies mediabestanden tonen"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Sorteer: Type"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Kan geen verbinding maken met allmusic.com"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Albuminfo downloaden mislukt"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Zoeken naar albumnamen..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Open"
+
+#: id:503
+msgid "Busy"
+msgstr "Bezig"
+
+#: id:504
+msgid "Empty"
+msgstr "Leeg"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Media-info van bestanden inlezen..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Sorteer: Gebruik"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Visualisaties weergeven"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Videoweergave automatisch aanpassen aan regiocode"
+
+#: id:512
+msgid "Startup window"
+msgstr "Start met venster"
+
+#: id:513
+msgid "Home window"
+msgstr "Beginscherm"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Handmatige instellingen"
+
+#: id:515
+msgid "Genre"
+msgstr "Genre"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Laatst afgespeelde albums"
+
+#: id:518
+msgid "Launch"
+msgstr "Starten"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Starten in.."
+
+#: id:521
+msgid "Compilations"
+msgstr "Compilaties"
+
+#: id:522
+msgid "Remove source"
+msgstr "Snelkoppeling verwijderen"
+
+#: id:523
+msgid "Switch media"
+msgstr "Media veranderen"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Afspeellijst kiezen"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Nieuwe afspeellijst"
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Aan afspeellijst toevoegen"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Handmatig toevoegen"
+
+#: id:528
+msgid "Enter title"
+msgstr "Voer titel in"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Fout : Bestaande titel"
+
+#: id:530
+msgid "Select genre"
+msgstr "Kies genre"
+
+#: id:531
+msgid "New genre"
+msgstr "Nieuw genre"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Handmatig toegevoegd"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Voer genre in"
+
+#: id:534
+msgid "View: %s"
+msgstr "Layout: %s"
+
+#: id:535
+msgid "List"
+msgstr "Lijst"
+
+#: id:536
+msgid "Icons"
+msgstr "Iconen"
+
+#: id:537
+msgid "Big list"
+msgstr "Grote lijst"
+
+#: id:538
+msgid "Big icons"
+msgstr "Grote iconen"
+
+#: id:539
+msgid "Wide"
+msgstr "Wijd"
+
+#: id:540
+msgid "Big wide"
+msgstr "Groot, wijd"
+
+#: id:541
+msgid "Album icons"
+msgstr "Covers"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD-iconen"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Media-info"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Apparaat voor geluidsuitvoer"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Doorgifte Geluidsuitvoerapparaat"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Geen biografie beschikbaar voor artiest"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Downmix multikanaals audio naar stereo"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Sorteer: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Naam"
+
+#: id:552
+msgid "Date"
+msgstr "Datum"
+
+#: id:553
+msgid "Size"
+msgstr "Grootte"
+
+#: id:554
+msgid "Track"
+msgstr "Nummer"
+
+#: id:555
+msgid "Time"
+msgstr "Tijd"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Titel"
+
+#: id:557
+msgid "Artist"
+msgstr "Artiest"
+
+#: id:558
+msgid "Album"
+msgstr "Album"
+
+#: id:559
+msgid "Playlist"
+msgstr "Afspeellijst"
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Bestand"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Jaar"
+
+#: id:563
+msgid "Rating"
+msgstr "Score"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Type"
+
+#: id:565
+msgid "Usage"
+msgstr "Gebruik"
+
+#: id:566
+msgid "Album artist"
+msgstr "Album artiest"
+
+#: id:567
+msgid "Play count"
+msgstr "Aantal keer afgespeeld"
+
+#: id:568
+msgid "Last played"
+msgstr "Laatst afgespeeld"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Opmerking"
+
+#: id:570
+msgid "Date added"
+msgstr "Datum toegevoegd"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Standaard"
+
+#: id:572
+msgid "Studio"
+msgstr "Filmstudio"
+
+#: id:573
+msgid "Path"
+msgstr "Pad"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Land"
+
+#: id:575
+msgid "In progress"
+msgstr "Bezig"
+
+#: id:576
+msgid "Times played"
+msgstr "Keren afgespeeld"
+
+#: id:580
+msgid "Sort direction"
+msgstr "Sorteerrichting"
+
+#: id:581
+msgid "Sort method"
+msgstr "Sorteren op"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Layout"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Layout van elke map onthouden"
+
+#: id:584
+msgid "Ascending"
+msgstr "Oplopend"
+
+#: id:585
+msgid "Descending"
+msgstr "Aflopend"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Afspeellijst wijzigen"
+
+#: id:587
+msgid "Filter"
+msgstr "Filter"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Feestmix annuleren"
+
+#: id:589
+msgid "Party mode"
+msgstr "Feestmix"
+
+#: id:590
+msgid "Random"
+msgstr "Willekeurig"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Uit"
+
+#: id:592
+msgid "One"
+msgstr "1"
+
+#: id:593
+msgid "All"
+msgstr "Alles"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Uit"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Herhalen: Uit"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Herhalen: 1"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Herhalen: Alles"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Cd kopiëren"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Middelmatig"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Standaard"
+
+#: id:603
+msgid "Extreme"
+msgstr "Extreem"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Constante bitsnelheid"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Kopiëren..."
+
+#: id:607
+msgid "To:"
+msgstr "Naar:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Kopiëren van CD of nummer mislukt"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDA-doelmap is niet ingegeven."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Muzieknummer rippen"
+
+#: id:611
+msgid "Enter number"
+msgstr "Voer nummer in"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bits/Sample"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Sample frequentie"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Muziek CD's"
+
+#: id:621
+msgid "Encoder"
+msgstr "Encoder"
+
+#: id:622
+msgid "Quality"
+msgstr "Kwaliteit"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bitsnelheid"
+
+#: id:624
+msgid "Include track number"
+msgstr "Tracknummer gebruiken"
+
+#: id:625
+msgid "All songs of"
+msgstr "Alle nummers van"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Weergave"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normaal"
+
+#: id:631
+msgid "Zoom"
+msgstr "Inzoomen"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Uitrekken 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Uitrekken 14:9"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Uitrekken 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Originele grootte"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Eigen instelling"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Normalisering"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Normalisatiemethode"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Per nummer"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Per album"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Voorversterking - genormaliseerd"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Voorversterking - niet genormaliseerd"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Het oversturen van genormaliseerde bestanden voorkomen"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Zwarte balken afsnijden"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Er moet een groot bestand uitgepakt worden. Doorgaan?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Uit bibliotheek verwijderen"
+
+#: id:647
+msgid "Export video library"
+msgstr "Videobibliotheek exporteren..."
+
+#: id:648
+msgid "Import video library"
+msgstr "Videobibliotheek importeren..."
+
+#: id:649
+msgid "Importing"
+msgstr "Importeren"
+
+#: id:650
+msgid "Exporting"
+msgstr "Exporteren"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Bibliotheek openen"
+
+#: id:652
+msgid "Years"
+msgstr "Jaren"
+
+#: id:653
+msgid "Update library"
+msgstr "Bibliotheek bijwerken"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Debug-informatie"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Uitvoerbaar bestand openen"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Afspeellijst openen"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Map openen"
+
+#: id:658
+msgid "Song information"
+msgstr "Muziekinformatie"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Niet-lineair uitrekken"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Volumeversterking"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Exporteerlocatie kiezen"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Dit bestand is niet langer beschikbaar."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Wilt u het verwijderen uit de bibliotheek?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Naar script zoeken"
+
+#: id:665
+msgid "Compression level"
+msgstr "Compressieniveau"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Bibliotheek opschonen"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Oude nummers uit bibliotheek verwijderen"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Deze locatie is al eerder gescand"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Netwerk"
+
+#: id:706
+msgid "- Server"
+msgstr "- Host"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "HTTP-proxy gebruiken"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internet Protocol (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Ongeldig poortnummer. Waarde moet tussen 1 en 65535 liggen."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP proxy"
+
+#: id:715
+msgid "- Assignment"
+msgstr "Toewijzing"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Automatisch (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Handmatig (Statisch)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP-adres"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Netmask"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Standaard Gateway"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS-server"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Opslaan en herstarten"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Ongeldig adres opgegeven. Waarde moet AAA.BBB.CCC.DDD zijn"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "met getallen tussen 0 en 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Veranderingen niet opgeslagen. Doorgaan zonder op te slaan?"
+
+#: id:727
+msgid "Web server"
+msgstr "Webserver"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP-server"
+
+#: id:730
+msgid "- Port"
+msgstr "- Poort"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Opslaan en toepassen"
+
+#: id:733
+msgid "- Password"
+msgstr "- Wachtwoord"
+
+#: id:734
+msgid "No pass"
+msgstr "Geen wachtwoord"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Tekencodering"
+
+#: id:736
+msgid "- Style"
+msgstr "- Stijl:"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Kleur:"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Normaal"
+
+#: id:739
+msgid "Bold"
+msgstr "Vet"
+
+#: id:740
+msgid "Italics"
+msgstr "Cursief"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Vet/cursief"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Wit"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Geel"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Bestanden"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Geen gescande informatie in deze weergave"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Wissel naar bestandsweergave"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Fout tijdens het laden van de afbeelding"
+
+#: id:748
+msgid "Edit path"
+msgstr "Snelkoppeling wijzingen"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Spiegel afbeelding"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Weet u het zeker?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Snelkoppeling verwijderen"
+
+#: id:754
+msgid "Add program link"
+msgstr "Programmalink toevoegen"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Programmalink wijzigen"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Programmanaam wijzigen"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Zoekdiepte instellen"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Layout: Groot"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Geel"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Wit"
+
+#: id:762
+msgid "Blue"
+msgstr "Blauw"
+
+#: id:763
+msgid "Bright green"
+msgstr "Lichtgroen"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Lichtgeel"
+
+#: id:765
+msgid "Cyan"
+msgstr "Cyaan"
+
+#: id:766
+msgid "Light grey"
+msgstr "Lichtgrijs"
+
+#: id:767
+msgid "Grey"
+msgstr "Grijs"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Fout %i: gedeelde map niet beschikbaar"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Geluidshardware"
+
+#: id:773
+msgid "Seeking"
+msgstr "Zoeken"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Map schermbeveiliging door diavoorstelling"
+
+#: id:775
+msgid "Network interface"
+msgstr "Netwerkverbinding"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Naam draadloos netwerk (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "Wachtwoord draadloos netwerk"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "Beveiligingsniveau draadloos netwerk"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Opslaan en Toepassen Netwerk Instellingen"
+
+#: id:780
+msgid "No encryption"
+msgstr "Geen versleuteling"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Netwerkinstellingen toepassen. Een ogenblik geduld."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Netwerkverbinding herstart."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Netwerkverbinding kon niet herstart worden."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Verbinding uitgeschakeld"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Verbinding succesvol uitgeschakeld."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Naam draadloos netwerk (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Gebeurtenissen op afstand activeren"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Poort voor gebeurtenissen op afstand"
+
+#: id:793
+msgid "Port range"
+msgstr "Poortbereik voor gebeurtenissen op afstand"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Gebeurtenissen van andere computers ontvangen"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Initiële herhalingsvertraging (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Doorgaande herhalingsvertraging (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Maximaal aantal gebruikers"
+
+#: id:798
+msgid "Internet access"
+msgstr "Internettoegang"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Ongeldig poortnummer ingevoerd"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Geldig poortbereik is 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Geldig poortbereik is 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "Muziek Toevoegen..."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Videos Toevoegen..."
+
+#: id:1000
+msgid "- Preview"
+msgstr "- Test schermbeveiliging"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Verbinding mislukt"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC kon niet verbinden met de netwerklocatie."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Dit kan veroorzaakt worden doordat het netwerk niet verbonden is."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Wilt u het toch toevoegen?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP-adres"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Netwerklocatie toevoegen"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protocol"
+
+#: id:1009
+msgid "Server address"
+msgstr "Serveradres"
+
+#: id:1010
+msgid "Server name"
+msgstr "Servernaam"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Remote pad"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Gedeelde map"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Poort"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Netwerkserver"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Voer het netwerkadres in van de server"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Voer de locatie op de server in"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Voer het poortnummer in"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Voer de gebruikersnaam in"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "%s locatie toevoegen"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Voer locaties in of blader naar de locaties."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Voer een naam in voor deze locatie."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Blader voor nieuwe locatie"
+
+#: id:1024
+msgid "Browse"
+msgstr "Bladeren"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Kon geen locatie-informatie verkrijgen."
+
+#: id:1026
+msgid "Add source"
+msgstr "Locatie toevoegen"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Locatie aanpassen"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Pas %s locatie aan"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Nieuw label opgeven"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Bladeren voor een afbeelding"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Bladeren voor een afbeeldingenmap"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Netwerklocatie toevoegen..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Bestand selecteren"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Submenu"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Submenu knoppen inschakelen"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Favorieten"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Video add-ons"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Audio add-ons"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Afbeeldingen add-ons"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Map laden"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "%i items ontvangen"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "%i van %i items ontvangen"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Programma add-ons"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Plugin-afbeelding instellen"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Addon-instelingen"
+
+#: id:1046
+msgid "Access points"
+msgstr "Draadloze Netwerken"
+
+#: id:1047
+msgid "Other..."
+msgstr "Andere..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Gebruikersnaam"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Script instellingen"
+
+#: id:1050
+msgid "Singles"
+msgstr "Singles"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Voer URL in"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB-client"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Werkgroep"
+
+#: id:1203
+msgid "Default username"
+msgstr "Standaardgebruikersnaam"
+
+#: id:1204
+msgid "Default password"
+msgstr "Standaardwachtwoord"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS-server"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Laad SMB gedeeld netwerk"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Verwijder"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Muziek"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Video"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Afbeeldingen"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Bestanden"
+
+#: id:1215
+msgctxt "Auto context with id 1215"
+msgid "Music & video"
+msgstr "Muziek en video's"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Muziek en afbeeldingen"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Muziek en bestanden"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Video en afbeeldingen"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Video - Bestanden"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Afbeeldingen en bestanden"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Muziek, video's en afbeeldingen"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Muziek, video's, afbeeldingen en bestanden"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Bestanden, muziek en video"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Bestanden, afbeeldingen en muziek"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Bestanden, afbeeldingen en video"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Muziek en programma's"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Video en programma's"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Afbeeldingen en programma's"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Muziek, video, afbeeldingen en programma's"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programma's, video en muziek"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programma's, afbeeldingen en muziek"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programma's, afbeeldingen en video's"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Systeem detecteren"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Aangesloten systemen automatisch detecteren"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Bijnaam"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Vragen om verbinding te maken"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "FTP-gebruikersnaam en -wachtwoord verzenden"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Pinginterval in sec."
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Verbinding maken met de gevonden systeem?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Zeroconf publishing"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Ontvangen van AirPlay-inhoud door XBMC toelaten"
+
+#: id:1271
+msgid "Device name"
+msgstr "Apparaatnaam"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr "- Beveiliging met wachtwoord"
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Aangepaste geluidskaart"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Aangepast Passthrough apparaat"
+
+#: id:1396
+msgid "Drifting"
+msgstr "Stuifsneeuw"
+
+#: id:1397
+msgid "and"
+msgstr "en"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Vrieskou"
+
+#: id:1399
+msgid "Late"
+msgstr "Laat"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Lokaal"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "Onweersbuien"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Onweer"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Zon"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Hevige"
+
+#: id:1405
+msgid "in"
+msgstr "in"
+
+#: id:1406
+msgid "the"
+msgstr "de"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Omgeving"
+
+#: id:1408
+msgid "Ice"
+msgstr "IJs"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Kristallen"
+
+#: id:1410
+msgid "Calm"
+msgstr "Kalm"
+
+#: id:1411
+msgid "with"
+msgstr "met"
+
+#: id:1412
+msgid "windy"
+msgstr "winderig"
+
+#: id:1413
+msgid "drizzle"
+msgstr "miezeren"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "Onweerstormen"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "Motregen"
+
+#: id:1416
+msgid "Foggy"
+msgstr "Mistig"
+
+#: id:1417
+msgid "Grains"
+msgstr "Korrels"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "Onweer"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "Onweersbuien"
+
+#: id:1420
+msgid "Moderate"
+msgstr "Matig"
+
+#: id:1421
+msgid "Very High"
+msgstr "Heel hoog"
+
+#: id:1422
+msgid "Windy"
+msgstr "Winderig"
+
+#: id:1423
+msgid "Mist"
+msgstr "Mist"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Schakel beeldscherm uit bij inactiviteit"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Speelduur"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Fout in script! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Nieuwere versie vereist - Zie log"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Gebruik LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Beginscherm"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Programma's"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Afbeeldingen"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Bestandsbeheer"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Muziek"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Video"
+
+#: id:10007
+msgid "System information"
+msgstr "Systeeminformatie"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Instellingen - Algemeen"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Instellingen - Beeld"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Instellingen - GUI-kalibratie"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Instellingen - Schermkalibratie"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Instellingen - Afbeeldingen"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Instellingen - Programma's"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Instellingen - Weer"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Instellingen - Muziek"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Instellingen - Systeem"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Instellingen - Video's"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Instellingen - Netwerk"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Instellingen - Uiterlijk"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Webbrowser"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr "Video's"
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Video/Afspeellijst"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr "Aanmeld scherm"
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Instellingen - Profielen"
+
+#: id:10040
+msgid "Addon browser"
+msgstr "Addon verkenner"
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Ja/Nee"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Voortgang"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Zoeken naar ondertitels..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Ondertitels cachen..."
+
+#: id:10212
+msgid "terminating"
+msgstr "Bezig met afsluiten"
+
+#: id:10213
+msgid "buffering"
+msgstr "Bufferen"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Bezig met het openen van stream"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Muziek/Afspeellijst"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Muziek/Bestanden"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Muziek/Bibliotheek"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Afspeellijst bewerken"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Top 100 Nummers"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Top 100 Albums"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Programma's"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Instellingen"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Weersverwachting"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Netwerk gaming"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Extensies"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Systeeminformatie"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Muziek - Bibliotheek"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Muziek - Afspeellijst"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Video's - Afspeellijst"
+
+#: id:10523
+msgid "Album info"
+msgstr "Albuminformatie"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Filminformatie"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Selecteren"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Muziek/Informatie"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Bevestiging"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Films/Informatie"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Scripts/Informatie"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Volledig scherm"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Geluidsvisualisatie"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Bestanden groeperen"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Herindexeren"
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Terug naar Muziek"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Terug naar Video's"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Starten vanaf begin"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Hervatten vanaf %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Vergrendeld! voer code in..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Voer het wachtwoord in"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Voer de vergrendelcode in"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Voer de vergrendelcode in om te ontgrendelen"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "of druk op C om te annuleren"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Voer controller knoppencombinatie in en druk op Start"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "druk op Ok, of Back om te annuleren"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Vergrendelen"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Ontgrendelen"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Vergrendeling resetten"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Vergrendeling verwijderen"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Numeriek wachtwoord"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Knoppencombinatie"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Normaal wachtwoord"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Voer nieuw wachtwoord in"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Voer nieuw wachtwoord opnieuw in"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Incorrect wachtwoord"
+
+#: id:12343
+msgid "retries left"
+msgstr "pogingen over"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Ingevoerd wachtwoord klopt niet."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Toegang geweigerd"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Maximaal aantal pogingen bereikt"
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "XBMC wordt nu uitgeschakeld."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Item vergrendeld"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Vergrendeling heractiveren"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Vergrendeling veranderen"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Vergrendeling delen"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Geen wachtwoord ingegeven. Probeer opnieuw."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Vergrendelen"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "XBMC uitschakelen na max. aantal mislukte pogingen"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Vergrendelcode is onjuist!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Voer een geldige vergrendelcode in!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Instellingen vergrendelen"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Als standaard instellen voor alle video's"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Dit zal alle voorgaande opgeslagen waarden resetten"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Afbeeldingen weergeven gedurende"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Pan- en zoomeffecten gebruiken"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12-uursformaat"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24-uursformaat"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Dag/Maand"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Maand/Dag"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Systeem actief"
+
+#: id:12391
+msgid "Minutes"
+msgstr "minuten"
+
+#: id:12392
+msgid "Hours"
+msgstr "uur"
+
+#: id:12393
+msgid "Days"
+msgstr "dagen"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Totale activiteit"
+
+#: id:12395
+msgid "Battery level"
+msgstr "Battery niveau"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Het weer"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Schermbeveiliging"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Volledig scherm On Screen Display"
+
+#: id:13000
+msgid "System"
+msgstr "Systeem"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Harde schijf onmiddellijk uitschakelen"
+
+#: id:13002
+msgid "Video only"
+msgstr "Alleen beeld"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Vertraging"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Minimale bestandsduur"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Computer uitschakelen"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Standaard afsluitmethode"
+
+#: id:13009
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Sluimerstand"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Slaapstand"
+
+#: id:13012
+msgid "Exit"
+msgstr "Stoppen"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Opnieuw opstarten"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minimaliseren"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Actie voor aan/uitknop"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Systeem Uitschakelen"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Er is een andere sessie actief, wellicht SSH?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Verwisselbare harde schijf aankoppelen?"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Apparaat onveilig verwijderd"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Apparaat succesvol verwijderd"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Joystick aangesloten"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Geen joystick aangesloten"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Lage accuspanning"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flikkerfilter"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Laat keuze aan driver (herstart vereist)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Vertical blank sync"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Ingeschakeld tijdens afspelen"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Altijd aan"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Test resolutie"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Resolutie behouden?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Wilt u deze resolutie behouden?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Softwarematige Hoge Kwaliteit Beeldverbetering"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Inschakelen voor SD-beelden"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Altijd inschakelen"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Beeldverbeteringsmethode"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicubisch"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "Strikte Pixmap-Texture Binding (vereist herstart)"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ Upscaling level"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU Studio level color conversion"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Stop doorgifte videosignaal aan andere beeldschermen"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Stop doorgifte videosignaal"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Actieve verbindingen gedetecteerd!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Als u doorgaat, kunt u XBMC mogelijk niet meer"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "besturen. Weet u zeker dat u de Event Server wilt stoppen?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Verander Apple afstandsbedieningsmodus?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Als u op dit moment de Apple afstandsbediening gebruikt"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "om XBMC te besturen, kan het veranderen van deze instelling"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "de mogelijkheid om het te blijven besturen beïnvloeden. Doorgaan?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Subnetmasker"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Gateway"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "DNS-server"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Initialiseren mislukt"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Nooit"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Direct"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Na %i sec."
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "HDD installatiedatum:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "HDD Power Cycle teller:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Profielen"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Profiel '%s' verwijderen?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Laatst gebruikt profiel:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Overschrijven"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Alarmklok"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Alarmklokinterval (in minuten)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Gestart, alarm over %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarm!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Gestopt met nog %im%is te gaan"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Naar ondertitels zoeken in RAR-archieven"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Ondertitels zoeken"
+
+#: id:13251
+msgid "Move item"
+msgstr "Item verplaatsen"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Item hierheen verplaatsen"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Verplaatsen annuleren"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Hardware:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Belasting:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "XBMC is verbonden, maar geen DNS beschikbaar."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Harde schijf"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Opslag"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Standaard"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Netwerk"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Video"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Hardware"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Besturingssysteem:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Kloksnelheid:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Video-encoder:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Schermresolutie:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V-kabel:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD-regio:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Ja, verbonden met internet"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Nee, niet verbonden met internet. Controleer uw netwerkinstellingen."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "- Doeltemperatuur"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "- Ventilatorsnelheid"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Automatische ventilatorsnelheid"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Snelheidsregeling ventilator"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Lettertype"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Bidirectionele tekst omdraaien"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "RSS-feeds inschakelen"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Hoofdmap tonen"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Nummers in lijst weergeven als"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Wilt u het systeem herstarten"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "in plaats van alleen XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Zoomeffect"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Zweefeffect"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Randreductie"
+
+#: id:13313
+msgid "Restart"
+msgstr "Herinitialiseer/Herstart"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Nummers in elkaar laten overvloeien"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Miniaturen regenereren"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Ook onderliggende mappen"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Diavoorstelling bekijken"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Diavoorstelling met mappen"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Willekeurig"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Alleen links"
+
+#: id:13322
+msgid "Right only"
+msgstr "Alleen rechts"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "CD+G (karaoke) inschakelen"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Doorzichtigheid achtergrond"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Doorzichtigheid voorgrond"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "Synchronisatie"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s niet gevonden"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Fout tijdens openen %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "%s kan niet geladen worden"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Fout: te weinig geheugen"
+
+#: id:13332
+msgid "Move up"
+msgstr "Omhoog"
+
+#: id:13333
+msgid "Move down"
+msgstr "Omlaag"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Label aanpassen"
+
+#: id:13335
+msgid "Make default"
+msgstr "Maak standaard"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Verwijder Knop"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Onveranderd laten"
+
+#: id:13341
+msgid "Green"
+msgstr "Groen"
+
+#: id:13342
+msgid "Orange"
+msgstr "Oranje"
+
+#: id:13343
+msgid "Red"
+msgstr "Rood"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Afwisselen"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "LED uit tijdens afspelen"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Filminformatie"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Aan afspeellijst toevoegen"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "IMDb doorzoeken..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Naar nieuwe inhoud scannen"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Afspeellijst weergeven"
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Albuminformatie"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Aan bibliotheek toevoegen"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Scan annuleren"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Rendermethode"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Lage kwaliteit Pixel Shader"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Hardware Overlays"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Hoge kwaliteit Pixel Shader"
+
+#: id:13358
+msgid "Play item"
+msgstr "Item afspelen"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Afbeelding artiest instellen"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Miniaturen automatisch aanmaken"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Stem inschakelen"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Apparaat inschakelen"
+
+#: id:13376
+msgid "Volume"
+msgstr "Volume"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Standaard weergavemodus"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Standaard helderheid"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Standaard contrast"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Standaard kleurbalans"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Video hervatten"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Stem - Poort 0"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Stem - Poort 1"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Stem - Poort 2"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Stem - Poort 3"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Op tijd gebaseerd zoeken"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "In rechter kolom van lijst weergeven:"
+
+#: id:13388
+msgid "Preset"
+msgstr "Preset"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "Er zijn geen presets beschikbaar voor deze visualisatie"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "Er zijn geen instellingen beschikbaar voor deze visualisatie"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Lade open/dicht"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Toon visualisaties tijdens afspelen muziek"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Bereken grootte"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Bereken mapgrootte"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Videoinstellingen"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Geluids- en ondertitelinstellingen"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Ondertitels gebruiken"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Posities"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Lidwoorden negeren tijdens sorteren (bijv. The & De)"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Nummers van hetzelfde album in elkaar laten overvloeien"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Zoeken naar %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Trackpositie weergeven"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Standaard leegmaken"
+
+#: id:13404
+msgid "Resume"
+msgstr "Hervatten"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Miniaturen"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Afbeeldingsinformatie"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s presets"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "IMDb-score"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Top 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Op Last.FM beluisteren"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Minimale ventilatorsnelheid"
+
+#: id:13412
+msgid "Play from here"
+msgstr "Afspelen vanaf hier"
+
+#: id:13413
+msgid "Downloading"
+msgstr "Download"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Artiesten weergeven die alleen op verzamel CD's voorkomen"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Rendermethode"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Automatisch detecteren"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Eenvoudige shaders (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Geavanceerde shaders (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Software"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Hardware veilig verwijderen"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Diavoorstelling starten"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Onthouden voor dit pad"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Gebruik pixelbufferobjecten"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Hardwareversnelling inschakelen (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Hardwareversnelling inschakelen (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Hardwareversnelling inschakelen (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Hardwareversnelling inschakelen (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Hardwareversnelling inschakelen (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Hardwareversnelling inschakelen (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Pixelshaders"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Hardware acceleratie toestaan (VideoToolbox)"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V-synchronisatiemethode"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Audiosignaal"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Videosignaal (Drop/Dupe audio)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Videosignaal (Resample audio)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Maximum resample amount (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Resamplingkwaliteit"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Laag (snel)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Medium"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Hoog"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Echt hoog (traag!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Synchroniseer video met beeldschermfrequentie"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Pauzeren gedurende wijzigen verversing snelheid"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Uit"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f Seconde"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f Seconden"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Type Apple afstandsbediening"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Gebruik afstandsbediening om XBMC zelf op te staren"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Ondertitel eerder/later starten"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Standaard"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Universele afstandsbediening"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Multi Remote (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Apple afstandsbedieningsfout"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Apple afstandsbedieningsondersteuning kan niet worden geactiveerd."
+
+#: id:14000
+msgid "Stack"
+msgstr "Groeperen"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Groeperen: Uit"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Afspeellijst downloaden..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Streamlijst downloaden..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Streamlijst verwerken..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Streamlijst downloaden mislukt"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Afspeellijst downloaden mislukt"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Spellocatie"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Automatisch overschakelen naar miniaturen als"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Automatisch overschakelen naar miniaturen"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Gebruik grote iconen"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Baseren op"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Percentage"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Geen bestanden en minimaal 1 miniatuur"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Tenminste 1 miniatuur"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Het percentage miniaturen"
+
+#: id:14018
+msgid "View options"
+msgstr "Weergaveopties"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Locatie 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Locatie 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Locatie 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Bibliotheek"
+
+#: id:14023
+msgid "No TV"
+msgstr "Geen TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "De dichtstbijzijnde grote plaats"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Video-/geluids-/DVD-buffer - harde schijf"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Videobuffer - DVD"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Lokaal netwerk"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Geluidsbuffer - DVD"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Lokaal netwerk"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD-buffer"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Lokaal netwerk"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Servers"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Netwerkinstellingen gewijzigd"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC moet herstarten om de netwerkinstellingen"
+
+#: id:14040
+msgid "network setup. Would you like to restart now?"
+msgstr "te wijzigen. Wilt u nu herstarten?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Bandbreedte internetverbinding beperken"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Uitschakelen tijdens gebruik"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i minuten"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i sec."
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i millisec."
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Tijdnotatie"
+
+#: id:14052
+msgid "Date format"
+msgstr "Datumnotatie"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI-filters"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Scannen op de achtergrond inschakelen"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Scan annuleren"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Niet mogelijk tijdens scannen naar media-info"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Filmkorreleffect"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Miniaturen in netwerkmappen zoeken"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Onbekende types buffer - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Automatisch"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Geef gebruikersnaam voor"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Datum & tijd"
+
+#: id:14064
+msgid "Set date"
+msgstr "Datum instellen"
+
+#: id:14065
+msgid "Set time"
+msgstr "Tijd instellen"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Geef de tijd in 24-uursformaat (HH:MM)"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Geef de datum in DD/MM/YYYY formaat"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Geef het IP-adres"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Instellingen nu toepassen?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Instellingen toepassen"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Hernoemen en verwijderen van bestanden toestaan"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Tijdzone"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Automatische zomer-/wintertijd"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Aan favorieten toevoegen"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Uit favorieten verwijderen"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Kleuren"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Tijdzone land"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Tijdzone"
+
+#: id:14081
+msgid "File lists"
+msgstr "Bestandlijsten"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "EXIF-informatie uitlezen"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Gemaximaliseerd venster in plaats van volledig scherm"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Bij selecteren nummers in de afspeellijst zetten"
+
+#: id:14086
+msgid "Playback"
+msgstr "Afspelen"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD's"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "DVD's automatisch afspelen"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Lettertype voor ondertiteling"
+
+#: id:14090
+msgid "International"
+msgstr "Land en Taal"
+
+#: id:14091
+msgid "Character set"
+msgstr "Tekencodering (Unicode, UTF-8, ISO)"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Fout registratie"
+
+#: id:14093
+msgid "Security"
+msgstr "Beveiliging"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Invoerapparaten"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Energiebeheer"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Verwijder"
+
+#: id:15016
+msgid "Games"
+msgstr "Spellen"
+
+#: id:15019
+msgid "Add"
+msgstr "Voeg toe"
+
+#: id:15052
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Bibliotheek"
+
+#: id:15101
+msgid "Database"
+msgstr "Database"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Alle albums"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Alle artiesten"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Alle nummers"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Alle genres"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Bufferen..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Navigatiegeluiden"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Standaarduiterijk"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Thema"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Standaard thema"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.FM"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Afgespeelde nummers op Last.FM bijhouden"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.FM-gebruikersnaam"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.FM-wachtwoord"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Verbinding mislukt"
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Werk XBMC bij aub"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Authentificatie mislukt: controleer gebruikersnaam en wachtwoord"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Actief"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Niet verbonden"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Verzendinterval %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "%i nummers gebufferd"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Verzenden..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Verzenden over %i sec."
+
+#: id:15213
+msgid "Play using..."
+msgstr "Afspelen met..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Geleidelijke A/V-synchronisatie gebruiken"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Bestandsnamen in miniatuurweergave verbergen"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Afspelen in feestmix"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Afgespeelde nummers op Libre.fm bijhouden"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm-gebruikersnaam"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm-wachtwoord"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Nummers bijhouden"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Last.FM-radio aan Last.FM toevoegen"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Verbinding maken met Last.FM..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Station selecteren..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Naar vergelijkbare artiesten zoeken..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Naar vergelijkbare tags zoeken..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Mijn profiel (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Populairste tags"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Favoriete artiesten van %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Favoriete albums van %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Favoriete nummers van %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Beluister %name% op Last.fm-radio"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Artiesten vergelijkbaar met %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Populairste albums van %name%"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Populairste nummers van %name%"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Populairste tags voor %name%"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Grootste fans van %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Beluister de Last.fm-radio van fans van %name%"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Beluister artiesten vergelijkbaar met %name%"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Populairste artiesten van %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Populairste albums van %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Populairste nummers van %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Vrienden van %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Buren van %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Wekelijkse artiestenhitlijst voor %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Wekelijkse albumhitlijst voor %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Wekelijkse nummerhitlijst voor %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Beluister de 'buren' Last.fm-radio van %name%"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Beluister de persoonlijke Last.fm-radio van %name%"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Beluister favoriete nummers van %name% op Last.fm radio"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Lijst ontvangen van Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Lijst ontvangen mislukt..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Geef een artiest op om vergelijkbare artiesten te vinden"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Geef een tag om vergelijkbare te vinden"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Onlangs door %name% afgespeelde nummers"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Beluister de aanbevelingen van %name% op Last.FM-radio"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Top tags van %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Wilt u dit nummer toevoegen aan uw favoriete nummers?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Wilt u dit nummer verbannen?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Toegevoegd aan favoriete nummers: %s"
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Toevoegen van '%s' aan favoriete nummers mislukt."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Verbannen: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Verbannen van '%s' mislukt."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Tracks recent gewaardeerd door %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Recent verbannen nummers door %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Verwijderen uit favoriete nummers"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Ban opheffen"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Wilt u dit nummer verwijderen uit uw favoriete nummers?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Wilt u de ban op dit nummer opheffen?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Pad niet gevonden of ongeldig"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Kan niet verbinden met netwerkserver"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Geen servers gevonden"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Werkgroep niet gevonden"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Openen multi-pad favoriet"
+
+#: id:15311
+msgid "Path:"
+msgstr "Pad:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Algemeen"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Zoeken op CDDB"
+
+#: id:16003
+msgid "Player"
+msgstr "Speler"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Media van disk afspelen"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Geef een nieuwe titel"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Geef naam van de film"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Geef profielnaam"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Geef titel album"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Geef naam afspeellijst"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Geef nieuwe bestandsnaam"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Geef mapnaam"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Open map"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Beschikbare opties: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Geef zoekopdracht"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Geen"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Automatisch selecteren"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "Deinterlace"
+
+#: id:16021
+msgid "Bob"
+msgstr "Synchroniseer oneven"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Synchroniseer even"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Annuleren..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Geef de artiest op"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Afspeellijst afspelen afgebroken"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Eén of meer item kan niet worden afgespeeld."
+
+#: id:16028
+msgid "Enter value"
+msgstr "Voer waarde in"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Controleer het logbestand voor details."
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Feestmix afgebroken."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Geen overeenkomstige nummers in bibliotheek."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Kan database niet initialiseren."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Kan database niet openen."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Kan geen nummers uit database verkrijgen."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Feestmix afspeellijst"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr "Deinterlace (Half)"
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr "Deinterlace video"
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr "Deinterlace methode"
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr "Uit"
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:16041
+msgid "On"
+msgstr "Aan"
+
+#: id:16100
+msgid "All Videos"
+msgstr "Alle video's"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Niet bekeken"
+
+#: id:16102
+msgid "Watched"
+msgstr "Bekeken"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Als bekeken markeren"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Als niet-bekeken markeren"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Titel aanpassen"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Actie is afgebroken"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Kopiëren mislukt"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Tenminste 1 bestand is niet gekopieerd"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Verplaatsen mislukt"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Tenminste 1 bestand is niet verplaatst"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Verwijderen mislukt"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Tenminste 1 bestand is niet verwijderd"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Videoschalingsmethode"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Nearest neighbour"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilinear"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bicubic (software)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (software)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (software)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "(VDPAU)Temporal"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "(VDPAU)Temporal/Spatial"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)Ruisonderdrukking"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)Scherpte"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Inverse telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 optimized"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Temporal (Half)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Temporal/Spatial (Half)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+#: id:16321
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+#: id:16322
+msgid "Spline36"
+msgstr "Spline36"
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr "Spline36 geoptimaliseerd"
+
+#: id:16324
+msgid "Software Blend"
+msgstr "Software menging"
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Kwaliteitsverbetering video"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Uitschakeltijd beeldscherm"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Kanaal wijzigen"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Opgeslagen muziek map..."
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Andere DVD-speler gebruiken"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "- Locatie van de DVD-speler"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Trainersmap"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Screenshotmap"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Afspeellijstmap"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Opnames"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Screenshots"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "XBMC gebruiken"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Muziekafspeellijsten"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Videoafspeellijsten"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Wilt u het spel starten?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Sorteer: afspeellijst"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Internetafbeelding"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Huidige afbeelding"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Lokale afbeelding"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Geen afbeelding"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Miniatuur kiezen"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Conflict"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Scan nieuwe"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Scan alles"
+
+#: id:20026
+msgid "Region"
+msgstr "Regio"
+
+#: id:20037
+msgid "Summary"
+msgstr "Overzicht"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Muzieksectie vergrendelen"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Videosectie vergrendelen"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Afbeeldingensectie vergrendelen"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Programma- & scriptssecties vergrendelen"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Bestandsbeheer vergrendelen"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Instellingen vergrendelen"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Met schone lei starten"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Naar ontgrendelde modus overschakelen"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Ontgrendelde modus verlaten"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Profiel '%s' maken?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Begin met standaardinstellingen"
+
+#: id:20049
+msgid "Best available"
+msgstr "Beste beschikbaar"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Schakel autom. tussen 16:9 & 4:3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Gesplitste bestanden als één behandelen"
+
+#: id:20052
+msgid "Caution"
+msgstr "Waarschuwing"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Ontgrendelde modus verlaten"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Ontgrendelde modus inschakelen"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com-miniatuur"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Miniatuur verwijderen"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Profiel toevoegen..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Info opvragen voor alle albums"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Media-info"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Afzonderlijk"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Gebruik standaard"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Gebruik standaard (alleen-lezen)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Kopiëren"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Profielafbeelding"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Vergrendelingsvoorkeuren"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Profiel wijzigen"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Profielvergrendeling"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Kan map niet creëren"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Profiellocatie"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Met verse mediabronnen beginnen"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Controleer of u schrijfrechten heeft op de gekozen locatie"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "en of de nieuwe mapnaam geldig is"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "MPAA-waardering:"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Voer vergrendelcode in"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Om vergrendelcode vragen bij opstarten"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Skininstellingen"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- Geen link ingesteld -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Soepel overvloeien bij schermovergang"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "RSS-feeds niet weergeven tijdens afspelen van muziek"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "'Favorieten'-knoppen weergeven"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Programma's in hoofdmenu weergeven"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Muziekinformatie weergeven"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Weerbericht weergeven"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Systeeminformatie weergeven"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Vrije hardeschijfruimte op C:, E: en F: weergeven"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Vrije hardeschijfruimte op E:F:G: weergeven"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Weerbericht"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Beschikbare hardeschijfruimte"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Voer de naam van een bestaande gedeelde map in"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Vergrendelcode"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Profiel laden"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Profielnaam"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Mediabronnen"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Geef profielvergrendelcode"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Inlogscherm"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Albuminfo ophalen"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Info over album ophalen"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "CD-rippen is tijdens het afspelen niet mogelijk"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Vergrendelingsinstellingen"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Invoeren vergrendelcode activeert altijd de ontgrendelde modus"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "of maak een kopie van de huidige instellingen?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Wijzigingen aan profiel opslaan?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Oude instellingen gevonden."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Wilt u deze gebruiken?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Oude mediabronnen gevonden."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Afzonderlijk (vergrendeld)"
+
+#: id:20108
+msgid "Root"
+msgstr "Hoofdmap"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Verschalen"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP-client"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Automatisch starten"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Vorige aanmelding: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Nog nooit ingelogd"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Profiel %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Gebruikersaanmelding / Selecteer een profiel"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Inlogscherm vergrendelen"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Ongeldige vergrendelcode."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Dit vereist een actieve hoofdvergrendeling."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Wilt u deze nu instellen?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Programmainformatie wordt geladen"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Feesten maar!"
+
+#: id:20122
+msgid "True"
+msgstr "Waar"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Drankjes mixen"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Glazen vullen"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Ingelogd als"
+
+#: id:20126
+msgid "Log off"
+msgstr "Uitloggen"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Naar beginscherm gaan"
+
+#: id:20129
+msgid "Weave"
+msgstr "Weven"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Weven (omgekeerd)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Overgaan"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Herstart video"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Netwerklocatie wijzigen"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Netwerklocatie verwijderen"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Wilt u de map doorzoeken?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Geheugenmodule"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Geheugenmodule geplaatst"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Kan geheugenmodule niet koppelen"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "In poort %i, slot %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Schermbeveiliging vergrendelen"
+
+#: id:20141
+msgid "Set"
+msgstr "Zet"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Voer wachtwoord in voor"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Uitschakelingstimer"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Uitschakelingsinterval (in minuten)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Gestart, afsluiten in %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Uitschakeling over 30 minuten"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Uitschakeling over 60 minuten"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Uitschakeling over 120 minuten"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Aangepaste uitschakeltimer"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Uitschakeltimer annuleren"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Vergrendelopties voor %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Bladeren..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Standaardinformatie"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Opslaginformatie"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Hardeschijfinformatie"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "DVD-ROM-informatie"
+
+#: id:20158
+msgid "Network information"
+msgstr "Netwerkinformatie"
+
+#: id:20159
+msgid "Video information"
+msgstr "Videoinformatie"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Hardware-informatie"
+
+#: id:20161
+msgid "Total"
+msgstr "Totaal"
+
+#: id:20162
+msgid "Used"
+msgstr "Gebruikt"
+
+#: id:20163
+msgid "of"
+msgstr "van"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Vergrendelen niet mogelijk"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Niet vergrendeld"
+
+#: id:20166
+msgid "Locked"
+msgstr "Vergrendeld"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Bevroren"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Herstart vereist"
+
+#: id:20169
+msgid "Week"
+msgstr "Week"
+
+#: id:20170
+msgid "Line"
+msgstr "Regel"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windowsnetwerk (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP-server"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP-server"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes muziekshare (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP-server"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Videoinformatie weergeven"
+
+#: id:20177
+msgid "Done"
+msgstr "OK"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Hoofdletters"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Symbolen"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Backspace"
+
+#: id:20182
+msgid "Space"
+msgstr "Spatie"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Skin herladen"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Foto's draaien op basis van EXIF-informatie"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Posterstijl voor tv-series gebruiken"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Even geduld..."
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Plot en bespreking automatisch scrollen"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Handmatig"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Foutregistratie inschakelen"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Extra albuminformatie downloaden tijdens het scannen"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Standaardscraper voor albuminformatie"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Standaardscraper voor artiestinformatie"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Scraper wijzigen"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Muziekbibliotheek exporteren..."
+
+#: id:20197
+msgid "Import music library"
+msgstr "Muziekbibliotheek importeren..."
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Geen artiest gevonden!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Downloaden van artiestinformatie mislukt"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Feesten maar! (video's)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Drankjes mixen (video's)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Glazen vullen (video's)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV-server (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV-server (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Eerste aanmelding, profiel bijwerken"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS tvheadend client"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR streamdev client"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV client"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "Network Filesystem (NFS)"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Webservermap (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Webservermap (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Kan niet schrijven naar map:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Overslaan en verdergaan?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS-feed"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Secundaire DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP-server:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Nieuwe map"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "LCD dimmen tijdens afspelen"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Onbekend of onboard (beveiligd)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "LCD dimmen tijdens pauze"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Video - Bibliotheek"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Sorteer: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Afspelen deel..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Kalibratie opnieuw instellen"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Dit zet de kalibratiewaarden voor %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "terug naar de standaardwaarden."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "een locatie om naar te kopiëren"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr "Films staan in aparte folders die overeenkomen met de film titel"
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Gebruik mapnamen bij zoeken"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Bestand"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Ook in bestands- of mapnamen zoeken?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Inhoud toewijzen"
+
+#: id:20334
+msgid "Folder"
+msgstr "Map"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Ook in onderliggende mappen zoeken?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Bronnen vrijgeven"
+
+#: id:20337
+msgid "Actor"
+msgstr "Acteur"
+
+#: id:20338
+msgid "Movie"
+msgstr "Film"
+
+#: id:20339
+msgid "Director"
+msgstr "Regisseur"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Wilt u alle items in deze map"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "verwijderen uit de bibliotheek?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Speelfilms"
+
+#: id:20343
+msgid "TV shows"
+msgstr "TV-Series"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Deze map bevat"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Automatisch scannen"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Ook onderliggende mappen scannen"
+
+#: id:20347
+msgid "as"
+msgstr "als"
+
+#: id:20348
+msgid "Directors"
+msgstr "Regisseurs"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "Geen videobestanden gevonden in deze map!"
+
+#: id:20350
+msgid "votes"
+msgstr "stemmen"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Serie-info"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Afleveringsinfo"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Details serie laden"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Afleveringengids ophalen"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Afleveringsinfo naar map laden"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Selecteer serie:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Geef de naam van de serie"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Seizoen %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Afl."
+
+#: id:20360
+msgid "Episodes"
+msgstr "Afl."
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Afleveringsdetails laden"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Aflevering uit bibliotheek verwijderen"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Serie uit bibliotheek verwijderen"
+
+#: id:20364
+msgid "TV show"
+msgstr "Serie"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Afleveringsplot"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Alle seizoenen"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Bekeken verbergen"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Prod."
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Plot van niet-bekeken video's weergeven"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Verborgen om plot niet te verklappen *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Afbeelding seizoen selecteren"
+
+#: id:20372
+msgid "Season image"
+msgstr "Afbeelding van seizoen"
+
+#: id:20373
+msgid "Season"
+msgstr "Seizoen"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Speelfilm informatie downloaden"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Inhoud ontkoppelen"
+
+#: id:20376
+msgid "Original title"
+msgstr "Originele titel"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Serie-informatie vernieuwen"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Alle afleveringen vernieuwen?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Geselecteerde map bevat één enkele serie"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Map uitsluiten van scans"
+
+#: id:20381
+msgid "Specials"
+msgstr "Specials"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Automatisch miniaturen van seizoen downloaden"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Geselecteerde map bevat 1 video"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Aan serie koppelen"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Van serie loskoppelen"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Onlangs toegevoegde speelfilms"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Onlangs toegevoegde afleveringen tv-series"
+
+#: id:20388
+msgid "Studios"
+msgstr "Filmstudio's"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Muziekvideo's"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Onlangs toegevoegde muziekvideo's"
+
+#: id:20391
+msgid "Music video"
+msgstr "Muziekvideo"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Verwijder muziekvideo uit bibliotheek"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Muziekvideo-informatie"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Muziekvideo-informatie laden"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Gemixt"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Albums van deze artiest"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Naar album"
+
+#: id:20398
+msgid "Play song"
+msgstr "Nummer afspelen"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Muziekvideo's van dit album"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Muziekvideo's van deze artiest"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Muziekvideo afspelen"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Afbeeldingen van acteurs automatisch downloaden"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Acteursafbeelding instellen"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Afl. uit favorieten verwijderen"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Afl. aan favorieten toevoegen"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Scraperinstellingen"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Muziekvideo-informatie downloaden"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "TV-Serie informatie downloaden"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Trailer"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Eenvoudige weergave"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Seizoenen verbergen indien één seizoen"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Zoek Fanart"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Fanart in video- en muziekbibliotheek tonen"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Bezig met scannen naar nieuwe inhoud"
+
+#: id:20416
+msgid "First aired"
+msgstr "Eerst uitgez."
+
+#: id:20417
+msgid "Writer"
+msgstr "Schrijver"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "Vervang bestandsnamen met bibliotheek titels"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Nooit"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Alleen indien één seizoen"
+
+#: id:20422
+msgid "Always"
+msgstr "Altijd"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Trailer"
+
+#: id:20424
+msgid "False"
+msgstr "Onwaar"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Fanart diavoorstelling"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Exporteer naar 1 bestand of meerdere"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "bestanden per entry?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Enkel bestand"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Apart"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Miniaturen en fanart exporteren?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Oude bestanden overschrijven?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Pad uitsluiten van bibliotheekupdates"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Miniaturen en codec informatie uitlezen"
+
+#: id:20434
+msgid "Sets"
+msgstr "Sets"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Filmset-miniatuur kiezen"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Acteurminiaturen exporteren"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Fanart kiezen"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Lokale fanart"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Geen fanart"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Huidige fanart"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Fanart op afstand"
+
+#: id:20442
+msgid "Change content"
+msgstr "Inhoud wijzigen"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Wilt u info verversen voor alle"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "items binnen dit pad?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Lokaal opgeslagen informatie gevonden."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Negeren en verversen van internet?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "De informatie kan niet worden gedownload"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Geen verbinding mogelijk met remote server."
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Wilt u doorgaan met scannen?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Landen"
+
+#: id:20452
+msgid "episode"
+msgstr "Aflevering"
+
+#: id:20453
+msgid "episodes"
+msgstr "Afleveringen"
+
+#: id:20454
+msgid "Listener"
+msgstr "Luisteraar"
+
+#: id:20455
+msgid "Listeners"
+msgstr "Luisteraars"
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "Kies filmset fanart"
+
+#: id:20457
+msgid "Movie set"
+msgstr "Filmsets"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr "Groepeer films in sets"
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Verborgen bestanden en mappen weergeven"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox-client"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "WAARSCHUWING: TuxBox is aan het opnemen."
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "De stream wordt gestopt!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Zappen naar kanaal %s mislukt!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Weet u zeker dat u de stream wil starten?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Verbinden met: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox-apparaat"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Gedeelde media toevoegen..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "UPnP-server inschakelen"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Gedeelde media wijzigen"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Gedeelde media verwijderen"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Map voor ondertitels..."
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Video - alternatieve ondertitelmap"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "ASS/SSA lettertype voor ondertitels negeren"
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Muis inschakelen"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Navigatiegeluiden afspelen tijdens afspelen van media"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Miniatuur"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "DVD-regiocode forceren"
+
+#: id:21373
+msgid "Video output"
+msgstr "Videohardware"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Beeldverhouding"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Normaal"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Breedbeeld"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "480p weergeven"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "720p weergeven"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "1080i weergeven"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Geef naam voor de intelligente afspeellijst"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Knop 'Locatie toevoegen' weergeven in bestandslijst"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Schuifbalken weergeven"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "'Bekeken verbergen'-knop toevoegen in bibliotheek"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Openen"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Akoestiekbeheerniveau"
+
+#: id:21387
+msgid "Fast"
+msgstr "Snel"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Stil"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Gebruik achtergrond naar keuze"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Stroombeheerniveau"
+
+#: id:21391
+msgid "High power"
+msgstr "Hoog Energie"
+
+#: id:21392
+msgid "Low power"
+msgstr "Laag Energie"
+
+#: id:21393
+msgid "High standby"
+msgstr "Hoog Standby"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Laag Standby"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Niet mogelijk bestanden groter dan 4 GiB te laden"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Hoofdstuk"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Hoge kwaliteit Pixel Shader v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Afspeellijst afspelen bij opstarten"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Animatie gebruiken bij schermovergang"
+
+#: id:21400
+msgid "contains"
+msgstr "bevat"
+
+#: id:21401
+msgid "does not contain"
+msgstr "bevat niet"
+
+#: id:21402
+msgid "is"
+msgstr "is"
+
+#: id:21403
+msgid "is not"
+msgstr "is niet"
+
+#: id:21404
+msgid "starts with"
+msgstr "begint met"
+
+#: id:21405
+msgid "ends with"
+msgstr "eindigt met"
+
+#: id:21406
+msgid "greater than"
+msgstr "groter dan"
+
+#: id:21407
+msgid "less than"
+msgstr "kleiner dan"
+
+#: id:21408
+msgid "after"
+msgstr "na"
+
+#: id:21409
+msgid "before"
+msgstr "voor"
+
+#: id:21410
+msgid "in the last"
+msgstr "in laatste"
+
+#: id:21411
+msgid "not in the last"
+msgstr "niet in laatste"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Scrapers"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Standaard speelfilm scraper"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Standaard tv-serie scraper"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Standaard muziekvideo scraper"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Alternatieven toestaan op basis van originele scraper taal"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Instellingen"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Meertalig"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Geen scrapers beschikbaar"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Waarde gelijk aan"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Intelligente-afspeellijstregel"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Nummers zijn gelijk wanneer"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Nieuwe regel..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Muziek moet gelijk aan"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "elk van deze regels"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "een of meer van deze regels"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Beperken tot"
+
+#: id:21428
+msgid "No limit"
+msgstr "Geen beperking"
+
+#: id:21429
+msgid "Order by"
+msgstr "Sorteren op"
+
+#: id:21430
+msgid "ascending"
+msgstr "oplopend"
+
+#: id:21431
+msgid "descending"
+msgstr "aflopend"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Intelligente afspeellijst wijzigen"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Naam van de afspeellijst"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Zoek muziek gelijk aan"
+
+#: id:21435
+msgid "Edit"
+msgstr "Wijzigen"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i nummers"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Nieuwe intelligente afspeellijst..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c schijf"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Feestmix instellen"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Startmap"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Aantal bekeken"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Titel afl."
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Videoresolutie"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Audiokanalen"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Videocodec"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Audiocodec"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Audiotaal"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Ondertiteltaal"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Afstandsbediening stuurt toetsenbordaanslagen"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Wijzigen"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Internetverbinding vereist."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Add-ons installeren"
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Rootbestandsysteem"
+
+#: id:21454
+msgid "Cache full"
+msgstr "Cache is vol"
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspelen"
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "Plaats van de ondertitels"
+
+#: id:21461
+msgid "Fixed"
+msgstr "Vast"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "Onderaan video"
+
+#: id:21463
+msgid "Below video"
+msgstr "Onder video"
+
+#: id:21464
+msgid "Top of video"
+msgstr "Bovenaan video"
+
+#: id:21465
+msgid "Above video"
+msgstr "Boven video"
+
+#: id:21800
+msgid "File name"
+msgstr "Bestandsnaam"
+
+#: id:21801
+msgid "File path"
+msgstr "Pad"
+
+#: id:21802
+msgid "File size"
+msgstr "Bestandsgrootte"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Laatst gewijzigd"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Dia-index"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Resolutie"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Opmerking"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Kleur/zwart-wit"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG-proces"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Datum/tijd"
+
+#: id:21821
+msgid "Description"
+msgstr "Omschrijving"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Cameramerk"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Cameramodel"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF-opmerking"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Firmware"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Diafragma"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Brandpuntafstand"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Voorwerpafstand"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Belichting"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Sluitertijd"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Belichtingsinval"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Belichtingsmethode"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Flitser"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Witbalans"
+
+#: id:21835
+msgid "Light source"
+msgstr "Lichtbron"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Meetmodus"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Digitale zoom"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD-breedte"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS-lengtegraad"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS-breedtegraad"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS-hoogte"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Oriëntatie"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Overige categorieën"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Sleutelwoorden"
+
+#: id:21862
+msgid "Caption"
+msgstr "Titel"
+
+#: id:21863
+msgid "Author"
+msgstr "Auteur"
+
+#: id:21864
+msgid "Headline"
+msgstr "Kop"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Speciale instructies"
+
+#: id:21866
+msgid "Category"
+msgstr "Categorie"
+
+#: id:21867
+msgid "Byline"
+msgstr "Fotograaf"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Naam fotograaf"
+
+#: id:21869
+msgid "Credit"
+msgstr "Credit"
+
+#: id:21870
+msgid "Source"
+msgstr "Bron"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Copyright"
+
+#: id:21872
+msgid "Object name"
+msgstr "Objectnaam"
+
+#: id:21873
+msgid "City"
+msgstr "Stad"
+
+#: id:21874
+msgid "State"
+msgstr "Staat"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Land"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Overdrachtsreferentie"
+
+#: id:21877
+msgid "Date created"
+msgstr "Datum aangemaakt"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Copyright"
+
+#: id:21879
+msgid "Country code"
+msgstr "Landcode"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Brondiensten"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "UPnP-rendering inschakelen"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Direct naar het DVD-menu proberen te gaan"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Geripte muziekalbums"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Info over alle artiesten zoeken"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Albuminformatie downloaden"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Artiestinformatie downloaden"
+
+#: id:21887
+msgid "Biography"
+msgstr "Biografie"
+
+#: id:21888
+msgid "Discography"
+msgstr "Discografie"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Zoekt artiest"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Artiest selecteren"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Artiestinformatie"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Instrumenten:"
+
+#: id:21893
+msgid "Born"
+msgstr "Geboren"
+
+#: id:21894
+msgid "Formed"
+msgstr "Gevormed"
+
+#: id:21895
+msgid "Themes"
+msgstr "Thema's"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Uit elkaar"
+
+#: id:21897
+msgid "Died"
+msgstr "Gestorven op:"
+
+#: id:21898
+msgid "Years active"
+msgstr "Periode:"
+
+#: id:21899
+msgid "Label"
+msgstr "Platenlabel"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Geboren/Opgericht"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Bibliotheek bijwerken bij het opstarten"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Voortgang verbergen bij bibliotheek bijwerken"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS-suffix"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Later %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Eerder %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Ondertitels synchroniseren"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL leverancier:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL versie:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPU Temperatuur:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPU Temperatuur:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Aanwezig geheugen"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Profieldata"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Beeldscherm dimmen tijdens pauzeren van video's"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Alle opnames"
+
+#: id:22016
+msgid "By title"
+msgstr "Op titel"
+
+#: id:22017
+msgid "By group"
+msgstr "Op groep"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Live kanalen"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Opnames op titel"
+
+#: id:22020
+msgid "Guide"
+msgstr "Gids"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Toegestane afwijking in beeldverhouding (%)"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Toon videobestanden in lijst met afbeeldingen"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX-leverancier:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D-versie"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Lettertype"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Grootte"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Kleuren"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Karakterset"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Karaoketitels als HTML exporteren"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Karaoketitels als CSV exporteren"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Karaoketitels importeren..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Auto popup nummerselectie"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Karaoketitels exporteren..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Nummer invoeren"
+
+#: id:22040
+msgid "white/green"
+msgstr "wit/groen"
+
+#: id:22041
+msgid "white/red"
+msgstr "wit/rood"
+
+#: id:22042
+msgid "white/blue"
+msgstr "wit/blauw"
+
+#: id:22043
+msgid "black/white"
+msgstr "zwart/wit"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Standaardactie bij selecteren"
+
+#: id:22080
+msgid "Choose"
+msgstr "Kiezen"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Informatie tonen"
+
+#: id:22082
+msgid "More..."
+msgstr "Meer..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Alles afspelen"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Teletekst niet beschikbaar"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Teletekst activeren"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Stuk %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "%i bytes bufferen"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Instellingen ontbreken"
+
+#: id:23054
+msgid "Running"
+msgstr "Instellingen verkeerd"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Externe speler actief"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Klik op OK om de speler te beëindigen"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Klik op OK als afspelen beëindigd is"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Add-on"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Add-ons"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Add-on opties"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Add-on informatie"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Mediabronnen"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Filminformatie"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Schermbeveiliging"
+
+#: id:24009
+msgid "Script"
+msgstr "Script"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Visualisatie"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Add-on repo"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Ondertitelscraper"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Songtekstscraper"
+
+#: id:24014
+msgid "TV information"
+msgstr "TV-informatie"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Muziekvideoinformatie"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Albuminformatie"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Artiestinformatie"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "Processen"
+
+#: id:24020
+msgid "Configure"
+msgstr "Configureren"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Uitschakelen"
+
+#: id:24022
+msgid "Enable"
+msgstr "Inschakelen"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Add-on uitgeschakeld"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Weer"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (standaard)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Deze add-on kan niet worden geconfigureerd"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Fout tijdens het laden van de instellingen"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Alle add-ons"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Add-ons downloaden"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Controleren op updates"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Verversen"
+
+#: id:24036
+msgid "Change log"
+msgstr "Wijzigingen"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Verwijderen"
+
+#: id:24038
+msgid "Install"
+msgstr "Installeren"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Uitgeschakelde add-ons"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Huidige instellingen wissen)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Add-ons installeren mbv zipbestand"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Downloaden van %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Beschikbare updates"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Niet voldaan aan afhankelijkheden"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "Add-on heeft niet de juiste structuur"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s wordt gebruikt door volgende geinstalleerde add-on(s)"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "Deze add-on kan niet verwijderd worden"
+
+#: id:24048
+msgid "Rollback"
+msgstr "Ongedaan maken"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Beschikbare add-ons"
+
+#: id:24051
+msgid "Version:"
+msgstr "Versie:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Disclaimer"
+
+#: id:24053
+msgid "License:"
+msgstr "Licentie:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Wijzigingen"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Wilt u deze add-on inschakelen?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Wilt u deze add-on uitschakelen?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Er is een update voor deze add-on!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Geïnstalleerde add-ons"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Automatisch bijwerken"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Add-on is ingeschakeld"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Add-on is bijgewerkt"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Downloaden add-on stoppen ?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Huidige add-ons downloads"
+
+#: id:24068
+msgid "Update available"
+msgstr "Update beschikbaar"
+
+#: id:24069
+msgid "Update"
+msgstr "Update"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Add-on kan niet worden geladen"
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Er is een onbekende fout opgetreden"
+
+#: id:24072
+msgid "Settings required"
+msgstr "Instellingen vereist"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Kan niet verbinden"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Herstart vereist"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Uitschakelen"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr "Vereiste add-on"
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Nogmaals proberen te verbinden?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Add-on aan het herstarten"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Add-onmanager vastzetten"
+
+#: id:24094
+msgid "(current)"
+msgstr "(huidige)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "(geblacklist)"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Add-on is gemarkeerd als niet werkend in het repository."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Wilt u de add-on uitschakelen?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Defect"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Wilt u deze skin gebruiken?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr "Om deze eigenschap te gebruiken, moet een add-on gedownload worden:"
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr "Wil U deze add-on downloaden?"
+
+#: id:25000
+msgid "Notifications"
+msgstr "Mededelingen"
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Bibliotheekmodus"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY-toetsenbordindeling"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Passthrough audio in gebruik"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Trailerkwaliteit"
+
+#: id:33002
+msgid "Stream"
+msgstr "Stream"
+
+#: id:33003
+msgid "Download"
+msgstr "Downloaden"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Downloaden & afspelen"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Downloaden & opslaan"
+
+#: id:33006
+msgid "Today"
+msgstr "Vandaag"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Morgen"
+
+#: id:33008
+msgid "Saving"
+msgstr "Opslaan"
+
+#: id:33009
+msgid "Copying"
+msgstr "Kopiëren"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Geef downloadmap op"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Zoek tijdsduur"
+
+#: id:33012
+msgid "Short"
+msgstr "Kort"
+
+#: id:33013
+msgid "Long"
+msgstr "Lang"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Gebruik DVD-speler in plaats van standaardspeler"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Vragen om download alvorens video te spelen"
+
+#: id:33016
+msgid "Clips"
+msgstr "Clips"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Herstart plugin om deze in te schakelen"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Vannacht"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Morgennacht"
+
+#: id:33020
+msgid "Condition"
+msgstr "Voorwaarde"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Neerslag"
+
+#: id:33022
+msgid "Precip"
+msgstr "Neersl."
+
+#: id:33023
+msgid "Humid"
+msgstr "Vochtigheid"
+
+#: id:33024
+msgid "Feels"
+msgstr "Voelt"
+
+#: id:33025
+msgid "Observed"
+msgstr "Waargenomen"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Vertrek van normaal"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Zonsopgang"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Zonsondergang"
+
+#: id:33029
+msgid "Details"
+msgstr "Details"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Verwachting"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Coverflow"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Vertaal tekst"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Map list %s categorie"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 Uur"
+
+#: id:33035
+msgid "Maps"
+msgstr "Kaarten"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Elk uur"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Weekend"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s dag"
+
+#: id:33049
+msgid "Alert"
+msgstr "Alarm"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Alarm"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Kies je"
+
+#: id:33052
+msgid "Check"
+msgstr "Controleer"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Configureer de"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Seizoenen"
+
+#: id:33055
+msgid "Use your"
+msgstr "Gebruik je"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Bekijk je"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Beluister"
+
+#: id:33058
+msgid "View your"
+msgstr "Bekijk je"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Configureer de"
+
+#: id:33060
+msgid "Power"
+msgstr "Power"
+
+#: id:33061
+msgid "Menu"
+msgstr "Menu"
+
+#: id:33062
+msgid "Play the"
+msgstr "Speel de"
+
+#: id:33063
+msgid "Options"
+msgstr "Opties"
+
+#: id:33065
+msgid "Editor"
+msgstr "Editor"
+
+#: id:33066
+msgid "About your"
+msgstr "Over je"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Waardering"
+
+#: id:33068
+msgid "Background"
+msgstr "Achtergrond"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Achtergronden"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Aangepaste achtergrond"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Aangepaste achtergronden"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Bekijk Readme"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Bekijk wijzigingen"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Deze versie van %s vereist een"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC-revisie %s of meer vereist om uit te kunnen voeren."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Gelieve XBMC bij te werken."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Geen data gevonden!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Volgende pagina"
+
+#: id:33079
+msgid "Love"
+msgstr "Leuk!"
+
+#: id:33080
+msgid "Hate"
+msgstr "Niet leuk!"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Dit bestand bestaat uit meerdere delen, selecteer het deel dat u wilt afspelen."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Pad naar script"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Stel aangepaste scriptknop in"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "Starten mislukt"
+
+#: id:33101
+msgid "Webserver"
+msgstr "Webserver"
+
+#: id:33102
+msgid "Event Server"
+msgstr "Event Server"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "Remote communication server"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr "Detecteer nieuwe verbinding"
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "FLAC"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Aantal geluidskanalen"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "Kan volgende item niet vinden om af te spelen"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "Kan vorige item niet vinden om af te spelen"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr "Niet gelukt om zeroconf te starten"
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr "Is Apple's Bonjour Service geinstalleerd? Zie log voor meer info."
+
+#: id:34400
+msgid "Video Rendering"
+msgstr "Video Rendering"
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Niet gelukt om video filters/scalers initialiseren, terugvallen naar bilinear scaling"
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr "Niet gelukt om audio apparaat te initialiseren"
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr "Controleer je audio-instellingen"
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr "Randapparatuur"
+
+#: id:35001
+msgid "Generic HID device"
+msgstr "Generiek HID apparaat"
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr "Generieke netwerkadapter"
+
+#: id:35003
+msgid "Generic disk"
+msgstr "Generieke schijf"
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Er zijn geen instellingen beschikbaar\nvoor dit apparaat."
+
+#: id:35005
+msgid "New device configured"
+msgstr "Nieuw apparaat geconfigureerd"
+
+#: id:35006
+msgid "Device removed"
+msgstr "Apparaat verwijderd"
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr "Keymap voor dit apparaat"
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr "Keymap ingeschakeld"
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr "Locatie"
+
+#: id:35501
+msgid "Class"
+msgstr "Klasse"
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr "Naam"
+
+#: id:35503
+msgid "Vendor"
+msgstr "Fabrikant"
+
+#: id:35504
+msgid "Product ID"
+msgstr "Product ID"
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr "Pulse-Eight CEC adapter"
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr "Pulse-Eight Nyxboard"
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr "Wissel naar toetsenbord commando"
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr "Wissel naar afstandbediening commando"
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr "Druk op \"user\" knop commando"
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr "Schakel commando's in bij het wisselen van kant"
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr "Kon de adapter niet openen"
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr "Schakel apparatuur in bij het opstarten van XBMC"
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr "Schakel apparatuur uit bij het stoppen van XBMC"
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "Schakel app. uit zolang de schermbeveiliging actief is"
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "Kon de COM poort niet detecteren. Stel het manueel in."
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "Kon de CEC adapter niet initialiseren."
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versie %d van de libCEC interface version wordt niet ondersteund door XBMC (> %d)"
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "Zet XBMC in standby wanneer de TV uitgeschakeld wordt"
+
+#: id:36015
+msgid "HDMI port number"
+msgstr "HDMI poort nummer"
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr "Verbonden"
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr "Adapter gevonden, maar libCEC is niet beschikbaar"
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr "Gebruik de taalinstelling van de TV"
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr "Verbonden met HDMI apparaat"
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr "Maak XBMC de actieve bron bij het opstarten"
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr "Physiek adres (overschrijft HDMI poort)"
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr "COM poort (laat leeg, tenzij noodzakelijk)"
+
+#: id:36023
+msgid "Configuration updated"
+msgstr "Configuratie aangepast"
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr "Kon de nieuwe configuratie niet instellen. Controleer de instellingen."
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr "Verstuur 'inactieve bron' commando bij het stoppen"
+

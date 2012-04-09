@@ -1,0 +1,9093 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-FRODO_GIT3ed1604ad7\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "程式"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "圖片"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "音樂"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "視訊"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "電視頻道"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "系統設定"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "檔案總管"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "氣象"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc 媒體中心"
+
+#: id:11
+msgid "Monday"
+msgstr "星期一"
+
+#: id:12
+msgid "Tuesday"
+msgstr "星期二"
+
+#: id:13
+msgid "Wednesday"
+msgstr "星期三"
+
+#: id:14
+msgid "Thursday"
+msgstr "星期四"
+
+#: id:15
+msgid "Friday"
+msgstr "星期五"
+
+#: id:16
+msgid "Saturday"
+msgstr "星期六"
+
+#: id:17
+msgid "Sunday"
+msgstr "星期日"
+
+#: id:21
+msgid "January"
+msgstr "一月"
+
+#: id:22
+msgid "February"
+msgstr "二月"
+
+#: id:23
+msgid "March"
+msgstr "三月"
+
+#: id:24
+msgid "April"
+msgstr "四月"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "五月"
+
+#: id:26
+msgid "June"
+msgstr "六月"
+
+#: id:27
+msgid "July"
+msgstr "七月"
+
+#: id:28
+msgid "August"
+msgstr "八月"
+
+#: id:29
+msgid "September"
+msgstr "九月"
+
+#: id:30
+msgid "October"
+msgstr "十月"
+
+#: id:31
+msgid "November"
+msgstr "十一月"
+
+#: id:32
+msgid "December"
+msgstr "十二月"
+
+#: id:41
+msgid "Mon"
+msgstr "周一"
+
+#: id:42
+msgid "Tue"
+msgstr "周二"
+
+#: id:43
+msgid "Wed"
+msgstr "周三"
+
+#: id:44
+msgid "Thu"
+msgstr "周四"
+
+#: id:45
+msgid "Fri"
+msgstr "周五"
+
+#: id:46
+msgid "Sat"
+msgstr "周六"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "周日"
+
+#: id:51
+msgid "Jan"
+msgstr "1月"
+
+#: id:52
+msgid "Feb"
+msgstr "2月"
+
+#: id:53
+msgid "Mar"
+msgstr "3月"
+
+#: id:54
+msgid "Apr"
+msgstr "4月"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "5月"
+
+#: id:56
+msgid "Jun"
+msgstr "6月"
+
+#: id:57
+msgid "Jul"
+msgstr "7月"
+
+#: id:58
+msgid "Aug"
+msgstr "8月"
+
+#: id:59
+msgid "Sep"
+msgstr "9月"
+
+#: id:60
+msgid "Oct"
+msgstr "10月"
+
+#: id:61
+msgid "Nov"
+msgstr "11月"
+
+#: id:62
+msgid "Dec"
+msgstr "12月"
+
+#: id:71
+msgid "N"
+msgstr "北"
+
+#: id:72
+msgid "NNE"
+msgstr "北北東"
+
+#: id:73
+msgid "NE"
+msgstr "東北"
+
+#: id:74
+msgid "ENE"
+msgstr "東北東"
+
+#: id:75
+msgid "E"
+msgstr "東"
+
+#: id:76
+msgid "ESE"
+msgstr "東南東"
+
+#: id:77
+msgid "SE"
+msgstr "東南"
+
+#: id:78
+msgid "SSE"
+msgstr "南南東"
+
+#: id:79
+msgid "S"
+msgstr "南"
+
+#: id:80
+msgid "SSW"
+msgstr "南南西"
+
+#: id:81
+msgid "SW"
+msgstr "西南"
+
+#: id:82
+msgid "WSW"
+msgstr "西南西"
+
+#: id:83
+msgid "W"
+msgstr "西"
+
+#: id:84
+msgid "WNW"
+msgstr "西北西"
+
+#: id:85
+msgid "NW"
+msgstr "西北"
+
+#: id:86
+msgid "NNW"
+msgstr "北北西"
+
+#: id:87
+msgid "VAR"
+msgstr "多方向"
+
+#: id:98
+msgid "View: Auto"
+msgstr "顯示：自動"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "顯示：自動大圖示"
+
+#: id:100
+msgid "View: Icons"
+msgstr "顯示：圖示"
+
+#: id:101
+msgid "View: List"
+msgstr "顯示：列表"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "搜尋"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "排序：名稱"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "排序：日期"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "排序：大小"
+
+#: id:106
+msgid "No"
+msgstr "否"
+
+#: id:107
+msgid "Yes"
+msgstr "是"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "播放圖片"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "建立縮圖"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "建立縮略圖"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "捷徑"
+
+#: id:112
+msgid "Paused"
+msgstr "暫停"
+
+#: id:113
+msgid "Update failed"
+msgstr "更新失敗"
+
+#: id:114
+msgid "Installation failed"
+msgstr "安裝失敗"
+
+#: id:115
+msgid "Copy"
+msgstr "複製"
+
+#: id:116
+msgid "Move"
+msgstr "移動"
+
+#: id:117
+msgid "Delete"
+msgstr "刪除"
+
+#: id:118
+msgid "Rename"
+msgstr "重新命名"
+
+#: id:119
+msgid "New folder"
+msgstr "新資料夾"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "確認複製檔案"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "確認移動檔案"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "確認刪除檔案？"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "複製這些檔案？"
+
+#: id:124
+msgid "Move these files?"
+msgstr "移動這些檔案？"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "刪除這些檔案？ - 刪除後將無法復原！"
+
+#: id:126
+msgid "Status"
+msgstr "狀態"
+
+#: id:127
+msgid "Objects"
+msgstr "項目"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "一般設定"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "播放圖片"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "系統資訊"
+
+#: id:131
+msgid "Display"
+msgstr "螢幕"
+
+#: id:132
+msgid "Albums"
+msgstr "專輯"
+
+#: id:133
+msgid "Artists"
+msgstr "藝人"
+
+#: id:134
+msgid "Songs"
+msgstr "歌曲"
+
+#: id:135
+msgid "Genres"
+msgstr "類別"
+
+#: id:136
+msgid "Playlists"
+msgstr "播放列表"
+
+#: id:137
+msgid "Search"
+msgstr "搜尋"
+
+#: id:138
+msgid "System Information"
+msgstr "系統資訊"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "溫度："
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU："
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU："
+
+#: id:142
+msgid "Time:"
+msgstr "時間："
+
+#: id:143
+msgid "Current:"
+msgstr "目前："
+
+#: id:144
+msgid "Build:"
+msgstr "版本："
+
+#: id:145
+msgid "Network:"
+msgstr "網路："
+
+#: id:146
+msgid "Type:"
+msgstr "類型："
+
+#: id:147
+msgid "Static"
+msgstr "靜態(手動分配)"
+
+#: id:148
+msgid "DHCP"
+msgstr "動態(自動分配)"
+
+#: id:149
+msgid "MAC address"
+msgstr "網卡位址(MAC)"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP 位址"
+
+#: id:151
+msgid "Link:"
+msgstr "連接："
+
+#: id:152
+msgid "Half duplex"
+msgstr "半雙工"
+
+#: id:153
+msgid "Full duplex"
+msgstr "全雙工"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "儲存裝置"
+
+#: id:155
+msgid "Drive"
+msgstr "裝置"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "可用"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "視訊"
+
+#: id:158
+msgid "Free memory"
+msgstr "可用記憶體"
+
+#: id:159
+msgid "No link"
+msgstr "未連接"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "可用"
+
+#: id:161
+msgid "Unavailable"
+msgstr "沒有"
+
+#: id:162
+msgid "Tray open"
+msgstr "托盤開啟"
+
+#: id:163
+msgid "Reading"
+msgstr "讀取中"
+
+#: id:164
+msgid "No disc"
+msgstr "無光碟"
+
+#: id:165
+msgid "Disc present"
+msgstr "光碟介紹"
+
+#: id:166
+msgid "Skin"
+msgstr "佈景主題"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "解析度"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "調整視訊更新頻率以符合視訊"
+
+#: id:172
+msgid "Release date"
+msgstr "發行日期"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "播放4:3影片的方式"
+
+#: id:175
+msgid "Moods"
+msgstr "主題"
+
+#: id:176
+msgid "Styles"
+msgstr "風格"
+
+#: id:179
+msgid "Song"
+msgstr "歌曲"
+
+#: id:180
+msgid "Duration"
+msgstr "持續時間"
+
+#: id:181
+msgid "Select album"
+msgstr "選擇專輯"
+
+#: id:182
+msgid "Tracks"
+msgstr "音軌"
+
+#: id:183
+msgid "Review"
+msgstr "評論"
+
+#: id:184
+msgid "Refresh"
+msgstr "重新整理"
+
+#: id:185
+msgid "Searching album"
+msgstr "搜尋專輯"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "找不到專輯！"
+
+#: id:188
+msgid "Select all"
+msgstr "全選"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "搜尋媒體資訊"
+
+#: id:190
+msgid "Save"
+msgstr "儲存"
+
+#: id:191
+msgid "Shuffle"
+msgstr "隨機"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "清除"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "搜尋"
+
+#: id:194
+msgid "Searching..."
+msgstr "搜尋中…"
+
+#: id:195
+msgid "No info found!"
+msgstr "找不到資訊！"
+
+#: id:196
+msgid "Select movie:"
+msgstr "選擇影片："
+
+#: id:197
+msgid "Querying %s info"
+msgstr "讀取 %s 資訊"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "載入影片詳細資料"
+
+#: id:199
+msgid "Web interface"
+msgstr "Web 介面"
+
+#: id:202
+msgid "Tagline"
+msgstr "標題"
+
+#: id:203
+msgid "Plot outline"
+msgstr "大綱"
+
+#: id:205
+msgid "Votes"
+msgstr "得票："
+
+#: id:206
+msgid "Cast"
+msgstr "演員表"
+
+#: id:207
+msgid "Plot"
+msgstr "簡介"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "播放"
+
+#: id:209
+msgid "Next"
+msgstr "向後"
+
+#: id:210
+msgid "Previous"
+msgstr "向前"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "使用者界面校正…"
+
+#: id:214
+msgid "Video calibration..."
+msgstr "視訊校正…"
+
+#: id:215
+msgid "Soften"
+msgstr "柔化"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "縮放"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "畫面比率"
+
+#: id:218
+msgid "DVD drive"
+msgstr "光碟機"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "請放入光碟"
+
+#: id:220
+msgid "Remote share"
+msgstr "遠端共享"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "網路未連線"
+
+#: id:222
+msgid "Cancel"
+msgstr "取消"
+
+#: id:224
+msgid "Speed"
+msgstr "速度"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "垂直位移"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "測試圖案…"
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "在 freedb 查詢音樂 CD 資訊"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "隨機播放列表"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "硬碟省電模式"
+
+#: id:230
+msgid "Video filters"
+msgstr "視訊濾鏡"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "無"
+
+#: id:232
+msgid "Point"
+msgstr "點"
+
+#: id:233
+msgid "Linear"
+msgstr "條紋"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "非等方性"
+
+#: id:235
+msgid "Quincunx"
+msgstr "梅花多重取樣"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "三維銳化"
+
+#: id:237
+msgid "Minification"
+msgstr "縮小"
+
+#: id:238
+msgid "Magnification"
+msgstr "放大"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "播放完成後清除列表"
+
+#: id:240
+msgid "Display Mode"
+msgstr "顯示模式"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "全螢幕 #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "視窗"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "更新頻率"
+
+#: id:244
+msgid "Full screen"
+msgstr "全螢幕"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "縮放中：(%i,%i)->(%i,%i) (縮放 x%2.2f) AR:%2.2f:1 (像素: %2.2f:1)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "腳本"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "語言"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "音樂"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "視覺效果"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "選擇目的目錄"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "雙聲道時輸出到所有喇叭"
+
+#: id:253
+msgid "Number of channels"
+msgstr "通道數"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- DTS 數位音效"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "獲取 CD 資訊"
+
+#: id:257
+msgid "Error"
+msgstr "錯誤"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "啟用 檔案資訊讀取"
+
+#: id:259
+msgid "Opening"
+msgstr "開始"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast 網路音樂"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "準備開始…"
+
+#: id:262
+msgid "Scripts output"
+msgstr "腳本輸出"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "允許通過 HTTP 控制 XBMC"
+
+#: id:264
+msgid "Record"
+msgstr "錄音"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "停止錄音"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "排序：音軌"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "排序：時間"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "排序：標題"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "排序：藝人"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "排序：專輯"
+
+#: id:271
+msgid "Top 100"
+msgstr "排行前 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "左上角位置"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "右下角位置"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "字幕位置"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "畫面比例調整"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "設定角落位置"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "改變字幕位置"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "調整成正方形"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "無法讀取設定"
+
+#: id:280
+msgid "Using default settings"
+msgstr "回復為預設值"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "請檢查 .xml 檔案"
+
+#: id:282
+msgid "Found %i items"
+msgstr "找到 %i 條"
+
+#: id:283
+msgid "Search results"
+msgstr "搜尋結果"
+
+#: id:284
+msgid "No results found"
+msgstr "無結果"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "字幕設定"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "字型"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- 大小"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "動態範圍壓縮"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "視訊"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "音效"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "字幕流覽"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "建立書籤"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "清除書籤"
+
+#: id:297
+msgid "Audio offset"
+msgstr "音效延遲"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "書籤"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- AAC 數位音效"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- MP1 數位音效"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- MP2 數位音效"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "-MP3 數位音效"
+
+#: id:303
+msgid "Delay"
+msgstr "延遲"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "語言"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "啟用"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "非交錯掃描"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=自動)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "正在清除資料庫"
+
+#: id:314
+msgid "Preparing..."
+msgstr "準備中…"
+
+#: id:315
+msgid "Database error"
+msgstr "資料庫錯誤！"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "搜尋歌曲…"
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "成功清除資料庫！"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "清除歌曲…"
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "清除歌曲錯誤！"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "清除藝人…"
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "清除藝人錯誤！"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "清除類別…"
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "清除類別錯誤！"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "清除路徑…"
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "清除路徑錯誤！"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "清除專輯…"
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "清除專輯錯誤！"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "寫入變更中…"
+
+#: id:329
+msgid "Error writing changes"
+msgstr "寫入錯誤！"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "這需要一些時間…"
+
+#: id:331
+msgid "Compressing database..."
+msgstr "壓縮資料庫…"
+
+#: id:332
+msgid "Error compressing database"
+msgstr "壓縮資料庫錯誤！"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "要清除資料庫嗎？"
+
+#: id:334
+msgid "Clean library..."
+msgstr "清除資料庫…"
+
+#: id:335
+msgid "Start"
+msgstr "開始"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "調整畫面頻率"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "音效輸出"
+
+#: id:338
+msgid "Analog"
+msgstr "類比"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "數位"
+
+#: id:340
+msgid "Various artists"
+msgstr "群星"
+
+#: id:341
+msgid "Play disc"
+msgstr "播放光碟"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "影片"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "調整畫面頻率"
+
+#: id:344
+msgid "Actors"
+msgstr "演員"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "年份"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "增加聲道縮減混音音量"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "程式"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "關閉"
+
+#: id:352
+msgid "Dim"
+msgstr "陰暗"
+
+#: id:353
+msgid "Black"
+msgstr "全黑"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix trails"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "螢幕保護時間"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "螢幕保護模式"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "待機時間"
+
+#: id:358
+msgid "All albums"
+msgstr "全部專輯"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "新的專輯"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "螢幕保護"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "循環播放圖片"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "螢幕保護的亮度"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "排序：檔案"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- AC3 數位音效"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "排序：名稱"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "排序：年份"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "排序：評等"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "標題"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "雷雨"
+
+#: id:371
+msgid "Partly"
+msgstr "局部"
+
+#: id:372
+msgid "Mostly"
+msgstr "大部分"
+
+#: id:373
+msgid "Sunny"
+msgstr "晴朗"
+
+#: id:374
+msgid "Cloudy"
+msgstr "陰"
+
+#: id:375
+msgid "Snow"
+msgstr "雪"
+
+#: id:376
+msgid "Rain"
+msgstr "雨"
+
+#: id:377
+msgid "Light"
+msgstr "細"
+
+#: id:378
+msgid "AM"
+msgstr "上午"
+
+#: id:379
+msgid "PM"
+msgstr "下午"
+
+#: id:380
+msgid "Showers"
+msgstr "陣雨"
+
+#: id:381
+msgid "Few"
+msgstr "少數"
+
+#: id:382
+msgid "Scattered"
+msgstr "間歇性"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "風"
+
+#: id:384
+msgid "Strong"
+msgstr "強烈"
+
+#: id:385
+msgid "Fair"
+msgstr "轉晴"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "晴"
+
+#: id:387
+msgid "Clouds"
+msgstr "雲"
+
+#: id:388
+msgid "Early"
+msgstr "提早"
+
+#: id:389
+msgid "Shower"
+msgstr "陣雨"
+
+#: id:390
+msgid "Flurries"
+msgstr "飄雪"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "低"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "中"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "高"
+
+#: id:394
+msgid "Fog"
+msgstr "霧"
+
+#: id:395
+msgid "Haze"
+msgstr "霾"
+
+#: id:396
+msgid "Select location"
+msgstr "選擇位置"
+
+#: id:397
+msgid "Refresh time"
+msgstr "更新時間"
+
+#: id:398
+msgid "Temperature units"
+msgstr "溫度單位"
+
+#: id:399
+msgid "Speed units"
+msgstr "速度單位"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "氣象"
+
+#: id:401
+msgid "Temp"
+msgstr "溫度"
+
+#: id:402
+msgid "Feels like"
+msgstr "體感溫度"
+
+#: id:403
+msgid "UV index"
+msgstr "紫外線"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "風"
+
+#: id:405
+msgid "Dew point"
+msgstr "露點"
+
+#: id:406
+msgid "Humidity"
+msgstr "濕度"
+
+#: id:409
+msgid "Defaults"
+msgstr "預設值"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "前往氣象伺服器"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "取得氣象資料："
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "無法取得氣象資料"
+
+#: id:413
+msgid "Manual"
+msgstr "手動"
+
+#: id:414
+msgid "No review for this album"
+msgstr "此專輯無評論"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "下載縮略圖…"
+
+#: id:416
+msgid "Not available"
+msgstr "無法使用"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "顯示：大圖示"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "低溫"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "高溫"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "刪除專輯資訊"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "刪除 CD 資訊"
+
+#: id:424
+msgid "Select"
+msgstr "選擇"
+
+#: id:425
+msgid "No album information found"
+msgstr "無專輯資訊"
+
+#: id:426
+msgid "No CD information found"
+msgstr "無 CD 資訊"
+
+#: id:427
+msgid "Disc"
+msgstr "光碟"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "請放入正確的光碟"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "請放入下一張光碟"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "排序：DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "無緩衝區"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "從資料庫中移除影片"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "確定移除 '%s' 嗎？"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "方向方位%s、風速%i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "隨身碟"
+
+#: id:438
+msgid "Opening file"
+msgstr "打開檔案"
+
+#: id:439
+msgid "Cache"
+msgstr "快取"
+
+#: id:440
+msgid "Harddisk"
+msgstr "硬碟"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "區域網路"
+
+#: id:443
+msgid "Internet"
+msgstr "網際網路"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "視訊"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "音效"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "自動播放媒體"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "啟用"
+
+#: id:450
+msgid "Columns"
+msgstr "列"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "第 1 列位址"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "第 2 列位址"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "第 3 列位址"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "第 4 列位址"
+
+#: id:455
+msgid "Rows"
+msgstr "行"
+
+#: id:456
+msgid "Mode"
+msgstr "模式"
+
+#: id:457
+msgid "Switch view"
+msgstr "選擇顯示"
+
+#: id:459
+msgid "Subs"
+msgstr "字幕"
+
+#: id:460
+msgid "Audio stream"
+msgstr "聲道"
+
+#: id:461
+msgid "[active]"
+msgstr "[啟用]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "字幕"
+
+#: id:463
+msgid "Backlight"
+msgstr "背光"
+
+#: id:464
+msgid "Brightness"
+msgstr "亮度"
+
+#: id:465
+msgid "Contrast"
+msgstr "對比"
+
+#: id:466
+msgid "Gamma"
+msgstr "伽瑪值"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "類型"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "移動播放工具列位置"
+
+#: id:469
+msgid "OSD position"
+msgstr "播放工具列位置"
+
+#: id:470
+msgid "Credits"
+msgstr "改機者"
+
+#: id:471
+msgid "Modchip"
+msgstr "改機晶片"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "關閉"
+
+#: id:475
+msgid "Music only"
+msgstr "只有音樂"
+
+#: id:476
+msgctxt "Auto context with id 476"
+msgid "Music & video"
+msgstr "音樂 & 視訊"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "無法讀取播放列表"
+
+#: id:478
+msgid "OSD"
+msgstr "播放工具列"
+
+#: id:479
+msgid "Skin & language"
+msgstr "佈景主題 & 語言"
+
+#: id:480
+msgid "Appearance"
+msgstr "外觀主題"
+
+#: id:481
+msgid "Audio options"
+msgstr "音效設定"
+
+#: id:482
+msgid "About XBMC"
+msgstr "關於 XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "刪除專輯"
+
+#: id:486
+msgid "Repeat"
+msgstr "重複"
+
+#: id:487
+msgid "Repeat one"
+msgstr "重複一次"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "重複資料夾"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "自動播放下個項目"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- 使用大圖示"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Vobsubs 字幕比例"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "進階選項(專家適用!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "總音量"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "以桌面的解析度播放視訊"
+
+#: id:496
+msgid "Calibration"
+msgstr "校正"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "顯示副檔名"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "排序：類型"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "無法連線到線上搜尋伺服器"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "下載專輯資訊失敗"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "搜尋專輯名稱…"
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "打開"
+
+#: id:503
+msgid "Busy"
+msgstr "忙碌"
+
+#: id:504
+msgid "Empty"
+msgstr "空的"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "從檔案載入媒體資訊…"
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "排序：使用數"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "啟用 視覺效果"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "啟用 切換視訊模式"
+
+#: id:512
+msgid "Startup window"
+msgstr "啟動界面"
+
+#: id:513
+msgid "Home window"
+msgstr "主界面"
+
+#: id:514
+msgid "Manual settings"
+msgstr "設定界面"
+
+#: id:515
+msgid "Genre"
+msgstr "類別"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "最近播放的專輯"
+
+#: id:518
+msgid "Launch"
+msgstr "執行"
+
+#: id:519
+msgid "Launch in..."
+msgstr "執行方式…"
+
+#: id:521
+msgid "Compilations"
+msgstr "編輯"
+
+#: id:522
+msgid "Remove source"
+msgstr "移除來源"
+
+#: id:523
+msgid "Switch media"
+msgstr "切換媒體"
+
+#: id:524
+msgid "Select playlist"
+msgstr "選擇播放列表"
+
+#: id:525
+msgid "New playlist..."
+msgstr "新播放列表…"
+
+#: id:526
+msgid "Add to playlist"
+msgstr "加入播放列表"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "手動加入資料庫"
+
+#: id:528
+msgid "Enter title"
+msgstr "輸入標題"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "錯誤：重複的標題"
+
+#: id:530
+msgid "Select genre"
+msgstr "選擇類別"
+
+#: id:531
+msgid "New genre"
+msgstr "新類別"
+
+#: id:532
+msgid "Manual addition"
+msgstr "手動加入"
+
+#: id:533
+msgid "Enter genre"
+msgstr "輸入類別"
+
+#: id:534
+msgid "View: %s"
+msgstr "顯示：%s"
+
+#: id:535
+msgid "List"
+msgstr "列表"
+
+#: id:536
+msgid "Icons"
+msgstr "圖示"
+
+#: id:537
+msgid "Big list"
+msgstr "大列表"
+
+#: id:538
+msgid "Big icons"
+msgstr "大圖示"
+
+#: id:539
+msgid "Wide"
+msgstr "寬幅"
+
+#: id:540
+msgid "Big wide"
+msgstr "大寬幅"
+
+#: id:541
+msgid "Album icons"
+msgstr "專輯圖示"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD 圖示"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "媒體資訊"
+
+#: id:545
+msgid "Audio output device"
+msgstr "音效輸出設備"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "通過輸出裝置"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "此藝人沒有傳記"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "混合多聲道輸出為雙聲道"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "排序：%s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "名稱"
+
+#: id:552
+msgid "Date"
+msgstr "日期"
+
+#: id:553
+msgid "Size"
+msgstr "大小"
+
+#: id:554
+msgid "Track"
+msgstr "音軌"
+
+#: id:555
+msgid "Time"
+msgstr "時間"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "標題"
+
+#: id:557
+msgid "Artist"
+msgstr "藝人"
+
+#: id:558
+msgid "Album"
+msgstr "專輯"
+
+#: id:559
+msgid "Playlist"
+msgstr "播放列表"
+
+#: id:560
+msgid "ID"
+msgstr "標籤"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "檔案"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "年份"
+
+#: id:563
+msgid "Rating"
+msgstr "評等"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "類型"
+
+#: id:565
+msgid "Usage"
+msgstr "使用數"
+
+#: id:566
+msgid "Album artist"
+msgstr "專輯藝人"
+
+#: id:567
+msgid "Play count"
+msgstr "播放次數"
+
+#: id:568
+msgid "Last played"
+msgstr "最近播放"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "評論"
+
+#: id:570
+msgid "Date added"
+msgstr "加入日期"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "預設"
+
+#: id:572
+msgid "Studio"
+msgstr "製作公司"
+
+#: id:573
+msgid "Path"
+msgstr "路徑"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "國家"
+
+#: id:575
+msgid "In progress"
+msgstr "進度"
+
+#: id:576
+msgid "Times played"
+msgstr "已播放時間"
+
+#: id:580
+msgid "Sort direction"
+msgstr "排序方向"
+
+#: id:581
+msgid "Sort method"
+msgstr "排序方法"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "顯示模式"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "記住不同資料夾的顯示模式"
+
+#: id:584
+msgid "Ascending"
+msgstr "升冪"
+
+#: id:585
+msgid "Descending"
+msgstr "降冪"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "編輯播放列表"
+
+#: id:587
+msgid "Filter"
+msgstr "濾鏡"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "取消派對模式"
+
+#: id:589
+msgid "Party mode"
+msgstr "派對模式"
+
+#: id:590
+msgid "Random"
+msgstr "隨機"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "關閉"
+
+#: id:592
+msgid "One"
+msgstr "單首"
+
+#: id:593
+msgid "All"
+msgstr "全部"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "關閉"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "重複：關閉"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "重複：單首"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "重複：全部"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "擷取音樂 CD"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "中等"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "標準"
+
+#: id:603
+msgid "Extreme"
+msgstr "最高"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "指定頻率"
+
+#: id:605
+msgid "Ripping..."
+msgstr "擷取中…"
+
+#: id:607
+msgid "To:"
+msgstr "儲存到："
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "無法擷取 CD 或音軌"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CD 擷取路徑未設定。"
+
+#: id:610
+msgid "Rip audio track"
+msgstr "擷取音軌"
+
+#: id:611
+msgid "Enter number"
+msgstr "輸入數字"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bits/取樣"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "取樣頻率"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "音樂 CD 擷取"
+
+#: id:621
+msgid "Encoder"
+msgstr "編碼"
+
+#: id:622
+msgid "Quality"
+msgstr "品質"
+
+#: id:623
+msgid "Bitrate"
+msgstr "頻率"
+
+#: id:624
+msgid "Include track number"
+msgstr "包括音軌編號"
+
+#: id:625
+msgid "All songs of"
+msgstr "所有歌曲"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "顯示模式"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "一般"
+
+#: id:631
+msgid "Zoom"
+msgstr "填滿螢幕(無黑邊)"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "4:3 畫面"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "14:9 畫面"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "16:9 畫面"
+
+#: id:635
+msgid "Original Size"
+msgstr "原始大小"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "自訂"
+
+#: id:637
+msgid "Replay gain"
+msgstr "重覆播放"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "重覆播放模式"
+
+#: id:639
+msgid "Use track levels"
+msgstr "依曲目重覆播放"
+
+#: id:640
+msgid "Use album levels"
+msgstr "依專輯重覆播放"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "音量 - 重覆播放的檔案"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "音量 - 不重覆播放的檔案"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "重覆播放時忽略消波失真"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "修剪黑邊"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "需要解開一個大檔案，是否繼續？"
+
+#: id:646
+msgid "Remove from library"
+msgstr "從資料庫中移除"
+
+#: id:647
+msgid "Export video library"
+msgstr "匯出視訊資料庫"
+
+#: id:648
+msgid "Import video library"
+msgstr "匯入視訊資料庫"
+
+#: id:649
+msgid "Importing"
+msgstr "匯入中"
+
+#: id:650
+msgid "Exporting"
+msgstr "匯出中"
+
+#: id:651
+msgid "Browse for library"
+msgstr "影片資料庫"
+
+#: id:652
+msgid "Years"
+msgstr "年份"
+
+#: id:653
+msgid "Update library"
+msgstr "更新資料庫"
+
+#: id:654
+msgid "Show debug info"
+msgstr "顯示除錯資訊"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "瀏覽可執行檔"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "瀏覽播放列表"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "瀏覽資料夾"
+
+#: id:658
+msgid "Song information"
+msgstr "歌曲資訊"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "非線性延伸"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "音量放大"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "選擇匯出資料夾"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "這個檔案已經無法使用。"
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "你要將它從資料庫移除嗎？"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "流覽腳本"
+
+#: id:665
+msgid "Compression level"
+msgstr "壓縮等級"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "清除音樂資料庫"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "移除音樂資料庫舊歌曲"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "目前路徑曾經搜尋過"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "網路設定"
+
+#: id:706
+msgid "- Server"
+msgstr "- 伺服器"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "啟用 HTTP 代理伺服器"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "網路位址(IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "無效的連接埠，數值必須是 1 至 65535。"
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP 代理伺服器"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- 分配"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "自動(動態分配)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "手動(靜態分配)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP 位址"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- 子網路遮罩"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- 預設閘道"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS 伺服器"
+
+#: id:723
+msgid "Save & restart"
+msgstr "儲存 & 重新啟動"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "無效位址。數值必須是 AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "必須是 0 至 255。"
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "改變未儲存. 不儲存就離開嗎？"
+
+#: id:727
+msgid "Web server"
+msgstr "Web 伺服器"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP 伺服器"
+
+#: id:730
+msgid "- Port"
+msgstr "- 連接埠"
+
+#: id:732
+msgid "Save & apply"
+msgstr "儲存 & 套用"
+
+#: id:733
+msgid "- Password"
+msgstr "- 密碼"
+
+#: id:734
+msgid "No pass"
+msgstr "無密碼"
+
+#: id:735
+msgid "- Character set"
+msgstr "- 編碼"
+
+#: id:736
+msgid "- Style"
+msgstr "- 效果"
+
+#: id:737
+msgid "- Colour"
+msgstr "- 顏色"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "標準"
+
+#: id:739
+msgid "Bold"
+msgstr "粗體"
+
+#: id:740
+msgid "Italics"
+msgstr "斜體"
+
+#: id:741
+msgid "Bold italics"
+msgstr "粗斜體"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "白色"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "黃色"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "檔案"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "目前顯示無已搜尋資訊"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "切換到檔案顯示"
+
+#: id:747
+msgid "Error loading image"
+msgstr "圖像載入錯誤"
+
+#: id:748
+msgid "Edit path"
+msgstr "編輯路徑"
+
+#: id:749
+msgid "Mirror image"
+msgstr "映像"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "您確定嗎？"
+
+#: id:751
+msgid "Removing source"
+msgstr "移除來源"
+
+#: id:754
+msgid "Add program link"
+msgstr "新增程式連結"
+
+#: id:755
+msgid "Edit program path"
+msgstr "編輯程式路徑"
+
+#: id:756
+msgid "Edit program name"
+msgstr "編輯程式名稱"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "編輯路徑深度"
+
+#: id:759
+msgid "View: Big list"
+msgstr "顯示：大列表"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "黃色"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "白色"
+
+#: id:762
+msgid "Blue"
+msgstr "藍色"
+
+#: id:763
+msgid "Bright green"
+msgstr "亮綠"
+
+#: id:764
+msgid "Yellow green"
+msgstr "翠綠"
+
+#: id:765
+msgid "Cyan"
+msgstr "青色"
+
+#: id:766
+msgid "Light grey"
+msgstr "保留"
+
+#: id:767
+msgid "Grey"
+msgstr "保留"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "錯誤 %i：無法共享"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "音效輸出"
+
+#: id:773
+msgid "Seeking"
+msgstr "搜尋中"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "圖片資料夾"
+
+#: id:775
+msgid "Network interface"
+msgstr "網路界面"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- 無線網路帳號(ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- 無線網路密碼"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- 無線網路安全"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "儲存並套用網路界面設定"
+
+#: id:780
+msgid "No encryption"
+msgstr "沒有加密"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "套用網路界面設定，請稍候。"
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "順利重新啟動網路界面。"
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "無法順利啟動網路界面。"
+
+#: id:787
+msgid "Interface disabled"
+msgstr "關閉網路界面"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "順利關閉網路界面。"
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "無線網路帳號(ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "允許這個系統的程式控制XBMC"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "遠端伺服器埠號"
+
+#: id:793
+msgid "Port range"
+msgstr "遠端伺服器埠號範圍"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "允許其他電腦連接"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "初步重複延遲(毫秒)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "連續重複延遲(毫秒)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "最大客戶端數"
+
+#: id:798
+msgid "Internet access"
+msgstr "網際網路訪問"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "輸入不合法的連接埠"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "合法的連接埠範圍是 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "合法的連接埠範圍是 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "新增音樂..."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "新增影片..."
+
+#: id:1000
+msgid "- Preview"
+msgstr "- 預覽"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "無法連線"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC 無法連線到網路。"
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "這可能是由於網路沒有連線。"
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "可以用其他方式來新增它嗎？"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP 位址"
+
+#: id:1007
+msgid "Add network location"
+msgstr "新增網路位置"
+
+#: id:1008
+msgid "Protocol"
+msgstr "協定"
+
+#: id:1009
+msgid "Server address"
+msgstr "伺服器位址"
+
+#: id:1010
+msgid "Server name"
+msgstr "伺服器名稱"
+
+#: id:1011
+msgid "Remote path"
+msgstr "遠端路徑"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "共享資料夾"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "連接埠"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "帳號"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "瀏覽網路伺服器"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "輸入伺服器網路位址"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "輸入伺服器遠端路徑"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "輸入埠號"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "輸入帳號"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "新增 %s 來源"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "輸入或選擇媒體位置。"
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "為該媒體來源命名。"
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "瀏覽目錄"
+
+#: id:1024
+msgid "Browse"
+msgstr "瀏覽"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "無法獲得目錄資訊。"
+
+#: id:1026
+msgid "Add source"
+msgstr "新增來源"
+
+#: id:1027
+msgid "Edit source"
+msgstr "編輯來源"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "編輯 %s 來源"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "輸入新標籤"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "瀏覽圖像"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "瀏覽圖像資料夾"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "新增網路位置…"
+
+#: id:1033
+msgid "Browse for file"
+msgstr "瀏覽檔案"
+
+#: id:1034
+msgid "Submenu"
+msgstr "子選單"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "啟用 子選單按鈕"
+
+#: id:1036
+msgid "Favourites"
+msgstr "我的最愛"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "視訊外掛"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "音樂外掛"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "圖片外掛"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "載入目錄"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "檢索 %i 項目"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "檢索 %i 在 %i 項目"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "程式外掛"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "設定外掛縮圖"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "外掛設定"
+
+#: id:1046
+msgid "Access points"
+msgstr "無線網路橋接器"
+
+#: id:1047
+msgid "Other..."
+msgstr "其他…"
+
+#: id:1048
+msgid "- Username"
+msgstr "- 使用者名稱"
+
+#: id:1049
+msgid "Script settings"
+msgstr "腳本設定"
+
+#: id:1050
+msgid "Singles"
+msgstr "單曲"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "輸入網路位址"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB 共享設定"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "工作群組"
+
+#: id:1203
+msgid "Default username"
+msgstr "預設帳號"
+
+#: id:1204
+msgid "Default password"
+msgstr "預設密碼"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS 伺服器"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "掛載 SMB 分享"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "移除"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "音樂"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "視訊"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "圖片"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "檔案"
+
+#: id:1215
+msgctxt "Auto context with id 1215"
+msgid "Music & video"
+msgstr "音樂 & 視訊"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "音樂 & 圖片"
+
+#: id:1217
+msgid "Music & files"
+msgstr "音樂 & 檔案"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "視訊 & 圖片"
+
+#: id:1219
+msgid "Video & files"
+msgstr "視訊 & 檔案"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "圖片 & 檔案"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "音樂 & 視訊 & 圖片"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "音樂 & 視訊 & 圖片 & 檔案"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "停用"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "檔案 & 音樂 & 視訊"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "檔案 & 圖片 & 音樂"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "檔案 & 圖片 & 視訊"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "音樂 & 程式"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "視訊 & 程式"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "圖片 & 程式"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "音樂 & 視訊 & 圖片 & 程式"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "程式 & 視訊 & 音樂"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "程式 & 圖片 & 音樂"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "程式 & 圖片 & 視訊"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "自動偵測"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "自動偵測系統"
+
+#: id:1252
+msgid "Nickname"
+msgstr "暱稱"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "詢問連線"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "發送 FTP 帳號和密碼"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "連線品質"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "是否連線到自動偵測到的系統？"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "自動網路設定"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "允許XBMC接收AirPlay內容"
+
+#: id:1271
+msgid "Device name"
+msgstr "裝置名稱"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr "- 使用密碼保護"
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "自訂音效設備"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "自訂直通輸出設備"
+
+#: id:1396
+msgid "Drifting"
+msgstr "移動"
+
+#: id:1397
+msgid "and"
+msgstr "有"
+
+#: id:1398
+msgid "Freezing"
+msgstr "結冰"
+
+#: id:1399
+msgid "Late"
+msgstr "睌間"
+
+#: id:1400
+msgid "Isolated"
+msgstr "局部"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "雷陣雨"
+
+#: id:1402
+msgid "Thunder"
+msgstr "雷"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "晴"
+
+#: id:1404
+msgid "Heavy"
+msgstr "大"
+
+#: id:1405
+msgid "in"
+msgstr "在"
+
+#: id:1406
+msgid "the"
+msgstr "這"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "區域性"
+
+#: id:1408
+msgid "Ice"
+msgstr "冰"
+
+#: id:1409
+msgid "Crystals"
+msgstr "冰霜"
+
+#: id:1410
+msgid "Calm"
+msgstr "無風"
+
+#: id:1411
+msgid "with"
+msgstr "有"
+
+#: id:1412
+msgid "windy"
+msgstr "風"
+
+#: id:1413
+msgid "drizzle"
+msgstr "毛雨"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "雷雨"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "毛雨"
+
+#: id:1416
+msgid "Foggy"
+msgstr "霧"
+
+#: id:1417
+msgid "Grains"
+msgstr "花"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "雷雨"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "雷陣雨"
+
+#: id:1420
+msgid "Moderate"
+msgstr "中等"
+
+#: id:1421
+msgid "Very High"
+msgstr "非常高"
+
+#: id:1422
+msgid "Windy"
+msgstr "風"
+
+#: id:1423
+msgid "Mist"
+msgstr "靄"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "閒置時顯示器休眠"
+
+#: id:2050
+msgid "Runtime"
+msgstr "視訊時間"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "腳本錯誤！：%s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "需要更新的版本 - 看記錄"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "啟用 LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "首頁"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "程式"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "圖片"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "檔案總管"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "系統設定"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "音樂"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "視訊"
+
+#: id:10007
+msgid "System information"
+msgstr "系統資訊"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "設定 - 一般"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "設定 - 螢幕"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "設定 - 佈景主題 - 界面校正"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "設定 - 視訊 - 螢幕校正"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "設定 - 圖片"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "設定 - 程式"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "設定 - 氣象"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "設定 - 音樂"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "設定 - 系統"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "設定 - 視訊"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "設定 - 網路"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "設定 - 佈景主題"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "腳本"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "網路瀏覽器"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr "視訊"
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "視訊/播放列表"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr "登入畫面"
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "設定 - 使用者設定檔"
+
+#: id:10040
+msgid "Addon browser"
+msgstr "附加元件瀏覽器"
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "確認對話框"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "進度對話框"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "正在尋找字幕…"
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "正在尋找或者快取字幕…"
+
+#: id:10212
+msgid "terminating"
+msgstr "結束中"
+
+#: id:10213
+msgid "buffering"
+msgstr "緩衝中"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "打開串流媒體"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "音樂/播放列表"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "音樂/檔案"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "音樂/資料庫"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "播放列表編輯"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "排行前100歌曲"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "排行前100專輯"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "程式"
+
+#: id:10507
+msgid "Configuration"
+msgstr "系統設定"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "氣象預報"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "網路遊戲"
+
+#: id:10510
+msgid "Extensions"
+msgstr "擴充功能"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "系統資訊"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "音樂 - 資料庫"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "現正播放 - 音樂"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "現在播放 - 視訊"
+
+#: id:10523
+msgid "Album info"
+msgstr "專輯資訊"
+
+#: id:10524
+msgid "Movie info"
+msgstr "電影資訊"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "選擇對話"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "音樂/資訊"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "確認"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "視訊/資訊"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "腳本/資訊"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "全螢幕視訊"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "音效視覺效果"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "檔案堆疊對話框"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "重建目錄索引…"
+
+#: id:12010
+msgid "Return to music window"
+msgstr "返回音樂視窗"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "返回視訊視窗"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "從頭開始播放"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "從 %s 開始播放"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "←"
+
+#: id:12321
+msgid "Ok"
+msgstr "Ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "已鎖定！ 輸入密碼…"
+
+#: id:12326
+msgid "Enter password"
+msgstr "輸入密碼"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "輸入管理員密碼"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "輸入解鎖密碼"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "或按 C 取消"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "輸入手把按鍵組合並且"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "按 Start 確認，或按 Back 取消"
+
+#: id:12332
+msgid "Set lock"
+msgstr "設定鎖定"
+
+#: id:12333
+msgid "Unlock"
+msgstr "解除鎖定"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "重設鎖定"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "移除鎖定"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "數字密碼"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "手把按鍵組合"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "文字密碼"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "輸入新密碼"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "確認新密碼"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "密碼不正確，"
+
+#: id:12343
+msgid "retries left"
+msgstr "重試次數"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "輸入的密碼不正確。"
+
+#: id:12345
+msgid "Access denied"
+msgstr "拒絕讀取"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "已達密碼重試次數限制。"
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "系統將要立刻關閉。"
+
+#: id:12348
+msgid "Item locked"
+msgstr "項目被鎖定"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "重新上鎖"
+
+#: id:12356
+msgid "Change lock"
+msgstr "更改鎖定"
+
+#: id:12357
+msgid "Source lock"
+msgstr "來源鎖定"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "密碼不能空白，請重試。"
+
+#: id:12360
+msgid "Master lock"
+msgstr "主機鎖定"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "超過重試次數就關機"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "管理員密碼錯誤！"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "請輸入正確的管理員密碼！"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "系統設定和檔案總管"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "設定為影片的預設值"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "將重設之前的設定"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "顯示各個圖像"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "使用移動和縮放特效"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12小時制"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24小時制"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "日/月"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "月/日"
+
+#: id:12390
+msgid "System uptime"
+msgstr "系統已運作時間"
+
+#: id:12391
+msgid "Minutes"
+msgstr "分鐘"
+
+#: id:12392
+msgid "Hours"
+msgstr "小時"
+
+#: id:12393
+msgid "Days"
+msgstr "天"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "累計運作時間"
+
+#: id:12395
+msgid "Battery level"
+msgstr "電池狀態"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "氣象"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "螢幕保護"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "全螢幕畫面調整"
+
+#: id:13000
+msgid "System"
+msgstr "系統設定"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "立即關閉硬碟"
+
+#: id:13002
+msgid "Video only"
+msgstr "只有視訊"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- 延遲"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- 最小媒體檔案長度"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "關機"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "預設關機模式"
+
+#: id:13009
+msgid "Quit"
+msgstr "退出"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "休眠"
+
+#: id:13011
+msgid "Suspend"
+msgstr "待機"
+
+#: id:13012
+msgid "Exit"
+msgstr "離開"
+
+#: id:13013
+msgid "Reboot"
+msgstr "重新啟動"
+
+#: id:13014
+msgid "Minimize"
+msgstr "最小化"
+
+#: id:13015
+msgid "Power button action"
+msgstr "電源按鈕作用"
+
+#: id:13016
+msgid "Power off System"
+msgstr "關閉系統"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "是否有透過 ssh 連接的會話存在？"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "掛載行動碟"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "不安全的移除裝置"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "順利的移除裝置"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "手把連接"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "手把沒有連接"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "電池電量不足"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "閃爍過濾"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "讓驅動選擇(必須重新啟動)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "垂直空白同步"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "停用"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "啟用 在視訊播放時"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "強制啟用"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "測試解析度"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "儲存此解析度？"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "是否儲存此解析度？"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "高品質軟體升頻"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "停用"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "在480解析度時啟用"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "始終啟用"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "升頻方式"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU 硬體解碼"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU 高品質倍線等級"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU 視聽室等級色彩轉換"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "顯示空白"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "停用"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "空白顯示"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "主動偵測連接！"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "如果你繼續，你也許會不能控制 XBMC"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "更長的時間，你是否確定停止事件伺服器？"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "更改 Apple 遙控器模式？"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "如果你正使用 Apple 遙控器來控制"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC，更改此設定可能會影響到你"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "繼續控制它，你要繼續嗎？"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "子網路遮罩"
+
+#: id:13160
+msgid "Gateway"
+msgstr "閘道位址"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "主要的 DNS 位址"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "初始化失敗"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "從不"
+
+#: id:13171
+msgid "Immediately"
+msgstr "立即"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "隔 %i 秒之後"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "硬碟安裝日期："
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "硬碟運轉週期："
+
+#: id:13200
+msgid "Profiles"
+msgstr "設定檔"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "要刪除設定檔 '%s' 嗎？"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "最近載入的設定檔："
+
+#: id:13205
+msgid "Unknown"
+msgstr "未知"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "覆蓋"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "鬧鈴"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "鬧鈴間隔(分鐘)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "鬧鈴啟動，倒數計時 %i 分鐘"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "響鈴！"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "鬧鈴取消，剩下 %i 分 %i 秒"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0f分"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0f秒"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "掃瞄 RAR 檔案中的字幕"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "瀏覽字幕…"
+
+#: id:13251
+msgid "Move item"
+msgstr "移動該項目"
+
+#: id:13252
+msgid "Move item here"
+msgstr "將項目移動至此"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "取消移動"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "硬體："
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "CPU 使用率："
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "已連線，但是 DNS 無法使用。"
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "硬碟"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "光碟機"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "儲存裝置"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "預設"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "網路"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "視訊"
+
+#: id:13281
+msgid "Hardware"
+msgstr "硬體"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "作業系統："
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "CPU 速度："
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "視訊晶片："
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "螢幕解析度："
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "影音端子："
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD 區碼："
+
+#: id:13295
+msgid "Internet:"
+msgstr "網際網路："
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "已連線"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "無法連線，請檢查網路設定。"
+
+#: id:13299
+msgid "Target temperature"
+msgstr "目標溫度"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "風扇轉速"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "自動控溫"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "指定風扇轉速"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- 字型"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "啟用 轉換雙向字串"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "啟用 RSS 新聞顯示"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "隱藏上層資料夾項目"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "音軌命名參數"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "你要將系統重新啟動"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "以重新啟動 XBMC 嗎？"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "縮放效果"
+
+#: id:13311
+msgid "Float effect"
+msgstr "浮動效果"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "縮小黑邊"
+
+#: id:13313
+msgid "Restart"
+msgstr "重新啟動"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "淡入淡出"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "建立縮略圖"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "重覆縮略圖"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "觀看圖片"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "重覆圖片"
+
+#: id:13319
+msgid "Randomize"
+msgstr "隨機"
+
+#: id:13320
+msgid "Stereo"
+msgstr "立體聲"
+
+#: id:13321
+msgid "Left only"
+msgstr "左聲道"
+
+#: id:13322
+msgid "Right only"
+msgstr "右聲道"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "啟用 卡拉OK 支援"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "背景透明度"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "前景透明度"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "影音延遲"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "卡拉OK"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s 找不到"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "打開 %s 發生錯誤"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "無法載入 %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "錯誤：記憶體不足"
+
+#: id:13332
+msgid "Move up"
+msgstr "上移"
+
+#: id:13333
+msgid "Move down"
+msgstr "下移"
+
+#: id:13334
+msgid "Edit label"
+msgstr "編輯標籤"
+
+#: id:13335
+msgid "Make default"
+msgstr "設為預設值"
+
+#: id:13336
+msgid "Remove button"
+msgstr "移除按鍵"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "讓它為"
+
+#: id:13341
+msgid "Green"
+msgstr "綠色"
+
+#: id:13342
+msgid "Orange"
+msgstr "橙色"
+
+#: id:13343
+msgid "Red"
+msgstr "紅色"
+
+#: id:13344
+msgid "Cycle"
+msgstr "循環"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "當播放時關閉顯示燈"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "影片資訊"
+
+#: id:13347
+msgid "Queue item"
+msgstr "佇列項目"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "搜尋 IMDb 資訊…"
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "掃描新內容"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "現正播放…"
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "專輯資訊"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "掃描項目到資料庫"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "停止掃描"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "補償方式"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "低品質像素著色器"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "硬體重疊"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "高品質像素著色器"
+
+#: id:13358
+msgid "Play item"
+msgstr "播放項目"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "設定藝人縮圖"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "建立縮圖"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "啟用語音"
+
+#: id:13375
+msgid "Enable device"
+msgstr "啟動裝置"
+
+#: id:13376
+msgid "Volume"
+msgstr "音量"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "預設顯示模式"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "預設亮度"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "預設對比"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "預設伽瑪值"
+
+#: id:13381
+msgid "Resume video"
+msgstr "接續播放本片"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "語音特效 - 第 1 埠"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "語音特效 - 第 2 埠"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "語音特效 - 第 3 埠"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "語音特效 - 第 4 埠"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "使用時間搜尋"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "音軌命名格式"
+
+#: id:13388
+msgid "Preset"
+msgstr "預設"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "該視覺效果 沒有預設值"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "該視覺效果 沒有可用的設定"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "托盤開/關"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "撥放音效時使用視覺效果"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "計算大小"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "計算資料夾大小"
+
+#: id:13395
+msgid "Video settings"
+msgstr "視訊設定"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "音效和字幕設定"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "啟用字幕"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "捷徑"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "排序時忽略符號"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "專輯音軌淡入淡出"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "瀏覽 %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "顯示音軌位置"
+
+#: id:13403
+msgid "Clear default"
+msgstr "清除預設值"
+
+#: id:13404
+msgid "Resume"
+msgstr "恢復"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "取得縮圖"
+
+#: id:13406
+msgid "Picture information"
+msgstr "圖片資訊"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s 預設"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(IMDb 用戶評價)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "排名前250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "收聽 Last.FM"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "最低風扇轉速"
+
+#: id:13412
+msgid "Play from here"
+msgstr "從這裡開始播放"
+
+#: id:13413
+msgid "Downloading"
+msgstr "下載中"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "隱藏只在編輯出現的藝人"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "渲染模式"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "自動檢測"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "基本著色(ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "高級著色(GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "軟體著色"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "托盤開啓"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU 硬體解碼"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "開始幻燈片播放"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "記住此路徑"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "使用像素緩衝物件"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "允許硬體加速 (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "允許硬體加速 (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "允許硬體加速 (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "允許硬體加速 (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "允許硬體加速 (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "允許硬體加速 (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Pixel Shaders"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "允許硬體加速（VideoToolbox）"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "影音同步方式"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "音效為主"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "視訊為主(放棄/重複音效)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "視訊為主(重新取樣音效)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "最高重取樣速率(%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "重取樣品質"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "低(快)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "中"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "高"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "極高(慢!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "同步重播顯示"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "當變更更新率時暫停"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "關閉"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f秒"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f秒"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple 遙控器"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "允許用遙控器啟動 XBMC"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "序列延遲時間"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "關閉"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "標準"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "通用遙控器"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "萬能遙控器(Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Apple 遙控器錯誤"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Apple 遙控器支援啟用。"
+
+#: id:14000
+msgid "Stack"
+msgstr "堆疊開啟"
+
+#: id:14001
+msgid "Unstack"
+msgstr "堆疊關閉"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "下載播放列表檔案…"
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "下載串流媒體列表…"
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "分析串流媒體列表…"
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "下載串流媒體列表失敗"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "下載播放列表檔案失敗"
+
+#: id:14009
+msgid "Games directory"
+msgstr "遊戲目錄"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "自動切換為縮圖顯示"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "啟用 自動切換為縮圖顯示"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- 使用大圖示"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- 條件"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- 百分比"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "沒有檔案且最少有一個縮圖"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "最少有一個檔案和縮圖"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "縮圖所占比例"
+
+#: id:14018
+msgid "View options"
+msgstr "瀏覽設定"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "改變區碼 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "改變區碼 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "改變區碼 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "資料庫"
+
+#: id:14023
+msgid "No TV"
+msgstr "無電視"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "輸入最近的城市"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "視訊/音效/光碟緩衝區 - 硬碟"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "視訊緩衝區 - 光碟機"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "視訊緩衝區 - 區域網路"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "視訊緩衝區 - 網際網路"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "音效緩衝區 - 光碟機"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "音效緩衝區 - 區域網路"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "音效緩衝區 - 網際網路"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "光碟緩衝區 - 光碟機"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "光碟緩衝區 - 區域網路"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "服務"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "網路設定已改變"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC 需要重新啟動以改變您的"
+
+#: id:14040
+msgid "network setup. Would you like to restart now?"
+msgstr "網路設定。 你要現在重新啟動嗎？"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "網際網路連線頻寬限制"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- 播放時關機"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i 分"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i 秒"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i 毫秒"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "時間格式"
+
+#: id:14052
+msgid "Date format"
+msgstr "日期格式"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "畫面濾鏡"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "使用背景搜尋"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "停止搜尋"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "無法搜尋媒體資訊"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "膠片顆粒濾鏡"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "搜尋遠端分享的縮圖"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "未知類型緩衝區 - 網際網路"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "自動"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "輸入帳號"
+
+#: id:14063
+msgid "Date & time"
+msgstr "日期 & 時間"
+
+#: id:14064
+msgid "Set date"
+msgstr "設定日期"
+
+#: id:14065
+msgid "Set time"
+msgstr "設定時間"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "輸入時間 時:分"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "輸入日期 日/月/年"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "輸入 IP 位址"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "現在套用這些設定嗎？"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "現在套用改變"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "允許重新命名和刪除檔案"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "設定時區"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "使用日光節約時間"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "加入我的最愛"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "從我的最愛中移除"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- 桌面顏色"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "時區國家"
+
+#: id:14080
+msgid "Timezone"
+msgstr "時區"
+
+#: id:14081
+msgid "File lists"
+msgstr "檔案列表"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "顯示 EXIF 圖片資訊"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "使用全螢幕視窗而非真正全螢幕"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "選中歌曲加入播放清單"
+
+#: id:14086
+msgid "Playback"
+msgstr "播放"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "自動播放 DVD"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "文字字幕檔字型"
+
+#: id:14090
+msgid "International"
+msgstr "介面語言"
+
+#: id:14091
+msgid "Character set"
+msgstr "字元集"
+
+#: id:14092
+msgid "Debugging"
+msgstr "偵錯中"
+
+#: id:14093
+msgid "Security"
+msgstr "安全"
+
+#: id:14094
+msgid "Input devices"
+msgstr "輸入裝置"
+
+#: id:14095
+msgid "Power saving"
+msgstr "省電模式"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "移除"
+
+#: id:15016
+msgid "Games"
+msgstr "遊戲"
+
+#: id:15019
+msgid "Add"
+msgstr "新增"
+
+#: id:15052
+msgid "Password"
+msgstr "密碼"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "瀏覽"
+
+#: id:15101
+msgid "Database"
+msgstr "資料庫"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* 所有專輯"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* 所有藝人"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* 所有歌曲"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* 所有類別"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "緩衝中…"
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "按鍵音效"
+
+#: id:15109
+msgid "Skin default"
+msgstr "佈景主題預設"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- 主題"
+
+#: id:15112
+msgid "Default theme"
+msgstr "預設主題"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "提交歌曲資訊到 Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm 帳號"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm 密碼"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "無法連線：休息中…"
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "請更新 XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "無法通過認證： 檢查帳號和密碼"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "已連線"
+
+#: id:15208
+msgid "Not connected"
+msgstr "無法連線"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "提交進度 %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "已快取 %i 首歌曲"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "提交中…"
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "提交剩餘 % i秒"
+
+#: id:15213
+msgid "Play using..."
+msgstr "播放方式…"
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "使用平滑的影音同步"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "顯示縮圖時隱藏檔案名稱"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "派對模式播放"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "將歌曲提交到 Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm 帳號"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm 密碼"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "提交歌曲"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "上傳電台到 Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "連線到 Last.fm…"
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "選擇電台…"
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "尋找同類型藝人…"
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "尋找同類型標籤…"
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "我的設定檔 (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "所有排行"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "%name% 藝人排行"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "%name% 專輯排行"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "%name% 歌曲排行"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "收聽 %name% 在 Last.fm 廣播"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "%name% 同類型藝人"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "%name% 專輯排行"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "%name% 歌曲排行"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "%name% 標籤排行"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "%name% 頭號歌迷"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "收聽 %name% 的歌迷在 Last.fm 廣播"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "收聽 %name% 的同類型藝人在 Last.fm 廣播"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "%name% 藝人排行"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "%name% 專輯排行"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "%name% 歌曲排行"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "%name% 好友"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "%name% 同好"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "%name% 藝人週排行"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "%name% 專輯週排行"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "%name% 歌曲週排行"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "收聽 %name% 的同好在 Last.fm 廣播"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "收聽 %name% 的個人在 Last.fm 廣播"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "收聽 %name% 的最愛在 Last.fm 廣播"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "從 Last.fm 獲取目錄…"
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "無法從 Last.fm 獲取目錄…"
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "輸入藝人名稱尋找相關資訊"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "輸入標籤名稱尋找相關資訊"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "%name% 最近聽過的歌曲"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "收聽 %name% 的推薦在 Last.fm 廣播"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "%name% 的排行"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "你想把目前歌曲加入你的最愛嗎？"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "你想封鎖目前的歌曲嗎？"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "已加入你的最愛歌曲： '%s'"
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "不能加入 '%s' 到你的最愛"
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "被封鎖： '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "不能封鎖 '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "%name% 最近喜好的歌曲"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "%name% 最近封鎖的歌曲"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "從最愛中移除"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "解除封鎖"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "你想從你的最愛移除這首歌曲嗎？"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "你想解除封鎖這首歌曲嗎？"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "路徑錯誤或無效"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "無法連線到網路伺服器"
+
+#: id:15302
+msgid "No servers found"
+msgstr "找不到伺服器"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "找不到工作群組"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "打開多個來源路徑"
+
+#: id:15311
+msgid "Path:"
+msgstr "路徑："
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "一般設定"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "網路查詢"
+
+#: id:16003
+msgid "Player"
+msgstr "播放設定"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "播放光碟"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "輸入新標題"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "輸入影片名稱"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "輸入設定檔名稱"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "輸入專輯名稱"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "輸入播放列表名稱"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "輸入新檔案名稱"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "輸入資料夾名稱"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "輸入目錄"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "可用選項： %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "輸入搜尋字串"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "關閉"
+
+#: id:16019
+msgid "Auto select"
+msgstr "自動選擇"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "非交錯掃描"
+
+#: id:16021
+msgid "Bob"
+msgstr "抖動"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "抖動(倒轉)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "取消中…"
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "輸入藝人名稱"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "播放失敗"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "一個或多個項目播放失敗。"
+
+#: id:16028
+msgid "Enter value"
+msgstr "輸入資料"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "詳情請查看日誌檔。"
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "取消派對模式。"
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "資料庫歌曲檔案不符。"
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "無法重建資料庫。"
+
+#: id:16033
+msgid "Could not open database."
+msgstr "無法打開資料庫。"
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "無法從資料庫取得歌曲檔案。"
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "派對模式播放列表"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr "關閉"
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr "自動"
+
+#: id:16041
+msgid "On"
+msgstr "開啟"
+
+#: id:16100
+msgid "All Videos"
+msgstr "所有視訊"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "未看過的"
+
+#: id:16102
+msgid "Watched"
+msgstr "已看過的"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "標記成已看過"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "標記成未看過"
+
+#: id:16105
+msgid "Edit title"
+msgstr "編輯標題"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "操作被取消"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "無法複製"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "至少一個檔案無法複製"
+
+#: id:16203
+msgid "Move failed"
+msgstr "無法搬移"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "至少一個檔案無法搬移"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "無法刪除"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "至少一個檔案無法刪除"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "視訊縮放方式"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Nearest neighbour"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "二元直線"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "雙立方"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bicubic(軟體)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos(軟體)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc(軟體)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "時間平滑"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "時間/空間平滑"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)降噪"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)銳化"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "填補為逐行信號"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 最佳化"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "自動"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "時間平滑 (不完全)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "時間/空間平滑（不完全）"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr "軟體混合"
+
+#: id:16400
+msgid "Post-processing"
+msgstr "視訊後處理"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "顯示休眠逾時"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "切換到頻道"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "音樂 CD 擷取資料夾"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "使用其他 DVD 播放程式"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "其他 DVD 播放程式"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "金手指資料夾"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "螢幕擷圖資料夾"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "播放列表資料夾"
+
+#: id:20007
+msgid "Recordings"
+msgstr "錄音"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "螢幕擷圖"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "使用 XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "音樂播放列表"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "視訊播放列表"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "你要執行該遊戲？"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "排序： 播放列表"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "遠端的縮圖"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "目前縮圖"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "本地縮圖"
+
+#: id:20018
+msgid "No thumb"
+msgstr "無縮圖"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "選擇縮略圖"
+
+#: id:20023
+msgid "Conflict"
+msgstr "衝突"
+
+#: id:20024
+msgid "Scan new"
+msgstr "掃描新加入"
+
+#: id:20025
+msgid "Scan all"
+msgstr "掃描全部"
+
+#: id:20026
+msgid "Region"
+msgstr "區域"
+
+#: id:20037
+msgid "Summary"
+msgstr "摘要"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "鎖定音樂視窗"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "鎖定視訊視窗"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "鎖定圖片視窗"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "鎖定程式 & 腳本視窗"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "鎖定檔案總管"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "鎖定系統設定"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "重新設定"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "進入管理員模式"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "離開管理員模式"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "要建立設定檔 '%s'嗎？"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "重回原先設定"
+
+#: id:20049
+msgid "Best available"
+msgstr "最適合模式"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "自動切換 16x9 與 4x3 模式"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "視堆疊檔案為單一檔案"
+
+#: id:20052
+msgid "Caution"
+msgstr "注意"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "已離開管理員模式"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "已進入管理員模式"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com 縮圖"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "移除縮略圖"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "新增設定檔…"
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "查詢所有專輯的資訊"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "媒體資訊"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "各別的"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "共用預設值"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "共用預設值(唯讀)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "複製預設值"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "設定檔圖片"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "鎖定偏好設定"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "編輯設定檔"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "設定檔鎖定"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "無法建立資料夾"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "設定檔目錄"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "以新媒體來源啟動"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "確定選擇的資料夾是可寫入的"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "而且是有效的資料夾名稱"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "MPAA 分級"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "輸入管理員密碼"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "啟動時詢問管理員密碼"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "佈景主題設定"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- 無連結設定 -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "啟用 桌面動畫效果"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "播放音樂時關閉 RSS 新聞顯示"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "啟用捷徑"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "顯示程式在主選單"
+
+#: id:20083
+msgid "Show music info"
+msgstr "顯示音樂資訊"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "顯示氣象資訊"
+
+#: id:20085
+msgid "Show system info"
+msgstr "顯示系統資訊"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "顯示可用的硬碟空間 C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "顯示可用的硬碟空間 E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "氣象資訊"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "可用裝置空間"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "輸入一個現有分享的名稱"
+
+#: id:20091
+msgid "Lock code"
+msgstr "密碼"
+
+#: id:20092
+msgid "Load profile"
+msgstr "載入設定檔"
+
+#: id:20093
+msgid "Profile name"
+msgstr "設定檔名稱"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "媒體來源"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "輸入設定檔密碼"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "登錄畫面"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "取得專輯資訊"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "正在取得專輯資訊"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "當 CD 播放時不能擷取該 CD"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "管理員密碼與鎖定"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "輸入管理員密碼後，永遠啟用管理員模式"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "或是從預設值中複製？"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "儲存預設檔變更？"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "發現舊的設定值"
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "你要使用嗎？"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "發現舊媒體來源"
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "各別的(鎖定)"
+
+#: id:20108
+msgid "Root"
+msgstr "根目錄"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- 桌面縮放"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP 設定"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "自動開啟 UPnP 客戶端"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "上次登入： %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "從未登入"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "設定檔 %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "使用者登入/選擇設定檔"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "在登入畫面中使用鎖定"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "密碼無效"
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "需先設定管理員鎖定"
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "你現在要設定嗎？"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "載入程式資訊"
+
+#: id:20121
+msgid "Party on!"
+msgstr "派對模式！"
+
+#: id:20122
+msgid "True"
+msgstr "真實"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Mixing drinks"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Filling glasses"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "登入"
+
+#: id:20126
+msgid "Log off"
+msgstr "登出"
+
+#: id:20128
+msgid "Go to root"
+msgstr "跳至根目錄"
+
+#: id:20129
+msgid "Weave"
+msgstr "交織"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "交織(倒轉)"
+
+#: id:20131
+msgid "Blend"
+msgstr "混合"
+
+#: id:20132
+msgid "Restart video"
+msgstr "重新播放視訊"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "編輯網路位置"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "移除網路位置"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "你想掃描這個資料夾？"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "記憶卡"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "記憶卡已插入"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "找不到記憶卡"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "在第%i埠，第%i槽"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "鎖定螢幕保護程式"
+
+#: id:20141
+msgid "Set"
+msgstr "設定"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "帳號"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "輸入密碼"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "自動定時關機"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "自動定時關機(分鐘)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "啓動，在%i分鐘後自動關機"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "30分鐘後自動關機"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "60分鐘後自動關機"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "120分鐘後自動關機"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "自訂關機時間"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "取消自動關機"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "鎖定偏好設定檔 %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "瀏覽…"
+
+#: id:20154
+msgid "Summary information"
+msgstr "基本資訊"
+
+#: id:20155
+msgid "Storage information"
+msgstr "儲存裝置資訊"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "硬碟資訊"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "光碟機資訊"
+
+#: id:20158
+msgid "Network information"
+msgstr "網路資訊"
+
+#: id:20159
+msgid "Video information"
+msgstr "視訊資訊"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "硬體資訊"
+
+#: id:20161
+msgid "Total"
+msgstr "總計"
+
+#: id:20162
+msgid "Used"
+msgstr "使用"
+
+#: id:20163
+msgid "of"
+msgstr "中"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "不支援鎖定"
+
+#: id:20165
+msgid "Not locked"
+msgstr "未鎖定"
+
+#: id:20166
+msgid "Locked"
+msgstr "鎖定"
+
+#: id:20167
+msgid "Frozen"
+msgstr "凍結"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "要求重新設定"
+
+#: id:20169
+msgid "Week"
+msgstr "週"
+
+#: id:20170
+msgid "Line"
+msgstr "生產線"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windows 網路(SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP 伺服器"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP 伺服器"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "ITunes 音樂分享(DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP 伺服器"
+
+#: id:20176
+msgid "Show video info"
+msgstr "顯示視訊資訊"
+
+#: id:20177
+msgid "Done"
+msgstr "完成"
+
+#: id:20178
+msgid "Shift"
+msgstr "轉換"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "大寫"
+
+#: id:20180
+msgid "Symbols"
+msgstr "符號"
+
+#: id:20181
+msgid "Backspace"
+msgstr "退格"
+
+#: id:20182
+msgid "Space"
+msgstr "空格"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "重新載入佈景主題"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "根據 EXIF 資訊旋轉圖片"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "使用海報模式顯示電視節目"
+
+#: id:20186
+msgid "Please wait"
+msgstr "請稍候"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "啟用 劇情和評論自動捲動"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "自訂"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "啟用 除錯記錄"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "取得專輯資訊加入資料庫"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "專輯資訊的預設服務"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "預設站台"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "更換站台"
+
+#: id:20196
+msgid "Export music library"
+msgstr "匯出音樂資料庫"
+
+#: id:20197
+msgid "Import music library"
+msgstr "匯入音樂資料庫"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "找不到藝人！"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "下載藝人資訊失敗"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "派對模式！(視訊)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Mixing drinks (視訊)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Filling glasses (視訊)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV 伺服器 (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV 伺服器 (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "第一次登入，請編輯您的設定檔"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend 客戶端"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev 客戶端"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV 客戶端"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "網路檔案系統（NFS）"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Web 伺服器目錄(HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Web 伺服器目錄(HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "無法寫入資料夾："
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "你要跳過並繼續嗎？"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS Feed"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "次要的 DNS 位址"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP 伺服器："
+
+#: id:20309
+msgid "Make new folder"
+msgstr "新建資料夾"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "播放時關閉液晶螢幕背光"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "未知或內建(寫入保護)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "暫停時關閉液晶螢幕背光"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "視訊 - 資料庫"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "排序：標籤"
+
+#: id:20324
+msgid "Play part..."
+msgstr "播放部分的…"
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "重設螢幕校正"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "重設螢幕校正值為 %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "還原為預設值"
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "瀏覽目的"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr "電影個別存放在和電影相同名稱的資料夾"
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "以資料夾名稱搜尋"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "檔案"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "以檔案或資料夾名稱來搜尋？"
+
+#: id:20333
+msgid "Set content"
+msgstr "設定內容"
+
+#: id:20334
+msgid "Folder"
+msgstr "資料夾"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "循環尋找內容？"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "解除來源鎖定"
+
+#: id:20337
+msgid "Actor"
+msgstr "演員"
+
+#: id:20338
+msgid "Movie"
+msgstr "影片"
+
+#: id:20339
+msgid "Director"
+msgstr "導演"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "你要從資料庫中"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "移除此路徑內所有項目？"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "影片"
+
+#: id:20343
+msgid "TV shows"
+msgstr "電視節目"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "此目錄包含"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "執行自動掃描"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "循環掃描"
+
+#: id:20347
+msgid "as"
+msgstr "以"
+
+#: id:20348
+msgid "Directors"
+msgstr "導演"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "此路徑無視訊檔！"
+
+#: id:20350
+msgid "votes"
+msgstr "票數"
+
+#: id:20351
+msgid "TV show information"
+msgstr "電視節目資訊"
+
+#: id:20352
+msgid "Episode information"
+msgstr "影集資訊"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "載入電視節目詳細介紹"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "取得影集介紹"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "載入影集情報至資料庫"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "選擇電視節目："
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "輸入電視節目名稱"
+
+#: id:20358
+msgid "Season %i"
+msgstr "第%i季"
+
+#: id:20359
+msgid "Episode"
+msgstr "集"
+
+#: id:20360
+msgid "Episodes"
+msgstr "影集"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "載入影集詳細介紹"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "從資料庫移除影集"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "從資料庫移除電視節目"
+
+#: id:20364
+msgid "TV show"
+msgstr "電視節目"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "劇情"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* 整季"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "隱藏觀看"
+
+#: id:20368
+msgid "Prod code"
+msgstr "產品編號"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "非觀看項目隱藏圖示"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* 隱藏防止被破壞 *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "設定影集縮圖"
+
+#: id:20372
+msgid "Season image"
+msgstr "影集圖像"
+
+#: id:20373
+msgid "Season"
+msgstr "季"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "載入電影資訊"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "不指定內容"
+
+#: id:20376
+msgid "Original title"
+msgstr "原始標題"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "重新整理電視節目資訊"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "重新整理所有影集資訊？"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "選擇的資料夾包含一個電視節目"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "將選擇的資料夾排除搜尋"
+
+#: id:20381
+msgid "Specials"
+msgstr "特別"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "自動擷取影集的縮圖"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "選擇的資料夾包含一個視訊"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "電視節目連接"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "移除電視節目連接"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "最近加入的電影"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "最近加入的影集"
+
+#: id:20388
+msgid "Studios"
+msgstr "影片製作公司"
+
+#: id:20389
+msgid "Music videos"
+msgstr "音樂影片"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "最近加入的音樂影片"
+
+#: id:20391
+msgid "Music video"
+msgstr "音樂影片"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "從資料庫移除音樂影片"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "音樂影片資訊"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "載入音樂影片資訊"
+
+#: id:20395
+msgid "Mixed"
+msgstr "混合"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "依藝人跳至專輯"
+
+#: id:20397
+msgid "Go to album"
+msgstr "進入專輯"
+
+#: id:20398
+msgid "Play song"
+msgstr "播放歌曲"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "從專輯跳至音樂影片"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "依藝人跳至音樂影片"
+
+#: id:20401
+msgid "Play music video"
+msgstr "播放音樂影片"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "自動擷取演員的縮圖"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "設定演員縮圖"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "移除影集書籤"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "設定影集書籤"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "站台設定"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "正在下載音樂影片資訊"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "正在下載電視節目資訊"
+
+#: id:20410
+msgid "Trailer"
+msgstr "預告片"
+
+#: id:20411
+msgid "Flatten"
+msgstr "連續播放"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "自動連續播放影集"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "取得劇照"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "在視訊和音樂資料庫顯示劇照"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "掃描新的內容"
+
+#: id:20416
+msgid "First aired"
+msgstr "首播"
+
+#: id:20417
+msgid "Writer"
+msgstr "編劇"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "在檔案檢視中顯示媒體資訊"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "從不"
+
+#: id:20421
+msgid "If only one season"
+msgstr "如果只有一季"
+
+#: id:20422
+msgid "Always"
+msgstr "總是"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "有預告片"
+
+#: id:20424
+msgid "False"
+msgstr "錯誤"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "劇照幻燈秀"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "匯出成單一或多個檔案"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "每檔案的項目數？"
+
+#: id:20428
+msgid "Single file"
+msgstr "單一檔案"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "多個檔案"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "要匯出縮略圖和劇照嗎？"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "覆蓋原檔案?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "資料庫更新時排除的路徑"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "提取縮略圖和媒體標識"
+
+#: id:20434
+msgid "Sets"
+msgstr "影片集"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "設定影片集縮略圖"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "匯出演員縮略圖"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "選擇劇照"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "本地劇照"
+
+#: id:20439
+msgid "No fanart"
+msgstr "無劇照"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "目前的劇照"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "遠端的劇照"
+
+#: id:20442
+msgid "Change content"
+msgstr "更新內容"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "要更新此目錄下的所有專案嗎？"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "項目在這個路徑？"
+
+#: id:20445
+msgid "Fanart"
+msgstr "劇照"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "找到本地的資料。"
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "要忽略並從網際網路更新嗎？"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "無法下載資料"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "無法連接到遠端伺服器"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "您要繼續掃描嗎？"
+
+#: id:20451
+msgid "Countries"
+msgstr "國家"
+
+#: id:20452
+msgid "episode"
+msgstr "集"
+
+#: id:20453
+msgid "episodes"
+msgstr "集"
+
+#: id:20454
+msgid "Listener"
+msgstr "電台"
+
+#: id:20455
+msgid "Listeners"
+msgstr "電台"
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "設定電影劇照"
+
+#: id:20457
+msgid "Movie set"
+msgstr "電影集"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr "按同系列電影分組"
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "顯示隱藏檔案和目錄"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox 客戶端"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "警告：目標 TuxBox 裝置在錄影模式！"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "串流即將停止！"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "切換頻道：%s 失敗！"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "你確定要開始串流？"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "連線到：%s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox 裝置"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "加入媒體共享…"
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "啟用 UPnP 伺服器"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "編輯媒體共享"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "移除媒體共享"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "自訂字幕資料夾"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "電影和替代字幕資料夾"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "覆蓋 ASS/SSA 字幕的字型"
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "啟用滑鼠"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "媒體播放時使用瀏覽音效"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "縮略圖"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "強制 DVD 播放器區碼"
+
+#: id:21373
+msgid "Video output"
+msgstr "視訊硬體"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "視訊模式"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "一般"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "填滿螢幕(有黑邊)"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "寬螢幕"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "開啟 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "開啟 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "開啟 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "輸入新播放列表的名稱"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "停用檔案列表的新增來源按鈕"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "啟用 頁面捲軸"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "視訊資料庫使用瀏覽過濾按鈕"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "打開"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "噪音管理"
+
+#: id:21387
+msgid "Fast"
+msgstr "快速"
+
+#: id:21388
+msgid "Quiet"
+msgstr "安靜"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "啟用 自訂背景"
+
+#: id:21390
+msgid "Power management level"
+msgstr "電源管理"
+
+#: id:21391
+msgid "High power"
+msgstr "高功率"
+
+#: id:21392
+msgid "Low power"
+msgstr "低功率"
+
+#: id:21393
+msgid "High standby"
+msgstr "高待機"
+
+#: id:21394
+msgid "Low standby"
+msgstr "低待機"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "暫存檔不能超過 4GB"
+
+#: id:21396
+msgid "Chapter"
+msgstr "章節"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "高品質像素著色器 V2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "啟用 啟動時播放列表"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "使用 Tween 動畫效果"
+
+#: id:21400
+msgid "contains"
+msgstr "包含"
+
+#: id:21401
+msgid "does not contain"
+msgstr "未包含"
+
+#: id:21402
+msgid "is"
+msgstr "是"
+
+#: id:21403
+msgid "is not"
+msgstr "不是"
+
+#: id:21404
+msgid "starts with"
+msgstr "開始於"
+
+#: id:21405
+msgid "ends with"
+msgstr "結束於"
+
+#: id:21406
+msgid "greater than"
+msgstr "大於"
+
+#: id:21407
+msgid "less than"
+msgstr "小於"
+
+#: id:21408
+msgid "after"
+msgstr "之後"
+
+#: id:21409
+msgid "before"
+msgstr "之前"
+
+#: id:21410
+msgid "in the last"
+msgstr "在最近"
+
+#: id:21411
+msgid "not in the last"
+msgstr "非最近"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "網路站台"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "預設電影站台"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "預設電視站台"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "預設音樂影片站台"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "啟用 當地語系支援"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- 設定"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "多語言"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "找不到站台"
+
+#: id:21420
+msgid "Value to match"
+msgstr "符合條件"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "智慧播放列表規則"
+
+#: id:21422
+msgid "Match items where"
+msgstr "匹配項目"
+
+#: id:21423
+msgid "New rule..."
+msgstr "新規則…"
+
+#: id:21424
+msgid "Items must match"
+msgstr "項目必須符合"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "所有規則"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "一個或更多規則"
+
+#: id:21427
+msgid "Limit to"
+msgstr "限制"
+
+#: id:21428
+msgid "No limit"
+msgstr "無限制"
+
+#: id:21429
+msgid "Order by"
+msgstr "排序方式"
+
+#: id:21430
+msgid "ascending"
+msgstr "升幂"
+
+#: id:21431
+msgid "descending"
+msgstr "降幂"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "編輯智慧播放列表"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "播放列表名稱"
+
+#: id:21434
+msgid "Find items where"
+msgstr "尋找項目"
+
+#: id:21435
+msgid "Edit"
+msgstr "編輯"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i 個項目"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "新的智慧播放列表…"
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c 裝置"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "編輯派對模式規則"
+
+#: id:21440
+msgid "Home folder"
+msgstr "主目錄"
+
+#: id:21441
+msgid "Watched count"
+msgstr "觀看次數"
+
+#: id:21442
+msgid "Episode title"
+msgstr "片名"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "視訊解析度"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "音效聲道數"
+
+#: id:21445
+msgid "Video codec"
+msgstr "視訊編碼"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "音效編碼"
+
+#: id:21447
+msgid "Audio language"
+msgstr "對白語言"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "字幕語言"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "搖控器發送鍵盤按鍵"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- 編輯"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "需要網際網路連線。"
+
+#: id:21452
+msgid "Get More..."
+msgstr "取得更多..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "檔案系統 Root Filesystem"
+
+#: id:21454
+msgid "Cache full"
+msgstr "完整快取"
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr "只快取到足夠連續播放的資料量"
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "字幕位置"
+
+#: id:21461
+msgid "Fixed"
+msgstr "固定"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "影片底部"
+
+#: id:21463
+msgid "Below video"
+msgstr "影片之下"
+
+#: id:21464
+msgid "Top of video"
+msgstr "影片上方"
+
+#: id:21465
+msgid "Above video"
+msgstr "影片之上"
+
+#: id:21800
+msgid "File name"
+msgstr "檔案名稱"
+
+#: id:21801
+msgid "File path"
+msgstr "檔案路徑"
+
+#: id:21802
+msgid "File size"
+msgstr "檔案大小"
+
+#: id:21803
+msgid "File date/time"
+msgstr "檔案日期/時間"
+
+#: id:21804
+msgid "Slide index"
+msgstr "幻燈片索引"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "解析度"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "評論"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "彩色/黑白"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG 影像處理"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "日期/時間"
+
+#: id:21821
+msgid "Description"
+msgstr "描述"
+
+#: id:21822
+msgid "Camera make"
+msgstr "製造廠商"
+
+#: id:21823
+msgid "Camera model"
+msgstr "相機型號"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "註解"
+
+#: id:21825
+msgid "Firmware"
+msgstr "韌體"
+
+#: id:21826
+msgid "Aperture"
+msgstr "光圈值"
+
+#: id:21827
+msgid "Focal length"
+msgstr "鏡頭焦長"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "焦點距離"
+
+#: id:21829
+msgid "Exposure"
+msgstr "曝光"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "曝光時間"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "曝光傾向"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "曝光模式"
+
+#: id:21833
+msgid "Flash used"
+msgstr "閃光燈"
+
+#: id:21834
+msgid "White-balance"
+msgstr "白平衡"
+
+#: id:21835
+msgid "Light source"
+msgstr "光源"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "測光模式"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO 感光值"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "數位變焦"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD 寬度"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS 緯度"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS 經度"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS 高度"
+
+#: id:21843
+msgid "Orientation"
+msgstr "方位"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "補充類別"
+
+#: id:21861
+msgid "Keywords"
+msgstr "關鍵字"
+
+#: id:21862
+msgid "Caption"
+msgstr "說明"
+
+#: id:21863
+msgid "Author"
+msgstr "作者"
+
+#: id:21864
+msgid "Headline"
+msgstr "標題"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "特別附註"
+
+#: id:21866
+msgid "Category"
+msgstr "類別"
+
+#: id:21867
+msgid "Byline"
+msgstr "署名報導"
+
+#: id:21868
+msgid "Byline title"
+msgstr "署名報導標題"
+
+#: id:21869
+msgid "Credit"
+msgstr "信用"
+
+#: id:21870
+msgid "Source"
+msgstr "來源"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "版權條款"
+
+#: id:21872
+msgid "Object name"
+msgstr "物件名稱"
+
+#: id:21873
+msgid "City"
+msgstr "城市"
+
+#: id:21874
+msgid "State"
+msgstr "州"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "國家"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "原始的 Tx 引用"
+
+#: id:21877
+msgid "Date created"
+msgstr "建立日期"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "版權標誌"
+
+#: id:21879
+msgid "Country code"
+msgstr "國家代碼"
+
+#: id:21880
+msgid "Reference service"
+msgstr "參考服務"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "允許通過 UPnP 控制 XBMC"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "嘗試略過廣告直接跳至 DVD 選單"
+
+#: id:21883
+msgid "Saved music"
+msgstr "擷取音樂 CD"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "查詢所有藝人的資訊"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "下載專輯資訊"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "下載藝人資訊"
+
+#: id:21887
+msgid "Biography"
+msgstr "經歷"
+
+#: id:21888
+msgid "Discography"
+msgstr "作品"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "搜尋藝人"
+
+#: id:21890
+msgid "Select artist"
+msgstr "選擇藝人"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "藝人資訊"
+
+#: id:21892
+msgid "Instruments"
+msgstr "樂器"
+
+#: id:21893
+msgid "Born"
+msgstr "出生"
+
+#: id:21894
+msgid "Formed"
+msgstr "出道"
+
+#: id:21895
+msgid "Themes"
+msgstr "主題"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "解散"
+
+#: id:21897
+msgid "Died"
+msgstr "死亡"
+
+#: id:21898
+msgid "Years active"
+msgstr "活躍"
+
+#: id:21899
+msgid "Label"
+msgstr "標籤"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "出生/出道"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "在啟動時更新資料庫"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "總是在幕後更新資料庫"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS 的尾碼"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3f秒"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "延遲：%2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "提前：%2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "字幕位移"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL 廠商："
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL 渲染："
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL 版本："
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPU 温度："
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPU 温度："
+
+#: id:22012
+msgid "Total memory"
+msgstr "總記憶體"
+
+#: id:22013
+msgid "Profile data"
+msgstr "簡介資料"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "暫停視訊播放時啟用陰暗效果"
+
+#: id:22015
+msgid "All recordings"
+msgstr "所有紀錄"
+
+#: id:22016
+msgid "By title"
+msgstr "標題"
+
+#: id:22017
+msgid "By group"
+msgstr "群組"
+
+#: id:22018
+msgid "Live channels"
+msgstr "現場直播"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "錄音的標題"
+
+#: id:22020
+msgid "Guide"
+msgstr "節目表"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "為減少黑邊允許高寬比誤差"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "在清單中顯示視訊檔"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX 廠商："
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D 版本："
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "字型"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- 大小"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- 顏色"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- 編碼"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "匯出卡拉OK 標題為 HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "匯出卡拉OK 標題為 CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "匯入卡拉OK 標題…"
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "自動顯示歌曲選單"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "匯出卡拉OK 標題…"
+
+#: id:22039
+msgid "Enter song number"
+msgstr "輸入歌曲號碼"
+
+#: id:22040
+msgid "white/green"
+msgstr "白/綠"
+
+#: id:22041
+msgid "white/red"
+msgstr "白/紅"
+
+#: id:22042
+msgid "white/blue"
+msgstr "白/藍"
+
+#: id:22043
+msgid "black/white"
+msgstr "黑/白"
+
+#: id:22079
+msgid "Default select action"
+msgstr "預設選擇動作"
+
+#: id:22080
+msgid "Choose"
+msgstr "選擇"
+
+#: id:22081
+msgid "Show Information"
+msgstr "顯示詳細資訊"
+
+#: id:22082
+msgid "More..."
+msgstr "更多..."
+
+#: id:22083
+msgid "Play all"
+msgstr "播放全部"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "只不到 Teletext"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "開啟電傳視訊"
+
+#: id:23051
+msgid "Part %i"
+msgstr "片段 %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "已緩衝 %i Bytes"
+
+#: id:23053
+msgid "Stopping"
+msgstr "正在停止"
+
+#: id:23054
+msgid "Running"
+msgstr "正在執行"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "外部播放機啟動"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "點選 OK 關閉播放機"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "播放完畢時點選 OK"
+
+#: id:24000
+msgid "Add-on"
+msgstr "附加元件"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "附加元件"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "附加元件選項"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "附加元件資訊"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "媒體來源"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "電影資訊"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "螢幕保護程式"
+
+#: id:24009
+msgid "Script"
+msgstr "腳本"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "視覺效果"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "附加元件庫"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "字幕"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "歌詞"
+
+#: id:24014
+msgid "TV information"
+msgstr "電視資訊"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "音樂錄影帶資訊"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "專輯資訊"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "藝術家資訊"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "服務"
+
+#: id:24020
+msgid "Configure"
+msgstr "設定"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "停用"
+
+#: id:24022
+msgid "Enable"
+msgstr "啟用"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "附加元件已停用"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "氣象"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (標準)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "這個附加元件不能被設定"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "讀取設定錯誤！"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "全部附加元件"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "取得附加元件"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "檢查更新"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "強制重新整理"
+
+#: id:24036
+msgid "Change log"
+msgstr "更新日誌"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "解除安裝"
+
+#: id:24038
+msgid "Install"
+msgstr "安裝"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "停用的附加元件"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "（清除目前的設定）"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "從 zip 檔案安裝"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "已下載 %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "可取得的更新"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Dependencies 不相符"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "附加元件未包含正確結構"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s 正被下列已安裝的附加元件使用中"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "這個附加元件不能解除安裝"
+
+#: id:24048
+msgid "Rollback"
+msgstr "回復舊版"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "可取得的附加元件"
+
+#: id:24051
+msgid "Version:"
+msgstr "版本："
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "免責聲明"
+
+#: id:24053
+msgid "License:"
+msgstr "許可："
+
+#: id:24054
+msgid "Changelog"
+msgstr "更新日誌"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "您想要啟用這個附加元件嗎？"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "您想要停用這個附加元件嗎？"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "有新的附加元件更新"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "已啟用的附加元件"
+
+#: id:24063
+msgid "Auto update"
+msgstr "自動更新"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "已啟用附加元件"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "已更新附加元件"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "要取消附加元件下載嗎？"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "正在下載的附加元件"
+
+#: id:24068
+msgid "Update available"
+msgstr "有新的更新"
+
+#: id:24069
+msgid "Update"
+msgstr "更新"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "附加元件無法被載入。"
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "發生未知的錯誤。"
+
+#: id:24072
+msgid "Settings required"
+msgstr "需要的設定"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "無法建立連線"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "需要重新啟動"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "停用"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr "需要的附加元件"
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "要重新連線嗎？"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "重啟附加元件"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "鎖定附加元件管理員"
+
+#: id:24094
+msgid "(current)"
+msgstr "〈目前版本〉"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "〈黑名單〉"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "附加元件已經被標記為\"已損壞\"。"
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "您想要在您的系統上停用嗎？"
+
+#: id:24098
+msgid "Broken"
+msgstr "已損壞"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "是否要切換至此主題？"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr "要使用這項功能你必須下載一個附加元件："
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr "你要下載這個附加元件嗎？"
+
+#: id:25000
+msgid "Notifications"
+msgstr "通知"
+
+#: id:29800
+msgid "Library Mode"
+msgstr "資料庫模式"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY 鍵盤"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "音效直通輸出啟用中"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "預告片品質"
+
+#: id:33002
+msgid "Stream"
+msgstr "媒體流"
+
+#: id:33003
+msgid "Download"
+msgstr "下載"
+
+#: id:33004
+msgid "Download & play"
+msgstr "下載 & 播放"
+
+#: id:33005
+msgid "Download & save"
+msgstr "下載 & 儲存"
+
+#: id:33006
+msgid "Today"
+msgstr "今天"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "明天"
+
+#: id:33008
+msgid "Saving"
+msgstr "儲存中"
+
+#: id:33009
+msgid "Copying"
+msgstr "複製中"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "設定下載目錄"
+
+#: id:33011
+msgid "Search duration"
+msgstr "搜尋持續時間"
+
+#: id:33012
+msgid "Short"
+msgstr "短"
+
+#: id:33013
+msgid "Long"
+msgstr "長"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "用 DVD player 代替預設播放機"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "播放視訊前詢間是否先下載"
+
+#: id:33016
+msgid "Clips"
+msgstr "片斷"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "重新啟動以啟用外掛程式"
+
+#: id:33018
+msgid "Tonight"
+msgstr "今晚"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "明晚"
+
+#: id:33020
+msgid "Condition"
+msgstr "狀況"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "降雨量"
+
+#: id:33022
+msgid "Precip"
+msgstr "降雨"
+
+#: id:33023
+msgid "Humid"
+msgstr "潮濕"
+
+#: id:33024
+msgid "Feels"
+msgstr "感覺"
+
+#: id:33025
+msgid "Observed"
+msgstr "觀測值"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "偏離正常值"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "日出"
+
+#: id:33028
+msgid "Sunset"
+msgstr "日落"
+
+#: id:33029
+msgid "Details"
+msgstr "詳細資料"
+
+#: id:33030
+msgid "Outlook"
+msgstr "氣象趨勢"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "流動封面"
+
+#: id:33032
+msgid "Translate text"
+msgstr "翻譯文字"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "地圖列表 %s 分類"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 小時"
+
+#: id:33035
+msgid "Maps"
+msgstr "地圖"
+
+#: id:33036
+msgid "Hourly"
+msgstr "每小時"
+
+#: id:33037
+msgid "Weekend"
+msgstr "週末"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s 天"
+
+#: id:33049
+msgid "Alert"
+msgstr "提醒"
+
+#: id:33050
+msgid "Alerts"
+msgstr "提醒"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "選擇你的"
+
+#: id:33052
+msgid "Check"
+msgstr "查看你的"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "配置你的"
+
+#: id:33054
+msgid "Seasons"
+msgstr "季節"
+
+#: id:33055
+msgid "Use your"
+msgstr "使用你的"
+
+#: id:33056
+msgid "Watch your"
+msgstr "觀看你的"
+
+#: id:33057
+msgid "Listen to"
+msgstr "聆聽你的"
+
+#: id:33058
+msgid "View your"
+msgstr "流覽你的"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "配置你的"
+
+#: id:33060
+msgid "Power"
+msgstr "電源控制"
+
+#: id:33061
+msgid "Menu"
+msgstr "選單"
+
+#: id:33062
+msgid "Play the"
+msgstr "播放你的"
+
+#: id:33063
+msgid "Options"
+msgstr "選項"
+
+#: id:33065
+msgid "Editor"
+msgstr "編輯"
+
+#: id:33066
+msgid "About your"
+msgstr "關於你的"
+
+#: id:33067
+msgid "Star rating"
+msgstr "星級"
+
+#: id:33068
+msgid "Background"
+msgstr "桌面背景"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "桌面背景集"
+
+#: id:33070
+msgid "Custom background"
+msgstr "自訂桌面背景"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "自訂桌面背景集"
+
+#: id:33072
+msgid "View Readme"
+msgstr "流覽說明檔"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "流覽更新記錄"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "運行此版本的 %s 需要"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC為 %s 或更高版本。"
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "請升級XBMC。"
+
+#: id:33077
+msgid "No data found!"
+msgstr "未找到資料！"
+
+#: id:33078
+msgid "Next page"
+msgstr "下一頁"
+
+#: id:33079
+msgid "Love"
+msgstr "喜歡"
+
+#: id:33080
+msgid "Hate"
+msgstr "討厭"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr "這是一個堆疊檔，請選擇要播放的片段。"
+
+#: id:33082
+msgid "Path to script"
+msgstr "腳本路徑"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "啟用自訂腳本按鈕"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "起始失敗"
+
+#: id:33101
+msgid "Webserver"
+msgstr "網站伺服器"
+
+#: id:33102
+msgid "Event Server"
+msgstr "事件伺服器"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "遠端通訊伺服器"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr "偵測新的連線"
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "喇叭設定"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "找不到下一個播放項目"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "找不到前一個播放項目"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr "Zeroconf啟動失敗"
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr "已經啟用蘋果的 Bonjour 服務了嗎？請查閱記錄以取得更多資訊。"
+
+#: id:34400
+msgid "Video Rendering"
+msgstr "視訊渲染"
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "影像濾鏡/放大器初始化失敗，改用預設的雙線性放大"
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr "初始化音訊裝置失敗"
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr "檢查你的音訊設定"
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr "周邊裝置"
+
+#: id:35001
+msgid "Generic HID device"
+msgstr "通用 HID 裝置"
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr "通用網路配接器"
+
+#: id:35003
+msgid "Generic disk"
+msgstr "通用磁碟機"
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr "找不到這台周邊裝置 的可用設定"
+
+#: id:35005
+msgid "New device configured"
+msgstr "新的裝置已設定"
+
+#: id:35006
+msgid "Device removed"
+msgstr "裝置已移除"
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr "給這個裝置的快速鍵"
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr "快速鍵已啟用"
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr "位置"
+
+#: id:35501
+msgid "Class"
+msgstr "分類"
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr "名稱"
+
+#: id:35503
+msgid "Vendor"
+msgstr "供應商"
+
+#: id:35504
+msgid "Product ID"
+msgstr "產品 ID"
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr "Pulse-Eight CEC 配接器"
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr "切換到鍵盤命令"
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr "切換到遙控器命令"
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr "按下\"使用者\"按鈕命令"
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr "啟用命令模式切換"
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr "無法開啟配接器"
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr "開啟 XBMC 時打開這台電視"
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr "當停止 XBMC 時關閉裝置"
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "螢幕保護啟動時讓裝置進入待機模式"
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "無法偵測CEC連接埠。請手動設定。"
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "無法偵測CEC配接器"
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "不支援的 libcec 介面版本。 %d 大於XBMC支援的版本 (%d)"
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "如果關掉這台電視，讓這台電腦進入待機模式"
+
+#: id:36015
+msgid "HDMI port number"
+msgstr "HDMI連接埠編號"
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr "已連接"
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr "找到配接器，但無法取得 libcec"
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr "使用這個電視的語言設定"
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

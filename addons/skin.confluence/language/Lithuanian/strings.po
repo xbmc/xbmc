@@ -1,0 +1,576 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-FRODO_GIT953c09c336\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Keičiami"
+
+#: id:31001
+msgid "Love"
+msgstr "Patinka"
+
+#: id:31002
+msgid "Hate"
+msgstr "Nepatinka"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Energijos nustatymai"
+
+#: id:31004
+msgid "Working..."
+msgstr "Veikia..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Paslėpti Informaciją"
+
+#: id:31006
+msgid "View Options"
+msgstr "Rodinio parinktys"
+
+#: id:31007
+msgid "Plugins"
+msgstr "Pridėtis"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "Per visą ekraną"
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Neseniai Pridėti"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Video - Failai"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Muzikos - Failai"
+
+#: id:31023
+msgid "Playing"
+msgstr "Atkūrimas"
+
+#: id:31024
+msgid "Page"
+msgstr "Puslapis"
+
+#: id:31025
+msgid "Items"
+msgstr "Elementai"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Kitos Opcijos"
+
+#: id:31027
+msgid "Location"
+msgstr "Vietovė"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Posterių Karuselė"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:31030
+msgid "Full list"
+msgstr "Pilnas sąrašas"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Miniatiūros"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Paveikslėliai žemai"
+
+#: id:31033
+msgid "Info"
+msgstr "Informacija"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Aktualus failas"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "RODOMA"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "PAUZĖ"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "PRASUKTI PIRMYN"
+
+#: id:31045
+msgid "REWIND"
+msgstr "PRASUKTI ATGAL"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Garso Savybės"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Aktualūs Nustatymai"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Vizualizacijos Parinktys"
+
+#: id:31049
+msgid "End Time"
+msgstr "Pabaigos Laikas"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "Ruš.: Didėjimo tvarka"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "Ruš.: Mažėjimo tvarka"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Atidaryti grojaraštį"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Įšsaugoti grojaraštį"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Uždaryti grojaraštį"
+
+#: id:31058
+msgid "System music files"
+msgstr "Sisteminiai audio failai"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Aktualus grojaraštis"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkurti."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Dabartinis Pasirinkimas"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Pagrindinio ekrano nustatymai"
+
+#: id:31102
+msgid "Background"
+msgstr "Fonas"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Rodyti \"Pauzė\" prezentacijos režime"
+
+#: id:31104
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Rodyti treilerį lange [COLOR=red](Tik dėl informacijos apie video dialogą)[/COLOR]"
+
+#: id:31105
+msgid "\"Videos\" button always goes to video \"Files\""
+msgstr "Rodyti pavadinimus foniniame nuskaityme"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Įvairios opcijos"
+
+#: id:31107
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Paslėpti nuorodas iš skaitomo failo [COLOR=red](Blu-ray, HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Slėpti Pagrindinio Menių Nuorodas"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Pagrindinio menių fonas"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Pakeisti pagrindinio ekrano foną"
+
+#: id:31111
+msgid "Hide"
+msgstr "Paslėpti"
+
+#: id:31112
+msgid "Options"
+msgstr "Nustatymai"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Vienas Vaizdas"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Daug Vaizdų"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Nustatymai"
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Rodyti Neseniai Patalpintus Video"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Pagrindinio Ekrano Submeniu"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Slėpti Fanart informaciją"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "MYGTUKO PAVADINIMAS"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Orų Puslapis"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Naudoti \"Posterius\" vietoi \"Banerių\" serialams"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Rodyti foninį \"Atkuriamasis\" Video"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Rodyti foninį \"Atkuriamasis\" Vizualizacija"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Ijungti Dainų Tekstai OSD"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "KELIAS IKI LYRICS PRIEDŲ"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Dainų Tekstai"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "Dainų Tekstų Priedas"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "Subtitrų Priedas"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "Pagrindinio puslapio Video Submeniu"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "Pagrindinio puslapio Muzikos Submeniu"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "Pagrindinio puslapio Paveikslėlių Submeniu"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Muzika OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Video OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Etiketės"
+
+#: id:31201
+msgid "Categories"
+msgstr "Kategorijos"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Rodyti Vaidmenis"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Išsirinkti Jūsų Dainą"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Nuorodų Kategorija"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Dainų Tekstų Šaltinis"
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Dabartinė Temperatūra"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Paskutiniai Atnaujinimai"
+
+#: id:31302
+msgid "Menu"
+msgstr "Meniu"
+
+#: id:31303
+msgid "Data provider"
+msgstr ""
+
+#: id:31304
+msgid "Picture"
+msgstr "Vaizdas"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Nėra Disko"
+
+#: id:31306
+msgid "Eject"
+msgstr "Išimti"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Paslėpti Fanart"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Daugiau apie Filmą"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Išnaudota Atminties:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Takelio Num.:"
+
+#: id:31311
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "FANART[CR][CR]NEPASIEKIAMAS[CR][CR] PASPAUSTI, KAD PASIRINKTI"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Aktualus Skreperis"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Pasirinkti Skreperį"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "Nuskaitomo Turinio Parinktys"
+
+#: id:31315
+msgid "Basic"
+msgstr "Bazinis(ė/iai)"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Nurodyti Kelią iki Fanart"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Mažas Fanart"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Pasirinktas Profilis"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Paskutinis Įėjimas"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Dainos Pasirinkimas"
+
+#: id:31322
+msgid "Aired"
+msgstr "Rodomas"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "Nauji Filmai"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "Nauji Epizodai"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Sąrašo Opcijos"
+
+#: id:31326
+msgid "Created"
+msgstr "Sukurta"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Leidimas"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Neseniai Dadėta"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]NUSTATYTAS LAIKRODIS![/B] [COLOR=red] - AUTOMATIŠKAI ATSIJUNGS PO[/COLOR]"
+
+#: id:31330
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Spustelėkite norėdami atkūrti[CR][CR]Video treilerį"
+
+#: id:31331
+msgid "Album Details"
+msgstr "Albumai Detaliau"
+
+#: id:31351
+msgid "Pause"
+msgstr "Pauzė"
+
+#: id:31352
+msgid "Stop"
+msgstr "Stop"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "Prasukimas Pirmyn"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Prasukimas Atgal"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Filmo Menių"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Atsisiųsti Subtitrus"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Pagal nutylėjimą šablonui"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Pagal nutylėjimą šablonui be Kaps"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Arial Pagrindu"
+
+#: id:31400
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin � Set language and region � Change file listing options[CR]Set up a screensaver"
+msgstr "[B][COLOR=blue]IŠVAIZDOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Pakeisti išvaizdą · Nustatyti kalbą ir regioną[CR]Pakeisti failų sarašą · Nustatyti ekrano vaizdą.[/COLOR]"
+
+#: id:31401
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library � Set video playback options � Change video listing options[CR]Set subtitle fonts"
+msgstr "[B][COLOR=blue]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas.[CR]Nustatyti video sarašą · Nustatyti subtitrų šriftą.[/COLOR]"
+
+#: id:31402
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library � Set music playback options � Change music listing options[CR]Setup song submission � Set karaoke options"
+msgstr "[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas.[CR]Nustatyti audio sarašą · Nustatyti audio pridėjimą · Nustatyti karaoke.[/COLOR]"
+
+#: id:31403
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options � Configure slideshows"
+msgstr "[B][COLOR=blue]PAVEIKSLŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Tvarkyti nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją.[/COLOR]"
+
+#: id:31404
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B][COLOR=blue]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti trys Miestus gauti informacijai apie orus.[/COLOR]"
+
+#: id:31406
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays � Configure audio output � Setup remote controls[CR]Set power saving options � Enable debugging � Setup master lock"
+msgstr "[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą.[CR]Nustatyti energijos sąnaudas · Nustatyti derinimą · Nustatyti blokavimą.[/COLOR]"
+
+#: id:31407
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin � Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B][COLOR=blue]ŠABLONŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti pasirinktą šabloną. Pakeisti šablono foną.[CR]Pridėti ir (arba) pašalinti pagrindinius menių punktus.[/COLOR]"
+
+#: id:31408
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons � Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR][COLOR=red]Nustatyti parametrų valdymą · Nustatymų diegimą iš xbmc.org[CR]Nustatyti priedų pakeitimą.[/COLOR]"
+
+#: id:31409
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP � Configure file sharing[CR]Enable Zeroconf � Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeiti į sistemą ir tęsti."
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "Orų Žemėlapiai"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36 Valandų Prognozė"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "Valandinė Prognozė"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "Savaitgalio Prognozė"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10 Dienų Prognozė"
+
+#: id:31905
+msgid "Forecast"
+msgstr "Prognozė"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "Žemėlapiai ir Video"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Video Prognozė [COLOR=grey2](Pilnaekranis Atkūrimas)[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "Kritulių Tikimybė"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "Parsiunčiama Prognozės Informacija..."
+

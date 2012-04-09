@@ -1,0 +1,9093 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-FRODO_GIT3ed1604ad7\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Program"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Gambar"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Musik"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Video"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "Panduan TV"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Setelan"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr ""
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "File"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Cuaca"
+
+#: id:9
+msgid "xbmc media center"
+msgstr ""
+
+#: id:11
+msgid "Monday"
+msgstr "Senin"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Selasa"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Rabu"
+
+#: id:14
+msgid "Thursday"
+msgstr "Kamis"
+
+#: id:15
+msgid "Friday"
+msgstr "Jumat"
+
+#: id:16
+msgid "Saturday"
+msgstr "Sabtu"
+
+#: id:17
+msgid "Sunday"
+msgstr "Minggu"
+
+#: id:21
+msgid "January"
+msgstr "Januari"
+
+#: id:22
+msgid "February"
+msgstr "Februari"
+
+#: id:23
+msgid "March"
+msgstr "Maret"
+
+#: id:24
+msgid "April"
+msgstr "April"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "Mei"
+
+#: id:26
+msgid "June"
+msgstr "Juni"
+
+#: id:27
+msgid "July"
+msgstr "Juli"
+
+#: id:28
+msgid "August"
+msgstr "Agustus"
+
+#: id:29
+msgid "September"
+msgstr "September"
+
+#: id:30
+msgid "October"
+msgstr "Oktober"
+
+#: id:31
+msgid "November"
+msgstr "Nopember"
+
+#: id:32
+msgid "December"
+msgstr "Desember"
+
+#: id:41
+msgid "Mon"
+msgstr ""
+
+#: id:42
+msgid "Tue"
+msgstr ""
+
+#: id:43
+msgid "Wed"
+msgstr ""
+
+#: id:44
+msgid "Thu"
+msgstr ""
+
+#: id:45
+msgid "Fri"
+msgstr ""
+
+#: id:46
+msgid "Sat"
+msgstr ""
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr ""
+
+#: id:51
+msgid "Jan"
+msgstr ""
+
+#: id:52
+msgid "Feb"
+msgstr ""
+
+#: id:53
+msgid "Mar"
+msgstr ""
+
+#: id:54
+msgid "Apr"
+msgstr ""
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr ""
+
+#: id:56
+msgid "Jun"
+msgstr ""
+
+#: id:57
+msgid "Jul"
+msgstr ""
+
+#: id:58
+msgid "Aug"
+msgstr ""
+
+#: id:59
+msgid "Sep"
+msgstr ""
+
+#: id:60
+msgid "Oct"
+msgstr ""
+
+#: id:61
+msgid "Nov"
+msgstr ""
+
+#: id:62
+msgid "Dec"
+msgstr ""
+
+#: id:71
+msgid "N"
+msgstr ""
+
+#: id:72
+msgid "NNE"
+msgstr ""
+
+#: id:73
+msgid "NE"
+msgstr ""
+
+#: id:74
+msgid "ENE"
+msgstr ""
+
+#: id:75
+msgid "E"
+msgstr ""
+
+#: id:76
+msgid "ESE"
+msgstr ""
+
+#: id:77
+msgid "SE"
+msgstr ""
+
+#: id:78
+msgid "SSE"
+msgstr ""
+
+#: id:79
+msgid "S"
+msgstr ""
+
+#: id:80
+msgid "SSW"
+msgstr ""
+
+#: id:81
+msgid "SW"
+msgstr ""
+
+#: id:82
+msgid "WSW"
+msgstr ""
+
+#: id:83
+msgid "W"
+msgstr ""
+
+#: id:84
+msgid "WNW"
+msgstr ""
+
+#: id:85
+msgid "NW"
+msgstr ""
+
+#: id:86
+msgid "NNW"
+msgstr ""
+
+#: id:87
+msgid "VAR"
+msgstr ""
+
+#: id:98
+msgid "View: Auto"
+msgstr "Lihat: Otomatis"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Lihat Otomatis Besar"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Lihat Ikon"
+
+#: id:101
+msgid "View: List"
+msgstr "Lihat Daftar"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Scan"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Sortir : Nama"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Sortir : Tanggal"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Sortir : Ukuran"
+
+#: id:106
+msgid "No"
+msgstr "Tidak"
+
+#: id:107
+msgid "Yes"
+msgstr "Ya"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "SlideShow"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Buat Thumb"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Buat Thumbnail"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Jalan Pintas"
+
+#: id:112
+msgid "Paused"
+msgstr "BERHENTI"
+
+#: id:113
+msgid "Update failed"
+msgstr "File : Sumber"
+
+#: id:114
+msgid "Installation failed"
+msgstr "File : Tujuan"
+
+#: id:115
+msgid "Copy"
+msgstr "Salin"
+
+#: id:116
+msgid "Move"
+msgstr "Pindah"
+
+#: id:117
+msgid "Delete"
+msgstr "Hapus"
+
+#: id:118
+msgid "Rename"
+msgstr "Ganti Nama"
+
+#: id:119
+msgid "New folder"
+msgstr "Folder Baru"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Konfirmasi salin file"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Konfirmasi pindah file"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Konfirmasi hapus file"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Salin file ini?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Pindahkan file ini?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Hapus file ini?"
+
+#: id:126
+msgid "Status"
+msgstr "Status"
+
+#: id:127
+msgid "Objects"
+msgstr "Objek"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Umum"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Slideshow"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Informasi Sistem"
+
+#: id:131
+msgid "Display"
+msgstr "Layar"
+
+#: id:132
+msgid "Albums"
+msgstr "Album"
+
+#: id:133
+msgid "Artists"
+msgstr "Artis"
+
+#: id:134
+msgid "Songs"
+msgstr "Lagu"
+
+#: id:135
+msgid "Genres"
+msgstr "Aliran"
+
+#: id:136
+msgid "Playlists"
+msgstr "Daftar Main"
+
+#: id:137
+msgid "Search"
+msgstr "Cari"
+
+#: id:138
+msgid "System Information"
+msgstr "INFORMASI SISTEM"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Suhu:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Waktu"
+
+#: id:143
+msgid "Current:"
+msgstr "Saat ini:"
+
+#: id:144
+msgid "Build:"
+msgstr "Build:"
+
+#: id:145
+msgid "Network:"
+msgstr "Jaringan:"
+
+#: id:146
+msgid "Type:"
+msgstr "Tipe:"
+
+#: id:147
+msgid "Static"
+msgstr "Statik"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP"
+
+#: id:151
+msgid "Link:"
+msgstr "Link:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Setengah duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Dupleks Penuh"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Penyimpanan"
+
+#: id:155
+msgid "Drive"
+msgstr "Drive"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Bebas"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Video"
+
+#: id:158
+msgid "Free memory"
+msgstr "Memori Bebas"
+
+#: id:159
+msgid "No link"
+msgstr "Tidak ada link"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Bebas"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Tidak tersedia"
+
+#: id:162
+msgid "Tray open"
+msgstr "DVD Rom Terbuka"
+
+#: id:163
+msgid "Reading"
+msgstr "Baca"
+
+#: id:164
+msgid "No disc"
+msgstr "Tidak ada disk"
+
+#: id:165
+msgid "Disc present"
+msgstr "Disk Saat Ini"
+
+#: id:166
+msgid "Skin"
+msgstr "Kulit"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Resolusi"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Album:"
+
+#: id:172
+msgid "Release date"
+msgstr "Tanggal terbit:"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Rating:"
+
+#: id:175
+msgid "Moods"
+msgstr "Nada:"
+
+#: id:176
+msgid "Styles"
+msgstr "Gaya:"
+
+#: id:179
+msgid "Song"
+msgstr "Lagu"
+
+#: id:180
+msgid "Duration"
+msgstr "Durasi"
+
+#: id:181
+msgid "Select album"
+msgstr "Pilih album"
+
+#: id:182
+msgid "Tracks"
+msgstr "Trek"
+
+#: id:183
+msgid "Review"
+msgstr "Tinjauan"
+
+#: id:184
+msgid "Refresh"
+msgstr "Segarkan"
+
+#: id:185
+msgid "Searching album"
+msgstr "Pencarian album"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Album tidak ditemukan!"
+
+#: id:188
+msgid "Select all"
+msgstr "Pilih Semua"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Memindai informasi media"
+
+#: id:190
+msgid "Save"
+msgstr "Simpan"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Kocokan"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Kosongkan"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Pindai"
+
+#: id:194
+msgid "Searching..."
+msgstr "Pencarian..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Informasi IMDB tidak ditemukan!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Pilih film:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Meminta info IMDB"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Mengakses detil Film"
+
+#: id:199
+msgid "Web interface"
+msgstr "Sutradara:"
+
+#: id:202
+msgid "Tagline"
+msgstr "Tagline:"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Alur Cerita:"
+
+#: id:205
+msgid "Votes"
+msgstr "Pemilihan"
+
+#: id:206
+msgid "Cast"
+msgstr "Para Pelaku"
+
+#: id:207
+msgid "Plot"
+msgstr "Alur"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Mainkan"
+
+#: id:209
+msgid "Next"
+msgstr "Berikut"
+
+#: id:210
+msgid "Previous"
+msgstr "Sebelumnya"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Tengahkan Antarmuka pengguna..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Kalibrasi Video..."
+
+#: id:215
+msgid "Soften"
+msgstr "Lebih Lembut"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Jumlah Zoom"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Rasio Piksel"
+
+#: id:218
+msgid "DVD drive"
+msgstr "Drive DVD"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Harap memasukan disk"
+
+#: id:220
+msgid "Remote share"
+msgstr "Remote Share"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Jaringan tidak tersambung"
+
+#: id:222
+msgid "Cancel"
+msgstr "Batal"
+
+#: id:224
+msgid "Speed"
+msgstr "Kecepatan"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Waktu Transisi"
+
+#: id:226
+msgid "Test patterns..."
+msgstr ""
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Aktifkan CDDB"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Kocok Daftar Main saat Memuat"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "HD Spindown Time"
+
+#: id:230
+msgid "Video filters"
+msgstr "Filter Video"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Tidak ada"
+
+#: id:232
+msgid "Point"
+msgstr "Point"
+
+#: id:233
+msgid "Linear"
+msgstr "Linear"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussian Cubic"
+
+#: id:237
+msgid "Minification"
+msgstr "Minification"
+
+#: id:238
+msgid "Magnification"
+msgstr "Magnification"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Kosongkan Daftar Main saat selesai"
+
+#: id:240
+msgid "Display Mode"
+msgstr "DVD-Video Mainkan Secara Otomatis"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "VCD/SVCD Mainkan Secara Otomatis"
+
+#: id:242
+msgid "Windowed"
+msgstr "CD-Audio Mainkan Secara Otomatis"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Permainan XBOX Mainkan Secara Otomatis"
+
+#: id:244
+msgid "Full screen"
+msgstr "Video Mainkan Secara Otomatis"
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Musik Mainkan Secara Otomatis"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Skrip"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Bahasa"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Musik"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Visualisasi"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Pilih direktori tujuan"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Keluaran Stereo ke semua Speaker"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Jumlah saluran"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- Penerima berkemampuan DTS"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Meminta freedb untuk info CDDB"
+
+#: id:257
+msgid "Error"
+msgstr "Kesalahan"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Aktifkan Tag ID3"
+
+#: id:259
+msgid "Opening"
+msgstr "Membuka"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Menunggu utk memulai...."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Keluaran Skrip"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Aktifkan Web Server"
+
+#: id:264
+msgid "Record"
+msgstr "Rekam"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Hentikan Rek."
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Sortir : Trek"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Sortir : Waktu"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Sortir : Nama"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Sortir : Artis"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Sortir : Album"
+
+#: id:271
+msgid "Top 100"
+msgstr "Top 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Top Left Overscan Compensation"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Bottom Right Overscan Compensation"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Posisi Terjemahan"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Penyetelan Rasio Piksel"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Pindahkan tanda panah untuk mengganti jumlah overscan"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Pindahkan bar untuk mengganti posisi teks bawah pada film"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Ganti persegi panjang sehingga menjadi persegi yang sempurna"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Tidak dapat memuat setelan"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Menggunakan Standar fallbacks"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Harap periksa file .xml"
+
+#: id:282
+msgid "Found %i items"
+msgstr "ditemukan %i item"
+
+#: id:283
+msgid "Search results"
+msgstr "Hasil Pencarian"
+
+#: id:284
+msgid "No results found"
+msgstr "Tidak ditemukan"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Teks Film"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Huruf"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Ukuran"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Volume Pengerasan"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Video"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Audio"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Teks Film"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Buat bookmark"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Kosongkan bookmark"
+
+#: id:297
+msgid "Audio offset"
+msgstr "AVDelay"
+
+#: id:298
+msgid "Bookmarks"
+msgstr ""
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr ""
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr ""
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr ""
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr ""
+
+#: id:303
+msgid "Delay"
+msgstr "Penundaan"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Bahasa"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Aktifkan"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Non-Interleaved"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=otomatis)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Membersihkan database"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Persiapan..."
+
+#: id:315
+msgid "Database error"
+msgstr "Database error"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Pencarian lagu..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Pembersihan database berhasil"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Pembersihan lagu..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Kesalahan membersihkan lagu"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Pembersihan artis..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Kesalahan membersihkan artis"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Pembersihan aliran..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Kesalahan membersihkan aliran"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Pembersihan path..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Kesalahan membersihkan path"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Pembersihan album..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Kesalahan membersihkan album"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Menulis perubahan..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Kesalahan menulis perubahan"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Mungkin ini akan menghabiskan beberapa saat..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Mengkompres database..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Kesalahan mengkompres database"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Anda ingin membersihkan pustaka musik?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Membersihkan Pustaka Musik..."
+
+#: id:335
+msgid "Start"
+msgstr "Mulai"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Atur Framerate"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Keluaran Audio"
+
+#: id:338
+msgid "Analog"
+msgstr "Analog"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Digital"
+
+#: id:340
+msgid "Various artists"
+msgstr "Berbagai Artis"
+
+#: id:341
+msgid "Play disc"
+msgstr "Mainkan DVD"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Film"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Atur Framerate"
+
+#: id:344
+msgid "Actors"
+msgstr "Aktor"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Tahun"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr ""
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Program"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Mati"
+
+#: id:352
+msgid "Dim"
+msgstr "Dim"
+
+#: id:353
+msgid "Black"
+msgstr "Hitam"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix Trails"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Waktu Tunggu Screensaver"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Mode Screensaver"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Waktu Tunggu Mematikan"
+
+#: id:358
+msgid "All albums"
+msgstr "Semua album"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Album Terkini"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Screensaver"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "SlideShow B.ulang"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Tingkat Pudar Screensaver"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Sortir : File"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Penerima berkemampuan AC3"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Sortir : Judul"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Sortir : Tahun"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Sortir : Nilai"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDB"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Judul"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Badai"
+
+#: id:371
+msgid "Partly"
+msgstr "Sebagian"
+
+#: id:372
+msgid "Mostly"
+msgstr "Kebanyakan"
+
+#: id:373
+msgid "Sunny"
+msgstr "Cerah"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Mendung"
+
+#: id:375
+msgid "Snow"
+msgstr "Salju"
+
+#: id:376
+msgid "Rain"
+msgstr "Hujan"
+
+#: id:377
+msgid "Light"
+msgstr "Ringan"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "Gerimis"
+
+#: id:381
+msgid "Few"
+msgstr "Sedikit"
+
+#: id:382
+msgid "Scattered"
+msgstr "Tersebar"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Angin"
+
+#: id:384
+msgid "Strong"
+msgstr "Kuat"
+
+#: id:385
+msgid "Fair"
+msgstr "Cukup"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Cerah"
+
+#: id:387
+msgid "Clouds"
+msgstr "Berawan"
+
+#: id:388
+msgid "Early"
+msgstr "Early"
+
+#: id:389
+msgid "Shower"
+msgstr "Gerimis"
+
+#: id:390
+msgid "Flurries"
+msgstr "Curah Hujan"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Rendah"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Menengah"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Tinggi"
+
+#: id:394
+msgid "Fog"
+msgstr "Kabut"
+
+#: id:395
+msgid "Haze"
+msgstr "Kabur"
+
+#: id:396
+msgid "Select location"
+msgstr "Pilih Lokasi"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Waktu Penyegaran"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Unit Suhu"
+
+#: id:399
+msgid "Speed units"
+msgstr "Unit Kecepatan"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Cuaca"
+
+#: id:401
+msgid "Temp"
+msgstr "Suhu"
+
+#: id:402
+msgid "Feels like"
+msgstr "Terasa Seperti"
+
+#: id:403
+msgid "UV index"
+msgstr "Indeks UV"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Angin"
+
+#: id:405
+msgid "Dew point"
+msgstr "Titik Embun"
+
+#: id:406
+msgid "Humidity"
+msgstr "Kelembaban"
+
+#: id:409
+msgid "Defaults"
+msgstr ""
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Mengakses Weather.com"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Mendapatkan Cuaca Untuk:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Tidak bisa mendapatkan data cuaca"
+
+#: id:413
+msgid "Manual"
+msgstr "Manual"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Tidak ada review album ini"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Mengunduh thumbnail..."
+
+#: id:416
+msgid "Not available"
+msgstr "Tidak tersedia"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Lihat: Ikon Besar"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Video/Aliran"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Video/Aktor"
+
+#: id:420
+msgid "HDMI"
+msgstr "Video/Tahun"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Hapus informasi Album"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Hapus informasi CDDB"
+
+#: id:424
+msgid "Select"
+msgstr "Pilih"
+
+#: id:425
+msgid "No album information found"
+msgstr "Info album tidak ditemukan."
+
+#: id:426
+msgid "No CD information found"
+msgstr "Info CDDB tidak ditemukan."
+
+#: id:427
+msgid "Disc"
+msgstr "Disk:"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Masukkan CD/DVD yg tepat"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Harap memasukan CD/DVD berikut"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Sortir : DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Tanpa Cache"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Hapus film dari database"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Anda yakin tetang menghapus"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "film?"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Durasi"
+
+#: id:438
+msgid "Opening file"
+msgstr "Buka File"
+
+#: id:439
+msgid "Cache"
+msgstr "Cache"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Harddisk"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "LAN"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Video"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Audio"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Otomatis Mainkan"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Aktifkan"
+
+#: id:450
+msgid "Columns"
+msgstr "Kolom"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Baris 1 Alamat"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Baris 2 Alamat"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Baris 3 Alamat"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Baris 4 Alamat"
+
+#: id:455
+msgid "Rows"
+msgstr "Baris"
+
+#: id:456
+msgid "Mode"
+msgstr "Mode"
+
+#: id:457
+msgid "Switch view"
+msgstr "Ganti Tampilan"
+
+#: id:459
+msgid "Subs"
+msgstr "Subs"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Audio Stream"
+
+#: id:461
+msgid "[active]"
+msgstr "[aktif]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Teks Film"
+
+#: id:463
+msgid "Backlight"
+msgstr "Backlight"
+
+#: id:464
+msgid "Brightness"
+msgstr "Kecerahan"
+
+#: id:465
+msgid "Contrast"
+msgstr "Kontras"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Tipe"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Pindahkan bar untuk mengganti posisi osd"
+
+#: id:469
+msgid "OSD position"
+msgstr "Posisi OSD"
+
+#: id:470
+msgid "Credits"
+msgstr "Kredit"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Matikan"
+
+#: id:475
+msgid "Music only"
+msgstr "Hanya Musik"
+
+#: id:476
+msgctxt "Auto context with id 476"
+msgid "Music & video"
+msgstr "Musik & Video"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Tidak dapat memuat Daftar Main"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Kulit dan Bahasa"
+
+#: id:480
+msgid "Appearance"
+msgstr "Penampilan"
+
+#: id:481
+msgid "Audio options"
+msgstr "Pilihan Audio"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Tentang XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Hapus album"
+
+#: id:486
+msgid "Repeat"
+msgstr "Berulang"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Ulang sekali"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Folder Berulang"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Mainkan Sendiri Item Berikutnya"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Gunakan ikon besar"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Ukur ulang Vobsubs"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Pilihan Lebih Lanjut (Hanya Pengguna Ahli!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Keseluruhan Audio Headroom"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Upsample Video ke Resolusi GUI"
+
+#: id:496
+msgid "Calibration"
+msgstr "Kalibrasi"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Sembunyikan Ekstensi Media"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Sortir : Tipe"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Tidak dapat tersambung ke www.allmusic.com"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Mengunduh info album gagal"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Mencari nama album..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Buka"
+
+#: id:503
+msgid "Busy"
+msgstr "Sibuk"
+
+#: id:504
+msgid "Empty"
+msgstr "Kosong"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Memuat informasi media dari file..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Sortir : Pemakaian"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Aktifkan Visualisasi"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Aktifkan tombol mode video"
+
+#: id:512
+msgid "Startup window"
+msgstr "Window Pembuka"
+
+#: id:513
+msgid "Home window"
+msgstr "Home Window"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Setelan Manual"
+
+#: id:515
+msgid "Genre"
+msgstr "Aliran"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Album Yang Baru Saja Dimainkan"
+
+#: id:518
+msgid "Launch"
+msgstr "Jalankan"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Jalankan dalam.."
+
+#: id:521
+msgid "Compilations"
+msgstr "Kompilasi"
+
+#: id:522
+msgid "Remove source"
+msgstr "Hapus Sumber"
+
+#: id:523
+msgid "Switch media"
+msgstr ""
+
+#: id:524
+msgid "Select playlist"
+msgstr ""
+
+#: id:525
+msgid "New playlist..."
+msgstr ""
+
+#: id:526
+msgid "Add to playlist"
+msgstr ""
+
+#: id:527
+msgid "Manually add to library"
+msgstr ""
+
+#: id:528
+msgid "Enter title"
+msgstr ""
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr ""
+
+#: id:530
+msgid "Select genre"
+msgstr ""
+
+#: id:531
+msgid "New genre"
+msgstr ""
+
+#: id:532
+msgid "Manual addition"
+msgstr ""
+
+#: id:533
+msgid "Enter genre"
+msgstr ""
+
+#: id:534
+msgid "View: %s"
+msgstr ""
+
+#: id:535
+msgid "List"
+msgstr ""
+
+#: id:536
+msgid "Icons"
+msgstr ""
+
+#: id:537
+msgid "Big list"
+msgstr ""
+
+#: id:538
+msgid "Big icons"
+msgstr ""
+
+#: id:539
+msgid "Wide"
+msgstr ""
+
+#: id:540
+msgid "Big wide"
+msgstr ""
+
+#: id:541
+msgid "Album icons"
+msgstr ""
+
+#: id:542
+msgid "DVD icons"
+msgstr ""
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr ""
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr ""
+
+#: id:545
+msgid "Audio output device"
+msgstr ""
+
+#: id:546
+msgid "Passthrough output device"
+msgstr ""
+
+#: id:547
+msgid "No biography for this artist"
+msgstr ""
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr ""
+
+#: id:550
+msgid "Sort by: %s"
+msgstr ""
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr ""
+
+#: id:552
+msgid "Date"
+msgstr ""
+
+#: id:553
+msgid "Size"
+msgstr ""
+
+#: id:554
+msgid "Track"
+msgstr ""
+
+#: id:555
+msgid "Time"
+msgstr ""
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr ""
+
+#: id:557
+msgid "Artist"
+msgstr ""
+
+#: id:558
+msgid "Album"
+msgstr ""
+
+#: id:559
+msgid "Playlist"
+msgstr ""
+
+#: id:560
+msgid "ID"
+msgstr ""
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr ""
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr ""
+
+#: id:563
+msgid "Rating"
+msgstr ""
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr ""
+
+#: id:565
+msgid "Usage"
+msgstr ""
+
+#: id:566
+msgid "Album artist"
+msgstr ""
+
+#: id:567
+msgid "Play count"
+msgstr ""
+
+#: id:568
+msgid "Last played"
+msgstr ""
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr ""
+
+#: id:570
+msgid "Date added"
+msgstr ""
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr ""
+
+#: id:572
+msgid "Studio"
+msgstr ""
+
+#: id:573
+msgid "Path"
+msgstr ""
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr ""
+
+#: id:575
+msgid "In progress"
+msgstr ""
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr ""
+
+#: id:581
+msgid "Sort method"
+msgstr ""
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr ""
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr ""
+
+#: id:584
+msgid "Ascending"
+msgstr ""
+
+#: id:585
+msgid "Descending"
+msgstr ""
+
+#: id:586
+msgid "Edit playlist"
+msgstr ""
+
+#: id:587
+msgid "Filter"
+msgstr ""
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Batalkan Mode Party"
+
+#: id:589
+msgid "Party mode"
+msgstr "Mode Party"
+
+#: id:590
+msgid "Random"
+msgstr "Acak"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Matikan"
+
+#: id:592
+msgid "One"
+msgstr "Satu"
+
+#: id:593
+msgid "All"
+msgstr "Semua"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Matikan"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Ulang: Tidak"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Ulang: Satu"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Ulang: Semua"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Salin CD Audio"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Medium"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Standar"
+
+#: id:603
+msgid "Extreme"
+msgstr "Ekstrim"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Constant Bit Rate"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Penyalinan..."
+
+#: id:607
+msgid "To:"
+msgstr "Ke"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Tidak dapat menyalin CD or Trek"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath tidak diatur di sources.xml"
+
+#: id:610
+msgid "Rip audio track"
+msgstr ""
+
+#: id:611
+msgid "Enter number"
+msgstr ""
+
+#: id:612
+msgid "Bits/Sample"
+msgstr ""
+
+#: id:613
+msgid "Sample Frequency"
+msgstr ""
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Ripping CD"
+
+#: id:621
+msgid "Encoder"
+msgstr "Enkoder"
+
+#: id:622
+msgid "Quality"
+msgstr "Kualitas"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bit Rate"
+
+#: id:624
+msgid "Include track number"
+msgstr "Termasuk Nomor Trek"
+
+#: id:625
+msgid "All songs of"
+msgstr "Semua lagu dari"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Mode Melihat"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zoom"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Rentangkan 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Rentangkan 14:9"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Rentangkan 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Ukuran Asli"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Kustom"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay Gain"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Replay Gain Mode"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Gunakan Level Trek"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Gunakan Level Album"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "PreAmp Level - Replay Gained Files"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "PreAmp Level - Non Replay Gained Files"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Avoid Clipping on Replay Gained Files"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Potong Bar Hitam"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Memerlukan meng-cache file besar. Lanjutkan?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Hapus Nama"
+
+#: id:647
+msgid "Export video library"
+msgstr ""
+
+#: id:648
+msgid "Import video library"
+msgstr ""
+
+#: id:649
+msgid "Importing"
+msgstr ""
+
+#: id:650
+msgid "Exporting"
+msgstr ""
+
+#: id:651
+msgid "Browse for library"
+msgstr ""
+
+#: id:652
+msgid "Years"
+msgstr ""
+
+#: id:653
+msgid "Update library"
+msgstr ""
+
+#: id:654
+msgid "Show debug info"
+msgstr ""
+
+#: id:655
+msgid "Browse for executable"
+msgstr ""
+
+#: id:656
+msgid "Browse for playlist"
+msgstr ""
+
+#: id:657
+msgid "Browse for folder"
+msgstr ""
+
+#: id:658
+msgid "Song information"
+msgstr ""
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr ""
+
+#: id:660
+msgid "Volume amplification"
+msgstr ""
+
+#: id:661
+msgid "Choose export folder"
+msgstr ""
+
+#: id:662
+msgid "This file is no longer available."
+msgstr ""
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr ""
+
+#: id:664
+msgid "Browse for Script"
+msgstr ""
+
+#: id:665
+msgid "Compression level"
+msgstr ""
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Bersihkan Pustaka"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Menghapus lagu lama dari Pustaka"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "path ini telah di-scan sebelumnya"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Jaringan"
+
+#: id:706
+msgid "- Server"
+msgstr "Host Proxy HTTP"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Aktifkan HTTP Proxy"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internet Protokol (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Port tidak valid. Nilai harus di antara 1 dan 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "Proxy HTTP"
+
+#: id:715
+msgid "- Assignment"
+msgstr "Penetapan"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Otomatis (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Manual (Statik)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- Alamat IP"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Netmask"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Gateway Standar"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- Server DNS"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Simpan & Memulai Kembali"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Alamat tidak valid. Nilai harus AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "dengan nomor antara 0 dan 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Perubahan tidak disimpan. Lanjutkan tanpa menyimpan?"
+
+#: id:727
+msgid "Web server"
+msgstr "Server Web"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "Server FTP"
+
+#: id:730
+msgid "- Port"
+msgstr "Port Server Web"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Simpan & Pakai"
+
+#: id:733
+msgid "- Password"
+msgstr "Password Server Web"
+
+#: id:734
+msgid "No pass"
+msgstr "Tanpa Pass"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Karakterset"
+
+#: id:736
+msgid "- Style"
+msgstr "- Gaya"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Warna"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:739
+msgid "Bold"
+msgstr "Tebal"
+
+#: id:740
+msgid "Italics"
+msgstr "Miring"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Tebal Miring"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Putih"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Kuning"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "File"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Tidak ada informasi untuk hasil scan ini"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Ganti ke tampilan File"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Kesalahan memuat gambar"
+
+#: id:748
+msgid "Edit path"
+msgstr "Edit Path"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Tambah Share"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Anda yakin?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Menghapus Share"
+
+#: id:754
+msgid "Add program link"
+msgstr "Tambah Link Program"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Edit Path Program"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Edit Nama Program"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Edit Kedalaman Path"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Lihat: Daftar Besar"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Kuning"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Putih"
+
+#: id:762
+msgid "Blue"
+msgstr "Biru"
+
+#: id:763
+msgid "Bright green"
+msgstr "Hijau Terang"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Kuning Hijau"
+
+#: id:765
+msgid "Cyan"
+msgstr "Cyan"
+
+#: id:766
+msgid "Light grey"
+msgstr "Dipesan"
+
+#: id:767
+msgid "Grey"
+msgstr "Dipesan"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Kesalahan %i: share tidak tersedia"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Audio"
+
+#: id:773
+msgid "Seeking"
+msgstr "Mencari"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Folder Slideshow"
+
+#: id:775
+msgid "Network interface"
+msgstr ""
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr ""
+
+#: id:777
+msgid "- Wireless password"
+msgstr ""
+
+#: id:778
+msgid "- Wireless security"
+msgstr ""
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr ""
+
+#: id:780
+msgid "No encryption"
+msgstr ""
+
+#: id:781
+msgid "WEP"
+msgstr ""
+
+#: id:782
+msgid "WPA"
+msgstr ""
+
+#: id:783
+msgid "WPA2"
+msgstr ""
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr ""
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr ""
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr ""
+
+#: id:787
+msgid "Interface disabled"
+msgstr ""
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr ""
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr ""
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr ""
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr ""
+
+#: id:793
+msgid "Port range"
+msgstr ""
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr ""
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr ""
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr ""
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr ""
+
+#: id:798
+msgid "Internet access"
+msgstr ""
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr ""
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr ""
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr ""
+
+#: id:998
+msgid "Add Music..."
+msgstr "XLink Kai"
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Permainan Online"
+
+#: id:1000
+msgid "- Preview"
+msgstr "Preview Screensaver"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Tidak bisa tersambung"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC tidak dapat tersambung ke lokasi jaringan."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Kemungkinan jaringan tidak tersambung."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Anda ingin menambahkan begitu saja?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "Alamat IP"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Tambah Lokasi Jaringan"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protokol"
+
+#: id:1009
+msgid "Server address"
+msgstr "Alamat Server"
+
+#: id:1010
+msgid "Server name"
+msgstr "Nama Server"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Path Remote"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Folder Yang Shared"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Port"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "NamaPengguna"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "server jaringan"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Masukkan alamat jaringan dari server"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Masukkan path pada server"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Masukkan nomor port"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Masukkan namapengguna"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Tambah %s Sumber"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Masukkan path atau jelajah lokasi media."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Masukkan nama Sumber Media ini."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Jelajah share baru"
+
+#: id:1024
+msgid "Browse"
+msgstr "Jelajah"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Tidak bisa mengambil informasi direktori."
+
+#: id:1026
+msgid "Add source"
+msgstr "Tambah Sumber"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Edit Sumber"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Edit %s Sumber"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Masukkan label baru"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "sebuah image"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "sebuah folder image"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Tambah Lokasi Jaringan..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr ""
+
+#: id:1034
+msgid "Submenu"
+msgstr ""
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr ""
+
+#: id:1036
+msgid "Favourites"
+msgstr ""
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr ""
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr ""
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr ""
+
+#: id:1040
+msgid "Loading directory"
+msgstr ""
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr ""
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr ""
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr ""
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr ""
+
+#: id:1045
+msgid "Add-on settings"
+msgstr ""
+
+#: id:1046
+msgid "Access points"
+msgstr ""
+
+#: id:1047
+msgid "Other..."
+msgstr ""
+
+#: id:1048
+msgid "- Username"
+msgstr ""
+
+#: id:1049
+msgid "Script settings"
+msgstr ""
+
+#: id:1050
+msgid "Singles"
+msgstr ""
+
+#: id:1051
+msgid "Enter web address"
+msgstr ""
+
+#: id:1200
+msgid "SMB client"
+msgstr "Klien SMB"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Workgroup"
+
+#: id:1203
+msgid "Default username"
+msgstr "NamaPengguna Standar"
+
+#: id:1204
+msgid "Default password"
+msgstr "Password Standar"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS-Server"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr ""
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Hapus"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Musik"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Video"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Gambar"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "File"
+
+#: id:1215
+msgctxt "Auto context with id 1215"
+msgid "Music & video"
+msgstr "Musik & Video"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Musik & Gambar"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Musik & File"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Video & Gambar"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Video & File"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Gambar & File"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Musik & Video & Gambar"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Musik & Video & Gambar & File"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Non Aktif"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "File & Musik & Video"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "File & Gambar & Musik"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "File & Gambar & Video"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Musik & Program"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Video & Program"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Gambar & Program"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Musik & Video & Gambar & Program"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Program & Video & Musik"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Program & Gambar & Musik"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Program & Gambar & Video"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Otodeteksi"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Otodeteksi XBOX"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Nama panggilan"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Minta utk Tersambungkan"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Kirim Pengguna dan Password FTP"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Jeda Ping"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Apakah Anda ingin tersambung ke Otodeteksi Xbox?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr ""
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr ""
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr ""
+
+#: id:1396
+msgid "Drifting"
+msgstr "Drifting"
+
+#: id:1397
+msgid "and"
+msgstr "dan"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Membeku"
+
+#: id:1399
+msgid "Late"
+msgstr "Late"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Isolated"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "T-Showers"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Guntur"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Cerah"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Heavy"
+
+#: id:1405
+msgid "in"
+msgstr "dalam"
+
+#: id:1406
+msgid "the"
+msgstr "the"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Vicinity"
+
+#: id:1408
+msgid "Ice"
+msgstr "Es"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Kristal"
+
+#: id:1410
+msgid "Calm"
+msgstr "Tenang"
+
+#: id:1411
+msgid "with"
+msgstr "dengan"
+
+#: id:1412
+msgid "windy"
+msgstr "berangin"
+
+#: id:1413
+msgid "drizzle"
+msgstr ""
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr ""
+
+#: id:1415
+msgid "Drizzle"
+msgstr ""
+
+#: id:1416
+msgid "Foggy"
+msgstr ""
+
+#: id:1417
+msgid "Grains"
+msgstr ""
+
+#: id:1418
+msgid "T-Storms"
+msgstr ""
+
+#: id:1419
+msgid "T-Showers"
+msgstr ""
+
+#: id:1420
+msgid "Moderate"
+msgstr ""
+
+#: id:1421
+msgid "Very High"
+msgstr ""
+
+#: id:1422
+msgid "Windy"
+msgstr ""
+
+#: id:1423
+msgid "Mist"
+msgstr ""
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr ""
+
+#: id:2050
+msgid "Runtime"
+msgstr "Durasi:"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr ""
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr ""
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Jenis LCD"
+
+#: id:10000
+msgid "Home"
+msgstr "Depan"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Program"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Foto"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "File"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Setelan"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Musik"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Video"
+
+#: id:10007
+msgid "System information"
+msgstr "Informasi Sistem"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Setelan->Umum"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Setelan->Layar"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Setelan->Penampilan->Kalibrasi GUI"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Setelan->Video->Kalibrasi Layar"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Setelan->Foto"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Setelan->Program"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Setelan->Cuaca"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Setelan->Musik"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Setelan->Sistem"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Setelan->Video"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Setelan->Jaringan"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Setelan->Penampilan"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Skrip"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Video/Aliran"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr "Video/Judul"
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Video/Daftar Main"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Setelan->Profil"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Dialog Ya/tidak"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Dialog Kemajuan"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr ""
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr ""
+
+#: id:10212
+msgid "terminating"
+msgstr ""
+
+#: id:10213
+msgid "buffering"
+msgstr ""
+
+#: id:10214
+msgid "Opening stream"
+msgstr ""
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Musik/Daftar Main"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Musik/File"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Musik/Pustaka"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Musik/Top 100"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Top 100 Lagu"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Top 100 Album"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Aplikasi"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Konfigurasi"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Ramalan Cuaca"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Permainan Jaringan"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Ekstensi"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Informasi Sistem"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Musik - Pustaka"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Musik - Sedang Dimainkan"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Video - Sedang Dimainkan"
+
+#: id:10523
+msgid "Album info"
+msgstr "Info Album"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Info Film"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Pilih dialog"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Musik/info"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Dialog OK"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Video/Info"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Skrip/Info"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Video Tampilan Penuh"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Visualisasi Audio"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Filestacking dialog"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Membangun kembali indeks..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Kembali ke Musik"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Kembali ke Video"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Memulai dari awal"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Mainkan lagi dari posisi akhir"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Dikunci Masukkan Kode..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Masukkan password"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Masukkan Kode Master"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Masukkan Kode Pembuka"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "atau tekan C untuk membatalkan"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Masukkan tombol kombo Gamepad dan tekan Start"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "tekan Start, atau Back utk membatalkan"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Pasang Kunci"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Buka Kunci"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Memasang Lagi Kunci"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Hapus Kunci"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Password Numerik"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Tombol Gamepad Kombo"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Password Teks"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Masukkan password baru"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Masukkan lagi password baru"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Password salah,"
+
+#: id:12343
+msgid "retries left"
+msgstr "sisa percobaan"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Password yg dimasukkan tidak sesuai."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Akses Ditolak"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Batas memasukan Password telah lewat."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "XBOX akan dimatikan sekarang."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Item Terkunci"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Pengangtifan Kunci"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Ganti Kunci"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Share Kunci"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Masukkan Password kosong. Coba lagi."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Kunci Master"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Aktifkan Shutdown"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Kunci Master tidak Valid!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Harap masukkan Kode Master yang Valid!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Setelan & File"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Pasangkan sebagai standar untuk semua Film"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Ini akan mengubah nilai yang telah disimpan sebelumnya"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Tampilkan setiap gambar untuk"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Gunakan efek Pan dan Zoom"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 jam"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 jam"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Hari/Bulan"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Bulan/Hari"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Sistem Berjalan"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Menit"
+
+#: id:12392
+msgid "Hours"
+msgstr "Jam"
+
+#: id:12393
+msgid "Days"
+msgstr "Hari"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Total Sistem Berjalan"
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Cuaca"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Screensaver"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Tampilan Penuh OSD"
+
+#: id:13000
+msgid "System"
+msgstr "Sistem"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "HD Spindown Seketika"
+
+#: id:13002
+msgid "Video only"
+msgstr "Hanya Video"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Penundaan"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Minimum Lamanya File"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Matikan"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr ""
+
+#: id:13009
+msgid "Quit"
+msgstr ""
+
+#: id:13010
+msgid "Hibernate"
+msgstr ""
+
+#: id:13011
+msgid "Suspend"
+msgstr ""
+
+#: id:13012
+msgid "Exit"
+msgstr ""
+
+#: id:13013
+msgid "Reboot"
+msgstr ""
+
+#: id:13014
+msgid "Minimize"
+msgstr ""
+
+#: id:13015
+msgid "Power button action"
+msgstr ""
+
+#: id:13016
+msgid "Power off System"
+msgstr ""
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr ""
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr ""
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr ""
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr ""
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr ""
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr ""
+
+#: id:13050
+msgid "Running low on battery"
+msgstr ""
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Filter Kedipan"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr ""
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr ""
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr ""
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr ""
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr ""
+
+#: id:13110
+msgid "Save resolution?"
+msgstr ""
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr ""
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr ""
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr ""
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr ""
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13116
+msgid "Upscaling method"
+msgstr ""
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr ""
+
+#: id:13118
+msgid "Lanczos"
+msgstr ""
+
+#: id:13119
+msgid "Sinc"
+msgstr ""
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr ""
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr ""
+
+#: id:13130
+msgid "Blank other displays"
+msgstr ""
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr ""
+
+#: id:13132
+msgid "Blank displays"
+msgstr ""
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr ""
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr ""
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr ""
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr ""
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr ""
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr ""
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr ""
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Subnet mask:"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Gateway:"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Gagal Inisialisasi"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Tidak Pernah"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Segera"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Setelah %i detik"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr ""
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr ""
+
+#: id:13200
+msgid "Profiles"
+msgstr "Profil"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Hapus profil '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Profil terakhir dipasang:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Tidak Diketahui"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Timpa"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Jam Alarm"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Jeda jam Alarm (dlm menit)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Dimulai, alarm pada %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarm!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Dibatalkan dengan %im%is"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr ""
+
+#: id:13214
+msgid "%2.0fs"
+msgstr ""
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Cari Teks Film dalam RARs"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Melihat-lihat teks film..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Pindahkan Item"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Pindahkan Item Ke Sini"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Batalkan Pemindahan"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Perangkat Keras"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Kecepatan CPU:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Xbox Tersambung, tetapi tidak tersedia DNS."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Hard Disk"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Penyimpanan"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Standar"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Jaringan"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Video"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Perangkat Keras"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Versi Kernel:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Kecepatan CPU:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Enkoder Video:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Resolusi Layar:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "Kabel A/V:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "Region DVD:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Xbox sedang Tersambung"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Xbox tidak Tersambung. Periksa setelan Jaringan."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Target Suhu"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Kecepatan Kipas"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Kontrol Suhu Otomatis"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Mengesampingkan Kecepatan Kipas"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "Huruf Kulit"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Aktifkan Flipping Bi-Directional Strings"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Aktifkan RSS Feeds"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Sembunyikan Induk Item Folder"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Template Penamaan Folder"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Anda yakin ingin mem-boot xbox"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "daripada hanya XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Efek Zoom"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Efek Float"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Pengurangan Bar Hitam"
+
+#: id:13313
+msgid "Restart"
+msgstr "Memulai Lagi"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Crossfade"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Buat Ulang Thumbnail"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Thumbnail Berulang"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Lihat Slideshow"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Slideshow Berulang"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Acak"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Hanya Kiri"
+
+#: id:13322
+msgid "Right only"
+msgstr "Hanya Kanan"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Aktifkan CD+G"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Latar Belakang Transparan"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Latar Depan Transparan"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "penundaan A/V"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s tidak ditemukan"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Kesalahan membuka %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Tidak dapat memuat %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Kesalahan: memori yg diperlukan terlalu besar"
+
+#: id:13332
+msgid "Move up"
+msgstr "Pindah Atas"
+
+#: id:13333
+msgid "Move down"
+msgstr "Pindah Bawah"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Edit Label"
+
+#: id:13335
+msgid "Make default"
+msgstr "Buat Standar"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Hapus Tombol"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Biarkan Seadanya"
+
+#: id:13341
+msgid "Green"
+msgstr "Hijau"
+
+#: id:13342
+msgid "Orange"
+msgstr "Oranye"
+
+#: id:13343
+msgid "Red"
+msgstr "Merah"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Putaran"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Matikan LED saat Memainkan"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Informasi Film"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Hal Antrian"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Cari IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Cari Info Utk Semua File"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Sedang Memainkan..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Informasi Album"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Pindai Seluruh Database"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Hentikan Scan"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Metode Render"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Pixel Shader Kualitas Rendah"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Lapisan Perangkat Keras"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Pixel Shader Kualitas Tinggi"
+
+#: id:13358
+msgid "Play item"
+msgstr "Mainkan Item"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Pasang Thumb Artis"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Buat Thumb"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Aktifkan Suara"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Aktifkan Perangkat"
+
+#: id:13376
+msgid "Volume"
+msgstr "Volume"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Mode Tampilan Standar"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Kecerahan Standar"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Kontras Standar"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Gamma Standar"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Lanjutkan Lagi Video"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Voice Mask - Port 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Voice Mask - Port 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Voice Mask - Port 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Voice Mask - Port 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Gunakan Pencarian Berdasar Waktu"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Template Penamaan Trek Kanan"
+
+#: id:13388
+msgid "Preset"
+msgstr "Presets"
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr "Tidak tersedia preset utk visualisasi ini"
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr "Tidak tersedia setelan utk visualisasi ini"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Keluarkan/Pasangkan"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Gunakan Visualisasi jika memainkan audio"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Hitung Ukuran"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Menghitung ukuran isi folder"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Setelan Video"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Audio dan Setelan Teks Film"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Aktifkan Teks Film"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Bookmark"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Abaikan \"The\" saat penyortiran"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Crossfade trek album"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Melihat-lihat untuk %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Tampilkan posisi trek"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Kosongkan Default"
+
+#: id:13404
+msgid "Resume"
+msgstr "Lanjutkan"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Dapatkan Thumb"
+
+#: id:13406
+msgid "Picture information"
+msgstr ""
+
+#: id:13407
+msgid "%s presets"
+msgstr ""
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr ""
+
+#: id:13409
+msgid "Top 250"
+msgstr ""
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr ""
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr ""
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr ""
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr ""
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr ""
+
+#: id:13416
+msgid "Auto detect"
+msgstr ""
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr ""
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr ""
+
+#: id:13419
+msgid "Software"
+msgstr ""
+
+#: id:13420
+msgid "Remove safely"
+msgstr ""
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr ""
+
+#: id:13423
+msgid "Remember for this path"
+msgstr ""
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr ""
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr ""
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr ""
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr ""
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr ""
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr ""
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr ""
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr ""
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr ""
+
+#: id:13501
+msgid "Audio clock"
+msgstr ""
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr ""
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr ""
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr ""
+
+#: id:13505
+msgid "Resample quality"
+msgstr ""
+
+#: id:13506
+msgid "Low(fast)"
+msgstr ""
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr ""
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr ""
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr ""
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr ""
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr ""
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr ""
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr ""
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr ""
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr ""
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr ""
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr ""
+
+#: id:13612
+msgid "Universal Remote"
+msgstr ""
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr ""
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr ""
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr ""
+
+#: id:14000
+msgid "Stack"
+msgstr "Stack"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Unstack"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Mengunduh file Daftar Main..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Mengunduh daftar stream..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Parsing daftar stream..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Mengunduh daftar stream gagal"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Mengunduh file Daftar Main gagal"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Direktori Permainan"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Otomatis Pindah ke Thumbs"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Aktifkan Autoswitching ke Tampilan Thumbs"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Gunakan Ikon Besar"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Penggantian Berdasar"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Persentase"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Tak ada File dan satu Thumb"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Sedikitnya satu File dan Thumb"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Persentase Thumb"
+
+#: id:14018
+msgid "View options"
+msgstr "Lihat Pilihan"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Ganti Kode Wilayah 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Ganti Kode Wilayah 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Ganti Kode Wilayah 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Pustaka"
+
+#: id:14023
+msgid "No TV"
+msgstr "Tidak ada TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Masukkan kota besar terdekat atau kode ZIP US"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Video/Audio/DVD Cache - Harddisk"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Video Cache - DVDRom"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Jaringan Lokal"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Audio Cache - DVDRom"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Jaringan Lokal"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD Cache - DVDRom"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Jaringan Lokal"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Server"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Setelan Jaringan berubah"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC harus dimulai ulang untuk mengganti"
+
+#: id:14040
+msgid "network setup. Would you like to restart now?"
+msgstr "pemasangan setelan jaringan. Anda mau lakukan sekarang?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Post Processing"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Matikan saat memainkan"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i mnt"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i det"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i mdet"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Format Waktu"
+
+#: id:14052
+msgid "Date format"
+msgstr "Format Tanggal"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "Filter GUI"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Gunakan Scanning Latar"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Hentikan Scan"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Tidak memungkinkan saat men-scan info media"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Efek Film Grain"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Mencari custom thumbnails pada remote shares"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Tipe Cache Tidak Diketahui- Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Masukkan namapengguna utk"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Tanggal & Jam"
+
+#: id:14064
+msgid "Set date"
+msgstr "Pasang Tanggal"
+
+#: id:14065
+msgid "Set time"
+msgstr "Pasang Waktu"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Masukkan Waktu dalam format 24 jam HH:MM"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Masukkan Tanggal dalam format DD/MM/YYYY"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Masukkan Alamat IP"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Anda ingin memasang setelan ini sekarang?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Pasang Perubahan Sekarang"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Mengijinkan Perubahan Nama File dan Penghapusan"
+
+#: id:14074
+msgid "Set timezone"
+msgstr ""
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr ""
+
+#: id:14076
+msgid "Add to favourites"
+msgstr ""
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr ""
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr ""
+
+#: id:14079
+msgid "Timezone country"
+msgstr ""
+
+#: id:14080
+msgid "Timezone"
+msgstr ""
+
+#: id:14081
+msgid "File lists"
+msgstr ""
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr ""
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr ""
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr ""
+
+#: id:14086
+msgid "Playback"
+msgstr ""
+
+#: id:14087
+msgid "DVDs"
+msgstr ""
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr ""
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr ""
+
+#: id:14090
+msgid "International"
+msgstr ""
+
+#: id:14091
+msgid "Character set"
+msgstr ""
+
+#: id:14092
+msgid "Debugging"
+msgstr ""
+
+#: id:14093
+msgid "Security"
+msgstr ""
+
+#: id:14094
+msgid "Input devices"
+msgstr ""
+
+#: id:14095
+msgid "Power saving"
+msgstr ""
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Hapus"
+
+#: id:15016
+msgid "Games"
+msgstr "Permainan"
+
+#: id:15019
+msgid "Add"
+msgstr "Tambah"
+
+#: id:15052
+msgid "Password"
+msgstr "Password"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Pustaka"
+
+#: id:15101
+msgid "Database"
+msgstr "Database"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Semua Album"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Semua Artis"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Semua Lagu"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Semua Aliran"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Buffering..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Navigasi Suara"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Kulit Standar"
+
+#: id:15111
+msgid "- Theme"
+msgstr "Tema Kulit"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Kulit Standar"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "LastFM"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Ajukan Lagu ke LastFM"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "NamaPengguna LastFM"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Password LastFM"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Tidak bisa tersambung: sleeping..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Harap Memperbaharui XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Pengajuan gagal: kesalahan otorisasi."
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Tersambung"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Tidak Tersambung"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Psang Jeda %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Cached %i Lagu"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Pengajuan..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Pengajuan dalam %i detik"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Mainkan Menggunakan..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Gunakan Sinkronisasi A/V halus"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Sembunyikan Nama File pada Tampilan Thumb"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr ""
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr ""
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr ""
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr ""
+
+#: id:15220
+msgid "Libre.fm"
+msgstr ""
+
+#: id:15221
+msgid "Song submission"
+msgstr ""
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Ajukan Last.fm Radio ke LastFM"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Menyambungkan diri ke Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Pilih stasiun..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Cari artis serupa..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Cari tag serupa..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Profil Anda (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Keseluruhan top tag"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Top artis utk tag %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Top album utk tag %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Top trek utk tag %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Mendengarkan tag %name% last.fm radio"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Artis serupa %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Top %name% album"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Top %name% trek"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Top %name% tag"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Biggest fans of %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Mendengarkan fan %name% last.fm radio"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Mendengarkan %name% artis serupa last.fm radio"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Top artis utk pengguna %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Top album utk pengguna %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Top trek utk pengguna %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Teman pengguna %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Tetangga pengguna %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Tangga artis mingguan %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Tangga album mingguan %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Tangga trek mingguan %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Mendengarkan %name%'s neighbours last.fm radio"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Mendengarkan %name%'s personal last.fm radio"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Mendengarkan %name%'s loved tracks last.fm radio"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Mendapatkan daftar dari last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Tidak bisa mendapatkan daftar dari last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Masukkan nama artis untuk menemukan yang mirip"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Masukkan nama tag untuk menemukan yang mirip"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Trek baru saja didengarkan oleh %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr ""
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr ""
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr ""
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr ""
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr ""
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr ""
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr ""
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr ""
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr ""
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr ""
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr ""
+
+#: id:15296
+msgid "Un-ban"
+msgstr ""
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr ""
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr ""
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Path tidak ditemukan atau tidak valid"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Tidak bisa tersambung ke jaringan server"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Server tidak ditemukan"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Workgroup tidak ditemukan"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Membuka bookmark multi-path"
+
+#: id:15311
+msgid "Path:"
+msgstr "Path:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Umum"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "CDDB lookup"
+
+#: id:16003
+msgid "Player"
+msgstr "Player"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Mainkan media dari disk"
+
+#: id:16008
+msgid "Enter new title"
+msgstr ""
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Masukkan Judul Film"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Masukkan Nama Profil"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Masukkan Nama Album"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Masukkan Nama Daftar Main"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Masukkan namafile baru"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Masukkan nama folder"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Masukkan direktori"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Pilihan yg tersedia: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Masukkan Pencarian"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Tidak Ada"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Memilih Sendiri"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "DeInterlace"
+
+#: id:16021
+msgid "Bob"
+msgstr "Sinkronisasi Ganjil"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Sinkronisasi Genap"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Pembatalan..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Masukkan Nama Artis"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Memainkan Daftar Main dibatalkan"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Terlalu banyak berturutan menggagalkan item"
+
+#: id:16028
+msgid "Enter value"
+msgstr ""
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr ""
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Mode Party dibatalkan."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Tidak ada lagu yang sesuai di database."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Tidak bisa meng-inisilisasi database."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Tidak bisa membuka database."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Tidak bisa memperoleh lagu dari database."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr ""
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "Semua Video"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Belum Ditonton"
+
+#: id:16102
+msgid "Watched"
+msgstr "Telah Ditonton"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Tandai Telah Ditonton"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Tandai Belum Ditonton"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Edit Judul"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Operasi dibatalkan"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Penyalinan gagal"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Gagal untuk menyalin sedikitnya satu file"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Pemindahan gagal"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Gagal untuk memindahkan sedikitnya satu file"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Penghapusan gagal"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Gagal untuk menghapus sedikitnya satu file"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr ""
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr ""
+
+#: id:16302
+msgid "Bilinear"
+msgstr ""
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr ""
+
+#: id:16304
+msgid "Lanczos2"
+msgstr ""
+
+#: id:16305
+msgid "Lanczos3"
+msgstr ""
+
+#: id:16306
+msgid "Sinc8"
+msgstr ""
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr ""
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr ""
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr ""
+
+#: id:16310
+msgid "Temporal"
+msgstr ""
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr ""
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr ""
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr ""
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr ""
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr ""
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr ""
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr ""
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr ""
+
+#: id:16319
+msgid "DXVA"
+msgstr ""
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr ""
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr ""
+
+#: id:19000
+msgid "Switch to channel"
+msgstr ""
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Folder CDDA Rip"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Gunakan Player DVD eksternal"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Player DVD Eksternal"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Folder Trainer"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Folder Screenshot"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Folder DaftarMain"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Perekaman"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Screenshots"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Gunakan XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "DaftarMain Musik"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "DaftarMain Video"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Anda ingin menjalankan permainan?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Urut :DaftarMain"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "IMDb Thumb"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Thumb Saat ini"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Thumb Lokal"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Tidak Ada Thumb"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Pilih Thumb"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Konflik"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Pindai Baru"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Pindai Semua"
+
+#: id:20026
+msgid "Region"
+msgstr "Wilayah"
+
+#: id:20037
+msgid "Summary"
+msgstr ""
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Kunci seksi musik"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Kunci seksi video"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Kunci seksi gambar"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Kunci seksi program dan skrip"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Kunci Manajer Berkas"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Setting Penguncian"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Memulai Secara Fresh"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Masuk mode mastrer"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Meninggalkan mode master"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Buat profil '%s' ?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Mulai dengan setting fresh"
+
+#: id:20049
+msgid "Best available"
+msgstr "Terbaik yg Tersedia"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Otomatis berganti anatara 16x9 dan 4x3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Perlakukan file stek sebagai file tunggal"
+
+#: id:20052
+msgid "Caution"
+msgstr "Peringatan"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Tinggalkan mode master"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Masuk mode master"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Thumb Allmusic.com"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Hapus Thumbnail"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Tambah Profil..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Meminta Info Semua Album"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Informasi Media"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Pisahkan"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Berbagi dengan standar"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Berbagi dengan standar (hanya baca)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Salin standar"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Gambar Profil"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Kunci pilihan"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Edit profil"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Kunci Profil"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Tidak bisa membuat folder"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Direktori profil"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Mulai dengan sumber media segar"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Yakinkan folder yang dipilih bisa ditulisi"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "dan nama folder baru tsb valid"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "Nilai MPAA:"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Masukkan kunci kode master"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Tanya kode master saat memulai"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Setelan Kulit"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- tak ada link dipasang -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Membolehkan Animasi"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Nonaktifkan RSS saat musik"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Membolehkan Tombol Bookmark"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Tampilkan Info XLink Kai"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Tampilkan info Music"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Tampilkan info Cuaca"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Tampilkan info Sistem"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Tampilkan Ruang Disk Tersedia C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Tampilkan Ruang Disk Tersedia E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Info Cuaca"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Ruang Drive Bebas"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Masukkan nama Share yang ada"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Kode Penguncian"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Muat Profil"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Nama profil"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Sumber Media"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Masukkan kode kunci profil"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Layar Masuk"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Mengambil info album"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Mengambil info untuk album"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Tidak dapat melakukan ripping CD atau Trek saat memainkan CD"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Kunci dan Kode Master"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Memasukan kode master selalu membolehkan mode master"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "atau salin dari standar"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Simpan perubahan ke profil?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Setelan lama ditemukan"
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Anda ingin menggunakannya?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Sumber media lama ditemukan."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Pemisahan (dikunci)"
+
+#: id:20108
+msgid "Root"
+msgstr "Akar"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "Zoom Kulit"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "Klien UPnP"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Memulai Sendiri"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Login terakhir: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Tidak pernah login"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Profil %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Login Pengguna / Pilih profil"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Gunakan penguncian saat layar masuk"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Kode kunci salah"
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Melakukan ini membutuhkan pemasangan kunci master."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Anda ingin memasannya sekarang?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Memuat informasi program"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Mode Party mulai!"
+
+#: id:20122
+msgid "True"
+msgstr "Ya"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Mixing drinks"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Mixing drinks"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Masuk sebagai"
+
+#: id:20126
+msgid "Log off"
+msgstr "Keluar"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Kembali ke akar"
+
+#: id:20129
+msgid "Weave"
+msgstr "Tenunan"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Tenunan (terbalik)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Campuran"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Ulang Video"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Edit Lokasi Jaringan"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Hapus Lokasi Jaringan"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Anda ingin memindai folder?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Unit Memori"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Unit Memori dimounting"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Tidak dapat me-mounting MU"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "Dalam port %i, slot %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Kunci Screensaver"
+
+#: id:20141
+msgid "Set"
+msgstr "Pasang"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Nama"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Masukkan password utk"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Waktu Penghentian"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Jeda Penghentian (dlm menit)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Dimulai, penghentian dimulai %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Penghentian dlm 30 menit"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Penghentian dalam 60 menit"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Penghentian dalam 120 menit"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Waktu Penghentian Kustom"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Batalkan Waktu Penghentian"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Kunci pilihan untuk %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Jelajah..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Informasi Dasar"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Informasi Penyimpanan"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Informasi Hard Disk"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "Informasi VD-ROM"
+
+#: id:20158
+msgid "Network information"
+msgstr "Informasi Jaringan"
+
+#: id:20159
+msgid "Video information"
+msgstr "Informasi Video"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Informasi Perangkat Keras"
+
+#: id:20161
+msgid "Total"
+msgstr "Total: %s MB, Digunakan: %s MB, Bebas: %s MB"
+
+#: id:20162
+msgid "Used"
+msgstr "Total HDD Digunakan: %u%% Bebas: %u%%"
+
+#: id:20163
+msgid "of"
+msgstr "%s: %s MB of %s MB Bebas"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Penguncian Tidak Didukung"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Tidak Dikunci"
+
+#: id:20166
+msgid "Locked"
+msgstr "Dikunci"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Membeku"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Membutuhkan Reset"
+
+#: id:20169
+msgid "Week"
+msgstr "Minggu"
+
+#: id:20170
+msgid "Line"
+msgstr "Baris"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Jaringan Windows (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "Server XBMSP"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "Server FTP"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes music share (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "Server UPnP"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Tampilkan Informasi Video"
+
+#: id:20177
+msgid "Done"
+msgstr "Selesai"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Caps Lock"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Simbol"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Backspace"
+
+#: id:20182
+msgid "Space"
+msgstr "Space"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Memuat lagi skin"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Putar menggunakan informasi EXIF"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Mendeteksi Nilai Perangkat Keras"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Harap Tunggu"
+
+#: id:20187
+msgid "UPnP"
+msgstr "Membaca Nilai dari EEPROM"
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Pendeteksian Selesai"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Mendeteksi Informasi Harddisk"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Mendeteksi Nilai HDD"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Mendeteksi Kunci HDD"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Mendeteksi Suhu HDD"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Mendeteksi Informasi DVD-ROM"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Mendeteksi Model/Firmware"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Mendeteksi Setelan Jaringan"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Mendeteksi Alamat MAC"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Mendeteksi Status Online"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Mendeteksi Versi Xbox, Serial dan CPU"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr ""
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr ""
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr ""
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr ""
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr ""
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr ""
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr ""
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr ""
+
+#: id:20258
+msgid "MythTV client"
+msgstr ""
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Mendeteksi Perangkat Keras Xbox"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Mendeteksi ModChip"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Mendeteksi BIOS"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Mendeteksi Kecepatan CPU"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "Mendeteksi Tanggal Produksi"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Secondary DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "Server DHCP:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Buat Folder Baru"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Dim LCD saat Playback"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Tidak Dikenal atau Onboard (diproteksi)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Dim LCD saat Jeda"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr ""
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr ""
+
+#: id:20324
+msgid "Play part..."
+msgstr ""
+
+#: id:20325
+msgid "Calibration reset"
+msgstr ""
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr ""
+
+#: id:20327
+msgid "to it's default values."
+msgstr ""
+
+#: id:20328
+msgid "Browse for destination"
+msgstr ""
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr ""
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr ""
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr ""
+
+#: id:20333
+msgid "Set content"
+msgstr ""
+
+#: id:20334
+msgid "Folder"
+msgstr ""
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr ""
+
+#: id:20336
+msgid "Unlock sources"
+msgstr ""
+
+#: id:20337
+msgid "Actor"
+msgstr ""
+
+#: id:20338
+msgid "Movie"
+msgstr ""
+
+#: id:20339
+msgid "Director"
+msgstr ""
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr ""
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr ""
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr ""
+
+#: id:20343
+msgid "TV shows"
+msgstr ""
+
+#: id:20344
+msgid "This directory contains"
+msgstr ""
+
+#: id:20345
+msgid "Run automated scan"
+msgstr ""
+
+#: id:20346
+msgid "Scan recursively"
+msgstr ""
+
+#: id:20347
+msgid "as"
+msgstr ""
+
+#: id:20348
+msgid "Directors"
+msgstr ""
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr ""
+
+#: id:20350
+msgid "votes"
+msgstr ""
+
+#: id:20351
+msgid "TV show information"
+msgstr ""
+
+#: id:20352
+msgid "Episode information"
+msgstr ""
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr ""
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr ""
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr ""
+
+#: id:20356
+msgid "Select TV show:"
+msgstr ""
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr ""
+
+#: id:20358
+msgid "Season %i"
+msgstr ""
+
+#: id:20359
+msgid "Episode"
+msgstr ""
+
+#: id:20360
+msgid "Episodes"
+msgstr ""
+
+#: id:20361
+msgid "Loading episode details"
+msgstr ""
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr ""
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr ""
+
+#: id:20364
+msgid "TV show"
+msgstr ""
+
+#: id:20365
+msgid "Episode plot"
+msgstr ""
+
+#: id:20366
+msgid "* All seasons"
+msgstr ""
+
+#: id:20367
+msgid "Hide watched"
+msgstr ""
+
+#: id:20368
+msgid "Prod code"
+msgstr ""
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr ""
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr ""
+
+#: id:20371
+msgid "Set season thumb"
+msgstr ""
+
+#: id:20372
+msgid "Season image"
+msgstr ""
+
+#: id:20373
+msgid "Season"
+msgstr ""
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr ""
+
+#: id:20375
+msgid "Unassign content"
+msgstr ""
+
+#: id:20376
+msgid "Original title"
+msgstr ""
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr ""
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr ""
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr ""
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr ""
+
+#: id:20381
+msgid "Specials"
+msgstr ""
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr ""
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr ""
+
+#: id:20384
+msgid "Link to TV show"
+msgstr ""
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr ""
+
+#: id:20386
+msgid "Recently added movies"
+msgstr ""
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr ""
+
+#: id:20388
+msgid "Studios"
+msgstr ""
+
+#: id:20389
+msgid "Music videos"
+msgstr ""
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr ""
+
+#: id:20391
+msgid "Music video"
+msgstr ""
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr ""
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr ""
+
+#: id:20394
+msgid "Loading music video information"
+msgstr ""
+
+#: id:20395
+msgid "Mixed"
+msgstr ""
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr ""
+
+#: id:20397
+msgid "Go to album"
+msgstr ""
+
+#: id:20398
+msgid "Play song"
+msgstr ""
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr ""
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr ""
+
+#: id:20401
+msgid "Play music video"
+msgstr ""
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr ""
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr ""
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr ""
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr ""
+
+#: id:20407
+msgid "Scraper settings"
+msgstr ""
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr ""
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr ""
+
+#: id:20410
+msgid "Trailer"
+msgstr ""
+
+#: id:20411
+msgid "Flatten"
+msgstr ""
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr ""
+
+#: id:20413
+msgid "Get fanart"
+msgstr ""
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr ""
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr ""
+
+#: id:20416
+msgid "First aired"
+msgstr ""
+
+#: id:20417
+msgid "Writer"
+msgstr ""
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr ""
+
+#: id:20421
+msgid "If only one season"
+msgstr ""
+
+#: id:20422
+msgid "Always"
+msgstr ""
+
+#: id:20423
+msgid "Has trailer"
+msgstr ""
+
+#: id:20424
+msgid "False"
+msgstr ""
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr ""
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr ""
+
+#: id:20427
+msgid "files per entry?"
+msgstr ""
+
+#: id:20428
+msgid "Single file"
+msgstr ""
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr ""
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr ""
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr ""
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr ""
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr ""
+
+#: id:20434
+msgid "Sets"
+msgstr ""
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr ""
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr ""
+
+#: id:20437
+msgid "Choose fanart"
+msgstr ""
+
+#: id:20438
+msgid "Local fanart"
+msgstr ""
+
+#: id:20439
+msgid "No fanart"
+msgstr ""
+
+#: id:20440
+msgid "Current fanart"
+msgstr ""
+
+#: id:20441
+msgid "Remote fanart"
+msgstr ""
+
+#: id:20442
+msgid "Change content"
+msgstr ""
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr ""
+
+#: id:20444
+msgid "items within this path?"
+msgstr ""
+
+#: id:20445
+msgid "Fanart"
+msgstr ""
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr ""
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr ""
+
+#: id:20448
+msgid "Could not download information"
+msgstr ""
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr ""
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr ""
+
+#: id:20451
+msgid "Countries"
+msgstr ""
+
+#: id:20452
+msgid "episode"
+msgstr ""
+
+#: id:20453
+msgid "episodes"
+msgstr ""
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr ""
+
+#: id:21331
+msgid "TuxBox client"
+msgstr ""
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr ""
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr ""
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr ""
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr ""
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr ""
+
+#: id:21337
+msgid "TuxBox device"
+msgstr ""
+
+#: id:21359
+msgid "Add media share..."
+msgstr ""
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr ""
+
+#: id:21364
+msgid "Edit media share"
+msgstr ""
+
+#: id:21365
+msgid "Remove media share"
+msgstr ""
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr ""
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr ""
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr ""
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr ""
+
+#: id:21371
+msgid "Thumbnail"
+msgstr ""
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr ""
+
+#: id:21373
+msgid "Video output"
+msgstr ""
+
+#: id:21374
+msgid "Video aspect"
+msgstr ""
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr ""
+
+#: id:21376
+msgid "Letterbox"
+msgstr ""
+
+#: id:21377
+msgid "Widescreen"
+msgstr ""
+
+#: id:21378
+msgid "Enable 480p"
+msgstr ""
+
+#: id:21379
+msgid "Enable 720p"
+msgstr ""
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr ""
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr ""
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr ""
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr ""
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr ""
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr ""
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr ""
+
+#: id:21387
+msgid "Fast"
+msgstr ""
+
+#: id:21388
+msgid "Quiet"
+msgstr ""
+
+#: id:21389
+msgid "Enable custom background"
+msgstr ""
+
+#: id:21390
+msgid "Power management level"
+msgstr ""
+
+#: id:21391
+msgid "High power"
+msgstr ""
+
+#: id:21392
+msgid "Low power"
+msgstr ""
+
+#: id:21393
+msgid "High standby"
+msgstr ""
+
+#: id:21394
+msgid "Low standby"
+msgstr ""
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr ""
+
+#: id:21396
+msgid "Chapter"
+msgstr ""
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr ""
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr ""
+
+#: id:21399
+msgid "Use tween animations"
+msgstr ""
+
+#: id:21400
+msgid "contains"
+msgstr ""
+
+#: id:21401
+msgid "does not contain"
+msgstr ""
+
+#: id:21402
+msgid "is"
+msgstr ""
+
+#: id:21403
+msgid "is not"
+msgstr ""
+
+#: id:21404
+msgid "starts with"
+msgstr ""
+
+#: id:21405
+msgid "ends with"
+msgstr ""
+
+#: id:21406
+msgid "greater than"
+msgstr ""
+
+#: id:21407
+msgid "less than"
+msgstr ""
+
+#: id:21408
+msgid "after"
+msgstr ""
+
+#: id:21409
+msgid "before"
+msgstr ""
+
+#: id:21410
+msgid "in the last"
+msgstr ""
+
+#: id:21411
+msgid "not in the last"
+msgstr ""
+
+#: id:21412
+msgid "Scrapers"
+msgstr ""
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr ""
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr ""
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr ""
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr ""
+
+#: id:21417
+msgid "- Settings"
+msgstr ""
+
+#: id:21418
+msgid "Multilingual"
+msgstr ""
+
+#: id:21419
+msgid "No scrapers present"
+msgstr ""
+
+#: id:21420
+msgid "Value to match"
+msgstr ""
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr ""
+
+#: id:21422
+msgid "Match items where"
+msgstr ""
+
+#: id:21423
+msgid "New rule..."
+msgstr ""
+
+#: id:21424
+msgid "Items must match"
+msgstr ""
+
+#: id:21425
+msgid "all of the rules"
+msgstr ""
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr ""
+
+#: id:21427
+msgid "Limit to"
+msgstr ""
+
+#: id:21428
+msgid "No limit"
+msgstr ""
+
+#: id:21429
+msgid "Order by"
+msgstr ""
+
+#: id:21430
+msgid "ascending"
+msgstr ""
+
+#: id:21431
+msgid "descending"
+msgstr ""
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr ""
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr ""
+
+#: id:21434
+msgid "Find items where"
+msgstr ""
+
+#: id:21435
+msgid "Edit"
+msgstr ""
+
+#: id:21436
+msgid "%i items"
+msgstr ""
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr ""
+
+#: id:21438
+msgid "%c Drive"
+msgstr ""
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr ""
+
+#: id:21440
+msgid "Home folder"
+msgstr ""
+
+#: id:21441
+msgid "Watched count"
+msgstr ""
+
+#: id:21442
+msgid "Episode title"
+msgstr ""
+
+#: id:21443
+msgid "Video resolution"
+msgstr ""
+
+#: id:21444
+msgid "Audio channels"
+msgstr ""
+
+#: id:21445
+msgid "Video codec"
+msgstr ""
+
+#: id:21446
+msgid "Audio codec"
+msgstr ""
+
+#: id:21447
+msgid "Audio language"
+msgstr ""
+
+#: id:21448
+msgid "Subtitle language"
+msgstr ""
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr ""
+
+#: id:21450
+msgid "- Edit"
+msgstr ""
+
+#: id:21451
+msgid "Internet connection required."
+msgstr ""
+
+#: id:21452
+msgid "Get More..."
+msgstr ""
+
+#: id:21453
+msgid "Root filesystem"
+msgstr ""
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr ""
+
+#: id:21801
+msgid "File path"
+msgstr ""
+
+#: id:21802
+msgid "File size"
+msgstr ""
+
+#: id:21803
+msgid "File date/time"
+msgstr ""
+
+#: id:21804
+msgid "Slide index"
+msgstr ""
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr ""
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr ""
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr ""
+
+#: id:21808
+msgid "JPEG process"
+msgstr ""
+
+#: id:21820
+msgid "Date/Time"
+msgstr ""
+
+#: id:21821
+msgid "Description"
+msgstr ""
+
+#: id:21822
+msgid "Camera make"
+msgstr ""
+
+#: id:21823
+msgid "Camera model"
+msgstr ""
+
+#: id:21824
+msgid "EXIF comment"
+msgstr ""
+
+#: id:21825
+msgid "Firmware"
+msgstr ""
+
+#: id:21826
+msgid "Aperture"
+msgstr ""
+
+#: id:21827
+msgid "Focal length"
+msgstr ""
+
+#: id:21828
+msgid "Focus distance"
+msgstr ""
+
+#: id:21829
+msgid "Exposure"
+msgstr ""
+
+#: id:21830
+msgid "Exposure time"
+msgstr ""
+
+#: id:21831
+msgid "Exposure bias"
+msgstr ""
+
+#: id:21832
+msgid "Exposure mode"
+msgstr ""
+
+#: id:21833
+msgid "Flash used"
+msgstr ""
+
+#: id:21834
+msgid "White-balance"
+msgstr ""
+
+#: id:21835
+msgid "Light source"
+msgstr ""
+
+#: id:21836
+msgid "Metering mode"
+msgstr ""
+
+#: id:21837
+msgid "ISO"
+msgstr ""
+
+#: id:21838
+msgid "Digital zoom"
+msgstr ""
+
+#: id:21839
+msgid "CCD width"
+msgstr ""
+
+#: id:21840
+msgid "GPS latitude"
+msgstr ""
+
+#: id:21841
+msgid "GPS longitude"
+msgstr ""
+
+#: id:21842
+msgid "GPS altitude"
+msgstr ""
+
+#: id:21843
+msgid "Orientation"
+msgstr ""
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr ""
+
+#: id:21861
+msgid "Keywords"
+msgstr ""
+
+#: id:21862
+msgid "Caption"
+msgstr ""
+
+#: id:21863
+msgid "Author"
+msgstr ""
+
+#: id:21864
+msgid "Headline"
+msgstr ""
+
+#: id:21865
+msgid "Special instructions"
+msgstr ""
+
+#: id:21866
+msgid "Category"
+msgstr ""
+
+#: id:21867
+msgid "Byline"
+msgstr ""
+
+#: id:21868
+msgid "Byline title"
+msgstr ""
+
+#: id:21869
+msgid "Credit"
+msgstr ""
+
+#: id:21870
+msgid "Source"
+msgstr ""
+
+#: id:21871
+msgid "Copyright notice"
+msgstr ""
+
+#: id:21872
+msgid "Object name"
+msgstr ""
+
+#: id:21873
+msgid "City"
+msgstr ""
+
+#: id:21874
+msgid "State"
+msgstr ""
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr ""
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr ""
+
+#: id:21877
+msgid "Date created"
+msgstr ""
+
+#: id:21878
+msgid "Copyright flag"
+msgstr ""
+
+#: id:21879
+msgid "Country code"
+msgstr ""
+
+#: id:21880
+msgid "Reference service"
+msgstr ""
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr ""
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr ""
+
+#: id:21883
+msgid "Saved music"
+msgstr ""
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr ""
+
+#: id:21885
+msgid "Downloading album information"
+msgstr ""
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr ""
+
+#: id:21887
+msgid "Biography"
+msgstr ""
+
+#: id:21888
+msgid "Discography"
+msgstr ""
+
+#: id:21889
+msgid "Searching artist"
+msgstr ""
+
+#: id:21890
+msgid "Select artist"
+msgstr ""
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr ""
+
+#: id:21892
+msgid "Instruments"
+msgstr ""
+
+#: id:21893
+msgid "Born"
+msgstr ""
+
+#: id:21894
+msgid "Formed"
+msgstr ""
+
+#: id:21895
+msgid "Themes"
+msgstr ""
+
+#: id:21896
+msgid "Disbanded"
+msgstr ""
+
+#: id:21897
+msgid "Died"
+msgstr ""
+
+#: id:21898
+msgid "Years active"
+msgstr ""
+
+#: id:21899
+msgid "Label"
+msgstr ""
+
+#: id:21900
+msgid "Born/Formed"
+msgstr ""
+
+#: id:22000
+msgid "Update library on startup"
+msgstr ""
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr ""
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr ""
+
+#: id:22003
+msgid "%2.3fs"
+msgstr ""
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr ""
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr ""
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr ""
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr ""
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr ""
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr ""
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr ""
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr ""
+
+#: id:22012
+msgid "Total memory"
+msgstr ""
+
+#: id:22013
+msgid "Profile data"
+msgstr ""
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr ""
+
+#: id:22015
+msgid "All recordings"
+msgstr ""
+
+#: id:22016
+msgid "By title"
+msgstr ""
+
+#: id:22017
+msgid "By group"
+msgstr ""
+
+#: id:22018
+msgid "Live channels"
+msgstr ""
+
+#: id:22019
+msgid "Recordings by title"
+msgstr ""
+
+#: id:22020
+msgid "Guide"
+msgstr ""
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr ""
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr ""
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr ""
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr ""
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr ""
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr ""
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr ""
+
+#: id:22033
+msgid "- Charset"
+msgstr ""
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr ""
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr ""
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr ""
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr ""
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr ""
+
+#: id:22039
+msgid "Enter song number"
+msgstr ""
+
+#: id:22040
+msgid "white/green"
+msgstr ""
+
+#: id:22041
+msgid "white/red"
+msgstr ""
+
+#: id:22042
+msgid "white/blue"
+msgstr ""
+
+#: id:22043
+msgid "black/white"
+msgstr ""
+
+#: id:22079
+msgid "Default select action"
+msgstr ""
+
+#: id:22080
+msgid "Choose"
+msgstr ""
+
+#: id:22081
+msgid "Show Information"
+msgstr ""
+
+#: id:22082
+msgid "More..."
+msgstr ""
+
+#: id:22083
+msgid "Play all"
+msgstr ""
+
+#: id:23049
+msgid "Teletext not available"
+msgstr ""
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr ""
+
+#: id:23051
+msgid "Part %i"
+msgstr ""
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr ""
+
+#: id:23053
+msgid "Stopping"
+msgstr ""
+
+#: id:23054
+msgid "Running"
+msgstr ""
+
+#: id:23100
+msgid "External Player Active"
+msgstr ""
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr ""
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr ""
+
+#: id:24000
+msgid "Add-on"
+msgstr ""
+
+#: id:24001
+msgid "Add-ons"
+msgstr ""
+
+#: id:24002
+msgid "Add-on options"
+msgstr ""
+
+#: id:24003
+msgid "Add-on Information"
+msgstr ""
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr ""
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr ""
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr ""
+
+#: id:24009
+msgid "Script"
+msgstr ""
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr ""
+
+#: id:24011
+msgid "Add-on repository"
+msgstr ""
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr ""
+
+#: id:24013
+msgid "Lyrics"
+msgstr ""
+
+#: id:24014
+msgid "TV information"
+msgstr ""
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr ""
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr ""
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr ""
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr ""
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr ""
+
+#: id:24022
+msgid "Enable"
+msgstr ""
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr ""
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr ""
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr ""
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr ""
+
+#: id:24031
+msgid "Error loading settings"
+msgstr ""
+
+#: id:24032
+msgid "All Add-ons"
+msgstr ""
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr ""
+
+#: id:24034
+msgid "Check for updates"
+msgstr ""
+
+#: id:24035
+msgid "Force refresh"
+msgstr ""
+
+#: id:24036
+msgid "Change log"
+msgstr ""
+
+#: id:24037
+msgid "Uninstall"
+msgstr ""
+
+#: id:24038
+msgid "Install"
+msgstr ""
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr ""
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr ""
+
+#: id:24041
+msgid "Install from zip file"
+msgstr ""
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr ""
+
+#: id:24043
+msgid "Available Updates"
+msgstr ""
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr ""
+
+#: id:24051
+msgid "Version:"
+msgstr ""
+
+#: id:24052
+msgid "Disclaimer"
+msgstr ""
+
+#: id:24053
+msgid "License:"
+msgstr ""
+
+#: id:24054
+msgid "Changelog"
+msgstr ""
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr ""
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr ""
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr ""
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr ""
+
+#: id:24063
+msgid "Auto update"
+msgstr ""
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr ""
+
+#: id:24065
+msgid "Add-on updated"
+msgstr ""
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr ""
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr ""
+
+#: id:24068
+msgid "Update available"
+msgstr ""
+
+#: id:24069
+msgid "Update"
+msgstr ""
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr ""
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr ""
+
+#: id:24072
+msgid "Settings required"
+msgstr ""
+
+#: id:24073
+msgid "Could not connect"
+msgstr ""
+
+#: id:24074
+msgid "Needs to restart"
+msgstr ""
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr ""
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr ""
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr ""
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr ""
+
+#: id:24094
+msgid "(current)"
+msgstr ""
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr ""
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr ""
+
+#: id:24098
+msgid "Broken"
+msgstr ""
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr ""
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr ""
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr ""
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr ""
+
+#: id:33001
+msgid "Trailer quality"
+msgstr ""
+
+#: id:33002
+msgid "Stream"
+msgstr ""
+
+#: id:33003
+msgid "Download"
+msgstr ""
+
+#: id:33004
+msgid "Download & play"
+msgstr ""
+
+#: id:33005
+msgid "Download & save"
+msgstr ""
+
+#: id:33006
+msgid "Today"
+msgstr ""
+
+#: id:33007
+msgid "Tomorrow"
+msgstr ""
+
+#: id:33008
+msgid "Saving"
+msgstr ""
+
+#: id:33009
+msgid "Copying"
+msgstr ""
+
+#: id:33010
+msgid "Set download directory"
+msgstr ""
+
+#: id:33011
+msgid "Search duration"
+msgstr ""
+
+#: id:33012
+msgid "Short"
+msgstr ""
+
+#: id:33013
+msgid "Long"
+msgstr ""
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr ""
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr ""
+
+#: id:33016
+msgid "Clips"
+msgstr ""
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr ""
+
+#: id:33018
+msgid "Tonight"
+msgstr ""
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr ""
+
+#: id:33020
+msgid "Condition"
+msgstr ""
+
+#: id:33021
+msgid "Precipitation"
+msgstr ""
+
+#: id:33022
+msgid "Precip"
+msgstr ""
+
+#: id:33023
+msgid "Humid"
+msgstr ""
+
+#: id:33024
+msgid "Feels"
+msgstr ""
+
+#: id:33025
+msgid "Observed"
+msgstr ""
+
+#: id:33026
+msgid "Departure from normal"
+msgstr ""
+
+#: id:33027
+msgid "Sunrise"
+msgstr ""
+
+#: id:33028
+msgid "Sunset"
+msgstr ""
+
+#: id:33029
+msgid "Details"
+msgstr ""
+
+#: id:33030
+msgid "Outlook"
+msgstr ""
+
+#: id:33031
+msgid "Coverflow"
+msgstr ""
+
+#: id:33032
+msgid "Translate text"
+msgstr ""
+
+#: id:33033
+msgid "Map list %s category"
+msgstr ""
+
+#: id:33034
+msgid "36 Hour"
+msgstr ""
+
+#: id:33035
+msgid "Maps"
+msgstr ""
+
+#: id:33036
+msgid "Hourly"
+msgstr ""
+
+#: id:33037
+msgid "Weekend"
+msgstr ""
+
+#: id:33038
+msgid "%s day"
+msgstr ""
+
+#: id:33049
+msgid "Alert"
+msgstr ""
+
+#: id:33050
+msgid "Alerts"
+msgstr ""
+
+#: id:33051
+msgid "Choose Your"
+msgstr ""
+
+#: id:33052
+msgid "Check"
+msgstr ""
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr ""
+
+#: id:33054
+msgid "Seasons"
+msgstr ""
+
+#: id:33055
+msgid "Use your"
+msgstr ""
+
+#: id:33056
+msgid "Watch your"
+msgstr ""
+
+#: id:33057
+msgid "Listen to"
+msgstr ""
+
+#: id:33058
+msgid "View your"
+msgstr ""
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr ""
+
+#: id:33060
+msgid "Power"
+msgstr ""
+
+#: id:33061
+msgid "Menu"
+msgstr ""
+
+#: id:33062
+msgid "Play the"
+msgstr ""
+
+#: id:33063
+msgid "Options"
+msgstr ""
+
+#: id:33065
+msgid "Editor"
+msgstr ""
+
+#: id:33066
+msgid "About your"
+msgstr ""
+
+#: id:33067
+msgid "Star rating"
+msgstr ""
+
+#: id:33068
+msgid "Background"
+msgstr ""
+
+#: id:33069
+msgid "Backgrounds"
+msgstr ""
+
+#: id:33070
+msgid "Custom background"
+msgstr ""
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr ""
+
+#: id:33072
+msgid "View Readme"
+msgstr ""
+
+#: id:33073
+msgid "View Changelog"
+msgstr ""
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr ""
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr ""
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr ""
+
+#: id:33077
+msgid "No data found!"
+msgstr ""
+
+#: id:33078
+msgid "Next page"
+msgstr ""
+
+#: id:33079
+msgid "Love"
+msgstr ""
+
+#: id:33080
+msgid "Hate"
+msgstr ""
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+
+#: id:33082
+msgid "Path to script"
+msgstr ""
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr ""
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr ""
+
+#: id:34001
+msgid "Vorbis"
+msgstr ""
+
+#: id:34002
+msgid "Wav"
+msgstr ""
+
+#: id:34003
+msgid "DXVA2"
+msgstr ""
+
+#: id:34004
+msgid "VAAPI"
+msgstr ""
+
+#: id:34005
+msgid "Flac"
+msgstr ""
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr ""
+
+#: id:34101
+msgid "2.0"
+msgstr ""
+
+#: id:34102
+msgid "2.1"
+msgstr ""
+
+#: id:34103
+msgid "3.0"
+msgstr ""
+
+#: id:34104
+msgid "3.1"
+msgstr ""
+
+#: id:34105
+msgid "4.0"
+msgstr ""
+
+#: id:34106
+msgid "4.1"
+msgstr ""
+
+#: id:34107
+msgid "5.0"
+msgstr ""
+
+#: id:34108
+msgid "5.1"
+msgstr ""
+
+#: id:34109
+msgid "7.0"
+msgstr ""
+
+#: id:34110
+msgid "7.1"
+msgstr ""
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

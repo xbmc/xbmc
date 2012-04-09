@@ -1,0 +1,576 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-FRODO_GIT953c09c336\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Zmień"
+
+#: id:31001
+msgid "Love"
+msgstr "Lubię"
+
+#: id:31002
+msgid "Hate"
+msgstr "Nie lubię"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Opcje zasilania"
+
+#: id:31004
+msgid "Working..."
+msgstr "Pracuję..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Ukryj info"
+
+#: id:31006
+msgid "View Options"
+msgstr "Zobacz opcje"
+
+#: id:31007
+msgid "Plugins"
+msgstr "Wtyczki"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "Pełny ekran"
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Ostatnio dodane"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Wideo - pliki"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Muzyka - pliki"
+
+#: id:31023
+msgid "Playing"
+msgstr "Otwarzam"
+
+#: id:31024
+msgid "Page"
+msgstr "Strona"
+
+#: id:31025
+msgid "Items"
+msgstr "Pozycji"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Różne opcje"
+
+#: id:31027
+msgid "Location"
+msgstr "Lokalizacja"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Plakaty"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:31030
+msgid "Full list"
+msgstr "Pełna lista"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Miniatury zdjęć"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Zawijaj obrazy"
+
+#: id:31033
+msgid "Info"
+msgstr "Info"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Teraz odtwarzane"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "ODTWARZAM"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "PAUZA"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "PRZEWIŃ"
+
+#: id:31045
+msgid "REWIND"
+msgstr "COFNIJ"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Właściwości audio"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Obecny efekt"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Efekty wizualizacji"
+
+#: id:31049
+msgid "End Time"
+msgstr "Koniec o godzinie"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "Sortuj: rosnąco"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "Sortuj: malejąco"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Otwórz playlistę"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Zapisz playlistę"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Zamknij playlistę"
+
+#: id:31058
+msgid "System music files"
+msgstr "Dostępne w systemie pliki muzyczne"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Obecna playlista"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Pozycja w wyniku połączenia części[CR]wybierz, którą chcesz odtwarzać."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Aktualnie wybrany"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Opcje ekranu głównego"
+
+#: id:31102
+msgid "Background"
+msgstr "Tło"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Wyświetlaj \"Pauza\" podczas pokazu slajdów"
+
+#: id:31104
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Odtwarzaj zwiastuny w oknie [COLOR=grey3](tylko w oknie Informacje o wideo)[/COLOR]"
+
+#: id:31105
+msgid "\"Videos\" button always goes to video \"Files\""
+msgstr "Przycisk \"wideo\" przenosi zawsze do plików wideo"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Różne opcje"
+
+#: id:31107
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Ukryj ikony właściwości wideo z nazw plików [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Ukryj przyciski głównego menu"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Tła ekranu głównego"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Edytuj tło dla"
+
+#: id:31111
+msgid "Hide"
+msgstr "Ukryj"
+
+#: id:31112
+msgid "Options"
+msgstr "Opcje"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Pojedynczy obraz"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Wiele obrazów"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Modyfikacja"
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Pokazuj ostatnio dodane wideo"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Podmenu programów Ekranu głównego"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Ukryj tło fanartu"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "ETYKIETA PRZYCISKU"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Strona pogody"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Użyj plakatów zamiast banerów dla seriali"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Pokazuj aktualnie odtwarzane wideo jako tło"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Pokazuj aktualną wizualizację jako tło"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Odtwarzaj motyw TV w bibliotece wideo (wtyczka TvTunes)"
+
+#: id:31127
+msgid "TvTunes"
+msgstr ""
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Teksty piosenek"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "Wtyczka Teksty piosenek"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "Wtyczka Napisy do filmów"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "Podmenu wideo Ekranu głównego"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "Podmenu muzyki Ekranu głównego"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "Podmenu zdjęć Ekranu głównego"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Muzyka - OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Wideo - OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Skróty"
+
+#: id:31201
+msgid "Categories"
+msgstr "Kategorie"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Pokaż obsadę"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Wybierz swoją piosenkę"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Linki sekcji"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Źródło tekstów piosenek"
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Temperatura"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Ostatnia aktualizacja"
+
+#: id:31302
+msgid "Menu"
+msgstr "Menu"
+
+#: id:31303
+msgid "Data provider"
+msgstr "Dostawca danych"
+
+#: id:31304
+msgid "Picture"
+msgstr "Zdjęcia"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Nie wykryto płyty"
+
+#: id:31306
+msgid "Eject"
+msgstr "Wysuń"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Ukryj fanart"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Szczegóły o filmie"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Używana pamięć:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Numer ścieżki"
+
+#: id:31311
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "Fanart[CR][CR]niedostępny[CR][CR] Kliknij przycisk, aby dodać"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Bieżący scraper"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Wybierz scraper"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "Opcje skanowania zawartości"
+
+#: id:31315
+msgid "Basic"
+msgstr "Podstawowe"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Wskaż ścieżkę fanartu"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Mały fanart"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Wybrany profil"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Ostatnio zalogowany"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Wybór piosenki karaoke"
+
+#: id:31322
+msgid "Aired"
+msgstr "Emisja"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "Najnowsze filmy"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "Najnowsze odcinki"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Opcje playlisty"
+
+#: id:31326
+msgid "Created"
+msgstr "Utworzony"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Rozdzielczość"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Ostatnio dodane"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]Timer ustawiony![/B] [COLOR=grey2] - Wyłączenie systemu za[/COLOR]"
+
+#: id:31330
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Kliknij przycisk, aby[CR][CR]odtworzyć zwiastun"
+
+#: id:31331
+msgid "Album Details"
+msgstr "Sczegóły albumu"
+
+#: id:31351
+msgid "Pause"
+msgstr "Pauza"
+
+#: id:31352
+msgid "Stop"
+msgstr "Stop"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "Przewiń"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Cofnij"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Menu filmu"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Pobierz napisy"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Domyślne dla skóry"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Domyślne dla skóry bez dużych liter"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Bazujące na Arialu"
+
+#: id:31400
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin � Set language and region � Change file listing options[CR]Set up a screensaver"
+msgstr "[B]KONFIGURUJ USTAWIENIA WYGLĄDU[/B][CR][CR]Wybór skóry · Język · Lista plików[CR]Wygaszacz ekranu"
+
+#: id:31401
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library � Set video playback options � Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Biblioteka wideo · Odtwarzanie · Lista wideo[CR]Czcionka napisów"
+
+#: id:31402
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library � Set music playback options � Change music listing options[CR]Setup song submission � Set karaoke options"
+msgstr "[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Biblioteka muzyki · Odtwarzanie · Lista utworów[CR]Publikacja piosenek · Opcje karaoke"
+
+#: id:31403
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options � Configure slideshows"
+msgstr "[B]KONFIGURUJ USTAWIENIA ZDJĘĆ[/B][CR][CR]Lista zdjęć · Pokaz slajdów"
+
+#: id:31404
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]KONFIGURUJ USTAWIENIA POGODY[/B][CR][CR]Ustaw pogodę dla trzech miast"
+
+#: id:31406
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays � Configure audio output � Setup remote controls[CR]Set power saving options � Enable debugging � Setup master lock"
+msgstr "[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Ustawienia wyświetlania · Wyjście audio · Zdalne sterowania[CR]Opcje zasilania · Debugging · Blokady"
+
+#: id:31407
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin � Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Ustawienia skóry · Pozycje menu głównego[CR]Tła skóry"
+
+#: id:31408
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons � Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzaj wtyczkami · Przeglądaj i instaluj wtyczki[CR]Ustawienia wtyczek"
+
+#: id:31409
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP � Configure file sharing[CR]Enable Zeroconf � Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Wybierz profil użytkownika"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "Mapy pogody"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "Pogoda na 36 godzin"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "Pogoda godzinna"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "Pogoda weekendowa"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "Pogoda na 10 dni"
+
+#: id:31905
+msgid "Forecast"
+msgstr "Pogoda"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "Mapy i wideo"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Pogoda wideo [COLOR=grey2](na pełnym ekranie)[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "Możliwość opadów"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "Prognozuję pogodę..."
+
