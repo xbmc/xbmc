@@ -212,13 +212,12 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   {
     if (!bQueueWrite)
     {
-      m_iChannelId = database->Persist(*this, false);
-      m_bChanged = false;
-      bReturn = m_iChannelId > 0;
+      bReturn = database->Persist(*this, false);
+      m_bChanged = !bReturn;
     }
     else
     {
-      bReturn = database->Persist(*this, true) > 0;
+      bReturn = database->Persist(*this, true);
     }
   }
   else

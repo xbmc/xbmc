@@ -26,7 +26,7 @@
 #include "xvdrcommand.h"
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
+#include "lib/libPlatform/os-dependent_socket.h"
 }
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
@@ -245,7 +245,7 @@ bool cXVDRData::ChannelFilter(bool fta, bool nativelangonly, std::vector<int>& c
   if (!vrp.add_U32(nativelangonly)) return false;
   if (!vrp.add_U32(count)) return false;
 
-  for(int i = 0; i < count; i++)
+  for(unsigned int i = 0; i < count; i++)
     if (!vrp.add_U32(caids[i])) return false;
 
   cResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
@@ -940,7 +940,7 @@ void cXVDRData::Action()
         char* str1      = vresp->extract_String();
         char* str2      = vresp->extract_String();
 
-        PVR->Recording(str1, str2, on);
+        PVR->Recording(str1, str2, (on!=0));
         PVR->TriggerTimerUpdate();
 
         delete[] str1;
@@ -1025,7 +1025,7 @@ bool cXVDRData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
     PVR_CHANNEL_GROUP tag;
 
     tag.strGroupName = vresp->extract_String();
-    tag.bIsRadio = vresp->extract_U8();
+    tag.bIsRadio = (vresp->extract_U8()!=0);
     PVR->TransferChannelGroup(handle, &tag);
 
     delete[] tag.strGroupName;

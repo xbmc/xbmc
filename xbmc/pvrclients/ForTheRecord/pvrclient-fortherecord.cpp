@@ -28,6 +28,7 @@
 #include "utils.h"
 #include "pvrclient-fortherecord.h"
 #include "fortherecordrpc.h"
+#include "platform/util/timeutils.h"
 
 #ifdef TSREADER
 #include "lib/tsreader/TSReader.h"
@@ -1128,7 +1129,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Tune XBMC channel: %i", channelinfo.iUniqueId);
     XBMC->Log(LOG_INFO, "Corresponding ForTheRecord channel: %s", channel->Guid().c_str());
 
-    if (m_keepalive.IsThreadRunning())
+    if (m_keepalive.IsRunning())
     {
       long hr = m_keepalive.StopThread();
       if (hr != 0)
@@ -1177,7 +1178,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Live stream file: %s", filename.c_str());
     m_bTimeShiftStarted = true;
     m_iCurrentChannel = channelinfo.iUniqueId;
-    if (m_keepalive.StartThread() != 0)
+    if (m_keepalive.CreateThread() != 0)
     {
       XBMC->Log(LOG_ERROR, "Start keepalive thread failed.");
     }
@@ -1316,7 +1317,7 @@ void cPVRClientForTheRecord::CloseLiveStream()
   string result;
   XBMC->Log(LOG_INFO, "CloseLiveStream");
 
-  if (m_keepalive.IsThreadRunning())
+  if (m_keepalive.IsRunning())
   {
     long hr = m_keepalive.StopThread();
     if (hr != 0)

@@ -29,7 +29,7 @@
 #include <sstream>
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
+#include "lib/libPlatform/os-dependent_socket.h"
 }
 
 using namespace ADDON;
@@ -518,7 +518,7 @@ bool cXVDRChannelScan::OnResponsePacket(cResponsePacket* resp)
   {
     uint32_t strength = resp->extract_U32();
     uint32_t locked   = resp->extract_U32();
-    SetSignal(strength, locked);
+    SetSignal(strength, (locked!=0));
   }
   else if (requestID == XVDR_SCANNER_DEVICE)
   {

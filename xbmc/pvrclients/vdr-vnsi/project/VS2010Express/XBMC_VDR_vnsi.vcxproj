@@ -15,6 +15,7 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\responsepacket.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp" />
     <ClCompile Include="..\..\tools.cpp" />
     <ClCompile Include="..\..\VNSIChannelScan.cpp" />
     <ClCompile Include="..\..\VNSIData.cpp" />

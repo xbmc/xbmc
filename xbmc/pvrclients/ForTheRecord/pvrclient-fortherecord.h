@@ -16,12 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifdef TSREADER
-//#include "os-dependent.h"
-#include "libPlatform/os-dependent.h"
-#else
-#include "libPlatform/os-dependent.h"
-#endif 
+
+#include "os-dependent.h"
 
 #include <vector>
 
@@ -33,8 +29,8 @@
 #include "guideprogram.h"
 
 #include "KeepAliveThread.h"
+
 #ifdef TSREADER
-//#include "lib/tsreader/TSReader.h"
 class CTsReader;
 #endif
 

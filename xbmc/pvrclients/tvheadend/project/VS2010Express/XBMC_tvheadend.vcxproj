@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\HTSPConnection.cpp" />
     <ClCompile Include="..\..\HTSPData.cpp" />

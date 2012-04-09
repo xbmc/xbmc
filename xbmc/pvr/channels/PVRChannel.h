@@ -132,6 +132,8 @@ namespace PVR
      */
     int ChannelID(void) const { return m_iChannelId; }
 
+    bool IsNew(void) const { return m_iChannelId <= 0; }
+
     /*!
      * @brief Set the identifier for this channel.
      * @param iDatabaseId The new channel ID

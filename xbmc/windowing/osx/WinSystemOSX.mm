@@ -1352,7 +1352,14 @@ void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display,
   {
     // pre/post-reconfiguration changes
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:g_settings.m_ResInfo[res].iScreen];
+    NSScreen* pScreen = nil;
+    unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
+    
+    if( screenIdx < [[NSScreen screens] count] )
+    {
+        pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
+    }
+
     if (pScreen)
     {
       CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
