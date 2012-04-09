@@ -139,7 +139,15 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem->SetPath(strFilePath);
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
+      pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
       results->Add(pFileItem);
+    }
+    else
+    {
+      CFileItemPtr pFileItem;
+      pFileItem=results->Get(strFilePath);
+      if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
+        pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
     }
   }
 
