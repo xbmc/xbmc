@@ -1532,8 +1532,8 @@ void CDVDPlayer::HandlePlaySpeed()
   {
     bool bGotAudio(m_pDemuxer->GetNrOfAudioStreams() > 0);
     bool bGotVideo(m_pDemuxer->GetNrOfVideoStreams() > 0);
-    bool bAudioLevelOk(m_dvdPlayerAudio.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinAudioCacheLevel);
-    bool bVideoLevelOk(m_dvdPlayerVideo.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinVideoCacheLevel);
+    bool bAudioLevelOk(m_dvdPlayerAudio.GetLevel() > g_advancedSettings.m_iPVRMinAudioCacheLevel);
+    bool bVideoLevelOk(m_dvdPlayerVideo.GetLevel() > g_advancedSettings.m_iPVRMinVideoCacheLevel);
     bool bAudioFull(!m_dvdPlayerAudio.AcceptsData());
     bool bVideoFull(!m_dvdPlayerVideo.AcceptsData());
 
@@ -1543,8 +1543,8 @@ void CDVDPlayer::HandlePlaySpeed()
         (bAudioFull || bVideoFull))
     {
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
-          bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
-          bGotVideo, m_dvdPlayerVideo.m_messageQueue.GetLevel());
+          bGotAudio, m_dvdPlayerAudio.GetLevel(),
+          bGotVideo, m_dvdPlayerVideo.GetLevel());
 
       CFileItem currentItem(g_application.CurrentFileItem());
       if (currentItem.HasPVRChannelInfoTag())
@@ -1629,8 +1629,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   {
     if (CachePVRStream())
     {
-      if ((current.type == STREAM_AUDIO && current.started && m_dvdPlayerAudio.m_messageQueue.GetLevel() == 0) ||
-         (current.type == STREAM_VIDEO && current.started && m_dvdPlayerVideo.m_messageQueue.GetLevel() == 0))
+      if ((current.type == STREAM_AUDIO && current.started && m_dvdPlayerAudio.GetLevel() == 0) ||
+         (current.type == STREAM_VIDEO && current.started && m_dvdPlayerVideo.GetLevel() == 0))
       {
         CLog::Log(LOGDEBUG, "%s stream stalled. start buffering", current.type == STREAM_AUDIO ? "audio" : "video");
         SetCaching(CACHESTATE_PVR);
