@@ -338,7 +338,7 @@ IOSEAGLView  *m_glView;
     if (sender.state == UIGestureRecognizerStateBegan)
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];
-      [self postMouseMotionEvent:point];
+      [self postMouseMotionEvent:point];//selects the current control
     }
 
     if (sender.state == UIGestureRecognizerStateEnded)
@@ -357,7 +357,7 @@ IOSEAGLView  *m_glView;
     if( [touches count] == 1 && [touch tapCount] == 1)
     {
       lastGesturePoint = [touch locationInView:m_glView];    
-      [self postMouseMotionEvent:lastGesturePoint];
+      [self postMouseMotionEvent:lastGesturePoint];//selects the current control
 
       lastGesturePoint.x *= screenScale;
       lastGesturePoint.y *= screenScale;  
@@ -397,7 +397,9 @@ IOSEAGLView  *m_glView;
       newEvent.button.button = XBMC_BUTTON_LEFT;
       newEvent.button.x = lastGesturePoint.x;
       newEvent.button.y = lastGesturePoint.y;
-      CWinEventsIOS::MessagePush(&newEvent);    
+      CWinEventsIOS::MessagePush(&newEvent);
+
+      [self postMouseMotionEvent:CGPointMake(-1,-1)];//deselects control
       
       memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
     }
