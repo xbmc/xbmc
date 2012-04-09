@@ -492,7 +492,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 
 #ifndef _WIN32
   {
-    CSingleLock waitLock(m_muAutoSource);  
+    CSingleLock waitLock(m_muAutoSource);
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo  )
     {
@@ -542,7 +542,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
   bool dataRead = false;
 
   vecItemsTS.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-  for (int i = 0; i < vecItemsTS.Size(); i++) 
+  for (int i = 0; i < vecItemsTS.Size(); i++)
   {
     CFileItemPtr videoTSItem = vecItemsTS[i];
     success = true;
@@ -558,7 +558,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
     }
     int res;
     char buf[2048];
-    while( (res = file.Read(buf, sizeof(buf))) > 0) 
+    while( (res = file.Read(buf, sizeof(buf))) > 0)
     {
       dataRead = true;
       crc32.Compute(buf, res);
@@ -630,8 +630,11 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("dvds.autorun"))
-    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+  if (g_guiSettings.GetInt("audiocds.autoaction") != AUTOCD_NONE || g_guiSettings.GetBool("dvds.autorun"))
+    if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP)
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_LOW);
+    else
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
 }

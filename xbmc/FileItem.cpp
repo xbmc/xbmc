@@ -2372,7 +2372,7 @@ void CFileItemList::StackFolders()
           if (bMatch)
           {
             CFileItemList items;
-            CDirectory::GetDirectory(item->GetPath(),items,g_settings.m_videoExtensions,true);
+            CDirectory::GetDirectory(item->GetPath(),items,g_settings.m_videoExtensions);
             // optimized to only traverse listing once by checking for filecount
             // and recording last file item for later use
             int nFiles = 0;
@@ -3177,11 +3177,11 @@ CStdString CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false, true);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (IsOpticalMediaFile())
   { // grab from the optical media parent folder as well - see GetUserVideoThumb
     CFileItemList moreItems;
-    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false, true);
+    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
   }
 
@@ -3336,10 +3336,18 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
 bool CFileItemList::UpdateItem(const CFileItem *item)
 {
   if (!item) return false;
-  CFileItemPtr oldItem = Get(item->GetPath());
-  if (oldItem)
-    *oldItem = *item;
-  return oldItem;
+
+  CSingleLock lock(m_lock);
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CFileItemPtr pItem = m_items[i];
+    if (pItem->IsSamePath(item))
+    {
+      *pItem = *item;
+      return true;
+    }
+  }
+  return false;
 }
 
 void CFileItemList::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, const LABEL_MASKS &labelMasks)
@@ -3454,7 +3462,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   URIUtils::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false, true);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   URIUtils::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");

@@ -666,6 +666,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\player.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -677,6 +680,9 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">..\..\project\BuildDependencies\include\python;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.cpp">
@@ -916,6 +922,7 @@
     <ClCompile Include="..\..\xbmc\SystemGlobals.cpp" />
     <ClCompile Include="..\..\xbmc\Temperature.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
+    <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp" />
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
@@ -1670,11 +1677,13 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\infotagvideo.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\keyboard.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\player.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyjsonrpc.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyplaylist.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyutil.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\window.h" />
@@ -1889,6 +1898,7 @@
     <ClInclude Include="..\..\xbmc\system.h" />
     <ClInclude Include="..\..\xbmc\Temperature.h" />
     <ClInclude Include="..\..\xbmc\TextureCache.h" />
+    <ClInclude Include="..\..\xbmc\TextureCacheJob.h" />
     <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
     <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
     <ClInclude Include="..\..\xbmc\threads\Condition.h" />

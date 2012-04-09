@@ -558,12 +558,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         { // store the thumb for this share
           CTextureDatabase db;
           if (db.Open())
-          {
-            cachedThumb = CTextureCache::GetUniqueImage(item->GetPath(), URIUtils::GetExtension(strThumb));
-            db.SetTextureForPath(item->GetPath(), cachedThumb);
-          }
+            db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
         }
-        XFILE::CFile::Cache(strThumb, cachedThumb);
+        if (!cachedThumb.IsEmpty())
+          XFILE::CFile::Cache(strThumb, cachedThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

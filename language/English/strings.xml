@@ -1348,7 +1348,7 @@
   <string id="14082">Show EXIF picture information</string>
   <string id="14083">Use a fullscreen window rather than true fullscreen</string>
   <string id="14084">Queue songs on selection</string>
-  <string id="14085">Play audio CDs automatically</string>
+  <string id="14085"></string>
   <string id="14086">Playback</string>
   <string id="14087">DVDs</string>
   <string id="14088">Play DVDs automatically</string>
@@ -1359,8 +1359,10 @@
   <string id="14093">Security</string>
   <string id="14094">Input devices</string>
   <string id="14095">Power saving</string>
+  <string id="14096">Rip</string>
+  <string id="14097">Audio CD Insert Action</string>
+  <string id="14098">Play</string>
   <string id="14099">Eject disc when CD ripping is complete</string>
-
   <string id="15015">Remove</string>
   <string id="15016">Games</string>
 
@@ -2824,6 +2826,13 @@
   <string id="34401">Failed to init video filters/scalers, falling back to bilinear scaling</string>
   <string id="34402">Failed to initialize audio device</string>
   <string id="34403">Check your audiosettings</string>
+
+  <!-- description for the touchscreen when using the tvout feature on iDevices -->
+  <string id="34404">Use gestures for navigation:</string>
+  <string id="34405">1 finger swipe left,right,up,down for cursors</string>
+  <string id="34406">2 finger swipe left for backspace</string>
+  <string id="34407">1 finger single tap for enter</string>
+  <string id="34408">2 finger single tap for contextmenu</string>
 
   <string id="35000">Peripherals</string>
 

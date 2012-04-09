@@ -70,23 +70,19 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
   return pItem->HasThumbnail();
 }
 
-CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
+CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString &type)
 {
   CTextureDatabase db;
   if (db.Open())
-    return db.GetTextureForPath(item.GetPath());
+    return db.GetTextureForPath(item.GetPath(), type);
   return "";
 }
 
-bool CThumbLoader::CheckAndCacheThumb(CFileItem &item)
+void CThumbLoader::SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image)
 {
-  if (item.HasThumbnail() && !g_TextureManager.CanLoad(item.GetThumbnailImage()))
-  {
-    CStdString thumb = CTextureCache::Get().CheckAndCacheImage(item.GetThumbnailImage());
-    item.SetThumbnailImage(thumb);
-    return !thumb.IsEmpty();
-  }
-  return false;
+  CTextureDatabase db;
+  if (db.Open())
+    db.SetTextureForPath(item.GetPath(), type, image);
 }
 
 CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
@@ -238,17 +234,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       cachedThumb = strPath + "auto-" + strFileName;
       if (CFile::Exists(cachedThumb))
       {
-        // this is abit of a hack to avoid loading zero sized images
-        // which we know will fail. They will just display empty image
-        // we should really have some way for the texture loader to
-        // do fallbacks to default images for a failed image instead
-        struct __stat64 st;
-        if(CFile::Stat(cachedThumb, &st) == 0 && st.st_size > 0)
-        {
-          pItem->SetProperty("HasAutoThumb", true);
-          pItem->SetProperty("AutoThumbImage", cachedThumb);
-          pItem->SetThumbnailImage(cachedThumb);
-        }
+        pItem->SetProperty("HasAutoThumb", true);
+        pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
       }
       else if (!pItem->m_bIsFolder && pItem->IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
                g_guiSettings.GetBool("myvideos.extractflags"))
@@ -319,25 +307,22 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 bool CProgramThumbLoader::FillThumb(CFileItem &item)
 {
   // no need to do anything if we already have a thumb set
-  if (CheckAndCacheThumb(item) || item.HasThumbnail())
+  if (item.HasThumbnail())
     return true;
 
   // see whether we have a cached image for this item
-  CStdString thumb = GetCachedThumb(item);
+  CStdString thumb = GetCachedImage(item, "thumb");
+  if (thumb.IsEmpty())
+  {
+    thumb = GetLocalThumb(item);
+    if (!thumb.IsEmpty())
+      SetCachedImage(item, "thumb", thumb);
+  }
   if (!thumb.IsEmpty())
   {
-    item.SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
-    return true;
+    CTextureCache::Get().BackgroundCacheImage(thumb);
+    item.SetThumbnailImage(thumb);
   }
-  thumb = GetLocalThumb(item);
-  if (!thumb.IsEmpty())
-  {
-    CTextureDatabase db;
-    if (db.Open())
-      db.SetTextureForPath(item.GetPath(), thumb);
-    thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-  }
-  item.SetThumbnailImage(thumb);
   return true;
 }
 

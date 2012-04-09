@@ -105,7 +105,7 @@ void CSkinInfo::Start(const CStdString &strBaseDir)
   if (!m_resolutions.size())
   { // try falling back to whatever resolutions exist in the directory
     CFileItemList items;
-    CDirectory::GetDirectory(Path(), items, "", false);
+    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
     for (int i = 0; i < items.Size(); i++)
     {
       RESOLUTION_INFO res;

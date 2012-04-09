@@ -530,3 +530,14 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
   }
   return best;
 }
+
+size_t StringUtils::utf8_strlen(const char *s)
+{
+  size_t length = 0;
+  while (*s)
+  {
+		if ((*s++ & 0xC0) != 0x80)
+			length++;
+	}
+	return length;
+}

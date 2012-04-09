@@ -29,6 +29,7 @@
 #include "avcodec.h"
 #include "get_bits.h"
 #include "dsputil.h"
+#include "mpegaudiodsp.h"
 #include "mpegaudio.h"
 
 #include "mpc.h"
@@ -36,7 +37,7 @@
 
 void ff_mpc_init(void)
 {
-    ff_mpa_synth_init(ff_mpa_synth_window);
+    ff_mpa_synth_init_fixed(ff_mpa_synth_window_fixed);
 }
 
 /**
@@ -51,8 +52,9 @@ static void mpc_synth(MPCContext *c, int16_t *out, int channels)
     for(ch = 0;  ch < channels; ch++){
         samples_ptr = samples + ch;
         for(i = 0; i < SAMPLES_PER_BAND; i++) {
-            ff_mpa_synth_filter(c->synth_buf[ch], &(c->synth_buf_offset[ch]),
-                                ff_mpa_synth_window, &dither_state,
+            ff_mpa_synth_filter_fixed(&c->mpadsp,
+                                c->synth_buf[ch], &(c->synth_buf_offset[ch]),
+                                ff_mpa_synth_window_fixed, &dither_state,
                                 samples_ptr, channels,
                                 c->sb_samples[ch][i]);
             samples_ptr += 32 * channels;
@@ -76,13 +78,13 @@ void ff_mpc_dequantize_and_synth(MPCContext * c, int maxband, void *data, int ch
         for(ch = 0; ch < 2; ch++){
             if(bands[i].res[ch]){
                 j = 0;
-                mul = mpc_CC[bands[i].res[ch]] * mpc_SCF[bands[i].scf_idx[ch][0]];
+                mul = mpc_CC[bands[i].res[ch] + 1] * mpc_SCF[bands[i].scf_idx[ch][0]+6];
                 for(; j < 12; j++)
                     c->sb_samples[ch][j][i] = mul * c->Q[ch][j + off];
-                mul = mpc_CC[bands[i].res[ch]] * mpc_SCF[bands[i].scf_idx[ch][1]];
+                mul = mpc_CC[bands[i].res[ch] + 1] * mpc_SCF[bands[i].scf_idx[ch][1]+6];
                 for(; j < 24; j++)
                     c->sb_samples[ch][j][i] = mul * c->Q[ch][j + off];
-                mul = mpc_CC[bands[i].res[ch]] * mpc_SCF[bands[i].scf_idx[ch][2]];
+                mul = mpc_CC[bands[i].res[ch] + 1] * mpc_SCF[bands[i].scf_idx[ch][2]+6];
                 for(; j < 36; j++)
                     c->sb_samples[ch][j][i] = mul * c->Q[ch][j + off];
             }

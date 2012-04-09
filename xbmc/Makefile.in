@@ -23,6 +23,7 @@ SRCS=Application.cpp \
      SystemGlobals.cpp \
      Temperature.cpp \
      TextureCache.cpp \
+     TextureCacheJob.cpp \
      TextureDatabase.cpp \
      ThumbLoader.cpp \
      ThumbnailCache.cpp \

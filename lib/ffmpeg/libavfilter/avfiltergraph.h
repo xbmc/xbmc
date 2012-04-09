@@ -76,12 +76,13 @@ int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt,
  * @param log_ctx context used for logging
  * @return 0 in case of success, a negative AVERROR code otherwise
  */
-int avfilter_graph_config(AVFilterGraph *graphctx, AVClass *log_ctx);
+int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx);
 
 /**
- * Free a graph and destroy its links, graph may be NULL.
+ * Free a graph, destroy its links, and set *graph to NULL.
+ * If *graph is NULL, do nothing.
  */
-void avfilter_graph_free(AVFilterGraph *graph);
+void avfilter_graph_free(AVFilterGraph **graph);
 
 /**
  * A linked-list of the inputs/outputs of the filter chain.
@@ -107,16 +108,77 @@ typedef struct AVFilterInOut {
 } AVFilterInOut;
 
 /**
+ * Create an AVFilterInOut.
+ * Must be free with avfilter_inout_free().
+ */
+AVFilterInOut *avfilter_inout_alloc(void);
+
+/**
+ * Free the AVFilterInOut in *inout, and set its pointer to NULL.
+ * If *inout is NULL, do nothing.
+ */
+void avfilter_inout_free(AVFilterInOut **inout);
+
+/**
  * Add a graph described by a string to a graph.
  *
  * @param graph   the filter graph where to link the parsed graph context
  * @param filters string to be parsed
- * @param inputs  linked list to the inputs of the graph
- * @param outputs linked list to the outputs of the graph
- * @return zero on success, a negative AVERROR code on error
+ * @param inputs  pointer to a linked list to the inputs of the graph, may be NULL.
+ *                If non-NULL, *inputs is updated to contain the list of open inputs
+ *                after the parsing, should be freed with avfilter_inout_free().
+ * @param outputs pointer to a linked list to the outputs of the graph, may be NULL.
+ *                If non-NULL, *outputs is updated to contain the list of open outputs
+ *                after the parsing, should be freed with avfilter_inout_free().
+ * @return non negative on success, a negative AVERROR code on error
  */
 int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
-                         AVFilterInOut *inputs, AVFilterInOut *outputs,
-                         AVClass *log_ctx);
+                         AVFilterInOut **inputs, AVFilterInOut **outputs,
+                         void *log_ctx);
 
-#endif  /* AVFILTER_AVFILTERGRAPH_H */
+/**
+ * Send a command to one or more filter instances.
+ *
+ * @param graph  the filter graph
+ * @param target the filter(s) to which the command should be sent
+ *               "all" sends to all filters
+ *               otherwise it can be a filter or filter instance name
+ *               which will send the command to all matching filters.
+ * @param cmd    the command to sent, for handling simplicity all commands must be alphanumeric only
+ * @param arg    the argument for the command
+ * @param res    a buffer with size res_size where the filter(s) can return a response.
+ *
+ * @returns >=0 on success otherwise an error code.
+ *              AVERROR(ENOSYS) on unsupported commands
+ */
+int avfilter_graph_send_command(AVFilterGraph *graph, const char *target, const char *cmd, const char *arg, char *res, int res_len, int flags);
+
+/**
+ * Queue a command for one or more filter instances.
+ *
+ * @param graph  the filter graph
+ * @param target the filter(s) to which the command should be sent
+ *               "all" sends to all filters
+ *               otherwise it can be a filter or filter instance name
+ *               which will send the command to all matching filters.
+ * @param cmd    the command to sent, for handling simplicity all commands must be alphanummeric only
+ * @param arg    the argument for the command
+ * @param ts     time at which the command should be sent to the filter
+ *
+ * @note As this executes commands after this function returns, no return code
+ *       from the filter is provided, also AVFILTER_CMD_FLAG_ONE is not supported.
+ */
+int avfilter_graph_queue_command(AVFilterGraph *graph, const char *target, const char *cmd, const char *arg, int flags, double ts);
+
+
+/**
+ * Dump a graph into a human-readable string representation.
+ *
+ * @param graph    the graph to dump
+ * @param options  formatting options; currently ignored
+ * @return  a string, or NULL in case of memory allocation failure;
+ *          the string must be freed using av_free
+ */
+char *avfilter_graph_dump(AVFilterGraph *graph, const char *options);
+
+#endif /* AVFILTER_AVFILTERGRAPH_H */

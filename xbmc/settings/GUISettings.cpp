@@ -323,7 +323,13 @@ void CGUISettings::Initialize()
   AddString(scr, "scrobbler.librefmpass", 15219, "", EDIT_CONTROL_MD5_INPUT, false, 15219);
 
   CSettingsCategory* acd = AddCategory(3, "audiocds", 620);
-  AddBool(acd, "audiocds.autorun", 14085, false);
+  map<int,int> autocd;
+  autocd.insert(make_pair(16018, AUTOCD_NONE));
+  autocd.insert(make_pair(14098, AUTOCD_PLAY));
+#ifdef HAS_CDDA_RIPPER
+  autocd.insert(make_pair(14096, AUTOCD_RIP));
+#endif
+  AddInt(acd,"audiocds.autoaction",14097,AUTOCD_NONE, autocd, SPIN_CONTROL_TEXT);
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
@@ -367,19 +373,17 @@ void CGUISettings::Initialize()
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
 
-#if (defined(__APPLE__) && defined(__arm__))
-  // define but hide display, resolution and blankdisplays settings on atv2/ios, they are not user controlled
-  AddInt(NULL, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
-  AddInt(NULL, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
-  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);
-#else
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains a DISPLAYMODE
+#if !defined(TARGET_DARWIN_IOS_ATV2)
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+#endif
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
 #if defined (__APPLE__)
-  AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+  #if !defined(TARGET_DARWIN_IOS_ATV2)
+    AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+  #endif
 #else
   AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #endif
@@ -408,9 +412,12 @@ void CGUISettings::Initialize()
   showSetting = false;
 #endif
   AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+#ifdef TARGET_DARWIN_IOS
+  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);  
+#else
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
-  AddSeparator(vs, "videoscreen.sep1");
 #endif
+  AddSeparator(vs, "videoscreen.sep1");
 #endif
 
   map<int,int> vsync;
@@ -445,13 +452,8 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
-#if (defined(__APPLE__) && defined(__arm__))
-  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.ac3passthrough", 364, false);
-  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.dtspassthrough", 254, false);
-#else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
-#endif
   AddBool(NULL, "audiooutput.passthroughaac", 299, false);
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
@@ -712,7 +714,6 @@ void CGUISettings::Initialize()
   myVideosSelectActions.insert(make_pair(22081, SELECT_ACTION_INFO));
   
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
-  AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.replacelabels", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);

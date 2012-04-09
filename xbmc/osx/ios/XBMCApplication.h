@@ -24,4 +24,3 @@
 @interface XBMCApplicationDelegate : NSObject <UIApplicationDelegate> {
 }
 @end
-

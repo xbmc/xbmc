@@ -509,6 +509,8 @@
 		43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
 		7C0A7EC113A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */; };
+		7C1A85651520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
+		7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A85631520522500C63311 /* TextureCacheJob.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -726,6 +728,10 @@
 		C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
 		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C8936052152C86CF00812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936050152C86CF00812418 /* monitor.cpp */; };
+		C8936053152C86CF00812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936050152C86CF00812418 /* monitor.cpp */; };
+		C8936056152C86D800812418 /* PythonMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936054152C86D800812418 /* PythonMonitor.cpp */; };
+		C8936057152C86D800812418 /* PythonMonitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936054152C86D800812418 /* PythonMonitor.cpp */; };
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
@@ -2613,6 +2619,8 @@
 		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
 		7C0A7EBE13A5DBCE00AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EBF13A5DBCE00AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
+		7C1A85631520522500C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
+		7C1A85641520522500C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
 		7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocol.cpp; sourceTree = "<group>"; };
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVDirectory.cpp; sourceTree = "<group>"; };
@@ -2840,6 +2848,10 @@
 		C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
 		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Repository.cpp; sourceTree = "<group>"; };
 		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Repository.h; sourceTree = "<group>"; };
+		C8936050152C86CF00812418 /* monitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = monitor.cpp; sourceTree = "<group>"; };
+		C8936051152C86CF00812418 /* monitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = monitor.h; sourceTree = "<group>"; };
+		C8936054152C86D800812418 /* PythonMonitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonMonitor.cpp; sourceTree = "<group>"; };
+		C8936055152C86D800812418 /* PythonMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonMonitor.h; sourceTree = "<group>"; };
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
 		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
@@ -5654,6 +5666,8 @@
 				E38E1E170D25F9FD00618676 /* Temperature.h */,
 				7C8A14541154CB2600E5FCFA /* TextureCache.cpp */,
 				7C8A14551154CB2600E5FCFA /* TextureCache.h */,
+				7C1A85631520522500C63311 /* TextureCacheJob.cpp */,
+				7C1A85641520522500C63311 /* TextureCacheJob.h */,
 				7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */,
 				7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */,
 				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
@@ -6561,12 +6575,23 @@
 				E38E19F80D25F9FB00618676 /* keyboard.h */,
 				E38E25920D263CE000618676 /* listitem.cpp */,
 				E38E19FA0D25F9FB00618676 /* listitem.h */,
+				C8936050152C86CF00812418 /* monitor.cpp */,
+				C8936051152C86CF00812418 /* monitor.h */,
 				E38E25930D263CE000618676 /* player.cpp */,
 				E38E19FE0D25F9FB00618676 /* player.h */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
 				E38E1A000D25F9FB00618676 /* pyplaylist.h */,
+<<<<<<< HEAD
 				1835C6561492A25800ADD1BA /* pyrendercapture.cpp */,
 				1835C6571492A25800ADD1BA /* pyrendercapture.h */,
+=======
+				F5E1125C14356B2400175026 /* pyrendercapture.cpp */,
+				F5E1125D14356B2400175026 /* pyrendercapture.h */,
+				7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */,
+				7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */,
+				C8936054152C86D800812418 /* PythonMonitor.cpp */,
+				C8936055152C86D800812418 /* PythonMonitor.h */,
+>>>>>>> upstream-ro/master
 				E38E25950D263CE000618676 /* PythonPlayer.cpp */,
 				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
 				E38E25960D263CE000618676 /* pyutil.cpp */,
@@ -8759,6 +8784,7 @@
 				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				1835C8221496A5F200ADD1BA /* PVROperations.cpp in Sources */,
 				7CCFD98D151494E100211D82 /* PCMCodec.cpp in Sources */,
+<<<<<<< HEAD
 				839D145C152AE8C80072F987 /* AFPFile.cpp in Sources */,
 				839D145D152AE8C80072F987 /* CDDAFile.cpp in Sources */,
 				839D145E152AE8C80072F987 /* CircularCache.cpp in Sources */,
@@ -8831,6 +8857,55 @@
 				839D150C152AEE130072F987 /* WebSocketV8.cpp in Sources */,
 				839D150D152AEE130072F987 /* WebSocketV13.cpp in Sources */,
 				839D1516152AEE4B0072F987 /* XLCDproc.cpp in Sources */,
+=======
+				DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */,
+				DF5276E2151BAEDA00B5B63B /* HttpResponse.cpp in Sources */,
+				DF527734151BAF4C00B5B63B /* WebSocket.cpp in Sources */,
+				DF527735151BAF4C00B5B63B /* WebSocketManager.cpp in Sources */,
+				DF527736151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
+				DF527737151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
+				188F75FE152217BC009870CE /* Mime.cpp in Sources */,
+				188F7602152217DF009870CE /* GUIOperations.cpp in Sources */,
+				DFCA6AC6152245CD000BFAAE /* HTTPApiHandler.cpp in Sources */,
+				DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */,
+				DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */,
+				DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
+				DFCA6ACA152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */,
+				DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */,
+				DF93D65D1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */,
+				DF93D6991444A8B1007C6459 /* AFPFile.cpp in Sources */,
+				DF93D69A1444A8B1007C6459 /* DirectoryCache.cpp in Sources */,
+				DF93D69B1444A8B1007C6459 /* FileCache.cpp in Sources */,
+				DF93D69C1444A8B1007C6459 /* CDDAFile.cpp in Sources */,
+				DF93D69D1444A8B1007C6459 /* CurlFile.cpp in Sources */,
+				DF93D69E1444A8B1007C6459 /* DAAPFile.cpp in Sources */,
+				DF93D69F1444A8B1007C6459 /* DirectoryFactory.cpp in Sources */,
+				DF93D6A01444A8B1007C6459 /* FileDirectoryFactory.cpp in Sources */,
+				DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
+				DF93D6A21444A8B1007C6459 /* HDFile.cpp in Sources */,
+				DF93D6A31444A8B1007C6459 /* ISOFile.cpp in Sources */,
+				DF93D6A41444A8B1007C6459 /* LastFMFile.cpp in Sources */,
+				DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
+				DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */,
+				DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */,
+				DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */,
+				DF93D6A91444A8B1007C6459 /* RTVFile.cpp in Sources */,
+				DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */,
+				DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
+				DF93D6AC1444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
+				DF93D6AD1444A8B1007C6459 /* SmbFile.cpp in Sources */,
+				DF93D6AE1444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
+				DF93D6AF1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */,
+				DF93D6B01444A8B1007C6459 /* TuxBoxFile.cpp in Sources */,
+				DF93D6B11444A8B1007C6459 /* UDFFile.cpp in Sources */,
+				DF93D6B21444A8B1007C6459 /* UPnPFile.cpp in Sources */,
+				DF93D6B31444A8B1007C6459 /* ZipFile.cpp in Sources */,
+				DF93D7F21444B54A007C6459 /* HDHomeRunFile.cpp in Sources */,
+				DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */,
+				7C1A85661520522500C63311 /* TextureCacheJob.cpp in Sources */,
+				C8936052152C86CF00812418 /* monitor.cpp in Sources */,
+				C8936056152C86D800812418 /* PythonMonitor.cpp in Sources */,
+>>>>>>> upstream-ro/master
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9749,6 +9824,7 @@
 				F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
 				1835C8231496A5F200ADD1BA /* PVROperations.cpp in Sources */,
 				7CCFD98C151494E100211D82 /* PCMCodec.cpp in Sources */,
+<<<<<<< HEAD
 				839D147A152AE8C80072F987 /* AFPFile.cpp in Sources */,
 				839D147B152AE8C80072F987 /* CDDAFile.cpp in Sources */,
 				839D147C152AE8C80072F987 /* CircularCache.cpp in Sources */,
@@ -9795,6 +9871,55 @@
 				839D1510152AEE130072F987 /* WebSocketV8.cpp in Sources */,
 				839D1511152AEE130072F987 /* WebSocketV13.cpp in Sources */,
 				839D1517152AEE4B0072F987 /* XLCDproc.cpp in Sources */,
+=======
+				DF527726151BAEDA00B5B63B /* Base64.cpp in Sources */,
+				DF527727151BAEDA00B5B63B /* HttpResponse.cpp in Sources */,
+				DF527739151BAF4C00B5B63B /* WebSocket.cpp in Sources */,
+				DF52773A151BAF4C00B5B63B /* WebSocketManager.cpp in Sources */,
+				DF52773B151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
+				DF52773C151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
+				188F75FF152217BC009870CE /* Mime.cpp in Sources */,
+				188F7603152217DF009870CE /* GUIOperations.cpp in Sources */,
+				DFCA6ACD152245CD000BFAAE /* HTTPApiHandler.cpp in Sources */,
+				DFCA6ACE152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */,
+				DFCA6ACF152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */,
+				DFCA6AD0152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */,
+				DFCA6AD1152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */,
+				DFCA6AD2152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */,
+				DF93D65E1444A7A3007C6459 /* SlingboxDirectory.cpp in Sources */,
+				DF93D6B41444A8B1007C6459 /* AFPFile.cpp in Sources */,
+				DF93D6B51444A8B1007C6459 /* DirectoryCache.cpp in Sources */,
+				DF93D6B61444A8B1007C6459 /* FileCache.cpp in Sources */,
+				DF93D6B71444A8B1007C6459 /* CDDAFile.cpp in Sources */,
+				DF93D6B81444A8B1007C6459 /* CurlFile.cpp in Sources */,
+				DF93D6B91444A8B1007C6459 /* DAAPFile.cpp in Sources */,
+				DF93D6BA1444A8B1007C6459 /* DirectoryFactory.cpp in Sources */,
+				DF93D6BB1444A8B1007C6459 /* FileDirectoryFactory.cpp in Sources */,
+				DF93D6BC1444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
+				DF93D6BD1444A8B1007C6459 /* HDFile.cpp in Sources */,
+				DF93D6BE1444A8B1007C6459 /* ISOFile.cpp in Sources */,
+				DF93D6BF1444A8B1007C6459 /* LastFMFile.cpp in Sources */,
+				DF93D6C01444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
+				DF93D6C11444A8B1007C6459 /* NFSFile.cpp in Sources */,
+				DF93D6C21444A8B1007C6459 /* PipeFile.cpp in Sources */,
+				DF93D6C31444A8B1007C6459 /* RarFile.cpp in Sources */,
+				DF93D6C41444A8B1007C6459 /* RTVFile.cpp in Sources */,
+				DF93D6C51444A8B1007C6459 /* SFTPFile.cpp in Sources */,
+				DF93D6C61444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
+				DF93D6C71444A8B1007C6459 /* SlingboxFile.cpp in Sources */,
+				DF93D6C81444A8B1007C6459 /* SmbFile.cpp in Sources */,
+				DF93D6C91444A8B1007C6459 /* SpecialProtocolFile.cpp in Sources */,
+				DF93D6CA1444A8B1007C6459 /* TuxBoxDirectory.cpp in Sources */,
+				DF93D6CB1444A8B1007C6459 /* TuxBoxFile.cpp in Sources */,
+				DF93D6CC1444A8B1007C6459 /* UDFFile.cpp in Sources */,
+				DF93D6CD1444A8B1007C6459 /* UPnPFile.cpp in Sources */,
+				DF93D6CE1444A8B1007C6459 /* ZipFile.cpp in Sources */,
+				DF93D7F31444B54A007C6459 /* HDHomeRunFile.cpp in Sources */,
+				DF93D7F71444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */,
+				7C1A85651520522500C63311 /* TextureCacheJob.cpp in Sources */,
+				C8936053152C86CF00812418 /* monitor.cpp in Sources */,
+				C8936057152C86D800812418 /* PythonMonitor.cpp in Sources */,
+>>>>>>> upstream-ro/master
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9872,7 +9997,18 @@
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+<<<<<<< HEAD
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
+=======
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+>>>>>>> upstream-ro/master
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9894,6 +10030,14 @@
 					"-ljpeg",
 					"-lcrypto",
 					"-lgcrypt",
+					"-lavdevice",
+					"-lavfilter",
+					"-lavcodec",
+					"-lavformat",
+					"-lpostproc",
+					"-lavutil",
+					"-lswresample",
+					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -9972,7 +10116,18 @@
 					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+<<<<<<< HEAD
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
+=======
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+>>>>>>> upstream-ro/master
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9994,6 +10149,14 @@
 					"-ljpeg",
 					"-lcrypto",
 					"-lgcrypt",
+					"-lavdevice",
+					"-lavfilter",
+					"-lavcodec",
+					"-lavformat",
+					"-lpostproc",
+					"-lavutil",
+					"-lswresample",
+					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -10131,7 +10294,19 @@
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"$(SRCROOT)/lib/SlingboxLib",
+<<<<<<< HEAD
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
+=======
+					"\"$(SRCROOT)/lib/shairport\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+>>>>>>> upstream-ro/master
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -10153,6 +10328,14 @@
 					"-ljpeg",
 					"-lcrypto",
 					"-lgcrypt",
+					"-lavdevice",
+					"-lavfilter",
+					"-lavcodec",
+					"-lavformat",
+					"-lpostproc",
+					"-lavutil",
+					"-lswresample",
+					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -10232,7 +10415,19 @@
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"$(SRCROOT)/lib/SlingboxLib",
+<<<<<<< HEAD
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
+=======
+					"\"$(SRCROOT)/lib/shairport\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavcodec\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavutil\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavformat\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavfilter\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libavdevice\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswresample\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libpostproc\"",
+					"\"$(SRCROOT)/lib/ffmpeg/libswscale\"",
+>>>>>>> upstream-ro/master
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -10254,6 +10449,14 @@
 					"-ljpeg",
 					"-lcrypto",
 					"-lgcrypt",
+					"-lavdevice",
+					"-lavfilter",
+					"-lavcodec",
+					"-lavformat",
+					"-lpostproc",
+					"-lavutil",
+					"-lswresample",
+					"-lswscale",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",

@@ -87,7 +87,7 @@ public:
   virtual void pp_free_context(pp_context *ppContext)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN) 
 
 // We call directly.
 class DllPostProc : public DllDynamic, DllPostProcInterface

@@ -1211,14 +1211,12 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   if(pic->reference)
   {
-    pic->age = pA->ip_age[0];
     pA->ip_age[0]= pA->ip_age[1]+1;
     pA->ip_age[1]= 1;
     pA->b_age++;
   }
   else
   {
-    pic->age = pA->b_age;
     pA->ip_age[0]++;
     pA->ip_age[1]++;
     pA->b_age = 1;

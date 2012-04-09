@@ -172,23 +172,6 @@ static uint8_t *png_choose_filter(PNGEncContext *s, uint8_t *dst,
     }
 }
 
-static void convert_from_rgb32(uint8_t *dst, const uint8_t *src, int width)
-{
-    uint8_t *d;
-    int j;
-    unsigned int v;
-
-    d = dst;
-    for(j = 0; j < width; j++) {
-        v = ((const uint32_t *)src)[j];
-        d[0] = v >> 16;
-        d[1] = v >> 8;
-        d[2] = v;
-        d[3] = v >> 24;
-        d += 4;
-    }
-}
-
 static void png_write_chunk(uint8_t **f, uint32_t tag,
                             const uint8_t *buf, int length)
 {
@@ -239,11 +222,10 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     uint8_t *ptr, *top;
     uint8_t *crow_base = NULL, *crow_buf, *crow;
     uint8_t *progressive_buf = NULL;
-    uint8_t *rgba_buf = NULL;
     uint8_t *top_buf = NULL;
 
     *p = *pict;
-    p->pict_type= FF_I_TYPE;
+    p->pict_type= AV_PICTURE_TYPE_I;
     p->key_frame= 1;
 
     s->bytestream_start=
@@ -252,7 +234,15 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
 
     is_progressive = !!(avctx->flags & CODEC_FLAG_INTERLACED_DCT);
     switch(avctx->pix_fmt) {
-    case PIX_FMT_RGB32:
+    case PIX_FMT_RGBA64BE:
+        bit_depth = 16;
+        color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+        break;
+    case PIX_FMT_RGB48BE:
+        bit_depth = 16;
+        color_type = PNG_COLOR_TYPE_RGB;
+        break;
+    case PIX_FMT_RGBA:
         bit_depth = 8;
         color_type = PNG_COLOR_TYPE_RGB_ALPHA;
         break;
@@ -260,9 +250,17 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         bit_depth = 8;
         color_type = PNG_COLOR_TYPE_RGB;
         break;
+    case PIX_FMT_GRAY16BE:
+        bit_depth = 16;
+        color_type = PNG_COLOR_TYPE_GRAY;
+        break;
     case PIX_FMT_GRAY8:
         bit_depth = 8;
         color_type = PNG_COLOR_TYPE_GRAY;
+        break;
+    case PIX_FMT_GRAY8A:
+        bit_depth = 8;
+        color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
         break;
     case PIX_FMT_MONOBLACK:
         bit_depth = 1;
@@ -297,12 +295,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         if (!progressive_buf)
             goto fail;
     }
-    if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-        rgba_buf = av_malloc(row_size + 1);
-        if (!rgba_buf)
-            goto fail;
-    }
-    if (is_progressive || color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+    if (is_progressive) {
         top_buf = av_malloc(row_size + 1);
         if (!top_buf)
             goto fail;
@@ -336,7 +329,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         for(i = 0; i < 256; i++) {
             v = palette[i];
             alpha = v >> 24;
-            if (alpha && alpha != 0xff)
+            if (alpha != 0xff)
                 has_alpha = 1;
             *alpha_ptr++ = alpha;
             bytestream_put_be24(&ptr, v);
@@ -363,10 +356,6 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
                     if ((ff_png_pass_ymask[pass] << (y & 7)) & 0x80) {
                         ptr = p->data[0] + y * p->linesize[0];
                         FFSWAP(uint8_t*, progressive_buf, top_buf);
-                        if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-                            convert_from_rgb32(rgba_buf, ptr, avctx->width);
-                            ptr = rgba_buf;
-                        }
                         png_get_interlaced_row(progressive_buf, pass_row_size,
                                                bits_per_pixel, pass,
                                                ptr, avctx->width);
@@ -381,11 +370,6 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         top = NULL;
         for(y = 0; y < avctx->height; y++) {
             ptr = p->data[0] + y * p->linesize[0];
-            if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-                FFSWAP(uint8_t*, rgba_buf, top_buf);
-                convert_from_rgb32(rgba_buf, ptr, avctx->width);
-                ptr = rgba_buf;
-            }
             crow = png_choose_filter(s, crow_buf, ptr, top, row_size, bits_per_pixel>>3);
             png_write_row(s, crow, row_size + 1);
             top = ptr;
@@ -413,7 +397,6 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
  the_end:
     av_free(crow_base);
     av_free(progressive_buf);
-    av_free(rgba_buf);
     av_free(top_buf);
     deflateEnd(&s->zstream);
     return ret;
@@ -437,13 +420,17 @@ static av_cold int png_enc_init(AVCodecContext *avctx){
 }
 
 AVCodec ff_png_encoder = {
-    "png",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_PNG,
-    sizeof(PNGEncContext),
-    png_enc_init,
-    encode_frame,
-    NULL, //encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_PAL8, PIX_FMT_GRAY8, PIX_FMT_MONOBLACK, PIX_FMT_NONE},
+    .name           = "png",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_PNG,
+    .priv_data_size = sizeof(PNGEncContext),
+    .init           = png_enc_init,
+    .encode         = encode_frame,
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGBA,
+                                          PIX_FMT_RGB48BE, PIX_FMT_RGBA64BE,
+                                          PIX_FMT_PAL8,
+                                          PIX_FMT_GRAY8, PIX_FMT_GRAY8A,
+                                          PIX_FMT_GRAY16BE,
+                                          PIX_FMT_MONOBLACK, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("PNG image"),
 };

@@ -125,7 +125,8 @@ namespace VIDEO
 
       tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
-
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+      
       m_bRunning = false;
       if (m_pObserver)
         m_pObserver->OnFinished();
@@ -412,12 +413,12 @@ namespace VIDEO
 
     if (content == CONTENT_TVSHOWS && ! seenPaths.empty())
     {
-      vector<int> libPaths;
+      vector< pair<int,string> > libPaths;
       m_database.GetSubPaths(items.GetPath(), libPaths);
-      for (vector<int>::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
+      for (vector< pair<int,string> >::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
       {
-        if (find(seenPaths.begin(), seenPaths.end(), *i) == seenPaths.end())
-          m_pathsToClean.insert(*i);
+        if (find(seenPaths.begin(), seenPaths.end(), i->first) == seenPaths.end())
+          m_pathsToClean.insert(i->first);
       }
     }
     if(pDlgProgress)

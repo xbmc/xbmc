@@ -118,7 +118,15 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = false */, bool getHidden /* = false */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, const CStdString &strMask /*=""*/, int flags /*=DIR_FLAG_DEFAULTS*/, bool allowThreads /* = false */)
+{
+  CHints hints;
+  hints.flags = flags;
+  hints.mask = strMask;
+  return GetDirectory(strPath, items, hints);
+}
+
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, const CHints &hints, bool allowThreads)
 {
   try
   {
@@ -128,19 +136,16 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       return false;
 
     // check our cache for this path
-    if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
+    if (g_directoryCache.GetDirectory(strPath, items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
       items.SetPath(strPath);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
-      if (cacheDirectory != DIR_CACHE_NEVER)
+      if (hints.flags & DIR_FLAG_BYPASS_CACHE)
         g_directoryCache.ClearDirectory(strPath);
 
-      pDirectory->SetAllowPrompting(allowPrompting);
-      pDirectory->SetCacheDirectory(cacheDirectory);
-      pDirectory->SetUseFileDirectories(bUseFileDirectories);
-      pDirectory->SetExtFileInfo(extFileInfo);
+      pDirectory->SetFlags(hints.flags);
 
       bool result = false, cancel = false;
       while (!result && !cancel)
@@ -187,19 +192,19 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       }
 
       // cache the directory, if necessary
-      if (cacheDirectory != DIR_CACHE_NEVER)
+      if (hints.flags & DIR_FLAG_BYPASS_CACHE)
         g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
     }
 
     // now filter for allowed files
-    pDirectory->SetMask(strMask);
+    pDirectory->SetMask(hints.mask);
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr item = items[i];
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
       if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
-          (item->GetProperty("file:hidden").asBoolean() && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
+          (item->GetProperty("file:hidden").asBoolean() && !(hints.flags & DIR_FLAG_GET_HIDDEN) && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
         i--; // don't confuse loop
@@ -208,8 +213,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
-    if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
-      FilterFileDirectories(items, strMask);
+    if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+      FilterFileDirectories(items, hints.mask);
 
     return true;
   }

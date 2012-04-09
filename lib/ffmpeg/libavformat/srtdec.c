@@ -42,10 +42,10 @@ static int srt_probe(AVProbeData *p)
 
 static int srt_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-    AVStream *st = av_new_stream(s, 0);
+    AVStream *st = avformat_new_stream(s, NULL);
     if (!st)
         return -1;
-    av_set_pts_info(st, 64, 1, 1000);
+    avpriv_set_pts_info(st, 64, 1, 1000);
     st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
     st->codec->codec_id   = CODEC_ID_SRT;
     return 0;
@@ -75,7 +75,7 @@ static inline int is_eol(char c)
 static int srt_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     char buffer[2048], *ptr = buffer, *ptr2;
-    int64_t pos = url_ftell(s->pb);
+    int64_t pos = avio_tell(s->pb);
     int res = AVERROR_EOF;
 
     do {

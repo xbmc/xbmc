@@ -67,7 +67,7 @@ const uint8_t *ff_avc_find_startcode(const uint8_t *p, const uint8_t *end){
     return out;
 }
 
-int ff_avc_parse_nal_units(ByteIOContext *pb, const uint8_t *buf_in, int size)
+int ff_avc_parse_nal_units(AVIOContext *pb, const uint8_t *buf_in, int size)
 {
     const uint8_t *p = buf_in;
     const uint8_t *end = p + size;
@@ -75,11 +75,14 @@ int ff_avc_parse_nal_units(ByteIOContext *pb, const uint8_t *buf_in, int size)
 
     size = 0;
     nal_start = ff_avc_find_startcode(p, end);
-    while (nal_start < end) {
-        while(!*(nal_start++));
+    for (;;) {
+        while (nal_start < end && !*(nal_start++));
+        if (nal_start == end)
+            break;
+
         nal_end = ff_avc_find_startcode(nal_start, end);
-        put_be32(pb, nal_end - nal_start);
-        put_buffer(pb, nal_start, nal_end - nal_start);
+        avio_wb32(pb, nal_end - nal_start);
+        avio_write(pb, nal_start, nal_end - nal_start);
         size += 4 + nal_end - nal_start;
         nal_start = nal_end;
     }
@@ -88,19 +91,19 @@ int ff_avc_parse_nal_units(ByteIOContext *pb, const uint8_t *buf_in, int size)
 
 int ff_avc_parse_nal_units_buf(const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-    ByteIOContext *pb;
-    int ret = url_open_dyn_buf(&pb);
+    AVIOContext *pb;
+    int ret = avio_open_dyn_buf(&pb);
     if(ret < 0)
         return ret;
 
     ff_avc_parse_nal_units(pb, buf_in, *size);
 
     av_freep(buf);
-    *size = url_close_dyn_buf(pb, buf);
+    *size = avio_close_dyn_buf(pb, buf);
     return 0;
 }
 
-int ff_isom_write_avcc(ByteIOContext *pb, const uint8_t *data, int len)
+int ff_isom_write_avcc(AVIOContext *pb, const uint8_t *data, int len)
 {
     if (len > 6) {
         /* check for h264 start code */
@@ -117,38 +120,42 @@ int ff_isom_write_avcc(ByteIOContext *pb, const uint8_t *data, int len)
             end = buf + len;
 
             /* look for sps and pps */
-            while (buf < end) {
-                unsigned int size;
+            while (end - buf > 4) {
+                uint32_t size;
                 uint8_t nal_type;
-                size = AV_RB32(buf);
-                nal_type = buf[4] & 0x1f;
+                size = FFMIN(AV_RB32(buf), end - buf - 4);
+                buf += 4;
+                nal_type = buf[0] & 0x1f;
+
                 if (nal_type == 7) { /* SPS */
-                    sps = buf + 4;
+                    sps = buf;
                     sps_size = size;
                 } else if (nal_type == 8) { /* PPS */
-                    pps = buf + 4;
+                    pps = buf;
                     pps_size = size;
                 }
-                buf += size + 4;
+
+                buf += size;
             }
-            assert(sps);
-            assert(pps);
 
-            put_byte(pb, 1); /* version */
-            put_byte(pb, sps[1]); /* profile */
-            put_byte(pb, sps[2]); /* profile compat */
-            put_byte(pb, sps[3]); /* level */
-            put_byte(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-            put_byte(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+            if (!sps || !pps || sps_size < 4 || sps_size > UINT16_MAX || pps_size > UINT16_MAX)
+                return AVERROR_INVALIDDATA;
 
-            put_be16(pb, sps_size);
-            put_buffer(pb, sps, sps_size);
-            put_byte(pb, 1); /* number of pps */
-            put_be16(pb, pps_size);
-            put_buffer(pb, pps, pps_size);
+            avio_w8(pb, 1); /* version */
+            avio_w8(pb, sps[1]); /* profile */
+            avio_w8(pb, sps[2]); /* profile compat */
+            avio_w8(pb, sps[3]); /* level */
+            avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
+            avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+
+            avio_wb16(pb, sps_size);
+            avio_write(pb, sps, sps_size);
+            avio_w8(pb, 1); /* number of pps */
+            avio_wb16(pb, pps_size);
+            avio_write(pb, pps, pps_size);
             av_free(start);
         } else {
-            put_buffer(pb, data, len);
+            avio_write(pb, data, len);
         }
     }
     return 0;

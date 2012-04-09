@@ -27,6 +27,7 @@
 
 #include "system.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "MouseStat.h"
@@ -36,16 +37,19 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
-#include "WinEventsIOS.h"
+#include "threads/Event.h"
 #undef BOOL
 
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
 
 #import "XBMCController.h"
+#import "IOSScreenManager.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
 
 XBMCController *g_xbmcController;
+static CEvent screenChangeEvent;
+
 
 // notification messages
 extern NSString* kBRScreenSaverActivated;
@@ -55,7 +59,8 @@ extern NSString* kBRScreenSaverDismissed;
 //
 
 @interface XBMCController ()
-XBMCEAGLView  *m_glView;
+UIWindow *m_window;
+IOSEAGLView  *m_glView;
 @end
 
 @interface UIApplication (extended)
@@ -69,40 +74,55 @@ XBMCEAGLView  *m_glView;
 @synthesize screenScale;
 @synthesize lastEvent;
 @synthesize touchBeginSignaled;
+@synthesize m_screenIdx;
 @synthesize screensize;
-
 //--------------------------------------------------------------
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-  if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+{  
+  //on external screens somehow the logic is rotated by 90°
+  //so we have to do this with our supported orientations then aswell
+  if([[IOSScreenManager sharedInstance] isExternalScreen])
   {
-    return YES;
+    if(interfaceOrientation == UIInterfaceOrientationPortrait) 
+    {
+      return YES;
+    }
   }
-  else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+  else//internal screen
   {
-    return YES;
+    if(interfaceOrientation == UIInterfaceOrientationLandscapeLeft) 
+    {
+      return YES;
+    }
+    else if(interfaceOrientation == UIInterfaceOrientationLandscapeRight)
+    {
+      return YES;
+    }
   }
-  else
-  {
-    return NO;
-  }
+  return NO;
 }
 //--------------------------------------------------------------
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
   orientation = toInterfaceOrientation;
+  CGRect srect = [IOSScreenManager getLandscapeResolution: [m_glView getCurrentScreen]];
+  CGRect rect = srect;;
   
-  CGRect rect;
-  CGRect srect = [[UIScreen mainScreen] bounds];
-  
-	if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
-    rect = srect;
-	} else if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-    rect.size = CGSizeMake( srect.size.height, srect.size.width );
-	}
-  
+
+  switch(toInterfaceOrientation)
+  {
+    case UIInterfaceOrientationPortrait:  
+    case UIInterfaceOrientationPortraitUpsideDown:
+      if(![[IOSScreenManager sharedInstance] isExternalScreen]) 
+      {
+        rect.size = CGSizeMake( srect.size.height, srect.size.width );    
+      }
+      break;
+    case UIInterfaceOrientationLandscapeLeft:
+    case UIInterfaceOrientationLandscapeRight:
+      break;//just leave the rect as is
+  }  
 	m_glView.frame = rect;
-  
 }
 
 - (UIInterfaceOrientation) getOrientation
@@ -328,13 +348,20 @@ XBMCEAGLView  *m_glView;
   }
 }
 //--------------------------------------------------------------
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-  
+  m_screenIdx = 0;
   self = [super init];
   if ( !self )
     return ( nil );
+
+  m_window = [[UIWindow alloc] initWithFrame:frame];
+  [m_window setRootViewController:self];  
+  m_window.screen = screen;
+  /* Turn off autoresizing */
+  m_window.autoresizingMask = 0;
+  m_window.autoresizesSubviews = NO;
   
   NSNotificationCenter *center;
   center = [NSNotificationCenter defaultCenter];
@@ -342,28 +369,25 @@ XBMCEAGLView  *m_glView;
              selector: @selector(observeDefaultCenterStuff:)
                  name: nil
                object: nil];
-  
-  /* Check if screen is Retina */
-  if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
-    screenScale = [[UIScreen mainScreen] scale];
-  else
-    screenScale = 1.0;
-  
+
   /* We start in landscape mode */
   CGRect srect = frame;
   srect.size = CGSizeMake( frame.size.height, frame.size.width );
   orientation = UIInterfaceOrientationLandscapeLeft;
   
-  m_glView = [[XBMCEAGLView alloc] initWithFrame: srect];
+  m_glView = [[IOSEAGLView alloc] initWithFrame: srect withScreen:screen];
+  [[IOSScreenManager sharedInstance] setView:m_glView];  
   [m_glView setMultipleTouchEnabled:YES];
   
-  //[self setView: m_glView];
-  
+  /* Check if screen is Retina */
+  screenScale = [m_glView getScreenScale:screen];
+
   [self.view addSubview: m_glView];
   
   [self createGestureRecognizers];
-  
-  g_xbmcController = self;
+  [m_window addSubview: self.view];
+  [m_window makeKeyAndVisible];
+  g_xbmcController = self;  
   
   return self;
 }
@@ -377,7 +401,8 @@ XBMCEAGLView  *m_glView;
 {
   [m_glView stopAnimation];
   [m_glView release];
-  
+  [m_window release];
+
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
@@ -477,6 +502,29 @@ XBMCEAGLView  *m_glView;
 {
 }
 //--------------------------------------------------------------
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode
+{
+  bool ret = false;
+
+  ret = [[IOSScreenManager sharedInstance] changeScreen:screenIdx withMode:mode];
+
+  return ret;
+}
+//--------------------------------------------------------------
+- (void) activateScreen: (UIScreen *)screen
+{
+  //this is the only way for making ios call the
+  //shouldAutorotateToInterfaceOrientation of the controller
+  //this is needed because at least with my vga adapter
+  //the orientation on the external screen is messed up by 90°
+  //so we need to hard force the orientation to Portrait for
+  //getting the correct display on external screen
+  UIView *view = [m_window.subviews objectAtIndex:0];
+  [view removeFromSuperview];
+  [m_window addSubview:view];  
+  m_window.screen = screen;
+}
+//--------------------------------------------------------------
 - (void)pauseAnimation
 {
   XBMC_Event newEvent;
@@ -515,8 +563,6 @@ XBMCEAGLView  *m_glView;
 {
   [m_glView stopAnimation];
 }
-//--------------------------------------------------------------
-
 #pragma mark -
 #pragma mark private helper methods
 //

@@ -320,6 +320,13 @@ public:
     int numWatched;
   };
 
+  class CSetInfo
+  {
+  public:
+    CStdString name;
+    int playcount;
+  };
+
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
@@ -483,7 +490,7 @@ public:
    \param subpaths the returned subpaths
    \return true if we successfully retrieve subpaths (may be zero), false on error
    */
-  bool GetSubPaths(const CStdString& basepath, std::vector<int>& subpaths);
+  bool GetSubPaths(const CStdString& basepath, std::vector< std::pair<int, std::string> >& subpaths);
 
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
@@ -689,6 +696,7 @@ protected:
   void GetCommonDetails(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag &details);
   bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1);
   bool GetNavCommon(const CStdString& strBaseDir, CFileItemList& items, const CStdString& type, int idContent=-1);
+  void GetCast(const CStdString &table, const CStdString &table_id, int type_id, std::vector<SActorInfo> &cast);
 
   void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;

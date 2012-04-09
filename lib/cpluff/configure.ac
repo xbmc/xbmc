@@ -165,7 +165,8 @@ dlmechanism=none
 if test "$with_dlopen" != no && test "$with_libltdl" != yes; then
   AC_CHECK_HEADER([dlfcn.h],
     AC_CHECK_LIB([dl], [dlopen],
-      [LIBS_LIBCPLUFF="-ldl $LIBS_LIBCPLUFF"; dlmechanism=dlopen]))
+      [LIBS_LIBCPLUFF="-ldl $LIBS_LIBCPLUFF"; dlmechanism=dlopen],
+	AC_CHECK_LIB([c], [dlopen], [dlmechanism=dlopen])))
 fi
 if test "$dlmechanism" = none && test "$with_libltdl" != no && test "$with_dlopen" != yes; then  
   AC_CHECK_HEADER([ltdl.h],

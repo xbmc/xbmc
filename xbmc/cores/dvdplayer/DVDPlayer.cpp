@@ -1126,8 +1126,8 @@ void CDVDPlayer::Process()
     }
 
     // always yield to players if they have data
-    if((m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 || m_CurrentAudio.id < 0)
-    && (m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0 || m_CurrentVideo.id < 0))
+    if((m_dvdPlayerAudio.HasData() || m_CurrentAudio.id < 0)
+    && (m_dvdPlayerVideo.HasData() || m_CurrentVideo.id < 0))
       Sleep(0);
 
     DemuxPacket* pPacket = NULL;
@@ -1230,8 +1230,8 @@ void CDVDPlayer::Process()
       SetCaching(CACHESTATE_DONE);
 
       // while players are still playing, keep going to allow seekbacks
-      if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0
-      || m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0)
+      if(m_dvdPlayerAudio.HasData()
+      || m_dvdPlayerVideo.HasData())
       {
         Sleep(100);
         continue;
@@ -1639,8 +1639,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
     }
 
     // don't start caching if it's only a single stream that has run dry
-    if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 ||
-         m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
+    if(m_dvdPlayerAudio.GetLevel() > 50
+    || m_dvdPlayerVideo.GetLevel() > 50)
       return false;
 
     if(current.inited)
@@ -3223,8 +3223,8 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     {
       // make sure players are properly flushed, should put them in stalled state
       CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
-      m_dvdPlayerAudio.m_messageQueue.Put(msg->Acquire(), 1);
-      m_dvdPlayerVideo.m_messageQueue.Put(msg->Acquire(), 1);
+      m_dvdPlayerAudio.SendMessage(msg->Acquire(), 1);
+      m_dvdPlayerVideo.SendMessage(msg->Acquire(), 1);
       msg->Wait(&m_bStop, 0);
       msg->Release();
 
@@ -3350,7 +3350,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         //Force an aspect ratio that is set in the dvdheaders if available
         m_CurrentVideo.hint.aspect = pStream->GetVideoAspectRatio();
-        if( m_dvdPlayerAudio.m_messageQueue.IsInited() )
+        if( m_dvdPlayerAudio.IsInited() )
           m_dvdPlayerVideo.SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, m_CurrentVideo.hint.aspect));
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
@@ -3368,7 +3368,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         m_dvd.state = DVDSTATE_NORMAL;
 
-        if( m_dvdPlayerVideo.m_messageQueue.IsInited() )
+        if( m_dvdPlayerVideo.IsInited() )
           m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
       }
       break;
@@ -3771,8 +3771,8 @@ int CDVDPlayer::GetCacheLevel() const
 
 double CDVDPlayer::GetQueueTime()
 {
-  int a = m_dvdPlayerAudio.m_messageQueue.GetLevel();
-  int v = m_dvdPlayerVideo.m_messageQueue.GetLevel();
+  int a = m_dvdPlayerAudio.GetLevel();
+  int v = m_dvdPlayerVideo.GetLevel();
   return max(a, v) * 8000.0 / 100;
 }
 
