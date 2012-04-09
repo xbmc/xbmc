@@ -63,8 +63,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   CRegExp reSize(true);
   reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
 
-  CRegExp reSizeNginx;
-  reSizeNginx.RegComp("([0-9]+)$");
+  CRegExp reSizeNginx(true);
+  reSizeNginx.RegComp("([0-9]+)(B|K|M|G)?$");
 
   /* read response from server into string buffer */
   char buffer[MAX_PATH + 1024];
@@ -153,6 +153,15 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSizeNginx.GetReplaceString("\\1"));
+            CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
+
+            if (strUnit == "K")
+              Size = Size * 1024;
+            else if (strUnit == "M")
+              Size = Size * 1024 * 1024;
+            else if (strUnit == "G")
+              Size = Size * 1000 * 1024 * 1024;
+
             pItem->m_dwSize = (int64_t)Size;
           }
           else
