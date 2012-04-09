@@ -279,8 +279,10 @@ void CPVRManager::StopUpdateThreads(void)
   SetState(ManagerStateInterrupted);
 
   StopThread();
-  m_guiInfo->Stop();
-  m_addons->Stop();
+  if (m_guiInfo)
+    m_guiInfo->Stop();
+  if (m_addons)
+    m_addons->Stop();
 }
 
 bool CPVRManager::Load(void)
