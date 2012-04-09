@@ -338,9 +338,9 @@ bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
   CStdString chosenPath;
-  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
+  chosenPath.Format("resources/language/%s", g_guiSettings.GetString("locale.language").c_str());
   CStdString chosen = URIUtils::AddFileToFolder(m_props.path, chosenPath);
-  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
+  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;

@@ -25,6 +25,9 @@
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/XMLUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/POUtils.h"
+#include "filesystem/Directory.h"
 
 CLocalizeStrings::CLocalizeStrings(void)
 {
@@ -57,7 +60,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   ClearSkinStrings();
   // load the skin strings in.
   CStdString encoding;
-  if (!LoadXML(path, encoding))
+  if (!LoadStr2Mem(path, encoding))
   {
     if (path == fallbackPath) // no fallback, nothing to do
       return false;
@@ -65,15 +68,58 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 
   // load the fallback
   if (path != fallbackPath)
-    LoadXML(fallbackPath, encoding);
+    LoadStr2Mem(fallbackPath, encoding);
 
+  return true;
+}
+
+bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, CStdString &encoding, uint32_t offset /* = 0 */)
+{
+  CStdString pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in);
+  if (!XFILE::CDirectory::Exists(pathname))
+  {
+    CLog::Log(LOGDEBUG, "LocalizeStrings: no translation available in currently set gui language, at path %s", pathname.c_str());
+    return false;
+  };
+
+  bool bIsSourceLanguage = CStdString((pathname.substr(pathname.size()-7,7))).ToLower() == "english";
+
+  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset, bIsSourceLanguage))
+    return true;
+
+  CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml", pathname.c_str());
+  return LoadXML(URIUtils::AddFileToFolder(pathname, "strings.xml"), encoding, offset);
+}
+
+bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding, uint32_t offset /* = 0 */, bool bSourceLanguage)
+{
+  CPODocument PODoc;
+  if (!PODoc.LoadFile(filename)) return false;
+  int counter = 0;
+  int id;
+  while ((PODoc.GetNextEntry()))
+  {
+    if (PODoc.GetEntryType() == ID_FOUND && m_strings.find((id = PODoc.GetEntryID()) + offset) == m_strings.end())
+    {
+      PODoc.ParseEntry();
+      if (bSourceLanguage)
+      {
+        if (PODoc.GetMsgid(0) != "") {m_strings[id + offset] = PODoc.GetMsgid(0).c_str(); counter++;}
+      }
+      else
+      {
+        if (PODoc.GetMsgstr(0) != "") {m_strings[id + offset] = PODoc.GetMsgstr(0).c_str(); counter++;}
+      }
+    }
+  }
+  CLog::Log(LOGDEBUG, "POParser: loaded %i strings from file %s", counter, filename.c_str());
   return true;
 }
 
 bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(filename)))
+  if (!xmlDoc.LoadFile(filename))
   {
     CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
@@ -112,17 +158,17 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
   CStdString encoding;
   Clear();
 
-  if (!LoadXML(strFileName, encoding))
+  if (!LoadStr2Mem(strFileName, encoding))
   {
     // try loading the fallback
-    if (!bLoadFallback || !LoadXML(strFallbackFileName, encoding))
+    if (!bLoadFallback || !LoadStr2Mem(strFallbackFileName, encoding))
       return false;
 
     bLoadFallback = false;
   }
 
   if (bLoadFallback)
-    LoadXML(strFallbackFileName, encoding);
+    LoadStr2Mem(strFallbackFileName, encoding);
 
   // fill in the constant strings
   m_strings[20022] = "";
@@ -192,7 +238,7 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
 
   // load the strings
   CStdString encoding;
-  bool success = LoadXML(path, encoding, offset);
+  bool success = LoadStr2Mem(path, encoding, offset);
   if (!success)
   {
     if (path == fallbackPath) // no fallback, nothing to do
@@ -201,7 +247,7 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
 
   // load the fallback
   if (path != fallbackPath)
-    success |= LoadXML(fallbackPath, encoding, offset);
+    success |= LoadStr2Mem(fallbackPath, encoding, offset);
 
   return success ? offset : 0;
 }

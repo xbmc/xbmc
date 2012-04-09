@@ -947,7 +947,7 @@ bool CSettings::LoadProfile(unsigned int index)
     g_langInfo.Load(strLangInfoPath);
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+    strLanguagePath.Format("special://xbmc/language/%s", strLanguage.c_str());
 
     CButtonTranslator::GetInstance().Load(true);
     g_localizeStrings.Load(strLanguagePath);

@@ -42,7 +42,7 @@ class CLocalizeStrings
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english/strings.xml");
+  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english");
   bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
   void ClearSkinStrings();
   const CStdString& Get(uint32_t code) const;
@@ -51,6 +51,8 @@ public:
   void ClearBlock(const CStdString &id);
 protected:
   void Clear(uint32_t start, uint32_t end);
+  bool LoadStr2Mem(const CStdString &pathname, CStdString &encoding, uint32_t offset = 0);
+  bool LoadPO(const CStdString &filename, CStdString &encoding, uint32_t offset = 0, bool bSourceLanguage = false);
   bool LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset = 0);
   CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
   std::map<uint32_t, CStdString> m_strings;
