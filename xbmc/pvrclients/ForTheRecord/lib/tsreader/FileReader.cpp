@@ -264,29 +264,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
       XBMC->Log(LOG_ERROR, "%s: SetFilePointer invalid MoveMethod(%d)", __FUNCTION__, dwMoveMethod);
 	  dwMoveMethod = SEEK_SET;
   }
-  off64_t myOffset;
-  int64_t startPos = 0;
-  GetStartPosition(&startPos);
-
-  if (startPos > 0)
-  {
-    int64_t start;
-    int64_t fileSize = 0;
-    GetFileSize(&start, &fileSize);
-
-    int64_t filePos  = (int64_t)((int64_t)startPos + (int64_t)llDistanceToMove);
-
-    if (filePos >= fileSize)
-      myOffset = (int64_t)((int64_t)filePos - (int64_t)fileSize);
-    else
-      myOffset = filePos;
-
-    int64_t rc = m_hFile.Seek(myOffset, dwMoveMethod);
-    //XBMC->Log(LOG_DEBUG, "%s: distance %d method %d returns %d.", __FUNCTION__, llDistanceToMove, dwMoveMethod, rc);
-    return rc;
-  }
-  myOffset = llDistanceToMove;
-  int64_t rc = m_hFile.Seek(myOffset, dwMoveMethod);
+  int64_t rc = m_hFile.Seek(llDistanceToMove, dwMoveMethod);
   //XBMC->Log(LOG_DEBUG, "%s: distance %d method %d returns %d.", __FUNCTION__, llDistanceToMove, dwMoveMethod, rc);
   return rc;
 #else
@@ -312,18 +290,6 @@ int64_t FileReader::GetFilePointer()
 #elif defined(TARGET_LINUX) || defined(TARGET_OSX)
   off64_t myOffset;
   myOffset = m_hFile.Seek(0, SEEK_CUR);
-
-  int64_t startPos = 0;
-  int64_t length = 0;
-  GetFileSize(&startPos, &length);
-
-  if (startPos > 0)
-  {
-    if(startPos > (int64_t)myOffset)
-      myOffset = (int64_t)(length - startPos + (int64_t)myOffset);
-    else
-      myOffset = (int64_t)((int64_t)myOffset - startPos);
-  }
 
   //XBMC->Log(LOG_DEBUG, "%s: returns %d GetPosition(%d).", __FUNCTION__, myOffset, m_hFile.GetPosition());
   return myOffset;
