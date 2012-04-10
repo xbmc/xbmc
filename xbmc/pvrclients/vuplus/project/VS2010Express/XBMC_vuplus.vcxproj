@@ -43,7 +43,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)\addons\pvr.vuplus\</OutDir>
+    <OutDir>..\..\..\..\..\addons\pvr.vuplus\</OutDir>
     <TargetName>XBMC_vuplus_win32</TargetName>
     <TargetExt>.pvr</TargetExt>
     <LibraryPath>$(ProjectDir)\addons\pvr.vuplus\;$(LibraryPath)</LibraryPath>
