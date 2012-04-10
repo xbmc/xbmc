@@ -256,7 +256,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
       CApplicationMessenger::Get().SwitchToFullscreen();
       lock.Enter();
     }
-    if( flags & CONF_FLAGS_FORMAT_BYPASS )
+    if( format & RENDER_FMT_BYPASS )
       m_presentmethod = PRESENT_METHOD_BYPASS;
 
     m_pRenderer->Update(false);
