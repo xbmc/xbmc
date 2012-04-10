@@ -29,5 +29,5 @@ uniform   lowp vec4 m_unicol;
 // SM_MULTI shader
 void main ()
 {
-  gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).rgba * m_unicol;
+  gl_FragColor.rgba = m_unicol * texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy);
 }
