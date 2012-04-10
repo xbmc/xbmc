@@ -80,7 +80,7 @@ bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, CStdString &en
   {
     CLog::Log(LOGDEBUG, "LocalizeStrings: no translation available in currently set gui language, at path %s", pathname.c_str());
     return false;
-  };
+  }
 
   bool bIsSourceLanguage = CStdString((pathname.substr(pathname.size()-7,7))).ToLower() == "english";
 
@@ -94,7 +94,8 @@ bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, CStdString &en
 bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding, uint32_t offset /* = 0 */, bool bSourceLanguage)
 {
   CPODocument PODoc;
-  if (!PODoc.LoadFile(filename)) return false;
+  if (!PODoc.LoadFile(filename))
+    return false;
   int counter = 0;
   int id;
   while ((PODoc.GetNextEntry()))
@@ -104,11 +105,19 @@ bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding, 
       PODoc.ParseEntry();
       if (bSourceLanguage)
       {
-        if (PODoc.GetMsgid(0) != "") {m_strings[id + offset] = PODoc.GetMsgid(0).c_str(); counter++;}
+        if (!PODoc.GetMsgid(0).empty())
+        {
+          m_strings[id + offset] = PODoc.GetMsgid(0);
+          counter++;
+        }
       }
       else
       {
-        if (PODoc.GetMsgstr(0) != "") {m_strings[id + offset] = PODoc.GetMsgstr(0).c_str(); counter++;}
+        if (!PODoc.GetMsgstr(0).empty())
+        {
+          m_strings[id + offset] = PODoc.GetMsgstr(0);
+          counter++;
+        }
       }
     }
   }

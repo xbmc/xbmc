@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 #include "utils/POUtils.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
+#include <stdlib.h>
 
 CPODocument::CPODocument()
 {
@@ -29,25 +30,21 @@ CPODocument::CPODocument()
   m_pBuffer = NULL;
   m_pCursor = NULL;
   m_POfilelength = 0;
-  m_currentline = "";
   m_pLastCursor = NULL;
 }
 
 CPODocument::~CPODocument()
 {
-  if (m_pBuffer)
-  {
-    delete [] m_pBuffer;
-    m_pBuffer = NULL;
-  }
+  delete [] m_pBuffer;
   m_pCursor = NULL;
   m_pLastCursor = NULL;
 }
 
-bool CPODocument::LoadFile(const CStdString &pofilename)
+bool CPODocument::LoadFile(const std::string &pofilename)
 {
   XFILE::CFile file;
-  if (!file.Open(pofilename)) return false;
+  if (!file.Open(pofilename))
+    return false;
   m_POfilelength = file.GetLength();
   if (m_POfilelength < 1)
   {
@@ -55,18 +52,20 @@ bool CPODocument::LoadFile(const CStdString &pofilename)
     CLog::Log(LOGERROR, "POParser: wrong filesize read from file: %s", pofilename.c_str());
     return false;
   }
-  m_pBuffer = new char[static_cast<size_t>(m_POfilelength+1)];
+  m_pBuffer = new char[m_POfilelength+1];
   m_pCursor = m_pBuffer;
   file.Read(m_pBuffer, m_POfilelength);
   file.Close();
-  if (ParseHeader()) return true;
+  if (ParseHeader())
+    return true;
   CLog::Log(LOGERROR, "POParser: unable to read PO file header from file: %s", pofilename.c_str());
   return false;
 }
 
 bool CPODocument::GetNextEntry()
 {
-  if (m_pCursor == m_pLastCursor) m_pCursor++; // if nothing was parsed from last call
+  if (m_pCursor == m_pLastCursor)
+    m_pCursor++; // if nothing was parsed from last call
   while ((m_pCursor - m_pBuffer + 8) < m_POfilelength)
   {
     if (*(m_pCursor-1) == '\n')
@@ -101,23 +100,31 @@ bool CPODocument::GetNextEntry()
 
 int CPODocument::GetEntryID()
 {
-  CStdString strID;
+  std::string strID;
   strID.append( &m_pCursor[6], NextNonDigit( &m_pCursor[6], 11));
-  m_id = atoi (strID.c_str());
+  m_id = strtol(strID.c_str(), NULL, 10);
   return m_id;
 }
 
 void CPODocument::ParseEntry()
 {
-  CStdString* pStr = NULL;
-  m_msgctx = "";
-  for (int i=0; i < 10; i++) m_msgid[i] = m_msgstr[i] = "";
+  std::string* pStr = NULL;
+  m_msgctx.clear();
+  for (int i=0; i < 10; i++)
+  {
+    m_msgid[i].clear();
+    m_msgstr[i].clear();
+  }
+
   while (ReadLine())
   {
-    if (IsEmptyLine()) return; // an empty line closes the the reading of the entry
+    if (IsEmptyLine())
+      return; // an empty line closes the the reading of the entry
 
-    if (pStr && ReadStringLine(pStr,0)) continue; // we are reading a continous multilne string
-    else pStr = NULL; // end of reading the multiline string
+    if (pStr && ReadStringLine(pStr,0))
+      continue; // we are reading a continous multilne string
+    else
+      pStr = NULL; // end of reading the multiline string
 
     if (HasPrefix(m_currentline, "msgctxt") && m_currentline.size() > 9)
     {
@@ -146,7 +153,8 @@ void CPODocument::ParseEntry()
         pStr = NULL;
       }
     }
-    else pStr=NULL; // any non recognized line breaks the reading of a multiline string
+    else
+      pStr=NULL; // any non recognized line breaks the reading of a multiline string
   }
   return; // we have the end of buffer
 }
@@ -155,25 +163,28 @@ bool CPODocument::ParseHeader()
 {
   do
   {
-    if (!ReadLine()) return false;
+    if (!ReadLine())
+      return false;
   }
   while (!HasPrefix(m_currentline, "msgid"));
 
   do
   {
-    if (IsEmptyLine()) return true; // an empty line closes the reading of the header
+    if (IsEmptyLine())
+      return true; // an empty line closes the reading of the header
   }
   while (ReadLine());
   return false; // not found the end of the header until reaching EOF
 }
 
-CStdString CPODocument::UnescapeString(CStdString &strInput)
+std::string CPODocument::UnescapeString(std::string &strInput)
 {
   char oescchar;
-  CStdString strOutput = "";
-  for (CStdString::iterator it = strInput.begin(); it < strInput.end(); it++)
+  std::string strOutput;
+  for (std::string::iterator it = strInput.begin(); it < strInput.end(); it++)
   {
-    if (*it != '\\') strOutput += *it;
+    if (*it != '\\')
+      strOutput += *it;
     else
     {
       if (it+1 == strInput.end())
@@ -204,15 +215,16 @@ CStdString CPODocument::UnescapeString(CStdString &strInput)
   return strOutput;
 }
 
-bool CPODocument::ReadStringLine(CStdString* pStrToAppend, int skip)
+bool CPODocument::ReadStringLine(std::string* pStrToAppend, int skip)
 {
   int linesize = m_currentline.size(); 
-  if (m_currentline[linesize-1] != '\"' || m_currentline[skip] != '\"') return false;
+  if (m_currentline[linesize-1] != '\"' || m_currentline[skip] != '\"')
+    return false;
   pStrToAppend->append(m_currentline, skip + 1, linesize - skip - 2);
   return true;
 }
 
-bool CPODocument::HasPrefix(const CStdString &strLine, const CStdString &strPrefix)
+bool CPODocument::HasPrefix(const std::string &strLine, const std::string &strPrefix)
 {
   if (strLine.length() < strPrefix.length())
     return false;
@@ -223,9 +235,10 @@ bool CPODocument::HasPrefix(const CStdString &strLine, const CStdString &strPref
 bool CPODocument::ReadLine()
 {
   long nbuff, offset;
-  m_currentline = "";
+  m_currentline.clear();
   nbuff = m_pBuffer + m_POfilelength - m_pCursor;
-  if (nbuff < 1) return false; // if we are at the end of buffer
+  if (nbuff < 1)
+    return false; // if we are at the end of buffer
 
   offset =  NextChar(m_pCursor, '\n', nbuff);
   long offset_end = offset;
@@ -248,13 +261,8 @@ long CPODocument::NextChar(char* pString, char char2find, long n)
 long CPODocument::NextNonDigit(char* pString, long n)
 {
   int i=0;
-  while (CharIsDigit(pString[i]) && (i < n)) i++;
+  while (isdigit(pString[i]) && (i < n)) i++;
   return i;
-}
-
-bool CPODocument::CharIsDigit(char char2check)
-{
-  return (char2check >= '0' && char2check <= '9');
 }
 
 bool CPODocument::IsWhitespace(char char2check)
@@ -265,8 +273,10 @@ bool CPODocument::IsWhitespace(char char2check)
 
 bool CPODocument::IsEmptyLine()
 {
-  if (m_currentline.empty()) return true;
-  else if (m_currentline == "\n") return true;
+  if (m_currentline.empty())
+    return true;
+  else if (m_currentline == "\n")
+    return true;
   else if (m_currentline[0] == '#')
   { // handle "# comment" style comments as empty lines
     if (m_currentline.size() == 1 || (m_currentline.size() >= 2 && isspace(m_currentline[1])))
@@ -276,7 +286,7 @@ bool CPODocument::IsEmptyLine()
   }
   else
   { // if the line only contains whitespaces
-    for(CStdString::iterator i = m_currentline.begin(); i != m_currentline.end(); ++i)
+    for(std::string::iterator i = m_currentline.begin(); i != m_currentline.end(); ++i)
     {
       if (!IsWhitespace(*i))
         return false;

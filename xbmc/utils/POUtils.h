@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/StdString.h"
+#include <string>
 
 enum
 {
@@ -39,7 +39,7 @@ class CPODocument
      \param pofilename filename of the PO file to load.
      \return true if the load was successful, unless return false
      */
-    bool LoadFile(const CStdString &pofilename);
+    bool LoadFile(const std::string &pofilename);
 
     /*! \brief Fast jumps to the next entry in PO buffer.
      * Finds next entry started with "#: id:" or msgctx or msgid.
@@ -76,21 +76,21 @@ class CPODocument
      * This function also converts c++ style character escapes back to chars.
      \return string containing the msgctxt string, unescaped and linked together.
      */
-    CStdString GetMsgctxt() {return UnescapeString(m_msgctx);}
+    std::string GetMsgctxt() {return UnescapeString(m_msgctx);}
 
     /*! \brief Gets the msgid string previously parsed by ParseEntry().
      * This function also converts c++ style character escapes back to chars.
      \param plural the number of plural-form expected to get (0-9).
      \return string containing the msgid string, unescaped and linked together.
      */
-    CStdString GetMsgid(const int plural) {return UnescapeString(m_msgid[plural]);}
+    std::string GetMsgid(const unsigned plural) {return UnescapeString(m_msgid[plural]);}
 
     /*! \brief Gets the msgstr string previously parsed by ParseEntry().
      * This function also converts c++ style character escapes back to chars.
      \param plural the number of plural-form expected to get (0-9).
      \return string containing the msgstr string, unescaped and linked together.
      */
-    CStdString GetMsgstr(const int plural) {return UnescapeString(m_msgstr[plural]);}
+    std::string GetMsgstr(const unsigned plural) {return UnescapeString(m_msgstr[plural]);}
 
   protected:
 
@@ -105,7 +105,7 @@ class CPODocument
      \param strInput string contains the string to be unescaped.
      \return unescaped string.
      */
-    CStdString UnescapeString(CStdString &strInput);
+    std::string UnescapeString(std::string &strInput);
 
     /*! \brief Reads msg strings from current line, from position "skip".
      * Note that the msg strings should always start and end with apostrophe.
@@ -114,14 +114,14 @@ class CPODocument
      \param pStrToAppend Pointer to a string where we should add the read string.
      \return false if the string is not surrounded by apostrophe chars.
      */
-    bool ReadStringLine(CStdString * pStrToAppend, int skip);
+    bool ReadStringLine(std::string * pStrToAppend, int skip);
 
     /*! \brief Checks if strLine starts with strPrefix.
      \param strLine The string to check.
      \param strPrefix The string containing the prefix to look for.
      \return true if the string starts with the prefix.
      */
-    bool HasPrefix(const CStdString &strLine, const CStdString &strPrefix);
+    bool HasPrefix(const std::string &strLine, const std::string &strPrefix);
 
     /*! \brief Reads the next line from the buffer.
      * It also removes trailing and leading whitespace from the read line.
@@ -145,12 +145,6 @@ class CPODocument
      */
     long NextNonDigit(char* pString, long n);
 
-    /*! \brief Check if character is a number.
-     \param char2check The input char to evaluate.
-     \return true if char was a number.
-     */
-    bool CharIsDigit(char char2check);
-
     /*! \brief Check if character is whitespace.
      * We actually look for: ' ', '\t', '\v", '\f' NOT '\n'
      \param char2check The input char to evaluate.
@@ -171,9 +165,9 @@ class CPODocument
     char* m_pLastCursor;
     int m_id;
     int m_entrytype;
-    CStdString m_msgid[10];
-    CStdString m_msgstr[10];
-    CStdString m_msgctx;
-    int64_t m_POfilelength;
-    CStdString m_currentline;
+    std::string m_msgid[10];
+    std::string m_msgstr[10];
+    std::string m_msgctx;
+    size_t m_POfilelength;
+    std::string m_currentline;
 };
