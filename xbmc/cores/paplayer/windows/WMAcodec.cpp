@@ -89,7 +89,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   hr = m_ISyncReader->OpenStream(m_pStream);
   if(hr!=S_OK)
   {
-    CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
+    CLog::Log(LOGERROR,"WMAcodec: error opening stream.");
     return false;
   }
 
@@ -274,6 +274,11 @@ int WMAcodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
 }
 
 bool WMAcodec::CanInit()
+{
+  return (LoadLibrary("WMVcore.dll") != NULL);
+}
+
+bool WMAcodec::IsWMAavailable()
 {
   return (LoadLibrary("WMVcore.dll") != NULL);
 }

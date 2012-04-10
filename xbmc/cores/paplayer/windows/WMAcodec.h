@@ -38,6 +38,7 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
+  static bool IsWMAavailable();
 
 private:
   IWMSyncReader* m_ISyncReader;

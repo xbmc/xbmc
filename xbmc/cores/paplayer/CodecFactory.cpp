@@ -101,10 +101,11 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new YMCodec();
   else if (strFileType.Equals("wma"))
 #ifdef TARGET_WINDOWS
-    return new WMAcodec();
-#else
-    return new DVDPlayerCodec();
+    if(WMAcodec::IsWMAavailable())
+      return new WMAcodec();
+    else
 #endif
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("xwav"))
@@ -143,10 +144,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   else if( strContent.Equals("audio/x-ms-wma") )
 #ifdef TARGET_WINDOWS
-    return new WMAcodec();
-#else
-    return new DVDPlayerCodec();
+    if(WMAcodec::IsWMAavailable())
+      return new WMAcodec();
+    else
 #endif
+    return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))
