@@ -146,6 +146,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
         g_directoryCache.ClearDirectory(strPath);
 
       pDirectory->SetFlags(hints.flags);
+      pDirectory->SetScanningType(hints.scanning_type);
 
       bool result = false, cancel = false;
       while (!result && !cancel)

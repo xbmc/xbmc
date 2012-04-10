@@ -1258,6 +1258,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       path.Left(4).Equals("zip:") ||
       path.Left(4).Equals("rar:") ||
       path.Left(6).Equals("stack:") ||
+      path.Left(7).Equals("bluray:") ||
       path.Left(10).Equals("multipath:") ))
     return result;
 

@@ -106,6 +106,7 @@ public:
 
   void SetMask(const CStdString& strMask);
   void SetFlags(int flags);
+  void SetScanningType(int content) { m_scanningType = content; }
 
   /*! \brief Process additional requirements before the directory fetch is performed.
    Some directory fetches may require authentication, keyboard input etc.  The IDirectory subclass
@@ -150,6 +151,7 @@ protected:
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
 
   int m_flags; ///< Directory flags - see DIR_FLAG
+  int m_scanningType;      ///< CONTENT_TYPE that we during scanning are looking for
 
   CVariant m_requirements;
 };

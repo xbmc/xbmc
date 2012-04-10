@@ -44,7 +44,7 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength();
 
-  virtual bool    NextStream();
+  virtual ENextStream NextStream();
   virtual int     GetBlockSize();
 
 

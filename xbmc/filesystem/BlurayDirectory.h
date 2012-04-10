@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,37 +21,33 @@
  *
  */
 
-#ifdef HAS_LIBRTMP
+#include "Directory.h"
+#include "FileItem.h"
+#include "URL.h"
 
-#include "DVDInputStream.h"
-#include "DllLibRTMP.h"
+class  DllLibbluray;
+typedef struct bluray BLURAY;
+typedef struct bd_title_info BLURAY_TITLE_INFO;
 
-class CDVDInputStreamRTMP 
-  : public CDVDInputStream
-  , public CDVDInputStream::ISeekTime
+namespace XFILE
+{
+
+class CBlurayDirectory: public XFILE::IDirectory
 {
 public:
-  CDVDInputStreamRTMP();
-  virtual ~CDVDInputStreamRTMP();
-  virtual bool    Open(const char* strFile, const std::string &content);
-  virtual void    Close();
-  virtual int     Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
-  bool            SeekTime(int iTimeInMsec);
-  virtual bool Pause(double dTime);
-  virtual bool    IsEOF();
-  virtual __int64 GetLength();
+  CBlurayDirectory();
+  virtual ~CBlurayDirectory();
+  virtual bool GetDirectory(const CStdString& path, CFileItemList &items);
 
-  CCriticalSection m_RTMPSection;
+private:
+  bool         GetOriginal(const CStdString& path, CFileItemList &items);
 
-protected:
-  bool       m_eof;
-  bool       m_bPaused;
-  char*      m_sStreamPlaying;
-  std::vector<CStdString> m_optionvalues;
-
-  RTMP       *m_rtmp;
-  DllLibRTMP m_libRTMP;
+  void         Dispose();
+  void         GetTitles(bool main, CFileItemList &items);
+  CFileItemPtr GetTitle(const BLURAY_TITLE_INFO* title, const CStdString label);
+  CURL          m_url;
+  DllLibbluray* m_dll;
+  BLURAY*       m_bd;
 };
 
-#endif
+}

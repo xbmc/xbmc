@@ -37,11 +37,12 @@ public:
   class CHints
   {
   public:
-    CHints() : flags(DIR_FLAG_DEFAULTS)
+    CHints() : flags(DIR_FLAG_DEFAULTS), scanning_type(0)
     {
     };
     CStdString mask;
     int flags;
+    int scanning_type;  /* content type we are looking for during scanning */
   };
 
   static bool GetDirectory(const CStdString& strPath

@@ -53,8 +53,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
     return (new CDVDInputStreamNavigator(pPlayer));
   }
 #ifdef HAVE_LIBBLURAY
-  else if (item.IsType(".bdmv") || item.IsType(".mpls") || content == "bluray/iso")
-    return new CDVDInputStreamBluray();
+  else if (item.IsType(".bdmv") || item.IsType(".mpls") || content == "bluray/iso" || file.substr(0, 7) == "bluray:")
+    return new CDVDInputStreamBluray(pPlayer);
 #endif
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
