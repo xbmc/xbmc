@@ -19,12 +19,15 @@
  *
  */
 
+#include "system.h"
 #include "utils/log.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
+#if defined(HAS_LIBASS)
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
+#endif
 
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
@@ -40,10 +43,12 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
   {
     Render(pPicture, (CDVDOverlayImage*)pOverlay);
   }
+#if defined(HAS_LIBASS)
   else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SSA))
   {
     Render(pPicture, (CDVDOverlaySSA*)pOverlay, pts);
   }
+#endif
   else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
@@ -66,7 +71,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* pOverlay, double pts)
 {
-
+#if defined(HAS_LIBASS)
   int height, width;
   height = pPicture->height;
   width = pPicture->width;
@@ -128,6 +133,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
     }
     img = img->next;
   }
+#endif
 }
 
 void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay)

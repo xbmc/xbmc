@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+#if defined(HAS_LIBASS)
 #include "DVDSubtitleParser.h"
 #include "DVDSubtitleLineCollection.h"
 #include "DVDSubtitlesLibass.h"
@@ -38,3 +40,4 @@ public:
 private:
   CDVDSubtitlesLibass* m_libass;
 };
+#endif

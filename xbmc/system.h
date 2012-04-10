@@ -80,6 +80,10 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_LIBASS
+  #define HAS_LIBASS
+#endif
+
 #ifdef HAVE_LIBMPEG2
   #define HAS_LIBMPEG2
 #endif
@@ -119,6 +123,7 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAVE_LIBCEC
+#define HAS_LIBASS
 #define HAS_LIBMPEG2
 
 #define DECLARE_UNUSED(a,b) a b;

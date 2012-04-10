@@ -688,7 +688,14 @@ if test $MYSQL_CONFIG = "yes"; then
 else
   AC_MSG_ERROR($missing_program)
 fi
-AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
+
+AC_CHECK_HEADER([ass/ass.h],
+  [AC_DEFINE([HAVE_LIBASS], [1], [Whether to use libass library.])
+    USE_LIBASS=1
+    XB_FIND_SONAME([ASS],[ass])],
+  [AC_MSG_NOTICE($missing_library)]
+    USE_LIBASS=0)
+
 AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],
   [AC_DEFINE([HAVE_LIBMPEG2], [1], [Whether to use libmpeg2 library.])
     USE_LIBMPEG2=1
@@ -823,7 +830,6 @@ XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
-XB_FIND_SONAME([ASS],         [ass])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1964,6 +1970,7 @@ AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_DVDREAD)
 AC_SUBST(USE_LIBMPEG2)
+AC_SUBST(USE_LIBASS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

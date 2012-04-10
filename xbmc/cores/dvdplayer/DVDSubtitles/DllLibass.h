@@ -21,9 +21,8 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "system.h"
+#if defined(HAS_LIBASS)
 extern "C" {
 #if defined(WIN32)
   #include "lib/libass/libass/ass.h"
@@ -115,3 +114,4 @@ class DllLibass : public DllDynamic, DllLibassInterface
     RESOLVE_METHOD(ass_set_message_cb)
   END_METHOD_RESOLVE()
 };
+#endif

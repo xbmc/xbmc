@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+#if defined(HAS_LIBASS)
 #include "DVDOverlayCodec.h"
 #include "DVDSubtitles/DVDSubtitlesLibass.h"
 #include "DVDStreamInfo.h"
@@ -45,3 +47,4 @@ private:
   CDVDStreamInfo       m_hints;
   int                  m_order;
 };
+#endif
