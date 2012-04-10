@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+#if defined(HAS_LIBMAD)
 #include "DVDAudioCodec.h"
 #include "DllLibMad.h"
 
@@ -64,3 +66,4 @@ private:
 
   DllLibMad m_dll;
 };
+#endif

@@ -87,6 +87,10 @@
 #ifdef HAVE_LIBMPEG2
   #define HAS_LIBMPEG2
 #endif
+#ifdef HAVE_LIBMAD
+  #define HAS_LIBMAD
+#endif
+
 /**********************
  * Non-free Components
  **********************/
@@ -125,6 +129,7 @@
 #define HAVE_LIBCEC
 #define HAS_LIBASS
 #define HAS_LIBMPEG2
+#define HAS_LIBMAD
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif

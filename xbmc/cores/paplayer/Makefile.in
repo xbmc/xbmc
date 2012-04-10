@@ -12,7 +12,6 @@ SRCS=ADPCMCodec.cpp \
      DVDPlayerCodec.cpp \
      FLACcodec.cpp \
      ModplugCodec.cpp \
-     MP3codec.cpp \
      NSFCodec.cpp \
      OggCallback.cpp \
      OGGcodec.cpp \
@@ -25,6 +24,10 @@ SRCS=ADPCMCodec.cpp \
      WAVcodec.cpp \
      YMCodec.cpp \
 
+ifeq (@USE_LIBMAD@,1)
+  SRCS+=MP3codec.cpp \
+
+endif
 ifeq (@USE_ASAP_CODEC@,1)
   SRCS+=ASAPCodec.cpp
 endif

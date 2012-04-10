@@ -20,9 +20,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "system.h"
+#if defined(HAS_LIBMAD)
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
 #if defined(_LINUX) || defined(__APPLE__)
@@ -86,4 +85,4 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
     RESOLVE_METHOD(mad_timer_zero)
   END_METHOD_RESOLVE()
 };
-
+#endif

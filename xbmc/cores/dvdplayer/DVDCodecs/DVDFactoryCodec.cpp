@@ -273,6 +273,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
 
   switch (hint.codec)
   {
+#if defined(HAS_LIBMAD)
   case CODEC_ID_MP2:
   case CODEC_ID_MP3:
     {
@@ -280,6 +281,7 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       if( pCodec ) return pCodec;
       break;
     }
+#endif
   case CODEC_ID_PCM_S32LE:
   case CODEC_ID_PCM_S32BE:
   case CODEC_ID_PCM_U32LE:

@@ -704,7 +704,14 @@ AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],
     USE_LIBMPEG2=0],
   AC_INCLUDES_DEFAULT()
   [#include <mpeg2dec/mpeg2.h>])
-AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
+
+AC_CHECK_HEADER([mad.h],
+  [AC_DEFINE([HAVE_LIBMAD], [1], [Whether to use libmad library.])
+    USE_LIBMAD=1
+    XB_FIND_SONAME([MAD],[mad])],
+  [AC_MSG_NOTICE($missing_library)
+    USE_LIBMAD=0])
+
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
@@ -822,7 +829,6 @@ else
   fi
 fi
 
-XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
@@ -1969,6 +1975,7 @@ AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_DVDREAD)
+AC_SUBST(USE_LIBMAD)
 AC_SUBST(USE_LIBMPEG2)
 AC_SUBST(USE_LIBASS)
 
