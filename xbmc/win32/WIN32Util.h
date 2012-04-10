@@ -38,6 +38,7 @@ enum Drive_Types
   DVD_DRIVES
 };
 
+#define BONJOUR_EVENT		( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
 
 class CWIN32Util
 {

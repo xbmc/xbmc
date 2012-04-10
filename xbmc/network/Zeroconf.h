@@ -77,6 +77,8 @@ public:
   static void   ReleaseInstance();
   // returns false if ReleaseInstance() was called befores
   static bool   IsInstantiated() { return  smp_instance != 0; }
+  // win32: process results from the bonjour daemon
+  virtual void  ProcessResults() {}
 
 protected:
   //methods to implement for concrete implementations
