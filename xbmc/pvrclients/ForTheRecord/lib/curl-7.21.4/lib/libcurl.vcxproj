@@ -88,7 +88,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy libcurl to PVR addon directory</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)</Command>
+      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
+copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -131,7 +132,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy libcurl to PVR addon directory</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)</Command>
+      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
+copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

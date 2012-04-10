@@ -485,7 +485,7 @@ void  *Vu::Process()
     Sleep(5 * 1000);
     m_iUpdateTimer += 5;
 
-    if ((m_iUpdateTimer > (g_iUpdateInterval * 60)) || (m_bInitial == false))
+    if (((int)m_iUpdateTimer > (g_iUpdateInterval * 60)) || (m_bInitial == false))
     {
       m_iUpdateTimer = 0;
  

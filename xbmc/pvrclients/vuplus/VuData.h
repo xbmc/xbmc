@@ -1,9 +1,9 @@
 #pragma once 
 
-#include "../platform/util/StdString.h"
+#include "platform/util/StdString.h"
 #include "xmlParser.h"
 #include "client.h"
-#include "../platform/threads/threads.h"
+#include "platform/threads/threads.h"
     
 struct VuWebResponse {
   char *response;
