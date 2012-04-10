@@ -110,6 +110,8 @@ public:
 
   void UpdateResolution();
 
+  bool RendererHandlesPresent();
+
 #ifdef HAS_GL
   CLinuxRendererGL    *m_pRenderer;
 #elif HAS_GLES == 2
@@ -164,6 +166,7 @@ protected:
     PRESENT_METHOD_BLEND,
     PRESENT_METHOD_WEAVE,
     PRESENT_METHOD_BOB,
+    PRESENT_METHOD_BYPASS,
   };
 
   double m_displayLatency;
