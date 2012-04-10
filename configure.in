@@ -689,8 +689,12 @@ else
   AC_MSG_ERROR($missing_program)
 fi
 AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
+AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],
+  [AC_DEFINE([HAVE_LIBMPEG2], [1], [Whether to use libmpeg2 library.])
+    USE_LIBMPEG2=1
+    XB_FIND_SONAME([MPEG2],[mpeg2])],
+  [AC_MSG_NOTICE($missing_library)
+    USE_LIBMPEG2=0],
   AC_INCLUDES_DEFAULT()
   [#include <mpeg2dec/mpeg2.h>])
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -820,7 +824,6 @@ XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
-XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1960,6 +1963,7 @@ AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_WEB_SERVER)
 AC_SUBST(USE_DVDREAD)
+AC_SUBST(USE_LIBMPEG2)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

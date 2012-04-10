@@ -166,10 +166,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 
   // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
+#if defined(HAS_LIBMPEG2)
   if(hint.stills && (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO))
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
+#endif
 #if defined(HAVE_LIBVDADECODER)
   if (!hint.software && g_guiSettings.GetBool("videoplayer.usevda"))
   {
