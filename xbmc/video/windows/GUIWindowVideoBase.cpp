@@ -1670,7 +1670,24 @@ public:
     if (!CProfilesManager::Get().GetCurrentProfile().canWriteDatabases())
       return false;
 
-    MarkWatched(m_item, m_bMark);
+    CVideoDatabase database;
+    if (!database.Open())
+      return false;
+
+    if (m_item->m_bIsFolder)
+    {
+      CFileItemList items;
+      CStdString strPath = m_item->GetPath();
+
+      CUtil::GetRecursiveListing(strPath, items, "");
+
+      for (int i = 0; i < items.Size(); ++i)
+        MarkOneWatched(database, items[i], m_bMark);
+    }
+    else
+      MarkOneWatched(database, m_item, m_bMark);
+
+    database.Close();
 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendThreadMessage(msg);
@@ -1681,47 +1698,22 @@ public:
   virtual const char *GetType() const { return "markwatched"; };
 
 private:
-  void MarkWatched(const CFileItemPtr &item, bool bMark)
+  void MarkOneWatched(CVideoDatabase &database, const CFileItemPtr &item, bool bMark)
   {
-    CVideoDatabase database;
-    if (database.Open())
-    {
-      CFileItemList items;
-      if (item->m_bIsFolder)
-      {
-        CStdString strPath = item->GetPath();
-        XFILE::CDirectory::GetDirectory(strPath, items);
-      }
-      else
-        items.Add(item);
-
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr pItem = items[i];
-        if (pItem->m_bIsFolder)
-        {
-          MarkWatched(pItem, bMark);
-          continue;
-        }
-
-        if (pItem->HasVideoInfoTag() &&
-            (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-             (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-          continue;
+    if (item->HasVideoInfoTag() &&
+        (( bMark && item->GetVideoInfoTag()->m_playCount) ||
+         (!bMark && !(item->GetVideoInfoTag()->m_playCount))))
+      return;
 
 #ifdef HAS_UPNP
-        if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*pItem, bMark))
+    if (!URIUtils::IsUPnP(item->GetPath()) || !UPNP::CUPnP::MarkWatched(*item, bMark))
 #endif
-        {
-          // Clear resume bookmark
-          if (bMark)
-            database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+    {
+      // Clear resume bookmark
+      if (bMark)
+        database.ClearBookMarksOfFile(item->GetPath(), CBookmark::RESUME);
 
-          database.SetPlayCount(*pItem, bMark ? 1 : 0);
-        }
-      }
-
-      database.Close();
+      database.SetPlayCount(*item, bMark ? 1 : 0);
     }
   }
 
