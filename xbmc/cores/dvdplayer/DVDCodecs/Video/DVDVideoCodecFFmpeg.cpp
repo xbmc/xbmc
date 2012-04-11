@@ -643,11 +643,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   switch(pix_fmt)
   {
     case PIX_FMT_YUVJ420P:
-      pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
+      pDvdVideoPicture->format = RENDER_FMT_YUV420P;
       pDvdVideoPicture->color_range = 1;
       break;
     default:
-      pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
+      pDvdVideoPicture->format = RENDER_FMT_YUV420P;
       break;
   }
 

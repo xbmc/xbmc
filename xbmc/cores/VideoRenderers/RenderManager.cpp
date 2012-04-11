@@ -758,37 +758,37 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if(index < 0)
     return index;
 
-  if(pic.format == DVDVideoPicture::FMT_YUV420P)
+  if(pic.format == RENDER_FMT_YUV420P)
   {
     CDVDCodecUtils::CopyPicture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_NV12)
+  else if(pic.format == RENDER_FMT_NV12)
   {
     CDVDCodecUtils::CopyNV12Picture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_YUY2
-       || pic.format == DVDVideoPicture::FMT_UYVY)
+  else if(pic.format == RENDER_FMT_YUYV422
+       || pic.format == RENDER_FMT_UYVY422)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_DXVA)
+  else if(pic.format == RENDER_FMT_DXVA)
   {
     CDVDCodecUtils::CopyDXVA2Picture(&image, &pic);
   }
 #ifdef HAVE_LIBVDPAU
-  else if(pic.format == DVDVideoPicture::FMT_VDPAU)
+  else if(pic.format == RENDER_FMT_VDPAU)
     m_pRenderer->AddProcessor(pic.vdpau);
 #endif
 #ifdef HAVE_LIBOPENMAX
-  else if(pic.format == DVDVideoPicture::FMT_OMXEGL)
+  else if(pic.format == RENDER_FMT_OMXEGL)
     m_pRenderer->AddProcessor(pic.openMax, &pic);
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  else if(pic.format == DVDVideoPicture::FMT_CVBREF)
+  else if(pic.format == RENDER_FMT_CVBREF)
     m_pRenderer->AddProcessor(pic.vtb, &pic);
 #endif
 #ifdef HAVE_LIBVA
-  else if(pic.format == DVDVideoPicture::FMT_VAAPI)
+  else if(pic.format == RENDER_FMT_VAAPI)
     m_pRenderer->AddProcessor(*pic.vaapi);
 #endif
   m_pRenderer->ReleaseImage(index, false);

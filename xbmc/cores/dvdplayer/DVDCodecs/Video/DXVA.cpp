@@ -716,7 +716,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 {
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
-  picture->format = DVDVideoPicture::FMT_DXVA;
+  picture->format = RENDER_FMT_DXVA;
   picture->extended_format = (unsigned int)m_format.Format;
   picture->context = m_surface_context;
   picture->data[3]= frame->data[3];
@@ -1332,14 +1332,14 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
 
   switch (picture->format)
   {
-    case DVDVideoPicture::FMT_DXVA:
+    case RENDER_FMT_DXVA:
     {
       surface = (IDirect3DSurface9*)picture->data[3];
       context = picture->context;
       break;
     }
 
-    case DVDVideoPicture::FMT_YUV420P:
+    case RENDER_FMT_YUV420P:
     {
       surface = m_surfaces[m_index];
       m_index = (m_index + 1) % m_size;

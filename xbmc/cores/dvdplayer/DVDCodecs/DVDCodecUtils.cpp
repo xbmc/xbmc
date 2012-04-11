@@ -183,7 +183,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
       pPicture->iLineSize[1] = pPicture->iWidth;
       pPicture->iLineSize[2] = 0;
       pPicture->iLineSize[3] = 0;
-      pPicture->format = DVDVideoPicture::FMT_NV12;
+      pPicture->format = RENDER_FMT_NV12;
       
       // copy luma
       uint8_t *s = pSrc->data[0];
@@ -218,7 +218,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
   return pPicture;
 }
 
-DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format)
+DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, ERenderFormat format)
 {
   // Clone a YV12 picture to new YUY2 or UYVY picture.
   DVDVideoPicture* pPicture = new DVDVideoPicture;
@@ -257,7 +257,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
         int      dstStride[] = { pPicture->iLineSize[0], 0,                  0,                  0    };
 
         int dstformat;
-        if (format == DVDVideoPicture::FMT_UYVY)
+        if (format == RENDER_FMT_UYVY422)
           dstformat = PIX_FMT_UYVY422;
         else
           dstformat = PIX_FMT_YUYV422;
