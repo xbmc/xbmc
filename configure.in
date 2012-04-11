@@ -505,6 +505,12 @@ case $host in
      ARCH="powerpc64-linux"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC64")
      ;;
+  arm*-*-linux-gnu*hf)
+     use_texturepacker=no
+     ARCH="arm"
+     use_arch="armhf"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL")
+     ;;
   arm*-*-linux-gnu*)
      use_texturepacker=no
      ARCH="arm"
@@ -553,7 +559,7 @@ fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
-  if test "$use_arch" != "arm"; then
+  if test "$use_arch" != "arm" && test "$use_arch" != "armhf"; then
     LIBS="$LIBS -framework IOKit"
     LIBS="$LIBS -framework Cocoa"
     LIBS="$LIBS -framework AppKit"
@@ -570,10 +576,16 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework DiskArbitration"
     LIBS="$LIBS -framework ApplicationServices"
   fi
-elif test "$use_arch" = "arm"; then
-  CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
-  CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
-  FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
+elif test "$use_arch" = "arm" || test "$use_arch" = "armhf"; then
+  if test "$use_arch" = "armhf"; then
+    CFLAGS="$CFLAGS -mfloat-abi=hard -mno-apcs-stack-check"
+    CXXFLAGS="$CXXFLAGS -mfloat-abi=hard -mno-apcs-stack-check"
+    FFMPEG_EXTRACFLAGS="-mfloat-abi=hard"
+  else
+    CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
+    CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
+    FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
+  fi
   if test "$use_tegra" = "yes"; then
     # Compile for ARMv7a architecture, need to test gcc for vfpv3-d16 support 
     SAVE_CFLAGS="$CFLAGS"
@@ -790,7 +802,7 @@ AS_CASE([x$use_libbluray],
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
-  if test "$use_arch" != "arm"; then
+  if test "$use_arch" != "arm" && test "$use_arch" != "armhf"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
@@ -1443,7 +1455,7 @@ if test "$host_vendor" != "apple" ; then
   fi
 fi
 
-if test "$use_arch" != "arm" ; then
+if test "$use_arch" != "arm" && test "$use_arch" != "armhf" ; then
   AC_CHECK_PROG(HAVE_CMAKE,cmake,"yes","no",)
   if test "$HAVE_CMAKE" = "no" ; then
     AC_MSG_ERROR($missing_program)
@@ -2007,7 +2019,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
-      `if test "$use_arch" = "arm"; then echo --enable-pic; fi`\
+      `if test "$use_arch" = "arm" || test "$use_arch" = "armhf"; then echo --enable-pic; fi`\
       `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
       --target-os=$(tolower $(uname -s)) \
       --disable-amd3dnow \
