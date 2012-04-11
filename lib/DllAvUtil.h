@@ -59,6 +59,10 @@ extern "C" {
   #else
     #include <ffmpeg/mem.h>
   #endif
+  /* For AVRounding */
+  #if (defined HAVE_LIBAVUTIL_MATHEMATICS_H)
+    #include <libavutil/mathematics.h>
+  #endif
 #else
   #include "libavutil/avutil.h"
   #include "libavutil/crc.h"
