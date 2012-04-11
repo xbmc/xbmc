@@ -129,7 +129,10 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       continue;
 
     CStdString strFilePath;
-    strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+    if(strUseBase.empty())
+      strFilePath.Format("pvr://recordings/%s/", strCurrent.c_str());
+    else
+      strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
 
     if (!results->Contains(strFilePath))
     {
