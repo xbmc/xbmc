@@ -2026,6 +2026,7 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/XBMCProjectM/Makefile \
     xbmc/visualizations/Goom/Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
+    xbmc/visualizations/fishBMC/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
     xbmc/visualizations/iTunes/Makefile \
     tools/Linux/xbmc.sh \

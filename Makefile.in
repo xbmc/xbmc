@@ -154,7 +154,8 @@ ifneq (@DISABLE_RSXS@,1)
 endif
 
 VIS_DIRS=xbmc/visualizations/OpenGLSpectrum \
-         xbmc/visualizations/WaveForm
+         xbmc/visualizations/WaveForm \
+         xbmc/visualizations/fishBMC
 
 ifneq (@DISABLE_PROJECTM@,1)
   VIS_DIRS+= xbmc/visualizations/XBMCProjectM
