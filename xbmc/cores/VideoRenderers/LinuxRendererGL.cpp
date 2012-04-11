@@ -43,6 +43,7 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "RenderCapture.h"
+#include "RenderFormats.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -139,6 +140,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
+  m_format = RENDER_FMT_NONE;
 
   m_iYV12RenderBuffer = 0;
   m_flipindex = 0;
@@ -253,7 +255,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
+bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -261,6 +263,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   // Save the flags.
   m_iFlags = flags;
+  m_format = format;
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
@@ -890,12 +893,12 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
 void CLinuxRendererGL::LoadShaders(int field)
 {
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
+  if (m_format == RENDER_FMT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
+  else if (m_format == RENDER_FMT_VAAPI)
   {
     CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
     m_renderMethod = RENDER_VAAPI;
@@ -927,7 +930,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS);
 
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
@@ -955,7 +958,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_renderMethod = RENDER_ARB ;
 
         // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+        m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, m_format);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
@@ -1009,26 +1012,26 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_pboUsed = false;
 
   // Now that we now the render method, setup texture function handlers
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
+  if (m_format == RENDER_FMT_NV12)
   {
     m_textureUpload = &CLinuxRendererGL::UploadNV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2 ||
-           CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_UYVY)
+  else if (m_format == RENDER_FMT_YUYV422 ||
+           m_format == RENDER_FMT_UYVY422)
   {
     m_textureUpload = &CLinuxRendererGL::UploadYUV422PackedTexture;
     m_textureCreate = &CLinuxRendererGL::CreateYUV422PackedTexture;
     m_textureDelete = &CLinuxRendererGL::DeleteYUV422PackedTexture;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
+  else if (m_format == RENDER_FMT_VDPAU)
   {
     m_textureUpload = &CLinuxRendererGL::UploadVDPAUTexture;
     m_textureCreate = &CLinuxRendererGL::CreateVDPAUTexture;
     m_textureDelete = &CLinuxRendererGL::DeleteVDPAUTexture;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
+  else if (m_format == RENDER_FMT_VAAPI)
   {
     m_textureUpload = &CLinuxRendererGL::UploadVAAPITexture;
     m_textureCreate = &CLinuxRendererGL::CreateVAAPITexture;
@@ -2609,7 +2612,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   int      srcStride[4] = {};
   int      srcFormat    = -1;
 
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YV12)
+  if (m_format == RENDER_FMT_YUV420P)
   {
     srcFormat = PIX_FMT_YUV420P;
     for (int i = 0; i < 3; i++)
@@ -2618,7 +2621,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
       srcStride[i] = im->stride[i];
     }
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
+  else if (m_format == RENDER_FMT_NV12)
   {
     srcFormat = PIX_FMT_NV12;
     for (int i = 0; i < 2; i++)
@@ -2627,13 +2630,13 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
       srcStride[i] = im->stride[i];
     }
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2)
+  else if (m_format == RENDER_FMT_YUYV422)
   {
     srcFormat    = PIX_FMT_YUYV422;
     src[0]       = im->plane[0];
     srcStride[0] = im->stride[0];
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_UYVY)
+  else if (m_format == RENDER_FMT_UYVY422)
   {
     srcFormat    = PIX_FMT_UYVY422;
     src[0]       = im->plane[0];
@@ -2641,7 +2644,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
   }
   else //should never happen
   {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFrame: called with unsupported format %i", CONF_FLAGS_FORMAT_MASK(m_iFlags));
+    CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFrame: called with unsupported format %i", m_format);
     return;
   }
 
@@ -2680,7 +2683,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   int      srcStrideBot[4] = {};
   int      srcFormat       = -1;
 
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YV12)
+  if (m_format == RENDER_FMT_YUV420P)
   {
     srcFormat = PIX_FMT_YUV420P;
     for (int i = 0; i < 3; i++)
@@ -2691,7 +2694,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
       srcStrideBot[i] = im->stride[i] * 2;
     }
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
+  else if (m_format == RENDER_FMT_NV12)
   {
     srcFormat = PIX_FMT_NV12;
     for (int i = 0; i < 2; i++)
@@ -2702,7 +2705,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
       srcStrideBot[i] = im->stride[i] * 2;
     }
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2)
+  else if (m_format == RENDER_FMT_YUYV422)
   {
     srcFormat       = PIX_FMT_YUYV422;
     srcTop[0]       = im->plane[0];
@@ -2710,7 +2713,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     srcBot[0]       = im->plane[0] + im->stride[0];
     srcStrideBot[0] = im->stride[0] * 2;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_UYVY)
+  else if (m_format == RENDER_FMT_UYVY422)
   {
     srcFormat       = PIX_FMT_UYVY422;
     srcTop[0]       = im->plane[0];
@@ -2720,7 +2723,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
   }
   else //should never happen
   {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFields: called with unsupported format %i", CONF_FLAGS_FORMAT_MASK(m_iFlags));
+    CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFields: called with unsupported format %i", m_format);
     return;
   }
 
@@ -3055,8 +3058,8 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
   //nearest neighbor doesn't work on YUY2 and UYVY
   if (method == VS_SCALINGMETHOD_NEAREST &&
-      CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_YUY2 &&
-      CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_UYVY)
+      m_format != RENDER_FMT_YUYV422 &&
+      m_format != RENDER_FMT_UYVY422)
     return true;
 
   if(method == VS_SCALINGMETHOD_LINEAR

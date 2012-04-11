@@ -29,13 +29,14 @@
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
 #include "win32/WIN32Util.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
   m_NeedRecalc = true;
 }
 
-void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags)
+void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)
 {
   if (m_contrast != contrast)
   {
@@ -52,6 +53,11 @@ void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned in
     m_NeedRecalc = true;
     m_flags = flags;
   }
+  if (m_format != format)
+  {
+    m_NeedRecalc = true;
+    m_format = format;
+  }
 }
 
 D3DXMATRIX* CYUV2RGBMatrix::Matrix()
@@ -59,7 +65,7 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
   if (m_NeedRecalc)
   {
     TransformMatrix matrix;
-    CalculateYUVMatrix(matrix, m_flags, m_blacklevel, m_contrast);
+    CalculateYUVMatrix(matrix, m_flags, m_format, m_blacklevel, m_contrast);
 
     m_mat._11 = matrix.m[0][0];
     m_mat._12 = matrix.m[1][0];
@@ -199,18 +205,19 @@ bool CWinShader::Execute(std::vector<LPDIRECT3DSURFACE9> *vecRT, unsigned int ve
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
+bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
 {
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   m_sourceWidth = sourceWidth;
   m_sourceHeight = sourceHeight;
+  m_format = fmt;
 
   unsigned int texWidth;
 
   DefinesMap defines;
 
-  if (fmt == YV12)
+  if (fmt == RENDER_FMT_YUV420P)
   {
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
@@ -223,7 +230,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == NV12)
+  else if (fmt == RENDER_FMT_NV12)
   {
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
@@ -235,7 +242,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == YUY2)
+  else if (fmt == RENDER_FMT_YUYV422)
   {
     defines["XBMC_YUY2"] = "";
     texWidth = sourceWidth >> 1;
@@ -246,7 +253,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
       return false;
     }
   }
-  else if (fmt == UYVY)
+  else if (fmt == RENDER_FMT_UYVY422)
   {
     defines["XBMC_UYVY"] = "";
     texWidth = sourceWidth >> 1;
@@ -355,7 +362,8 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 
   m_matrix.SetParameters(contrast * 0.02f,
                          brightness * 0.01f - 0.5f,
-                         flags);
+                         flags,
+                         m_format);
 }
 
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)

@@ -30,6 +30,7 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
+#include "RenderFormats.h"
 
 #include "threads/Event.h"
 
@@ -132,7 +133,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -222,6 +223,7 @@ protected:
   bool m_bValidated;
   bool m_bImageReady;
   unsigned m_iFlags;
+  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;

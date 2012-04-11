@@ -44,6 +44,8 @@
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
+#include "RenderFormats.h"
+
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
 #endif
@@ -85,6 +87,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
+  m_format = RENDER_FMT_NONE;
 
   m_iYV12RenderBuffer = 0;
   m_flipindex = 0;
@@ -153,13 +156,14 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;  
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
 
   // Save the flags.
   m_iFlags = flags;
+  m_format = format;
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
@@ -414,7 +418,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) != CONF_FLAGS_FORMAT_OMXEGL)
+  if (m_format != RENDER_FMT_OMXEGL)
   {
     if (!buf.fields[FIELD_FULL][0].id) return;
   }
@@ -592,26 +596,26 @@ void CLinuxRendererGLES::LoadShaders(int field)
   {
     case RENDER_METHOD_AUTO:
     case RENDER_METHOD_GLSL:
-      if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_OMXEGL)
+      if (m_format == RENDER_FMT_OMXEGL)
       {
         CLog::Log(LOGNOTICE, "GL: Using OMXEGL RGBA render method");
         m_renderMethod = RENDER_OMXEGL;
         break;
       }
-      else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_BYPASS)
+      else if (m_format == RENDER_FMT_BYPASS)
       {
         CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
         m_renderMethod = RENDER_BYPASS;
         break;
       }
-      else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_CVBREF)
+      else if (m_format == RENDER_FMT_CVBREF)
       {
         CLog::Log(LOGNOTICE, "GL: Using CoreVideoRef RGBA render method");
         m_renderMethod = RENDER_CVREF;
         break;
       }
       #if defined(TARGET_DARWIN_IOS)
-      else if (ios_version < 5.0 && CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YV12)
+      else if (ios_version < 5.0 && m_format == RENDER_FMT_YUV420P)
       {
         CLog::Log(LOGNOTICE, "GL: Using software color conversion/RGBA render method");
         m_renderMethod = RENDER_SW;
@@ -622,7 +626,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
       if (glCreateProgram)
       {
         // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShader(false, m_iFlags);
+        m_pYUVShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
         if (m_pYUVShader && m_pYUVShader->CompileAndLink())
@@ -660,13 +664,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   // Now that we now the render method, setup texture function handlers
-  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_CVBREF)
+  if (m_format == RENDER_FMT_CVBREF)
   {
     m_textureUpload = &CLinuxRendererGLES::UploadCVRefTexture;
     m_textureCreate = &CLinuxRendererGLES::CreateCVRefTexture;
     m_textureDelete = &CLinuxRendererGLES::DeleteCVRefTexture;
   }
-  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_BYPASS)
+  else if (m_format == RENDER_FMT_BYPASS)
   {
     m_textureUpload = &CLinuxRendererGLES::UploadBYPASSTexture;
     m_textureCreate = &CLinuxRendererGLES::CreateBYPASSTexture;

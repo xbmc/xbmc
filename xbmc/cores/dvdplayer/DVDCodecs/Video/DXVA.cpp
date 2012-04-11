@@ -1068,7 +1068,7 @@ bool CProcessor::PreInit()
   return true;
 }
 
-bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int format)
+bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format)
 {
   Close();
 
@@ -1159,8 +1159,8 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 
   m_desc = dsc;
 
-  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_DXVA)
-    m_desc.Format = (D3DFORMAT)format;
+  if (format == RENDER_FMT_DXVA)
+    m_desc.Format = (D3DFORMAT)extended_format;
   else
   {
     // Only NV12 software colorspace conversion is implemented for now

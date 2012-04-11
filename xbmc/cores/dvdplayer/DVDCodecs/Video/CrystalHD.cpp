@@ -257,7 +257,7 @@ protected:
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int height)
+CPictureBuffer::CPictureBuffer(ERenderFormat format, int width, int height)
 {
   m_width = width;
   m_height = height;
