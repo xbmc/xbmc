@@ -788,15 +788,15 @@ void CDVDInputStreamNavigator::SkipWait()
   m_dll.dvdnav_wait_skip(m_dvdnav);
 }
 
-void CDVDInputStreamNavigator::SkipHold()
+CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
 {
-  if(IsHeld())
+  if(m_holdmode == HOLDMODE_HELD)
     m_holdmode = HOLDMODE_SKIP;
-}
 
-bool CDVDInputStreamNavigator::IsHeld()
-{
-  return m_holdmode == HOLDMODE_HELD;
+  if(m_bEOF)
+    return NEXTSTREAM_NONE;
+  else
+    return NEXTSTREAM_RETRY;
 }
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()

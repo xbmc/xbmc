@@ -41,8 +41,6 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength();
 
-  virtual bool    NextStream();
-
   CCriticalSection m_RTMPSection;
 
 protected:

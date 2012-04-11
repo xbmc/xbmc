@@ -1349,10 +1349,10 @@
   <string id="14082">Exibir informações EXIF de imagens</string>
   <string id="14083">Usar janela maximizada ao invés de tela cheia</string>
   <string id="14084">Enfileirar músicas ao selecionar</string>
-  <string id="14085">Tocar CDs de áudio automaticamente</string>
-  <string id="14086">Tocar</string>
+  <string id="14085"></string>
+  <string id="14086">Reproduzir</string>
   <string id="14087">DVDs</string>
-  <string id="14088">Tocar DVDs automaticamente</string>
+  <string id="14088">Reproduzir DVDs automaticamente</string>
   <string id="14089">Fonte para uso em legendas de texto</string>
   <string id="14090">Internacional</string>
   <string id="14091">Conjunto de caracteres</string>
@@ -1360,6 +1360,10 @@
   <string id="14093">Segurança</string>
   <string id="14094">Disp. de Entrada</string>
   <string id="14095">Econ. de energia</string>
+  <string id="14096">Ripar</string>
+  <string id="14097">Ação ao Inserir Áudio CD</string>
+  <string id="14098">Reproduzir</string>
+  <string id="14099">Ejetar o disco quando ripar CD tiver sido concluído</string>
 
   <string id="15015">Remove</string>
   <string id="15016">Jogos</string>

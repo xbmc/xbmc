@@ -665,6 +665,12 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   if (filters.IsEmpty() && !scale)
     return 0;
 
+  if (m_pHardware)
+  {
+    CLog::Log(LOGWARNING, "CDVDVideoCodecFFmpeg::FilterOpen - skipped opening filters on hardware decode");
+    return 0;
+  }
+
   if (!(m_pFilterGraph = m_dllAvFilter.avfilter_graph_alloc()))
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - unable to alloc filter graph");

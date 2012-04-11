@@ -914,6 +914,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
   if(render == OVERLAY_AUTO)
     render = OVERLAY_GPU;
 
+  VecOverlays overlays;
+
   {
     CSingleLock lock(*m_pOverlayContainer);
 
@@ -935,15 +937,28 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
       {
-        if (render == OVERLAY_GPU)
-          g_renderManager.AddOverlay(pOverlay, pts2);
+        if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
+          overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
+                                        , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
+        else
+          overlays.push_back(pOverlay);
 
-        if (render == OVERLAY_BUF)
-          CDVDOverlayRenderer::Render(pSource, pOverlay, pts2);
       }
     }
 
+    for(it = overlays.begin(); it != overlays.end(); ++it)
+    {
+      double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
+
+      if (render == OVERLAY_GPU)
+        g_renderManager.AddOverlay(*it, pts2);
+
+      if (render == OVERLAY_BUF)
+        CDVDOverlayRenderer::Render(pSource, *it, pts2);
+    }
   }
+
+
 }
 #endif
 

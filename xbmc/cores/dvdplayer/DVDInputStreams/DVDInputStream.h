@@ -47,6 +47,8 @@ enum DVDStreamType
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
+class CPoint;
+
 class CDVDInputStream
 {
 public:
@@ -92,6 +94,35 @@ public:
     virtual bool SeekChapter(int ch) = 0;
   };
 
+  class IMenus
+  {
+    public:
+    virtual ~IMenus() {};
+    virtual void ActivateButton() = 0;
+    virtual void SelectButton(int iButton) = 0;
+    virtual int  GetCurrentButton() = 0;
+    virtual int  GetTotalButtons() = 0;
+    virtual void OnUp() = 0;
+    virtual void OnDown() = 0;
+    virtual void OnLeft() = 0;
+    virtual void OnRight() = 0;
+    virtual void OnMenu() = 0;
+    virtual void OnBack() = 0;
+    virtual void OnNext() = 0;
+    virtual void OnPrevious() = 0;
+    virtual bool OnMouseMove(const CPoint &point) = 0;
+    virtual bool OnMouseClick(const CPoint &point) = 0;
+    virtual bool IsInMenu() = 0;
+    virtual double GetTimeStampCorrection() = 0;
+  };
+
+  enum ENextStream
+  {
+    NEXTSTREAM_NONE,
+    NEXTSTREAM_OPEN,
+    NEXTSTREAM_RETRY,
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
@@ -102,7 +133,7 @@ public:
   virtual __int64 GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string& GetFileName() { return m_strFileName; }
-  virtual bool NextStream() { return false; }
+  virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
 
