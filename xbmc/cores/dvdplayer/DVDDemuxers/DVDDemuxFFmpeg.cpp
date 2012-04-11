@@ -33,7 +33,9 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+#ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
