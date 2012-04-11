@@ -1,3 +1,5 @@
+CXXFLAGS+=-DMESA_EGL_NO_X11_HEADERS
+
 SRCS=ApplicationOperations.cpp \
      AudioLibrary.cpp \
      FileItemHandler.cpp \
