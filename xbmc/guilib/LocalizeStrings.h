@@ -42,7 +42,7 @@ class CLocalizeStrings
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english/strings.xml");
+  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english");
   bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
   void ClearSkinStrings();
   const CStdString& Get(uint32_t code) const;
@@ -51,7 +51,35 @@ public:
   void ClearBlock(const CStdString &id);
 protected:
   void Clear(uint32_t start, uint32_t end);
+
+  /*! \brief Loads language ids and strings to memory map m_strings.
+   * It tries to load a string.po file first. If doesn't exist, it loads a strings.xml file instead.
+   \param pathname The directory name, where we look for the strings file.
+   \param encoding Encoding of the strings. For PO files we only use utf-8.
+   \param offset An offset value to place strings from the id value.
+   \return false if no strings.po or strings.xml file was loaded.
+   */
+  bool LoadStr2Mem(const CStdString &pathname, CStdString &encoding, uint32_t offset = 0);
+
+  /*! \brief Tries to load ids and strings from astrings.po file to m_strings map.
+   * It should only be called from the LoadStr2Mem function to have a fallback.
+   *   \param pathname The directory name, where we look for the strings file.
+   *   \param encoding Encoding of the strings. For PO files we only use utf-8.
+   *   \param offset An offset value to place strings from the id value.
+   *   \param bSourceLanguage If we are loading the source English strings.po.
+   *   \return false if no strings.po file was loaded.
+   */
+  bool LoadPO(const CStdString &filename, CStdString &encoding, uint32_t offset = 0, bool bSourceLanguage = false);
+
+  /*! \brief Tries to load ids and strings from astrings.xml file to m_strings map.
+   * It should only be called from the LoadStr2Mem function to try a PO file first.
+   *   \param pathname The directory name, where we look for the strings file.
+   *   \param encoding Encoding of the strings.
+   *   \param offset An offset value to place strings from the id value.
+   *   \return false if no strings.xml file was loaded.
+   */
   bool LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset = 0);
+
   CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
   std::map<uint32_t, CStdString> m_strings;
   typedef std::map<uint32_t, CStdString>::const_iterator ciStrings;

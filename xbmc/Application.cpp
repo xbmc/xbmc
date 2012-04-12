@@ -731,9 +731,9 @@ bool CApplication::Create()
   g_langInfo.Load(strLangInfoPath);
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+  strLanguagePath.Format("special://xbmc/language/%s", strLanguage.c_str());
 
-  CLog::Log(LOGINFO, "load language file: %s", strLanguagePath.c_str());
+  CLog::Log(LOGINFO, "load language file from path: %s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
@@ -1749,11 +1749,9 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   CStdString langPath, skinEnglishPath;
   URIUtils::AddFileToFolder(skin->Path(), "language", langPath);
   URIUtils::AddFileToFolder(langPath, g_guiSettings.GetString("locale.language"), langPath);
-  URIUtils::AddFileToFolder(langPath, "strings.xml", langPath);
 
   URIUtils::AddFileToFolder(skin->Path(), "language", skinEnglishPath);
   URIUtils::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
-  URIUtils::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
 

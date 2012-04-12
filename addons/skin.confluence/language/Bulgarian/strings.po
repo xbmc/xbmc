@@ -1,0 +1,576 @@
+# Converted from xbmc strings.xml with xbmc-xml2po (by Team-XBMC)
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-FRODO_GIT953c09c336\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-09 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Променете вашите"
+
+#: id:31001
+msgid "Love"
+msgstr "Love"
+
+#: id:31002
+msgid "Hate"
+msgstr "Hate"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Опции на захранването"
+
+#: id:31004
+msgid "Working..."
+msgstr "Работя..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Скрий ИНФО"
+
+#: id:31006
+msgid "View Options"
+msgstr "Изглед"
+
+#: id:31007
+msgid "Plugins"
+msgstr "Добавки"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "Цял екран"
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Наскоро Добавени"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Видео - Файлове"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Музика - Файлове"
+
+#: id:31023
+msgid "Playing"
+msgstr "Възпроизвеждане"
+
+#: id:31024
+msgid "Page"
+msgstr "Страница"
+
+#: id:31025
+msgid "Items"
+msgstr "Позиции"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Разни Опции"
+
+#: id:31027
+msgid "Location"
+msgstr "Място"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Плакати въртене"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Плакати"
+
+#: id:31030
+msgid "Full list"
+msgstr "Пълен лист"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Малки картинки"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Изображение въртене"
+
+#: id:31033
+msgid "Info"
+msgstr "Инфо"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Възпроизвежда"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "ВЪЗПРОИЗВЕЖДА"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "НА ПАУЗА"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "НАПРЕД"
+
+#: id:31045
+msgid "REWIND"
+msgstr "НАЗАД"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Аудио Свойства"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Текущо Настроени"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Настроени Визуализации"
+
+#: id:31049
+msgid "End Time"
+msgstr "Крайно Време"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "Сортиране: Възходящ"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "Сортиране: Низходящ"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Отвори плейлист"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Запази плейлист"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Затвори плейлист"
+
+#: id:31058
+msgid "System music files"
+msgstr "Системна музика"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Текущ плейлист"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Изберете място, от което искате да възпроизвеждате."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Текущо избрани"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Настройки на начален екран"
+
+#: id:31102
+msgid "Background"
+msgstr "Фон"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Покажи \"На Пауза\" в слайдшоу на снимки"
+
+#: id:31104
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Възпроизведи трейлърите в прозорец [COLOR=grey3](Само диалог за видео инфо)[/COLOR]"
+
+#: id:31105
+msgid "\"Videos\" button always goes to video \"Files\""
+msgstr ""
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Разни опции"
+
+#: id:31107
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr ""
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Скрий бутоните на главното меню"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Фон на начален екран"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Редактиране на фон за Начало:"
+
+#: id:31111
+msgid "Hide"
+msgstr "Скрий"
+
+#: id:31112
+msgid "Options"
+msgstr "Опции"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Една картина"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Много картини"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Потребителски"
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Покажи Наскоро добавени видео"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Подменю Начална страница"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Включи протребителски Скрипт Бутон"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "ЕТИКЕТ НА БУТОН"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Страница Времето"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Ползвай \"Плакати\" вместо \"Банери\" за ТВ Шоу"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Покажи фон \"Възпроизвеждам\" Видео"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Покажи фон \"Възпроизвеждам\" Визуализация"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Пусни тв музика във видео библиотеката (TvTunes добавка)"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "TvTunes"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Текст"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "Добавка за текст"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "Добавка субтитри"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "Начална страница подменю Видео"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "Начална страница подменю Музика"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "Начална страница подменю Снимки"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Музика OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Видео OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Преки пътища"
+
+#: id:31201
+msgid "Categories"
+msgstr "Категории"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Покажи ролите"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Избери песен"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Секзия връзки"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Източник на текст на песен"
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Текуща температура"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Последно обновен"
+
+#: id:31302
+msgid "Menu"
+msgstr "Меню"
+
+#: id:31303
+msgid "Data provider"
+msgstr ""
+
+#: id:31304
+msgid "Picture"
+msgstr "Снимка"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Не е открит медия диск"
+
+#: id:31306
+msgid "Eject"
+msgstr "Извади"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Скрий плакат"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Детайли Филм"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Използвана памет:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Номер на песен"
+
+#: id:31311
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "ПЛАКАТ[CR][CR]НЕДОСТЪПЕН[CR][CR] НАТИСНИ БУТОНА ЗА ЗАДАВАНЕ"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Текущ Сайт Инфо"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Сайт Инфо"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "Опции Сканиране на съдържание"
+
+#: id:31315
+msgid "Basic"
+msgstr "Основни"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Задай път до Плакат"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Малък Плакат"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Избран Профил"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Последно влизане"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Караоке избирател на песни"
+
+#: id:31322
+msgid "Aired"
+msgstr "Излъчен"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "Последни Филми"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "Последни Епизоди"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Опции на Плейлисти"
+
+#: id:31326
+msgid "Created"
+msgstr "Създаден"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Резолюция"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Наскоро Добавени"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]ТАЙМЕР УСТАНОВЕН![/B] [COLOR=grey2] - АВТОМАТИЧНО ИЗКЛЮЧВАНЕ[/COLOR]"
+
+#: id:31330
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr "Натисни бутон за възпроизвеждане[CR][CR]Трейлър"
+
+#: id:31331
+msgid "Album Details"
+msgstr "Албум детайли"
+
+#: id:31351
+msgid "Pause"
+msgstr "Пауза"
+
+#: id:31352
+msgid "Stop"
+msgstr "Стоп"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "Превъртане напред"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Превъртане назад"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Меню филм"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Свали субтитри"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Кожа подразбиране"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Кожа подразбиране без главни букви"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Ариал базилан"
+
+#: id:31400
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin � Set language and region � Change file listing options[CR]Set up a screensaver"
+msgstr "[B]КОНФИГУРАЦИЯ НАСТРОЙКИ НА ОБЛИКА[/B][CR][CR]Промяна на кожа · Избор на език и регион · Промяна на файловите опции[CR]Настройки на скрийнсейвър"
+
+#: id:31401
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library � Set video playback options � Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]КОНФИГУРИРАНЕ НА ВИДЕО НАСТРОЙКИТЕ[/B][CR][CR]Управление на видео библиотека · Настройки на видео възпроизвеждане · Промяна на видео файловите опции · Задаване на шрифт за субтитри"
+
+#: id:31402
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library � Set music playback options � Change music listing options[CR]Setup song submission � Set karaoke options"
+msgstr "[B]КОНФИГУРИРАНЕ НА НАСТРОЙКИТЕ ЗА МУЗИКА[/B][CR][CR]Управление на музикалната библиотека · Настройки на възпроизвежданена музика · Промяна на музикалните файлови опции · Настройки на караоке"
+
+#: id:31403
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options � Configure slideshows"
+msgstr "[B]КОНФИГУРИРАНЕ НА НАСТРОЙКИТЕ ЗА СНИМКИ[/B][CR][CR]Настройка на листингови опции · Конфигуриране на слайдшоу"
+
+#: id:31404
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]КОНФИГУРИРАНЕ НА НАСТРОЙКИТЕ ЗА ВРЕМЕТО[/B][CR][CR]Задаване на три града за събиране на информация за времето"
+
+#: id:31406
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays � Configure audio output � Setup remote controls[CR]Set power saving options � Enable debugging � Setup master lock"
+msgstr "[B]КОНФИГУРИРАНЕ НА СИСТЕМНИТЕ НАСТРОЙКИ[/B][CR][CR]Найстройки и калибриране на дисплей · Конфигуриране на аудио изход[CR]Найстройки на дистанционни управления · Настройки на запазване на захранването · Включване на дебъг · Настройки на главно заключване"
+
+#: id:31407
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin � Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]КОНФИГУРИРАНЕ НАСТРОЙКИ ЗА КОЖА[/B][CR][CR]Настройки на кожа Confluence · Добавяне и премахване на позиции от начален екран · Промяна фона на кожите"
+
+#: id:31408
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons � Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr "[B]КОНФИГУРИРАНЕ ДОБАВКИ[/B][CR][CR]Управление на инсталираните добавки · Разглеждане и инсталиране на добавки от xbmc.org · Промяна на настройките на добавките"
+
+#: id:31409
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP � Configure file sharing[CR]Enable Zeroconf � Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Изберете XBMC потребителски профил[CR]за вход и продължаване"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "Карта на времето"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36 часова прогноза"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "Часова прогноза"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "Уикенд прогноза"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10 дневна прогноза"
+
+#: id:31905
+msgid "Forecast"
+msgstr "Прогноза"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "Карти & Видео"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Видео Прогноза [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "Възможност от превалявания"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "Извличане информация за прогноза..."
+
