@@ -135,11 +135,41 @@
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
 				<onleft>604</onleft>
-				<onright>701</onright>
+				<onright>606</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
+			<control type="button" id="606">
+				<posx>270</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDVolDownFO.png</texturefocus>
+				<texturenofocus>OSDVolDownNF.png</texturenofocus>
+				<onleft>605</onleft>
+				<onright>607</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>VolumeDown</onclick>
+			</control>
+			<control type="button" id="607">
+				<posx>315</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>209</label>
+				<font>-</font>
+				<texturefocus>OSDVolUpFO.png</texturefocus>
+				<texturenofocus>OSDVolUpNF.png</texturenofocus>
+				<onleft>606</onleft>
+				<onright>701</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>VolumeUp</onclick>
+			</control>			
 		</control>
 		<control type="group">
 			<posx>250r</posx>
@@ -157,7 +187,7 @@
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
 				<alttexturefocus>OSDSubtitlesFO.png</alttexturefocus>
 				<alttexturenofocus>OSDSubtitlesNF.png</alttexturenofocus>
-				<onleft>605</onleft>
+				<onleft>607</onleft>
 				<onright>702</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
