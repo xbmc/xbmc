@@ -1239,8 +1239,10 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& thumb
       m_pDS->close();
       // update the thumb url's
       if (!thumbURLs.IsEmpty())
+      {
         strSQL=PrepareSQL("update actors set strThumb='%s' where idActor=%i",thumbURLs.c_str(),idActor);
-      m_pDS->exec(strSQL.c_str());
+        m_pDS->exec(strSQL.c_str());
+      }
       return idActor;
     }
 
