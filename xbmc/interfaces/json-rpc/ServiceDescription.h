@@ -2359,7 +2359,7 @@ namespace JSONRPC
     "}",
     "\"VideoLibrary.OnScanFinished\": {"
       "\"type\": \"notification\","
-      "\"description\": \"Scanning the audio library has been finished.\","
+      "\"description\": \"Scanning the video library has been finished.\","
       "\"params\": ["
         "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
         "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
