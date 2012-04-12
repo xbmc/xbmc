@@ -139,25 +139,6 @@ void CXRandR::SaveState()
   Query(true);
 }
 
-void CXRandR::RestoreState()
-{
-  vector<XOutput>::iterator outiter;
-  for (outiter=m_current.begin() ; outiter!=m_current.end() ; outiter++)
-  {
-    vector<XMode> modes = (*outiter).modes;
-    vector<XMode>::iterator modeiter;
-    for (modeiter=modes.begin() ; modeiter!=modes.end() ; modeiter++)
-    {
-      XMode mode = *modeiter;
-      if (mode.isCurrent)
-      {
-        SetMode(*outiter, mode);
-        return;
-      }
-    }
-  }
-}
-
 bool CXRandR::SetMode(XOutput output, XMode mode)
 {
   if ((output.name == m_currentOutput && mode.id == m_currentMode) || (output.name == "" && mode.id == ""))
