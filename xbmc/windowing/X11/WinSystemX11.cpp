@@ -80,9 +80,18 @@ bool CWinSystemX11::InitWindowSystem()
 bool CWinSystemX11::DestroyWindowSystem()
 {
 #if defined(HAS_XRANDR)
-  //restore videomode on exit
+  //restore desktop resolution on exit
   if (m_bFullScreen)
-    g_xrandr.RestoreState();
+  {
+    XOutput out;
+    XMode mode;
+    out.name = g_settings.m_ResInfo[RES_DESKTOP].strOutput;
+    mode.w   = g_settings.m_ResInfo[RES_DESKTOP].iWidth;
+    mode.h   = g_settings.m_ResInfo[RES_DESKTOP].iHeight;
+    mode.hz  = g_settings.m_ResInfo[RES_DESKTOP].fRefreshRate;
+    mode.id  = g_settings.m_ResInfo[RES_DESKTOP].strId;
+    g_xrandr.SetMode(out, mode);
+  }
 #endif
 
   if (m_dpy)
