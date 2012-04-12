@@ -640,7 +640,14 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   else if (type == "movies")
   {
     CStdString result;
-    if (field == FIELD_TITLE) result.Format("c%02d", whereClause ? VIDEODB_ID_TITLE : VIDEODB_ID_SORTTITLE);
+    if (field == FIELD_TITLE)
+    {
+      if (whereClause)
+        result.Format("c%02d", VIDEODB_ID_TITLE);
+      else
+        // We need some extra logic to get the title value if sorttitle isn't set
+        result.Format("CASE WHEN length(c%02d) > 0 THEN c%02d ELSE c%02d END", VIDEODB_ID_SORTTITLE, VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE);
+    }
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_PLOT);
     else if (field == FIELD_PLOTOUTLINE) result.Format("c%02d", VIDEODB_ID_PLOTOUTLINE);
     else if (field == FIELD_TAGLINE) result.Format("c%02d", VIDEODB_ID_TAGLINE);
