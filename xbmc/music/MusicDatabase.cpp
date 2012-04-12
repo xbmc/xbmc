@@ -764,14 +764,24 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& strMusicDBbasePath)
 {
   // get the full artist string
-  CStdString strArtist=m_pDS->fv(song_strArtist).get_asString();
-  strArtist += m_pDS->fv(song_strExtraArtists).get_asString();
-  item->GetMusicInfoTag()->SetArtist(strArtist);
+  vector<string> artist;
+  artist.push_back(m_pDS->fv(song_strArtist).get_asString());
+  if (!m_pDS->fv(song_strExtraArtists).get_asString().empty())
+  {
+    vector<string> extraArtists = StringUtils::Split(m_pDS->fv(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    artist.insert(artist.end(), extraArtists.begin(), extraArtists.end());
+  }
+  item->GetMusicInfoTag()->SetArtist(artist);
   item->GetMusicInfoTag()->SetArtistId(m_pDS->fv(song_idArtist).get_asInt());
   // and the full genre string
-  CStdString strGenre = m_pDS->fv(song_strGenre).get_asString();
-  strGenre += m_pDS->fv(song_strExtraGenres).get_asString();
-  item->GetMusicInfoTag()->SetGenre(strGenre);
+  vector<string> genre;
+  genre.push_back(m_pDS->fv(song_strGenre).get_asString());
+  if (!m_pDS->fv(song_strExtraGenres).get_asString().empty())
+  {
+    vector<string> extraGenres = StringUtils::Split(m_pDS->fv(song_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    genre.insert(genre.end(), extraGenres.begin(), extraGenres.end());
+  }
+  item->GetMusicInfoTag()->SetGenre(genre);
   // and the rest...
   item->GetMusicInfoTag()->SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
   item->GetMusicInfoTag()->SetAlbumId(m_pDS->fv(song_idAlbum).get_asInt());
