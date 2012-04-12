@@ -30,6 +30,7 @@
 #define FTR_REST_MAXIMUM_API_VERSION FTR_1_6_1_0
 #define E_FAILED -1
 #define E_EMPTYRESPONSE -2
+#define E_NORETUNEPOSSIBLE -3
 
 namespace ForTheRecord
 {
