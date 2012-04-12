@@ -100,7 +100,6 @@ public:
   bool SetMode(XOutput output, XMode mode);
   void LoadCustomModeLinesToAllOutputs(void);
   void SaveState();
-  void RestoreState();
   //bool Has1080i();
   //bool Has1080p();
   //bool Has720p();
