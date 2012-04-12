@@ -33,14 +33,6 @@
 #include <vector>
 #include <string>
 
-#ifdef _WIN32
-#define PATH_SEPARATOR_CHAR '\\'
-#define PATH_SEPARATOR_STRING "\\"
-#else
-#define PATH_SEPARATOR_CHAR '/'
-#define PATH_SEPARATOR_STRING "/"
-#endif
-
 class MultiFileReaderFile
 {
   public:

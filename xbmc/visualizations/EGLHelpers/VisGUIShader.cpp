@@ -19,13 +19,9 @@
 *
 */
 
-#ifdef HAS_GLES
+#include "VisGUIShader.h"
 
-#include "GUIShader.h"
-#include "../../guilib/MatrixGLES.h"
-#include "utils/log.h"
-
-CGUIShader::CGUIShader( const std::string& vert, const std::string& frag ) : CGLSLShaderProgram(vert, frag)
+CVisGUIShader::CVisGUIShader(const char *vert, const char *frag ) : CVisGLSLShaderProgram(vert, frag)
 {
   // Initialise values
   m_hTex0   = 0;
@@ -41,7 +37,7 @@ CGUIShader::CGUIShader( const std::string& vert, const std::string& frag ) : CGL
   m_model  = NULL;
 }
 
-void CGUIShader::OnCompiledAndLinked()
+void CVisGUIShader::OnCompiledAndLinked()
 {
   // This is called after CompileAndLink()
 
@@ -63,20 +59,17 @@ void CGUIShader::OnCompiledAndLinked()
   glUseProgram( 0 );
 }
 
-bool CGUIShader::OnEnabled()
+bool CVisGUIShader::OnEnabled()
 {
   // This is called after glUseProgram()
-
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, g_matrices.GetMatrix(MM_PROJECTION));
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, g_matrices.GetMatrix(MM_MODELVIEW));
+  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, GetMatrix(MM_PROJECTION));
+  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, GetMatrix(MM_MODELVIEW));
 
   return true;
 }
 
-void CGUIShader::Free()
+void CVisGUIShader::Free()
 {
   // Do Cleanup here
-  CGLSLShaderProgram::Free();
+  CVisShaderProgram::Free();
 }
-
-#endif

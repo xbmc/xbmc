@@ -665,8 +665,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     items.AddFront(pItem, 0);
   }
 
-  CStdStringArray regexps;
   int iWindow = GetID();
+  CStdStringArray regexps;
 
   // TODO: Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)

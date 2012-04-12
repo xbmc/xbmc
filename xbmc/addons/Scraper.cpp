@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/StringUtils.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "music/Album.h"
@@ -755,7 +756,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl,
           continue;
 
         CMusicArtistInfo ari(pxnTitle->FirstChild()->Value(), scurlArtist);
-        XMLUtils::GetString(pxeArtist, "genre", ari.GetArtist().strGenre);
+        CStdString genre;
+        XMLUtils::GetString(pxeArtist, "genre", genre);
+        ari.GetArtist().genre = StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
         vcari.push_back(ari);

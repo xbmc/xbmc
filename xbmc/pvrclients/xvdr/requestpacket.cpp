@@ -30,7 +30,7 @@
 #include "tools.h"
 
 extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
+#include "lib/libPlatform/os-dependent_socket.h"
 }
 
 uint32_t cRequestPacket::serialNumberCounter = 1;

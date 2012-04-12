@@ -24,6 +24,7 @@
  * Most of this code is taken from thread.c in the Video Disk Recorder ('VDR')
  */
 
+#include "platform/util/timeutils.h"
 #include <errno.h>
 #include "tools.h"
 #include "thread.h"
@@ -41,6 +42,7 @@
 #include <stdlib.h>
 
 using namespace ADDON;
+using namespace PLATFORM;
 
 static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {

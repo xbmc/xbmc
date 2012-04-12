@@ -20,6 +20,9 @@
  *
  */
 
+#include "addons/Addon.h"
+#include "addons/AddonDll.h"
+#include "addons/DllPVRClient.h"
 #include "PVRManager.h"
 #include "dbwrappers/Database.h"
 #include "XBDateTime.h"
@@ -44,8 +47,8 @@ namespace PVR
     /*!
      * @brief Create a new instance of the PVR database.
      */
-    CPVRDatabase(void);
-    virtual ~CPVRDatabase(void);
+    CPVRDatabase(void) {};
+    virtual ~CPVRDatabase(void) {};
 
     /*!
      * @brief Open the database.
@@ -85,9 +88,9 @@ namespace PVR
      * @brief Add or update a channel entry in the database
      * @param channel The channel to persist.
      * @param bQueueWrite If true, don't write immediately
-     * @return The database ID of the channel.
+     * @return True when persisted or queued, false otherwise.
      */
-    int Persist(const CPVRChannel &channel, bool bQueueWrite = false);
+    bool Persist(CPVRChannel &channel, bool bQueueWrite = false);
 
     /*!
      * @brief Remove a channel entry from the database
@@ -141,11 +144,6 @@ namespace PVR
     /*! @name Channel group methods */
     //@{
 
-    bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
-    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
-    bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
-    bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
-
     /*!
      * @brief Remove all channel groups from the database
      * @return True if all channel groups were removed.
@@ -171,7 +169,7 @@ namespace PVR
      * @param group The group to get the channels for.
      * @return The amount of channels that were added.
      */
-    int GetGroupMembers(CPVRChannelGroup &group);
+    int Get(CPVRChannelGroup &group);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -184,7 +182,6 @@ namespace PVR
 
     /*! @name Client methods */
     //@{
-  public:
     /*!
      * @brief Remove all client information from the database.
      * @return True if all clients were removed successfully.
@@ -197,24 +194,14 @@ namespace PVR
      * @param strGuid The unique ID of the client.
      * @return The database ID of the client.
      */
-    int AddClient(const CStdString &strClientName, const CStdString &strGuid);
+    int Persist(const ADDON::AddonPtr addon);
 
     /*!
      * @brief Remove a client from the database
      * @param strGuid The unique ID of the client.
      * @return True if the client was removed successfully, false otherwise.
      */
-    bool DeleteClient(const CStdString &strGuid);
-
-  protected:
-    /*!
-     * @brief Get the database ID of a client.
-     * @param strClientUid The unique ID of the client.
-     * @return The database ID of the client or -1 if it wasn't found.
-     */
-    int GetClientId(const CStdString &strClientUid);
-
-    bool PersistGroupMembers(CPVRChannelGroup &group);
+    bool Delete(const CPVRClient &client);
 
     //@}
 
@@ -223,14 +210,34 @@ namespace PVR
      * @brief Create the PVR database tables.
      * @return True if the tables were created successfully, false otherwise.
      */
-    virtual bool CreateTables();
+    bool CreateTables();
+
+    bool DeleteChannelsFromGroup(const CPVRChannelGroup &group);
+    bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
+
+    /*!
+     * @brief Get the database ID of a client.
+     * @param strClientUid The unique ID of the client.
+     * @return The database ID of the client or -1 if it wasn't found.
+     */
+    int GetClientId(const CStdString &strClientUid);
+
+    bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
+    int GetLastChannelId(void);
+    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
 
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
      * @return True if it was updated successfully, false otherwise.
      */
-    virtual bool UpdateOldVersion(int version);
+    bool UpdateOldVersion(int version);
+
+    bool PersistGroupMembers(CPVRChannelGroup &group);
+
+    bool PersistChannels(CPVRChannelGroup &group);
+
+    bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
   };
 
   /*!

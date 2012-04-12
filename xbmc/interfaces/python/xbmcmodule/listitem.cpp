@@ -28,6 +28,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "utils/Variant.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -474,9 +476,9 @@ namespace PYXBMC
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
-            self->item->GetVideoInfoTag()->m_strGenre = tmp;
+            self->item->GetVideoInfoTag()->m_genre = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "director") == 0)
-            self->item->GetVideoInfoTag()->m_strDirector = tmp;
+            self->item->GetVideoInfoTag()->m_director = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "mpaa") == 0)
             self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
           else if (strcmpi(PyString_AsString(key), "plot") == 0)
@@ -490,25 +492,25 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "duration") == 0)
             self->item->GetVideoInfoTag()->m_strRuntime = tmp;
           else if (strcmpi(PyString_AsString(key), "studio") == 0)
-            self->item->GetVideoInfoTag()->m_strStudio = tmp;
+            self->item->GetVideoInfoTag()->m_studio = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "tagline") == 0)
             self->item->GetVideoInfoTag()->m_strTagLine = tmp;
           else if (strcmpi(PyString_AsString(key), "writer") == 0)
-            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+            self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "tvshowtitle") == 0)
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
-            self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+            self->item->GetVideoInfoTag()->m_premiered.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "status") == 0)
             self->item->GetVideoInfoTag()->m_strStatus = tmp;
           else if (strcmpi(PyString_AsString(key), "code") == 0)
             self->item->GetVideoInfoTag()->m_strProductionCode = tmp;
           else if (strcmpi(PyString_AsString(key), "aired") == 0)
-            self->item->GetVideoInfoTag()->m_strFirstAired = tmp;
+            self->item->GetVideoInfoTag()->m_firstAired.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "credits") == 0)
-            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+            self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
-            self->item->GetVideoInfoTag()->m_lastPlayed = tmp;
+            self->item->GetVideoInfoTag()->m_lastPlayed.SetFromDBDateTime(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
             self->item->GetVideoInfoTag()->m_strAlbum = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)

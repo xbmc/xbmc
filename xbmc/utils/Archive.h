@@ -58,6 +58,8 @@ public:
   CArchive& operator<<(const SYSTEMTIME& time);
   CArchive& operator<<(IArchivable& obj);
   CArchive& operator<<(const CVariant& variant);
+  CArchive& operator<<(const std::vector<std::string>& strArray);
+  CArchive& operator<<(const std::vector<int>& iArray);
 
   // loading
   CArchive& operator>>(float& f);
@@ -73,6 +75,8 @@ public:
   CArchive& operator>>(SYSTEMTIME& time);
   CArchive& operator>>(IArchivable& obj);
   CArchive& operator>>(CVariant& variant);
+  CArchive& operator>>(std::vector<std::string>& strArray);
+  CArchive& operator>>(std::vector<int>& iArray);
 
   bool IsLoading();
   bool IsStoring();

@@ -33,7 +33,11 @@
 #include <string>
 #include "utils.h"
 #include <wchar.h>
+#include <algorithm>
+#include "platform/util/timeutils.h"
+
 #include <limits.h>
+
 #if !defined(TARGET_WINDOWS)
 #include <sys/time.h>
 #include "PlatformInclude.h"
@@ -87,32 +91,21 @@ long MultiFileReader::OpenFile()
 {
   long hr = m_TSBufferFile.OpenFile();
 
-  //For radio the buffer sometimes needs some time to become available, so wait try it more than once
-#if defined(TARGET_WINDOWS)
-  unsigned long tc=GetTickCount();
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
-  struct timeval tstart;
-  gettimeofday(&tstart, NULL);
-#else
-#error FIXME: Add some form of timeout handling for your OS
-#endif
-  while (RefreshTSBufferFile()==S_FALSE)
+  if (RefreshTSBufferFile() == S_FALSE)
   {
-#if defined(TARGET_WINDOWS)
-    if (GetTickCount()-tc>MAX_BUFFER_TIMEOUT)
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
-    struct timeval tnow, tdelta;
-    gettimeofday(&tnow, NULL);
-    timersub(&tnow, &tstart, &tdelta);
-    if ((tdelta.tv_sec * 1000) + (tdelta.tv_usec / 1000) > MAX_BUFFER_TIMEOUT)
-#else
-#error FIXME: Add some form of timeout handling for your OS
-#endif
+    // For radio the buffer sometimes needs some time to become available, so wait and try it more than once
+    PLATFORM::CTimeout timeout(MAX_BUFFER_TIMEOUT);
+
+    do
     {
-      XBMC->Log(LOG_ERROR, "MultiFileReader: timedout while waiting for buffer file to become available");
-      XBMC->QueueNotification(QUEUE_ERROR, "Time out while waiting for buffer file");
-      return S_FALSE;
-    }
+      usleep(100000);
+      if (timeout.TimeLeft() == 0)
+      {
+        XBMC->Log(LOG_ERROR, "MultiFileReader: timed out while waiting for buffer file to become available");
+        XBMC->QueueNotification(QUEUE_ERROR, "Time out while waiting for buffer file");
+        return S_FALSE;
+      }
+    } while (RefreshTSBufferFile() == S_FALSE);
   }
 
   m_currentPosition = 0;
@@ -189,7 +182,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
 
   if (m_currentPosition < m_startPosition)
   {
-    XBMC->Log(LOG_INFO, "%s: current position adjusted from %d to %d.", __FUNCTION__, m_currentPosition, m_startPosition);
+    XBMC->Log(LOG_DEBUG, "%s: current position adjusted from %%I64dd to %%I64dd.", __FUNCTION__, m_currentPosition, m_startPosition);
     m_currentPosition = m_startPosition;
   }
 

@@ -175,6 +175,11 @@ void CEpgContainer::LoadFromDB(void)
   m_bLoaded = bLoaded;
 }
 
+bool CEpgContainer::PersistTables(void)
+{
+  return m_database.Persist(*this);
+}
+
 bool CEpgContainer::PersistAll(void)
 {
   bool bReturn(true);

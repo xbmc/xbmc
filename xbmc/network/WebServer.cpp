@@ -610,7 +610,11 @@ std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection,
   if (connection == NULL)
     return "";
 
-  return MHD_lookup_connection_value(connection, kind, key.c_str());
+  const char* value = MHD_lookup_connection_value(connection, kind, key.c_str());
+  if (value == NULL)
+    return "";
+
+  return value;
 }
 
 int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues)

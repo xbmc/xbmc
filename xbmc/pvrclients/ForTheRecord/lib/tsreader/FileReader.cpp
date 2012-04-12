@@ -30,12 +30,11 @@
 
 #include "FileReader.h"
 #include "client.h" //for XBMC->Log
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
+#include <algorithm> //std::min, std::max
+
 #if !defined(TARGET_WINDOWS)
 #include "PlatformInclude.h"
-#include "limits.h"
-#define ERROR_FILENAME_EXCED_RANGE (206)
-#define ERROR_INVALID_NAME (123)
 using namespace XFILE;
 #endif
 

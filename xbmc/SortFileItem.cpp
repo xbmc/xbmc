@@ -147,7 +147,7 @@ void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
   if (!item) return;
 
   if (item->HasVideoInfoTag())
-    item->SetSortLabel(item->GetVideoInfoTag()->m_lastPlayed);
+    item->SetSortLabel(item->GetVideoInfoTag()->m_lastPlayed.GetAsDBDateTime());
   else if (item->HasMusicInfoTag()) // TODO: No last played info in the fileitem for music
     item->SetSortLabel(item->GetMusicInfoTag()->GetTitle());
   else
@@ -181,7 +181,7 @@ void SSortFileItem::ByDateAdded(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%d", item->GetVideoInfoTag()->m_iFileId);
+  label.Format("%s %d", item->GetVideoInfoTag()->m_dateAdded.GetAsDBDateTime().c_str(), item->GetVideoInfoTag()->m_iFileId);
   item->SetSortLabel(label);
 }
 
@@ -227,7 +227,7 @@ void SSortFileItem::BySongAlbum(CFileItemPtr &item)
 
   CStdString artist;
   if (item->HasMusicInfoTag())
-    artist = item->GetMusicInfoTag()->GetArtist();
+    artist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
   else if (item->HasVideoInfoTag())
     artist = item->GetVideoInfoTag()->m_strArtist;
   label += " " + artist;
@@ -250,7 +250,7 @@ void SSortFileItem::BySongAlbumNoThe(CFileItemPtr &item)
 
   CStdString artist;
   if (item->HasMusicInfoTag())
-    artist = item->GetMusicInfoTag()->GetArtist();
+    artist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
   else if (item->HasVideoInfoTag())
     artist = item->GetVideoInfoTag()->m_strArtist;
   label += " " + RemoveArticles(artist);
@@ -267,7 +267,7 @@ void SSortFileItem::BySongArtist(CFileItemPtr &item)
 
   CStdString label;
   if (item->HasMusicInfoTag())
-    label = item->GetMusicInfoTag()->GetArtist();
+    label = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
   else if (item->HasVideoInfoTag())
     label = item->GetVideoInfoTag()->m_strArtist;
 
@@ -300,7 +300,7 @@ void SSortFileItem::BySongArtistNoThe(CFileItemPtr &item)
 
   CStdString label;
   if (item->HasMusicInfoTag())
-    label = item->GetMusicInfoTag()->GetArtist();
+    label = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
   else if (item->HasVideoInfoTag())
     label = item->GetVideoInfoTag()->m_strArtist;
   label = RemoveArticles(label);
@@ -368,15 +368,15 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
   if (!item) return;
 
   if (item->HasMusicInfoTag())
-    item->SetSortLabel(item->GetMusicInfoTag()->GetGenre());
+    item->SetSortLabel(StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator));
   else
-    item->SetSortLabel(item->GetVideoInfoTag()->m_strGenre);
+    item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator));
 }
 
 void SSortFileItem::ByCountry(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetVideoInfoTag()->m_strCountry);
+  item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator));
 }
 
 
@@ -388,7 +388,7 @@ void SSortFileItem::ByYear(CFileItemPtr &item)
   if (item->HasMusicInfoTag())
     label.Format("%i %s", item->GetMusicInfoTag()->GetYear(), item->GetLabel().c_str());
   else
-    label.Format("%s %s %i %s", item->GetVideoInfoTag()->m_strPremiered.c_str(), item->GetVideoInfoTag()->m_strFirstAired, item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
+    label.Format("%s %s %i %s", item->GetVideoInfoTag()->m_premiered.GetAsDBDate().c_str(), item->GetVideoInfoTag()->m_firstAired.GetAsDBDate(), item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
   item->SetSortLabel(label);
 }
 
@@ -446,13 +446,13 @@ void SSortFileItem::ByMPAARating(CFileItemPtr &item)
 void SSortFileItem::ByStudio(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetVideoInfoTag()->m_strStudio);
+  item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator));
 }
 
 void SSortFileItem::ByStudioNoThe(CFileItemPtr &item)
 {
   if (!item) return;
-  CStdString studio = item->GetVideoInfoTag()->m_strStudio;
+  CStdString studio = StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
   item->SetSortLabel(RemoveArticles(studio));
 }
 

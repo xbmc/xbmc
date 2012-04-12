@@ -50,7 +50,6 @@ CEpgInfoTag::CEpgInfoTag(int iEpgId /* = -1 */, int iPVRChannelNumber /* = -1 */
     m_strTitle(""),
     m_strPlotOutline(""),
     m_strPlot(""),
-    m_strGenre(""),
     m_strEpisodeName(""),
     m_strIconPath(""),
     m_strFileNameAndPath(""),
@@ -77,7 +76,6 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
     m_strTitle(""),
     m_strPlotOutline(""),
     m_strPlot(""),
-    m_strGenre(""),
     m_strEpisodeName(""),
     m_strIconPath(""),
     m_strFileNameAndPath(""),
@@ -104,7 +102,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_strTitle(tag.m_strTitle),
     m_strPlotOutline(tag.m_strPlotOutline),
     m_strPlot(tag.m_strPlot),
-    m_strGenre(tag.m_strGenre),
+    m_genre(tag.m_genre),
     m_strEpisodeName(tag.m_strEpisodeName),
     m_strIconPath(tag.m_strIconPath),
     m_strFileNameAndPath(tag.m_strFileNameAndPath),
@@ -146,7 +144,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strTitle           == right.m_strTitle &&
           m_strPlotOutline     == right.m_strPlotOutline &&
           m_strPlot            == right.m_strPlot &&
-          m_strGenre           == right.m_strGenre &&
+          m_genre              == right.m_genre &&
           m_strEpisodeName     == right.m_strEpisodeName &&
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
@@ -182,7 +180,7 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_strTitle           = other.m_strTitle;
   m_strPlotOutline     = other.m_strPlotOutline;
   m_strPlot            = other.m_strPlot;
-  m_strGenre           = other.m_strGenre;
+  m_genre              = other.m_genre;
   m_strEpisodeName     = other.m_strEpisodeName;
   m_strIconPath        = other.m_strIconPath;
   m_strFileNameAndPath = other.m_strFileNameAndPath;
@@ -476,12 +474,12 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID, const char* strGenre)
       {
         /* Type and sub type are not given. No EPG color coding possible
          * Use the provided genre description as backup. */
-        m_strGenre    = strGenre;
+        m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
       }
       else
       {
         /* Determine the genre description from the type and subtype IDs */
-        m_strGenre      = CEpg::ConvertGenreIdToString(iID, iSubID);
+        m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iID, iSubID), g_advancedSettings.m_videoItemSeparator);
       }
       m_bChanged = true;
       bUpdate = true;
@@ -503,11 +501,11 @@ int CEpgInfoTag::GenreSubType(void) const
   return m_iGenreSubType;
 }
 
-CStdString CEpgInfoTag::Genre(void) const
+const vector<string> CEpgInfoTag::Genre(void) const
 {
-  CStdString retVal;
+  vector<string> retVal;
   CSingleLock lock(m_critSection);
-  retVal = m_strGenre;
+  retVal = m_genre;
   return retVal;
 }
 
@@ -866,7 +864,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         m_iPVRChannelID      != tag.m_iPVRChannelID ||
         m_iPVRChannelNumber  != tag.m_iPVRChannelNumber ||
         m_strTableName       != tag.m_strTableName ||
-        ( tag.m_strGenre.length() > 0 && m_strGenre != tag.m_strGenre )
+        m_genre              != tag.m_genre
     );
     if (bUpdateBroadcastId)
       bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
@@ -887,15 +885,15 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_iPVRChannelID      = tag.m_iPVRChannelID;
       m_iPVRChannelNumber  = tag.m_iPVRChannelNumber;
       m_strTableName       = tag.m_strTableName;
-      if (m_iGenreType == EPG_GENRE_USE_STRING && tag.m_strGenre.length() > 0)
+      if (m_iGenreType == EPG_GENRE_USE_STRING)
       {
         /* No type/subtype. Use the provided description */
-        m_strGenre         = tag.m_strGenre;
+        m_genre = tag.m_genre;
       }
       else
       {
         /* Determine genre description by type/subtype */
-        m_strGenre         = CEpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType);
+        m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), g_advancedSettings.m_videoItemSeparator);
       }
       m_firstAired         = tag.m_firstAired;
       m_iParentalRating    = tag.m_iParentalRating;

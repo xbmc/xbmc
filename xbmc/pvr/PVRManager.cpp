@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -751,7 +752,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     if (musictag)
     {
       musictag->SetTitle(bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055));
-      musictag->SetGenre(bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString);
+      if (bHasTagNow)
+        musictag->SetGenre(epgTagNow.Genre());
       musictag->SetDuration(bHasTagNow ? epgTagNow.GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
@@ -767,7 +769,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     if (videotag)
     {
       videotag->m_strTitle = bHasTagNow ? epgTagNow.Title() : g_localizeStrings.Get(19055);
-      videotag->m_strGenre = bHasTagNow ? epgTagNow.Genre() : StringUtils::EmptyString;
+      if (bHasTagNow)
+        videotag->m_genre = epgTagNow.Genre();
       videotag->m_strPath = channelTag->Path();
       videotag->m_strFileNameAndPath = channelTag->Path();
       videotag->m_strPlot = bHasTagNow ? epgTagNow.Plot() : StringUtils::EmptyString;

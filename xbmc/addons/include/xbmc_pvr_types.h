@@ -157,6 +157,7 @@ extern "C" {
     bool bSupportsChannelScan;          /*!< @brief (optional) true if this add-on support scanning for new channels on the backend */
     bool bHandlesInputStream;           /*!< @brief (optional) true if this add-on provides an input stream. false if XBMC handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief (optional) true if this add-on demultiplexes packets. */
+    bool bSupportsRecordingFolders;     /*!< @brief (optional) true if the backend supports timers / recordings in folders. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!

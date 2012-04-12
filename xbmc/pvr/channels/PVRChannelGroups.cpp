@@ -449,9 +449,6 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   if (!database)
     return bReturn;
 
-  /* remove all channels from the group */
-  database->RemoveChannelsFromGroup(group);
-
   /* delete the group from the database */
   bReturn = database->Delete(group);
 

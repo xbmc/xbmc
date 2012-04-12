@@ -18,7 +18,7 @@
  *
  */
 
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
 #include "client.h" //for XBMC->Log
 #include "utils.h"
 #include "fortherecordrpc.h"
@@ -29,7 +29,6 @@ using namespace ADDON;
 CKeepAliveThread::CKeepAliveThread()
 {
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: constructor");
-  SetDescription("Keep-alive Thread");
 }
 
 CKeepAliveThread::~CKeepAliveThread()
@@ -37,17 +36,19 @@ CKeepAliveThread::~CKeepAliveThread()
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: destructor");
 }
 
-void CKeepAliveThread::Action()
+void *CKeepAliveThread::Process()
 {
-  bool retval;
-
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", ThreadId());
-  while (Running())
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started");
+  while (!IsStopped())
   {
-    retval = ForTheRecord::KeepLiveStreamAlive();
+    int retval = ForTheRecord::KeepLiveStreamAlive();
     XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
-    cCondWait::SleepMs(20000);
+    // The new PLATFORM:: thread library has a problem with stopping a thread that is doing a long sleep
+    for (int i = 0; i < 200; i++)
+    {
+      if (Sleep(100)) break;
+    }
   }
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", ThreadId());
-  return;
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped");
+  return NULL;
 }

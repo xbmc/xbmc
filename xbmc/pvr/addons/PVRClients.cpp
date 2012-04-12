@@ -210,16 +210,9 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
   {
     g_PVRManager.StopUpdateThreads();
     if (bRestart)
-    {
       mappedClient->ReCreate();
-    }
     else
-    {
       mappedClient->Destroy();
-      CPVRDatabase *database = GetPVRDatabase();
-      if (database)
-        database->DeleteClient(mappedClient->ID());
-    }
     g_PVRManager.StartUpdateThreads();
   }
 
@@ -1045,7 +1038,7 @@ int CPVRClients::AddClientToDb(const AddonPtr client)
 {
   /* add this client to the database if it's not in there yet */
   CPVRDatabase *database = GetPVRDatabase();
-  int iClientDbId = database ? database->AddClient(client->Name(), client->ID()) : -1;
+  int iClientDbId = database ? database->Persist(client) : -1;
   if (iClientDbId == -1)
   {
     CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database",

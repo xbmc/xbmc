@@ -42,7 +42,6 @@ typedef int64_t off_t;
 typedef uint64_t ino_t;
 #endif
 
-#define usleep(t) Sleep((t)/1000)
 #define snprintf _snprintf
 
 #include <stddef.h>
@@ -65,10 +64,3 @@ struct timezone
   int	tz_dsttime;	/* type of dst correction */
 };
 
-/*!
-	\brief	implements similar unix call under windows
-	\return		0 on success, -1 on failure (if pcur_time was NULL)
-	\param		pcur_time points to a timeval structure, should not be NULL
-	\param		tz points to a timezone structure, may be NULL
- */
-extern int gettimeofday(struct timeval *pcur_time, struct timezone *tz);

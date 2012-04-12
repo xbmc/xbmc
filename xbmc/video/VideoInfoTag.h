@@ -22,10 +22,12 @@
 
 
 #include <vector>
+#include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
+#include "XBDateTime.h"
 
 class CArchive;
 class TiXmlNode;
@@ -75,10 +77,10 @@ public:
 
   CStdString m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
-  CStdString m_strDirector;
-  CStdString m_strWritingCredits;
-  CStdString m_strGenre;
-  CStdString m_strCountry;
+  std::vector<std::string> m_director;
+  std::vector<std::string> m_writingCredits;
+  std::vector<std::string> m_genre;
+  std::vector<std::string> m_country;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
   CStdString m_strTrailer;
@@ -100,15 +102,15 @@ public:
   CStdString m_strFileNameAndPath;
   CStdString m_strOriginalTitle;
   CStdString m_strEpisodeGuide;
-  CStdString m_strPremiered;
+  CDateTime m_premiered;
   CStdString m_strStatus;
   CStdString m_strProductionCode;
-  CStdString m_strFirstAired;
+  CDateTime m_firstAired;
   CStdString m_strShowTitle;
-  CStdString m_strStudio;
+  std::vector<std::string> m_studio;
   CStdString m_strAlbum;
-  CStdString m_lastPlayed;
-  CStdString m_strShowLink;
+  CDateTime m_lastPlayed;
+  std::vector<std::string> m_showLink;
   CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;
@@ -127,6 +129,7 @@ public:
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
+  CDateTime m_dateAdded;
 
 private:
   /* \brief Parse our native XML format for video info.

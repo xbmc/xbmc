@@ -423,7 +423,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
     
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
-      return false;
+      return -1;
     return pFile->Stat(url, buffer);
   }
 #ifndef _LINUX
@@ -447,14 +447,14 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
         {
-          return false;
+          return 0;
         }
       }
       else     
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
-          return false;
+          return 0;
         }
       }
     }

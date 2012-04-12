@@ -226,8 +226,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
   if (control)
   { // set the navigation of items so that they form a list
-    int beforeID = (m_orientation == VERTICAL) ? GetControlIdUp() : GetControlIdLeft();
-    int afterID = (m_orientation == VERTICAL) ? GetControlIdDown() : GetControlIdRight();
+    CGUIAction beforeAction = (m_orientation == VERTICAL) ? m_actionUp : m_actionLeft;
+    CGUIAction afterAction = (m_orientation == VERTICAL) ? m_actionDown : m_actionRight;
     if (m_children.size())
     {
       // we're inserting at the given position, so grab the items above and below and alter
@@ -237,27 +237,27 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       if (position == 0)
       { // inserting at the beginning
         after = m_children[0];
-        if (afterID == GetID()) // we're wrapping around bottom->top, so we have to update the last item
+        if (!afterAction.HasActionsMeetingCondition() || afterAction.GetNavigation() == GetID()) // we're wrapping around bottom->top, so we have to update the last item
           before = m_children[m_children.size() - 1];
-        if (beforeID == GetID())   // we're wrapping around top->bottom
-          beforeID = m_children[m_children.size() - 1]->GetID();
-        afterID = after->GetID();
+        if (!beforeAction.HasActionsMeetingCondition() || beforeAction.GetNavigation() == GetID())   // we're wrapping around top->bottom
+          beforeAction = CGUIAction(m_children[m_children.size() - 1]->GetID());
+        afterAction = CGUIAction(after->GetID());
       }
       else if (position == (int)m_children.size())
       { // inserting at the end
         before = m_children[m_children.size() - 1];
-        if (beforeID == GetID())   // we're wrapping around top->bottom, so we have to update the first item
+        if (!beforeAction.HasActionsMeetingCondition() || beforeAction.GetNavigation() == GetID())   // we're wrapping around top->bottom, so we have to update the first item
           after = m_children[0];
-        if (afterID == GetID()) // we're wrapping around bottom->top
-          afterID = m_children[0]->GetID();
-        beforeID = before->GetID();
+        if (!afterAction.HasActionsMeetingCondition() || afterAction.GetNavigation() == GetID()) // we're wrapping around bottom->top
+          afterAction = CGUIAction(m_children[0]->GetID());
+        beforeAction = CGUIAction(before->GetID());
       }
       else
       { // inserting somewhere in the middle
         before = m_children[position - 1];
         after = m_children[position];
-        beforeID = before->GetID();
-        afterID = after->GetID();
+        beforeAction = CGUIAction(before->GetID());
+        afterAction = CGUIAction(after->GetID());
       }
       if (m_orientation == VERTICAL)
       {
@@ -280,15 +280,15 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
     // don't override them if child have already defined actions
     if (m_orientation == VERTICAL)
     {
-      control->SetNavigationAction(ACTION_MOVE_UP, CGUIAction(beforeID));
-      control->SetNavigationAction(ACTION_MOVE_DOWN, CGUIAction(afterID));
+      control->SetNavigationAction(ACTION_MOVE_UP, beforeAction);
+      control->SetNavigationAction(ACTION_MOVE_DOWN, afterAction);
       control->SetNavigationAction(ACTION_MOVE_LEFT, m_actionLeft, false);
       control->SetNavigationAction(ACTION_MOVE_RIGHT, m_actionRight, false);
     }
     else
     {
-      control->SetNavigationAction(ACTION_MOVE_LEFT, CGUIAction(beforeID));
-      control->SetNavigationAction(ACTION_MOVE_RIGHT, CGUIAction(afterID));
+      control->SetNavigationAction(ACTION_MOVE_LEFT, beforeAction);
+      control->SetNavigationAction(ACTION_MOVE_RIGHT, afterAction);
       control->SetNavigationAction(ACTION_MOVE_UP, m_actionUp, false);
       control->SetNavigationAction(ACTION_MOVE_DOWN, m_actionDown, false);
     }
