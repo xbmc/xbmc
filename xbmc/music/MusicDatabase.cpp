@@ -709,16 +709,20 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   CSong song;
   song.idSong = m_pDS->fv(song_idSong).get_asInt();
   // get the full artist string
-  song.artist = StringUtils::Split(m_pDS->fv(song_strArtist).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  for (unsigned int index = 0; index < extraArtists.size(); index++)
-    song.artist.push_back(extraArtists.at(index));
+  song.artist.push_back(m_pDS->fv(song_strArtist).get_asString());
+  if (!m_pDS->fv(song_strExtraArtists).get_asString().empty())
+  {
+    std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    song.artist.insert(song.artist.end(), extraArtists.begin(), extraArtists.end());
+  }
   song.iArtistId = m_pDS->fv(song_idArtist).get_asInt();
   // and the full genre string
   song.genre.push_back(m_pDS->fv(song_strGenre).get_asString());
-  std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv(song_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  for (unsigned int index = 0; index < extraGenres.size(); index++)
-    song.genre.push_back(extraGenres.at(index));
+  if (!m_pDS->fv(song_strExtraGenres).get_asString().empty())
+  {
+    std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv(song_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    song.genre.insert(song.genre.end(), extraGenres.begin(), extraGenres.end());
+  }
   // and the rest...
   song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
   song.iAlbumId = m_pDS->fv(song_idAlbum).get_asInt();
@@ -818,15 +822,19 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.strAlbum = pDS->fv(album_strAlbum).get_asString();
   if (album.strAlbum.IsEmpty())
     album.strAlbum = g_localizeStrings.Get(1050);
-  album.artist = StringUtils::Split(pDS->fv(album_strArtist).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  std::vector<std::string> extraArtists = StringUtils::Split(pDS->fv(album_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  for (unsigned int index = 0; index < extraArtists.size(); index++)
-    album.artist.push_back(extraArtists.at(index));
+  album.artist.push_back(pDS->fv(album_strArtist).get_asString());
+  if (!pDS->fv(album_strExtraArtists).get_asString().empty())
+  {
+    std::vector<std::string> extraArtists = StringUtils::Split(pDS->fv(album_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
+  }
   album.idArtist = pDS->fv(album_idArtist).get_asInt();
-  album.genre = StringUtils::Split(pDS->fv(album_strGenre).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  std::vector<std::string> extraGenres = StringUtils::Split(pDS->fv(album_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  for (unsigned int index = 0; index < extraGenres.size(); index++)
-    album.genre.push_back(extraGenres.at(index));
+  album.genre.push_back(pDS->fv(album_strGenre).get_asString());
+  if (!pDS->fv(album_strExtraGenres).get_asString().empty())
+  {
+    std::vector<std::string> extraGenres = StringUtils::Split(pDS->fv(album_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
+    album.genre.insert(album.genre.end(), extraGenres.begin(), extraGenres.end());
+  }
   album.iYear = pDS->fv(album_iYear).get_asInt();
   if (imageURL)
     album.thumbURL.ParseString(pDS->fv(album_strThumbURL).get_asString());
@@ -2307,10 +2315,12 @@ void CMusicDatabase::DeleteAlbumInfo()
     CAlbumCache album;
     album.idAlbum = m_pDS->fv("album.idAlbum").get_asInt() ;
     album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
-    album.artist = StringUtils::Split(m_pDS->fv("artist.strArtist").get_asString(), g_advancedSettings.m_musicItemSeparator);
-    std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("album.strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
-    for (unsigned int index = 0; index < extraArtists.size(); index++)
-      album.artist.push_back(extraArtists.at(index));
+    album.artist.push_back(m_pDS->fv("artist.strArtist").get_asString());
+    if (!m_pDS->fv("album.strExtraArtists").get_asString().empty())
+    {
+      std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("album.strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
+      album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
+    }
     vecAlbums.push_back(album);
     m_pDS->next();
   }
