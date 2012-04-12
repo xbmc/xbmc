@@ -3256,6 +3256,14 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
       m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
     }
+    if (version < 19)
+    {
+      int len = g_advancedSettings.m_musicItemSeparator.size() + 1;
+      CStdString sql = PrepareSQL("UPDATE song SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
+      m_pDS->exec(sql.c_str());
+      sql = PrepareSQL("UPDATE album SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
+      m_pDS->exec(sql.c_str());
+    }
 
     // always recreate the views after any table change
     CreateViews();
