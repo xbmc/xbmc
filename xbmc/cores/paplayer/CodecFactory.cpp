@@ -41,7 +41,10 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "BXAcodec.h" 
+#include "BXAcodec.h"
+#ifdef TARGET_WINDOWS
+#include "windows/WMAcodec.h"
+#endif
 #include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
@@ -97,6 +100,11 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("ym"))
     return new YMCodec();
   else if (strFileType.Equals("wma"))
+#ifdef TARGET_WINDOWS
+    if(WMAcodec::IsWMAavailable())
+      return new WMAcodec();
+    else
+#endif
     return new DVDPlayerCodec();
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
     return new DVDPlayerCodec();
@@ -135,6 +143,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return pCodec;
   }
   else if( strContent.Equals("audio/x-ms-wma") )
+#ifdef TARGET_WINDOWS
+    if(WMAcodec::IsWMAavailable())
+      return new WMAcodec();
+    else
+#endif
     return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
