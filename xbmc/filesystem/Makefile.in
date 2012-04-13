@@ -112,6 +112,10 @@ SRCS+=AFPFile.cpp
 SRCS+=AFPDirectory.cpp
 endif
 
+ifeq (@HAVE_LIBBLURAY@,1)
+SRCS+=BlurayDirectory.cpp
+endif
+
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
