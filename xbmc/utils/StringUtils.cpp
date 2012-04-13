@@ -38,6 +38,8 @@
 #include <sstream>
 #include <time.h>
 
+#define FORMAT_BLOCK_SIZE 2048 // # of bytes to increment per try
+
 using namespace std;
 
 const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
@@ -45,6 +47,41 @@ const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";
 CStdString StringUtils::m_lastUUID = "";
+
+string StringUtils::Format(const string &fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  string str = FormatV(fmt, args);
+  va_end(args);
+
+  return str;
+}
+
+string StringUtils::FormatV(const string &fmt, va_list args)
+{
+  int size = FORMAT_BLOCK_SIZE;
+  string str;
+  va_list argCopy;
+
+  while (1) 
+  {
+    str.resize(size);
+    va_copy(argCopy, args);
+
+    int nActual = vsnprintf((char *)str.c_str(), size, fmt.c_str(), argCopy);
+    va_end(argCopy);
+
+    if (nActual > -1 && nActual < size) // We got a valid result
+      return str;
+    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else                                // Let's try to double the size (glibc 2.0)
+      size *= 2;
+  }
+
+  return str;
+}
 
 void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
 {

@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -28,9 +29,6 @@
 //
 //------------------------------------------------------------------------
 
-#ifndef __STRINGUTILS_H_
-#define __STRINGUTILS_H_
-
 #include "XBDateTime.h"
 #include "utils/StdString.h"
 #include <vector>
@@ -39,6 +37,9 @@
 class StringUtils
 {
 public:
+  static std::string Format(const std::string &fmt, ...);
+  static std::string FormatV(const std::string &fmt, va_list args);
+
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
@@ -92,5 +93,3 @@ public:
 private:
   static CStdString m_lastUUID;
 };
-
-#endif
