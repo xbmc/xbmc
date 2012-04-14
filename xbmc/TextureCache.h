@@ -199,6 +199,14 @@ private:
    */
   bool IncrementUseCount(const CTextureDetails &details);
 
+  /*! \brief Set a previously cached texture as valid in the database
+   Thread-safe wrapper of CTextureDatabase::SetCachedTextureValid
+   \param image url of the original image
+   \param updateable whether this image should be checked for updates
+   \return true if successful, false otherwise.
+   */
+  bool SetCachedTextureValid(const CStdString &url, bool updateable);
+
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   CCriticalSection m_databaseSection;

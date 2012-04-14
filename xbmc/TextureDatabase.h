@@ -33,6 +33,7 @@ public:
 
   bool GetCachedTexture(const CStdString &originalURL, CTextureDetails &details);
   bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
+  bool SetCachedTextureValid(const CStdString &originalURL, bool updateable);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
   bool IncrementUseCount(const CTextureDetails &details);
 

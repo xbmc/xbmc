@@ -244,6 +244,12 @@ bool CTextureCache::IncrementUseCount(const CTextureDetails &details)
   return m_database.IncrementUseCount(details);
 }
 
+bool CTextureCache::SetCachedTextureValid(const CStdString &url, bool updateable)
+{
+  CSingleLock lock(m_databaseSection);
+  return m_database.SetCachedTextureValid(url, updateable);
+}
+
 bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
@@ -271,7 +277,10 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (strcmp(job->GetType(), "cacheimage") == 0 && success)
   {
     CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
+    if (cacheJob->m_oldHash == cacheJob->m_details.hash)
+      SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
+    else
+      AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
       AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_details.file)));

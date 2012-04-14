@@ -169,6 +169,13 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
   return false;
 }
 
+bool CTextureDatabase::SetCachedTextureValid(const CStdString &url, bool updateable)
+{
+  CStdString date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
+  CStdString sql = PrepareSQL("UPDATE texture SET lasthashcheck='%s' WHERE url='%s'", date.c_str(), url.c_str());
+  return ExecuteQuery(sql);
+}
+
 bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDetails &details)
 {
   try
@@ -176,29 +183,12 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDet
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString cacheURL(details.file);
-    CStdString date = details.updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
+    CStdString sql = PrepareSQL("DELETE FROM texture WHERE url='%s'", url.c_str());
+    m_pDS->exec(sql.c_str());
 
-    CStdString sql = PrepareSQL("select id,cachedurl from texture where url='%s'", url.c_str());
-    m_pDS->query(sql.c_str());
-    if (!m_pDS->eof())
-    { // update
-      int textureID = m_pDS->fv(0).get_asInt();
-      if (cacheURL.IsEmpty())
-        cacheURL = m_pDS->fv(1).get_asString();
-      m_pDS->close();
-      if (!details.hash.empty())
-        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheURL.c_str(), details.hash.c_str(), date.c_str(), textureID);
-      else
-        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP where id=%u", cacheURL.c_str(), textureID);
-      m_pDS->exec(sql.c_str());
-    }
-    else if (!cacheURL.IsEmpty())
-    { // add the texture
-      m_pDS->close();
-      sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), cacheURL.c_str(), details.hash.c_str(), date.c_str());
-      m_pDS->exec(sql.c_str());
-    }
+    CStdString date = details.updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
+    sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), details.file.c_str(), details.hash.c_str(), date.c_str());
+    m_pDS->exec(sql.c_str());
   }
   catch (...)
   {
