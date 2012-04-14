@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -42,7 +42,6 @@ public:
 
 private:
   IWMSyncReader* m_ISyncReader;
-  INSSBuffer* m_pINSSBuffer;
   CRingBuffer m_pcmBuffer;
   bool m_bnomoresamples;
   DWORD m_dmaxwritebuffer;

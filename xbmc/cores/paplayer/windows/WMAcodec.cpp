@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,8 +24,6 @@
 #include "system.h"
 
 #pragma comment(lib, "wmvcore.lib")
-
-#define BUFFER_SIZE 882000 //4*44100*5
 
 WMAcodec::WMAcodec()
 {
@@ -182,15 +180,18 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   m_BitsPerSample = 16; //inputFormat->wBitsPerSample;
   m_Bitrate = inputFormat->nAvgBytesPerSec/8;
 
-  if(!m_pcmBuffer.Create(BUFFER_SIZE))
-    return false;
-
   SAFE_RELEASE(wmMediaProperties);
   SAFE_RELEASE(wmStreamConfig);
   SAFE_RELEASE(wmProfile);
   SAFE_RELEASE(wmHeaderInfo);
 
   LocalFree(mediaType);
+
+  if(!m_pcmBuffer.Create(50*m_dmaxwritebuffer))
+  {
+    CLog::Log(LOGERROR,"WMAcodec: Can't create pcmBuffer with %i bytes.", 50*m_dmaxwritebuffer );
+    return false;
+  }
 
   return true;
 }
@@ -224,11 +225,12 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   DWORD dwOutputNum;
   WORD wStreamNum;
   DWORD dwBufferLength;
+  INSSBuffer* pINSSBuffer;
 
   if(!m_bnomoresamples && m_pcmBuffer.getMaxWriteSize() > m_dmaxwritebuffer)
   {
     hr = m_ISyncReader->GetNextSample(0,
-                                      &m_pINSSBuffer,
+                                      &pINSSBuffer,
                                       &cnsSampleTime,
                                       &cnsSampleDuration,
                                       &dwFlags,
@@ -241,12 +243,12 @@ int WMAcodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     if(SUCCEEDED(hr))
     {
       unsigned char *buffer;
-      m_pINSSBuffer->GetBufferAndLength(&buffer,&dwBufferLength);
+      pINSSBuffer->GetBufferAndLength(&buffer,&dwBufferLength);
 
       m_pcmBuffer.WriteData((char *)buffer, dwBufferLength);
 
       //cleaning up before reading next sample
-      SAFE_RELEASE(m_pINSSBuffer);
+      SAFE_RELEASE(pINSSBuffer);
     }
   }
 
