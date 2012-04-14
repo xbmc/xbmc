@@ -902,7 +902,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h" />
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AddonsDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AFPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AFPFile.h" />

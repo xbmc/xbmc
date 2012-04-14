@@ -2312,7 +2312,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2363,7 +2363,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\AFPFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2655,12 +2655,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINFileSMB.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
@@ -5246,13 +5240,9 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
-      <Filter>interfaces\python\xbmcmodule</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h">
       <Filter>cores\paplayer</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\MemBufferCache.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5318,6 +5308,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
