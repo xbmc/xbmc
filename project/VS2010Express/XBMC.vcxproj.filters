@@ -834,7 +834,6 @@
     <ClCompile Include="..\..\xbmc\addons\Service.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\MediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIDialog.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -2639,6 +2638,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\MemBufferCache.cpp">
       <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\MediaSource.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
