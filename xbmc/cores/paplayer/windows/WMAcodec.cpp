@@ -75,12 +75,16 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 
   m_pStream = new XBMCistream();
   if(m_pStream == NULL)
+  {
+    DeInit();
     return false;
+  }
 
   hr = m_pStream->Open(strFile);
   if(hr!=S_OK)
   {
     CLog::Log(LOGERROR,"WMAcodec: error opening file %s!",strFile.c_str());
+    DeInit();
     return false;
   }
 
@@ -88,6 +92,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   if(hr!=S_OK)
   {
     CLog::Log(LOGERROR,"WMAcodec: error opening stream.");
+    DeInit();
     return false;
   }
 
@@ -104,6 +109,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
   {
     CLog::Log(LOGERROR,"WMAcodec: GetStreamCount failed (hr=0x%08x).", hr );
     SAFE_RELEASE(wmProfile);
+    SAFE_RELEASE(wmHeaderInfo);
     return false;
   }
 
@@ -114,6 +120,7 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     {
       CLog::Log(LOGERROR,"WMAcodec: GetStream failed (hr=0x%08x).", hr );
       SAFE_RELEASE(wmProfile);
+      SAFE_RELEASE(wmHeaderInfo);
       return false;
     }
 
@@ -121,16 +128,18 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
     if(hr!=S_OK)
     {
       CLog::Log(LOGERROR,"WMAcodec: GetStreamNumber failed (hr=0x%08x).", hr );
-      SAFE_RELEASE(wmProfile);
       SAFE_RELEASE(wmStreamConfig);
+      SAFE_RELEASE(wmProfile);
+      SAFE_RELEASE(wmHeaderInfo);
       return false;
     }
     hr = wmStreamConfig->GetStreamType( &pguidStreamType );
     if(hr!=S_OK)
     {
       CLog::Log(LOGERROR,"WMAcodec: GetStreamNumber failed (hr=0x%08x).", hr );
-      SAFE_RELEASE(wmProfile);
       SAFE_RELEASE(wmStreamConfig);
+      SAFE_RELEASE(wmProfile);
+      SAFE_RELEASE(wmHeaderInfo);
       return false;
     }
     if( WMMEDIATYPE_Audio == pguidStreamType )
@@ -143,7 +152,9 @@ bool WMAcodec::Init(const CStdString &strFile, unsigned int filecache)
 
   if(wAudioStreamNum == -1)
   {
+    SAFE_RELEASE(wmStreamConfig);
     SAFE_RELEASE(wmProfile);
+    SAFE_RELEASE(wmHeaderInfo);
     return false;
   }
 
