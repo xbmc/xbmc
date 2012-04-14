@@ -192,6 +192,13 @@ private:
    */
   bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
 
+  /*! \brief Increment the use count of a texture in the database
+   Thread-safe wrapper of CTextureDatabase::IncrementUseCount
+   \param details the texture to increment the use count
+   \return true on success, false otherwise
+   */
+  bool IncrementUseCount(const CTextureDetails &details);
+
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   CCriticalSection m_databaseSection;

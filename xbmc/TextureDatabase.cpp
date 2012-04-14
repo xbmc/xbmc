@@ -133,6 +133,12 @@ bool CTextureDatabase::UpdateOldVersion(int version)
   return true;
 }
 
+bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)
+{
+  CStdString sql = PrepareSQL("update texture set usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP where id=%u", details.id);
+  return ExecuteQuery(sql);
+}
+
 bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &details)
 {
   try
@@ -152,9 +158,6 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
       if (lastCheck.IsValid() && lastCheck + CDateTimeSpan(1,0,0,0) < CDateTime::GetCurrentDateTime())
         details.hash = m_pDS->fv(3).get_asString();
       m_pDS->close();
-      // update the use count
-      sql = PrepareSQL("update texture set usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP where id=%u", details.id);
-      m_pDS->exec(sql.c_str());
       return true;
     }
     m_pDS->close();

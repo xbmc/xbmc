@@ -34,6 +34,7 @@ public:
   bool GetCachedTexture(const CStdString &originalURL, CTextureDetails &details);
   bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool IncrementUseCount(const CTextureDetails &details);
 
   /*! \brief Invalidate a previously cached texture
    Invalidates the texture hash, and sets the texture update time to the current time so that

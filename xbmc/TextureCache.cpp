@@ -91,7 +91,10 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cach
   // lookup the item in the database
   CTextureDetails details;
   if (GetCachedTexture(url, details))
+  {
+    IncrementUseCount(details);
     return GetCachedPath(details.file);
+  }
   return "";
 }
 
@@ -233,6 +236,12 @@ bool CTextureCache::AddCachedTexture(const CStdString &url, const CTextureDetail
 {
   CSingleLock lock(m_databaseSection);
   return m_database.AddCachedTexture(url, details);
+}
+
+bool CTextureCache::IncrementUseCount(const CTextureDetails &details)
+{
+  CSingleLock lock(m_databaseSection);
+  return m_database.IncrementUseCount(details);
 }
 
 bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
