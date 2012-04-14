@@ -1351,10 +1351,18 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if(!m_pInputStream || !m_pDemuxer)
     return false;
 
-  int64_t cached  = m_pInputStream->GetCachedBytes();
+  SCacheStatus status;
+  if (!m_pInputStream->GetCacheStatus(&status))
+    return false;
+
+  int64_t cached   = status.forward;
+  unsigned currate = status.currate;
+  unsigned maxrate = status.maxrate;
+  bool full        = status.full;
+
   int64_t length  = m_pInputStream->GetLength();
   int64_t remain  = length - m_pInputStream->Seek(0, SEEK_CUR);
-  unsigned rate   = m_pInputStream->GetReadRate();
+
   if(cached < 0 || length <= 0 || remain < 0)
     return false;
 
@@ -1365,22 +1373,21 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   level  = 0.0;
   offset = (double)(cached + queued) / length;
 
-  if(rate == 0)
+  if (currate == 0)
     return true;
 
-  if(rate == (unsigned)-1) /* buffer is full */
-  {
-    level = -1.0;
-    return true;
-  }
-
-  double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / rate;            /* underestimate by 10 % */
+  double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / currate;         /* underestimate by 10 % */
   double play_left   = play_sbp  * (remain + queued);                 /* time to play out all remaining bytes */
   double cache_left  = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
   double cache_need  = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
-  delay  = cache_left - play_left;
-  level  = (cached + queued) / (cache_need + queued);
+  delay = cache_left - play_left;
+
+  if (full && (currate < maxrate) )
+    level = -1.0;                          /* buffer is full & our read rate is too low  */
+  else
+    level = (cached + queued) / (cache_need + queued);
+
   return true;
 }
 
@@ -3763,9 +3770,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.cache_offset = GetQueueTime() / state.time_total;
   }
 
-  if(m_pInputStream && m_pInputStream->GetCachedBytes() >= 0)
+  SCacheStatus status;
+  if(m_pInputStream && m_pInputStream->GetCacheStatus(&status) && status.forward >=0)
   {
-    state.cache_bytes = m_pInputStream->GetCachedBytes();
+    state.cache_bytes = status.forward;
     if(state.time_total)
       state.cache_bytes += m_pInputStream->GetLength() * GetQueueTime() / state.time_total;
   }
