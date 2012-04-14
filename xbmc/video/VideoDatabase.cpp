@@ -689,7 +689,10 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     // Let's try to get the modification datetime
     struct __stat64 buffer;
     if (CFile::Stat(strFileNameAndPath, &buffer) == 0)
-      dateAdded = *localtime((const time_t*)&buffer.st_mtime);
+    {
+      time_t maxTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+      dateAdded = *localtime(&maxTime);
+    }
 
     if (!dateAdded.IsValid())
       dateAdded = CDateTime::GetCurrentDateTime();
