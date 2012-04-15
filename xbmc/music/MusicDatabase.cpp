@@ -227,9 +227,9 @@ void CMusicDatabase::CreateViews()
               "    song.idPath=path.idPath"
               "  JOIN artist ON"
               "    song.idArtist=artist.idArtist"
-              "  JOIN genre ON"
+              "  LEFT OUTER JOIN genre ON"
               "    song.idGenre=genre.idGenre"
-              "  JOIN thumb ON"
+              "  LEFT OUTER JOIN thumb ON"
               "    song.idThumb=thumb.idThumb"
               "  LEFT OUTER JOIN karaokedata ON"
               "    song.idSong=karaokedata.idSong");
