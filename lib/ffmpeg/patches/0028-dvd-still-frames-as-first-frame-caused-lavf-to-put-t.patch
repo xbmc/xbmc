@@ -1,0 +1,27 @@
+From 41da1abf333afddac29b8e86e9b76aac40a433f5 Mon Sep 17 00:00:00 2001
+From: Voyager-xbmc <x@x.be>
+Date: Sun, 15 Apr 2012 07:02:36 +0200
+Subject: [PATCH 3/3] dvd still frames as first frame caused lavf to put the
+ whole menu into an internal buffer.
+
+See : c13bfaa8ca023923cc42d0808fc4f4f83260b2f7
+---
+ lib/ffmpeg/libavformat/utils.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/utils.c b/lib/ffmpeg/libavformat/utils.c
+index 4729a40..63f89dd 100644
+--- a/lib/ffmpeg/libavformat/utils.c
++++ b/lib/ffmpeg/libavformat/utils.c
+@@ -833,7 +833,7 @@ int av_read_packet(AVFormatContext *s, AVPacket *pkt)
+ 
+             if(end || av_log2(pd->buf_size) != av_log2(pd->buf_size - pkt->size)){
+                 int score= set_codec_from_probe_data(s, st, pd);
+-                if(    (st->codec->codec_id != CODEC_ID_NONE && score > AVPROBE_SCORE_MAX/4)
++                if(    (st->codec->codec_id != CODEC_ID_NONE && score > AVPROBE_SCORE_MAX/4-1)
+                     || end){
+                     pd->buf_size=0;
+                     av_freep(&pd->buf);
+-- 
+1.7.9.msysgit.0
+
