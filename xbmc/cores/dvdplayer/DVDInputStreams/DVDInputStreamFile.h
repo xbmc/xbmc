@@ -37,9 +37,8 @@ public:
   virtual __int64 GetLength();
   virtual BitstreamStats GetBitstreamStats() const ;
   virtual int GetBlockSize();
-  virtual __int64 GetCachedBytes();
   virtual void SetReadRate(unsigned rate);
-  virtual unsigned GetReadRate();
+  virtual bool GetCacheStatus(SCacheStatus *status);
 
 protected:
   XFILE::CFile* m_pFile;
