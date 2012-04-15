@@ -1351,7 +1351,7 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if(!m_pInputStream || !m_pDemuxer)
     return false;
 
-  SCacheStatus status;
+  XFILE::SCacheStatus status;
   if (!m_pInputStream->GetCacheStatus(&status))
     return false;
 
@@ -3770,7 +3770,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.cache_offset = GetQueueTime() / state.time_total;
   }
 
-  SCacheStatus status;
+  XFILE::SCacheStatus status;
   if(m_pInputStream && m_pInputStream->GetCacheStatus(&status) && status.forward >=0)
   {
     state.cache_bytes = status.forward;

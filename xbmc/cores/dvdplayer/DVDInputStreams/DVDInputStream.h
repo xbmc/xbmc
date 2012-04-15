@@ -27,8 +27,6 @@
 
 #include "FileItem.h"
 
-using namespace XFILE;
-
 enum DVDStreamType
 {
   DVDSTREAM_TYPE_NONE   = -1,
@@ -81,7 +79,7 @@ public:
 
   class IChapter
   {
-    public:    
+    public:
     virtual ~IChapter() {};
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
@@ -141,7 +139,7 @@ public:
   /*! \brief Get the cache status
    \return true when cache status was succesfully obtained
    */
-  virtual bool GetCacheStatus(SCacheStatus *status) { return false; }
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;

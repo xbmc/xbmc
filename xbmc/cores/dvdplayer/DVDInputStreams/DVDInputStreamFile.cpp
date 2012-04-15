@@ -114,7 +114,7 @@ __int64 CDVDInputStreamFile::GetLength()
   return 0;
 }
 
-bool CDVDInputStreamFile::GetCacheStatus(SCacheStatus *status)
+bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status)
 {
   if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
     return true;
