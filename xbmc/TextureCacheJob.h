@@ -36,11 +36,14 @@ public:
   CTextureDetails()
   {
     id = -1;
+    width = height = 0;
     updateable = false;
   };
   int          id;
   std::string  file;
   std::string  hash;
+  unsigned int width;
+  unsigned int height;
   bool         updateable;
 };
 

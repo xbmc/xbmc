@@ -100,7 +100,12 @@ bool CTextureCacheJob::DoWork()
       CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
                 m_texture->GetOrientation(), m_details.file.c_str());
 
-    return CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_details.file));
+    if (CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
+    {
+      m_details.width = width;
+      m_details.height = height;
+      return true;
+    }
   }
   return false;
 }

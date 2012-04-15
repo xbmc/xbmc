@@ -45,10 +45,15 @@ bool CTextureDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create texture table");
-    m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, usecount integer, lastusetime text, imagehash text, lasthashcheck text)\n");
+    m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
 
     CLog::Log(LOGINFO, "create textures index");
     m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
+
+    CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
+    m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
+    m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+    m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 
     CLog::Log(LOGINFO, "create path table");
     m_pDS->exec("CREATE TABLE path (id integer primary key, url text, type text, texture text)\n");
@@ -122,6 +127,15 @@ bool CTextureDatabase::UpdateOldVersion(int version)
     { // get rid of cached URLs that don't have the correct extension
       m_pDS->exec("DELETE FROM texture WHERE SUBSTR(cachedUrl,-4,4) NOT IN ('.jpg', '.png')");
     }
+    if (version < 12)
+    { // create new sizes table and move usecount info to it.
+      m_pDS->exec("DROP TABLE texture");
+      m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
+      m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
+      m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
+      m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+      m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
+    }
   }
   catch (...)
   {
@@ -135,7 +149,7 @@ bool CTextureDatabase::UpdateOldVersion(int version)
 
 bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)
 {
-  CStdString sql = PrepareSQL("update texture set usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP where id=%u", details.id);
+  CStdString sql = PrepareSQL("UPDATE sizes SET usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP WHERE idtexture=%u AND width=%u AND height=%u", details.id, details.width, details.height);
   return ExecuteQuery(sql);
 }
 
@@ -146,9 +160,8 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql = PrepareSQL("select id, cachedurl, lasthashcheck, imagehash from texture where url='%s'", url.c_str());
+    CStdString sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", url.c_str());
     m_pDS->query(sql.c_str());
-
     if (!m_pDS->eof())
     { // have some information
       details.id = m_pDS->fv(0).get_asInt();
@@ -157,6 +170,8 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &
       lastCheck.SetFromDBDateTime(m_pDS->fv(2).get_asString());
       if (lastCheck.IsValid() && lastCheck + CDateTimeSpan(1,0,0,0) < CDateTime::GetCurrentDateTime())
         details.hash = m_pDS->fv(3).get_asString();
+      details.width = m_pDS->fv(4).get_asInt();
+      details.height = m_pDS->fv(5).get_asInt();
       m_pDS->close();
       return true;
     }
@@ -187,7 +202,12 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDet
     m_pDS->exec(sql.c_str());
 
     CStdString date = details.updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
-    sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), details.file.c_str(), details.hash.c_str(), date.c_str());
+    sql = PrepareSQL("INSERT INTO texture (id, url, cachedurl, imagehash, lasthashcheck) VALUES(NULL, '%s', '%s', '%s', '%s')", url.c_str(), details.file.c_str(), details.hash.c_str(), date.c_str());
+    m_pDS->exec(sql.c_str());
+    int textureID = (int)m_pDS->lastinsertid();
+
+    // set the size information
+    sql = PrepareSQL("INSERT INTO sizes (idtexture, size, usecount, lastusetime, width, height) VALUES(%u, 1, 1, CURRENT_TIMESTAMP, %u, %u)", textureID, details.width, details.height);
     m_pDS->exec(sql.c_str());
   }
   catch (...)
