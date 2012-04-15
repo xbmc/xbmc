@@ -52,7 +52,7 @@ static int parse_config_ALS(GetBitContext *gb, MPEG4AudioConfig *c)
     return 0;
 }
 
-const int ff_mpeg4audio_sample_rates[16] = {
+const int avpriv_mpeg4audio_sample_rates[16] = {
     96000, 88200, 64000, 48000, 44100, 32000,
     24000, 22050, 16000, 12000, 11025, 8000, 7350
 };
@@ -73,15 +73,19 @@ static inline int get_sample_rate(GetBitContext *gb, int *index)
 {
     *index = get_bits(gb, 4);
     return *index == 0x0f ? get_bits(gb, 24) :
-        ff_mpeg4audio_sample_rates[*index];
+        avpriv_mpeg4audio_sample_rates[*index];
 }
 
-int ff_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf, int buf_size)
+int avpriv_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf,
+                                 int bit_size, int sync_extension)
 {
     GetBitContext gb;
     int specific_config_bitindex;
 
-    init_get_bits(&gb, buf, buf_size*8);
+    if(bit_size<=0)
+        return AVERROR_INVALIDDATA;
+
+    init_get_bits(&gb, buf, bit_size);
     c->object_type = get_object_type(&gb);
     c->sample_rate = get_sample_rate(&gb, &c->sampling_index);
     c->chan_config = get_bits(&gb, 4);
@@ -117,7 +121,7 @@ int ff_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf, int buf_si
             return -1;
     }
 
-    if (c->ext_object_type != AOT_SBR) {
+    if (c->ext_object_type != AOT_SBR && sync_extension) {
         while (get_bits_left(&gb) > 15) {
             if (show_bits(&gb, 11) == 0x2b7) { // sync extension
                 get_bits(&gb, 11);
@@ -151,7 +155,7 @@ static av_always_inline unsigned int copy_bits(PutBitContext *pb,
     return el;
 }
 
-int ff_copy_pce_data(PutBitContext *pb, GetBitContext *gb)
+int avpriv_copy_pce_data(PutBitContext *pb, GetBitContext *gb)
 {
     int five_bit_ch, four_bit_ch, comment_size, bits;
     int offset = put_bits_count(pb);
@@ -173,7 +177,7 @@ int ff_copy_pce_data(PutBitContext *pb, GetBitContext *gb)
         copy_bits(pb, gb, 16);
     if (bits)
         copy_bits(pb, gb, bits);
-    align_put_bits(pb);
+    avpriv_align_put_bits(pb);
     align_get_bits(gb);
     comment_size = copy_bits(pb, gb, 8);
     for (; comment_size > 0; comment_size--)

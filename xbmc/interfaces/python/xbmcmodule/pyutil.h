@@ -28,9 +28,9 @@ extern "C" {
 #endif
 
 // credits and version information
-#define PY_XBMC_AUTHOR    "J. Mulder <darkie@xbmc.org>"
-#define PY_XBMC_CREDITS   "XBMC TEAM."
-#define PY_XBMC_PLATFORM  "XBOX"
+#define PY_XBMC_AUTHOR    "Team XBMC <www.xbmc.org>"
+#define PY_XBMC_CREDITS   "Team XBMC"
+#define PY_XBMC_PLATFORM  "ALL"
 
 namespace PYXBMC
 {
@@ -42,6 +42,8 @@ namespace PYXBMC
 
   void  PyXBMCInitializeTypeObject(PyTypeObject* type_object);
   void  PyXBMCWaitForThreadMessage(int message, int param1, int param2);
+ 
+  bool  PyXBMCGetAddonId(std::string &addonId);
 }
 
 // Python doesn't play nice with PyXBMC_AddPendingCall

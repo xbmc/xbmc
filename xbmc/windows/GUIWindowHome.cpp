@@ -69,8 +69,10 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     {
       if (data.isMember("playcount"))
         ra_flag |= Totals;
-      else
-        ra_flag |= (Video | Totals);
+    }
+    else if (strcmp(message, "OnScanFinished") == 0)
+    {
+      ra_flag |= (Video | Totals);
     }
   }
   else if (flag & AudioLibrary)
@@ -80,8 +82,10 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     {
       if (data.isMember("playcount"))
         ra_flag |= Totals;
-      else
-        ra_flag |= ( Audio | Totals );
+    }
+    else if (strcmp(message, "OnScanFinished") == 0)
+    {
+      ra_flag |= ( Audio | Totals );
     }
   }
 

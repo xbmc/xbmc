@@ -379,7 +379,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD || dwRet == ERROR_LOGON_FAILURE)
     {
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
-      if (m_allowPrompting)
+      if (m_flags & DIR_FLAG_ALLOW_PROMPT)
         RequireAuthentication(urlIn.Get());
       break;
     }

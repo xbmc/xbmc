@@ -23,7 +23,7 @@
  * Ported from MPlayer libmpcodecs/vf_cropdetect.c.
  */
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "avfilter.h"
 
 typedef struct {
@@ -46,7 +46,7 @@ static int query_formats(AVFilterContext *ctx)
         PIX_FMT_NONE
     };
 
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
     return 0;
 }
 
@@ -200,7 +200,7 @@ AVFilter avfilter_vf_cropdetect = {
 
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .config_props     = config_input,
                                     .get_video_buffer = avfilter_null_get_video_buffer,
@@ -208,7 +208,7 @@ AVFilter avfilter_vf_cropdetect = {
                                     .end_frame        = end_frame, },
                                   { .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO },
                                   { .name = NULL}},
 };

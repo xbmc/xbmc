@@ -23,13 +23,14 @@
 
 #include <stdarg.h>
 #include "avutil.h"
+#include "attributes.h"
 
 /**
  * Describe the class of an AVClass context structure. That is an
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
-typedef struct {
+typedef struct AVClass {
     /**
      * The name of the class; usually it is the same name as the
      * context structure type to which the AVClass is associated.
@@ -70,6 +71,21 @@ typedef struct {
      * can be NULL of course
      */
     int parent_log_context_offset;
+
+    /**
+     * Return next AVOptions-enabled child or NULL
+     */
+    void* (*child_next)(void *obj, void *prev);
+
+    /**
+     * Return an AVClass corresponding to next potential
+     * AVOptions-enabled child.
+     *
+     * The difference between child_next and this is that
+     * child_next iterates over _already existing_ objects, while
+     * child_class_next iterates over _all possible_ children.
+     */
+    const struct AVClass* (*child_class_next)(const struct AVClass *prev);
 } AVClass;
 
 /* av_log API */
@@ -122,11 +138,7 @@ typedef struct {
  * subsequent arguments are converted to output.
  * @see av_vlog
  */
-#ifdef __GNUC__
-void av_log(void *avcl, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
-#else
-void av_log(void *avcl, int level, const char *fmt, ...);
-#endif
+void av_log(void *avcl, int level, const char *fmt, ...) av_printf_format(3, 4);
 
 void av_vlog(void *avcl, int level, const char *fmt, va_list);
 int av_log_get_level(void);
@@ -136,6 +148,16 @@ void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
 const char* av_default_item_name(void* ctx);
 
 /**
+ * Format a line of log the same way as the default callback.
+ * @param line          buffer to receive the formated line
+ * @param line_size     size of the buffer
+ * @param print_prefix  used to store whether the prefix must be printed;
+ *                      must point to a persistent integer initially set to 1
+ */
+void av_log_format_line(void *ptr, int level, const char *fmt, va_list vl,
+                        char *line, int line_size, int *print_prefix);
+
+/**
  * av_dlog macros
  * Useful to print debug messages that shouldn't get compiled in normally.
  */
@@ -143,7 +165,7 @@ const char* av_default_item_name(void* ctx);
 #ifdef DEBUG
 #    define av_dlog(pctx, ...) av_log(pctx, AV_LOG_DEBUG, __VA_ARGS__)
 #else
-#    define av_dlog(pctx, ...)
+#    define av_dlog(pctx, ...) do { if (0) av_log(pctx, AV_LOG_DEBUG, __VA_ARGS__); } while (0)
 #endif
 
 /**
@@ -152,7 +174,7 @@ const char* av_default_item_name(void* ctx);
  * "Last message repeated x times" messages below (f)printf messages with some
  * bad luck.
  * Also to receive the last, "last repeated" line if any, the user app must
- * call av_log(NULL, AV_LOG_QUIET, ""); at the end
+ * call av_log(NULL, AV_LOG_QUIET, "%s", ""); at the end
  */
 #define AV_LOG_SKIP_REPEATED 1
 void av_log_set_flags(int arg);

@@ -114,6 +114,7 @@ protected:
   CGUITexture m_texture;
   std::vector<CFadingTexture *> m_fadingTextures;
   CStdString m_currentTexture;
+  CStdString m_currentFallback;
 
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;

@@ -31,7 +31,6 @@
 #include "internal.h"
 #include "libavutil/avstring.h"
 #include "libavcodec/get_bits.h"
-#include <strings.h>
 
 /** Structure listing useful vars to parse RTP packet payload*/
 struct PayloadContext
@@ -111,8 +110,7 @@ static int parse_fmtp_config(AVCodecContext * codec, char *value)
 {
     /* decode the hexa encoded parameter */
     int len = ff_hex_to_data(NULL, value);
-    if (codec->extradata)
-        av_free(codec->extradata);
+    av_free(codec->extradata);
     codec->extradata = av_mallocz(len + FF_INPUT_BUFFER_PADDING_SIZE);
     if (!codec->extradata)
         return AVERROR(ENOMEM);
@@ -207,7 +205,7 @@ static int parse_fmtp(AVStream *stream, PayloadContext *data,
     if (codec->codec_id == CODEC_ID_AAC) {
         /* Looking for a known attribute */
         for (i = 0; attr_names[i].str; ++i) {
-            if (!strcasecmp(attr, attr_names[i].str)) {
+            if (!av_strcasecmp(attr, attr_names[i].str)) {
                 if (attr_names[i].type == ATTR_NAME_TYPE_INT) {
                     *(int *)((char *)data+
                         attr_names[i].offset) = atoi(value);
@@ -236,9 +234,6 @@ RTPDynamicProtocolHandler ff_mp4v_es_dynamic_handler = {
     .codec_type         = AVMEDIA_TYPE_VIDEO,
     .codec_id           = CODEC_ID_MPEG4,
     .parse_sdp_a_line   = parse_sdp_line,
-    .open               = NULL,
-    .close              = NULL,
-    .parse_packet       = NULL
 };
 
 RTPDynamicProtocolHandler ff_mpeg4_generic_dynamic_handler = {
@@ -246,7 +241,7 @@ RTPDynamicProtocolHandler ff_mpeg4_generic_dynamic_handler = {
     .codec_type         = AVMEDIA_TYPE_AUDIO,
     .codec_id           = CODEC_ID_AAC,
     .parse_sdp_a_line   = parse_sdp_line,
-    .open               = new_context,
-    .close              = free_context,
+    .alloc              = new_context,
+    .free               = free_context,
     .parse_packet       = aac_parse_packet
 };

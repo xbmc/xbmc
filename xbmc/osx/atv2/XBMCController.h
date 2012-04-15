@@ -21,13 +21,16 @@
 
 #import <Foundation/Foundation.h>
 #import <BackRow/BackRow.h>
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
+#import "IOSSCreenManager.h"
+#include "XBMC_keysym.h"
 
 @interface XBMCController : BRController
 {
   int padding[16];  // credit is due here to SapphireCompatibilityClasses!!
         
   int m_screensaverTimeout;
+  
   BRController *m_controller;
 }
 // message from which our instance is obtained
@@ -40,10 +43,18 @@
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
+- (void) sendKey: (XBMCKey) key;
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
+- (void) pauseAnimation;
+- (void) resumeAnimation;
+- (void) startAnimation;
+- (void) stopAnimation;
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
+- (void) activateScreen: (UIScreen *)screen;
+
 
 @end
 

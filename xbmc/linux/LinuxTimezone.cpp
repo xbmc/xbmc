@@ -169,14 +169,21 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
 
    // try Slackware approach first
    ssize_t rlrc = readlink("/etc/localtime-copied-from"
-                           , timezoneName, sizeof(timezoneName));
+                           , timezoneName, sizeof(timezoneName)-1);
    if (rlrc != -1)
    {
      timezoneName[rlrc] = '\0';
 
-     const char* p = strrchr(timezoneName+rlrc,'/');
+     char* p = strrchr(timezoneName,'/');
      if (p)
-       p = strrchr(p-1,'/')+1; 
+     { // we want the previous '/'
+       char* q = p;
+       *q = 0;
+       p = strrchr(timezoneName,'/');
+       *q = '/';
+       if (p)
+         p++;
+     }
      return p;
    }
 

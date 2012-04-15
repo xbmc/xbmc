@@ -42,7 +42,7 @@
 struct PayloadContext {
     unsigned ident;             ///< 24-bit stream configuration identifier
     uint32_t timestamp;
-    ByteIOContext* fragment;    ///< buffer for split payloads
+    AVIOContext* fragment;    ///< buffer for split payloads
     uint8_t *split_buf;
     int split_pos, split_buf_len, split_buf_size;
     int split_pkts;
@@ -57,7 +57,7 @@ static inline void free_fragment_if_needed(PayloadContext * data)
 {
     if (data->fragment) {
         uint8_t* p;
-        url_close_dyn_buf(data->fragment, &p);
+        avio_close_dyn_buf(data->fragment, &p);
         av_free(p);
         data->fragment = NULL;
     }
@@ -176,10 +176,10 @@ static int xiph_handle_packet(AVFormatContext * ctx,
         // end packet has been lost somewhere, so drop buffered data
         free_fragment_if_needed(data);
 
-        if((res = url_open_dyn_buf(&data->fragment)) < 0)
+        if((res = avio_open_dyn_buf(&data->fragment)) < 0)
             return res;
 
-        put_buffer(data->fragment, buf, pkt_len);
+        avio_write(data->fragment, buf, pkt_len);
         data->timestamp = *timestamp;
 
     } else {
@@ -198,12 +198,12 @@ static int xiph_handle_packet(AVFormatContext * ctx,
         }
 
         // copy data to fragment buffer
-        put_buffer(data->fragment, buf, pkt_len);
+        avio_write(data->fragment, buf, pkt_len);
 
         if (fragmented == 3) {
             // end of xiph data packet
             av_init_packet(pkt);
-            pkt->size = url_close_dyn_buf(data->fragment, &pkt->data);
+            pkt->size = avio_close_dyn_buf(data->fragment, &pkt->data);
 
             if (pkt->size < 0) {
                 av_log(ctx, AV_LOG_ERROR,
@@ -389,8 +389,8 @@ RTPDynamicProtocolHandler ff_theora_dynamic_handler = {
     .codec_type       = AVMEDIA_TYPE_VIDEO,
     .codec_id         = CODEC_ID_THEORA,
     .parse_sdp_a_line = xiph_parse_sdp_line,
-    .open             = xiph_new_context,
-    .close            = xiph_free_context,
+    .alloc            = xiph_new_context,
+    .free             = xiph_free_context,
     .parse_packet     = xiph_handle_packet
 };
 
@@ -399,7 +399,7 @@ RTPDynamicProtocolHandler ff_vorbis_dynamic_handler = {
     .codec_type       = AVMEDIA_TYPE_AUDIO,
     .codec_id         = CODEC_ID_VORBIS,
     .parse_sdp_a_line = xiph_parse_sdp_line,
-    .open             = xiph_new_context,
-    .close            = xiph_free_context,
+    .alloc            = xiph_new_context,
+    .free             = xiph_free_context,
     .parse_packet     = xiph_handle_packet
 };

@@ -26,9 +26,9 @@ static int parse(AVCodecParserContext *s,
                            const uint8_t *buf, int buf_size)
 {
     if(avctx->codec_id == CODEC_ID_THEORA)
-        s->pict_type= (buf[0]&0x40) ? FF_P_TYPE : FF_I_TYPE;
+        s->pict_type= (buf[0]&0x40) ? AV_PICTURE_TYPE_P : AV_PICTURE_TYPE_I;
     else
-        s->pict_type= (buf[0]&0x80) ? FF_P_TYPE : FF_I_TYPE;
+        s->pict_type= (buf[0]&0x80) ? AV_PICTURE_TYPE_P : AV_PICTURE_TYPE_I;
 
     *poutbuf = buf;
     *poutbuf_size = buf_size;
@@ -36,9 +36,7 @@ static int parse(AVCodecParserContext *s,
 }
 
 AVCodecParser ff_vp3_parser = {
-    { CODEC_ID_THEORA, CODEC_ID_VP3,
-      CODEC_ID_VP6,    CODEC_ID_VP6F, CODEC_ID_VP6A },
-    0,
-    NULL,
-    parse,
+    .codec_ids      = { CODEC_ID_THEORA, CODEC_ID_VP3, CODEC_ID_VP6,
+                        CODEC_ID_VP6F,   CODEC_ID_VP6A },
+    .parser_parse   = parse,
 };

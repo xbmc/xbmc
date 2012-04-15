@@ -1949,6 +1949,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\player.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
@@ -1956,6 +1959,9 @@
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.cpp">
@@ -2115,6 +2121,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\TextureCache.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp">
@@ -4708,6 +4717,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\listitem.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\monitor.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\player.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
@@ -4718,6 +4730,9 @@
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonAddon.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonMonitor.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonPlayer.h">
@@ -4862,6 +4877,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\TextureCache.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\TextureCacheJob.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Temperature.h">

@@ -33,19 +33,25 @@
 #include "avformat.h"
 #include "internal.h"
 #include "libavcodec/dvdata.h"
+#include "libavcodec/timecode.h"
 #include "dv.h"
 #include "libavutil/fifo.h"
+#include "libavutil/mathematics.h"
+#include "libavutil/intreadwrite.h"
+#include "libavutil/opt.h"
 
 struct DVMuxContext {
+    AVClass          *av_class;
     const DVprofile*  sys;           /* current DV profile, e.g.: 525/60, 625/50 */
     int               n_ast;         /* number of stereo audio streams (up to 2) */
     AVStream         *ast[2];        /* stereo audio streams */
     AVFifoBuffer     *audio_data[2]; /* FIFO for storing excessive amounts of PCM */
     int               frames;        /* current frame number */
-    time_t            start_time;    /* recording start time */
+    int64_t           start_time;    /* recording start time */
     int               has_audio;     /* frame under contruction has audio */
     int               has_video;     /* frame under contruction has video */
     uint8_t           frame_buf[DV_MAX_FRAME_SIZE]; /* frame under contruction */
+    struct ff_timecode tc;
 };
 
 static const int dv_aaux_packs_dist[12][9] = {
@@ -74,33 +80,23 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
     struct tm tc;
     time_t ct;
     int ltc_frame;
+    uint32_t timecode;
     va_list ap;
 
     buf[0] = (uint8_t)pack_id;
     switch (pack_id) {
     case dv_timecode:
-        ct = (time_t)av_rescale_rnd(c->frames, c->sys->time_base.num,
-                                    c->sys->time_base.den, AV_ROUND_DOWN);
-        brktimegm(ct, &tc);
         /*
          * LTC drop-frame frame counter drops two frames (0 and 1) every
          * minute, unless it is exactly divisible by 10
          */
-        ltc_frame = (c->frames + 2 * ct / 60 - 2 * ct / 600) % c->sys->ltc_divisor;
-        buf[1] = (0                 << 7) | /* color frame: 0 - unsync; 1 - sync mode */
-                 (1                 << 6) | /* drop frame timecode: 0 - nondrop; 1 - drop */
-                 ((ltc_frame / 10)  << 4) | /* tens of frames */
-                 (ltc_frame % 10);          /* units of frames */
-        buf[2] = (1                 << 7) | /* biphase mark polarity correction: 0 - even; 1 - odd */
-                 ((tc.tm_sec / 10)  << 4) | /* tens of seconds */
-                 (tc.tm_sec % 10);          /* units of seconds */
-        buf[3] = (1                 << 7) | /* binary group flag BGF0 */
-                 ((tc.tm_min / 10)  << 4) | /* tens of minutes */
-                 (tc.tm_min % 10);          /* units of minutes */
-        buf[4] = (1                 << 7) | /* binary group flag BGF2 */
-                 (1                 << 6) | /* binary group flag BGF1 */
-                 ((tc.tm_hour / 10) << 4) | /* tens of hours */
-                 (tc.tm_hour % 10);         /* units of hours */
+        ltc_frame = c->tc.start + c->frames;
+        if (c->tc.drop)
+            ltc_frame = avpriv_framenum_to_drop_timecode(ltc_frame);
+        timecode = avpriv_framenum_to_smpte_timecode(ltc_frame, c->sys->ltc_divisor,
+                                                     c->tc.drop);
+        timecode |= 1<<23 | 1<<15 | 1<<7 | 1<<6; // biphase and binary group flags
+        AV_WB32(buf + 1, timecode);
         break;
     case dv_audio_source:  /* AAUX source pack */
         va_start(ap, buf);
@@ -191,8 +187,8 @@ static void dv_inject_audio(DVMuxContext *c, int channel, uint8_t* frame_ptr)
                 if (of*2 >= size)
                     continue;
 
-                frame_ptr[d]   = av_fifo_peek(c->audio_data[channel], of*2+1); // FIXME: maybe we have to admit
-                frame_ptr[d+1] = av_fifo_peek(c->audio_data[channel], of*2);   //        that DV is a big-endian PCM
+                frame_ptr[d]   = *av_fifo_peek2(c->audio_data[channel], of*2+1); // FIXME: maybe we have to admit
+                frame_ptr[d+1] = *av_fifo_peek2(c->audio_data[channel], of*2);   //        that DV is a big-endian PCM
             }
             frame_ptr += 16 * 80; /* 15 Video DIFs + 1 Audio DIF */
         }
@@ -289,6 +285,7 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
 {
     DVMuxContext *c = s->priv_data;
     AVStream *vst = NULL;
+    AVDictionaryEntry *t;
     int i;
 
     /* we support at most 1 video and 2 audio streams */
@@ -323,7 +320,7 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
                           c->ast[i]->codec->channels    != 2))
             goto bail_out;
     }
-    c->sys = ff_dv_codec_profile(vst->codec);
+    c->sys = avpriv_dv_codec_profile(vst->codec);
     if (!c->sys)
         goto bail_out;
 
@@ -336,7 +333,13 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
     c->frames     = 0;
     c->has_audio  = 0;
     c->has_video  = 0;
-    c->start_time = (time_t)s->timestamp;
+#if FF_API_TIMESTAMP
+    if (s->timestamp)
+        c->start_time = s->timestamp;
+    else
+#endif
+    if (t = av_dict_get(s->metadata, "creation_time", NULL, 0))
+        c->start_time = ff_iso8601_to_unix_time(t->value);
 
     for (i=0; i < c->n_ast; i++) {
         if (c->ast[i] && !(c->audio_data[i]=av_fifo_alloc(100*AVCODEC_MAX_AUDIO_FRAME_SIZE))) {
@@ -363,12 +366,20 @@ static void dv_delete_mux(DVMuxContext *c)
 
 static int dv_write_header(AVFormatContext *s)
 {
+    DVMuxContext *dvc = s->priv_data;
+
     if (!dv_init_mux(s)) {
         av_log(s, AV_LOG_ERROR, "Can't initialize DV format!\n"
                     "Make sure that you supply exactly two streams:\n"
                     "     video: 25fps or 29.97fps, audio: 2ch/48kHz/PCM\n"
                     "     (50Mbps allows an optional second audio stream)\n");
         return -1;
+    }
+    if (dvc->tc.str) {
+        dvc->tc.rate.num = dvc->sys->time_base.den;
+        dvc->tc.rate.den = dvc->sys->time_base.num;
+        if (avpriv_init_smpte_timecode(s, &dvc->tc) < 0)
+            return -1;
     }
     return 0;
 }
@@ -381,8 +392,8 @@ static int dv_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     fsize = dv_assemble_frame(s->priv_data, s->streams[pkt->stream_index],
                               pkt->data, pkt->size, &frame);
     if (fsize > 0) {
-        put_buffer(s->pb, frame, fsize);
-        put_flush_packet(s->pb);
+        avio_write(s->pb, frame, fsize);
+        avio_flush(s->pb);
     }
     return 0;
 }
@@ -399,15 +410,25 @@ static int dv_write_trailer(struct AVFormatContext *s)
     return 0;
 }
 
+static const AVClass class = {
+    .class_name = "dv",
+    .item_name  = av_default_item_name,
+    .version    = LIBAVUTIL_VERSION_INT,
+    .option     = (const AVOption[]){
+        {TIMECODE_OPT(DVMuxContext, AV_OPT_FLAG_ENCODING_PARAM)},
+        {NULL},
+    },
+};
+
 AVOutputFormat ff_dv_muxer = {
-    "dv",
-    NULL_IF_CONFIG_SMALL("DV video format"),
-    NULL,
-    "dv",
-    sizeof(DVMuxContext),
-    CODEC_ID_PCM_S16LE,
-    CODEC_ID_DVVIDEO,
-    dv_write_header,
-    dv_write_packet,
-    dv_write_trailer,
+    .name              = "dv",
+    .long_name         = NULL_IF_CONFIG_SMALL("DV video format"),
+    .extensions        = "dv",
+    .priv_data_size    = sizeof(DVMuxContext),
+    .audio_codec       = CODEC_ID_PCM_S16LE,
+    .video_codec       = CODEC_ID_DVVIDEO,
+    .write_header      = dv_write_header,
+    .write_packet      = dv_write_packet,
+    .write_trailer     = dv_write_trailer,
+    .priv_class        = &class,
 };

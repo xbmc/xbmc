@@ -49,7 +49,14 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 
   m_dllAvCodec.avcodec_register_all();
 
-  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
+  AVCodec* pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
+  if (!pCodec)
+  {
+    CLog::Log(LOGDEBUG,"%s - Unable to find codec %d", __FUNCTION__, hints.codec);
+    return false;
+  }
+
+  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
@@ -100,14 +107,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     delete[] parse_extra;
   }
 
-  AVCodec* pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
-  if (!pCodec)
-  {
-    CLog::Log(LOGDEBUG,"%s - Unable to find codec %d", __FUNCTION__, hints.codec);
-    return false;
-  }
-
-  if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
+  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
@@ -134,19 +134,12 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
 {
   for(unsigned i=0;i<sub.num_rects;i++)
   {
-#if LIBAVCODEC_VERSION_INT >= (52<<10)
     if(sub.rects[i])
     {
       m_dllAvUtil.av_free(sub.rects[i]->pict.data[0]);
       m_dllAvUtil.av_free(sub.rects[i]->pict.data[1]);
       m_dllAvUtil.av_freep(&sub.rects[i]);
     }
-#else
-    if(sub.rects[i].bitmap)
-      m_dllAvUtil.av_freep(&sub.rects[i].bitmap);
-    if(m_Subtitle.rects[i].rgba_palette)
-      m_dllAvUtil.av_freep(&sub.rects[i].rgba_palette);
-#endif
   }
   if(sub.rects)
     m_dllAvUtil.av_freep(&sub.rects);
@@ -294,7 +287,6 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->source_width  = m_width;
     overlay->source_height = m_height;
 
-#if LIBAVCODEC_VERSION_INT >= (52<<10)
     BYTE* s = rect.pict.data[0];
     BYTE* t = overlay->data;
     for(int i=0;i<rect.h;i++)
@@ -310,21 +302,6 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     m_dllAvUtil.av_free(rect.pict.data[0]);
     m_dllAvUtil.av_free(rect.pict.data[1]);
     m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
-#else
-    BYTE* s = rect.bitmap;
-    BYTE* t = overlay->data;
-    for(int i=0;i<rect.h;i++)
-    {
-      memcpy(t, s, rect.w);
-      s += rect.linesize;
-      t += overlay->linesize;
-    }
-
-    memcpy(overlay->palette, rect.rgba_palette, rect.nb_colors*4);
-
-    m_dllAvUtil.av_freep(&rect.bitmap);
-    m_dllAvUtil.av_freep(&rect.rgba_palette);
-#endif
     m_SubtitleIndex++;
 
     return overlay;

@@ -268,7 +268,7 @@ static int query_formats(AVFilterContext *ctx)
         PIX_FMT_YUV420P, PIX_FMT_YUV422P, PIX_FMT_YUV411P, PIX_FMT_NONE
     };
 
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
 
     return 0;
 }
@@ -332,14 +332,14 @@ AVFilter avfilter_vf_hqdn3d = {
     .uninit        = uninit,
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .draw_slice       = null_draw_slice,
                                     .config_props     = config_input,
                                     .end_frame        = end_frame },
                                   { .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO },
                                   { .name = NULL}},
 };

@@ -1,8 +1,8 @@
 \input texinfo @c -*- texinfo -*-
 
-@settitle FFmpeg Documentation
+@settitle ffmpeg Documentation
 @titlepage
-@center @titlefont{FFmpeg Documentation}
+@center @titlefont{ffmpeg Documentation}
 @end titlepage
 
 @top
@@ -15,34 +15,50 @@ The generic syntax is:
 
 @example
 @c man begin SYNOPSIS
-ffmpeg [[infile options][@option{-i} @var{infile}]]... @{[outfile options] @var{outfile}@}...
+ffmpeg [global options] [[infile options][@option{-i} @var{infile}]]... @{[outfile options] @var{outfile}@}...
 @c man end
 @end example
 
 @chapter Description
 @c man begin DESCRIPTION
 
-FFmpeg is a very fast video and audio converter. It can also grab from
-a live audio/video source.
+ffmpeg is a very fast video and audio converter that can also grab from
+a live audio/video source. It can also convert between arbitrary sample
+rates and resize video on the fly with a high quality polyphase filter.
 
-The command line interface is designed to be intuitive, in the sense
-that FFmpeg tries to figure out all parameters that can possibly be
-derived automatically. You usually only have to specify the target
-bitrate you want.
+ffmpeg reads from an arbitrary number of input "files" (which can be regular
+files, pipes, network streams, grabbing devices, etc.), specified by the
+@code{-i} option, and writes to an arbitrary number of output "files", which are
+specified by a plain output filename. Anything found on the command line which
+cannot be interpreted as an option is considered to be an output filename.
 
-FFmpeg can also convert from any sample rate to any other, and resize
-video on the fly with a high quality polyphase filter.
+Each input or output file can in principle contain any number of streams of
+different types (video/audio/subtitle/attachment/data). Allowed number and/or
+types of streams can be limited by the container format. Selecting, which
+streams from which inputs go into output, is done either automatically or with
+the @code{-map} option (see the Stream selection chapter).
+
+To refer to input files in options, you must use their indices (0-based). E.g.
+the first input file is @code{0}, the second is @code{1} etc. Similarly, streams
+within a file are referred to by their indices. E.g. @code{2:3} refers to the
+fourth stream in the third input file. See also the Stream specifiers chapter.
 
 As a general rule, options are applied to the next specified
 file. Therefore, order is important, and you can have the same
 option on the command line multiple times. Each occurrence is
 then applied to the next input or output file.
+Exceptions from this rule are the global options (e.g. verbosity level),
+which should be specified first.
+
+Do not mix input and output files -- first specify all input files, then all
+output files. Also do not mix options which belong to different files. All
+options apply ONLY to the next input or output file and are reset between files.
 
 @itemize
 @item
 To set the video bitrate of the output file to 64kbit/s:
 @example
-ffmpeg -i input.avi -b 64k output.avi
+ffmpeg -i input.avi -b:v 64k output.avi
 @end example
 
 @item
@@ -61,51 +77,90 @@ ffmpeg -r 1 -i input.m2v -r 24 output.avi
 
 The format option may be needed for raw input files.
 
-By default, FFmpeg tries to convert as losslessly as possible: It
-uses the same audio and video parameters for the outputs as the one
-specified for the inputs.
-
 @c man end DESCRIPTION
+
+@chapter Stream selection
+@c man begin STREAM SELECTION
+
+By default ffmpeg includes only one stream of each type (video, audio, subtitle)
+present in the input files and adds them to each output file.  It picks the
+"best" of each based upon the following criteria; for video it is the stream
+with the highest resolution, for audio the stream with the most channels, for
+subtitle it's the first subtitle stream. In the case where several streams of
+the same type rate equally, the lowest numbered stream is chosen.
+
+You can disable some of those defaults by using @code{-vn/-an/-sn} options. For
+full manual control, use the @code{-map} option, which disables the defaults just
+described.
+
+@c man end STREAM SELECTION
 
 @chapter Options
 @c man begin OPTIONS
 
-@include fftools-common-opts.texi
+@include avtools-common-opts.texi
 
 @section Main options
 
 @table @option
 
-@item -f @var{fmt}
-Force format.
+@item -f @var{fmt} (@emph{input/output})
+Force input or output file format. The format is normally auto detected for input
+files and guessed from file extension for output files, so this option is not
+needed in most cases.
 
-@item -i @var{filename}
+@item -i @var{filename} (@emph{input})
 input file name
 
-@item -y
-Overwrite output files.
+@item -y (@emph{global})
+Overwrite output files without asking.
 
-@item -t @var{duration}
-Restrict the transcoded/captured video sequence
-to the duration specified in seconds.
-@code{hh:mm:ss[.xxx]} syntax is also supported.
+@item -n (@emph{global})
+Do not overwrite output files but exit if file exists.
 
-@item -fs @var{limit_size}
+@item -c[:@var{stream_specifier}] @var{codec} (@emph{input/output,per-stream})
+@itemx -codec[:@var{stream_specifier}] @var{codec} (@emph{input/output,per-stream})
+Select an encoder (when used before an output file) or a decoder (when used
+before an input file) for one or more streams. @var{codec} is the name of a
+decoder/encoder or a special value @code{copy} (output only) to indicate that
+the stream is not to be re-encoded.
+
+For example
+@example
+ffmpeg -i INPUT -map 0 -c:v libx264 -c:a copy OUTPUT
+@end example
+encodes all video streams with libx264 and copies all audio streams.
+
+For each stream, the last matching @code{c} option is applied, so
+@example
+ffmpeg -i INPUT -map 0 -c copy -c:v:1 libx264 -c:a:137 libvorbis OUTPUT
+@end example
+will copy all the streams except the second video, which will be encoded with
+libx264, and the 138th audio, which will be encoded with libvorbis.
+
+@item -t @var{duration} (@emph{output})
+Stop writing the output after its duration reaches @var{duration}.
+@var{duration} may be a number in seconds, or in @code{hh:mm:ss[.xxx]} form.
+
+@item -fs @var{limit_size} (@emph{output})
 Set the file size limit.
 
-@item -ss @var{position}
-Seek to given time position in seconds.
-@code{hh:mm:ss[.xxx]} syntax is also supported.
+@item -ss @var{position} (@emph{input/output})
+When used as an input option (before @code{-i}), seeks in this input file to
+@var{position}. When used as an output option (before an output filename),
+decodes but discards input until the timestamps reach @var{position}. This is
+slower, but more accurate.
 
-@item -itsoffset @var{offset}
+@var{position} may be either in seconds or in @code{hh:mm:ss[.xxx]} form.
+
+@item -itsoffset @var{offset} (@emph{input})
 Set the input time offset in seconds.
 @code{[-]hh:mm:ss[.xxx]} syntax is also supported.
-This option affects all the input files that follow it.
 The offset is added to the timestamps of the input files.
 Specifying a positive offset means that the corresponding
-streams are delayed by 'offset' seconds.
+streams are delayed by @var{offset} seconds.
 
-@item -timestamp @var{time}
+@item -timestamp @var{time} (@emph{output})
 Set the recording timestamp in the container.
 The syntax for @var{time} is:
 @example
@@ -117,21 +172,31 @@ interpreted as UTC.
 If the year-month-day part is not specified it takes the current
 year-month-day.
 
-@item -metadata @var{key}=@var{value}
+@item -metadata[:metadata_specifier] @var{key}=@var{value} (@emph{output,per-metadata})
 Set a metadata key/value pair.
+
+An optional @var{metadata_specifier} may be given to set metadata
+on streams or chapters. See @code{-map_metadata} documentation for
+details.
+
+This option overrides metadata set with @code{-map_metadata}. It is
+also possible to delete metadata by using an empty value.
 
 For example, for setting the title in the output file:
 @example
 ffmpeg -i in.avi -metadata title="my title" out.flv
 @end example
 
-@item -v @var{number}
-Set the logging verbosity level.
+To set the language of the first audio stream:
+@example
+ffmpeg -i INPUT -metadata:s:a:1 language=eng OUTPUT
+@end example
 
-@item -target @var{type}
-Specify target file type ("vcd", "svcd", "dvd", "dv", "dv50", "pal-vcd",
-"ntsc-svcd", ... ). All the format options (bitrate, codecs,
-buffer sizes) are then set automatically. You can just type:
+@item -target @var{type} (@emph{output})
+Specify target file type (@code{vcd}, @code{svcd}, @code{dvd}, @code{dv},
+@code{dv50}). @var{type} may be prefixed with @code{pal-}, @code{ntsc-} or
+@code{film-} to use the corresponding standard. All the format options
+(bitrate, codecs, buffer sizes) are then set automatically. You can just type:
 
 @example
 ffmpeg -i myfile.avi -target vcd /tmp/vcd.mpg
@@ -144,31 +209,71 @@ they do not conflict with the standard, as in:
 ffmpeg -i myfile.avi -target vcd -bf 2 /tmp/vcd.mpg
 @end example
 
-@item -dframes @var{number}
-Set the number of data frames to record.
+@item -dframes @var{number} (@emph{output})
+Set the number of data frames to record. This is an alias for @code{-frames:d}.
 
-@item -scodec @var{codec}
-Force subtitle codec ('copy' to copy stream).
+@item -frames[:@var{stream_specifier}] @var{framecount} (@emph{output,per-stream})
+Stop writing to the stream after @var{framecount} frames.
 
-@item -newsubtitle
-Add a new subtitle stream to the current output stream.
+@item -q[:@var{stream_specifier}] @var{q} (@emph{output,per-stream})
+@itemx -qscale[:@var{stream_specifier}] @var{q} (@emph{output,per-stream})
+Use fixed quality scale (VBR). The meaning of @var{q} is
+codec-dependent.
 
-@item -slang @var{code}
-Set the ISO 639 language code (3 letters) of the current subtitle stream.
+@item -filter[:@var{stream_specifier}] @var{filter_graph} (@emph{output,per-stream})
+@var{filter_graph} is a description of the filter graph to apply to
+the stream. Use @code{-filters} to show all the available filters
+(including also sources and sinks).
+@item -pre[:@var{stream_specifier}] @var{preset_name} (@emph{output,per-stream})
+Specify the preset for matching stream(s).
+
+@item -stats (@emph{global})
+Print encoding progress/statistics. On by default.
+
+@item -attach @var{filename} (@emph{output})
+Add an attachment to the output file. This is supported by a few formats
+like Matroska for e.g. fonts used in rendering subtitles. Attachments
+are implemented as a specific type of stream, so this option will add
+a new stream to the file. It is then possible to use per-stream options
+on this stream in the usual way. Attachment streams created with this
+option will be created after all the other streams (i.e. those created
+with @code{-map} or automatic mappings).
+
+Note that for Matroska you also have to set the mimetype metadata tag:
+@example
+ffmpeg -i INPUT -attach DejaVuSans.ttf -metadata:s:2 mimetype=application/x-truetype-font out.mkv
+@end example
+(assuming that the attachment stream will be third in the output file).
+
+@item -dump_attachment[:@var{stream_specifier}] @var{filename} (@emph{input,per-stream})
+Extract the matching attachment stream into a file named @var{filename}. If
+@var{filename} is empty, then the value of the @code{filename} metadata tag
+will be used.
+
+E.g. to extract the first attachment to a file named 'out.ttf':
+@example
+ffmpeg -dump_attachment:t:0 out.ttf INPUT
+@end example
+To extract all attachments to files determined by the @code{filename} tag:
+@example
+ffmpeg -dump_attachment:t "" INPUT
+@end example
+
+Technical note -- attachments are implemented as codec extradata, so this
+option can actually be used to extract extradata from any stream, not just
+attachments.
 
 @end table
 
 @section Video Options
 
 @table @option
-@item -b @var{bitrate}
-Set the video bitrate in bit/s (default = 200 kb/s).
-@item -vframes @var{number}
-Set the number of video frames to record.
-@item -r @var{fps}
+@item -vframes @var{number} (@emph{output})
+Set the number of video frames to record. This is an alias for @code{-frames:v}.
+@item -r[:@var{stream_specifier}] @var{fps} (@emph{input/output,per-stream})
 Set frame rate (Hz value, fraction or abbreviation), (default = 25).
-@item -s @var{size}
-Set frame size. The format is @samp{wxh} (ffserver default = 160x128, ffmpeg default = same as source).
+@item -s[:@var{stream_specifier}] @var{size} (@emph{input/output,per-stream})
+Set frame size. The format is @samp{wxh} (default - same as source).
 The following abbreviations are recognized:
 @table @samp
 @item sqcif
@@ -231,8 +336,14 @@ The following abbreviations are recognized:
 1920x1080
 @end table
 
-@item -aspect @var{aspect}
-Set aspect ratio (4:3, 16:9 or 1.3333, 1.7777).
+@item -aspect[:@var{stream_specifier}] @var{aspect} (@emph{output,per-stream})
+Set the video display aspect ratio specified by @var{aspect}.
+
+@var{aspect} can be a floating point number string, or a string of the
+form @var{num}:@var{den}, where @var{num} and @var{den} are the
+numerator and denominator of the aspect ratio. For example "4:3",
+"16:9", "1.3333", and "1.7777" are valid argument values.
+
 @item -croptop @var{size}
 @item -cropbottom @var{size}
 @item -cropleft @var{size}
@@ -247,7 +358,8 @@ crop=width:height:x:y instead.
 @item -padcolor @var{hex_color}
 All the pad options have been removed. Use -vf
 pad=width:height:x:y:color instead.
-@item -vn
+
+@item -vn (@emph{output})
 Disable video recording.
 @item -bt @var{tolerance}
 Set video bitrate tolerance (in bits, default 4000k).
@@ -263,16 +375,18 @@ Requires -bufsize to be set.
 Set min video bitrate (in bit/s).
 Most useful in setting up a CBR encode:
 @example
-ffmpeg -i myfile.avi -b 4000k -minrate 4000k -maxrate 4000k -bufsize 1835k out.m2v
+ffmpeg -i myfile.avi -b:v 4000k -minrate 4000k -maxrate 4000k -bufsize 1835k out.m2v
 @end example
 It is of little use elsewise.
 @item -bufsize @var{size}
 Set video buffer verifier buffer size (in bits).
-@item -vcodec @var{codec}
-Force video codec to @var{codec}. Use the @code{copy} special value to
-tell that the raw codec data must be copied as is.
-@item -sameq
-Use same video quality as source (implies VBR).
+@item -vcodec @var{codec} (@emph{output})
+Set the video codec. This is an alias for @code{-codec:v}.
+@item -same_quant
+Use same quantizer as source (implies VBR).
+
+Note that this is NOT SAME QUALITY. Do not use this option unless you know you
+need it.
 
 @item -pass @var{n}
 Select the pass number (1 or 2). It is used to do two-pass
@@ -283,46 +397,41 @@ at the exact requested bitrate.
 On pass 1, you may just deactivate audio and set output to null,
 examples for Windows and Unix:
 @example
-ffmpeg -i foo.mov -vcodec libxvid -pass 1 -an -f rawvideo -y NUL
-ffmpeg -i foo.mov -vcodec libxvid -pass 1 -an -f rawvideo -y /dev/null
+ffmpeg -i foo.mov -c:v libxvid -pass 1 -an -f rawvideo -y NUL
+ffmpeg -i foo.mov -c:v libxvid -pass 1 -an -f rawvideo -y /dev/null
 @end example
 
-@item -passlogfile @var{prefix}
+@item -passlogfile @var{prefix} (@emph{global})
 Set two-pass log file name prefix to @var{prefix}, the default file name
 prefix is ``ffmpeg2pass''. The complete file name will be
 @file{PREFIX-N.log}, where N is a number specific to the output
-stream.
-
-@item -newvideo
-Add a new video stream to the current output stream.
+stream
 
 @item -vlang @var{code}
 Set the ISO 639 language code (3 letters) of the current video stream.
 
-@item -vf @var{filter_graph}
+@item -vf @var{filter_graph} (@emph{output})
 @var{filter_graph} is a description of the filter graph to apply to
 the input video.
 Use the option "-filters" to show all the available filters (including
-also sources and sinks).
+also sources and sinks).  This is an alias for @code{-filter:v}.
 
 @end table
 
 @section Advanced Video Options
 
 @table @option
-@item -pix_fmt @var{format}
-Set pixel format. Use 'list' as parameter to show all the supported
+@item -pix_fmt[:@var{stream_specifier}] @var{format} (@emph{input/output,per-stream})
+Set pixel format. Use @code{-pix_fmts} to show all the supported
 pixel formats.
-@item -sws_flags @var{flags}
+@item -sws_flags @var{flags} (@emph{input/output})
 Set SwScaler flags.
 @item -g @var{gop_size}
 Set the group of pictures size.
 @item -intra
-Use only intra frames.
+deprecated, use -g 1
 @item -vdt @var{n}
 Discard threshold.
-@item -qscale @var{q}
-Use fixed video quantizer scale (VBR).
 @item -qmin @var{q}
 minimum video quantizer scale (VBR)
 @item -qmax @var{q}
@@ -394,8 +503,11 @@ and the following constants are available:
 @item avgTex
 @end table
 
-@item -rc_override @var{override}
-rate control override for specific intervals
+@item -rc_override[:@var{stream_specifier}] @var{override} (@emph{output,per-stream})
+Rate control override for specific intervals, formatted as "int,int,int"
+list separated with slashes. Two first values are the beginning and
+end frame numbers, last one is quantizer to use if positive, or quality
+factor if negative.
 @item -me_method @var{method}
 Set motion estimation method to @var{method}.
 Available methods are (from lowest to best quality):
@@ -486,7 +598,7 @@ Use 'frames' B-frames (supported for MPEG-1, MPEG-2 and MPEG-4).
 macroblock decision
 @table @samp
 @item 0
-FF_MB_DECISION_SIMPLE: Use mb_cmp (cannot change it yet in FFmpeg).
+FF_MB_DECISION_SIMPLE: Use mb_cmp (cannot change it yet in ffmpeg).
 @item 1
 FF_MB_DECISION_BITS: Choose the one which needs the fewest bits.
 @item 2
@@ -520,123 +632,231 @@ Calculate PSNR of compressed frames.
 Dump video coding statistics to @file{vstats_HHMMSS.log}.
 @item -vstats_file @var{file}
 Dump video coding statistics to @var{file}.
-@item -top @var{n}
+@item -top[:@var{stream_specifier}] @var{n} (@emph{output,per-stream})
 top=1/bottom=0/auto=-1 field first
 @item -dc @var{precision}
 Intra_dc_precision.
-@item -vtag @var{fourcc/tag}
-Force video tag/fourcc.
-@item -qphist
-Show QP histogram.
+@item -vtag @var{fourcc/tag} (@emph{output})
+Force video tag/fourcc. This is an alias for @code{-tag:v}.
+@item -qphist (@emph{global})
+Show QP histogram
 @item -vbsf @var{bitstream_filter}
-Bitstream filters available are "dump_extra", "remove_extra", "noise", "h264_mp4toannexb", "imxdump", "mjpegadump", "mjpeg2jpeg".
-@example
-ffmpeg -i h264.mp4 -vcodec copy -vbsf h264_mp4toannexb -an out.h264
-@end example
-@item -force_key_frames @var{time}[,@var{time}...]
+Deprecated see -bsf
+@item -force_key_frames[:@var{stream_specifier}] @var{time}[,@var{time}...] (@emph{output,per-stream})
 Force key frames at the specified timestamps, more precisely at the first
 frames after each specified time.
 This option can be useful to ensure that a seek point is present at a
 chapter mark or any other designated place in the output file.
 The timestamps must be specified in ascending order.
+
+@item -copyinkf[:@var{stream_specifier}] (@emph{output,per-stream})
+When doing stream copy, copy also non-key frames found at the
+beginning.
 @end table
 
 @section Audio Options
 
 @table @option
-@item -aframes @var{number}
-Set the number of audio frames to record.
-@item -ar @var{freq}
-Set the audio sampling frequency. For input streams it is set by
-default to 44100 Hz, for output streams it is set by default to the
-frequency of the input stream. If the input file has audio streams
-with different frequencies, the behaviour is undefined.
-@item -ab @var{bitrate}
-Set the audio bitrate in bit/s (default = 64k).
-@item -aq @var{q}
-Set the audio quality (codec-specific, VBR).
-@item -ac @var{channels}
-Set the number of audio channels. For input streams it is set by
-default to 1, for output streams it is set by default to the same
-number of audio channels in input. If the input file has audio streams
-with different channel count, the behaviour is undefined.
-@item -an
+@item -aframes @var{number} (@emph{output})
+Set the number of audio frames to record. This is an alias for @code{-frames:a}.
+@item -ar[:@var{stream_specifier}] @var{freq} (@emph{input/output,per-stream})
+Set the audio sampling frequency. For output streams it is set by
+default to the frequency of the corresponding input stream. For input
+streams this option only makes sense for audio grabbing devices and raw
+demuxers and is mapped to the corresponding demuxer options.
+@item -aq @var{q} (@emph{output})
+Set the audio quality (codec-specific, VBR). This is an alias for -q:a.
+@item -ac[:@var{stream_specifier}] @var{channels} (@emph{input/output,per-stream})
+Set the number of audio channels. For output streams it is set by
+default to the number of input audio channels. For input streams
+this option only makes sense for audio grabbing devices and raw demuxers
+and is mapped to the corresponding demuxer options.
+@item -an (@emph{output})
 Disable audio recording.
-@item -acodec @var{codec}
-Force audio codec to @var{codec}. Use the @code{copy} special value to
-specify that the raw codec data must be copied as is.
-@item -newaudio
-Add a new audio track to the output file. If you want to specify parameters,
-do so before @code{-newaudio} (@code{-acodec}, @code{-ab}, etc..).
-
-Mapping will be done automatically, if the number of output streams is equal to
-the number of input streams, else it will pick the first one that matches. You
-can override the mapping using @code{-map} as usual.
-
-Example:
-@example
-ffmpeg -i file.mpg -vcodec copy -acodec ac3 -ab 384k test.mpg -acodec mp2 -ab 192k -newaudio
-@end example
-@item -alang @var{code}
-Set the ISO 639 language code (3 letters) of the current audio stream.
+@item -acodec @var{codec} (@emph{input/output})
+Set the audio codec. This is an alias for @code{-codec:a}.
+@item -sample_fmt[:@var{stream_specifier}] @var{sample_fmt} (@emph{output,per-stream})
+Set the audio sample format. Use @code{-sample_fmts} to get a list
+of supported sample formats.
 @end table
 
 @section Advanced Audio options:
 
 @table @option
-@item -atag @var{fourcc/tag}
-Force audio tag/fourcc.
+@item -atag @var{fourcc/tag} (@emph{output})
+Force audio tag/fourcc. This is an alias for @code{-tag:a}.
+@item -audio_service_type @var{type}
+Set the type of service that the audio stream contains.
+@table @option
+@item ma
+Main Audio Service (default)
+@item ef
+Effects
+@item vi
+Visually Impaired
+@item hi
+Hearing Impaired
+@item di
+Dialogue
+@item co
+Commentary
+@item em
+Emergency
+@item vo
+Voice Over
+@item ka
+Karaoke
+@end table
 @item -absf @var{bitstream_filter}
-Bitstream filters available are "dump_extra", "remove_extra", "noise", "mp3comp", "mp3decomp".
+Deprecated, see -bsf
 @end table
 
 @section Subtitle options:
 
 @table @option
-@item -scodec @var{codec}
-Force subtitle codec ('copy' to copy stream).
-@item -newsubtitle
-Add a new subtitle stream to the current output stream.
 @item -slang @var{code}
 Set the ISO 639 language code (3 letters) of the current subtitle stream.
-@item -sn
+@item -scodec @var{codec} (@emph{input/output})
+Set the subtitle codec. This is an alias for @code{-codec:s}.
+@item -sn (@emph{output})
 Disable subtitle recording.
 @item -sbsf @var{bitstream_filter}
-Bitstream filters available are "mov2textsub", "text2movsub".
-@example
-ffmpeg -i file.mov -an -vn -sbsf mov2textsub -scodec copy -f rawvideo sub.txt
-@end example
+Deprecated, see -bsf
 @end table
 
 @section Audio/Video grab options
 
 @table @option
-@item -vc @var{channel}
-Set video grab channel (DV1394 only).
-@item -tvstd @var{standard}
-Set television standard (NTSC, PAL (SECAM)).
-@item -isync
+@item -isync (@emph{global})
 Synchronize read on input.
 @end table
 
 @section Advanced options
 
 @table @option
-@item -map @var{input_stream_id}[:@var{sync_stream_id}]
-Set stream mapping from input streams to output streams.
-Just enumerate the input streams in the order you want them in the output.
-@var{sync_stream_id} if specified sets the input stream to sync
-against.
-@item -map_meta_data @var{outfile}[,@var{metadata}]:@var{infile}[,@var{metadata}]
-Set meta data information of @var{outfile} from @var{infile}. Note that those
-are file indices (zero-based), not filenames.
-Optional @var{metadata} parameters specify, which metadata to copy - (g)lobal
-(i.e. metadata that applies to the whole file), per-(s)tream, per-(c)hapter or
-per-(p)rogram. All metadata specifiers other than global must be followed by the
-stream/chapter/program number. If metadata specifier is omitted, it defaults to
-global.
+@item -map [-]@var{input_file_id}[:@var{stream_specifier}][,@var{sync_file_id}[:@var{stream_specifier}]] (@emph{output})
 
-By default, global metadata is copied from the first input file to all output files,
+Designate one or more input streams as a source for the output file. Each input
+stream is identified by the input file index @var{input_file_id} and
+the input stream index @var{input_stream_id} within the input
+file. Both indices start at 0. If specified,
+@var{sync_file_id}:@var{stream_specifier} sets which input stream
+is used as a presentation sync reference.
+
+The first @code{-map} option on the command line specifies the
+source for output stream 0, the second @code{-map} option specifies
+the source for output stream 1, etc.
+
+A @code{-} character before the stream identifier creates a "negative" mapping.
+It disables matching streams from already created mappings.
+
+For example, to map ALL streams from the first input file to output
+@example
+ffmpeg -i INPUT -map 0 output
+@end example
+
+For example, if you have two audio streams in the first input file,
+these streams are identified by "0:0" and "0:1". You can use
+@code{-map} to select which streams to place in an output file. For
+example:
+@example
+ffmpeg -i INPUT -map 0:1 out.wav
+@end example
+will map the input stream in @file{INPUT} identified by "0:1" to
+the (single) output stream in @file{out.wav}.
+
+For example, to select the stream with index 2 from input file
+@file{a.mov} (specified by the identifier "0:2"), and stream with
+index 6 from input @file{b.mov} (specified by the identifier "1:6"),
+and copy them to the output file @file{out.mov}:
+@example
+ffmpeg -i a.mov -i b.mov -c copy -map 0:2 -map 1:6 out.mov
+@end example
+
+To select all video and the third audio stream from an input file:
+@example
+ffmpeg -i INPUT -map 0:v -map 0:a:2 OUTPUT
+@end example
+
+To map all the streams except the second audio, use negative mappings
+@example
+ffmpeg -i INPUT -map 0 -map -0:a:1 OUTPUT
+@end example
+
+Note that using this option disables the default mappings for this output file.
+
+@item -map_channel [@var{input_file_id}.@var{stream_specifier}.@var{channel_id}|-1][:@var{output_file_id}.@var{stream_specifier}]
+Map an audio channel from a given input to an output. If
+@var{output_file_id}.@var{stream_specifier} are not set, the audio channel will
+be mapped on all the audio streams.
+
+Using "-1" instead of
+@var{input_file_id}.@var{stream_specifier}.@var{channel_id} will map a muted
+channel.
+
+For example, assuming @var{INPUT} is a stereo audio file, you can switch the
+two audio channels with the following command:
+@example
+ffmpeg -i INPUT -map_channel 0.0.1 -map_channel 0.0.0 OUTPUT
+@end example
+
+If you want to mute the first channel and keep the second:
+@example
+ffmpeg -i INPUT -map_channel -1 -map_channel 0.0.1 OUTPUT
+@end example
+
+The order of the "-map_channel" option specifies the order of the channels in
+the output stream. The output channel layout is guessed from the number of
+channels mapped (mono if one "-map_channel", stereo if two, etc.). Using "-ac"
+in combination of "-map_channel" makes the channel gain levels to be updated if
+channel layouts don't match (for instance two "-map_channel" options and "-ac
+6").
+
+You can also extract each channel of an @var{INPUT} to specific outputs; the
+following command extract each channel of the audio stream (file 0, stream 0)
+to the respective @var{OUTPUT_CH0} and @var{OUTPUT_CH1}:
+@example
+ffmpeg -i INPUT -map_channel 0.0.0 OUTPUT_CH0 -map_channel 0.0.1 OUTPUT_CH1
+@end example
+
+The following example split the channels of a stereo input into streams:
+
+@example
+ffmpeg -i stereo.wav -map 0:0 -map 0:0 -map_channel 0.0.0:0.0 -map_channel 0.0.1:0.1 -y out.ogg
+@end example
+
+Note that currently each output stream can only contain channels from a single
+input stream; you can't for example use "-map_channel" to pick multiple input
+audio channels contained in different streams (from the same or different files)
+and merge them into a single output stream. It is therefore not currently
+possible, for example, to turn two separate mono streams into a single stereo
+stream. However spliting a stereo stream into two single channel mono streams
+is possible.
+
+@item -map_metadata[:@var{metadata_spec_out}] @var{infile}[:@var{metadata_spec_in}] (@emph{output,per-metadata})
+Set metadata information of the next output file from @var{infile}. Note that
+those are file indices (zero-based), not filenames.
+Optional @var{metadata_spec_in/out} parameters specify, which metadata to copy.
+A metadata specifier can have the following forms:
+@table @option
+@item @var{g}
+global metadata, i.e. metadata that applies to the whole file
+
+@item @var{s}[:@var{stream_spec}]
+per-stream metadata. @var{stream_spec} is a stream specifier as described
+in the @ref{Stream specifiers} chapter. In an input metadata specifier, the first
+matching stream is copied from. In an output metadata specifier, all matching
+streams are copied to.
+
+@item @var{c}:@var{chapter_index}
+per-chapter metadata. @var{chapter_index} is the zero-based chapter index.
+
+@item @var{p}:@var{program_index}
+per-program metadata. @var{program_index} is the zero-based program index.
+@end table
+If metadata specifier is omitted, it defaults to global.
+
+By default, global metadata is copied from the first input file,
 per-stream and per-chapter metadata is copied along with streams/chapters. These
 default mappings are disabled by creating any mapping of the relevant type. A negative
 file index can be used to create a dummy mapping that just disables automatic copying.
@@ -644,50 +864,92 @@ file index can be used to create a dummy mapping that just disables automatic co
 For example to copy metadata from the first stream of the input file to global metadata
 of the output file:
 @example
-ffmpeg -i in.ogg -map_meta_data 0:0,s0 out.mp3
+ffmpeg -i in.ogg -map_metadata 0:s:0 out.mp3
 @end example
-@item -map_chapters @var{outfile}:@var{infile}
-Copy chapters from @var{infile} to @var{outfile}. If no chapter mapping is specified,
-then chapters are copied from the first input file with at least one chapter to all
-output files. Use a negative file index to disable any chapter copying.
-@item -debug
+
+To do the reverse, i.e. copy global metadata to all audio streams:
+@example
+ffmpeg -i in.mkv -map_metadata:s:a 0:g out.mkv
+@end example
+Note that simple @code{0} would work as well in this example, since global
+metadata is assumed by default.
+
+@item -map_chapters @var{input_file_index} (@emph{output})
+Copy chapters from input file with index @var{input_file_index} to the next
+output file. If no chapter mapping is specified, then chapters are copied from
+the first input file with at least one chapter. Use a negative file index to
+disable any chapter copying.
+@item -debug @var{category}
 Print specific debug info.
-@item -benchmark
+@var{category} is a number or a string containing one of the following values:
+@table @samp
+@item bitstream
+@item buffers
+picture buffer allocations
+@item bugs
+@item dct_coeff
+@item er
+error recognition
+@item mb_type
+macroblock (MB) type
+@item mmco
+memory management control operations (H.264)
+@item mv
+motion vector
+@item pict
+picture info
+@item pts
+@item qp
+per-block quantization parameter (QP)
+@item rc
+rate control
+@item skip
+@item startcode
+@item thread_ops
+threading operations
+@item vis_mb_type
+visualize block types
+@item vis_qp
+visualize quantization parameter (QP), lower QP are tinted greener
+@end table
+@item -benchmark (@emph{global})
 Show benchmarking information at the end of an encode.
 Shows CPU time used and maximum memory consumption.
 Maximum memory consumption is not supported on all systems,
 it will usually display as 0 if not supported.
-@item -dump
-Dump each input packet.
-@item -hex
+@item -timelimit @var{duration} (@emph{global})
+Exit after ffmpeg has been running for @var{duration} seconds.
+@item -dump (@emph{global})
+Dump each input packet to stderr.
+@item -hex (@emph{global})
 When dumping packets, also dump the payload.
-@item -bitexact
-Only use bit exact algorithms (for codec testing).
 @item -ps @var{size}
 Set RTP payload size in bytes.
-@item -re
+@item -re (@emph{input})
 Read input at native frame rate. Mainly used to simulate a grab device.
 @item -loop_input
 Loop over the input stream. Currently it works only for image
 streams. This option is used for automatic FFserver testing.
+This option is deprecated, use -loop 1.
 @item -loop_output @var{number_of_times}
 Repeatedly loop output for formats that support looping such as animated GIF
 (0 will loop the output infinitely).
+This option is deprecated, use -loop.
 @item -threads @var{count}
 Thread count.
 @item -vsync @var{parameter}
 Video sync method.
 
 @table @option
-@item 0
+@item 0, passthrough
 Each frame is passed with its timestamp from the demuxer to the muxer.
-@item 1
+@item 1, cfr
 Frames will be duplicated and dropped to achieve exactly the requested
 constant framerate.
-@item 2
+@item 2, vfr
 Frames are passed through with their timestamp or dropped so as to
 prevent 2 frames from having the same timestamp.
-@item -1
+@item -1, auto
 Chooses between 1 and 2 depending on muxer capabilities. This is the
 default method.
 @end table
@@ -709,11 +971,11 @@ Copy input stream time base from input to output when stream copying.
 Finish encoding when the shortest input stream ends.
 @item -dts_delta_threshold
 Timestamp discontinuity delta threshold.
-@item -muxdelay @var{seconds}
+@item -muxdelay @var{seconds} (@emph{input})
 Set the maximum demux-decode delay.
-@item -muxpreload @var{seconds}
+@item -muxpreload @var{seconds} (@emph{input})
 Set the initial demux-decode delay.
-@item -streamid @var{output-stream-index}:@var{new-value}
+@item -streamid @var{output-stream-index}:@var{new-value} (@emph{output})
 Assign a new stream-id value to an output stream. This option should be
 specified prior to the output filename to which it applies.
 For the situation where multiple output files exist, a streamid
@@ -724,15 +986,35 @@ an output mpegts file:
 @example
 ffmpeg -i infile -streamid 0:33 -streamid 1:36 out.ts
 @end example
+
+@item -bsf[:@var{stream_specifier}] @var{bitstream_filters} (@emph{output,per-stream})
+Set bitstream filters for matching streams. @var{bistream_filters} is
+a comma-separated list of bitstream filters. Use the @code{-bsfs} option
+to get the list of bitstream filters.
+@example
+ffmpeg -i h264.mp4 -c:v copy -vbsf h264_mp4toannexb -an out.h264
+@end example
+@example
+ffmpeg -i file.mov -an -vn -sbsf mov2textsub -c:s copy -f rawvideo sub.txt
+@end example
+
+@item -tag[:@var{stream_specifier}] @var{codec_tag} (@emph{per-stream})
+Force a tag/fourcc for matching streams.
+
+@item -timecode @var{hh}:@var{mm}:@var{ss}SEP@var{ff}
+Specify Timecode for writing. @var{SEP} is ':' for non drop timecode and ';'
+(or '.') for drop.
+@example
+ffmpeg -i input.mpg -timecode 01:02:03.04 -r 30000/1001 -s ntsc output.mpg
+@end example
 @end table
 
 @section Preset files
-
 A preset file contains a sequence of @var{option}=@var{value} pairs,
 one for each line, specifying a sequence of options which would be
 awkward to specify on the command line. Lines starting with the hash
 ('#') character are ignored and are used to provide comments. Check
-the @file{ffpresets} directory in the FFmpeg source tree for examples.
+the @file{presets} directory in the FFmpeg source tree for examples.
 
 Preset files are specified with the @code{vpre}, @code{apre},
 @code{spre}, and @code{fpre} options. The @code{fpre} option takes the
@@ -749,6 +1031,7 @@ following rules:
 First ffmpeg searches for a file named @var{arg}.ffpreset in the
 directories @file{$FFMPEG_DATADIR} (if set), and @file{$HOME/.ffmpeg}, and in
 the datadir defined at configuration time (usually @file{PREFIX/share/ffmpeg})
+or in a @file{ffpresets} folder along the executable on win32,
 in that order. For example, if the argument is @code{libx264-max}, it will
 search for the file @file{libx264-max.ffpreset}.
 
@@ -758,7 +1041,7 @@ directories, where @var{codec_name} is the name of the codec to which
 the preset file options will be applied. For example, if you select
 the video codec with @code{-vcodec libx264} and use @code{-vpre max},
 then it will search for the file @file{libx264-max.ffpreset}.
-@c man end
+@c man end OPTIONS
 
 @chapter Tips
 @c man begin TIPS
@@ -771,7 +1054,7 @@ the Linux player does not seem to be very fast, so it can miss
 frames. An example is:
 
 @example
-ffmpeg -g 3 -r 3 -t 10 -b 50k -s qcif -f rv10 /tmp/b.rm
+ffmpeg -g 3 -r 3 -t 10 -b:v 50k -s qcif -f rv10 /tmp/b.rm
 @end example
 
 @item
@@ -798,35 +1081,50 @@ To have a constant quality (but a variable bitrate), use the option
 '-qscale n' when 'n' is between 1 (excellent quality) and 31 (worst
 quality).
 
-@item
-When converting video files, you can use the '-sameq' option which
-uses the same quality factor in the encoder as in the decoder.
-It allows almost lossless encoding.
-
 @end itemize
 @c man end TIPS
 
 @chapter Examples
 @c man begin EXAMPLES
 
+@section Preset files
+
+A preset file contains a sequence of @var{option=value} pairs, one for
+each line, specifying a sequence of options which can be specified also on
+the command line. Lines starting with the hash ('#') character are ignored and
+are used to provide comments. Empty lines are also ignored. Check the
+@file{presets} directory in the FFmpeg source tree for examples.
+
+Preset files are specified with the @code{pre} option, this option takes a
+preset name as input.  FFmpeg searches for a file named @var{preset_name}.avpreset in
+the directories @file{$AVCONV_DATADIR} (if set), and @file{$HOME/.ffmpeg}, and in
+the data directory defined at configuration time (usually @file{$PREFIX/share/ffmpeg})
+in that order.  For example, if the argument is @code{libx264-max}, it will
+search for the file @file{libx264-max.avpreset}.
+
 @section Video and Audio grabbing
 
-FFmpeg can grab video and audio from devices given that you specify the input
-format and device.
+If you specify the input format and device then ffmpeg can grab video
+and audio directly.
 
 @example
 ffmpeg -f oss -i /dev/dsp -f video4linux2 -i /dev/video0 /tmp/out.mpg
 @end example
 
+Or with an ALSA audio source (mono input, card id 1) instead of OSS:
+@example
+ffmpeg -f alsa -ac 1 -i hw:1 -f video4linux2 -i /dev/video0 /tmp/out.mpg
+@end example
+
 Note that you must activate the right video source and channel before
-launching FFmpeg with any TV viewer such as xawtv
-(@url{http://linux.bytesex.org/xawtv/}) by Gerd Knorr. You also
+launching ffmpeg with any TV viewer such as
+@uref{http://linux.bytesex.org/xawtv/, xawtv} by Gerd Knorr. You also
 have to set the audio recording levels correctly with a
 standard mixer.
 
 @section X11 grabbing
 
-FFmpeg can grab the X11 display.
+Grab the X11 display with ffmpeg via
 
 @example
 ffmpeg -f x11grab -s cif -r 25 -i :0.0 /tmp/out.mpg
@@ -844,7 +1142,7 @@ variable. 10 is the x-offset and 20 the y-offset for the grabbing.
 
 @section Video and Audio file format conversion
 
-FFmpeg can use any supported file format and protocol as input:
+Any supported file format and protocol can serve as input to ffmpeg:
 
 Examples:
 @itemize
@@ -864,7 +1162,7 @@ It will use the files:
 The Y files use twice the resolution of the U and V files. They are
 raw files, without header. They can be generated by all decent video
 decoders. You must specify the size of the image with the @option{-s} option
-if FFmpeg cannot guess it.
+if ffmpeg cannot guess it.
 
 @item
 You can input from a raw YUV420P file:
@@ -908,7 +1206,7 @@ You can encode to several formats at the same time and define a
 mapping from input stream to output streams:
 
 @example
-ffmpeg -i /tmp/a.wav -ab 64k /tmp/a.mp2 -ab 128k /tmp/b.mp2 -map 0:0 -map 0:0
+ffmpeg -i /tmp/a.wav -map 0:a -b:a 64k /tmp/a.mp2 -map 0:a -b:a 128k /tmp/b.mp2
 @end example
 
 Converts a.wav to a.mp2 at 64 kbits and to b.mp2 at 128 kbits. '-map
@@ -919,7 +1217,7 @@ stream, in the order of the definition of output streams.
 You can transcode decrypted VOBs:
 
 @example
-ffmpeg -i snatch_1.vob -f avi -vcodec mpeg4 -b 800k -g 300 -bf 2 -acodec libmp3lame -ab 128k snatch.avi
+ffmpeg -i snatch_1.vob -f avi -c:v mpeg4 -b:v 800k -g 300 -bf 2 -c:a libmp3lame -b:a 128k snatch.avi
 @end example
 
 This is a typical DVD ripping example; the input is a VOB file, the
@@ -963,21 +1261,18 @@ only formats accepting a normal integer are suitable.
 You can put many streams of the same type in the output:
 
 @example
-ffmpeg -i test1.avi -i test2.avi -vcodec copy -acodec copy -vcodec copy -acodec copy test12.avi -newvideo -newaudio
+ffmpeg -i test1.avi -i test2.avi -map 0.3 -map 0.2 -map 0.1 -map 0.0 -c copy test12.nut
 @end example
 
-In addition to the first video and audio streams, the resulting
-output file @file{test12.avi} will contain the second video
-and the second audio stream found in the input streams list.
-
-The @code{-newvideo}, @code{-newaudio} and @code{-newsubtitle}
-options have to be specified immediately after the name of the output
-file to which you want to add them.
+The resulting output file @file{test12.avi} will contain first four streams from
+the input file in reverse order.
 
 @end itemize
 @c man end EXAMPLES
 
 @include eval.texi
+@include decoders.texi
+@include encoders.texi
 @include demuxers.texi
 @include muxers.texi
 @include indevs.texi
@@ -990,14 +1285,14 @@ file to which you want to add them.
 @ignore
 
 @setfilename ffmpeg
-@settitle FFmpeg video converter
+@settitle ffmpeg video converter
 
 @c man begin SEEALSO
 ffplay(1), ffprobe(1), ffserver(1) and the FFmpeg HTML documentation
 @c man end
 
 @c man begin AUTHORS
-The FFmpeg developers
+See git history
 @c man end
 
 @end ignore

@@ -253,10 +253,23 @@ int CDVDMessageQueue::GetLevel() const
   if(m_iDataSize == 0)
     return 0;
 
-  if(m_TimeBack  == DVD_NOPTS_VALUE
-  || m_TimeFront == DVD_NOPTS_VALUE
-  || m_TimeFront <= m_TimeBack)
+  if(IsDataBased())
     return min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
   return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+}
+
+int CDVDMessageQueue::GetTimeSize() const
+{
+  if(IsDataBased())
+    return 0;
+  else
+    return (m_TimeFront - m_TimeBack) / DVD_TIME_BASE;
+}
+
+bool CDVDMessageQueue::IsDataBased() const
+{
+  return (m_TimeBack == DVD_NOPTS_VALUE  ||
+          m_TimeFront == DVD_NOPTS_VALUE ||
+          m_TimeFront <= m_TimeBack);
 }

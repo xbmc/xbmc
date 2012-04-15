@@ -114,7 +114,6 @@ protected:
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
-  static void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
@@ -123,6 +122,8 @@ protected:
   static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
 
   bool StackingAvailable(const CFileItemList &items) const;
+
+  bool OnPlayStackPart(int item);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

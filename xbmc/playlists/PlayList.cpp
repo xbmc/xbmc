@@ -450,7 +450,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
   for (ivecItems it = m_vecItems.begin(); it != m_vecItems.end(); ++it)
   {
     CFileItemPtr playlistItem = *it;
-    if (playlistItem->GetPath() == item->GetPath())
+    if (playlistItem->IsSamePath(item))
     {
       *playlistItem = *item;
       break;

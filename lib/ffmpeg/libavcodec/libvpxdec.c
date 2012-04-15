@@ -27,7 +27,7 @@
 #include <vpx/vpx_decoder.h>
 #include <vpx/vp8dx.h>
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "avcodec.h"
 
 typedef struct VP8DecoderContext {
@@ -112,14 +112,13 @@ static av_cold int vp8_free(AVCodecContext *avctx)
 }
 
 AVCodec ff_libvpx_decoder = {
-    "libvpx",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_VP8,
-    sizeof(VP8Context),
-    vp8_init,
-    NULL, /* encode */
-    vp8_free,
-    vp8_decode,
-    0, /* capabilities */
-    .long_name = NULL_IF_CONFIG_SMALL("libvpx VP8"),
+    .name           = "libvpx",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_VP8,
+    .priv_data_size = sizeof(VP8Context),
+    .init           = vp8_init,
+    .close          = vp8_free,
+    .decode         = vp8_decode,
+    .capabilities   = CODEC_CAP_AUTO_THREADS,
+    .long_name      = NULL_IF_CONFIG_SMALL("libvpx VP8"),
 };

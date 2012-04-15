@@ -731,8 +731,8 @@ bool CApplication::Create()
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "recording folder: %s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder: %s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
   CDirectory::Create(g_settings.GetUserDataFolder());
   CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
@@ -755,7 +755,7 @@ bool CApplication::Create()
   CStdString strLanguagePath;
   strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+  CLog::Log(LOGINFO, "load language file: %s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
@@ -1782,7 +1782,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   UnloadSkin();
 
-  CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
+  CLog::Log(LOGINFO, "  load skin from: %s", skin->Path().c_str());
   g_SkinInfo = skin;
   g_SkinInfo->Start();
 
@@ -1831,7 +1831,7 @@ void CApplication::LoadSkin(const SkinPtr& skin)
     // fallback to default skin
     if ( strcmpi(skin->ID().c_str(), DEFAULT_SKIN) != 0)
     {
-      CLog::Log(LOGERROR, "failed to load home.xml for skin:%s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
+      CLog::Log(LOGERROR, "failed to load home.xml for skin: %s, fallback to \"%s\" skin", skin->ID().c_str(), DEFAULT_SKIN);
       g_guiSettings.SetString("lookandfeel.skin", DEFAULT_SKIN);
       LoadSkin(DEFAULT_SKIN);
       return ;
@@ -1927,7 +1927,7 @@ bool CApplication::LoadUserWindows()
   {
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
     CFileItemList items;
-    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", false))
+    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", DIR_FLAG_NO_FILE_DIRS))
     {
       for (int i = 0; i < items.Size(); ++i)
       {
@@ -1939,7 +1939,7 @@ bool CApplication::LoadUserWindows()
           TiXmlDocument xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
-            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "unable to load: %s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1948,7 +1948,7 @@ bool CApplication::LoadUserWindows()
           CStdString strValue = pRootElement->Value();
           if (!strValue.Equals("window"))
           {
-            CLog::Log(LOGERROR, "file :%s doesnt contain <window>", skinFile.c_str());
+            CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
             continue;
           }
 
@@ -3634,88 +3634,123 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   if (!item.IsStack())
     return false;
 
-  // see if we have the info in the database
-  // TODO: If user changes the time speed (FPS via framerate conversion stuff)
-  //       then these times will be wrong.
-  //       Also, this is really just a hack for the slow load up times we have
-  //       A much better solution is a fast reader of FPS and fileLength
-  //       that we can use on a file to get it's time.
-  vector<int> times;
-  bool haveTimes(false);
   CVideoDatabase dbs;
-  if (dbs.Open())
-  {
-    dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
-    haveTimes = dbs.GetStackTimes(item.GetPath(), times);
-    dbs.Close();
-  }
 
-
-  // calculate the total time of the stack
-  CStackDirectory dir;
-  dir.GetDirectory(item.GetPath(), *m_currentStack);
-  long totalTime = 0;
-  for (int i = 0; i < m_currentStack->Size(); i++)
+  // case 1: stacked ISOs
+  if (CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()),false).IsDVDImage())
   {
-    if (haveTimes)
-      (*m_currentStack)[i]->m_lEndOffset = times[i];
-    else
+    CStackDirectory dir;
+    CFileItemList movieList;
+    dir.GetDirectory(item.GetPath(), movieList);
+
+    int selectedFile = 1; // if playing from beginning, play file 1.
+    long startoffset = item.m_lStartOffset;
+
+    // We instructed the stack to resume.
+    if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
+      startoffset = CGUIWindowVideoBase::GetResumeItemOffset(&item);
+
+    if (startoffset & 0xF0000000) /* selected part is specified as a flag */
     {
-      int duration;
-      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
-      {
-        m_currentStack->Clear();
-        return false;
-      }
-      totalTime += duration / 1000;
-      (*m_currentStack)[i]->m_lEndOffset = totalTime;
-      times.push_back(totalTime);
+      selectedFile = (startoffset>>28);
+      startoffset = startoffset & ~0xF0000000;
+
+      // set startoffset in movieitem. The remaining startoffset is either 0 (just play part from beginning) or positive (then we use STARTOFFSET_RESUME).
+      if (selectedFile > 0 && selectedFile <= (int)movieList.Size())
+        movieList[selectedFile - 1]->m_lStartOffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
     }
+
+    // finally play selected item
+    if (selectedFile > 0 && selectedFile <= (int)movieList.Size())
+      return PlayFile(*(movieList[selectedFile - 1]));
   }
-
-  double seconds = item.m_lStartOffset / 75.0;
-
-  if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
-  {  // have our times now, so update the dB
+  // case 2: all other stacks
+  else
+  {
+    // see if we have the info in the database
+    // TODO: If user changes the time speed (FPS via framerate conversion stuff)
+    //       then these times will be wrong.
+    //       Also, this is really just a hack for the slow load up times we have
+    //       A much better solution is a fast reader of FPS and fileLength
+    //       that we can use on a file to get it's time.
+    vector<int> times;
+    bool haveTimes(false);
+    CVideoDatabase dbs;
     if (dbs.Open())
     {
-      if( !haveTimes )
-        dbs.SetStackTimes(item.GetPath(), times);
-
-      if( item.m_lStartOffset == STARTOFFSET_RESUME )
-      {
-        // can only resume seek here, not dvdstate
-        CBookmark bookmark;
-        if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
-          seconds = bookmark.timeInSeconds;
-        else
-          seconds = 0.0f;
-      }
+      dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
+      haveTimes = dbs.GetStackTimes(item.GetPath(), times);
       dbs.Close();
     }
-  }
 
-  *m_itemCurrentFile = item;
-  m_currentStackPosition = 0;
-  m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
 
-  if (seconds > 0)
-  {
-    // work out where to seek to
+    // calculate the total time of the stack
+    CStackDirectory dir;
+    dir.GetDirectory(item.GetPath(), *m_currentStack);
+    long totalTime = 0;
     for (int i = 0; i < m_currentStack->Size(); i++)
     {
-      if (seconds < (*m_currentStack)[i]->m_lEndOffset)
+      if (haveTimes)
+        (*m_currentStack)[i]->m_lEndOffset = times[i];
+      else
       {
-        CFileItem item(*(*m_currentStack)[i]);
-        long start = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
-        item.m_lStartOffset = (long)(seconds - start) * 75;
-        m_currentStackPosition = i;
-        return PlayFile(item, true);
+        int duration;
+        if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
+        {
+          m_currentStack->Clear();
+          return false;
+        }
+        totalTime += duration / 1000;
+        (*m_currentStack)[i]->m_lEndOffset = totalTime;
+        times.push_back(totalTime);
       }
     }
-  }
 
-  return PlayFile(*(*m_currentStack)[0], true);
+    double seconds = item.m_lStartOffset / 75.0;
+
+    if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME )
+    {  // have our times now, so update the dB
+      if (dbs.Open())
+      {
+        if( !haveTimes )
+          dbs.SetStackTimes(item.GetPath(), times);
+
+        if( item.m_lStartOffset == STARTOFFSET_RESUME )
+        {
+          // can only resume seek here, not dvdstate
+          CBookmark bookmark;
+          if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
+            seconds = bookmark.timeInSeconds;
+          else
+            seconds = 0.0f;
+        }
+        dbs.Close();
+      }
+    }      
+
+    *m_itemCurrentFile = item;
+    m_currentStackPosition = 0;
+    m_eCurrentPlayer = EPC_NONE; // must be reset on initial play otherwise last player will be used
+
+    if (seconds > 0)
+    {
+      // work out where to seek to
+      for (int i = 0; i < m_currentStack->Size(); i++)
+      {
+        if (seconds < (*m_currentStack)[i]->m_lEndOffset)
+        {
+          CFileItem item(*(*m_currentStack)[i]);
+          long start = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
+          item.m_lStartOffset = (long)(seconds - start) * 75;
+          m_currentStackPosition = i;
+          return PlayFile(item, true);
+        }
+      }
+    }
+
+    return PlayFile(*(*m_currentStack)[0], true);
+  }
+  return false;
 }
 
 bool CApplication::PlayFile(const CFileItem& item, bool bRestart)

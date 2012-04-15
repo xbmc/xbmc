@@ -493,7 +493,7 @@ int CSmbFile::OpenFile(const CURL &url, CStdString& strAuth)
     CSMBDirectory smbDir;
     // TODO: Currently we always allow prompting on files.  This may need to
     // change in the future as background scanners are more prolific.
-    smbDir.SetAllowPrompting(true);
+    smbDir.SetFlags(DIR_FLAG_ALLOW_PROMPT);
     fd = smbDir.Open(urlshare);
 
     // directory open worked, try opening the file again

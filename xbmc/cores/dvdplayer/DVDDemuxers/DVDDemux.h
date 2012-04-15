@@ -159,6 +159,7 @@ public:
     bPTSInvalid = false;
     bForcedAspect = false;
     type = STREAM_VIDEO;
+    iOrientation = 0;
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -172,6 +173,7 @@ public:
   int iProfile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container
+  int iOrientation; // orientation of the video in degress counter clockwise
 };
 
 class CDemuxStreamAudio : public CDemuxStream

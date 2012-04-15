@@ -35,7 +35,7 @@
 
 #include "avcodec.h"
 #include "dsputil.h"
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 
 #include "truemotion1data.h"
 
@@ -353,7 +353,7 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
         s->flags = FLAG_KEYFRAME;
 
     if (s->flags & FLAG_SPRITE) {
-        av_log(s->avctx, AV_LOG_INFO, "SPRITE frame found, please report the sample to the developers\n");
+        av_log_ask_for_sample(s->avctx, "SPRITE frame found.\n");
         /* FIXME header.width, height, xoffset and yoffset aren't initialized */
 #if 0
         s->w = header.width;
@@ -370,7 +370,7 @@ static int truemotion1_decode_header(TrueMotion1Context *s)
             if ((s->w < 213) && (s->h >= 176))
             {
                 s->flags |= FLAG_INTERPOLATED;
-                av_log(s->avctx, AV_LOG_INFO, "INTERPOLATION selected, please report the sample to the developers\n");
+                av_log_ask_for_sample(s->avctx, "INTERPOLATION selected.\n");
             }
         }
     }
@@ -474,6 +474,7 @@ static av_cold int truemotion1_decode_init(AVCodecContext *avctx)
 //    else
 //        avctx->pix_fmt = PIX_FMT_RGB555;
 
+    avcodec_get_frame_defaults(&s->frame);
     s->frame.data[0] = NULL;
 
     /* there is a vertical predictor for each pixel in a line; each vertical
@@ -858,7 +859,7 @@ static int truemotion1_decode_frame(AVCodecContext *avctx,
     if (truemotion1_decode_header(s) == -1)
         return -1;
 
-    s->frame.reference = 1;
+    s->frame.reference = 3;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID |
         FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
     if (avctx->reget_buffer(avctx, &s->frame) < 0) {
@@ -892,14 +893,13 @@ static av_cold int truemotion1_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_truemotion1_decoder = {
-    "truemotion1",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_TRUEMOTION1,
-    sizeof(TrueMotion1Context),
-    truemotion1_decode_init,
-    NULL,
-    truemotion1_decode_end,
-    truemotion1_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "truemotion1",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_TRUEMOTION1,
+    .priv_data_size = sizeof(TrueMotion1Context),
+    .init           = truemotion1_decode_init,
+    .close          = truemotion1_decode_end,
+    .decode         = truemotion1_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Duck TrueMotion 1.0"),
 };

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Idan Bushari-->
 <!--Email: bushari2003@hotmail.com-->
-<!--Date of translation: 03/28/2012-->
+<!--Date of translation: 03/31/2012-->
 <!--$Revision$-->
 <strings>
   <string id="0">תוכנות</string>
@@ -1232,6 +1232,7 @@
   <string id="14093">אבטחה</string>
   <string id="14094">התקני קלט</string>
   <string id="14095">חסכון באנרגיה</string>
+  <string id="14099">הוצא דיסק כאשר ההעתקה הושלמה</string>
   <string id="15015">הסר</string>
   <string id="15016">משחקים</string>
   <string id="15019">הוסף</string>
@@ -1357,8 +1358,8 @@
   <string id="16100">כל הוידאו</string>
   <string id="16101">לא נצפו</string>
   <string id="16102">נצפו</string>
-  <string id="16103">סמן כנצפו</string>
-  <string id="16104">סמן כלא נצפו</string>
+  <string id="16103">סמן כנצפה</string>
+  <string id="16104">סמן כלא כנצפה</string>
   <string id="16105">ערוך כותרת</string>
   <string id="16200">פעולה בוטלה</string>
   <string id="16201">העתקה נכשלה</string>
@@ -2132,8 +2133,8 @@
   <string id="35503">ספק</string>
   <string id="35504">מוצר ID</string>
   <string id="36006">אין אפשרות לפתוח מתאם</string>
-  <string id="36007">התקנים אשר ידליקו את טלוויזיה כאשר מפעילים את XBMC</string>
-  <string id="36008">התקנים אשר יכבו את ההתקנים כאשר מפסיקים את XBMC</string>
+  <string id="36007">התקנים אשר יפעלו כאשר מפעילים את XBMC</string>
+  <string id="36008">התקנים אשר יכבו כאשר מפסיקים את XBMC</string>
   <string id="36009">הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך</string>
   <string id="36011">אין אפשרות לזהות פורט CEC. הגדר זאת ידנית.</string>
   <string id="36012">אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך</string>
