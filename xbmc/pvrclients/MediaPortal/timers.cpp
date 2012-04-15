@@ -52,9 +52,10 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
   m_index = timerinfo.iClientIndex;
   m_active = (timerinfo.state == PVR_TIMER_STATE_SCHEDULED || timerinfo.state == PVR_TIMER_STATE_RECORDING);
-  if(!m_active)
+
+  if (!m_active)
   {
-    time(&m_canceled);
+    m_canceled = Now();
   }
   else
   {
@@ -67,7 +68,17 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
   m_title = timerinfo.strTitle;
   m_directory = timerinfo.strDirectory;
   m_channel = timerinfo.iClientChannelUid;
-  m_starttime = timerinfo.startTime;
+
+  if (timerinfo.startTime <= 0)
+  {
+    // Instant timer has starttime = 0, so set current time as starttime.
+    m_starttime = Now();
+  }
+  else
+  {
+    m_starttime = timerinfo.startTime;
+  }
+
   m_endtime = timerinfo.endTime;
   //m_firstday = timerinfo.firstday;
   m_isrecording = timerinfo.state == PVR_TIMER_STATE_RECORDING;
@@ -504,4 +515,13 @@ int cTimer::GetLifetime(void)
     default:
       return 0;
   }
+}
+
+time_t cTimer::Now()
+{
+  time_t now;
+
+  time(&now);
+
+  return now;
 }

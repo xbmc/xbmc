@@ -98,6 +98,7 @@ class cTimer
     int GetLifetime(void);
     int XBMC2MepoPriority(int xbmcprio);
     int Mepo2XBMCPriority(int mepoprio);
+    time_t Now();
 
     // MediaPortal database fields:
     int         m_index;               ///> MediaPortal id_Schedule
