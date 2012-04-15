@@ -685,10 +685,14 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
+    CStdString file = strFileNameAndPath;
+    if (URIUtils::IsStack(strFileNameAndPath))
+      file = CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+
     CDateTime dateAdded;
     // Let's try to get the modification datetime
     struct __stat64 buffer;
-    if (CFile::Stat(strFileNameAndPath, &buffer) == 0)
+    if (CFile::Stat(file, &buffer) == 0)
     {
       time_t maxTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
       dateAdded = *localtime(&maxTime);
