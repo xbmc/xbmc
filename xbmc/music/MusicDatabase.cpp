@@ -210,7 +210,29 @@ void CMusicDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create song view");
   m_pDS->exec("DROP VIEW IF EXISTS songview");
-  m_pDS->exec("create view songview as select song.idSong as idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
+  m_pDS->exec("CREATE VIEW songview AS SELECT "
+              "  song.idSong AS idSong, song.strExtraArtists AS strExtraArtists,"
+              "  song.strExtraGenres AS strExtraGenres, strTitle, iTrack, iDuration,"
+              "  song.iYear AS iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID,"
+              "  strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID,"
+              "  strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
+              "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
+              "  song.idArtist AS idArtist, strArtist,"
+              "  song.idGenre AS idGenre, strGenre,"
+              "  strThumb, iKaraNumber, iKaraDelay, strKaraEncoding "
+              "FROM song"
+              "  JOIN album ON"
+              "    song.idAlbum=album.idAlbum"
+              "  JOIN path ON"
+              "    song.idPath=path.idPath"
+              "  JOIN artist ON"
+              "    song.idArtist=artist.idArtist"
+              "  JOIN genre ON"
+              "    song.idGenre=genre.idGenre"
+              "  JOIN thumb ON"
+              "    song.idThumb=thumb.idThumb"
+              "  LEFT OUTER JOIN karaokedata ON"
+              "    song.idSong=karaokedata.idSong");
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
