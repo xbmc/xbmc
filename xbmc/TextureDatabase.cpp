@@ -133,7 +133,7 @@ bool CTextureDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-bool CTextureDatabase::GetCachedTexture(const CStdString &url, CStdString &cacheFile, CStdString &imageHash)
+bool CTextureDatabase::GetCachedTexture(const CStdString &url, CTextureDetails &details)
 {
   try
   {
@@ -145,15 +145,15 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CStdString &cache
 
     if (!m_pDS->eof())
     { // have some information
-      int textureID = m_pDS->fv(0).get_asInt();
-      cacheFile = m_pDS->fv(1).get_asString();
+      details.id = m_pDS->fv(0).get_asInt();
+      details.file  = m_pDS->fv(1).get_asString();
       CDateTime lastCheck;
       lastCheck.SetFromDBDateTime(m_pDS->fv(2).get_asString());
       if (lastCheck.IsValid() && lastCheck + CDateTimeSpan(1,0,0,0) < CDateTime::GetCurrentDateTime())
-        imageHash = m_pDS->fv(3).get_asString();
+        details.hash = m_pDS->fv(3).get_asString();
       m_pDS->close();
       // update the use count
-      sql = PrepareSQL("update texture set usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP where id=%u", textureID);
+      sql = PrepareSQL("update texture set usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP where id=%u", details.id);
       m_pDS->exec(sql.c_str());
       return true;
     }
@@ -166,15 +166,15 @@ bool CTextureDatabase::GetCachedTexture(const CStdString &url, CStdString &cache
   return false;
 }
 
-bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString &cacheFile, const CStdString &imageHash, bool updateable)
+bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CTextureDetails &details)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString cacheURL(cacheFile);
-    CStdString date = updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
+    CStdString cacheURL(details.file);
+    CStdString date = details.updateable ? CDateTime::GetCurrentDateTime().GetAsDBDateTime() : "";
 
     CStdString sql = PrepareSQL("select id,cachedurl from texture where url='%s'", url.c_str());
     m_pDS->query(sql.c_str());
@@ -184,8 +184,8 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString 
       if (cacheURL.IsEmpty())
         cacheURL = m_pDS->fv(1).get_asString();
       m_pDS->close();
-      if (!imageHash.IsEmpty())
-        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheURL.c_str(), imageHash.c_str(), date.c_str(), textureID);
+      if (!details.hash.empty())
+        sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP, imagehash='%s', lasthashcheck='%s' where id=%u", cacheURL.c_str(), details.hash.c_str(), date.c_str(), textureID);
       else
         sql = PrepareSQL("update texture set cachedurl='%s', usecount=1, lastusetime=CURRENT_TIMESTAMP where id=%u", cacheURL.c_str(), textureID);
       m_pDS->exec(sql.c_str());
@@ -193,7 +193,7 @@ bool CTextureDatabase::AddCachedTexture(const CStdString &url, const CStdString 
     else if (!cacheURL.IsEmpty())
     { // add the texture
       m_pDS->close();
-      sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), cacheURL.c_str(), imageHash.c_str(), date.c_str());
+      sql = PrepareSQL("insert into texture (id, url, cachedurl, usecount, lastusetime, imagehash, lasthashcheck) values(NULL, '%s', '%s', 1, CURRENT_TIMESTAMP, '%s', '%s')", url.c_str(), cacheURL.c_str(), details.hash.c_str(), date.c_str());
       m_pDS->exec(sql.c_str());
     }
   }

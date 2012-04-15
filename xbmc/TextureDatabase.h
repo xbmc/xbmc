@@ -22,6 +22,7 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
+#include "TextureCacheJob.h"
 
 class CTextureDatabase : public CDatabase
 {
@@ -30,8 +31,8 @@ public:
   virtual ~CTextureDatabase();
   virtual bool Open();
 
-  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &imageHash);
-  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "", bool updateable = true);
+  bool GetCachedTexture(const CStdString &originalURL, CTextureDetails &details);
+  bool AddCachedTexture(const CStdString &originalURL, const CTextureDetails &details);
   bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
   /*! \brief Invalidate a previously cached texture

@@ -28,6 +28,24 @@ class CBaseTexture;
 
 /*!
  \ingroup textures
+ \brief Simple class for passing texture detail around
+ */
+class CTextureDetails
+{
+public:
+  CTextureDetails()
+  {
+    id = -1;
+    updateable = false;
+  };
+  int          id;
+  std::string  file;
+  std::string  hash;
+  bool         updateable;
+};
+
+/*!
+ \ingroup textures
  \brief Job class for caching textures
  
  Handles loading and caching of textures.
@@ -66,10 +84,8 @@ public:
   static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped);
 
   CStdString m_url;
-  CStdString m_cacheFile;
-  CStdString m_hash;
   CStdString m_oldHash;
-  bool       m_updateable;
+  CTextureDetails m_details;
 private:
   /*! \brief retrieve a hash for the given image
    Combines the size, ctime and mtime of the image file into a "unique" hash

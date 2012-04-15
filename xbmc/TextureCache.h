@@ -144,12 +144,10 @@ public:
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
-   \param cacheFile url of the cached image
-   \param hash hash of the original image
-   \param updateable whether this image is updateable
+   \param details the texture details to add
    \return true if we successfully added to the database, false otherwise.
    */
-  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash, bool updateable = false);
+  bool AddCachedTexture(const CStdString &image, const CTextureDetails &details);
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
@@ -181,11 +179,10 @@ private:
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
    \param image url of the original image
-   \param cacheFile [out] url of the cached original (if available)
-   \param cacheHash [out] the hash of the cached image if it requires recaching, empty otherwise.
+   \param details [out] texture details from the database (if available)
    \return true if we have a cached version of this image, false otherwise.
    */
-  bool GetCachedTexture(const CStdString &url, CStdString &cacheFile, CStdString &cacheHash);
+  bool GetCachedTexture(const CStdString &url, CTextureDetails &details);
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture
