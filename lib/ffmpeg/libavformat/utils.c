@@ -833,7 +833,7 @@ int av_read_packet(AVFormatContext *s, AVPacket *pkt)
 
             if(end || av_log2(pd->buf_size) != av_log2(pd->buf_size - pkt->size)){
                 int score= set_codec_from_probe_data(s, st, pd);
-                if(    (st->codec->codec_id != CODEC_ID_NONE && score > AVPROBE_SCORE_MAX/4)
+                if(    (st->codec->codec_id != CODEC_ID_NONE && score > AVPROBE_SCORE_MAX/4-1)
                     || end){
                     pd->buf_size=0;
                     av_freep(&pd->buf);
