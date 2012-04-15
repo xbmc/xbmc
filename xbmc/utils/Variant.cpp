@@ -18,11 +18,55 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "Variant.h"
+
+#include <stdlib.h>
 #include <string.h>
 #include <sstream>
 
+#include "Variant.h"
+
 using namespace std;
+
+string trimRight(const string &str)
+{
+  string tmp = str;
+  // find_last_not_of will return string::npos (which is defined as -1)
+  // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
+  // always result in a valid index between 0 and size()
+  tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
+
+  return tmp;
+}
+
+int64_t str2int64(const string &str, int64_t fallback /* = 0 */)
+{
+  char *end = NULL;
+  int64_t result = strtol(trimRight(str).c_str(), &end, 0);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
+
+uint64_t str2uint64(const string &str, uint64_t fallback /* = 0 */)
+{
+  char *end = NULL;
+  uint64_t result = strtoul(trimRight(str).c_str(), &end, 0);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
+
+double str2double(const string &str, double fallback /* = 0.0 */)
+{
+  char *end = NULL;
+  double result = strtod(trimRight(str).c_str(), &end);
+  if (end == NULL || *end == '\0')
+    return result;
+
+  return fallback;
+}
 
 CVariant CVariant::ConstNullVariant = CVariant::VariantTypeConstNull;
 
@@ -175,15 +219,7 @@ int64_t CVariant::asInteger(int64_t fallback) const
     case VariantTypeDouble:
       return (int64_t)m_data.dvalue;
     case VariantTypeString:
-    {
-      char *end = NULL;
-      string tmp = m_string;
-      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
-      long result = strtol(tmp.c_str(), &end, 0);
-      if (end == NULL)
-        return result;
-      break;
-    }
+      return str2int64(m_string, fallback);
     default:
       return fallback;
   }
@@ -202,15 +238,7 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
     case VariantTypeDouble:
       return (uint64_t)m_data.dvalue;
     case VariantTypeString:
-    {
-      char *end = NULL;
-      string tmp = m_string;
-      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
-      unsigned long result = strtoul(tmp.c_str(), &end, 0);
-      if (end == NULL)
-        return result;
-      break;
-    }
+      return str2uint64(m_string, fallback);
     default:
       return fallback;
   }
@@ -229,15 +257,7 @@ double CVariant::asDouble(double fallback) const
     case VariantTypeUnsignedInteger:
       return (double)m_data.unsignedinteger;
     case VariantTypeString:
-    {
-      char *end = NULL;
-      string tmp = m_string;
-      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
-      double result = strtod(tmp.c_str(), &end);
-      if (end == NULL)
-        return result;
-      break;
-    }
+      return str2double(m_string, fallback);
     default:
       return fallback;
   }
@@ -256,15 +276,7 @@ float CVariant::asFloat(float fallback) const
     case VariantTypeUnsignedInteger:
       return (float)m_data.unsignedinteger;
     case VariantTypeString:
-    {
-      char *end = NULL;
-      string tmp = m_string;
-      tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
-      float result = (float)strtod(tmp.c_str(), &end);
-      if (end == NULL)
-        return result;
-      break;
-    }
+      return (float)str2double(m_string, fallback);
     default:
       return fallback;
   }
