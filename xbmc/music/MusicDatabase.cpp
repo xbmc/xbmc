@@ -3273,6 +3273,10 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         c9.push_back("comment");
         tables.insert(pair<CStdString, CStdStringArray> ("song", c9));
 
+        CStdStringArray c10;
+        c10.push_back("strPath");
+        tables.insert(pair<CStdString, CStdStringArray> ("path", c10));
+
         for (itt = tables.begin(); itt != tables.end(); ++itt)
         {
           CStdString q;

@@ -3406,6 +3406,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         c7.push_back("strStudio");
         tables.insert(pair<CStdString, CStdStringArray> ("studio", c7));
 
+        CStdStringArray c8;
+        c8.push_back("strPath");
+        tables.insert(pair<CStdString, CStdStringArray> ("path", c8));
+
         for (itt = tables.begin(); itt != tables.end(); ++itt)
         {
           CStdString q;
