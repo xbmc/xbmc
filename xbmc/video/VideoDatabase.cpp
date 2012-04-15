@@ -1597,7 +1597,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
     {
       CVideoInfoTag tag = GetDetailsForMusicVideo(m_pDS);
       CFileItemPtr pItem(new CFileItem(tag));
-      pItem->SetLabel(tag.m_strArtist);
+      pItem->SetLabel(StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator));
       items.Add(pItem);
       m_pDS->next();
     }
@@ -1999,13 +1999,11 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
     // add artists...
-    if (!details.m_strArtist.IsEmpty())
+    if (!details.m_artist.empty())
     {
-      CStdStringArray vecArtists;
-      StringUtils::SplitString(details.m_strArtist, g_advancedSettings.m_videoItemSeparator, vecArtists);
-      for (unsigned int i = 0; i < vecArtists.size(); i++)
+      for (unsigned int i = 0; i < details.m_artist.size(); i++)
       {
-        CStdString artist = vecArtists[i];
+        CStdString artist = details.m_artist[i];
         artist.Trim();
         int idArtist = AddActor(artist,"");
         AddArtistToMusicVideo(idMVideo, idArtist);
@@ -4162,7 +4160,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
           {
-            pItem->GetVideoInfoTag()->m_strArtist = it->second.second;
+            pItem->GetVideoInfoTag()->m_artist.push_back(it->second.second);
             CStdString strThumb = CThumbnailCache::GetAlbumThumb(*pItem);
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
@@ -4185,7 +4183,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
           {
-            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            pItem->GetVideoInfoTag()->m_artist.push_back(m_pDS->fv(2).get_asString());
             CStdString strThumb = CThumbnailCache::GetAlbumThumb(pItem->GetLabel(), m_pDS->fv(2).get_asString());
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
@@ -4357,7 +4355,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
           if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-            pItem->GetVideoInfoTag()->m_strArtist = pItem->GetLabel();
+            pItem->GetVideoInfoTag()->m_artist.push_back(pItem->GetLabel());
           items.Add(pItem);
           m_pDS->next();
         }
@@ -7137,7 +7135,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       CFileItem saveItem(item);
       if (!singleFiles)
       {
-        CStdString strFileName(movie.m_strArtist + "." + movie.m_strTitle);
+        CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
         if (movie.m_iYear > 0)
           strFileName.AppendFormat("_%i", movie.m_iYear);
         saveItem = CFileItem(GetSafeFile(musicvideosDir, strFileName) + ".avi", false);
@@ -7626,7 +7624,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
-        CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
+        CStdString strFileName(StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle);
         if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
         CStdString file(GetSafeFile(musicvideosDir, strFileName));

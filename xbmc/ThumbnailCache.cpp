@@ -215,8 +215,8 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
   {
     if (!item.HasVideoInfoTag())
       return "";
-    if (!item.GetVideoInfoTag()->m_strArtist.IsEmpty())
-      return GetThumb(item.GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    if (!item.GetVideoInfoTag()->m_artist.empty())
+      return GetThumb(StringUtils::Join(item.GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator),g_settings.GetMusicFanartFolder());
     if (!item.m_bIsFolder && !item.GetVideoInfoTag()->m_strShowTitle.IsEmpty())
     {
       CStdString showPath;
