@@ -713,8 +713,16 @@ namespace ForTheRecord
         XBMC->Log(LOG_DEBUG, "TuneLiveStream result %d.", livestreamresult);
         if (livestreamresult != ForTheRecord::Succeed)
         {
-          XBMC->Log(LOG_ERROR, "TuneLiveStream result %d.", livestreamresult);
-          return E_FAILED;
+          if (livestreamresult != ForTheRecord::NoReTunePossible)
+          {
+            XBMC->Log(LOG_ERROR, "TuneLiveStream result %d.", livestreamresult);
+            return E_FAILED;
+          }
+          else
+          {
+            XBMC->Log(LOG_INFO, "Re-tune not possible.");
+            return E_NORETUNEPOSSIBLE;
+          }
         }
 
         // Ok, pick up the returned LiveStream object

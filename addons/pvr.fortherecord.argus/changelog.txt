@@ -1,3 +1,7 @@
+v0.0.1.135 (12-04-2012)
+- Small regression fixes after switch to new platform library
+  When ForTheRecord returns 'NoRetunePossible' close the current live stream and
+  then try to tune again
 v0.0.1.134 (07-04-2012)
 - Internal change: Switch to new platform library for threading and lock mechanisms
 v0.0.1.133 (31-03-2012)

@@ -1129,15 +1129,15 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Tune XBMC channel: %i", channelinfo.iUniqueId);
     XBMC->Log(LOG_INFO, "Corresponding ForTheRecord channel: %s", channel->Guid().c_str());
 
-    if (m_keepalive.IsRunning())
-    {
-      long hr = m_keepalive.StopThread();
-      if (hr != 0)
-      {
-        XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
-      }
-    }
     int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), channel->Name(), filename);
+    if (retval == E_NORETUNEPOSSIBLE)
+    {
+      // Ok, we can't re-tune with the current live stream still running
+      // So stop it and re-try
+      CloseLiveStream();
+      XBMC->Log(LOG_INFO, "Re-Tune XBMC channel: %i", channelinfo.iUniqueId);
+      int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), channel->Name(), filename);
+    }
 
 #if defined(TARGET_LINUX) || defined(TARGET_OSX)
     // TODO FHo: merge this code and the code that translates names from recordings
@@ -1169,6 +1169,13 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     if (retval < 0 || filename.length() == 0)
     {
       XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i (%s)", channelinfo.iUniqueId, channel->Guid().c_str());
+      if (m_keepalive.IsRunning())
+      {
+        if (!m_keepalive.StopThread())
+        {
+          XBMC->Log(LOG_ERROR, "Stop keepalive thread failed.");
+        }
+      }
       return false;
     }
 
@@ -1178,9 +1185,12 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Live stream file: %s", filename.c_str());
     m_bTimeShiftStarted = true;
     m_iCurrentChannel = channelinfo.iUniqueId;
-    if (m_keepalive.CreateThread() != 0)
+    if (!m_keepalive.IsRunning())
     {
-      XBMC->Log(LOG_ERROR, "Start keepalive thread failed.");
+      if (!m_keepalive.CreateThread())
+      {
+        XBMC->Log(LOG_ERROR, "Start keepalive thread failed.");
+      }
     }
 
 #if defined(FTR_DUMPTS)
@@ -1319,10 +1329,9 @@ void cPVRClientForTheRecord::CloseLiveStream()
 
   if (m_keepalive.IsRunning())
   {
-    long hr = m_keepalive.StopThread();
-    if (hr != 0)
+    if (!m_keepalive.StopThread())
     {
-      XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
+      XBMC->Log(LOG_ERROR, "Stop keepalive thread failed.");
     }
   } 
 

@@ -38,14 +38,16 @@ CKeepAliveThread::~CKeepAliveThread()
 
 void *CKeepAliveThread::Process()
 {
-  bool retval;
-
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started");
   while (!IsStopped())
   {
-    retval = ForTheRecord::KeepLiveStreamAlive();
+    int retval = ForTheRecord::KeepLiveStreamAlive();
     XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
-    Sleep(20000);
+    // The new PLATFORM:: thread library has a problem with stopping a thread that is doing a long sleep
+    for (int i = 0; i < 200; i++)
+    {
+      if (Sleep(100)) break;
+    }
   }
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped");
   return NULL;
