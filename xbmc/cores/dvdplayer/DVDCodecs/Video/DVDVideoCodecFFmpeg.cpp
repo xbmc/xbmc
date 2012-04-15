@@ -551,7 +551,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
   if (m_pBufferRef)
+#ifdef HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
     pixel_aspect = m_pBufferRef->video->sample_aspect_ratio;
+#else
+    pixel_aspect = m_pBufferRef->video->pixel_aspect;
+#endif
 
   if (pixel_aspect.num == 0)
     aspect_ratio = 0;
@@ -657,7 +661,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
 {
   int result;
-  AVBufferSinkParams *buffersink_params;
 
   if (m_pFilterGraph)
     FilterClose();
@@ -678,7 +681,13 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
   }
 
   AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
-  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
+
+  // should be last filter in the graph for now
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
+  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("buffersink");
+#else
+  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("nullsink");
+#endif
 
   CStdString args;
 
@@ -697,7 +706,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
     return result;
   }
 
-  buffersink_params = m_dllAvFilter.av_buffersink_params_alloc();
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
+  AVBufferSinkParams *buffersink_params = m_dllAvFilter.av_buffersink_params_alloc();
   buffersink_params->pixel_fmts = &m_formats[0];
 #ifdef FF_API_OLD_VSINK_API
   if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, (void*)buffersink_params->pixel_fmts, m_pFilterGraph)) < 0)
@@ -710,6 +720,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters, bool scale)
     return result;
   }
   m_dllAvUtil.av_freep(&buffersink_params);
+#endif
 
   if (!filters.empty())
   {
@@ -777,7 +788,11 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
+#if (defined USE_OLD_AV_VSRC_BUFFER_ADD_FRAME)
+    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts, m_pCodecContext->sample_aspect_ratio);
+#else
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
+#endif
     if (result < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsrc_buffer_add_frame");
@@ -791,16 +806,32 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
     m_pBufferRef = NULL;
   }
 
-  if ((frames = m_dllAvFilter.av_buffersink_poll_frame(m_pFilterOut)) < 0)
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
+  frames = m_dllAvFilter.av_buffersink_poll_frame(m_pFilterOut);
+#else
+  AVFilterLink *link = m_pFilterOut->inputs[0];
+  frames = m_dllAvFilter.avfilter_poll_frame(link);
+#endif
+  if (frames < 0)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_poll_frame");
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - poll_frame");
     return VC_ERROR;
   }
 
   if (frames > 0)
   {
-
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
     result = m_dllAvFilter.av_buffersink_get_buffer_ref(m_pFilterOut, &m_pBufferRef, 0);
+#else
+    if ((result = m_dllAvFilter.avfilter_request_frame(link)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_request_frame");
+      return VC_ERROR;
+    }
+    m_pBufferRef = link->cur_buf;
+    link->cur_buf = NULL;
+#endif
+
     if(!m_pBufferRef)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - cur_buf");

@@ -1188,6 +1188,9 @@ if test "$use_external_ffmpeg" = "yes"; then
   # libavcore is optional
   PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
 
+  # libswresample doesn't exist in libav
+  PKG_CHECK_EXISTS([libswresample], [FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libswresample"; AC_DEFINE([HAVE_LIBSWRESAMPLE], [1], [Define to 1 if you have the `swresample' library (-lswresample).])])
+
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
                     AC_MSG_ERROR($missing_library))
@@ -1210,6 +1213,7 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   # optional
   AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/mem.h libavutil/samplefmt.h])
+  AC_CHECK_HEADERS([libavfilter/buffersink.h libavfilter/avcodec.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
@@ -1237,7 +1241,11 @@ if test "$use_external_ffmpeg" = "yes"; then
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
 
   # Disable vdpau support if external libavcodec doesn't have it
-  AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
+  AC_RUN_IFELSE(
+    AC_LANG_PROGRAM([[#include <libavcodec/avcodec.h>]],
+      [[avcodec_register_all();
+        AVCodec *codec = avcodec_find_decoder_by_name("vc1_vdpau");
+        return (codec) ? 0 : 1;]]),,
     [if test "x$use_vdpau" = "xyes"; then
       AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
     else
@@ -1245,6 +1253,23 @@ if test "$use_external_ffmpeg" = "yes"; then
       AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
     fi])
 
+  # Other headers to include if available.
+  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
+
+  # Check if <libavfilter/vsrc_buffer.h> exists and defines old
+  # av_vsrc_buffer_add_frame() from SoC. This avoids multiple declarations of
+  # av_vsrc_buffer_add_frame().
+  AC_COMPILE_IFELSE(
+    AC_LANG_SOURCE([[
+      #include <libavfilter/vsrc_buffer.h>
+      void foo(void)
+      {
+        AVRational a;
+        av_vsrc_buffer_add_frame(NULL, NULL, 0, a);
+      }
+      ]]), AC_DEFINE([USE_OLD_AV_VSRC_BUFFER_ADD_FRAME],
+        [1], [Check if SoC av_vsrc_buffer_add_frame() is defined in libavfilter/vsrc_buffer.h.]),)
+  
   # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
@@ -1255,6 +1280,53 @@ if test "$use_external_ffmpeg" = "yes"; then
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
   fi
+
+  # Check if ffmpeg/libav defines certain functions
+  AC_CHECK_FUNCS(avfilter_inout_alloc avfilter_inout_free)
+  AC_CHECK_FUNCS(av_get_default_channel_layout)
+
+  # Check parameters passed to avfilter_graph_parse()
+  AC_LANG_PUSH([C++])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([#define __STDC_CONSTANT_MACROS
+      #include <libavfilter/avfiltergraph.h>
+      int test()
+      {
+        AVFilterInOut *inputs = NULL, *outputs = NULL;
+        return avfilter_graph_parse(NULL, NULL, inputs, outputs, NULL);
+      }
+    ])],
+    [AC_DEFINE([AVFILTER_GRAPH_PARSE_AVFILTERINOUT_SINGLE_POINTER], [1],
+    [Define to 1 if avfilter_graph_parse() accepts (AVFilterInOut*) parameters.])],)
+  AC_LANG_POP([C++])
+
+  # Check if libavfilter supports the "buffersink" filter
+  AC_LANG_PUSH([C++])
+  AC_RUN_IFELSE(
+    [AC_LANG_SOURCE([#define __STDC_CONSTANT_MACROS
+      extern "C"
+      {
+      #include <libavfilter/avfilter.h>
+      #include <libavfilter/buffersink.h>
+      }
+      void compile_test(void)
+      {
+        av_buffersink_get_buffer_ref(NULL, NULL, 0);
+        av_buffersink_poll_frame(NULL);
+        av_buffersink_params_alloc();
+      }
+      int main(int argc, char **argv)
+      {
+        (void)argc; (void)argv;
+        avfilter_register_all();
+        AVFilter *f = avfilter_get_by_name("buffersink");
+        return (f) ? 0 : 1;
+      }
+    ])],
+    [AC_DEFINE([LIBAVFILTER_SUPPORTS_BUFFERSINK], [1],
+    [Define to 1 if libavfilter supports the `buffersink' filter.])],)
+  AC_LANG_POP([C++])
+
   CPPFLAGS="$SAVE_CPPFLAGS"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)

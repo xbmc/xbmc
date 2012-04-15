@@ -59,6 +59,10 @@ extern "C" {
   #else
     #include <ffmpeg/mem.h>
   #endif
+  /* For AVRounding */
+  #if (defined HAVE_LIBAVUTIL_MATHEMATICS_H)
+    #include <libavutil/mathematics.h>
+  #endif
 #else
   #include "libavutil/avutil.h"
   #include "libavutil/crc.h"
@@ -138,7 +142,24 @@ public:
   virtual int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_dict_set(pm, key, value, flags); }
   virtual int av_samples_get_buffer_size (int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align)
     { return ::av_samples_get_buffer_size(linesize, nb_channels, nb_samples, sample_fmt, align); }
-  virtual int64_t av_get_default_channel_layout(int nb_channels) { return ::av_get_default_channel_layout(nb_channels); }
+  virtual int64_t av_get_default_channel_layout(int nb_channels)
+  {
+#ifdef HAVE_AV_GET_DEFAULT_CHANNEL_LAYOUT
+    return ::av_get_default_channel_layout(nb_channels);
+#else
+    switch(nb_channels) {
+    case 1: return AV_CH_LAYOUT_MONO;
+    case 2: return AV_CH_LAYOUT_STEREO;
+    case 3: return AV_CH_LAYOUT_SURROUND;
+    case 4: return AV_CH_LAYOUT_QUAD;
+    case 5: return AV_CH_LAYOUT_5POINT0;
+    case 6: return AV_CH_LAYOUT_5POINT1;
+    case 7: return AV_CH_LAYOUT_6POINT1;
+    case 8: return AV_CH_LAYOUT_7POINT1;
+    default: return 0;
+    }
+#endif
+  }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
