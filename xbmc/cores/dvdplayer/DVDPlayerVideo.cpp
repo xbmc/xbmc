@@ -1314,6 +1314,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
      (pPicture->format == DVDVideoPicture::FMT_NV12) ||
+     (pPicture->format == DVDVideoPicture::FMT_DXVA) ||
      (pPicture->format == DVDVideoPicture::FMT_YUY2) ||
      (pPicture->format == DVDVideoPicture::FMT_UYVY))
   {
@@ -1385,15 +1386,43 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
     xstart   = 1;
   }
 
+  // define base parameters for non-dxva
+  unsigned int lineSize = pPicture->iLineSize[0];
+  unsigned int pictureWidth = pPicture->iWidth;
+  unsigned int pictureHeight = pPicture->iHeight;
+  BYTE *pictureBase = pPicture->data[0];
+
+#ifdef HAS_DX
+  IDirect3DSurface9* surface = NULL;
+  if (pPicture->format == DVDVideoPicture::FMT_DXVA)
+  {
+    switch (pPicture->extended_format) {
+      case MAKEFOURCC('N','V','1','2'):
+      { 
+        surface = (IDirect3DSurface9*)pPicture->data[3];
+        D3DLOCKED_RECT rectangle;
+        if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
+          return;
+        pictureBase = (BYTE *)rectangle.pBits;
+        lineSize = rectangle.Pitch;
+        break;
+      }
+      default:
+        // other FOURCC not implemented 
+        return;
+    }
+  }
+#endif
+
   // Crop top
-  s      = pPicture->data[0];
+  s      = pictureBase;
   last   = black2;
-  for (unsigned int y = 0; y < pPicture->iHeight/2; y++)
+  for (unsigned int y = 0; y < pictureHeight/2; y++)
   {
     int total = 0;
-    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
+    for (unsigned int x = xstart; x < pictureWidth * xspacing; x += xspacing)
       total += s[x];
-    s += pPicture->iLineSize[0];
+    s += lineSize;
 
     if (total > detect)
     {
@@ -1405,37 +1434,37 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   }
 
   // Crop bottom
-  s    = pPicture->data[0] + (pPicture->iHeight-1) * pPicture->iLineSize[0];
+  s    = pictureBase + (pictureHeight-1) * lineSize;
   last = black2;
-  for (unsigned int y = (int)pPicture->iHeight; y > pPicture->iHeight/2; y--)
+  for (unsigned int y = (int)pictureHeight; y > pictureHeight/2; y--)
   {
     int total = 0;
-    for (unsigned int x = xstart; x < pPicture->iWidth * xspacing; x += xspacing)
+    for (unsigned int x = xstart; x < pictureWidth * xspacing; x += xspacing)
       total += s[x];
-    s -= pPicture->iLineSize[0];
+    s -= lineSize;
 
     if (total > detect)
     {
       if (total - black2 > (last - black2) * multi)
-        crop.bottom = pPicture->iHeight - y;
+        crop.bottom = pictureHeight - y;
       break;
     }
     last = total;
   }
 
   // left and right levels
-  black2 = black * pPicture->iHeight;
-  detect = level * pPicture->iHeight + black2;
+  black2 = black * pictureHeight;
+  detect = level * pictureHeight + black2;
 
 
   // Crop left
-  s    = pPicture->data[0];
+  s    = pictureBase;
   last = black2;
-  for (unsigned int x = xstart; x < pPicture->iWidth/2*xspacing; x += xspacing)
+  for (unsigned int x = xstart; x < pictureWidth/2*xspacing; x += xspacing)
   {
     int total = 0;
-    for (unsigned int y = 0; y < pPicture->iHeight; y++)
-      total += s[y * pPicture->iLineSize[0]];
+    for (unsigned int y = 0; y < pictureHeight; y++)
+      total += s[y * lineSize];
     s++;
     if (total > detect)
     {
@@ -1447,19 +1476,19 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   }
 
   // Crop right
-  s    = pPicture->data[0] + (pPicture->iWidth-1);
+  s    = pictureBase + (pictureWidth-1);
   last = black2;
-  for (unsigned int x = (int)pPicture->iWidth*xspacing-1; x > pPicture->iWidth/2*xspacing; x -= xspacing)
+  for (unsigned int x = (int)pictureWidth*xspacing-1; x > pictureWidth/2*xspacing; x -= xspacing)
   {
     int total = 0;
-    for (unsigned int y = 0; y < pPicture->iHeight; y++)
-      total += s[y * pPicture->iLineSize[0]];
+    for (unsigned int y = 0; y < pictureHeight; y++)
+      total += s[y * lineSize];
     s--;
 
     if (total > detect)
     {
       if (total - black2 > (last - black2) * multi)
-        crop.right = pPicture->iWidth - (x / xspacing);
+        crop.right = pictureWidth - (x / xspacing);
       break;
     }
     last = total;
@@ -1473,17 +1502,25 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 
   min = std::min(crop.left, crop.right);
   max = std::max(crop.left, crop.right);
-  if(10 * (max - min) / pPicture->iWidth < 1)
+  if(10 * (max - min) / pictureWidth < 1)
     crop.left = crop.right = max;
   else
     crop.left = crop.right = min;
 
   min = std::min(crop.top, crop.bottom);
   max = std::max(crop.top, crop.bottom);
-  if(10 * (max - min) / pPicture->iHeight < 1)
+  if(10 * (max - min) / pictureHeight < 1)
     crop.top = crop.bottom = max;
   else
     crop.top = crop.bottom = min;
+
+#ifdef HAS_DX
+  if (surface)
+  {
+    if (FAILED(surface->UnlockRect()))
+      return;
+  }
+#endif
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()
