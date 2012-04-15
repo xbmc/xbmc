@@ -81,6 +81,7 @@ public:
   virtual bool OnMouseMove(const CPoint &point)  { return false; }
   virtual bool OnMouseClick(const CPoint &point) { return false; }
   virtual double GetTimeStampCorrection()        { return 0.0; }
+  virtual void UpdateState()                    { return; } /* TODO */
 
   void UserInput(bd_vk_key_e vk);
 

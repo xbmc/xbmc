@@ -1076,6 +1076,12 @@ void CDVDPlayer::Process()
     && (m_dvdPlayerVideo.HasData() || m_CurrentVideo.id < 0))
       Sleep(0);
 
+    // check if input stream menus has some events
+    CDVDInputStream::IMenus* pMenus = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
+    if(pMenus)
+      pMenus->UpdateState();
+
+
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);

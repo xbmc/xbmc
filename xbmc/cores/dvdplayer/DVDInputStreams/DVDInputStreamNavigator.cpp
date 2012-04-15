@@ -43,6 +43,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_dvdnav = 0;
   m_pDVDPlayer = player;
   m_bCheckButtons = false;
+  m_bCheckEvents = false;
   m_iCellStart = 0;
   m_iVobUnitStart = 0LL;
   m_iVobUnitStop = 0LL;
@@ -241,6 +242,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
   int navresult;
   int iBytesRead;
 
+  m_bCheckEvents = false;
   while(true) {
     navresult = ProcessBlock(buf, &iBytesRead);
     if (navresult == NAVRESULT_HOLD)       return 0; // return 0 bytes read;
@@ -298,8 +300,13 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
         m_holdmode = HOLDMODE_NONE;
-        memcpy(dest_buffer, buf, len);
-        *read = len;
+        if(dest_buffer && read)
+        {
+          memcpy(dest_buffer, buf, len);
+          *read = len;
+        }
+        else
+          CLog::Log(LOGERROR, "%s - no target buffer for data block", __FUNCTION__);
         iNavresult = NAVRESULT_DATA;
       }
       break;
@@ -331,18 +338,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // ahead in the stream compared to what the application sees.
         // Such applications should wait until their fifos are empty
         // when they receive this type of event.
-        if(m_holdmode == HOLDMODE_NONE)
-        {
-          CLog::Log(LOGDEBUG, " - DVDNAV_WAIT (HOLDING)");
-          m_holdmode = HOLDMODE_HELD;
-          iNavresult = NAVRESULT_HOLD;
-        }
-        else
-          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
-
-        /* if user didn't care for action, just skip it */
-        if(iNavresult == NAVRESULT_NOP)
-          SkipWait();
+        iNavresult = NAVRESULT_HOLD;
       }
       break;
 
@@ -569,6 +565,24 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   return iNavresult;
 }
 
+void CDVDInputStreamNavigator::UpdateState()
+{
+  /* if events where not checked since last call, check them here */
+  if(m_bCheckEvents)
+  {
+    /* this is a bit of a hack, we force libdvdnav into wait *
+     * state, this allow us to process highlight updates     *
+     * without getting any other data out of the library     */
+    int sync_wait = m_dvdnav->sync_wait;
+    m_dvdnav->sync_wait = 1;
+    while(ProcessBlock(NULL, NULL) == NAVRESULT_NOP)
+      ; /* ProcessBlock.. */
+    m_dvdnav->sync_wait = sync_wait;
+  }
+  else
+    m_bCheckEvents = true;
+}
+
 bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
 {
   int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
@@ -792,6 +806,9 @@ CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
 {
   if(m_holdmode == HOLDMODE_HELD)
     m_holdmode = HOLDMODE_SKIP;
+
+  if(m_lastevent == DVDNAV_WAIT)
+    m_dll.dvdnav_wait_skip(m_dvdnav);
 
   if(m_bEOF)
     return NEXTSTREAM_NONE;
