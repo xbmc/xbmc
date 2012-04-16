@@ -107,7 +107,6 @@ public:
     virtual bool OnMouseClick(const CPoint &point) = 0;
     virtual bool IsInMenu() = 0;
     virtual double GetTimeStampCorrection() = 0;
-    virtual void UpdateState() = 0; /**< Called by player before requesting packet from demuser, to process events */
   };
 
   enum ENextStream

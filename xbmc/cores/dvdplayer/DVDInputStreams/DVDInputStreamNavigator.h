@@ -89,7 +89,6 @@ public:
   void OnPrevious();
   bool OnMouseMove(const CPoint &point);
   bool OnMouseClick(const CPoint &point);
-  void UpdateState();
 
   int GetCurrentButton();
   int GetTotalButtons();
@@ -149,7 +148,6 @@ protected:
 
   DllDvdNav m_dll;
   bool m_bCheckButtons;
-  bool m_bCheckEvents;
   bool m_bEOF;
 
   unsigned int m_icurrentGroupId;
