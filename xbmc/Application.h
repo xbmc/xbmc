@@ -204,8 +204,8 @@ public:
   void ResetScreenSaverTimer();
   void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
-  bool WakeUpScreenSaverAndDPMS();
-  bool WakeUpScreenSaver();
+  bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
+  bool WakeUpScreenSaver(bool bPowerOffKeyPressed = false);
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;

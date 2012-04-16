@@ -53,6 +53,7 @@ namespace PERIPHERALS
     const CStdString &DeviceName(void) const       { return m_strDeviceName; }
     bool IsHidden(void) const                      { return m_bHidden; }
     void SetHidden(bool bSetTo = true)             { m_bHidden = bSetTo; }
+    const CStdString &GetVersionInfo(void) const   { return m_strVersionInfo; }
 
     /*!
      * @brief Check whether this device has the given feature.
@@ -127,18 +128,18 @@ namespace PERIPHERALS
      * @return The value or an empty string if it wasn't found.
      */
     virtual const CStdString GetSettingString(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual bool SetSetting(const CStdString &strKey, const CStdString &strValue);
     virtual void SetSettingVisible(const CStdString &strKey, bool bSetTo);
     virtual bool IsSettingVisible(const CStdString &strKey) const;
 
     virtual int GetSettingInt(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, int iValue);
+    virtual bool SetSetting(const CStdString &strKey, int iValue);
 
     virtual bool GetSettingBool(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, bool bValue);
+    virtual bool SetSetting(const CStdString &strKey, bool bValue);
 
     virtual float GetSettingFloat(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, float fValue);
+    virtual bool SetSetting(const CStdString &strKey, float fValue);
 
     virtual void PersistSettings(bool bExiting = false);
     virtual void LoadPersistedSettings(void);
@@ -161,6 +162,7 @@ namespace PERIPHERALS
     CStdString                       m_strVendorId;
     int                              m_iProductId;
     CStdString                       m_strProductId;
+    CStdString                       m_strVersionInfo;
     bool                             m_bInitialised;
     bool                             m_bHidden;
     bool                             m_bError;

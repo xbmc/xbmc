@@ -8862,20 +8862,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "激活屏幕保护程序时设备进入待机状态"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "未检测到 CEC 端口。需人工设置。"
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
+msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "无法初始化 CEC 适配器。请检查设置"
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "电视关闭时本计算机进入待机状态"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8886,7 +8882,7 @@ msgid "Connected"
 msgstr "XBMC 已连接"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
 msgstr "发现适配器，但 libCEC 不可用"
 
 msgctxt "#36018"
@@ -8920,4 +8916,32 @@ msgstr "新配置设定失败，请检查设置。"
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "停止 XBMC 时发送“非活动源”命令"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr ""
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr ""
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr ""
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr ""
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr ""
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 

@@ -323,6 +323,7 @@ void CPeripheralBus::GetDirectory(const CStdString &strPath, CFileItemList &item
     peripheralFile->SetProperty("bus", PeripheralTypeTranslator::BusTypeToString(peripheral->GetBusType()));
     peripheralFile->SetProperty("location", peripheral->Location());
     peripheralFile->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
+    peripheralFile->SetProperty("version", peripheral->GetVersionInfo());
     items.Add(peripheralFile);
   }
 }

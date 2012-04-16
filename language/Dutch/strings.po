@@ -8845,7 +8845,7 @@ msgstr "Keymap ingeschakeld"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Gebruik geen aangepaste keymap voor dit apparaat"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8908,20 +8908,16 @@ msgid "Put devices in standby mode when activating screensaver"
 msgstr "Schakel app. uit zolang de schermbeveiliging actief is"
 
 msgctxt "#36011"
-msgid "Could not detect the CEC port. Set it up manually."
+msgid "Could not detect the CEC com port. Set it up manually."
 msgstr "Kon de COM poort niet detecteren. Stel het manueel in."
 
 msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Check your settings."
-msgstr "Kon de CEC adapter niet initialiseren."
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr "Kon de CEC adapter niet initialiseren. Controleer de instellingen."
 
 msgctxt "#36013"
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "Versie %d van de libCEC interface version wordt niet ondersteund door XBMC (> %d)"
-
-msgctxt "#36014"
-msgid "Put this PC in standby mode when the TV is switched off"
-msgstr "Zet XBMC in standby wanneer de TV uitgeschakeld wordt"
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8932,8 +8928,8 @@ msgid "Connected"
 msgstr "Verbonden"
 
 msgctxt "#36017"
-msgid "Adapter found, but libCEC is not available"
-msgstr "Adapter gevonden, maar libCEC is niet beschikbaar"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "Kon de CEC adapter niet initialiseren: libCEC is niet gevonden op dit systeem."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -8966,4 +8962,32 @@ msgstr "Kon de nieuwe configuratie niet instellen. Controleer de instellingen."
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Verstuur 'inactieve bron' commando bij het stoppen"
+
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "Schakel apparatuur uit wanneer de PC in slaapstand gaat"
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr "Dit apparaat heeft onderhoud nodig"
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Negeer"
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr "Wanneer de TV uitgeschakeld wordt"
+
+msgctxt "#36030"
+msgid "Connection lost"
+msgstr "Verbinding verbroken"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr ""
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr ""
 
