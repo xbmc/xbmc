@@ -38,10 +38,12 @@ typedef struct {
 
 class LibraryLoader;
 class CPythonMonitor;
+class CPythonJsonRpcClient;
 
 typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
 typedef std::vector<PVOID> MonitorCallbackList;
+typedef std::vector<PVOID> JsonRpcClientCallbackList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
 class XBPython : 
@@ -62,6 +64,8 @@ public:
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void RegisterPythonMonitorCallBack(CPythonMonitor* pCallback);
   void UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback);
+  void RegisterPythonJsonRpcClientCallBack(CPythonJsonRpcClient* pCallback);
+  void UnregisterPythonJsonRpcClientCallBack(CPythonJsonRpcClient* pCallback);
   void OnSettingsChanged(const CStdString &strings);
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
@@ -130,6 +134,7 @@ private:
   PyList              m_vecPyList;
   PlayerCallbackList  m_vecPlayerCallbackList;
   MonitorCallbackList m_vecMonitorCallbackList;
+  JsonRpcClientCallbackList m_vecJsonRpcCallbackList;
   LibraryLoader*      m_pDll;
 
   // any global events that scripts should be using

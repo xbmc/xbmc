@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,24 +19,33 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "system.h"
-#include "interfaces/json-rpc/ITransportLayer.h"
-#include "interfaces/json-rpc/JSONRPC.h"
 
-#ifdef HAS_JSONRPC
-class CPythonTransport : public JSONRPC::ITransportLayer
+#include <Python.h>
+
+#include "PythonJsonRpcClient.h"
+
+#define JsonRpcClient_Check(op) PyObject_TypeCheck(op, &JsonRpcClient_Type)
+#define JsonRpcClient_CheckExact(op) ((op)->ob_type == &JsonRpcClient_Type)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+namespace PYXBMC
 {
-public:
-  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) { return false; }
-  virtual bool Download(const char *path, CVariant &result) { return false; }
-  virtual int GetCapabilities() { return JSONRPC::Response; }
+  extern PyTypeObject JsonRpcClient_Type;
 
-  class CPythonClient : public JSONRPC::IClient
-  {
-  public:
-    virtual int  GetPermissionFlags() { return JSONRPC::OPERATION_PERMISSION_ALL; }
-    virtual int  GetAnnouncementFlags() { return 0; }
-    virtual bool SetAnnouncementFlags(int flags) { return true; }
-  };
-};
+  typedef struct {
+    PyObject_HEAD
+    CPythonJsonRpcClient* pClient;
+  } JsonRpcClient;
+
+  void initJsonRpcClient_Type();
+
+  PyObject* JsonRpcClient_New(PyTypeObject *type, PyObject *args, PyObject *kwds);
+  PyObject* JsonRpcClient_execute(JsonRpcClient *self, PyObject *args);
+}
+
+#ifdef __cplusplus
+}
 #endif

@@ -20,6 +20,7 @@ SRCS=action.cpp \
      GUIPythonWindowXMLDialog.cpp \
      infotagmusic.cpp \
      infotagvideo.cpp \
+     jsonrpcclient.cpp \
      keyboard.cpp \
      listitem.cpp \
      monitor.cpp \
@@ -27,6 +28,7 @@ SRCS=action.cpp \
      pyplaylist.cpp \
      pyrendercapture.cpp \
      PythonAddon.cpp \
+     PythonJsonRpcClient.cpp \
      PythonMonitor.cpp \
      PythonPlayer.cpp \
      pyutil.cpp \
