@@ -61,6 +61,7 @@ extern "C" {
   #endif
 #else
   #include "libavutil/avutil.h"
+  #include "libavutil/audioconvert.h"
   #include "libavutil/crc.h"
   #include "libavutil/opt.h"
   #include "libavutil/mem.h"
