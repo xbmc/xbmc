@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include <errno.h>
 #include <cmyth_local.h>
 
@@ -59,7 +60,7 @@ long long cmyth_get_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog)
 	}
 	if ((r=cmyth_rcv_long_long(conn, &err, &ll, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			"%s: cmyth_rcv_longlong() failed (%d)\n",
+			"%s: cmyth_rcv_long_long() failed (%d)\n",
 			__FUNCTION__, r);
 		ret = err;
 		goto out;
@@ -74,7 +75,7 @@ long long cmyth_get_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog)
 int cmyth_set_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog, long long bookmark)
 {
 	char *buf;
-	unsigned int len = CMYTH_TIMESTAMP_LEN + CMYTH_LONGLONG_LEN + 18;
+	unsigned int len = CMYTH_TIMESTAMP_LEN + CMYTH_LONGLONG_LEN * 2 + 18;
 	char resultstr[3];
 	int r,err;
 	int ret;
@@ -85,8 +86,18 @@ int cmyth_set_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog, long long bookm
 	if (!buf) {
 		return -ENOMEM;
 	}
-	sprintf(buf,"%s %ld %s %lld %lld","SET_BOOKMARK",prog->proginfo_chanId,
-		start_ts_dt, bookmark >> 32,(bookmark & 0xffffffff));
+	if (conn->conn_version >= 66) {
+		/*
+		 * Since protocol 66 mythbackend expects a single 64 bit integer rather than two 32 bit
+		 * hi and lo integers.
+		 */
+		sprintf(buf, "SET_BOOKMARK %ld %s %"PRIu64, prog->proginfo_chanId,
+				start_ts_dt, (int64_t)bookmark);
+	}
+	else {
+		sprintf(buf, "SET_BOOKMARK %ld %s %d %d", prog->proginfo_chanId,
+				start_ts_dt, (int32_t)(bookmark >> 32), (int32_t)(bookmark & 0xffffffff));
+	}
 	pthread_mutex_lock(&mutex);
 	if ((err = cmyth_send_message(conn,buf)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
