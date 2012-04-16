@@ -576,7 +576,7 @@ void CDVDInputStreamNavigator::UpdateState()
     int sync_wait = m_dvdnav->sync_wait;
     m_dvdnav->sync_wait = 1;
     while(ProcessBlock(NULL, NULL) == NAVRESULT_NOP)
-      ; /* ProcessBlock.. */
+      m_dvdnav->sync_wait = 1; /* Some action will reset the wait.. */
     m_dvdnav->sync_wait = sync_wait;
   }
   else
