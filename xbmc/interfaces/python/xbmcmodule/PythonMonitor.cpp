@@ -59,7 +59,7 @@ static int SPyMonitor_Function(void* e)
   if(object->m_monitor->m_callback)
   { 
     if (!object->m_arg.empty())
-      ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), "(s)", object->m_arg.c_str());
+      ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), (char*)"(s)", object->m_arg.c_str());
     else
       ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), NULL);
   }
