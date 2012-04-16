@@ -3250,7 +3250,10 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         if(m_dvd.state == DVDSTATE_SEEK)
           m_dvd.state = DVDSTATE_NORMAL;
         else
+        {
+          m_messenger.Put(new CDVDMsgDemuxerReset());
           m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+        }
 
         return NAVRESULT_ERROR;
       }
