@@ -211,7 +211,15 @@ void CPeripheral::AddSetting(const CStdString &strKey, const CSetting *setting)
     case SETTINGS_TYPE_INT:
       {
         const CSettingInt *mappedSetting = (const CSettingInt *) setting;
-        CSettingInt *intSetting = new CSettingInt(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_iMin, mappedSetting->m_iStep, mappedSetting->m_iMax, mappedSetting->GetControlType(), mappedSetting->m_strFormat);
+        CSettingInt *intSetting(NULL);
+        if (mappedSetting->GetControlType() == SPIN_CONTROL_INT)
+        {
+          intSetting = new CSettingInt(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_iMin, mappedSetting->m_iStep, mappedSetting->m_iMax, mappedSetting->GetControlType(), mappedSetting->m_strFormat);
+        }
+        else if (mappedSetting->GetControlType() == SPIN_CONTROL_TEXT)
+        {
+          intSetting = new CSettingInt(mappedSetting->GetOrder(), strKey.c_str(), mappedSetting->GetLabel(), mappedSetting->GetData(), mappedSetting->m_entries, mappedSetting->GetControlType());
+        }
         if (intSetting)
         {
           intSetting->SetVisible(mappedSetting->IsVisible());
