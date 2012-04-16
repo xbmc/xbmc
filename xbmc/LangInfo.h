@@ -37,6 +37,9 @@ public:
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
 
+  // three char language code (not win32 specific)
+  const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
+
   const CStdString& GetDVDMenuLanguage() const;
   const CStdString& GetDVDAudioLanguage() const;
   const CStdString& GetDVDSubtitleLanguage() const;
