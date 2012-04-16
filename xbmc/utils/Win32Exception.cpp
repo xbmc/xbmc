@@ -24,7 +24,6 @@
 #include "eh.h"
 #endif
 #include "log.h"
-#include <string>
 
 #ifdef _LINUX
 
