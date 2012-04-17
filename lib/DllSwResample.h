@@ -36,7 +36,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #if (defined USE_EXTERNAL_FFMPEG)
-  #include <libswresample/swresample.h>
+  #ifdef HAVE_LIBSWRESAMPLE
+    #include <libswresample/swresample.h>
+  #endif
 #else
   #include "libswresample/swresample.h"
 #endif
@@ -54,7 +56,11 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+  #ifdef HAVE_LIBSWRESAMPLE
     CLog::Log(LOGDEBUG, "DllAvFormat: Using libswresample system library");
+  #else
+    CLog::Log(LOGDEBUG, "DllAvFormat: libswresample unavailable");
+  #endif
     return true;
   }
   virtual void Unload() {}

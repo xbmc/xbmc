@@ -44,12 +44,20 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVFILTER_AVFILTER_H)
     #include <libavfilter/avfiltergraph.h>
-    #include <libavfilter/buffersink.h>
-    #include <libavfilter/avcodec.h>
+    #if (defined USE_OLD_AV_VSRC_BUFFER_ADD_FRAME)
+      #include <libavfilter/vsrc_buffer.h>
+    #else
+      #include <libavfilter/buffersink.h>
+      #include <libavfilter/avcodec.h>
+    #endif
   #elif (defined HAVE_FFMPEG_AVFILTER_H)
     #include <ffmpeg/avfiltergraph.h>
-    #include <ffmpeg/buffersink.h>
-    #include <ffmpeg/avcodec.h>
+    #if (defined USE_OLD_AV_VSRC_BUFFER_ADD_FRAME)
+      #include <ffmpeg/vsrc_buffer.h>
+    #else
+      #include <ffmpeg/buffersink.h>
+      #include <ffmpeg/avcodec.h>
+    #endif
   #endif
 #else
   #include "libavfilter/avfiltergraph.h"
@@ -76,13 +84,19 @@ public:
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
   virtual int avfilter_poll_frame(AVFilterLink *link)=0;
   virtual int avfilter_request_frame(AVFilterLink *link)=0;
+#if (defined USE_OLD_AV_VSRC_BUFFER_ADD_FRAME)
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int64_t pts, AVRational pixel_aspect)=0;
+#else
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
+#endif
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)=0;
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags)=0;
   virtual AVBufferSinkParams *av_buffersink_params_alloc()=0;
   virtual int av_buffersink_poll_frame(AVFilterContext *ctx)=0;
+#endif
 };
 
 #if (defined USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -117,17 +131,34 @@ public:
   virtual AVFilterInOut *avfilter_inout_alloc()
   {
     CSingleLock lock(DllAvCodec::m_critSection);
+#ifdef HAVE_AVFILTER_INOUT_ALLOC
     return ::avfilter_inout_alloc();
+#else
+    return (AVFilterInOut*)::av_mallocz(sizeof(AVFilterInOut));
+#endif
   }
   virtual void avfilter_inout_free(AVFilterInOut **inout)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
+#ifdef HAVE_AVFILTER_INOUT_FREE
     ::avfilter_inout_free(inout);
+#else
+    while (*inout) {
+      AVFilterInOut *next = (*inout)->next;
+      ::av_freep(&(*inout)->name);
+      ::av_freep(inout);
+      *inout = next;
+    }
+#endif
   }
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
+#ifdef AVFILTER_GRAPH_PARSE_AVFILTERINOUT_SINGLE_POINTER
+    return ::avfilter_graph_parse(graph, filters, *inputs, *outputs, log_ctx);
+#else
     return ::avfilter_graph_parse(graph, filters, inputs, outputs, log_ctx);
+#endif
   }
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)
   {
@@ -135,13 +166,19 @@ public:
   }
   virtual int avfilter_poll_frame(AVFilterLink *link) { return ::avfilter_poll_frame(link); }
   virtual int avfilter_request_frame(AVFilterLink *link) { return ::avfilter_request_frame(link); }
+#if (defined USE_OLD_AV_VSRC_BUFFER_ADD_FRAME)
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int64_t pts, AVRational pixel_aspect) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, pts, pixel_aspect); }
+#else
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
+#endif
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
+#ifdef LIBAVFILTER_SUPPORTS_BUFFERSINK
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags) { return ::av_buffersink_get_buffer_ref(buffer_sink, bufref, flags); }
   virtual AVBufferSinkParams *av_buffersink_params_alloc() { return ::av_buffersink_params_alloc(); }
   virtual int av_buffersink_poll_frame(AVFilterContext *ctx) { return ::av_buffersink_poll_frame(ctx); }
+#endif
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
