@@ -100,29 +100,15 @@ void cXVDRResponsePacket::ConvertToUTF8(std::string& value)
 {
 }
 
-char* cXVDRResponsePacket::extract_String()
+const char* cXVDRResponsePacket::extract_String()
 {
-  std::string s;
-  if(!extract_String(s))
-    return NULL;
+  const char* value = (const char*)&userData[packetPos];
+  int length = strlen(value);
 
-  char* str = new char[s.size()+1];
-  strcpy(str, s.c_str());
-
-  return str;
-}
-
-bool cXVDRResponsePacket::extract_String(std::string& value)
-{
-  value.clear();
-  if (serverError()) return false;
-
-  int length = strlen((char*)&userData[packetPos]);
   if ((packetPos + length) > userDataLength) return NULL;
-  value = (char*)&userData[packetPos];
   packetPos += length + 1;
 
-  return true;
+  return value;
 }
 
 uint8_t cXVDRResponsePacket::extract_U8()

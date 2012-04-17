@@ -21,7 +21,7 @@
  */
 
 #include "XVDRData.h"
-#include "responsepacket.h"
+#include "XVDRResponsePacket.h"
 #include "requestpacket.h"
 #include "xvdrcommand.h"
 
@@ -102,7 +102,7 @@ void cXVDRData::OnReconnect()
   PVR->TriggerRecordingUpdate();
 }
 
-cResponsePacket* cXVDRData::ReadResult(cRequestPacket* vrp)
+cXVDRResponsePacket* cXVDRData::ReadResult(cRequestPacket* vrp)
 {
   m_Mutex.Lock();
 
@@ -123,7 +123,7 @@ cResponsePacket* cXVDRData::ReadResult(cRequestPacket* vrp)
 
   m_Mutex.Lock();
 
-  cResponsePacket* vresp = message.pkt;
+  cXVDRResponsePacket* vresp = message.pkt;
   delete message.event;
 
   m_queue.erase(vrp->getSerial());
@@ -142,7 +142,7 @@ bool cXVDRData::GetDriveSpace(long long *total, long long *used)
     return false;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -173,7 +173,7 @@ bool cXVDRData::SupportChannelScan()
     return false;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -191,7 +191,7 @@ bool cXVDRData::EnableStatusInterface(bool onOff, bool direct)
   if (!vrp.init(XVDR_ENABLESTATUSINTERFACE)) return false;
   if (!vrp.add_U8(onOff)) return false;
 
-  cResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -215,7 +215,7 @@ bool cXVDRData::SetUpdateChannels(uint8_t method, bool direct)
   if (!vrp.init(XVDR_UPDATECHANNELS)) return false;
   if (!vrp.add_U8(method)) return false;
 
-  cResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_INFO, "Setting channel update method not supported by server. Consider updating the XVDR server.");
@@ -245,10 +245,10 @@ bool cXVDRData::ChannelFilter(bool fta, bool nativelangonly, std::vector<int>& c
   if (!vrp.add_U32(nativelangonly)) return false;
   if (!vrp.add_U32(count)) return false;
 
-  for(unsigned int i = 0; i < count; i++)
+  for(int i = 0; i < count; i++)
     if (!vrp.add_U32(caids[i])) return false;
 
-  cResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = direct ? cXVDRSession::ReadResult(&vrp) : ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_INFO, "Channel filter method not supported by server. Consider updating the XVDR server.");
@@ -280,7 +280,7 @@ int cXVDRData::GetChannelsCount()
     return -1;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -307,7 +307,7 @@ bool cXVDRData::GetChannelsList(PVR_HANDLE handle, bool radio)
     return false;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -332,7 +332,6 @@ bool cXVDRData::GetChannelsList(PVR_HANDLE handle, bool radio)
     tag.bIsHidden         = false;
 
     PVR->TransferChannelEntry(handle, &tag);
-    delete[] tag.strChannelName;
   }
 
   delete vresp;
@@ -353,7 +352,7 @@ bool cXVDRData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, 
     return false;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -381,12 +380,6 @@ bool cXVDRData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, 
       tag.strPlot             = vresp->extract_String();
 
       PVR->TransferEpgEntry(handle, &tag);
-      if (tag.strTitle)
-        delete[] tag.strTitle;
-      if (tag.strPlotOutline)
-        delete[] tag.strPlotOutline;
-      if (tag.strPlot)
-        delete[] tag.strPlot;
     }
   }
 
@@ -410,7 +403,7 @@ int cXVDRData::GetTimersCount()
     return -1;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -421,6 +414,54 @@ int cXVDRData::GetTimersCount()
 
   delete vresp;
   return m_timercount;
+}
+
+void cXVDRData::ReadTimerPacket(cXVDRResponsePacket* resp, PVR_TIMER &tag) {
+  tag.iClientIndex      = resp->extract_U32();
+  int iActive           = resp->extract_U32();
+  int iRecording        = resp->extract_U32();
+  int iPending          = resp->extract_U32();
+  if (iRecording)
+    tag.state = PVR_TIMER_STATE_RECORDING;
+  else if (iPending || iActive)
+    tag.state = PVR_TIMER_STATE_SCHEDULED;
+  else
+    tag.state = PVR_TIMER_STATE_CANCELLED;
+  tag.iPriority         = resp->extract_U32();
+  tag.iLifetime         = resp->extract_U32();
+                          resp->extract_U32(); // channel number - unused
+  tag.iClientChannelUid = resp->extract_U32();
+  tag.startTime         = resp->extract_U32();
+  tag.endTime           = resp->extract_U32();
+  tag.firstDay          = resp->extract_U32();
+  tag.iWeekdays         = resp->extract_U32();
+  tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
+  const char* title     = resp->extract_String();
+  tag.iMarginStart      = 0;
+  tag.iMarginEnd        = 0;
+
+#ifdef TARGET_WINDOWS
+  char* p = (char*)strrchr(title, '~');
+#else
+  char* p = (char*)rindex(title, '~');
+#endif
+  if(p == NULL) {
+	  tag.strTitle = title;
+	  tag.strDirectory = "";
+  }
+  else {
+	  const char* name = p + 1;
+
+	  p[0] = 0;
+	  const char* dir = title;
+
+	  // replace dir separators
+	  for(p = (char*)dir; *p != 0; p++)
+		  if(*p == '~') *p = '/';
+
+	  tag.strTitle = name;
+	  tag.strDirectory = dir;
+  }
 }
 
 PVR_ERROR cXVDRData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
@@ -435,7 +476,7 @@ PVR_ERROR cXVDRData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   if (!vrp.add_U32(timernumber))
     return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -453,29 +494,8 @@ PVR_ERROR cXVDRData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
       return PVR_ERROR_SERVER_ERROR;
   }
 
-  tag.iClientIndex      = vresp->extract_U32();
-  int iActive           = vresp->extract_U32();
-  int iRecording        = vresp->extract_U32();
-  int iPending          = vresp->extract_U32();
-  if (iRecording)
-    tag.state = PVR_TIMER_STATE_RECORDING;
-  else if (iPending || iActive)
-    tag.state = PVR_TIMER_STATE_SCHEDULED;
-  else
-    tag.state = PVR_TIMER_STATE_CANCELLED;
-  tag.iPriority         = vresp->extract_U32();
-  tag.iLifetime         = vresp->extract_U32();
-                          vresp->extract_U32(); // channel number - unused
-  tag.iClientChannelUid = vresp->extract_U32();
-  tag.startTime         = vresp->extract_U32();
-  tag.endTime           = vresp->extract_U32();
-  tag.firstDay          = vresp->extract_U32();
-  tag.iWeekdays         = vresp->extract_U32();
-  tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
-  tag.strTitle          = vresp->extract_String();
-  tag.strDirectory            = "";
+  ReadTimerPacket(vresp, tag);
 
-  delete[] tag.strTitle;
   delete vresp;
   return PVR_ERROR_NO_ERROR;
 }
@@ -489,7 +509,7 @@ bool cXVDRData::GetTimersList(PVR_HANDLE handle)
     return false;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     delete vresp;
@@ -503,32 +523,8 @@ bool cXVDRData::GetTimersList(PVR_HANDLE handle)
     while (!vresp->end())
     {
       PVR_TIMER tag;
-      tag.iClientIndex      = vresp->extract_U32();
-      int iActive           = vresp->extract_U32();
-      int iRecording        = vresp->extract_U32();
-      int iPending          = vresp->extract_U32();
-      if (iRecording)
-        tag.state = PVR_TIMER_STATE_RECORDING;
-      else if (iPending || iActive)
-        tag.state = PVR_TIMER_STATE_SCHEDULED;
-      else
-        tag.state = PVR_TIMER_STATE_CANCELLED;
-      tag.iPriority         = vresp->extract_U32();
-      tag.iLifetime         = vresp->extract_U32();
-                              vresp->extract_U32(); // channel number - unused
-      tag.iClientChannelUid = vresp->extract_U32();
-      tag.startTime         = vresp->extract_U32();
-      tag.endTime           = vresp->extract_U32();
-      tag.firstDay          = vresp->extract_U32();
-      tag.iWeekdays         = vresp->extract_U32();
-      tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
-      tag.strTitle          = vresp->extract_String();
-      tag.strDirectory      = "";
-      tag.iMarginStart      = 0;
-      tag.iMarginEnd        = 0;
-
+      ReadTimerPacket(vresp, tag);
       PVR->TransferTimerEntry(handle, &tag);
-      delete[] tag.strTitle;
     }
   }
   delete vresp;
@@ -593,7 +589,7 @@ PVR_ERROR cXVDRData::AddTimer(const PVR_TIMER &timerinfo)
   if (!vrp.add_String(path.c_str()))      return PVR_ERROR_UNKNOWN;
   if (!vrp.add_String(""))                return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -624,7 +620,7 @@ PVR_ERROR cXVDRData::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
   if (!vrp.add_U32(force))
     return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -646,22 +642,27 @@ PVR_ERROR cXVDRData::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cXVDRData::RenameTimer(const PVR_TIMER &timerinfo, const char *newname)
-{
-  PVR_TIMER timerinfo1;
-  PVR_ERROR ret = GetTimerInfo(timerinfo.iClientIndex, timerinfo1);
-  if (ret != PVR_ERROR_NO_ERROR)
-    return ret;
-
-  timerinfo1.strTitle = newname;
-  return UpdateTimer(timerinfo1);
-}
-
 PVR_ERROR cXVDRData::UpdateTimer(const PVR_TIMER &timerinfo)
 {
   // use timer margin to calculate start/end times
   uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart*60;
   uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd*60;
+
+  std::string dir = timerinfo.strDirectory;
+  while(dir[dir.size()-1] == '/' && dir.size() > 1)
+    dir = dir.substr(0, dir.size()-1);
+
+  std::string name = timerinfo.strTitle;
+  std::string title;
+
+  if(!dir.empty() && dir != "/")
+	  title = dir + "/";
+
+  title += name;
+
+  // replace dir separators
+  for(std::string::iterator i = title.begin(); i != title.end(); i++)
+	  if(*i == '/') *i = '~';
 
   cRequestPacket vrp;
   if (!vrp.init(XVDR_TIMER_UPDATE))        return PVR_ERROR_UNKNOWN;
@@ -674,10 +675,10 @@ PVR_ERROR cXVDRData::UpdateTimer(const PVR_TIMER &timerinfo)
   if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKNOWN;
   if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKNOWN;
   if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKNOWN;
-  if (!vrp.add_String(timerinfo.strTitle))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_String(title.c_str()))   return PVR_ERROR_UNKNOWN;
   if (!vrp.add_String(""))                return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -704,7 +705,7 @@ int cXVDRData::GetRecordingsCount()
     return -1;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -726,7 +727,7 @@ PVR_ERROR cXVDRData::GetRecordingsList(PVR_HANDLE handle)
     return PVR_ERROR_UNKNOWN;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packet", __FUNCTION__);
@@ -751,13 +752,6 @@ PVR_ERROR cXVDRData::GetRecordingsList(PVR_HANDLE handle)
     tag.iGenreSubType   = 0;
 
     PVR->TransferRecordingEntry(handle, &tag);
-
-    delete[] tag.strChannelName;
-    delete[] tag.strTitle;
-    delete[] tag.strPlotOutline;
-    delete[] tag.strPlot;
-    delete[] tag.strDirectory;
-    delete[] tag.strRecordingId;
   }
 
   delete vresp;
@@ -783,7 +777,7 @@ PVR_ERROR cXVDRData::RenameRecording(const PVR_RECORDING& recinfo, const char* n
   if (!vrp.add_String(newname))
     return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -811,7 +805,7 @@ PVR_ERROR cXVDRData::DeleteRecording(const PVR_RECORDING& recinfo)
   if (!vrp.add_String(recinfo.strRecordingId))
     return PVR_ERROR_UNKNOWN;
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -839,7 +833,7 @@ PVR_ERROR cXVDRData::DeleteRecording(const PVR_RECORDING& recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool cXVDRData::OnResponsePacket(cResponsePacket* pkt)
+bool cXVDRData::OnResponsePacket(cXVDRResponsePacket* pkt)
 {
   return false;
 }
@@ -855,7 +849,7 @@ bool cXVDRData::SendPing()
     return false;
   }
 
-  cResponsePacket* vresp = cXVDRSession::ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = cXVDRSession::ReadResult(&vrp);
   delete vresp;
 
   return (vresp != NULL);
@@ -864,7 +858,7 @@ bool cXVDRData::SendPing()
 void cXVDRData::Action()
 {
   uint32_t lastPing = 0;
-  cResponsePacket* vresp;
+  cXVDRResponsePacket* vresp;
 
   SetPriority(19);
 
@@ -921,30 +915,24 @@ void cXVDRData::Action()
       if (vresp->getRequestID() == XVDR_STATUS_MESSAGE)
       {
         uint32_t type = vresp->extract_U32();
-        char* msgstr  = vresp->extract_String();
-        std::string text = msgstr;
+        const char* msgstr = vresp->extract_String();
 
         if (type == 2)
-          XBMC->QueueNotification(QUEUE_ERROR, text.c_str());
+          XBMC->QueueNotification(QUEUE_ERROR, msgstr);
         if (type == 1)
-          XBMC->QueueNotification(QUEUE_WARNING, text.c_str());
+          XBMC->QueueNotification(QUEUE_WARNING, msgstr);
         else
-          XBMC->QueueNotification(QUEUE_INFO, text.c_str());
-
-        delete[] msgstr;
+          XBMC->QueueNotification(QUEUE_INFO, msgstr);
       }
       else if (vresp->getRequestID() == XVDR_STATUS_RECORDING)
       {
-                          vresp->extract_U32(); // device currently unused
-        uint32_t on     = vresp->extract_U32();
-        char* str1      = vresp->extract_String();
-        char* str2      = vresp->extract_String();
+                           vresp->extract_U32(); // device currently unused
+        uint32_t on      = vresp->extract_U32();
+        const char* str1 = vresp->extract_String();
+        const char* str2 = vresp->extract_String();
 
-        PVR->Recording(str1, str2, (on!=0));
+        PVR->Recording(str1, str2, on);
         PVR->TriggerTimerUpdate();
-
-        delete[] str1;
-        delete[] str2;
       }
       else if (vresp->getRequestID() == XVDR_STATUS_TIMERCHANGE)
       {
@@ -989,7 +977,7 @@ int cXVDRData::GetChannelGroupCount(bool automatic)
     return 0;
   }
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -1013,7 +1001,7 @@ bool cXVDRData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
 
   vrp.add_U8(bRadio);
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
@@ -1025,10 +1013,8 @@ bool cXVDRData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
     PVR_CHANNEL_GROUP tag;
 
     tag.strGroupName = vresp->extract_String();
-    tag.bIsRadio = (vresp->extract_U8()!=0);
+    tag.bIsRadio = vresp->extract_U8();
     PVR->TransferChannelGroup(handle, &tag);
-
-    delete[] tag.strGroupName;
   }
 
   delete vresp;
@@ -1047,7 +1033,7 @@ bool cXVDRData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROU
   vrp.add_String(group.strGroupName);
   vrp.add_U8(group.bIsRadio);
 
-  cResponsePacket* vresp = ReadResult(&vrp);
+  cXVDRResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;

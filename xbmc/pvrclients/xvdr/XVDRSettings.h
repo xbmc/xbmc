@@ -122,9 +122,10 @@ public:
 
   bool set(const std::string& setting, const void* value);
 
+  void checkValues();
+
   cXVDRConfigParameter<std::string> Hostname;
   cXVDRConfigParameter<int> ConnectTimeout;
-  cXVDRConfigParameter<bool> CharsetConv;
   cXVDRConfigParameter<bool> HandleMessages;
   cXVDRConfigParameter<int> Priority;
   cXVDRConfigParameter<int> Compression;
@@ -142,7 +143,6 @@ protected:
   cXVDRSettings() :
   Hostname("host", "127.0.0,1"),
   ConnectTimeout("timeout", 3),
-  CharsetConv("convertchar", false),
   HandleMessages("handlemessages", true),
   Priority("priority", 50),
   Compression("compression", 2),
