@@ -1575,6 +1575,29 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 		ref_release(buf->proginfo_description);
 	buf->proginfo_description = ref_strdup(tmp_str);
 
+	if (buf->proginfo_version >= 67) {
+		/*
+		 * Get season and episode (unsigned int)
+		 */
+		consumed = cmyth_rcv_ushort(conn, err,
+					   &buf->proginfo_season, count);
+		count -= consumed;
+		total += consumed;
+		if (*err) {
+			failed = "cmyth_rcv_ushort";
+			goto fail;
+		}
+
+		consumed = cmyth_rcv_ushort(conn, err,
+					   &buf->proginfo_episode, count);
+		count -= consumed;
+		total += consumed;
+		if (*err) {
+			failed = "cmyth_rcv_ushort";
+			goto fail;
+		}
+	}
+
 	/*
 	 * Get proginfo_category (string)
 	 */
@@ -2052,12 +2075,29 @@ cmyth_rcv_proginfo(cmyth_conn_t conn, int *err, cmyth_proginfo_t buf,
 		count -= consumed;
 		total += consumed;
 		if (*err) {
-			failed = "cmyth_rcv_timestamp";
+			failed = "cmyth_rcv_string";
 			goto fail;
 		}
 		if (buf->proginfo_programid)
 			ref_release(buf->proginfo_programid);
 		buf->proginfo_programid = ref_strdup(tmp_str);
+	}
+
+	if (buf->proginfo_version >= 67) {
+		/*
+		 * Get inetref (string)
+		 */
+		consumed = cmyth_rcv_string(conn, err, tmp_str,
+						sizeof(tmp_str) - 1, count);
+		count -= consumed;
+		total += consumed;
+		if (*err) {
+			failed = "cmyth_rcv_string";
+			goto fail;
+		}
+		if (buf->proginfo_inetref)
+			ref_release(buf->proginfo_inetref);
+		buf->proginfo_inetref = ref_strdup(tmp_str);
 	}
 
 	if (buf->proginfo_version >= 12) {
