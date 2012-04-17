@@ -566,7 +566,7 @@ bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
   if (model)
   {
     cstr = (const char*)CFDataGetBytePtr(model);
-    if (std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
+    if (cstr && std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
       result = true;
 
     CFRelease(model);
