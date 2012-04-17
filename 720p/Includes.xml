@@ -21,7 +21,7 @@
 	</include>
 	<include name="DialogSlideUp">
 		<animation effect="slide" time="500" tween="circle" easing="out" start="0,100" end="0,0">WindowOpen</animation>
-		<animation effect="slide" time="500" tween="circle" easing="in" start="0,0" end="0,100">WindowClose</animation>
+		<animation effect="slide" time="100" tween="circle" easing="in" start="0,0" end="0,100">WindowClose</animation>
 	</include>
 	<include name="DialogFadeBG">
 		<control type="image">
