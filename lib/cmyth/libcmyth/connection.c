@@ -59,6 +59,7 @@ static myth_protomap_t protomap[] = {
 	{65, "D2BB94C2"},
 	{66, "0C0FFEE0"},
 	{67, "0G0G0G0"},
+	{68, "90094EAD"},
 	{0, 0}
 };
 
