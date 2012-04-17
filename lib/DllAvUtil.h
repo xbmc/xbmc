@@ -59,6 +59,9 @@ extern "C" {
   #else
     #include <ffmpeg/mem.h>
   #endif
+  #if (defined HAVE_LIBAVUTIL_MATHEMATICS_H)
+    #include <libavutil/mathematics.h>
+  #endif
 #else
   #include "libavutil/avutil.h"
   #include "libavutil/audioconvert.h"
