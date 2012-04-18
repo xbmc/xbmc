@@ -672,6 +672,13 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
   {
     m_iPVRChannelId     = epg.m_iPVRChannelId;
     m_iPVRChannelNumber = epg.m_iPVRChannelNumber;
+
+    /* Copy the new channel information to all child tags */
+    for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
+    {
+      it->second->SetPVRChannelID(m_iPVRChannelId);
+      it->second->SetPVRChannelNumber(m_iPVRChannelNumber);
+    }
   }
 
   if (bUpdateDb)

@@ -376,6 +376,18 @@ namespace EPG
     virtual PVR::CPVRTimerInfoTag *Timer(void) const;
 
     /*!
+     * @brief Set the PVR channel ID of the tag
+     * @param The new value
+     */
+    virtual void SetPVRChannelID(int iPVRChannelID);
+
+    /*!
+     * @brief Set the PVR channel number of the tag
+     * @param The new value
+     */
+    virtual void SetPVRChannelNumber(int iPVRChannelNumber);
+
+    /*!
      * @return True if this tag has a PVR channel set.
      */
     virtual bool HasPVRChannel(void) const;
