@@ -130,6 +130,7 @@ public:
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
   virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateDwmFixWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
@@ -178,6 +179,7 @@ protected:
   void AddResolution(const RESOLUTION_INFO &res);
 
   HWND m_hWnd;
+  HWND m_hWndDwmFix;
   std::vector<HWND> m_hBlankWindows;
   HDC m_hDC;
   HINSTANCE m_hInstance;

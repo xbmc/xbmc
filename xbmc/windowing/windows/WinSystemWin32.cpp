@@ -26,6 +26,7 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 
 #ifdef _WIN32
 #include <tpcshrd.h>
@@ -157,6 +158,7 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   m_bWindowCreated = true;
 
   CreateBlankWindows();
+  CreateDwmFixWindow();
 
   ResizeInternal(true);
 
@@ -164,6 +166,37 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
   UpdateWindow( m_hWnd );
 
+  return true;
+}
+
+LRESULT CALLBACK DwmFixWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+  return (DefWindowProc(hWnd, msg, wParam, lParam));
+}
+
+bool CWinSystemWin32::CreateDwmFixWindow()
+{
+  m_hWndDwmFix = NULL;
+
+  // Register the windows class
+  WNDCLASSEX wc = {0};
+  wc.cbSize = sizeof(WNDCLASSEX);
+  wc.lpfnWndProc = (WNDPROC) DwmFixWindowProc;
+  wc.hInstance = m_hInstance;
+  wc.hbrBackground = HBRUSH(0);
+  wc.lpszClassName = TEXT("DwmFixClass");
+  if (!RegisterClassEx(&wc))
+    return false;
+
+  // Create and hide the window
+  HWND hWnd = CreateWindowEx(WS_EX_TRANSPARENT | WS_EX_COMPOSITED, TEXT("DwmFixClass"), TEXT(""), 
+                             WS_SYSMENU | WS_CAPTION, 1, m_nHeight + 50, 1, 1, 
+                             NULL, NULL, m_hInstance, NULL);
+  if (hWnd == NULL)
+    return false;
+
+  ShowWindow(hWnd, SW_HIDE);
+  m_hWndDwmFix = hWnd;
   return true;
 }
 
@@ -474,6 +507,14 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
     }
     else
     {
+      // Hack around DWM not realizing the refresh change by showing/hiding an offscreen window
+      if (!(g_sysinfo.IsAeroDisabled()) && m_hWndDwmFix != NULL)
+      {
+        CLog::Log(LOGDEBUG, "Aero enabled and in windowed fullscreen mode, apply DWM composition rate fix workaround");
+        ShowWindow(m_hWndDwmFix, SW_SHOWNORMAL);
+        UpdateWindow(m_hWndDwmFix);
+        ShowWindow(m_hWndDwmFix, SW_HIDE);
+      }
       return true;
     }
   }
