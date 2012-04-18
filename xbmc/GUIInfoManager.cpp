@@ -3377,10 +3377,15 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
+        CDateTime dateTime;
         if (m_currentFile->GetVideoInfoTag()->m_firstAired.IsValid())
-          return m_currentFile->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
-        if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
-          return m_currentFile->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
+          dateTime = m_currentFile->GetVideoInfoTag()->m_firstAired;
+        else if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
+          dateTime = m_currentFile->GetVideoInfoTag()->m_premiered;
+
+        if (dateTime.IsValid())
+          return dateTime.GetAsLocalizedDate();
+        break;
       }
       break;
     case VIDEOPLAYER_PLOT:
@@ -3439,7 +3444,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
     case VIDEOPLAYER_LASTPLAYED:
-      return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
+      {
+        if (m_currentFile->GetVideoInfoTag()->m_lastPlayed.IsValid())
+          return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
+        break;
+      }
     case VIDEOPLAYER_PLAYCOUNT:
       {
         CStdString strPlayCount;
@@ -3871,11 +3880,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     }
   case LISTITEM_LASTPLAYED:
     {
-      CStdString strLastPlayed;
+      CDateTime dateTime;
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDate();
-      if (item->HasMusicInfoTag())
-        return item->GetMusicInfoTag()->GetLastPlayed().GetAsLocalizedDate();
+        dateTime = item->GetVideoInfoTag()->m_lastPlayed;
+      else if (item->HasMusicInfoTag())
+        dateTime = item->GetMusicInfoTag()->GetLastPlayed();
+
+      if (dateTime.IsValid())
+        return dateTime.GetAsLocalizedDate();
       break;
     }
   case LISTITEM_TRACKNUMBER:
@@ -3926,10 +3938,15 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
+      CDateTime dateTime;
       if (item->GetVideoInfoTag()->m_firstAired.IsValid())
-        return item->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
-      if (item->GetVideoInfoTag()->m_premiered.IsValid())
-        return item->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
+        dateTime = item->GetVideoInfoTag()->m_firstAired;
+      else if (item->GetVideoInfoTag()->m_premiered.IsValid())
+        dateTime = item->GetVideoInfoTag()->m_premiered;
+
+      if (dateTime.IsValid())
+        return dateTime.GetAsLocalizedDate();
+      break;
     }
     break;
   case LISTITEM_GENRE:
