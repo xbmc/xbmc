@@ -280,7 +280,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -357,7 +357,7 @@
 						</control>
 						<!-- unwatched icon -->
 						<control type="image">
-							<visible>Window.IsActive(24) + !Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(plugincontent)</visible>
+							<visible>Window.IsActive(24) + !Container.Content(TVShows) + !Container.Content(Seasons) + ListItem.Property(HasWatchedState)</visible>
 							<posx>535</posx>
 							<posy>5</posy>
 							<width>35</width>
@@ -396,7 +396,7 @@
 						</control>
 						<!-- unwatched count bg -->
 						<control type="image">
-							<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
+							<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + ListItem.Property(HasWatchedState)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -527,7 +527,7 @@
 						</control>
 						<!-- unwatched icon -->
 						<control type="image">
-							<visible>Window.IsActive(24) + !Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(plugincontent)</visible>
+							<visible>Window.IsActive(24) + !Container.Content(TVShows) + !Container.Content(Seasons) + ListItem.Property(HasWatchedState)</visible>
 							<posx>535</posx>
 							<posy>5</posy>
 							<width>35</width>
