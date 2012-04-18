@@ -787,6 +787,18 @@ CPVRTimerInfoTag *CEpgInfoTag::Timer(void) const
   return tag;
 }
 
+void CEpgInfoTag::SetPVRChannelID(int iPVRChannelID)
+{
+  CSingleLock lock(m_critSection);
+  m_iPVRChannelID = iPVRChannelID;
+}
+
+void CEpgInfoTag::SetPVRChannelNumber(int iPVRChannelNumber)
+{
+  CSingleLock lock(m_critSection);
+  m_iPVRChannelNumber = iPVRChannelNumber;
+}
+
 bool CEpgInfoTag::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
