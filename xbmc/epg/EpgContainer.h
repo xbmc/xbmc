@@ -201,6 +201,12 @@ namespace EPG
     void PreventUpdates(bool bSetTo = true) { m_bPreventUpdates = bSetTo;  }
 
     /*!
+     * @brief Notify EPG container that there are pending manual EPG updates
+     * @param bHasPendingUpdates The new value
+     */
+    void SetHasPendingUpdates(bool bHasPendingUpdates = true);
+
+    /*!
      * @return True while being initialised.
      */
     bool IsInitialising(void) const;
@@ -228,9 +234,10 @@ namespace EPG
 
     /*!
      * @brief Load and update the EPG data.
+     * @param bOnlyPending Only check and update EPG tables with pending manual updates
      * @return True if the update has not been interrupted, false otherwise.
      */
-    virtual bool UpdateEPG();
+    virtual bool UpdateEPG(bool bOnlyPending = false);
 
     /*!
      * @return True if a running update should be interrupted, false otherwise.
@@ -274,6 +281,7 @@ namespace EPG
     bool         m_bIsInitialising;        /*!< true while the epg manager hasn't loaded all tables */
     bool         m_bLoaded;                /*!< true after epg data is initially loaded from the database */
     bool         m_bPreventUpdates;        /*!< true to prevent EPG updates */
+    bool         m_bHasPendingUpdates;     /*!< true if there are manual updates pending */
     time_t       m_iLastEpgCleanup;        /*!< the time the EPG was cleaned up */
     time_t       m_iNextEpgUpdate;         /*!< the time the EPG will be updated */
     time_t       m_iNextEpgActiveTagCheck; /*!< the time the EPG will be checked for active tag updates */
