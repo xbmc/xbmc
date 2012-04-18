@@ -27,9 +27,9 @@
 
 using namespace PYXBMC;
 
-struct SPyEvent
+struct SPyMonitor
 {
-  SPyEvent(CPythonMonitor* monitor
+  SPyMonitor(CPythonMonitor* monitor
          , const std::string &function, const std::string &arg = "")
   {
     m_monitor   = monitor;
@@ -38,7 +38,7 @@ struct SPyEvent
     m_arg = arg;
   }
 
-  ~SPyEvent()
+  ~SPyMonitor()
   {
     m_monitor->Release();
   }
@@ -51,15 +51,15 @@ struct SPyEvent
 /*
  * called from python library!
  */
-static int SPyEvent_Function(void* e)
+static int SPyMonitor_Function(void* e)
 {
-  SPyEvent* object = (SPyEvent*)e;
+  SPyMonitor* object = (SPyMonitor*)e;
   PyObject* ret    = NULL;
 
   if(object->m_monitor->m_callback)
   { 
     if (!object->m_arg.empty())
-      ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), "(s)", object->m_arg.c_str());
+      ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), (char*)"(s)", object->m_arg.c_str());
     else
       ret = PyObject_CallMethod(object->m_monitor->m_callback, (char*)object->m_function.c_str(), NULL);
   }
@@ -101,25 +101,25 @@ CPythonMonitor::~CPythonMonitor(void)
 
 void CPythonMonitor::OnSettingsChanged()
 {
-  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onSettingsChanged"));
+  PyXBMC_AddPendingCall(m_state, SPyMonitor_Function, new SPyMonitor(this, "onSettingsChanged"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonMonitor::OnScreensaverActivated()
 {
-  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onScreensaverActivated"));
+  PyXBMC_AddPendingCall(m_state, SPyMonitor_Function, new SPyMonitor(this, "onScreensaverActivated"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonMonitor::OnScreensaverDeactivated()
 {
-  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onScreensaverDeactivated"));
+  PyXBMC_AddPendingCall(m_state, SPyMonitor_Function, new SPyMonitor(this, "onScreensaverDeactivated"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonMonitor::OnDatabaseUpdated(const std::string &database)
 {
- PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onDatabaseUpdated", database));
+ PyXBMC_AddPendingCall(m_state, SPyMonitor_Function, new SPyMonitor(this, "onDatabaseUpdated", database));
  g_pythonParser.PulseGlobalEvent();
 }
 

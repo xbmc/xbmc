@@ -2398,6 +2398,15 @@ namespace JSONRPC
       "],"
       "\"returns\": null"
     "}",
+    "\"AudioLibrary.OnScanFinished\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"Scanning the audio library has been finished.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
+      "],"
+      "\"returns\": null"
+    "}",
     "\"VideoLibrary.OnUpdate\": {"
       "\"type\": \"notification\","
       "\"description\": \"A video item has been updated.\","
@@ -2424,6 +2433,15 @@ namespace JSONRPC
             "\"type\": { \"$ref\": \"Notifications.Library.Video.Type\", \"required\": true }"
           "}"
         "}"
+      "],"
+      "\"returns\": null"
+    "}",
+    "\"VideoLibrary.OnScanFinished\": {"
+      "\"type\": \"notification\","
+      "\"description\": \"Scanning the video library has been finished.\","
+      "\"params\": ["
+        "{ \"name\": \"sender\", \"type\": \"string\", \"required\": true },"
+        "{ \"name\": \"data\", \"type\": \"null\", \"required\": true }"
       "],"
       "\"returns\": null"
     "}",

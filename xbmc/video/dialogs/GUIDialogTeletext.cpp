@@ -119,9 +119,9 @@ void CGUIDialogTeletext::OnInitWindow()
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   float left = g_graphicsContext.ScaleFinalXCoord(0, 0);
-  float right = g_graphicsContext.ScaleFinalXCoord(m_coordsRes.iWidth, 0);
+  float right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
   float top = g_graphicsContext.ScaleFinalYCoord(0, 0);
-  float bottom = g_graphicsContext.ScaleFinalYCoord(0, m_coordsRes.iHeight);
+  float bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
   m_vertCoords.SetRect(left,
                        top,

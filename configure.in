@@ -1214,6 +1214,9 @@ if test "$use_external_ffmpeg" = "yes"; then
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
 
+  # new FFmpeg have math headers
+  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
+
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)

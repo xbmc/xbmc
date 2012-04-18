@@ -122,7 +122,7 @@ bool CRemoteControl::Connect()
   if(res)
   {
     if(m_iAttempt == 0)
-      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s", gai_strerror(res));
     return false;
   }
 

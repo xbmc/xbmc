@@ -69,7 +69,7 @@ endif
 ffmpeg:
 	$(MAKE) -C $@
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(AR) d ffmpeg/libavcodec/libavcodec.a inverse.o
+	-$(AR) d ffmpeg/libavcodec/libavcodec.a inverse.o
 endif
 
 clean:
