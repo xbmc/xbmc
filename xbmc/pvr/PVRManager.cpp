@@ -581,6 +581,36 @@ int CPVRManager::GetPreviousChannel(void)
   return iReturn;
 }
 
+bool CPVRManager::ToggleRecordingOnChannel(unsigned int iChannelId)
+{
+  bool bReturn = false;
+
+  CPVRChannel *channel;
+  channel = m_channelGroups->GetChannelById(iChannelId);
+  if (!channel)
+    return bReturn;
+
+  if (m_addons->HasTimerSupport(channel->ClientID()))
+  {
+    /* timers are supported on this channel */
+    if (!channel->IsRecording())
+    {
+      CPVRTimerInfoTag *newTimer = m_timers->InstantTimer(channel);
+      if (!newTimer)
+        CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
+      else
+        bReturn = true;
+    }
+    else
+    {
+      /* delete active timers */
+      bReturn = m_timers->DeleteTimersOnChannel(*channel, false, true);
+    }
+  }
+
+  return bReturn;
+}
+
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
   bool bReturn = false;
