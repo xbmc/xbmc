@@ -104,6 +104,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
         CPVRChannelGroups *groups = ((CPVRChannelGroups *) g_PVRChannelGroups->Get(m_bIsRadio));
         if (groups->AddGroup(strGroupName))
         {
+          g_PVRChannelGroups->Get(m_bIsRadio)->GetByName(strGroupName)->SetUserSetGroup(true);
           m_iSelectedChannelGroup = groups->size() - 1;
           Update();
         }
