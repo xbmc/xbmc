@@ -104,9 +104,10 @@ bool CPVRDatabase::CreateTables()
     CLog::Log(LOGDEBUG, "PVR - %s - creating table 'channelgroups'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE channelgroups ("
-          "idGroup    integer primary key,"
-          "bIsRadio   bool, "
-          "sName      varchar(64)"
+          "idGroup         integer primary key,"
+          "bIsRadio        bool, "
+          "bIsUserSetGroup bool, "
+          "sName           varchar(64)"
         ")"
     );
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
@@ -256,6 +257,9 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
       }
       if (iVersion < 20)
         m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
+
+      if (iVersion < 21)
+        m_pDS->exec("ALTER TABLE channelgroups ADD bIsUserSetGroup bool");
     }
   }
   catch (...)
@@ -660,6 +664,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
 
         data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
         data.SetGroupName(m_pDS->fv("sName").get_asString());
+        data.SetUserSetGroup(m_pDS->fv("bIsUserSetGroup").get_asBool());
 
         results.Update(data);
 
@@ -742,8 +747,8 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
 
 bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 {
-  bool bReturn = false;
-  bool bRemoveChannels = false;
+  bool bReturn = true;
+  bool bRemoveChannels = true;
   CStdString strQuery;
   CSingleLock lock(group.m_critSection);
 
@@ -825,11 +830,11 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = FormatSQL("INSERT INTO channelgroups (bIsRadio, sName) VALUES (%i, '%s')",
-          (group.IsRadio() ? 1 :0), group.GroupName().c_str());
+      strQuery = FormatSQL("INSERT INTO channelgroups (bIsRadio, bIsUserSetGroup, sName) VALUES (%i, %i, '%s')",
+          (group.IsRadio() ? 1 :0), (group.IsUserSetGroup() ? 1 :0), group.GroupName().c_str());
     else
-      strQuery = FormatSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, sName) VALUES (%i, %i, '%s')",
-          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str());
+      strQuery = FormatSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, bIsUserSetGroup, sName) VALUES (%i, %i, %i, '%s')",
+          group.GroupID(), (group.IsRadio() ? 1 :0), (group.IsUserSetGroup() ? 1 :0), group.GroupName().c_str());
 
     bReturn = ExecuteQuery(strQuery);
 

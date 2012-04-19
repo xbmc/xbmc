@@ -190,6 +190,17 @@ namespace PVR
     virtual void SetGroupID(int iGroupId) { m_iGroupId = iGroupId; }
 
     /*!
+     * @brief Set the m_bIsUserSetGroup bool of this group.
+     * @param the new bIsUserSetGroup bool.
+     */
+    virtual void SetUserSetGroup(bool bIsUserSetGroup) { m_bIsUserSetGroup = bIsUserSetGroup; }
+
+    /*!
+     * @brief Return the m_bIsUserSetGroup bool of this group.
+     */
+    virtual bool IsUserSetGroup(void) const { return m_bIsUserSetGroup; }
+
+    /*!
      * @brief The name of this group.
      * @return The name of this group.
      */
@@ -427,6 +438,7 @@ namespace PVR
     virtual CPVRChannel *GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const;
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
+    bool             m_bIsUserSetGroup;             /*!< true if this is a group created by the user, false otherwise */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
     CStdString       m_strGroupName;                /*!< The name of this group */
     bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */

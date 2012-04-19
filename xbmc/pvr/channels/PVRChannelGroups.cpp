@@ -93,6 +93,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   if (iIndex < 0)
   {
     CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName());
+    newGroup->SetUserSetGroup(group.IsUserSetGroup());
     if (bSaveInDb)
       newGroup->Persist();
 
@@ -102,6 +103,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   {
     at(iIndex)->SetGroupID(group.GroupID());
     at(iIndex)->SetGroupName(group.GroupName());
+    at(iIndex)->SetUserSetGroup(group.IsUserSetGroup());
 
     if (bSaveInDb)
       at(iIndex)->Persist();
@@ -221,7 +223,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
   {
     CPVRChannelGroup existingGroup(*at(iGroupPtr));
     CPVRChannelGroup *group = (CPVRChannelGroup *) groups.GetByName(existingGroup.GroupName());
-    if (group == NULL)
+    if (!existingGroup.IsUserSetGroup() && group == NULL)
     {
       CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - user defined group %s with ID '%u' does not exist on the client anymore. deleting",
           __FUNCTION__, existingGroup.GroupName().c_str(), existingGroup.GroupID());
