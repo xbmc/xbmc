@@ -229,7 +229,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     if (hasThumbnailField)
     {
       if (item->HasThumbnail())
-        object["thumbnail"] = item->GetThumbnailImage().c_str();
+        object["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
       else if (item->HasVideoInfoTag())
       {
         CStdString strPath, strFileName;

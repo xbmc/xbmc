@@ -1,0 +1,22 @@
+#
+# Makefile for the XBMC HTS Tvheadend PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
+
+LIBS   = -ldl -lcurl
+LIBDIR = @abs_top_srcdir@/addons/pvr.vuplus
+LIB    = @abs_top_srcdir@/addons/pvr.vuplus/XBMC_vuplus.pvr
+
+SRCS=client.cpp \
+     xmlParser.cpp \
+     VuData.cpp 
+
+include ../Makefile.include
+
+clean:
+	-rm -f $(OBJS) $(LIB) *.P *~
+
+$(LIB): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

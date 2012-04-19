@@ -413,6 +413,7 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
       m_started = false;
     }
@@ -420,6 +421,7 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
       m_packets.clear();
 
       m_pullupCorrection.Flush();
@@ -829,11 +831,40 @@ void CDVDPlayerVideo::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
+int CDVDPlayerVideo::GetLevel()
+{
+  int level = m_messageQueue.GetLevel();
+
+  // fast exit, if the message queue is full, we do not care about the codec queue.
+  if (level == 100)
+    return level;
+
+  // Now for the harder choices, the message queue could be time or size based.
+  // In order to return the proper summed level, we need to know which.
+  if (m_messageQueue.IsDataBased())
+  {
+    int datasize = m_messageQueue.GetDataSize();
+    if (m_pVideoCodec)
+      datasize += m_pVideoCodec->GetDataSize();
+    return min(100, (int)(100 * datasize / (m_messageQueue.GetMaxDataSize() * m_messageQueue.GetMaxTimeSize())));
+  }
+  else
+  {
+    double timesize = m_messageQueue.GetTimeSize();
+    if (m_pVideoCodec)
+      timesize += m_pVideoCodec->GetTimeSize();
+    return min(100, MathUtils::round_int(100.0 * m_messageQueue.GetMaxTimeSize() * timesize));
+  }
+
+  return level;
+}
+
 #ifdef HAS_VIDEO_PLAYBACK
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 {
   // remove any overlays that are out of time
-  m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
+  if (m_started)
+    m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
 
   enum EOverlay
   { OVERLAY_AUTO // select mode auto
@@ -883,6 +914,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
   if(render == OVERLAY_AUTO)
     render = OVERLAY_GPU;
 
+  VecOverlays overlays;
+
   {
     CSingleLock lock(*m_pOverlayContainer);
 
@@ -904,15 +937,28 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
       {
-        if (render == OVERLAY_GPU)
-          g_renderManager.AddOverlay(pOverlay, pts2);
+        if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
+          overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
+                                        , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
+        else
+          overlays.push_back(pOverlay);
 
-        if (render == OVERLAY_BUF)
-          CDVDOverlayRenderer::Render(pSource, pOverlay, pts2);
       }
     }
 
+    for(it = overlays.begin(); it != overlays.end(); ++it)
+    {
+      double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
+
+      if (render == OVERLAY_GPU)
+        g_renderManager.AddOverlay(*it, pts2);
+
+      if (render == OVERLAY_BUF)
+        CDVDOverlayRenderer::Render(pSource, *it, pts2);
+    }
   }
+
+
 }
 #endif
 
@@ -1444,7 +1490,7 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "fr:"     << fixed << setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
+  s << ", vq:"   << setw(2) << min(99,GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;

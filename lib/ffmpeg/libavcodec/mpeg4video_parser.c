@@ -20,6 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#define UNCHECKED_BITSTREAM_READER 1
+
 #include "parser.h"
 #include "mpegvideo.h"
 #include "mpeg4video.h"
@@ -99,6 +101,8 @@ static av_cold int mpeg4video_parse_init(AVCodecParserContext *s)
     if (!pc->enc)
         return -1;
     pc->first_picture = 1;
+    pc->enc->quant_precision=5;
+    pc->enc->slice_context_count = 1;
     return 0;
 }
 
@@ -130,10 +134,10 @@ static int mpeg4video_parse(AVCodecParserContext *s,
 
 
 AVCodecParser ff_mpeg4video_parser = {
-    { CODEC_ID_MPEG4 },
-    sizeof(ParseContext1),
-    mpeg4video_parse_init,
-    mpeg4video_parse,
-    ff_parse1_close,
-    ff_mpeg4video_split,
+    .codec_ids      = { CODEC_ID_MPEG4 },
+    .priv_data_size = sizeof(ParseContext1),
+    .parser_init    = mpeg4video_parse_init,
+    .parser_parse   = mpeg4video_parse,
+    .parser_close   = ff_parse1_close,
+    .split          = ff_mpeg4video_split,
 };

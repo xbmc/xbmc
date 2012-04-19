@@ -45,13 +45,22 @@ protected:
 
   bool IsZCdaemonRunning();
 
+  void ProcessResults();
+
 private:
 
-  static void DNSSD_API registerCallback(DNSServiceRef sdref, const DNSServiceFlags flags, DNSServiceErrorType errorCode, const char *name, const char *regtype, const char *domain, void *context);
+  static void DNSSD_API registerCallback(DNSServiceRef sdref,
+                                         const DNSServiceFlags flags,
+                                         DNSServiceErrorType errorCode,
+                                         const char *name,
+                                         const char *regtype,
+                                         const char *domain,
+                                         void *context);
 
 
   //lock + data (accessed from runloop(main thread) + the rest)
   CCriticalSection m_data_guard;
   typedef std::map<std::string, DNSServiceRef> tServiceMap;
   tServiceMap m_services;
+  DNSServiceRef m_service;
 };

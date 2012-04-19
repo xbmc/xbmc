@@ -29,10 +29,19 @@
 #include "os_support.h"
 #include "rtsp.h"
 #include "internal.h"
+#include "avio_internal.h"
 #include "libavutil/intreadwrite.h"
 #include "libavutil/avstring.h"
+#include "url.h"
 
 #define SDP_MAX_SIZE 16384
+
+static const AVClass rtsp_muxer_class = {
+    .class_name = "RTSP muxer",
+    .item_name  = av_default_item_name,
+    .option     = ff_rtsp_options,
+    .version    = LIBAVUTIL_VERSION_INT,
+};
 
 int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
 {
@@ -64,7 +73,7 @@ int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
     ff_url_join(sdp_ctx.filename, sizeof(sdp_ctx.filename),
                 "rtsp", NULL, addr, -1, NULL);
     ctx_array[0] = &sdp_ctx;
-    if (avf_sdp_create(ctx_array, 1, sdp, SDP_MAX_SIZE)) {
+    if (av_sdp_create(ctx_array, 1, sdp, SDP_MAX_SIZE)) {
         av_free(sdp);
         return AVERROR_INVALIDDATA;
     }
@@ -135,14 +144,14 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
     int size;
     uint8_t *interleave_header, *interleaved_packet;
 
-    size = url_close_dyn_buf(rtpctx->pb, &buf);
+    size = avio_close_dyn_buf(rtpctx->pb, &buf);
     ptr = buf;
     while (size > 4) {
         uint32_t packet_len = AV_RB32(ptr);
         int id;
         /* The interleaving header is exactly 4 bytes, which happens to be
          * the same size as the packet length header from
-         * url_open_dyn_packet_buf. So by writing the interleaving header
+         * ffio_open_dyn_packet_buf. So by writing the interleaving header
          * over these bytes, we get a consecutive interleaved packet
          * that can be written in one call. */
         interleaved_packet = interleave_header = ptr;
@@ -157,12 +166,12 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
         interleave_header[0] = '$';
         interleave_header[1] = id;
         AV_WB16(interleave_header + 2, packet_len);
-        url_write(rt->rtsp_hd_out, interleaved_packet, 4 + packet_len);
+        ffurl_write(rt->rtsp_hd_out, interleaved_packet, 4 + packet_len);
         ptr += packet_len;
         size -= packet_len;
     }
     av_free(buf);
-    url_open_dyn_packet_buf(&rtpctx->pb, RTSP_TCP_MAX_PACKET_SIZE);
+    ffio_open_dyn_packet_buf(&rtpctx->pb, RTSP_TCP_MAX_PACKET_SIZE);
     return 0;
 }
 
@@ -171,7 +180,7 @@ static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
     RTSPState *rt = s->priv_data;
     RTSPStream *rtsp_st;
     int n;
-    struct pollfd p = {url_get_file_handle(rt->rtsp_hd), POLLIN, 0};
+    struct pollfd p = {ffurl_get_file_handle(rt->rtsp_hd), POLLIN, 0};
     AVFormatContext *rtpctx;
     int ret;
 
@@ -225,16 +234,15 @@ static int rtsp_write_close(AVFormatContext *s)
 }
 
 AVOutputFormat ff_rtsp_muxer = {
-    "rtsp",
-    NULL_IF_CONFIG_SMALL("RTSP output format"),
-    NULL,
-    NULL,
-    sizeof(RTSPState),
-    CODEC_ID_AAC,
-    CODEC_ID_MPEG4,
-    rtsp_write_header,
-    rtsp_write_packet,
-    rtsp_write_close,
+    .name              = "rtsp",
+    .long_name         = NULL_IF_CONFIG_SMALL("RTSP output format"),
+    .priv_data_size    = sizeof(RTSPState),
+    .audio_codec       = CODEC_ID_AAC,
+    .video_codec       = CODEC_ID_MPEG4,
+    .write_header      = rtsp_write_header,
+    .write_packet      = rtsp_write_packet,
+    .write_trailer     = rtsp_write_close,
     .flags = AVFMT_NOFILE | AVFMT_GLOBALHEADER,
+    .priv_class = &rtsp_muxer_class,
 };
 

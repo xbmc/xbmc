@@ -44,8 +44,8 @@
 #define MIN_SIZE 3
 #define MAX_SIZE 13
 
-#define CHROMA_WIDTH(link)  -((-link->w) >> av_pix_fmt_descriptors[link->format].log2_chroma_w)
-#define CHROMA_HEIGHT(link) -((-link->h) >> av_pix_fmt_descriptors[link->format].log2_chroma_h)
+/* right-shift and round-up */
+#define SHIFTUP(x,shift) (-((-(x))>>(shift)))
 
 typedef struct FilterParam {
     int msize_x;                             ///< matrix width
@@ -61,15 +61,19 @@ typedef struct FilterParam {
 typedef struct {
     FilterParam luma;   ///< luma parameters (width, height, amount)
     FilterParam chroma; ///< chroma parameters (width, height, amount)
+    int hsub, vsub;
 } UnsharpContext;
 
-static void unsharpen(uint8_t *dst, uint8_t *src, int dst_stride, int src_stride, int width, int height, FilterParam *fp)
+static void apply_unsharp(      uint8_t *dst, int dst_stride,
+                          const uint8_t *src, int src_stride,
+                          int width, int height, FilterParam *fp)
 {
     uint32_t **sc = fp->sc;
     uint32_t sr[(MAX_SIZE * MAX_SIZE) - 1], tmp1, tmp2;
 
     int32_t res;
     int x, y, z;
+    const uint8_t *src2 = NULL;  //silence a warning
 
     if (!fp->amount) {
         if (dst_stride == src_stride)
@@ -84,9 +88,12 @@ static void unsharpen(uint8_t *dst, uint8_t *src, int dst_stride, int src_stride
         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
 
     for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+        if (y < height)
+            src2 = src;
+
         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
         for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
-            tmp1 = x <= 0 ? src[0] : x >= width ? src[width-1] : src[x];
+            tmp1 = x <= 0 ? src2[0] : x >= width ? src2[width-1] : src2[x];
             for (z = 0; z < fp->steps_x * 2; z += 2) {
                 tmp2 = sr[z + 0] + tmp1; sr[z + 0] = tmp1;
                 tmp1 = sr[z + 1] + tmp2; sr[z + 1] = tmp2;
@@ -96,8 +103,8 @@ static void unsharpen(uint8_t *dst, uint8_t *src, int dst_stride, int src_stride
                 tmp1 = sc[z + 1][x + fp->steps_x] + tmp2; sc[z + 1][x + fp->steps_x] = tmp2;
             }
             if (x >= fp->steps_x && y >= fp->steps_y) {
-                uint8_t* srx = src - fp->steps_y * src_stride + x - fp->steps_x;
-                uint8_t* dsx = dst - fp->steps_y * dst_stride + x - fp->steps_x;
+                const uint8_t *srx = src - fp->steps_y * src_stride + x - fp->steps_x;
+                uint8_t       *dsx = dst - fp->steps_y * dst_stride + x - fp->steps_x;
 
                 res = (int32_t)*srx + ((((int32_t) * srx - (int32_t)((tmp1 + fp->halfscale) >> fp->scalebits)) * fp->amount) >> 16);
                 *dsx = av_clip_uint8(res);
@@ -125,8 +132,8 @@ static void set_filter_param(FilterParam *fp, int msize_x, int msize_y, double a
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 {
     UnsharpContext *unsharp = ctx->priv;
-    int lmsize_x = 5, cmsize_x = 0;
-    int lmsize_y = 5, cmsize_y = 0;
+    int lmsize_x = 5, cmsize_x = 5;
+    int lmsize_y = 5, cmsize_y = 5;
     double lamount = 1.0f, camount = 0.0f;
 
     if (args)
@@ -155,7 +162,7 @@ static int query_formats(AVFilterContext *ctx)
         PIX_FMT_YUVJ444P, PIX_FMT_YUVJ440P, PIX_FMT_NONE
     };
 
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
 
     return 0;
 }
@@ -178,8 +185,11 @@ static int config_props(AVFilterLink *link)
 {
     UnsharpContext *unsharp = link->dst->priv;
 
+    unsharp->hsub = av_pix_fmt_descriptors[link->format].log2_chroma_w;
+    unsharp->vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
+
     init_filter_param(link->dst, &unsharp->luma,   "luma",   link->w);
-    init_filter_param(link->dst, &unsharp->chroma, "chroma", CHROMA_WIDTH(link));
+    init_filter_param(link->dst, &unsharp->chroma, "chroma", SHIFTUP(link->w, unsharp->hsub));
 
     return 0;
 }
@@ -205,10 +215,12 @@ static void end_frame(AVFilterLink *link)
     UnsharpContext *unsharp = link->dst->priv;
     AVFilterBufferRef *in  = link->cur_buf;
     AVFilterBufferRef *out = link->dst->outputs[0]->out_buf;
+    int cw = SHIFTUP(link->w, unsharp->hsub);
+    int ch = SHIFTUP(link->h, unsharp->vsub);
 
-    unsharpen(out->data[0], in->data[0], out->linesize[0], in->linesize[0], link->w,            link->h,             &unsharp->luma);
-    unsharpen(out->data[1], in->data[1], out->linesize[1], in->linesize[1], CHROMA_WIDTH(link), CHROMA_HEIGHT(link), &unsharp->chroma);
-    unsharpen(out->data[2], in->data[2], out->linesize[2], in->linesize[2], CHROMA_WIDTH(link), CHROMA_HEIGHT(link), &unsharp->chroma);
+    apply_unsharp(out->data[0], out->linesize[0], in->data[0], in->linesize[0], link->w, link->h, &unsharp->luma);
+    apply_unsharp(out->data[1], out->linesize[1], in->data[1], in->linesize[1], cw,      ch,      &unsharp->chroma);
+    apply_unsharp(out->data[2], out->linesize[2], in->data[2], in->linesize[2], cw,      ch,      &unsharp->chroma);
 
     avfilter_unref_buffer(in);
     avfilter_draw_slice(link->dst->outputs[0], 0, link->h, 1);
@@ -230,7 +242,7 @@ AVFilter avfilter_vf_unsharp = {
     .uninit = uninit,
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .draw_slice       = draw_slice,
                                     .end_frame        = end_frame,
@@ -238,7 +250,7 @@ AVFilter avfilter_vf_unsharp = {
                                     .min_perms        = AV_PERM_READ, },
                                   { .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO, },
                                   { .name = NULL}},
 };

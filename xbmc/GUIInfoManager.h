@@ -492,9 +492,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-#define VERSION_MAJOR 11
+#define VERSION_MAJOR 12
 #define VERSION_MINOR 0
-#define VERSION_TAG "-PRE"
+#define VERSION_TAG "-ALPHA1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -705,9 +705,9 @@ public:
    \sa GetItemInt, GetMultiInfoInt
    */
   bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
-  CStdString GetLabel(int info, int contextWindow = 0);
+  CStdString GetLabel(int info, int contextWindow = 0, CStdString *fallback = NULL);
 
-  CStdString GetImage(int info, int contextWindow);
+  CStdString GetImage(int info, int contextWindow, CStdString *fallback = NULL);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetLcdTime( int _eInfo ) const;
@@ -767,8 +767,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info);
-  CStdString GetItemImage(const CFileItem *item, int info);
+  CStdString GetItemLabel(const CFileItem *item, int info, CStdString *fallback = NULL);
+  CStdString GetItemImage(const CFileItem *item, int info, CStdString *fallback = NULL);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -819,7 +819,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, CStdString *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);

@@ -56,15 +56,18 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   CRegExp reDateTime(true);
   reDateTime.RegComp("<td align=\"right\">([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) +</td>");
+  
+  CRegExp reDateTimeLighttp(true);
+  reDateTimeLighttp.RegComp("<td class=\"m\">([0-9]{4})-([A-Z]{3})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})</td>");
 
   CRegExp reDateTimeNginx(true);
   reDateTimeNginx.RegComp("</a> +([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) ");
 
   CRegExp reSize(true);
-  reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
+  reSize.RegComp("> *([0-9.]+)(B|K|M|G| )</td>");
 
-  CRegExp reSizeNginx;
-  reSizeNginx.RegComp("([0-9]+)$");
+  CRegExp reSizeNginx(true);
+  reSizeNginx.RegComp("([0-9]+)(B|K|M|G)?$");
 
   /* read response from server into string buffer */
   char buffer[MAX_PATH + 1024];
@@ -128,6 +131,14 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           hour = reDateTimeNginx.GetReplaceString("\\4");
           minute = reDateTimeNginx.GetReplaceString("\\5");
         }
+        else if (reDateTimeLighttp.RegFind(strBuffer.c_str()) >= 0)
+        {
+          day = reDateTimeLighttp.GetReplaceString("\\3");
+          month = reDateTimeLighttp.GetReplaceString("\\2");
+          year = reDateTimeLighttp.GetReplaceString("\\1");
+          hour = reDateTimeLighttp.GetReplaceString("\\4");
+          minute = reDateTimeLighttp.GetReplaceString("\\5");
+        }
 
         if (day.length() > 0 && month.length() > 0 && year.length() > 0)
         {
@@ -146,13 +157,22 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             else if (strUnit == "M")
               Size = Size * 1024 * 1024;
             else if (strUnit == "G")
-              Size = Size * 1000 * 1024 * 1024;
+              Size = Size * 1024 * 1024 * 1024;
 
             pItem->m_dwSize = (int64_t)Size;
           }
           else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSizeNginx.GetReplaceString("\\1"));
+            CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
+
+            if (strUnit == "K")
+              Size = Size * 1024;
+            else if (strUnit == "M")
+              Size = Size * 1024 * 1024;
+            else if (strUnit == "G")
+              Size = Size * 1024 * 1024 * 1024;
+
             pItem->m_dwSize = (int64_t)Size;
           }
           else

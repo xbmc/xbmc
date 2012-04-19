@@ -249,9 +249,9 @@ bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::NextStream()
+CDVDInputStream::ENextStream CDVDInputStreamPVRManager::NextStream()
 {
-  if(!m_pFile) return false;
+  if(!m_pFile) return NEXTSTREAM_NONE;
 
   if (m_pOtherStream)
     return m_pOtherStream->NextStream();
@@ -260,10 +260,10 @@ bool CDVDInputStreamPVRManager::NextStream()
     if(m_pFile->SkipNext())
     {
       m_eof = false;
-      return true;
+      return NEXTSTREAM_OPEN;
     }
   }
-  return false;
+  return NEXTSTREAM_NONE;
 }
 
 bool CDVDInputStreamPVRManager::CanRecord()

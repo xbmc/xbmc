@@ -419,9 +419,12 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
         }
         else
+        {
           iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
-
-        m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+          m_holdmode  = HOLDMODE_HELD;
+          m_lastevent = DVDNAV_NOP;
+          m_bInMenu   = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+        }
       }
       break;
 
@@ -785,15 +788,15 @@ void CDVDInputStreamNavigator::SkipWait()
   m_dll.dvdnav_wait_skip(m_dvdnav);
 }
 
-void CDVDInputStreamNavigator::SkipHold()
+CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
 {
-  if(IsHeld())
+  if(m_holdmode == HOLDMODE_HELD)
     m_holdmode = HOLDMODE_SKIP;
-}
 
-bool CDVDInputStreamNavigator::IsHeld()
-{
-  return m_holdmode == HOLDMODE_HELD;
+  if(m_bEOF)
+    return NEXTSTREAM_NONE;
+  else
+    return NEXTSTREAM_RETRY;
 }
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()

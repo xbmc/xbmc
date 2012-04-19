@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/mathematics.h"
 #include "libavutil/tree.h"
 #include "nut.h"
 #include "internal.h"
@@ -65,8 +66,16 @@ const AVCodecTag ff_nut_video_tags[] = {
     { CODEC_ID_RAWVIDEO, MKTAG('R', 'G', 'B',  4 ) },
     { CODEC_ID_RAWVIDEO, MKTAG('B', '4', 'B', 'Y') },
     { CODEC_ID_RAWVIDEO, MKTAG('R', '4', 'B', 'Y') },
+    { CODEC_ID_RAWVIDEO, MKTAG('B', 'G', 'R', 48 ) },
     { CODEC_ID_RAWVIDEO, MKTAG('R', 'G', 'B', 48 ) },
+    { CODEC_ID_RAWVIDEO, MKTAG(48 , 'B', 'G', 'R') },
     { CODEC_ID_RAWVIDEO, MKTAG(48 , 'R', 'G', 'B') },
+    { CODEC_ID_RAWVIDEO, MKTAG('Y', '3', 11 , 10 ) },
+    { CODEC_ID_RAWVIDEO, MKTAG(10 , 11 , '3', 'Y') },
+    { CODEC_ID_RAWVIDEO, MKTAG('Y', '3', 10 , 10 ) },
+    { CODEC_ID_RAWVIDEO, MKTAG(10 , 10 , '3', 'Y') },
+    { CODEC_ID_RAWVIDEO, MKTAG('Y', '3',  0 , 10 ) },
+    { CODEC_ID_RAWVIDEO, MKTAG(10 ,  0 , '3', 'Y') },
     { CODEC_ID_RAWVIDEO, MKTAG('Y', '1',  0 , 16 ) },
     { CODEC_ID_RAWVIDEO, MKTAG(16 ,  0 , '1', 'Y') },
     { CODEC_ID_RAWVIDEO, MKTAG('Y', '3', 11 , 16 ) },

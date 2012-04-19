@@ -26,6 +26,8 @@
 #import "XBMC_events.h"
 #include "utils/log.h"
 #include "osx/DarwinUtils.h"
+#include "threads/Event.h"
+#include "Application.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -33,14 +35,8 @@
 #import <BackRow/BackRow.h>
 
 #import "XBMCController.h"
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
 #import "XBMCDebugHelpers.h"
-
-// This is defined in Math.h
-#define M_PI   3.14159265358979323846264338327950288   /* pi */
- 
-// Our conversion definition
-#define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
 
 //start repeating after 0.5s
 #define REPEATED_KEYPRESS_DELAY_S     0.5
@@ -166,23 +162,6 @@ typedef enum {
 XBMCController *g_xbmcController;
 
 //--------------------------------------------------------------
-//--------------------------------------------------------------
-@implementation UIWindow (limneos)
--(id)parent { return nil; }
--(void)removeFromParent {}
--(BOOL)active { return NO; } 
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
-@implementation UIView (limneos)
--(id)parent { return nil; }
--(BOOL)active { return NO; }
--(void)removeFromParent {}
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
 // so we don't have to include AppleTV.frameworks/PrivateHeaders/ATVSettingsFacade.h
 @interface ATVSettingsFacade : BRSettingsFacade {}
 -(int)screenSaverTimeout;
@@ -194,13 +173,12 @@ XBMCController *g_xbmcController;
 // notification messages
 extern NSString* kBRScreenSaverActivated;
 extern NSString* kBRScreenSaverDismissed;
-
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface XBMCController (PrivateMethods)
-UIWindow      *m_window;
-XBMCEAGLView  *m_glView;
 NSTimer       *m_keyTimer;
+IOSEAGLView  *m_glView;
+
 int           m_screensaverTimeout;
 int           m_systemsleepTimeout;
 
@@ -213,6 +191,7 @@ int           m_systemsleepTimeout;
 //
 //
 @implementation XBMCController
+
 /*
 + (XBMCController*) sharedInstance
 {
@@ -232,8 +211,6 @@ int           m_systemsleepTimeout;
 {
   [m_glView stopAnimation];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
@@ -271,6 +248,11 @@ int           m_systemsleepTimeout;
 
   return screensize;
 }
+- (void) sendKey: (XBMCKey) key
+{
+  //empty because its not used here. Only implemented for getting rid
+  //of "may not respond to selector" compile warnings in IOSExternalTouchController
+}
 
 
 - (id) init
@@ -290,9 +272,8 @@ int           m_systemsleepTimeout;
     name: nil
     object: nil];
 
-  m_window = [[UIWindow alloc] initWithFrame:[BRWindow interfaceFrame]];
-  m_glView = [[XBMCEAGLView alloc] initWithFrame:m_window.bounds];
-  [m_window addSubview:m_glView];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:[BRWindow interfaceFrame] withScreen:[UIScreen mainScreen]];
+  [[IOSScreenManager sharedInstance] setView:m_glView];
 
   g_xbmcController = self;
 
@@ -304,7 +285,7 @@ int           m_systemsleepTimeout;
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   [m_glView stopAnimation];
   [m_glView release];
-  [m_window release];
+
 
   NSNotificationCenter *center;
   // take us off the default center for our app
@@ -312,24 +293,6 @@ int           m_systemsleepTimeout;
   [center removeObserver: self];
 
   [super dealloc];
-}
-
-- (void)rotateView:(UIView *)view duration:(NSTimeInterval)duration 
-       curve:(UIViewAnimationCurve)curve degrees:(CGFloat)degrees
-{
-  // Setup the animation
-  [UIView beginAnimations:nil context:NULL];
-  [UIView setAnimationDuration:duration];
-  [UIView setAnimationCurve:curve];
-  [UIView setAnimationBeginsFromCurrentState:YES];
- 
-  // The transform matrix
-  CGAffineTransform transform = 
-      CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(degrees));
-  view.transform = transform;
- 
-  // Commit the changes
-  [UIView commitAnimations];
 }
 
 - (void)controlWasActivated
@@ -340,19 +303,9 @@ int           m_systemsleepTimeout;
 
   [self disableSystemSleep];
   [self disableScreenSaver];
-  [m_window makeKeyAndVisible];
 
-  //atv2 ios5.1 doesn't like to get our window added as a BRControl
-  //so we better leave it there...
-  if( GetIOSVersion() < (float)5.1 )
-  {
-    [[[[BRWindow windowList] objectAtIndex:0] content] addControl: m_window];
-  }
-  else//instead on ios 5.1 we rotate our window 90degrees ourself (remember ios is portrait based overall)
-  {
-    [self rotateView:m_window duration:0 
-      curve:UIViewAnimationCurveEaseIn degrees:90];
-  }
+  //inject our gles layer into the backrow root layer
+  [[BRWindow rootLayer] addSublayer:m_glView.layer];
 
   [m_glView startAnimation];
 }
@@ -362,9 +315,8 @@ int           m_systemsleepTimeout;
   NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
   [m_glView stopAnimation];
+  [m_glView.layer removeFromSuperlayer];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
@@ -1077,5 +1029,53 @@ int           m_systemsleepTimeout;
   return newEvent;
 }
 
+//--------------------------------------------------------------
+- (void)pauseAnimation
+{
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
+  CWinEventsIOS::MessagePush(&newEvent);
+  
+  /* Give player time to pause */
+  Sleep(2000);
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  [m_glView pauseAnimation];
+  
+}
+//--------------------------------------------------------------
+- (void)resumeAnimation
+{  
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+  CWinEventsIOS::MessagePush(&newEvent);    
+  
+  [m_glView resumeAnimation];
+}
+//--------------------------------------------------------------
+- (void)startAnimation
+{
+  [m_glView startAnimation];
+}
+//--------------------------------------------------------------
+- (void)stopAnimation
+{
+  [m_glView stopAnimation];
+}
+//--------------------------------------------------------------
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode
+{
+  return [[IOSScreenManager sharedInstance] changeScreen: screenIdx withMode: mode];
+}
+//--------------------------------------------------------------
+- (void) activateScreen: (UIScreen *)screen
+{
+}
 @end
 

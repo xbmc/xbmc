@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [11.0], [http://trac.xbmc.org])
+AC_INIT([xbmc], [11.9.1], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -127,6 +127,7 @@ libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 libcec_disabled_missing_libs="== libcec disabled because both libudev and libusb are not available. CEC adapter support will not be available. =="
+libbluray_wrong_version="version has old angle api which is not supported, if you want to continue disable libbluray support"
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -777,20 +778,8 @@ AS_CASE([x$use_libbluray],
             [AC_LANG_PROGRAM(
                 [#include <libbluray/bluray.h>]
                ,[bd_get_playlist_info(0, 0)])]
-          ,[AC_MSG_RESULT(version has old angle api)
-            AC_DEFINE([HAVE_LIBBLURAY_NOANGLE],[],[System has an old api libbluray without angle support])]
+          ,[AC_MSG_ERROR($libbluray_wrong_version)]
           ,[AC_MSG_RESULT(normal)]
-        )
-
-        AC_MSG_CHECKING([for libbluray log control])
-        AC_LINK_IFELSE(
-            [AC_LANG_PROGRAM(
-               [#include <libbluray/bluray.h>
-                #include <libbluray/log_control.h>]
-              ,[bd_set_debug_mask(0)])]
-          , AC_MSG_RESULT(yes)
-          ,[AC_MSG_RESULT(no)
-            AC_DEFINE([HAVE_LIBBLURAY_NOLOGCONTROL],[],[System has an old api libbluray without log support])]
         )
     )
   ],[
@@ -808,7 +797,9 @@ if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 else
-  AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
+  case $host_os in
+    linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
+  esac
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
@@ -1898,6 +1889,7 @@ OUTPUT_FILES="Makefile \
     xbmc/pvrclients/ForTheRecord/Makefile \
     xbmc/pvrclients/mythtv/Makefile \
     xbmc/pvrclients/pvr-demo/Makefile \
+    xbmc/pvrclients/vuplus/Makefile \
     xbmc/pvrclients/tvheadend/Makefile \
     xbmc/pvrclients/vdr-vnsi/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
@@ -2033,7 +2025,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-amd3dnow \
       --disable-armv5te \
       --disable-armv6t2 \
-      --disable-static \
+      --enable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --enable-muxer=spdif \
@@ -2047,9 +2039,9 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --enable-shared \
       --disable-doc \
       --disable-decoder=mpeg_xvmc \
+      --disable-crystalhd \
       --enable-postproc \
       --enable-gpl \
       --enable-protocol=http \
@@ -2088,6 +2080,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
+      --disable-crystalhd \
       --enable-shared \
       --disable-doc \
       --enable-postproc \

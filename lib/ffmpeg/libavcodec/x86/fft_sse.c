@@ -22,12 +22,21 @@
 #include "libavutil/x86_cpu.h"
 #include "libavcodec/dsputil.h"
 #include "fft.h"
+#include "config.h"
 
-DECLARE_ASM_CONST(16, int, ff_m1m1m1m1)[4] =
-    { 1 << 31, 1 << 31, 1 << 31, 1 << 31 };
+DECLARE_ASM_CONST(16, unsigned int, ff_m1m1m1m1)[4] =
+    { 1U << 31, 1U << 31, 1U << 31, 1U << 31 };
 
 void ff_fft_dispatch_sse(FFTComplex *z, int nbits);
 void ff_fft_dispatch_interleave_sse(FFTComplex *z, int nbits);
+void ff_fft_dispatch_interleave_avx(FFTComplex *z, int nbits);
+
+#if HAVE_AVX
+void ff_fft_calc_avx(FFTContext *s, FFTComplex *z)
+{
+    ff_fft_dispatch_interleave_avx(z, s->nbits);
+}
+#endif
 
 void ff_fft_calc_sse(FFTContext *s, FFTComplex *z)
 {
@@ -77,7 +86,7 @@ void ff_imdct_calc_sse(FFTContext *s, FFTSample *output, const FFTSample *input)
     long n = s->mdct_size;
     long n4 = n >> 2;
 
-    ff_imdct_half_sse(s, output+n4, input);
+    s->imdct_half(s, output + n4, input);
 
     j = -n;
     k = n-16;

@@ -38,7 +38,7 @@ public:
   virtual bool    IsEOF();
   virtual __int64 GetLength()                      { return -1; }
 
-  virtual bool    NextStream()                     { return m_startup; }
+  virtual ENextStream NextStream() { return m_startup ? NEXTSTREAM_OPEN : NEXTSTREAM_NONE; }
 
   virtual void    Abort();
 

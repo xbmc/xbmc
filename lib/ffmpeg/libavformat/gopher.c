@@ -26,6 +26,7 @@
 #include "avformat.h"
 #include "internal.h"
 #include "network.h"
+#include "url.h"
 
 typedef struct {
     URLContext *hd;
@@ -34,7 +35,7 @@ typedef struct {
 static int gopher_write(URLContext *h, const uint8_t *buf, int size)
 {
     GopherContext *s = h->priv_data;
-    return url_write(s->hd, buf, size);
+    return ffurl_write(s->hd, buf, size);
 }
 
 static int gopher_connect(URLContext *h, const char *path)
@@ -49,7 +50,7 @@ static int gopher_connect(URLContext *h, const char *path)
             if (!path) return AVERROR(EINVAL);
             break;
         default:
-            av_log(NULL, AV_LOG_WARNING,
+            av_log(h, AV_LOG_WARNING,
                    "Gopher protocol type '%c' not supported yet!\n",
                    *path);
             return AVERROR(EINVAL);
@@ -68,26 +69,19 @@ static int gopher_close(URLContext *h)
 {
     GopherContext *s = h->priv_data;
     if (s->hd) {
-        url_close(s->hd);
+        ffurl_close(s->hd);
         s->hd = NULL;
     }
-    av_freep(&h->priv_data);
     return 0;
 }
 
 static int gopher_open(URLContext *h, const char *uri, int flags)
 {
-    GopherContext *s;
+    GopherContext *s = h->priv_data;
     char hostname[1024], auth[1024], path[1024], buf[1024];
     int port, err;
 
     h->is_streamed = 1;
-
-    s = av_malloc(sizeof(GopherContext));
-    if (!s) {
-        return AVERROR(ENOMEM);
-    }
-    h->priv_data = s;
 
     /* needed in any case to build the host string */
     av_url_split(NULL, 0, auth, sizeof(auth), hostname, sizeof(hostname), &port,
@@ -99,7 +93,8 @@ static int gopher_open(URLContext *h, const char *uri, int flags)
     ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port, NULL);
 
     s->hd = NULL;
-    err = url_open(&s->hd, buf, URL_RDWR);
+    err = ffurl_open(&s->hd, buf, AVIO_FLAG_READ_WRITE,
+                     &h->interrupt_callback, NULL);
     if (err < 0)
         goto fail;
 
@@ -114,16 +109,17 @@ static int gopher_open(URLContext *h, const char *uri, int flags)
 static int gopher_read(URLContext *h, uint8_t *buf, int size)
 {
     GopherContext *s = h->priv_data;
-    int len = url_read(s->hd, buf, size);
+    int len = ffurl_read(s->hd, buf, size);
     return len;
 }
 
 
 URLProtocol ff_gopher_protocol = {
-    "gopher",
-    gopher_open,
-    gopher_read,
-    gopher_write,
-    NULL, /*seek*/
-    gopher_close,
+    .name           = "gopher",
+    .url_open       = gopher_open,
+    .url_read       = gopher_read,
+    .url_write      = gopher_write,
+    .url_close      = gopher_close,
+    .priv_data_size = sizeof(GopherContext),
+    .flags          = URL_PROTOCOL_FLAG_NETWORK,
 };

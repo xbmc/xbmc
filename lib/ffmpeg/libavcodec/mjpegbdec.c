@@ -59,6 +59,9 @@ read_header:
     s->restart_count = 0;
     s->mjpb_skiptosod = 0;
 
+    if (buf_end - buf_ptr >= 1 << 28)
+        return AVERROR_INVALIDDATA;
+
     init_get_bits(&hgb, buf_ptr, /*buf_size*/(buf_end - buf_ptr)*8);
 
     skip_bits(&hgb, 32); /* reserved zeros */
@@ -66,7 +69,7 @@ read_header:
     if (get_bits_long(&hgb, 32) != MKBETAG('m','j','p','g'))
     {
         av_log(avctx, AV_LOG_WARNING, "not mjpeg-b (bad fourcc)\n");
-        return 0;
+        return AVERROR_INVALIDDATA;
     }
 
     field_size = get_bits_long(&hgb, 32); /* field size */
@@ -81,7 +84,9 @@ read_header:
     {
         init_get_bits(&s->gb, buf_ptr+dqt_offs, (buf_end - (buf_ptr+dqt_offs))*8);
         s->start_code = DQT;
-        ff_mjpeg_decode_dqt(s);
+        if (ff_mjpeg_decode_dqt(s) < 0 &&
+            (avctx->err_recognition & AV_EF_EXPLODE))
+          return AVERROR_INVALIDDATA;
     }
 
     dht_offs = read_offs(avctx, &hgb, buf_end - buf_ptr, "dht is %d and size is %d\n");
@@ -109,11 +114,13 @@ read_header:
     av_log(avctx, AV_LOG_DEBUG, "sod offs: 0x%x\n", sod_offs);
     if (sos_offs)
     {
-//        init_get_bits(&s->gb, buf+sos_offs, (buf_end - (buf+sos_offs))*8);
-        init_get_bits(&s->gb, buf_ptr+sos_offs, field_size*8);
+        init_get_bits(&s->gb, buf_ptr + sos_offs,
+                      8 * FFMIN(field_size, buf_end - buf_ptr - sos_offs));
         s->mjpb_skiptosod = (sod_offs - sos_offs - show_bits(&s->gb, 16));
         s->start_code = SOS;
-        ff_mjpeg_decode_sos(s);
+        if (ff_mjpeg_decode_sos(s, NULL, NULL) < 0 &&
+            (avctx->err_recognition & AV_EF_EXPLODE))
+          return AVERROR_INVALIDDATA;
     }
 
     if (s->interlaced) {
@@ -129,7 +136,7 @@ read_header:
 
     //XXX FIXME factorize, this looks very similar to the EOI code
 
-    *picture= s->picture;
+    *picture= *s->picture_ptr;
     *data_size = sizeof(AVFrame);
 
     if(!s->lossless){
@@ -142,20 +149,18 @@ read_header:
         picture->quality*= FF_QP2LAMBDA;
     }
 
-    return buf_ptr - buf;
+    return buf_size;
 }
 
 AVCodec ff_mjpegb_decoder = {
-    "mjpegb",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_MJPEGB,
-    sizeof(MJpegDecodeContext),
-    ff_mjpeg_decode_init,
-    NULL,
-    ff_mjpeg_decode_end,
-    mjpegb_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
+    .name           = "mjpegb",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_MJPEGB,
+    .priv_data_size = sizeof(MJpegDecodeContext),
+    .init           = ff_mjpeg_decode_init,
+    .close          = ff_mjpeg_decode_end,
+    .decode         = mjpegb_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .max_lowres = 3,
     .long_name = NULL_IF_CONFIG_SMALL("Apple MJPEG-B"),
 };

@@ -1,0 +1,43 @@
+From 954d92f3fc2c5bd45fc1b4d347f2d9295d269574 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Wed, 23 Feb 2011 19:24:07 +0200
+Subject: [PATCH 17/24] allow customizing shared library soname (name with
+ major)
+
+This is a hack.
+---
+ configure |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure b/configure
+index 6255f57..5e11b2d 100755
+--- a/configure
++++ b/configure
+@@ -238,6 +238,7 @@ Advanced options (experts only):
+   --arch=ARCH              select architecture [$arch]
+   --cpu=CPU                select the minimum required CPU (affects
+                            instruction selection, may crash on older CPUs)
++  --custom-libname-with-major=NAME  custom library name with major [$SLIBNAME_WITH_MAJOR]
+   --disable-asm            disable all assembler optimizations
+   --disable-altivec        disable AltiVec optimizations
+   --disable-amd3dnow       disable 3DNow! optimizations
+@@ -1298,6 +1299,7 @@ CMDLINE_SET="
+     cpu
+     cross_prefix
+     cxx
++    custom_libname_with_major
+     dep_cc
+     extra_version
+     host_cc
+@@ -2778,6 +2780,8 @@ EOF
+     exit 1;
+ fi
+ 
++test -n "$custom_libname_with_major" && SLIBNAME_WITH_MAJOR="$custom_libname_with_major"
++
+ die_license_disabled() {
+     enabled $1 || { enabled $2 && die "$2 is $1 and --enable-$1 is not specified."; }
+ }
+-- 
+1.7.9.4
+

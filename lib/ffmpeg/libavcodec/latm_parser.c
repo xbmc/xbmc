@@ -36,7 +36,7 @@ typedef struct LATMParseContext{
 } LATMParseContext;
 
 /**
- * finds the end of the current frame in the bitstream.
+ * Find the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
 static int latm_find_frame_end(AVCodecParserContext *s1, const uint8_t *buf,
@@ -106,9 +106,8 @@ static int latm_parse(AVCodecParserContext *s1, AVCodecContext *avctx,
 }
 
 AVCodecParser ff_aac_latm_parser = {
-    { CODEC_ID_AAC_LATM },
-    sizeof(LATMParseContext),
-    NULL,
-    latm_parse,
-    ff_parse_close
+    .codec_ids      = { CODEC_ID_AAC_LATM },
+    .priv_data_size = sizeof(LATMParseContext),
+    .parser_parse   = latm_parse,
+    .parser_close   = ff_parse_close
 };

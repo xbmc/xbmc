@@ -27,6 +27,7 @@
 #include "libavcodec/get_bits.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
+#include "internal.h"
 #include "oggdec.h"
 #include "riff.h"
 
@@ -39,7 +40,6 @@ ogm_header(AVFormatContext *s, int idx)
     const uint8_t *p = os->buf + os->pstart;
     uint64_t time_unit;
     uint64_t spu;
-    uint32_t default_len;
 
     if(!(*p & 1))
         return 0;
@@ -74,8 +74,7 @@ ogm_header(AVFormatContext *s, int idx)
 
         time_unit   = bytestream_get_le64(&p);
         spu         = bytestream_get_le64(&p);
-        default_len = bytestream_get_le32(&p);
-
+        p += 4;                     /* default_len */
         p += 8;                     /* buffersize + bits_per_sample */
 
         if(st->codec->codec_type == AVMEDIA_TYPE_VIDEO){
@@ -83,14 +82,13 @@ ogm_header(AVFormatContext *s, int idx)
             st->codec->height = bytestream_get_le32(&p);
             st->codec->time_base.den = spu * 10000000;
             st->codec->time_base.num = time_unit;
-            st->time_base = st->codec->time_base;
+            avpriv_set_pts_info(st, 64, st->codec->time_base.num, st->codec->time_base.den);
         } else {
             st->codec->channels = bytestream_get_le16(&p);
             p += 2;                 /* block_align */
             st->codec->bit_rate = bytestream_get_le32(&p) * 8;
             st->codec->sample_rate = spu * 10000000 / time_unit;
-            st->time_base.num = 1;
-            st->time_base.den = st->codec->sample_rate;
+            avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
         }
     } else if (*p == 3) {
         if (os->psize > 8)

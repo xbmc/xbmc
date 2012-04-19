@@ -654,9 +654,7 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
 
 int CGUITextureBase::GetOrientation() const
 {
-  if (m_isAllocated == LARGE)
-    return m_info.orientation;
-  // otherwise multiply our orientations
+  // multiply our orientations
   static char orient_table[] = { 0, 1, 2, 3, 4, 5, 6, 7,
                                  1, 0, 3, 2, 5, 4, 7, 6,
                                  2, 3, 0, 1, 6, 7, 4, 5,

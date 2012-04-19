@@ -51,7 +51,7 @@ public:
   virtual bool IsEOF();
   virtual __int64 GetLength();
 
-  virtual bool    NextStream();
+  virtual ENextStream NextStream();
 
   bool            SelectChannelByNumber(unsigned int iChannel);
   bool            SelectChannel(const PVR::CPVRChannel &channel);

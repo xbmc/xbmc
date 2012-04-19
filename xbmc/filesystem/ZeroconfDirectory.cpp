@@ -241,7 +241,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         }
         else//no txt record path - so let the CDirectory handler show the folders
         {          
-          return CDirectory::GetDirectory(service.Get(), items, "", true, true); 
+          return CDirectory::GetDirectory(service.Get(), items, "", DIR_FLAG_ALLOW_PROMPT); 
         }
       }
     } catch (std::runtime_error& e) {

@@ -33,6 +33,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 #define MM_PREAMBLE_SIZE    6
 
@@ -84,28 +85,28 @@ static int read_header(AVFormatContext *s,
                            AVFormatParameters *ap)
 {
     MmDemuxContext *mm = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     AVStream *st;
 
     unsigned int type, length;
     unsigned int frame_rate, width, height;
 
-    type = get_le16(pb);
-    length = get_le32(pb);
+    type = avio_rl16(pb);
+    length = avio_rl32(pb);
 
     if (type != MM_TYPE_HEADER)
         return AVERROR_INVALIDDATA;
 
     /* read header */
-    get_le16(pb);   /* total number of chunks */
-    frame_rate = get_le16(pb);
-    get_le16(pb);   /* ibm-pc video bios mode */
-    width = get_le16(pb);
-    height = get_le16(pb);
-    url_fseek(pb, length - 10, SEEK_CUR);  /* unknown data */
+    avio_rl16(pb);   /* total number of chunks */
+    frame_rate = avio_rl16(pb);
+    avio_rl16(pb);   /* ibm-pc video bios mode */
+    width = avio_rl16(pb);
+    height = avio_rl16(pb);
+    avio_skip(pb, length - 10);  /* unknown data */
 
     /* video stream */
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
@@ -113,11 +114,11 @@ static int read_header(AVFormatContext *s,
     st->codec->codec_tag = 0;  /* no fourcc */
     st->codec->width = width;
     st->codec->height = height;
-    av_set_pts_info(st, 64, 1, frame_rate);
+    avpriv_set_pts_info(st, 64, 1, frame_rate);
 
     /* audio stream */
     if (length == MM_HEADER_LEN_AV) {
-        st = av_new_stream(s, 0);
+        st = avformat_new_stream(s, NULL);
         if (!st)
             return AVERROR(ENOMEM);
         st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -125,7 +126,7 @@ static int read_header(AVFormatContext *s,
         st->codec->codec_id = CODEC_ID_PCM_U8;
         st->codec->channels = 1;
         st->codec->sample_rate = 8000;
-        av_set_pts_info(st, 64, 1, 8000); /* 8000 hz */
+        avpriv_set_pts_info(st, 64, 1, 8000); /* 8000 hz */
     }
 
     mm->audio_pts = 0;
@@ -137,13 +138,13 @@ static int read_packet(AVFormatContext *s,
                            AVPacket *pkt)
 {
     MmDemuxContext *mm = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     unsigned char preamble[MM_PREAMBLE_SIZE];
     unsigned int type, length;
 
     while(1) {
 
-        if (get_buffer(pb, preamble, MM_PREAMBLE_SIZE) != MM_PREAMBLE_SIZE) {
+        if (avio_read(pb, preamble, MM_PREAMBLE_SIZE) != MM_PREAMBLE_SIZE) {
             return AVERROR(EIO);
         }
 
@@ -162,7 +163,7 @@ static int read_packet(AVFormatContext *s,
             if (av_new_packet(pkt, length + MM_PREAMBLE_SIZE))
                 return AVERROR(ENOMEM);
             memcpy(pkt->data, preamble, MM_PREAMBLE_SIZE);
-            if (get_buffer(pb, pkt->data + MM_PREAMBLE_SIZE, length) != length)
+            if (avio_read(pb, pkt->data + MM_PREAMBLE_SIZE, length) != length)
                 return AVERROR(EIO);
             pkt->size = length + MM_PREAMBLE_SIZE;
             pkt->stream_index = 0;
@@ -181,18 +182,16 @@ static int read_packet(AVFormatContext *s,
 
         default :
             av_log(s, AV_LOG_INFO, "unknown chunk type 0x%x\n", type);
-            url_fseek(pb, length, SEEK_CUR);
+            avio_skip(pb, length);
         }
     }
-
-    return 0;
 }
 
 AVInputFormat ff_mm_demuxer = {
-    "mm",
-    NULL_IF_CONFIG_SMALL("American Laser Games MM format"),
-    sizeof(MmDemuxContext),
-    probe,
-    read_header,
-    read_packet,
+    .name           = "mm",
+    .long_name      = NULL_IF_CONFIG_SMALL("American Laser Games MM format"),
+    .priv_data_size = sizeof(MmDemuxContext),
+    .read_probe     = probe,
+    .read_header    = read_header,
+    .read_packet    = read_packet,
 };
