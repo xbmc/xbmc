@@ -1272,6 +1272,9 @@ lib/cmyth/Makefile
 /addons/pvr.hts/XBMC_Tvheadend_win32.lib
 /addons/pvr.vdr.vnsi/XBMC_VDR_vnsi_win32.lib
 /addons/pvr.vdr.xvdr/XBMC_VDR_xvdr_win32.lib
+/addons/pvr.vuplus/XBMC_vuplus_win32.lib
+/addons/pvr.vuplus/libcurl.dll
+/addons/pvr.vuplus/libcurld.dll
 
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
@@ -1281,6 +1284,9 @@ lib/cmyth/Makefile
 
 /xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Debug
 /xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Release
+
+/xbmc/pvrclients/vuplus/project/VS2010Express/Debug
+/xbmc/pvrclients/vuplus/project/VS2010Express/Release
 
 /xbmc/pvrclients/xvdr/project/VS2010Express/Debug
 /xbmc/pvrclients/xvdr/project/VS2010Express/Release
