@@ -187,6 +187,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
   }
   else
   {
+    jpeg_save_markers (&m_cinfo, JPEG_APP0 + 1, 0xFFFF);
     jpeg_read_header(&m_cinfo, true);
 
     /*  libjpeg can scale the image for us if it is too big. It must be in the format
@@ -219,7 +220,9 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
     m_width  = m_cinfo.output_width;
     m_height = m_cinfo.output_height;
 
-    GetExif();
+
+    if (m_cinfo.marker_list)
+      m_orientation = GetExifOrientation(m_cinfo.marker_list->data, m_cinfo.marker_list->data_length);
     return true;
   }
 }
@@ -358,35 +361,26 @@ unsigned int CJpegIO::findExifMarker( unsigned char *jpegData,
   return 0;
 }
 
-bool CJpegIO::GetExif()
+unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size)
 {
-  unsigned int length = 0;
   unsigned int offset = 0;
   unsigned int numberOfTags = 0;
   unsigned int tagNumber = 0;
   bool isMotorola = false;
-  unsigned char *exif_data = NULL;
   unsigned const char ExifHeader[] = "Exif\0\0";
-
-  length = findExifMarker(m_inputBuff, m_imgsize, exif_data);
+  unsigned int orientation = 0;
 
   // read exif head, check for "Exif"
   //   next we want to read to current offset + length
   //   check if buffer is big enough
-  if (length && memcmp(exif_data, ExifHeader, 6) == 0)
+  if (exif_data_size && memcmp(exif_data, ExifHeader, 6) == 0)
   {
     //read exif body
     exif_data += 6;
   }
   else
   {
-    return false;
-  }
-
-  //check for broken files
-  if ((m_inputBuff + m_imgsize) < (exif_data + length))
-  {
-    return false;
+    return 0;
   }
 
   // Discover byte order
@@ -395,25 +389,25 @@ bool CJpegIO::GetExif()
   else if (exif_data[0] == 'M' && exif_data[1] == 'M')
     isMotorola = true;
   else
-    return false;
+    return 0;
 
   // Check Tag Mark
   if (isMotorola)
   {
     if (exif_data[2] != 0 || exif_data[3] != 0x2A)
-      return false;
+      return 0;
   }
   else
   {
     if (exif_data[3] != 0 || exif_data[2] != 0x2A)
-      return false;
+      return 0;
   }
 
   // Get first IFD offset (offset to IFD0)
   if (isMotorola)
   {
     if (exif_data[4] != 0 || exif_data[5] != 0)
-      return false;
+      return 0;
     offset = exif_data[6];
     offset <<= 8;
     offset += exif_data[7];
@@ -421,14 +415,14 @@ bool CJpegIO::GetExif()
   else
   {
     if (exif_data[7] != 0 || exif_data[6] != 0)
-      return false;
+      return 0;
     offset = exif_data[5];
     offset <<= 8;
     offset += exif_data[4];
   }
 
-  if (offset > length - 2)
-    return false; // check end of data segment
+  if (offset > exif_data_size - 2)
+    return 0; // check end of data segment
 
   // Get the number of directory entries contained in this IFD
   if (isMotorola)
@@ -445,14 +439,14 @@ bool CJpegIO::GetExif()
   }
 
   if (numberOfTags == 0)
-    return false;
+    return 0;
   offset += 2;
 
   // Search for Orientation Tag in IFD0 - hey almost there! :D
   while(1)//hopefully this jpeg has correct exif data...
   {
-    if (offset > length - 12)
-      return false; // check end of data segment
+    if (offset > exif_data_size - 12)
+      return 0; // check end of data segment
 
     // Get Tag number
     if (isMotorola)
@@ -472,7 +466,7 @@ bool CJpegIO::GetExif()
       break; //found orientation tag
 
     if ( --numberOfTags == 0)
-      return false;//no orientation found
+      return 0;//no orientation found
     offset += 12;//jump to next tag
   }
 
@@ -480,20 +474,20 @@ bool CJpegIO::GetExif()
   if (isMotorola)
   {
     if (exif_data[offset+8] != 0)
-      return false;
-    m_orientation = exif_data[offset+9];
+      return 0;
+    orientation = exif_data[offset+9];
   }
   else
   {
     if (exif_data[offset+9] != 0)
-      return false;
-    m_orientation = exif_data[offset+8];
+      return 0;
+    orientation = exif_data[offset+8];
   }
-  if (m_orientation > 8)
+  if (orientation > 8)
   {
-    m_orientation = 0;
-    return false;
+    orientation = 0;
+    return 0;
   }
 
-  return true;//done
+  return orientation;//done
 }

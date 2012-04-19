@@ -48,7 +48,7 @@ public:
 protected:
   static  void   jpeg_error_exit(j_common_ptr cinfo);
 
-  bool           GetExif();
+  unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
   unsigned int   findExifMarker( unsigned char *jpegData, 
                                  unsigned int dataSize, 
                                  unsigned char *&exifPtr);
