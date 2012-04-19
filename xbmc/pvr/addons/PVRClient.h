@@ -256,6 +256,14 @@ namespace PVR
      */
     PVR_ERROR RenameRecording(const CPVRRecording &recording);
 
+    /*!
+     * @brief Set the play count of a recording on the backend.
+     * @param recording The recording to set the play count.
+     * @param count Play count.
+     * @return PVR_ERROR_NO_ERROR if the recording's play count has been set successfully.
+     */
+    PVR_ERROR SetRecordingPlayCount(const CPVRRecording &recording, int count);
+
     //@}
     /** @name PVR timer methods */
     //@{

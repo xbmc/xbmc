@@ -106,9 +106,18 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
-    CVideoDatabase db;
-    if (db.Open())
+
+    // Set the play count either directly from client (if supported) or from video db
+    if (g_PVRClients->GetAddonCapabilities(pFileItem->GetPVRRecordingInfoTag()->m_iClientId).bSupportsRecordingPlayCount)
+    {
+      pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
+    }
+    else
+    {
+      CVideoDatabase db;
+      if (db.Open())
       pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
+    }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
     results->Add(pFileItem);
@@ -291,6 +300,8 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
         }
         continue;
       }
+
+      pItem->GetPVRRecordingInfoTag()->SetPlayCount(count);
 
       // Clear resume bookmark
       if (count > 0)
