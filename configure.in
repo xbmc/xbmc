@@ -748,6 +748,9 @@ PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([TINYXML],   [tinyxml],
+  [INCLUDES="$INCLUDES $TINYXML_CFLAGS"; LIBS="$LIBS $TINYXML_LIBS"],
+  AC_MSG_ERROR($missing_library))
 
 # check for libbluray
 AS_CASE([x$use_libbluray],

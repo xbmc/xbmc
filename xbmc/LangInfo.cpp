@@ -24,7 +24,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #ifdef _WIN32
 #include "utils/LangCodeExpander.h"
 #endif
@@ -201,7 +201,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
 {
   SetDefaults();
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strFileName))
   {
     CLog::Log(LOGERROR, "unable to load %s: %s at line %d", strFileName.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());

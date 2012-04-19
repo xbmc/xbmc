@@ -35,7 +35,7 @@
 // Forward
 class CGUIFont;
 class CGUIFontTTFBase;
-class TiXmlDocument;
+class CXBMCTinyXML;
 class TiXmlNode;
 
 struct OrigFontInfo
@@ -84,7 +84,7 @@ protected:
   void ReloadTTFFonts();
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
-  bool OpenFontFile(TiXmlDocument& xmlDoc);
+  bool OpenFontFile(CXBMCTinyXML& xmlDoc);
 
   std::vector<CGUIFont*> m_vecFonts;
   std::vector<CGUIFontTTFBase*> m_vecFontFiles;

@@ -20,7 +20,7 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "cores/IPlayer.h"
 #include "PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDPlayer.h"
