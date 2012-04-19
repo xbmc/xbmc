@@ -29,7 +29,7 @@
 #include "input/ButtonTranslator.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "addons/Skin.h"
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
@@ -312,7 +312,7 @@ bool CGUIAudioManager::Load()
   CStdString strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
 
