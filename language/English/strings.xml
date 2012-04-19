@@ -1807,6 +1807,10 @@
   <string id="19248">Daily wakeup time (HH:MM:SS)</string>
   <string id="19249">Filter channels</string>
   <string id="19250">Loading EPG from database</string>
+  <string id="19251">Update EPG information</string>
+  <string id="19252">Schedule EPG update for this channel?</string>
+  <string id="19253">EPG update scheduled for channel</string>
+  <string id="19254">EPG update failed for channel</string>
   
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

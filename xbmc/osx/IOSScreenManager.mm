@@ -196,7 +196,11 @@ IOSExternalTouchController *_externalTouchController;
 #ifdef TARGET_DARWIN_IOS_ATV2
   //because bounds returns f00bar on atv2 - we return the preferred resolution (which mostly is the
   //right resolution
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_4_2
   res.size = screen.preferredMode.size;
+#else
+  res.size = [BRWindow interfaceFrame].size;
+#endif
 #else
   //main screen is in portrait mode (physically) so exchange height and width
   if(screen == [UIScreen mainScreen])

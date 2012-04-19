@@ -1443,10 +1443,18 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if(!m_pInputStream || !m_pDemuxer)
     return false;
 
-  int64_t cached  = m_pInputStream->GetCachedBytes();
+  XFILE::SCacheStatus status;
+  if (!m_pInputStream->GetCacheStatus(&status))
+    return false;
+
+  int64_t cached   = status.forward;
+  unsigned currate = status.currate;
+  unsigned maxrate = status.maxrate;
+  bool full        = status.full;
+
   int64_t length  = m_pInputStream->GetLength();
   int64_t remain  = length - m_pInputStream->Seek(0, SEEK_CUR);
-  unsigned rate   = m_pInputStream->GetReadRate();
+
   if(cached < 0 || length <= 0 || remain < 0)
     return false;
 
@@ -1457,22 +1465,21 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   level  = 0.0;
   offset = (double)(cached + queued) / length;
 
-  if(rate == 0)
+  if (currate == 0)
     return true;
 
-  if(rate == (unsigned)-1) /* buffer is full */
-  {
-    level = -1.0;
-    return true;
-  }
-
-  double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / rate;            /* underestimate by 10 % */
+  double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / currate;         /* underestimate by 10 % */
   double play_left   = play_sbp  * (remain + queued);                 /* time to play out all remaining bytes */
   double cache_left  = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
   double cache_need  = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
-  delay  = cache_left - play_left;
-  level  = (cached + queued) / (cache_need + queued);
+  delay = cache_left - play_left;
+
+  if (full && (currate < maxrate) )
+    level = -1.0;                          /* buffer is full & our read rate is too low  */
+  else
+    level = (cached + queued) / (cache_need + queued);
+
   return true;
 }
 
@@ -2598,16 +2605,18 @@ bool CDVDPlayer::SeekScene(bool bPlus)
 
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
-  CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D(%s) P(%s)", m_State.demux_audio.c_str()
-                                   , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  { CSingleLock lock(m_StateSection);
+    strAudioInfo.Format("D(%s)", m_State.demux_audio.c_str());
+  }
+  strAudioInfo.AppendFormat(" P(%s)", m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
-  CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("D(%s) P(%s)", m_State.demux_video.c_str()
-                                   , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  { CSingleLock lock(m_StateSection);
+    strVideoInfo.Format("D(%s)", m_State.demux_video.c_str());
+  }
+  strVideoInfo.AppendFormat(" P(%s)", m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -3366,12 +3375,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
         //Make sure we clear all the old overlays here, or else old forced items are left.
         m_overlayContainer.Clear();
 
-        // reset the demuxer, this also imples closing the video and the audio system
-        // this is a bit tricky cause it's the demuxer that's is making this call in the end
-        // so we send a message to indicate the main loop that the demuxer needs a reset
-        // this also means the libdvdnav may not return any data packets after this command
-        m_messenger.Put(new CDVDMsgDemuxerReset());
-
         //Force an aspect ratio that is set in the dvdheaders if available
         m_CurrentVideo.hint.aspect = pStream->GetVideoAspectRatio();
         if( m_dvdPlayerAudio.IsInited() )
@@ -3379,10 +3382,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-
-        // we must hold here once more, otherwise the demuxer message
-        // will be executed after demuxer have filled with data
-        return NAVRESULT_HOLD;
       }
       break;
     case DVDNAV_CELL_CHANGE:
@@ -3977,9 +3976,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     state.cache_offset = GetQueueTime() / state.time_total;
   }
 
-  if(m_pInputStream && m_pInputStream->GetCachedBytes() >= 0)
+  XFILE::SCacheStatus status;
+  if(m_pInputStream && m_pInputStream->GetCacheStatus(&status) && status.forward >=0)
   {
-    state.cache_bytes = m_pInputStream->GetCachedBytes();
+    state.cache_bytes = status.forward;
     if(state.time_total)
       state.cache_bytes += m_pInputStream->GetLength() * GetQueueTime() / state.time_total;
   }
