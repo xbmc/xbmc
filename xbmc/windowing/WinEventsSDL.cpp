@@ -264,11 +264,17 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_KEYDOWN;
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
-        newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
         newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
+
+        // Check if the Windows keys are down because SDL doesn't flag this.
+        uint16_t mod = event.key.keysym.mod;
+        uint8_t* keystate = SDL_GetKeyState(NULL);
+        if (keystate[XBMCK_LSUPER] || keystate[XBMCK_RSUPER])
+          mod |= XBMCKMOD_LSUPER;
+        newEvent.key.keysym.mod = (XBMCMod) mod;
 
 #if defined(_LINUX) && !defined(__APPLE__)
         // If the keysym.sym is zero try to get it from the scan code
