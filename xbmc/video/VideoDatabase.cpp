@@ -53,12 +53,15 @@
 #include "ThumbnailCache.h"
 #include "utils/LabelFormatter.h"
 #include "XBDateTime.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 
 using namespace std;
 using namespace dbiplus;
 using namespace XFILE;
 using namespace VIDEO;
 using namespace ADDON;
+using namespace PVR;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
@@ -3741,6 +3744,11 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateT
     }
 
     m_pDS->exec(strSQL.c_str());
+
+    // PVR: Set recording's play count on the backend (if supported)
+    if (item.HasPVRRecordingInfoTag() && g_PVRManager.IsStarted()) {
+      g_PVRRecordings->GetByPath(item.GetPath())->SetPlayCount(count);
+    }
 
     // We only need to announce changes to video items in the library
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
