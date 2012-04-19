@@ -93,6 +93,19 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   {
     buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
   }
+  if (pItem->m_bIsFolder)
+  {
+    // Have both options for folders since we don't know whether all childs are watched/unwatched
+    buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
+    buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+  }
+  if (pItem->HasPVRRecordingInfoTag())
+  {
+    if (pItem->GetPVRRecordingInfoTag()->m_playCount > 0)
+      buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); /* Mark as UnWatched */
+    else
+      buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   /* Mark as Watched */
+  }
   buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
   buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
@@ -137,6 +150,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       OnContextButtonRename(pItem.get(), button) ||
       OnContextButtonDelete(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
+      OnContextButtonMarkWatched(pItem, button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
@@ -316,6 +330,33 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
       if (g_PVRRecordings->RenameRecording(*item, strNewName))
         UpdateData();
     }
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_MARK_WATCHED)
+  {
+    bReturn = true;
+
+    int newSelection = m_parent->m_viewControl.GetSelectedItem();
+    g_PVRRecordings->SetRecordingsPlayCount(item, 1);
+    m_parent->m_viewControl.SetSelectedItem(newSelection);
+
+    UpdateData();
+  }
+
+  if (button == CONTEXT_BUTTON_MARK_UNWATCHED)
+  {
+    bReturn = true;
+
+    g_PVRRecordings->SetRecordingsPlayCount(item, 0);
+
+    UpdateData();
   }
 
   return bReturn;

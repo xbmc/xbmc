@@ -257,6 +257,54 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &strNewName)
   return tag->Rename(strNewName);
 }
 
+bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
+{
+  bool bResult = false;
+
+  CVideoDatabase database;
+  if (database.Open())
+  {
+    bResult = true;
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
+    CFileItemList items;
+    if (item->m_bIsFolder)
+    {
+      CStdString strPath = item->GetPath();
+      CDirectory::GetDirectory(strPath, items);
+    }
+    else
+      items.Add(item);
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
+    for (int i=0;i<items.Size();++i)
+    {
+      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+
+      CFileItemPtr pItem=items[i];
+      if (pItem->m_bIsFolder)
+      {
+        CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
+        if (pItem->GetLabel() != "..")
+        {
+          SetRecordingsPlayCount(pItem, count);
+        }
+        continue;
+      }
+
+      // Clear resume bookmark
+      if (count > 0)
+        database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
+
+      database.SetPlayCount(*pItem, count);
+    }
+
+    database.Close();
+  }
+
+  return bResult;
+}
+
 bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   bool bSuccess(false);
