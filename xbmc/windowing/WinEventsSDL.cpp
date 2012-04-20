@@ -272,7 +272,7 @@ bool CWinEventsSDL::MessagePump()
         // Check if the Windows keys are down because SDL doesn't flag this.
         uint16_t mod = event.key.keysym.mod;
         uint8_t* keystate = SDL_GetKeyState(NULL);
-        if (keystate[XBMCK_LSUPER] || keystate[XBMCK_RSUPER])
+        if (keystate[SDLK_LSUPER] || keystate[SDLK_RSUPER])
           mod |= XBMCKMOD_LSUPER;
         newEvent.key.keysym.mod = (XBMCMod) mod;
 
