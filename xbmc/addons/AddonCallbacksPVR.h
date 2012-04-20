@@ -23,6 +23,11 @@
 #include "AddonCallbacks.h"
 #include "include/xbmc_pvr_types.h"
 
+namespace PVR
+{
+  class CPVRClient;
+}
+
 namespace ADDON
 {
 
@@ -45,7 +50,7 @@ public:
   /*!
    * @brief Transfer a channel group from the add-on to XBMC. The group will be created if it doesn't exist.
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
+   * @param handle The handle containing a pointer to the CPVRChannelGroups instance that this group needs to be added to.
    * @param group The entry to transfer.
    */
   static void PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group);
@@ -146,6 +151,8 @@ public:
   static DemuxPacket* PVRAllocateDemuxPacket(void *addonData, int iDataSize = 0);
 
 private:
+  static PVR::CPVRClient *GetPVRClient(void *addonData);
+
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the addon */
 };
