@@ -1067,46 +1067,35 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     switch(pPicture->format)
     {
       case RENDER_FMT_YUV420P:
-        flags |= CONF_FLAGS_FORMAT_YV12;
         formatstr = "YV12";
         break;
       case RENDER_FMT_YUV420P16:
-        flags |= CONF_FLAGS_FORMAT_YV12;
         formatstr = "YV12P16";
         break;
       case RENDER_FMT_YUV420P10:
-        flags |= CONF_FLAGS_FORMAT_YV12;
         formatstr = "YV12P10";
         break;
       case RENDER_FMT_NV12:
-        flags |= CONF_FLAGS_FORMAT_NV12;
         formatstr = "NV12";
         break;
       case RENDER_FMT_UYVY422:
-        flags |= CONF_FLAGS_FORMAT_UYVY;
         formatstr = "UYVY";
         break;
       case RENDER_FMT_YUYV422:
-        flags |= CONF_FLAGS_FORMAT_YUY2;
         formatstr = "YUY2";
         break;
       case RENDER_FMT_VDPAU:
-        flags |= CONF_FLAGS_FORMAT_VDPAU;
         formatstr = "VDPAU";
         break;
       case RENDER_FMT_DXVA:
-        flags |= CONF_FLAGS_FORMAT_DXVA;
         formatstr = "DXVA";
         break;
       case RENDER_FMT_VAAPI:
-        flags |= CONF_FLAGS_FORMAT_VAAPI;
         formatstr = "VAAPI";
         break;
       case RENDER_FMT_OMXEGL:
-        flags |= CONF_FLAGS_FORMAT_OMXEGL;
         break;
       case RENDER_FMT_CVBREF:
-        flags |= CONF_FLAGS_FORMAT_CVBREF;
         formatstr = "BGRA";
         break;
     }
