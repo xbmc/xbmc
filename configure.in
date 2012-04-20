@@ -752,10 +752,10 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
 # check for libbluray
 AS_CASE([x$use_libbluray],
   [xyes],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
   ],
   [xauto],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], [use_libbluray="no"])
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], [use_libbluray="no"])
   ])
 
 AS_CASE([x$use_libbluray],
@@ -764,22 +764,7 @@ AS_CASE([x$use_libbluray],
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
-
-	XB_PUSH_FLAGS(
-        [$LIBBLURAY_CFLAGS]
-      , [$LIBBLURAY_LIBS]
-
-      , AC_MSG_CHECKING([libbluray version])
-        AC_COMPILE_IFELSE(
-            [AC_LANG_PROGRAM(
-                [#include <libbluray/bluray.h>]
-               ,[bd_get_playlist_info(0, 0)])]
-          ,[AC_MSG_ERROR(version has old angle api which is not supported, if you want to continue disable libbluray support)]
-          ,[AC_MSG_RESULT(normal)]
-        )
-    )
   ],[
-#    AC_DEFINE([HAVE_LIBBLURAY], 0, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 0)
   ]
 )
