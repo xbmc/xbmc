@@ -162,9 +162,9 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
   Parses the XML for multiple tags of the given name.
   Does not clear the array to support chaining.
 */
-bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */)
+bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string separator /* = "" */)
 {
-  CStdString strTemp;
+  std::string strTemp;
   const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
   bool bResult=false;
   if (node && node->FirstChild() && clear)
@@ -174,7 +174,22 @@ bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, st
     if (node->FirstChild())
     {
       bResult = true;
-      arrayValue.push_back(node->FirstChild()->Value());
+      strTemp = node->FirstChild()->ValueStr();
+
+      const char* clearAttr = node->Attribute("clear");
+      if (clearAttr && strcasecmp(clearAttr, "true") == 0)
+        arrayValue.clear();
+
+      if (strTemp.empty())
+        continue;
+
+      if (separator.empty())
+        arrayValue.push_back(strTemp);
+      else
+      {
+        std::vector<std::string> tempArray = StringUtils::Split(strTemp, separator);
+        arrayValue.insert(arrayValue.end(), tempArray.begin(), tempArray.end());
+      }
     }
     node = node->NextSiblingElement(strTag);
   }

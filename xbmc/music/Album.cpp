@@ -41,11 +41,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetStringArray(album, "artist", artist, prioritise);
-  XMLUtils::GetStringArray(album, "genre", genre, prioritise);
-  XMLUtils::GetStringArray(album, "style", styles, prioritise);
-  XMLUtils::GetStringArray(album, "mood", moods, prioritise);
-  XMLUtils::GetStringArray(album, "theme", themes, prioritise);
+  XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "mood", moods, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "theme", themes, prioritise, g_advancedSettings.m_musicItemSeparator);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
