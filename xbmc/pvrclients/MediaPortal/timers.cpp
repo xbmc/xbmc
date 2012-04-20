@@ -50,7 +50,13 @@ cTimer::cTimer()
 
 cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
-  m_index = timerinfo.iClientIndex;
+  if(timerinfo.iEpgUid!=-1)
+  {
+      m_progid = timerinfo.iClientIndex;
+      m_index  = timerinfo.iEpgUid;
+  }
+  else m_index = timerinfo.iClientIndex;
+
   m_active = (timerinfo.state == PVR_TIMER_STATE_SCHEDULED || timerinfo.state == PVR_TIMER_STATE_RECORDING);
 
   if (!m_active)
@@ -107,7 +113,16 @@ cTimer::~cTimer()
  */
 void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
-  tag.iClientIndex      = m_index;
+  if(m_progid!=-1)
+  {
+    tag.iClientIndex    = m_progid;
+    tag.iEpgUid         = m_index;
+  }
+  else
+  {
+     tag.iClientIndex   = m_index; //Support older TVServer and Manual Schedule having a program name that does not have a match in MP EPG.
+     tag.iEpgUid        = 0;
+  }
   if (IsRecording())
     tag.state           = PVR_TIMER_STATE_RECORDING;
   else if (m_active)
@@ -136,6 +151,7 @@ void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
   tag.iMarginEnd        = m_postrecordinterval * 60;
   tag.iGenreType        = 0;
   tag.iGenreSubType     = 0;
+  
 }
 
 time_t cTimer::StartTime(void) const
@@ -176,7 +192,9 @@ bool cTimer::ParseLine(const char *s)
     // field 15 = canceled (TVServerXBMC build >= 100)
     // field 16 = series (True/False) (TVServerXBMC build >= 100)
     // field 17 = isrecording (True/False)
-
+    if(schedulefields.size() >= 19)
+      m_progid = atoi(schedulefields[18].c_str());
+    else m_progid = -1;
     m_index = atoi(schedulefields[0].c_str());
     m_starttime = DateTimeToTimeT(schedulefields[1]);
 
