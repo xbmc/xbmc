@@ -21,6 +21,16 @@
     },
     "additionalProperties": false
   },
+  "Global.IncrementDecrement": {
+    "type": "string",
+    "enum": [ "increment", "decrement" ]
+  },
+  "Global.Toggle": {
+    "type": [
+      { "type": "boolean", "required": true },
+      { "type": "string", "enum": [ "toggle" ], "required": true }
+    ]
+  },
   "Configuration.Notifications": {
     "type": "object",
     "properties": {
@@ -97,6 +107,16 @@
     "type": "number",
     "minimum": 0.0,
     "maximum": 100.0
+  },
+  "Player.Position.Time": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "hours": { "type": "integer", "minimum": 0, "maximum": 23, "default": 0 },
+      "minutes": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
+      "seconds": { "type": "integer", "minimum": 0, "maximum": 59, "default": 0 },
+      "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999, "default": 0 }
+    }
   },
   "Player.Speed": {
     "type": "object",
@@ -375,7 +395,7 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "premiered", "productioncode", "runtime", "set",
                 "showlink", "streamdetails", "top250", "votes", "fanart",
-                "thumbnail", "file", "sorttitle", "resume", "setid" ]
+                "thumbnail", "file", "sorttitle", "resume", "setid", "dateadded" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -392,13 +412,15 @@
                 "studio", "mpaa", "cast", "playcount", "episode",
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
-                "sorttitle", "episodeguide" ]
+                "sorttitle", "episodeguide", "season", "watchedepisodes",
+                "dateadded"]
     }
   },
   "Video.Fields.Season": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "season", "showtitle", "playcount", "episode", "fanart", "thumbnail", "tvshowid" ]
+      "enum": [ "season", "showtitle", "playcount", "episode", "fanart", "thumbnail", "tvshowid",
+                "watchedepisodes" ]
     }
   },
   "Video.Fields.Episode": {
@@ -409,7 +431,7 @@
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
-                "thumbnail", "file", "resume", "tvshowid" ]
+                "thumbnail", "file", "resume", "tvshowid", "dateadded" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -419,7 +441,7 @@
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
-                "fanart", "thumbnail", "file", "resume" ]
+                "fanart", "thumbnail", "file", "resume", "dateadded" ]
     }
   },
   "Video.Cast": {
@@ -494,7 +516,8 @@
     "properties": {
       "file": { "type": "string" },
       "plot": { "type": "string" },
-      "lastplayed": { "type": "string" }
+      "lastplayed": { "type": "string" },
+      "dateadded": { "type": "string" }
     }
   },
   "Video.Details.File": {
@@ -560,10 +583,12 @@
       "mpaa": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
       "episode": { "type": "integer" },
+      "watchedepisodes": { "type": "integer" },
       "imdbnumber": { "type": "string" },
       "premiered": { "type": "string" },
       "votes": { "type": "string" },
-      "episodeguide": { "type": "string" }
+      "episodeguide": { "type": "string" },
+      "season": { "type": "integer" }
     }
   },
   "Video.Details.Season": {
@@ -572,6 +597,7 @@
       "season": { "type": "integer", "required": true },
       "showtitle": { "type": "string" },
       "episode": { "type": "integer" },
+      "watchedepisodes": { "type": "integer" },
       "tvshowid": { "$ref": "Library.Id" }
     }
   },
@@ -626,9 +652,9 @@
     "properties": {
       "method": { "type": "string", "default": "none",
         "enum": [ "none", "label", "date", "size", "file", "drivetype", "track", "duration", "title", "artist",
-                  "album", "genre", "year", "videorating", "programcount", "playlist", "episode", "videotitle",
-                  "sorttitle", "productioncode", "songrating", "mpaarating", "videoruntime", "studio", "fullpath",
-                  "lastplayed", "unsorted" ]
+                  "album", "genre", "country", "year", "videorating", "dateadded", "programcount", "playlist",
+                  "episode", "videotitle", "sorttitle", "productioncode", "songrating", "mpaarating", "videoruntime",
+                  "studio", "fullpath", "lastplayed", "playcount", "listeners", "bitrate", "unsorted" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
       "ignorearticle": { "type": "boolean", "default": false }
@@ -654,7 +680,7 @@
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
-                "resume", "artistid", "albumid", "tvshowid", "setid" ]
+                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes" ]
     }
   },
   "List.Item.All": {
@@ -693,14 +719,33 @@
       "artistid": { "$ref": "Library.Id" },
       "albumid": { "$ref": "Library.Id" },
       "setid": { "$ref": "Array.Integer" },
-      "tvshowid": { "$ref": "Library.Id" }
+      "tvshowid": { "$ref": "Library.Id" },
+      "watchedepisodes": { "type": "integer" }
+    }
+  },
+  "List.Fields.Files": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "artist", "albumartist", "genre", "year", "rating",
+                "album", "track", "duration", "comment", "lyrics", "musicbrainztrackid",
+                "musicbrainzartistid", "musicbrainzalbumid", "musicbrainzalbumartistid",
+                "playcount", "fanart", "director", "trailer", "tagline", "plot",
+                "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
+                "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
+                "runtime", "set", "showlink", "streamdetails", "top250", "votes",
+                "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
+                "resume", "artistid", "albumid", "tvshowid", "setid", "size",
+                "lastmodified", "mimetype", "watchedepisodes" ]
     }
   },
   "List.Item.File": {
     "extends": "List.Item.All",
     "properties": {
       "file": { "type": "string", "required": true },
-      "filetype": { "type": "string", "enum": [ "file", "directory" ], "required": true }
+      "filetype": { "type": "string", "enum": [ "file", "directory" ], "required": true },
+      "size": { "type": "integer", "description": "Size of the file in kB (1000 Byte)" },
+      "lastmodified": { "type": "string" },
+      "mimetype": { "type": "string" }
     }
   },
   "List.Items.Sources": {
@@ -710,6 +755,33 @@
       "properties": {
         "file": { "type": "string", "required": true }
       }
+    }
+  },
+  "GUI.Property.Name": {
+    "type": "string",
+    "enum": [ "currentwindow", "currentcontrol", "skin", "fullscreen" ]
+  },
+  "GUI.Property.Value": {
+    "type": "object",
+    "properties": {
+      "currentwindow": { "type": "object",
+        "properties": {
+          "id": { "type": "integer", "required": true },
+          "label": { "type": "string", "required": true }
+        }
+      },
+      "currentcontrol": { "type": "object",
+        "properties": {
+          "label": { "type": "string", "required": true }
+        }
+      },
+      "skin": { "type": "object",
+        "properties": {
+          "id": { "type": "string", "required": true, "minLength": 1 },
+          "name": { "type": "string" }
+        }
+      },
+      "fullscreen": { "type": "boolean" }
     }
   },
   "System.Property.Name": {
@@ -732,7 +804,7 @@
   "Application.Property.Value": {
     "type": "object",
     "properties": {
-      "volume": { "type": "integer" },
+      "volume": { "type": "integer", "minimum": 0, "maximum": 100 },
       "muted": { "type": "boolean" },
       "name": { "type": "string", "minLength": 1 },
       "version": { "type": "object",

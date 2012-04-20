@@ -2,8 +2,8 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Idan Bushari-->
 <!--Email: bushari2003@hotmail.com-->
-<!--Date of translation: 02/20/2012-->
-<!--Based on English 0ee1ef09238e4d913cf6c47fa18138c3654cd33e (08.02.2012)-->
+<!--Date of translation: 03/31/2012-->
+<!--$Revision$-->
 <strings>
   <string id="0">תוכנות</string>
   <string id="1">תמונות</string>
@@ -68,6 +68,7 @@
   <string id="84">מע-צ-מע</string>
   <string id="85">צ-מע</string>
   <string id="86">צ-צ-מע</string>
+  <string id="87">VAR</string>
   <string id="98">תצוגה: אוטומטי</string>
   <string id="99">תצוגה: אוטומטי גדול</string>
   <string id="100">תצוגה: צלמיות</string>
@@ -652,6 +653,7 @@
   <string id="787">ממשק מנוטרל</string>
   <string id="788">ממשק רשת נוטרל בהצלחה.</string>
   <string id="789">שם רשת אלחוטית (ESSID)</string>
+  <string id="790">שליטה מרחוק</string>
   <string id="791">אפשר לתוכנות במערכת זו לשלוט על XBMC</string>
   <string id="792">פורט</string>
   <string id="793">תווך פורטים</string>
@@ -753,10 +755,12 @@
   <string id="1255">שלח פרטי FTP משתמש וסיסמא</string>
   <string id="1256">השהיית פינג</string>
   <string id="1257">האם ברצונך להתחבר למערכת שזוהתה אוטומטית?</string>
+  <string id="1259">Zeroconf</string>
   <string id="1260">הכרז על שירותים אלו למערכות אחרות דרך Zeroconf</string>
   <string id="1270">אפשר ל-XBMC לקבל תכני AirPlay</string>
   <string id="1271">שם התקן</string>
   <string id="1272">- השתמש בהגנת סיסמא</string>
+  <string id="1273">AirPlay</string>
   <string id="1300">התקן אודיו מותאם אישית</string>
   <string id="1301">התקן פלט מותאם אישית</string>
   <string id="1396">זולג</string>
@@ -949,6 +953,7 @@
   <string id="13113">מנוטרל</string>
   <string id="13114">מופעל רק לתכני SD</string>
   <string id="13115">אפשר תמיד</string>
+  <string id="13120">VDPAU</string>
   <string id="13130">החשך צגים אחרים</string>
   <string id="13131">מנוטרל</string>
   <string id="13132">צגים ריקים</string>
@@ -1107,6 +1112,7 @@
   <string id="13416">זהה אוטומטית</string>
   <string id="13419">תוכנתי</string>
   <string id="13420">הסר בבטחה</string>
+  <string id="13421">VDPAU</string>
   <string id="13422">התחל מצגת תמונות כאן</string>
   <string id="13423">זכור לנתיב זה</string>
   <string id="13425">אפשר תאוצת חומרה (VDPAU)</string>
@@ -1120,6 +1126,8 @@
   <string id="13501">שעון שמע</string>
   <string id="13502">שעון וידאו (Drop/Dupe audio)</string>
   <string id="13503">שעון וידאו</string>
+  <string id="13504">כמות דגימה מקסימלית (%)</string>
+  <string id="13505">דגום איכות שוב</string>
   <string id="13506">נמוך (מהיר)</string>
   <string id="13507">בינוני</string>
   <string id="13508">גבוה</string>
@@ -1224,6 +1232,7 @@
   <string id="14093">אבטחה</string>
   <string id="14094">התקני קלט</string>
   <string id="14095">חסכון באנרגיה</string>
+  <string id="14099">הוצא דיסק כאשר ההעתקה הושלמה</string>
   <string id="15015">הסר</string>
   <string id="15016">משחקים</string>
   <string id="15019">הוסף</string>
@@ -1259,6 +1268,7 @@
   <string id="15217">שלח שירים לשירות Libre.fm</string>
   <string id="15218">Libre.fm משתמש</string>
   <string id="15219">Libre.fm סיסמא</string>
+  <string id="15220">Libre.fm</string>
   <string id="15221">הגשת שיר</string>
   <string id="15250">שלח Last.fm אל Last.fm</string>
   <string id="15251">מתחבר אל Last.fm...</string>
@@ -1346,10 +1356,10 @@
   <string id="16040">אוטומטי</string>
   <string id="16041">פעיל</string>
   <string id="16100">כל הוידאו</string>
-  <string id="16101">לא נראו</string>
-  <string id="16102">נראו</string>
-  <string id="16103">סמן כנראו</string>
-  <string id="16104">סמן כלא נראו</string>
+  <string id="16101">לא נצפו</string>
+  <string id="16102">נצפו</string>
+  <string id="16103">סמן כנצפה</string>
+  <string id="16104">סמן כלא כנצפה</string>
   <string id="16105">ערוך כותרת</string>
   <string id="16200">פעולה בוטלה</string>
   <string id="16201">העתקה נכשלה</string>
@@ -1360,6 +1370,7 @@
   <string id="16206">נכשל במחיקת קובץ אחד לפחות</string>
   <string id="16301">השכן הקרוב</string>
   <string id="16316">אוטומטי</string>
+  <string id="16319">DXVA</string>
   <string id="17500">מסך פרק זמן שינה</string>
   <string id="19000">החלף לערוץ</string>
   <string id="20000">תיקיית שמירת מוזיקה</string>
@@ -1532,6 +1543,7 @@
   <string id="20184">סובב תמונות בעזרת פרטי EXIF</string>
   <string id="20185">השתמש בפוסטרים לתוכניות טלויזיה</string>
   <string id="20186">אנא המתן</string>
+  <string id="20187">UPnP</string>
   <string id="20189">אפשר גלילה אוטומטית לעלילות וסקירות</string>
   <string id="20190">מותאם אישית</string>
   <string id="20191">הפעל לוג מורחב</string>
@@ -1604,9 +1616,9 @@
   <string id="20364">תוכנית טלויזיה</string>
   <string id="20365">עלילת פרק</string>
   <string id="20366">* כל העונות</string>
-  <string id="20367">הסתר שנראו</string>
+  <string id="20367">הסתר שנצפו</string>
   <string id="20368">קוד הפקה</string>
-  <string id="20369">הראה עלילה לפריטים שעוד לא נראו</string>
+  <string id="20369">הראה עלילה לפריטים שעוד לא נצפו</string>
   <string id="20370">* הסתר למניעת ספוילרים *</string>
   <string id="20371">בחר תמונה ממוזערת לעונה</string>
   <string id="20372">תמונת עונה</string>
@@ -1724,7 +1736,7 @@
   <string id="21381">הזן שם רשימת השמעה חדשה</string>
   <string id="21382">הראה כפתור "הוסף מקור" ברשימות קבצים</string>
   <string id="21383">אפשר פסי גלילה</string>
-  <string id="21384">אפשר פילטר נראו בספריית וידאו</string>
+  <string id="21384">אפשר פילטר נצפו בספריית וידאו</string>
   <string id="21385">פתח</string>
   <string id="21386">רמת ניהול אקוסטי</string>
   <string id="21387">מהר</string>
@@ -1780,7 +1792,7 @@
   <string id="21438">כונן %c</string>
   <string id="21439">ערוך חוקי מצב מסיבה</string>
   <string id="21440">תיקיית בית</string>
-  <string id="21441">ספירת שנראו</string>
+  <string id="21441">ספירת שנצפו</string>
   <string id="21442">שם פרק</string>
   <string id="21443">רזולוצית וידאו</string>
   <string id="21444">ערוצי שמע</string>
@@ -1876,6 +1888,7 @@
   <string id="22000">עדכן את הספריה בהפעלה</string>
   <string id="22001">תמיד עדכן ספרייה ברקע</string>
   <string id="22002">- DNS סיומת</string>
+  <string id="22003">%2.3fs</string>
   <string id="22004">%2.3f שניות עוכבו</string>
   <string id="22005">%2.3f שניות הוקדמו</string>
   <string id="22006">השהיית כתוביות</string>
@@ -2081,7 +2094,23 @@
   <string id="33102">Event Server</string>
   <string id="33103">שרת התחברות מרחוק</string>
   <string id="33200">זוהה חיבור חדש</string>
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
   <string id="34100">תצורת רמקול</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
   <string id="34201">לא נמצא פריט הבא לניגון</string>
   <string id="34202">לא נמצא הפריט הקודם לניגון</string>
   <string id="34300">נכשל בהפעלת zeroconf</string>
@@ -2096,21 +2125,30 @@
   <string id="35004">אין הגדרות להתקן זה</string>
   <string id="35005">התקן חדש הוגדר</string>
   <string id="35006">התקן הוסר</string>
+  <string id="35008">Keymap פעיל</string>
+  <string id="35009">אל תשתמש ב 'keymap' מותאם אישית להתקן זה</string>
   <string id="35500">מיקום</string>
   <string id="35501">מחלקה</string>
   <string id="35502">שם</string>
   <string id="35503">ספק</string>
   <string id="35504">מוצר ID</string>
   <string id="36006">אין אפשרות לפתוח מתאם</string>
-  <string id="36007">הדלק טלוויזיה כאשר מפעילים את XBMC</string>
-  <string id="36008">כבה את ההתקנים כאשר מפסיקים את XBMC</string>
+  <string id="36007">התקנים אשר יפעלו כאשר מפעילים את XBMC</string>
+  <string id="36008">התקנים אשר יכבו כאשר מפסיקים את XBMC</string>
   <string id="36009">הכנס את ההתקנים למצב שינה כאשר מפעילים שומר מסך</string>
   <string id="36011">אין אפשרות לזהות פורט CEC. הגדר זאת ידנית.</string>
-  <string id="36012">אין אפשרות לזהות מתאם CEC.</string>
-  <string id="36013">ממשק libcec  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)</string>
+  <string id="36012">אין אפשרות לאתחל מתאם CEC. בדוק את ההגדרות שלך</string>
+  <string id="36013">ממשק libCEC  לא נתמך. %d גדול יותר מאשר הגרסא ש- XBMC תומך (%d)</string>
   <string id="36014">הכנס את המחשב למצב המתנה כאשר הטלוויזיה נכבית</string>
   <string id="36015">מספר פורט HDMI</string>
   <string id="36016">מחובר</string>
-  <string id="36017">מתאם נמצא. אבל libcec לא זמין</string>
+  <string id="36017">מתאם נמצא. אבל libCEC לא זמין</string>
   <string id="36018">השתמש בהגדרות שפה של הטלוויזיה</string>
+  <string id="36019">מחובר להתקן HDMI</string>
+  <string id="36020">הפוך את XBMC למקור הפעיל כאשר מפעילים</string>
+  <string id="36021">כתובת פיזית (מבטל יציאת HDMI)</string>
+  <string id="36022">יציאת COM (השאר ריק אלא אם יש צורך)</string>
+  <string id="36023">תצורה עודכנה</string>
+  <string id="36024">נכשל בהגדרת תצורה חדשה. אנא בדוק את ההגדרות שלך.</string>
+  <string id="36025">שלח פקודת 'מקור לא פעיל' כאשר עוצרים את XBMC</string>
 </strings>

@@ -19,7 +19,7 @@
  */
 
 /* The *no_round* functions have been added by James A. Morrison, 2003,2004.
-   The vis code from libmpeg2 was adapted for ffmpeg by James A. Morrison.
+   The vis code from libmpeg2 was adapted for libavcodec by James A. Morrison.
  */
 
 #include "config.h"
@@ -3953,15 +3953,18 @@ void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx)
 {
   /* VIS-specific optimizations */
   int accel = vis_level ();
+  const int high_bit_depth = avctx->bits_per_raw_sample > 8;
 
   if (accel & ACCEL_SPARC_VIS) {
-      if(avctx->idct_algo==FF_IDCT_SIMPLEVIS){
+      if (avctx->bits_per_raw_sample <= 8 &&
+          avctx->idct_algo == FF_IDCT_SIMPLEVIS) {
           c->idct_put = ff_simple_idct_put_vis;
           c->idct_add = ff_simple_idct_add_vis;
           c->idct     = ff_simple_idct_vis;
           c->idct_permutation_type = FF_TRANSPOSE_IDCT_PERM;
       }
 
+      if (!high_bit_depth) {
       c->put_pixels_tab[0][0] = MC_put_o_16_vis;
       c->put_pixels_tab[0][1] = MC_put_x_16_vis;
       c->put_pixels_tab[0][2] = MC_put_y_16_vis;
@@ -4001,5 +4004,6 @@ void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx)
       c->avg_no_rnd_pixels_tab[1][1] = MC_avg_no_round_x_8_vis;
       c->avg_no_rnd_pixels_tab[1][2] = MC_avg_no_round_y_8_vis;
       c->avg_no_rnd_pixels_tab[1][3] = MC_avg_no_round_xy_8_vis;
+      }
   }
 }

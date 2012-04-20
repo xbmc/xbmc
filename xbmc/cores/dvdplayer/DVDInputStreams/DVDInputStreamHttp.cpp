@@ -21,7 +21,7 @@
 
 #include "DVDInputStreamHttp.h"
 #include "URL.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 using namespace XFILE;
 
@@ -55,7 +55,7 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-  m_pFile = new CFileCurl();
+  m_pFile = new CCurlFile();
   if (!m_pFile) return false;
 
   std::string filename = strFile;

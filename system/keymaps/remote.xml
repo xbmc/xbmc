@@ -148,6 +148,8 @@
       <star>NextSubtitle</star>
       <language>AudioNextLanguage</language>
       <hash>AudioNextLanguage</hash>
+      <pageplus>SkipNext</pageplus>
+      <pageminus>SkipPrevious</pageminus>
     </remote>
   </FullscreenVideo>
   <VideoTimeSeek>
@@ -254,6 +256,8 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <play>Select</play>
+      <pageplus>SkipNext</pageplus>
+      <pageminus>SkipPrevious</pageminus>
     </remote>
   </VideoMenu>
   <OSDVideoSettings>

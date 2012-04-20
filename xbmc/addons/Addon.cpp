@@ -25,6 +25,7 @@
 #include "settings/GUISettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "interfaces/python/XBPython.h"
 #ifdef __APPLE__
 #include "../osx/OSXGNUReplacements.h"
 #endif
@@ -443,6 +444,7 @@ void CAddon::SaveSettings(void)
   doc.SaveFile(m_userSettingsPath);
   
   CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
+  g_pythonParser.OnSettingsChanged(ID());
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)

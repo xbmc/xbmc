@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "FileNFS.h"
+#include "NFSFile.h"
 
 namespace XFILE
 {

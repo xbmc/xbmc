@@ -28,20 +28,16 @@ static int framecrc_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     char buf[256];
 
     snprintf(buf, sizeof(buf), "%d, %"PRId64", %d, 0x%08x\n", pkt->stream_index, pkt->dts, pkt->size, crc);
-    put_buffer(s->pb, buf, strlen(buf));
-    put_flush_packet(s->pb);
+    avio_write(s->pb, buf, strlen(buf));
+    avio_flush(s->pb);
     return 0;
 }
 
 AVOutputFormat ff_framecrc_muxer = {
-    "framecrc",
-    NULL_IF_CONFIG_SMALL("framecrc testing format"),
-    NULL,
-    "",
-    0,
-    CODEC_ID_PCM_S16LE,
-    CODEC_ID_RAWVIDEO,
-    NULL,
-    framecrc_write_packet,
-    NULL,
+    .name              = "framecrc",
+    .long_name         = NULL_IF_CONFIG_SMALL("framecrc testing format"),
+    .audio_codec       = CODEC_ID_PCM_S16LE,
+    .video_codec       = CODEC_ID_RAWVIDEO,
+    .write_packet      = framecrc_write_packet,
+    .flags             = AVFMT_VARIABLE_FPS,
 };

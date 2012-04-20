@@ -1,32 +1,36 @@
 ARCH=@ARCH@
 CXXFLAGS=-fPIC
-OBJS=Main.o
 
-SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
+SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 
 ifeq (@USE_OPENGLES@,1)
-  OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o ../../guilib/MatrixGLES.o
-  DEFINES+=-DHAS_GLES=2
+  DEFINES += -DHAS_GLES=2
+  INCLUDES+= -I@abs_top_srcdir@/xbmc/visualizations/EGLHelpers
+  OBJS  = Main_gles.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisMatrixGLES.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisGUIShader.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisShader.o
   ifeq ($(findstring osx,$(ARCH)), osx)
-    LDFLAGS+=-framework OpenGLES
+    LDFLAGS += -framework OpenGLES
   else
-    LDFLAGS+=-lGLESv2
+    LDFLAGS += -lGLESv2
   endif
 else
-  DEFINES+=-DHAS_SDL
-  DEFINES+=-DHAS_SDL_OPENGL
+  OBJS  = Main.o
+  DEFINES += -DHAS_SDL
+  DEFINES += -DHAS_SDL_OPENGL
   ifeq ($(findstring osx,$(ARCH)), osx)
-    LDFLAGS+=-framework OpenGL
+    LDFLAGS += -framework OpenGL
   else
-    LDFLAGS+=-lGL -lGLU
+    LDFLAGS += -lGL -lGLU
   endif
 endif
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CFLAGS) $(LDFLAGS) -bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -o $@ $(OBJS)
 else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) -Wl,--unresolved-symbols=ignore-all $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS)
 endif
 
 include @abs_top_srcdir@/Makefile.include

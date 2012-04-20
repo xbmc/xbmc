@@ -327,7 +327,7 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = g_settings.GetSourcesFromType(m_type);
   if (shares)
     shares->push_back(share);
-  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
     m_confirmed = true;
     Close();

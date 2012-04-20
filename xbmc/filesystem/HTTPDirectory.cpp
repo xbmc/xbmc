@@ -21,7 +21,7 @@
 
 #include "HTTPDirectory.h"
 #include "URL.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "settings/AdvancedSettings.h"
@@ -39,7 +39,7 @@ CHTTPDirectory::~CHTTPDirectory(void){}
 
 bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CFileCurl http;
+  CCurlFile http;
   CURL url(strPath);
 
   CStdString strName, strLink;
@@ -53,6 +53,21 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   CRegExp reItem(true); // HTML is case-insensitive
   reItem.RegComp("<a href=\"(.*)\">(.*)</a>");
+
+  CRegExp reDateTime(true);
+  reDateTime.RegComp("<td align=\"right\">([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) +</td>");
+  
+  CRegExp reDateTimeLighttp(true);
+  reDateTimeLighttp.RegComp("<td class=\"m\">([0-9]{4})-([A-Z]{3})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})</td>");
+
+  CRegExp reDateTimeNginx(true);
+  reDateTimeNginx.RegComp("</a> +([0-9]{2})-([A-Z]{3})-([0-9]{4}) ([0-9]{2}):([0-9]{2}) ");
+
+  CRegExp reSize(true);
+  reSize.RegComp("> *([0-9.]+)(B|K|M|G| )</td>");
+
+  CRegExp reSizeNginx(true);
+  reSizeNginx.RegComp("([0-9]+)(B|K|M|G)?$");
 
   /* read response from server into string buffer */
   char buffer[MAX_PATH + 1024];
@@ -98,18 +113,40 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
           pItem->m_bIsFolder = true;
 
-        if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
+        CStdString day, month, year, hour, minute;
+
+        if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
         {
-          CFileCurl file;
-          file.Open(url);
-          pItem->m_dwSize= file.GetLength();
-          file.Close();
+          day = reDateTime.GetReplaceString("\\1");
+          month = reDateTime.GetReplaceString("\\2");
+          year = reDateTime.GetReplaceString("\\3");
+          hour = reDateTime.GetReplaceString("\\4");
+          minute = reDateTime.GetReplaceString("\\5");
+        }
+        else if (reDateTimeNginx.RegFind(strBuffer.c_str()) >= 0)
+        {
+          day = reDateTimeNginx.GetReplaceString("\\1");
+          month = reDateTimeNginx.GetReplaceString("\\2");
+          year = reDateTimeNginx.GetReplaceString("\\3");
+          hour = reDateTimeNginx.GetReplaceString("\\4");
+          minute = reDateTimeNginx.GetReplaceString("\\5");
+        }
+        else if (reDateTimeLighttp.RegFind(strBuffer.c_str()) >= 0)
+        {
+          day = reDateTimeLighttp.GetReplaceString("\\3");
+          month = reDateTimeLighttp.GetReplaceString("\\2");
+          year = reDateTimeLighttp.GetReplaceString("\\1");
+          hour = reDateTimeLighttp.GetReplaceString("\\4");
+          minute = reDateTimeLighttp.GetReplaceString("\\5");
         }
 
-        if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
+        if (day.length() > 0 && month.length() > 0 && year.length() > 0)
         {
-          CRegExp reSize(true);
-          reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
+          pItem->m_dateTime = CDateTime(atoi(year.c_str()), CDateTime::MonthStringToMonthNum(month), atoi(day.c_str()), atoi(hour.c_str()), atoi(minute.c_str()), 0);
+        }
+
+        if (!pItem->m_bIsFolder)
+        {
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSize.GetReplaceString("\\1"));
@@ -120,12 +157,33 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             else if (strUnit == "M")
               Size = Size * 1024 * 1024;
             else if (strUnit == "G")
-              Size = Size * 1000 * 1024 * 1024;
+              Size = Size * 1024 * 1024 * 1024;
 
             pItem->m_dwSize = (int64_t)Size;
           }
-        }
+          else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
+          {
+            double Size = atof(reSizeNginx.GetReplaceString("\\1"));
+            CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
 
+            if (strUnit == "K")
+              Size = Size * 1024;
+            else if (strUnit == "M")
+              Size = Size * 1024 * 1024;
+            else if (strUnit == "G")
+              Size = Size * 1024 * 1024 * 1024;
+
+            pItem->m_dwSize = (int64_t)Size;
+          }
+          else
+          if (g_advancedSettings.m_bHTTPDirectoryStatFilesize) // As a fallback get the size by stat-ing the file (slow)
+          {
+            CCurlFile file;
+            file.Open(url);
+            pItem->m_dwSize=file.GetLength();
+            file.Close();
+          }
+        }
         items.Add(pItem);
       }
     }
@@ -139,7 +197,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
 bool CHTTPDirectory::Exists(const char* strPath)
 {
-  CFileCurl http;
+  CCurlFile http;
   CURL url(strPath);
   struct __stat64 buffer;
 

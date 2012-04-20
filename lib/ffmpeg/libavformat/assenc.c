@@ -42,7 +42,7 @@ static int write_header(AVFormatContext *s)
         if(!end) end= avctx->extradata + avctx->extradata_size;
         else     end++;
 
-        put_buffer(s->pb, p, end-p);
+        avio_write(s->pb, p, end-p);
         ass->extra_index += end-p;
 
         if(last && !memcmp(last, "[Events]", 8))
@@ -50,16 +50,16 @@ static int write_header(AVFormatContext *s)
         last=p;
     }
 
-    put_flush_packet(s->pb);
+    avio_flush(s->pb);
 
     return 0;
 }
 
 static int write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    put_buffer(s->pb, pkt->data, pkt->size);
+    avio_write(s->pb, pkt->data, pkt->size);
 
-    put_flush_packet(s->pb);
+    avio_flush(s->pb);
 
     return 0;
 }
@@ -69,10 +69,10 @@ static int write_trailer(AVFormatContext *s)
     ASSContext *ass = s->priv_data;
     AVCodecContext *avctx= s->streams[0]->codec;
 
-    put_buffer(s->pb, avctx->extradata      + ass->extra_index,
+    avio_write(s->pb, avctx->extradata      + ass->extra_index,
                       avctx->extradata_size - ass->extra_index);
 
-    put_flush_packet(s->pb);
+    avio_flush(s->pb);
 
     return 0;
 }

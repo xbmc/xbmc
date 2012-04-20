@@ -65,6 +65,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <DisableSpecificWarnings>4001;4996;4244;4267;4018;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <AdditionalDependencies>fontconfig.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -139,6 +140,7 @@
     <ClInclude Include="..\..\libass\ass_library.h" />
     <ClInclude Include="..\..\libass\ass_parse.h" />
     <ClInclude Include="..\..\libass\ass_render.h" />
+    <ClInclude Include="..\..\libass\ass_shaper.h" />
     <ClInclude Include="..\..\libass\ass_types.h" />
     <ClInclude Include="..\..\libass\ass_utils.h" />
     <ClInclude Include="config.h" />
@@ -154,8 +156,11 @@
     <ClCompile Include="..\..\libass\ass_parse.c" />
     <ClCompile Include="..\..\libass\ass_render.c" />
     <ClCompile Include="..\..\libass\ass_render_api.c" />
+    <ClCompile Include="..\..\libass\ass_shaper.c" />
     <ClCompile Include="..\..\libass\ass_strtod.c" />
-    <ClCompile Include="..\..\libass\ass_utils.c" />
+    <ClCompile Include="..\..\libass\ass_utils.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\enca\libenca_win32\libenca_win32.vcxproj">

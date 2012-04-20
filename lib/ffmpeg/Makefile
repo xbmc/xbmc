@@ -1,8 +1,14 @@
+MAIN_MAKEFILE=1
 include config.mak
 
-SRC_DIR = $(SRC_PATH_BARE)
-
-vpath %.texi $(SRC_PATH_BARE)
+vpath %.c    $(SRC_PATH)
+vpath %.cpp  $(SRC_PATH)
+vpath %.h    $(SRC_PATH)
+vpath %.S    $(SRC_PATH)
+vpath %.asm  $(SRC_PATH)
+vpath %.v    $(SRC_PATH)
+vpath %.texi $(SRC_PATH)
+vpath %/fate_config.sh.template $(SRC_PATH)
 
 PROGS-$(CONFIG_FFMPEG)   += ffmpeg
 PROGS-$(CONFIG_FFPLAY)   += ffplay
@@ -10,18 +16,16 @@ PROGS-$(CONFIG_FFPROBE)  += ffprobe
 PROGS-$(CONFIG_FFSERVER) += ffserver
 
 PROGS      := $(PROGS-yes:%=%$(EXESUF))
-PROGS_G     = $(PROGS-yes:%=%_g$(EXESUF))
+INSTPROGS   = $(PROGS-yes:%=%$(PROGSSUF)$(EXESUF))
 OBJS        = $(PROGS-yes:%=%.o) cmdutils.o
-MANPAGES    = $(PROGS-yes:%=doc/%.1)
-PODPAGES    = $(PROGS-yes:%=doc/%.pod)
-HTMLPAGES   = $(PROGS-yes:%=doc/%.html)
-TOOLS       = $(addprefix tools/, $(addsuffix $(EXESUF), cws2fws pktdumper probetest qt-faststart trasher))
 TESTTOOLS   = audiogen videogen rotozoom tiny_psnr base64
 HOSTPROGS  := $(TESTTOOLS:%=tests/%)
+TOOLS       = qt-faststart trasher
+TOOLS-$(CONFIG_ZLIB) += cws2fws
 
 BASENAMES   = ffmpeg ffplay ffprobe ffserver
-ALLPROGS    = $(BASENAMES:%=%$(EXESUF))
-ALLPROGS_G  = $(BASENAMES:%=%_g$(EXESUF))
+ALLPROGS    = $(BASENAMES:%=%$(PROGSSUF)$(EXESUF))
+ALLPROGS_G  = $(BASENAMES:%=%$(PROGSSUF)_g$(EXESUF))
 ALLMANPAGES = $(BASENAMES:%=%.1)
 
 FFLIBS-$(CONFIG_AVDEVICE) += avdevice
@@ -29,44 +33,40 @@ FFLIBS-$(CONFIG_AVFILTER) += avfilter
 FFLIBS-$(CONFIG_AVFORMAT) += avformat
 FFLIBS-$(CONFIG_AVCODEC)  += avcodec
 FFLIBS-$(CONFIG_POSTPROC) += postproc
+FFLIBS-$(CONFIG_SWRESAMPLE)+= swresample
 FFLIBS-$(CONFIG_SWSCALE)  += swscale
-FFLIBS-$(CONFIG_AVCORE)   += avcore
 
 FFLIBS := avutil
 
-DATA_FILES := $(wildcard $(SRC_DIR)/ffpresets/*.ffpreset)
+DATA_FILES := $(wildcard $(SRC_PATH)/presets/*.ffpreset) $(SRC_PATH)/doc/ffprobe.xsd
 
 SKIPHEADERS = cmdutils_common_opts.h
 
-include common.mak
+include $(SRC_PATH)/common.mak
 
-FF_LDFLAGS   := $(FFLDFLAGS)
 FF_EXTRALIBS := $(FFEXTRALIBS)
 FF_DEP_LIBS  := $(DEP_LIBS)
 
-ALL_TARGETS-$(CONFIG_DOC)       += documentation
+all: $(PROGS)
 
-ifdef PROGS
-INSTALL_TARGETS-yes             += install-progs install-data
-INSTALL_TARGETS-$(CONFIG_DOC)   += install-man
-endif
-INSTALL_PROGS_TARGETS-$(CONFIG_SHARED) = install-libs
+$(PROGS): %$(EXESUF): %$(PROGSSUF)_g$(EXESUF)
+	$(CP) $< $@$(PROGSSUF)
+	$(STRIP) $@$(PROGSSUF)
 
-all: $(FF_DEP_LIBS) $(PROGS) $(ALL_TARGETS-yes)
+$(TOOLS): %$(EXESUF): %.o
+	$(LD) $(LDFLAGS) -o $@ $< $(ELIBS)
 
-$(PROGS): %$(EXESUF): %_g$(EXESUF)
-	$(CP) $< $@
-	$(STRIP) $@
+tools/cws2fws$(EXESUF): ELIBS = -lz
 
 config.h: .config
-.config: $(wildcard $(FFLIBS:%=$(SRC_DIR)/lib%/all*.c))
+.config: $(wildcard $(FFLIBS:%=$(SRC_PATH)/lib%/all*.c))
 	@-tput bold 2>/dev/null
 	@-printf '\nWARNING: $(?F) newer than config.h, rerun configure\n\n'
 	@-tput sgr0 2>/dev/null
 
 SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES SKIPHEADERS \
                ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS \
-               HOSTPROGS BUILT_HEADERS TESTOBJS ARCH_HEADERS
+               HOSTPROGS BUILT_HEADERS TESTOBJS ARCH_HEADERS ARMV6-OBJS TOOLS
 
 define RESET
 $(1) :=
@@ -76,30 +76,28 @@ endef
 define DOSUBDIR
 $(foreach V,$(SUBDIR_VARS),$(eval $(call RESET,$(V))))
 SUBDIR := $(1)/
-include $(1)/Makefile
+include $(SRC_PATH)/$(1)/Makefile
+-include $(SRC_PATH)/$(1)/$(ARCH)/Makefile
+include $(SRC_PATH)/library.mak
 endef
 
 $(foreach D,$(FFLIBS),$(eval $(call DOSUBDIR,lib$(D))))
 
-ffplay_g$(EXESUF): FF_EXTRALIBS += $(SDL_LIBS)
-ffserver_g$(EXESUF): FF_LDFLAGS += $(FFSERVERLDFLAGS)
-
-%_g$(EXESUF): %.o cmdutils.o $(FF_DEP_LIBS)
-	$(LD) $(FF_LDFLAGS) -o $@ $< cmdutils.o $(FF_EXTRALIBS)
-
-tools/%$(EXESUF): tools/%.o
-	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
-
-tools/%.o: tools/%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(CC_O) $<
-
 ffplay.o: CFLAGS += $(SDL_CFLAGS)
+ffplay_g$(EXESUF): FF_EXTRALIBS += $(SDL_LIBS)
+ffserver_g$(EXESUF): LDFLAGS += $(FFSERVERLDFLAGS)
 
-VERSION_SH  = $(SRC_PATH_BARE)/version.sh
-GIT_LOG     = $(SRC_PATH_BARE)/.git/logs/HEAD
-SVN_ENTRIES = $(SRC_PATH_BARE)/.svn/entries
+%$(PROGSSUF)_g$(EXESUF): %.o cmdutils.o $(FF_DEP_LIBS)
+	$(LD) $(LDFLAGS) -o $@ $< cmdutils.o $(FF_EXTRALIBS)
 
-.version: $(wildcard $(GIT_LOG) $(SVN_ENTRIES)) $(VERSION_SH) config.mak
+OBJDIRS += tools
+
+-include $(wildcard tools/*.d)
+
+VERSION_SH  = $(SRC_PATH)/version.sh
+GIT_LOG     = $(SRC_PATH)/.git/logs/HEAD
+
+.version: $(wildcard $(GIT_LOG)) $(VERSION_SH) config.mak
 .version: M=@
 
 version.h .version:
@@ -109,45 +107,26 @@ version.h .version:
 # force version.sh to run whenever version might have changed
 -include .version
 
-alltools: $(TOOLS)
+ifdef PROGS
+install: install-progs install-data
+endif
 
-DOCS = $(addprefix doc/, developer.html faq.html general.html libavfilter.html) $(HTMLPAGES) $(MANPAGES) $(PODPAGES)
+install: install-libs install-headers
 
-documentation: $(DOCS)
+install-libs: install-libs-yes
 
--include $(wildcard $(DOCS:%=%.d))
+install-progs-yes:
+install-progs-$(CONFIG_SHARED): install-libs
 
-TEXIDEP = awk '/^@include/ { printf "$@: $(@D)/%s\n", $$2 }' <$< >$(@:%=%.d)
-
-doc/%.html: TAG = HTML
-doc/%.html: doc/%.texi $(SRC_PATH_BARE)/doc/t2h.init
-	$(Q)$(TEXIDEP)
-	$(M)cd doc && texi2html -monolithic --init-file $(SRC_PATH_BARE)/doc/t2h.init $(<:doc/%=%)
-
-doc/%.pod: TAG = POD
-doc/%.pod: doc/%.texi
-	$(Q)$(TEXIDEP)
-	$(M)doc/texi2pod.pl $< $@
-
-doc/%.1: TAG = MAN
-doc/%.1: doc/%.pod
-	$(M)pod2man --section=1 --center=" " --release=" " $< > $@
-
-install: $(INSTALL_TARGETS-yes)
-
-install-progs: $(PROGS) $(INSTALL_PROGS_TARGETS-yes)
+install-progs: install-progs-yes $(PROGS)
 	$(Q)mkdir -p "$(BINDIR)"
-	$(INSTALL) -c -m 755 $(PROGS) "$(BINDIR)"
+	$(INSTALL) -c -m 755 $(INSTPROGS) "$(BINDIR)"
 
 install-data: $(DATA_FILES)
 	$(Q)mkdir -p "$(DATADIR)"
 	$(INSTALL) -m 644 $(DATA_FILES) "$(DATADIR)"
 
-install-man: $(MANPAGES)
-	$(Q)mkdir -p "$(MANDIR)/man1"
-	$(INSTALL) -m 644 $(MANPAGES) "$(MANDIR)/man1"
-
-uninstall: uninstall-progs uninstall-data uninstall-man
+uninstall: uninstall-libs uninstall-headers uninstall-progs uninstall-data
 
 uninstall-progs:
 	$(RM) $(addprefix "$(BINDIR)/", $(ALLPROGS))
@@ -155,143 +134,43 @@ uninstall-progs:
 uninstall-data:
 	$(RM) -r "$(DATADIR)"
 
-uninstall-man:
-	$(RM) $(addprefix "$(MANDIR)/man1/",$(ALLMANPAGES))
-
-testclean:
-	$(RM) -r tests/vsynth1 tests/vsynth2 tests/data
-	$(RM) $(addprefix tests/,$(CLEANSUFFIXES))
-	$(RM) tests/seek_test$(EXESUF) tests/seek_test.o
-	$(RM) $(TESTTOOLS:%=tests/%$(HOSTEXESUF))
-
-clean:: testclean
+clean::
 	$(RM) $(ALLPROGS) $(ALLPROGS_G)
 	$(RM) $(CLEANSUFFIXES)
-	$(RM) doc/*.html doc/*.pod doc/*.1
 	$(RM) $(TOOLS)
+	$(RM) $(CLEANSUFFIXES:%=tools/%)
+	$(RM) coverage.info
+	$(RM) -r coverage-html
 
 distclean::
 	$(RM) $(DISTCLEANSUFFIXES)
-	$(RM) version.h config.* libavutil/avconfig.h
+	$(RM) config.* .version version.h libavutil/avconfig.h
 
 config:
 	$(SRC_PATH)/configure $(value FFMPEG_CONFIGURATION)
 
-# regression tests
+# Without the sed genthml thinks "libavutil" and "./libavutil" are two different things
+coverage.info: $(wildcard *.gcda *.gcno */*.gcda */*.gcno */*/*.gcda */*/*.gcno)
+	$(Q)lcov -c -d . -b . | sed -e 's#/./#/#g' > $@
 
-check: test checkheaders
+coverage-html: coverage.info
+	$(Q)mkdir -p $@
+	$(Q)genhtml -o $@ $<
+	$(Q)touch $@
 
-fulltest test: codectest lavftest lavfitest seektest
+include $(SRC_PATH)/doc/Makefile
+include $(SRC_PATH)/tests/Makefile
 
-FFSERVER_REFFILE = $(SRC_PATH)/tests/ffserver.regression.ref
-SEEK_REFFILE     = $(SRC_PATH)/tests/seek.regression.ref
+$(sort $(OBJDIRS)):
+	$(Q)mkdir -p $@
 
-codectest: fate-codec
-lavftest:  fate-lavf
-lavfitest: fate-lavfi
-seektest:  fate-seek
+# Dummy rule to stop make trying to rebuild removed or renamed headers
+%.h:
+	@:
 
-AREF = tests/data/acodec.ref.wav
-VREF = tests/data/vsynth1.ref.yuv
-REFS = $(AREF) $(VREF)
+# Disable suffix rules.  Most of the builtin rules are suffix rules,
+# so this saves some time on slow systems.
+.SUFFIXES:
 
-$(REFS): TAG = GEN
-
-$(VREF): ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm
-	$(M)$(SRC_PATH)/tests/codec-regression.sh vref vsynth1 tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-	$(Q)$(SRC_PATH)/tests/codec-regression.sh vref vsynth2 tests/vsynth2 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-
-$(AREF): ffmpeg$(EXESUF) tests/data/asynth1.sw
-	$(M)$(SRC_PATH)/tests/codec-regression.sh aref acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
-
-ffservertest: ffserver$(EXESUF) tests/vsynth1/00.pgm tests/data/asynth1.sw
-	@echo
-	@echo "Unfortunately ffserver is broken and therefore its regression"
-	@echo "test fails randomly. Treat the results accordingly."
-	@echo
-	$(SRC_PATH)/tests/ffserver-regression.sh $(FFSERVER_REFFILE) $(SRC_PATH)/tests/ffserver.conf
-
-tests/vsynth1/00.pgm: tests/videogen$(HOSTEXESUF)
-	@mkdir -p tests/vsynth1
-	$(M)$(BUILD_ROOT)/$< 'tests/vsynth1/'
-
-tests/vsynth2/00.pgm: tests/rotozoom$(HOSTEXESUF)
-	@mkdir -p tests/vsynth2
-	$(M)$(BUILD_ROOT)/$< 'tests/vsynth2/' $(SRC_PATH)/tests/lena.pnm
-
-tests/data/asynth1.sw: tests/audiogen$(HOSTEXESUF)
-	@mkdir -p tests/data
-	$(M)$(BUILD_ROOT)/$< $@
-
-tests/data/asynth1.sw tests/vsynth%/00.pgm: TAG = GEN
-
-tests/seek_test$(EXESUF): tests/seek_test.o $(FF_DEP_LIBS)
-	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
-
-tools/lavfi-showfiltfmts$(EXESUF): tools/lavfi-showfiltfmts.o $(FF_DEP_LIBS)
-	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
-
-include $(SRC_PATH_BARE)/tests/fate.mak
-include $(SRC_PATH_BARE)/tests/fate2.mak
-
-include $(SRC_PATH_BARE)/tests/fate/aac.mak
-include $(SRC_PATH_BARE)/tests/fate/als.mak
-include $(SRC_PATH_BARE)/tests/fate/fft.mak
-include $(SRC_PATH_BARE)/tests/fate/h264.mak
-include $(SRC_PATH_BARE)/tests/fate/mp3.mak
-include $(SRC_PATH_BARE)/tests/fate/vorbis.mak
-include $(SRC_PATH_BARE)/tests/fate/vp8.mak
-
-FATE_ACODEC  = $(ACODEC_TESTS:%=fate-acodec-%)
-FATE_VSYNTH1 = $(VCODEC_TESTS:%=fate-vsynth1-%)
-FATE_VSYNTH2 = $(VCODEC_TESTS:%=fate-vsynth2-%)
-FATE_VCODEC  = $(FATE_VSYNTH1) $(FATE_VSYNTH2)
-FATE_LAVF    = $(LAVF_TESTS:%=fate-lavf-%)
-FATE_LAVFI   = $(LAVFI_TESTS:%=fate-lavfi-%)
-FATE_SEEK    = $(SEEK_TESTS:seek_%=fate-seek-%)
-
-FATE = $(FATE_ACODEC)                                                   \
-       $(FATE_VCODEC)                                                   \
-       $(FATE_LAVF)                                                     \
-       $(FATE_LAVFI)                                                    \
-       $(FATE_SEEK)                                                     \
-
-$(FATE_ACODEC): $(AREF)
-$(FATE_VCODEC): $(VREF)
-$(FATE_LAVF):   $(REFS)
-$(FATE_LAVFI):  $(REFS) tools/lavfi-showfiltfmts$(EXESUF)
-$(FATE_SEEK):   fate-codec fate-lavf tests/seek_test$(EXESUF)
-
-$(FATE_ACODEC):  CMD = codectest acodec
-$(FATE_VSYNTH1): CMD = codectest vsynth1
-$(FATE_VSYNTH2): CMD = codectest vsynth2
-$(FATE_LAVF):    CMD = lavftest
-$(FATE_LAVFI):   CMD = lavfitest
-$(FATE_SEEK):    CMD = seektest
-
-fate-codec:  fate-acodec fate-vcodec
-fate-acodec: $(FATE_ACODEC)
-fate-vcodec: $(FATE_VCODEC)
-fate-lavf:   $(FATE_LAVF)
-fate-lavfi:  $(FATE_LAVFI)
-fate-seek:   $(FATE_SEEK)
-
-ifdef SAMPLES
-FATE += $(FATE_TESTS)
-else
-$(FATE_TESTS):
-	@echo "SAMPLES not specified, cannot run FATE"
-endif
-
-FATE_UTILS = base64 tiny_psnr
-
-fate: $(FATE)
-
-$(FATE): ffmpeg$(EXESUF) $(FATE_UTILS:%=tests/%$(HOSTEXESUF))
-	@echo "TEST    $(@:fate-%=%)"
-	$(Q)$(SRC_PATH)/tests/fate-run.sh $@ "$(SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)'
-
-fate-list:
-	@printf '%s\n' $(sort $(FATE))
-
-.PHONY: documentation *test regtest-* alltools check config
+.PHONY: all all-yes alltools *clean config examples install*
+.PHONY: testprogs uninstall*

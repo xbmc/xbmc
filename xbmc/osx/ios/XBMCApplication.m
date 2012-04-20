@@ -23,10 +23,10 @@
 
 #import "XBMCApplication.h"
 #import "XBMCController.h"
+#import "IOSScreenManager.h"
 
 @implementation XBMCApplicationDelegate
 XBMCController *m_xbmcController;  
-UIWindow *m_window;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -53,33 +53,53 @@ UIWindow *m_window;
   [m_xbmcController resumeAnimation];
 }
 
+- (void)screenDidConnect:(NSNotification *)aNotification
+{
+  [IOSScreenManager updateResolutions];
+}
+
+- (void)screenDidDisconnect:(NSNotification *)aNotification
+{
+  [IOSScreenManager updateResolutions];
+  //switch back to mainscreen when external screen is removed
+  [[IOSScreenManager sharedInstance] screenDisconnect];
+}
+
+- (void)registerScreenNotifications:(BOOL)bRegister
+{
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];  
+  
+  if( bRegister )
+  {
+    //register to screen notifications
+    [nc addObserver:self selector:@selector(screenDidConnect:) name:UIScreenDidConnectNotification object:nil]; 
+    [nc addObserver:self selector:@selector(screenDidDisconnect:) name:UIScreenDidDisconnectNotification object:nil]; 
+  }
+  else
+  {
+    //deregister from screen notifications
+    [nc removeObserver:self name:UIScreenDidConnectNotification object:nil];
+    [nc removeObserver:self name:UIScreenDidDisconnectNotification object:nil];
+  }
+}
+
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
   [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
-  
-  m_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+  UIScreen *currentScreen = [UIScreen mainScreen];
 
-  /* Turn off autoresizing */
-  m_window.autoresizingMask = 0;
-  m_window.autoresizesSubviews = NO;
-
-  m_xbmcController = [[XBMCController alloc] initWithFrame: [m_window bounds]];  
-  m_xbmcController.wantsFullScreenLayout = YES;
-  
-  //m_window.rootViewController = m_xbmcController;
-  
-  [m_window addSubview: m_xbmcController.view];
-  [m_window makeKeyAndVisible];
-  
+  m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];  
+  m_xbmcController.wantsFullScreenLayout = YES;  
   [m_xbmcController startAnimation];
+  [self registerScreenNotifications:YES];
 }
 
 - (void)dealloc
 {
+  [self registerScreenNotifications:NO];
   [m_xbmcController stopAnimation];
   [m_xbmcController release];
-  [m_window release];
-	
+
   [super dealloc];
 }
 @end

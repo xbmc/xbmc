@@ -25,7 +25,7 @@ static int parse(AVCodecParserContext *s,
                            const uint8_t **poutbuf, int *poutbuf_size,
                            const uint8_t *buf, int buf_size)
 {
-    s->pict_type= (buf[0]&0x01) ? FF_P_TYPE : FF_I_TYPE;
+    s->pict_type= (buf[0]&0x01) ? AV_PICTURE_TYPE_P : AV_PICTURE_TYPE_I;
 
     *poutbuf = buf;
     *poutbuf_size = buf_size;
@@ -33,8 +33,6 @@ static int parse(AVCodecParserContext *s,
 }
 
 AVCodecParser ff_vp8_parser = {
-    { CODEC_ID_VP8 },
-    0,
-    NULL,
-    parse,
+    .codec_ids      = { CODEC_ID_VP8 },
+    .parser_parse   = parse,
 };

@@ -16,11 +16,11 @@
 ;*
 ;* You should have received a copy of the GNU Lesser General Public
 ;* License along with FFmpeg; if not, write to the Free Software
-;* 51, Inc., Foundation Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "x86inc.asm"
-%include "x86util.asm"
+%include "libavutil/x86/x86inc.asm"
+%include "libavutil/x86/x86util.asm"
 
 cextern pw_4
 cextern pw_5
@@ -227,7 +227,7 @@ section .text
     imul r2, 0x01010101
 %endmacro
 
-; I dont know why the sign extension is needed...
+; I do not know why the sign extension is needed...
 %macro PSIGNW_SRA_MMX 2
     psraw %2, 15
     PSIGNW_MMX %1, %2

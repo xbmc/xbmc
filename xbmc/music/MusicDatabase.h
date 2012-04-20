@@ -180,6 +180,7 @@ public:
 
   int GetArtistByName(const CStdString& strArtist);
   int GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
+  int GetAlbumByName(const CStdString& strAlbum, const std::vector<std::string>& artist);
   int GetGenreByName(const CStdString& strGenre);
   int GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
@@ -214,7 +215,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 18; };
+  virtual int GetMinVersion() const { return 20; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
@@ -222,10 +223,10 @@ protected:
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
-  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int idAlbum);
-  void AddExtraSongArtists(const CStdStringArray& vecArtists, int idSong, bool bCheck = true);
+  void AddExtraAlbumArtists(const std::vector<std::string>& vecArtists, int idAlbum);
+  void AddExtraSongArtists(const std::vector<std::string>& vecArtists, int idSong, bool bCheck = true);
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const CStdStringArray& vecGenres, int idSong, int idAlbum, bool bCheck = true);
+  void AddExtraGenres(const std::vector<std::string>& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
@@ -233,7 +234,7 @@ private:
    */
   virtual void CreateViews();
 
-  void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
+  void SplitString(const CStdString &multiString, std::vector<std::string> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb=true);
   CAlbum GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL=false);

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,16 +22,17 @@
 
 #include <vector>
 #include <sys/socket.h>
-#include "interfaces/IAnnouncer.h"
+
+#include "interfaces/json-rpc/IClient.h"
+#include "interfaces/json-rpc/IJSONRPCAnnouncer.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
-#include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 #include "websocket/WebSocket.h"
-#include "interfaces/json-rpc/JSONUtils.h"
 
 namespace JSONRPC
 {
-  class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread, protected CJSONUtils
+  class CTCPServer : public ITransportLayer, public JSONRPC::IJSONRPCAnnouncer, public CThread
   {
   public:
     static bool StartServer(int port, bool nonlocal);
@@ -41,7 +42,7 @@ namespace JSONRPC
     virtual bool Download(const char *path, CVariant &result);
     virtual int GetCapabilities();
 
-    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   protected:
     void Process();
   private:

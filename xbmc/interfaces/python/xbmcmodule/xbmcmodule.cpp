@@ -54,6 +54,7 @@
 #include "pythreadstate.h"
 #include "utils/log.h"
 #include "pyrendercapture.h"
+#include "monitor.h"
 
 // include for constants
 #include "pyutil.h"
@@ -1029,6 +1030,7 @@ namespace PYXBMC
     initPlayListItem_Type();
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
+    initMonitor_Type();
 
 #ifdef HAS_PYRENDERCAPTURE
     initRenderCapture_Type();
@@ -1039,7 +1041,8 @@ namespace PYXBMC
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
-        PyType_Ready(&InfoTagVideo_Type) < 0) return;
+        PyType_Ready(&InfoTagVideo_Type) < 0 ||
+        PyType_Ready(&Monitor_Type) < 0) return;
 
 #ifdef HAS_PYRENDERCAPTURE
     if (PyType_Ready(&RenderCapture_Type) < 0)
@@ -1066,6 +1069,7 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
+    Py_INCREF(&Monitor_Type);
 
 #ifdef HAS_PYRENDERCAPTURE
     Py_INCREF(&RenderCapture_Type);
@@ -1080,11 +1084,12 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, (char*)"PlayListItem", (PyObject*)&PlayListItem_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"Monitor", (PyObject*)&Monitor_Type);
 
     // constants
     PyModule_AddStringConstant(pXbmcModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcModule, (char*)"__date__", (char*)"15 November 2005");
-    PyModule_AddStringConstant(pXbmcModule, (char*)"__version__", (char*)"1.3");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__date__", (char*)"16 February 2011");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__version__", (char*)"1.4");
     PyModule_AddStringConstant(pXbmcModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
     PyModule_AddStringConstant(pXbmcModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 

@@ -423,7 +423,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
     
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
-      return false;
+      return -1;
     return pFile->Stat(url, buffer);
   }
 #ifndef _LINUX
@@ -447,14 +447,14 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
         {
-          return false;
+          return 0;
         }
       }
       else     
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
-          return false;
+          return 0;
         }
       }
     }
@@ -1035,17 +1035,3 @@ bool CFileStream::Open(const CStdString& filename)
 {
   return Open(CURL(URIUtils::SubstitutePath(filename)));
 }
-
-#ifdef _ARMEL
-char* CFileStream::ReadFile()
-{
-  if(!m_file)
-    return NULL;
-
-  int64_t length = m_file->GetLength();
-  char *str = new char[length+1];
-  m_file->Read(str, length);
-  str[length] = '\0';
-  return str;
-}
-#endif

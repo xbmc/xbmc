@@ -27,7 +27,7 @@
  *
  * Supports: PAL8 (RGB 8bpp, paletted)
  *         : BGR24 (RGB 24bpp) (can also output it as RGB32)
- *         : RGB32 (RGB 32bpp, 4th plane is probably alpha and it's ignored)
+ *         : RGB32 (RGB 32bpp, 4th plane is alpha)
  *
  */
 
@@ -50,6 +50,8 @@ typedef struct EightBpsContext {
 
         unsigned char planes;
         unsigned char planemap[4];
+
+        uint32_t pal[256];
 } EightBpsContext;
 
 
@@ -69,7 +71,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
         unsigned int dlen, p, row;
         const unsigned char *lp, *dp;
         unsigned char count;
-        unsigned int px_inc;
         unsigned int planes = c->planes;
         unsigned char *planemap = c->planemap;
 
@@ -86,12 +87,6 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
         /* Set data pointer after line lengths */
         dp = encoded + planes * (height << 1);
 
-        /* Ignore alpha plane, don't know what to do with it */
-        if (planes == 4)
-                planes--;
-
-        px_inc = planes + (avctx->pix_fmt == PIX_FMT_RGB32);
-
         for (p = 0; p < planes; p++) {
                 /* Lines length pointer for this plane */
                 lp = encoded + p * (height << 1);
@@ -107,20 +102,20 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
                                 if ((count = *dp++) <= 127) {
                                         count++;
                                         dlen -= count + 1;
-                                        if (pixptr + count * px_inc > pixptr_end)
+                                        if (pixptr + count * planes > pixptr_end)
                                             break;
                                         if(dp + count > buf+buf_size) return -1;
                                         while(count--) {
                                                 *pixptr = *dp++;
-                                                pixptr += px_inc;
+                                                pixptr += planes;
                                         }
                                 } else {
                                         count = 257 - count;
-                                        if (pixptr + count * px_inc > pixptr_end)
+                                        if (pixptr + count * planes > pixptr_end)
                                             break;
                                         while(count--) {
                                                 *pixptr = *dp;
-                                                pixptr += px_inc;
+                                                pixptr += planes;
                                         }
                                         dp++;
                                         dlen -= 2;
@@ -129,13 +124,16 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
                 }
         }
 
-        if (avctx->palctrl) {
-                memcpy (c->pic.data[1], avctx->palctrl->palette, AVPALETTE_SIZE);
-                if (avctx->palctrl->palette_changed) {
+        if (avctx->bits_per_coded_sample <= 8) {
+                const uint8_t *pal = av_packet_get_side_data(avpkt,
+                                                             AV_PKT_DATA_PALETTE,
+                                                             NULL);
+                if (pal) {
                         c->pic.palette_has_changed = 1;
-                        avctx->palctrl->palette_changed = 0;
-                } else
-                        c->pic.palette_has_changed = 0;
+                        memcpy(c->pal, pal, AVPALETTE_SIZE);
+                }
+
+                memcpy (c->pic.data[1], c->pal, AVPALETTE_SIZE);
         }
 
         *data_size = sizeof(AVFrame);
@@ -157,6 +155,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
         c->avctx = avctx;
 
+        avcodec_get_frame_defaults(&c->pic);
         c->pic.data[0] = NULL;
 
         switch (avctx->bits_per_coded_sample) {
@@ -164,10 +163,6 @@ static av_cold int decode_init(AVCodecContext *avctx)
                         avctx->pix_fmt = PIX_FMT_PAL8;
                         c->planes = 1;
                         c->planemap[0] = 0; // 1st plane is palette indexes
-                        if (avctx->palctrl == NULL) {
-                                av_log(avctx, AV_LOG_ERROR, "Error: PAL8 format but no palette from demuxer.\n");
-                                return -1;
-                        }
                         break;
                 case 24:
                         avctx->pix_fmt = avctx->get_format(avctx, pixfmt_rgb24);
@@ -183,12 +178,12 @@ static av_cold int decode_init(AVCodecContext *avctx)
                         c->planemap[0] = 1; // 1st plane is red
                         c->planemap[1] = 2; // 2nd plane is green
                         c->planemap[2] = 3; // 3rd plane is blue
-                        c->planemap[3] = 0; // 4th plane is alpha???
+                        c->planemap[3] = 0; // 4th plane is alpha
 #else
                         c->planemap[0] = 2; // 1st plane is red
                         c->planemap[1] = 1; // 2nd plane is green
                         c->planemap[2] = 0; // 3rd plane is blue
-                        c->planemap[3] = 3; // 4th plane is alpha???
+                        c->planemap[3] = 3; // 4th plane is alpha
 #endif
                         break;
                 default:
@@ -220,14 +215,13 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 
 AVCodec ff_eightbps_decoder = {
-        "8bps",
-        AVMEDIA_TYPE_VIDEO,
-        CODEC_ID_8BPS,
-        sizeof(EightBpsContext),
-        decode_init,
-        NULL,
-        decode_end,
-        decode_frame,
-        CODEC_CAP_DR1,
-        .long_name = NULL_IF_CONFIG_SMALL("QuickTime 8BPS video"),
+    .name           = "8bps",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_8BPS,
+    .priv_data_size = sizeof(EightBpsContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
+    .long_name      = NULL_IF_CONFIG_SMALL("QuickTime 8BPS video"),
 };

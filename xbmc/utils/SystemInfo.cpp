@@ -28,7 +28,7 @@
 #include <sys/utsname.h>
 #endif
 #include "GUIInfoManager.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "network/Network.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
@@ -81,7 +81,7 @@ CStdString CSysInfoJob::GetCPUFreqInfo()
 CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 {
   // Internet connection state!
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   if (http.IsInternet())
     return CSysData::CONNECTED;
   if (http.IsInternet(false))
@@ -504,29 +504,40 @@ CStdString CSysInfo::GetLinuxDistro()
                                         "/etc/gentoo-release",
                                         "/etc/slackware-version",
                                         "/etc/arch-release",
+                                        "/etc/buildroot-release",
                                         NULL };
+  CStdString result("");
 
-  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d | cut -f2", "r");
-  
-  for (int i = 0; !pipe && release_file[i]; i++)
-  {
-    CStdString cmd = "cat ";
-    cmd += release_file[i];
-
-    pipe = popen(cmd.c_str(), "r");
-  }
-
-  CStdString result = "Unknown";
+  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d  2>/dev/null | cut -f2", "r");
   if (pipe)
   {
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
-    else
-      CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
     pclose(pipe);
+    if (!result.IsEmpty())
+      return result.Trim();
   }
-  return result.Trim();
+
+  FILE* file = NULL;
+  for (int i = 0; result.IsEmpty() && release_file[i]; i++)
+  {
+    file = fopen(release_file[i], "r");
+    if (file)
+    {
+      char buffer[256] = {'\0'};
+      if (fgets(buffer, sizeof(buffer), file))
+      {
+        result = buffer;
+        if (!result.IsEmpty())
+          return result.Trim();
+      }
+      fclose(file);
+    }
+  }
+
+  CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
+  return "Unknown";
 }
 #endif
 

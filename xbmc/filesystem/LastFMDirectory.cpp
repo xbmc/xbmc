@@ -27,7 +27,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -627,7 +627,7 @@ DIR_CACHE_TYPE CLastFMDirectory::GetCacheType(const CStdString& strPath) const
 
 void CLastFMDirectory::Run()
 {
-  XFILE::CFileCurl http;
+  XFILE::CCurlFile http;
   if (!http.Download(m_strSource, m_strDestination))
     m_Error=true;
 

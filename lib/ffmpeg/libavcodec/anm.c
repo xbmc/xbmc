@@ -29,6 +29,7 @@
 
 typedef struct AnmContext {
     AVFrame frame;
+    int palette[AVPALETTE_COUNT];
     int x;  ///< x coordinate position
 } AnmContext;
 
@@ -43,15 +44,12 @@ static av_cold int decode_init(AVCodecContext *avctx)
     if (avctx->extradata_size != 16*8 + 4*256)
         return -1;
 
-    s->frame.reference = 1;
-    if (avctx->get_buffer(avctx, &s->frame) < 0) {
-        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
-        return -1;
-    }
+    avcodec_get_frame_defaults(&s->frame);
+    s->frame.reference = 3;
 
     buf = avctx->extradata + 16*8;
     for (i = 0; i < 256; i++)
-        ((uint32_t*)s->frame.data[1])[i] = bytestream_get_le32(&buf);
+        s->palette[i] = bytestream_get_le32(&buf);
 
     return 0;
 }
@@ -81,6 +79,8 @@ static inline int op(uint8_t **dst, const uint8_t *dst_end,
         int striplen = FFMIN(count, remaining);
         if (buf) {
             striplen = FFMIN(striplen, buf_end - *buf);
+            if (*buf >= buf_end)
+                goto exhausted;
             memcpy(*dst, *buf, striplen);
             *buf += striplen;
         } else if (pixel >= 0)
@@ -170,6 +170,8 @@ static int decode_frame(AVCodecContext *avctx,
         }
     } while (buf + 1 < buf_end);
 
+    memcpy(s->frame.data[1], s->palette, AVPALETTE_SIZE);
+
     *data_size = sizeof(AVFrame);
     *(AVFrame*)data = s->frame;
     return buf_size;
@@ -184,14 +186,13 @@ static av_cold int decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_anm_decoder = {
-    "anm",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ANM,
-    sizeof(AnmContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "anm",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_ANM,
+    .priv_data_size = sizeof(AnmContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Deluxe Paint Animation"),
 };

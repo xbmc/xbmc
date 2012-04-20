@@ -80,24 +80,43 @@ void win32_exception::writelog(const char *prefix)  const
 }
 
 access_violation::access_violation(const EXCEPTION_RECORD& info)
-: win32_exception(info), mIsWrite(false), mBadAddress(0)
+: win32_exception(info), mAccessType(Invalid), mBadAddress(0)
 {
-    mIsWrite = info.ExceptionInformation[0] == 1;
+    switch(info.ExceptionInformation[0])
+    {
+    case 0:
+      mAccessType = Read;
+      break;
+    case 1:
+      mAccessType = Write;
+      break;
+    case 8:
+      mAccessType = DEP;
+      break;
+    }
     mBadAddress = reinterpret_cast<win32_exception ::Address>(info.ExceptionInformation[1]);
 }
 
 void access_violation::writelog(const char *prefix) const
 {
   if( prefix )
-    if( mIsWrite )
+    if( mAccessType == Write)
       CLog::Log(LOGERROR, "%s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
-    else
+    else if( mAccessType == Read)
       CLog::Log(LOGERROR, "%s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
-  else
-    if( mIsWrite )
-      CLog::Log(LOGERROR, "%s at 0x%08x: Writing location 0x%08x", what(), where(), address());
+    else if( mAccessType == DEP)
+      CLog::Log(LOGERROR, "%s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
     else
+      CLog::Log(LOGERROR, "%s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
+  else
+    if( mAccessType == Write)
+      CLog::Log(LOGERROR, "%s at 0x%08x: Writing location 0x%08x", what(), where(), address());
+    else if( mAccessType == Read)
       CLog::Log(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
+    else if( mAccessType == DEP)
+      CLog::Log(LOGERROR, "%s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
+    else
+      CLog::Log(LOGERROR, "%s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
 
 }
 

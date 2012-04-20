@@ -105,7 +105,7 @@ void CSkinInfo::Start(const CStdString &strBaseDir)
   if (!m_resolutions.size())
   { // try falling back to whatever resolutions exist in the directory
     CFileItemList items;
-    CDirectory::GetDirectory(Path(), items, "", false);
+    CDirectory::GetDirectory(Path(), items, "", DIR_FLAG_NO_FILE_DIRS);
     for (int i = 0; i < items.Size(); i++)
     {
       RESOLUTION_INFO res;
@@ -174,7 +174,7 @@ double CSkinInfo::GetMinVersion()
 
 void CSkinInfo::LoadIncludes()
 {
-  CStdString includesPath = PTH_IC(GetSkinPath("includes.xml"));
+  CStdString includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath);

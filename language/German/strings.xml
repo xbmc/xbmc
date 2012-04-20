@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -696,6 +696,7 @@
   <string id="787">Karte deaktiviert</string>
   <string id="788">Netzwerkkarte erfolgreich deaktiviert.</string>
   <string id="789">Wireless Netzwerkname (ESSID)</string>
+  <string id="790">Fernsteuerung</string>
 
   <string id="791">Steuerung über lokale Programme zulassen</string>
   <string id="792">Port</string>
@@ -1377,7 +1378,7 @@
   <string id="14082">EXIF Bildinformationen zeigen</string>
   <string id="14083">Benutze Vollbild Fenster anstatt echtes Vollbild</string>
   <string id="14084">Reihenfolge der Lieder nach Auswahl</string>
-  <string id="14085">Musik CDs automatisch wiedergeben</string>
+  <string id="14085"></string>
   <string id="14086">Wiedergabe</string>
   <string id="14087">DVDs</string>
   <string id="14088">DVDs automatisch wiedergeben</string>
@@ -1388,6 +1389,10 @@
   <string id="14093">Sicherheit</string>
   <string id="14094">Eingabegeräte</string>
   <string id="14095">Energiesparen</string>
+  <string id="14096">Rippen</string>
+  <string id="14097">Aktion beim Einlegen einer Audio CD</string>
+  <string id="14098">Wiedergeben</string>
+  <string id="14099">Disk auswerfen wenn Rippen fertig gestellt wurde</string>
 
   <string id="15015">Entfernen</string>
   <string id="15016">Spiele</string>
@@ -2363,6 +2368,15 @@
   <string id="34401">Videofilter/-scaler konnte nicht initialisiert werden! Verwende Bilineares Scaling</string>
   <string id="34402">Audiogerät konnte nicht initialisiert werden</string>
   <string id="34403">Audio-Einstellungen überprüfen</string>
+  
+  <!-- Beschreibung für den Touchscreen, bei der Benutzung des TV-Out Features mit iDevices -->
+  <string id="34404">Benutze folgende Gesten zur Navigation:</string>
+  <string id="34405">1 Finger: links,rechts,hoch,runter wischen (cursor Tasten)</string>
+  <string id="34406">2 Finger: links wischen für Backspace</string>
+  <string id="34407">1 Finger: tippen für Enter</string>
+  <string id="34408">2 Finger: tippen für Context Menü</string>
+
+  
   <string id="35000">Geräte</string>
 
   <string id="35001">HID-Gerät</string>
@@ -2373,6 +2387,7 @@
   <string id="35006">Gerät entfernt</string>
   <string id="35007">Tastenbelegung für dieses Gerät</string>
   <string id="35008">Tastenbelegung aktiviert</string>
+  <string id="35009">Keine benutzerdefinierte Keymap für dieses Gerät verwenden</string>
 
   <string id="35500">Ort</string>
   <string id="35501">Klasse</string>
@@ -2387,16 +2402,23 @@
   <string id="36004">Befehl der benutzerdefinierten Taste (USER)</string>
   <string id="36005">Seitenwechsel Befehle aktivieren</string>
   <string id="36006">Der Adapter konnte nicht geöffnet werden</string>
-  <string id="36007">Geräte anschalten wenn XBMC startet</string>
-  <string id="36008">Geräte ausschalten wenn XBMC beendet wird</string>
+  <string id="36007">Geräte, welche den TV anschalten, wenn XBMC startet</string>
+  <string id="36008">Geräte, welche den TV ausschalten, wenn XBMC beendet wird</string>
   <string id="36009">Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird</string>
   <string id="36010"></string>
   <string id="36011">Der CEC Port konnte nicht gefunden werden. Manuell einstellen.</string>
-  <string id="36012">Der CEC Adapter konnte nicht gefunden werden.</string>
-  <string id="36013">Nicht unterstützte libcec Version. %d ist größer als die von XBMC unterstützte Version (%d)</string>
+  <string id="36012">Der CEC Adapter konnte nicht initialisiert werden. Bitte Einstellungen prüfen!</string>
+  <string id="36013">Nicht unterstützte libCEC Version. %d ist größer als die von XBMC unterstützte Version (%d)</string>
   <string id="36014">PC in den Standby versetzen wenn der Fernseher ausgeschaltet wird</string>
   <string id="36015">HDMI Port Nummer</string>
   <string id="36016">Verbunden</string> <!-- max. 13 characters -->
-  <string id="36017">CEC Adapter gefunden, aber libcec ist nicht verfügbar</string>
+  <string id="36017">CEC Adapter gefunden, aber libCEC ist nicht verfügbar</string>
   <string id="36018">Spracheinstellung des Fernsehers in XBMC nutzen</string>
+  <string id="36019">Verbunden mit HDMI-Gerät</string>
+  <string id="36020">Setze beim Starten XBMC als aktive Quelle</string>
+  <string id="36021">Physikalische Adresse (verwirft HDMI-Port)</string>
+  <string id="36022">COM-Port (frei lassen, falls nicht benötigt)</string>
+  <string id="36023">Konfiguration aktualisiert</string>
+  <string id="36024">Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prüfen!</string>
+  <string id="36025">Sende 'inaktive Quelle' wenn XBMC beendet wird</string>
 </strings>

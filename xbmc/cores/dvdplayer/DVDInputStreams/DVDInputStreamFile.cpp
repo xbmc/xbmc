@@ -114,27 +114,12 @@ __int64 CDVDInputStreamFile::GetLength()
   return 0;
 }
 
-__int64 CDVDInputStreamFile::GetCachedBytes()
+bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status)
 {
-  SCacheStatus status;
-  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
-    return status.forward;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
+    return true;
   else
-    return -1;
-}
-
-unsigned CDVDInputStreamFile::GetReadRate()
-{
-  SCacheStatus status;
-  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
-  {
-    if(status.full)
-      return (unsigned)-1;
-    else
-      return status.currate;
-  }
-  else
-    return (unsigned)-1;
+    return false;
 }
 
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const

@@ -166,7 +166,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
     tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
    */
-  tag->m_strGenre         = GetValue(m_dll->proginfo_category(program)); // e.g. Sports
+  tag->m_genre            = StringUtils::Split(GetValue(m_dll->proginfo_category(program)), g_advancedSettings.m_videoItemSeparator); // e.g. Sports
   tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
   tag->m_strRuntime       = StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program));
   
@@ -179,7 +179,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
   if (originalairdate != "1970-01-01"
   &&  originalairdate != "1969-12-31")
-    tag->m_strFirstAired = originalairdate;
+  tag->m_firstAired.SetFromDateString(originalairdate);
 
   /*
    * Video sort title is the raw title with the date appended on the end in a sortable format so

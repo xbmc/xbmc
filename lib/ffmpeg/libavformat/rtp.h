@@ -21,17 +21,17 @@
 #ifndef AVFORMAT_RTP_H
 #define AVFORMAT_RTP_H
 
+#include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
 
 /**
- * Return the payload type for a given codec.
+ * Return the payload type for a given codec used in the given format context.
  *
+ * @param fmt   The context of the format
  * @param codec The context of the codec
- * @return In case of unknown payload type or dynamic payload type, a
- * negative value is returned; otherwise, the payload type (the 'PT' field
- * in the RTP header) is returned.
+ * @return The payload type (the 'PT' field in the RTP header).
  */
-int ff_rtp_get_payload_type(AVCodecContext *codec);
+int ff_rtp_get_payload_type(AVFormatContext *fmt, AVCodecContext *codec);
 
 /**
  * Initialize a codec context based on the payload type.
@@ -72,7 +72,7 @@ enum CodecID ff_rtp_codec_id(const char *buf, enum AVMediaType codec_type);
 #define RTP_VERSION 2
 #define RTP_MAX_SDES 256   /**< maximum text length for SDES */
 
-/* RTCP paquets use 0.5 % of the bandwidth */
+/* RTCP packets use 0.5% of the bandwidth */
 #define RTCP_TX_RATIO_NUM 5
 #define RTCP_TX_RATIO_DEN 1000
 

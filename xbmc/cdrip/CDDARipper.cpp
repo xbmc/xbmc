@@ -42,6 +42,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "filesystem/SpecialProtocol.h"
 #include "storage/MediaManager.h"
@@ -89,11 +90,11 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
 
   m_pEncoder->SetComment("Ripped with XBMC");
-  m_pEncoder->SetArtist(infoTag.GetArtist().c_str());
+  m_pEncoder->SetArtist(StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
   m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
-  m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
-  m_pEncoder->SetGenre(infoTag.GetGenre().c_str());
+  m_pEncoder->SetAlbumArtist(StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
+  m_pEncoder->SetGenre(StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetTrack(strTrack.c_str());
   m_pEncoder->SetTrackLength(m_cdReader.GetTrackLength());
   m_pEncoder->SetYear(infoTag.GetYearString().c_str());
@@ -160,10 +161,10 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   {
     char tmp[MAX_PATH];
 #ifndef _LINUX
-    GetTempFileName(_P("special://temp/"), "riptrack", 0, tmp);
+    GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/"), "riptrack", 0, tmp);
 #else
     int fd;
-    strncpy(tmp, _P("special://temp/riptrackXXXXXX"), MAX_PATH);
+    strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX"), MAX_PATH);
     if ((fd = mkstemp(tmp)) == -1)
       strFilename = "";
     close(fd);
@@ -332,6 +333,11 @@ bool CCDDARipper::RipCD()
   }
 
   CLog::Log(LOGINFO, "Ripped CD succesfull");
+  if (g_guiSettings.GetBool("audiocds.ejectonrip"))
+  {
+    CLog::Log(LOGINFO, "Ejecting CD");
+    CIoSupport::EjectTray();
+  }
   return true;
 }
 
@@ -404,9 +410,9 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // replace %A with album artist name
   if (strAlbumDir.Find("%A") != -1)
   {
-    CStdString strAlbumArtist = infoTag.GetAlbumArtist();
+    CStdString strAlbumArtist = StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
-      strAlbumArtist = infoTag.GetArtist();
+      strAlbumArtist = StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
       strAlbumArtist = "Unknown Artist";
     else
@@ -428,7 +434,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // replace %G with genre
   if (strAlbumDir.Find("%G") != -1)
   {
-    CStdString strGenre = infoTag.GetGenre();
+    CStdString strGenre = StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator);
     if (strGenre.IsEmpty())
       strGenre = "Unknown Genre";
     else

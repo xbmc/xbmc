@@ -134,7 +134,7 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
     if(c->curfrm == c->keyint)
         c->curfrm = 0;
     *p = *pict;
-    p->pict_type= keyframe ? FF_I_TYPE : FF_P_TYPE;
+    p->pict_type= keyframe ? AV_PICTURE_TYPE_I : AV_PICTURE_TYPE_P;
     p->key_frame= keyframe;
     chpal = !keyframe && memcmp(p->data[1], c->pal2, 1024);
 
@@ -181,7 +181,7 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
         int x, y, bh2, bw2, xored;
         uint8_t *tsrc, *tprev;
         uint8_t *mv;
-        int mx, my, bv;
+        int mx, my;
 
         bw = (avctx->width + ZMBV_BLOCK - 1) / ZMBV_BLOCK;
         bh = (avctx->height + ZMBV_BLOCK - 1) / ZMBV_BLOCK;
@@ -197,7 +197,7 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
                 tsrc = src + x;
                 tprev = prev + x;
 
-                bv = zmbv_me(c, tsrc, p->linesize[0], tprev, c->pstride, x, y, &mx, &my, &xored);
+                zmbv_me(c, tsrc, p->linesize[0], tprev, c->pstride, x, y, &mx, &my, &xored);
                 mv[0] = (mx << 1) | !!xored;
                 mv[1] = my << 1;
                 tprev += mx + my * c->pstride;
@@ -269,7 +269,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
     }
 
     // Needed if zlib unused or init aborted before deflateInit
-    memset(&(c->zstream), 0, sizeof(z_stream));
+    memset(&c->zstream, 0, sizeof(z_stream));
     c->comp_size = avctx->width * avctx->height + 1024 +
         ((avctx->width + ZMBV_BLOCK - 1) / ZMBV_BLOCK) * ((avctx->height + ZMBV_BLOCK - 1) / ZMBV_BLOCK) * 2 + 4;
     if ((c->work_buf = av_malloc(c->comp_size)) == NULL) {
@@ -294,7 +294,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
     c->zstream.zalloc = Z_NULL;
     c->zstream.zfree = Z_NULL;
     c->zstream.opaque = Z_NULL;
-    zret = deflateInit(&(c->zstream), lvl);
+    zret = deflateInit(&c->zstream, lvl);
     if (zret != Z_OK) {
         av_log(avctx, AV_LOG_ERROR, "Inflate init error: %d\n", zret);
         return -1;
@@ -317,20 +317,20 @@ static av_cold int encode_end(AVCodecContext *avctx)
     av_freep(&c->comp_buf);
     av_freep(&c->work_buf);
 
-    deflateEnd(&(c->zstream));
+    deflateEnd(&c->zstream);
     av_freep(&c->prev);
 
     return 0;
 }
 
 AVCodec ff_zmbv_encoder = {
-    "zmbv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ZMBV,
-    sizeof(ZmbvEncContext),
-    encode_init,
-    encode_frame,
-    encode_end,
+    .name           = "zmbv",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_ZMBV,
+    .priv_data_size = sizeof(ZmbvEncContext),
+    .init           = encode_init,
+    .encode         = encode_frame,
+    .close          = encode_end,
     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_PAL8, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Zip Motion Blocks Video"),
 };

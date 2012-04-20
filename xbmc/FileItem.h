@@ -73,6 +73,7 @@ public:
   CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
+  CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
@@ -501,7 +502,7 @@ public:
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
-  CStdString GetDiscCacheFile(int windowID) const;
+  CStdString GetDisCFileCache(int windowID) const;
 
   /*!
    \brief stack files in a CFileItemList

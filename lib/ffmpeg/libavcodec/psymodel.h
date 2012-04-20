@@ -26,6 +26,8 @@
 
 /** maximum possible number of bands */
 #define PSY_MAX_BANDS 128
+/** maximum number of channels */
+#define PSY_MAX_CHANS 20
 
 /**
  * single band psychoacoustic information
@@ -37,6 +39,23 @@ typedef struct FFPsyBand {
     float distortion;
     float perceptual_weight;
 } FFPsyBand;
+
+/**
+ * single channel psychoacoustic information
+ */
+typedef struct FFPsyChannel {
+    FFPsyBand psy_bands[PSY_MAX_BANDS]; ///< channel bands information
+    float     entropy;                  ///< total PE for this channel
+} FFPsyChannel;
+
+/**
+ * psychoacoustic information for an arbitrary group of channels
+ */
+typedef struct FFPsyChannelGroup {
+    FFPsyChannel *ch[PSY_MAX_CHANS];  ///< pointers to the individual channels in the group
+    uint8_t num_ch;                   ///< number of channels in this group
+    uint8_t coupling[PSY_MAX_BANDS];  ///< allow coupling for this band in the group
+} FFPsyChannelGroup;
 
 /**
  * windowing related information
@@ -56,11 +75,18 @@ typedef struct FFPsyContext {
     AVCodecContext *avctx;            ///< encoder context
     const struct FFPsyModel *model;   ///< encoder-specific model functions
 
-    FFPsyBand *psy_bands;             ///< frame bands information
+    FFPsyChannel      *ch;            ///< single channel information
+    FFPsyChannelGroup *group;         ///< channel group information
+    int num_groups;                   ///< number of channel groups
 
     uint8_t **bands;                  ///< scalefactor band sizes for possible frame sizes
     int     *num_bands;               ///< number of scalefactor bands for possible frame sizes
     int num_lens;                     ///< number of scalefactor band sets
+
+    struct {
+        int size;                     ///< size of the bitresevoir in bits
+        int bits;                     ///< number of bits used in the bitresevoir
+    } bitres;
 
     void* model_priv_data;            ///< psychoacoustic model implementation private data
 } FFPsyContext;
@@ -71,8 +97,30 @@ typedef struct FFPsyContext {
 typedef struct FFPsyModel {
     const char *name;
     int  (*init)   (FFPsyContext *apc);
-    FFPsyWindowInfo (*window)(FFPsyContext *ctx, const int16_t *audio, const int16_t *la, int channel, int prev_type);
-    void (*analyze)(FFPsyContext *ctx, int channel, const float *coeffs, const FFPsyWindowInfo *wi);
+
+    /**
+     * Suggest window sequence for channel.
+     *
+     * @param ctx       model context
+     * @param audio     samples for the current frame
+     * @param la        lookahead samples (NULL when unavailable)
+     * @param channel   number of channel element to analyze
+     * @param prev_type previous window type
+     *
+     * @return suggested window information in a structure
+     */
+    FFPsyWindowInfo (*window)(FFPsyContext *ctx, const float *audio, const float *la, int channel, int prev_type);
+
+    /**
+     * Perform psychoacoustic analysis and set band info (threshold, energy) for a group of channels.
+     *
+     * @param ctx      model context
+     * @param channel  channel number of the first channel in the group to perform analysis on
+     * @param coeffs   array of pointers to the transformed coefficients
+     * @param wi       window information for the channels in the group
+     */
+    void (*analyze)(FFPsyContext *ctx, int channel, const float **coeffs, const FFPsyWindowInfo *wi);
+
     void (*end)    (FFPsyContext *apc);
 } FFPsyModel;
 
@@ -84,39 +132,24 @@ typedef struct FFPsyModel {
  * @param num_lens   number of possible frame lengths
  * @param bands      scalefactor band lengths for all frame lengths
  * @param num_bands  number of scalefactor bands for all frame lengths
+ * @param num_groups number of channel groups
+ * @param group_map  array with # of channels in group - 1, for each group
  *
  * @return zero if successful, a negative value if not
  */
-av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx,
-                        int num_lens,
-                        const uint8_t **bands, const int* num_bands);
+av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx, int num_lens,
+                        const uint8_t **bands, const int* num_bands,
+                        int num_groups, const uint8_t *group_map);
 
 /**
- * Suggest window sequence for channel.
+ * Determine what group a channel belongs to.
  *
- * @param ctx       model context
- * @param audio     samples for the current frame
- * @param la        lookahead samples (NULL when unavailable)
- * @param channel   number of channel element to analyze
- * @param prev_type previous window type
+ * @param ctx     psymodel context
+ * @param channel channel to locate the group for
  *
- * @return suggested window information in a structure
+ * @return pointer to the FFPsyChannelGroup this channel belongs to
  */
-FFPsyWindowInfo ff_psy_suggest_window(FFPsyContext *ctx,
-                                      const int16_t *audio, const int16_t *la,
-                                      int channel, int prev_type);
-
-
-/**
- * Perform psychoacoustic analysis and set band info (threshold, energy).
- *
- * @param ctx     model context
- * @param channel audio channel number
- * @param coeffs  pointer to the transformed coefficients
- * @param wi      window information
- */
-void ff_psy_set_band_info(FFPsyContext *ctx, int channel, const float *coeffs,
-                          const FFPsyWindowInfo *wi);
+FFPsyChannelGroup *ff_psy_find_group(FFPsyContext *ctx, int channel);
 
 /**
  * Cleanup model context at the end.
@@ -141,14 +174,10 @@ av_cold struct FFPsyPreprocessContext* ff_psy_preprocess_init(AVCodecContext *av
  * Preprocess several channel in audio frame in order to compress it better.
  *
  * @param ctx      preprocessing context
- * @param audio    samples to preprocess
- * @param dest     place to put filtered samples
- * @param tag      channel number
- * @param channels number of channel to preprocess (some additional work may be done on stereo pair)
+ * @param audio    samples to be filtered (in place)
+ * @param channels number of channel to preprocess
  */
-void ff_psy_preprocess(struct FFPsyPreprocessContext *ctx,
-                       const int16_t *audio, int16_t *dest,
-                       int tag, int channels);
+void ff_psy_preprocess(struct FFPsyPreprocessContext *ctx, float **audio, int channels);
 
 /**
  * Cleanup audio preprocessing module.

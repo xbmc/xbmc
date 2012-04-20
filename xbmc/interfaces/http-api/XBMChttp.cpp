@@ -44,7 +44,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -187,9 +187,9 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   try
   {
     if (append)
-      outfile = fopen_utf8(_P(outfilename).c_str(), "ab" );
+      outfile = fopen_utf8(CSpecialProtocol::TranslatePath(outfilename).c_str(), "ab" );
     else
-      outfile = fopen_utf8(_P(outfilename).c_str(), "wb" );
+      outfile = fopen_utf8(CSpecialProtocol::TranslatePath(outfilename).c_str(), "wb" );
     while( ptr < inString.length() )
     {
       for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) 
@@ -1146,8 +1146,8 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag->SetReleaseDate(systime);
     tag->SetTrackNumber(song.iTrack);
     tag->SetAlbum(song.strAlbum);
-    tag->SetArtist(song.strArtist);
-    tag->SetGenre(song.strGenre);
+    tag->SetArtist(song.artist);
+    tag->SetGenre(song.genre);
     tag->SetTitle(song.strTitle);
     tag->SetDuration(song.iDuration);
     tag->SetLoaded(true);
@@ -1176,14 +1176,14 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
   {
     CStdString output, tmp;
 
-    output = openTag+"Artist:" + tag->GetArtist();
+    output = openTag+"Artist:" + StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     output += closeTag+openTag+"Album:" + tag->GetAlbum();
     output += closeTag+openTag+"Title:" + tag->GetTitle();
     tmp.Format("%i", tag->GetTrackNumber());
     output += closeTag+openTag+"Track number:" + tmp;
     tmp.Format("%i", tag->GetDuration());
     output += closeTag+openTag+"Duration:" + tmp;
-    output += closeTag+openTag+"Genre:" + tag->GetGenre();
+    output += closeTag+openTag+"Genre:" + StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     SYSTEMTIME stTime;
     tag->GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
@@ -1239,10 +1239,10 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         m_database.GetMovieInfo(paras[0].c_str(),aMovieRec);
         tmp.Format("%i", aMovieRec.m_iYear);
         output = closeTag+openTag+"Year:" + tmp;
-        output += closeTag+openTag+"Director:" + aMovieRec.m_strDirector;
+        output += closeTag+openTag+"Director:" + StringUtils::Join(aMovieRec.m_director, g_advancedSettings.m_videoItemSeparator);
         output += closeTag+openTag+"Title:" + aMovieRec.m_strTitle;
         output += closeTag+openTag+"Plot:" + aMovieRec.m_strPlot;
-        output += closeTag+openTag+"Genre:" + aMovieRec.m_strGenre;
+        output += closeTag+openTag+"Genre:" + StringUtils::Join(aMovieRec.m_genre, g_advancedSettings.m_videoItemSeparator);
         CStdString strRating;
         strRating.Format("%3.3f", aMovieRec.m_fRating);
         if (strRating=="") strRating="0.0";
@@ -1397,14 +1397,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         if (justChange && !changed)
           return SetResponse(openTag+"Changed:False");
         //if still here, continue collecting info
-        if (!tagVal->m_strGenre.IsEmpty())
-          output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
-        if (!tagVal->m_strStudio.IsEmpty())
-          output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
-        if (tagVal && !tagVal->m_strDirector.IsEmpty())
-          output+=closeTag+openTag+"Director"+tag+":"+tagVal->m_strDirector;
-        if (!tagVal->m_strWritingCredits.IsEmpty())
-          output+=closeTag+openTag+"Writer"+tag+":"+tagVal->m_strWritingCredits;
+        if (!tagVal->m_genre.empty())
+          output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->m_genre, g_advancedSettings.m_videoItemSeparator);
+        if (!tagVal->m_studio.empty())
+          output+=closeTag+openTag+"Studio"+tag+":"+StringUtils::Join(tagVal->m_studio, g_advancedSettings.m_videoItemSeparator);
+        if (tagVal && tagVal->m_director.size() > 0)
+          output+=closeTag+openTag+"Director"+tag+":"+StringUtils::Join(tagVal->m_director, g_advancedSettings.m_videoItemSeparator);
+        if (tagVal->m_writingCredits.size() > 0)
+          output+=closeTag+openTag+"Writer"+tag+":"+StringUtils::Join(tagVal->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
         if (!tagVal->m_strTagLine.IsEmpty())
           output+=closeTag+openTag+"Tagline"+tag+":"+tagVal->m_strTagLine;
         if (!tagVal->m_strPlotOutline.IsEmpty())
@@ -1415,14 +1415,14 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output.Format("%s%03.1f (%s %s)",output+closeTag+openTag+"Rating"+tag+":",tagVal->m_fRating, tagVal->m_strVotes, g_localizeStrings.Get(20350));
         if (!tagVal->m_strOriginalTitle.IsEmpty())
           output+=closeTag+openTag+"Original Title"+tag+":"+tagVal->m_strOriginalTitle;
-        if (!tagVal->m_strPremiered.IsEmpty())
-          output+=closeTag+openTag+"Premiered"+tag+":"+tagVal->m_strPremiered;
+        if (tagVal->m_premiered.IsValid())
+          output+=closeTag+openTag+"Premiered"+tag+":"+tagVal->m_premiered.GetAsLocalizedDate();
         if (!tagVal->m_strStatus.IsEmpty())
           output+=closeTag+openTag+"Status"+tag+":"+tagVal->m_strStatus;
         if (!tagVal->m_strProductionCode.IsEmpty())
           output+=closeTag+openTag+"Production Code"+tag+":"+tagVal->m_strProductionCode;
-        if (!tagVal->m_strFirstAired.IsEmpty())
-          output+=closeTag+openTag+"First Aired"+tag+":"+tagVal->m_strFirstAired;
+        if (tagVal->m_firstAired.IsValid())
+          output+=closeTag+openTag+"First Aired"+tag+":"+tagVal->m_firstAired.GetAsLocalizedDate();
         if (tagVal->m_iYear != 0)
           output.Format("%s%i",output+closeTag+openTag+"Year"+tag+":",tagVal->m_iYear);
         if (tagVal->m_iSeason != -1)
@@ -1461,8 +1461,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         tmp.Format("%i",(int)tagVal->GetTrackNumber());
         output+=closeTag+openTag+"Track"+tag+":"+tmp;
       }
-      if (tagVal && !tagVal->GetArtist().IsEmpty())
-        output+=closeTag+openTag+"Artist"+tag+":"+tagVal->GetArtist();
+      if (tagVal && !tagVal->GetArtist().empty())
+        output+=closeTag+openTag+"Artist"+tag+":"+StringUtils::Join(tagVal->GetArtist(), g_advancedSettings.m_musicItemSeparator);
       if (tagVal && !tagVal->GetAlbum().IsEmpty())
         output+=closeTag+openTag+"Album"+tag+":"+tagVal->GetAlbum();
       //now have enough info to check for a change
@@ -1474,8 +1474,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       if (justChange && !changed && !slideChanged)
         return SetResponse(openTag+"Changed:False");
       //if still here, continue collecting info
-      if (tagVal && !tagVal->GetGenre().IsEmpty())
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
+      if (tagVal && !tagVal->GetGenre().empty())
+        output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->GetGenre(), g_advancedSettings.m_musicItemSeparator);
       if (tagVal && tagVal->GetYear())
         output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYearString();
       if (tagVal && tagVal->GetURL())
@@ -1671,7 +1671,7 @@ int CXbmcHttp::xbmcAddToSlideshow(int numParas, CStdString paras[])
   // if its not a picture type, test to see if its a folder
   if (!pItem->IsPicture())
   {
-    IDirectory *pDirectory = CFactoryDirectory::Create(pItem->GetPath());
+    IDirectory *pDirectory = CDirectoryFactory::Create(pItem->GetPath());
     if (!pDirectory)
       return SetResponse(openTag+"Error");  
     bool bResult=pDirectory->Exists(pItem->GetPath());
@@ -2273,7 +2273,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
             albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
             if (rel)
             {
-              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
+              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), artist);
               tmp.Format("%f",relevance);
               albums += "<@@@>"+tmp;
             }
@@ -2303,7 +2303,7 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
     try
     {
       CMusicAlbumInfo musicInfo;//("", "") ;
-      XFILE::CFileCurl http;
+      XFILE::CCurlFile http;
       ScraperPtr info; // TODO - WTF is this code supposed to do?
       if (musicInfo.Load(http,info))
       {
@@ -2345,7 +2345,7 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
           tempSkipWebFooterHeader=paras[1].ToLower() == "bare";
         if (numParas>2)
           tempSkipWebFooterHeader=paras[2].ToLower() == "bare";
-        XFILE::CFileCurl http;
+        XFILE::CCurlFile http;
         http.Download(src, dest);
         CStdString encoded="";
         encoded=encodeFileToBase64(dest, 80);

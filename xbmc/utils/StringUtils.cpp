@@ -58,6 +58,22 @@ void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& d
     result.Delete(result.size()-delimiter.size(), delimiter.size());
 }
 
+CStdString StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter)
+{
+  CStdString result;
+  JoinString(strings, delimiter, result);
+  return result;
+}
+
+CStdString StringUtils::Join(const vector<string> &strings, const CStdString& delimiter)
+{
+  CStdStringArray strArray;
+  for (unsigned int index = 0; index < strings.size(); index++)
+    strArray.push_back(strings.at(index));
+
+  return JoinString(strArray, delimiter);
+}
+
 // Splits the string input into pieces delimited by delimiter.
 // if 2 delimiters are in a row, it will include the empty string between them.
 // added MaxStrings parameter to restrict the number of returned substrings (like perl and python)
@@ -119,6 +135,25 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
   }
   // return the number of substrings
   return results.size();
+}
+
+CStdStringArray StringUtils::SplitString(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+{
+  CStdStringArray result;
+  SplitString(input, delimiter, result, iMaxStrings);
+  return result;
+}
+
+vector<string> StringUtils::Split(const CStdString& input, const CStdString& delimiter, unsigned int iMaxStrings /* = 0 */)
+{
+  CStdStringArray result;
+  SplitString(input, delimiter, result, iMaxStrings);
+
+  vector<string> strArray;
+  for (unsigned int index = 0; index < result.size(); index++)
+    strArray.push_back(result.at(index));
+
+  return strArray;
 }
 
 // returns the number of occurences of strFind in strInput.
@@ -258,21 +293,65 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
 bool StringUtils::IsNaturalNumber(const CStdString& str)
 {
-  if (0 == (int)str.size())
-    return false;
-  for (int i = 0; i < (int)str.size(); i++)
+  size_t i = 0, n = 0;
+  // allow whitespace,digits,whitespace
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  while (i < str.size() && isdigit(str[i]))
   {
-    if ((str[i] < '0') || (str[i] > '9')) return false;
+    i++; n++;
   }
-  return true;
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  return i == str.size() && n > 0;
 }
 
 bool StringUtils::IsInteger(const CStdString& str)
 {
-  if (str.size() > 0 && str[0] == '-')
-    return IsNaturalNumber(str.Mid(1));
-  else
-    return IsNaturalNumber(str);
+  size_t i = 0, n = 0;
+  // allow whitespace,-,digits,whitespace
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  if (i < str.size() && str[i] == '-')
+    i++;
+  while (i < str.size() && isdigit(str[i]))
+  {
+    i++; n++;
+  }
+  while (i < str.size() && isspace(str[i]))
+    i++;
+  return i == str.size() && n > 0;
+}
+
+bool StringUtils::Test()
+{
+  bool ret = true;
+
+  ret |= IsNaturalNumber("10");
+  ret |= IsNaturalNumber(" 10");
+  ret |= IsNaturalNumber("0");
+  ret |= !IsNaturalNumber(" 1 0");
+  ret |= !IsNaturalNumber("1.0");
+  ret |= !IsNaturalNumber("1.1");
+  ret |= !IsNaturalNumber("0x1");
+  ret |= !IsNaturalNumber("blah");
+  ret |= !IsNaturalNumber("120 h");
+  ret |= !IsNaturalNumber(" ");
+  ret |= !IsNaturalNumber("");
+
+  ret |= IsInteger("10");
+  ret |= IsInteger(" -10");
+  ret |= IsInteger("0");
+  ret |= !IsInteger(" 1 0");
+  ret |= !IsInteger("1.0");
+  ret |= !IsInteger("1.1");
+  ret |= !IsInteger("0x1");
+  ret |= !IsInteger("blah");
+  ret |= !IsInteger("120 h");
+  ret |= !IsInteger(" ");
+  ret |= !IsInteger("");
+
+  return ret;
 }
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
@@ -450,4 +529,15 @@ int StringUtils::FindBestMatch(const CStdString &str, const CStdStringArray &str
     }
   }
   return best;
+}
+
+size_t StringUtils::utf8_strlen(const char *s)
+{
+  size_t length = 0;
+  while (*s)
+  {
+		if ((*s++ & 0xC0) != 0x80)
+			length++;
+	}
+	return length;
 }

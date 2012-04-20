@@ -346,7 +346,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   if (!group)
     return;
   vecSettings settings;
-  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection]->m_strCategory, settings);
+  g_guiSettings.GetSettingsGroup(m_vecSections[m_iSection], settings);
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
@@ -2483,7 +2483,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   URIUtils::AddFileToFolder(g_SkinInfo->Path(),"colors",strPath);
 
   CFileItemList items;
-  CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
+  CDirectory::GetDirectory(CSpecialProtocol::TranslatePathConvertCase(strPath), items, ".xml");
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {

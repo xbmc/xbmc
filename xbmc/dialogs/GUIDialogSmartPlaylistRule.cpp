@@ -184,7 +184,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CStdString path = "special://videoplaylists/";
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
-    XFILE::CDirectory::GetDirectory(path, items, ".xsp",false,false,XFILE::DIR_CACHE_ONCE,true,true);
+    XFILE::CDirectory::GetDirectory(path, items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];

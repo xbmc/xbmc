@@ -49,12 +49,7 @@ bool CShader::LoadSource(const string& filename, const string& prefix)
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
   }
-#ifdef _ARMEL
-  CLog::Log(LOGDEBUG, "Shader - Loading shader file %s", filename.c_str());
-  m_source.assign(file.ReadFile());
-#else
   getline(file, m_source, '\0');
-#endif
   m_source.insert(0, prefix);
   return true;
 }

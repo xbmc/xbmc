@@ -331,6 +331,13 @@ case TMSG_POWERDOWN:
               g_application.PlayMedia(*((*list)[0]), playlist);
             else
             {
+              // Handle "shuffled" option if present
+              if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
+                g_playlistPlayer.SetShuffle(playlist, list->GetProperty("shuffled").asBoolean(), false);
+              // Handle "repeat" option if present
+              if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
+                g_playlistPlayer.SetRepeat(playlist, (PLAYLIST::REPEAT_STATE)list->GetProperty("repeat").asInteger(), false);
+
               g_playlistPlayer.Add(playlist, (*list));
               g_playlistPlayer.Play(pMsg->dwParam1);
             }

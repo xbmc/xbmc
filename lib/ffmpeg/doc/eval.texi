@@ -1,7 +1,7 @@
 @chapter Expression Evaluation
 @c man begin EXPRESSION EVALUATION
 
-When evaluating an arithemetic expression, FFmpeg uses an internal
+When evaluating an arithmetic expression, FFmpeg uses an internal
 formula evaluator, implemented through the @file{libavutil/eval.h}
 interface.
 
@@ -50,36 +50,88 @@ Allow to store the value of the expression @var{expr} in an internal
 variable. @var{var} specifies the number of the variable where to
 store the value, and it is a value ranging from 0 to 9. The function
 returns the value stored in the internal variable.
+Note, Variables are currently not shared between expressions.
 
 @item ld(var)
 Allow to load the value of the internal variable with number
-@var{var}, which was previosly stored with st(@var{var}, @var{expr}).
+@var{var}, which was previously stored with st(@var{var}, @var{expr}).
 The function returns the loaded value.
 
 @item while(cond, expr)
 Evaluate expression @var{expr} while the expression @var{cond} is
 non-zero, and returns the value of the last @var{expr} evaluation, or
 NAN if @var{cond} was always false.
+
+@item ceil(expr)
+Round the value of expression @var{expr} upwards to the nearest
+integer. For example, "ceil(1.5)" is "2.0".
+
+@item floor(expr)
+Round the value of expression @var{expr} downwards to the nearest
+integer. For example, "floor(-1.5)" is "-2.0".
+
+@item trunc(expr)
+Round the value of expression @var{expr} towards zero to the nearest
+integer. For example, "trunc(-1.5)" is "-1.0".
+
+@item sqrt(expr)
+Compute the square root of @var{expr}. This is equivalent to
+"(@var{expr})^.5".
+
+@item not(expr)
+Return 1.0 if @var{expr} is zero, 0.0 otherwise.
+
+@item pow(x, y)
+Compute the power of @var{x} elevated @var{y}, it is equivalent to
+"(@var{x})^(@var{y})".
+
+@item random(x)
+Return a pseudo random value between 0.0 and 1.0. @var{x} is the index of the
+internal variable which will be used to save the seed/state.
+
+@item hypot(x, y)
+This function is similar to the C function with the same name; it returns
+"sqrt(@var{x}*@var{x} + @var{y}*@var{y})", the length of the hypotenuse of a
+right triangle with sides of length @var{x} and @var{y}, or the distance of the
+point (@var{x}, @var{y}) from the origin.
+
+@item gcd(x, y)
+Return the greatest common divisor of @var{x} and @var{y}. If both @var{x} and
+@var{y} are 0 or either or both are less than zero then behavior is undefined.
+
+@item if(x, y)
+Evaluate @var{x}, and if the result is non-zero return the result of
+the evaluation of @var{y}, return 0 otherwise.
+
+@item ifnot(x, y)
+Evaluate @var{x}, and if the result is zero return the result of the
+evaluation of @var{y}, return 0 otherwise.
 @end table
 
-Note that:
+The following constants are available:
+@table @option
+@item PI
+area of the unit disc, approximately 3.14
+@item E
+exp(1) (Euler's number), approximately 2.718
+@item PHI
+golden ratio (1+sqrt(5))/2, approximately 1.618
+@end table
+
+Assuming that an expression is considered "true" if it has a non-zero
+value, note that:
 
 @code{*} works like AND
 
 @code{+} works like OR
 
-thus
+and the construct:
 @example
 if A then B else C
 @end example
 is equivalent to
 @example
-A*B + not(A)*C
-@end example
-
-When A evaluates to either 1 or 0, that is the same as
-@example
-A*B + eq(A,0)*C
+if(A,B) + ifnot(A,C)
 @end example
 
 In your C code, you can extend the list of unary and binary functions,

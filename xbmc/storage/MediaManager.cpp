@@ -50,7 +50,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/FactoryDirectory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/Directory.h"
 #include "utils/Crc32.h"
 
@@ -95,6 +95,9 @@ void CMediaManager::Initialize()
       m_platformStorage = new CWin32StorageProvider();
     #endif
   }
+#ifdef HAS_DVD_DRIVE
+  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
   m_platformStorage->Initialize();
 }
 
@@ -301,7 +304,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
-    strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+    strDevice = strFirstAvailDrive;
 #endif
 
 #ifdef _WIN32
@@ -325,9 +328,9 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   std::map<CStdString,CCdInfo*>::iterator it;
+  CSingleLock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
     return true;
@@ -373,7 +376,6 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   DWORD dwRet = DRIVE_NOT_READY;
   int status = CWIN32Util::GetDriveStatus(strDevice);
@@ -408,19 +410,24 @@ CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 #ifdef _WIN32
   if(!m_bhasoptical)
     return NULL;
-
-  CSingleLock waitLock(m_muAutoSource);
-  CCdInfo* pCdInfo=NULL;
+  
   CStdString strDevice = TranslateDevicePath(devicePath, true);
   std::map<CStdString,CCdInfo*>::iterator it;
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
-    return it->second;
+  {
+    CSingleLock waitLock(m_muAutoSource);
+    it = m_mapCdInfo.find(strDevice);
+    if(it != m_mapCdInfo.end())
+      return it->second;
+  }
 
+  CCdInfo* pCdInfo=NULL;
   CCdIoSupport cdio;
   pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
   if(pCdInfo!=NULL)
+  {
+    CSingleLock waitLock(m_muAutoSource);
     m_mapCdInfo.insert(std::pair<CStdString,CCdInfo*>(strDevice,pCdInfo));
+  }
 
   return pCdInfo;
 #else
@@ -433,10 +440,10 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
   if(!m_bhasoptical)
     return false;
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
 
   std::map<CStdString,CCdInfo*>::iterator it;
+  CSingleLock waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
@@ -455,7 +462,6 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   if(!m_bhasoptical)
     return "";
 
-  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath);
   char cVolumenName[128];
   char cFSName[128];
@@ -486,7 +492,7 @@ CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
 
 #ifndef _WIN32
   {
-    CSingleLock waitLock(m_muAutoSource);  
+    CSingleLock waitLock(m_muAutoSource);
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo  )
     {
@@ -536,7 +542,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
   bool dataRead = false;
 
   vecItemsTS.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-  for (int i = 0; i < vecItemsTS.Size(); i++) 
+  for (int i = 0; i < vecItemsTS.Size(); i++)
   {
     CFileItemPtr videoTSItem = vecItemsTS[i];
     success = true;
@@ -552,7 +558,7 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
     }
     int res;
     char buf[2048];
-    while( (res = file.Read(buf, sizeof(buf))) > 0) 
+    while( (res = file.Read(buf, sizeof(buf))) > 0)
     {
       dataRead = true;
       crc32.Compute(buf, res);
@@ -618,14 +624,17 @@ void CMediaManager::ProcessEvents()
 
 std::vector<CStdString> CMediaManager::GetDiskUsage()
 {
-  CSingleLock waitLock(m_muAutoSource);
+  CSingleLock lock(m_CritSecStorageProvider);
   return m_platformStorage->GetDiskUsage();
 }
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("dvds.autorun"))
-    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+  if (g_guiSettings.GetInt("audiocds.autoaction") != AUTOCD_NONE || g_guiSettings.GetBool("dvds.autorun"))
+    if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP)
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_LOW);
+    else
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
 }

@@ -52,7 +52,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
       tag.SetLoaded(false);
       return( false );
     }
-    ifstream inMDZ(_P(strMDZ.c_str()));
+    ifstream inMDZ(CSpecialProtocol::TranslatePath(strMDZ.c_str()));
     char temp[8192];
     char temp2[8192];
 

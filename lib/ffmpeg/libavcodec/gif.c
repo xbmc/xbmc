@@ -62,7 +62,7 @@ static int gif_image_write_header(AVCodecContext *avctx,
                                   uint8_t **bytestream, uint32_t *palette)
 {
     int i;
-    unsigned int v;
+    unsigned int v, smallest_alpha = 0xFF, alpha_component = 0;
 
     bytestream_put_buffer(bytestream, "GIF", 3);
     bytestream_put_buffer(bytestream, "89a", 3);
@@ -77,6 +77,20 @@ static int gif_image_write_header(AVCodecContext *avctx,
     for(i=0;i<256;i++) {
         v = palette[i];
         bytestream_put_be24(bytestream, v);
+        if (v >> 24 < smallest_alpha) {
+            smallest_alpha = v >> 24;
+            alpha_component = i;
+        }
+    }
+
+    if (smallest_alpha < 128) {
+        bytestream_put_byte(bytestream, 0x21); /* Extension Introducer */
+        bytestream_put_byte(bytestream, 0xf9); /* Graphic Control Label */
+        bytestream_put_byte(bytestream, 0x04); /* block length */
+        bytestream_put_byte(bytestream, 0x01); /* Transparent Color Flag */
+        bytestream_put_le16(bytestream, 0x00); /* no delay */
+        bytestream_put_byte(bytestream, alpha_component);
+        bytestream_put_byte(bytestream, 0x00);
     }
 
     return 0;
@@ -150,7 +164,7 @@ static int gif_encode_frame(AVCodecContext *avctx, unsigned char *outbuf, int bu
     uint8_t *end = outbuf + buf_size;
 
     *p = *pict;
-    p->pict_type = FF_I_TYPE;
+    p->pict_type = AV_PICTURE_TYPE_I;
     p->key_frame = 1;
     gif_image_write_header(avctx, &outbuf_ptr, (uint32_t *)pict->data[1]);
     gif_image_write_image(avctx, &outbuf_ptr, end, pict->data[0], pict->linesize[0]);
@@ -167,13 +181,13 @@ static int gif_encode_close(AVCodecContext *avctx)
 }
 
 AVCodec ff_gif_encoder = {
-    "gif",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_GIF,
-    sizeof(GIFContext),
-    gif_encode_init,
-    gif_encode_frame,
-    gif_encode_close,
+    .name           = "gif",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_GIF,
+    .priv_data_size = sizeof(GIFContext),
+    .init           = gif_encode_init,
+    .encode         = gif_encode_frame,
+    .close          = gif_encode_close,
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_RGB8, PIX_FMT_BGR8, PIX_FMT_RGB4_BYTE, PIX_FMT_BGR4_BYTE, PIX_FMT_GRAY8, PIX_FMT_PAL8, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("GIF (Graphics Interchange Format)"),
 };

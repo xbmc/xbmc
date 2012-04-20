@@ -22,6 +22,7 @@
 #include "GUIDialogSongInfo.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
@@ -31,7 +32,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -180,10 +181,13 @@ void CGUIDialogSongInfo::SetRating(char rating)
 {
   if (rating < '0') rating = '0';
   if (rating > '5') rating = '5';
-  m_song->GetMusicInfoTag()->SetRating(rating);
-  // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-  g_windowManager.SendMessage(msg);
+  if (rating != m_song->GetMusicInfoTag()->GetRating())
+  {
+    m_song->GetMusicInfoTag()->SetRating(rating);
+    // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
+    g_windowManager.SendMessage(msg);
+  }
 }
 
 void CGUIDialogSongInfo::SetSong(CFileItem *item)
@@ -195,7 +199,7 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   // set artist thumb as well
   if (m_song->HasMusicInfoTag())
   {
-    CFileItem artist(m_song->GetMusicInfoTag()->GetArtist());
+    CFileItem artist(StringUtils::Join(m_song->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator));
     artist.SetCachedArtistThumb();
     if (CFile::Exists(artist.GetThumbnailImage()))
       m_song->SetProperty("artistthumb", artist.GetThumbnailImage());
@@ -212,7 +216,7 @@ bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // TODO: Obtain the source...
   CStdString source;
-  CFileCurl http;
+  CCurlFile http;
   http.Download(source, thumbFile);
   return true;
 }

@@ -34,17 +34,7 @@
 #include <math.h>
 
 #if defined(HAS_GLES)
-
-#if defined(__APPLE__)
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
-#else
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#endif//__APPLE__
-
-#include "xbmc/guilib/MatrixGLES.h"
-#include "xbmc/visualizations/EGLHelpers/GUIShader.h"
+#include "VisGUIShader.h"
 
 #ifndef M_PI
 #define M_PI       3.141592654f
@@ -55,27 +45,27 @@
 #define GL_PROJECTION             MM_PROJECTION
 #define GL_MODELVIEW              MM_MODELVIEW
 
-#define glPushMatrix()            g_matrices.PushMatrix()
-#define glPopMatrix()             g_matrices.PopMatrix()
-#define glTranslatef(x,y,z)       g_matrices.Translatef(x,y,z)
-#define glRotatef(a,x,y,z)        g_matrices.Rotatef(DEG2RAD(a),x,y,z)
+#define glPushMatrix()            vis_shader->PushMatrix()
+#define glPopMatrix()             vis_shader->PopMatrix()
+#define glTranslatef(x,y,z)       vis_shader->Translatef(x,y,z)
+#define glRotatef(a,x,y,z)        vis_shader->Rotatef(DEG2RAD(a),x,y,z)
 #define glPolygonMode(a,b)        ;
-#define glBegin(a)                m_shader->Enable()
-#define glEnd()                   m_shader->Disable()
-#define glMatrixMode(a)           g_matrices.MatrixMode(a)
-#define glLoadIdentity()          g_matrices.LoadIdentity()
-#define glFrustum(a,b,c,d,e,f)    g_matrices.Frustum(a,b,c,d,e,f)
+#define glBegin(a)                vis_shader->Enable()
+#define glEnd()                   vis_shader->Disable()
+#define glMatrixMode(a)           vis_shader->MatrixMode(a)
+#define glLoadIdentity()          vis_shader->LoadIdentity()
+#define glFrustum(a,b,c,d,e,f)    vis_shader->Frustum(a,b,c,d,e,f)
 
 GLenum  g_mode = GL_TRIANGLES;
 float g_fWaveform[2][512];
-std::string frag = "precision mediump float; \n"
+const char *frag = "precision mediump float; \n"
                    "varying lowp vec4 m_colour; \n"
                    "void main () \n"
                    "{ \n"
                    "  gl_FragColor = m_colour; \n"
                    "}\n";
 
-std::string vert = "attribute vec4 m_attrpos;\n"
+const char *vert = "attribute vec4 m_attrpos;\n"
                    "attribute vec4 m_attrcol;\n"
                    "attribute vec4 m_attrcord0;\n"
                    "attribute vec4 m_attrcord1;\n"
@@ -93,12 +83,12 @@ std::string vert = "attribute vec4 m_attrpos;\n"
                    "  m_cord1     = m_attrcord1;\n"
                    "}\n";
 
-CGUIShader *m_shader = NULL;
+CVisGUIShader *vis_shader = NULL;
 
 #elif defined(HAS_SDL_OPENGL)
 #include <GL/glew.h>
-
 GLenum  g_mode = GL_FILL;
+
 #endif
 
 #define NUM_BANDS 16
@@ -209,8 +199,8 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
                       4, 6, 7
                    };
 
-  GLint   posLoc = m_shader->GetPosLoc();
-  GLint   colLoc = m_shader->GetColLoc();
+  GLint   posLoc = vis_shader->GetPosLoc();
+  GLint   colLoc = vis_shader->GetColLoc();
 
   glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
@@ -278,14 +268,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   scale = 1.0 / log(256.0);
 
 #if defined(HAS_GLES)
-  m_shader = new CGUIShader(vert, frag);
+  vis_shader = new CVisGUIShader(vert, frag);
 
-  if(!m_shader)
+  if(!vis_shader)
     return ADDON_STATUS_UNKNOWN;
 
-  if(!m_shader->CompileAndLink())
+  if(!vis_shader->CompileAndLink())
   {
-    delete m_shader;
+    delete vis_shader;
     return ADDON_STATUS_UNKNOWN;
   }  
 #endif
@@ -456,10 +446,10 @@ extern "C" void ADDON_Stop()
 extern "C" void ADDON_Destroy()
 {
 #if defined(HAS_GLES)
-  if(m_shader) 
+  if(vis_shader) 
   {
-    m_shader->Free();
-    delete m_shader;
+    vis_shader->Free();
+    delete vis_shader;
   }
 #endif
 }

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,65 +22,14 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "utils/StdString.h"
+
+#include "JSONRPCUtils.h"
 #include "interfaces/IAnnouncer.h"
-#include "interfaces/AnnouncementUtils.h"
-#include "ITransportLayer.h"
-#include "utils/Variant.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 
-
 namespace JSONRPC
 {
-  /*!
-   \ingroup jsonrpc
-   \brief Possible statuc codes of a response
-   to a JSON RPC request
-   */
-  enum JSON_STATUS
-  {
-    OK = 0,
-    ACK = -1,
-    InvalidRequest = -32600,
-    MethodNotFound = -32601,
-    InvalidParams = -32602,
-    InternalError = -32603,
-    ParseError = -32700,
-    //-32099..-32000 Reserved for implementation-defined server-errors.
-    BadPermission = -32099,
-    FailedToExecute = -32100
-  };
-
-  /*!
-   \brief Function pointer for json rpc methods
-   */
-  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-
-  /*!
-   \ingroup jsonrpc
-   \brief Permission categories for json rpc methods
-   
-   A json rpc method will only be called if the caller 
-   has the correct permissions to exectue the method.
-   The method call needs to be perfectly threadsafe.
-  */
-  enum OperationPermission
-  {
-    ReadData        =   0x1,
-    ControlPlayback =   0x2,
-    ControlNotify   =   0x4,
-    ControlPower    =   0x8,
-    UpdateData      =  0x10,
-    RemoveData      =  0x20,
-    Navigate        =  0x40,
-    WriteFile       =  0x80
-  };
-
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
-
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
-
   /*!
    \brief Possible value types of a parameter or return type
    */
@@ -191,63 +140,6 @@ namespace JSONRPC
       }
 
       return str;
-    }
-
-    /*!
-     \brief Returns a string representation for the 
-     given OperationPermission
-     \param permission Specific OperationPermission
-     \return String representation of the given OperationPermission
-     */
-    static inline const char *PermissionToString(const OperationPermission &permission)
-    {
-      switch (permission)
-      {
-      case ReadData:
-        return "ReadData";
-      case ControlPlayback:
-        return "ControlPlayback";
-      case ControlNotify:
-        return "ControlNotify";
-      case ControlPower:
-        return "ControlPower";
-      case UpdateData:
-        return "UpdateData";
-      case RemoveData:
-        return "RemoveData";
-      case Navigate:
-        return "Navigate";
-      case WriteFile:
-        return "WriteFile";
-      default:
-        return "Unknown";
-      }
-    }
-
-    /*!
-     \brief Returns a OperationPermission value for the given
-     string representation
-     \param permission String representation of the OperationPermission
-     \return OperationPermission value of the given string representation
-     */
-    static inline OperationPermission StringToPermission(std::string permission)
-    {
-      if (permission.compare("ControlPlayback") == 0)
-        return ControlPlayback;
-      if (permission.compare("ControlNotify") == 0)
-        return ControlNotify;
-      if (permission.compare("ControlPower") == 0)
-        return ControlPower;
-      if (permission.compare("UpdateData") == 0)
-        return UpdateData;
-      if (permission.compare("RemoveData") == 0)
-        return RemoveData;
-      if (permission.compare("Navigate") == 0)
-        return Navigate;
-      if (permission.compare("WriteFile") == 0)
-        return WriteFile;
-
-      return ReadData;
     }
 
     /*!
@@ -477,25 +369,10 @@ namespace JSONRPC
           value = CVariant(CVariant::VariantTypeObject);
           break;
         default:
-          value = CVariant(CVariant::VariantTypeConstNull);
+          value = CVariant(CVariant::VariantTypeNull);
       }
     }
 
     static inline bool HasType(JSONSchemaType typeObject, JSONSchemaType type) { return (typeObject & type) == type; }
-
-    static std::string AnnouncementToJSON(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
-    {
-      CVariant root;
-      root["jsonrpc"] = "2.0";
-
-      CStdString namespaceMethod;
-      namespaceMethod.Format("%s.%s", ANNOUNCEMENT::CAnnouncementUtils::AnnouncementFlagToString(flag), method);
-      root["method"]  = namespaceMethod.c_str();
-
-      root["params"]["data"] = data;
-      root["params"]["sender"] = sender;
-
-      return CJSONVariantWriter::Write(root, compactOutput);
-    }
   };
 }

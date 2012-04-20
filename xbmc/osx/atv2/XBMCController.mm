@@ -25,6 +25,9 @@
 #import "WinEventsIOS.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
+#include "threads/Event.h"
+#include "Application.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
@@ -32,27 +35,26 @@
 #import <BackRow/BackRow.h>
 
 #import "XBMCController.h"
-#import "XBMCEAGLView.h"
+#import "IOSEAGLView.h"
 #import "XBMCDebugHelpers.h"
+
+//start repeating after 0.5s
+#define REPEATED_KEYPRESS_DELAY_S     0.5
+//pause 0.01s (10ms) between keypresses
+#define REPEATED_KEYPRESS_PAUSE_S 0.01
 
 typedef enum {
 
   ATV_BUTTON_UP                 = 1,
-  ATV_BUTTON_UP_RELEASE         = 1,
   ATV_BUTTON_DOWN               = 2,
-  ATV_BUTTON_DOWN_RELEASE       = 2,
   ATV_BUTTON_LEFT               = 3,
-  ATV_BUTTON_LEFT_RELEASE       = 3,
   ATV_BUTTON_RIGHT              = 4,
-  ATV_BUTTON_RIGHT_RELEASE      = 4,
   ATV_BUTTON_PLAY               = 5,
   ATV_BUTTON_MENU               = 6,
   ATV_BUTTON_PLAY_H             = 7,
   ATV_BUTTON_MENU_H             = 8,
   ATV_BUTTON_LEFT_H             = 9,
-  ATV_BUTTON_LEFT_H_RELEASE     = 9,
   ATV_BUTTON_RIGHT_H            = 10,
-  ATV_BUTTON_RIGHT_H_RELEASE    = 10,
 
   //new aluminium remote buttons
   ATV_ALUMINIUM_PLAY            = 12,
@@ -160,23 +162,6 @@ typedef enum {
 XBMCController *g_xbmcController;
 
 //--------------------------------------------------------------
-//--------------------------------------------------------------
-@implementation UIWindow (limneos)
--(id)parent { return nil; }
--(void)removeFromParent {}
--(BOOL)active { return NO; } 
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
-@implementation UIView (limneos)
--(id)parent { return nil; }
--(BOOL)active { return NO; }
--(void)removeFromParent {}
--(void)controlWasActivated {}
--(void)controlWasDeactivated {}
-@end
-
 // so we don't have to include AppleTV.frameworks/PrivateHeaders/ATVSettingsFacade.h
 @interface ATVSettingsFacade : BRSettingsFacade {}
 -(int)screenSaverTimeout;
@@ -188,20 +173,25 @@ XBMCController *g_xbmcController;
 // notification messages
 extern NSString* kBRScreenSaverActivated;
 extern NSString* kBRScreenSaverDismissed;
-
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface XBMCController (PrivateMethods)
-UIWindow      *m_window;
-XBMCEAGLView  *m_glView;
+NSTimer       *m_keyTimer;
+IOSEAGLView  *m_glView;
+
 int           m_screensaverTimeout;
 int           m_systemsleepTimeout;
 
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
+- (void) keyPressTimerCallback: (NSTimer*)theTimer;
+- (void) startKeyPressTimer: (int) keyId;
+- (void) stopKeyPressTimer;
+- (void) setUserEvent:(int) id withHoldTime:(unsigned int) holdTime;
 @end
 //
 //
 @implementation XBMCController
+
 /*
 + (XBMCController*) sharedInstance
 {
@@ -221,8 +211,6 @@ int           m_systemsleepTimeout;
 {
   [m_glView stopAnimation];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
@@ -260,6 +248,11 @@ int           m_systemsleepTimeout;
 
   return screensize;
 }
+- (void) sendKey: (XBMCKey) key
+{
+  //empty because its not used here. Only implemented for getting rid
+  //of "may not respond to selector" compile warnings in IOSExternalTouchController
+}
 
 
 - (id) init
@@ -279,9 +272,8 @@ int           m_systemsleepTimeout;
     name: nil
     object: nil];
 
-  m_window = [[UIWindow alloc] initWithFrame:[BRWindow interfaceFrame]];
-  m_glView = [[XBMCEAGLView alloc] initWithFrame:m_window.bounds];
-  [m_window addSubview:m_glView];
+  m_glView = [[IOSEAGLView alloc] initWithFrame:[BRWindow interfaceFrame] withScreen:[UIScreen mainScreen]];
+  [[IOSScreenManager sharedInstance] setView:m_glView];
 
   g_xbmcController = self;
 
@@ -293,7 +285,7 @@ int           m_systemsleepTimeout;
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   [m_glView stopAnimation];
   [m_glView release];
-  [m_window release];
+
 
   NSNotificationCenter *center;
   // take us off the default center for our app
@@ -311,8 +303,9 @@ int           m_systemsleepTimeout;
 
   [self disableSystemSleep];
   [self disableScreenSaver];
-  [m_window makeKeyAndVisible];
-  [[[[BRWindow windowList] objectAtIndex:0] content] addControl: m_window];
+
+  //inject our gles layer into the backrow root layer
+  [[BRWindow rootLayer] addSublayer:m_glView.layer];
 
   [m_glView startAnimation];
 }
@@ -322,9 +315,8 @@ int           m_systemsleepTimeout;
   NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
   [m_glView stopAnimation];
+  [m_glView.layer removeFromSuperlayer];
 
-  [[[[BRWindow windowList] objectAtIndex:0] content] _removeControl: m_window];
-  [m_window resignKeyWindow];
   [self enableScreenSaver];
   [self enableSystemSleep];
 
@@ -337,39 +329,40 @@ int           m_systemsleepTimeout;
   return YES;
 }
 
-- (eATVClientEvent) ATVClientEventFromBREvent:(BREvent*) f_event
+- (eATVClientEvent) ATVClientEventFromBREvent:(BREvent*) f_event 
+                    Repeatable:(bool &) isRepeatable
+                    ButtonState:(bool &) isPressed
 {
   int remoteAction = [f_event remoteAction];
   CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i", remoteAction);
+  isRepeatable = false;
+  isPressed = false;
 
   switch (remoteAction)
   {
     // tap up
     case kBREventRemoteActionUp:
     case 65676:
+      isRepeatable = true;
       if([f_event value] == 1)
-        return ATV_BUTTON_UP;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_UP_RELEASE;
+        isPressed = true;
+      return ATV_BUTTON_UP;
 
     // tap down
     case kBREventRemoteActionDown:
     case 65677:
+      isRepeatable = true;
       if([f_event value] == 1)
-        return ATV_BUTTON_DOWN;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_DOWN_RELEASE;
+        isPressed = true;
+      return ATV_BUTTON_DOWN;
 
     // tap left
     case kBREventRemoteActionLeft:
     case 65675:
+      isRepeatable = true;
       if([f_event value] == 1)
-        return ATV_BUTTON_LEFT;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_LEFT_RELEASE;
+        isPressed = true;
+      return ATV_BUTTON_LEFT;
 
     // hold left
     case 786612:
@@ -377,16 +370,14 @@ int           m_systemsleepTimeout;
         return ATV_LEARNED_REWIND;
       else
         return ATV_INVALID_BUTTON;
-        //return ATV_LEARNED_REWIND_RELEASE;
 
     // tap right
     case kBREventRemoteActionRight:
     case 65674:
+      isRepeatable = true;
       if ([f_event value] == 1)
-        return ATV_BUTTON_RIGHT;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_RIGHT_RELEASE;
+        isPressed = true;
+      return ATV_BUTTON_RIGHT;
 
     // hold right
     case 786611:
@@ -394,7 +385,6 @@ int           m_systemsleepTimeout;
         return ATV_LEARNED_FORWARD;
       else
         return ATV_INVALID_BUTTON;
-        //return ATV_LEARNED_FORWARD_RELEASE;
 
     // tap play
     case kBREventRemoteActionPlay:
@@ -457,69 +447,39 @@ int           m_systemsleepTimeout;
 
     // PageUp
     case kBREventRemoteActionPageUp:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_PAGEUP;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_PAGEUP;
 
     // PageDown
     case kBREventRemoteActionPageDown:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_PAGEDOWN;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_PAGEDOWN;
 
     // Pause
     case kBREventRemoteActionPause:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_PAUSE;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_PAUSE;
 
     // Play2
     case kBREventRemoteActionPlay2:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_PLAY2;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_PLAY2;
 
     // Stop
     case kBREventRemoteActionStop:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_STOP;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_STOP_RELEASE;
+      return ATV_BUTTON_STOP;
 
     // Fast Forward
     case kBREventRemoteActionFastFwd:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_FASTFWD;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_FASTFWD_RELEASE;
+      return ATV_BUTTON_FASTFWD;
 
     // Rewind
     case kBREventRemoteActionRewind:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_REWIND;
-      else
-        return ATV_INVALID_BUTTON;
-        //return ATV_BUTTON_REWIND_RELEASE;
+      return ATV_BUTTON_REWIND;
 
     // Skip Forward
     case kBREventRemoteActionSkipFwd:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_SKIPFWD;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_SKIPFWD;
 
     // Skip Back
     case kBREventRemoteActionSkipBack:
-      if ([f_event value] == 1)
-        return ATV_BUTTON_SKIPBACK;
-      else
-        return ATV_INVALID_BUTTON;
+      return ATV_BUTTON_SKIPBACK;
 
     // Gesture Swipe Left
     case kBREventRemoteActionSwipeLeft:
@@ -585,6 +545,17 @@ int           m_systemsleepTimeout;
   }
 }
 
+- (void)setUserEvent:(int) id withHoldTime:(unsigned int) holdTime
+{
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(newEvent));
+
+  newEvent.type = XBMC_USEREVENT;
+  newEvent.jbutton.which = id;
+  newEvent.jbutton.holdTime = holdTime;
+  CWinEventsIOS::MessagePush(&newEvent);
+}
+
 - (BOOL)brEventAction:(BREvent*)event
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
@@ -592,15 +563,19 @@ int           m_systemsleepTimeout;
 	if ([m_glView isAnimating])
   {
     BOOL is_handled = NO;
-    eATVClientEvent xbmc_ir_key = [self ATVClientEventFromBREvent:event];
+    bool isRepeatable = false;
+    bool isPressed = false;
+    eATVClientEvent xbmc_ir_key = [self ATVClientEventFromBREvent:event 
+                                        Repeatable:isRepeatable
+                                        ButtonState:isPressed];
     
     if ( xbmc_ir_key != ATV_INVALID_BUTTON )
     {
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
-
       if (xbmc_ir_key == ATV_BTKEYPRESS && [event value] == 1)
       {
+        XBMC_Event newEvent;
+        memset(&newEvent, 0, sizeof(newEvent));
+
         NSDictionary *dict = [event eventDictionary];
         NSString *key_nsstring = [dict objectForKey:@"kBRKeyEventCharactersKey"];
         
@@ -636,9 +611,23 @@ int           m_systemsleepTimeout;
       }
       else
       {
-        newEvent.type = XBMC_USEREVENT;
-        newEvent.user.code = xbmc_ir_key;
-        CWinEventsIOS::MessagePush(&newEvent);
+        if(isRepeatable)
+        {
+          if(isPressed)
+          {
+            [self setUserEvent:xbmc_ir_key withHoldTime:0]; //fire event
+            [self startKeyPressTimer:xbmc_ir_key];//start repeat timer
+          }
+          else
+          {
+            //stop the timer
+            [self stopKeyPressTimer];
+          }
+        }
+        else
+        {
+          [self setUserEvent:xbmc_ir_key  withHoldTime:0];
+        }
         is_handled = TRUE;
       }
     }
@@ -652,6 +641,54 @@ int           m_systemsleepTimeout;
 
 #pragma mark -
 #pragma mark private helper methods
+- (void)startKeyPressTimer: (int) keyId
+{ 
+  NSNumber *number = [NSNumber numberWithInt:keyId]; 
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[NSDate date], @"StartDate", 
+                                                                  number, @"keyId", nil];
+  
+  NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:REPEATED_KEYPRESS_DELAY_S]; 
+
+  [self stopKeyPressTimer];
+
+  //schedule repeated timer which starts after REPEATED_KEYPRESS_DELAY_S and fires
+  //every REPEATED_KEYPRESS_PAUSE_S
+  m_keyTimer       = [[NSTimer alloc] initWithFireDate:fireDate 
+                                      interval:REPEATED_KEYPRESS_PAUSE_S 
+                                      target:self 
+                                      selector:@selector(keyPressTimerCallback:) 
+                                      userInfo:dict 
+                                      repeats:YES]; 
+  //schedule the timer to the runloop
+  NSRunLoop *runLoop = [NSRunLoop currentRunLoop]; 
+  [runLoop addTimer:m_keyTimer forMode:NSDefaultRunLoopMode]; 
+} 
+
+- (void)stopKeyPressTimer
+{
+  if(m_keyTimer != nil)
+  {
+    [m_keyTimer invalidate];
+    [m_keyTimer release];
+    m_keyTimer = nil;
+  }
+}
+
+- (void)keyPressTimerCallback:(NSTimer*)theTimer 
+{ 
+  //if queue is empty - skip this timer event
+  //for letting it process
+  if(CWinEventsIOS::GetQueueSize())
+    return;
+  NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
+  int keyId = [[[theTimer userInfo] objectForKey:@"keyId"] intValue];
+  //calc the holdTime - timeIntervalSinceNow gives the
+  //passed time since startDate in seconds as negative number
+  //so multiply with -1000 for getting the positive ms
+  NSTimeInterval holdTime = [startDate timeIntervalSinceNow] * -1000.0f;
+  [self setUserEvent:keyId withHoldTime:(unsigned int)holdTime];
+} 
+
 //
 - (void)observeDefaultCenterStuff: (NSNotification *) notification
 {
@@ -992,4 +1029,53 @@ int           m_systemsleepTimeout;
   return newEvent;
 }
 
+//--------------------------------------------------------------
+- (void)pauseAnimation
+{
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
+  CWinEventsIOS::MessagePush(&newEvent);
+  
+  /* Give player time to pause */
+  Sleep(2000);
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  [m_glView pauseAnimation];
+  
+}
+//--------------------------------------------------------------
+- (void)resumeAnimation
+{  
+  XBMC_Event newEvent;
+  memset(&newEvent, 0, sizeof(XBMC_Event));
+  
+  newEvent.appcommand.type = XBMC_APPCOMMAND;
+  newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+  CWinEventsIOS::MessagePush(&newEvent);    
+  
+  [m_glView resumeAnimation];
+}
+//--------------------------------------------------------------
+- (void)startAnimation
+{
+  [m_glView startAnimation];
+}
+//--------------------------------------------------------------
+- (void)stopAnimation
+{
+  [m_glView stopAnimation];
+}
+//--------------------------------------------------------------
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode
+{
+  return [[IOSScreenManager sharedInstance] changeScreen: screenIdx withMode: mode];
+}
+//--------------------------------------------------------------
+- (void) activateScreen: (UIScreen *)screen
+{
+}
 @end
+
