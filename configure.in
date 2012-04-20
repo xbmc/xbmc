@@ -1248,7 +1248,11 @@ if test "$use_external_ffmpeg" = "yes"; then
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
 
   # Disable vdpau support if external libavcodec doesn't have it
-  AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
+  AC_RUN_IFELSE(
+    AC_LANG_PROGRAM([[#include <libavcodec/avcodec.h>]],
+      [[avcodec_register_all();
+        AVCodec *codec = avcodec_find_decoder_by_name("vc1_vdpau");
+        return (codec) ? 0 : 1;]]),,
     [if test "x$use_vdpau" = "xyes"; then
       AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
     else
@@ -1256,6 +1260,23 @@ if test "$use_external_ffmpeg" = "yes"; then
       AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
     fi])
 
+  # Other headers to include if available.
+  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
+
+  # Check if <libavfilter/vsrc_buffer.h> exists and defines old
+  # av_vsrc_buffer_add_frame() from SoC. This avoids multiple declarations of
+  # av_vsrc_buffer_add_frame().
+  AC_COMPILE_IFELSE(
+    AC_LANG_SOURCE([[
+      #include <libavfilter/vsrc_buffer.h>
+      void foo(void)
+      {
+        AVRational a;
+        av_vsrc_buffer_add_frame(NULL, NULL, 0, a);
+      }
+      ]]), AC_DEFINE([USE_OLD_AV_VSRC_BUFFER_ADD_FRAME],
+        [1], [Check if SoC av_vsrc_buffer_add_frame() is defined in libavfilter/vsrc_buffer.h.]),)
+  
   # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
