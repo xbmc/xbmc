@@ -128,6 +128,8 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 {
   CStdString strUseBase = TrimSlashes(strBase);
 
+  std::set<CStdString> unwatchedFolders;
+
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
   {
     CPVRRecording *current = at(iRecordingPtr);
@@ -149,6 +151,20 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
+
+      // Initialize folder overlay from play count (either directly from client or from video database)
+      CVideoDatabase db;
+      bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+      if ((supportsPlayCount && current->m_iRecPlayCount > 0) ||
+          (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) > 0))
+      {
+        pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
+      }
+      else
+      {
+        unwatchedFolders.insert(strFilePath);
+      }
+
       results->Add(pFileItem);
     }
     else
@@ -157,6 +173,17 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem=results->Get(strFilePath);
       if (pFileItem->m_dateTime<current->RecordingTimeAsLocalTime())
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
+
+      // Unset folder overlay if recording is unwatched
+      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end()) {
+        CVideoDatabase db;
+        bool supportsPlayCount = g_PVRClients->GetAddonCapabilities(current->m_iClientId).bSupportsRecordingPlayCount;
+        if ((supportsPlayCount && current->m_iRecPlayCount == 0) || (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) == 0))
+        {
+          pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+          unwatchedFolders.insert(strFilePath);
+        }
+      }
     }
   }
 
