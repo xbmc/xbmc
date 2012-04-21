@@ -44,6 +44,7 @@
 #include "GUIInfoManager.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "music/LastFmManager.h"
 #include "music/tags/MusicInfoTag.h"
@@ -264,6 +265,12 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
   if (item->IsVideoDb())
   { // music video
     OnContextButton(iItem, CONTEXT_BUTTON_INFO);
+    return;
+  }
+
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  {
+    CGUIDialogAddonInfo::ShowForItem(item);
     return;
   }
 
@@ -870,6 +877,8 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (item && !item->IsParentFolder())
     {
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO,24003); // Add-on info
       if (item->GetExtraInfo().Equals("lastfmloved"))
       {
         buttons.Add(CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM, 15295); //unlove
