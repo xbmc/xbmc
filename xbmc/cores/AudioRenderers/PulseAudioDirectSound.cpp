@@ -652,7 +652,7 @@ void CPulseAudioDirectSound::UnRegisterAudioCallback()
 
 void CPulseAudioDirectSound::WaitCompletion()
 {
-  if (!m_bIsAllocated)
+  if (!m_bIsAllocated || m_bRecentlyFlushed)
     return;
 
   pa_threaded_mainloop_lock(m_MainLoop);

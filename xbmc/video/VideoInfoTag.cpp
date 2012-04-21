@@ -443,15 +443,15 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["originaltitle"] = m_strOriginalTitle;
   value["sorttitle"] = m_strSortTitle;
   value["episodeguide"] = m_strEpisodeGuide;
-  value["premiered"] = m_premiered.GetAsDBDate();
+  value["premiered"] = m_premiered.IsValid() ? m_premiered.GetAsDBDate() : StringUtils::EmptyString;
   value["status"] = m_strStatus;
   value["productioncode"] = m_strProductionCode;
-  value["firstaired"] = m_firstAired.GetAsDBDate();
+  value["firstaired"] = m_firstAired.IsValid() ? m_firstAired.GetAsDBDate() : StringUtils::EmptyString;
   value["showtitle"] = m_strShowTitle;
   value["album"] = m_strAlbum;
   value["artist"] = m_strArtist;
   value["playcount"] = m_playCount;
-  value["lastplayed"] = m_lastPlayed.GetAsDBDateTime();
+  value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
   value["top250"] = m_iTop250;
   value["year"] = m_iYear;
   value["season"] = m_iSeason;
@@ -468,7 +468,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
   value["tvshowpath"] = m_strShowPath;
-  value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : "";
+  value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -559,11 +559,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_strPictureURL.m_xml = xmlAdd;
   }
 
-  XMLUtils::GetStringArray(movie, "genre", m_genre, prioritise);
-  XMLUtils::GetStringArray(movie, "country", m_country, prioritise);
-  XMLUtils::GetStringArray(movie, "credits", m_writingCredits, prioritise);
-  XMLUtils::GetStringArray(movie, "director", m_director, prioritise);
-  XMLUtils::GetStringArray(movie, "showlink", m_showLink, prioritise);
+  XMLUtils::GetStringArray(movie, "genre", m_genre, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetStringArray(movie, "country", m_country, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetStringArray(movie, "credits", m_writingCredits, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetStringArray(movie, "director", m_director, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetStringArray(movie, "showlink", m_showLink, prioritise, g_advancedSettings.m_videoItemSeparator);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
@@ -593,8 +593,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("actor");
   }
 
-  XMLUtils::GetStringArray(movie, "set", m_set, prioritise);
-  XMLUtils::GetStringArray(movie, "studio", m_studio, prioritise);
+  XMLUtils::GetStringArray(movie, "set", m_set, prioritise, g_advancedSettings.m_videoItemSeparator);
+  XMLUtils::GetStringArray(movie, "studio", m_studio, prioritise, g_advancedSettings.m_videoItemSeparator);
   // artists
   node = movie->FirstChildElement("artist");
   if (node && node->FirstChild() && prioritise)

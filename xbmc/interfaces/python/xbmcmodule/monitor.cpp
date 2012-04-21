@@ -78,7 +78,7 @@ namespace PYXBMC
 
   // Monitor_onScreensaverActivated
   PyDoc_STRVAR(onScreensaverActivated__doc__,
-               "onScreenSaverStarted() -- onScreensaverActivated method.\n"
+               "onScreensaverActivated() -- onScreensaverActivated method.\n"
                "\n"
                "Will be called when screensaver kicks in");
   
