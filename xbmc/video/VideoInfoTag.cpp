@@ -408,16 +408,16 @@ void CVideoInfoTag::Serialize(CVariant& value)
   /* TODO:
      All the StringUtils::Join() calls can be removed once backwards-compatibility to
      JSON-RPC v4 can be broken */
-  value["director"] = StringUtils::Join(m_director, g_advancedSettings.m_videoItemSeparator);
-  value["writer"] = StringUtils::Join(m_writingCredits, g_advancedSettings.m_videoItemSeparator);
-  value["genre"] = StringUtils::Join(m_genre, g_advancedSettings.m_videoItemSeparator);
-  value["country"] = StringUtils::Join(m_country, g_advancedSettings.m_videoItemSeparator);
+  value["director"] = StringUtils::Join(m_director, " / ");
+  value["writer"] = StringUtils::Join(m_writingCredits, " / ");
+  value["genre"] = StringUtils::Join(m_genre, " / ");
+  value["country"] = StringUtils::Join(m_country, " / ");
   value["tagline"] = m_strTagLine;
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
   value["votes"] = m_strVotes;
-  value["studio"] = StringUtils::Join(m_studio, g_advancedSettings.m_videoItemSeparator);
+  value["studio"] = StringUtils::Join(m_studio, " / ");
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
   for (unsigned int i = 0; i < m_cast.size(); ++i)
@@ -460,7 +460,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
-  value["showlink"] = StringUtils::Join(m_showLink, g_advancedSettings.m_videoItemSeparator);
+  value["showlink"] = StringUtils::Join(m_showLink, " / ");
   m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = (float)m_resumePoint.timeInSeconds;
