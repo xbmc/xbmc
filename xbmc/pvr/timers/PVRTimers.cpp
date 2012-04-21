@@ -338,6 +338,23 @@ int CPVRTimers::GetNumActiveTimers(void) const
   return iReturn;
 }
 
+int CPVRTimers::GetActiveRecordings(vector<CPVRTimerInfoTag *> *tags) const
+{
+  int iInitialSize = tags->size();
+  CSingleLock lock(m_critSection);
+
+  for (map<CDateTime, vector<CPVRTimerInfoTag *>* >::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
+  {
+    for (unsigned int iTimerPtr = 0; iTimerPtr < it->second->size(); iTimerPtr++)
+    {
+      if (it->second->at(iTimerPtr)->IsRecording())
+        tags->push_back(it->second->at(iTimerPtr));
+    }
+  }
+
+  return tags->size() - iInitialSize;
+}
+
 int CPVRTimers::GetNumActiveRecordings(void) const
 {
   int iReturn(0);
