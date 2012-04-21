@@ -26,6 +26,7 @@
 #include "filesystem/HDDirectory.h"
 #include "GUIPassword.h"
 #include "dialogs/GUIDialogMediaSource.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "Autorun.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
@@ -109,9 +110,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
-        if (message.GetParam1() == ACTION_PLAYER_PLAY)
+        int iAction = message.GetParam1();
+        int iItem = m_viewControl.GetSelectedItem();
+        if (iAction == ACTION_PLAYER_PLAY)
         {
-          OnPlayMedia(m_viewControl.GetSelectedItem());
+          OnPlayMedia(iItem);
+          return true;
+        }
+        else if (iAction == ACTION_SHOW_INFO)
+        {
+          OnInfo(iItem);
           return true;
         }
       }
@@ -149,6 +157,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
 
@@ -208,6 +218,10 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_LAUNCH:
     OnClick(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_INFO:
+    OnInfo(itemNumber);
     return true;
 
   default:
@@ -290,4 +304,16 @@ CStdString CGUIWindowPrograms::GetStartFolder(const CStdString &dir)
     return dir;
   }
   return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+void CGUIWindowPrograms::OnInfo(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return;
+
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  {
+    CGUIDialogAddonInfo::ShowForItem(item);
+  }
 }
