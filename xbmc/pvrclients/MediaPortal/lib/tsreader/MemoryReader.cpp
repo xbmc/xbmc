@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -32,15 +32,17 @@ CMemoryReader::~CMemoryReader(void)
 
 long CMemoryReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
-  *dwReadBytes =m_buffer.ReadFromBuffer(pbData,lDataLength);
-  if ((*dwReadBytes) <=0) return S_FALSE;
+  *dwReadBytes = m_buffer.ReadFromBuffer(pbData,lDataLength);
+  if ((*dwReadBytes) <=0)
+    return S_FALSE;
   return S_OK;
 }
 
 long CMemoryReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
   *dwReadBytes =m_buffer.ReadFromBuffer(pbData,lDataLength);
-  if ((*dwReadBytes) <=0) return S_FALSE;
+  if ((*dwReadBytes) <=0)
+    return S_FALSE;
   return S_OK;
 }
 

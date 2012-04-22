@@ -65,19 +65,16 @@ long FileReader::GetFileName(char* *lpszFileName)
 
 long FileReader::SetFileName(const char *pszFileName)
 {
-  // Is this a valid filename supplied
-  //CheckPointer(pszFileName,E_POINTER);
-
   if(strlen(pszFileName) > MAX_PATH)
     return ERROR_FILENAME_EXCED_RANGE;
 
   // Take a copy of the filename
-
   if (m_pFileName)
   {
     delete[] m_pFileName;
     m_pFileName = NULL;
   }
+
   m_pFileName = new char[1 + strlen(pszFileName)];
   if (m_pFileName == NULL)
     return E_OUTOFMEMORY;
@@ -94,8 +91,8 @@ long FileReader::SetFileName(const char *pszFileName)
 //
 long FileReader::OpenFile()
 {
-  //char *pFileName = NULL;
-  int Tmo=25 ; //5 in MediaPortal
+  int Tmo = 25; //5 in MediaPortal
+
   // Is the file already opened
   if (!IsFileInvalid())
   {
@@ -154,9 +151,11 @@ long FileReader::OpenFile()
     m_bReadOnly = TRUE;
     if (!IsFileInvalid()) break;
 
-    Sleep(20) ;
+    Sleep(20);
   }
-  while(--Tmo) ;
+
+  while(--Tmo);
+
   if (Tmo)
   {
     if (Tmo<4) // 1 failed + 1 succeded is quasi-normal, more is a bit suspicious ( disk drive too slow or problem ? )
@@ -200,8 +199,6 @@ long FileReader::OpenFile()
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif
 
-  //XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() info file handle %i", m_hInfoFile);
-
   SetFilePointer(0, FILE_BEGIN);
   m_llBufferPointer = 0;
 
@@ -226,9 +223,6 @@ long FileReader::CloseFile()
   }
 
   //XBMC->Log(LOG_DEBUG, "FileReader::CloseFile() handle %i %ws", m_hFile, m_pFileName);
-  //XBMC->Log(LOG_DEBUG, "FileReader::CloseFile() info file handle %i", m_hInfoFile);
-
-//  BoostThread Boost;
 
 #if defined(TARGET_WINDOWS)
   ::CloseHandle(m_hFile);
@@ -264,9 +258,6 @@ inline bool FileReader::IsFileInvalid()
 
 long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 {
-  //CheckPointer(pStartPosition,E_POINTER);
-  //CheckPointer(pLength,E_POINTER);
-  
   GetStartPosition(pStartPosition);
 
 #if defined(TARGET_WINDOWS)

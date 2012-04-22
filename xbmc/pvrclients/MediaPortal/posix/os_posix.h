@@ -21,6 +21,9 @@
 #ifndef PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 #define PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 
+#include <stdint.h>
+#include "File.h"
+
 #define _FILE_OFFSET_BITS 64
 
 // Success codes
@@ -90,5 +93,39 @@ inline unsigned long GetTickCount(void)
   return (unsigned long)( (tv.tv_sec * 1000) + (tv.tv_usec / 1000) );
 };
 #endif /* TARGET_LINUX || TARGET_DARWIN */
+
+// For TSReader
+//#include <sys/time.h>
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+
+using namespace XFILE;
+
+typedef uint16_t Wchar_t; /* sizeof(wchar_t) = 4 bytes on Linux, but the MediaPortal buffer files have 2-byte wchars */
+
+inline size_t WcsLen(const Wchar_t *str)
+{
+  const unsigned short *eos = (const unsigned short*)str;
+  while( *eos++ ) ;
+  return( (size_t)(eos - (const unsigned short*)str) -1);
+};
+
+inline size_t WcsToMbs(char *s, const Wchar_t *w, size_t n)
+{
+  size_t i = 0;
+  const unsigned short *wc = (const unsigned short*) w;
+  while(wc[i] && (i < n))
+  {
+    s[i] = wc[i];
+    ++i;
+  }
+  if (i < n) s[i] = '\0';
+
+  return (i);
+};
+
+inline void Sleep(long milliseconds)
+{
+    usleep(milliseconds * 1000);
+};
 
 #endif
