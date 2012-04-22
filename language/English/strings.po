@@ -1585,7 +1585,13 @@ msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr ""
 
-#empty strings from id 435 to 436
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr ""
+
+msgctxt "#436"
+msgid "You need a optical disc drive to play this video"
+msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
