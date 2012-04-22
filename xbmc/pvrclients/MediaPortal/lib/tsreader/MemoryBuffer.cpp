@@ -88,7 +88,7 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
   while (m_BytesInBuffer < (unsigned long) lDataLength)
   {
     if (!m_bRunning) return 0;
-    m_event.Wait();
+    m_event.Wait(5000);
     if (!m_bRunning) return 0;
   }
 
