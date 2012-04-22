@@ -68,8 +68,8 @@ class FileReader
   protected:
 #if defined(TARGET_WINDOWS)
     HANDLE   m_hFile;               // Handle to file for streaming
-#elif defined(TARGET_LINUX)
-    int      m_hFile;               // Handle to file for streaming
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+    XFILE::CFile m_hFile;           // Handle to file for streaming
 #endif
     char*    m_pFileName;           // The filename where we stream
     bool     m_bReadOnly;

@@ -191,7 +191,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
 
   if (m_currentPosition < m_startPosition)
   {
-    XBMC->Log(LOG_INFO, "%s: current position adjusted from %d to %d.", __FUNCTION__, m_currentPosition, m_startPosition);
+    XBMC->Log(LOG_INFO, "%s: current position adjusted from %%I64dd to %%I64dd.", __FUNCTION__, m_currentPosition, m_startPosition);
     m_currentPosition = m_startPosition;
   }
 
@@ -204,6 +204,8 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     if (m_currentPosition < (file->startPosition + file->length))
       break;
   };
+
+  // XBMC->Log(LOG_DEBUG, "%s: reading %ld bytes. File %s, start %d, current %d, end %d.", __FUNCTION__, lDataLength, file->filename.c_str(), m_startPosition, m_currentPosition, m_endPosition);
 
   if(!file)
   {
@@ -241,6 +243,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     int64_t bytesToRead = file->length - seekPosition;
     if ((int64_t)lDataLength > bytesToRead)
     {
+      // XBMC->Log(LOG_DEBUG, "%s: datalength %lu bytesToRead %lli.", __FUNCTION__, lDataLength, bytesToRead);
       hr = m_TSFile.Read(pbData, (unsigned long)bytesToRead, &bytesRead);
       if (FAILED(hr))
       {
@@ -271,6 +274,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     *dwReadBytes = 0;
   }
 
+  // XBMC->Log(LOG_DEBUG, "%s: read %lu bytes. start %lli, current %lli, end %lli.", __FUNCTION__, *dwReadBytes, m_startPosition, m_currentPosition, m_endPosition);
   return S_OK;
 }
 
@@ -496,6 +500,7 @@ long MultiFileReader::RefreshTSBufferFile()
       WcsToMbs( wide2normal, pwCurrFile, length );
       wide2normal[length] = '\0';
       std::string sCurrFile = wide2normal;
+      //XBMC->Log(LOG_DEBUG, "%s: filename %s (%s).", __FUNCTION__, wide2normal, sCurrFile.c_str());
       delete[] wide2normal;
 
       // Modify filename path here to include the real (local) path
@@ -632,6 +637,26 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     XBMC->Log(LOG_ERROR, "Failed to open file %s : 0x%x\n", pFilename, dwErr);
     XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
     return HRESULT_FROM_WIN32(dwErr);
+  }
+  return S_OK;
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+  //USES_CONVERSION;
+
+  length = 0;
+
+  // Try to open the file
+  CFile hFile;
+  struct stat64 filestatus;
+  if (hFile.Open(pFilename) && hFile.Stat(&filestatus) >= 0)
+  {
+    length = filestatus.st_size;
+    hFile.Close();
+  }
+  else
+  {
+    XBMC->Log(LOG_ERROR, "Failed to open file %s : 0x%x(%s)\n", pFilename, errno, strerror(errno));
+    XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
+    return S_FALSE;
   }
   return S_OK;
 #else
