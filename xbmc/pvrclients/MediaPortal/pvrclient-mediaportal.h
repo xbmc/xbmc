@@ -118,14 +118,13 @@ private:
   CGenreTable*            m_genretable;
   PLATFORM::CMutex        m_mutex;
   int64_t                 m_iLastRecordingUpdate;
-#ifdef TSREADER
   CTsReader*              m_tsreader;
 
   char                    m_noSignalStreamData[ 6 + 0xffff ];
   long                    m_noSignalStreamSize;
   long                    m_noSignalStreamReadPos;
   bool                    m_bPlayingNoSignal;
-#endif //TSREADER
+
   void Close();
 
   //Used for TV Server communication:

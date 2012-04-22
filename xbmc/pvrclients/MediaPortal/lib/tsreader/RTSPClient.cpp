@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#if defined LIVE555
 
 #include "os-dependent.h"
 #include "platform/util/timeutils.h"
@@ -668,4 +668,4 @@ bool CRTSPClient::UpdateDuration()
 
   return true;
 }
-#endif //TSREADER
+#endif //LIVE555

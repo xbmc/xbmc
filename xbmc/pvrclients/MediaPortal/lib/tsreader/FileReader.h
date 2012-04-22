@@ -27,8 +27,6 @@
  *    http://forums.dvbowners.com/
  */
 
-#if defined TSREADER
-
 #include "os-dependent.h"
 
 class FileReader
@@ -80,5 +78,3 @@ class FileReader
 
     bool     m_bDebugOutput;
 };
-
-#endif //_WIN32 && TSREADER

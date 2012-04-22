@@ -16,8 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
-
 // Code below is work in progress and not yet finished
 //
 // DONE:
@@ -326,4 +324,3 @@ void CTsReader::SetDirectory( string& directory )
   m_basePath = tmp;
 }
 
-#endif //TSREADER

@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#ifdef LIVE555
 
 #include "platform/threads/threads.h"
 #include "lib/tsreader/MemoryBuffer.h"
@@ -102,4 +102,4 @@ private:
   bool m_bPaused;
   char m_outFileName[1000];
 };
-#endif //TSREADER
+#endif //LIVE555

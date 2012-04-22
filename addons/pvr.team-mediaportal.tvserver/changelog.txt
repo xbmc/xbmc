@@ -1,4 +1,7 @@
-v1.2.2.11:
+v1.2.3.112:
+- Merged: tsreader and ffmpeg addons are now combined into one addon
+
+v1.2.2.111:
 - Fixed: Day of the week mismatch for timers between MePo and XBMC. Credits: jajoflo
 - Added: Trigger recording update on timer retrieval so the recording list is kept up to date when there is a new recording. Credits: jajoflo
 - Fixed: tv group retrieval requested radio groups

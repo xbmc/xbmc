@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#if defined LIVE555
 
 #include "os-dependent.h"
 #include "MemorySink.h"
@@ -88,4 +88,4 @@ void CMemorySink::afterGettingFrame1(unsigned frameSize, struct timeval presenta
 {
   addData(fBuffer, frameSize, presentationTime);
 }
-#endif //TSREADER
+#endif //LIVE555
