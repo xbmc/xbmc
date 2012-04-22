@@ -117,6 +117,13 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                                                , - 16.0f / 255
                                                , - 16.0f / 255);
   }
+
+  if(format == RENDER_FMT_YUV420P10)
+  {
+    matrix *= TransformMatrix::CreateScaler(65535.0 / 1023.0
+                                          , 65535.0 / 1023.0
+                                          , 65535.0 / 1023.0);
+  }
 }
 
 #if defined(HAS_GL) || HAS_GLES == 2
@@ -184,7 +191,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
   else
     m_defines += "#define XBMC_STRETCH 0\n";
 
-  if (m_format == RENDER_FMT_YUV420P)
+  if (m_format == RENDER_FMT_YUV420P ||
+      m_format == RENDER_FMT_YUV420P10 ||
+      m_format == RENDER_FMT_YUV420P16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == RENDER_FMT_NV12)
     m_defines += "#define XBMC_NV12\n";
@@ -192,6 +201,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
     m_defines += "#define XBMC_YUY2\n";
   else if (m_format == RENDER_FMT_UYVY422)
     m_defines += "#define XBMC_UYVY\n";
+  else
+    CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 #elif HAS_GLES == 2

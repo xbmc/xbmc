@@ -285,7 +285,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , int stride, void* data, GLuint* pbo = NULL );
+                , int stride, int bpp, void* data, GLuint* pbo = NULL );
 
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
