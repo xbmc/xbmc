@@ -4349,9 +4349,6 @@ void CApplication::ResetScreenSaver()
 
 void CApplication::ResetScreenSaverTimer()
 {
-#if defined(__APPLE__) && !defined(__arm__)
-  Cocoa_UpdateSystemActivity();
-#endif
   m_screenSaverTimer.StartZero();
 }
 
