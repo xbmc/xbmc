@@ -337,7 +337,9 @@ int64_t CPVRClients::LengthStream(void)
   int64_t streamLength(0);
   CSingleLock lock(m_critSection);
 
-  if (m_bIsPlayingLiveTV)
+  if(GetCurrentAddonCapabilities().bSupportsTimeshift && m_bIsPlayingLiveTV)
+    streamLength = m_clientMap[m_currentChannel.ClientID()]->LengthLiveStream();
+  else if (m_bIsPlayingLiveTV)
     streamLength = 0;
   else if (m_bIsPlayingRecording)
     streamLength = m_clientMap[m_currentRecording.m_iClientId]->LengthRecordedStream();
@@ -350,7 +352,9 @@ int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   int64_t streamNewPos(0);
   CSingleLock lock(m_critSection);
 
-  if (m_bIsPlayingLiveTV)
+  if(GetCurrentAddonCapabilities().bSupportsTimeshift && m_bIsPlayingLiveTV)
+    streamNewPos = m_clientMap[m_currentChannel.ClientID()]->SeekLiveStream(iFilePosition, iWhence);
+  else if (m_bIsPlayingLiveTV)
     streamNewPos = 0;
   else if (m_bIsPlayingRecording)
     streamNewPos = m_clientMap[m_currentRecording.m_iClientId]->SeekRecordedStream(iFilePosition, iWhence);
@@ -363,6 +367,8 @@ int64_t CPVRClients::GetStreamPosition(void)
   int64_t streamPos(0);
   CSingleLock lock(m_critSection);
 
+  if(GetCurrentAddonCapabilities().bSupportsTimeshift && m_bIsPlayingLiveTV)
+    streamPos = m_clientMap[m_currentChannel.ClientID()]->PositionLiveStream();
   if (m_bIsPlayingLiveTV)
     streamPos = 0;
   else if (m_bIsPlayingRecording)

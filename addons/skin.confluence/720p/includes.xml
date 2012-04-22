@@ -529,7 +529,7 @@
 		</control>
 		<control type="group" id="9006">
 			<width>250</width>
-			<height>45</height>
+			<height>90</height>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="600">
@@ -591,6 +591,56 @@
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
 			</control>
+			
+			<control type="button" id="605">
+				<posx>20</posx>
+				<posy>42</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDRewindFO.png</texturefocus>
+				<texturenofocus>OSDRewindNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>607</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Rewind)</onclick>				
+			</control>
+				<control type="button" id="606">
+					<posx>60</posx>
+					<posy>42</posy>
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDForwardFO.png</texturefocus>
+					<texturenofocus>OSDForwardNF.png</texturenofocus>
+					<onleft>607</onleft>
+					<onright>600</onright>
+					<onup>610</onup>
+					<ondown>611</ondown>
+					<onback>50</onback>
+					<onclick>XBMC.PlayerControl(Forward)</onclick>					
+			</control>
+			<control type="togglebutton" id="607">
+				<posx>100</posx>
+				<posy>42</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<onleft>605</onleft>
+				<onright>606</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onback>50</onback>
+				<onclick>XBMC.PlayerControl(Play)</onclick>
+			</control>
+				
 		</control>
 		<control type="group" id="9005">
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
