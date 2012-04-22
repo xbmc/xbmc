@@ -49,7 +49,6 @@ class FileReader
     virtual long set_DelayMode(bool DelayMode);
     virtual long get_ReaderMode(unsigned short *ReaderMode);
     virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
-    long GetInfoFileSize(int64_t *lpllsize);
     long GetStartPosition(int64_t *lpllpos);
     virtual bool IsFileInvalid();
     virtual unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
@@ -69,16 +68,13 @@ class FileReader
   protected:
 #if defined(TARGET_WINDOWS)
     HANDLE   m_hFile;               // Handle to file for streaming
-    HANDLE   m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
 #elif defined(TARGET_LINUX)
     int      m_hFile;               // Handle to file for streaming
-    int      m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
 #endif
     char*    m_pFileName;           // The filename where we stream
     bool     m_bReadOnly;
     bool     m_bDelay;
     int64_t  m_fileSize;
-    int64_t  m_infoFileSize;
     int64_t  m_fileStartPos;
     int64_t  m_llBufferPointer;
 
