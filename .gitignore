@@ -1300,7 +1300,8 @@ lib/cmyth/Makefile
 /xbmc/pvrclients/ForTheRecord/project/VS2010Express/Release
 /xbmc/pvrclients/ForTheRecord/project/VS2010Express/Debug-RTSP/
 /xbmc/pvrclients/ForTheRecord/project/VS2010Express/Release-RTSP/
-/xbmc/pvrclients/ForTheRecord/lib/curl-7.21.4/lib/Debug
-/xbmc/pvrclients/ForTheRecord/lib/curl-7.21.4/lib/Release
-/xbmc/pvrclients/ForTheRecord/lib/libcurl.*
-/xbmc/pvrclients/ForTheRecord/lib/libcurld.*
+
+/xbmc/pvrclients/lib/curl-7.21.6/lib/Debug
+/xbmc/pvrclients/lib/curl-7.21.6/lib/Release
+/xbmc/pvrclients/lib/curl-7.21.6/libcurl.*
+/xbmc/pvrclients/lib/curl-7.21.6/libcurld.*

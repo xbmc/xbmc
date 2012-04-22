@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>pvrclient_fortherecord_libcurl</ProjectName>
+    <ProjectName>pvrlib_curl</ProjectName>
     <ProjectGuid>{87EE9DA4-DE1E-4448-8324-183C98DCA588}</ProjectGuid>
     <RootNamespace>libcurl</RootNamespace>
   </PropertyGroup>
@@ -40,9 +40,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libcurld</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libcurl</TargetName>
@@ -88,8 +88,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy libcurl to PVR addon directory</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
-copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
+      <Command>copy $(TargetPath) ..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
+copy $(TargetPath) ..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -132,8 +132,8 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy libcurl to PVR addon directory</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
-copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
+      <Command>copy $(TargetPath) ..\..\..\..\..\addons\pvr.fortherecord.argus\$(TargetFileName)
+copy $(TargetPath) ..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
