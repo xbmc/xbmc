@@ -25,6 +25,7 @@ SRCS   = channels.cpp \
 include ../Makefile.include
 
 #DEFINES+=-DTSREADER -DLIVE555
+INCLUDES += -I@abs_top_srcdir@/xbmc/filesystem
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~

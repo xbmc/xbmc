@@ -22,18 +22,19 @@
 #define PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 
 #include <stdint.h>
-#include "File.h"
 
 #define _FILE_OFFSET_BITS 64
+#define FILE_END 2
 
 // Success codes
-#define S_OK                             0L
+//#define S_OK                             0L
 #define S_FALSE                          1L
 //
 // Error codes
 #define ERROR_FILENAME_EXCED_RANGE       206L
-#define E_OUTOFMEMORY                    0x8007000EL
-#define E_FAIL                           0x8004005EL
+//#define E_OUTOFMEMORY                    0x8007000EL
+//#define E_FAIL                           0x8004005EL
+#define ERROR_INVALID_NAME               123L
 
 #define THREAD_FUNC_PREFIX void *
 #define THREAD_PRIORITY_LOWEST          THREAD_BASE_PRIORITY_MIN
@@ -41,10 +42,12 @@
 #define THREAD_PRIORITY_NORMAL          0
 #define THREAD_PRIORITY_HIGHEST         THREAD_BASE_PRIORITY_MAX
 #define THREAD_PRIORITY_ABOVE_NORMAL    (THREAD_PRIORITY_HIGHEST-1)
-#define THREAD_PRIORITY_ERROR_RETURN    (MAXLONG)
+//#define THREAD_PRIORITY_ERROR_RETURN    (MAXLONG)
 
 #define THREAD_PRIORITY_TIME_CRITICAL   THREAD_BASE_PRIORITY_LOWRT
 #define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
+
+#include "File.h"
 
 #ifdef TARGET_LINUX
 #include <limits.h>
@@ -54,20 +57,20 @@
 #endif
 
 #include <string.h>
-#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
+//#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
 
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
-typedef unsigned char byte;
+//typedef unsigned char byte;
 typedef pid_t tThreadId;
 
 // Various Windows typedefs
 // Unused for Linux, but needed for compilation at the moment
-typedef struct _SECURITY_ATTRIBUTES {
-    unsigned long  nLength;
-    void*          lpSecurityDescriptor;
-    int            bInheritHandle;
-} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
+//typedef struct _SECURITY_ATTRIBUTES {
+//    unsigned long  nLength;
+//    void*          lpSecurityDescriptor;
+//    int            bInheritHandle;
+//} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 /* Platform dependent path separator */
 #define PATH_SEPARATOR_CHAR '/'

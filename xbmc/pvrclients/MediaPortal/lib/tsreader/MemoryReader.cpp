@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
+#if defined TSREADER && defined LIVE555
 
 #include "os-dependent.h"
 #include "MemoryReader.h"
@@ -61,4 +61,4 @@ int CMemoryReader::HasData()
   return (m_buffer.Size());
 }
 
-#endif //TSREADER
+#endif //TSREADER && LIVE555
