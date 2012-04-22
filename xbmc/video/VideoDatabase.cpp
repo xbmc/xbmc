@@ -7905,8 +7905,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         if (ImportArtFromXML(movie->FirstChild("art"), artwork))
           item.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
-        scanner.AddVideo(&item, CONTENT_MOVIES, useFolders);
-        SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
+        scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, -1, true);
         CStdString strFileName(info.m_strTitle);
         if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
@@ -7920,8 +7919,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         if (ImportArtFromXML(movie->FirstChild("art"), artwork))
           item.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
-        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
-        SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
+        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, -1, true);
         CStdString strFileName(StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle);
         if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
@@ -7939,7 +7937,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         if (ImportArtFromXML(movie->FirstChild("art"), artwork))
           item.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath(), true) : false;
-        int showID = scanner.AddVideo(&item, CONTENT_TVSHOWS, useFolders);
+        int showID = scanner.AddVideo(&item, CONTENT_TVSHOWS, useFolders, true, -1, true);
         // season artwork
         TiXmlNode *art = movie->FirstChild("art");
         if (art)
@@ -7972,8 +7970,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           map<string, string> artwork;
           if (ImportArtFromXML(movie->FirstChild("art"), artwork))
             item.SetArt(artwork);
-          scanner.AddVideo(&item,CONTENT_TVSHOWS,false,false,showID);
-          SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
+          scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showID, true);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
