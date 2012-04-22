@@ -3899,13 +3899,17 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsDiscStub())
   {
-#ifdef HAS_DVD_DRIVE
-    // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(item))
-      // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
-      // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-      return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
-#endif
+    // Display the Play Eject dialog if there is any optical disc drive
+    if (g_mediaManager.HasOpticalDrive())
+    {
+      if (CGUIDialogPlayEject::ShowAndGetInput(item))
+        // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
+        // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
+        return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
+    }
+    else
+      CGUIDialogOK::ShowAndGetInput(435, NULL, 436, NULL);
+
     return true;
   }
 
