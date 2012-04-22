@@ -127,7 +127,8 @@ const struct Curl_handler Curl_handler_file = {
   ZERO_NULL,                            /* perform_getsock */
   ZERO_NULL,                            /* disconnect */
   0,                                    /* defport */
-  PROT_FILE                             /* protocol */
+  CURLPROTO_FILE,                       /* protocol */
+  PROTOPT_BANPROXY                      /* flags */
 };
 
 
@@ -464,7 +465,7 @@ static CURLcode file_do(struct connectdata *conn, bool *done)
   }
 
   if(fstated && !data->state.range && data->set.timecondition) {
-    if(!Curl_meets_timecondition(data, data->info.filetime)) {
+    if(!Curl_meets_timecondition(data, (time_t)data->info.filetime)) {
       *done = TRUE;
       return CURLE_OK;
     }

@@ -6,6 +6,7 @@
  *                 \___|\___/|_| \_\_____|
  *
  * Copyright (C) 2010, Howard Chu, <hyc@openldap.org>
+ * Copyright (C) 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -45,6 +46,7 @@
 #include "curl_ldap.h"
 #include "curl_memory.h"
 #include "curl_base64.h"
+#include "http_proxy.h"
 
 #define _MPRINTF_REPLACE /* use our functions only */
 #include <curl/mprintf.h>
@@ -83,7 +85,8 @@ const struct Curl_handler Curl_handler_ldap = {
   ZERO_NULL,                            /* perform_getsock */
   ldap_disconnect,                      /* disconnect */
   PORT_LDAP,                            /* defport */
-  PROT_LDAP                             /* protocol */
+  CURLPROTO_LDAP,                       /* protocol */
+  PROTOPT_NONE                          /* flags */
 };
 
 #ifdef USE_SSL
@@ -105,7 +108,8 @@ const struct Curl_handler Curl_handler_ldaps = {
   ZERO_NULL,                            /* perform_getsock */
   ldap_disconnect,                      /* disconnect */
   PORT_LDAPS,                           /* defport */
-  PROT_LDAP | PROT_SSL                  /* protocol */
+  CURLPROTO_LDAP,                       /* protocol */
+  PROTOPT_SSL                           /* flags */
 };
 #endif
 
@@ -185,7 +189,7 @@ static CURLcode ldap_connect(struct connectdata *conn, bool *done)
 
   strcpy(hosturl, "ldap");
   ptr = hosturl+4;
-  if (conn->protocol & PROT_SSL)
+  if (conn->handler->flags & PROTOPT_SSL)
     *ptr++ = 's';
   snprintf(ptr, sizeof(hosturl)-(ptr-hosturl), "://%s:%d",
     conn->host.name, conn->remote_port);
@@ -199,7 +203,6 @@ static CURLcode ldap_connect(struct connectdata *conn, bool *done)
 
   ldap_set_option(li->ld, LDAP_OPT_PROTOCOL_VERSION, &proto);
 
-#if !defined(CURL_DISABLE_HTTP) && !defined(CURL_DISABLE_PROXY)
   if(conn->bits.tunnel_proxy && conn->bits.httpproxy) {
     /* for LDAP over HTTP proxy */
     struct HTTP http_proxy;
@@ -226,10 +229,9 @@ static CURLcode ldap_connect(struct connectdata *conn, bool *done)
     if(CURLE_OK != result)
       return result;
   }
-#endif /* !CURL_DISABLE_HTTP && !CURL_DISABLE_PROXY */
 
 #ifdef USE_SSL
-  if (conn->protocol & PROT_SSL) {
+  if (conn->handler->flags & PROTOPT_SSL) {
     CURLcode res;
     if (data->state.used_interface == Curl_if_easy) {
       res = Curl_ssl_connect(conn, FIRSTSOCKET);
@@ -260,7 +262,7 @@ static CURLcode ldap_connecting(struct connectdata *conn, bool *done)
   char *info = NULL;
 
 #ifdef USE_SSL
-  if (conn->protocol & PROT_SSL) {
+  if (conn->handler->flags & PROTOPT_SSL) {
     /* Is the SSL handshake complete yet? */
     if (!li->ssldone) {
       CURLcode res = Curl_ssl_connect_nonblocking(conn, FIRSTSOCKET, &li->ssldone);
@@ -463,7 +465,8 @@ static ssize_t ldap_recv(struct connectdata *conn, int sockindex, char *buf,
       char *info = NULL;
       rc = ldap_parse_result(li->ld, ent, &code, NULL, &info, NULL, NULL, 0);
       if (rc) {
-        failf(data, "LDAP local: search ldap_parse_result %s", ldap_err2string(rc));
+        failf(data, "LDAP local: search ldap_parse_result %s",
+              ldap_err2string(rc));
         *err = CURLE_LDAP_SEARCH_FAILED;
       } else if (code && code != LDAP_SIZELIMIT_EXCEEDED) {
         failf(data, "LDAP remote: search failed %s %s", ldap_err2string(rc),
@@ -486,6 +489,12 @@ static ssize_t ldap_recv(struct connectdata *conn, int sockindex, char *buf,
 
     lr->nument++;
     rc = ldap_get_dn_ber(li->ld, ent, &ber, &bv);
+    if(rc < 0) {
+      /* TODO: verify that this is really how this return code should be
+         handled */
+      *err = CURLE_RECV_ERROR;
+      return -1;
+    }
     Curl_client_write(conn, CLIENTWRITE_BODY, (char *)"DN: ", 4);
     Curl_client_write(conn, CLIENTWRITE_BODY, (char *)bv.bv_val, bv.bv_len);
     Curl_client_write(conn, CLIENTWRITE_BODY, (char *)"\n", 1);

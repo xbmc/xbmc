@@ -602,6 +602,10 @@
 /* Define this if you have the SPNEGO library fbopenssl */
 #undef HAVE_SPNEGO
 
+
+/* if you have the function SRP_Calc_client_key */
+#undef HAVE_SSLEAY_SRP
+
 /* Define to 1 if you have the `SSL_get_shutdown' function. */
 #undef HAVE_SSL_GET_SHUTDOWN
 
@@ -953,6 +957,9 @@
 
 /* Define to disable non-blocking sockets. */
 #undef USE_BLOCKING_SOCKETS
+
+/* if CyaSSL is enabled */
+#undef USE_CYASSL
 
 /* if GnuTLS is enabled */
 #undef USE_GNUTLS

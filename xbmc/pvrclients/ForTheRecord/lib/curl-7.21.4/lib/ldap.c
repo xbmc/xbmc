@@ -5,7 +5,7 @@
  *                | (__| |_| |  _ <| |___
  *                 \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2010, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -140,7 +140,8 @@ const struct Curl_handler Curl_handler_ldap = {
   ZERO_NULL,                            /* perform_getsock */
   ZERO_NULL,                            /* disconnect */
   PORT_LDAP,                            /* defport */
-  PROT_LDAP                             /* protocol */
+  CURLPROTO_LDAP,                       /* protocol */
+  PROTOPT_NONE                          /* flags */
 };
 
 #ifdef HAVE_LDAP_SSL
@@ -162,7 +163,8 @@ const struct Curl_handler Curl_handler_ldaps = {
   ZERO_NULL,                            /* perform_getsock */
   ZERO_NULL,                            /* disconnect */
   PORT_LDAPS,                           /* defport */
-  PROT_LDAP | PROT_SSL                  /* protocol */
+  CURLPROTO_LDAP | CURLPROTO_LDAPS,     /* protocol */
+  PROTOPT_SSL                           /* flags */
 };
 #endif
 
@@ -203,7 +205,7 @@ static CURLcode Curl_ldap(struct connectdata *conn, bool *done)
   }
 
   /* Get the URL scheme ( either ldap or ldaps ) */
-  if(conn->protocol & PROT_SSL)
+  if(conn->given->protocol & CURLPROTO_LDAPS)
     ldap_ssl = 1;
   infof(data, "LDAP local: trying to establish %s connection\n",
           ldap_ssl ? "encrypted" : "cleartext");
@@ -216,7 +218,7 @@ static CURLcode Curl_ldap(struct connectdata *conn, bool *done)
   if(ldap_ssl) {
 #ifdef HAVE_LDAP_SSL
 #ifdef CURL_LDAP_WIN
-    /* Win32 LDAP SDK doesnt support insecure mode without CA! */
+    /* Win32 LDAP SDK doesn't support insecure mode without CA! */
     server = ldap_sslinit(conn->host.name, (int)conn->port, 1);
     ldap_set_option(server, LDAP_OPT_SSL, LDAP_OPT_ON);
 #else

@@ -74,7 +74,8 @@ const struct Curl_handler Curl_handler_rtmp = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMP,                            /* defport */
-  PROT_RTMP                             /* protocol */
+  CURLPROTO_RTMP,                       /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 
 const struct Curl_handler Curl_handler_rtmpt = {
@@ -91,7 +92,8 @@ const struct Curl_handler Curl_handler_rtmpt = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMPT,                           /* defport */
-  PROT_RTMPT                            /* protocol */
+  CURLPROTO_RTMPT,                      /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 
 const struct Curl_handler Curl_handler_rtmpe = {
@@ -108,7 +110,8 @@ const struct Curl_handler Curl_handler_rtmpe = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMP,                            /* defport */
-  PROT_RTMPE                            /* protocol */
+  CURLPROTO_RTMPE,                      /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 
 const struct Curl_handler Curl_handler_rtmpte = {
@@ -125,7 +128,8 @@ const struct Curl_handler Curl_handler_rtmpte = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMPT,                           /* defport */
-  PROT_RTMPTE                           /* protocol */
+  CURLPROTO_RTMPTE,                     /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 
 const struct Curl_handler Curl_handler_rtmps = {
@@ -142,7 +146,8 @@ const struct Curl_handler Curl_handler_rtmps = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMPS,                           /* defport */
-  PROT_RTMPS                            /* protocol */
+  CURLPROTO_RTMPS,                      /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 const struct Curl_handler Curl_handler_rtmpts = {
   "RTMPTS",                             /* scheme */
@@ -158,7 +163,8 @@ const struct Curl_handler Curl_handler_rtmpts = {
   ZERO_NULL,                            /* perform_getsock */
   rtmp_disconnect,                      /* disconnect */
   PORT_RTMPS,                           /* defport */
-  PROT_RTMPTS                           /* protocol */
+  CURLPROTO_RTMPTS,                     /* protocol */
+  PROTOPT_NONE                          /* flags*/
 };
 
 static CURLcode rtmp_setup(struct connectdata *conn)

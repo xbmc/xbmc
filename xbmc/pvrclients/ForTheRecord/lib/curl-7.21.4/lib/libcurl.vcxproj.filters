@@ -292,6 +292,15 @@
     <ClCompile Include="http_negotiate_sspi.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cyassl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="http_proxy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="non-ascii.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arpa_telnet.h">
@@ -547,6 +556,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="axtls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cyassl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="http_proxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="non-ascii.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

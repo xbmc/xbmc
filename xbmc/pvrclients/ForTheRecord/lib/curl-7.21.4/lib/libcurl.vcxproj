@@ -150,6 +150,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClCompile Include="curl_rtmp.c" />
     <ClCompile Include="curl_sspi.c" />
     <ClCompile Include="curl_threads.c" />
+    <ClCompile Include="cyassl.c" />
     <ClCompile Include="dict.c" />
     <ClCompile Include="easy.c" />
     <ClCompile Include="escape.c" />
@@ -177,6 +178,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClCompile Include="http_negotiate.c" />
     <ClCompile Include="http_negotiate_sspi.c" />
     <ClCompile Include="http_ntlm.c" />
+    <ClCompile Include="http_proxy.c" />
     <ClCompile Include="idn_win32.c" />
     <ClCompile Include="if2ip.c" />
     <ClCompile Include="imap.c" />
@@ -192,6 +194,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClCompile Include="mprintf.c" />
     <ClCompile Include="multi.c" />
     <ClCompile Include="netrc.c" />
+    <ClCompile Include="non-ascii.c" />
     <ClCompile Include="nonblock.c" />
     <ClCompile Include="nss.c" />
     <ClCompile Include="openldap.c" />
@@ -253,6 +256,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClInclude Include="curl_sspi.h" />
     <ClInclude Include="curl_threads.h" />
     <ClInclude Include="curlx.h" />
+    <ClInclude Include="cyassl.h" />
     <ClInclude Include="dict.h" />
     <ClInclude Include="easyif.h" />
     <ClInclude Include="escape.h" />
@@ -271,6 +275,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClInclude Include="http_digest.h" />
     <ClInclude Include="http_negotiate.h" />
     <ClInclude Include="http_ntlm.h" />
+    <ClInclude Include="http_proxy.h" />
     <ClInclude Include="if2ip.h" />
     <ClInclude Include="imap.h" />
     <ClInclude Include="inet_ntop.h" />
@@ -280,6 +285,7 @@ copy $(TargetPath) ..\..\..\..\..\..\addons\pvr.vuplus\$(TargetFileName)</Comman
     <ClInclude Include="memdebug.h" />
     <ClInclude Include="multiif.h" />
     <ClInclude Include="netrc.h" />
+    <ClInclude Include="non-ascii.h" />
     <ClInclude Include="nonblock.h" />
     <ClInclude Include="nssg.h" />
     <ClInclude Include="parsedate.h" />

@@ -71,7 +71,7 @@
 #endif
 
 #include "curl_memory.h"
-#include "easyif.h" /* for Curl_convert_from_utf8 prototype */
+#include "non-ascii.h" /* for Curl_convert_from_utf8 prototype */
 
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -1200,7 +1200,7 @@ static CURLcode verifyhost(struct connectdata *conn,
     res = CURLE_PEER_FAILED_VERIFICATION;
   }
   else {
-    /* we have to look to the last occurence of a commonName in the
+    /* we have to look to the last occurrence of a commonName in the
        distinguished one to get the most significant one. */
     int j,i=-1 ;
 
@@ -1251,18 +1251,15 @@ static CURLcode verifyhost(struct connectdata *conn,
 
     if(peer_CN == nulstr)
        peer_CN = NULL;
-#ifdef CURL_DOES_CONVERSIONS
     else {
       /* convert peer_CN from UTF8 */
-      size_t rc;
-      rc = Curl_convert_from_utf8(data, peer_CN, strlen(peer_CN));
+      size_t rc = Curl_convert_from_utf8(data, peer_CN, strlen(peer_CN));
       /* Curl_convert_from_utf8 calls failf if unsuccessful */
-      if(rc != CURLE_OK) {
+      if(rc) {
         OPENSSL_free(peer_CN);
         return rc;
       }
     }
-#endif /* CURL_DOES_CONVERSIONS */
 
     if(res)
       /* error already detected, pass through */
@@ -1437,9 +1434,16 @@ ossl_connect_step1(struct connectdata *conn,
   Curl_ossl_seed(data);
 
   /* check to see if we've been told to use an explicit SSL/TLS version */
+
   switch(data->set.ssl.version) {
   default:
   case CURL_SSLVERSION_DEFAULT:
+#ifdef USE_TLS_SRP
+    if (data->set.ssl.authtype == CURL_TLSAUTH_SRP) {
+      infof(data, "Set version TLSv1 for SRP authorisation\n");
+      req_method = TLSv1_client_method() ;
+    } else
+#endif
     /* we try to figure out version */
     req_method = SSLv23_client_method();
     use_sni(TRUE);
@@ -1449,10 +1453,23 @@ ossl_connect_step1(struct connectdata *conn,
     use_sni(TRUE);
     break;
   case CURL_SSLVERSION_SSLv2:
+#ifdef OPENSSL_NO_SSL2
+    failf(data, "OpenSSL was built without SSLv2 support");
+    return CURLE_NOT_BUILT_IN;
+#else
+#ifdef USE_TLS_SRP
+    if (data->set.ssl.authtype == CURL_TLSAUTH_SRP)
+      return CURLE_SSL_CONNECT_ERROR;
+#endif
     req_method = SSLv2_client_method();
     use_sni(FALSE);
     break;
+#endif
   case CURL_SSLVERSION_SSLv3:
+#ifdef USE_TLS_SRP
+    if (data->set.ssl.authtype == CURL_TLSAUTH_SRP)
+      return CURLE_SSL_CONNECT_ERROR;
+#endif
     req_method = SSLv3_client_method();
     use_sni(FALSE);
     break;
@@ -1547,6 +1564,28 @@ ossl_connect_step1(struct connectdata *conn,
     }
   }
 
+#ifdef USE_TLS_SRP
+  if(data->set.ssl.authtype == CURL_TLSAUTH_SRP) {
+    infof(data, "Using TLS-SRP username: %s\n", data->set.ssl.username);
+
+    if (!SSL_CTX_set_srp_username(connssl->ctx, data->set.ssl.username)) {
+      failf(data, "Unable to set SRP user name");
+      return CURLE_BAD_FUNCTION_ARGUMENT;
+    }
+    if (!SSL_CTX_set_srp_password(connssl->ctx,data->set.ssl.password)) {
+      failf(data, "failed setting SRP password");
+      return CURLE_BAD_FUNCTION_ARGUMENT;
+    }
+    if(!data->set.str[STRING_SSL_CIPHER_LIST]) {
+      infof(data, "Setting cipher list SRP\n");
+
+      if(!SSL_CTX_set_cipher_list(connssl->ctx, "SRP")) {
+        failf(data, "failed setting SRP cipher list");
+        return CURLE_SSL_CIPHER;
+      }
+    }
+  }
+#endif
   if(data->set.str[STRING_SSL_CAFILE] || data->set.str[STRING_SSL_CAPATH]) {
     /* tell SSL where to find CA certificates that are used to verify
        the servers certificate. */
@@ -1846,7 +1885,7 @@ static void pubkey_show(struct SessionHandle *data,
   char namebuf[32];
   char *buffer;
 
-  left = sizeof(len*3 + 1);
+  left = len*3 + 1;
   buffer = malloc(left);
   if(buffer) {
     char *ptr=buffer;
@@ -2548,7 +2587,7 @@ static ssize_t ossl_send(struct connectdata *conn,
     case SSL_ERROR_WANT_READ:
     case SSL_ERROR_WANT_WRITE:
       /* The operation did not complete; the same TLS/SSL I/O function
-         should be called again later. This is basicly an EWOULDBLOCK
+         should be called again later. This is basically an EWOULDBLOCK
          equivalent. */
       *curlcode = CURLE_AGAIN;
       return -1;
@@ -2619,7 +2658,7 @@ static ssize_t ossl_recv(struct connectdata *conn, /* connection data */
 size_t Curl_ossl_version(char *buffer, size_t size)
 {
 #ifdef YASSL_VERSION
-  /* yassl provides an OpenSSL API compatiblity layer so it looks identical
+  /* yassl provides an OpenSSL API compatibility layer so it looks identical
      to OpenSSL in all other aspects */
   return snprintf(buffer, size, "yassl/%s", YASSL_VERSION);
 #else /* YASSL_VERSION */

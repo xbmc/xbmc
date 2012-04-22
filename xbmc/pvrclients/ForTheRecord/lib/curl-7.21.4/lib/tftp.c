@@ -196,7 +196,8 @@ const struct Curl_handler Curl_handler_tftp = {
   ZERO_NULL,                            /* perform_getsock */
   tftp_disconnect,                      /* disconnect */
   PORT_TFTP,                            /* defport */
-  PROT_TFTP                             /* protocol */
+  CURLPROTO_TFTP,                       /* protocol */
+  PROTOPT_NONE                          /* flags */
 };
 
 /**********************************************************
@@ -1275,7 +1276,7 @@ static CURLcode tftp_easy_statemach(struct connectdata *conn)
     else {
 
       if(rc==0) {
-        /* A timeout occured, but our timeout is variable, so maybe
+        /* A timeout occurred, but our timeout is variable, so maybe
            just continue? */
         long rtms = state->retry_time * 1000;
         if (Curl_tvdiff(k->now, transaction_start) > rtms) {

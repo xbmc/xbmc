@@ -137,6 +137,12 @@ void Curl_pgrsDone(struct connectdata *conn)
   data->progress.lastshow=0;
   Curl_pgrsUpdate(conn); /* the final (forced) update */
 
+  if(!(data->progress.flags & PGRS_HIDE) &&
+     !data->progress.callback)
+    /* only output if we don't use a progress callback and we're not
+     * hidden */
+    fprintf(data->set.err, "\n");
+
   data->progress.speeder_c = 0; /* reset the progress meter display */
 }
 
@@ -403,17 +409,17 @@ int Curl_pgrsUpdate(struct connectdata *conn)
     time2str(time_total, total_estimate);
     time2str(time_spent, timespent);
 
-    /* Get the total amount of data expected to get transfered */
+    /* Get the total amount of data expected to get transferred */
     total_expected_transfer =
       (data->progress.flags & PGRS_UL_SIZE_KNOWN?
        data->progress.size_ul:data->progress.uploaded)+
       (data->progress.flags & PGRS_DL_SIZE_KNOWN?
        data->progress.size_dl:data->progress.downloaded);
 
-    /* We have transfered this much so far */
+    /* We have transferred this much so far */
     total_transfer = data->progress.downloaded + data->progress.uploaded;
 
-    /* Get the percentage of data transfered so far */
+    /* Get the percentage of data transferred so far */
     if(total_expected_transfer > CURL_OFF_T_C(10000))
       total_percen = total_transfer /
         (total_expected_transfer/CURL_OFF_T_C(100));

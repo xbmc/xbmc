@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2010, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -196,7 +196,8 @@ const struct Curl_handler Curl_handler_telnet = {
   ZERO_NULL,                            /* perform_getsock */
   ZERO_NULL,                            /* disconnect */
   PORT_TELNET,                          /* defport */
-  PROT_TELNET                           /* protocol */
+  CURLPROTO_TELNET,                     /* protocol */
+  PROTOPT_NONE                          /* flags */
 };
 
 
@@ -1092,7 +1093,7 @@ CURLcode telrcv(struct connectdata *conn,
           {
             /*
              * This is an error.  We only expect to get "IAC IAC" or "IAC SE".
-             * Several things may have happend.  An IAC was not doubled, the
+             * Several things may have happened.  An IAC was not doubled, the
              * IAC SE was left off, or another option got inserted into the
              * suboption are all possibilities.  If we assume that the IAC was
              * not doubled, and really the IAC SE was left off, we could get

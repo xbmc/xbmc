@@ -80,21 +80,6 @@ int Curl_parsenetrc(const char *host,
 
 #define NETRC DOT_CHAR "netrc"
 
-#ifdef DEBUGBUILD
-  {
-    /* This is a hack to allow testing.
-     * If compiled with --enable-debug and CURL_DEBUG_NETRC is defined,
-     * then it's the path to a substitute .netrc for testing purposes *only* */
-
-    char *override = curl_getenv("CURL_DEBUG_NETRC");
-
-    if(override) {
-      fprintf(stderr, "NETRC: overridden " NETRC " file: %s\n", override);
-      netrcfile = override;
-      netrc_alloc = TRUE;
-    }
-  }
-#endif /* DEBUGBUILD */
   if(!netrcfile) {
     home = curl_getenv("HOME"); /* portable environment reader */
     if(home) {
@@ -157,9 +142,6 @@ int Curl_parsenetrc(const char *host,
           if(Curl_raw_equal(host, tok)) {
             /* and yes, this is our host! */
             state=HOSTVALID;
-#ifdef _NETRC_DEBUG
-            fprintf(stderr, "HOST: %s\n", tok);
-#endif
             retcode=0; /* we did find our host */
           }
           else
@@ -174,18 +156,12 @@ int Curl_parsenetrc(const char *host,
             }
             else {
               strncpy(login, tok, LOGINSIZE-1);
-#ifdef _NETRC_DEBUG
-              fprintf(stderr, "LOGIN: %s\n", login);
-#endif
             }
             state_login=0;
           }
           else if(state_password) {
             if(state_our_login || !specific_login) {
               strncpy(password, tok, PASSWORDSIZE-1);
-#ifdef _NETRC_DEBUG
-              fprintf(stderr, "PASSWORD: %s\n", password);
-#endif
             }
             state_password=0;
           }

@@ -34,6 +34,7 @@ typedef enum {
   SMTP_EHLO,
   SMTP_HELO,
   SMTP_STARTTLS,
+  SMTP_UPGRADETLS, /* asynchronously upgrade the connection to SSL/TLS (multi mode only) */
   SMTP_AUTHPLAIN,
   SMTP_AUTHLOGIN,
   SMTP_AUTHPASSWD,
@@ -57,6 +58,7 @@ struct smtp_conn {
   unsigned int authmechs;       /* Accepted authentication methods. */
   smtpstate state; /* always use smtp.c:state() to change state! */
   struct curl_slist *rcpt;
+  bool ssldone; /* is connect() over SSL done? only relevant in multi mode */
 };
 
 /* Authentication mechanism flags. */

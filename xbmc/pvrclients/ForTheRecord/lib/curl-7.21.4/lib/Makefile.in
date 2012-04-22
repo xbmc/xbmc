@@ -115,7 +115,8 @@ am__objects_1 = libcurl_la-file.lo libcurl_la-timeval.lo \
 	libcurl_la-curl_rtmp.lo libcurl_la-openldap.lo \
 	libcurl_la-curl_gethostname.lo libcurl_la-gopher.lo \
 	libcurl_la-axtls.lo libcurl_la-idn_win32.lo \
-	libcurl_la-http_negotiate_sspi.lo
+	libcurl_la-http_negotiate_sspi.lo libcurl_la-cyassl.lo \
+	libcurl_la-http_proxy.lo libcurl_la-non-ascii.lo
 am__objects_2 =
 am_libcurl_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libcurl_la_OBJECTS = $(am_libcurl_la_OBJECTS)
@@ -164,7 +165,8 @@ am__objects_3 = libcurlu_la-file.lo libcurlu_la-timeval.lo \
 	libcurlu_la-curl_rtmp.lo libcurlu_la-openldap.lo \
 	libcurlu_la-curl_gethostname.lo libcurlu_la-gopher.lo \
 	libcurlu_la-axtls.lo libcurlu_la-idn_win32.lo \
-	libcurlu_la-http_negotiate_sspi.lo
+	libcurlu_la-http_negotiate_sspi.lo libcurlu_la-cyassl.lo \
+	libcurlu_la-http_proxy.lo libcurlu_la-non-ascii.lo
 am_libcurlu_la_OBJECTS = $(am__objects_3) $(am__objects_2)
 libcurlu_la_OBJECTS = $(am_libcurlu_la_OBJECTS)
 @CURLDEBUG_TRUE@am_libcurlu_la_rpath =
@@ -206,6 +208,7 @@ CROSSCOMPILING_FALSE = @CROSSCOMPILING_FALSE@
 CROSSCOMPILING_TRUE = @CROSSCOMPILING_TRUE@
 CURLDEBUG_FALSE = @CURLDEBUG_FALSE@
 CURLDEBUG_TRUE = @CURLDEBUG_TRUE@
+CURLVERSION = @CURLVERSION@
 CURL_CA_BUNDLE = @CURL_CA_BUNDLE@
 CURL_CFLAG_EXTRAS = @CURL_CFLAG_EXTRAS@
 CURL_DISABLE_DICT = @CURL_DISABLE_DICT@
@@ -244,6 +247,7 @@ HAVE_LIBZ = @HAVE_LIBZ@
 HAVE_LIBZ_FALSE = @HAVE_LIBZ_FALSE@
 HAVE_LIBZ_TRUE = @HAVE_LIBZ_TRUE@
 HAVE_PK11_CREATEGENERICOBJECT = @HAVE_PK11_CREATEGENERICOBJECT@
+HAVE_SSLEAY_SRP = @HAVE_SSLEAY_SRP@
 IDN_ENABLED = @IDN_ENABLED@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -264,6 +268,7 @@ MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MANOPT = @MANOPT@
 MIMPURE_FALSE = @MIMPURE_FALSE@
 MIMPURE_TRUE = @MIMPURE_TRUE@
@@ -307,6 +312,7 @@ SUPPORT_PROTOCOLS = @SUPPORT_PROTOCOLS@
 TEST_SERVER_LIBS = @TEST_SERVER_LIBS@
 USE_ARES = @USE_ARES@
 USE_AXTLS = @USE_AXTLS@
+USE_CYASSL = @USE_CYASSL@
 USE_EMBEDDED_ARES_FALSE = @USE_EMBEDDED_ARES_FALSE@
 USE_EMBEDDED_ARES_TRUE = @USE_EMBEDDED_ARES_TRUE@
 USE_GNUTLS = @USE_GNUTLS@
@@ -321,6 +327,7 @@ USE_SSLEAY = @USE_SSLEAY@
 USE_WINDOWS_SSPI = @USE_WINDOWS_SSPI@
 VERSION = @VERSION@
 VERSIONNUM = @VERSIONNUM@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
@@ -355,7 +362,6 @@ libexecdir = @libexecdir@
 libext = @libext@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -494,7 +500,8 @@ CSOURCES = file.c timeval.c base64.c hostip.c progress.c formdata.c	\
   socks_gssapi.c socks_sspi.c curl_sspi.c slist.c nonblock.c		\
   curl_memrchr.c imap.c pop3.c smtp.c pingpong.c rtsp.c curl_threads.c	\
   warnless.c hmac.c polarssl.c curl_rtmp.c openldap.c curl_gethostname.c\
-  gopher.c axtls.c idn_win32.c http_negotiate_sspi.c
+  gopher.c axtls.c idn_win32.c http_negotiate_sspi.c cyassl.c http_proxy.c \
+  non-ascii.c
 
 HHEADERS = arpa_telnet.h netrc.h file.h timeval.h qssl.h hostip.h	\
   progress.h formdata.h cookie.h http.h sendf.h ftp.h url.h dict.h	\
@@ -509,7 +516,7 @@ HHEADERS = arpa_telnet.h netrc.h file.h timeval.h qssl.h hostip.h	\
   curl_base64.h rawstr.h curl_addrinfo.h curl_sspi.h slist.h nonblock.h	\
   curl_memrchr.h imap.h pop3.h smtp.h pingpong.h rtsp.h curl_threads.h	\
   warnless.h curl_hmac.h polarssl.h curl_rtmp.h curl_gethostname.h      \
-  gopher.h axtls.h
+  gopher.h axtls.h cyassl.h http_proxy.h non-ascii.h
 
 
 # Makefile.inc provides the CSOURCES and HHEADERS defines
@@ -630,6 +637,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-curl_rtmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-curl_sspi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-curl_threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-cyassl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-dict.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-easy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-escape.Plo@am__quote@
@@ -657,6 +665,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-http_negotiate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-http_negotiate_sspi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-http_ntlm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-http_proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-idn_win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-if2ip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-imap.Plo@am__quote@
@@ -672,6 +681,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-mprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-multi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-netrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-non-ascii.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-nonblock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-nss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurl_la-openldap.Plo@am__quote@
@@ -723,6 +733,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-curl_rtmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-curl_sspi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-curl_threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-cyassl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-dict.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-easy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-escape.Plo@am__quote@
@@ -750,6 +761,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-http_negotiate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-http_negotiate_sspi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-http_ntlm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-http_proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-idn_win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-if2ip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-imap.Plo@am__quote@
@@ -765,6 +777,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-mprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-multi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-netrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-non-ascii.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-nonblock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-nss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcurlu_la-openldap.Plo@am__quote@
@@ -1476,6 +1489,27 @@ libcurl_la-http_negotiate_sspi.lo: http_negotiate_sspi.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -c -o libcurl_la-http_negotiate_sspi.lo `test -f 'http_negotiate_sspi.c' || echo '$(srcdir)/'`http_negotiate_sspi.c
 
+libcurl_la-cyassl.lo: cyassl.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -MT libcurl_la-cyassl.lo -MD -MP -MF "$(DEPDIR)/libcurl_la-cyassl.Tpo" -c -o libcurl_la-cyassl.lo `test -f 'cyassl.c' || echo '$(srcdir)/'`cyassl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurl_la-cyassl.Tpo" "$(DEPDIR)/libcurl_la-cyassl.Plo"; else rm -f "$(DEPDIR)/libcurl_la-cyassl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cyassl.c' object='libcurl_la-cyassl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -c -o libcurl_la-cyassl.lo `test -f 'cyassl.c' || echo '$(srcdir)/'`cyassl.c
+
+libcurl_la-http_proxy.lo: http_proxy.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -MT libcurl_la-http_proxy.lo -MD -MP -MF "$(DEPDIR)/libcurl_la-http_proxy.Tpo" -c -o libcurl_la-http_proxy.lo `test -f 'http_proxy.c' || echo '$(srcdir)/'`http_proxy.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurl_la-http_proxy.Tpo" "$(DEPDIR)/libcurl_la-http_proxy.Plo"; else rm -f "$(DEPDIR)/libcurl_la-http_proxy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='http_proxy.c' object='libcurl_la-http_proxy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -c -o libcurl_la-http_proxy.lo `test -f 'http_proxy.c' || echo '$(srcdir)/'`http_proxy.c
+
+libcurl_la-non-ascii.lo: non-ascii.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -MT libcurl_la-non-ascii.lo -MD -MP -MF "$(DEPDIR)/libcurl_la-non-ascii.Tpo" -c -o libcurl_la-non-ascii.lo `test -f 'non-ascii.c' || echo '$(srcdir)/'`non-ascii.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurl_la-non-ascii.Tpo" "$(DEPDIR)/libcurl_la-non-ascii.Plo"; else rm -f "$(DEPDIR)/libcurl_la-non-ascii.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='non-ascii.c' object='libcurl_la-non-ascii.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurl_la_CFLAGS) $(CFLAGS) -c -o libcurl_la-non-ascii.lo `test -f 'non-ascii.c' || echo '$(srcdir)/'`non-ascii.c
+
 libcurlu_la-file.lo: file.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -MT libcurlu_la-file.lo -MD -MP -MF "$(DEPDIR)/libcurlu_la-file.Tpo" -c -o libcurlu_la-file.lo `test -f 'file.c' || echo '$(srcdir)/'`file.c; \
 @am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurlu_la-file.Tpo" "$(DEPDIR)/libcurlu_la-file.Plo"; else rm -f "$(DEPDIR)/libcurlu_la-file.Tpo"; exit 1; fi
@@ -2126,6 +2160,27 @@ libcurlu_la-http_negotiate_sspi.lo: http_negotiate_sspi.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='http_negotiate_sspi.c' object='libcurlu_la-http_negotiate_sspi.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -c -o libcurlu_la-http_negotiate_sspi.lo `test -f 'http_negotiate_sspi.c' || echo '$(srcdir)/'`http_negotiate_sspi.c
+
+libcurlu_la-cyassl.lo: cyassl.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -MT libcurlu_la-cyassl.lo -MD -MP -MF "$(DEPDIR)/libcurlu_la-cyassl.Tpo" -c -o libcurlu_la-cyassl.lo `test -f 'cyassl.c' || echo '$(srcdir)/'`cyassl.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurlu_la-cyassl.Tpo" "$(DEPDIR)/libcurlu_la-cyassl.Plo"; else rm -f "$(DEPDIR)/libcurlu_la-cyassl.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cyassl.c' object='libcurlu_la-cyassl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -c -o libcurlu_la-cyassl.lo `test -f 'cyassl.c' || echo '$(srcdir)/'`cyassl.c
+
+libcurlu_la-http_proxy.lo: http_proxy.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -MT libcurlu_la-http_proxy.lo -MD -MP -MF "$(DEPDIR)/libcurlu_la-http_proxy.Tpo" -c -o libcurlu_la-http_proxy.lo `test -f 'http_proxy.c' || echo '$(srcdir)/'`http_proxy.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurlu_la-http_proxy.Tpo" "$(DEPDIR)/libcurlu_la-http_proxy.Plo"; else rm -f "$(DEPDIR)/libcurlu_la-http_proxy.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='http_proxy.c' object='libcurlu_la-http_proxy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -c -o libcurlu_la-http_proxy.lo `test -f 'http_proxy.c' || echo '$(srcdir)/'`http_proxy.c
+
+libcurlu_la-non-ascii.lo: non-ascii.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -MT libcurlu_la-non-ascii.lo -MD -MP -MF "$(DEPDIR)/libcurlu_la-non-ascii.Tpo" -c -o libcurlu_la-non-ascii.lo `test -f 'non-ascii.c' || echo '$(srcdir)/'`non-ascii.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libcurlu_la-non-ascii.Tpo" "$(DEPDIR)/libcurlu_la-non-ascii.Plo"; else rm -f "$(DEPDIR)/libcurlu_la-non-ascii.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='non-ascii.c' object='libcurlu_la-non-ascii.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcurlu_la_CFLAGS) $(CFLAGS) -c -o libcurlu_la-non-ascii.lo `test -f 'non-ascii.c' || echo '$(srcdir)/'`non-ascii.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
