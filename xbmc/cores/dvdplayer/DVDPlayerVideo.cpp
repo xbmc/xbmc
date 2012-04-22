@@ -1094,9 +1094,16 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
         formatstr = "VAAPI";
         break;
       case RENDER_FMT_OMXEGL:
+        formatstr = "OMXEGL";
         break;
       case RENDER_FMT_CVBREF:
         formatstr = "BGRA";
+        break;
+      case RENDER_FMT_BYPASS:
+        formatstr = "BYPASS";
+        break;
+      case RENDER_FMT_NONE:
+        formatstr = "NONE";
         break;
     }
 
