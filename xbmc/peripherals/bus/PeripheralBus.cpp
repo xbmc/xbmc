@@ -143,7 +143,10 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
     {
       /* device removed */
       if (peripheral->Type() != PERIPHERAL_UNKNOWN)
+      {
         CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+        peripheral->OnDeviceRemoved();
+      }
       m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
       lock.Leave();
 

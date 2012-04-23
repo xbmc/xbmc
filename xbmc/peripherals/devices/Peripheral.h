@@ -88,6 +88,11 @@ namespace PERIPHERALS
     virtual void OnSettingChanged(const CStdString &strChangedSetting) {};
 
     /*!
+     * @brief Called when this device is removed, before calling the destructor.
+     */
+    virtual void OnDeviceRemoved(void) {}
+
+    /*!
      * @brief Get all subdevices if this device is multifunctional.
      * @param subDevices The subdevices.
      */
