@@ -554,9 +554,6 @@ bool CApplication::Create()
 {
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
-  g_Windowing.EnableSystemScreenSaver(false);
-
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -594,6 +591,9 @@ bool CApplication::Create()
       CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str());
     return false;
   }
+
+  // Init our DllLoaders emu env
+  init_emu_environ();
 
   g_settings.LoadProfiles(PROFILES_FILE);
 
@@ -642,54 +642,6 @@ bool CApplication::Create()
   g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
 
-  // Init our DllLoaders emu env
-  init_emu_environ();
-
-
-#ifdef HAS_SDL
-  CLog::Log(LOGNOTICE, "Setup SDL");
-
-  /* Clean up on exit, exit on window close and interrupt */
-  atexit(SDL_Quit);
-
-  uint32_t sdlFlags = 0;
-
-#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
-  sdlFlags |= SDL_INIT_VIDEO;
-#endif
-
-#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
-  sdlFlags |= SDL_INIT_JOYSTICK;
-#endif
-
-  //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
-  //this might bring the monitor out of standby, so we have to disable it explicitly
-  //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
-#endif
-
-#endif // HAS_SDL
-
-#ifdef _LINUX
-  // for nvidia cards - vsync currently ALWAYS enabled.
-  // the reason is that after screen has been setup changing this env var will make no difference.
-  setenv("__GL_SYNC_TO_VBLANK", "1", 0);
-  setenv("__GL_YIELD", "USLEEP", 0);
-#endif
-
-#ifdef HAS_SDL
-  if (SDL_Init(sdlFlags) != 0)
-  {
-    CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
-    return false;
-  }
-  #if defined(TARGET_DARWIN)
-  // SDL_Init will install a handler for segfaults, restore the default handler.
-  signal(SIGSEGV, SIG_DFL);
-  #endif
-#endif
-
   // for python scripts that check the OS
 #if defined(TARGET_DARWIN)
   setenv("OS","OS X",true);
@@ -698,15 +650,6 @@ bool CApplication::Create()
 #elif defined(_WIN32)
   SetEnvironmentVariable("OS","win32");
 #endif
-
-  // Initialize core peripheral port support. Note: If these parameters
-  // are 0 and NULL, respectively, then the default number and types of
-  // controllers will be initialized.
-  if (!g_Windowing.InitWindowSystem())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
-    return false;
-  }
 
   g_powerManager.Initialize();
 
@@ -790,6 +733,73 @@ bool CApplication::Create()
   XBMCHelper::GetInstance().Configure();
 #endif
 
+  CUtil::InitRandomSeed();
+
+#ifdef HAS_SDL_JOYSTICK
+  g_Joystick.Initialize();
+#endif
+
+  g_mediaManager.Initialize();
+
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
+  m_lastRenderTime = m_lastFrameTime;
+#ifdef HAS_SDL
+  CLog::Log(LOGNOTICE, "Setup SDL");
+
+  /* Clean up on exit, exit on window close and interrupt */
+  atexit(SDL_Quit);
+
+  uint32_t sdlFlags = 0;
+
+#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
+  sdlFlags |= SDL_INIT_VIDEO;
+#endif
+
+#if defined(HAS_SDL_JOYSTICK) && !defined(TARGET_WINDOWS)
+  sdlFlags |= SDL_INIT_JOYSTICK;
+#endif
+
+  //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
+  //this might bring the monitor out of standby, so we have to disable it explicitly
+  //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
+#if defined(_LINUX) && !defined(TARGET_DARWIN)
+  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
+#endif
+
+#endif // HAS_SDL
+
+#ifdef _LINUX
+  // for nvidia cards - vsync currently ALWAYS enabled.
+  // the reason is that after screen has been setup changing this env var will make no difference.
+  setenv("__GL_SYNC_TO_VBLANK", "1", 0);
+  setenv("__GL_YIELD", "USLEEP", 0);
+#endif
+
+
+  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+  g_Windowing.EnableSystemScreenSaver(false);
+
+#ifdef HAS_SDL
+  if (SDL_Init(sdlFlags) != 0)
+  {
+    CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
+    return false;
+  }
+  #if defined(TARGET_DARWIN)
+  // SDL_Init will install a handler for segfaults, restore the default handler.
+  signal(SIGSEGV, SIG_DFL);
+  #endif
+#endif
+
+  // Initialize core peripheral port support. Note: If these parameters
+  // are 0 and NULL, respectively, then the default number and types of
+  // controllers will be initialized.
+  if (!g_Windowing.InitWindowSystem())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
+    return false;
+  }
+
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
@@ -857,17 +867,6 @@ bool CApplication::Create()
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
-
-  CUtil::InitRandomSeed();
-
-#ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
-#endif
-
-  g_mediaManager.Initialize();
-
-  m_lastFrameTime = XbmcThreads::SystemClockMillis();
-  m_lastRenderTime = m_lastFrameTime;
 
   return Initialize();
 }
