@@ -19,12 +19,8 @@
  *
  */
 
-#define INITGUID
-
 #include "AESinkWASAPI.h"
 #include <Audioclient.h>
-#include <mmdeviceapi.h>
-#include <Functiondiscoverykeys_devpkey.h>
 #include <avrt.h>
 #include <initguid.h>
 #include <Mmreg.h>
@@ -37,7 +33,9 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
-#include "AEDeviceInfo.h"
+#include "../Utils/AEDeviceInfo.h"
+#include <Mmreg.h>
+#include <mmdeviceapi.h>
 
 #pragma comment(lib, "Avrt.lib")
 
@@ -49,7 +47,7 @@ const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 static const unsigned int WASAPISampleRateCount = 10;
 static const unsigned int WASAPISampleRates[] = {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025};
 
-#define SPEAKER_COUNT AE_CH_MAX
+#define WASAPI_SPEAKER_COUNT 21
 static const unsigned int WASAPIChannelOrder[] = {AE_CH_RAW,
                                                   SPEAKER_FRONT_LEFT,           SPEAKER_FRONT_RIGHT,           SPEAKER_FRONT_CENTER,
                                                   SPEAKER_LOW_FREQUENCY,        SPEAKER_BACK_LEFT,             SPEAKER_BACK_RIGHT,
@@ -120,6 +118,7 @@ AEDeviceInfoList DeviceInfoList;
 
 #define ERRTOSTR(err) case err: return #err
 
+DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 14);
 
 CAESinkWASAPI::CAESinkWASAPI() :
   m_pAudioClient(NULL),
@@ -133,7 +132,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_encodedChannels(0),
   m_encodedSampleRate(0),
   m_uiBufferLen(0),
-  avgTimeWaiting(10)
+  avgTimeWaiting(50)
 {
   m_channelLayout.Reset();
 }
@@ -214,7 +213,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
     hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.")
 
-    hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
+    hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
 
     std::wstring strRawDevName(varName.pwszVal);
     std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
@@ -345,9 +344,9 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
 
 double CAESinkWASAPI::GetDelay()
 {
-  //HRESULT hr;
-  if(!m_initialized) return 0.0;
-/*
+  HRESULT hr;
+  if (!m_initialized) return 0.0;
+
   if (m_isExclusive)
   {
     hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
@@ -358,7 +357,7 @@ double CAESinkWASAPI::GetDelay()
     }
     return (double)m_uiBufferLen / (double)m_format.m_sampleRate;
   }
-*/
+
   UINT32 frames;
   m_pAudioClient->GetCurrentPadding(&frames);
   return (double)frames / (double)m_format.m_sampleRate;
@@ -587,6 +586,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
   CAEChannelInfo       deviceChannels;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
+  WAVEFORMATEX*        pwfxex = NULL;
   HRESULT              hr;
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
@@ -651,6 +651,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
     std::wstring strRawDevName(varName.pwszVal);
     std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
+
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
@@ -678,7 +679,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
     deviceChannels.Reset();
 
-    for (unsigned int c = 0; c < AE_CH_MAX; c++)
+    for (unsigned int c = 0; c < WASAPI_SPEAKER_COUNT; c++)
     {
       if (uiChannelMask & WASAPIChannelOrder[c])
         deviceChannels += AEChannelNames[c];
@@ -833,10 +834,10 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       /* In shared mode Windows tells us what format the audio must be in. */
       IAudioClient *pClient;
       hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&pClient);
-      HRESULT hr = pClient->GetMixFormat((WAVEFORMATEX **)&wfxex);
+      HRESULT hr = pClient->GetMixFormat(&pwfxex);
       if (SUCCEEDED(hr))
       {
-        deviceInfo.m_channels = (AEStdChLayout) wfxex.Format.nChannels;
+        deviceInfo.m_channels = layoutsByChCount[pwfxex->nChannels];
         deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
         deviceInfo.m_sampleRates.push_back(wfxex.Format.nSamplesPerSec);
       }
@@ -1296,7 +1297,7 @@ void CAESinkWASAPI::AEChannelsFromSpeakerMask(DWORD speakers)
 {
   m_channelLayout.Reset();
 
-  for (int i = 0; i < AE_CH_MAX; i++)
+  for (int i = 0; i < WASAPI_SPEAKER_COUNT; i++)
   {
     if (speakers & WASAPIChannelOrder[i])
       m_channelLayout += AEChannelNames[i];
@@ -1309,7 +1310,7 @@ DWORD CAESinkWASAPI::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
 
   for (unsigned int i = 0; i < channels.Count(); i++)
   {
-    for (unsigned int j = 0; j < SPEAKER_COUNT; j++)
+    for (unsigned int j = 0; j < WASAPI_SPEAKER_COUNT; j++)
       if (channels[i] == AEChannelNames[j])
         mask |= WASAPIChannelOrder[j];
   }
