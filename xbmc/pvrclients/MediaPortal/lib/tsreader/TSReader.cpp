@@ -49,6 +49,7 @@ CTsReader::CTsReader()
   m_cardSettings    = NULL;
   m_State           = State_Stopped;
   m_lastPause       = 0;
+  m_WaitForSeekToEof = 0;
 
 #ifdef LIVE555
   m_rtspClient      = NULL;
@@ -324,3 +325,61 @@ void CTsReader::SetDirectory( string& directory )
   m_basePath = tmp;
 }
 
+bool CTsReader::IsTimeShifting()
+{
+  return m_bTimeShifting;
+}
+
+long CTsReader::Pause()
+{
+  XBMC->Log(LOG_DEBUG, "CTsReader::Pause() - IsTimeShifting = %d - state = %d", IsTimeShifting(), m_State);
+
+  if (m_State == State_Running)
+  {
+    m_lastPause = GetTickCount();
+#ifdef LIVE555
+    // Are we using rtsp?
+    if (m_bIsRTSP)
+    {
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause()  ->pause rtsp"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+        m_rtspClient->Pause();
+    }
+#endif //LIVE555
+    m_State = State_Paused;
+  }
+  else if (m_State == State_Paused)
+  {
+#ifdef LIVE555
+    // Are we using rtsp?
+    if (m_bIsRTSP)
+    {
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause() is paused, continue rtsp"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+        m_rtspClient->Continue();
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause() rtsp running"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+    }
+#endif //LIVE555
+  }
+
+  XBMC->Log(LOG_DEBUG, "CTsReader::Pause() - END - state = %d", m_State);
+  return S_OK;
+}
+
+bool CTsReader::IsSeeking()
+{
+  return (m_WaitForSeekToEof > 0);
+}
+
+int64_t CTsReader::GetFileSize()
+{
+  return m_fileReader->GetFileSize();
+}
+
+int64_t CTsReader::GetFilePointer()
+{
+  return m_fileReader->GetFilePointer();
+}
+
+unsigned long CTsReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
+{
+  return m_fileReader->SetFilePointer(llDistanceToMove, dwMoveMethod);
+}
