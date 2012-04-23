@@ -44,7 +44,7 @@ using namespace EPG;
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
     m_bRadio(bRadio),
-    m_bIsUserSetGroup(false),
+    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(iGroupId),
     m_strGroupName(strGroupName),
     m_bLoaded(false),
@@ -55,7 +55,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
     m_bRadio(bRadio),
-    m_bIsUserSetGroup(false),
+    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(-1),
     m_bLoaded(false),
     m_bChanged(false),
@@ -65,7 +65,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
 
 CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bRadio(group.bIsRadio),
-    m_bIsUserSetGroup(false),
+    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(-1),
     m_strGroupName(group.strGroupName),
     m_bLoaded(false),
@@ -84,7 +84,7 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
   if (this == &right) return true;
 
   return (m_bRadio == right.m_bRadio &&
-      m_bIsUserSetGroup == right.m_bIsUserSetGroup &&
+      m_iGroupType == right.m_iGroupType &&
       m_iGroupId == right.m_iGroupId &&
       m_strGroupName.Equals(right.m_strGroupName));
 }
@@ -97,7 +97,7 @@ bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
 CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
 {
   m_bRadio                      = group.m_bRadio;
-  m_bIsUserSetGroup             = group.m_bIsUserSetGroup;
+  m_iGroupType                  = group.m_iGroupType;
   m_iGroupId                    = group.m_iGroupId;
   m_strGroupName                = group.m_strGroupName;
   m_bLoaded                     = group.m_bLoaded;
@@ -145,7 +145,7 @@ void CPVRChannelGroup::Unload(void)
 
 bool CPVRChannelGroup::Update(void)
 {
-  if (IsUserSetGroup())
+  if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED)
     return false;
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);

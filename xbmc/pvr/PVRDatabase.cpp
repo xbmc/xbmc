@@ -106,7 +106,7 @@ bool CPVRDatabase::CreateTables()
         "CREATE TABLE channelgroups ("
           "idGroup         integer primary key,"
           "bIsRadio        bool, "
-          "bIsUserSetGroup bool, "
+          "iGroupType      integer, "
           "sName           varchar(64)"
         ")"
     );
@@ -259,7 +259,7 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
         m_pDS->exec("ALTER TABLE channels ADD bIsUserSetIcon bool");
 
       if (iVersion < 21)
-        m_pDS->exec("ALTER TABLE channelgroups ADD bIsUserSetGroup bool");
+        m_pDS->exec("ALTER TABLE channelgroups ADD iGroupType integer");
     }
   }
   catch (...)
@@ -664,7 +664,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
 
         data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
         data.SetGroupName(m_pDS->fv("sName").get_asString());
-        data.SetUserSetGroup(m_pDS->fv("bIsUserSetGroup").get_asBool());
+        data.SetGroupType(m_pDS->fv("iGroupType").get_asInt());
 
         results.Update(data);
 
@@ -830,11 +830,11 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
     /* insert a new entry when this is a new group, or replace the existing one otherwise */
     if (group.GroupID() <= 0)
-      strQuery = FormatSQL("INSERT INTO channelgroups (bIsRadio, bIsUserSetGroup, sName) VALUES (%i, %i, '%s')",
-          (group.IsRadio() ? 1 :0), (group.IsUserSetGroup() ? 1 :0), group.GroupName().c_str());
+      strQuery = FormatSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName) VALUES (%i, %i, '%s')",
+          (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str());
     else
-      strQuery = FormatSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, bIsUserSetGroup, sName) VALUES (%i, %i, %i, '%s')",
-          group.GroupID(), (group.IsRadio() ? 1 :0), (group.IsUserSetGroup() ? 1 :0), group.GroupName().c_str());
+      strQuery = FormatSQL("REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName) VALUES (%i, %i, %i, '%s')",
+          group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupType(), group.GroupName().c_str());
 
     bReturn = ExecuteQuery(strQuery);
 

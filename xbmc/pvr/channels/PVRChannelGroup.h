@@ -35,6 +35,10 @@ namespace PVR
 #define XBMC_INTERNAL_GROUP_RADIO 1
 #define XBMC_INTERNAL_GROUP_TV    2
 
+#define PVR_GROUP_TYPE_DEFAULT      0
+#define PVR_GROUP_TYPE_INTERNAL     1
+#define PVR_GROUP_TYPE_USER_DEFINED 2
+
   class CPVRChannelGroups;
   class CPVRChannelGroupInternal;
 
@@ -190,15 +194,15 @@ namespace PVR
     virtual void SetGroupID(int iGroupId) { m_iGroupId = iGroupId; }
 
     /*!
-     * @brief Set the m_bIsUserSetGroup bool of this group.
-     * @param the new bIsUserSetGroup bool.
+     * @brief Set the type of this group.
+     * @param the new type for this group.
      */
-    virtual void SetUserSetGroup(bool bIsUserSetGroup) { m_bIsUserSetGroup = bIsUserSetGroup; }
+    virtual void SetGroupType(int iGroupType) { m_iGroupType = iGroupType; }
 
     /*!
-     * @brief Return the m_bIsUserSetGroup bool of this group.
+     * @brief Return the type of this group.
      */
-    virtual bool IsUserSetGroup(void) const { return m_bIsUserSetGroup; }
+    virtual int GroupType(void) const { return m_iGroupType; }
 
     /*!
      * @brief The name of this group.
@@ -438,7 +442,7 @@ namespace PVR
     virtual CPVRChannel *GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const;
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
-    bool             m_bIsUserSetGroup;             /*!< true if this is a group created by the user, false otherwise */
+    int              m_iGroupType;                  /*!< The type of this group */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
     CStdString       m_strGroupName;                /*!< The name of this group */
     bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
