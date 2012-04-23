@@ -744,6 +744,11 @@ unsigned int CLinuxRendererGL::PreInit()
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
+  m_formats.push_back(RENDER_FMT_YUV420P);
+  m_formats.push_back(RENDER_FMT_NV12);
+  m_formats.push_back(RENDER_FMT_YUYV422);
+  m_formats.push_back(RENDER_FMT_UYVY422);
+
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 

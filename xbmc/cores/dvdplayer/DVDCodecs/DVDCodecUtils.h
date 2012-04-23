@@ -22,6 +22,7 @@
  */
 
 #include "Video/DVDVideoCodec.h"
+#include "cores/VideoRenderers/RenderFormats.h"
 
 struct YV12Image;
 
@@ -42,5 +43,8 @@ public:
   static bool IsVP3CompatibleWidth(int width);
 
   static double NormalizeFrameduration(double frameduration);
+
+  static ERenderFormat EFormatFromPixfmt(int fmt);
+  static int           PixfmtFromEFormat(ERenderFormat format);
 };
 

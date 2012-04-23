@@ -173,6 +173,8 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+
   virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EDEINTERLACEMODE mode);
   virtual bool         Supports(EINTERLACEMETHOD method);
@@ -215,6 +217,7 @@ protected:
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
   DXVA::CProcessor     m_processor;
+  std::vector<ERenderFormat> m_formats;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;

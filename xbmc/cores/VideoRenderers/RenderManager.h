@@ -167,6 +167,15 @@ public:
     return 0;
   }
 
+  // Supported pixel formats, can be called before configure
+  std::vector<ERenderFormat> SupportedFormats()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->SupportedFormats();
+    return std::vector<ERenderFormat>();
+  }
+
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
 #elif HAS_GLES == 2

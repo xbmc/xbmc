@@ -154,6 +154,8 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
@@ -204,6 +206,7 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   unsigned m_iFlags;
   ERenderFormat m_format;

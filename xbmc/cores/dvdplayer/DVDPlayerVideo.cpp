@@ -177,12 +177,15 @@ double CDVDPlayerVideo::GetOutputDelay()
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
   unsigned int surfaces = 0;
+  std::vector<ERenderFormat> formats;
 #ifdef HAS_VIDEO_PLAYBACK
   surfaces = g_renderManager.GetProcessorSize();
+  formats  = g_renderManager.SupportedFormats();
 #endif
 
+
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces);
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces, formats);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");

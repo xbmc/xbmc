@@ -372,6 +372,12 @@ unsigned int CWinRenderer::PreInit()
   if ((g_advancedSettings.m_DXVAForceProcessorRenderer || m_iRequestedMethod == RENDER_METHOD_DXVA) && !m_processor.PreInit())
     CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
 
+  m_formats.push_back(RENDER_FMT_YUV420P);
+  m_formats.push_back(RENDER_FMT_NV12);
+  m_formats.push_back(RENDER_FMT_YUYV422);
+  m_formats.push_back(RENDER_FMT_UYVY422);
+
+
   return 0;
 }
 

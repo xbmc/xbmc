@@ -504,6 +504,15 @@ unsigned int CLinuxRendererGLES::PreInit()
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
+  m_formats.push_back(RENDER_FMT_YUV420P);
+  m_formats.push_back(RENDER_FMT_BYPASS);
+#if defined(HAVE_LIBOPENMAX)
+  m_formats.push_back(RENDER_FMT_OMXEGL);
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  m_formats.push_back(RENDER_FMT_CVBREF);
+#endif
+
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 

@@ -119,10 +119,15 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces, const std::vector<ERenderFormat>& formats)
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
+
+  if(formats.size() == 0)
+    options.m_formats.push_back(RENDER_FMT_YUV420P);
+  else
+    options.m_formats = formats;
 
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform

@@ -446,3 +446,37 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
     return frameduration;
 }
 
+struct EFormatMap {
+  PixelFormat   pix_fmt;
+  ERenderFormat format;
+};
+
+static const EFormatMap g_format_map[] = {
+   { PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
+,  { PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
+,  { PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
+,  { PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
+,  { PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
+,  { PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
+,  { PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
+};
+
+ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
+{
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  {
+    if(p->pix_fmt == fmt)
+      return p->format;
+  }
+  return RENDER_FMT_NONE;
+}
+
+int CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
+{
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  {
+    if(p->format == fmt)
+      return p->pix_fmt;
+  }
+  return PIX_FMT_NONE;
+}

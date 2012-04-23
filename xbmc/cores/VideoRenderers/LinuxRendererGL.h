@@ -161,6 +161,8 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
   void         ClearBackBuffer();
@@ -221,6 +223,7 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   unsigned m_iFlags;
   ERenderFormat m_format;
