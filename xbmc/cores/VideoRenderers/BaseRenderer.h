@@ -39,6 +39,7 @@ typedef struct YV12Image
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
+  unsigned bpp; /* bytes per pixel */
 } YV12Image;
 
 enum ERENDERFEATURE

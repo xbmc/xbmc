@@ -110,8 +110,8 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
-  int w = pSrc->iWidth;
-  int h = pSrc->iHeight;
+  int w = pImage->width * pImage->bpp;
+  int h = pImage->height;
   if ((w == pSrc->iLineSize[0]) && ((unsigned int) pSrc->iLineSize[0] == pImage->stride[0]))
   {
     fast_memcpy(d, s, w*h);
@@ -127,8 +127,8 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
   }
   s = pSrc->data[1];
   d = pImage->plane[1];
-  w = pSrc->iWidth >> 1;
-  h = pSrc->iHeight >> 1;
+  w =(pImage->width  >> pImage->cshift_x) * pImage->bpp;
+  h =(pImage->height >> pImage->cshift_y);
   if ((w==pSrc->iLineSize[1]) && ((unsigned int) pSrc->iLineSize[1]==pImage->stride[1]))
   {
     fast_memcpy(d, s, w*h);
@@ -454,6 +454,8 @@ struct EFormatMap {
 static const EFormatMap g_format_map[] = {
    { PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
 ,  { PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
+,  { PIX_FMT_YUV420P10,   RENDER_FMT_YUV420P10  }
+,  { PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
 ,  { PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
 ,  { PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
 ,  { PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }

@@ -336,6 +336,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   image->flags    = im.flags;
   image->cshift_x = im.cshift_x;
   image->cshift_y = im.cshift_y;
+  image->bpp      = 1;
 
   return source;
 

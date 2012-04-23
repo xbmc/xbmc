@@ -1070,6 +1070,14 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
         flags |= CONF_FLAGS_FORMAT_YV12;
         formatstr = "YV12";
         break;
+      case RENDER_FMT_YUV420P16:
+        flags |= CONF_FLAGS_FORMAT_YV12;
+        formatstr = "YV12P16";
+        break;
+      case RENDER_FMT_YUV420P10:
+        flags |= CONF_FLAGS_FORMAT_YV12;
+        formatstr = "YV12P10";
+        break;
       case RENDER_FMT_NV12:
         flags |= CONF_FLAGS_FORMAT_NV12;
         formatstr = "NV12";

@@ -283,6 +283,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->height = m_sourceHeight;
   image->width = m_sourceWidth;
   image->flags = 0;
+  image->bpp = 1;
 
   for(int i=0;i<3;i++)
   {

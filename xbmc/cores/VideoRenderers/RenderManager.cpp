@@ -758,7 +758,9 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if(index < 0)
     return index;
 
-  if(pic.format == RENDER_FMT_YUV420P)
+  if(pic.format == RENDER_FMT_YUV420P
+  || pic.format == RENDER_FMT_YUV420P10
+  || pic.format == RENDER_FMT_YUV420P16)
   {
     CDVDCodecUtils::CopyPicture(&image, &pic);
   }
