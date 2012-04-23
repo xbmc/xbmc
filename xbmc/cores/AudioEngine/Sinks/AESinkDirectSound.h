@@ -23,6 +23,7 @@
 #include "Interfaces/AESink.h"
 #include <stdint.h>
 #include <dsound.h>
+#include "../Utils/AEDeviceInfo.h"
 
 #include "threads/CriticalSection.h"
 
@@ -38,10 +39,11 @@ public:
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat format, const std::string device);
 
-  virtual void         Stop             ();
-  virtual double       GetDelay         ();
-  virtual unsigned int AddPackets       (uint8_t *data, unsigned int frames);
-  static  void         EnumerateDevices (AEDeviceList &devices, bool passthrough);
+  virtual void         Stop               ();
+  virtual double       GetDelay           ();
+  virtual unsigned int AddPackets         (uint8_t *data, unsigned int frames);
+  static  void         EnumerateDevices   (AEDeviceList &devices, bool passthrough);
+  static  void         EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList);
 private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
@@ -49,6 +51,8 @@ private:
   void          UpdateCacheStatus();
   unsigned int  GetSpace();
   const char    *dserr2str(int err);
+
+  static const char  *WASAPIErrToStr(HRESULT err);
 
   LPDIRECTSOUNDBUFFER m_pBuffer;
   LPDIRECTSOUND8      m_pDSound;
