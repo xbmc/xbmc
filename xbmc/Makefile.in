@@ -37,6 +37,10 @@ SRCS=Application.cpp \
 
 LIB=xbmc.a
 
+ifneq (@USE_LIBXBMC@,1)
+SRCS += main.cpp
+endif
+
 DISTCLEAN_FILES=DllPaths_generated.h
 
 include @abs_top_srcdir@/Makefile.include
