@@ -68,6 +68,7 @@ public:
   static bool IsISO9660(const CStdString& strFile);
   static bool IsLastFM(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsPVRRecording(const CStdString& strFile);
   static bool IsMultiPath(const CStdString& strPath);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
@@ -76,7 +77,6 @@ public:
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);
-  static bool IsPVRRecording(const CStdString& strFile);
   static bool IsScript(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
