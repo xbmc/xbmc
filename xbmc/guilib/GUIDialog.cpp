@@ -36,6 +36,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
   m_renderOrder = 1;
   m_autoClosing = false;
   m_enableSound = true;
+  m_bAutoClosed = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -227,7 +228,10 @@ void CGUIDialog::Show()
 void CGUIDialog::FrameMove()
 {
   if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_closing)
+  {
+    m_bAutoClosed = true;
     Close();
+  }
   CGUIWindow::FrameMove();
 }
 
@@ -249,8 +253,11 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;
-   if (m_active)
-     m_showStartTime = CTimeUtils::GetFrameTime();
+   ResetAutoClose();
 }
 
-
+void CGUIDialog::ResetAutoClose(void)
+{
+  if (m_autoClosing && m_active)
+    m_showStartTime = CTimeUtils::GetFrameTime();
+}

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -56,18 +56,8 @@ void Observer::StopObserving(void)
 
 bool Observer::IsObserving(const Observable &obs) const
 {
-  bool bReturn(false);
   CSingleLock lock(m_obsCritSection);
-  for (unsigned int iObsPtr = 0; iObsPtr < m_observables.size(); iObsPtr++)
-  {
-    if (m_observables.at(iObsPtr) == &obs)
-    {
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
+  return find(m_observables.begin(), m_observables.end(), &obs) != m_observables.end();
 }
 
 void Observer::RegisterObservable(Observable *obs)
@@ -80,14 +70,9 @@ void Observer::RegisterObservable(Observable *obs)
 void Observer::UnregisterObservable(Observable *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  for (unsigned int iObsPtr = 0; iObsPtr < m_observables.size(); iObsPtr++)
-  {
-    if (m_observables.at(iObsPtr) == obs)
-    {
-      m_observables.erase(m_observables.begin() + iObsPtr);
-      break;
-    }
-  }
+  vector<Observable *>::iterator it = find(m_observables.begin(), m_observables.end(), obs);
+  if (it != m_observables.end())
+    m_observables.erase(it);
 }
 
 Observable::Observable() :
@@ -108,7 +93,8 @@ Observable &Observable::operator=(const Observable &observable)
   CSingleLock lock(m_obsCritSection);
 
   m_bObservableChanged = observable.m_bObservableChanged;
-  for (unsigned int iObsPtr = 0; iObsPtr < m_observers.size(); iObsPtr++)
+  m_observers.clear();
+  for (unsigned int iObsPtr = 0; iObsPtr < observable.m_observers.size(); iObsPtr++)
     m_observers.push_back(observable.m_observers.at(iObsPtr));
 
   return *this;
@@ -124,18 +110,8 @@ void Observable::StopObserver(void)
 
 bool Observable::IsObserving(const Observer &obs) const
 {
-  bool bReturn(false);
   CSingleLock lock(m_obsCritSection);
-  for (unsigned int iObsPtr = 0; iObsPtr < m_observers.size(); iObsPtr++)
-  {
-    if (m_observers.at(iObsPtr) == &obs)
-    {
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
+  return find(m_observers.begin(), m_observers.end(), &obs) != m_observers.end();
 }
 
 void Observable::RegisterObserver(Observer *obs)
@@ -151,14 +127,11 @@ void Observable::RegisterObserver(Observer *obs)
 void Observable::UnregisterObserver(Observer *obs)
 {
   CSingleLock lock(m_obsCritSection);
-  for (unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
+  vector<Observer *>::iterator it = find(m_observers.begin(), m_observers.end(), obs);
+  if (it != m_observers.end())
   {
-    if (m_observers.at(ptr) == obs)
-    {
-      obs->UnregisterObservable(this);
-      m_observers.erase(m_observers.begin() + ptr);
-      break;
-    }
+    obs->UnregisterObservable(this);
+    m_observers.erase(it);
   }
 }
 
