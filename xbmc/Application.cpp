@@ -1153,6 +1153,8 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
+  if (g_windowManager.Initialized())
+  {
   g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1282,6 +1284,15 @@ bool CApplication::Initialize()
 #endif
     ADDON::CAddonMgr::Get().StartServices(false);
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+  }
+
+  }
+  else //No GUI Created
+  {
+#ifdef HAS_JSONRPC
+    CJSONRPC::Initialize();
+#endif
+    ADDON::CAddonMgr::Get().StartServices(false);
   }
 
   g_sysinfo.Refresh();
