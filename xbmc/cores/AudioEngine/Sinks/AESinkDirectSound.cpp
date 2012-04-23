@@ -34,6 +34,8 @@
 #include <Mmreg.h>
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
+#include <Rpc.h>
+#pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;
 
@@ -95,7 +97,8 @@ static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LP
 
   dev.lpGuid = lpGuid;
 
-  enumerator.push_back(dev);
+  if (lpGuid)
+    enumerator.push_back(dev);
 
   return TRUE;
 }
@@ -124,19 +127,27 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     return false;
 
   LPGUID deviceGUID = NULL;
+  RPC_WSTR wszUuid  = NULL;
+  HRESULT hr;
   std::list<DSDevice> DSDeviceList;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); itt++)
   {
-    if ((*itt).name == device)
+    if ((*itt).lpGuid)
     {
-      deviceGUID = (*itt).lpGuid;
-      break;
+      hr = (UuidToStringW((*itt).lpGuid, &wszUuid));
+      std::wstring wsztmp = (wchar_t*)wszUuid;
+      std::string szGUID = "{" + std::string(wsztmp.begin(), wsztmp.end()) + "}";
+      if (strcasecmp(szGUID.c_str(), device.c_str()) == 0)
+      {
+        deviceGUID = (*itt).lpGuid;
+        break;
+      }
     }
   }
 
-  HRESULT hr = DirectSoundCreate(deviceGUID, &m_pDSound, NULL);
+ hr = DirectSoundCreate(deviceGUID, &m_pDSound, NULL);
 
   if (FAILED(hr))
   {
@@ -368,11 +379,12 @@ void CAESinkDirectSound::EnumerateDevices(AEDeviceList &devices, bool passthroug
   if (FAILED(DirectSoundEnumerate(DSEnumCallback, &dev)))
     CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
 
-  std::list<DSDevice>::iterator it;
+  std::list<DSDevice>::iterator itt;
 
-  for (it = dev.begin(); it != dev.end(); it++)
+  for (itt = dev.begin(); itt != dev.end(); itt++)
   {
-    devices.push_back(AEDevice((*it).name, std::string("DIRECTSOUND:") + (*it).name));
+    if ((*itt).lpGuid)
+      devices.push_back(AEDevice((*itt).name, std::string("DIRECTSOUND:") + (*itt).name));
   }
 }
 
@@ -469,10 +481,10 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     HRESULT hr = pClient->GetMixFormat(&pwfxex);
     if (SUCCEEDED(hr))
     {
-      deviceInfo.m_channels = layoutsByChCount[std::min((int)pwfxex->nChannels, 2)];
+      deviceInfo.m_channels = layoutsByChCount[8 /*std::min((int)pwfxex->nChannels, 2)*/];
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
-      deviceInfo.m_sampleRates.push_back(pwfxex->nSamplesPerSec);
+      deviceInfo.m_sampleRates.push_back(192000 /*pwfxex->nSamplesPerSec*/);
     }
     else
     {
@@ -678,4 +690,6 @@ const char *CAESinkDirectSound::WASAPIErrToStr(HRESULT err)
   }
   return NULL;
 }
+
+
 
