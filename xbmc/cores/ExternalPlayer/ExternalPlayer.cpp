@@ -24,7 +24,6 @@
 #include "signal.h"
 #include "limits.h"
 #include "threads/SingleLock.h"
-#include "guilib/AudioContext.h"
 #include "ExternalPlayer.h"
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -243,13 +242,6 @@ void CExternalPlayer::Process()
     strFArgs.append("\"");
   }
 
-  int iActiveDevice = g_audioContext.GetActiveDevice();
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Releasing audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(CAudioContext::NONE);
-  }
-
 #if defined(_WIN32)
   if (m_warpcursor)
   {
@@ -360,12 +352,6 @@ void CExternalPlayer::Process()
   // We don't want to come back to an active screensaver
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();
-
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Reclaiming audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(iActiveDevice);
-  }
 
   if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
     m_callback.OnPlayBackStopped();
