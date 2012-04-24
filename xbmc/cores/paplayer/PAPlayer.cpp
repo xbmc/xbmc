@@ -358,7 +358,7 @@ void PAPlayer::DrainStream(int stream)
 
 bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
+  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.m_audioResample) ? g_advancedSettings.m_audioResample : samplerate;
 
   if (m_pAudioDecoder[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
   {
@@ -606,7 +606,7 @@ bool PAPlayer::ProcessPAP()
             unsigned int channels2, samplerate2, bitspersample2;
             m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
             // change of channels - reinitialize our speaker configuration
-            if (channels != channels2 || (g_advancedSettings.m_musicResample == 0 && (samplerate != samplerate2 || bitspersample != bitspersample2)))
+            if (channels != channels2 || (g_advancedSettings.m_audioResample == 0 && (samplerate != samplerate2 || bitspersample != bitspersample2)))
             {
               CLog::Log(LOGINFO, "PAPlayer: Stream properties have changed, restarting stream");
               FreeStream(m_currentStream);
@@ -621,7 +621,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, g_advancedSettings.m_musicResample, 16, PACKET_SIZE))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, g_advancedSettings.m_audioResample, 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
