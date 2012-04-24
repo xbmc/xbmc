@@ -92,7 +92,7 @@ void CSettings::Initialize()
   m_bAddonAutoUpdate = true;
   m_bAddonNotifications = true;
 
-  m_nVolumeLevel = 0;
+  m_fVolumeLevel = 1.0f;
   m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
@@ -720,7 +720,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "mute", m_bMute);
-    GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
+    GetFloat(pElement, "fvolumelevel", m_fVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -896,7 +896,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   pNode = pRoot->InsertEndChild(volumeNode);
   if (!pNode) return false;
   XMLUtils::SetBoolean(pNode, "mute", m_bMute);
-  XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
+  XMLUtils::SetFloat(pNode, "fvolumelevel", m_fVolumeLevel);
 
   SaveCalibration(pRoot);
 

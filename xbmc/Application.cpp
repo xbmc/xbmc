@@ -31,6 +31,7 @@
 #include "pictures/Picture.h"
 #include "guilib/TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
 #include "video/Bookmark.h"
@@ -730,6 +731,8 @@ bool CApplication::Create()
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
+  SetHardwareVolume(g_settings.m_fVolumeLevel);
+
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
   if (!CAddonMgr::Get().Init())
@@ -1252,7 +1255,6 @@ bool CApplication::Initialize()
   //  Restore volume
   if (g_settings.m_bMute)
     Mute();
-  SetVolume(g_settings.m_nVolumeLevel, false);
 
   // if the user shutoff the xbox during music scan
   // restore the settings
@@ -2622,21 +2624,17 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      int volume = g_settings.m_nVolumeLevel;
-
-      // calculate speed so that a full press will equal 1 second from min to max
-      float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+      float volume = g_settings.m_fVolumeLevel;
+      float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
       if (action.GetRepeat())
-        speed *= action.GetRepeat();
-      else
-        speed /= 50; //50 fps
+        step *= action.GetRepeat() * 50; // 50 fps
 
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+        volume += (float)fabs(action.GetAmount()) * action.GetAmount() * step;
       else
-        volume -= (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+        volume -= (float)fabs(action.GetAmount()) * action.GetAmount() * step;
 
-      SetVolume(volume, false);
+      SetHardwareVolume(volume);
     }
     // show visual feedback of volume change...
     ShowVolumeBar(&action);
@@ -5123,44 +5121,40 @@ void CApplication::UnMute()
   g_settings.m_bMute = false;
 }
 
-void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
+void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
 {
-  // convert the percentage to a mB (milliBell) value (*100 for dB)
-  if (isPercentage)
-    iValue = (long)((float)iValue * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
+  float hardwareVolume = iValue;
 
-  SetHardwareVolume(iValue);
-  g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+  if(isPercentage)
+    hardwareVolume /= 100.0f;
+
+  SetHardwareVolume(hardwareVolume);
+  g_audioManager.SetVolume((int)(128.f * g_settings.m_fVolumeLevel));
 
   CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = (int)(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 100.0f + 0.5f);
+  data["volume"] = (int)(hardwareVolume * 100.0f + 0.5f);
   data["muted"] = g_settings.m_bMute;
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
 
-void CApplication::SetHardwareVolume(long hardwareVolume)
+void CApplication::SetHardwareVolume(float hardwareVolume)
 {
-  // TODO DRC
-  if (hardwareVolume >= VOLUME_MAXIMUM) // + VOLUME_DRC_MAXIMUM
-    hardwareVolume = VOLUME_MAXIMUM;// + VOLUME_DRC_MAXIMUM;
-  if (hardwareVolume <= VOLUME_MINIMUM)
-    hardwareVolume = VOLUME_MINIMUM;
+  hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
+  g_settings.m_fVolumeLevel = hardwareVolume;
 
-  // update our settings
-  if (hardwareVolume > VOLUME_MAXIMUM)
-    g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
-  else
-    g_settings.m_nVolumeLevel = hardwareVolume;
+  float value = 0.0f;
+  if (hardwareVolume > VOLUME_MINIMUM)
+    value = CAEUtil::LinToLog(VOLUME_DYNAMIC_RANGE, hardwareVolume);
 
   // and tell our player to update the volume
   if (m_pPlayer)
-    m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
+    m_pPlayer->SetVolume(value);
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
-  return int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+  return g_settings.m_fVolumeLevel * 100.0f;
 }
 
 int CApplication::GetSubtitleDelay() const
@@ -5199,7 +5193,7 @@ void CApplication::SetPlaySpeed(int iSpeed)
   m_pPlayer->ToFFRW(m_iPlaySpeed);
   if (m_iPlaySpeed == 1)
   { // restore volume
-    m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
+    m_pPlayer->SetVolume(VOLUME_MAXIMUM);
   }
   else
   { // mute volume

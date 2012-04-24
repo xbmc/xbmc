@@ -1145,7 +1145,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", (float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f);
+    strLabel.Format("%2.1f dB", g_settings.m_fVolumeLevel);
     break;
   case PLAYER_SUBTITLE_DELAY:
     strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_SubtitleDelay);
