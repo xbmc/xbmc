@@ -688,7 +688,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   else if (uri == "/volume")
   {
       const char* found = strstr(queryString.c_str(), "volume=");
-      double volume = found ? (double)(atof(found + strlen("volume="))) : 0;
+      float volume = found ? (float)strtod(found + strlen("volume="), NULL) : 0;
 
       CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
 
