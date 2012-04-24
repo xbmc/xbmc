@@ -611,16 +611,8 @@ bool CDatabase::CreateTables()
 
 bool CDatabase::UpdateVersionNumber()
 {
-  try
-  {
-    CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch(...)
-  {
-    return false;
-  }
-
+  CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
+  m_pDS->exec(strSQL.c_str());
   return true;
 }
 
