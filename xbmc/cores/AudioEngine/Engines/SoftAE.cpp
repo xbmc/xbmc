@@ -197,7 +197,8 @@ void CSoftAE::InternalOpenSink()
 
     if (m_masterStream->IsRaw())
     {
-      newFormat.m_sampleRate    = m_masterStream->GetEncodedSampleRate();
+      newFormat.m_sampleRate    = m_masterStream->GetSampleRate();
+      newFormat.m_encodedRate   = m_masterStream->GetEncodedSampleRate();
       newFormat.m_dataFormat    = m_masterStream->GetDataFormat();
       newFormat.m_channelLayout = m_masterStream->m_initChannelLayout;
       m_rawPassthrough = true;
