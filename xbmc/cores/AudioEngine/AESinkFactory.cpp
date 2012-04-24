@@ -158,9 +158,9 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list)
 
 #ifdef _WIN32
   if (g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound)
-    ENUMERATE_SINK(WASAPI)
-//  else
-//    ENUMERATE_SINK(DirectSound);
+    ENUMERATE_SINK(WASAPI);
+
+    ENUMERATE_SINK(DirectSound);
 #endif
 }
 #endif
