@@ -84,7 +84,7 @@ DemuxPacket* cVNSIDemux::Read()
     return NULL;
   }
 
-  cResponsePacket *resp = ReadMessage();
+  cResponsePacket *resp = ReadMessage(1000,1000);
 
   if(resp == NULL)
     return PVR->AllocateDemuxPacket(0);
