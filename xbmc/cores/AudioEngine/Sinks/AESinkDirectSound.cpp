@@ -374,21 +374,6 @@ double CAESinkDirectSound::GetDelay()
   return delay;
 }
 
-void CAESinkDirectSound::EnumerateDevices(AEDeviceList &devices, bool passthrough)
-{
-  std::list<DSDevice> dev;
-  if (FAILED(DirectSoundEnumerate(DSEnumCallback, &dev)))
-    CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
-
-  std::list<DSDevice>::iterator itt;
-
-  for (itt = dev.begin(); itt != dev.end(); itt++)
-  {
-    if ((*itt).lpGuid)
-      devices.push_back(AEDevice((*itt).name, std::string("DIRECTSOUND:") + (*itt).name));
-  }
-}
-
 void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 {
   CAEDeviceInfo        deviceInfo;

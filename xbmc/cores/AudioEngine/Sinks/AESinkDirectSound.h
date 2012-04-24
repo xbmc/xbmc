@@ -42,7 +42,6 @@ public:
   virtual void         Stop               ();
   virtual double       GetDelay           ();
   virtual unsigned int AddPackets         (uint8_t *data, unsigned int frames);
-  static  void         EnumerateDevices   (AEDeviceList &devices, bool passthrough);
   static  void         EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList);
 private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
