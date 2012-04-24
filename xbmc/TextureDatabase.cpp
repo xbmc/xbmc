@@ -74,9 +74,6 @@ bool CTextureDatabase::CreateTables()
 
 bool CTextureDatabase::UpdateOldVersion(int version)
 {
-  BeginTransaction();
-  try
-  {
     if (version < 7)
     { // update all old thumb://foo urls to image://foo?size=thumb
       m_pDS->query("select id,texture from path where texture like 'thumb://%'");
@@ -141,14 +138,6 @@ bool CTextureDatabase::UpdateOldVersion(int version)
     { // index for updateusecount
       m_pDS->exec("CREATE INDEX idxSize2 ON sizes(idtexture, width, height)");
     }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, version);
-    RollbackTransaction();
-    return false;
-  }
-  CommitTransaction();
   return true;
 }
 

@@ -3182,14 +3182,6 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
 bool CMusicDatabase::UpdateOldVersion(int version)
 {
-  if (NULL == m_pDB.get()) return false;
-  if (NULL == m_pDS.get()) return false;
-  if (NULL == m_pDS2.get()) return false;
-
-  BeginTransaction();
-
-  try
-  {
     if (version < 16)
     {
       // only if MySQL is used and default character set is not utf8
@@ -3526,13 +3518,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
     // always recreate the views after any table change
     CreateViews();
 
-    CommitTransaction();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    return false;
-  }
   return true;
 }
 

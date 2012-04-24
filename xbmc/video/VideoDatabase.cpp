@@ -3686,10 +3686,6 @@ bool CVideoDatabase::ScraperInUse(const CStdString &scraperID) const
 
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
-  BeginTransaction();
-
-  try
-  {
     if (iVersion < 43)
     {
       m_pDS->exec("ALTER TABLE settings ADD VerticalShift float");
@@ -3906,14 +3902,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     // always recreate the view after any table change
     CreateViews();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "Error attempting to update the database version!");
-    RollbackTransaction();
-    return false;
-  }
-  CommitTransaction();
   return true;
 }
 
