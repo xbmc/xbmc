@@ -86,6 +86,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
+  CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
 
   if (pItem->GetPath() == "pvr://channels/.add.channel")
   {
@@ -97,6 +98,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);                                     /* switch to channel */
+    buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
     buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);                                     /* change icon */
     buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);                                 /* group manager */
     buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 19049 : 19054);          /* show/hide channel */
@@ -131,6 +133,7 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonGroupManager(pItem.get(), button) ||
       OnContextButtonFilter(pItem.get(), button) ||
       OnContextButtonUpdateEpg(pItem.get(), button) ||
+      OnContextButtonRecord(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
@@ -502,6 +505,17 @@ bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTO
 
     bReturn = true;
   }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn(false);
+  CPVRChannel *channel = item->GetPVRChannelInfoTag();
+
+  if (channel)
+    return g_PVRManager.ToggleRecordingOnChannel(channel->ChannelID());
 
   return bReturn;
 }
