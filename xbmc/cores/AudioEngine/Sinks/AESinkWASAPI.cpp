@@ -997,25 +997,17 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   format.m_frameSize     = sizeof(float) * format.m_channelLayout.Count();
   format.m_sampleRate    = wfxex->Format.nSamplesPerSec;
 
-  REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
-  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
+  REFERENCE_TIME audioSinkBufferDurationMsec;
 
   /* Get m_audioSinkBufferSizeMsec from advancedsettings.xml */
-  int audioSinkBufferDurationMsec;
-  audioSinkBufferDurationMsec = g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
-
-  //The default periods of some devices are VERY low (less than 3ms).
-  //For audio stability make sure we have at least an 50ms buffer.
-  if (hnsPeriodicity < 500000)
-    hnsPeriodicity = 500000;
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
 
   //use user's advancedsetting value for buffer size as long as it's over minimum set above
-  if (hnsPeriodicity < audioSinkBufferDurationMsec)
-    hnsPeriodicity = audioSinkBufferDurationMsec;
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
-  hnsRequestedDuration = hnsPeriodicity; //*MUST* be equal now with event-driven callback event
-
-  if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK, hnsRequestedDuration, hnsPeriodicity, &wfxex->Format, NULL)))
+  if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
+                                               audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex->Format, NULL)))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%s)", WASAPIErrToStr(hr));
     CoTaskMemFree(wfxex);
@@ -1067,8 +1059,6 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
   CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
   CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
-  CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
-  CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
   CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
 
   if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
@@ -1197,23 +1187,14 @@ initialize:
   //format.m_channelLayout = m_channelLayout;
   format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
 
-  REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity, hnsLatency;
-  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
+  REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
   /* Get m_audioSinkBufferSizeMsec from advancedsettings.xml */
-  int audioSinkBufferDurationMsec;
-  audioSinkBufferDurationMsec = g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
-
-  //The default periods of some devices are VERY low (less than 3ms).
-  //For audio stability make sure we have at least an 8ms buffer.
-  if (hnsPeriodicity < 80000)
-    hnsPeriodicity = 80000;
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
 
   //use user's advancedsetting value for buffer size as long as it's over minimum set above
-  //if(hnsPeriodicity < audioSinkBufferMsec) hnsPeriodicity = audioSinkBufferMsec;
-
-  hnsRequestedDuration = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, 500000);
-  hnsRequestedDuration = (REFERENCE_TIME)((hnsRequestedDuration / format.m_frameSize) * format.m_frameSize); //even number of frames
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
+  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI exclusive mode with the following parameters:");
   CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
@@ -1229,7 +1210,7 @@ initialize:
   CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
   CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
   CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
-  CLog::Log(LOGDEBUG, "  Periodicty      : %d", hnsPeriodicity);
+  CLog::Log(LOGDEBUG, "  Periodicty      : %d", audioSinkBufferDurationMsec);
 
   if (wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
     CLog::Log(LOGDEBUG, "  SubFormat       : KSDATAFORMAT_SUBTYPE_IEEE_FLOAT");
@@ -1251,7 +1232,8 @@ initialize:
   if (AE_IS_RAW(format.m_dataFormat))
     format.m_dataFormat = AE_FMT_S16NE;
 
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST, hnsRequestedDuration, hnsRequestedDuration, &wfxex.Format, NULL);
+  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                    audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
 
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
@@ -1264,9 +1246,9 @@ initialize:
       return false;
     }
 
-    hnsRequestedDuration = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
+    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
     CLog::Log(LOGDEBUG, __FUNCTION__": Number of Frames in Buffer   : %d", m_uiBufferLen);
-    CLog::Log(LOGDEBUG, __FUNCTION__": Requested Duration of Buffer : %d", hnsRequestedDuration);
+    CLog::Log(LOGDEBUG, __FUNCTION__": Requested Duration of Buffer : %d", audioSinkBufferDurationMsec);
 
     // Release the previous allocations.
     SAFE_RELEASE(m_pAudioClient);
@@ -1280,7 +1262,8 @@ initialize:
     }
 
     // Open the stream and associate it with an audio session.
-    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST, hnsRequestedDuration, hnsRequestedDuration, &wfxex.Format, NULL);
+    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
   }
   if (FAILED(hr))
   {
