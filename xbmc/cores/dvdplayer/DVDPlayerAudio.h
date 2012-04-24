@@ -115,7 +115,7 @@ public:
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
 
-  void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
+  void SetVolume(float fVolume)                         { m_dvdAudio.SetVolume(fVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
   float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
 

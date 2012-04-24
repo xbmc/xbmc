@@ -306,10 +306,10 @@ void CDVDAudio::Drain()
     m_pAudioDecoder->WaitCompletion();
 }
 
-void CDVDAudio::SetVolume(int iVolume)
+void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(iVolume);
+  if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(volume);
 }
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)

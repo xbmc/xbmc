@@ -69,7 +69,7 @@ public:
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
-  virtual void SetVolume(long nVolume);
+  virtual void SetVolume(float volume);
   virtual void SetDynamicRangeCompression(long drc);
   virtual void GetAudioInfo( CStdString& strAudioInfo) {}
   virtual void GetVideoInfo( CStdString& strVideoInfo) {}

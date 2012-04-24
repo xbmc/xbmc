@@ -45,7 +45,7 @@ public:
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
-  virtual void SetVolume(long nVolume) {}
+  virtual void SetVolume(float volume) {}
   virtual void SetDynamicRangeCompression(long drc) {}
   virtual void SetContrast(bool bPlus) {}
   virtual void SetBrightness(bool bPlus) {}
