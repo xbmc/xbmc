@@ -615,8 +615,6 @@ bool CDatabase::UpdateVersionNumber()
   {
     CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
     m_pDS->exec(strSQL.c_str());
-
-    CommitTransaction();
   }
   catch(...)
   {
