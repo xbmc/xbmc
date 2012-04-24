@@ -372,13 +372,13 @@ void CAESinkDirectSound::Stop()
 double CAESinkDirectSound::GetDelay()
 {
   if (!m_initialized)
-    return 0.0f;
+    return 0.0;
 
    // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
-  double delay  = 0.008f; // WTF?
-  delay += (float)m_CacheLen / (float)m_AvgBytesPerSec;
+  double delay  = 0.0;
+  delay += (double)m_CacheLen / (double)m_AvgBytesPerSec;
   return delay;
 }
 
