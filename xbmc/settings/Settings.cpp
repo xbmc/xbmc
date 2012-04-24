@@ -32,8 +32,6 @@
 #include "PasswordManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
-#include "guilib/GUIAudioManager.h"
-#include "guilib/AudioContext.h"
 #include "GUIInfoManager.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
