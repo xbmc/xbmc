@@ -55,6 +55,7 @@ public:
     Address where() const { return mWhere; };
     unsigned code() const { return mCode; };
     virtual void writelog(const char *prefix) const;
+    bool write_minidump() const { return write_minidump(mExceptionPointers); };
     static bool write_minidump(EXCEPTION_POINTERS* pEp);
 protected:
     win32_exception(EXCEPTION_POINTERS* info);

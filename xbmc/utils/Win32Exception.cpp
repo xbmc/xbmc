@@ -92,7 +92,6 @@ void win32_exception::writelog(const char *prefix)  const
 bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
 {
   // Create the dump file where the xbmc.exe resides
-  CStdString errorMsg;
   bool returncode = false;
   CStdString dumpFileName;
   SYSTEMTIME stLocalTime;
