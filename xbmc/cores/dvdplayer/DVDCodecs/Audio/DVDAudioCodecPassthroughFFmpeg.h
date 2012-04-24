@@ -85,9 +85,6 @@ private:
   bool m_bSupportsAC3Out;
   bool m_bSupportsDTSOut;
   bool m_bSupportsAACOut;
-  bool m_bSupportsMP1Out;
-  bool m_bSupportsMP2Out;
-  bool m_bSupportsMP3Out;
 
   CDVDAudioCodec   *m_Codec;
   IDVDAudioEncoder *m_Encoder;
