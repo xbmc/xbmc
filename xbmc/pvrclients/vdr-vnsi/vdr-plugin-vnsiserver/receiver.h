@@ -58,6 +58,7 @@ private:
   void sendStreamChange();
   void sendSignalInfo();
   void sendStreamInfo();
+  void sendStreamStatus();
 
   const cChannel   *m_Channel;                      /*!> Channel to stream */
   cDevice          *m_Device;                       /*!> The receiving device the channel depents to */
