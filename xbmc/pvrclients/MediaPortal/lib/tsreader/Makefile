@@ -2,7 +2,9 @@ SRCS=TSReader.cpp \
     RTSPClient.cpp \
     MemoryBuffer.cpp \
     MemoryReader.cpp \
-    MemorySink.cpp
+    MemorySink.cpp \
+    FileReader.cpp \
+    MultiFileReader.cpp
 LIB=tsreader.a
 
 include ../../../Makefile.include
