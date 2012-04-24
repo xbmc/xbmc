@@ -888,7 +888,7 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   format.m_frameSize     = sizeof(float) * format.m_channelLayout.Count();
   format.m_sampleRate    = wfxex->Format.nSamplesPerSec;
 
-  REFERENCE_TIME audioSinkBufferDurationMsec;
+  REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
   /* Get m_audioSinkBufferSizeMsec from advancedsettings.xml */
   audioSinkBufferDurationMsec = (REFERENCE_TIME)g_advancedSettings.m_audioSinkBufferDurationMsec * 10000;
@@ -897,14 +897,32 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   audioSinkBufferDurationMsec = (REFERENCE_TIME)std::max(audioSinkBufferDurationMsec, (REFERENCE_TIME)500000);
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI shared mode with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex->Format.nSamplesPerSec);
+  CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex->Format.wBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex->Samples.wValidBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex->Format.nChannels);
+  CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex->Format.nBlockAlign);
+  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex->Format.nAvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex->Samples.wSamplesPerBlock);
+  CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex->Format.cbSize);
+  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
+  CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex->dwChannelMask);
+  CLog::Log(LOGDEBUG, "  Periodicty      : %d", audioSinkBufferDurationMsec);
+
   if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_EVENTCALLBACK,
                                                audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex->Format, NULL)))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%s)", WASAPIErrToStr(hr));
     CoTaskMemFree(wfxex);
+    SAFE_RELEASE(m_pAudioClient);
     return false;
   }
 
+  hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
+  CLog::Log(LOGDEBUG,  __FUNCTION__": Requested Duration of Buffer : %fmsec", hnsLatency / 10000.0);
+  CLog::Log(LOGNOTICE, __FUNCTION__": WASAPI Shared Mode Sink Initialized Successfully!!!");
   CoTaskMemFree(wfxex);
   return true;
 }
@@ -1163,7 +1181,7 @@ initialize:
   }
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   CLog::Log(LOGDEBUG,  __FUNCTION__": Requested Duration of Buffer : %fmsec", hnsLatency / 10000.0);
-  CLog::Log(LOGNOTICE, __FUNCTION__": WASAPI Sink Initialized Successfully!!!");
+  CLog::Log(LOGNOTICE, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized Successfully!!!");
   return true;
 }
 
