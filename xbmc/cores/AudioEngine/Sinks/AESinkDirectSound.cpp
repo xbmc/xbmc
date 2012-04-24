@@ -197,7 +197,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
   // unsure if these are the right values
-  unsigned int uiFrameCount = format.m_sampleRate / 100;
+  unsigned int uiFrameCount = format.m_sampleRate / 10;
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * uiFrameCount;
   m_dwBufferLen = m_dwChunkSize * 16;
@@ -240,10 +240,10 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
   format.m_channelLayout = m_channelLayout;
-  format.m_dataFormat = AE_FMT_FLOAT;
   format.m_frames = uiFrameCount;
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
-  format.m_frameSize = sizeof(float) * format.m_channelLayout.Count();
+  format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? 2 : sizeof(float)) * format.m_channelLayout.Count();
+  format.m_dataFormat = AE_IS_RAW(format.m_dataFormat) ? AE_FMT_S16NE : AE_FMT_FLOAT;
 
   m_format = format;
   m_device = device;
@@ -252,6 +252,23 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_CacheLen = 0;
   m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   m_initialized = true;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing DirectSound with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Audio Device    : %s", device);
+  CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
+  CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : %d", wfxex.Samples.wValidBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Channel Count   : %d", wfxex.Format.nChannels);
+  CLog::Log(LOGDEBUG, "  Block Align     : %d", wfxex.Format.nBlockAlign);
+  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
+  CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
+  CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
+  CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
+  CLog::Log(LOGDEBUG, "  Frames          : %d", format.m_frames);
+  CLog::Log(LOGDEBUG, "  Frame Samples   : %d", format.m_frameSamples);
+  CLog::Log(LOGDEBUG, "  Frame Size      : %d", format.m_frameSize);
 
   return true;
 }
@@ -464,13 +481,20 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     /* In shared mode Windows tells us what format the audio must be in. */
     IAudioClient *pClient;
     hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&pClient);
-    HRESULT hr = pClient->GetMixFormat(&pwfxex);
+    if (FAILED(hr))
+      {
+        CLog::Log(LOGERROR, __FUNCTION__": Activate device failed (%s)", WASAPIErrToStr(hr));
+      }
+
+    //hr = pClient->GetMixFormat(&pwfxex);
+    hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
     if (SUCCEEDED(hr))
     {
-      deviceInfo.m_channels = layoutsByChCount[8 /*std::min((int)pwfxex->nChannels, 2)*/];
+      WAVEFORMATEX* smpwfxex = (WAVEFORMATEX*)varName.blob.pBlobData;
+      deviceInfo.m_channels = layoutsByChCount[std::min(smpwfxex->nChannels, (WORD) 2)];
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
       deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
-      deviceInfo.m_sampleRates.push_back(192000 /*pwfxex->nSamplesPerSec*/);
+      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 96000));
     }
     else
     {
