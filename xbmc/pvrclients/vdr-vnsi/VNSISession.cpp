@@ -151,9 +151,12 @@ bool cVNSISession::Login()
   catch (const char * str)
   {
     XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
-    m_socket->Close();
-    delete m_socket;
-    m_socket = NULL;
+    if (m_socket)
+    {
+      m_socket->Close();
+      delete m_socket;
+      m_socket = NULL;
+    }
     return false;
   }
 
