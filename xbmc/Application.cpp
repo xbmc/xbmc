@@ -2622,7 +2622,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      int volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
+      int volume = g_settings.m_nVolumeLevel;
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
@@ -5134,8 +5134,6 @@ void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
 
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = (int)(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 100.0f + 0.5f);
-  /* TODO: add once DRC is available
-  data["drc"] = (int)(((float)(g_settings.m_dynamicRangeCompressionLevel - VOLUME_DRC_MINIMUM)) / (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 100.0f + 0.5f);*/
   data["muted"] = g_settings.m_bMute;
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 }
@@ -5150,29 +5148,19 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
 
   // update our settings
   if (hardwareVolume > VOLUME_MAXIMUM)
-  {
-    g_settings.m_dynamicRangeCompressionLevel = hardwareVolume - VOLUME_MAXIMUM;
     g_settings.m_nVolumeLevel = VOLUME_MAXIMUM;
-  }
   else
-  {
-    g_settings.m_dynamicRangeCompressionLevel = 0;
     g_settings.m_nVolumeLevel = hardwareVolume;
-  }
 
   // and tell our player to update the volume
   if (m_pPlayer)
-  {
     m_pPlayer->SetVolume(g_settings.m_nVolumeLevel);
-    // TODO DRC
-//    m_pPlayer->SetDynamicRangeCompression(g_settings.m_dynamicRangeCompressionLevel);
-  }
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
-  return int(((float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+  return int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
 }
 
 int CApplication::GetSubtitleDelay() const
