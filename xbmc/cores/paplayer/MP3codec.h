@@ -71,7 +71,7 @@ private:
   virtual int Decode(int *out_len);
   virtual void Flush();
   int madx_init(madx_house* mxhouse);
-  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite, bool discard = false);
+  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite);
   void madx_deinit(madx_house* mxhouse);
   /* END decoder functions */
 
