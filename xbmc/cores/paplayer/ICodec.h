@@ -25,6 +25,9 @@
 #include "utils/StdString.h"
 #include "filesystem/File.h"
 
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+
 #define READ_EOF      -1
 #define READ_SUCCESS   0
 #define READ_ERROR     1
@@ -89,14 +92,22 @@ public:
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
+  // GetChannelInfo()
+  // Return the channel layout and count information in an CAEChannelInfo object
+  virtual CAEChannelInfo GetChannelInfo() {return CAEUtil::GuessChLayout(m_Channels);}
 
   int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
+  int m_EncodedSampleRate;
   int m_BitsPerSample;
-  int m_Channels;
+  enum AEDataFormat m_DataFormat;
   int m_Bitrate;
   CStdString m_CodecName;
   CReplayGain m_replayGain;
   XFILE::CFile m_file;
+
+protected:
+  int m_Channels; /* remove this soon, its being deprecated */
+
 };
 

@@ -63,6 +63,8 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool SkipNext();
+  virtual CAEChannelInfo GetChannelInfo();
+
 private:
 
   /* TODO decoder functions */
