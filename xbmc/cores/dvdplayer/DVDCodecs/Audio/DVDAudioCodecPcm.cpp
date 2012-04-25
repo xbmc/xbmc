@@ -293,18 +293,19 @@ int CDVDAudioCodecPcm::GetChannels()
   return m_iOutputChannels;
 }
 
-enum PCMChannels* CDVDAudioCodecPcm::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecPcm::GetChannelMap()
 {
-  static enum PCMChannels map[8][8] =
+  assert(m_iOutputChannels > 0 && m_iOutputChannels <= 8);
+  static enum AEChannel map[8][9] =
   {
-    /* MONO   */ {PCM_FRONT_CENTER                                                                                                                                                    },
-    /* STEREO */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                                     },
-    /* 3.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                                   },
-    /* 4.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                                   },
-    /* 5.0    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                                },
-    /* 5.1    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                                },
-    /* 7.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                                },
-    /* 7.1 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                }
+    /* MONO   */ {AE_CH_FC, AE_CH_NULL,                                                                      },
+    /* STEREO */ {AE_CH_FL, AE_CH_FR, AE_CH_NULL,                                                            },
+    /* 3.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_NULL,                                                  },
+    /* 4.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR , AE_CH_NULL,                                       },
+    /* 5.0    */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL , AE_CH_BR, AE_CH_NULL                              },
+    /* 5.1    */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_NULL,                   },
+    /* 7.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL , AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL          },
+    /* 7.1 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL}
   };
 
   return map[m_iOutputChannels - 1];
@@ -315,7 +316,7 @@ int CDVDAudioCodecPcm::GetSampleRate()
   return m_iSourceSampleRate;
 }
 
-int CDVDAudioCodecPcm::GetBitsPerSample()
+enum AEDataFormat CDVDAudioCodecPcm::GetDataFormat()
 {
-  return 16;
+  return AE_FMT_S16NE;
 }

@@ -24,9 +24,10 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#include "cores/AudioRenderers/IAudioRenderer.h"
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
+
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 
 #ifndef _LINUX
 enum CodecID;
@@ -58,11 +59,10 @@ public:
   float GetCurrentAttenuation();
   void Pause();
   void Resume();
-  bool Create(const DVDAudioFrame &audioframe, CodecID codec);
+  bool Create(const DVDAudioFrame &audioframe, CodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
-  double AddSilence(double delay);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
@@ -70,7 +70,10 @@ public:
   void Finish();
   void Drain();
 
-  IAudioRenderer* m_pAudioDecoder;
+  void SetSpeed(int iSpeed);
+  void SetResampleRatio(double ratio);
+
+  IAEStream *m_pAudioStream;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
@@ -78,11 +81,11 @@ protected:
   DWORD m_dwPacketSize;
   CCriticalSection m_critSection;
 
-  int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
   double m_SecondsPerByte;
   bool m_bPassthrough;
+  CAEChannelInfo m_channelLayout;
   bool m_bPaused;
 
   volatile bool& m_bStop;

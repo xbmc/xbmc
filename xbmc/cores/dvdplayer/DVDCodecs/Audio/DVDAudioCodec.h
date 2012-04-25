@@ -22,7 +22,7 @@
  */
 
 #include "system.h"
-#include "utils/PCMRemap.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
@@ -76,9 +76,14 @@ public:
   virtual int GetChannels() = 0;
 
   /*
+   * returns the nr of channels for the encoded audio stream
+   */
+  virtual int GetEncodedChannels() { return 0; }
+
+  /*
    * returns the channel mapping
    */
-  virtual enum PCMChannels* GetChannelMap() = 0;
+  virtual CAEChannelInfo GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream
@@ -86,9 +91,14 @@ public:
   virtual int GetSampleRate() = 0;
 
   /*
-   * returns the bitspersample for the decoded audio stream (eg 16 bits)
+   * returns the samplerate for the encoded audio stream
    */
-  virtual int GetBitsPerSample() = 0;
+  virtual int GetEncodedSampleRate() { return 0; } 
+
+  /*
+   * returns the data format for the decoded audio stream (eg AE_FMT_S16LE)
+   */
+  virtual enum AEDataFormat GetDataFormat() = 0;
 
   /*
    * should return the average input bit rate 
