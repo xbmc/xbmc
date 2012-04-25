@@ -94,7 +94,6 @@ void CSettings::Initialize()
   m_bAddonForeignFilter = false;
 
   m_nVolumeLevel = 0;
-  m_dynamicRangeCompressionLevel = 0;
   m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
@@ -724,7 +723,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   {
     XMLUtils::GetBoolean(pElement, "mute", m_bMute);
     GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
-    GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -902,7 +900,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!pNode) return false;
   XMLUtils::SetBoolean(pNode, "mute", m_bMute);
   XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
-  XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
 
   SaveCalibration(pRoot);
 
