@@ -393,7 +393,7 @@ void PAPlayer::Process()
       double percent = (100.0 / buffer) * delay;
       if (percent > 75.0)
       {
-        delay = ((buffer / 100.0) * (100.0 - percent)) * 1000.0;
+        delay = ((buffer * 0.01) * (100.0 - percent)) * 1000.0;
         Sleep(MathUtils::round_int(delay));
       }
     }
@@ -675,10 +675,11 @@ __int64 PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = (double)m_currentStream->m_framesSent / (double)(m_currentStream->m_sampleRate) * 1000.0f;
+  double time = (double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate;
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
-  return (__int64)time;
+
+  return (__int64)(time * 1000.0);
 }
 
 __int64 PAPlayer::GetTotalTime64()
