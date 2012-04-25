@@ -169,6 +169,9 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
+#ifdef HAVE_ALSA
+#define HAS_ALSA
+#endif
 #endif
 
 #ifdef HAVE_LIBSSH
