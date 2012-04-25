@@ -118,8 +118,6 @@ private:
   bool m_IgnoreLast;      // Ignore first samples if this is true (for gapless playback)
   int m_IgnoredBytes;     // amount of samples ignored thus far
 
-  int m_BitsPerSampleInternal;
-
   DllLibMad m_dll;
 };
 
