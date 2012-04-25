@@ -103,8 +103,6 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     m_pAudioDecoder->Pause();
 
   m_iBufferSize = 0;
-  SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
-
   return true;
 }
 
@@ -288,12 +286,6 @@ void CDVDAudio::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioDecoder) m_pAudioDecoder->SetCurrentVolume(volume);
-}
-
-void CDVDAudio::SetDynamicRangeCompression(long drc)
-{
-  CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
 }
 
 float CDVDAudio::GetCurrentAttenuation()
