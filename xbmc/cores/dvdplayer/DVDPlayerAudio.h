@@ -93,9 +93,6 @@ public:
   CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
   virtual ~CDVDPlayerAudio();
 
-  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
-  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
-
   bool OpenStream(CDVDStreamInfo &hints);
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   void CloseStream(bool bWaitForBuffers);

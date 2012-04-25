@@ -25,7 +25,6 @@
   #include "config.h"
 #endif
 #include "cores/AudioRenderers/IAudioRenderer.h"
-#include "cores/IAudioCallback.h"
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
 
@@ -54,9 +53,6 @@ public:
   CDVDAudio(volatile bool& bStop);
   ~CDVDAudio();
 
-  void RegisterAudioCallback(IAudioCallback* pCallback);
-  void UnRegisterAudioCallback();
-
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);
   float GetCurrentAttenuation();
@@ -77,7 +73,6 @@ public:
   IAudioRenderer* m_pAudioDecoder;
 protected:
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
-  IAudioCallback* m_pCallback;
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
   DWORD m_iBufferSize;
   DWORD m_dwPacketSize;
