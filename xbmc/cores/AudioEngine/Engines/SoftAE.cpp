@@ -931,36 +931,35 @@ void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
 
 void CSoftAE::RunOutputStage()
 {
-  if (m_buffer.Used() / m_sinkFormat.m_frameSize < m_sinkFormat.m_frames)
+  const size_t needBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
+  if (m_buffer.Used() < needBytes)
     return;
 
-  const unsigned int rSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
-  int wroteFrames;
-
-  if (m_remappedSize < rSamples)
+  const unsigned int needFrames = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
+  if (m_remappedSize < needFrames)
   {
     _aligned_free(m_remapped);
-    m_remapped = (float *)_aligned_malloc(rSamples * sizeof(float), 16);
-    m_remappedSize = rSamples;
+    m_remapped = (float *)_aligned_malloc(needFrames * sizeof(float), 16);
+    m_remappedSize = needFrames;
   }
 
   m_remap.Remap(
-    (float *)m_buffer.Raw(m_sinkFormat.m_frames * m_sinkFormat.m_frameSize),
+    (float *)m_buffer.Raw(needBytes),
     m_remapped,
     m_sinkFormat.m_frames
   );
-  FinalizeSamples(m_remapped, rSamples);
+  FinalizeSamples(m_remapped, needFrames);
 
+  int wroteFrames;
   if (m_convertFn)
   {
-    unsigned int newSize = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
-    if (m_convertedSize < newSize)
+    if (m_convertedSize < needBytes)
     {
       _aligned_free(m_converted);
-      m_converted = (uint8_t *)_aligned_malloc(newSize, 16);
-      m_convertedSize = newSize;
+      m_converted = (uint8_t *)_aligned_malloc(needBytes, 16);
+      m_convertedSize = needBytes;
     }
-    m_convertFn(m_remapped, rSamples, m_converted);
+    m_convertFn(m_remapped, needFrames, m_converted);
     wroteFrames = m_sink->AddPackets(m_converted, m_sinkFormat.m_frames);
   }
   else
