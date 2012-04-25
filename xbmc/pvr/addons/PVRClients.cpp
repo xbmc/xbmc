@@ -369,7 +369,7 @@ int64_t CPVRClients::GetStreamPosition(void)
 
   if(GetCurrentAddonCapabilities().bSupportsTimeshift && m_bIsPlayingLiveTV)
     streamPos = m_clientMap[m_currentChannel.ClientID()]->PositionLiveStream();
-  if (m_bIsPlayingLiveTV)
+  else if (m_bIsPlayingLiveTV)
     streamPos = 0;
   else if (m_bIsPlayingRecording)
     streamPos = m_clientMap[m_currentRecording.m_iClientId]->PositionRecordedStream();
