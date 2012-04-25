@@ -1853,7 +1853,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
     xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-    xbmc/cores/AudioRenderers/Makefile \
     xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     lib/timidity/Makefile \
