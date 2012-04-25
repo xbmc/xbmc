@@ -37,7 +37,6 @@ using namespace MUSIC_INFO;
 #define CHANNELSPERSAMPLE 2
 #define BITSPERSAMPLE     32
 #define OUTPUTFRAMESIZE   (SAMPLESPERFRAME * CHANNELSPERSAMPLE * (BITSPERSAMPLE >> 3))
-#define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
 
 MP3Codec::MP3Codec()
 {
@@ -486,7 +485,7 @@ int MP3Codec::madx_init (madx_house *mxhouse )
   return(1);
 }
 
-madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite, bool discard)
+madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite)
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
@@ -514,27 +513,25 @@ madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrit
 
   m_dll.mad_synth_frame( &mxhouse->synth, &mxhouse->frame );
   
-  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)BITSPERSAMPLE/8;
+  mxstat->framepcmsize = mxhouse->synth.pcm.length * mxhouse->synth.pcm.channels * (int)(BITSPERSAMPLE >> 3);
   mxhouse->frame_cnt++;
   m_dll.mad_timer_add( &mxhouse->timer, mxhouse->frame.header.duration );
-  float *data_f = (float *)mxhouse->output_ptr;
-  if (!discard)
+
+  int32_t *dest = (int32_t*)mxhouse->output_ptr;
+  for(int i=0; i < mxhouse->synth.pcm.length; i++)
   {
-    for( int i=0; i < mxhouse->synth.pcm.length; i++ )
-    {
-      // Left channel
-      *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[0][i]);
-      mxhouse->output_ptr += sizeof(float);
-      // Right channel
-      if(MAD_NCHANNELS(&mxhouse->frame.header)==2)
-      {
-        *data_f++ = mad_scale_float(mxhouse->synth.pcm.samples[1][i]);
-        mxhouse->output_ptr += sizeof(float);
-      }
-    }
-    // Tell calling code buffer size
-    mxstat->write_size = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
+    // Left channel
+    *dest++ = (int32_t)(mxhouse->synth.pcm.samples[0][i] << 2);
+
+    // Right channel
+    if(MAD_NCHANNELS(&mxhouse->frame.header) == 2)
+      *dest++ = (int32_t)(mxhouse->synth.pcm.samples[1][i] << 2);
   }
+
+  // Tell calling code buffer size
+  mxhouse->output_ptr = (unsigned char*)dest;
+  mxstat->write_size  = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
+
   return(FLUSH_BUFFER);
 }
 
