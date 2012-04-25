@@ -786,6 +786,28 @@ double CSoftAE::GetDelay()
   return delay + (buffered * m_sinkFormatSampleRateMul);
 }
 
+double CSoftAE::GetCacheTime()
+{
+  CSharedLock sinkLock(m_sinkLock);
+
+  double time;
+  time  = (double)m_buffer.Free() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
+  time += m_sink->GetCacheTime();
+
+  return time;
+}
+
+double CSoftAE::GetCacheTotal()
+{
+  CSharedLock sinkLock(m_sinkLock);
+
+  double total;
+  total  = (double)m_buffer.Size() * m_sinkFormatFrameSizeMul * m_sinkFormatSampleRateMul;
+  total += m_sink->GetCacheTotal();
+
+  return total;
+}
+
 float CSoftAE::GetVolume()
 {
   return m_volume;

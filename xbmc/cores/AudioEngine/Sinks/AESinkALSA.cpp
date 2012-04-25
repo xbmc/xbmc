@@ -342,6 +342,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
 
   snd_pcm_hw_params_get_period_size(hw_params_copy, &periodSize, NULL);
   snd_pcm_hw_params_get_buffer_size(hw_params_copy, &bufferSize);
+  
 
   CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Got: periodSize %lu, periods %u, bufferSize %lu", periodSize, periods, bufferSize);
 
@@ -350,6 +351,8 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   format.m_frames       = periodSize;
   format.m_frameSamples = periodSize * format.m_channelLayout.Count();
   format.m_frameSize    = snd_pcm_frames_to_bytes(m_pcm, 1);
+
+  m_bufferSize = (unsigned int)bufferSize;
 
   if (AE_IS_RAW(m_initFormat.m_dataFormat))
     m_timeout = 100;
@@ -420,6 +423,33 @@ double CAESinkALSA::GetDelay()
   }
 
   return (double)frames * m_formatSampleRateMul;
+}
+
+double CAESinkALSA::GetCacheTime()
+{
+  if (!m_pcm)
+    return 0.0;
+
+  int space = snd_pcm_avail_update(m_pcm);
+  if (space == 0)
+  {
+    snd_pcm_state_t state = snd_pcm_state(m_pcm);
+    if (state < 0)
+    {
+      HandleError("snd_pcm_state", state);
+      space = m_bufferSize;
+    }
+
+    if (state != SND_PCM_STATE_RUNNING && state != SND_PCM_STATE_PREPARED)
+      space = m_bufferSize;
+  }
+
+  return (double)(m_bufferSize - space) * m_formatSampleRateMul;
+}
+
+double CAESinkALSA::GetCacheTotal()
+{
+  return (double)m_bufferSize * m_formatSampleRateMul;
 }
 
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames)

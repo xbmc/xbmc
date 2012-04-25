@@ -137,12 +137,13 @@ void CSoftAEStream::Initialize()
   m_aeChannelLayout = AE.GetChannelLayout();
   m_aeBytesPerFrame = AE_IS_RAW(m_initDataFormat) ? m_bytesPerFrame : (m_samplesPerFrame * sizeof(float));
   m_waterLevel      = AE.GetSampleRate();
+  m_refillBuffer    = m_waterLevel;
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
   m_format.m_encodedRate   = m_initEncodedSampleRate;
   m_format.m_channelLayout = m_initChannelLayout;
-  m_format.m_frames        = m_initSampleRate;
+  m_format.m_frames        = m_initSampleRate / 2;
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelLayout.Count();
   m_format.m_frameSize     = m_bytesPerFrame;
 
@@ -477,6 +478,7 @@ double CSoftAEStream::GetCacheTime()
   double time;
   time  = (double)(m_inputBuffer.Free() / m_format.m_frameSize) / (double)m_format.m_sampleRate;
   time += (double)(m_waterLevel - m_refillBuffer)               / (double)AE.GetSampleRate();
+  time += AE.GetCacheTime();
   return time;
 }
 
@@ -488,6 +490,7 @@ double CSoftAEStream::GetCacheTotal()
   double total;
   total  = (double)(m_inputBuffer.Size() / m_format.m_frameSize) / (double)m_format.m_sampleRate;
   total += (double)m_waterLevel                                  / (double)AE.GetSampleRate();
+  total += AE.GetCacheTotal();
   return total;
 }
 

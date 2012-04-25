@@ -58,6 +58,16 @@ public:
   virtual double GetDelay() = 0;
 
   /*
+    This method returns the time in seconds till the sink's cache is full
+  */
+  virtual double GetCacheTime() = 0;
+
+  /*
+    This method returns the total length of the cache in seconds
+  */
+  virtual double GetCacheTotal() = 0;
+
+  /*
     Adds packets to be sent out, must block after at-least one block is being rendered
   */
   virtual unsigned int AddPackets(uint8_t *data, unsigned int frames) = 0;

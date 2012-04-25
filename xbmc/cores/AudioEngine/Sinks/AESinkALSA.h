@@ -46,6 +46,8 @@ public:
 
   virtual void         Stop            ();
   virtual double       GetDelay        ();
+  virtual double       GetCacheTime    ();
+  virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
   virtual void         Drain           ();
 
@@ -58,6 +60,7 @@ private:
   std::string       m_initDevice;
   AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
+  unsigned int      m_bufferSize;
   double            m_formatSampleRateMul;
   bool              m_passthrough;
   CAEChannelInfo    m_channelLayout;
