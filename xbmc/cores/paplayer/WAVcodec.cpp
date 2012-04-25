@@ -48,6 +48,7 @@ WAVCodec::WAVCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_iDataStart=0;
   m_iDataLen=0;
   m_Bitrate = 0;
@@ -98,8 +99,16 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       m_Channels      = Endian_SwapLE16(wfx.Format.nChannels     );
       m_BitsPerSample = Endian_SwapLE16(wfx.Format.wBitsPerSample);
 
+      switch(m_BitsPerSample)
+      {
+        case 8 : m_DataFormat = AE_FMT_U8   ;  break;
+        case 16: m_DataFormat = AE_FMT_S16LE;  break;
+        case 24: m_DataFormat = AE_FMT_S24NE3; break;
+        case 32: m_DataFormat = AE_FMT_FLOAT;  break;
+      }
+
       CLog::Log(LOGINFO, "WAVCodec::Init - Sample Rate: %d, Bits Per Sample: %d, Channels: %d", m_SampleRate, m_BitsPerSample, m_Channels);
-      if ((m_SampleRate == 0) || (m_Channels == 0) || (m_BitsPerSample == 0))
+      if ((m_SampleRate == 0) || (m_Channels == 0) || (m_BitsPerSample == 0) || (m_DataFormat == AE_FMT_INVALID))
       {
         CLog::Log(LOGERROR, "WAVCodec::Init - Invalid data in WAVE header");
         return false;

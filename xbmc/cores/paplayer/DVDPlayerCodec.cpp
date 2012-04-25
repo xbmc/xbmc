@@ -21,6 +21,7 @@
 
 #include "DVDPlayerCodec.h"
 #include "Util.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
@@ -151,10 +152,12 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
       ++nErrors;
 
-    // We always ask ffmpeg to return s16le
-    m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
+    m_DataFormat    = m_pAudioCodec->GetDataFormat();
+    m_BitsPerSample = CAEUtil::DataFormatToBits(m_DataFormat);
     m_SampleRate = m_pAudioCodec->GetSampleRate();
+    m_EncodedSampleRate = m_pAudioCodec->GetEncodedSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
+    m_ChannelInfo = m_pAudioCodec->GetChannelMap();
 
   }
   if (nErrors >= 10)

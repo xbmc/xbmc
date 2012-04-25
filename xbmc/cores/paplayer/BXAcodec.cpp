@@ -57,6 +57,7 @@ bool BXACodec::Init(const CStdString &strFile, unsigned int filecache)
   m_BitsPerSample = bxah.bitsPerSample;
   m_TotalTime = bxah.durationMs;
   m_Bitrate = bxah.sampleRate * bxah.channels * bxah.bitsPerSample;
+  m_DataFormat = AE_FMT_S16LE;
 
   if (m_SampleRate == 0 || m_Channels == 0 || m_BitsPerSample == 0)
   {

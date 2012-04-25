@@ -30,6 +30,7 @@ FLACCodec::FLACCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_DataFormat = AE_FMT_INVALID;
   m_TotalTime=0;
   m_Bitrate = 0;
   m_CodecName = "FLAC";
@@ -87,7 +88,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   //  These are filled by the metadata callback
-  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0)
+  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0 || m_DataFormat == AE_FMT_INVALID)
   {
     CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu, MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
     FreeDecoder();
@@ -313,9 +314,31 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, cons
 
   if (metadata->type==FLAC__METADATA_TYPE_STREAMINFO)
   {
+    static enum AEChannel map[6][7] = {
+      {AE_CH_FC, AE_CH_NULL},
+      {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_NULL},
+      {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL, AE_CH_BR, AE_CH_NULL},
+      {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_NULL}
+    };
+
+    /* channel counts greater then 6 are undefined */
+    if (metadata->data.stream_info.channels > 6)
+      pThis->m_ChannelInfo = CAEUtil::GuessChLayout(metadata->data.stream_info.channels);
+    else
+      pThis->m_ChannelInfo = CAEChannelInfo(map[metadata->data.stream_info.channels - 1]);
+
     pThis->m_SampleRate    = metadata->data.stream_info.sample_rate;
     pThis->m_Channels      = metadata->data.stream_info.channels;
     pThis->m_BitsPerSample = metadata->data.stream_info.bits_per_sample;
+    switch(pThis->m_BitsPerSample)
+    {
+      case  8: pThis->m_DataFormat = AE_FMT_U8;     break;
+      case 16: pThis->m_DataFormat = AE_FMT_S16NE;  break;
+      case 24: pThis->m_DataFormat = AE_FMT_S24NE3; break;
+      case 32: pThis->m_DataFormat = AE_FMT_FLOAT;  break;
+    }
     pThis->m_TotalTime     = (__int64)metadata->data.stream_info.total_samples * 1000 / metadata->data.stream_info.sample_rate;
     pThis->m_MaxFrameSize  = metadata->data.stream_info.max_blocksize*(pThis->m_BitsPerSample/8)*pThis->m_Channels;
   }

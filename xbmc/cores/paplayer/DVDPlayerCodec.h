@@ -40,6 +40,7 @@ public:
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool CanSeek();
+  virtual CAEChannelInfo GetChannelInfo() {return m_ChannelInfo;}
 
   void SetContentType(const CStdString &strContent);
 
@@ -57,6 +58,8 @@ private:
 
   BYTE *m_decoded;
   int  m_nDecodedLen;
+
+  CAEChannelInfo m_ChannelInfo;
 };
 
 #endif

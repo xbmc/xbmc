@@ -35,6 +35,7 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
+  virtual CAEChannelInfo GetChannelInfo() {return m_ChannelInfo;}
 
 private:
   //  I/O callbacks for the flac decoder
@@ -54,4 +55,5 @@ private:
   int m_BufferSize;                   //  size of buffer is filled with decoded audio data
   int m_MaxFrameSize;                 //  size of a single decoded frame
   FLAC__StreamDecoder* m_pFlacDecoder;
+  CAEChannelInfo m_ChannelInfo;
 };

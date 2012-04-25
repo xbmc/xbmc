@@ -28,6 +28,7 @@ VGMCodec::VGMCodec()
   m_CodecName = "VGM";
   m_vgm = 0;
   m_iDataPos = -1;
+  m_DataFormat = AE_FMT_INVALID;
 }
 
 VGMCodec::~VGMCodec()
@@ -51,6 +52,13 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
   {
     CLog::Log(LOGERROR,"%s: error opening file %s!",__FUNCTION__,strFile.c_str());
     return false;
+  }
+
+  switch (m_BitsPerSample)
+  {
+    case  8: m_DataFormat = AE_FMT_U8   ; break;
+    case 16: m_DataFormat = AE_FMT_S16NE; break;
+    case 32: m_DataFormat = AE_FMT_FLOAT; break;
   }
 
   m_TotalTime = (__int64)m_dll.GetLength(m_vgm);
