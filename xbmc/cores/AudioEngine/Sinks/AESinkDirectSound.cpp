@@ -300,10 +300,43 @@ void CAESinkDirectSound::Deinitialize()
 
 bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const std::string device)
 {
-  return m_initialized && m_device == device                  &&
-          m_format.m_sampleRate    == format.m_sampleRate     &&
-          m_format.m_dataFormat    == format.m_dataFormat     &&
-          m_format.m_channelLayout == format.m_channelLayout;
+  if (!m_initialized)
+    return false;
+
+  u_int notCompatible         = 0;
+  const u_int numTests        = 6;
+  std::string strDiffBecause ("");
+  static const char* compatibleParams[numTests] = {":Devices",
+                                                   ":Channels",
+                                                   ":Sample Rates",
+                                                   ":Data Formats",
+                                                   ":Bluray Formats",
+                                                   ":Passthrough Formats"};
+
+  notCompatible = (notCompatible  +!((AE_IS_RAW(format.m_dataFormat)  == AE_IS_RAW(m_encodedFormat))        ||
+                                     (!AE_IS_RAW(format.m_dataFormat) == !AE_IS_RAW(m_encodedFormat))))     << 1;
+  notCompatible = (notCompatible  +!((format.m_dataFormat             == AE_FMT_EAC3)                       ||
+                                     (format.m_dataFormat             == AE_FMT_DTSHD                       ||
+                                     (format.m_dataFormat             == AE_FMT_TRUEHD))))                  << 1;
+  notCompatible = (notCompatible  + !(format.m_dataFormat             == m_format.m_dataFormat))            << 1;
+  notCompatible = (notCompatible  + !(format.m_sampleRate             == m_format.m_sampleRate))            << 1;
+  notCompatible = (notCompatible  + !(format.m_channelLayout.Count()  == m_format.m_channelLayout.Count())) << 1;
+  notCompatible = (notCompatible  + !(m_device                        == device));
+
+  if (!notCompatible)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__": Formats compatible - reusing existing sink");
+    return true;
+  }
+
+  for (int i = 0; i < numTests ; i++)
+  {
+    strDiffBecause += (notCompatible & 0x01) ? (std::string) compatibleParams[i] : "";
+    notCompatible    = notCompatible >> 1;
+  }
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Formats Incompatible due to different %s", strDiffBecause.c_str());
+  return false;
 }
 
 unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames)

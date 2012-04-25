@@ -57,8 +57,9 @@ private:
   LPDIRECTSOUND8      m_pDSound;
 
   AEAudioFormat       m_format;
+  enum AEDataFormat   m_encodedFormat;
   CAEChannelInfo      m_channelLayout;
-  std::string          m_device;
+  std::string         m_device;
 
   unsigned int        m_AvgBytesPerSec;
 
