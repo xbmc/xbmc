@@ -271,9 +271,6 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
-#endif
 #ifdef TARGET_WINDOWS
 #include <shlobj.h>
 #include "win32util.h"
@@ -644,10 +641,6 @@ bool CApplication::Create()
 
 #if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
   sdlFlags |= SDL_INIT_VIDEO;
-#endif
-
-#ifdef HAS_SDL_AUDIO
-  sdlFlags |= SDL_INIT_AUDIO;
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
@@ -3874,12 +3867,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  // Workaround for bug/quirk in SDL_Mixer on OSX.
-  // TODO: Remove after GUI Sounds redux
-#if defined(__APPLE__) || defined(_LINUX)
-  g_audioManager.Enable(false);
-#endif
-
   bool bResult;
   if (m_pPlayer)
   {
@@ -5149,11 +5136,7 @@ void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
     iValue = (long)((float)iValue * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
 
   SetHardwareVolume(iValue);
-#ifndef HAS_SDL_AUDIO
-  g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
-#else
   g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-#endif
 
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = (int)(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 100.0f + 0.5f);

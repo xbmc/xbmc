@@ -792,7 +792,6 @@ AS_CASE([x$use_libbluray],
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
-    AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
@@ -816,7 +815,6 @@ else
     PKG_CHECK_MODULES([SDL],   [sdl],
       [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
       AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
