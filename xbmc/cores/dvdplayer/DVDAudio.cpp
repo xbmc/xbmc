@@ -74,7 +74,13 @@ void CDVDAudio::UnRegisterAudioCallback()
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
+  CLog::Log(LOGNOTICE,
+    "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
+    codec,
+    audioframe.channel_count,
+    audioframe.sample_rate,
+    audioframe.passthrough ? "pass-through" : "no pass-through"
+  );
 
   // if passthrough isset do something else
   CSingleLock lock (m_critSection);
@@ -93,11 +99,11 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     }
   }
 
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, encoded);
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channel_count, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, encoded);
 
   if (!m_pAudioDecoder) return false;
 
-  m_iChannels = audioframe.channels;
+  m_iChannels = audioframe.channel_count;
   m_iBitrate = audioframe.sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
@@ -250,7 +256,7 @@ double CDVDAudio::AddSilence(double delay)
   CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - %f seconds", delay);
   DVDAudioFrame audioframe;
   audioframe.passthrough     = m_bPassthrough;
-  audioframe.channels        = m_iChannels;
+  audioframe.channel_count   = m_iChannels;
   audioframe.sample_rate     = m_iBitrate;
   audioframe.bits_per_sample = m_iBitsPerSample;
   audioframe.size            = m_iChannels * (m_iBitsPerSample>>3);
@@ -368,7 +374,7 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
   if(audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if(audioframe.channels != m_iChannels
+  if(audioframe.channel_count != m_iChannels
   || audioframe.sample_rate != m_iBitrate
   || audioframe.bits_per_sample != m_iBitsPerSample)
     return false;
