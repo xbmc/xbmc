@@ -465,6 +465,8 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
 
+  AddBool(ao, "audiooutput.guisoundwhileplayback", 34120, true);
+
   CSettingsCategory* in = AddCategory(4, "input", 14094);
   AddString(in, "input.peripherals", 35000, "", BUTTON_CONTROL_STANDARD);
 #if defined(__APPLE__)

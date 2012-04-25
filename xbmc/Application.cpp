@@ -2321,7 +2321,8 @@ bool CApplication::OnKey(const CKey& key)
     CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   //  Play a sound based on the action
-  g_audioManager.PlayActionSound(action);
+  if (!IsPlaying() || g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"))
+    g_audioManager.PlayActionSound(action);
 
   return OnAction(action);
 }
@@ -2794,7 +2795,8 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_BUTTON, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_audioManager.PlayActionSound(action);
+      if (!IsPlaying() || g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"))
+        g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return OnAction(action);
@@ -2823,7 +2825,8 @@ bool CApplication::ProcessGamepad(float frameTime)
       }
 
       CAction action(actionID, fullrange ? (g_Joystick.GetAmount() + 1.0f)/2.0f : fabs(g_Joystick.GetAmount()), 0.0f, actionName);
-      g_audioManager.PlayActionSound(action);
+      if (!IsPlaying() || g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"))
+        g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return OnAction(action);
@@ -2855,7 +2858,8 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, g_Joystick.GetJoystick().c_str(), bid, JACTIVE_HAT, actionID, actionName, fullrange))
     {
       CAction action(actionID, 1.0f, 0.0f, actionName);
-      g_audioManager.PlayActionSound(action);
+      if (!IsPlaying() || g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"))
+        g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
       return OnAction(action);
@@ -3155,7 +3159,8 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, actionID, actionName, fullRange))
    {
      CAction action(actionID, fAmount, 0.0f, actionName, holdTime);
-     g_audioManager.PlayActionSound(action);
+     if (!IsPlaying() || g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"))
+       g_audioManager.PlayActionSound(action);
      return OnAction(action);
    }
    else
