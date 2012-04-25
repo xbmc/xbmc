@@ -35,7 +35,6 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   : m_bStop(bStop)
 {
   m_pAudioDecoder = NULL;
-  m_pCallback = NULL;
   m_iBufferSize = 0;
   m_dwPacketSize = 0;
   m_pBuffer = NULL;
@@ -58,19 +57,6 @@ CDVDAudio::~CDVDAudio()
   free(m_pBuffer);
 }
 
-void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = pCallback;
-  if (m_pCallback && m_pAudioDecoder && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
-}
-
-void CDVDAudio::UnRegisterAudioCallback()
-{
-  CSingleLock lock (m_critSection);
-  m_pCallback = NULL;
-}
 
 bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
@@ -117,10 +103,6 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     m_pAudioDecoder->Pause();
 
   m_iBufferSize = 0;
-
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
-
   SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
 
   return true;
@@ -196,10 +178,6 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   DWORD total = len;
   DWORD copied;
-
-  //Feed audio to the visualizer if necessary.
-  if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnAudioData(data, len);
 
   // When paused, we need to buffer all data as renderers don't need to accept it
   if (m_bPaused)
