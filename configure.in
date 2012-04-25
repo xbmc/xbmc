@@ -77,6 +77,7 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
+alsa_disabled="== ALSA support disabled. =="
 rsxs_enabled="== RSXS enabled. =="
 rsxs_disabled="== RSXS disabled. =="
 projectm_enabled="== ProjectM enabled. =="
@@ -276,6 +277,12 @@ AC_ARG_ENABLE([ccache],
   [enable building with ccache feature (default is auto)])],
   [use_ccache=$enableval],
   [use_ccache=auto])
+
+AC_ARG_ENABLE([alsa],
+  [AS_HELP_STRING([--disable-alsa],
+  [disable ALSA support (only for linux/freebsd)])],
+  [use_alsa=$enableval],
+  [use_alsa=yes])
 
 AC_ARG_ENABLE([pulse],
   [AS_HELP_STRING([--enable-pulse],
@@ -864,6 +871,17 @@ fi
 # Optical
 if test "$use_optical_drive" = "yes"; then
   AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
+fi
+
+# Alsa
+if test "$use_alsa" = "yes" && test "$host_vendor" != "apple"; then
+  PKG_CHECK_MODULES([ALSA],  [alsa],
+    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  AC_DEFINE([HAS_ALSA], [1], [Define to 0 to disable ALSA support])
+else
+  use_alsa="no"
+  AC_MSG_RESULT($alsa_disabled)
 fi
 
 # PulseAudio
@@ -1704,6 +1722,12 @@ if test "x$use_ccache" != "xno"; then
   fi
 else
   final_message="$final_message\n  ccache:\tNo"
+fi
+
+if test "$use_alsa" = "yes"; then
+  final_message="$final_message\n  ALSA Support:\tYes"
+else
+  final_message="$final_message\n  ALSA Support:\tNo"
 fi
 
 if test "x$use_pulse" != "xno"; then
