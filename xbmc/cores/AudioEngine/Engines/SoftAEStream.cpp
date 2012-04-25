@@ -247,7 +247,7 @@ unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
   if (m_draining)
   {
     /* if the stream has finished draining, cork it */
-    if (!m_packet->data.Used() && m_outBuffer.empty())
+    if (m_packet && !m_packet->data.Used() && m_outBuffer.empty())
       m_draining = false;
     else
       return 0;
