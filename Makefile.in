@@ -31,6 +31,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/cdrip/cdrip.a \
                    xbmc/commons/commons.a \
                    xbmc/cores/AudioRenderers/audiorenderers.a \
+                   xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
