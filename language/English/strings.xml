@@ -220,7 +220,7 @@
   <string id="249">Music</string>
   <string id="250">Visualization</string>
   <string id="251">Select destination directory</string>
-  <string id="252">Output stereo to all speakers</string>
+  <string id="252">Enable stereo upmix</string>
   <string id="253">Number of channels</string>
   <string id="254">- DTS capable receiver</string>
   <string id="255">CDDB</string>
