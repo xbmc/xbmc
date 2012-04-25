@@ -1278,7 +1278,17 @@ msgstr ""
 msgid "Boost volume level on downmix"
 msgstr ""
 
-#empty strings from id 347 to 349
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr ""
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr ""
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr ""
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -1520,7 +1530,7 @@ msgstr ""
 msgid "Humidity"
 msgstr ""
 
-#empty strings from id 407 to 408
+#empty strings from 407 to 408
 
 #: id:409
 msgid "Defaults"
@@ -9343,8 +9353,27 @@ msgstr ""
 msgid "7.1"
 msgstr ""
 
-#34112-34200 reserved for future use
-#empty strings from id 34111 to 34200
+#34111-34119 reserved for future use
+#empty strings from id 34111 to 34119
+
+#: id:34120
+msgid "Play GUI sounds"
+msgstr ""
+
+#: id:34121
+msgid "Only when playback stopped"
+msgstr ""
+
+#: id:34122
+msgid "Always"
+msgstr ""
+
+#: id:34123
+msgid "Never"
+msgstr ""
+
+#34124-34200 reserved for future use
+#empty strings from id 34124 to 34200
 
 #: id:34201
 msgid "Can't find a next item to play"
