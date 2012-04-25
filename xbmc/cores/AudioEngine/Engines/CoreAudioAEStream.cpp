@@ -25,7 +25,7 @@
 
 #include "Interfaces/AE.h"
 #include "AEFactory.h"
-#include "Utils/AEUtil.h"
+#include "AEUtil.h"
 
 #include "CoreAudioAE.h"
 #include "CoreAudioAEStream.h"
@@ -518,6 +518,11 @@ double CCoreAudioAEStream::GetDelay()
   return delay;
 }
 
+bool CCoreAudioAEStream::IsBuffering()
+{
+  return m_Buffer->GetReadSize() == 0;
+}
+
 double CCoreAudioAEStream::GetCacheTime()
 {
   if (m_delete || !m_Buffer)
@@ -534,11 +539,6 @@ double CCoreAudioAEStream::GetCacheTotal()
   return (double)m_Buffer->GetMaxSize() / (double)m_AvgBytesPerSec;
 }
 
-bool CCoreAudioAEStream::IsBuffering()
-{
-  // TODO: implement me
-  return false;
-}
 
 bool CCoreAudioAEStream::IsPaused()
 {

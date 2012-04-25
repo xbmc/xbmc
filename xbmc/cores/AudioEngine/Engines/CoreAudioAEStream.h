@@ -61,6 +61,7 @@ public:
   virtual unsigned int AddData(void *data, unsigned int size);
   unsigned int GetFrames(uint8_t *buffer, unsigned int size);
   virtual double GetDelay();
+  virtual bool   IsBuffering();
   virtual double GetCacheTime();
   virtual double GetCacheTotal();
 
@@ -69,7 +70,6 @@ public:
   virtual bool IsDrained();
   bool IsDestroyed();
   bool IsValid();
-  virtual bool IsBuffering();
 
   virtual void Pause();
   virtual void Resume();
