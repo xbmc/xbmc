@@ -53,6 +53,7 @@ public:
   virtual unsigned int      GetSpace        ();
   virtual unsigned int      AddData         (void *data, unsigned int size);
   virtual double            GetDelay        ();
+  virtual double            IsBuffering     () { return m_refillBuffer > 0; }
   virtual double            GetCacheTime    ();
   virtual double            GetCacheTotal   ();
 
