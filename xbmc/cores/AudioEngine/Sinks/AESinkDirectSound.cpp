@@ -410,9 +410,25 @@ double CAESinkDirectSound::GetDelay()
    // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
-  double delay  = 0.0;
-  delay += (double)m_CacheLen / (double)m_AvgBytesPerSec;
+  double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
   return delay;
+}
+
+double CAESinkDirectSound::GetCacheTime()
+{
+  if (!m_initialized)
+    return 0.0;
+
+   // Make sure we know how much data is in the cache
+  UpdateCacheStatus();
+
+  double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
+  return delay;
+}
+
+double CAESinkDirectSound::GetCacheTotal()
+{
+  return (double)m_dwBufferLen / (double)m_AvgBytesPerSec;
 }
 
 void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)

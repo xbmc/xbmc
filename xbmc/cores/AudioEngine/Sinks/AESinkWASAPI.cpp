@@ -345,7 +345,8 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
 double CAESinkWASAPI::GetDelay()
 {
   HRESULT hr;
-  if (!m_initialized) return 0.0;
+  if (!m_initialized)
+    return 0.0;
 
   if (m_isExclusive)
   {
@@ -361,6 +362,30 @@ double CAESinkWASAPI::GetDelay()
   UINT32 frames;
   m_pAudioClient->GetCurrentPadding(&frames);
   return (double)frames / (double)m_format.m_sampleRate;
+}
+
+double CAESinkWASAPI::GetCacheTime()
+{
+  if (!m_initialized)
+    return 0.0;
+
+  REFERENCE_TIME hnsLatency;
+  HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
+
+  /** returns buffer duration in seconds */
+  return hnsLatency / 10.0;
+}
+
+double CAESinkWASAPI::GetCacheTotal()
+{
+  if (!m_initialized)
+    return 0.0;
+
+  REFERENCE_TIME hnsLatency;
+  HRESULT hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
+
+  /** returns buffer duration in seconds */
+  return hnsLatency / 10.0;
 }
 
 unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)

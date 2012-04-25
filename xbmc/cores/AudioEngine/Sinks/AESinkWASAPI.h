@@ -41,6 +41,8 @@ public:
     virtual bool IsCompatible(const AEAudioFormat format, const std::string device);
 
     virtual double       GetDelay                    ();
+    virtual double       GetCacheTime                ();
+    virtual double       GetCacheTotal               ();
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames);
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
