@@ -31,6 +31,7 @@
 #include "pictures/Picture.h"
 #include "guilib/TextureManager.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
@@ -136,7 +137,6 @@
 #include "music/karaoke/GUIDialogKaraokeSongSelector.h"
 #include "music/karaoke/GUIWindowKaraokeLyrics.h"
 #endif
-#include "guilib/AudioContext.h"
 #include "guilib/GUIFontTTF.h"
 #include "network/Network.h"
 #include "storage/IoSupport.h"
@@ -694,6 +694,13 @@ bool CApplication::Create()
 
   g_powerManager.Initialize();
 
+  // Load the AudioEngine before settings as they need to query the engine
+  if (!CAEFactory::LoadEngine())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Failed to load an AudioEngine");
+    FatalErrorHandler(true, true, true);
+  }
+
   CLog::Log(LOGNOTICE, "load settings...");
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
@@ -731,7 +738,16 @@ bool CApplication::Create()
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
+  // start the AudioEngine
+  if (!CAEFactory::StartEngine())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Failed to start the AudioEngine");
+    FatalErrorHandler(true, true, true);
+  }
+
+  // restore AE's previous volume state
   SetHardwareVolume(g_settings.m_fVolumeLevel);
+  CAEFactory::AE->SetMute(g_settings.m_bMute);
 
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
@@ -1251,10 +1267,6 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
-
-  //  Restore volume
-  if (g_settings.m_bMute)
-    Mute();
 
   // if the user shutoff the xbox during music scan
   // restore the settings
@@ -3445,6 +3457,9 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
 
+    // shutdown the AudioEngine
+    CAEFactory::AE->Shutdown();
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
@@ -4848,11 +4863,6 @@ void CApplication::Process()
   m_applicationMessenger.ProcessMessages();
   if (g_application.m_bStop) return; //we're done, everything has been unloaded
 
-  // check if we can free unused memory
-#ifndef _LINUX
-  g_audioManager.FreeUnused();
-#endif
-
   // check how far we are through playing the current item
   // and do anything that needs doing (lastfm submission, playcount updates etc)
   CheckPlayingProgress();
@@ -4993,6 +5003,8 @@ void CApplication::ProcessSlow()
   
   if (!IsPlayingVideo())
     CAddonInstaller::Get().UpdateRepos();
+
+  CAEFactory::AE->GarbageCollect();
 }
 
 // Global Idle Time in Seconds
@@ -5094,7 +5106,7 @@ bool CApplication::IsMuted() const
 {
   if (g_peripherals.IsMuted())
     return true;
-  return g_settings.m_bMute;
+  return CAEFactory::AE->IsMuted();
 }
 
 void CApplication::ToggleMute(void)
@@ -5110,6 +5122,7 @@ void CApplication::Mute()
   if (g_peripherals.Mute())
     return;
 
+  CAEFactory::AE->SetMute(true);
   g_settings.m_bMute = true;
 }
 
@@ -5118,6 +5131,7 @@ void CApplication::UnMute()
   if (g_peripherals.UnMute())
     return;
 
+  CAEFactory::AE->SetMute(false);
   g_settings.m_bMute = false;
 }
 
@@ -5129,7 +5143,6 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
     hardwareVolume /= 100.0f;
 
   SetHardwareVolume(hardwareVolume);
-  g_audioManager.SetVolume((int)(128.f * g_settings.m_fVolumeLevel));
 
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = (int)(hardwareVolume * 100.0f + 0.5f);
@@ -5146,9 +5159,7 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   if (hardwareVolume > VOLUME_MINIMUM)
     value = CAEUtil::LinToLog(VOLUME_DYNAMIC_RANGE, hardwareVolume);
 
-  // and tell our player to update the volume
-  if (m_pPlayer)
-    m_pPlayer->SetVolume(value);
+  CAEFactory::AE->SetVolume(value);
 }
 
 int CApplication::GetVolume() const
