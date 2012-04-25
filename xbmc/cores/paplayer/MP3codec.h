@@ -61,10 +61,8 @@ public:
   virtual bool CanSeek();
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples);
   virtual bool CanInit();
   virtual bool SkipNext();
-  virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
 private:
 
   /* TODO decoder functions */

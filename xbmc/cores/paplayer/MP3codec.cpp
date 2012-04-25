@@ -206,13 +206,6 @@ int64_t MP3Codec::Seek(int64_t iSeekTime)
   return iSeekTime;
 }
 
-int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
-{
-  int result = ReadPCM((BYTE *)pBuffer, numsamples * sizeof(float), actualsamples);
-  *actualsamples /= sizeof(float);
-  return result;
-}
-
 int MP3Codec::Read(int size, bool init)
 {
   int inputBufferToRead = (int)(m_InputBufferSize - m_InputBufferPos);

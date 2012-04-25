@@ -74,14 +74,6 @@ public:
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
 
-  // ReadSamples()
-  // Decodes audio into floats (normalized to 1) into pBuffer up to numsamples samples.
-  // The actual amount of returned samples is given in actualsamples.  Samples are
-  // total samples (ie distributed over channels).
-  // Returns READ_SUCCESS on success.  Returns READ_EOF when the data has been exhausted,
-  // and READ_ERROR on error.
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples) { return READ_ERROR; };
-
   // CanInit()
   // Should return true if the codec can be initialized
   // eg. check if a dll needed for the codec exists
@@ -97,8 +89,6 @@ public:
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // true if we can retrieve normalized float data immediately
-  virtual bool HasFloatData() const { return false; }
 
   int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
