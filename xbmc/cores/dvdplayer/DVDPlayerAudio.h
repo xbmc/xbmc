@@ -28,7 +28,8 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
-#include "DVDPlayerAudioResampler.h"
+
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #include <list>
 #include <queue>
@@ -54,10 +55,13 @@ typedef struct stDVDAudioFrame
   unsigned int size;
 
   int               channel_count;
-  enum PCMChannels *channel_map;
-  int bits_per_sample;
-  int sample_rate;
-  bool passthrough;
+  int               encoded_channel_count;
+  CAEChannelInfo    channel_layout;
+  enum AEDataFormat data_format;
+  int               bits_per_sample;
+  int               sample_rate;
+  int               encoded_sample_rate;
+  bool              passthrough;
 } DVDAudioFrame;
 
 class CPTSOutputQueue
@@ -179,8 +183,6 @@ protected:
   bool    m_started;
   double  m_duration; // last packets duration
   bool    m_silence;
-
-  CDVDPlayerResampler m_resampler;
 
   bool OutputPacket(DVDAudioFrame &audioframe);
 

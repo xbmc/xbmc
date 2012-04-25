@@ -31,9 +31,17 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include <sstream>
 #include <iomanip>
+
+/* for sync-based resampling */
+#define PROPORTIONAL 20.0
+#define PROPREF       0.01
+#define PROPDIVMIN    2.0
+#define PROPDIVMAX   40.0
+#define INTEGRAL    200.0
 
 using namespace std;
 
@@ -226,7 +234,6 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_synctype = SYNC_DISCON;
   m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
   m_prevsynctype = -1;
-  m_resampler.SetQuality(g_guiSettings.GetInt("videoplayer.resamplequality"));
 
   m_error = 0;
   m_errorbuff = 0;
@@ -277,7 +284,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   // flush any remaining pts values
   m_ptsOutput.Flush();
-  m_resampler.Flush();
 }
 
 // decode one audio frame and returns its uncompressed size
@@ -329,11 +335,15 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       // get decoded data and the size of it
       audioframe.size = m_pAudioCodec->GetData(&audioframe.data);
       audioframe.pts = m_audioClock;
-      audioframe.channel_map = m_pAudioCodec->GetChannelMap();
+
+      audioframe.channel_layout        = m_pAudioCodec->GetChannelMap();
       audioframe.channel_count         = m_pAudioCodec->GetChannels();
-      audioframe.bits_per_sample = m_pAudioCodec->GetBitsPerSample();
-      audioframe.sample_rate = m_pAudioCodec->GetSampleRate();
-      audioframe.passthrough = m_pAudioCodec->NeedPassthrough();
+      audioframe.encoded_channel_count = m_pAudioCodec->GetEncodedChannels();
+      audioframe.data_format           = m_pAudioCodec->GetDataFormat();
+      audioframe.bits_per_sample       = CAEUtil::DataFormatToBits(audioframe.data_format);
+      audioframe.sample_rate           = m_pAudioCodec->GetSampleRate();
+      audioframe.encoded_sample_rate   = m_pAudioCodec->GetEncodedSampleRate();
+      audioframe.passthrough           = m_pAudioCodec->NeedPassthrough();
 
       if (audioframe.size <= 0)
         continue;
@@ -440,7 +450,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_dvdAudio.Flush();
       m_ptsOutput.Flush();
       m_ptsInput.Flush();
-      m_resampler.Flush();
       m_syncclock = true;
       m_stalled   = true;
       m_started   = false;
@@ -486,7 +495,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       else
       {
         m_ptsOutput.Flush();
-        m_resampler.Flush();
         m_syncclock = true;
         if (m_speed != DVD_PLAYSPEED_PAUSE)
           m_dvdAudio.Flush();
@@ -589,7 +597,7 @@ void CDVDPlayerAudio::Process()
       else
         m_dvdAudio.Pause();
 
-      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
+      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
 
@@ -709,7 +717,6 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_integral = 0;
     m_skipdupcount = 0;
     m_error = 0;
-    m_resampler.Flush();
     m_errortime = CurrentHostCounter();
     return;
   }
@@ -822,19 +829,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
       proportional = m_error / DVD_TIME_BASE / proportionaldiv;
     }
-    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
-    m_resampler.SetRatio(m_resampleratio);
 
-    //add to the resampler
-    m_resampler.Add(audioframe, audioframe.pts);
-    //give any packets from the resampler to the audiorenderer
-    bool packetadded = false;
-    while(m_resampler.Retrieve(audioframe, audioframe.pts))
-    {
-      m_dvdAudio.AddPackets(audioframe);
-      packetadded = true;
-    }
-    return packetadded;
+    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+    m_dvdAudio.SetResampleRatio(m_resampleratio);
+    m_dvdAudio.AddPackets(audioframe);
   }
 
   return true;
@@ -906,7 +904,6 @@ string CDVDPlayerAudio::GetPlayerInfo()
   //if the resample ratio is 0.5, then we're playing twice as fast
   if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
-
 
   return s.str();
 }
