@@ -309,6 +309,9 @@
   <string id="344">Actors</string>
   <string id="345">Year</string>
   <string id="346">Boost volume level on downmix</string>
+  <string id="347">Use exclusive mode</string>
+  <string id="348">- Multichannel LPCM capable receiver</string>
+  <string id="349">- TrueHD capable receiver</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -366,6 +369,7 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
+  <string id="407">- DTS-HD capable receiver</string>
 
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>

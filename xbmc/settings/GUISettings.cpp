@@ -38,8 +38,12 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#include "utils/PCMRemap.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined __APPLE__ && !defined __arm__
+#include "CoreAudioAEHALOSX.h"
+#endif
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
@@ -442,27 +446,54 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
   map<int,int> channelLayout;
-  for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
-    channelLayout.insert(make_pair(34101+layout, layout));
-  AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
+    channelLayout.insert(make_pair(34100+layout, layout));
+  AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
+  AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
-  AddBool(ao, "audiooutput.ac3passthrough", 364, true);
-  AddBool(ao, "audiooutput.dtspassthrough", 254, true);
-  AddBool(NULL, "audiooutput.passthroughaac", 299, false);
+#if (defined(__APPLE__) && defined(__arm__))
+  CSettingsCategory* aocat = g_sysinfo.IsAppleTV2() ? ao : NULL;
+#else
+  CSettingsCategory* aocat = ao;
+#endif
 
-#ifdef __APPLE__
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(aocat, "audiooutput.ac3passthrough"   , 364, true);
+  AddBool(aocat, "audiooutput.dtspassthrough"   , 254, true);
+
+
+#if !defined(TARGET_DARWIN)
+  AddBool(aocat, "audiooutput.passthroughaac"   , 299, false);
+#endif
+#if !defined(TARGET_DARWIN_IOS)
+  AddBool(aocat, "audiooutput.multichannellpcm" , 348, true );
+#endif
+#if !defined(TARGET_DARWIN)
+  AddBool(aocat, "audiooutput.truehdpassthrough", 349, true );
+  AddBool(aocat, "audiooutput.dtshdpassthrough" , 407, true );
+#endif
+
+#if defined __APPLE__
+#if defined __arm__
+  CStdString defaultDeviceName = "Default";
+#else
+  CStdString defaultDeviceName;
+  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+#endif
+  
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
 #elif defined(_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
-  AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(ao, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
-  AddString(ao, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(ao, "audiooutput.sep3");
 #elif defined(_WIN32)
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddSeparator(ao, "audiooutput.sep1");
+  if(g_sysinfo.IsVistaOrHigher())
+    AddBool(ao, "audiooutput.useexclusivemode" , 347, false);
+  AddString(ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
+  AddString(ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
 #endif
 
   AddBool(ao, "audiooutput.guisoundwhileplayback", 34120, true);
