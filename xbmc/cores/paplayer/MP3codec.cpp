@@ -33,7 +33,10 @@ using namespace MUSIC_INFO;
 #define DECODING_SUCCESS   0
 #define DECODING_CALLAGAIN 1
 
-#define BITSPERSAMPLE  32
+#define SAMPLESPERFRAME   1152
+#define CHANNELSPERSAMPLE 2
+#define BITSPERSAMPLE     32
+#define OUTPUTFRAMESIZE   (SAMPLESPERFRAME * CHANNELSPERSAMPLE * (BITSPERSAMPLE >> 3))
 #define mad_scale_float(sample) ((float)(sample/(float)(1L << MAD_F_FRACBITS)))
 
 MP3Codec::MP3Codec()
@@ -58,7 +61,7 @@ MP3Codec::MP3Codec()
   m_DataFormat = AE_FMT_S32NE;
 
   // create our output buffer
-  m_OutputBufferSize = 1152*4*8;        // enough for 4 frames
+  m_OutputBufferSize = OUTPUTFRAMESIZE * 4;        // enough for 4 frames
   m_OutputBuffer = new BYTE[m_OutputBufferSize];
   m_OutputBufferPos = 0;
   m_Decoding = false;
@@ -159,13 +162,13 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     }
   }
   
-  if ( m_TotalTime && (length-id3v2Size > 0) )
+  if ( m_TotalTime && (length - id3v2Size > 0) )
   {
-    m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
+    m_Bitrate = (int)(((length - id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
   }
 
   m_eof = false;
-  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < 1152*8)) // eof can be set from outside (when stopping playback)
+  while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < OUTPUTFRAMESIZE)) // eof can be set from outside (when stopping playback)
   {
     result = Read(8192, true);
     if (result == DECODING_ERROR)
@@ -176,6 +179,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     if (bTags && !m_Bitrate) //use tag bitrate if average bitrate is not available
       m_Bitrate = m_Formatdata[4];
   } ;
+
   return true;
 
 error:
@@ -279,6 +283,7 @@ int MP3Codec::Read(int size, bool init)
           //m_BitsPerSample holds display value when using 32-bits floats (source is 24 bits), real value otherwise
           m_BitsPerSample         = m_BitsPerSampleInternal>16?24:m_BitsPerSampleInternal;
         }
+
         // let's check if we need to ignore the decoded data.
         if ( m_IgnoreFirst && outputsize && m_seekInfo.GetFirstSample() )
         {
@@ -300,6 +305,7 @@ int MP3Codec::Read(int size, bool init)
             outputsize = 0;
           }
         }
+
         // Do we still have data in the buffer to decode?
         if ( result == DECODING_CALLAGAIN )
           m_CallAgainWithSameBuffer = true;
@@ -341,22 +347,22 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   // check whether we can move data out of our output buffer
   // we leave some data in our output buffer to allow us to remove samples
   // at the end of the track for gapless playback
-  int amounttomove = 0;
-  if (m_OutputBufferPos > 1152 * 4 * 2)
-    amounttomove = m_OutputBufferPos - 1152 * 4 * 2;
-  if (m_eof && !m_Decoding)
-    amounttomove = m_OutputBufferPos;
-  if (amounttomove > size) amounttomove = size;
-  if (amounttomove)
-  {
-    memcpy(pBuffer, m_OutputBuffer, amounttomove);
-    m_OutputBufferPos -= amounttomove;
-    memmove(m_OutputBuffer, m_OutputBuffer + amounttomove, m_OutputBufferPos);
-    *actualsize = amounttomove;
-  }
+  int move;
+  if ((m_eof && !m_Decoding) || m_OutputBufferPos <= OUTPUTFRAMESIZE)
+    move = m_OutputBufferPos;
+  else
+    move = m_OutputBufferPos - OUTPUTFRAMESIZE;
+  move = std::min(move, size);
+
+  memcpy(pBuffer, m_OutputBuffer, move);
+  m_OutputBufferPos -= move;
+  memmove(m_OutputBuffer, m_OutputBuffer + move, m_OutputBufferPos);
+  *actualsize = move;
+
   // only return READ_EOF when we've reached the end of the mp3 file, we've finished decoding, and our output buffer is depleated.
   if (m_eof && !m_Decoding && !m_OutputBufferPos)
     return READ_EOF;
+
   return READ_SUCCESS;
 }
 
@@ -375,9 +381,8 @@ bool MP3Codec::CanSeek()
   return true;
 }
 
-int MP3Codec::Decode(
-  int         *out_len // out_len is read and written to
-) {
+int MP3Codec::Decode(int *out_len)
+{
   if (!m_HaveData)
   {
     if (!m_dll.IsLoaded())
@@ -401,9 +406,9 @@ int MP3Codec::Decode(
       int skip;
       skip = 2;
       do
-	  {
-        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) 
-		{
+      {
+        if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0)
+        {
           if (--skip == 0)
             m_dll.mad_synth_frame(&mxhouse.synth, &mxhouse.frame);
         }
