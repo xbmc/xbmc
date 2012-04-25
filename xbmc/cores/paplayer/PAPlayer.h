@@ -88,7 +88,7 @@ private:
     unsigned int      m_encodedSampleRate;   /* the encoded sample rate of raw streams */
     enum AEDataFormat m_dataFormat;          /* data format of the samples */
     unsigned int      m_bytesPerSample;      /* number of bytes per audio sample */
-    unsigned int      m_framesPerSecond;     /* sample rate * channel count */
+    unsigned int      m_bytesPerFrame;       /* number of bytes per audio frame */
     
     bool              m_started;             /* if playback of this stream has been started */
     bool              m_finishing;           /* if this stream is finishing */

@@ -275,7 +275,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_startOffset        = file.m_lStartOffset * 1000 / 75;
   si->m_endOffset          = file.m_lEndOffset   * 1000 / 75;
   si->m_bytesPerSample     = CAEUtil::DataFormatToBits(si->m_dataFormat) >> 3;
-  si->m_framesPerSecond    = si->m_sampleRate * si->m_channelInfo.Count();
+  si->m_bytesPerFrame      = si->m_bytesPerSample * si->m_channelInfo.Count();
   si->m_started            = false;
   si->m_finishing          = false;
   si->m_framesSent         = 0;
@@ -517,10 +517,10 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     else
     {
       si->m_framesSent      += si->m_sampleRate * (m_playbackSpeed  - 1);
-      si->m_seekNextAtFrame  = si->m_framesSent + (si->m_framesPerSecond / 2);
+      si->m_seekNextAtFrame  = si->m_framesSent + (si->m_sampleRate / 2);
     }
 
-    __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_framesPerSecond * 1000.0f));
+    __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
     if (time < si->m_startOffset || si->m_framesSent < 0) {
@@ -560,20 +560,20 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
 
 bool PAPlayer::QueueData(StreamInfo *si)
 {
-  unsigned int space = si->m_stream->GetSpace();
-  unsigned int size  = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
-  if (!size)
+  unsigned int space   = si->m_stream->GetSpace();
+  unsigned int samples = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
+  if (!samples)
     return true;
   
-  void* data = si->m_decoder.GetData(size);
+  void* data = si->m_decoder.GetData(samples);
   if (!data)
   {
     CLog::Log(LOGERROR, "PAPlayer::ProcessStream - Failed to get data from the decoder");
     return false;
   }
   
-  unsigned int added = si->m_stream->AddData(data, size * si->m_bytesPerSample);
-  si->m_framesSent += added / si->m_bytesPerSample;
+  unsigned int added = si->m_stream->AddData(data, samples * si->m_bytesPerSample);
+  si->m_framesSent += added / si->m_bytesPerFrame;
 
   return true;
 }
@@ -652,7 +652,7 @@ __int64 PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = (double)m_currentStream->m_framesSent / (double)(m_currentStream->m_framesPerSecond) * 1000.0f;
+  double time = (double)m_currentStream->m_framesSent / (double)(m_currentStream->m_sampleRate) * 1000.0f;
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
   return (__int64)time;
@@ -767,7 +767,7 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
   if (m_playbackSpeed != 1)
 	ToFFRW(1);
 
-  m_currentStream->m_seekFrame = (int)(m_currentStream->m_framesPerSecond * (iTime / 1000));
+  m_currentStream->m_seekFrame = (int)(m_currentStream->m_sampleRate * (iTime / 1000));
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 
