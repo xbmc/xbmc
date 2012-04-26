@@ -220,7 +220,6 @@ public:
   int m_HttpApiBroadcastLevel;
   int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
   int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
-  int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
 

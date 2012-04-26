@@ -2615,8 +2615,6 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
         tmp.Format("%i",g_settings.m_nVolumeLevel);
       else if (paras[i]=="dynamicrangecompressionlevel")
         tmp.Format("%i",g_settings.m_dynamicRangeCompressionLevel);
-      else if (paras[i]=="premutevolumelevel")
-        tmp.Format("%i",g_settings.m_iPreMuteVolumeLevel);
       else if (paras[i]=="systemtimetotalup")
         tmp.Format("%i",g_settings.m_iSystemTimeTotalUp);
       else if (paras[i]=="mute")
