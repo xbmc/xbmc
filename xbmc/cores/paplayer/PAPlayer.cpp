@@ -387,17 +387,8 @@ void PAPlayer::Process()
     ProcessStreams(delay, buffer);
 
 #ifndef TARGET_DARWIN_IOS
-
-    if (delay != 100.0)
-    {
-      double percent = (100.0 / buffer) * delay;
-      if (percent > 75.0)
-      {
-        delay = ((buffer * 0.01) * (100.0 - percent)) * 1000.0;
-        Sleep(MathUtils::round_int(delay));
-      }
-    }
-
+    if (delay < buffer && delay > 0.75 * buffer)
+      Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
 #endif
   }
 }
