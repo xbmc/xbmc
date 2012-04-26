@@ -1258,14 +1258,8 @@ bool CApplication::Initialize()
 
   //  Restore volume
   if (g_settings.m_bMute)
-  {
-    SetVolume(g_settings.m_iPreMuteVolumeLevel);
     Mute();
-  }
-  else
-  {
-    SetVolume(g_settings.m_nVolumeLevel, false);
-  }
+  SetVolume(g_settings.m_nVolumeLevel, false);
 
   // if the user shutoff the xbox during music scan
   // restore the settings
@@ -2635,15 +2629,9 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      // increase or decrease the volume
-      int volume;
       if (g_settings.m_bMute)
-      {
-        volume = (int)((float)g_settings.m_iPreMuteVolumeLevel * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
         UnMute();
-      }
-      else
-        volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
+      int volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
@@ -5139,9 +5127,7 @@ void CApplication::Mute()
   if (g_peripherals.Mute())
     return;
 
-  g_settings.m_iPreMuteVolumeLevel = GetVolume();
   g_settings.m_bMute = true;
-  SetVolume(0);
 }
 
 void CApplication::UnMute()
@@ -5150,8 +5136,6 @@ void CApplication::UnMute()
     return;
 
   g_settings.m_bMute = false;
-  SetVolume(g_settings.m_iPreMuteVolumeLevel);
-  g_settings.m_iPreMuteVolumeLevel = 0;
 }
 
 void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
