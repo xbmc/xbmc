@@ -68,7 +68,7 @@ public:
    * Returns if the stream is buffering
    * @return True if the stream is buffering
    */
-  virtual double IsBuffering() = 0;
+  virtual bool IsBuffering() = 0;
 
   /**
    * Returns how long until playback will start
