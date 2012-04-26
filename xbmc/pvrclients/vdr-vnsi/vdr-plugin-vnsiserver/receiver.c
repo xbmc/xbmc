@@ -645,11 +645,12 @@ void cLiveStreamer::Action(void)
     if (buf == NULL || size <= TS_SIZE)
     {
       // keep client going
-      if(m_last_tick.Elapsed() >= (uint64_t)(m_scanTimeout*2000) && !m_SignalLost)
+      if(m_last_tick.Elapsed() >= (uint64_t)(m_scanTimeout*1000))
       {
         INFOLOG("No Signal");
-        m_SignalLost = true;
         sendStreamStatus();
+        m_last_tick.Set(0);
+        m_SignalLost = true;
       }
       continue;
     }
@@ -687,6 +688,8 @@ void cLiveStreamer::Action(void)
       {
         demuxer->ProcessTSPacket(buf);
       }
+      else
+        INFOLOG("no muxer found");
 
       buf += TS_SIZE;
       size -= TS_SIZE;
@@ -799,11 +802,6 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
       {
         m_Streams[m_NumStreams] = new cTSDemuxer(this, m_NumStreams, stTELETEXT, m_Channel->Tpid());
         m_Pids[m_NumStreams]    = m_Channel->Tpid();
-        cCamSlot* cam = m_Device->CamSlot();
-        if(cam != NULL) 
-        {
-          cam->AddPid(m_Channel->Sid(), m_Channel->Tpid(), 0x06);
-        }
         m_NumStreams++;
       }
 
