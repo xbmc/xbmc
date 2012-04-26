@@ -106,14 +106,14 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-         lock.Leave();	  
+          lock.Leave();	  
           wait = true;
           Sleep(1);
           lock.Enter();
           break;
         }
       }
-    }   
+    }
   }
 }
 
@@ -268,6 +268,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
       m_callback.OnQueueNextItem();
       return false;
     }
+
+    /* yield our time so that the main PAP thread doesnt stall */
+    CThread::Sleep(1);
   }
   
   /* init the streaminfo struct */
@@ -351,6 +354,9 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
     if (!QueueData(si))
       break;
+
+    /* yield our time so that the main PAP thread doesnt stall */
+    CThread::Sleep(1);
   }
 
   CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Ready");
@@ -388,7 +394,7 @@ void PAPlayer::Process()
 
 #ifndef TARGET_DARWIN_IOS
     if (delay < buffer && delay > 0.75 * buffer)
-      Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
+      CThread::Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
 #endif
   }
 }
