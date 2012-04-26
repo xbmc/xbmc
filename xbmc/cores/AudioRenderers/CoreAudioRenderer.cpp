@@ -808,8 +808,18 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     
     // Setup the callback function that the AudioUnit will use to request data	
     ICoreAudioSource* pSource = this;
-    if (m_AUCompressor.IsInitialized()) // A mixer+compressor are in-use
-      pSource = &m_AUCompressor;
+    if (m_init_state.bIsMusic)
+    {
+      // A mixer is in-use
+      if (m_MixerUnit.IsInitialized())
+        pSource = &m_MixerUnit;
+    }
+    else
+    {
+      // A mixer+compressor are in-use
+      if (m_AUCompressor.IsInitialized())
+        pSource = &m_AUCompressor;
+    }
     if (!m_AUOutput.SetInputSource(pSource))
       return false;      
     
@@ -1381,20 +1391,23 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: "
         "Mixer Output Format: %d channels, %0.1f kHz, %d bits, %d bytes per frame",
         (int)fmt.mChannelsPerFrame, fmt.mSampleRate / 1000.0f, (int)fmt.mBitsPerChannel, (int)fmt.mBytesPerFrame);
-      
-      // Set-up the compander
-      if (!m_AUCompressor.Open() ||
-          !m_AUCompressor.SetOutputFormat(&fmt) ||
-          !m_AUCompressor.SetInputFormat(&fmt) ||
-          !m_AUCompressor.SetInputSource(&m_MixerUnit) || // The compressor gets its data from the mixer
-          !m_AUCompressor.Initialize())
-        return false;
-      
-      // Configure compander parameters
-      // TODO: Uncomment when limiter params are pushed for other platforms
-      m_AUCompressor.SetAttackTime(g_advancedSettings.m_limiterHold);
-      m_AUCompressor.SetReleaseTime(g_advancedSettings.m_limiterRelease);
-      
+
+      // only enable the compressor if not playing music
+      if (!m_init_state.bIsMusic)
+      {
+        // Set-up the compander
+        if (!m_AUCompressor.Open() ||
+            !m_AUCompressor.SetOutputFormat(&fmt) ||
+            !m_AUCompressor.SetInputFormat(&fmt)  ||
+            !m_AUCompressor.SetInputSource(&m_MixerUnit) || // The compressor gets its data from the mixer
+            !m_AUCompressor.Initialize())
+          return false;
+        
+        // Configure compander parameters
+        m_AUCompressor.SetAttackTime(g_advancedSettings.m_limiterHold);
+        m_AUCompressor.SetReleaseTime(g_advancedSettings.m_limiterRelease);
+      }
+
       // Copy format for the Output AU
       outputFormat = fmt;
     }
