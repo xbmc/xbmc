@@ -1922,7 +1922,7 @@ bool CAUDynamicsProcessor::Initialize()
   bool ret = CCoreAudioUnit::Initialize();
   if (ret)
   {
-    if (!SetMasterGain(6.0) ||
+    if (!SetMasterGain(0.0) ||
         !SetCompressionThreshold(-35.0) ||
         !SetHeadroom(30.0) ||
         !SetExpansionRatio(1.0) ||
