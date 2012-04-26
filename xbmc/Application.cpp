@@ -2629,8 +2629,6 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      if (g_settings.m_bMute)
-        UnMute();
       int volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
 
       // calculate speed so that a full press will equal 1 second from min to max
