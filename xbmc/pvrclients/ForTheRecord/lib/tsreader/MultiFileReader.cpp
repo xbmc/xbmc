@@ -57,7 +57,7 @@ MultiFileReader::MultiFileReader():
 {
   m_startPosition = 0;
   m_endPosition = 0;
-  m_currentPosition = 0;
+  m_currentReadPosition = 0;
   m_filesAdded = 0;
   m_filesRemoved = 0;
   m_TSFileId = 0;
@@ -108,7 +108,7 @@ long MultiFileReader::OpenFile()
     } while (RefreshTSBufferFile() == S_FALSE);
   }
 
-  m_currentPosition = 0;
+  m_currentReadPosition = 0;
 
   return hr;
 }
@@ -141,23 +141,23 @@ unsigned long MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned
 
   if (dwMoveMethod == FILE_END)
   {
-    m_currentPosition = m_endPosition + llDistanceToMove;
+    m_currentReadPosition = m_endPosition + llDistanceToMove;
   }
   else if (dwMoveMethod == FILE_CURRENT)
   {
-    m_currentPosition += llDistanceToMove;
+    m_currentReadPosition += llDistanceToMove;
   }
   else // if (dwMoveMethod == FILE_BEGIN)
   {
-    m_currentPosition = m_startPosition + llDistanceToMove;
+    m_currentReadPosition = m_startPosition + llDistanceToMove;
   }
 
-  if (m_currentPosition < m_startPosition)
-    m_currentPosition = m_startPosition;
+  if (m_currentReadPosition < m_startPosition)
+    m_currentReadPosition = m_startPosition;
 
-  if (m_currentPosition > m_endPosition) {
-    XBMC->Log(LOG_ERROR, "Seeking beyond the end position: %I64d > %I64d", m_currentPosition, m_endPosition);
-    m_currentPosition = m_endPosition;
+  if (m_currentReadPosition > m_endPosition) {
+    XBMC->Log(LOG_ERROR, "Seeking beyond the end position: %I64d > %I64d", m_currentReadPosition, m_endPosition);
+    m_currentReadPosition = m_endPosition;
   }
 
   RefreshTSBufferFile();
@@ -167,7 +167,7 @@ unsigned long MultiFileReader::SetFilePointer(int64_t llDistanceToMove, unsigned
 int64_t MultiFileReader::GetFilePointer()
 {
 //  RefreshTSBufferFile();
-  return m_currentPosition;
+  return m_currentReadPosition;
 }
 
 long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
@@ -180,10 +180,10 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
 
   RefreshTSBufferFile();
 
-  if (m_currentPosition < m_startPosition)
+  if (m_currentReadPosition < m_startPosition)
   {
-    XBMC->Log(LOG_DEBUG, "%s: current position adjusted from %%I64dd to %%I64dd.", __FUNCTION__, m_currentPosition, m_startPosition);
-    m_currentPosition = m_startPosition;
+    XBMC->Log(LOG_DEBUG, "%s: current position adjusted from %%I64dd to %%I64dd.", __FUNCTION__, m_currentReadPosition, m_startPosition);
+    m_currentReadPosition = m_startPosition;
   }
 
   // Find out which file the currentPosition is in.
@@ -192,7 +192,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
   for ( ; it < m_tsFiles.end() ; it++ )
   {
     file = *it;
-    if (m_currentPosition < (file->startPosition + file->length))
+    if (m_currentReadPosition < (file->startPosition + file->length))
       break;
   };
 
@@ -205,7 +205,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     XBMC->QueueNotification(QUEUE_ERROR, "No buffer file");
     return S_FALSE;
   }
-  if (m_currentPosition < (file->startPosition + file->length))
+  if (m_currentReadPosition < (file->startPosition + file->length))
   {
     if (m_TSFileId != file->filePositionId)
     {
@@ -221,13 +221,17 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
       }
     }
 
-    int64_t seekPosition = m_currentPosition - file->startPosition;
+    int64_t seekPosition = m_currentReadPosition - file->startPosition;
 
-    m_TSFile.SetFilePointer(seekPosition, FILE_BEGIN);
     int64_t posSeeked=m_TSFile.GetFilePointer();
-    if (posSeeked!=seekPosition)
+    if (posSeeked != seekPosition)
     {
-      XBMC->Log(LOG_ERROR, "SEEK FAILED");
+      m_TSFile.SetFilePointer(seekPosition, FILE_BEGIN);
+      posSeeked=m_TSFile.GetFilePointer();
+      if (posSeeked!=seekPosition)
+      {
+        XBMC->Log(LOG_ERROR, "SEEK FAILED");
+      }
     }
 
     unsigned long bytesRead = 0;
@@ -241,7 +245,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
       {
         XBMC->Log(LOG_ERROR, "READ FAILED1");
       }
-      m_currentPosition += bytesToRead;
+      m_currentReadPosition += bytesToRead;
 
       hr = this->Read(pbData + bytesToRead, lDataLength - (unsigned long)bytesToRead, dwReadBytes);
       if (FAILED(hr))
@@ -257,7 +261,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
       {
         XBMC->Log(LOG_ERROR, "READ FAILED3");
       }
-      m_currentPosition += lDataLength;
+      m_currentReadPosition += lDataLength;
     }
   }
   else
@@ -589,7 +593,7 @@ long MultiFileReader::RefreshTSBufferFile()
     {
       int64_t stPos = m_startPosition;
       int64_t endPos = m_endPosition;
-      int64_t curPos = m_currentPosition;
+      int64_t curPos = m_currentReadPosition;
       XBMC->Log(LOG_DEBUG, "StartPosition %lli, EndPosition %lli, CurrentPosition %lli\n", stPos, endPos, curPos);
     }
   }

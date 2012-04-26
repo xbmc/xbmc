@@ -69,7 +69,7 @@ class MultiFileReader : public FileReader
     FileReader m_TSBufferFile;
     int64_t m_startPosition;
     int64_t m_endPosition;
-    int64_t m_currentPosition;
+    int64_t m_currentReadPosition;
     long m_filesAdded;
     long m_filesRemoved;
 
