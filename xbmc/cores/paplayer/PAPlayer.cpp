@@ -392,10 +392,8 @@ void PAPlayer::Process()
     double buffer = 100.0;
     ProcessStreams(delay, buffer);
 
-#ifndef TARGET_DARWIN_IOS
     if (delay < buffer && delay > 0.75 * buffer)
       CThread::Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
-#endif
   }
 }
 
