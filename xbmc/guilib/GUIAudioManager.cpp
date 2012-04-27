@@ -133,7 +133,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   if (itsb != m_pythonSounds.end())
   {
     IAESound* sound = itsb->second;
-    sound->Play();;
+    sound->Play();
     return;
   }
 
