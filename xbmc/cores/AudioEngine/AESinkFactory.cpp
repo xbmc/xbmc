@@ -24,11 +24,11 @@
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
-#elif defined _LINUX && !defined __APPLE__
-  #ifdef HAS_ALSA
+#elif defined(TARGET_LINUX)
+  #if defined(HAS_ALSA)
     #include "Sinks/AESinkALSA.h"
   #endif
   #include "Sinks/AESinkOSS.h"
@@ -48,12 +48,12 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
     /* check that it is a valid driver name */
     if (
-#if defined _LINUX && !defined __APPLE__
-#ifdef HAS_ALSA
+#if defined(TARGET_LINUX)
+  #if defined(HAS_ALSA)
         driver == "ALSA"        ||
-#endif
+  #endif
         driver == "OSS"         ||
-#elif defined _WIN32
+#elif defined(TARGET_WINDOWS)
         driver == "WASAPI"      ||
         driver == "DIRECTSOUND" ||
 #endif
@@ -84,7 +84,6 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
 IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
 {
-#if !defined __APPLE__
   /* extract the driver from the device string if it exists */
   std::string driver;
   ParseDevice(device, driver);
@@ -97,7 +96,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
     TRY_SINK(Profiler);
 
 
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
 
   if ((driver.empty() && g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound) || driver == "WASAPI")
     TRY_SINK(WASAPI)
@@ -105,9 +104,9 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   if (driver.empty() || driver == "DIRECTSOUND")
     TRY_SINK(DirectSound)
 
-#elif defined _LINUX && !defined __APPLE__
+#elif defined(TARGET_LINUX)
 
-  #ifdef HAS_ALSA
+  #if defined(HAS_ALSA)
   if (driver.empty() || driver == "ALSA")
     TRY_SINK(ALSA)
   #endif
@@ -119,7 +118,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
     TRY_SINK(NULL);
 
   /* if we failed to get a sink, try to open one of the others */
-  #ifdef HAS_ALSA
+  #if defined(HAS_ALSA)
   if (driver != "ALSA")
       TRY_SINK(ALSA)
   #endif
@@ -131,15 +130,10 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   //Complete failure.
   TRY_SINK(NULL);
 
-#endif//__APPLE__
-
   /* should never get here */
   ASSERT(false);
   return NULL;
 }
-
-/* no support for apple yet  */
-#ifndef __APPLE__
 
 #define ENUMERATE_SINK(SINK) { \
   AESinkInfo info; \
@@ -152,15 +146,14 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 void CAESinkFactory::EnumerateEx(AESinkInfoList &list)
 {
 
-#ifdef HAS_ALSA
+#if defined(HAS_ALSA)
   ENUMERATE_SINK(ALSA);
 #endif
 
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
   if (g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound)
-    ENUMERATE_SINK(WASAPI)
-//  else
-//    ENUMERATE_SINK(DirectSound);
+    ENUMERATE_SINK(WASAPI);
+
+  ENUMERATE_SINK(DirectSound);
 #endif
 }
-#endif

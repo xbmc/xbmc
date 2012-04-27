@@ -39,6 +39,8 @@ public:
 
   virtual void         Stop            ();
   virtual double       GetDelay        ();
+  virtual double       GetCacheTime    () { return 0.0; } /* FIXME */
+  virtual double       GetCacheTotal   () { return 0.0; } /* FIXME */
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames);
   virtual void         Drain           ();
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);

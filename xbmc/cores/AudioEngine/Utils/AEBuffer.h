@@ -142,9 +142,14 @@ public:
     m_cursorPos = 0;
   }
 
+  inline size_t CursorOffset()
+  {
+    return m_cursorPos;
+  }
+
   inline bool CursorEnd()
   {
-    return m_cursorPos == m_bufferSize;
+    return m_cursorPos == m_bufferPos;
   }
 
   inline void CursorSeek (const size_t pos )
@@ -158,7 +163,7 @@ public:
   inline void* CursorRead(const size_t size)
   {
   #ifdef _DEBUG
-    ASSERT(m_cursorPos + size <= m_bufferSize);
+    ASSERT(m_cursorPos + size <= m_bufferPos);
   #endif
     uint8_t* out = m_buffer + m_cursorPos;
     m_cursorPos += size;

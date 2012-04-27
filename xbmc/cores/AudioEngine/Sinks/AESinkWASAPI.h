@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
-#include "AEDeviceInfo.h"
+#include "../Utils/AEDeviceInfo.h"
 
 #include "threads/CriticalSection.h"
 
@@ -41,8 +41,9 @@ public:
     virtual bool IsCompatible(const AEAudioFormat format, const std::string device);
 
     virtual double       GetDelay                    ();
+    virtual double       GetCacheTime                ();
+    virtual double       GetCacheTotal               ();
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames);
-    static  void         EnumerateDevices            (AEDeviceList &devices, bool passthrough);
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
     bool         InitializeShared(AEAudioFormat &format);

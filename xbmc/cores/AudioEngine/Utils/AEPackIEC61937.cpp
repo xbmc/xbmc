@@ -203,7 +203,7 @@ int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, 
 
   /* Align so that (length_code & 0xf) == 0x8. This is reportedly needed
    * with some receivers, but the exact requirement is unconfirmed. */
-  packet->m_length    = ((size + 0x9) &~ 0x9) - 0x8;
+  packet->m_length    = ((size + 0x17) &~ 0x0f) - 0x08;
 
   if (data == NULL)
     data = packet->m_data;

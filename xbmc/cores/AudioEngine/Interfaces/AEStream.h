@@ -65,6 +65,12 @@ public:
   virtual double GetDelay() = 0;
 
   /**
+   * Returns if the stream is buffering
+   * @return True if the stream is buffering
+   */
+  virtual bool IsBuffering() = 0;
+
+  /**
    * Returns how long until playback will start
    * @return The delay in seconds
    */

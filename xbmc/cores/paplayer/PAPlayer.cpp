@@ -106,14 +106,14 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-         lock.Leave();	  
+          lock.Leave();	  
           wait = true;
           Sleep(1);
           lock.Enter();
           break;
         }
       }
-    }   
+    }
   }
 }
 
@@ -268,6 +268,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
       m_callback.OnQueueNextItem();
       return false;
     }
+
+    /* yield our time so that the main PAP thread doesnt stall */
+    CThread::Sleep(1);
   }
   
   /* init the streaminfo struct */
@@ -275,7 +278,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_startOffset        = file.m_lStartOffset * 1000 / 75;
   si->m_endOffset          = file.m_lEndOffset   * 1000 / 75;
   si->m_bytesPerSample     = CAEUtil::DataFormatToBits(si->m_dataFormat) >> 3;
-  si->m_framesPerSecond    = si->m_sampleRate * si->m_channelInfo.Count();
+  si->m_bytesPerFrame      = si->m_bytesPerSample * si->m_channelInfo.Count();
   si->m_started            = false;
   si->m_finishing          = false;
   si->m_framesSent         = 0;
@@ -288,14 +291,16 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   
   if (si->m_decoder.TotalTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
        si->m_prepareNextAtFrame = 0;
-  else si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * (si->m_sampleRate * si->m_channelInfo.Count()) / 1000.0f);
+  else si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
   si->m_prepareTriggered = false;
   
   if (si->m_decoder.TotalTime() < m_crossFadeTime)
-       si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * (si->m_sampleRate * si->m_channelInfo.Count()) / 1000.0f);
-  else si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * (si->m_sampleRate * si->m_channelInfo.Count()) / 1000.0f);
+       si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * si->m_sampleRate / 1000.0f);
+  else si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
   si->m_playNextTriggered = false;
-   
+
+  PrepareStream(si);
+
   /* add the stream to the list */
   CExclusiveLock lock(m_streamsLock);
   m_streams.push_back(si);
@@ -334,10 +339,29 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
     si->m_isSlaved = true;
     m_currentStream->m_stream->RegisterSlave(si->m_stream);
   }
- 
+
+  /* fill the stream's buffer */
+  while(si->m_stream->IsBuffering())
+  {
+    int status = si->m_decoder.GetStatus();
+    if (status == STATUS_ENDED   ||
+        status == STATUS_NO_FILE ||
+        si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+    {
+      CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Stream Finished");
+      break;
+    }
+
+    if (!QueueData(si))
+      break;
+
+    /* yield our time so that the main PAP thread doesnt stall */
+    CThread::Sleep(1);
+  }
+
   CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Ready");
 
-  return QueueData(si);
+  return true;
 }
 
 bool PAPlayer::CloseFile()
@@ -364,18 +388,12 @@ void PAPlayer::Process()
       m_signalSpeedChange = false;
     }
 
-    double delay  = 1.0;
-    double buffer = 1.0;
+    double delay  = 100.0;
+    double buffer = 100.0;
     ProcessStreams(delay, buffer);
-#ifndef TARGET_DARWIN_IOS
-    if (buffer > 0.2)
-    {
-      /* try to keep the buffer 75% full */
-      const float mul = 13.333333333f;
-      delay = delay * mul;
-      Sleep(MathUtils::round_int(delay));
-    }
-#endif
+
+    if (delay < buffer && delay > 0.75 * buffer)
+      CThread::Sleep(MathUtils::round_int((buffer - delay) * 1000.0));
   }
 }
 
@@ -414,7 +432,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
     /* if the stream is finishing */
-    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay, buffer))
+    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !ProcessStream(si, delay, buffer))
     {
       if (!si->m_prepareTriggered)
       {
@@ -517,10 +535,10 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     else
     {
       si->m_framesSent      += si->m_sampleRate * (m_playbackSpeed  - 1);
-      si->m_seekNextAtFrame  = si->m_framesSent + (si->m_framesPerSecond / 2);
+      si->m_seekNextAtFrame  = si->m_framesSent + si->m_sampleRate / 2;
     }
 
-    __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_framesPerSecond * 1000.0f));
+    __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
     if (time < si->m_startOffset || si->m_framesSent < 0) {
@@ -531,7 +549,6 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     }
 
     si->m_decoder.Seek(time);
-    si->m_stream->Flush();
   }
 
   int status = si->m_decoder.GetStatus();
@@ -549,10 +566,11 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
   /* update the delay time if we are running */
   if (si->m_started)
   {
-    double cacheTime = si->m_stream->GetCacheTime();
-    double cacheTotalTime = si->m_stream->GetCacheTotal();
-    delay  = std::min(delay, cacheTime);
-    buffer = std::min(buffer, cacheTime / cacheTotalTime);
+    if (si->m_stream->IsBuffering())
+      delay = 0.0;
+    else
+      delay = std::min(delay , si->m_stream->GetDelay());
+    buffer = std::min(buffer, si->m_stream->GetCacheTotal());
   }
 
   return true;
@@ -560,20 +578,20 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
 
 bool PAPlayer::QueueData(StreamInfo *si)
 {
-  unsigned int space = si->m_stream->GetSpace();
-  unsigned int size  = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
-  if (!size)
+  unsigned int space   = si->m_stream->GetSpace();
+  unsigned int samples = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
+  if (!samples)
     return true;
   
-  void* data = si->m_decoder.GetData(size);
+  void* data = si->m_decoder.GetData(samples);
   if (!data)
   {
-    CLog::Log(LOGERROR, "PAPlayer::ProcessStream - Failed to get data from the decoder");
+    CLog::Log(LOGERROR, "PAPlayer::QueueData - Failed to get data from the decoder");
     return false;
   }
   
-  unsigned int added = si->m_stream->AddData(data, size * si->m_bytesPerSample);
-  si->m_framesSent += added / si->m_bytesPerSample;
+  unsigned int added = si->m_stream->AddData(data, samples * si->m_bytesPerSample);
+  si->m_framesSent += added / si->m_bytesPerFrame;
 
   return true;
 }
@@ -652,10 +670,11 @@ __int64 PAPlayer::GetTime()
   if (!m_currentStream)
     return 0;
 
-  double time = (double)m_currentStream->m_framesSent / (double)(m_currentStream->m_framesPerSecond) * 1000.0f;
+  double time = (double)m_currentStream->m_framesSent / (double)m_currentStream->m_sampleRate;
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
-  return (__int64)time;
+
+  return (__int64)(time * 1000.0);
 }
 
 __int64 PAPlayer::GetTotalTime64()
@@ -767,7 +786,7 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
   if (m_playbackSpeed != 1)
 	ToFFRW(1);
 
-  m_currentStream->m_seekFrame = (int)(m_currentStream->m_framesPerSecond * (iTime / 1000));
+  m_currentStream->m_seekFrame = (int)(m_currentStream->m_sampleRate * (iTime / 1000));
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
 }
 

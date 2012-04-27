@@ -97,6 +97,10 @@ public:
   CAEChannelInfo&       GetSinkChLayout   () {return m_sinkFormat.m_channelLayout;}
   unsigned int          GetSinkFrameSize  () {return m_sinkFormat.m_frameSize    ;}
 
+  /* for streams so they can calc cachetimes correct */
+  double GetCacheTime();
+  double GetCacheTotal();
+
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw();

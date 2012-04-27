@@ -5,8 +5,8 @@ CXXFLAGS+=-DHAVE_MMX
 SRCS=	DVDAudioCodecFFmpeg.cpp \
 	DVDAudioCodecLibMad.cpp \
 	DVDAudioCodecLPcm.cpp \
-	DVDAudioCodecPassthrough.cpp
-	DVDAudioCodecPcm.cpp \
+	DVDAudioCodecPassthrough.cpp \
+	DVDAudioCodecPcm.cpp
 
 LIB=Audio.a
 
