@@ -71,10 +71,8 @@
 #include "HALManager.h"
 #endif
 #endif
-#if defined(__APPLE__) 
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX) 
 #include "XBMCHelper.h"
-#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -708,7 +706,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
       }
     }
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
     else if (strSetting.Equals("audiooutput.channellayout"))
     {
       //Speaker setting is irrelevant when using shared audio mode.
@@ -1793,21 +1791,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (strSetting.Equals("audiooutput.audiodevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if !defined(__APPLE__)
-      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
-#else
+#if defined(TARGET_DARWIN)
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+#else
+      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
 #endif
     }
-#if !defined(__APPLE__)
+#if !defined(TARGET_DARWIN)
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if !defined(__APPLE__)
       g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
-#elif !defined(__arm__)
-      g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
-#endif
     }
 #endif
     
@@ -2662,7 +2656,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   int selectedValue = -1;
   AEDeviceList sinkList;
   CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
-#if !defined(__APPLE__)
+#if !defined(TARGET_DARWIN)
   if (sinkList.size()==0)
   {
     pControl->AddLabel("Error - no devices found", 0);
@@ -2691,7 +2685,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     }
 
     numberSinks = sinkList.size();
-#if !defined(__APPLE__)
+#if !defined(TARGET_DARWIN)
   }
 #endif
 

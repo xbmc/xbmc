@@ -25,7 +25,7 @@
 #include "utils/EndianSwap.h"
 #include "PlatformDefs.h"
 
-#ifndef _WIN32
+#if defined(TARGET_WINDOWS)
 #include <unistd.h>
 #endif
 #include <math.h>

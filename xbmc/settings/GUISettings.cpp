@@ -41,14 +41,14 @@
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
-#if defined __APPLE__ && !defined __arm__
-#include "CoreAudioAEHALOSX.h"
+#if defined(TARGET_DARWIN_OSX)
+  #include "CoreAudioAEHALOSX.h"
 #endif
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
 #include "utils/XMLUtils.h"
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   #include "osx/DarwinUtils.h"
 #endif
 
@@ -452,7 +452,7 @@ void CGUISettings::Initialize()
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
   AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
-#if (defined(__APPLE__) && defined(__arm__))
+#if defined(TARGET_DARWIN_IOS)
   CSettingsCategory* aocat = g_sysinfo.IsAppleTV2() ? ao : NULL;
 #else
   CSettingsCategory* aocat = ao;
@@ -473,8 +473,8 @@ void CGUISettings::Initialize()
   AddBool(aocat, "audiooutput.dtshdpassthrough" , 407, true );
 #endif
 
-#if defined __APPLE__
-#if defined __arm__
+#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   CStdString defaultDeviceName = "Default";
 #else
   CStdString defaultDeviceName;
@@ -483,12 +483,12 @@ void CGUISettings::Initialize()
   
   AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
   AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
-#elif defined(_LINUX)
+#elif defined(TARGET_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
   AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::AE->GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
   AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::AE->GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
   AddSeparator(ao, "audiooutput.sep2");
-#elif defined(_WIN32)
+#elif defined(TARGET_WINDOWS)
   AddSeparator(ao, "audiooutput.sep1");
   if(g_sysinfo.IsVistaOrHigher())
     AddBool(ao, "audiooutput.useexclusivemode" , 347, false);

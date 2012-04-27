@@ -46,7 +46,7 @@ void CAEBuffer::Alloc(const size_t size)
 
 void CAEBuffer::ReAlloc(const size_t size)
 {
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
   m_buffer = (uint8_t*)_aligned_realloc(m_buffer, size, 16);
 #else
   uint8_t* tmp = (uint8_t*)_aligned_malloc(size, 16);

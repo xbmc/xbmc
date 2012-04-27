@@ -21,13 +21,15 @@
 #include "system.h"
 
 #include "AEFactory.h"
-#ifdef TARGET_DARWIN
-# include "Engines/CoreAudioAE.h"
+
+#if defined(TARGET_DARWIN)
+  #include "Engines/CoreAudioAE.h"
 #else
-# include "Engines/SoftAE.h"
+  #include "Engines/SoftAE.h"
 #endif
-#ifdef HAS_PULSEAUDIO
-# include "Engines/PulseAE.h"
+
+#if defined(HAS_PULSEAUDIO)
+  #include "Engines/PulseAE.h"
 #endif
 
 IAE* CAEFactory::AE = NULL;
@@ -38,13 +40,13 @@ bool CAEFactory::LoadEngine()
 
   std::string engine;
 
-#if defined(__LINUX__) && !defined(TARGET_DARWIN)
+#if defined(TARGET_LINUX)
   if (getenv("AE_ENGINE"))
   {
     engine = (std::string)getenv("AE_ENGINE");
     std::transform(engine.begin(), engine.end(), engine.begin(), ::toupper);
 
-    #ifdef HAS_PULSEAUDIO
+    #if defined(HAS_PULSEAUDIO)
     if (!loaded && engine == "PULSE")
       loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
     #endif
@@ -53,12 +55,12 @@ bool CAEFactory::LoadEngine()
   }
 #endif
 
-#ifdef HAS_PULSEAUDIO
+#if defined(HAS_PULSEAUDIO)
   if (!loaded)
     loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
 #endif
 
-#ifdef TARGET_DARWIN
+#if defined(TARGET_DARWIN)
   if (!loaded)
     loaded = CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
 #else
@@ -77,15 +79,13 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 
   switch(engine)
   {
-#ifndef TARGET_DARWIN
     case AE_ENGINE_NULL     :
-#endif
-#ifdef TARGET_DARWIN
+#if defined(TARGET_DARWIN)
     case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else
     case AE_ENGINE_SOFT     : AE = new CSoftAE(); break;
 #endif
-#ifdef HAS_PULSEAUDIO
+#if defined(HAS_PULSEAUDIO)
     case AE_ENGINE_PULSE    : AE = new CPulseAE(); break;
 #endif
   }
