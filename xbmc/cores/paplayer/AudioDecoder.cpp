@@ -36,8 +36,6 @@ CAudioDecoder::CAudioDecoder()
 
   m_status = STATUS_NO_FILE;
   m_canPlay = false;
-
-  m_blockSize = 4;
 }
 
 CAudioDecoder::~CAudioDecoder()
@@ -86,10 +84,10 @@ bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset)
     Destroy();
     return false;
   }
-  m_blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
+  unsigned int blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
 
   /* allocate the pcmBuffer for 2 seconds of audio */
-  m_pcmBuffer.Create(2 * m_blockSize * m_codec->m_SampleRate);
+  m_pcmBuffer.Create(2 * blockSize * m_codec->m_SampleRate);
 
   // set total time from the given tag
   if (file.HasMusicInfoTag() && file.GetMusicInfoTag()->GetDuration())
