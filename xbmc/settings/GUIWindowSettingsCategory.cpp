@@ -1786,7 +1786,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
-  else if (strSetting.find_first_of("audiooutput.") == 0)
+  else if (strSetting.compare(0, 12, "audiooutput.") == 0)
   {
     if (strSetting.Equals("audiooutput.audiodevice"))
     {
