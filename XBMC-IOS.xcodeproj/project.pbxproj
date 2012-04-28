@@ -24,6 +24,7 @@
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
 		7C0A7FB213A9E72E00AFC2BD /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FAE13A9E72E00AFC2BD /* DirtyRegionSolvers.cpp */; };
 		7C0A7FB313A9E72E00AFC2BD /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FB013A9E72E00AFC2BD /* DirtyRegionTracker.cpp */; };
+		7C0B98F9154B7FF30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98F7154B7FF30065A238 /* AEDeviceInfo.cpp */; };
 		7C1A89CE1526722200C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A89CC1526722200C63311 /* TextureCacheJob.cpp */; };
 		7C89628013B7031E003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89627E13B7031E003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C99B7BE1340730000FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */; };
@@ -1013,6 +1014,8 @@
 		7C0A7FAF13A9E72E00AFC2BD /* DirtyRegionSolvers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionSolvers.h; sourceTree = "<group>"; };
 		7C0A7FB013A9E72E00AFC2BD /* DirtyRegionTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionTracker.cpp; sourceTree = "<group>"; };
 		7C0A7FB113A9E72E00AFC2BD /* DirtyRegionTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionTracker.h; sourceTree = "<group>"; };
+		7C0B98F7154B7FF30065A238 /* AEDeviceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEDeviceInfo.cpp; sourceTree = "<group>"; };
+		7C0B98F8154B7FF30065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
 		7C1A89CC1526722200C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
 		7C1A89CD1526722200C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
 		7C89627E13B7031E003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
@@ -3220,6 +3223,8 @@
 				DFB6624915376791006B8FF1 /* AEChannelInfo.h */,
 				DFB6624A15376791006B8FF1 /* AEConvert.cpp */,
 				DFB6624B15376791006B8FF1 /* AEConvert.h */,
+				7C0B98F7154B7FF30065A238 /* AEDeviceInfo.cpp */,
+				7C0B98F8154B7FF30065A238 /* AEDeviceInfo.h */,
 				DFB6624C15376791006B8FF1 /* AEPackIEC61937.cpp */,
 				DFB6624D15376791006B8FF1 /* AEPackIEC61937.h */,
 				DFB6624E15376791006B8FF1 /* AERemap.cpp */,
@@ -7215,6 +7220,7 @@
 				DFB6627515376791006B8FF1 /* AEUtil.cpp in Sources */,
 				DFB6627615376791006B8FF1 /* AEWAVLoader.cpp in Sources */,
 				DFB6630C1537697E006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
+				7C0B98F9154B7FF30065A238 /* AEDeviceInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
