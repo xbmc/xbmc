@@ -135,20 +135,6 @@ bool CWinSystemX11GLES::DestroyWindowSystem()
     m_eglSurface = NULL;
   }
 
-  // Needed???
-  if (m_eglWindow)
-  {
-    XDestroyWindow(m_dpy, m_eglWindow);
-    m_eglWindow = 0;
-  }
-
-  // Needed???
-  if (m_wmWindow)
-  {
-    XDestroyWindow(m_dpy, m_wmWindow);
-    m_wmWindow = 0;
-  }
-
   if (m_eglDisplay)
   {
     eglTerminate(m_eglDisplay);

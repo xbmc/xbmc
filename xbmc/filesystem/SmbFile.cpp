@@ -61,7 +61,6 @@ CSMB::CSMB()
   m_IdleTimeout = 0;
 #endif
   m_context = NULL;
-  smbc_init(xb_smbc_auth, 0);
 }
 
 CSMB::~CSMB()
@@ -148,6 +147,10 @@ void CSMB::Init()
       fclose(f);
     }
 #endif
+
+    // reads smb.conf so this MUST be after we create smb.conf
+    // multiple smbc_init calls are ignored by libsmbclient.
+    smbc_init(xb_smbc_auth, 0);
 
 #ifdef TARGET_WINDOWS
     // set the log function

@@ -32,11 +32,11 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetStringArray(artist, "genre", genre, prioritise);
-  XMLUtils::GetStringArray(artist, "style", styles, prioritise);
-  XMLUtils::GetStringArray(artist, "mood", moods, prioritise);
-  XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise);
-  XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise);
+  XMLUtils::GetStringArray(artist, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "mood", moods, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise, g_advancedSettings.m_musicItemSeparator);
 
   XMLUtils::GetString(artist, "born", strBorn);
   XMLUtils::GetString(artist, "formed", strFormed);
