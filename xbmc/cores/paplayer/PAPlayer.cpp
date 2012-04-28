@@ -52,7 +52,6 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_currentStream    (NULL ),
   m_audioCallback    (NULL )
 {
-  m_startEvent.Reset();
 }
 
 PAPlayer::~PAPlayer()
