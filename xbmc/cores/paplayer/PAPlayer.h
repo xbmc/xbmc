@@ -89,7 +89,7 @@ private:
     enum AEDataFormat m_dataFormat;          /* data format of the samples */
     unsigned int      m_bytesPerSample;      /* number of bytes per audio sample */
     unsigned int      m_bytesPerFrame;       /* number of bytes per audio frame */
-    
+
     bool              m_started;             /* if playback of this stream has been started */
     bool              m_finishing;           /* if this stream is finishing */
     int               m_framesSent;          /* number of frames sent to the stream */
@@ -100,7 +100,7 @@ private:
     bool              m_fadeOutTriggered;    /* if the stream has been told to fade out */
     int               m_seekNextAtFrame;     /* the FF/RR sample to seek at */
     int               m_seekFrame;           /* the exact position to seek too, -1 for none */
-    
+
     IAEStream*        m_stream;              /* the playback stream */
     float             m_volume;              /* the initial volume level to set the stream to on creation */
 
@@ -118,7 +118,7 @@ private:
   CEvent              m_startEvent;          /* event for playback start */
   StreamInfo*         m_currentStream;       /* the current playing stream */
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
-  
+
   CSharedSection      m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */

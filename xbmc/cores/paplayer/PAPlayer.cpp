@@ -59,7 +59,7 @@ PAPlayer::~PAPlayer()
   if (!m_isPaused)
     SoftStop(true, true);
   CloseAllStreams(false);  
-  
+
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
 }
@@ -84,7 +84,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
     StreamInfo* si = *itt;
     if (si->m_fadeOutTriggered)
       continue;
-    
+
     si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
     si->m_stream->Resume();
   }
@@ -125,7 +125,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     StreamInfo* si = *itt;
     if (si->m_stream)
       si->m_stream->FadeVolume(1.0f, 0.0f, FAST_XFADE_TIME);
-    
+
     if (close)
     {
       si->m_prepareTriggered  = true;
@@ -133,7 +133,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
       si->m_fadeOutTriggered  = true;
     }
   }
-  
+
   /* if we are going to wait for them to finish fading */
   if(wait)
   {
@@ -141,7 +141,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     lock.Leave();
     Sleep(FAST_XFADE_TIME);
     lock.Enter();
-    
+
     /* be sure they have faded out */
     while(wait)
     {
@@ -159,7 +159,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         }
       }
     }
-    
+
     /* if we are not closing the streams, pause them */
     if (!close)
     {
@@ -187,22 +187,22 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
         CAEFactory::AE->FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
-      
+
       si->m_decoder.Destroy();
       delete si;
     }
-    
+
     while(!m_finishing.empty())
     {
       StreamInfo* si = m_finishing.front();
       m_finishing.pop_front();
-      
+
       if (si->m_stream)
       {
         CAEFactory::AE->FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
-      
+
       si->m_decoder.Destroy();
       delete si;
     }
@@ -220,13 +220,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   CloseAllStreams();
   m_crossFadeTime = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
-  
+
   if (!QueueNextFileEx(file, false))
     return false;
-  
+
   if (ThreadHandle() == NULL)
     Create();
-  
+
   /* trigger playback start */
   m_isPlaying = true;
   m_startEvent.Set();
@@ -241,11 +241,11 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
 {
   StreamInfo *si = new StreamInfo();
-  
+
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
-    
+
     delete si;
     m_callback.OnQueueNextItem();
     return false;
@@ -261,7 +261,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
         si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
     {
       CLog::Log(LOGINFO, "PAPlayer::QueueNextFileEx - Error reading samples");
-      
+
       si->m_decoder.Destroy();
       delete si;
       m_callback.OnQueueNextItem();
@@ -271,7 +271,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
     /* yield our time so that the main PAP thread doesnt stall */
     CThread::Sleep(1);
   }
-  
+
   /* init the streaminfo struct */
   si->m_decoder.GetDataFormat(&si->m_channelInfo, &si->m_sampleRate, &si->m_encodedSampleRate, &si->m_dataFormat);
   si->m_startOffset        = file.m_lStartOffset * 1000 / 75;
@@ -287,15 +287,17 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_volume             = (fadeIn && m_crossFadeTime) ? 0.0f : 1.0f;
   si->m_fadeOutTriggered   = false;
   si->m_isSlaved           = false;
-  
+
   if (si->m_decoder.TotalTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
-       si->m_prepareNextAtFrame = 0;
-  else si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+    si->m_prepareNextAtFrame = 0;
+  else
+    si->m_prepareNextAtFrame = (int)((si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
   si->m_prepareTriggered = false;
-  
+
   if (si->m_decoder.TotalTime() < m_crossFadeTime)
-       si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * si->m_sampleRate / 1000.0f);
-  else si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
+    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() / 2) * si->m_sampleRate / 1000.0f);
+  else
+    si->m_playNextAtFrame = (int)((si->m_decoder.TotalTime() - m_crossFadeTime) * si->m_sampleRate / 1000.0f);
   si->m_playNextTriggered = false;
 
   PrepareStream(si);
@@ -330,7 +332,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
   si->m_stream->SetVolume    (si->m_volume);
   si->m_stream->SetReplayGain(si->m_decoder.GetReplayGain());
- 
+
   /* if its not the first stream and crossfade is not enabled */
   if (m_currentStream && m_currentStream != si && !m_crossFadeTime)
   {
@@ -424,7 +426,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
 
   sharedLock.Leave();
   CExclusiveLock lock(m_streamsLock);
-    
+
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
@@ -468,17 +470,17 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
       m_finishing.push_back(si);
       return;
     }
-    
+
     if (!si->m_started)
       continue;
-    
+
     /* is it time to prepare the next stream? */
     if (si->m_prepareNextAtFrame > 0 && !si->m_prepareTriggered && si->m_framesSent >= si->m_prepareNextAtFrame)
     {
       si->m_prepareTriggered = true;
       m_callback.OnQueueNextItem();
     }
-    
+
     /* it is time to start playing the next stream? */
     if (si->m_playNextAtFrame > 0 && !si->m_playNextTriggered && si->m_framesSent >= si->m_playNextAtFrame)
     {
@@ -487,7 +489,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
         si->m_prepareTriggered = true;
         m_callback.OnQueueNextItem();
       }
-      
+
       if (!m_isFinished)
       {
         if (m_crossFadeTime)
@@ -540,8 +542,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
     __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
-    if (time < si->m_startOffset || si->m_framesSent < 0) {
-      time		    = si->m_startOffset;
+    if (time < si->m_startOffset || si->m_framesSent < 0)
+    {
+      time = si->m_startOffset;
       si->m_framesSent	    = 0;
       si->m_seekNextAtFrame = 0;
       ToFFRW(1);
@@ -581,14 +584,14 @@ bool PAPlayer::QueueData(StreamInfo *si)
   unsigned int samples = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
   if (!samples)
     return true;
-  
+
   void* data = si->m_decoder.GetData(samples);
   if (!data)
   {
     CLog::Log(LOGERROR, "PAPlayer::QueueData - Failed to get data from the decoder");
     return false;
   }
-  
+
   unsigned int added = si->m_stream->AddData(data, samples * si->m_bytesPerSample);
   si->m_framesSent += added / si->m_bytesPerFrame;
 
@@ -783,7 +786,7 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
     iTime += m_currentStream->m_startOffset;
 
   if (m_playbackSpeed != 1)
-	ToFFRW(1);
+    ToFFRW(1);
 
   m_currentStream->m_seekFrame = (int)(m_currentStream->m_sampleRate * (iTime / 1000));
   m_callback.OnPlayBackSeek((int)iTime, seekOffset);
