@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOAEHALIOS_H__
-#define __COREAUDIOAEHALIOS_H__
 
 #ifdef __arm__
 
@@ -202,5 +200,4 @@ public:
   virtual bool  AllowMixing() { return m_allowMixing; }
 };
 
-#endif
 #endif

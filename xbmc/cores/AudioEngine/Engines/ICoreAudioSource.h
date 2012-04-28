@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOSOURCE_H__
-#define __COREAUDIOSOURCE_H__
 
 #include "AEAudioFormat.h"
 #include "Interfaces/AE.h"
@@ -50,4 +48,3 @@ public:
   //AudioUnitElement InputBus() { return m_inputBus; };
   //void InputBus(AudioUnitElement inputBus) { m_inputBus = m_inputBus; };
 };
-#endif

@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOAESTREAM_H__
-#define __COREAUDIOAESTREAM_H__
 
 #include <samplerate.h>
 #include <list>
@@ -169,4 +167,3 @@ private:
   bool              m_firstInput;
 };
 
-#endif

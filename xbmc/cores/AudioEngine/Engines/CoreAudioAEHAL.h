@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -19,9 +20,6 @@
  *
  */
 
-#ifndef __COREAUDIOHALAE_H__
-#define __COREAUDIOHALAE_H__
-
 #include <list>
 #include "utils/StdString.h"
 #include <AudioUnit/AudioUnit.h>
@@ -36,4 +34,3 @@ char* UInt32ToFourCC(UInt32* val);
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string& str);
 void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
 
-#endif

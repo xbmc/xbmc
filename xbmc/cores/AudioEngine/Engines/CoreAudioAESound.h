@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOAESOUND_H__
-#define __COREAUDIOAESOUND_H__
 
 #include "utils/StdString.h"
 #include "Interfaces/AESound.h"
@@ -59,4 +57,3 @@ private:
   int              m_inUse;
 };
 
-#endif

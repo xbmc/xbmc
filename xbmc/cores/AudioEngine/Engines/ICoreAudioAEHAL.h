@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOAEHAL_H__
-#define __COREAUDIOAEHAL_H__
 
 #include "AEAudioFormat.h"
 #include "Interfaces/AE.h"
@@ -51,4 +49,3 @@ public:
   virtual double GetDelay() = 0;
   virtual void   SetVolume(float volume) = 0;
 };
-#endif

@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
  *      http://xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef __COREAUDIOAE_H__
-#define __COREAUDIOAE_H__
 
 #include <list>
 #include <map>
@@ -161,4 +159,3 @@ private:
   float m_volumeBeforeMute;  
   bool  m_muted;
 };
-#endif

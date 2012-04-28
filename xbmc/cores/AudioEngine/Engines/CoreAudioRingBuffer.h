@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifndef COREAUDIORINGBUFFER_H_
-#define COREAUDIORINGBUFFER_H_
 
 #define RING_BUFFER_OK 0;
 #define RING_BUFFER_EMPTY 1;
@@ -254,4 +252,3 @@ private:
   unsigned int m_iSize;
   unsigned char *m_Buffer;
 };
-#endif //#define COREAUDIORINGBUFFER_H_
