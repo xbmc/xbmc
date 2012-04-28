@@ -84,6 +84,8 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
 IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
 {
+#if !defined(TARGET_DARWIN)
+
   /* extract the driver from the device string if it exists */
   std::string driver;
   ParseDevice(device, driver);
@@ -125,10 +127,12 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   if (driver != "OSS")
     TRY_SINK(OSS)
 
-#endif /* defined _LINUX && !defined __APPLE__ */
+#endif /* defined TARGET_WINDOWS || defined TARGET_LINUX */
 
   //Complete failure.
   TRY_SINK(NULL);
+
+#endif /* defined TARGET_DARWIN */
 
   /* should never get here */
   ASSERT(false);

@@ -534,6 +534,12 @@ double CCoreAudioAEStream::GetCacheTotal()
   return (double)m_Buffer->GetMaxSize() / (double)m_AvgBytesPerSec;
 }
 
+bool CCoreAudioAEStream::IsBuffering()
+{
+  // TODO: implement me
+  return false;
+}
+
 bool CCoreAudioAEStream::IsPaused()
 {
   return m_paused;

@@ -25,15 +25,10 @@
 
 enum AEEngine
 {
-#ifndef __APPLE__
   AE_ENGINE_NULL,
   AE_ENGINE_SOFT,
-#else
   AE_ENGINE_COREAUDIO,
-#endif
-#ifdef HAS_PULSEAUDIO
-  AE_ENGINE_PULSE,
-#endif
+  AE_ENGINE_PULSE
 };
 
 class IAE;

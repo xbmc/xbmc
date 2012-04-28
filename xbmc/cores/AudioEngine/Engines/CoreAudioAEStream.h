@@ -69,6 +69,7 @@ public:
   virtual bool IsDrained();
   bool IsDestroyed();
   bool IsValid();
+  virtual bool IsBuffering();
 
   virtual void Pause();
   virtual void Resume();
