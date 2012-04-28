@@ -74,7 +74,6 @@ public:
   // Data management
   unsigned int GetDataSize();
   void *GetData(unsigned int samples);
-  void PrefixData(void *data, unsigned int size);
   ICodec *GetCodec() const { return m_codec; }
   float GetReplayGain();
 
