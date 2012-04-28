@@ -44,7 +44,7 @@ protected:
   friend class CCoreAudioAE;
   CCoreAudioAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options);
   virtual ~CCoreAudioAEStream();
-  
+
   CAUOutputDevice    *m_outputUnit;
 
 public:
@@ -97,7 +97,7 @@ public:
   virtual void FadeVolume(float from, float to, unsigned int time);
   virtual bool IsFading();
   virtual void RegisterSlave(IAEStream *stream);
-  
+
   OSStatus Render(AudioUnitRenderActionFlags* actionFlags, 
                   const AudioTimeStamp* pTimeStamp, 
                   UInt32 busNumber, 
@@ -113,7 +113,7 @@ private:
   void InternalFlush();
 
   AEDataFormat            m_rawDataFormat;
-  
+
   AEAudioFormat           m_OutputFormat;
   unsigned int            m_chLayoutCountOutput;
   AEAudioFormat           m_StreamFormat;
@@ -144,7 +144,7 @@ private:
   int                     m_remapBufferSize;
   uint8_t                *m_vizRemapBuffer;     /* buffer for remap data */
   int                     m_vizRemapBufferSize;
-  
+
   SRC_STATE              *m_ssrc;
   SRC_DATA                m_ssrcData;
   bool                    m_paused;
