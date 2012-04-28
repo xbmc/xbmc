@@ -56,7 +56,7 @@ CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
   m_SampleRate   = 0;
 
   m_Codec        = NULL;
-  
+
   /* make enough room for at-least two audio frames */
   m_DecodeSize   = 0;
   m_DecodeBuffer = NULL;
@@ -347,9 +347,9 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   /* we will check the first packet's crc */
   m_LostSync = true;
-  
+
   m_codec = hints.codec;
-  
+
   return true;
 }
 
@@ -641,7 +641,7 @@ CAEChannelInfo CDVDAudioCodecPassthroughFFmpeg::GetChannelMap()
     {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
     {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
   };
-  
+
   switch(m_codec)
   {
     default:

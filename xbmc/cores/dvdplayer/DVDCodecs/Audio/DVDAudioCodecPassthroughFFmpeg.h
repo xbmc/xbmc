@@ -96,7 +96,7 @@ private:
   bool         m_LostSync;
   int          m_SampleRate;
   CodecID      m_codec;
-  
+
   unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, unsigned int iSize, unsigned int *fSize);
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize);
   unsigned int SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize);
