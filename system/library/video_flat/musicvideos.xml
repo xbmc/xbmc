@@ -1,0 +1,5 @@
+<node order="3" type="folder" visible="Library.HasContent(MusicVideos)">
+  <label>20389</label>
+  <path>videodb://3/2</path>
+  <icon>DefaultMusicVideoTitle.png</icon>
+</node>

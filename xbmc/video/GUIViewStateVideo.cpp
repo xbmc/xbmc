@@ -409,7 +409,10 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   //  Setup shares we want to have
   m_sources.clear();
   CFileItemList items;
-  CDirectory::GetDirectory("library://video/", items, "");
+  if (g_settings.m_bMyVideoNavFlatten)
+    CDirectory::GetDirectory("library://video_flat/", items, "");
+  else
+    CDirectory::GetDirectory("library://video/", items, "");
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
