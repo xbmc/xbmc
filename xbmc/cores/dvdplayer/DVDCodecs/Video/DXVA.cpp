@@ -743,6 +743,19 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
   }
 
+  if(m_format.SampleWidth  == 0
+  || m_format.SampleHeight == 0)
+  {
+    if(!Open(avctx, avctx->pix_fmt, m_shared))
+    {
+      CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
+      Close();
+      return VC_ERROR;
+    }
+    return VC_FLUSHED;
+  }
+  else
+  {
   if(avctx->refs > m_refs)
   {
     CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
@@ -754,17 +767,6 @@ int CDecoder::Check(AVCodecContext* avctx)
     return VC_FLUSHED;
 #endif
   }
-
-  if(m_format.SampleWidth  == 0
-  || m_format.SampleHeight == 0)
-  {
-    if(!Open(avctx, avctx->pix_fmt, m_shared))
-    {
-      CLog::Log(LOGERROR, "CDecoder::Check - decoder was not able to reset");
-      Close();
-      return VC_ERROR;
-    }
-    return VC_FLUSHED;
   }
 
   // Status reports are available only for the DXVA2_ModeH264 and DXVA2_ModeVC1 modes
