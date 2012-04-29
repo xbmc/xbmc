@@ -1,9 +1,6 @@
 INCLUDES=-I.
-SRCS=tinystr.cpp \
-     tinyxml.cpp \
-     tinyxmlerror.cpp \
-     tinyxmlparser.cpp
-LIB=tinyxml.a
+SRCS=tinyxml2.cpp
+LIB=tinyxml2.a
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

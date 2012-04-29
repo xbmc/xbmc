@@ -124,10 +124,7 @@
     <ClCompile Include="..\..\..\..\..\lib\platform\windows\os-threads.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
     <ClCompile Include="..\..\GenreTable.cpp" />
-    <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
-    <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
-    <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
-    <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="..\..\lib\tsreader\FileReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp" />
@@ -152,8 +149,7 @@
     <ClInclude Include="..\..\epg.h" />
     <ClInclude Include="..\..\FileUtils.h" />
     <ClInclude Include="..\..\GenreTable.h" />
-    <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
-    <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
+    <ClInclude Include="..\..\lib\tinyxml2\tinyxml2.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
     <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h" />
     <ClInclude Include="..\..\lib\tsreader\MemoryReader.h" />
