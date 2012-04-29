@@ -1496,17 +1496,34 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 long long cPVRClientMediaPortal::SeekLiveStream(long long iPosition, int iWhence)
 {
-  return -1;
+  if (g_eStreamingMethod == ffmpeg || !m_tsreader)
+  {
+    return -1;
+  }
+
+  if (iPosition == 0 && iWhence == SEEK_CUR)
+  {
+    return m_tsreader->GetFilePointer();
+  }
+  return m_tsreader->SetFilePointer(iPosition, iWhence);
 }
 
 long long cPVRClientMediaPortal::LengthLiveStream(void)
 {
-  return -1;
+  if (g_eStreamingMethod == ffmpeg || !m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFileSize();
 }
 
 long long cPVRClientMediaPortal::PositionLiveStream(void)
 {
-  return -1;
+  if (g_eStreamingMethod == ffmpeg || !m_tsreader)
+  {
+    return -1;
+  }
+  return m_tsreader->GetFilePointer();
 }
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
