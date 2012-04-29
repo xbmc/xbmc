@@ -1091,7 +1091,11 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     CDateTime dateAdded;
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(strPath, &buffer) == 0)
-      dateAdded = *localtime((const time_t*)&buffer.st_ctime);
+    {
+      struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+      if (time)
+        dateAdded = *time;
+    }
 
     if (!dateAdded.IsValid())
       dateAdded = CDateTime::GetCurrentDateTime();
