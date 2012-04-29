@@ -139,7 +139,7 @@ void CSmartPlaylistRule::TranslateStrings(const char *field, const char *oper, c
   m_parameter = parameter;
 }
 
-TiXmlElement CSmartPlaylistRule::GetAsElement()
+TiXmlElement CSmartPlaylistRule::GetAsElement() const
 {
   TiXmlElement rule("rule");
   TiXmlText parameter(m_parameter.c_str());
@@ -355,14 +355,14 @@ CStdString CSmartPlaylistRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
   return g_localizeStrings.Get(16018);
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedRule()
+CStdString CSmartPlaylistRule::GetLocalizedRule() const
 {
   CStdString rule;
   rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), m_parameter.c_str());
   return rule;
 }
 
-CStdString CSmartPlaylistRule::GetVideoResolutionQuery(void)
+CStdString CSmartPlaylistRule::GetVideoResolutionQuery(void) const
 {
   CStdString retVal(" in (select distinct idFile from streamdetails where iVideoWidth ");
   int iRes = atoi(m_parameter.c_str());
@@ -394,7 +394,7 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(void)
   return retVal;
 }
 
-CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& strType)
+CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& strType) const
 {
   SEARCH_OPERATOR op = m_operator;
   if ((strType == "tvshows" || strType == "episodes") && m_field == FIELD_YEAR)
@@ -911,10 +911,10 @@ void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
   m_playlistRules.push_back(rule);
 }
 
-CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists, bool needWhere /* = true */)
+CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists, bool needWhere /* = true */) const
 {
   CStdString rule, currentRule;
-  for (vector<CSmartPlaylistRule>::iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
+  for (vector<CSmartPlaylistRule>::const_iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
   {
     if (it != m_playlistRules.begin())
       rule += m_matchAllRules ? " AND " : " OR ";
@@ -957,7 +957,7 @@ CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &refere
   return rule;
 }
 
-CStdString CSmartPlaylist::GetOrderClause(CDatabase &db)
+CStdString CSmartPlaylist::GetOrderClause(CDatabase &db) const
 {
   CStdString order;
   if (m_orderField != CSmartPlaylistRule::FIELD_NONE)
