@@ -437,7 +437,7 @@ typedef struct {
   uint8_t* decoderConfig;
 } quicktime_esds_t;
 
-int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *pb, int length, int compact)
+int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, AVIOContext *pb, int length, int compact)
 {
   int i;
   uint8_t b;
@@ -480,7 +480,7 @@ int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *
   return numBytes; 
 }
 
-void quicktime_write_esds(DllAvFormat *av_format_ctx, ByteIOContext *pb, quicktime_esds_t *esds)
+void quicktime_write_esds(DllAvFormat *av_format_ctx, AVIOContext *pb, quicktime_esds_t *esds)
 {
   av_format_ctx->avio_w8(pb, 0);     // Version
   av_format_ctx->avio_wb24(pb, 0);     // Flags
@@ -654,7 +654,7 @@ const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
 }
 
 const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *buf_in, int size)
+  AVIOContext *pb, const uint8_t *buf_in, int size)
 {
   const uint8_t *p = buf_in;
   const uint8_t *end = p + size;
@@ -677,7 +677,7 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
 const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-  ByteIOContext *pb;
+  AVIOContext *pb;
   int ret = av_format_ctx->avio_open_dyn_buf(&pb);
   if (ret < 0)
     return ret;
@@ -731,7 +731,7 @@ const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format
    (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
 const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *data, int len)
+  AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
   if (len > 6)
@@ -1083,7 +1083,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       case CODEC_ID_MPEG4:
         if (extrasize)
         {
-          ByteIOContext *pb;
+          AVIOContext *pb;
           quicktime_esds_t *esds;
 
           if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
@@ -1161,7 +1161,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format required
 
-            ByteIOContext *pb;
+            AVIOContext *pb;
             if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
               return false;
 
@@ -1307,7 +1307,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
     uint32_t decoderFlags = 0;
     CFDictionaryRef frameInfo = NULL;;
     CMSampleBufferRef sampleBuff = NULL;
-    ByteIOContext *pb = NULL;
+    AVIOContext *pb = NULL;
     int demux_size = 0;
     uint8_t *demux_buff = NULL;
     
