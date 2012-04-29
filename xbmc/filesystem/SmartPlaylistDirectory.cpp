@@ -85,33 +85,40 @@ namespace XFILE
     {
       CMusicDatabase db;
       db.Open();
-      CStdString type=playlist.GetType();
-      if (type.IsEmpty())
-        type = "songs";
-      if (playlist.GetType().Equals("mixed"))
-        playlist.SetType("songs");
+      CStdString whereOrder;
+      if (playlist.GetType().IsEmpty() || playlist.GetType().Equals("mixed"))
+      {
+        CSmartPlaylist songPlaylist(playlist);
+        songPlaylist.SetType("songs");
+        whereOrder = songPlaylist.GetWhereClause(db, playlists) + " " + songPlaylist.GetOrderClause(db);
+      }
+      else
+        whereOrder = playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
 
-      CStdString whereOrder = playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
       success = db.GetSongsByWhere("", whereOrder, items);
       items.SetContent("songs");
       db.Close();
-      playlist.SetType(type);
     }
     if (playlist.GetType().Equals("musicvideos") || playlist.GetType().Equals("mixed"))
     {
       CVideoDatabase db;
       db.Open();
-      CStdString type=playlist.GetType();
+      CStdString whereOrder;
       if (playlist.GetType().Equals("mixed"))
-        playlist.SetType("musicvideos");
-      CStdString whereOrder = playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
+      {
+        CSmartPlaylist mvidPlaylist(playlist);
+        mvidPlaylist.SetType("musicvideos");
+        whereOrder = mvidPlaylist.GetWhereClause(db, playlists) + " " + mvidPlaylist.GetOrderClause(db);
+      }
+      else
+        whereOrder = playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
+
       CFileItemList items2;
       success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2, false); // TODO: SMARTPLAYLISTS Don't check locks???
       db.Close();
       items.Append(items2);
       if (items2.Size())
         items.SetContent("musicvideos");
-      playlist.SetType(type);
     }
     items.SetLabel(playlist.GetName());
     // go through and set the playlist order
