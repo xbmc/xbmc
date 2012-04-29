@@ -1,8 +1,5 @@
-<node order="6" type="filter" visible="Library.HasContent(MusicVideos)">
+<node order="6" type="folder" visible="Library.HasContent(MusicVideos)">
   <label>20390</label>
   <icon>DefaultRecentlyAddedMusicVideos.png</icon>
-  <content>musicvideos</content>
-  <match>all</match>
-  <limit>25</limit>
-  <order direction="descending">dateadded</order>
+  <path>videodb://6</path>
 </node>

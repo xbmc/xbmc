@@ -1,8 +1,5 @@
-<node order="5" type="filter" visible="Library.HasContent(TVShows)">
+<node order="5" type="folder" visible="Library.HasContent(TVShows)">
   <label>20387</label>
   <icon>DefaultRecentlyAddedEpisodes.png</icon>
-  <content>episodes</content>
-  <match>all</match> 
-  <limit>25</limit>
-  <order direction="descending">dateadded</order>
+  <path>videodb://5</path>
 </node>
