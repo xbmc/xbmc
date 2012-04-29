@@ -36,7 +36,6 @@ bool CGenreTable::LoadGenreXML(const std::string &filename)
   XBMC->Log(LOG_DEBUG, "Opened %s to read genre string to type/subtype translation table", filename.c_str());
 
   tinyxml2::XMLElement* pElem;
-  string sGenre;
   const char* sGenreType = NULL;
   const char* sGenreSubType = NULL;
   genre_t genre;
@@ -50,11 +49,8 @@ bool CGenreTable::LoadGenreXML(const std::string &filename)
     return false;
   }
 
-  //This should hold: pElem->Value() == "genrestrings"
-
   // iterate through all genre elements
   tinyxml2::XMLElement* pGenreNode = pElem->FirstChildElement("genre");
-  //This should hold: pGenreNode->Value() == "genre"
 
   if (!pGenreNode)
   {

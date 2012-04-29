@@ -157,7 +157,6 @@
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h" />
     <ClInclude Include="..\..\lib\tsreader\RTSPClient.h" />
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
-    <ClInclude Include="..\..\NonCopyable.h" />
     <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />

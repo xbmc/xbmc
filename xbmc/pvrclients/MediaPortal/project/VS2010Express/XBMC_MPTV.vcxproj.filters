@@ -130,9 +130,6 @@
     <ClInclude Include="..\..\Cards.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\NonCopyable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\FileReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>

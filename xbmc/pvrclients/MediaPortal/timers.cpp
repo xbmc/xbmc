@@ -52,10 +52,11 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
   if(timerinfo.iEpgUid!=-1)
   {
-      m_progid = timerinfo.iClientIndex;
-      m_index  = timerinfo.iEpgUid;
+    m_progid = timerinfo.iClientIndex;
+    m_index  = timerinfo.iEpgUid;
   }
-  else m_index = timerinfo.iClientIndex;
+  else
+    m_index = timerinfo.iClientIndex;
 
   m_active = (timerinfo.state == PVR_TIMER_STATE_SCHEDULED || timerinfo.state == PVR_TIMER_STATE_RECORDING);
 
@@ -91,12 +92,11 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
   m_priority = XBMC2MepoPriority(timerinfo.iPriority);
 
   SetKeepMethod(timerinfo.iLifetime);
+
   if(timerinfo.bIsRepeating)
-  {
     m_schedtype = RepeatFlags2SchedRecType(timerinfo.iWeekdays);
-  } else {
+  else
     m_schedtype = Once;
-  }
 
   m_prerecordinterval = timerinfo.iMarginStart;
   m_postrecordinterval = timerinfo.iMarginEnd;
@@ -113,7 +113,7 @@ cTimer::~cTimer()
  */
 void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
-  if(m_progid!=-1)
+  if (m_progid != -1)
   {
     tag.iClientIndex    = m_progid;
     tag.iEpgUid         = m_index;
@@ -172,7 +172,7 @@ bool cTimer::ParseLine(const char *s)
 
   Tokenize(data, schedulefields, "|");
 
-  if(schedulefields.size() >= 10)
+  if (schedulefields.size() >= 10)
   {
     // field 0 = index
     // field 1 = start date + time
@@ -192,9 +192,7 @@ bool cTimer::ParseLine(const char *s)
     // field 15 = canceled (TVServerXBMC build >= 100)
     // field 16 = series (True/False) (TVServerXBMC build >= 100)
     // field 17 = isrecording (True/False)
-    if(schedulefields.size() >= 19)
-      m_progid = atoi(schedulefields[18].c_str());
-    else m_progid = -1;
+    // field 18 = program id (EPG)
     m_index = atoi(schedulefields[0].c_str());
     m_starttime = DateTimeToTimeT(schedulefields[1]);
 
@@ -255,6 +253,11 @@ bool cTimer::ParseLine(const char *s)
       m_series = false;
       m_isrecording = false;
     }
+
+    if(schedulefields.size() >= 19)
+      m_progid = atoi(schedulefields[18].c_str());
+    else
+      m_progid = -1;
 
     return true;
   }

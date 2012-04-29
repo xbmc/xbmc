@@ -688,7 +688,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
       tag.strIconPath = "";
 #endif
       tag.iEncryptionSystem = channel.Encrypted();
-      tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
+      tag.bIsRadio = bRadio;
       tag.bIsHidden = false;
 
       if(channel.IsWebstream())
@@ -815,7 +815,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  if(group.bIsRadio)
+  if (group.bIsRadio)
   {
     if (g_bRadioEnabled)
     {
