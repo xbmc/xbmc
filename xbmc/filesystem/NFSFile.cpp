@@ -65,6 +65,7 @@ CNfsConnection::CNfsConnection()
 , m_writeChunkSize(0)
 , m_OpenConnections(0)
 , m_IdleTimeout(0)
+, m_lastAccessedTime(0)
 , m_pLibNfs(new DllLibNfs())
 {
 }
@@ -199,6 +200,7 @@ int CNfsConnection::getContextForExport(const CStdString &exportname)
       ret = CONTEXT_CACHED;
       CLog::Log(LOGDEBUG,"NFS: Using cached context.");
     }
+    m_lastAccessedTime = XbmcThreads::SystemClockMillis(); //refresh last access time of m_pNfsContext
   }
   return ret;
 }
@@ -261,7 +263,9 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
   resolveHost(url);
   ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
   
-  if(ret && (!exportPath.Equals(m_exportPath,true) || !url.GetHostName().Equals(m_hostName,false)) )
+  if(ret && (!exportPath.Equals(m_exportPath,true) || 
+     !url.GetHostName().Equals(m_hostName,false))  ||
+     (XbmcThreads::SystemClockMillis() - m_lastAccessedTime) > CONTEXT_TIMEOUT)
   {
     int contextRet = getContextForExport(url.GetHostName() + exportPath);
     
