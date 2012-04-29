@@ -695,7 +695,9 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     if (CFile::Stat(file, &buffer) == 0)
     {
       time_t maxTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
-      dateAdded = *localtime(&maxTime);
+      struct tm *time = localtime(&maxTime);
+      if (time)
+        dateAdded = *time;
     }
 
     if (!dateAdded.IsValid())
