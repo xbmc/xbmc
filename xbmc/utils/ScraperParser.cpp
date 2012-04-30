@@ -164,6 +164,18 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }
+  // insert localize strings
+  iIndex = 0;
+  while ((size_t)(iIndex = strDest.find("$LOCALIZE[",iIndex)) != CStdString::npos)
+  {
+    int iEnd = strDest.Find("]",iIndex);
+    CStdString strInfo = strDest.Mid(iIndex+10,iEnd-iIndex-10);
+    CStdString strReplace;
+    if (m_scraper)
+      strReplace = m_scraper->GetString(strtol(strInfo.c_str(),NULL,10));
+    strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
+    iIndex += strReplace.length();
+  }
   iIndex = 0;
   while ((size_t)(iIndex = strDest.find("\\n",iIndex)) != CStdString::npos)
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iIndex+2,"\n");
