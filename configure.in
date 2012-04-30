@@ -127,7 +127,6 @@ libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 libcec_disabled_missing_libs="== libcec disabled because both libudev and libusb are not available. CEC adapter support will not be available. =="
-libbluray_wrong_version="version has old angle api which is not supported, if you want to continue disable libbluray support"
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
