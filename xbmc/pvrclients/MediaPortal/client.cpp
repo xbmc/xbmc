@@ -29,22 +29,26 @@ using namespace ADDON;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string g_szHostname           = DEFAULT_HOST;                  ///< The Host name or IP of the MediaPortal TV Server
-int         g_iPort                = DEFAULT_PORT;                  ///< The TVServerXBMC listening port (default: 9596)
-int         g_iConnectTimeout      = DEFAULT_TIMEOUT;               ///< The Socket connection timeout
-int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL;        ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
-bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;              ///< Send only Free-To-Air Channels inside Channel list to XBMC
-bool        g_bRadioEnabled        = DEFAULT_RADIO;                 ///< Send also Radio channels list to XBMC
-bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;            ///< Send VDR's OSD status messages to XBMC OSD
-bool        g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
-bool        g_bReadGenre           = DEFAULT_READ_GENRE;            ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
-bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
-std::string g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
-std::string g_szTimeshiftDir       = DEFAULT_TIMESHIFT_DIR;         ///< The path to the recordings directory
-std::string g_szTVGroup            = DEFAULT_TVGROUP;               ///< Import only TV channels from this TV Server TV group
-std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;            ///< Import only radio channels from this TV Server radio group
-bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
-bool        g_bFastChannelSwitch   = true;                          ///< Don't stop an existing timeshift on a channel switch
+std::string      g_szHostname           = DEFAULT_HOST;                  ///< The Host name or IP of the MediaPortal TV Server
+int              g_iPort                = DEFAULT_PORT;                  ///< The TVServerXBMC listening port (default: 9596)
+int              g_iConnectTimeout      = DEFAULT_TIMEOUT;               ///< The Socket connection timeout
+int              g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL;        ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
+bool             g_bOnlyFTA             = DEFAULT_FTA_ONLY;              ///< Send only Free-To-Air Channels inside Channel list to XBMC
+bool             g_bRadioEnabled        = DEFAULT_RADIO;                 ///< Send also Radio channels list to XBMC
+bool             g_bHandleMessages      = DEFAULT_HANDLE_MSG;            ///< Send VDR's OSD status messages to XBMC OSD
+bool             g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
+bool             g_bReadGenre           = DEFAULT_READ_GENRE;            ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
+bool             g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
+std::string      g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
+std::string      g_szTimeshiftDir       = DEFAULT_TIMESHIFT_DIR;         ///< The path to the recordings directory
+std::string      g_szTVGroup            = DEFAULT_TVGROUP;               ///< Import only TV channels from this TV Server TV group
+std::string      g_szRadioGroup         = DEFAULT_RADIOGROUP;            ///< Import only radio channels from this TV Server radio group
+std::string      g_szSMBusername        = DEFAULT_SMBUSERNAME;           ///< Windows user account used to access share
+std::string      g_szSMBpassword        = DEFAULT_SMBPASSWORD;           ///< Windows user password used to access share
+                                                                         ///< Leave empty to use current user when running on Windows
+bool             g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
+eStreamingMethod g_eStreamingMethod     = TSReader;
+bool             g_bFastChannelSwitch   = true;                          ///< Don't stop an existing timeshift on a channel switch
 
 /* Client member variables */
 ADDON_STATUS           m_CurStatus    = ADDON_STATUS_UNKNOWN;
@@ -90,11 +94,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     return ADDON_STATUS_UNKNOWN;
   }
 
-#ifdef TSREADER
-  XBMC->Log(LOG_INFO, "Creating MediaPortal PVR-Client (TSReader version)");
-#else
-  XBMC->Log(LOG_INFO, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
-#endif
+  XBMC->Log(LOG_INFO, "Creating MediaPortal PVR-Client");
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_iClientID    = pvrprops->iClientId;
@@ -242,7 +242,13 @@ void ADDON_ReadSettings(void)
     g_szRadioGroup = buffer;
   }
 
-#ifndef TSREADER
+  if (!XBMC->GetSetting("streamingmethod", &g_eStreamingMethod))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'streamingmethod' setting, falling back to 'tsreader' as default");
+    g_eStreamingMethod = TSReader;
+  }
+
   /* Read setting "resolvertsphostname" from settings.xml */
   if (!XBMC->GetSetting("resolvertsphostname", &g_bResolveRTSPHostname))
   {
@@ -250,7 +256,6 @@ void ADDON_ReadSettings(void)
     XBMC->Log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
     g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME;
   }
-#endif
 
   /* Read setting "readgenre" from settings.xml */
   if (!XBMC->GetSetting("readgenre", &g_bReadGenre))
@@ -283,10 +288,9 @@ void ADDON_ReadSettings(void)
   } else {
     g_szRecordingsDir = buffer;
   }
-#ifdef TSREADER
+
   /* TSReader settings */
   /*********************/
-#ifdef TARGET_WINDOWS
   /* Read setting "directtsfileread" from settings.xml */
   if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
   {
@@ -294,11 +298,6 @@ void ADDON_ReadSettings(void)
     XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
     g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
   }
-#else
-  /* "directtsfileread" is not yet supported on non-Windows targets */
-   XBMC->Log(LOG_INFO, "Setting 'directtsfileread' to 'false' for non-Windows targets");
-  g_bDirectTSFileRead = false;
-#endif //TARGET_WINDOWS
 
   if (!XBMC->GetSetting("timeshiftdir", &buffer))
   {
@@ -317,23 +316,33 @@ void ADDON_ReadSettings(void)
     g_bFastChannelSwitch = false;
   }
 
-#else //! TSREADER
-  /* "directtsfileread" is not yet supported on non-Windows targets */
-  XBMC->Log(LOG_INFO, "Setting 'directtsfileread' to 'false' for non-Windows targets");
-  g_bDirectTSFileRead = false;
-  g_szTimeshiftDir = DEFAULT_TIMESHIFT_DIR;
-#endif //TSREADER
+  /* read setting "user" from settings.xml */
+  if (!XBMC->GetSetting("smbusername", &buffer))
+  {
+    XBMC->Log(LOG_ERROR, "Couldn't get 'smbusername' setting, falling back to '%s' as default", DEFAULT_SMBUSERNAME);
+    g_szSMBusername = DEFAULT_SMBUSERNAME;
+  }
+  else
+    g_szSMBusername = buffer;
+
+  /* read setting "pass" from settings.xml */
+  if (!XBMC->GetSetting("smbpassword", &buffer))
+  {
+    XBMC->Log(LOG_ERROR, "Couldn't get 'smbpassword' setting, falling back to '%s' as default", DEFAULT_SMBPASSWORD);
+    g_szSMBpassword = DEFAULT_SMBPASSWORD;
+  }
+  else
+    g_szSMBpassword = buffer;
 
   /* Log the current settings for debugging purposes */
+  XBMC->Log(LOG_DEBUG, "settings: streamingmethod: %s", (( g_eStreamingMethod == TSReader) ? "TSReader" : "ffmpeg"));
   XBMC->Log(LOG_DEBUG, "settings: host='%s', port=%i, timeout=%i", g_szHostname.c_str(), g_iPort, g_iConnectTimeout);
   XBMC->Log(LOG_DEBUG, "settings: ftaonly=%i, useradio=%i, tvgroup='%s', radiogroup='%s'", (int) g_bOnlyFTA, (int) g_bRadioEnabled, g_szTVGroup.c_str(), g_szRadioGroup.c_str());
   XBMC->Log(LOG_DEBUG, "settings: readgenre=%i, sleeponrtspurl=%i", (int) g_bReadGenre, g_iSleepOnRTSPurl);
   XBMC->Log(LOG_DEBUG, "settings: userecordingsdir=%i, recordingsdir='%s'", (int) g_bUseRecordingsDir, g_szRecordingsDir.c_str());
-#ifndef TSREADER
   XBMC->Log(LOG_DEBUG, "settings: resolvertsphostname=%i", (int) g_bResolveRTSPHostname);
-#else
   XBMC->Log(LOG_DEBUG, "settings: directsfileread=%i, timeshiftdir='%s' fastchannelswitch=%i", (int) g_bDirectTSFileRead, g_szTimeshiftDir.c_str(), (int) g_bFastChannelSwitch);
-#endif
+  XBMC->Log(LOG_DEBUG, "settings: smb user='%s', pass='%s'", g_szSMBusername.c_str(), g_szSMBpassword.c_str());
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -393,13 +402,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from '%s' to '%s'", g_szRadioGroup.c_str(), (const char*) settingValue);
     g_szRadioGroup = (const char*) settingValue;
   }
-#ifndef TSREADER
   else if (str == "resolvertsphostname")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'resolvertsphostname' from %u to %u", g_bResolveRTSPHostname, *(bool*) settingValue);
     g_bResolveRTSPHostname = *(bool*) settingValue;
   }
-#endif
   else if (str == "readgenre")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'readgenre' from %u to %u", g_bReadGenre, *(bool*) settingValue);
@@ -420,7 +427,6 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
     g_szRecordingsDir = (const char*) settingValue;
   }
-#ifdef TSREADER
   else if (str == "directtsfileread")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'directtsfileread' from %u to %u", g_bDirectTSFileRead, *(bool*) settingValue);
@@ -431,12 +437,32 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %s to %s", g_szTimeshiftDir.c_str(), (const char*) settingValue);
     g_szTimeshiftDir = (const char*) settingValue;
   }
+  else if (str == "smbusername")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'smbusername' from '%s' to '%s'", g_szSMBusername.c_str(), (const char*) settingValue);
+    g_szSMBusername = (const char*) settingValue;
+  }
+  else if (str == "smbpassword")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'smbpassword' from '%s' to '%s'", g_szSMBpassword.c_str(), (const char*) settingValue);
+   g_szSMBpassword = (const char*) settingValue;
+  }
   else if (str == "fastchannelswitch")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'fastchannelswitch' from %u to %u", g_bFastChannelSwitch, *(bool*) settingValue);
     g_bFastChannelSwitch = *(bool*) settingValue;
   }
-#endif
+  else if (str == "streamingmethod")
+  {
+    if (g_eStreamingMethod != *(eStreamingMethod*) settingValue)
+    {
+      XBMC->Log(LOG_INFO, "Changed setting 'streamingmethod' from %u to %u", g_eStreamingMethod, *(int*) settingValue);
+      g_eStreamingMethod = *(eStreamingMethod*) settingValue;
+      /* Switching between ffmpeg and tsreader mode requires a restart due to different channel streams */
+      return ADDON_STATUS_NEED_RESTART;
+    }
+  }
+
   return ADDON_STATUS_OK;
 }
 
@@ -461,7 +487,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
 {
   XBMC->Log(LOG_DEBUG, "->GetProperties()");
 
-  pCapabilities->bSupportsTimeshift          = false;
+  pCapabilities->bSupportsTimeshift          = true;
   pCapabilities->bSupportsEPG                = true;
   pCapabilities->bSupportsRecordings         = true;
   pCapabilities->bSupportsTimers             = true;
@@ -729,6 +755,30 @@ int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
     return g_client->ReadLiveStream(pBuffer, iBufferSize);
 }
 
+long long SeekLiveStream(long long iPosition, int iWhence)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->SeekLiveStream(iPosition, iWhence);
+}
+
+long long PositionLiveStream(void)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->PositionLiveStream();
+}
+
+long long LengthLiveStream(void)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->LengthLiveStream();
+}
+
 int GetCurrentClientChannel()
 {
   if (!g_client)
@@ -778,6 +828,30 @@ int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
     return g_client->ReadRecordedStream(pBuffer, iBufferSize);
 }
 
+long long SeekRecordedStream(long long iPosition, int iWhence)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->SeekRecordedStream(iPosition, iWhence);
+}
+
+long long PositionRecordedStream(void)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->PositionRecordedStream();
+}
+
+long long LengthRecordedStream(void)
+{
+  if (!g_client)
+    return -1;
+  else
+    return g_client->LengthRecordedStream();
+}
+
 const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
 {
   if (!g_client)
@@ -792,13 +866,5 @@ DemuxPacket* DemuxRead(void) { return NULL; }
 void DemuxAbort(void) {}
 void DemuxReset(void) {}
 void DemuxFlush(void) {}
-
-long long SeekRecordedStream(long long iPosition, int iWhence) { return -1; }
-long long PositionRecordedStream(void) { return -1; }
-long long LengthRecordedStream(void) { return -1; }
-
-long long SeekLiveStream(long long pos, int whence) { return -1; }
-long long PositionLiveStream(void) { return -1; }
-long long LengthLiveStream(void) { return -1 ; }
 
 } //end extern "C"

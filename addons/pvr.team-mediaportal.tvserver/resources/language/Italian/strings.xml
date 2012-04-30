@@ -14,6 +14,8 @@
     <string id="30010">Tempo di attesa dopo il tuning di un canale (ms)</string>
     <string id="30011">Registra direttamente (nessuno streaming)</string>
     <string id="30012">Cartella di salvataggio per Mediaportal</string>
+    <string id="30013">Esegui direttamente dal buffer del Timeshift (senza rtsp)</string>
+    <string id="30014">Cartella di buffer del Timeshift</string>
 
     <!-- category labels -->
     <string id="30040">Connessione</string>

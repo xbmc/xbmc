@@ -87,11 +87,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_tvheadend", "..\.
 		{00700E12-A63B-4E54-B962-4011A90584BD} = {00700E12-A63B-4E54-B962-4011A90584BD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv_tsreader", "..\..\xbmc\pvrclients\MediaPortal\project\VS2010Express\XBMC_MPTV_tsreader.vcxproj", "{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv_libLive555", "..\..\xbmc\pvrclients\MediaPortal\lib\live555\LiveMedia555.vcxproj", "{3C398BD4-5714-4802-AB86-D43ADD15B3C0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_fortherecord_libcurl", "..\..\xbmc\pvrclients\ForTheRecord\lib\curl-7.21.4\lib\libcurl.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrlib_curl", "..\..\xbmc\pvrclients\lib\curl-7.21.6\lib\libcurl.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_fortherecord", "..\..\xbmc\pvrclients\ForTheRecord\project\VS2010Express\XBMC_ForTheRecord.vcxproj", "{897FF040-CCA8-4573-8785-FB1747BCC8E6}"
 EndProject
@@ -442,14 +440,6 @@ Global
 		{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{3C398BD4-5714-4802-AB86-D43ADD15B3C0}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{3C398BD4-5714-4802-AB86-D43ADD15B3C0}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{3C398BD4-5714-4802-AB86-D43ADD15B3C0}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

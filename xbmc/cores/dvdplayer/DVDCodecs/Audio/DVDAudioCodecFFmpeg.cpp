@@ -279,7 +279,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   else
   {
     CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported %d channels, but the layout contains %d ignoring", m_pCodecContext->channels, bits);
-    layout = m_dllAvCodec.avcodec_guess_channel_layout(m_pCodecContext->channels, m_pCodecContext->codec_id, NULL);
+    layout = m_dllAvUtil.av_get_default_channel_layout(m_pCodecContext->channels);
   }
 
   int index = 0;

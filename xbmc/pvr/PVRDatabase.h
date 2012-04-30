@@ -60,7 +60,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetMinVersion() const { return 20; };
+    virtual int GetMinVersion() const { return 21; };
 
     /*!
      * @brief Get the default sqlite database filename.

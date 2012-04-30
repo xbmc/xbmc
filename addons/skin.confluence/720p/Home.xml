@@ -609,7 +609,7 @@
 			</control>
 			<control type="group" id="600">
 				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<posx>65</posx>
+				<posx>0</posx>
 				<onup>9003</onup>
 				<ondown>9000</ondown>
 				<defaultcontrol>603</defaultcontrol>
@@ -617,7 +617,7 @@
 					<description>Background image</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>175</width>
+					<width>245</width>
 					<height>35</height>
 					<texture flipy="true" border="0,5,0,0">HomeSubNF.png</texture>
 					<colordiffuse>CCFFFFFF</colordiffuse>
@@ -666,7 +666,7 @@
 					<onclick>XBMC.PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="604">
-					<posx>130</posx>
+					<posx>100</posx>
 					<posy>2</posy>
 					<width>30</width>
 					<height>30</height>
@@ -674,11 +674,61 @@
 					<texturefocus>OSDRecordOffFO.png</texturefocus>
 					<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 					<onleft>603</onleft>
+					<onright>605</onright>
+					<onup>9003</onup>
+					<ondown>9000</ondown>
+					<onclick>XBMC.PlayerControl(record)</onclick>
+				</control>
+				
+				<control type="button" id="605">
+					<posx>130</posx>
+					<posy>2</posy>
+					<width>30</width>
+					<height>30</height>
+					<label>-</label>
+					<texturefocus>OSDRewindFO.png</texturefocus>
+					<texturenofocus>OSDRewindNF.png</texturenofocus>
+					<onleft>604</onleft>
+					<onright>608</onright>
+					<onup>9003</onup>
+					<ondown>9000</ondown>
+					<onback>50</onback>
+					<onclick>XBMC.PlayerControl(Rewind)</onclick>				
+				</control>
+				<control type="button" id="606">
+					<posx>160</posx>
+					<posy>2</posy>
+					<width>30</width>
+					<height>30</height>
+					<label>-</label>
+					<texturefocus>OSDForwardFO.png</texturefocus>
+					<texturenofocus>OSDForwardNF.png</texturenofocus>
+					<onleft>608</onleft>
+					<onright>600</onright>
+					<onup>9003</onup>
+					<ondown>9000</ondown>
+					<onback>50</onback>
+					<onclick>XBMC.PlayerControl(Forward)</onclick>					
+				</control>
+				<control type="togglebutton" id="608">
+					<posx>190</posx>
+					<posy>2</posy>
+					<width>30</width>
+					<height>30</height>
+					<label>-</label>
+					<texturefocus>OSDPauseFO.png</texturefocus>
+					<texturenofocus>OSDPauseNF.png</texturenofocus>
+					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+					<onleft>605</onleft>
 					<onright>607</onright>
 					<onup>9003</onup>
 					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Forward)</onclick>
+					<onback>50</onback>
+					<onclick>XBMC.PlayerControl(Play)</onclick>
 				</control>
+				
 			</control>
 			<control type="radiobutton" id="607">
 				<colordiffuse>CCFFFFFF</colordiffuse>

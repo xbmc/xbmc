@@ -147,14 +147,14 @@
 
 		<!-- LiveTV -->
 		<control type="group" id="100">
-			<posx>325</posx>
+			<posx>190</posx>
 			<posy>50r</posy>
 			<defaultcontrol always="true">601</defaultcontrol>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="600">
-				<posx>0</posx>
+				<posx>45</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -169,7 +169,7 @@
 				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
-				<posx>45</posx>
+				<posx>90</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -178,13 +178,43 @@
 				<texturefocus>OSDChannelDownFO.png</texturefocus>
 				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
 				<onleft>600</onleft>
-				<onright>602</onright>
+				<onright>607</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
+			
+			<control type="button" id="607">
+				<posx>135</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>-</label>
+				<texturefocus>OSDRewindFO.png</texturefocus>
+				<texturenofocus>OSDRewindNF.png</texturenofocus>
+				<onleft>601</onleft>
+				<onright>608</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>XBMC.PlayerControl(Rewind)</onclick>				
+			</control>
+			<control type="button" id="609">
+				<posx>180</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>-</label>
+				<texturefocus>OSDForwardFO.png</texturefocus>
+				<texturenofocus>OSDForwardNF.png</texturenofocus>
+				<onleft>608</onleft>
+				<onright>602</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>XBMC.PlayerControl(Forward)</onclick>					
+			</control>
+			
 			<control type="togglebutton" id="602">
-				<posx>90</posx>
+				<posx>225</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -196,7 +226,7 @@
 				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-				<onleft>601</onleft>
+				<onleft>609</onleft>
 				<onright>603</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
@@ -204,7 +234,7 @@
 				<visible>true</visible>
 			</control>
 			<control type="button" id="603">
-				<posx>135</posx>
+				<posx>270</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -220,7 +250,7 @@
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
-				<posx>180</posx>
+				<posx>315</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -236,7 +266,7 @@
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
 			<control type="button" id="605">
-				<posx>225</posx>
+				<posx>360</posx>
 				<posy>0</posy>
 				<width>45</width>
 				<height>45</height>
@@ -252,7 +282,7 @@
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
 			<control type="label" id="606">
-				<posx>290</posx>
+				<posx>425</posx>
 				<posy>0</posy>
 				<width>450</width>
 				<height>45</height>

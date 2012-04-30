@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#ifdef LIVE555
 
 #include "platform/threads/mutex.h"
 #include <vector>
@@ -60,4 +60,4 @@ class CMemoryBuffer
     IMemoryCallback* m_pcallback;
     bool m_bRunning;
 };
-#endif //TSREADER && LIVE555
+#endif //LIVE555

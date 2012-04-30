@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#if defined LIVE555
 
 #include "os-dependent.h"
 #include "platform/util/timeutils.h"
@@ -26,7 +26,7 @@
 
 using namespace ADDON;
 
-CRTSPClient::CRTSPClient(): CThread("RTSPClient")
+CRTSPClient::CRTSPClient()
 {
   XBMC->Log(LOG_DEBUG, "CRTSPClient::CRTSPClient()");
   allowProxyServers = false;
@@ -493,7 +493,7 @@ void CRTSPClient::StartBufferThread()
 
   if (!m_BufferThreadActive)
   {
-    StartThread();
+    CreateThread();
     m_BufferThreadActive = true;
   }
   XBMC->Log(LOG_DEBUG, "CRTSPClient::StartBufferThread done");
@@ -506,7 +506,7 @@ void CRTSPClient::StopBufferThread()
   if (!m_BufferThreadActive)
     return;
 
-  StopThread(2000);
+  StopThread();
 
   m_BufferThreadActive = false;
   XBMC->Log(LOG_DEBUG, "CRTSPClient::StopBufferThread done");
@@ -536,27 +536,25 @@ void CRTSPClient::FillBuffer(unsigned long byteCount)
   XBMC->Log(LOG_DEBUG, "CRTSPClient::Fillbuffer...%d/%d\n", byteCount, m_buffer->Size() );
 }
 
-void CRTSPClient::Run()
+void *CRTSPClient::Process()
 {
   m_BufferThreadActive = true;
   m_bRunning = true;
-#ifdef TARGET_WINDOWS
-  this->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
-#else
-#warning TODO: add setpriority for your OS
-#endif
-  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started: %d", (unsigned long) this->ThreadId());
 
-  while (m_env != NULL && !ThreadIsStopping(0))
+  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started");
+
+  while (m_env != NULL && !IsStopped())
   {
     m_env->taskScheduler().doEventLoop();
     if (m_bRunning == false)
       break;
   }
 
-  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread stopped:%d", (unsigned long) this->ThreadId());
+  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread stopped");
 
   m_BufferThreadActive = false;
+
+  return NULL;
 }
 
 void CRTSPClient::Continue()
@@ -581,7 +579,7 @@ bool CRTSPClient::Pause()
   if (m_ourClient != NULL && m_session != NULL)
   {
     XBMC->Log(LOG_DEBUG, "CRTSPClient::Pause() stopthread");
-    StopThread(10000);                           // Ambass : sometimes 100mS ( prev value ) is not enough and thread is not stopped.
+    StopThread(10000);                    // Ambass : sometimes 100mS ( prev value ) is not enough and thread is not stopped.
                                                  //          now stopping takes around 5 secs ?!?! why ????
     XBMC->Log(LOG_DEBUG, "CRTSPClient::Pause() thread stopped");
     RTSPClient* rtspClient=(RTSPClient*)m_ourClient;
@@ -670,4 +668,4 @@ bool CRTSPClient::UpdateDuration()
 
   return true;
 }
-#endif //TSREADER
+#endif //LIVE555

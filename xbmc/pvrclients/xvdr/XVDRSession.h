@@ -28,7 +28,7 @@ extern "C" {
 #include "lib/libPlatform/os-dependent_socket.h"
 }
 
-class cResponsePacket;
+class cXVDRResponsePacket;
 class cRequestPacket;
 
 class cXVDRSession
@@ -42,10 +42,10 @@ public:
   virtual void      Close();
   virtual void      Abort();
 
-  cResponsePacket*  ReadMessage();
+  cXVDRResponsePacket*  ReadMessage();
   bool              SendMessage(cRequestPacket* vrp);
 
-  cResponsePacket*  ReadResult(cRequestPacket* vrp);
+  cXVDRResponsePacket*  ReadResult(cRequestPacket* vrp);
   bool              ReadSuccess(cRequestPacket* vrp, uint32_t& rc);
   bool              ReadSuccess(cRequestPacket* vrp);
 

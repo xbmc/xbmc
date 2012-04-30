@@ -74,14 +74,8 @@ bool cXVDRSettings::set(const std::string& setting, const void* value)
   return false;
 }
 
-void cXVDRSettings::load()
+void cXVDRSettings::checkValues()
 {
-  std::list<cXVDRConfigParameterBase*>& list = cXVDRConfigParameterBase::parameters();
-  std::list<cXVDRConfigParameterBase*>::iterator i;
-
-  for(i = list.begin(); i != list.end(); i++)
-    (*i)->load();
-
   ReadCaIDs(caids().c_str(), vcaids);
 
   if (!EncryptedChannels())
@@ -93,6 +87,17 @@ void cXVDRSettings::load()
   // check priority setting (and set a sane value)
   if(Priority() > 21)
     Priority.set(10);
+}
+
+void cXVDRSettings::load()
+{
+  std::list<cXVDRConfigParameterBase*>& list = cXVDRConfigParameterBase::parameters();
+  std::list<cXVDRConfigParameterBase*>::iterator i;
+
+  for(i = list.begin(); i != list.end(); i++)
+    (*i)->load();
+
+  checkValues();
 }
 
 void cXVDRSettings::ReadCaIDs(const char* buffer, std::vector<int>& array)

@@ -572,9 +572,9 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework ApplicationServices"
   fi
 elif test "$use_arch" = "arm"; then
-  CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
-  CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
-  FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
+  CFLAGS="$CFLAGS -mno-apcs-stack-check"
+  CXXFLAGS="$CXXFLAGS -mno-apcs-stack-check"
+  FFMPEG_EXTRACFLAGS=""
   if test "$use_tegra" = "yes"; then
     # Compile for ARMv7a architecture, need to test gcc for vfpv3-d16 support 
     SAVE_CFLAGS="$CFLAGS"
@@ -589,9 +589,6 @@ elif test "$use_arch" = "arm"; then
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
         use_cpu=cortex-a8])
   else
-    # Compile for ARMv7a architecture, CortexA8 cpu and check for enabled NEON coprocessor
-    CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8"
-    CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8"
     if test "$use_neon" = "yes"; then 
       CFLAGS="$CFLAGS -mfpu=neon -mvectorize-with-neon-quad"
       CXXFLAGS="$CXXFLAGS -mfpu=neon -mvectorize-with-neon-quad"
@@ -756,10 +753,10 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
 # check for libbluray
 AS_CASE([x$use_libbluray],
   [xyes],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], AC_MSG_ERROR($missing_library))
   ],
   [xauto],[
-    PKG_CHECK_MODULES([LIBBLURAY],[libbluray],[use_libbluray="yes"], [use_libbluray="no"])
+    PKG_CHECK_MODULES([LIBBLURAY],[libbluray >= 0.2.1],[use_libbluray="yes"], [use_libbluray="no"])
   ])
 
 AS_CASE([x$use_libbluray],
@@ -768,22 +765,7 @@ AS_CASE([x$use_libbluray],
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
-
-	XB_PUSH_FLAGS(
-        [$LIBBLURAY_CFLAGS]
-      , [$LIBBLURAY_LIBS]
-
-      , AC_MSG_CHECKING([libbluray version])
-        AC_COMPILE_IFELSE(
-            [AC_LANG_PROGRAM(
-                [#include <libbluray/bluray.h>]
-               ,[bd_get_playlist_info(0, 0)])]
-          ,[AC_MSG_ERROR($libbluray_wrong_version)]
-          ,[AC_MSG_RESULT(normal)]
-        )
-    )
   ],[
-#    AC_DEFINE([HAVE_LIBBLURAY], 0, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 0)
   ]
 )
@@ -1214,6 +1196,9 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
+
+  # new FFmpeg have math headers
+  AC_CHECK_HEADERS([libavutil/mathematics.h],,)
 
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)

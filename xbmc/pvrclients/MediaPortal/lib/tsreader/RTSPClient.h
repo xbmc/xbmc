@@ -17,19 +17,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#ifdef LIVE555
 
-#include "Thread.h"
+#include "platform/threads/threads.h"
+#include "lib/tsreader/MemoryBuffer.h"
 
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
 #include "GroupsockHelper.hh"
 
-#include "MemoryBuffer.h"
 
 #define RTSP_URL_BUFFERSIZE 2048
 
-class CRTSPClient: public CThread
+class CRTSPClient: public PLATFORM::CThread
 {
 public:
   CRTSPClient();
@@ -88,10 +88,12 @@ public:
   bool startPlayingStreams();
 
   // Thread
+private:
+  virtual void *Process(void);
   void StartBufferThread();
   void StopBufferThread();
-  virtual void Run();
   bool m_BufferThreadActive;
+
   long m_duration;
   double m_fStart;
   double m_fDuration;
@@ -100,4 +102,4 @@ public:
   bool m_bPaused;
   char m_outFileName[1000];
 };
-#endif //TSREADER
+#endif //LIVE555

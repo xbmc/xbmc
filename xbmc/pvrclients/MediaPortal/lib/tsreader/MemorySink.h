@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#if defined LIVE555
 
 #ifndef _MEDIA_SINK_HH
   #include "MediaSink.hh" //Live555 header
@@ -51,4 +51,4 @@ class CMemorySink: public MediaSink
     int   m_iSubmitBufferPos;
     bool  m_bReEntrant;
 };
-#endif //TSREADER
+#endif //LIVE555

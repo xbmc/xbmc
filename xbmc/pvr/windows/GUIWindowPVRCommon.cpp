@@ -556,6 +556,17 @@ bool CGUIWindowPVRCommon::ActionDeleteChannel(CFileItem *item)
   return true;
 }
 
+bool CGUIWindowPVRCommon::UpdateEpgForChannel(CFileItem *item)
+{
+  CPVRChannel *channel = item->GetPVRChannelInfoTag();
+  CEpg *epg = channel->GetEPG();
+  if (!epg)
+    return false;
+
+  epg->ForceUpdate();
+  return true;
+}
+
 bool CGUIWindowPVRCommon::ShowTimerSettings(CFileItem *item)
 {
   /* Check item is TV timer information tag */

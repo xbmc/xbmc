@@ -25,7 +25,7 @@
 #include <string.h>
 #include "codecids.h" // For codec id's
 #include "XVDRDemux.h"
-#include "responsepacket.h"
+#include "XVDRResponsePacket.h"
 #include "requestpacket.h"
 #include "xvdrcommand.h"
 
@@ -82,7 +82,7 @@ DemuxPacket* cXVDRDemux::Read()
     return PVR->AllocateDemuxPacket(0);
   }
 
-  cResponsePacket *resp = ReadMessage();
+  cXVDRResponsePacket *resp = ReadMessage();
 
   if(resp == NULL)
     return PVR->AllocateDemuxPacket(0);
@@ -229,7 +229,7 @@ bool cXVDRDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
   return true;
 }
 
-void cXVDRDemux::StreamChange(cResponsePacket *resp)
+void cXVDRDemux::StreamChange(cXVDRResponsePacket *resp)
 {
   m_Streams.iStreamCount = 0;
 
@@ -267,8 +267,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
@@ -279,8 +277,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "AAC"))
     {
@@ -291,8 +287,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "LATM"))
     {
@@ -303,8 +297,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "DTS"))
     {
@@ -315,8 +307,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "EAC3"))
     {
@@ -327,8 +317,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
@@ -338,7 +326,7 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
       stream->iFPSRate       = resp->extract_U32();
       stream->iHeight        = resp->extract_U32();
       stream->iWidth         = resp->extract_U32();
-      stream->fAspect        = (float) resp->extract_Double();
+      stream->fAspect        = resp->extract_Double();
 
       m_Streams.iStreamCount++;
     }
@@ -350,7 +338,7 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
       stream->iFPSRate       = resp->extract_U32();
       stream->iHeight        = resp->extract_U32();
       stream->iWidth         = resp->extract_U32();
-      stream->fAspect        = (float) resp->extract_Double();
+      stream->fAspect        = resp->extract_Double();
 
       m_Streams.iStreamCount++;
     }
@@ -366,8 +354,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;
-
-      delete[] language;
     }
     else if(!strcmp(type, "TELETEXT"))
     {
@@ -377,8 +363,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
       m_Streams.iStreamCount++;
     }
 
-    delete[] type;
-
     if (m_Streams.iStreamCount >= PVR_STREAM_MAX_STREAMS)
     {
       XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
@@ -387,7 +371,7 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
   }
 }
 
-void cXVDRDemux::StreamStatus(cResponsePacket *resp)
+void cXVDRDemux::StreamStatus(cXVDRResponsePacket *resp)
 {
   uint32_t status = resp->extract_U32();
 
@@ -404,7 +388,7 @@ void cXVDRDemux::StreamStatus(cResponsePacket *resp)
   }
 }
 
-void cXVDRDemux::StreamSignalInfo(cResponsePacket *resp)
+void cXVDRDemux::StreamSignalInfo(cXVDRResponsePacket *resp)
 {
   const char* name = resp->extract_String();
   const char* status = resp->extract_String();
@@ -415,12 +399,9 @@ void cXVDRDemux::StreamSignalInfo(cResponsePacket *resp)
   m_Quality.fe_signal = resp->extract_U32();
   m_Quality.fe_ber    = resp->extract_U32();
   m_Quality.fe_unc    = resp->extract_U32();
-
-  delete[] name;
-  delete[] status;
 }
 
-bool cXVDRDemux::StreamContentInfo(cResponsePacket *resp)
+bool cXVDRDemux::StreamContentInfo(cXVDRResponsePacket *resp)
 {
   PVR_STREAM_PROPERTIES old = m_Streams;
 
@@ -463,7 +444,7 @@ bool cXVDRDemux::StreamContentInfo(cResponsePacket *resp)
         stream->iFPSRate  = resp->extract_U32();
         stream->iHeight   = resp->extract_U32();
         stream->iWidth    = resp->extract_U32();
-        stream->fAspect   = (float) resp->extract_Double();
+        stream->fAspect   = resp->extract_Double();
         break;
 
       case AVMEDIA_TYPE_SUBTITLE:
@@ -480,8 +461,6 @@ bool cXVDRDemux::StreamContentInfo(cResponsePacket *resp)
       default:
         break;
     }
-
-    delete[] language;
   }
 
   return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);

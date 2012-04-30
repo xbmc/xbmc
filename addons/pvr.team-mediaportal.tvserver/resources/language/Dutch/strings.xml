@@ -5,7 +5,7 @@
     <string id="30001">Mediaportal XBMC plugin poort</string>
     <string id="30002">Toon alleen vrij te ontvangen kanalen</string>
     <string id="30003">Toon radio</string>
-
+    <string id="30004">Snel zappen (timeshift niet stoppen)</string>
     <string id="30005">Verbindingstimeout (s)</string>
     <string id="30006">Importeer alleen TV kanalen uit groep</string>
     <string id="30007">Importeer alleen radio kanalen uit groep</string>
@@ -14,10 +14,15 @@
     <string id="30010">Wachttijd na kanaal tunen(ms)</string>
     <string id="30011">Opnames direct afspelen (niet streamen)</string>
     <string id="30012">Mediaportal directory met opnames</string>
+    <string id="30013">Direct afspelen uit Timeshift buffer (niet streamen)</string>
+    <string id="30014">Timeshift buffer directory</string>
+    <string id="30016">Windows gebruikersnaam (SMB)</string>
+    <string id="30017">Windows wachtwoord (SMB)</string>
 
     <!-- category labels -->
     <string id="30040">Verbinding</string>
     <string id="30041">MediaPortal</string>
+    <string id="30042">Afspelen</string>
 
     <!-- on-screen error messages -->
     <string id="30050">Uw TVServerXBMC plugin '%s' is te oud. U heeft minimaal versie '%s' of nieuwer nodig!</string>

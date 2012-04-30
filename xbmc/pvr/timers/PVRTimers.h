@@ -80,6 +80,7 @@ namespace PVR
 
     int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags) const;
 
+    int GetActiveRecordings(std::vector<CPVRTimerInfoTag *> *tags) const;
     /**
      * The amount of timers in this container.
      */

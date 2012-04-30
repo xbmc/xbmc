@@ -59,7 +59,7 @@ public:
 
 protected:
 
-  bool OnResponsePacket(cResponsePacket* resp);
+  bool OnResponsePacket(cXVDRResponsePacket* resp);
 
 private:
 

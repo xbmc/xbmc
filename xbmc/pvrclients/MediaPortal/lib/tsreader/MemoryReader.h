@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
+#ifdef LIVE555
 
 #include "FileReader.h"
 #include "MemoryBuffer.h"
@@ -38,4 +38,4 @@ class CMemoryReader : public FileReader
   private:
     CMemoryBuffer& m_buffer;
 };
-#endif //TSREADER
+#endif //LIVE555

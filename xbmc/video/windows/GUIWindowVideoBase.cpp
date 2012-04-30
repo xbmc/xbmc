@@ -1109,7 +1109,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->IsPlugin() && !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
+      if (!item->GetPath().Equals("add") && !item->IsPlugin() &&
+          !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
         {

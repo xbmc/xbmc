@@ -23,6 +23,7 @@
 
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKeyboard.h"
@@ -85,6 +86,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
+  CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
 
   if (pItem->GetPath() == "pvr://channels/.add.channel")
   {
@@ -96,6 +98,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     buttons.Add(CONTEXT_BUTTON_INFO, 19047);                                          /* channel info */
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);                                          /* find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);                                     /* switch to channel */
+    buttons.Add(CONTEXT_BUTTON_RECORD_ITEM, channel->IsRecording() ? 19256 : 19255);  /* start/stop recording on channel */
     buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);                                     /* change icon */
     buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);                                 /* group manager */
     buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 19049 : 19054);          /* show/hide channel */
@@ -110,6 +113,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
 
     buttons.Add(CONTEXT_BUTTON_FILTER, 19249);                                        /* filter channels */
+    buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);                                    /* update EPG information */
   }
 }
 
@@ -128,6 +132,8 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonGroupManager(pItem.get(), button) ||
       OnContextButtonFilter(pItem.get(), button) ||
+      OnContextButtonUpdateEpg(pItem.get(), button) ||
+      OnContextButtonRecord(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
 }
 
@@ -498,6 +504,49 @@ bool CGUIWindowPVRChannels::OnContextButtonFilter(CFileItem *item, CONTEXT_BUTTO
     m_parent->OnFilterItems(filter);
 
     bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonRecord(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn(false);
+  CPVRChannel *channel = item->GetPVRChannelInfoTag();
+
+  if (channel)
+    return g_PVRManager.ToggleRecordingOnChannel(channel->ChannelID());
+
+  return bReturn;
+}
+
+bool CGUIWindowPVRChannels::OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_UPDATE_EPG)
+  {
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog)
+      return bReturn;
+
+    CPVRChannel *channel = item->GetPVRChannelInfoTag();
+    pDialog->SetHeading(19251);
+    pDialog->SetLine(0, g_localizeStrings.Get(19252));
+    pDialog->SetLine(1, channel->ChannelName());
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+
+    if (!pDialog->IsConfirmed())
+      return bReturn;
+
+    bReturn = UpdateEpgForChannel(item);
+
+    CStdString strMessage;
+    strMessage.Format("%s: '%s'", g_localizeStrings.Get(bReturn ? 19253 : 19254), channel->ChannelName());
+    CGUIDialogKaiToast::QueueNotification(bReturn ? CGUIDialogKaiToast::Info : CGUIDialogKaiToast::Error,
+        g_localizeStrings.Get(19166),
+        strMessage);
   }
 
   return bReturn;

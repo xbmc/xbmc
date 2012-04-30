@@ -27,6 +27,12 @@
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 
+enum eStreamingMethod
+{
+  TSReader = 0,
+  ffmpeg = 1
+};
+
 #define DEFAULT_HOST                  "127.0.0.1"
 #define DEFAULT_PORT                  9596
 #define DEFAULT_FTA_ONLY              false
@@ -46,33 +52,38 @@
 #define DEFAULT_TVGROUP               ""
 #define DEFAULT_RADIOGROUP            ""
 #define DEFAULT_DIRECT_TS_FR          false
+#define DEFAULT_SMBUSERNAME           "Guest"
+#define DEFAULT_SMBPASSWORD           ""
 
-extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
-extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
-extern std::string  g_szUserPath;         ///< The Path to the user directory inside user profile
-extern std::string  g_szClientPath;       ///< The Path where this driver is located
+extern bool             g_bCreated;           ///< Shows that the Create function was successfully called
+extern int              g_iClientID;          ///< The PVR client ID used by XBMC for this driver
+extern std::string      g_szUserPath;         ///< The Path to the user directory inside user profile
+extern std::string      g_szClientPath;       ///< The Path where this driver is located
 
 /* Client Settings */
-extern std::string  g_szHostname;
-extern int          g_iPort;
-extern int          g_iConnectTimeout;
-extern int          g_iSleepOnRTSPurl;
-extern bool         g_bOnlyFTA;
-extern bool         g_bRadioEnabled;
-extern bool         g_bHandleMessages;
-extern bool         g_bResolveRTSPHostname;
-extern bool         g_bReadGenre;
-extern bool         g_bUseRecordingsDir;
-extern bool         g_bDirectTSFileRead;
-extern bool         g_bFastChannelSwitch;
-extern std::string  g_szRecordingsDir;
-extern std::string  g_szTimeshiftDir;
-extern std::string  g_szTVGroup;
-extern std::string  g_szRadioGroup;
+extern std::string      g_szHostname;
+extern int              g_iPort;
+extern int              g_iConnectTimeout;
+extern int              g_iSleepOnRTSPurl;
+extern bool             g_bOnlyFTA;
+extern bool             g_bRadioEnabled;
+extern bool             g_bHandleMessages;
+extern bool             g_bResolveRTSPHostname;
+extern bool             g_bReadGenre;
+extern bool             g_bUseRecordingsDir;
+extern bool             g_bDirectTSFileRead;
+extern bool             g_bFastChannelSwitch;
+extern std::string      g_szRecordingsDir;
+extern std::string      g_szTimeshiftDir;
+extern std::string      g_szTVGroup;
+extern std::string      g_szRadioGroup;
+extern std::string      g_szSMBusername;
+extern std::string      g_szSMBpassword;
+extern eStreamingMethod g_eStreamingMethod;
 
 extern ADDON::CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_pvr          *PVR;
 
-extern int          g_iTVServerXBMCBuild;
+extern int              g_iTVServerXBMCBuild;
 
 #endif /* CLIENT_H */
