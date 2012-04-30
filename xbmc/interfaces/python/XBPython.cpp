@@ -43,6 +43,7 @@
 #include "addons/Addon.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/python/xbmcmodule/PythonMonitor.h"
+#include "interfaces/python/xbmcmodule/PythonJsonRpcClient.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -76,6 +77,7 @@ XBPython::XBPython()
   m_iDllScriptCounter = 0;
   m_vecPlayerCallbackList.clear();
   m_vecMonitorCallbackList.clear();
+  m_vecJsonRpcCallbackList.clear();
   CAnnouncementManager::AddAnnouncer(this);
 }
 
@@ -117,6 +119,17 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnScreensaverDeactivated();   
    else if (strcmp(message, "OnScreensaverActivated") == 0)
      OnScreensaverActivated();
+  }
+
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    JsonRpcClientCallbackList::iterator it = m_vecJsonRpcCallbackList.begin();
+    while (it != m_vecJsonRpcCallbackList.end())
+    { 
+      ((CPythonJsonRpcClient*)(*it))->Announce(flag, sender, message, data);
+      it++;
+    }
   }
 }
 
@@ -213,6 +226,25 @@ void XBPython::UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback)
   {
     if (*it == pCallback)
       it = m_vecMonitorCallbackList.erase(it);
+    else
+      it++;
+  }
+}
+
+void XBPython::RegisterPythonJsonRpcClientCallBack(CPythonJsonRpcClient* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  m_vecJsonRpcCallbackList.push_back(pCallback);
+}
+
+void XBPython::UnregisterPythonJsonRpcClientCallBack(CPythonJsonRpcClient* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  JsonRpcClientCallbackList::iterator it = m_vecJsonRpcCallbackList.begin();
+  while (it != m_vecJsonRpcCallbackList.end())
+  {
+    if (*it == pCallback)
+      it = m_vecJsonRpcCallbackList.erase(it);
     else
       it++;
   }

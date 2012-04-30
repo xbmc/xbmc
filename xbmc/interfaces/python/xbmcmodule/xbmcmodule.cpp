@@ -34,7 +34,9 @@
 #include "interfaces/http-api/XBMChttp.h"
 #include "interfaces/http-api/HttpApi.h"
 #endif
-#include "pyjsonrpc.h"
+#ifdef HAS_JSONRPC
+#include "jsonrpcclient.h"
+#endif
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIAudioManager.h"
@@ -273,9 +275,9 @@ namespace PYXBMC
 #ifdef HAS_JSONRPC
   // executehttpapi() method
   PyDoc_STRVAR(executeJSONRPC__doc__,
-    "executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.\n"
+    "executeJSONRPC(jsonrpccommand) -- Execute a JSON-RPC command.\n"
     "\n"
-    "jsonrpccommand    : string - jsonrpc command to execute.\n"
+    "jsonrpccommand    : string - JSON-RPC command to execute.\n"
     "\n"
     "List of commands - \n"
     "\n"
@@ -284,16 +286,13 @@ namespace PYXBMC
 
   PyObject* XBMC_ExecuteJSONRPC(PyObject *self, PyObject *args)
   {
-    char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cLine))
+    JsonRpcClient *client = (JsonRpcClient*)JsonRpcClient_New(&JsonRpcClient_Type, NULL, NULL);
+    if (client == NULL)
       return NULL;
 
-    CStdString method = cLine;
-
-    CPythonTransport transport;
-    CPythonTransport::CPythonClient client;
-
-    return PyString_FromString(JSONRPC::CJSONRPC::MethodCall(method, &transport, &client).c_str());
+    PyObject* result = JsonRpcClient_execute(client, args);
+    Py_DECREF(client);
+    return result;
   }
 #endif
 
@@ -1032,6 +1031,10 @@ namespace PYXBMC
     initInfoTagVideo_Type();
     initMonitor_Type();
 
+#ifdef HAS_JSONRPC
+    initJsonRpcClient_Type();
+#endif
+
 #ifdef HAS_PYRENDERCAPTURE
     initRenderCapture_Type();
 #endif
@@ -1043,6 +1046,11 @@ namespace PYXBMC
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
         PyType_Ready(&InfoTagVideo_Type) < 0 ||
         PyType_Ready(&Monitor_Type) < 0) return;
+
+#ifdef HAS_JSONRPC
+    if (PyType_Ready(&JsonRpcClient_Type) < 0)
+      return;
+#endif
 
 #ifdef HAS_PYRENDERCAPTURE
     if (PyType_Ready(&RenderCapture_Type) < 0)
@@ -1071,6 +1079,10 @@ namespace PYXBMC
     Py_INCREF(&InfoTagVideo_Type);
     Py_INCREF(&Monitor_Type);
 
+#ifdef HAS_JSONRPC
+    Py_INCREF(&JsonRpcClient_Type);
+#endif
+
 #ifdef HAS_PYRENDERCAPTURE
     Py_INCREF(&RenderCapture_Type);
 #endif
@@ -1085,6 +1097,10 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
     PyModule_AddObject(pXbmcModule, (char*)"Monitor", (PyObject*)&Monitor_Type);
+
+#ifdef HAS_JSONRPC
+    PyModule_AddObject(pXbmcModule, (char*)"JsonRpcClient", (PyObject*)&JsonRpcClient_Type);
+#endif
 
     // constants
     PyModule_AddStringConstant(pXbmcModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
