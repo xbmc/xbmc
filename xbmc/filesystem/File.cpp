@@ -232,7 +232,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 
     if (m_flags & READ_CACHED)
     {
-      m_pFile = new CFileCache();
+      m_pFile = new CFileCache((m_flags & READ_ADAPTIVE_CACHE_SIZE) != 0);
       return m_pFile->Open(url);
     }
 

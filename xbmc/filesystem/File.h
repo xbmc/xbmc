@@ -60,6 +60,9 @@ public:
 /* calcuate bitrate for file while reading */
 #define READ_BITRATE   0x10
 
+/* base cache size on amount of free ram */
+#define READ_ADAPTIVE_CACHE_SIZE 0x20
+
 class CFileStreamBuffer;
 
 class CFile

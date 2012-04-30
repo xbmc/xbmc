@@ -318,6 +318,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
+  m_readrate = 0;
   
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
@@ -566,7 +567,10 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate(len * 1000 / tim);
+  {
+    m_readrate = len * 1000 / tim;
+    m_pInputStream->SetReadRate(m_readrate);
+  }
 
   return true;
 }
@@ -1062,6 +1066,9 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+    //update readrate based on peak bitrate
+    UpdateReadRate();
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
@@ -3795,6 +3802,18 @@ void CDVDPlayer::UpdateApplication(double timeout)
     }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
+}
+
+void CDVDPlayer::UpdateReadRate()
+{
+  //if the combined audio and video bitrate is more than half the readrate
+  //increase the readrate
+  unsigned int bytespersecond = (GetVideoBitrate() + GetAudioBitrate()) / 8;
+  if (bytespersecond * 2 > m_readrate)
+  {
+    m_readrate = bytespersecond * 3;
+    m_pInputStream->SetReadRate(m_readrate);
+  }
 }
 
 bool CDVDPlayer::CanRecord()

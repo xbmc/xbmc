@@ -699,6 +699,8 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
+  AddSeparator(vp, "videoplayer.sep6");
+  AddBool(vp, "videoplayer.slownetworkcache", 13554, false);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
 
