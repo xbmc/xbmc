@@ -346,7 +346,7 @@ namespace JSONRPC
                   "\"lyrics\", \"musicbrainztrackid\", \"musicbrainzartistid\","
                   "\"musicbrainzalbumid\", \"musicbrainzalbumartistid\","
                   "\"playcount\", \"fanart\", \"thumbnail\", \"file\", \"artistid\","
-                  "\"albumid\" ]"
+                  "\"albumid\", \"lastplayed\" ]"
       "}"
     "}",
     "\"Audio.Details.Base\": {"
@@ -411,7 +411,8 @@ namespace JSONRPC
         "\"musicbrainztrackid\": { \"type\": \"string\" },"
         "\"musicbrainzartistid\": { \"type\": \"string\" },"
         "\"artistid\": { \"$ref\": \"Library.Id\" },"
-        "\"albumid\": { \"$ref\": \"Library.Id\" }"
+        "\"albumid\": { \"$ref\": \"Library.Id\" },"
+        "\"lastplayed\": { \"type\": \"string\" }"
       "}"
     "}",
     "\"Video.Fields.Movie\": {"
