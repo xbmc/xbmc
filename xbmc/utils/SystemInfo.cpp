@@ -34,9 +34,13 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Variant.h"
+#include "interfaces/python/XBPython.h"
+#include "addons/AddonManager.h"
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif
@@ -57,6 +61,8 @@ bool CSysInfoJob::DoWork()
   m_info.systemUptime      = GetSystemUpTime(false);
   m_info.systemTotalUptime = GetSystemUpTime(true);
   m_info.internetState     = GetInternetState();
+  if (m_info.internetState == CSysData::CONNECTED)
+    m_info.IPRegion        = GetIPRegion();
   m_info.videoEncoder      = GetVideoEncoder();
   m_info.cpuFrequency      = GetCPUFreqInfo();
   m_info.kernelVersion     = CSysInfo::GetKernelVersion();
@@ -87,6 +93,32 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
   if (http.IsInternet(false))
     return CSysData::NO_DNS;
   return CSysData::DISCONNECTED;
+}
+
+CStdString CSysInfoJob::GetIPRegion()
+{
+  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_SYSTEM_INFORMATION);
+  int id = -1;
+  if (window && (window->GetProperty("GeoRegion").isNull() ||
+                 window->GetProperty("GeoRegion").asString().empty()))
+  {
+    ADDON::AddonPtr addon;
+    ADDON::CAddonMgr::Get().GetAddon("script.library.geoip",addon);
+    if (addon)
+      id = g_pythonParser.evalFile(addon->LibPath(),addon);
+  }
+  if (id > -1)
+  {
+    int slept = 0;
+    while (slept < 10000)
+    {
+      if (!g_pythonParser.isRunning(id))
+        break;
+      Sleep(50);
+      slept += 50;
+    }
+  }
+  return window?window->GetProperty("GeoRegion").asString():"";
 }
 
 CStdString CSysInfoJob::GetMACAddress()
@@ -686,4 +718,12 @@ void CSysInfo::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   m_info = ((CSysInfoJob *)job)->GetData();
   CInfoLoader::OnJobComplete(jobID, success, job);
+}
+
+CStdString CSysInfo::GetIPRegion()
+{
+  if (m_info.IPRegion.IsEmpty())
+    m_info.IPRegion = CSysInfoJob::GetIPRegion();
+
+  return m_info.IPRegion;
 }

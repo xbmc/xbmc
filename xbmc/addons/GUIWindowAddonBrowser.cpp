@@ -43,14 +43,18 @@
 #include "threads/SingleLock.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "Application.h"
 #include "AddonDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "storage/MediaManager.h"
 #include "settings/GUISettings.h"
+#include "LangInfo.h"
 
-#define CONTROL_AUTOUPDATE 5
-#define CONTROL_SHUTUP     6
+#define CONTROL_AUTOUPDATE    5
+#define CONTROL_SHUTUP        6
+#define CONTROL_GEOLOCKFILTER 7
+#define CONTROL_FOREIGNFILTER 8
 
 using namespace ADDON;
 using namespace XFILE;
@@ -98,6 +102,20 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
         g_settings.Save();
+        return true;
+      }
+      else if (iControl == CONTROL_GEOLOCKFILTER)
+      {
+        g_settings.m_bAddonGeolockFilter = !g_settings.m_bAddonGeolockFilter;
+        g_settings.Save();
+        Update(m_vecItems->GetPath());
+        return true;
+      }
+      else if (iControl == CONTROL_FOREIGNFILTER)
+      {
+        g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
+        g_settings.Save();
+        Update(m_vecItems->GetPath());
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -246,7 +264,33 @@ void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
   SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_GEOLOCKFILTER,g_settings.m_bAddonGeolockFilter);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,g_settings.m_bAddonForeignFilter);
   CGUIMediaWindow::UpdateButtons();
+}
+
+static bool FilterVar(bool valid, const CVariant& variant,
+                                  const CStdString& check)
+{
+  if (!valid)
+    return false;
+
+  if (variant.isNull() || variant.asString().empty())
+    return false;
+
+  CStdStringArray regions;
+  StringUtils::SplitString(variant.asString()," ",regions);
+  bool ok=false;
+  for (size_t j=0;j<regions.size();++j)
+  {
+    if (check.Equals(regions[j]))
+    {
+      ok = true;
+      break;
+    }
+  }
+
+  return !ok;
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
@@ -275,7 +319,29 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
 
   }
   else
+  {
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
+    if (g_settings.m_bAddonGeolockFilter || g_settings.m_bAddonForeignFilter)
+    {
+      int i=0;
+      while (i < items.Size())
+      {
+        if (FilterVar(g_settings.m_bAddonGeolockFilter,
+                      items[i]->GetProperty("Addon.GeoLocks"),
+                      g_sysinfo.GetIPRegion()) ||
+            FilterVar(g_settings.m_bAddonForeignFilter,
+                      items[i]->GetProperty("Addon.Languages"), "en") ||
+             FilterVar(g_settings.m_bAddonForeignFilter,
+                      items[i]->GetProperty("Addon.Languages"),
+                      g_langInfo.GetLanguageLocale()))
+        {
+          items.Remove(i);
+        }
+        else
+          i++;
+      }
+    }
+  }
 
   if (strDirectory.IsEmpty() && CAddonInstaller::Get().IsDownloading())
   {

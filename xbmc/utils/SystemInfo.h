@@ -49,6 +49,7 @@ public:
   CStdString systemUptime;
   CStdString systemTotalUptime;
   INTERNET_STATE internetState;
+  CStdString IPRegion;
   CStdString videoEncoder;
   CStdString cpuFrequency;
   CStdString kernelVersion;
@@ -65,6 +66,7 @@ public:
   const CSysData &GetData() const;
 
   static CSysData::INTERNET_STATE GetInternetState();
+  static CStdString GetIPRegion();
 private:
   bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   double GetCPUFrequency();
@@ -111,6 +113,8 @@ public:
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
+
+  CStdString GetIPRegion();
 
 protected:
   virtual CJob *GetJob() const;
