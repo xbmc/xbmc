@@ -341,7 +341,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
-    if(ThreadHandle())
+    if(IsRunning())
       CloseFile();
 
     m_bAbortRequest = false;
@@ -433,8 +433,7 @@ void CDVDPlayer::OnStartup()
 
   m_messenger.Init();
 
-  g_dvdPerformanceCounter.EnableMainPerformance(ThreadHandle());
-
+  g_dvdPerformanceCounter.EnableMainPerformance(this);
   CUtil::ClearTempFonts();
 }
 
@@ -2726,7 +2725,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source)
   m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
   /* audio normally won't consume full cpu, so let it have prio */
-  m_dvdPlayerAudio.SetPriority(GetThreadPriority(*this)+1);
+  m_dvdPlayerAudio.SetPriority(GetPriority()+1);
 
   return true;
 }
@@ -2794,11 +2793,11 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   // the CoreAudio audio device handler thread. We do the same for
   // the DVDPlayerVideo thread so it can run to sleep without getting
   // swapped out by a busy OS.
-  m_dvdPlayerVideo.SetPrioritySched_RR();
+  m_dvdPlayerVideo.SetPriority(GetSchedRRPriority());
 #else
   /* use same priority for video thread as demuxing thread, as */
   /* otherwise demuxer will starve if video consumes the full cpu */
-  m_dvdPlayerVideo.SetPriority(GetThreadPriority(*this));
+  m_dvdPlayerVideo.SetPriority(GetPriority());
 #endif
   return true;
 

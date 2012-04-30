@@ -72,7 +72,7 @@
 
 using namespace std;
 
-CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
 {
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;

@@ -1,8 +1,5 @@
-#ifndef __X_EVENT_UTIL_H__
-#define __X_EVENT_UTIL_H__
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,17 +19,12 @@
  *
  */
 
-#include "XHandlePublic.h"
+int CThread::GetSchedRRPriority(void)
+{
+  return GetNormalPriority();
+}
 
-#ifdef _LINUX
-
-HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName);
-bool WINAPI SetEvent(HANDLE hEvent);
-bool WINAPI ResetEvent(HANDLE hEvent);
-bool WINAPI PulseEvent(HANDLE hEvent);
-
-#endif
-
-
-#endif
-
+bool CThread::SetPrioritySched_RR(int iPriority)
+{
+  return false;
+}

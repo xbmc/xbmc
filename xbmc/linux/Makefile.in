@@ -10,14 +10,11 @@ SRCS=ConvUtils.cpp \
      LinuxResourceCounter.cpp \
      LinuxTimezone.cpp \
      PosixMountProvider.cpp \
-     XEventUtils.cpp \
      XFileUtils.cpp \
      XHandle.cpp \
      XLCDproc.cpp \
      XMemUtils.cpp \
-     XSyncUtils.cpp \
      XTimeUtils.cpp \
-     XThreadUtils.cpp \
 
 LIB=linux.a
 

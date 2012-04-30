@@ -1,9 +1,5 @@
 #include "rar.hpp"
 #include "Util.h"
-#ifdef _LINUX
-#include "XSyncUtils.h"
-#include "XEventUtils.h"
-#endif
 
 // a cautious wrapper around strncpy
 char *strncpy_null_terminated(char *dest, const char *src, size_t n)

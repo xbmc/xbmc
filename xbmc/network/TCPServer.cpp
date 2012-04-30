@@ -86,7 +86,7 @@ void CTCPServer::StopServer(bool bWait)
   }
 }
 
-CTCPServer::CTCPServer(int port, bool nonlocal)
+CTCPServer::CTCPServer(int port, bool nonlocal) : CThread("CTCPServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;

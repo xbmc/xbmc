@@ -518,7 +518,7 @@ void CDVDPlayerAudio::OnStartup()
   m_decode.msg = NULL;
   m_decode.Release();
 
-  g_dvdPerformanceCounter.EnableAudioDecodePerformance(ThreadHandle());
+  g_dvdPerformanceCounter.EnableAudioDecodePerformance(this);
 
 #ifdef _WIN32
   CoInitializeEx(NULL, COINIT_MULTITHREADED);

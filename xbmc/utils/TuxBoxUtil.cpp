@@ -48,7 +48,7 @@ using namespace std;
 CTuxBoxUtil g_tuxbox;
 CTuxBoxService g_tuxboxService;
 
-CTuxBoxService::CTuxBoxService()
+CTuxBoxService::CTuxBoxService() : CThread("CTuxBoxService")
 {
 }
 CTuxBoxService::~CTuxBoxService()
