@@ -444,6 +444,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["comment"] = m_strComment;
   value["rating"] = m_rating;
   value["playcount"] = m_iTimesPlayed;
+  value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::EmptyString;
   value["lyrics"] = m_strLyrics;
   value["artistid"] = m_iArtistId;
   value["albumid"] = m_iAlbumId;
