@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Michal Iro-->
 <!--Email: mixo@frco.sk-->
@@ -52,7 +52,7 @@
   <string id="31102">Pozadie</string>
   <string id="31103">Zobrazovať 'Pauza' pri prezentácií obrázkov</string>
   <string id="31104">Prehrávať ukážky v okne [COLOR=grey3](iba z okna Detailné Informácie)[/COLOR]</string>
-  <string id="31105">Odkaz 'Videá' automaticky otvorí podmenu 'Súbory'</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Rôzne nastavenia</string>
   <string id="31107">Nezobrazovať ikonky zdroja videa [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Skryť položky hlavného menu</string>

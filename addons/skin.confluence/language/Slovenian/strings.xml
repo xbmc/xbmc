@@ -58,7 +58,7 @@
   <string id="31102">Ozadje</string>
   <string id="31103">Prikaži "Prekinjeno" v projekciji slik</string>
   <string id="31104">Predvajaj napovednike v oknu [COLOR=grey3](Samo okno z informacijami o videu)[/COLOR]</string>
-  <string id="31105">"Video" gumb je vedno v "Datoteke" za video</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Razne nastavitve</string>
   <string id="31107">Skrij oznake videa, prebrane iz datotek [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Skrij gumbe v glavnem menuju</string>
