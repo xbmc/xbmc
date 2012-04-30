@@ -25,7 +25,6 @@
 
 #include "RTVDirectory.h"
 #include "utils/URIUtils.h"
-#include "SectionLoader.h"
 #include "URL.h"
 #include "tinyXML/tinyxml.h"
 #include "FileItem.h"
@@ -43,12 +42,10 @@ extern "C"
 
 CRTVDirectory::CRTVDirectory(void)
 {
-  CSectionLoader::Load("LIBRTV");
 }
 
 CRTVDirectory::~CRTVDirectory(void)
 {
-  CSectionLoader::Unload("LIBRTV");
 }
 
 //*********************************************************************************************

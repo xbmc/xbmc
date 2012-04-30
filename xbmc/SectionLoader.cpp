@@ -45,81 +45,6 @@ CSectionLoader::~CSectionLoader(void)
   UnloadAll();
 }
 
-bool CSectionLoader::IsLoaded(const CStdString& strSection)
-{
-  CSingleLock lock(g_sectionLoader.m_critSection);
-
-  for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedSections.size(); ++i)
-  {
-    CSection& section = g_sectionLoader.m_vecLoadedSections[i];
-    if (section.m_strSectionName == strSection && section.m_lReferenceCount > 0) return true;
-  }
-  return false;
-}
-
-bool CSectionLoader::Load(const CStdString& strSection)
-{
-  CSingleLock lock(g_sectionLoader.m_critSection);
-
-  for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedSections.size(); ++i)
-  {
-    CSection& section = g_sectionLoader.m_vecLoadedSections[i];
-    if (section.m_strSectionName == strSection)
-    {
-
-#ifdef LOGALL
-      CLog::Log(LOGDEBUG,"SECTION:LoadSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
-#endif
-
-      section.m_lReferenceCount++;
-      return true;
-    }
-  }
-
-#ifdef HAS_SECTIONS
-  if ( NULL == XLoadSection(strSection.c_str() ) )
-  {
-    CLog::Log(LOGDEBUG,"SECTION:LoadSection(%s) load failed!!\n", strSection.c_str());
-    return false;
-  }
-  HANDLE hHandle = XGetSectionHandle(strSection.c_str());
-
-  CLog::Log(LOGDEBUG,"SECTION:Section %s loaded count:1 size:%i\n", strSection.c_str(), XGetSectionSize(hHandle) );
-#endif
-
-  CSection newSection;
-  newSection.m_strSectionName = strSection;
-  newSection.m_lReferenceCount = 1;
-  g_sectionLoader.m_vecLoadedSections.push_back(newSection);
-  return true;
-}
-
-void CSectionLoader::Unload(const CStdString& strSection)
-{
-  CSingleLock lock(g_sectionLoader.m_critSection);
-  if (!CSectionLoader::IsLoaded(strSection)) return ;
-
-  ivecLoadedSections i;
-  i = g_sectionLoader.m_vecLoadedSections.begin();
-  while (i != g_sectionLoader.m_vecLoadedSections.end())
-  {
-    CSection& section = *i;
-    if (section.m_strSectionName == strSection)
-    {
-#ifdef LOGALL
-      CLog::Log(LOGDEBUG,"SECTION:FreeSection(%s) count:%i\n", strSection.c_str(), section.m_lReferenceCount);
-#endif
-      section.m_lReferenceCount--;
-      if ( 0 == section.m_lReferenceCount)
-      {
-        section.m_unloadDelayStartTick = XbmcThreads::SystemClockMillis();
-        return ;
-      }
-    }
-    ++i;
-  }
-}
-
 LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnload /*=true*/, bool bLoadSymbols /*=false*/)
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
@@ -186,22 +111,6 @@ void CSectionLoader::UnloadDelayed()
 {
   CSingleLock lock(g_sectionLoader.m_critSection);
 
-  ivecLoadedSections i = g_sectionLoader.m_vecLoadedSections.begin();
-  while( i != g_sectionLoader.m_vecLoadedSections.end() )
-  {
-    CSection& section = *i;
-    if( section.m_lReferenceCount == 0 && XbmcThreads::SystemClockMillis() - section.m_unloadDelayStartTick > UNLOAD_DELAY)
-    {
-      CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
-#ifdef HAS_SECTIONS
-      XFreeSection(section.m_strSectionName.c_str());
-#endif
-      i = g_sectionLoader.m_vecLoadedSections.erase(i);
-      continue;
-    }
-    i++;
-  }
-
   // check if we can unload any unreferenced dlls
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
@@ -220,19 +129,6 @@ void CSectionLoader::UnloadDelayed()
 
 void CSectionLoader::UnloadAll()
 {
-  ivecLoadedSections i;
-  i = g_sectionLoader.m_vecLoadedSections.begin();
-  while (i != g_sectionLoader.m_vecLoadedSections.end())
-  {
-    CSection& section = *i;
-    //g_sectionLoader.m_vecLoadedSections.erase(i);
-    CLog::Log(LOGDEBUG,"SECTION:UnloadAll(SECTION: %s)", section.m_strSectionName.c_str());
-#ifdef HAS_SECTIONS
-    XFreeSection(section.m_strSectionName.c_str());
-#endif
-    i = g_sectionLoader.m_vecLoadedSections.erase(i);
-  }
-
   // delete the dll's
   CSingleLock lock(g_sectionLoader.m_critSection);
   vector<CDll>::iterator it = g_sectionLoader.m_vecLoadedDLLs.begin();

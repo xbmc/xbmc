@@ -24,7 +24,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "RTVFile.h"
-#include "SectionLoader.h"
 #include "URL.h"
 #include "utils/log.h"
 #include <errno.h>
@@ -46,7 +45,6 @@ using namespace XFILE;
 
 CRTVFile::CRTVFile()
 {
-  CSectionLoader::Load("LIBRTV");
   m_filePos = 0;
   m_fileSize = 0;
   m_bOpened = false;
@@ -56,7 +54,6 @@ CRTVFile::CRTVFile()
 CRTVFile::~CRTVFile()
 {
   Close();
-  CSectionLoader::Unload("LIBRTV");
 }
 
 //*********************************************************************************************

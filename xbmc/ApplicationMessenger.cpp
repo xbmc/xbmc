@@ -26,7 +26,6 @@
 #include "guilib/TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
-#include "SectionLoader.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -516,7 +515,6 @@ case TMSG_POWERDOWN:
 #ifdef HAS_HTTPAPI
       if (!m_pXbmcHttp)
       {
-        CSectionLoader::Load("LIBHTTP");
         m_pXbmcHttp = new CXbmcHttp();
       }
       switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
