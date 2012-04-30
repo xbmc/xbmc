@@ -1,0 +1,9111 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-30 23:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eo\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Mia Softvaroj"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Mia Bildoj"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Mia Mizuko"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Mia Filmoj"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "Televido Gvido"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Preferoj"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr ""
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Mia Vicoj"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Veterprognozo"
+
+#: id:9
+msgid "xbmc media center"
+msgstr ""
+
+#: id:11
+msgid "Monday"
+msgstr "Lundo"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Mardo"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Merkredo"
+
+#: id:14
+msgid "Thursday"
+msgstr "Ĵaŭdo"
+
+#: id:15
+msgid "Friday"
+msgstr "Vendredo"
+
+#: id:16
+msgid "Saturday"
+msgstr "Sabato"
+
+#: id:17
+msgid "Sunday"
+msgstr "Dimanĉo"
+
+#: id:21
+msgid "January"
+msgstr "Januaro"
+
+#: id:22
+msgid "February"
+msgstr "Februaro"
+
+#: id:23
+msgid "March"
+msgstr "Marto"
+
+#: id:24
+msgid "April"
+msgstr "Aprilo"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "Majo"
+
+#: id:26
+msgid "June"
+msgstr "Junio"
+
+#: id:27
+msgid "July"
+msgstr "Julio"
+
+#: id:28
+msgid "August"
+msgstr "Aŭgusto"
+
+#: id:29
+msgid "September"
+msgstr "Septembro"
+
+#: id:30
+msgid "October"
+msgstr "Oktobro"
+
+#: id:31
+msgid "November"
+msgstr "Novembro"
+
+#: id:32
+msgid "December"
+msgstr "Decembro"
+
+#: id:41
+msgid "Mon"
+msgstr ""
+
+#: id:42
+msgid "Tue"
+msgstr ""
+
+#: id:43
+msgid "Wed"
+msgstr ""
+
+#: id:44
+msgid "Thu"
+msgstr ""
+
+#: id:45
+msgid "Fri"
+msgstr ""
+
+#: id:46
+msgid "Sat"
+msgstr ""
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr ""
+
+#: id:51
+msgid "Jan"
+msgstr ""
+
+#: id:52
+msgid "Feb"
+msgstr ""
+
+#: id:53
+msgid "Mar"
+msgstr ""
+
+#: id:54
+msgid "Apr"
+msgstr ""
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr ""
+
+#: id:56
+msgid "Jun"
+msgstr ""
+
+#: id:57
+msgid "Jul"
+msgstr ""
+
+#: id:58
+msgid "Aug"
+msgstr ""
+
+#: id:59
+msgid "Sep"
+msgstr ""
+
+#: id:60
+msgid "Oct"
+msgstr ""
+
+#: id:61
+msgid "Nov"
+msgstr ""
+
+#: id:62
+msgid "Dec"
+msgstr ""
+
+#: id:71
+msgid "N"
+msgstr ""
+
+#: id:72
+msgid "NNE"
+msgstr ""
+
+#: id:73
+msgid "NE"
+msgstr ""
+
+#: id:74
+msgid "ENE"
+msgstr ""
+
+#: id:75
+msgid "E"
+msgstr ""
+
+#: id:76
+msgid "ESE"
+msgstr ""
+
+#: id:77
+msgid "SE"
+msgstr ""
+
+#: id:78
+msgid "SSE"
+msgstr ""
+
+#: id:79
+msgid "S"
+msgstr ""
+
+#: id:80
+msgid "SSW"
+msgstr ""
+
+#: id:81
+msgid "SW"
+msgstr ""
+
+#: id:82
+msgid "WSW"
+msgstr ""
+
+#: id:83
+msgid "W"
+msgstr ""
+
+#: id:84
+msgid "WNW"
+msgstr ""
+
+#: id:85
+msgid "NW"
+msgstr ""
+
+#: id:86
+msgid "NNW"
+msgstr ""
+
+#: id:87
+msgid "VAR"
+msgstr ""
+
+#: id:98
+msgid "View: Auto"
+msgstr "Vido: Auto"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Vido: Auto Big"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Vido: Icons"
+
+#: id:101
+msgid "View: List"
+msgstr "Vido: List"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Skani"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "ordigi je: Nomo"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "ordigi je: Dati"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "ordigi je: amplekso"
+
+#: id:106
+msgid "No"
+msgstr "Ne"
+
+#: id:107
+msgid "Yes"
+msgstr "Jes"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "SlideShow"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Verki Thumbs"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Verki Thumbnails"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+#: id:112
+msgid "Paused"
+msgstr "Paŭzis"
+
+#: id:113
+msgid "Update failed"
+msgstr "Mia vicos : Fonto"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Mia vicos : Destination"
+
+#: id:115
+msgid "Copy"
+msgstr "Kopii"
+
+#: id:116
+msgid "Move"
+msgstr "Movi"
+
+#: id:117
+msgid "Delete"
+msgstr "Forviŝi"
+
+#: id:118
+msgid "Rename"
+msgstr "Rebapti"
+
+#: id:119
+msgid "New folder"
+msgstr "Nova Dosiero"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Confirm vico kopii"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Confirm vico movi"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Confirm vico forviŝi"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Kopii lase vicos?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Movi lase vicos?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Forviŝi lase vicos?"
+
+#: id:126
+msgid "Status"
+msgstr "Kondiĉo"
+
+#: id:127
+msgid "Objects"
+msgstr "Objects"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Generalo"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Slideshow"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Sistemo Informaĵo"
+
+#: id:131
+msgid "Display"
+msgstr "Ekrano"
+
+#: id:132
+msgid "Albums"
+msgstr "Albumos"
+
+#: id:133
+msgid "Artists"
+msgstr "Muzikisto"
+
+#: id:134
+msgid "Songs"
+msgstr "Kantoj"
+
+#: id:135
+msgid "Genres"
+msgstr "Gxenroj"
+
+#: id:136
+msgid "Playlists"
+msgstr "Kantoj-listo"
+
+#: id:137
+msgid "Search"
+msgstr "Traserĉi"
+
+#: id:138
+msgid "System Information"
+msgstr "SISTEMO informaĵo"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Temperaturoj:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Tempo:"
+
+#: id:143
+msgid "Current:"
+msgstr "Current:"
+
+#: id:144
+msgid "Build:"
+msgstr "Eldono:"
+
+#: id:145
+msgid "Network:"
+msgstr "Reto:"
+
+#: id:146
+msgid "Type:"
+msgstr "Type:"
+
+#: id:147
+msgid "Static"
+msgstr "Static"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP"
+
+#: id:151
+msgid "Link:"
+msgstr "Link: "
+
+#: id:152
+msgid "Half duplex"
+msgstr "Half duplex"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Full duplex"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Diskmemoro"
+
+#: id:155
+msgid "Drive"
+msgstr "Ingo"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Havebla"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Filmoj"
+
+#: id:158
+msgid "Free memory"
+msgstr "Havebla labormemoro"
+
+#: id:159
+msgid "No link"
+msgstr "No link"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Havebla"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Malhavebla"
+
+#: id:162
+msgid "Tray open"
+msgstr "KD-ingo malfermi"
+
+#: id:163
+msgid "Reading"
+msgstr "Sxakis KD"
+
+#: id:164
+msgid "No disc"
+msgstr "Ne KD"
+
+#: id:165
+msgid "Disc present"
+msgstr "KD Present"
+
+#: id:166
+msgid "Skin"
+msgstr "Skin"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Distingivo"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Albumo:"
+
+#: id:172
+msgid "Release date"
+msgstr "Dati of Ellasi:"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Rating:"
+
+#: id:175
+msgid "Moods"
+msgstr "Tones:"
+
+#: id:176
+msgid "Styles"
+msgstr "Styles:"
+
+#: id:179
+msgid "Song"
+msgstr "Kanto"
+
+#: id:180
+msgid "Duration"
+msgstr "Tempo grando"
+
+#: id:181
+msgid "Select album"
+msgstr "Elekti albumo"
+
+#: id:182
+msgid "Tracks"
+msgstr "Tracks"
+
+#: id:183
+msgid "Review"
+msgstr "ReVido"
+
+#: id:184
+msgid "Refresh"
+msgstr "Refresh"
+
+#: id:185
+msgid "Searching album"
+msgstr "Searching albumo"
+
+#: id:186
+msgid "OK"
+msgstr "OK"
+
+#: id:187
+msgid "No albums found!"
+msgstr "No albumos found!"
+
+#: id:188
+msgid "Select all"
+msgstr "Elekti cxio"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Scanning media info"
+
+#: id:190
+msgid "Save"
+msgstr "Save"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Shuffle"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Clear"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Scan"
+
+#: id:194
+msgid "Searching..."
+msgstr "Trasercxis..."
+
+#: id:195
+msgid "No info found!"
+msgstr "No IMDB info found!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Elekti movie:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Querying IMDB info"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Loading Filmo details"
+
+#: id:199
+msgid "Web interface"
+msgstr "Filmo-artisto:"
+
+#: id:202
+msgid "Tagline"
+msgstr "Tagline:"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Malgranda-komploti:"
+
+#: id:205
+msgid "Votes"
+msgstr "Voxcoj"
+
+#: id:206
+msgid "Cast"
+msgstr "Aktoroj	"
+
+#: id:207
+msgid "Plot"
+msgstr "Komploti"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Iniciati"
+
+#: id:209
+msgid "Next"
+msgstr "Sekvonta"
+
+#: id:210
+msgid "Previous"
+msgstr "Antaŭa"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Calibrate uzulinterfaco..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Filmoj Calibration..."
+
+#: id:215
+msgid "Soften"
+msgstr "Mildigi"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Zoom Amount"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Pixel Ratio"
+
+#: id:218
+msgid "DVD drive"
+msgstr "KD-ingo"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Plaĉi insert KD"
+
+#: id:220
+msgid "Remote share"
+msgstr "Remote Share"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Network is not connected"
+
+#: id:222
+msgid "Cancel"
+msgstr "Renonci"
+
+#: id:224
+msgid "Speed"
+msgstr "Rapideco"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Transition Time"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Enable PAL60"
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Enable CDDB"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Shuffle Playlist on Load"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "HD Spindown Time"
+
+#: id:230
+msgid "Video filters"
+msgstr "Filmoj Filters"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Neniu"
+
+#: id:232
+msgid "Point"
+msgstr "Point"
+
+#: id:233
+msgid "Linear"
+msgstr "Rekta"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussian Cubic"
+
+#: id:237
+msgid "Minification"
+msgstr "Minification"
+
+#: id:238
+msgid "Magnification"
+msgstr "Magnification"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Clear playlist on finish"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Autorun DVD-Filmoj"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Autorun VCD/SVCD"
+
+#: id:242
+msgid "Windowed"
+msgstr "Autorun Audio-CD"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Autorun XBOX Games"
+
+#: id:244
+msgid "Full screen"
+msgstr "Autorun Filmoj"
+
+#: id:245
+msgid ""
+"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
+" %2.2f)"
+msgstr "Autorun Muziko"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Lingvo"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Muziko"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Visualisation"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Elekti destination directory"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Output Stereo to ĉiom Speakers"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Number of channels"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- DTS Capable Receiver"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Querying freedb for CDDB info"
+
+#: id:257
+msgid "Error"
+msgstr "Eraro"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Enable ID3 Tags"
+
+#: id:259
+msgid "Opening"
+msgstr "Opening"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Waiting for start...."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Scripts Output"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Enable Web Server"
+
+#: id:264
+msgid "Record"
+msgstr "Registri"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Registri Rec."
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "ordigi je: Track"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "ordigi je: Time"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "ordigi je: Title"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "ordigi je: Artist"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "ordigi je: Albumo"
+
+#: id:271
+msgid "Top 100"
+msgstr "Top 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Top Left Overscan Compensation"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Bottom Right Overscan Compensation"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Subtitles Position"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Pixel Ratio Adjustment"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Movi la arrow to change la amount of overscan"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Movi la bar to change la subtitles position"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Change la rectangle so that it is perfectly square"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Unable to load Preferoj"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Using default fĉiombacks"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Plaĉi check la .xml vicos"
+
+#: id:282
+msgid "Found %i items"
+msgstr "found %i items"
+
+#: id:283
+msgid "Search results"
+msgstr "Search Results"
+
+#: id:284
+msgid "No results found"
+msgstr "No results found"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Subtitles"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Tiparo"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- amplekso"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Dynamic Range Compression"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Filmoj"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Soni"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Subtitles"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Verki bookmark"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Clear bookmarks"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Soni malfruiĝo"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Slider"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr ""
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "1. Lingvo"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "2. Soni-granda"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "3. Stream"
+
+#: id:303
+msgid "Delay"
+msgstr "malfruiĝo"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Language"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Enabled"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Non-Interleaved"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=auto)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Cleaning datinbanko"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Preparing..."
+
+#: id:315
+msgid "Database error"
+msgstr "Datinbanko eraro"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Searching kantoj..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Cleaning datinbanko successful"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Cleaning kantoj..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Eraro cleaning kantoj"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Cleaning artists..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Eraro cleaning artists"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Cleaning Gxenroj..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Eraro cleaning Gxenroj"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Cleaning paths..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Eraro cleaning paths"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Cleaning albumos..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Eraro cleaning albumos"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Writing changes..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Eraro writing changes"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "This may take some time..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Compressing datinbanko..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Eraro compressing datinbanko"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Do you want to clean la muziko library?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Clean Muziko Library..."
+
+#: id:335
+msgid "Start"
+msgstr "Iniciati"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Framerate Conversion"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Audio Output"
+
+#: id:338
+msgid "Analog"
+msgstr "Analog"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Diĝita"
+
+#: id:340
+msgid "Various artists"
+msgstr "Various Artists"
+
+#: id:341
+msgid "Play disc"
+msgstr "Play Disc"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Filmoj"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Adjust Framerate"
+
+#: id:344
+msgid "Actors"
+msgstr "Aktoro"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Jaro"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Stack"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Softvaro"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Off"
+
+#: id:352
+msgid "Dim"
+msgstr "Dim"
+
+#: id:353
+msgid "Black"
+msgstr "Black"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix Trails"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "ekranosaver Idle Timeout"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "ekranosaver Mode"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Shutdown Idle Timeout"
+
+#: id:358
+msgid "All albums"
+msgstr "ĉiom albumos"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Recently Added Albumos"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "ekranosaver"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "R. SlideShow"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "ekranosaver Fade Level"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "ordigi je: vico"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- AC3 Capable Receiver"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "ordigi je: Nomo"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "ordigi je: Year"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "ordigi je: Rating"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDB"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Nomo"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Fulmotondro"
+
+#: id:371
+msgid "Partly"
+msgstr "Parte"
+
+#: id:372
+msgid "Mostly"
+msgstr "Plejparte"
+
+#: id:373
+msgid "Sunny"
+msgstr "Suna"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Nuba-cxielo"
+
+#: id:375
+msgid "Snow"
+msgstr "Negxi negxi cxie"
+
+#: id:376
+msgid "Rain"
+msgstr "Pluvo"
+
+#: id:377
+msgid "Light"
+msgstr "KROTALOJ"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "Showers"
+
+#: id:381
+msgid "Few"
+msgstr "Few"
+
+#: id:382
+msgid "Scattered"
+msgstr "Scattered"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Vovento"
+
+#: id:384
+msgid "Strong"
+msgstr "Intensa"
+
+#: id:385
+msgid "Fair"
+msgstr "Fair"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Clear"
+
+#: id:387
+msgid "Clouds"
+msgstr "Clouds"
+
+#: id:388
+msgid "Early"
+msgstr "Frua"
+
+#: id:389
+msgid "Shower"
+msgstr "Shower"
+
+#: id:390
+msgid "Flurries"
+msgstr "Flurries"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Malnobla"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Mezgrada"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Nobla"
+
+#: id:394
+msgid "Fog"
+msgstr "Nebulo"
+
+#: id:395
+msgid "Haze"
+msgstr "Haze"
+
+#: id:396
+msgid "Select location"
+msgstr "Elekti Location"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Refresh Time"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Temperature Units"
+
+#: id:399
+msgid "Speed units"
+msgstr "Tempo Units"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Wealar"
+
+#: id:401
+msgid "Temp"
+msgstr "Temp"
+
+#: id:402
+msgid "Feels like"
+msgstr "Feels Like"
+
+#: id:403
+msgid "UV index"
+msgstr "UV Index"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Wind"
+
+#: id:405
+msgid "Dew point"
+msgstr "Dew Point"
+
+#: id:406
+msgid "Humidity"
+msgstr "Humideco"
+
+#: id:409
+msgid "Defaults"
+msgstr ""
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Accessing Wealar.com"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Getting Wealar For:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Unable to get wealar data"
+
+#: id:413
+msgid "Manual"
+msgstr "Manual"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Ne review for this albumo"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Downloading thumbnail..."
+
+#: id:416
+msgid "Not available"
+msgstr "Not available"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Vido: Big Icons"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Mia Filmoj/Gxenroj"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Mia Filmoj/Aktoroj"
+
+#: id:420
+msgid "HDMI"
+msgstr "Mia Filmoj/Jaroj"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Forviŝi Albumoinfo"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Forviŝi CDDB Info"
+
+#: id:424
+msgid "Select"
+msgstr "Elekti"
+
+#: id:425
+msgid "No album information found"
+msgstr "No albumoinfo found."
+
+#: id:426
+msgid "No CD information found"
+msgstr "No CDDB info found."
+
+#: id:427
+msgid "Disc"
+msgstr "KD-ingo:"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Insert correct KD-ingo"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Plaĉi insert la following KD"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "ordigi je: KD#"
+
+#: id:431
+msgid "No cache"
+msgstr "No Cache"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Forviŝi movie from datinbanko"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Are vi sure about removing"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "la filmo?"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Tempo-amplekso:"
+
+#: id:438
+msgid "Opening file"
+msgstr "Opening vico"
+
+#: id:439
+msgid "Cache"
+msgstr "Cache"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Durdisko"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "LAN"
+
+#: id:443
+msgid "Internet"
+msgstr "Interreto"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Filmo"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Soni"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "KD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Autorun"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Enabled"
+
+#: id:450
+msgid "Columns"
+msgstr "Columns"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Row 1 Address"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Row 2 Address"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Row 3 Address"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Row 4 Address"
+
+#: id:455
+msgid "Rows"
+msgstr "Rows"
+
+#: id:456
+msgid "Mode"
+msgstr "Mode"
+
+#: id:457
+msgid "Switch view"
+msgstr "Switch Vido"
+
+#: id:459
+msgid "Subs"
+msgstr "Subs"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Soni Stream"
+
+#: id:461
+msgid "[active]"
+msgstr "[active]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Subtitle"
+
+#: id:463
+msgid "Backlight"
+msgstr "Backlight"
+
+#: id:464
+msgid "Brightness"
+msgstr "Brightness"
+
+#: id:465
+msgid "Contrast"
+msgstr "Contrast"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Type"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Movi la bar to change la osd position"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSD Position"
+
+#: id:470
+msgid "Credits"
+msgstr "CrEditiis"
+
+#: id:471
+msgid "Modchip"
+msgstr "Modchip"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Off"
+
+#: id:475
+msgid "Music only"
+msgstr "Muziko Only"
+
+#: id:476
+msgid "Music & video"
+msgstr "Muziko & Filmoj"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Unable to load playlist"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Skin and Language"
+
+#: id:480
+msgid "Appearance"
+msgstr "Appearance"
+
+#: id:481
+msgid "Audio options"
+msgstr "Audio Options"
+
+#: id:482
+msgid "About XBMC"
+msgstr "About XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Forviŝi albumo"
+
+#: id:486
+msgid "Repeat"
+msgstr "Repeat"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Repeat One"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Repeat Folders"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Auto Play Next Item"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Use big icons"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Reamplekso Vobsubs"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Advanced Options (Experts Only!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Overĉiom Audio Headroom"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Upsample Filmoj to GUI Resolution"
+
+#: id:496
+msgid "Calibration"
+msgstr "Calibration"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Hide Media Extensions"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "ordigi je: Type"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Unable to connect to www.ĉiommuziko.com"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Downloading albumo info failed"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Looking for albumo nomoj..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Open"
+
+#: id:503
+msgid "Busy"
+msgstr "Busy"
+
+#: id:504
+msgid "Empty"
+msgstr "Empty"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Loading media info from vicos..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "ordigi je: Usage"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Enable Visualisations"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Enable filmoj mode switching"
+
+#: id:512
+msgid "Startup window"
+msgstr "Startup Window"
+
+#: id:513
+msgid "Home window"
+msgstr "Home Window"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Manual Preferoj"
+
+#: id:515
+msgid "Genre"
+msgstr "Gxenro"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Recently Played Albumos"
+
+#: id:518
+msgid "Launch"
+msgstr "Launch"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Launch in.."
+
+#: id:521
+msgid "Compilations"
+msgstr "Compilations"
+
+#: id:522
+msgid "Remove source"
+msgstr "ReMovi Source"
+
+#: id:523
+msgid "Switch media"
+msgstr ""
+
+#: id:524
+msgid "Select playlist"
+msgstr ""
+
+#: id:525
+msgid "New playlist..."
+msgstr ""
+
+#: id:526
+msgid "Add to playlist"
+msgstr ""
+
+#: id:527
+msgid "Manually add to library"
+msgstr ""
+
+#: id:528
+msgid "Enter title"
+msgstr ""
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr ""
+
+#: id:530
+msgid "Select genre"
+msgstr ""
+
+#: id:531
+msgid "New genre"
+msgstr ""
+
+#: id:532
+msgid "Manual addition"
+msgstr ""
+
+#: id:533
+msgid "Enter genre"
+msgstr ""
+
+#: id:534
+msgid "View: %s"
+msgstr ""
+
+#: id:535
+msgid "List"
+msgstr ""
+
+#: id:536
+msgid "Icons"
+msgstr ""
+
+#: id:537
+msgid "Big list"
+msgstr ""
+
+#: id:538
+msgid "Big icons"
+msgstr ""
+
+#: id:539
+msgid "Wide"
+msgstr ""
+
+#: id:540
+msgid "Big wide"
+msgstr ""
+
+#: id:541
+msgid "Album icons"
+msgstr ""
+
+#: id:542
+msgid "DVD icons"
+msgstr ""
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr ""
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr ""
+
+#: id:545
+msgid "Audio output device"
+msgstr ""
+
+#: id:546
+msgid "Passthrough output device"
+msgstr ""
+
+#: id:547
+msgid "No biography for this artist"
+msgstr ""
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr ""
+
+#: id:550
+msgid "Sort by: %s"
+msgstr ""
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr ""
+
+#: id:552
+msgid "Date"
+msgstr ""
+
+#: id:553
+msgid "Size"
+msgstr ""
+
+#: id:554
+msgid "Track"
+msgstr ""
+
+#: id:555
+msgid "Time"
+msgstr ""
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr ""
+
+#: id:557
+msgid "Artist"
+msgstr ""
+
+#: id:558
+msgid "Album"
+msgstr ""
+
+#: id:559
+msgid "Playlist"
+msgstr ""
+
+#: id:560
+msgid "ID"
+msgstr ""
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr ""
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr ""
+
+#: id:563
+msgid "Rating"
+msgstr ""
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr ""
+
+#: id:565
+msgid "Usage"
+msgstr ""
+
+#: id:566
+msgid "Album artist"
+msgstr ""
+
+#: id:567
+msgid "Play count"
+msgstr ""
+
+#: id:568
+msgid "Last played"
+msgstr ""
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr ""
+
+#: id:570
+msgid "Date added"
+msgstr ""
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr ""
+
+#: id:572
+msgid "Studio"
+msgstr ""
+
+#: id:573
+msgid "Path"
+msgstr ""
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr ""
+
+#: id:575
+msgid "In progress"
+msgstr ""
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr ""
+
+#: id:581
+msgid "Sort method"
+msgstr ""
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr ""
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr ""
+
+#: id:584
+msgid "Ascending"
+msgstr ""
+
+#: id:585
+msgid "Descending"
+msgstr ""
+
+#: id:586
+msgid "Edit playlist"
+msgstr ""
+
+#: id:587
+msgid "Filter"
+msgstr ""
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Cancel Party Mode"
+
+#: id:589
+msgid "Party mode"
+msgstr "Party Mode"
+
+#: id:590
+msgid "Random"
+msgstr "Random"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Off"
+
+#: id:592
+msgid "One"
+msgstr "One"
+
+#: id:593
+msgid "All"
+msgstr "ĉiom"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Off"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Repeat: Off"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Repeat: One"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Repeat: ĉiom"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Rip CD Audio"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Medium"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Standard"
+
+#: id:603
+msgid "Extreme"
+msgstr "Extreme"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Constant Bit Rate"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Ripping..."
+
+#: id:607
+msgid "To:"
+msgstr "To:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Could not rip CD or Track"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath is not set in sources.xml"
+
+#: id:610
+msgid "Rip audio track"
+msgstr ""
+
+#: id:611
+msgid "Enter number"
+msgstr ""
+
+#: id:612
+msgid "Bits/Sample"
+msgstr ""
+
+#: id:613
+msgid "Sample Frequency"
+msgstr ""
+
+#: id:620
+msgid "Audio CDs"
+msgstr "CD Ripping"
+
+#: id:621
+msgid "Encoder"
+msgstr "Encoder"
+
+#: id:622
+msgid "Quality"
+msgstr "Quality"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bit Rate"
+
+#: id:624
+msgid "Include track number"
+msgstr "Include Track Number"
+
+#: id:625
+msgid "All songs of"
+msgstr "ĉiom kantoj of"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Vido Mode"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:631
+msgid "Zoom"
+msgstr "Zoom"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Stretch 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Stretch 14:9"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Stretch 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Original amplekso"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Custom"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay Gain"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Replay Gain Mode"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Use Track Levels"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Use Albumo Levels"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "PreAmp Level - Replay Gained vicos"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "PreAmp Level - Non Replay Gained vicos"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Avoid Clipping on Replay Gained vicos"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Crop Black Bars"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Need to cache a big vico. Continue?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "ReMovi Title"
+
+#: id:647
+msgid "Export video library"
+msgstr ""
+
+#: id:648
+msgid "Import video library"
+msgstr ""
+
+#: id:649
+msgid "Importing"
+msgstr ""
+
+#: id:650
+msgid "Exporting"
+msgstr ""
+
+#: id:651
+msgid "Browse for library"
+msgstr ""
+
+#: id:652
+msgid "Years"
+msgstr ""
+
+#: id:653
+msgid "Update library"
+msgstr ""
+
+#: id:654
+msgid "Show debug info"
+msgstr ""
+
+#: id:655
+msgid "Browse for executable"
+msgstr ""
+
+#: id:656
+msgid "Browse for playlist"
+msgstr ""
+
+#: id:657
+msgid "Browse for folder"
+msgstr ""
+
+#: id:658
+msgid "Song information"
+msgstr ""
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr ""
+
+#: id:660
+msgid "Volume amplification"
+msgstr ""
+
+#: id:661
+msgid "Choose export folder"
+msgstr ""
+
+#: id:662
+msgid "This file is no longer available."
+msgstr ""
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr ""
+
+#: id:664
+msgid "Browse for Script"
+msgstr ""
+
+#: id:665
+msgid "Compression level"
+msgstr ""
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Cleaning up Library"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Removing old kantoj from la Library"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "This path has been scanned before"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Network"
+
+#: id:706
+msgid "- Server"
+msgstr "HTTP Proxy Host"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Enable HTTP Proxy"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internet Protocol (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Invalid port specified. Value must be between 1 and 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP Proxy"
+
+#: id:715
+msgid "- Assignment"
+msgstr "Assignment"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Aŭtomate (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Manual (Static)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP Address"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Netmpeti"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Default Gateway"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS Server"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Save & Restart"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "with numbers between 0 and 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Changes not saved. Continue without saving?"
+
+#: id:727
+msgid "Web server"
+msgstr "Web Server"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP Server"
+
+#: id:730
+msgid "- Port"
+msgstr "Web Server Port"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Save & Apply"
+
+#: id:733
+msgid "- Password"
+msgstr "Web Server pasvorto"
+
+#: id:734
+msgid "No pass"
+msgstr "No Pass"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Charset"
+
+#: id:736
+msgid "- Style"
+msgstr "- Style"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Color"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Normal"
+
+#: id:739
+msgid "Bold"
+msgstr "Bold"
+
+#: id:740
+msgid "Italics"
+msgstr "Italics"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Bold Italics"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "White"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "flava"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "vicos"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "No scanned informaĵo for this Vido"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Switch to la vicos Vido"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Eraro loading image"
+
+#: id:748
+msgid "Edit path"
+msgstr "Editii Path"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Add Share"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Are vi sure?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Removing Share"
+
+#: id:754
+msgid "Add program link"
+msgstr "Add Program Link"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Editii Program Path"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Editii Program Nomo"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Editii Path Depth"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Vido: Big List"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "flava"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Blanka"
+
+#: id:762
+msgid "Blue"
+msgstr "Blue"
+
+#: id:763
+msgid "Bright green"
+msgstr "Bright Verda"
+
+#: id:764
+msgid "Yellow green"
+msgstr "flava Verda"
+
+#: id:765
+msgid "Cyan"
+msgstr "Cyan"
+
+#: id:766
+msgid "Light grey"
+msgstr "Reserved"
+
+#: id:767
+msgid "Grey"
+msgstr "Reserved"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Eraro %i: share not available"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Audio Hardware"
+
+#: id:773
+msgid "Seeking"
+msgstr "Seeking"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Slideshow Folder"
+
+#: id:775
+msgid "Network interface"
+msgstr ""
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr ""
+
+#: id:777
+msgid "- Wireless password"
+msgstr ""
+
+#: id:778
+msgid "- Wireless security"
+msgstr ""
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr ""
+
+#: id:780
+msgid "No encryption"
+msgstr ""
+
+#: id:781
+msgid "WEP"
+msgstr ""
+
+#: id:782
+msgid "WPA"
+msgstr ""
+
+#: id:783
+msgid "WPA2"
+msgstr ""
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr ""
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr ""
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr ""
+
+#: id:787
+msgid "Interface disabled"
+msgstr ""
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr ""
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr ""
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr ""
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr ""
+
+#: id:793
+msgid "Port range"
+msgstr ""
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr ""
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr ""
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr ""
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr ""
+
+#: id:798
+msgid "Internet access"
+msgstr ""
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr ""
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr ""
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr ""
+
+#: id:998
+msgid "Add Music..."
+msgstr "XLink Kai"
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Interreto-gaming"
+
+#: id:1000
+msgid "- Preview"
+msgstr "ekranosaver PreVido"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Unable to connect"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC was unable to connect to la network location."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "This could be due to la network not being connected."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Would you like to add it anyway?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP Address"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Add Network Location"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Protocol"
+
+#: id:1009
+msgid "Server address"
+msgstr "Server Address"
+
+#: id:1010
+msgid "Server name"
+msgstr "Server Nomo"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Remote Path"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Shared Folder"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Port"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Uzulonomo"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "network server"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "tajpi la network address of la server"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "tajpi la path on la server"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "tajpi la port number"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "tajpi la uzulonomo"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Add %s Source"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "tajpi la path or foliumilo for la media location."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "tajpi a nomo for this Media Source."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Foliumilo for new share"
+
+#: id:1024
+msgid "Browse"
+msgstr "Foliumilo"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Could not retrieve directory informaĵo."
+
+#: id:1026
+msgid "Add source"
+msgstr "Add Source"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Editii Source"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Editii %s Source"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "tajpi la new label"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "an image"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "an image folder"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Add Network Location..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr ""
+
+#: id:1034
+msgid "Submenu"
+msgstr ""
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr ""
+
+#: id:1036
+msgid "Favourites"
+msgstr ""
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr ""
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr ""
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr ""
+
+#: id:1040
+msgid "Loading directory"
+msgstr ""
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr ""
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr ""
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr ""
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr ""
+
+#: id:1045
+msgid "Add-on settings"
+msgstr ""
+
+#: id:1046
+msgid "Access points"
+msgstr ""
+
+#: id:1047
+msgid "Other..."
+msgstr ""
+
+#: id:1048
+msgid "- Username"
+msgstr ""
+
+#: id:1049
+msgid "Script settings"
+msgstr ""
+
+#: id:1050
+msgid "Singles"
+msgstr ""
+
+#: id:1051
+msgid "Enter web address"
+msgstr ""
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB Client"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Workgroup"
+
+#: id:1203
+msgid "Default username"
+msgstr "Default Uzulonomo"
+
+#: id:1204
+msgid "Default password"
+msgstr "Default Pasvorto"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS-Server"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr ""
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "ReMovi"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Muziko"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Filmoj"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Bildoj"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "vicos"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Muziko & Filmoj "
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Muziko & Bildoj"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Muziko & vicos"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Filmoj & Bildoj"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Filmoj & vicos"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Bildoj & vicos"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Muziko & Filmoj & Bildoj"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Muziko & Filmoj & Bildoj & vicos"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Disabled"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "vicos & Muziko & Filmoj"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "vicos & Bildoj & Muziko"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "vicos & Bildoj & Filmoj"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Muziko & Programs"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Filmoj & Programs"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Bildoj & Programs"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Muziko & Filmoj & Bildoj & Programs"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Programs & Filmoj & Muziko"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Programs & Bildoj & Muziko"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Programs & Bildoj & Filmoj"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Auxtomata-detection"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "XBOX Auxtomata-detection"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Kromnomo"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Peti to Connect"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Send FTP Uzulo and pasvorto"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Ping Interval"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Would vi like to connect to la Autodetected Xbox?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr ""
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr ""
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr ""
+
+#: id:1396
+msgid "Drifting"
+msgstr "Drifting"
+
+#: id:1397
+msgid "and"
+msgstr "kaj"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Frostos"
+
+#: id:1399
+msgid "Late"
+msgstr "Late"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Sola"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "T-Showers"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Tondri"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Sunbrilo"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Peza"
+
+#: id:1405
+msgid "in"
+msgstr "en"
+
+#: id:1406
+msgid "the"
+msgstr "la"
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Apudaĵo"
+
+#: id:1408
+msgid "Ice"
+msgstr "Glacio"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Kristaloj"
+
+#: id:1410
+msgid "Calm"
+msgstr "Kvieto"
+
+#: id:1411
+msgid "with"
+msgstr ""
+
+#: id:1412
+msgid "windy"
+msgstr ""
+
+#: id:1413
+msgid "drizzle"
+msgstr ""
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr ""
+
+#: id:1415
+msgid "Drizzle"
+msgstr ""
+
+#: id:1416
+msgid "Foggy"
+msgstr ""
+
+#: id:1417
+msgid "Grains"
+msgstr ""
+
+#: id:1418
+msgid "T-Storms"
+msgstr ""
+
+#: id:1419
+msgid "T-Showers"
+msgstr ""
+
+#: id:1420
+msgid "Moderate"
+msgstr ""
+
+#: id:1421
+msgid "Very High"
+msgstr ""
+
+#: id:1422
+msgid "Windy"
+msgstr ""
+
+#: id:1423
+msgid "Mist"
+msgstr ""
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr ""
+
+#: id:2050
+msgid "Runtime"
+msgstr "Runtime:"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr ""
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr ""
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "LCD Type"
+
+#: id:10000
+msgid "Home"
+msgstr "Hejmo"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Mia Programs"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Mia Bildoj"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Mia vicos"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Preferoj"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Mia Muziko"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Mia Filmoj"
+
+#: id:10007
+msgid "System information"
+msgstr "Sistemo informaĵo"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Preferoj->Generalo"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Preferoj->ekrano"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Preferoj->Appearance->GUI Calibration"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Preferoj->Mia Filmoj->ekrano Calibration"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Preferoj->Mia Bildoj"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Preferoj->Mia Programs"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Preferoj->Wealar"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Preferoj->Mia Muziko"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Preferoj->System"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Preferoj->Mia Filmoj"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Preferoj->Network"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Preferoj->Appearance"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Scripts"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Mia Filmoj/Gxenroj"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr "Mia Filmoj/Nomoj"
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Mia Filmoj/Kanto-listoj"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Preferoj->Provicos"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Jes/ne dialog"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Progress dialog"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr ""
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr ""
+
+#: id:10212
+msgid "terminating"
+msgstr ""
+
+#: id:10213
+msgid "buffering"
+msgstr ""
+
+#: id:10214
+msgid "Opening stream"
+msgstr ""
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Mia Muziko/Playlist"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Mia Muziko/vicos"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Mia Muziko/Library"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Mia Muziko/Popola 100"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Pli-popola 100 kantoj"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Pli-popa 100 Albumos"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Applications"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Preferoj"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Wealar Forecast"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Reto Gaming"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Extensions"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Sistemo Info"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Mia Muziko - Library"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Mia Muziko - Now Playing"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Mia Filmoj - Now Playing"
+
+#: id:10523
+msgid "Album info"
+msgstr "Albumo Info"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Filmo Info"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Elekti dialog"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Mia Muziko/info"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Dialog OK"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Mia Filmoj/Info"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Mia Scripts/Info"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Fullekrano filmoj"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Soni visualisation"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Vicostacking dialog"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Rebuild index..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Return to Mia Muziko"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Return to Mia Filmoj"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Start from beginning"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Resume from last position"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "ok"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Locked! tajpi Code..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "tajpi pasvorto"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "tajpi Master Code"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "tajpi Malŝlosi Code"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "or press C to cancel"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "tajpi Gamepad button combo and press Start"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "press Start, or Back to cancel"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Set Lock"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Malŝlosi"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Reset Lock"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "ReMovi Lock"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Numeric pasvorto"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Gamepad button combo"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Full-text pasvorto"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "tajpi new pasvorto"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Re-tajpi new pasvorto"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "malĝusta pasvorto,"
+
+#: id:12343
+msgid "retries left "
+msgstr "retries left "
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "pasvortos tajpied did not match."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Access Denied"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "pasvorto retry limit exceeded."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "La XBOX will now shut off."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Item Locked"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Reactivate Lock"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Change Lock"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Share Lock"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "pasvorto entry was blank. Try again."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Master Lock"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Enable Shutdown"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Master Code is not Valid!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Plaĉi tajpi a Valid Master Code!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Preferoj &  Mia vicos"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Set as default for ĉiom Movies"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "This will reset any previously saved values"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Show each image for"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Use Pan and Zoom effects"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 hour clock"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 hour clock"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Day/Month"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Month/Day"
+
+#: id:12390
+msgid "System uptime"
+msgstr "System Uptime"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Minutes"
+
+#: id:12392
+msgid "Hours"
+msgstr "Hours"
+
+#: id:12393
+msgid "Days"
+msgstr "Days"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Total Uptime"
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Mia Wealar"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "ekranosaver"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Fullekrano OSD"
+
+#: id:13000
+msgid "System"
+msgstr "System"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Immediate HD Spindown"
+
+#: id:13002
+msgid "Video only"
+msgstr "Filmoj Only"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- malfruiĝo"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Minimum vico Duration"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Shutdown"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr ""
+
+#: id:13009
+msgid "Quit"
+msgstr ""
+
+#: id:13010
+msgid "Hibernate"
+msgstr ""
+
+#: id:13011
+msgid "Suspend"
+msgstr ""
+
+#: id:13012
+msgid "Exit"
+msgstr ""
+
+#: id:13013
+msgid "Reboot"
+msgstr ""
+
+#: id:13014
+msgid "Minimize"
+msgstr ""
+
+#: id:13015
+msgid "Power button action"
+msgstr ""
+
+#: id:13016
+msgid "Power off System"
+msgstr ""
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr ""
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr ""
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr ""
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr ""
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr ""
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr ""
+
+#: id:13050
+msgid "Running low on battery"
+msgstr ""
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flicker Filter"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr ""
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr ""
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr ""
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr ""
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr ""
+
+#: id:13110
+msgid "Save resolution?"
+msgstr ""
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr ""
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr ""
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr ""
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr ""
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13116
+msgid "Upscaling method"
+msgstr ""
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr ""
+
+#: id:13118
+msgid "Lanczos"
+msgstr ""
+
+#: id:13119
+msgid "Sinc"
+msgstr ""
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr ""
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr ""
+
+#: id:13130
+msgid "Blank other displays"
+msgstr ""
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr ""
+
+#: id:13132
+msgid "Blank displays"
+msgstr ""
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr ""
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr ""
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr ""
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr ""
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr ""
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr ""
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr ""
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Subnet mpeti:"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Gateway:"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Initialize failed"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Never"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Immediately"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "After %i secs"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr ""
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr ""
+
+#: id:13200
+msgid "Profiles"
+msgstr "Provicos"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Forviŝi provico '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Last loaded provico:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Unknown"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Overwrite"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Alarm clock"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Alarm clock interval (in minutes)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Started, alarm in %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Alarm!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Canceled with %im%is left"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr ""
+
+#: id:13214
+msgid "%2.0fs"
+msgstr ""
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Search for Subtitles in RARs"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Foliumilo for subtitle..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Movi Item"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Movi Item Here"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Cancel Movi"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Hardware:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "CPU Speed:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Xbox is Connected, but no DNS is available."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Hard Disk"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Storage"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Default"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Network"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Filmoj"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Hardware"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Kernel Version:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "CPU Speed:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Filmoj Encoder:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "ekrano Resolution:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V Cable:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD Region:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Xbox is Connected"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Xbox is not Connected. Check Network Preferoj."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Target Temperature"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Fan Speed"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Auto Temperature Control"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Fan Speed Override"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "Skin Fonts"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Enable Flipping Bi-Directional Strings"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Enable RSS Feeds"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Hide Parent Folder Items"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Track Naming Template"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Do you wish to reboot your xbox"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "instead of just XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Zoom Effect"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Float Effect"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Black Bar Reduction"
+
+#: id:13313
+msgid "Restart"
+msgstr "Restart"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Crossfade"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Regenerate Thumbnails"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Recursive Thumbnails"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Vido Slideshow"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Recursive Slideshow"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Randomize"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Stereo"
+
+#: id:13321
+msgid "Left only"
+msgstr "Left Only"
+
+#: id:13322
+msgid "Right only"
+msgstr "Right Only"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Enable CD+G"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Background Transparency"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Foreground Transparency"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "A/V malfruiĝo"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s not found"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Eraro opening %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Unable to load %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Eraro: out of memory"
+
+#: id:13332
+msgid "Move up"
+msgstr "Movi Up"
+
+#: id:13333
+msgid "Move down"
+msgstr "Movi Down"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Editii Label"
+
+#: id:13335
+msgid "Make default"
+msgstr "Make Default"
+
+#: id:13336
+msgid "Remove button"
+msgstr "ReMovi Button"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Leave As Is"
+
+#: id:13341
+msgid "Green"
+msgstr "Verda"
+
+#: id:13342
+msgid "Orange"
+msgstr "Orangxa"
+
+#: id:13343
+msgid "Red"
+msgstr "Rugxo"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Cycle"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Switch LED off on Playback"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Filmoj info"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Queue Item"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Skani IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Query Info For ĉiom vicos"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Now Playing..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Albumo informaĵo"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Scan ĉiom to Datinbanko"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Stop Scanning"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Render Method"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Low Quality Pixel Shader"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Hardware Overlays"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "High Quality Pixel Shader"
+
+#: id:13358
+msgid "Play item"
+msgstr "Play Item"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Set Artist Thumb"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Generate Thumbs"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Enable Voice"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Enable Device"
+
+#: id:13376
+msgid "Volume"
+msgstr "Volume"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Default Vido Mode"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Default Brightness"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Default Contrast"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Default Gamma"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Resume Filmoj"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Voice Mpeti - Port 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Voice Mpeti - Port 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Voice Mpeti - Port 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Voice Mpeti - Port 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Use Time Based Seeking"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Track Naming Template Right"
+
+#: id:13388
+msgid "Preset"
+msgstr "Presets"
+
+#: id:13389
+msgid ""
+"There are no presets available\n"
+"for this visualization"
+msgstr ""
+"Lare are no presets available\n"
+"for this visualisation"
+
+#: id:13390
+msgid ""
+"There are no settings available\n"
+"for this visualization"
+msgstr ""
+"Lare are no Preferoj available\n"
+"for this visualisation"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Eject/Load"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Use Visualisation if playing audio"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Calculate amplekso"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Calculating folder amplekso"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Filmoj Preferoj"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Audio and Subtitle Preferoj"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Enable Subtitles"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Bookmarks"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Ignore \"La\" when sorting"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Crossfade albumotracks"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Foliumilo for %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Show track position"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Clear Default"
+
+#: id:13404
+msgid "Resume"
+msgstr "Resume"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Get Thumb"
+
+#: id:13406
+msgid "Picture information"
+msgstr ""
+
+#: id:13407
+msgid "%s presets"
+msgstr ""
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr ""
+
+#: id:13409
+msgid "Top 250"
+msgstr ""
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr ""
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr ""
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr ""
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr ""
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr ""
+
+#: id:13416
+msgid "Auto detect"
+msgstr ""
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr ""
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr ""
+
+#: id:13419
+msgid "Software"
+msgstr ""
+
+#: id:13420
+msgid "Remove safely"
+msgstr ""
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr ""
+
+#: id:13423
+msgid "Remember for this path"
+msgstr ""
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr ""
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr ""
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr ""
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr ""
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr ""
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr ""
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr ""
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr ""
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr ""
+
+#: id:13501
+msgid "Audio clock"
+msgstr ""
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr ""
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr ""
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr ""
+
+#: id:13505
+msgid "Resample quality"
+msgstr ""
+
+#: id:13506
+msgid "Low(fast)"
+msgstr ""
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr ""
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr ""
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr ""
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr ""
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr ""
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr ""
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr ""
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr ""
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr ""
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr ""
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr ""
+
+#: id:13612
+msgid "Universal Remote"
+msgstr ""
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr ""
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr ""
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr ""
+
+#: id:14000
+msgid "Stack"
+msgstr "Stack"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Unstack"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Downloading playlist vico..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Downloading streams list..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Parsing streams list..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Downloading streams list failed"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Downloading playlist vico failed"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Games Directory"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Autoswitch to Thumbs based on"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Enable Autoswitching to Thumbs Vido"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Use Large Icons"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Switch Based on"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Percentage"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "No vicos and at least one Thumb"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "At least one vico and Thumb"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Percentage of Thumbs"
+
+#: id:14018
+msgid "View options"
+msgstr "Vido Options"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Change Area Code 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Change Area Code 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Change Area Code 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Library"
+
+#: id:14023
+msgid "No TV"
+msgstr "No TV"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "tajpi la nearest large town or US ZIP code"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Filmoj/Audio/DVD Cache - Harddisk"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Filmoj Cache - DVDRom"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Local Network"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Audio Cache - DVDRom"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Local Network"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD Cache - DVDRom"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Local Network"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Servers"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Network Preferoj changed"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC requires to restart to change your"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "network setup.  Would you like to restart now?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Post Processing"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Shutdown while playing"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i mins"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i secs"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Time Format"
+
+#: id:14052
+msgid "Date format"
+msgstr "Dati Format"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI Filters"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Use Background Scanning"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Stop Scan"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Not possible while scanning for media info"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Film Grain Effect"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Look for custom thumbnails on remote shares"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Unknown type Cache - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Auto"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "tajpi uzulonomo for"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Dati & Time"
+
+#: id:14064
+msgid "Set date"
+msgstr "Set Dati"
+
+#: id:14065
+msgid "Set time"
+msgstr "Set Time"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "tajpi la Time in 24 hour HH:MM format"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "tajpi la Dati in DD/MM/YYYY format"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "tajpi la IP address"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Apply lase Preferoj now?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Apply Changes Now"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "ĉiomow vico Renaming and Deletion"
+
+#: id:14074
+msgid "Set timezone"
+msgstr ""
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr ""
+
+#: id:14076
+msgid "Add to favourites"
+msgstr ""
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr ""
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr ""
+
+#: id:14079
+msgid "Timezone country"
+msgstr ""
+
+#: id:14080
+msgid "Timezone"
+msgstr ""
+
+#: id:14081
+msgid "File lists"
+msgstr ""
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr ""
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr ""
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr ""
+
+#: id:14086
+msgid "Playback"
+msgstr ""
+
+#: id:14087
+msgid "DVDs"
+msgstr ""
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr ""
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr ""
+
+#: id:14090
+msgid "International"
+msgstr ""
+
+#: id:14091
+msgid "Character set"
+msgstr ""
+
+#: id:14092
+msgid "Debugging"
+msgstr ""
+
+#: id:14093
+msgid "Security"
+msgstr ""
+
+#: id:14094
+msgid "Input devices"
+msgstr ""
+
+#: id:14095
+msgid "Power saving"
+msgstr ""
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "ReMovi"
+
+#: id:15016
+msgid "Games"
+msgstr "Games"
+
+#: id:15019
+msgid "Add"
+msgstr "Add"
+
+#: id:15052
+msgid "Password"
+msgstr "pasvorto"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Library"
+
+#: id:15101
+msgid "Database"
+msgstr "Datinbanko"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* ĉiom Albumos"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* ĉiom Artists"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* ĉiom kantoj"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* ĉiom Gxenroj"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Buffering..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Navigation Sounds"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Skin Default"
+
+#: id:15111
+msgid "- Theme"
+msgstr "Skin Lame"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Default Lame"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "LastFM"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Submit kantoj to LastFM"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "LastFM Uzulonomo"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "LastFM pasvorto"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Unable to handshake: sleeping..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Plaĉi Updati XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Submission failed: bad authorization."
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Connected"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Not Connected"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Submit Interval %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Cached %i kantoj"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Submitting..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Submitting in %i secs"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Play Using..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Use Smoolad A/V Syncronization"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Hide vico nomoj in Thumbs Vido"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr ""
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr ""
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr ""
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr ""
+
+#: id:15220
+msgid "Libre.fm"
+msgstr ""
+
+#: id:15221
+msgid "Song submission"
+msgstr ""
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Submit Last.fm Radio to LastFM"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Connecting to Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Elektiing station..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Search similar artists..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Search similar tags..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Via logxas (%nomo%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Overĉiom top tags"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Top artists for tag %nomo%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Top albumos for tag %nomo%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Top tracks for tag %nomo%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "aŭskulti to tag %nomo% last.fm radio"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Similar artists as %nomo%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Top %nomo% albumos"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Top %nomo% tracks"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Top %nomo% tags"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Pligranda fans of %nomo%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "aŭskulti to %nomo% fans last.fm radio"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "aŭskulti to %nomo% similar artists last.fm radio"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Top artists for uzulo %nomo%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Top albumos for uzulo %nomo%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Top tracks for uzulo %nomo%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Amikoj of uzulo %nomo%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Najboroj of uzulo %nomo%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Weekly artist chart for %nomo%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Weekly albumo chart for %nomo%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Weekly track chart for %nomo%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "aŭskulti to %nomo% naboroja last.fm radio"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "aŭskulti to %nomo% personal last.fm radio"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "aŭskulti to %nomo% amas kanto last.fm radio"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Retrieving list from last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Can't retrieve list from last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "tajpi la artisto nomo to find related ones"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "tajpi a tag nomo to find similar ones"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Kanto lastatempe aŭskultas by %nomo%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr ""
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr ""
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr ""
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr ""
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr ""
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr ""
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr ""
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr ""
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr ""
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr ""
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr ""
+
+#: id:15296
+msgid "Un-ban"
+msgstr ""
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr ""
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr ""
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Path not found or invalid"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Could not connect to network server"
+
+#: id:15302
+msgid "No servers found"
+msgstr "No servers found"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Workgroup not found"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Opening multi-path bookmark"
+
+#: id:15311
+msgid "Path:"
+msgstr "Path:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Generalo"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "CDDB lookup"
+
+#: id:16003
+msgid "Player"
+msgstr "Player"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Play media from KD"
+
+#: id:16008
+msgid "Enter new title"
+msgstr ""
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Tajpi la Filmo Nomo"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Tajpi la Provico Nomo"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Tajpi la Albumo Nomo"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Tajpi la Playlist Nomo"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Tajpi new viconomo"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Tajpi folder nomo"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Tajpi directory"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Tajpi Search String"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "None"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Auto Elekti"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "DeInterlace"
+
+#: id:16021
+msgid "Bob"
+msgstr "Sync Odd"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Sync Even"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Canceling..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "tajpi la Artist Nomo"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Playlist playback aborted"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Too many consecutive failed items"
+
+#: id:16028
+msgid "Enter value"
+msgstr ""
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr ""
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Festo Mode mode aborted."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Ne matching kantoj in la datinbanko."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Could not initialise datinbanko."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Could not open datinbanko."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Could not get kantoj from datinbanko."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr ""
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "ĉiom Filmoj"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "UnWatched"
+
+#: id:16102
+msgid "Watched"
+msgstr "Watched"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Mark as vidas"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Mark as malvidas"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Editi Nomo"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr ""
+
+#: id:16201
+msgid "Copy failed"
+msgstr ""
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr ""
+
+#: id:16203
+msgid "Move failed"
+msgstr ""
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr ""
+
+#: id:16205
+msgid "Delete failed"
+msgstr ""
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr ""
+
+#: id:16300
+msgid "Video scaling method"
+msgstr ""
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr ""
+
+#: id:16302
+msgid "Bilinear"
+msgstr ""
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr ""
+
+#: id:16304
+msgid "Lanczos2"
+msgstr ""
+
+#: id:16305
+msgid "Lanczos3"
+msgstr ""
+
+#: id:16306
+msgid "Sinc8"
+msgstr ""
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr ""
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr ""
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr ""
+
+#: id:16310
+msgid "Temporal"
+msgstr ""
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr ""
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr ""
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr ""
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr ""
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr ""
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr ""
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr ""
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr ""
+
+#: id:16319
+msgid "DXVA"
+msgstr ""
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr ""
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr ""
+
+#: id:19000
+msgid "Switch to channel"
+msgstr ""
+
+#: id:20000
+msgid "Saved music folder"
+msgstr ""
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr ""
+
+#: id:20002
+msgid "External DVD player"
+msgstr ""
+
+#: id:20003
+msgid "Trainers folder"
+msgstr ""
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr ""
+
+#: id:20006
+msgid "Playlists folder"
+msgstr ""
+
+#: id:20007
+msgid "Recordings"
+msgstr ""
+
+#: id:20008
+msgid "Screenshots"
+msgstr ""
+
+#: id:20009
+msgid "Use XBMC"
+msgstr ""
+
+#: id:20011
+msgid "Music playlists"
+msgstr ""
+
+#: id:20012
+msgid "Video playlists"
+msgstr ""
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr ""
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr ""
+
+#: id:20015
+msgid "Remote thumb"
+msgstr ""
+
+#: id:20016
+msgid "Current thumb"
+msgstr ""
+
+#: id:20017
+msgid "Local thumb"
+msgstr ""
+
+#: id:20018
+msgid "No thumb"
+msgstr ""
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr ""
+
+#: id:20023
+msgid "Conflict"
+msgstr ""
+
+#: id:20024
+msgid "Scan new"
+msgstr ""
+
+#: id:20025
+msgid "Scan all"
+msgstr ""
+
+#: id:20026
+msgid "Region"
+msgstr ""
+
+#: id:20037
+msgid "Summary"
+msgstr ""
+
+#: id:20038
+msgid "Lock music window"
+msgstr ""
+
+#: id:20039
+msgid "Lock videos window"
+msgstr ""
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr ""
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr ""
+
+#: id:20042
+msgid "Lock file manager"
+msgstr ""
+
+#: id:20043
+msgid "Lock settings"
+msgstr ""
+
+#: id:20044
+msgid "Start fresh"
+msgstr ""
+
+#: id:20045
+msgid "Enter master mode"
+msgstr ""
+
+#: id:20046
+msgid "Leave master mode"
+msgstr ""
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr ""
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr ""
+
+#: id:20049
+msgid "Best available"
+msgstr ""
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr ""
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr ""
+
+#: id:20052
+msgid "Caution"
+msgstr ""
+
+#: id:20053
+msgid "Left master mode"
+msgstr ""
+
+#: id:20054
+msgid "Entered master mode"
+msgstr ""
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr ""
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr ""
+
+#: id:20058
+msgid "Add profile..."
+msgstr ""
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr ""
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr ""
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr ""
+
+#: id:20062
+msgid "Shares with default"
+msgstr ""
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr ""
+
+#: id:20064
+msgid "Copy default"
+msgstr ""
+
+#: id:20065
+msgid "Profile picture"
+msgstr ""
+
+#: id:20066
+msgid "Lock preferences"
+msgstr ""
+
+#: id:20067
+msgid "Edit profile"
+msgstr ""
+
+#: id:20068
+msgid "Profile lock"
+msgstr ""
+
+#: id:20069
+msgid "Could not create folder"
+msgstr ""
+
+#: id:20070
+msgid "Profile directory"
+msgstr ""
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr ""
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr ""
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr ""
+
+#: id:20074
+msgid "MPAA rating"
+msgstr ""
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr ""
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr ""
+
+#: id:20077
+msgid "Skin settings"
+msgstr ""
+
+#: id:20078
+msgid "- no link set -"
+msgstr ""
+
+#: id:20079
+msgid "Enable animations"
+msgstr ""
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr ""
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr ""
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr ""
+
+#: id:20083
+msgid "Show music info"
+msgstr ""
+
+#: id:20084
+msgid "Show weather info"
+msgstr ""
+
+#: id:20085
+msgid "Show system info"
+msgstr ""
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr ""
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr ""
+
+#: id:20088
+msgid "Weather info"
+msgstr ""
+
+#: id:20089
+msgid "Drive space free"
+msgstr ""
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr ""
+
+#: id:20091
+msgid "Lock code"
+msgstr ""
+
+#: id:20092
+msgid "Load profile"
+msgstr ""
+
+#: id:20093
+msgid "Profile name"
+msgstr ""
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr ""
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr ""
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr ""
+
+#: id:20097
+msgid "Fetching album info"
+msgstr ""
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr ""
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr ""
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr ""
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr ""
+
+#: id:20102
+msgid "or copy from default?"
+msgstr ""
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr ""
+
+#: id:20104
+msgid "Old settings found."
+msgstr ""
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr ""
+
+#: id:20106
+msgid "Old media sources found."
+msgstr ""
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr ""
+
+#: id:20108
+msgid "Root"
+msgstr ""
+
+#: id:20109
+msgid "- Zoom"
+msgstr ""
+
+#: id:20110
+msgid "UPnP settings"
+msgstr ""
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr ""
+
+#: id:20112
+msgid "Last login: %s"
+msgstr ""
+
+#: id:20113
+msgid "Never logged on"
+msgstr ""
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr ""
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr ""
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr ""
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr ""
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr ""
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr ""
+
+#: id:20120
+msgid "Loading program information"
+msgstr ""
+
+#: id:20121
+msgid "Party on!"
+msgstr ""
+
+#: id:20122
+msgid "True"
+msgstr ""
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr ""
+
+#: id:20124
+msgid "Filling glasses"
+msgstr ""
+
+#: id:20125
+msgid "Logged on as"
+msgstr ""
+
+#: id:20126
+msgid "Log off"
+msgstr ""
+
+#: id:20128
+msgid "Go to root"
+msgstr ""
+
+#: id:20129
+msgid "Weave"
+msgstr ""
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr ""
+
+#: id:20131
+msgid "Blend"
+msgstr ""
+
+#: id:20132
+msgid "Restart video"
+msgstr ""
+
+#: id:20133
+msgid "Edit network location"
+msgstr ""
+
+#: id:20134
+msgid "Remove network location"
+msgstr ""
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr ""
+
+#: id:20136
+msgid "Memory unit"
+msgstr ""
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr ""
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr ""
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr ""
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr ""
+
+#: id:20141
+msgid "Set"
+msgstr ""
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr ""
+
+#: id:20143
+msgid "Enter password for"
+msgstr ""
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr ""
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr ""
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr ""
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr ""
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr ""
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr ""
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr ""
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr ""
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr ""
+
+#: id:20153
+msgid "Browse..."
+msgstr ""
+
+#: id:20154
+msgid "Summary information"
+msgstr ""
+
+#: id:20155
+msgid "Storage information"
+msgstr ""
+
+#: id:20156
+msgid "Hard disk information"
+msgstr ""
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr ""
+
+#: id:20158
+msgid "Network information"
+msgstr ""
+
+#: id:20159
+msgid "Video information"
+msgstr ""
+
+#: id:20160
+msgid "Hardware information"
+msgstr ""
+
+#: id:20161
+msgid "Total"
+msgstr ""
+
+#: id:20162
+msgid "Used"
+msgstr ""
+
+#: id:20163
+msgid "of"
+msgstr ""
+
+#: id:20164
+msgid "Locking not supported"
+msgstr ""
+
+#: id:20165
+msgid "Not locked"
+msgstr ""
+
+#: id:20166
+msgid "Locked"
+msgstr ""
+
+#: id:20167
+msgid "Frozen"
+msgstr ""
+
+#: id:20168
+msgid "Requires reset"
+msgstr ""
+
+#: id:20169
+msgid "Week"
+msgstr ""
+
+#: id:20170
+msgid "Line"
+msgstr ""
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr ""
+
+#: id:20172
+msgid "XBMSP server"
+msgstr ""
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr ""
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr ""
+
+#: id:20175
+msgid "UPnP server"
+msgstr ""
+
+#: id:20176
+msgid "Show video info"
+msgstr ""
+
+#: id:20177
+msgid "Done"
+msgstr ""
+
+#: id:20178
+msgid "Shift"
+msgstr ""
+
+#: id:20179
+msgid "Caps Lock"
+msgstr ""
+
+#: id:20180
+msgid "Symbols"
+msgstr ""
+
+#: id:20181
+msgid "Backspace"
+msgstr ""
+
+#: id:20182
+msgid "Space"
+msgstr ""
+
+#: id:20183
+msgid "Reload skin"
+msgstr ""
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr ""
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr ""
+
+#: id:20186
+msgid "Please wait"
+msgstr ""
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr ""
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr ""
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr ""
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr ""
+
+#: id:20193
+msgid "Default service for album information"
+msgstr ""
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr ""
+
+#: id:20195
+msgid "Change scraper"
+msgstr ""
+
+#: id:20196
+msgid "Export music library"
+msgstr ""
+
+#: id:20197
+msgid "Import music library"
+msgstr ""
+
+#: id:20198
+msgid "No artist found!"
+msgstr ""
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr ""
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr ""
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr ""
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr ""
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr ""
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr ""
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr ""
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr ""
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr ""
+
+#: id:20258
+msgid "MythTV client"
+msgstr ""
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr ""
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr ""
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr ""
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr ""
+
+#: id:20304
+msgid "RSS Feed"
+msgstr ""
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr ""
+
+#: id:20308
+msgid "DHCP server:"
+msgstr ""
+
+#: id:20309
+msgid "Make new folder"
+msgstr ""
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr ""
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr ""
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr ""
+
+#: id:20314
+msgid "Videos - Library"
+msgstr ""
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr ""
+
+#: id:20324
+msgid "Play part..."
+msgstr ""
+
+#: id:20325
+msgid "Calibration reset"
+msgstr ""
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr ""
+
+#: id:20327
+msgid "to it's default values."
+msgstr ""
+
+#: id:20328
+msgid "Browse for destination"
+msgstr ""
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr ""
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr ""
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr ""
+
+#: id:20333
+msgid "Set content"
+msgstr ""
+
+#: id:20334
+msgid "Folder"
+msgstr ""
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr ""
+
+#: id:20336
+msgid "Unlock sources"
+msgstr ""
+
+#: id:20337
+msgid "Actor"
+msgstr ""
+
+#: id:20338
+msgid "Movie"
+msgstr ""
+
+#: id:20339
+msgid "Director"
+msgstr ""
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr ""
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr ""
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr ""
+
+#: id:20343
+msgid "TV shows"
+msgstr ""
+
+#: id:20344
+msgid "This directory contains"
+msgstr ""
+
+#: id:20345
+msgid "Run automated scan"
+msgstr ""
+
+#: id:20346
+msgid "Scan recursively"
+msgstr ""
+
+#: id:20347
+msgid "as"
+msgstr ""
+
+#: id:20348
+msgid "Directors"
+msgstr ""
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr ""
+
+#: id:20350
+msgid "votes"
+msgstr ""
+
+#: id:20351
+msgid "TV show information"
+msgstr ""
+
+#: id:20352
+msgid "Episode information"
+msgstr ""
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr ""
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr ""
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr ""
+
+#: id:20356
+msgid "Select TV show:"
+msgstr ""
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr ""
+
+#: id:20358
+msgid "Season %i"
+msgstr ""
+
+#: id:20359
+msgid "Episode"
+msgstr ""
+
+#: id:20360
+msgid "Episodes"
+msgstr ""
+
+#: id:20361
+msgid "Loading episode details"
+msgstr ""
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr ""
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr ""
+
+#: id:20364
+msgid "TV show"
+msgstr ""
+
+#: id:20365
+msgid "Episode plot"
+msgstr ""
+
+#: id:20366
+msgid "* All seasons"
+msgstr ""
+
+#: id:20367
+msgid "Hide watched"
+msgstr ""
+
+#: id:20368
+msgid "Prod code"
+msgstr ""
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr ""
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr ""
+
+#: id:20371
+msgid "Set season thumb"
+msgstr ""
+
+#: id:20372
+msgid "Season image"
+msgstr ""
+
+#: id:20373
+msgid "Season"
+msgstr ""
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr ""
+
+#: id:20375
+msgid "Unassign content"
+msgstr ""
+
+#: id:20376
+msgid "Original title"
+msgstr ""
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr ""
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr ""
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr ""
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr ""
+
+#: id:20381
+msgid "Specials"
+msgstr ""
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr ""
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr ""
+
+#: id:20384
+msgid "Link to TV show"
+msgstr ""
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr ""
+
+#: id:20386
+msgid "Recently added movies"
+msgstr ""
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr ""
+
+#: id:20388
+msgid "Studios"
+msgstr ""
+
+#: id:20389
+msgid "Music videos"
+msgstr ""
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr ""
+
+#: id:20391
+msgid "Music video"
+msgstr ""
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr ""
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr ""
+
+#: id:20394
+msgid "Loading music video information"
+msgstr ""
+
+#: id:20395
+msgid "Mixed"
+msgstr ""
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr ""
+
+#: id:20397
+msgid "Go to album"
+msgstr ""
+
+#: id:20398
+msgid "Play song"
+msgstr ""
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr ""
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr ""
+
+#: id:20401
+msgid "Play music video"
+msgstr ""
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr ""
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr ""
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr ""
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr ""
+
+#: id:20407
+msgid "Scraper settings"
+msgstr ""
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr ""
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr ""
+
+#: id:20410
+msgid "Trailer"
+msgstr ""
+
+#: id:20411
+msgid "Flatten"
+msgstr ""
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr ""
+
+#: id:20413
+msgid "Get fanart"
+msgstr ""
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr ""
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr ""
+
+#: id:20416
+msgid "First aired"
+msgstr ""
+
+#: id:20417
+msgid "Writer"
+msgstr ""
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr ""
+
+#: id:20421
+msgid "If only one season"
+msgstr ""
+
+#: id:20422
+msgid "Always"
+msgstr ""
+
+#: id:20423
+msgid "Has trailer"
+msgstr ""
+
+#: id:20424
+msgid "False"
+msgstr ""
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr ""
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr ""
+
+#: id:20427
+msgid "files per entry?"
+msgstr ""
+
+#: id:20428
+msgid "Single file"
+msgstr ""
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr ""
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr ""
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr ""
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr ""
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr ""
+
+#: id:20434
+msgid "Sets"
+msgstr ""
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr ""
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr ""
+
+#: id:20437
+msgid "Choose fanart"
+msgstr ""
+
+#: id:20438
+msgid "Local fanart"
+msgstr ""
+
+#: id:20439
+msgid "No fanart"
+msgstr ""
+
+#: id:20440
+msgid "Current fanart"
+msgstr ""
+
+#: id:20441
+msgid "Remote fanart"
+msgstr ""
+
+#: id:20442
+msgid "Change content"
+msgstr ""
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr ""
+
+#: id:20444
+msgid "items within this path?"
+msgstr ""
+
+#: id:20445
+msgid "Fanart"
+msgstr ""
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr ""
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr ""
+
+#: id:20448
+msgid "Could not download information"
+msgstr ""
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr ""
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr ""
+
+#: id:20451
+msgid "Countries"
+msgstr ""
+
+#: id:20452
+msgid "episode"
+msgstr ""
+
+#: id:20453
+msgid "episodes"
+msgstr ""
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr ""
+
+#: id:21331
+msgid "TuxBox client"
+msgstr ""
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr ""
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr ""
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr ""
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr ""
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr ""
+
+#: id:21337
+msgid "TuxBox device"
+msgstr ""
+
+#: id:21359
+msgid "Add media share..."
+msgstr ""
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr ""
+
+#: id:21364
+msgid "Edit media share"
+msgstr ""
+
+#: id:21365
+msgid "Remove media share"
+msgstr ""
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr ""
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr ""
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr ""
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr ""
+
+#: id:21371
+msgid "Thumbnail"
+msgstr ""
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr ""
+
+#: id:21373
+msgid "Video output"
+msgstr ""
+
+#: id:21374
+msgid "Video aspect"
+msgstr ""
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr ""
+
+#: id:21376
+msgid "Letterbox"
+msgstr ""
+
+#: id:21377
+msgid "Widescreen"
+msgstr ""
+
+#: id:21378
+msgid "Enable 480p"
+msgstr ""
+
+#: id:21379
+msgid "Enable 720p"
+msgstr ""
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr ""
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr ""
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr ""
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr ""
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr ""
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr ""
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr ""
+
+#: id:21387
+msgid "Fast"
+msgstr ""
+
+#: id:21388
+msgid "Quiet"
+msgstr ""
+
+#: id:21389
+msgid "Enable custom background"
+msgstr ""
+
+#: id:21390
+msgid "Power management level"
+msgstr ""
+
+#: id:21391
+msgid "High power"
+msgstr ""
+
+#: id:21392
+msgid "Low power"
+msgstr ""
+
+#: id:21393
+msgid "High standby"
+msgstr ""
+
+#: id:21394
+msgid "Low standby"
+msgstr ""
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr ""
+
+#: id:21396
+msgid "Chapter"
+msgstr ""
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr ""
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr ""
+
+#: id:21399
+msgid "Use tween animations"
+msgstr ""
+
+#: id:21400
+msgid "contains"
+msgstr ""
+
+#: id:21401
+msgid "does not contain"
+msgstr ""
+
+#: id:21402
+msgid "is"
+msgstr ""
+
+#: id:21403
+msgid "is not"
+msgstr ""
+
+#: id:21404
+msgid "starts with"
+msgstr ""
+
+#: id:21405
+msgid "ends with"
+msgstr ""
+
+#: id:21406
+msgid "greater than"
+msgstr ""
+
+#: id:21407
+msgid "less than"
+msgstr ""
+
+#: id:21408
+msgid "after"
+msgstr ""
+
+#: id:21409
+msgid "before"
+msgstr ""
+
+#: id:21410
+msgid "in the last"
+msgstr ""
+
+#: id:21411
+msgid "not in the last"
+msgstr ""
+
+#: id:21412
+msgid "Scrapers"
+msgstr ""
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr ""
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr ""
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr ""
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr ""
+
+#: id:21417
+msgid "- Settings"
+msgstr ""
+
+#: id:21418
+msgid "Multilingual"
+msgstr ""
+
+#: id:21419
+msgid "No scrapers present"
+msgstr ""
+
+#: id:21420
+msgid "Value to match"
+msgstr ""
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr ""
+
+#: id:21422
+msgid "Match items where"
+msgstr ""
+
+#: id:21423
+msgid "New rule..."
+msgstr ""
+
+#: id:21424
+msgid "Items must match"
+msgstr ""
+
+#: id:21425
+msgid "all of the rules"
+msgstr ""
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr ""
+
+#: id:21427
+msgid "Limit to"
+msgstr ""
+
+#: id:21428
+msgid "No limit"
+msgstr ""
+
+#: id:21429
+msgid "Order by"
+msgstr ""
+
+#: id:21430
+msgid "ascending"
+msgstr ""
+
+#: id:21431
+msgid "descending"
+msgstr ""
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr ""
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr ""
+
+#: id:21434
+msgid "Find items where"
+msgstr ""
+
+#: id:21435
+msgid "Edit"
+msgstr ""
+
+#: id:21436
+msgid "%i items"
+msgstr ""
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr ""
+
+#: id:21438
+msgid "%c Drive"
+msgstr ""
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr ""
+
+#: id:21440
+msgid "Home folder"
+msgstr ""
+
+#: id:21441
+msgid "Watched count"
+msgstr ""
+
+#: id:21442
+msgid "Episode title"
+msgstr ""
+
+#: id:21443
+msgid "Video resolution"
+msgstr ""
+
+#: id:21444
+msgid "Audio channels"
+msgstr ""
+
+#: id:21445
+msgid "Video codec"
+msgstr ""
+
+#: id:21446
+msgid "Audio codec"
+msgstr ""
+
+#: id:21447
+msgid "Audio language"
+msgstr ""
+
+#: id:21448
+msgid "Subtitle language"
+msgstr ""
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr ""
+
+#: id:21450
+msgid "- Edit"
+msgstr ""
+
+#: id:21451
+msgid "Internet connection required."
+msgstr ""
+
+#: id:21452
+msgid "Get More..."
+msgstr ""
+
+#: id:21453
+msgid "Root filesystem"
+msgstr ""
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr ""
+
+#: id:21801
+msgid "File path"
+msgstr ""
+
+#: id:21802
+msgid "File size"
+msgstr ""
+
+#: id:21803
+msgid "File date/time"
+msgstr ""
+
+#: id:21804
+msgid "Slide index"
+msgstr ""
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr ""
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr ""
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr ""
+
+#: id:21808
+msgid "JPEG process"
+msgstr ""
+
+#: id:21820
+msgid "Date/Time"
+msgstr ""
+
+#: id:21821
+msgid "Description"
+msgstr ""
+
+#: id:21822
+msgid "Camera make"
+msgstr ""
+
+#: id:21823
+msgid "Camera model"
+msgstr ""
+
+#: id:21824
+msgid "EXIF comment"
+msgstr ""
+
+#: id:21825
+msgid "Firmware"
+msgstr ""
+
+#: id:21826
+msgid "Aperture"
+msgstr ""
+
+#: id:21827
+msgid "Focal length"
+msgstr ""
+
+#: id:21828
+msgid "Focus distance"
+msgstr ""
+
+#: id:21829
+msgid "Exposure"
+msgstr ""
+
+#: id:21830
+msgid "Exposure time"
+msgstr ""
+
+#: id:21831
+msgid "Exposure bias"
+msgstr ""
+
+#: id:21832
+msgid "Exposure mode"
+msgstr ""
+
+#: id:21833
+msgid "Flash used"
+msgstr ""
+
+#: id:21834
+msgid "White-balance"
+msgstr ""
+
+#: id:21835
+msgid "Light source"
+msgstr ""
+
+#: id:21836
+msgid "Metering mode"
+msgstr ""
+
+#: id:21837
+msgid "ISO"
+msgstr ""
+
+#: id:21838
+msgid "Digital zoom"
+msgstr ""
+
+#: id:21839
+msgid "CCD width"
+msgstr ""
+
+#: id:21840
+msgid "GPS latitude"
+msgstr ""
+
+#: id:21841
+msgid "GPS longitude"
+msgstr ""
+
+#: id:21842
+msgid "GPS altitude"
+msgstr ""
+
+#: id:21843
+msgid "Orientation"
+msgstr ""
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr ""
+
+#: id:21861
+msgid "Keywords"
+msgstr ""
+
+#: id:21862
+msgid "Caption"
+msgstr ""
+
+#: id:21863
+msgid "Author"
+msgstr ""
+
+#: id:21864
+msgid "Headline"
+msgstr ""
+
+#: id:21865
+msgid "Special instructions"
+msgstr ""
+
+#: id:21866
+msgid "Category"
+msgstr ""
+
+#: id:21867
+msgid "Byline"
+msgstr ""
+
+#: id:21868
+msgid "Byline title"
+msgstr ""
+
+#: id:21869
+msgid "Credit"
+msgstr ""
+
+#: id:21870
+msgid "Source"
+msgstr ""
+
+#: id:21871
+msgid "Copyright notice"
+msgstr ""
+
+#: id:21872
+msgid "Object name"
+msgstr ""
+
+#: id:21873
+msgid "City"
+msgstr ""
+
+#: id:21874
+msgid "State"
+msgstr ""
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr ""
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr ""
+
+#: id:21877
+msgid "Date created"
+msgstr ""
+
+#: id:21878
+msgid "Copyright flag"
+msgstr ""
+
+#: id:21879
+msgid "Country code"
+msgstr ""
+
+#: id:21880
+msgid "Reference service"
+msgstr ""
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr ""
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr ""
+
+#: id:21883
+msgid "Saved music"
+msgstr ""
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr ""
+
+#: id:21885
+msgid "Downloading album information"
+msgstr ""
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr ""
+
+#: id:21887
+msgid "Biography"
+msgstr ""
+
+#: id:21888
+msgid "Discography"
+msgstr ""
+
+#: id:21889
+msgid "Searching artist"
+msgstr ""
+
+#: id:21890
+msgid "Select artist"
+msgstr ""
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr ""
+
+#: id:21892
+msgid "Instruments"
+msgstr ""
+
+#: id:21893
+msgid "Born"
+msgstr ""
+
+#: id:21894
+msgid "Formed"
+msgstr ""
+
+#: id:21895
+msgid "Themes"
+msgstr ""
+
+#: id:21896
+msgid "Disbanded"
+msgstr ""
+
+#: id:21897
+msgid "Died"
+msgstr ""
+
+#: id:21898
+msgid "Years active"
+msgstr ""
+
+#: id:21899
+msgid "Label"
+msgstr ""
+
+#: id:21900
+msgid "Born/Formed"
+msgstr ""
+
+#: id:22000
+msgid "Update library on startup"
+msgstr ""
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr ""
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr ""
+
+#: id:22003
+msgid "%2.3fs"
+msgstr ""
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr ""
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr ""
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr ""
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr ""
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr ""
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr ""
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr ""
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr ""
+
+#: id:22012
+msgid "Total memory"
+msgstr ""
+
+#: id:22013
+msgid "Profile data"
+msgstr ""
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr ""
+
+#: id:22015
+msgid "All recordings"
+msgstr ""
+
+#: id:22016
+msgid "By title"
+msgstr ""
+
+#: id:22017
+msgid "By group"
+msgstr ""
+
+#: id:22018
+msgid "Live channels"
+msgstr ""
+
+#: id:22019
+msgid "Recordings by title"
+msgstr ""
+
+#: id:22020
+msgid "Guide"
+msgstr ""
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr ""
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr ""
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr ""
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr ""
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr ""
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr ""
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr ""
+
+#: id:22033
+msgid "- Charset"
+msgstr ""
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr ""
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr ""
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr ""
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr ""
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr ""
+
+#: id:22039
+msgid "Enter song number"
+msgstr ""
+
+#: id:22040
+msgid "white/green"
+msgstr ""
+
+#: id:22041
+msgid "white/red"
+msgstr ""
+
+#: id:22042
+msgid "white/blue"
+msgstr ""
+
+#: id:22043
+msgid "black/white"
+msgstr ""
+
+#: id:22079
+msgid "Default select action"
+msgstr ""
+
+#: id:22080
+msgid "Choose"
+msgstr ""
+
+#: id:22081
+msgid "Show Information"
+msgstr ""
+
+#: id:22082
+msgid "More..."
+msgstr ""
+
+#: id:22083
+msgid "Play all"
+msgstr ""
+
+#: id:23049
+msgid "Teletext not available"
+msgstr ""
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr ""
+
+#: id:23051
+msgid "Part %i"
+msgstr ""
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr ""
+
+#: id:23053
+msgid "Stopping"
+msgstr ""
+
+#: id:23054
+msgid "Running"
+msgstr ""
+
+#: id:23100
+msgid "External Player Active"
+msgstr ""
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr ""
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr ""
+
+#: id:24000
+msgid "Add-on"
+msgstr ""
+
+#: id:24001
+msgid "Add-ons"
+msgstr ""
+
+#: id:24002
+msgid "Add-on options"
+msgstr ""
+
+#: id:24003
+msgid "Add-on Information"
+msgstr ""
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr ""
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr ""
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr ""
+
+#: id:24009
+msgid "Script"
+msgstr ""
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr ""
+
+#: id:24011
+msgid "Add-on repository"
+msgstr ""
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr ""
+
+#: id:24013
+msgid "Lyrics"
+msgstr ""
+
+#: id:24014
+msgid "TV information"
+msgstr ""
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr ""
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr ""
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr ""
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr ""
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr ""
+
+#: id:24022
+msgid "Enable"
+msgstr ""
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr ""
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr ""
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr ""
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr ""
+
+#: id:24031
+msgid "Error loading settings"
+msgstr ""
+
+#: id:24032
+msgid "All Add-ons"
+msgstr ""
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr ""
+
+#: id:24034
+msgid "Check for updates"
+msgstr ""
+
+#: id:24035
+msgid "Force refresh"
+msgstr ""
+
+#: id:24036
+msgid "Change log"
+msgstr ""
+
+#: id:24037
+msgid "Uninstall"
+msgstr ""
+
+#: id:24038
+msgid "Install"
+msgstr ""
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr ""
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr ""
+
+#: id:24041
+msgid "Install from zip file"
+msgstr ""
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr ""
+
+#: id:24043
+msgid "Available Updates"
+msgstr ""
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr ""
+
+#: id:24051
+msgid "Version:"
+msgstr ""
+
+#: id:24052
+msgid "Disclaimer"
+msgstr ""
+
+#: id:24053
+msgid "License:"
+msgstr ""
+
+#: id:24054
+msgid "Changelog"
+msgstr ""
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr ""
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr ""
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr ""
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr ""
+
+#: id:24063
+msgid "Auto update"
+msgstr ""
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr ""
+
+#: id:24065
+msgid "Add-on updated"
+msgstr ""
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr ""
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr ""
+
+#: id:24068
+msgid "Update available"
+msgstr ""
+
+#: id:24069
+msgid "Update"
+msgstr ""
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr ""
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr ""
+
+#: id:24072
+msgid "Settings required"
+msgstr ""
+
+#: id:24073
+msgid "Could not connect"
+msgstr ""
+
+#: id:24074
+msgid "Needs to restart"
+msgstr ""
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr ""
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr ""
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr ""
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr ""
+
+#: id:24094
+msgid "(current)"
+msgstr ""
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr ""
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr ""
+
+#: id:24098
+msgid "Broken"
+msgstr ""
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr ""
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr ""
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr ""
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr ""
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr ""
+
+#: id:33001
+msgid "Trailer quality"
+msgstr ""
+
+#: id:33002
+msgid "Stream"
+msgstr ""
+
+#: id:33003
+msgid "Download"
+msgstr ""
+
+#: id:33004
+msgid "Download & play"
+msgstr ""
+
+#: id:33005
+msgid "Download & save"
+msgstr ""
+
+#: id:33006
+msgid "Today"
+msgstr ""
+
+#: id:33007
+msgid "Tomorrow"
+msgstr ""
+
+#: id:33008
+msgid "Saving"
+msgstr ""
+
+#: id:33009
+msgid "Copying"
+msgstr ""
+
+#: id:33010
+msgid "Set download directory"
+msgstr ""
+
+#: id:33011
+msgid "Search duration"
+msgstr ""
+
+#: id:33012
+msgid "Short"
+msgstr ""
+
+#: id:33013
+msgid "Long"
+msgstr ""
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr ""
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr ""
+
+#: id:33016
+msgid "Clips"
+msgstr ""
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr ""
+
+#: id:33018
+msgid "Tonight"
+msgstr ""
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr ""
+
+#: id:33020
+msgid "Condition"
+msgstr ""
+
+#: id:33021
+msgid "Precipitation"
+msgstr ""
+
+#: id:33022
+msgid "Precip"
+msgstr ""
+
+#: id:33023
+msgid "Humid"
+msgstr ""
+
+#: id:33024
+msgid "Feels"
+msgstr ""
+
+#: id:33025
+msgid "Observed"
+msgstr ""
+
+#: id:33026
+msgid "Departure from normal"
+msgstr ""
+
+#: id:33027
+msgid "Sunrise"
+msgstr ""
+
+#: id:33028
+msgid "Sunset"
+msgstr ""
+
+#: id:33029
+msgid "Details"
+msgstr ""
+
+#: id:33030
+msgid "Outlook"
+msgstr ""
+
+#: id:33031
+msgid "Coverflow"
+msgstr ""
+
+#: id:33032
+msgid "Translate text"
+msgstr ""
+
+#: id:33033
+msgid "Map list %s category"
+msgstr ""
+
+#: id:33034
+msgid "36 Hour"
+msgstr ""
+
+#: id:33035
+msgid "Maps"
+msgstr ""
+
+#: id:33036
+msgid "Hourly"
+msgstr ""
+
+#: id:33037
+msgid "Weekend"
+msgstr ""
+
+#: id:33038
+msgid "%s day"
+msgstr ""
+
+#: id:33049
+msgid "Alert"
+msgstr ""
+
+#: id:33050
+msgid "Alerts"
+msgstr ""
+
+#: id:33051
+msgid "Choose Your"
+msgstr ""
+
+#: id:33052
+msgid "Check"
+msgstr ""
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr ""
+
+#: id:33054
+msgid "Seasons"
+msgstr ""
+
+#: id:33055
+msgid "Use your"
+msgstr ""
+
+#: id:33056
+msgid "Watch your"
+msgstr ""
+
+#: id:33057
+msgid "Listen to"
+msgstr ""
+
+#: id:33058
+msgid "View your"
+msgstr ""
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr ""
+
+#: id:33060
+msgid "Power"
+msgstr ""
+
+#: id:33061
+msgid "Menu"
+msgstr ""
+
+#: id:33062
+msgid "Play the"
+msgstr ""
+
+#: id:33063
+msgid "Options"
+msgstr ""
+
+#: id:33065
+msgid "Editor"
+msgstr ""
+
+#: id:33066
+msgid "About your"
+msgstr ""
+
+#: id:33067
+msgid "Star rating"
+msgstr ""
+
+#: id:33068
+msgid "Background"
+msgstr ""
+
+#: id:33069
+msgid "Backgrounds"
+msgstr ""
+
+#: id:33070
+msgid "Custom background"
+msgstr ""
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr ""
+
+#: id:33072
+msgid "View Readme"
+msgstr ""
+
+#: id:33073
+msgid "View Changelog"
+msgstr ""
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr ""
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr ""
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr ""
+
+#: id:33077
+msgid "No data found!"
+msgstr ""
+
+#: id:33078
+msgid "Next page"
+msgstr ""
+
+#: id:33079
+msgid "Love"
+msgstr ""
+
+#: id:33080
+msgid "Hate"
+msgstr ""
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+
+#: id:33082
+msgid "Path to script"
+msgstr ""
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr ""
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr ""
+
+#: id:34001
+msgid "Vorbis"
+msgstr ""
+
+#: id:34002
+msgid "Wav"
+msgstr ""
+
+#: id:34003
+msgid "DXVA2"
+msgstr ""
+
+#: id:34004
+msgid "VAAPI"
+msgstr ""
+
+#: id:34005
+msgid "Flac"
+msgstr ""
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr ""
+
+#: id:34101
+msgid "2.0"
+msgstr ""
+
+#: id:34102
+msgid "2.1"
+msgstr ""
+
+#: id:34103
+msgid "3.0"
+msgstr ""
+
+#: id:34104
+msgid "3.1"
+msgstr ""
+
+#: id:34105
+msgid "4.0"
+msgstr ""
+
+#: id:34106
+msgid "4.1"
+msgstr ""
+
+#: id:34107
+msgid "5.0"
+msgstr ""
+
+#: id:34108
+msgid "5.1"
+msgstr ""
+
+#: id:34109
+msgid "7.0"
+msgstr ""
+
+#: id:34110
+msgid "7.1"
+msgstr ""
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid ""
+"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid ""
+"There are no settings available\n"
+"for this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid ""
+"Unsupported libCEC interface version. %d is greater than the version XBMC "
+"supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
