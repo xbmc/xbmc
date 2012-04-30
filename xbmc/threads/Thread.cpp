@@ -161,6 +161,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
+    e.write_minidump();
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
@@ -190,10 +191,12 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
+    e.write_minidump();
   }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
+    e.write_minidump();
   }
 #endif
   catch(...)
@@ -209,10 +212,12 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
+    e.write_minidump();
   }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
+    e.write_minidump();
   }
 #endif
   catch(...)

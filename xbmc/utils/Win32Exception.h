@@ -25,6 +25,7 @@
 #include <windows.h>
 #endif
 #include <exception>
+#include "utils/StdString.h"
 
 #ifdef _LINUX
 
@@ -49,17 +50,22 @@ public:
     typedef const void* Address; // OK on Win32 platform
 
     static void install_handler();
+    static void set_version(CStdString version) { mVersion = version; };
     virtual const char* what() const { return mWhat; };
     Address where() const { return mWhere; };
     unsigned code() const { return mCode; };
     virtual void writelog(const char *prefix) const;
+    bool write_minidump() const { return write_minidump(mExceptionPointers); };
+    static bool write_minidump(EXCEPTION_POINTERS* pEp);
 protected:
-    win32_exception(const EXCEPTION_RECORD& info);
+    win32_exception(EXCEPTION_POINTERS* info);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
 private:
     const char* mWhat;
     Address mWhere;
     unsigned mCode;
+    EXCEPTION_POINTERS *mExceptionPointers;
+    static CStdString mVersion;
 };
 
 class access_violation: public win32_exception
@@ -80,6 +86,6 @@ protected:
 private:
     access_type mAccessType;
     Address mBadAddress;
-    access_violation(const EXCEPTION_RECORD& info);
+    access_violation(EXCEPTION_POINTERS* info);
 };
 #endif

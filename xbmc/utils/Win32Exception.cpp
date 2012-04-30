@@ -22,6 +22,9 @@
 #include "Win32Exception.h"
 #ifndef _LINUX
 #include "eh.h"
+#include <dbghelp.h>
+#include "Util.h"
+#include "WIN32Util.h"
 #endif
 #include "log.h"
 
@@ -40,6 +43,13 @@ void win32_exception::writelog(const char *prefix)  const
 
 #else
 
+typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+                                        CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+                                        CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+                                        CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
+
+CStdString win32_exception::mVersion;
+
 void win32_exception::install_handler()
 {
     _set_se_translator(win32_exception::translate);
@@ -47,20 +57,20 @@ void win32_exception::install_handler()
 
 void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info)
 {
-    // Windows guarantees that *(info->ExceptionRecord) is valid
     switch (code) {
     case EXCEPTION_ACCESS_VIOLATION:
-        throw access_violation(*(info->ExceptionRecord));
+        throw access_violation(info);
         break;
     default:
-        throw win32_exception(*(info->ExceptionRecord));
+        throw win32_exception(info);
     }
 }
 
-win32_exception::win32_exception(const EXCEPTION_RECORD& info)
-: mWhat("Win32 exception"), mWhere(info.ExceptionAddress), mCode(info.ExceptionCode)
+win32_exception::win32_exception(EXCEPTION_POINTERS* info)
+: mWhat("Win32 exception"), mWhere(info->ExceptionRecord->ExceptionAddress), mCode(info->ExceptionRecord->ExceptionCode), mExceptionPointers(info)
 {
-    switch (info.ExceptionCode) {
+    // Windows guarantees that *(info->ExceptionRecord) is valid
+    switch (info->ExceptionRecord->ExceptionCode) {
     case EXCEPTION_ACCESS_VIOLATION:
         mWhat = "Access violation";
         break;
@@ -79,10 +89,77 @@ void win32_exception::writelog(const char *prefix)  const
     CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
 }
 
-access_violation::access_violation(const EXCEPTION_RECORD& info)
+bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
+{
+  // Create the dump file where the xbmc.exe resides
+  bool returncode = false;
+  CStdString dumpFileName;
+  SYSTEMTIME stLocalTime;
+  GetLocalTime(&stLocalTime);
+
+  dumpFileName.Format("xbmc crashlog %s %04d%02d%02d-%02d%02d%02d.dmp",
+                      mVersion.c_str(),
+                      stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay, 
+                      stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
+
+  dumpFileName.Format("%s\\%s", CWIN32Util::GetProfilePath().c_str(), CUtil::MakeLegalFileName(dumpFileName));
+
+  HANDLE hDumpFile = CreateFile(dumpFileName.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+
+  if (hDumpFile == INVALID_HANDLE_VALUE)
+  {
+    CLog::Log(LOGERROR, "CreateFile '%s' failed with error id %d", dumpFileName.c_str(), GetLastError());
+    goto cleanup;
+  }
+
+  // Load the DBGHELP DLL
+  HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
+  if (!hDbgHelpDll)
+  {
+    CLog::Log(LOGERROR, "LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
+  if (!pDump)
+  {
+    CLog::Log(LOGERROR, "Failed to locate MiniDumpWriteDump with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  // Initialize minidump structure
+  MINIDUMP_EXCEPTION_INFORMATION mdei;
+  mdei.ThreadId           = GetCurrentThreadId();
+  mdei.ExceptionPointers  = pEp;
+  mdei.ClientPointers     = FALSE;
+
+  // Call the minidump api with normal dumping
+  // We can get more detail information by using other minidump types but the dump file will be
+  // extremely large.
+  BOOL bMiniDumpSuccessful = pDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &mdei, 0, NULL); 
+  if( !bMiniDumpSuccessful )
+  {
+    CLog::Log(LOGERROR, "MiniDumpWriteDump failed with error id %d", GetLastError());
+    goto cleanup;
+  }
+
+  returncode = true;
+
+cleanup:
+
+  if (hDumpFile != INVALID_HANDLE_VALUE)
+    CloseHandle(hDumpFile);
+
+  if (hDbgHelpDll)
+    FreeLibrary(hDbgHelpDll);
+
+  return returncode;
+}
+
+access_violation::access_violation(EXCEPTION_POINTERS* info)
 : win32_exception(info), mAccessType(Invalid), mBadAddress(0)
 {
-    switch(info.ExceptionInformation[0])
+    switch(info->ExceptionRecord->ExceptionInformation[0])
     {
     case 0:
       mAccessType = Read;
@@ -94,7 +171,7 @@ access_violation::access_violation(const EXCEPTION_RECORD& info)
       mAccessType = DEP;
       break;
     }
-    mBadAddress = reinterpret_cast<win32_exception ::Address>(info.ExceptionInformation[1]);
+    mBadAddress = reinterpret_cast<win32_exception ::Address>(info->ExceptionRecord->ExceptionInformation[1]);
 }
 
 void access_violation::writelog(const char *prefix) const
