@@ -26,7 +26,7 @@
 #include "log.h"
 #include "utils/TimeUtils.h"
 
-CAsyncFileCopy::CAsyncFileCopy()
+CAsyncFileCopy::CAsyncFileCopy() : CThread("CAsyncFileCopy")
 {
   m_cancelled = false;
   m_succeeded = false;

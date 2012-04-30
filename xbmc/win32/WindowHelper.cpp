@@ -28,7 +28,7 @@ using namespace std;
 
 CWHelper g_windowHelper;
 
-CWHelper::CWHelper(void)
+CWHelper::CWHelper(void) : CThread("CWHelper")
 {
   m_hwnd = NULL;
   m_hProcess = NULL;

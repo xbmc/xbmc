@@ -33,6 +33,7 @@ SRCS=Application.cpp \
      XBApplicationEx.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
+     XbmcContext.cpp \
 
 LIB=xbmc.a
 

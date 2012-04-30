@@ -780,11 +780,11 @@ void XBPython::PulseGlobalEvent()
   m_globalEvent.Set();
 }
 
-void XBPython::WaitForEvent(CEvent& hEvent, unsigned int timeout)
+void XBPython::WaitForEvent(CEvent& hEvent)
 {
   // wait for either this event our our global event
   XbmcThreads::CEventGroup eventGroup(&hEvent, &m_globalEvent, NULL);
-  eventGroup.wait(timeout);
+  eventGroup.wait();
   m_globalEvent.Reset();
 }
 

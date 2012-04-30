@@ -30,6 +30,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/xbmc-dll-symbols/dll-symbols.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
+                   xbmc/commons/commons.a \
                    xbmc/cores/AudioRenderers/audiorenderers.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \
@@ -309,7 +310,6 @@ xcode_depends: \
 	lib/libXDAAP/libxdaap.a \
 	lib/SlingboxLib/SlingboxLib.a
 
-
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC+=lib/libapetag/.libs/libapetag.a
 
@@ -328,7 +328,8 @@ OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 LIBS += @PYTHON_LDFLAGS@
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
+
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else

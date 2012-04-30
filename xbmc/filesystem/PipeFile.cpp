@@ -82,7 +82,7 @@ unsigned int CPipeFile::Read(void* lpBuf, int64_t uiBufSize)
   if (!m_pipe)
     return -1;
   
-  return m_pipe->Read((char *)lpBuf,(int)uiBufSize,INFINITE);
+  return m_pipe->Read((char *)lpBuf,(int)uiBufSize);
 }
 
 int CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
@@ -90,7 +90,7 @@ int CPipeFile::Write(const void* lpBuf, int64_t uiBufSize)
   if (!m_pipe)
     return -1;
   
-  return (int)(m_pipe->Write((const char *)lpBuf,(int)uiBufSize,INFINITE)); // its not the size. its bool. either all was written or not.
+  return (int)(m_pipe->Write((const char *)lpBuf,(int)uiBufSize)); // its not the size. its bool. either all was written or not.
 }
 
 void CPipeFile::SetEof()

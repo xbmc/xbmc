@@ -325,7 +325,7 @@ CPictureBuffer::~CPictureBuffer()
 #pragma mark -
 #endif
 CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_bcm70015) :
-  CThread(),
+  CThread("CMPCOutputThread"),
   m_dll(dll),
   m_device(device),
   m_has_bcm70015(has_bcm70015),

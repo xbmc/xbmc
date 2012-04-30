@@ -71,7 +71,7 @@ public:
   CRarManager();
   ~CRarManager();
   bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath,
-                       const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE,
+                       const CStdString& strPathInRar, uint8_t bOptions = EXFILE_AUTODELETE,
                        const CStdString& strDir =RAR_DEFAULT_CACHE, const int64_t iSize=-1);
   bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath,
                       const CStdString& strPathInRar = "");

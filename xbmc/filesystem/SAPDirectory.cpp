@@ -272,7 +272,7 @@ namespace SDP
 using namespace SDP;
 
 
-CSAPSessions::CSAPSessions()
+CSAPSessions::CSAPSessions() : CThread("CSAPSessions")
 {
   m_socket = INVALID_SOCKET;
 }
@@ -486,7 +486,7 @@ namespace XFILE
 
     CSingleLock lock(g_sapsessions.m_section);
 
-    if(g_sapsessions.ThreadHandle() == NULL)
+    if(!g_sapsessions.IsRunning())
       g_sapsessions.Create();
 
     // check if we can find this session in our cache

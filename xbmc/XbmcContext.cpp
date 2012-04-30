@@ -1,8 +1,5 @@
-#ifndef __X_SYNC_UTILS_
-#define __X_SYNC_UTILS_
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,23 +19,39 @@
  *
  */
 
-#include "PlatformDefs.h"
-#include "XHandlePublic.h"
+#include "XbmcContext.h"
 
-#ifdef _LINUX
+#include "threads/Thread.h"
+#include "utils/log.h"
 
-#define STATUS_WAIT_0 ((DWORD   )0x00000000L)
-#define WAIT_FAILED   ((DWORD)0xFFFFFFFF)
-#define WAIT_OBJECT_0 ((STATUS_WAIT_0 ) + 0 )
-#define WAIT_TIMEOUT  258L
-#define INFINITE    0xFFFFFFFF
-#define STATUS_ABANDONED_WAIT_0 0x00000080
-#define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
-#define WAIT_ABANDONED_0       ((STATUS_ABANDONED_WAIT_0 ) + 0 )
+namespace XBMC
+{
 
-void GlobalMemoryStatusEx(LPMEMORYSTATUSEX lpBuffer);
+  class ContextOpaque
+  {
+  public:
+    XbmcCommons::ILogger* loggerImpl;
 
-#endif
+    ContextOpaque() : loggerImpl(NULL) {}
+  };
 
-#endif
+  Context::Context()
+  {
+    impl = new ContextOpaque;
+
+    // instantiate
+    impl->loggerImpl = new XbmcUtils::LogImplementation;
+
+    // set
+    CThread::SetLogger(impl->loggerImpl);
+  }
+
+  Context::~Context()
+  {
+    // cleanup
+    delete impl->loggerImpl;
+
+    delete impl;
+  }
+}
 

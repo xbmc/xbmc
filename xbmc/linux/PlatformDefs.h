@@ -182,8 +182,6 @@
 #define EXCEPTION_EXECUTE_HANDLER ...
 //NOTE: dont try to define __except because it breaks g++ (already uses it).
 
-typedef pthread_t ThreadIdentifier;
-
 struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
 

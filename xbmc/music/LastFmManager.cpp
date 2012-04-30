@@ -70,7 +70,7 @@ using namespace XFILE;
 
 CLastFmManager* CLastFmManager::m_pInstance=NULL;
 
-CLastFmManager::CLastFmManager()
+CLastFmManager::CLastFmManager() : CThread("CLastFmManager")
 {
   m_RadioTrackQueue = new CPlayList;
 }
@@ -534,7 +534,7 @@ void CLastFmManager::Update()
     if (iNrCachedTracks == 0)
     {
       //get more tracks
-      if (ThreadHandle() != NULL)
+      if (IsRunning())
       {
         m_hWorkerEvent.Set();
       }
@@ -633,7 +633,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   {
     m_RadioSession = "";
   }
-  if (m_ThreadHandle)
+  if (IsRunning())
   {
     m_bStop = true;
     m_hWorkerEvent.Set();
