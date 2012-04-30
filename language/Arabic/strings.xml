@@ -964,7 +964,7 @@
   <string id="13209">فاصل المنبه الزمني (بالدقائق)</string>
   <string id="13210">بدأ, المنبه في %im</string>
   <string id="13211">المنبه!</string>
-  <string id="13212">ألغي مع %im&is متبقيه</string>
+  <string id="13212">ألغي مع %im%is متبقيه</string>
   <string id="13213">%2.0fm</string>
   <string id="13214">%2.0fs</string>
   <string id="13249">بحث الترجمات في RARs</string>
