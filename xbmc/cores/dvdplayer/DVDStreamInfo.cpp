@@ -94,6 +94,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  level    != right.level
   ||  profile  != right.profile
   ||  ptsinvalid != right.ptsinvalid
+  ||  forced_aspect != right.forced_aspect
   ||  vfr      != right.vfr) return false;
 
   // AUDIO
@@ -148,6 +149,8 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   level    = right.level;
   profile  = right.profile;
   ptsinvalid = right.ptsinvalid;
+  forced_aspect = right.forced_aspect;
+  orientation = right.orientation;
 
   // AUDIO
   channels      = right.channels;
@@ -196,6 +199,8 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     level     = stream->iLevel;
     profile   = stream->iProfile;
     ptsinvalid = stream->bPTSInvalid;
+    forced_aspect = stream->bForcedAspect;
+    orientation = stream->iOrientation;
   }
   else if(  right.type == STREAM_SUBTITLE )
   {

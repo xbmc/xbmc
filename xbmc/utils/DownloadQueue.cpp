@@ -24,7 +24,7 @@
 #include "log.h"
 
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "threads/SingleLock.h"
 
 using namespace std;
@@ -124,7 +124,7 @@ void CDownloadQueue::Process()
 {
   CLog::Log(LOGNOTICE, "DownloadQueue ready.");
 
-  CFileCurl http;
+  CCurlFile http;
   bool bSuccess;
 
   while ( !m_bStop )

@@ -28,7 +28,6 @@
 
 #define M_SQRT1_2 0.70710678118654752440
 
-        .text
 
 function fft4_neon
         vld1.32         {d0-d3}, [r0,:128]
@@ -101,12 +100,8 @@ function fft8_neon
         bx              lr
 endfunc
 
-        .align 4
-pmmp:   .float  +1.0, -1.0, -1.0, +1.0
-mppm:   .float  -M_SQRT1_2, M_SQRT1_2, M_SQRT1_2, -M_SQRT1_2
-
 function fft16_neon
-        adr             r1, mppm
+        movrel          r1, mppm
         vld1.32         {d16-d19}, [r0,:128]!   @ q8{r0,i0,r1,i1} q9{r2,i2,r3,i3}
         pld             [r0, #32]
         vld1.32         {d2-d3}, [r1,:128]
@@ -148,16 +143,12 @@ function fft16_neon
         vswp            d29, d30                @ q14{r12,i12,i14,r15} q15{r13,i13,i15,r14}
         vadd.f32        q0,  q12, q13           @ {t1,t2,t5,t6}
         vadd.f32        q1,  q14, q15           @ {t1a,t2a,t5a,t6a}
-        ldr             r2,  _neon_label
-        ldr             r3,  L$diff1
-        add             r2,  r3
-local_label1:
-        ldr             r2,  [pc, r2]
+        movrel          r2,  X(ff_cos_16)
         vsub.f32        q13, q12, q13           @ {t3,t4,t7,t8}
         vrev64.32       d1,  d1
         vsub.f32        q15, q14, q15           @ {t3a,t4a,t7a,t8a}
         vrev64.32       d3,  d3
-        adr             r3,  pmmp
+        movrel          r3,  pmmp
         vswp            d1,  d26                @ q0{t1,t2,t3,t4} q13{t6,t5,t7,t8}
         vswp            d3,  d30                @ q1{t1a,t2a,t3a,t4a} q15{t6a,t5a,t7a,t8a}
         vadd.f32        q12, q0,  q13           @ {r8,i8,r9,i9}
@@ -222,7 +213,7 @@ function fft_pass_neon
         add             r2,  r2,  r0            @ &z[o2]
         add             r3,  r3,  r0            @ &z[o3]
         vld1.32         {d20-d21},[r2,:128]     @ {z[o2],z[o2+1]}
-        adr             r12, pmmp
+        movrel          r12, pmmp
         vld1.32         {d22-d23},[r3,:128]     @ {z[o3],z[o3+1]}
         add             r5,  r5,  r1            @ wim
         vld1.32         {d6-d7},  [r12,:128]    @ pmmp
@@ -287,11 +278,6 @@ function fft_pass_neon
         pop             {r4-r6,pc}
 endfunc
 
-.set L$offs16, 0
-.macro setTabOffs n, n2
-.set L$offs\n, L$offs\n2 + 4
-.endm
-
 .macro  def_fft n, n2, n4
         .align 6
 function fft\n\()_neon
@@ -304,15 +290,10 @@ function fft\n\()_neon
         bl              fft\n4\()_neon
         mov             r0,  r4
         pop             {r4, lr}
-        ldr             r1,  _neon_label
-        add             r1,  #L$diff\n
-local_label\n:
-        ldr             r1,  [pc, r1]
+        movrel          r1,  X(ff_cos_\n)
         mov             r2,  #\n4/2
         b               fft_pass_neon
 endfunc
-setTabOffs \n, \n2
-.set L$diff\n, _neon_label - local_label\n + L$offs\n - 8
 .endm
 
         def_fft    32,    16,     8
@@ -328,14 +309,10 @@ setTabOffs \n, \n2
         def_fft 32768, 16384,  8192
         def_fft 65536, 32768, 16384
 
-.set L$diffTab, fft_tab_neon_offs - local_label_tab - 8
 function ff_fft_calc_neon, export=1
         ldr             r2,  [r0]
         sub             r2,  r2,  #2
-        ldr             r3,  fft_tab_neon_offs
-        add             r3,  #L$diffTab
-local_label_tab:
-        add             r3,  pc
+        movrel          r3,  fft_tab_neon
         ldr             r3,  [r3, r2, lsl #2]
         mov             r0,  r1
         bx              r3
@@ -371,22 +348,7 @@ function ff_fft_permute_neon, export=1
         pop             {r4,pc}
 endfunc
 
-
-.global _neon_label
-_neon_label:
-.word _neon_cos_tab - .
-
-L$diff1:
-.word _neon_label - local_label1 - 8
-
-fft_tab_neon_offs:
-.word _fft_tab_neon - .
-
-
-.section .rodata
-		
-        .align 4
-_fft_tab_neon:
+const   fft_tab_neon
         .word fft4_neon
         .word fft8_neon
         .word fft16_neon
@@ -402,20 +364,12 @@ _fft_tab_neon:
         .word fft16384_neon
         .word fft32768_neon
         .word fft65536_neon
-ELF     .size _fft_tab_neon, . - _fft_tab_neon
-		
-		.align 4
-_neon_cos_tab:
-        .word X(ff_cos_16)
-        .word X(ff_cos_32)
-        .word X(ff_cos_64)
-        .word X(ff_cos_128)
-        .word X(ff_cos_256)
-        .word X(ff_cos_512)
-        .word X(ff_cos_1024)
-        .word X(ff_cos_2048)
-        .word X(ff_cos_4096)
-        .word X(ff_cos_8192)
-        .word X(ff_cos_16384)
-        .word X(ff_cos_32768)
-        .word X(ff_cos_65536)
+endconst
+
+const   pmmp, align=4
+        .float          +1.0, -1.0, -1.0, +1.0
+endconst
+
+const   mppm, align=4
+        .float          -M_SQRT1_2, M_SQRT1_2, M_SQRT1_2, -M_SQRT1_2
+endconst

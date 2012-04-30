@@ -413,7 +413,7 @@ CTeletextDecoder::CTeletextDecoder()
 {
   memset(&m_RenderInfo, 0, sizeof(TextRenderInfo_t));
 
-  m_teletextFont                 = _P(TeletextFont);
+  m_teletextFont                 = CSpecialProtocol::TranslatePath(TeletextFont);
   m_TextureBuffer                = NULL;
   m_txtCache                     = NULL;
   m_Manager                      = NULL;

@@ -61,141 +61,8 @@
 #include "XHandle.h"
 #endif
 
-#define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
-#define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
-
-typedef struct
-{
-  char cDriveLetter;
-  char szDevice[MAX_PATH];
-  int iPartition;
-}
-stDriveMapping;
-
-#if defined(WIN32)
-stDriveMapping driveMapping[] =
-  {
-    {'P', "", 0},
-    {'Q', "", 0},
-    {'T', "", 0},
-    {'Z', "", 0},
-    {'U', "", 0}
-  };
-
-#else
-stDriveMapping driveMapping[] =
-  {
-    {'P', "", 0},
-    {'Q', "", 0},
-    {'T', "", 0},
-    {'Z', "", 0},
-    {'C', "", 0},
-    {'E', "", 0},
-    {'U', "", 0}
-  };
-#endif
-
-#define NUM_OF_DRIVES ( sizeof( driveMapping) / sizeof( driveMapping[0] ) )
-
 
 PVOID CIoSupport::m_rawXferBuffer;
-PARTITION_TABLE CIoSupport::m_partitionTable;
-bool CIoSupport::m_fPartitionTableIsValid;
-
-
-// cDriveLetter e.g. 'D'
-// szDevice e.g. "Cdrom0" or "Harddisk0\Partition6"
-HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
-{
-
-#ifdef _WIN32
-  // still legacy support (only used in DetectDVDType.cpp)
-  if((strnicmp(szDevice, "Harddisk0",9)==0) || (strnicmp(szDevice, "Cdrom",5)==0))
-    return S_OK;
-#endif
-  CStdString device(szDevice);
-  device.TrimRight("/\\");
-  char upperLetter = toupper(cDriveLetter);
-  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
-    if (driveMapping[i].cDriveLetter == upperLetter)
-    {
-      strcpy(driveMapping[i].szDevice, device.c_str());
-      CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, device.c_str());
-      return S_OK;
-    }
-  return E_FAIL;
-}
-
-// cDriveLetter e.g. 'D'
-HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
-{
-  return S_OK;
-}
-
-HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, const char* szDevice)
-{
-  UnmapDriveLetter(cDriveLetter);
-
-  return MapDriveLetter(cDriveLetter, szDevice);
-}
-// to be used with CdRom devices.
-HRESULT CIoSupport::Dismount(const char* szDevice)
-{
-  return S_OK;
-}
-
-void CIoSupport::GetPartition(char cDriveLetter, char* szPartition)
-{
-  char upperLetter = toupper(cDriveLetter);
-  if (upperLetter >= 'F' && upperLetter <= 'O')
-  {
-    sprintf(szPartition, "Harddisk0\\Partition%u", upperLetter - 'A' + 1);
-    return;
-  }
-  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
-    if (driveMapping[i].cDriveLetter == upperLetter)
-    {
-      strcpy(szPartition, driveMapping[i].szDevice);
-      return;
-    }
-  *szPartition = 0;
-}
-
-const char* CIoSupport::GetPartition(char cDriveLetter)
-{
-  char upperLetter = toupper(cDriveLetter);
-  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
-    if (driveMapping[i].cDriveLetter == upperLetter)
-      return driveMapping[i].szDevice;
-  return NULL;
-}
-
-void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
-{
-  int part_str_len = strlen(szPartition);
-  int part_num;
-
-  if (part_str_len < 19)
-  {
-    *cDriveLetter = 0;
-    return;
-  }
-
-  part_num = atoi(szPartition + 19);
-
-  if (part_num >= 6)
-  {
-    *cDriveLetter = part_num + 'A' - 1;
-    return;
-  }
-  for (unsigned int i=0; i < NUM_OF_DRIVES; i++)
-    if (strnicmp(driveMapping[i].szDevice, szPartition, strlen(driveMapping[i].szDevice)) == 0)
-    {
-      *cDriveLetter = driveMapping[i].cDriveLetter;
-      return;
-    }
-  *cDriveLetter = 0;
-}
 
 HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
@@ -261,11 +128,6 @@ HRESULT CIoSupport::ToggleTray()
     return CloseTray();
   else
     return EjectTray();
-}
-
-HRESULT CIoSupport::Shutdown()
-{
-  return S_OK;
 }
 
 HANDLE CIoSupport::OpenCDROM()
@@ -482,19 +344,12 @@ VOID CIoSupport::CloseCDROM(HANDLE hDevice)
   CloseHandle(hDevice);
 }
 
-// returns true if this is a debug machine
-BOOL CIoSupport::IsDebug()
-{
-  return FALSE;
-}
-
-
 VOID CIoSupport::GetXbePath(char* szDest)
 {
 
 #if WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   CStdString strPath;
   g_charsetConverter.wToUTF8(strPathW,strPath);
@@ -520,57 +375,4 @@ VOID CIoSupport::GetXbePath(char* szDest)
 	
   strcpy(szDest, buf);
 #endif
-}
-
-bool CIoSupport::DriveExists(char cDriveLetter)
-{
-  cDriveLetter = toupper(cDriveLetter);
-#if defined(WIN32)
-  if (cDriveLetter < 'A' || cDriveLetter > 'Z')
-    return false;
-
-  DWORD drivelist;
-  DWORD bitposition = cDriveLetter - 'A';
-
-  drivelist = GetLogicalDrives();
-
-  if (!drivelist)
-    return false;
-
-  return (drivelist >> bitposition) & 1;
-#else
-  return false;
-#endif
-}
-
-bool CIoSupport::PartitionExists(int nPartition)
-{
-  return false;
-}
-
-LARGE_INTEGER CIoSupport::GetDriveSize()
-{
-  LARGE_INTEGER drive_size;
-  drive_size.QuadPart = 0;
-  return drive_size;
-}
-
-bool CIoSupport::ReadPartitionTable()
-{
-  return false;
-}
-
-bool CIoSupport::HasPartitionTable()
-{
-  return m_fPartitionTableIsValid;
-}
-
-void CIoSupport::MapExtendedPartitions()
-{
-
-}
-
-unsigned int CIoSupport::ReadPartitionTable(PARTITION_TABLE *p_table)
-{
-  return (unsigned int) -1;
 }

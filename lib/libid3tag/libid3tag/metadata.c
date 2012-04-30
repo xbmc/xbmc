@@ -298,8 +298,8 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
 {
   union id3_field const *field;
   struct id3_frame const *frame;
-  const id3_ucs4_t* ucs4 = id3_ucs4_empty;
   int commentNumber = 0;
+  const id3_ucs4_t* ucs4 = 0;
 
   // return the first non-empty comment
   do
@@ -332,11 +332,9 @@ const id3_ucs4_t* id3_metadata_getcomment(const struct id3_tag* tag, enum id3_fi
         //finally fetch the comment
         field = id3_frame_field(frame, 3);
         if (field == 0)
-          break;
+          continue;
     
-        ucs4 = id3_field_getfullstring(field);
-        //done
-        break;  
+        return id3_field_getfullstring(field);
       }
     }
   }

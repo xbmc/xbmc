@@ -184,7 +184,14 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CStdString path = "special://videoplaylists/";
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
-    XFILE::CDirectory::GetDirectory(path, items, ".xsp",false,false,XFILE::DIR_CACHE_ONCE,true,true);
+    XFILE::CDirectory::GetDirectory(path, items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      CSmartPlaylist playlist;
+      if (playlist.OpenAndReadName(item->GetPath()))
+        item->SetLabel(playlist.GetName());
+    }
     iLabel = 559;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PATH)
@@ -382,7 +389,7 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
   if (!editor) return false;
 
   editor->m_rule = rule;
-  editor->m_type = type;
+  editor->m_type = type == "mixed" ? "songs" : type;
   editor->DoModal(g_windowManager.GetActiveWindow());
   rule = editor->m_rule;
   return !editor->m_cancelled;

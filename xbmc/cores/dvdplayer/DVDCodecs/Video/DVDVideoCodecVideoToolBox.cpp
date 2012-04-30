@@ -333,7 +333,7 @@ CreateFormatDescription(VTFormatId format_id, int width, int height)
 static CMFormatDescriptionRef
 CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size, uint32_t atom)
 {
-  CMFormatDescriptionRef fmt_desc;
+  CMFormatDescriptionRef fmt_desc = NULL;
   OSStatus status;
 
   FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
@@ -437,7 +437,7 @@ typedef struct {
   uint8_t* decoderConfig;
 } quicktime_esds_t;
 
-int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *pb, int length, int compact)
+int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, AVIOContext *pb, int length, int compact)
 {
   int i;
   uint8_t b;
@@ -474,45 +474,45 @@ int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *
     {
       b |= 0x80;
     }
-    av_format_ctx->put_byte(pb, b);
+    av_format_ctx->avio_w8(pb, b);
   }
 
   return numBytes; 
 }
 
-void quicktime_write_esds(DllAvFormat *av_format_ctx, ByteIOContext *pb, quicktime_esds_t *esds)
+void quicktime_write_esds(DllAvFormat *av_format_ctx, AVIOContext *pb, quicktime_esds_t *esds)
 {
-  av_format_ctx->put_byte(pb, 0);     // Version
-  av_format_ctx->put_be24(pb, 0);     // Flags
+  av_format_ctx->avio_w8(pb, 0);     // Version
+  av_format_ctx->avio_wb24(pb, 0);     // Flags
 
   // elementary stream descriptor tag
-  av_format_ctx->put_byte(pb, 0x03);
+  av_format_ctx->avio_w8(pb, 0x03);
   quicktime_write_mp4_descr_length(av_format_ctx, pb,
     3 + 5 + (13 + 5 + esds->decoderConfigLen) + 3, false);
   // 3 bytes + 5 bytes for tag
-  av_format_ctx->put_be16(pb, esds->esid);
-  av_format_ctx->put_byte(pb, esds->stream_priority);
+  av_format_ctx->avio_wb16(pb, esds->esid);
+  av_format_ctx->avio_w8(pb, esds->stream_priority);
 
   // decoder configuration description tag
-  av_format_ctx->put_byte(pb, 0x04);
+  av_format_ctx->avio_w8(pb, 0x04);
   quicktime_write_mp4_descr_length(av_format_ctx, pb,
     13 + 5 + esds->decoderConfigLen, false);
   // 13 bytes + 5 bytes for tag
-  av_format_ctx->put_byte(pb, esds->objectTypeId); // objectTypeIndication
-  av_format_ctx->put_byte(pb, esds->streamType);   // streamType
-  av_format_ctx->put_be24(pb, esds->bufferSizeDB); // buffer size
-  av_format_ctx->put_be32(pb, esds->maxBitrate);   // max bitrate
-  av_format_ctx->put_be32(pb, esds->avgBitrate);   // average bitrate
+  av_format_ctx->avio_w8(pb, esds->objectTypeId); // objectTypeIndication
+  av_format_ctx->avio_w8(pb, esds->streamType);   // streamType
+  av_format_ctx->avio_wb24(pb, esds->bufferSizeDB); // buffer size
+  av_format_ctx->avio_wb32(pb, esds->maxBitrate);   // max bitrate
+  av_format_ctx->avio_wb32(pb, esds->avgBitrate);   // average bitrate
 
   // decoder specific description tag
-  av_format_ctx->put_byte(pb, 0x05);
+  av_format_ctx->avio_w8(pb, 0x05);
   quicktime_write_mp4_descr_length(av_format_ctx, pb, esds->decoderConfigLen, false);
-  av_format_ctx->put_buffer(pb, esds->decoderConfig, esds->decoderConfigLen);
+  av_format_ctx->avio_write(pb, esds->decoderConfig, esds->decoderConfigLen);
 
   // sync layer configuration descriptor tag
-  av_format_ctx->put_byte(pb, 0x06);  // tag
-  av_format_ctx->put_byte(pb, 0x01);  // length
-  av_format_ctx->put_byte(pb, 0x7F);  // no SL
+  av_format_ctx->avio_w8(pb, 0x06);  // tag
+  av_format_ctx->avio_w8(pb, 0x01);  // length
+  av_format_ctx->avio_w8(pb, 0x7F);  // no SL
 
   /* no IPI_DescrPointer */
 	/* no IP_IdentificationDataSet */
@@ -654,7 +654,7 @@ const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
 }
 
 const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *buf_in, int size)
+  AVIOContext *pb, const uint8_t *buf_in, int size)
 {
   const uint8_t *p = buf_in;
   const uint8_t *end = p + size;
@@ -666,8 +666,8 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
   {
     while (!*(nal_start++));
     nal_end = avc_find_startcode(nal_start, end);
-    av_format_ctx->put_be32(pb, nal_end - nal_start);
-    av_format_ctx->put_buffer(pb, nal_start, nal_end - nal_start);
+    av_format_ctx->avio_wb32(pb, nal_end - nal_start);
+    av_format_ctx->avio_write(pb, nal_start, nal_end - nal_start);
     size += 4 + nal_end - nal_start;
     nal_start = nal_end;
   }
@@ -677,15 +677,15 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
 const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-  ByteIOContext *pb;
-  int ret = av_format_ctx->url_open_dyn_buf(&pb);
+  AVIOContext *pb;
+  int ret = av_format_ctx->avio_open_dyn_buf(&pb);
   if (ret < 0)
     return ret;
 
   avc_parse_nal_units(av_format_ctx, pb, buf_in, *size);
 
   av_util_ctx->av_freep(buf);
-  *size = av_format_ctx->url_close_dyn_buf(pb, buf);
+  *size = av_format_ctx->avio_close_dyn_buf(pb, buf);
   return 0;
 }
 
@@ -731,7 +731,7 @@ const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format
    (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
 const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *data, int len)
+  AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
   if (len > 6)
@@ -770,26 +770,26 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
       }
       assert(sps);
 
-      av_format_ctx->put_byte(pb, 1); /* version */
-      av_format_ctx->put_byte(pb, sps[1]); /* profile */
-      av_format_ctx->put_byte(pb, sps[2]); /* profile compat */
-      av_format_ctx->put_byte(pb, sps[3]); /* level */
-      av_format_ctx->put_byte(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-      av_format_ctx->put_byte(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+      av_format_ctx->avio_w8(pb, 1); /* version */
+      av_format_ctx->avio_w8(pb, sps[1]); /* profile */
+      av_format_ctx->avio_w8(pb, sps[2]); /* profile compat */
+      av_format_ctx->avio_w8(pb, sps[3]); /* level */
+      av_format_ctx->avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
+      av_format_ctx->avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
 
-      av_format_ctx->put_be16(pb, sps_size);
-      av_format_ctx->put_buffer(pb, sps, sps_size);
+      av_format_ctx->avio_wb16(pb, sps_size);
+      av_format_ctx->avio_write(pb, sps, sps_size);
       if (pps)
       {
-        av_format_ctx->put_byte(pb, 1); /* number of pps */
-        av_format_ctx->put_be16(pb, pps_size);
-        av_format_ctx->put_buffer(pb, pps, pps_size);
+        av_format_ctx->avio_w8(pb, 1); /* number of pps */
+        av_format_ctx->avio_wb16(pb, pps_size);
+        av_format_ctx->avio_write(pb, pps, pps_size);
       }
       av_util_ctx->av_free(start);
     }
     else
     {
-      av_format_ctx->put_buffer(pb, data, len);
+      av_format_ctx->avio_write(pb, data, len);
     }
   }
   return 0;
@@ -1071,15 +1071,22 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
+    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
+        __FUNCTION__, width, height, profile, level);
+      return false;
+    }
+    
     switch (hints.codec)
     {
       case CODEC_ID_MPEG4:
         if (extrasize)
         {
-          ByteIOContext *pb;
+          AVIOContext *pb;
           quicktime_esds_t *esds;
 
-          if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+          if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
             return false;
 
           esds = quicktime_set_esds(m_dllAvFormat, extradata, extrasize);
@@ -1088,7 +1095,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // unhook from ffmpeg's extradata
           extradata = NULL;
           // extract the esds atom decoderConfig from extradata
-          extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
+          extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
           free(esds->decoderConfig);
           free(esds);
 
@@ -1124,6 +1131,16 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
             return false;
 
+          // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+          // with a bogus m_fmt_desc returned that crashes on CFRelease.
+          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+          {
+            // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+            CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+              __FUNCTION__, m_max_ref_frames);
+            return false;
+          }
+
           if (extradata[4] == 0xFE)
           {
             // video content is from some silly encoder that think 3 byte NAL sizes
@@ -1144,8 +1161,8 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format required
 
-            ByteIOContext *pb;
-            if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+            AVIOContext *pb;
+            if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
               return false;
 
             m_convert_bytestream = true;
@@ -1154,7 +1171,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             // unhook from ffmpeg's extradata
             extradata = NULL;
             // extract the avcC atom data into extradata getting size into extrasize
-            extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
+            extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
 
             // check for interlaced and get number of ref frames
             if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
@@ -1163,6 +1180,17 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
               return false;
             }
 
+            // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+            // with a bogus m_fmt_desc returned that crashes on CFRelease.
+            if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+            {
+              // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+              CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+                __FUNCTION__, m_max_ref_frames);
+              m_dllAvUtil->av_free(extradata);
+              return false;
+            }
+ 
             // CFDataCreate makes a copy of extradata contents
             m_fmt_desc = CreateFormatDescriptionFromCodecData(
               kVTFormatH264, width, height, extradata, extrasize, 'avcC');
@@ -1185,20 +1213,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    if (profile == 77 && level == 32 && m_max_ref_frames > 4)
-    {
-      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-        __FUNCTION__, m_max_ref_frames);
-      return false;
-    }
- 
     if(m_fmt_desc == NULL)
     {
       CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
       m_pFormatName = "";
       return false;
     }
+
     if (m_max_ref_frames == 0)
       m_max_ref_frames = 2;
 
@@ -1286,24 +1307,24 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
     uint32_t decoderFlags = 0;
     CFDictionaryRef frameInfo = NULL;;
     CMSampleBufferRef sampleBuff = NULL;
-    ByteIOContext *pb = NULL;
+    AVIOContext *pb = NULL;
     int demux_size = 0;
     uint8_t *demux_buff = NULL;
     
     if (m_convert_bytestream)
     {
       // convert demuxer packet from bytestream (AnnexB) to bitstream
-      if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
       demux_size = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
-      demux_size = m_dllAvFormat->url_close_dyn_buf(pb, &demux_buff);
+      demux_size = m_dllAvFormat->avio_close_dyn_buf(pb, &demux_buff);
       sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
     }
     else if (m_convert_3byteTo4byteNALSize)
     {
       // convert demuxer packet from 3 byte NAL sizes to 4 byte
-      if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
       uint32_t nal_size;
@@ -1312,13 +1333,13 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
       while (nal_start < end)
       {
         nal_size = VDA_RB24(nal_start);
-        m_dllAvFormat->put_be32(pb, nal_size);
+        m_dllAvFormat->avio_wb32(pb, nal_size);
         nal_start += 3;
-        m_dllAvFormat->put_buffer(pb, nal_start, nal_size);
+        m_dllAvFormat->avio_write(pb, nal_start, nal_size);
         nal_start += nal_size;
       }
 
-      demux_size = m_dllAvFormat->url_close_dyn_buf(pb, &demux_buff);
+      demux_size = m_dllAvFormat->avio_close_dyn_buf(pb, &demux_buff);
       sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
     }
     else
@@ -1378,7 +1399,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
 
   // TODO: queue depth is related to the number of reference frames in encoded h.264.
   // so we need to buffer until we get N ref frames + 1.
-  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE | VC_BUFFER;

@@ -821,15 +821,17 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
       (m_focusedLayout && !m_focusedLayout->CheckCondition()))
   {
     // and do it
-    int item = GetSelectedItem();
+    int itemIndex = GetSelectedItem();
     UpdateLayout(true); // true to refresh all items
-    SelectItem(item);
+    SelectItem(itemIndex);
   }
 
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
     CGUIListItem *lastItem = m_lastItem;
+    int selected = GetSelectedItem();
+    CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
     Reset();
     bool updateItems = false;
     if (!m_staticUpdateTime)
@@ -841,18 +843,21 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
-      CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
-      if (item->UpdateVisibility(GetParentID()))
+      CGUIStaticItemPtr staticItem = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
+      if (staticItem->UpdateVisibility(GetParentID()))
         MarkDirtyRegion();
-      if (item->IsVisible())
+      if (staticItem->IsVisible())
       {
-        m_items.push_back(item);
-        if (item.get() == lastItem)
+        m_items.push_back(staticItem);
+        if (staticItem.get() == lastItem)
           m_lastItem = lastItem;
+        // if item is selected and it changed position, re-select it
+        if (staticItem.get() == selectedItem && selected != (int)m_items.size() - 1)
+          SelectItem(m_items.size() - 1);
       }
       // update any properties
       if (updateItems)
-        item->UpdateProperties(GetParentID());
+        staticItem->UpdateProperties(GetParentID());
     }
     UpdateScrollByLetter();
   }
@@ -871,7 +876,7 @@ void CGUIBaseContainer::CalculateLayout()
   if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
     return; // nothing has changed, so don't update stuff
 
-  m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
+  m_itemsPerPage = std::max((int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1, 1);
 
   // ensure that the scroll offset is a multiple of our size
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));

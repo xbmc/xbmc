@@ -34,6 +34,7 @@ class CFileItem;
 class CFileItemList;
 class CGUIDialog;
 class CGUIWindow;
+class CGUIMessage;
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
@@ -90,6 +91,7 @@ class CGUIWindow;
 #define TMSG_GUI_ACTION               607
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
+#define TMSG_GUI_MESSAGE              610
 
 #define TMSG_CALLBACK             800
 
@@ -191,6 +193,15 @@ public:
   void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
+
+  /*! \brief Send a GUIMessage, optionally waiting before it's processed to return.
+   Should be used to send messages to the GUI from other threads.
+   \param msg the GUIMessage to send.
+   \param windowID optional window to send the message to (defaults to no specified window).
+   \param waitResult whether to wait for the result (defaults to false).
+   */
+  void SendGUIMessage(const CGUIMessage &msg, int windowID = WINDOW_INVALID, bool waitResult=false);
+
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);
   std::vector<bool> GetInfoBooleans(const std::vector<CStdString> &properties);
 

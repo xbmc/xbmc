@@ -1,3 +1,4 @@
+#pragma once
 /*
 *      Copyright (C) 2005-2008 Team XBMC
 *      http://www.xbmc.org
@@ -19,14 +20,8 @@
 *
 */
 
-#ifndef MATRIX_GLES_H
-#define MATRIX_GLES_H
-
-#pragma once
-
 #include <vector>
-
-using namespace std;
+#include <string.h>
 
 enum EMATRIXMODE
 {
@@ -60,11 +55,22 @@ public:
   bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
 protected:
-  vector<GLfloat*> m_matrices[(int)MM_MATRIXSIZE];
+
+  struct MatrixWrapper 
+  {
+    MatrixWrapper(){};
+    MatrixWrapper( const float values[16]) { memcpy(m_values,values,sizeof(m_values)); }
+    MatrixWrapper( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); }
+    MatrixWrapper &operator=( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); return *this;}
+    operator float*() { return m_values; }
+    operator const float*() const { return m_values; }
+
+    float m_values[16];
+  };
+
+  std::vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
   GLfloat *m_pMatrix;
   EMATRIXMODE m_matrixMode;
 };
 
 extern CMatrixGLES g_matrices;
-
-#endif // MATRIX_GLES_H

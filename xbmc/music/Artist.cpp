@@ -32,17 +32,17 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetAdditiveString(artist, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prioritise);
-  XMLUtils::GetAdditiveString(artist, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
-  XMLUtils::GetAdditiveString(artist, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
-  XMLUtils::GetAdditiveString(artist, "yearsactive", g_advancedSettings.m_musicItemSeparator, strYearsActive, prioritise);
-  XMLUtils::GetAdditiveString(artist, "instruments", g_advancedSettings.m_musicItemSeparator, strInstruments, prioritise);
+  XMLUtils::GetStringArray(artist, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "mood", moods, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise, g_advancedSettings.m_musicItemSeparator);
 
-  XMLUtils::GetString(artist,"born",strBorn);
-  XMLUtils::GetString(artist,"formed",strFormed);
-  XMLUtils::GetString(artist,"biography",strBiography);
-  XMLUtils::GetString(artist,"died",strDied);
-  XMLUtils::GetString(artist,"disbanded",strDisbanded);
+  XMLUtils::GetString(artist, "born", strBorn);
+  XMLUtils::GetString(artist, "formed", strFormed);
+  XMLUtils::GetString(artist, "biography", strBiography);
+  XMLUtils::GetString(artist, "died", strDied);
+  XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
   size_t iThumbCount = thumbURL.m_url.size();
   CStdString xmlAdd = thumbURL.m_xml;
@@ -113,16 +113,11 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   if (!artist) return false;
 
   XMLUtils::SetString(artist,       "name", strArtist);
-  XMLUtils::SetAdditiveString(artist,       "genre",
-                            g_advancedSettings.m_musicItemSeparator, strGenre);
-  XMLUtils::SetAdditiveString(artist,      "style",
-                            g_advancedSettings.m_musicItemSeparator, strStyles);
-  XMLUtils::SetAdditiveString(artist,      "mood",
-                            g_advancedSettings.m_musicItemSeparator, strMoods);
-  XMLUtils::SetAdditiveString(artist, "yearsactive",
-                            g_advancedSettings.m_musicItemSeparator, strYearsActive);
-  XMLUtils::SetAdditiveString(artist, "instruments",
-                            g_advancedSettings.m_musicItemSeparator, strInstruments);
+  XMLUtils::SetStringArray(artist, "genre", genre);
+  XMLUtils::SetStringArray(artist, "style", styles);
+  XMLUtils::SetStringArray(artist,  "mood", moods);
+  XMLUtils::SetStringArray(artist, "yearsactive", yearsActive);
+  XMLUtils::SetStringArray(artist, "instruments", instruments);
   XMLUtils::SetString(artist,        "born", strBorn);
   XMLUtils::SetString(artist,      "formed", strFormed);
   XMLUtils::SetString(artist,   "biography", strBiography);

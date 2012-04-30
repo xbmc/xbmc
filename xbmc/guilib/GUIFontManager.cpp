@@ -80,7 +80,7 @@ static bool CheckFont(CStdString& strPath, const CStdString& newPath,
   {
     strPath = URIUtils::AddFileToFolder(newPath,filename);
 #ifdef _LINUX
-    strPath = PTH_IC(strPath);
+    strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
     return false;
   }
@@ -114,7 +114,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
     strPath = strFilename;
 
 #ifdef _LINUX
-  strPath = PTH_IC(strPath);
+  strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 #endif
 
   // Check if the file exists, otherwise try loading it from the global media dir

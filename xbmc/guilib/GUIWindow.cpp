@@ -354,9 +354,9 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
   }
 
+  m_closing = false;
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   OnMessage(msg);
-  m_closing = false;
 }
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
@@ -601,6 +601,27 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       EVENT_RESULT result = OnMouseAction(action);
       message.SetParam1(result);
       return result != EVENT_RESULT_UNHANDLED;
+    }
+  case GUI_MSG_ADD_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        control->AllocResources();
+        AddControl(control);
+      }
+      return true;
+    }
+  case GUI_MSG_REMOVE_CONTROL:
+    {
+      if (message.GetPointer())
+      {
+        CGUIControl *control = (CGUIControl *)message.GetPointer();
+        RemoveControl(control);
+        control->FreeResources(true);
+        delete control;
+      }
+      return true;
     }
   case GUI_MSG_NOTIFY_ALL:
     {

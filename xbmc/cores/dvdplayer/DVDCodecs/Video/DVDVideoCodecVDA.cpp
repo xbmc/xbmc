@@ -513,7 +513,7 @@ const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
 }
 
 const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *buf_in, int size)
+  AVIOContext *pb, const uint8_t *buf_in, int size)
 {
   const uint8_t *p = buf_in;
   const uint8_t *end = p + size;
@@ -525,8 +525,8 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
   {
     while (!*(nal_start++));
     nal_end = avc_find_startcode(nal_start, end);
-    av_format_ctx->put_be32(pb, nal_end - nal_start);
-    av_format_ctx->put_buffer(pb, nal_start, nal_end - nal_start);
+    av_format_ctx->avio_wb32(pb, nal_end - nal_start);
+    av_format_ctx->avio_write(pb, nal_start, nal_end - nal_start);
     size += 4 + nal_end - nal_start;
     nal_start = nal_end;
   }
@@ -536,20 +536,20 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
 const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-  ByteIOContext *pb;
-  int ret = av_format_ctx->url_open_dyn_buf(&pb);
+  AVIOContext *pb;
+  int ret = av_format_ctx->avio_open_dyn_buf(&pb);
   if (ret < 0)
     return ret;
 
   avc_parse_nal_units(av_format_ctx, pb, buf_in, *size);
 
   av_util_ctx->av_freep(buf);
-  *size = av_format_ctx->url_close_dyn_buf(pb, buf);
+  *size = av_format_ctx->avio_close_dyn_buf(pb, buf);
   return 0;
 }
 
 const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *data, int len)
+  AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
   if (len > 6)
@@ -590,26 +590,26 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
       }
       assert(sps);
 
-      av_format_ctx->put_byte(pb, 1); /* version */
-      av_format_ctx->put_byte(pb, sps[1]); /* profile */
-      av_format_ctx->put_byte(pb, sps[2]); /* profile compat */
-      av_format_ctx->put_byte(pb, sps[3]); /* level */
-      av_format_ctx->put_byte(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-      av_format_ctx->put_byte(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+      av_format_ctx->avio_w8(pb, 1); /* version */
+      av_format_ctx->avio_w8(pb, sps[1]); /* profile */
+      av_format_ctx->avio_w8(pb, sps[2]); /* profile compat */
+      av_format_ctx->avio_w8(pb, sps[3]); /* level */
+      av_format_ctx->avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
+      av_format_ctx->avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
 
-      av_format_ctx->put_be16(pb, sps_size);
-      av_format_ctx->put_buffer(pb, sps, sps_size);
+      av_format_ctx->avio_wb16(pb, sps_size);
+      av_format_ctx->avio_write(pb, sps, sps_size);
       if (pps)
       {
-        av_format_ctx->put_byte(pb, 1); /* number of pps */
-        av_format_ctx->put_be16(pb, pps_size);
-        av_format_ctx->put_buffer(pb, pps, pps_size);
+        av_format_ctx->avio_w8(pb, 1); /* number of pps */
+        av_format_ctx->avio_wb16(pb, pps_size);
+        av_format_ctx->avio_write(pb, pps, pps_size);
       }
       av_util_ctx->av_free(start);
     }
     else
     {
-      av_format_ctx->put_buffer(pb, data, len);
+      av_format_ctx->avio_write(pb, data, len);
     }
   }
   return 0;
@@ -669,6 +669,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
     
+    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
+        __FUNCTION__, width, height, profile, level);
+      return false;
+    }
+    
     if (Cocoa_GPUForDisplayIsNvidiaPureVideo3() && !CDVDCodecUtils::IsVP3CompatibleWidth(width))
     {
       CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
@@ -698,8 +705,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
               return false;
             }
 
-            ByteIOContext *pb;
-            if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+            AVIOContext *pb;
+            if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
             {
               return false;
             }
@@ -710,7 +717,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
             // unhook from ffmpeg's extradata
             extradata = NULL;
             // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
-            extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
+            extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
             // CFDataCreate makes a copy of extradata contents
             avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
             // done with the converted extradata, we MUST free using av_free
@@ -774,10 +781,11 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         m_max_ref_frames = 2;
     }
 
-    if (hints.profile == 77 && hints.level == 32 && (m_max_ref_frames > 4))
+    if (hints.profile == FF_PROFILE_H264_MAIN && hints.level == 32 && m_max_ref_frames > 4)
     {
       // Main@L3.2, VDA cannot handle greater than 4 reference frames
       CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VDA cannot decode.", __FUNCTION__);
+      CFRelease(avcCData);
       return false;
     }
  
@@ -936,24 +944,24 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     if (m_convert_bytestream)
     {
       // convert demuxer packet from bytestream (AnnexB) to bitstream
-      ByteIOContext *pb;
+      AVIOContext *pb;
       int demuxer_bytes;
       uint8_t *demuxer_content;
 
-      if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
       {
         return VC_ERROR;
       }
       demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
-      demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
+      demuxer_bytes = m_dllAvFormat->avio_close_dyn_buf(pb, &demuxer_content);
       avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
       m_dllAvUtil->av_free(demuxer_content);
     }
     else if (m_convert_3byteTo4byteNALSize)
     {
       // convert demuxer packet from 3 byte NAL sizes to 4 byte
-      ByteIOContext *pb;
-      if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      AVIOContext *pb;
+      if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
       uint32_t nal_size;
@@ -962,14 +970,14 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
       while (nal_start < end)
       {
         nal_size = VDA_RB24(nal_start);
-        m_dllAvFormat->put_be32(pb, nal_size);
+        m_dllAvFormat->avio_wb32(pb, nal_size);
         nal_start += 3;
-        m_dllAvFormat->put_buffer(pb, nal_start, nal_size);
+        m_dllAvFormat->avio_write(pb, nal_start, nal_size);
         nal_start += nal_size;
       }
 
       uint8_t *demuxer_content;
-      int demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
+      int demuxer_bytes = m_dllAvFormat->avio_close_dyn_buf(pb, &demuxer_content);
       avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
       m_dllAvUtil->av_free(demuxer_content);
     }
@@ -993,7 +1001,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
+  if (m_queue_depth < m_max_ref_frames)
   {
     return VC_BUFFER;
   }

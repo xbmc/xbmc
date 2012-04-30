@@ -18,7 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "FileDAAP.h"
+#include "DAAPFile.h"
 #include "DAAPDirectory.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"

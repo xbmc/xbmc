@@ -1,21 +1,18 @@
 ARCH=@ARCH@
 
+AR=@AR@
 LD=@LD@
 CC=@CC@
 CXX=@CXX@
-SHELL=@SHELL@
-ifeq ($(findstring osx,$(ARCH)),osx)
-ifeq ($(findstring arm,$(ARCH)),arm)
-LDFLAGS=-arch armv7 -iphoneos_version_min 4.1 -bundle -undefined dynamic_lookup -read_only_relocs suppress
-else
-LDFLAGS=-bundle -undefined dynamic_lookup -read_only_relocs suppress
-endif
-else
-LDFLAGS=-shared -fPIC -rdynamic
-endif
 SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
-WRAPPER=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
-WRAPPER_MACH_ALIAS=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias
+
+AVFORMAT_SO=avformat-53-$(ARCH).so
+AVCODEC_SO=avcodec-53-$(ARCH).so
+AVUTIL_SO=avutil-51-$(ARCH).so
+AVFILTER_SO=avfilter-2-$(ARCH).so
+SWSCALE_SO=swscale-2-$(ARCH).so
+POSTPROC_SO=postproc-52-$(ARCH).so
+SWRESAMPLE_SO=swresample-0-$(ARCH).so
 
 DIRS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
@@ -24,123 +21,55 @@ endif
 
 LIBS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  LIBS+=avutil-50-$(ARCH).so \
-	avcodec-52-$(ARCH).so \
-	avcore-0-$(ARCH).so \
-	avformat-52-$(ARCH).so \
-	postproc-51-$(ARCH).so \
-	avfilter-1-$(ARCH).so \
-	swscale-0-$(ARCH).so
-endif
-
-ifneq (,$(findstring powerpc,$(ARCH)))
-  ARCH_DIR=ppc
-else
-ifeq ($(findstring arm,$(ARCH)),arm)
-  ARCH_DIR=arm
-else
-  ARCH_DIR=x86
-endif
+  LIBS+=$(AVUTIL_SO) \
+	$(AVCODEC_SO) \
+	$(AVFORMAT_SO) \
+	$(POSTPROC_SO) \
+	$(AVFILTER_SO) \
+	$(SWSCALE_SO) \
+	$(SWRESAMPLE_SO)
 endif
 
 .PHONY: $(DIRS) codecs
 
+ifneq ($(findstring osx,$(ARCH)), osx)
+
 codecs: $(addprefix $(SYSDIR)/, $(LIBS));
 
-
-ifeq ($(findstring osx,$(ARCH)), osx)
-# Add -lbundle1.o for powerpc-osx
-ifeq ($(ARCH), powerpc-osx)
-BUNDLE1_O = -lbundle1.o
-endif
-
-$(SYSDIR)/avutil-50-$(ARCH).so: $(WRAPPER) ffmpeg/libavutil/libavutil.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
-		$(WRAPPER) ffmpeg/libavutil/*.o \
-		ffmpeg/libavutil/$(ARCH_DIR)/*.o $(BUNDLE1_O)
-
-$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
-		$(WRAPPER) ffmpeg/libavcodec/*.o \
-		ffmpeg/libavcodec/$(ARCH_DIR)/*.o $(BUNDLE1_O)
-
-$(SYSDIR)/avcore-0-$(ARCH).so: $(WRAPPER) ffmpeg/libavcore/libavcore.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavcore/*.o $(BUNDLE1_O)
-
-$(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavformat/*.o $(BUNDLE1_O)
-
-ifeq ($(findstring x86,$(ARCH_DIR)), x86)
-$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavfilter/$(ARCH_DIR)/*.o \
-		ffmpeg/libavfilter/*.o $(BUNDLE1_O)
-else # No libavfilter/ppc or libavfilter/arm
-$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavfilter/*.o $(BUNDLE1_O)
-endif
-
-ifneq ($(findstring arm,$(ARCH)), arm)
-$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libswscale/*.o \
-		ffmpeg/libswscale/$(ARCH_DIR)/*.o $(BUNDLE1_O)
-else # No ARM version of swscale available yet.
-$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libswscale/*.o
-endif
-
-$(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.dylib
-	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libpostproc/*.o $(BUNDLE1_O)
-
-ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
-ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;
-ffmpeg/libavcore/libavcore.dylib     : ffmpeg;
-ffmpeg/libavformat/libavformat.dylib : ffmpeg;
-ffmpeg/libavformat/libavfilter.dylib : ffmpeg;
-ffmpeg/libswscale/libswscale.dylib   : ffmpeg;
-ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
-ffmpeg:
-	$(MAKE) -C $@
-
-else
-
-$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.so
+$(SYSDIR)/$(AVUTIL_SO): ffmpeg/libavutil/libavutil.so
 	cp ffmpeg/libavutil/libavutil.so $@
 
-$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
+$(SYSDIR)/$(AVCODEC_SO): ffmpeg/libavcodec/libavcodec.so
 	cp ffmpeg/libavcodec/libavcodec.so $@
 
-$(SYSDIR)/avcore-0-$(ARCH).so: $(WRAPPER) ffmpeg/libavcore/libavcore.so
-	cp ffmpeg/libavcore/libavcore.so $@
-
-$(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
+$(SYSDIR)/$(AVFORMAT_SO): ffmpeg/libavformat/libavformat.so
 	cp ffmpeg/libavformat/libavformat.so $@
 
-$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.so
+$(SYSDIR)/$(AVFILTER_SO): ffmpeg/libavfilter/libavfilter.so
 	cp ffmpeg/libavfilter/libavfilter.so $@
 
-$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+$(SYSDIR)/$(SWSCALE_SO): ffmpeg/libswscale/libswscale.so
 	cp ffmpeg/libswscale/libswscale.so $@
 
-$(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
+$(SYSDIR)/$(POSTPROC_SO): ffmpeg/libpostproc/libpostproc.so
 	cp ffmpeg/libpostproc/libpostproc.so $@
+
+$(SYSDIR)/$(SWRESAMPLE_SO): ffmpeg/libswresample/libswresample.so
+	cp ffmpeg/libswresample/libswresample.so $@
 
 ffmpeg/libavutil/libavutil.so     : ffmpeg;
 ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
-ffmpeg/libavcore/libavcore.so     : ffmpeg;
 ffmpeg/libavformat/libavformat.so : ffmpeg;
 ffmpeg/libavfilter/libavfilter.so : ffmpeg;
 ffmpeg/libswscale/libswscale.so   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.so : ffmpeg;
+ffmpeg/libswresample/libswresample.so : ffmpeg;
+endif
+
 ffmpeg:
 	$(MAKE) -C $@
-
+ifeq ($(findstring osx,$(ARCH)), osx)
+	-$(AR) d ffmpeg/libavcodec/libavcodec.a inverse.o
 endif
 
 clean:

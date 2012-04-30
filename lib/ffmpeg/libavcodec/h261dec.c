@@ -97,7 +97,7 @@ static av_cold int h261_decode_init(AVCodecContext *avctx){
 }
 
 /**
- * decodes the group of blocks header or slice header.
+ * Decode the group of blocks header or slice header.
  * @return <0 if an error occurred
  */
 static int h261_decode_gob_header(H261Context *h){
@@ -136,7 +136,7 @@ static int h261_decode_gob_header(H261Context *h){
 
     if(s->qscale==0) {
         av_log(s->avctx, AV_LOG_ERROR, "qscale has forbidden 0 value\n");
-        if (s->avctx->error_recognition >= FF_ER_COMPLIANT)
+        if (s->avctx->err_recognition & (AV_EF_BITSTREAM | AV_EF_COMPLIANT))
             return -1;
     }
 
@@ -150,7 +150,7 @@ static int h261_decode_gob_header(H261Context *h){
 }
 
 /**
- * decodes the group of blocks / video packet header.
+ * Decode the group of blocks / video packet header.
  * @return <0 if no resync found
  */
 static int ff_h261_resync(H261Context *h){
@@ -191,7 +191,7 @@ static int ff_h261_resync(H261Context *h){
 }
 
 /**
- * decodes skipped macroblocks
+ * Decode skipped macroblocks.
  * @return 0
  */
 static int h261_decode_mb_skipped(H261Context *h, int mba1, int mba2 )
@@ -215,7 +215,7 @@ static int h261_decode_mb_skipped(H261Context *h, int mba1, int mba2 )
 
         s->mv_dir = MV_DIR_FORWARD;
         s->mv_type = MV_TYPE_16X16;
-        s->current_picture.mb_type[xy]= MB_TYPE_SKIP | MB_TYPE_16x16 | MB_TYPE_L0;
+        s->current_picture.f.mb_type[xy] = MB_TYPE_SKIP | MB_TYPE_16x16 | MB_TYPE_L0;
         s->mv[0][0][0] = 0;
         s->mv[0][0][1] = 0;
         s->mb_skipped = 1;
@@ -265,7 +265,7 @@ static int h261_decode_mb(H261Context *h){
     while( h->mba_diff == MBA_STUFFING ); // stuffing
 
     if ( h->mba_diff < 0 ){
-        if ( get_bits_count(&s->gb) + 7 >= s->gb.size_in_bits )
+        if (get_bits_left(&s->gb) <= 7)
             return SLICE_END;
 
         av_log(s->avctx, AV_LOG_ERROR, "illegal mba at %d %d\n", s->mb_x, s->mb_y);
@@ -323,14 +323,14 @@ static int h261_decode_mb(H261Context *h){
     }
 
     if(s->mb_intra){
-        s->current_picture.mb_type[xy]= MB_TYPE_INTRA;
+        s->current_picture.f.mb_type[xy] = MB_TYPE_INTRA;
         goto intra;
     }
 
     //set motion vectors
     s->mv_dir = MV_DIR_FORWARD;
     s->mv_type = MV_TYPE_16X16;
-    s->current_picture.mb_type[xy]= MB_TYPE_16x16 | MB_TYPE_L0;
+    s->current_picture.f.mb_type[xy] = MB_TYPE_16x16 | MB_TYPE_L0;
     s->mv[0][0][0] = h->current_mv_x * 2;//gets divided by 2 in motion compensation
     s->mv[0][0][1] = h->current_mv_y * 2;
 
@@ -355,7 +355,7 @@ intra:
 }
 
 /**
- * decodes a macroblock
+ * Decode a macroblock.
  * @return <0 if an error occurred
  */
 static int h261_decode_block(H261Context * h, DCTELEM * block,
@@ -437,7 +437,7 @@ static int h261_decode_block(H261Context * h, DCTELEM * block,
 }
 
 /**
- * decodes the H261 picture header.
+ * Decode the H.261 picture header.
  * @return <0 if no startcode found
  */
 static int h261_decode_picture_header(H261Context *h){
@@ -464,7 +464,7 @@ static int h261_decode_picture_header(H261Context *h){
     s->picture_number = (s->picture_number&~31) + i;
 
     s->avctx->time_base= (AVRational){1001, 30000};
-    s->current_picture.pts= s->picture_number;
+    s->current_picture.f.pts = s->picture_number;
 
 
     /* PTYPE starts here */
@@ -497,9 +497,9 @@ static int h261_decode_picture_header(H261Context *h){
         skip_bits(&s->gb, 8);
     }
 
-    // h261 has no I-FRAMES, but if we pass FF_I_TYPE for the first frame, the codec crashes if it does
+    // h261 has no I-FRAMES, but if we pass AV_PICTURE_TYPE_I for the first frame, the codec crashes if it does
     // not contain all I-blocks (e.g. when a packet is lost)
-    s->pict_type = FF_P_TYPE;
+    s->pict_type = AV_PICTURE_TYPE_P;
 
     h->gob_number = 0;
     return 0;
@@ -570,8 +570,10 @@ retry:
     }
 
     //we need to set current_picture_ptr before reading the header, otherwise we cannot store anyting im there
-    if(s->current_picture_ptr==NULL || s->current_picture_ptr->data[0]){
+    if (s->current_picture_ptr == NULL || s->current_picture_ptr->f.data[0]) {
         int i= ff_find_unused_picture(s, 0);
+        if (i < 0)
+            return i;
         s->current_picture_ptr= &s->picture[i];
     }
 
@@ -595,14 +597,12 @@ retry:
         goto retry;
     }
 
-    // for hurry_up==5
-    s->current_picture.pict_type= s->pict_type;
-    s->current_picture.key_frame= s->pict_type == FF_I_TYPE;
+    // for skipping the frame
+    s->current_picture.f.pict_type = s->pict_type;
+    s->current_picture.f.key_frame = s->pict_type == AV_PICTURE_TYPE_I;
 
-    /* skip everything if we are in a hurry>=5 */
-    if(avctx->hurry_up>=5) return get_consumed_bytes(s, buf_size);
-    if(  (avctx->skip_frame >= AVDISCARD_NONREF && s->pict_type==FF_B_TYPE)
-       ||(avctx->skip_frame >= AVDISCARD_NONKEY && s->pict_type!=FF_I_TYPE)
+    if(  (avctx->skip_frame >= AVDISCARD_NONREF && s->pict_type==AV_PICTURE_TYPE_B)
+       ||(avctx->skip_frame >= AVDISCARD_NONKEY && s->pict_type!=AV_PICTURE_TYPE_I)
        || avctx->skip_frame >= AVDISCARD_ALL)
         return get_consumed_bytes(s, buf_size);
 
@@ -622,8 +622,8 @@ retry:
     }
     MPV_frame_end(s);
 
-assert(s->current_picture.pict_type == s->current_picture_ptr->pict_type);
-assert(s->current_picture.pict_type == s->pict_type);
+assert(s->current_picture.f.pict_type == s->current_picture_ptr->f.pict_type);
+assert(s->current_picture.f.pict_type == s->pict_type);
     *pict= *(AVFrame*)s->current_picture_ptr;
     ff_print_debug_info(s, pict);
 
@@ -642,15 +642,14 @@ static av_cold int h261_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_h261_decoder = {
-    "h261",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_H261,
-    sizeof(H261Context),
-    h261_decode_init,
-    NULL,
-    h261_decode_end,
-    h261_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "h261",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_H261,
+    .priv_data_size = sizeof(H261Context),
+    .init           = h261_decode_init,
+    .close          = h261_decode_end,
+    .decode         = h261_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .max_lowres = 3,
     .long_name = NULL_IF_CONFIG_SMALL("H.261"),
 };

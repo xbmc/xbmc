@@ -145,7 +145,7 @@ void CGUIWindowWeather::UpdateLocations()
 {
   if (!IsActive()) return;
   m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
-
+  if (m_maxLocation < 1) return;
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);

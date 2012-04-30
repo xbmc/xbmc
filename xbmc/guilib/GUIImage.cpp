@@ -73,9 +73,9 @@ void CGUIImage::UpdateInfo(const CGUIListItem *item)
     return;
 
   if (item)
-    SetFileName(m_info.GetItemLabel(item, true));
+    SetFileName(m_info.GetItemLabel(item, true, &m_currentFallback));
   else
-    SetFileName(m_info.GetLabel(m_parentID, true));
+    SetFileName(m_info.GetLabel(m_parentID, true, &m_currentFallback));
 }
 
 void CGUIImage::AllocateOnDemand()
@@ -97,7 +97,12 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
 {
   // check whether our image failed to allocate, and if so drop back to the fallback image
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
-    m_texture.SetFileName(m_info.GetFallback());
+  {
+    if (!m_currentFallback.IsEmpty() && !m_texture.GetFileName().Equals(m_currentFallback))
+      m_texture.SetFileName(m_currentFallback);
+    else
+      m_texture.SetFileName(m_info.GetFallback());
+  }
 
   if (m_crossFadeTime)
   {

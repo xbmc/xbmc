@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avformat.h"
+#include "internal.h"
+#include "avio_internal.h"
 #include "pcm.h"
 #include "riff.h"
 
@@ -47,20 +49,20 @@ static int mmf_rate_code(int rate)
 }
 
 /* Copy of end_tag() from avienc.c, but for big-endian chunk size */
-static void end_tag_be(ByteIOContext *pb, int64_t start)
+static void end_tag_be(AVIOContext *pb, int64_t start)
 {
     int64_t pos;
 
-    pos = url_ftell(pb);
-    url_fseek(pb, start - 4, SEEK_SET);
-    put_be32(pb, (uint32_t)(pos - start));
-    url_fseek(pb, pos, SEEK_SET);
+    pos = avio_tell(pb);
+    avio_seek(pb, start - 4, SEEK_SET);
+    avio_wb32(pb, (uint32_t)(pos - start));
+    avio_seek(pb, pos, SEEK_SET);
 }
 
 static int mmf_write_header(AVFormatContext *s)
 {
     MMFContext *mmf = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     int64_t pos;
     int rate;
 
@@ -70,96 +72,96 @@ static int mmf_write_header(AVFormatContext *s)
         return -1;
     }
 
-    put_tag(pb, "MMMD");
-    put_be32(pb, 0);
+    ffio_wfourcc(pb, "MMMD");
+    avio_wb32(pb, 0);
     pos = ff_start_tag(pb, "CNTI");
-    put_byte(pb, 0); /* class */
-    put_byte(pb, 0); /* type */
-    put_byte(pb, 0); /* code type */
-    put_byte(pb, 0); /* status */
-    put_byte(pb, 0); /* counts */
-    put_tag(pb, "VN:libavcodec,"); /* metadata ("ST:songtitle,VN:version,...") */
+    avio_w8(pb, 0); /* class */
+    avio_w8(pb, 0); /* type */
+    avio_w8(pb, 0); /* code type */
+    avio_w8(pb, 0); /* status */
+    avio_w8(pb, 0); /* counts */
+    avio_write(pb, "VN:libavcodec,", sizeof("VN:libavcodec,") -1); /* metadata ("ST:songtitle,VN:version,...") */
     end_tag_be(pb, pos);
 
-    put_buffer(pb, "ATR\x00", 4);
-    put_be32(pb, 0);
-    mmf->atrpos = url_ftell(pb);
-    put_byte(pb, 0); /* format type */
-    put_byte(pb, 0); /* sequence type */
-    put_byte(pb, (0 << 7) | (1 << 4) | rate); /* (channel << 7) | (format << 4) | rate */
-    put_byte(pb, 0); /* wave base bit */
-    put_byte(pb, 2); /* time base d */
-    put_byte(pb, 2); /* time base g */
+    avio_write(pb, "ATR\x00", 4);
+    avio_wb32(pb, 0);
+    mmf->atrpos = avio_tell(pb);
+    avio_w8(pb, 0); /* format type */
+    avio_w8(pb, 0); /* sequence type */
+    avio_w8(pb, (0 << 7) | (1 << 4) | rate); /* (channel << 7) | (format << 4) | rate */
+    avio_w8(pb, 0); /* wave base bit */
+    avio_w8(pb, 2); /* time base d */
+    avio_w8(pb, 2); /* time base g */
 
-    put_tag(pb, "Atsq");
-    put_be32(pb, 16);
-    mmf->atsqpos = url_ftell(pb);
+    ffio_wfourcc(pb, "Atsq");
+    avio_wb32(pb, 16);
+    mmf->atsqpos = avio_tell(pb);
     /* Will be filled on close */
-    put_buffer(pb, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
+    avio_write(pb, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 16);
 
     mmf->awapos = ff_start_tag(pb, "Awa\x01");
 
-    av_set_pts_info(s->streams[0], 64, 1, s->streams[0]->codec->sample_rate);
+    avpriv_set_pts_info(s->streams[0], 64, 1, s->streams[0]->codec->sample_rate);
 
-    put_flush_packet(pb);
+    avio_flush(pb);
 
     return 0;
 }
 
 static int mmf_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
-    ByteIOContext *pb = s->pb;
-    put_buffer(pb, pkt->data, pkt->size);
+    AVIOContext *pb = s->pb;
+    avio_write(pb, pkt->data, pkt->size);
     return 0;
 }
 
 /* Write a variable-length symbol */
-static void put_varlength(ByteIOContext *pb, int val)
+static void put_varlength(AVIOContext *pb, int val)
 {
     if(val < 128)
-        put_byte(pb, val);
+        avio_w8(pb, val);
     else {
         val -= 128;
-        put_byte(pb, 0x80 | val >> 7);
-        put_byte(pb, 0x7f & val);
+        avio_w8(pb, 0x80 | val >> 7);
+        avio_w8(pb, 0x7f & val);
     }
 }
 
 static int mmf_write_trailer(AVFormatContext *s)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     MMFContext *mmf = s->priv_data;
     int64_t pos, size;
     int gatetime;
 
-    if (!url_is_streamed(s->pb)) {
+    if (s->pb->seekable) {
         /* Fill in length fields */
         end_tag_be(pb, mmf->awapos);
         end_tag_be(pb, mmf->atrpos);
         end_tag_be(pb, 8);
 
-        pos = url_ftell(pb);
+        pos = avio_tell(pb);
         size = pos - mmf->awapos;
 
         /* Fill Atsq chunk */
-        url_fseek(pb, mmf->atsqpos, SEEK_SET);
+        avio_seek(pb, mmf->atsqpos, SEEK_SET);
 
         /* "play wav" */
-        put_byte(pb, 0); /* start time */
-        put_byte(pb, 1); /* (channel << 6) | wavenum */
+        avio_w8(pb, 0); /* start time */
+        avio_w8(pb, 1); /* (channel << 6) | wavenum */
         gatetime = size * 500 / s->streams[0]->codec->sample_rate;
         put_varlength(pb, gatetime); /* duration */
 
         /* "nop" */
         put_varlength(pb, gatetime); /* start time */
-        put_buffer(pb, "\xff\x00", 2); /* nop */
+        avio_write(pb, "\xff\x00", 2); /* nop */
 
         /* "end of sequence" */
-        put_buffer(pb, "\x00\x00\x00\x00", 4);
+        avio_write(pb, "\x00\x00\x00\x00", 4);
 
-        url_fseek(pb, pos, SEEK_SET);
+        avio_seek(pb, pos, SEEK_SET);
 
-        put_flush_packet(pb);
+        avio_flush(pb);
     }
     return 0;
 }
@@ -183,20 +185,20 @@ static int mmf_read_header(AVFormatContext *s,
 {
     MMFContext *mmf = s->priv_data;
     unsigned int tag;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     AVStream *st;
-    int64_t file_size, size;
+    int64_t size;
     int rate, params;
 
-    tag = get_le32(pb);
+    tag = avio_rl32(pb);
     if (tag != MKTAG('M', 'M', 'M', 'D'))
         return -1;
-    file_size = get_be32(pb);
+    avio_skip(pb, 4); /* file_size */
 
     /* Skip some unused chunks that may or may not be present */
-    for(;; url_fseek(pb, size, SEEK_CUR)) {
-        tag = get_le32(pb);
-        size = get_be32(pb);
+    for(;; avio_skip(pb, size)) {
+        tag = avio_rl32(pb);
+        size = avio_rb32(pb);
         if(tag == MKTAG('C','N','T','I')) continue;
         if(tag == MKTAG('O','P','D','A')) continue;
         break;
@@ -212,22 +214,22 @@ static int mmf_read_header(AVFormatContext *s,
         return -1;
     }
 
-    get_byte(pb); /* format type */
-    get_byte(pb); /* sequence type */
-    params = get_byte(pb); /* (channel << 7) | (format << 4) | rate */
+    avio_r8(pb); /* format type */
+    avio_r8(pb); /* sequence type */
+    params = avio_r8(pb); /* (channel << 7) | (format << 4) | rate */
     rate = mmf_rate(params & 0x0f);
     if(rate  < 0) {
         av_log(s, AV_LOG_ERROR, "Invalid sample rate\n");
         return -1;
     }
-    get_byte(pb); /* wave base bit */
-    get_byte(pb); /* time base d */
-    get_byte(pb); /* time base g */
+    avio_r8(pb); /* wave base bit */
+    avio_r8(pb); /* time base d */
+    avio_r8(pb); /* time base g */
 
     /* Skip some unused chunks that may or may not be present */
-    for(;; url_fseek(pb, size, SEEK_CUR)) {
-        tag = get_le32(pb);
-        size = get_be32(pb);
+    for(;; avio_skip(pb, size)) {
+        tag = avio_rl32(pb);
+        size = avio_rb32(pb);
         if(tag == MKTAG('A','t','s','q')) continue;
         if(tag == MKTAG('A','s','p','I')) continue;
         break;
@@ -240,7 +242,7 @@ static int mmf_read_header(AVFormatContext *s,
     }
     mmf->data_size = size;
 
-    st = av_new_stream(s, 0);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
 
@@ -251,7 +253,7 @@ static int mmf_read_header(AVFormatContext *s,
     st->codec->bits_per_coded_sample = 4;
     st->codec->bit_rate = st->codec->sample_rate * st->codec->bits_per_coded_sample;
 
-    av_set_pts_info(st, 64, 1, st->codec->sample_rate);
+    avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
 
     return 0;
 }
@@ -262,12 +264,10 @@ static int mmf_read_packet(AVFormatContext *s,
                            AVPacket *pkt)
 {
     MMFContext *mmf = s->priv_data;
-    AVStream *st;
     int ret, size;
 
     if (url_feof(s->pb))
         return AVERROR(EIO);
-    st = s->streams[0];
 
     size = MAX_SIZE;
     if(size > mmf->data_size)
@@ -280,7 +280,7 @@ static int mmf_read_packet(AVFormatContext *s,
         return AVERROR(EIO);
     pkt->stream_index = 0;
 
-    ret = get_buffer(s->pb, pkt->data, pkt->size);
+    ret = avio_read(s->pb, pkt->data, pkt->size);
     if (ret < 0)
         av_free_packet(pkt);
 
@@ -292,27 +292,26 @@ static int mmf_read_packet(AVFormatContext *s,
 
 #if CONFIG_MMF_DEMUXER
 AVInputFormat ff_mmf_demuxer = {
-    "mmf",
-    NULL_IF_CONFIG_SMALL("Yamaha SMAF"),
-    sizeof(MMFContext),
-    mmf_probe,
-    mmf_read_header,
-    mmf_read_packet,
-    NULL,
-    pcm_read_seek,
+    .name           = "mmf",
+    .long_name      = NULL_IF_CONFIG_SMALL("Yamaha SMAF"),
+    .priv_data_size = sizeof(MMFContext),
+    .read_probe     = mmf_probe,
+    .read_header    = mmf_read_header,
+    .read_packet    = mmf_read_packet,
+    .read_seek      = pcm_read_seek,
 };
 #endif
 #if CONFIG_MMF_MUXER
 AVOutputFormat ff_mmf_muxer = {
-    "mmf",
-    NULL_IF_CONFIG_SMALL("Yamaha SMAF"),
-    "application/vnd.smaf",
-    "mmf",
-    sizeof(MMFContext),
-    CODEC_ID_ADPCM_YAMAHA,
-    CODEC_ID_NONE,
-    mmf_write_header,
-    mmf_write_packet,
-    mmf_write_trailer,
+    .name              = "mmf",
+    .long_name         = NULL_IF_CONFIG_SMALL("Yamaha SMAF"),
+    .mime_type         = "application/vnd.smaf",
+    .extensions        = "mmf",
+    .priv_data_size    = sizeof(MMFContext),
+    .audio_codec       = CODEC_ID_ADPCM_YAMAHA,
+    .video_codec       = CODEC_ID_NONE,
+    .write_header      = mmf_write_header,
+    .write_packet      = mmf_write_packet,
+    .write_trailer     = mmf_write_trailer,
 };
 #endif

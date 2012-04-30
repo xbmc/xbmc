@@ -153,10 +153,10 @@
 						<icon>special://skin/backgrounds/addons.jpg</icon>
 					</item>
 					<item id="7">
-						<label>705</label>
-						<label2>31405</label2>
-						<onclick>ActivateWindow(NetworkSettings)</onclick>
-						<icon>special://skin/backgrounds/network.jpg</icon>
+						<label>14036</label>
+						<label2>31409</label2>
+						<onclick>ActivateWindow(ServiceSettings)</onclick>
+						<icon>special://skin/backgrounds/services.jpg</icon>
 					</item>
 					<item id="8">
 						<label>13000</label>

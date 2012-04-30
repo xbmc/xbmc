@@ -39,6 +39,7 @@ OPTIONS="
 --disable-ffmpeg \
 --disable-ffprobe \
 --disable-devices \
+--disable-crystalhd \
 --enable-muxer=spdif \
 --enable-muxer=adts \
 --enable-encoder=ac3 \
@@ -47,14 +48,14 @@ OPTIONS="
 --enable-avfilter \
 --disable-doc"
 
-./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2 -DNDEBUG" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
 make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
-cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avcore-0.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avformat-52.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avutil-50.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/avfilter-1.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/postproc-51.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/swscale-0.dll /xbmc/system/players/dvdplayer/
+cp .libs/avcodec-53.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avformat-53.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avutil-51.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avfilter-2.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/postproc-52.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/swresample-0.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/swscale-2.dll /xbmc/system/players/dvdplayer/

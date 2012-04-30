@@ -33,7 +33,9 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -202,7 +204,9 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         {
           {
             int nWidth = g_advancedSettings.m_thumbSize;
-            double aspect = (double)picture.iWidth / (double)picture.iHeight;
+            double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
+            if(hint.forced_aspect && hint.aspect != 0)
+              aspect = hint.aspect;
             int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
 
             DllSwScale dllSwScale;
@@ -367,7 +371,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   }  /* for iStream */
 
   details.DetermineBestStreams();
-
+#ifdef HAVE_LIBBLURAY
   // correct bluray runtime. we need the duration from the input stream, not the demuxer.
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
@@ -376,7 +380,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
     }
   }
-
+#endif
   return retVal;
 }
 

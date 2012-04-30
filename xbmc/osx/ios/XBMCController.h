@@ -26,7 +26,6 @@
 
 #import "XBMC_events.h"
 #include "XBMC_keysym.h"
-
 @interface XBMCController : UIViewController
 {
   int m_screensaverTimeout;
@@ -36,8 +35,10 @@
   CGPoint lastGesturePoint;
   CGFloat lastPinchScale;
   CGFloat currentPinchScale;  
+  CGFloat screenScale;
   bool touchBeginSignaled;
-	
+  int  m_screenIdx;
+
   UIInterfaceOrientation orientation;
 
   XBMC_Event lastEvent;
@@ -46,7 +47,9 @@
 @property CGPoint lastGesturePoint;
 @property CGFloat lastPinchScale;
 @property CGFloat currentPinchScale;
+@property CGFloat screenScale;
 @property bool touchBeginSignaled;
+@property int  m_screenIdx;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
 
@@ -64,11 +67,15 @@
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
 - (UIInterfaceOrientation) getOrientation;
-- (void)createGestureRecognizers;
+- (void) createGestureRecognizers;
+
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
+- (void) activateScreen: (UIScreen *)screen;
+- (id)   initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen;
 @end
 
 extern XBMCController *g_xbmcController;

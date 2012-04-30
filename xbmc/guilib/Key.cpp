@@ -79,7 +79,7 @@ void CKey::Reset()
   m_rightThumbX = 0.0f;
   m_rightThumbY = 0.0f;
   m_repeat = 0.0f;
-  m_fromHttpApi = false;
+  m_fromService = false;
   m_buttonCode = KEY_INVALID;
   m_vkey = 0;
   m_unicode = 0;
@@ -98,7 +98,7 @@ const CKey& CKey::operator=(const CKey& key)
   m_rightThumbX  = key.m_rightThumbX;
   m_rightThumbY  = key.m_rightThumbY;
   m_repeat       = key.m_repeat;
-  m_fromHttpApi  = key.m_fromHttpApi;
+  m_fromService  = key.m_fromService;
   m_buttonCode   = key.m_buttonCode;
   m_vkey         = key.m_vkey;
   m_unicode     = key.m_unicode;
@@ -164,22 +164,15 @@ float CKey::GetRepeat() const
   return m_repeat;
 }
 
-bool CKey::GetFromHttpApi() const
+void CKey::SetFromService(bool fromService)
 {
-  return m_fromHttpApi;
-}
-
-void CKey::SetFromHttpApi(bool bFromHttpApi)
-{
-  if(bFromHttpApi && (m_buttonCode & KEY_ASCII) )
-  {
-      m_unicode = m_buttonCode - KEY_ASCII;      
-  }
+  if (fromService && (m_buttonCode & KEY_ASCII))
+    m_unicode = m_buttonCode - KEY_ASCII;
     
-  m_fromHttpApi = bFromHttpApi;
+  m_fromService = fromService;
 }
 
-CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)
+CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */, unsigned int holdTime /*= 0*/)
 {
   m_id = actionID;
   m_amount[0] = amount1;
@@ -190,7 +183,7 @@ CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;
-  m_holdTime = 0;
+  m_holdTime = holdTime;
 }
 
 CAction::CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name)

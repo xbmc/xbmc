@@ -139,7 +139,6 @@ namespace INFO
 #define SYSTEM_CURRENT_WINDOW       135
 #define SYSTEM_CURRENT_CONTROL      136
 #define SYSTEM_DVD_LABEL            138
-#define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN             142
@@ -149,7 +148,6 @@ namespace INFO
 #define SYSTEM_PROFILENAME          146
 #define SYSTEM_PROFILETHUMB         147
 #define SYSTEM_HAS_LOGINSCREEN      148
-#define SYSTEM_HAS_DRIVE_G          149
 #define SYSTEM_HDD_SMART            150
 #define SYSTEM_HDD_TEMPERATURE      151
 #define SYSTEM_HDD_MODEL            152
@@ -178,6 +176,7 @@ namespace INFO
 #define SYSTEM_PROFILECOUNT         181
 #define SYSTEM_ISFULLSCREEN         182
 #define SYSTEM_ISSTANDALONE         183
+#define SYSTEM_HAS_PVR              184
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -422,9 +421,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-#define VERSION_MAJOR 11
+#define VERSION_MAJOR 12
 #define VERSION_MINOR 0
-#define VERSION_TAG "-PRE"
+#define VERSION_TAG "-ALPHA1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -457,39 +456,57 @@ namespace INFO
 #define LISTITEM_ACTUAL_ICON        (LISTITEM_START + 27)
 #define LISTITEM_PATH               (LISTITEM_START + 28)
 #define LISTITEM_PICTURE_PATH       (LISTITEM_START + 29)
-#define LISTITEM_PICTURE_DATETIME   (LISTITEM_START + 30)
-#define LISTITEM_PICTURE_RESOLUTION (LISTITEM_START + 31)
-#define LISTITEM_STUDIO             (LISTITEM_START + 32)
-#define LISTITEM_MPAA               (LISTITEM_START + 33)
-#define LISTITEM_CAST               (LISTITEM_START + 34)
-#define LISTITEM_CAST_AND_ROLE      (LISTITEM_START + 35)
-#define LISTITEM_WRITER             (LISTITEM_START + 36)
-#define LISTITEM_TAGLINE            (LISTITEM_START + 37)
-#define LISTITEM_TOP250             (LISTITEM_START + 38)
-#define LISTITEM_RATING_AND_VOTES   (LISTITEM_START + 39)
-#define LISTITEM_TRAILER            (LISTITEM_START + 40)
-#define LISTITEM_STAR_RATING        (LISTITEM_START + 41)
-#define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 42)
-#define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
-#define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
-#define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
-#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 46)
-#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 47)
-#define LISTITEM_VIDEO_ASPECT       (LISTITEM_START + 48)
-#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 49)
-#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
-#define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
-#define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
-#define LISTITEM_IS_FOLDER          (LISTITEM_START + 53)
-#define LISTITEM_ORIGINALTITLE      (LISTITEM_START + 54)
-#define LISTITEM_COUNTRY            (LISTITEM_START + 55)
-#define LISTITEM_PLAYCOUNT          (LISTITEM_START + 56)
-#define LISTITEM_LASTPLAYED         (LISTITEM_START + 57)
-#define LISTITEM_FOLDERPATH         (LISTITEM_START + 58)
-#define LISTITEM_DISC_NUMBER        (LISTITEM_START + 59)
-#define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 60)
-#define LISTITEM_IS_RESUMABLE       (LISTITEM_START + 61)
-#define LISTITEM_PERCENT_PLAYED     (LISTITEM_START + 62)
+// the ordering of LISTITEM_PICTURE_* is important as they're mapped to SLIDE_* items in GUIInfoManager.cpp
+#define LISTITEM_PICTURE_START      (LISTITEM_START + 30)
+#define LISTITEM_PICTURE_RESOLUTION (LISTITEM_PICTURE_START) // => SLIDE_RESOLUTION
+#define LISTITEM_PICTURE_DATETIME   (LISTITEM_START + 31)    // => SLIDE_EXIF_DATE_TIME
+#define LISTITEM_PICTURE_COMMENT    (LISTITEM_START + 32)    // => SLIDE_COMMENT
+#define LISTITEM_PICTURE_CAPTION    (LISTITEM_START + 33)    // => SLIDE_IPTC_CAPTION
+#define LISTITEM_PICTURE_DESC       (LISTITEM_START + 34)    // => SLIDE_EXIF_DESCRIPTION
+#define LISTITEM_PICTURE_KEYWORDS   (LISTITEM_START + 35)    // => SLIDE_IPTC_KEYWORDS
+#define LISTITEM_PICTURE_CAM_MAKE   (LISTITEM_START + 36)    // => SLIDE_EXIF_CAMERA_MAKE
+#define LISTITEM_PICTURE_CAM_MODEL  (LISTITEM_START + 37)    // => SLIDE_EXIF_CAMERA_MODEL
+#define LISTITEM_PICTURE_APERTURE   (LISTITEM_START + 38)    // => SLIDE_EXIF_APERTURE
+#define LISTITEM_PICTURE_FOCAL_LEN  (LISTITEM_START + 39)    // => SLIDE_EXIF_FOCAL_LENGTH
+#define LISTITEM_PICTURE_FOCUS_DIST (LISTITEM_START + 40)    // => SLIDE_EXIF_FOCUS_DIST
+#define LISTITEM_PICTURE_EXP_MODE   (LISTITEM_START + 41)    // => SLIDE_EXIF_EXPOSURE_MODE
+#define LISTITEM_PICTURE_EXP_TIME   (LISTITEM_START + 42)    // => SLIDE_EXIF_EXPOSURE_TIME
+#define LISTITEM_PICTURE_ISO        (LISTITEM_START + 43)    // => SLIDE_EXIF_ISO_EQUIV
+#define LISTITEM_PICTURE_GPS_LAT    (LISTITEM_START + 44)    // => SLIDE_EXIF_GPS_LATITUDE
+#define LISTITEM_PICTURE_GPS_LON    (LISTITEM_START + 45)    // => SLIDE_EXIF_GPS_LONGITUDE
+#define LISTITEM_PICTURE_GPS_ALT    (LISTITEM_START + 46)    // => SLIDE_EXIF_GPS_ALTITUDE
+#define LISTITEM_PICTURE_END        (LISTITEM_PICTURE_GPS_ALT)
+#define LISTITEM_STUDIO             (LISTITEM_START + 47)
+#define LISTITEM_MPAA               (LISTITEM_START + 48)
+#define LISTITEM_CAST               (LISTITEM_START + 49)
+#define LISTITEM_CAST_AND_ROLE      (LISTITEM_START + 50)
+#define LISTITEM_WRITER             (LISTITEM_START + 51)
+#define LISTITEM_TAGLINE            (LISTITEM_START + 52)
+#define LISTITEM_TOP250             (LISTITEM_START + 53)
+#define LISTITEM_RATING_AND_VOTES   (LISTITEM_START + 54)
+#define LISTITEM_TRAILER            (LISTITEM_START + 55)
+#define LISTITEM_STAR_RATING        (LISTITEM_START + 56)
+#define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 57)
+#define LISTITEM_SORT_LETTER        (LISTITEM_START + 58)
+#define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 59)
+#define LISTITEM_FOLDERNAME         (LISTITEM_START + 60)
+#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 61)
+#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 62)
+#define LISTITEM_VIDEO_ASPECT       (LISTITEM_START + 63)
+#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 64)
+#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 65)
+#define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 66)
+#define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 67)
+#define LISTITEM_IS_FOLDER          (LISTITEM_START + 68)
+#define LISTITEM_ORIGINALTITLE      (LISTITEM_START + 69)
+#define LISTITEM_COUNTRY            (LISTITEM_START + 70)
+#define LISTITEM_PLAYCOUNT          (LISTITEM_START + 71)
+#define LISTITEM_LASTPLAYED         (LISTITEM_START + 72)
+#define LISTITEM_FOLDERPATH         (LISTITEM_START + 73)
+#define LISTITEM_DISC_NUMBER        (LISTITEM_START + 74)
+#define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 75)
+#define LISTITEM_IS_RESUMABLE       (LISTITEM_START + 76)
+#define LISTITEM_PERCENT_PLAYED     (LISTITEM_START + 77)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -594,9 +611,9 @@ public:
    \sa GetItemInt, GetMultiInfoInt
    */
   bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
-  CStdString GetLabel(int info, int contextWindow = 0);
+  CStdString GetLabel(int info, int contextWindow = 0, CStdString *fallback = NULL);
 
-  CStdString GetImage(int info, int contextWindow);
+  CStdString GetImage(int info, int contextWindow, CStdString *fallback = NULL);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetLcdTime( int _eInfo ) const;
@@ -656,8 +673,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info);
-  CStdString GetItemImage(const CFileItem *item, int info);
+  CStdString GetItemLabel(const CFileItem *item, int info, CStdString *fallback = NULL);
+  CStdString GetItemImage(const CFileItem *item, int info, CStdString *fallback = NULL);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -708,7 +725,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, CStdString *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);

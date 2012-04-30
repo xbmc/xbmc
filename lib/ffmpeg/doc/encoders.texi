@@ -1,0 +1,588 @@
+@chapter Encoders
+@c man begin ENCODERS
+
+Encoders are configured elements in FFmpeg which allow the encoding of
+multimedia streams.
+
+When you configure your FFmpeg build, all the supported native encoders
+are enabled by default. Encoders requiring an external library must be enabled
+manually via the corresponding @code{--enable-lib} option. You can list all
+available encoders using the configure option @code{--list-encoders}.
+
+You can disable all the encoders with the configure option
+@code{--disable-encoders} and selectively enable / disable single encoders
+with the options @code{--enable-encoder=@var{ENCODER}} /
+@code{--disable-encoder=@var{ENCODER}}.
+
+The option @code{-codecs} of the ff* tools will display the list of
+enabled encoders.
+
+@c man end ENCODERS
+
+@chapter Audio Encoders
+@c man begin AUDIO ENCODERS
+
+A description of some of the currently available audio encoders
+follows.
+
+@section ac3 and ac3_fixed
+
+AC-3 audio encoders.
+
+These encoders implement part of ATSC A/52:2010 and ETSI TS 102 366, as well as
+the undocumented RealAudio 3 (a.k.a. dnet).
+
+The @var{ac3} encoder uses floating-point math, while the @var{ac3_fixed}
+encoder only uses fixed-point integer math. This does not mean that one is
+always faster, just that one or the other may be better suited to a
+particular system. The floating-point encoder will generally produce better
+quality audio for a given bitrate. The @var{ac3_fixed} encoder is not the
+default codec for any of the output formats, so it must be specified explicitly
+using the option @code{-acodec ac3_fixed} in order to use it.
+
+@subsection AC-3 Metadata
+
+The AC-3 metadata options are used to set parameters that describe the audio,
+but in most cases do not affect the audio encoding itself. Some of the options
+do directly affect or influence the decoding and playback of the resulting
+bitstream, while others are just for informational purposes. A few of the
+options will add bits to the output stream that could otherwise be used for
+audio data, and will thus affect the quality of the output. Those will be
+indicated accordingly with a note in the option list below.
+
+These parameters are described in detail in several publicly-available
+documents.
+@itemize
+@item @uref{http://www.atsc.org/cms/standards/a_52-2010.pdf,A/52:2010 - Digital Audio Compression (AC-3) (E-AC-3) Standard}
+@item @uref{http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf,A/54 - Guide to the Use of the ATSC Digital Television Standard}
+@item @uref{http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf,Dolby Metadata Guide}
+@item @uref{http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf,Dolby Digital Professional Encoding Guidelines}
+@end itemize
+
+@subsubsection Metadata Control Options
+
+@table @option
+
+@item -per_frame_metadata @var{boolean}
+Allow Per-Frame Metadata. Specifies if the encoder should check for changing
+metadata for each frame.
+@table @option
+@item 0
+The metadata values set at initialization will be used for every frame in the
+stream. (default)
+@item 1
+Metadata values can be changed before encoding each frame.
+@end table
+
+@end table
+
+@subsubsection Downmix Levels
+
+@table @option
+
+@item -center_mixlev @var{level}
+Center Mix Level. The amount of gain the decoder should apply to the center
+channel when downmixing to stereo. This field will only be written to the
+bitstream if a center channel is present. The value is specified as a scale
+factor. There are 3 valid values:
+@table @option
+@item 0.707
+Apply -3dB gain
+@item 0.595
+Apply -4.5dB gain (default)
+@item 0.500
+Apply -6dB gain
+@end table
+
+@item -surround_mixlev @var{level}
+Surround Mix Level. The amount of gain the decoder should apply to the surround
+channel(s) when downmixing to stereo. This field will only be written to the
+bitstream if one or more surround channels are present. The value is specified
+as a scale factor.  There are 3 valid values:
+@table @option
+@item 0.707
+Apply -3dB gain
+@item 0.500
+Apply -6dB gain (default)
+@item 0.000
+Silence Surround Channel(s)
+@end table
+
+@end table
+
+@subsubsection Audio Production Information
+Audio Production Information is optional information describing the mixing
+environment.  Either none or both of the fields are written to the bitstream.
+
+@table @option
+
+@item -mixing_level @var{number}
+Mixing Level. Specifies peak sound pressure level (SPL) in the production
+environment when the mix was mastered. Valid values are 80 to 111, or -1 for
+unknown or not indicated. The default value is -1, but that value cannot be
+used if the Audio Production Information is written to the bitstream. Therefore,
+if the @code{room_type} option is not the default value, the @code{mixing_level}
+option must not be -1.
+
+@item -room_type @var{type}
+Room Type. Describes the equalization used during the final mixing session at
+the studio or on the dubbing stage. A large room is a dubbing stage with the
+industry standard X-curve equalization; a small room has flat equalization.
+This field will not be written to the bitstream if both the @code{mixing_level}
+option and the @code{room_type} option have the default values.
+@table @option
+@item 0
+@itemx notindicated
+Not Indicated (default)
+@item 1
+@itemx large
+Large Room
+@item 2
+@itemx small
+Small Room
+@end table
+
+@end table
+
+@subsubsection Other Metadata Options
+
+@table @option
+
+@item -copyright @var{boolean}
+Copyright Indicator. Specifies whether a copyright exists for this audio.
+@table @option
+@item 0
+@itemx off
+No Copyright Exists (default)
+@item 1
+@itemx on
+Copyright Exists
+@end table
+
+@item -dialnorm @var{value}
+Dialogue Normalization. Indicates how far the average dialogue level of the
+program is below digital 100% full scale (0 dBFS). This parameter determines a
+level shift during audio reproduction that sets the average volume of the
+dialogue to a preset level. The goal is to match volume level between program
+sources. A value of -31dB will result in no volume level change, relative to
+the source volume, during audio reproduction. Valid values are whole numbers in
+the range -31 to -1, with -31 being the default.
+
+@item -dsur_mode @var{mode}
+Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround
+(Pro Logic). This field will only be written to the bitstream if the audio
+stream is stereo. Using this option does @b{NOT} mean the encoder will actually
+apply Dolby Surround processing.
+@table @option
+@item 0
+@itemx notindicated
+Not Indicated (default)
+@item 1
+@itemx off
+Not Dolby Surround Encoded
+@item 2
+@itemx on
+Dolby Surround Encoded
+@end table
+
+@item -original @var{boolean}
+Original Bit Stream Indicator. Specifies whether this audio is from the
+original source and not a copy.
+@table @option
+@item 0
+@itemx off
+Not Original Source
+@item 1
+@itemx on
+Original Source (default)
+@end table
+
+@end table
+
+@subsection Extended Bitstream Information
+The extended bitstream options are part of the Alternate Bit Stream Syntax as
+specified in Annex D of the A/52:2010 standard. It is grouped into 2 parts.
+If any one parameter in a group is specified, all values in that group will be
+written to the bitstream.  Default values are used for those that are written
+but have not been specified.  If the mixing levels are written, the decoder
+will use these values instead of the ones specified in the @code{center_mixlev}
+and @code{surround_mixlev} options if it supports the Alternate Bit Stream
+Syntax.
+
+@subsubsection Extended Bitstream Information - Part 1
+
+@table @option
+
+@item -dmix_mode @var{mode}
+Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt
+(Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode.
+@table @option
+@item 0
+@itemx notindicated
+Not Indicated (default)
+@item 1
+@itemx ltrt
+Lt/Rt Downmix Preferred
+@item 2
+@itemx loro
+Lo/Ro Downmix Preferred
+@end table
+
+@item -ltrt_cmixlev @var{level}
+Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the
+center channel when downmixing to stereo in Lt/Rt mode.
+@table @option
+@item 1.414
+Apply +3dB gain
+@item 1.189
+Apply +1.5dB gain
+@item 1.000
+Apply 0dB gain
+@item 0.841
+Apply -1.5dB gain
+@item 0.707
+Apply -3.0dB gain
+@item 0.595
+Apply -4.5dB gain (default)
+@item 0.500
+Apply -6.0dB gain
+@item 0.000
+Silence Center Channel
+@end table
+
+@item -ltrt_surmixlev @var{level}
+Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the
+surround channel(s) when downmixing to stereo in Lt/Rt mode.
+@table @option
+@item 0.841
+Apply -1.5dB gain
+@item 0.707
+Apply -3.0dB gain
+@item 0.595
+Apply -4.5dB gain
+@item 0.500
+Apply -6.0dB gain (default)
+@item 0.000
+Silence Surround Channel(s)
+@end table
+
+@item -loro_cmixlev @var{level}
+Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the
+center channel when downmixing to stereo in Lo/Ro mode.
+@table @option
+@item 1.414
+Apply +3dB gain
+@item 1.189
+Apply +1.5dB gain
+@item 1.000
+Apply 0dB gain
+@item 0.841
+Apply -1.5dB gain
+@item 0.707
+Apply -3.0dB gain
+@item 0.595
+Apply -4.5dB gain (default)
+@item 0.500
+Apply -6.0dB gain
+@item 0.000
+Silence Center Channel
+@end table
+
+@item -loro_surmixlev @var{level}
+Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the
+surround channel(s) when downmixing to stereo in Lo/Ro mode.
+@table @option
+@item 0.841
+Apply -1.5dB gain
+@item 0.707
+Apply -3.0dB gain
+@item 0.595
+Apply -4.5dB gain
+@item 0.500
+Apply -6.0dB gain (default)
+@item 0.000
+Silence Surround Channel(s)
+@end table
+
+@end table
+
+@subsubsection Extended Bitstream Information - Part 2
+
+@table @option
+
+@item -dsurex_mode @var{mode}
+Dolby Surround EX Mode. Indicates whether the stream uses Dolby Surround EX
+(7.1 matrixed to 5.1). Using this option does @b{NOT} mean the encoder will actually
+apply Dolby Surround EX processing.
+@table @option
+@item 0
+@itemx notindicated
+Not Indicated (default)
+@item 1
+@itemx on
+Dolby Surround EX Off
+@item 2
+@itemx off
+Dolby Surround EX On
+@end table
+
+@item -dheadphone_mode @var{mode}
+Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone
+encoding (multi-channel matrixed to 2.0 for use with headphones). Using this
+option does @b{NOT} mean the encoder will actually apply Dolby Headphone
+processing.
+@table @option
+@item 0
+@itemx notindicated
+Not Indicated (default)
+@item 1
+@itemx on
+Dolby Headphone Off
+@item 2
+@itemx off
+Dolby Headphone On
+@end table
+
+@item -ad_conv_type @var{type}
+A/D Converter Type. Indicates whether the audio has passed through HDCD A/D
+conversion.
+@table @option
+@item 0
+@itemx standard
+Standard A/D Converter (default)
+@item 1
+@itemx hdcd
+HDCD A/D Converter
+@end table
+
+@end table
+
+@subsection Other AC-3 Encoding Options
+
+@table @option
+
+@item -stereo_rematrixing @var{boolean}
+Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This
+is an optional AC-3 feature that increases quality by selectively encoding
+the left/right channels as mid/side. This option is enabled by default, and it
+is highly recommended that it be left as enabled except for testing purposes.
+
+@end table
+
+@subsection Floating-Point-Only AC-3 Encoding Options
+
+These options are only valid for the floating-point encoder and do not exist
+for the fixed-point encoder due to the corresponding features not being
+implemented in fixed-point.
+
+@table @option
+
+@item -channel_coupling @var{boolean}
+Enables/Disables use of channel coupling, which is an optional AC-3 feature
+that increases quality by combining high frequency information from multiple
+channels into a single channel. The per-channel high frequency information is
+sent with less accuracy in both the frequency and time domains. This allows
+more bits to be used for lower frequencies while preserving enough information
+to reconstruct the high frequencies. This option is enabled by default for the
+floating-point encoder and should generally be left as enabled except for
+testing purposes or to increase encoding speed.
+@table @option
+@item -1
+@itemx auto
+Selected by Encoder (default)
+@item 0
+@itemx off
+Disable Channel Coupling
+@item 1
+@itemx on
+Enable Channel Coupling
+@end table
+
+@item -cpl_start_band @var{number}
+Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a
+value higher than the bandwidth is used, it will be reduced to 1 less than the
+coupling end band. If @var{auto} is used, the start band will be determined by
+the encoder based on the bit rate, sample rate, and channel layout. This option
+has no effect if channel coupling is disabled.
+@table @option
+@item -1
+@itemx auto
+Selected by Encoder (default)
+@end table
+
+@end table
+
+@c man end AUDIO ENCODERS
+
+@chapter Video Encoders
+@c man begin VIDEO ENCODERS
+
+A description of some of the currently available video encoders
+follows.
+
+@section libvpx
+
+VP8 format supported through libvpx.
+
+Requires the presence of the libvpx headers and library during configuration.
+You need to explicitly configure the build with @code{--enable-libvpx}.
+
+@subsection Options
+
+Mapping from FFmpeg to libvpx options with conversion notes in parentheses.
+
+@table @option
+
+@item threads
+g_threads
+
+@item profile
+g_profile
+
+@item vb
+rc_target_bitrate
+
+@item g
+kf_max_dist
+
+@item keyint_min
+kf_min_dist
+
+@item qmin
+rc_min_quantizer
+
+@item qmax
+rc_max_quantizer
+
+@item bufsize, vb
+rc_buf_sz
+@code{(bufsize * 1000 / vb)}
+
+rc_buf_optimal_sz
+@code{(bufsize * 1000 / vb * 5 / 6)}
+
+@item rc_init_occupancy, vb
+rc_buf_initial_sz
+@code{(rc_init_occupancy * 1000 / vb)}
+
+@item rc_buffer_aggressivity
+rc_undershoot_pct
+
+@item skip_threshold
+rc_dropframe_thresh
+
+@item qcomp
+rc_2pass_vbr_bias_pct
+
+@item maxrate, vb
+rc_2pass_vbr_maxsection_pct
+@code{(maxrate * 100 / vb)}
+
+@item minrate, vb
+rc_2pass_vbr_minsection_pct
+@code{(minrate * 100 / vb)}
+
+@item minrate, maxrate, vb
+@code{VPX_CBR}
+@code{(minrate == maxrate == vb)}
+
+@item crf
+@code{VPX_CQ}, @code{VP8E_SET_CQ_LEVEL}
+
+@item quality
+@table @option
+@item @var{best}
+@code{VPX_DL_BEST_QUALITY}
+@item @var{good}
+@code{VPX_DL_GOOD_QUALITY}
+@item @var{realtime}
+@code{VPX_DL_REALTIME}
+@end table
+
+@item speed
+@code{VP8E_SET_CPUUSED}
+
+@item nr
+@code{VP8E_SET_NOISE_SENSITIVITY}
+
+@item mb_threshold
+@code{VP8E_SET_STATIC_THRESHOLD}
+
+@item slices
+@code{VP8E_SET_TOKEN_PARTITIONS}
+
+@item Alternate reference frame related
+@table @option
+@item vp8flags altref
+@code{VP8E_SET_ENABLEAUTOALTREF}
+@item @var{arnr_max_frames}
+@code{VP8E_SET_ARNR_MAXFRAMES}
+@item @var{arnr_type}
+@code{VP8E_SET_ARNR_TYPE}
+@item @var{arnr_strength}
+@code{VP8E_SET_ARNR_STRENGTH}
+@item @var{rc_lookahead}
+g_lag_in_frames
+@end table
+
+@item vp8flags error_resilient
+g_error_resilient
+
+@end table
+
+For more information about libvpx see:
+@url{http://www.webmproject.org/}
+
+@section libx264
+
+H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 format supported through
+libx264.
+
+Requires the presence of the libx264 headers and library during
+configuration. You need to explicitly configure the build with
+@code{--enable-libx264}.
+
+@subsection Options
+
+@table @option
+
+@item preset @var{preset_name}
+Set the encoding preset.
+
+@item tune @var{tune_name}
+Tune the encoding params.
+
+@item fastfirstpass @var{bool}
+Use fast settings when encoding first pass, default value is 1.
+
+@item profile @var{profile_name}
+Set profile restrictions.
+
+@item level @var{level}
+Specify level (as defined by Annex A).
+Deprecated in favor of @var{x264opts}.
+
+@item passlogfile @var{filename}
+Specify filename for 2 pass stats.
+Deprecated in favor of @var{x264opts} (see @var{stats} libx264 option).
+
+@item wpredp @var{wpred_type}
+Specify Weighted prediction for P-frames.
+Deprecated in favor of @var{x264opts} (see @var{weightp} libx264 option).
+
+@item x264opts @var{options}
+Allow to set any x264 option, see x264 --fullhelp for a list.
+
+@var{options} is a list of @var{key}=@var{value} couples separated by
+":".
+@end table
+
+For example to specify libx264 encoding options with @command{ffmpeg}:
+@example
+ffmpeg -i foo.mpg -vcodec libx264 -x264opts keyint=123:min-keyint=20 -an out.mkv
+@end example
+
+For more information about libx264 and the supported options see:
+@url{http://www.videolan.org/developers/x264.html}
+
+@c man end VIDEO ENCODERS

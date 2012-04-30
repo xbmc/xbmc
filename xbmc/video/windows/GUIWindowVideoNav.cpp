@@ -282,7 +282,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  m_rootDir.SetCacheDirectory(DIR_CACHE_ONCE);
   items.ClearProperties();
 
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
@@ -339,7 +338,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           // grab the season thumb as the folder thumb
           CStdString strLabel;
           CStdString strPath;
-          if (params.GetSeason() == -1 && items.Size() > 0)
+          if (params.GetSeason() <= -1 && items.Size() > 0)
           {
             CQueryParams params2;
             dir.GetQueryParams(items[0]->GetPath(),params2);
@@ -405,7 +404,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       CStdString label;
       if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
         items.SetLabel(label);
-      LoadVideoInfo(items);
+      if (!items.IsSourcesPath())
+        LoadVideoInfo(items);
     }
   }
   return bResult;
@@ -421,9 +421,19 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   CStdString content = m_database.GetContentForPath(items.GetPath());
   items.SetContent(content.IsEmpty() ? "files" : content);
 
-  bool fileMetaData = (g_guiSettings.GetBool("myvideos.filemetadata") &&
-                      !content.IsEmpty() &&
-                       m_stackingAvailable && g_settings.m_videoStacking);
+  /*
+    If we have a matching item in the library, so we can assign the metadata to it. In addition, we can choose
+    * whether the item is stacked down (eg in the case of folders representing a single item)
+    * whether or not we assign the library's labels to the item, or leave the item as is.
+
+    As certain users (read: certain developers) don't want either of these to occur, we compromise by stacking
+    items down only if stacking is available and enabled.
+
+    Similarly, we assign the "clean" library labels to the item only if the "Replace filenames with library titles"
+    setting is enabled.
+    */
+  bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_settings.m_videoStacking);
+  bool replaceLabels = g_guiSettings.GetBool("myvideos.replacelabels");
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
@@ -439,15 +449,13 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   {
     CFileItemPtr pItem = items[i];
     CFileItemPtr match;
-    if (!content.IsEmpty())
-      match = dbItems.Get(pItem->GetPath());
+    if (!content.IsEmpty()) /* optical media will be stacked down, so it's path won't match the base path */
+      match = dbItems.Get(pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath());
     if (match)
     {
-      CStdString label (pItem->GetLabel ());
-      CStdString label2(pItem->GetLabel2());
-      pItem->UpdateInfo(*match);
-      
-      if (fileMetaData)
+      pItem->UpdateInfo(*match, replaceLabels);
+
+      if (stackItems)
       {
         if (match->m_bIsFolder)
           pItem->SetPath(match->GetVideoInfoTag()->m_strPath);
@@ -460,14 +468,6 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
           items.SetSortIgnoreFolders(true);
           pItem->m_bIsFolder = match->m_bIsFolder;
         }
-      }
-      else
-      {
-        if (CFile::Exists(match->GetCachedFanart()))
-          pItem->SetProperty("fanart_image", match->GetCachedFanart());
-
-        pItem->SetLabel (label);
-        pItem->SetLabel2(label2);
       }
     }
     else
@@ -484,10 +484,6 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       // set the watched overlay
       if (pItem->IsVideo())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
-
-      // Since the item is not in our db, as an alternative clean its name
-      if (fileMetaData)
-        pItem->CleanString();
     }
   }
 }
@@ -655,7 +651,7 @@ bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
   if (params.GetMovieId()   != -1 ||
       params.GetEpisodeId() != -1 ||
       params.GetMVideoId()  != -1 ||
-      (params.GetTvShowId() != -1 && params.GetSeason() == -1
+      (params.GetTvShowId() != -1 && params.GetSeason() <= -1
               && !CVideoDatabaseDirectory::IsAllItem(strPath)))
     return true;
 
@@ -687,7 +683,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
-      CDirectory::GetDirectory(pItem->GetPath(),items,"",false,false,DIR_CACHE_ONCE,true,true);
+      CDirectory::GetDirectory(pItem->GetPath(),items,"",DIR_FLAG_NO_FILE_DIRS);
       for (int i=0;i<items.Size();++i)
         OnDeleteItem(items[i]);
 
@@ -905,7 +901,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
-    if (!item->IsDVD() && item->GetPath() != "add" &&
+    if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       CVideoDatabase database;
@@ -1325,7 +1321,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      OnScan("",true);
+      OnScan("");
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:
@@ -1504,10 +1500,12 @@ CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
     return "videodb://3/3/";
   else if (dir.Equals("MusicVideoArtists"))
     return "videodb://3/4/";
-  else if (dir.Equals("MusicVideoDirectors"))
+  else if (dir.Equals("MusicVideoAlbums"))
     return "videodb://3/5/";
-  else if (dir.Equals("MusicVideoStudios"))
+  else if (dir.Equals("MusicVideoDirectors"))
     return "videodb://3/6/";
+  else if (dir.Equals("MusicVideoStudios"))
+    return "videodb://3/7/";
   else if (dir.Equals("MusicVideos"))
     return "videodb://3/";
   else if (dir.Equals("RecentlyAddedMovies"))

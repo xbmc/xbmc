@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <strings>
     <string id="30000">启用同人画</string>
-    <string id="30001">启用HD-Trailers.net预告片</string>
+    <string id="30001">首选HD-Trailers.net预告片</string>
+    <string id="30002">首选语言</string>
+    <string id="30003">获取评价信息于</string>
+    <string id="30004">启用预告片（YouTube）</string>
+    <string id="30005">保留原片名</string>
 </strings>

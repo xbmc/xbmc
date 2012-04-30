@@ -43,8 +43,22 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
+#import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
 #import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
+
+//------------------------------------------------------------------------------------------
+// special object-c class for handling the inhibit display NSTimer callback.
+@interface windowInhibitScreenSaverClass : NSObject
+- (void) updateSystemActivity: (NSTimer*)timer;
+@end
+
+@implementation windowInhibitScreenSaverClass
+-(void) updateSystemActivity: (NSTimer*)timer
+{
+  UpdateSystemActivity(UsrActivity);
+}
+@end
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
@@ -442,6 +456,7 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
   m_glContext = 0;
   m_SDLSurface = NULL;
   m_osx_events = NULL;
+  m_use_system_screensaver = true;
   // check runtime, we only allow this on 10.5+
   m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
 }
@@ -1100,7 +1115,7 @@ void CWinSystemOSX::FillInVideoModes()
 
     CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
-    CLog::Log(LOGDEBUG, "Display %i has name %s", disp, [dispName UTF8String]);
+    CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
     
     if (NULL == displayModes)
       continue;
@@ -1128,7 +1143,7 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
+        CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
         
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
 
@@ -1231,6 +1246,62 @@ void CWinSystemOSX::OnMove(int x, int y)
   Cocoa_CVDisplayLinkUpdate();
 }
 
+void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
+{
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+  // static games because NSTimer is an object-c class and we cannot
+  // forward declare nor include NSTimer.h in WinSystemOSX.h
+  static NSTimer *display_tickle;
+
+  if (bEnable)
+  {
+    if (display_tickle != NULL)
+    {
+      [display_tickle invalidate];
+      [display_tickle release];
+      display_tickle = NULL;
+    }
+  }
+  else
+  {
+    if (display_tickle == NULL)
+    {
+      // NSTimer will retain the target until it is released,
+      //  so we do not worry about retaining/releasing it.
+      windowInhibitScreenSaverClass *inhibitScreenSaver;
+      inhibitScreenSaver = [[[windowInhibitScreenSaverClass alloc] init] autorelease];
+      // schedule every 30 seconds
+      display_tickle = [NSTimer scheduledTimerWithTimeInterval:30.0  
+        target:inhibitScreenSaver selector:@selector(updateSystemActivity:) userInfo:nil repeats:YES]; 
+      [display_tickle retain];
+    }
+  }
+  m_use_system_screensaver = (display_tickle == NULL);
+#else
+  // only present in 10.5 SDK and above
+  // kIOPMAssertionTypeNoDisplaySleep prevents display idle sleep
+  static IOPMAssertionID assertionID = 0;
+
+  if (bEnable)
+    IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
+  else
+    IOPMAssertionRelease(assertionID);
+
+  m_use_system_screensaver = bEnable;
+#endif
+}
+
+bool CWinSystemOSX::IsSystemScreenSaverEnabled()
+{
+  return m_use_system_screensaver;
+}
+
+void CWinSystemOSX::ResetOSScreensaver()
+{
+  // allow os screensaver only if we are fullscreen
+  EnableSystemScreenSaver(!m_bFullScreen);
+}
+
 void CWinSystemOSX::Register(IDispResource *resource)
 {
   CSingleLock lock(m_resourceSection);
@@ -1262,56 +1333,6 @@ bool CWinSystemOSX::Show(bool raise)
       
   [pool release];
   return true;
-}
-
-void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
-{
-/* not working any more, problems on 10.6 and atv)
-  if (!g_sysinfo.IsAppleTV() )
-  {
-    NSDictionary* errorDict;
-    NSAppleScript* scriptObject;
-    NSAppleEventDescriptor* returnDescriptor;
-
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-    // If we don't call this, the screen saver will just stop and then start up again.
-    UpdateSystemActivity(UsrActivity);
-    
-    if (bEnable)
-    {
-      // tell application id "com.apple.ScreenSaver.Engine" to launch
-      scriptObject = [[NSAppleScript alloc] initWithSource:
-        @"launch application \"ScreenSaverEngine\""];
-    }
-    else
-    {
-      // tell application id "com.apple.ScreenSaver.Engine" to quit
-      scriptObject = [[NSAppleScript alloc] initWithSource:
-        @"tell application \"ScreenSaverEngine\" to quit"];
-    }
-    returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-    [scriptObject release];
-
-    [pool release];
-  }
-*/
-}
-
-bool CWinSystemOSX::IsSystemScreenSaverEnabled()
-{
-  bool sss_enabled = false;
-/*
-  if (g_sysinfo.IsAppleTV() )
-  {
-    sss_enabled = false;
-  }
-  else
-  {
-    sss_enabled = g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1;
-  }
-*/
-  return(sss_enabled);
 }
 
 int CWinSystemOSX::GetNumScreens()
@@ -1352,7 +1373,14 @@ void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display,
   {
     // pre/post-reconfiguration changes
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:g_settings.m_ResInfo[res].iScreen];
+    NSScreen* pScreen = nil;
+    unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
+    
+    if( screenIdx < [[NSScreen screens] count] )
+    {
+        pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
+    }
+
     if (pScreen)
     {
       CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);

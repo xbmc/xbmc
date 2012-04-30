@@ -1,22 +1,29 @@
 <peripherals>
   <peripheral vendor_product="1915:003B,22B8:003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
-    <setting key="keymap_enabled" type="bool" value="1" label="35008" />
+    <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
-    <setting key="enable_flip_commands" type="bool" value="1" label="36005" />
-    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" />
-    <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" />
-    <setting key="key_user" value="" label="36004" />
+    <setting key="enable_flip_commands" type="bool" value="1" label="36005" order="2" />
+    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
+    <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
+    <setting key="key_user" value="" label="36004" order="5" />
   </peripheral>
 
-  <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adaptor" mapTo="cec">
-    <setting key="enabled" type="bool" value="1" label="305" />
-    <setting key="port" type="string" value="" label="792" />
-    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="16" label="36015" />
-    <setting key="cec_power_on_startup" type="bool" value="1" label="36007" />
-    <setting key="cec_power_off_shutdown" type="bool" value="1" label="36008" />
-    <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" />
-    <setting key="standby_pc_on_tv_standby" type="bool" value="1" label="36014" />
-    <setting key="cec_debug_logging" type="bool" value="0" label="20191" />
-    <setting key="use_tv_menu_language" type="bool" value="1" label="36018" />
+  <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
+    <setting key="enabled" type="bool" value="1" label="305" order="1" />
+    <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
+    <setting key="wake_devices" type="string" value="0" label="36007" order="3" />
+    <setting key="standby_devices" type="string" value="0" label="36008" order="4" />
+    <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" order="5" />
+    <setting key="standby_pc_on_tv_standby" type="bool" value="1" label="36014" order="6" />
+    <setting key="send_inactive_source" type="bool" value="1" label="36025" order="7" />
+    <setting key="use_tv_menu_language" type="bool" value="1" label="36018" order="8" />
+    <setting key="physical_address" type="string" label="36021" value="0" order="9" />
+    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="16" label="36015" order="10" />
+    <setting key="connected_device" type="int" label="36019" value="0" min="0" max="15" step="1" order="11" />
+    <setting key="port" type="string" value="" label="36022" order="12" />
+
+    <setting key="tv_vendor" type="int" value="0" configurable="0" />
+    <setting key="device_name" type="string" value="XBMC" configurable="0" />
+    <setting key="device_type" type="int" value="1" configurable="0" />
   </peripheral>
 </peripherals>

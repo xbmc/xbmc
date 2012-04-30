@@ -220,10 +220,17 @@ void CGUIDialogContextMenu::SetupButtons()
   }
 
   // update our default control
-  if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
-    m_defaultControl = BUTTON_START;
-  while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
-    m_defaultControl++;
+  if (pGroupList)
+    m_defaultControl = pGroupList->GetID();
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+  else
+  {
+    if (m_defaultControl < BUTTON_START || m_defaultControl > BUTTON_END)
+      m_defaultControl = BUTTON_START;
+    while (m_defaultControl <= BUTTON_END && !(GetControl(m_defaultControl)->CanFocus()))
+      m_defaultControl++;
+  }
+#endif
 }
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
@@ -551,12 +558,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         { // store the thumb for this share
           CTextureDatabase db;
           if (db.Open())
-          {
-            cachedThumb = CTextureCache::GetUniqueImage(item->GetPath(), URIUtils::GetExtension(strThumb));
-            db.SetTextureForPath(item->GetPath(), cachedThumb);
-          }
+            db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
         }
-        XFILE::CFile::Cache(strThumb, cachedThumb);
+        if (!cachedThumb.IsEmpty())
+          XFILE::CFile::Cache(strThumb, cachedThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

@@ -72,7 +72,7 @@ public:
     memcpy(alpha          , src.alpha          , sizeof(alpha));
     memcpy(color          , src.color          , sizeof(color));
     memcpy(highlight_alpha, src.highlight_alpha, sizeof(highlight_alpha));
-    memcpy(highlight_color, src.highlight_alpha, sizeof(highlight_color));
+    memcpy(highlight_color, src.highlight_color, sizeof(highlight_color));
   }
 
   BYTE result[2*65536 + 20]; // rle data

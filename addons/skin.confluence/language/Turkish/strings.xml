@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 25/11/2011-->
-<!--Turkish strings based on English strings commit 72696c450c -->
+<!--Date of translation: 05/04/2012-->
+<!--Turkish strings based on English strings commit 953c09c336 -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -162,10 +162,11 @@
   <string id="31402">[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik listeleme seçeneklerini değiştir · Şarkı sunumu ayarları · Karaoke seçeneklerini ayarla</string>
   <string id="31403">[B]RESİM AYARLARINI YAPILANDIR[/B][CR][CR]Resim listeleme seçeneklerini değiştir · Slayt gösterisi ayarlarını yapılandır</string>
   <string id="31404">[B]HAVA DURUMU AYARLARINI YAPILANDIR[/B][CR][CR]Hava Durumu bilgilerini almak için üç şehir seçin</string>
-  <string id="31405">[B]AĞ AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]İnternet erişim seçeneklerini ayarla</string>
+
   <string id="31406">[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünüm ayarları · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem kilit ayarları</string>
   <string id="31407">[B]DIŞ GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Confluence dış görünümü ayarları · Ana menü ögelerini ekle ve kaldır[CR]Arayüz arkaplanlarını değiştir</string>
   <string id="31408">[B]EKLENTİLERİ YAPILANDIR[/B][CR][CR]Yüklenmiş eklentileri yönet · Eklentilere gözat ve yenilerini yükle[CR]Eklenti ayarlarını değiştir</string>
+  <string id="31409">[B]HİZMET AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]Zeroconf'u etkinleştir · AirPlay'i yapılandır</string>
 
   <string id="31421">Oturum açıp devam etmek için[CR]XBMC kullanıcı profilinizi seçin</string>
   

@@ -212,6 +212,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = g_settings.m_fileSources;
     g_mediaManager.GetLocalDrives(shares);
+    g_mediaManager.GetNetworkLocations(shares);
     CStdString path;
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
       CAddonInstaller::Get().InstallFromZip(path);
@@ -394,11 +395,10 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
   dialog->SetHeading(heading);
   dialog->Reset();
   dialog->SetUseDetails(true);
-  if (multipleSelection || iTypes > 1)
-  {
+  if (multipleSelection)
     showNone = false;
+  if (multipleSelection || iTypes > 1)
     dialog->EnableButton(true, 186);
-  }
   else
     dialog->EnableButton(true, 21452);
   if (showNone)

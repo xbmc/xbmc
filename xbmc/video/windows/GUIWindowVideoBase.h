@@ -60,7 +60,12 @@ public:
    */
   static void AppendAndClearSearchItems(CFileItemList &searchItems, const CStdString &prependLabel, CFileItemList &results);
 
-  static void OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  /*! \brief Prompt the user for assigning content to a path.
+   Based on changes, we then call OnUnassignContent, update or refresh scraper information in the database
+   and optionally start a scan
+   \param path the path to assign content for
+   */
+  static void OnAssignContent(const CStdString &path);
 
   /*! \brief checks the database for a resume position and puts together a string
    \param item selected item
@@ -109,13 +114,16 @@ protected:
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
-  static void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
 
   static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
+
+  bool StackingAvailable(const CFileItemList &items) const;
+
+  bool OnPlayStackPart(int item);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

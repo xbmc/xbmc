@@ -131,13 +131,14 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
+  // Set rendering to dxva before trying it, in order to open the correct processor immediately, when deinterlacing method is auto.
+
   // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
   if (g_advancedSettings.m_DXVAForceProcessorRenderer && CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
   {
     CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
-    if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format))
-        m_renderMethod = RENDER_DXVA;
-    else
+    m_renderMethod = RENDER_DXVA;
+    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format))
     {
       CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
       m_processor.Close();
@@ -151,11 +152,9 @@ void CWinRenderer::SelectRenderMethod()
     switch(m_iRequestedMethod)
     {
       case RENDER_METHOD_DXVA:
+        m_renderMethod = RENDER_DXVA;
         if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format))
-        {
-            m_renderMethod = RENDER_DXVA;
             break;
-        }
         else
         {
           CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");

@@ -24,7 +24,7 @@
  * tables taken directly from the AC-3 spec.
  */
 
-#include "libavcore/audioconvert.h"
+#include "libavutil/audioconvert.h"
 #include "avcodec.h"
 #include "ac3tab.h"
 
@@ -84,7 +84,7 @@ const uint8_t ff_ac3_channels_tab[8] = {
 /**
  * Map audio coding mode (acmod) to channel layout mask.
  */
-const uint16_t ff_ac3_channel_layout_tab[8] = {
+const uint16_t avpriv_ac3_channel_layout_tab[8] = {
     AV_CH_LAYOUT_STEREO,
     AV_CH_LAYOUT_MONO,
     AV_CH_LAYOUT_STEREO,
@@ -138,10 +138,17 @@ const uint16_t ff_ac3_bitrate_tab[19] = {
  */
 const uint8_t ff_ac3_rematrix_band_tab[5] = { 13, 25, 37, 61, 253 };
 
+/**
+ * Table E2.16 Default Coupling Banding Structure
+ */
+const uint8_t ff_eac3_default_cpl_band_struct[18] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1
+};
+
 /* AC-3 MDCT window */
 
 /* MDCT window */
-const int16_t ff_ac3_window[AC3_WINDOW_SIZE/2] = {
+DECLARE_ALIGNED(16, const int16_t, ff_ac3_window)[AC3_WINDOW_SIZE/2] = {
     4,    7,   12,   16,   21,   28,   34,   42,
    51,   61,   72,   84,   97,  111,  127,  145,
   164,  184,  207,  231,  257,  285,  315,  347,

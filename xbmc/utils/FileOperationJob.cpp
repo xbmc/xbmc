@@ -23,7 +23,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
-#include "filesystem/FactoryFileDirectory.h"
+#include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "log.h"
@@ -95,7 +95,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
+  IFileDirectory *file = CFileDirectoryFactory::Create(strPath, &item);
   if (file)
   {
     delete file;
@@ -104,7 +104,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items, "", false, false, DIR_CACHE_ONCE, true, false, true);
+  CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_GET_HIDDEN);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];

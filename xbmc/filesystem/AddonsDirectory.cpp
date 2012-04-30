@@ -22,7 +22,7 @@
 
 #include "AddonsDirectory.h"
 #include "addons/AddonDatabase.h"
-#include "FactoryDirectory.h"
+#include "DirectoryFactory.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "FileItem.h"
@@ -40,8 +40,6 @@ namespace XFILE
 
 CAddonsDirectory::CAddonsDirectory(void)
 {
-  m_allowPrompting = true;
-  m_cacheDirectory = DIR_CACHE_ONCE;
 }
 
 CAddonsDirectory::~CAddonsDirectory(void)

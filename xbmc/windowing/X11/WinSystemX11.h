@@ -79,6 +79,7 @@ protected:
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);
+  static int XErrorHandler(Display* dpy, XErrorEvent* error);
 
   CStopWatch m_screensaverReset;
 };

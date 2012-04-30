@@ -51,7 +51,6 @@
 #include "Application.h"
 #include "IoSupport.h"
 #include "cdioSupport.h"
-#include "storage/MediaManager.h"
 
 
 using namespace XFILE;
@@ -194,10 +193,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT)
           {
             m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-            // drive has been closed and is ready
-            OutputDebugString("Drive closed media present, remounting...\n");
-            CIoSupport::Dismount("Cdrom0");
-            CIoSupport::RemapDriveLetter('D', "Cdrom0");
             // Detect ISO9660(mode1/mode2) or CDDA filesystem
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
@@ -529,28 +524,4 @@ const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }
-
-CDetectDisc::CDetectDisc(const CStdString &strPath, bool bautorun)
-{
-  m_strPath  = strPath;
-  m_bautorun = bautorun;
-}
-
-bool CDetectDisc::DoWork()
-{
-  CMediaSource share;
-  share.strPath = m_strPath;
-  share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
-  share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
-  if(g_mediaManager.IsAudio(share.strPath))
-    share.strStatus = "Audio-CD";
-  else if(share.strStatus == "")
-    share.strStatus = g_localizeStrings.Get(446);
-  share.strName = share.strPath;
-  share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-  g_mediaManager.AddAutoSource(share, m_bautorun);
-  return true;
-}
-
 #endif

@@ -32,10 +32,6 @@
 extern "C"
 {
 #endif
-  // Power and Screen
-  //
-  void Cocoa_UpdateSystemActivity(void);
-  
   // DisplayLink
   //
   bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext);

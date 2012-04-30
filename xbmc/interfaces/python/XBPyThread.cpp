@@ -154,7 +154,7 @@ void XBPyThread::Process()
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
   CStdString scriptDir;
-  URIUtils::GetDirectory(_P(m_source), scriptDir);
+  URIUtils::GetDirectory(CSpecialProtocol::TranslatePath(m_source), scriptDir);
   URIUtils::RemoveSlashAtEnd(scriptDir);
   CStdString path = scriptDir;
 
@@ -164,12 +164,12 @@ void XBPyThread::Process()
   for (unsigned int i = 0; i < addons.size(); ++i)
 #ifdef TARGET_WINDOWS
   {
-    CStdString strTmp(_P(addons[i]->LibPath()));
+    CStdString strTmp(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
     g_charsetConverter.utf8ToSystem(strTmp);
     path += PY_PATH_SEP + strTmp;
   }
 #else
-    path += PY_PATH_SEP + _P(addons[i]->LibPath());
+    path += PY_PATH_SEP + CSpecialProtocol::TranslatePath(addons[i]->LibPath());
 #endif
 
   // and add on whatever our default path is
@@ -234,12 +234,12 @@ void XBPyThread::Process()
       // We need to have python open the file because on Windows the DLL that python
       //  is linked against may not be the DLL that xbmc is linked against so
       //  passing a FILE* to python from an fopen has the potential to crash.
-      PyObject* file = PyFile_FromString((char *) _P(m_source).c_str(), (char*)"r");
+      PyObject* file = PyFile_FromString((char *) CSpecialProtocol::TranslatePath(m_source).c_str(), (char*)"r");
       FILE *fp = PyFile_AsFile(file);
 
       if (fp)
       {
-        PyObject *f = PyString_FromString(_P(m_source).c_str());
+        PyObject *f = PyString_FromString(CSpecialProtocol::TranslatePath(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
         if (addon.get() != NULL)
         {
@@ -253,7 +253,7 @@ void XBPyThread::Process()
           CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",addon->ID().c_str(),version.c_str());
         }
         Py_DECREF(f);
-        PyRun_FileExFlags(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);
+        PyRun_FileExFlags(fp, CSpecialProtocol::TranslatePath(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);
       }
       else
         CLog::Log(LOGERROR, "%s not found!", m_source);
@@ -375,6 +375,13 @@ void XBPyThread::Process()
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
+  //set stopped event - this allows ::stop to run and kill remaining threads
+  //this event has to be fired without holding m_pExecuter->m_critSection
+  //before
+  //Also the GIL (PyEval_AcquireLock) must not be held
+  //if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
+  stoppedEvent.Set();
+
   { CSingleLock lock(m_pExecuter->m_critSection);
     m_threadState = NULL;
   }
@@ -428,6 +435,17 @@ void XBPyThread::stop()
     if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
 
+    PyThreadState_Swap(old);
+    PyEval_ReleaseLock();
+
+    if(!stoppedEvent.WaitMSec(5000))//let the script 5 secs for shut stuff down
+    {
+      CLog::Log(LOGERROR, "XBPyThread::stop - script didn't stop in proper time - lets kill it");
+    }
+    
+    //everything which didn't exit by now gets killed
+    PyEval_AcquireLock();
+    old = PyThreadState_Swap((PyThreadState*)m_threadState);    
     for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
       Py_XDECREF(state->async_exc);

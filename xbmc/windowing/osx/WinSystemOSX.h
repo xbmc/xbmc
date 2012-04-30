@@ -55,11 +55,12 @@ public:
   virtual bool Show(bool raise = true);
   virtual void OnMove(int x, int y);
 
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
-
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
+  virtual void ResetOSScreensaver();
+
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
   
   virtual int GetNumScreens();
 
@@ -80,6 +81,7 @@ protected:
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
+  bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
   void                        *m_windowDidMove;
   void                        *m_windowDidReSize;

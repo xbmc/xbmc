@@ -33,10 +33,7 @@ using namespace XFILE;
 IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
-  m_allowPrompting = false;
-  m_cacheDirectory = DIR_CACHE_NEVER;
-  m_useFileDirectories = false;
-  m_extFileInfo = true;
+  m_flags = DIR_FLAG_DEFAULTS;
 }
 
 IDirectory::~IDirectory(void)
@@ -68,6 +65,16 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
       if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
       return false;
     }
+    if (strExtension.Equals(".dat|"))
+    {
+      CStdString fileName = URIUtils::GetFileName(strFile);
+      /* VCD filenames are of the form AVSEQ##(#).DAT, ITEM###(#).DAT, MUSIC##(#).DAT - i.e. all 11 or 12 characters long
+         starting with AVSEQ, MUSIC or ITEM */
+      if ((fileName.length() == 11 || fileName.length() == 12) &&
+          (fileName.Left(5).Equals("AVSEQ") || fileName.Left(5).Equals("MUSIC") || fileName.Left(4).Equals("ITEM")))
+        return true;
+      return false;
+    }
     return true;
   }
   return false;
@@ -93,46 +100,12 @@ void IDirectory::SetMask(const CStdString& strMask)
 }
 
 /*!
- \brief Set whether the directory handlers can prompt the user.
- \param allowPrompting Set true to allow prompting to occur (default is false).
-
- Directory handlers should only prompt the user as a direct result of the
- users actions.
+ \brief Set the flags for this directory handler.
+ \param flags - \sa XFILE::DIR_FLAG for a description.
  */
-
-void IDirectory::SetAllowPrompting(bool allowPrompting)
+void IDirectory::SetFlags(int flags)
 {
-  m_allowPrompting = allowPrompting;
-}
-
-/*!
- \brief Set whether the directory should be cached by our directory cache.
- \param cacheDirectory Set DIR_CACHE_NEVER or DIR_CACHE_ALWAYS to enable or disable caching (default is DIR_CACHE_ONCE).
- */
-
-void IDirectory::SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory)
-{
-  m_cacheDirectory = cacheDirectory;
-}
-
-/*!
- \brief Set whether the directory should allow file directories.
- \param useFileDirectories Set true to enable file directories (default is true).
- */
-
-void IDirectory::SetUseFileDirectories(bool useFileDirectories)
-{
-  m_useFileDirectories = useFileDirectories;
-}
-
-/*!
- \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
- \param extFileInfo Set true to enable extended file info (default is true).
- */
-
-void IDirectory::SetExtFileInfo(bool extFileInfo)
-{
-  m_extFileInfo = extFileInfo;
+  m_flags = flags;
 }
 
 bool IDirectory::ProcessRequirements()

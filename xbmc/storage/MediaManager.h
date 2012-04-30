@@ -55,7 +55,7 @@ public:
 
   void GetLocalDrives(VECSOURCES &localDrives, bool includeQ = true);
   void GetRemovableDrives(VECSOURCES &removableDrives);
-  void GetNetworkLocations(VECSOURCES &locations);
+  void GetNetworkLocations(VECSOURCES &locations, bool autolocations = true);
 
   bool AddNetworkLocation(const CStdString &path);
   bool HasLocation(const CStdString& path) const;
@@ -97,6 +97,7 @@ protected:
   bool HashDVD(const CStdString& dvdpath, uint32_t& crc);
 #endif
   bool m_bhasoptical;
+  CStdString strFirstAvailDrive;
 
 private:
   IStorageProvider *m_platformStorage;

@@ -76,6 +76,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 # define TX(id)    #id, translate_##id
 
 static id3_compat_func_t translate_TCON;
+static id3_compat_func_t translate_APIC;
 
 #define TOTAL_KEYWORDS 75
 #define MIN_WORD_LENGTH 3
@@ -276,7 +277,7 @@ id3_compat_lookup (str, len)
 #line 96 "compat.gperf"
       {"TIME", OBSOLETE  /* Time [obsolete] */},
 #line 75 "compat.gperf"
-      {"PIC",  EQ(APIC)  /* Attached picture */},
+      {"PIC",  TX(APIC)  /* Attached picture */},
 #line 127 "compat.gperf"
       {"UFI",  EQ(UFID)  /* Unique file identifier */},
 #line 72 "compat.gperf"
@@ -346,7 +347,7 @@ int translate_APIC(struct id3_frame *frame, char const *oldid,
 		   id3_byte_t const *data, id3_length_t length)
 {
   id3_byte_t const *end;
-  char type[3];
+  char type[4];
   enum id3_field_textencoding encoding;
   int result = 0;
   

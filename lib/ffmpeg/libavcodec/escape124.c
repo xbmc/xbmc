@@ -21,7 +21,7 @@
 
 #include "avcodec.h"
 
-#define ALT_BITSTREAM_READER_LE
+#define BITSTREAM_READER_LE
 #include "get_bits.h"
 
 typedef union MacroBlock {
@@ -49,7 +49,7 @@ typedef struct Escape124Context {
 } Escape124Context;
 
 static int can_safely_read(GetBitContext* gb, int bits) {
-    return get_bits_count(gb) + bits <= gb->size_in_bits;
+    return get_bits_left(gb) >= bits;
 }
 
 /**
@@ -61,6 +61,7 @@ static av_cold int escape124_decode_init(AVCodecContext *avctx)
 {
     Escape124Context *s = avctx->priv_data;
 
+    avcodec_get_frame_defaults(&s->frame);
     avctx->pix_fmt = PIX_FMT_RGB555;
 
     s->num_superblocks = ((unsigned)avctx->width / 8) *
@@ -214,7 +215,8 @@ static int escape124_decode_frame(AVCodecContext *avctx,
     uint16_t* old_frame_data, *new_frame_data;
     unsigned old_stride, new_stride;
 
-    AVFrame new_frame = { { 0 } };
+    AVFrame new_frame;
+    avcodec_get_frame_defaults(&new_frame);
 
     init_get_bits(&gb, buf, buf_size * 8);
 
@@ -364,15 +366,14 @@ static int escape124_decode_frame(AVCodecContext *avctx,
 
 
 AVCodec ff_escape124_decoder = {
-    "escape124",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ESCAPE124,
-    sizeof(Escape124Context),
-    escape124_decode_init,
-    NULL,
-    escape124_decode_close,
-    escape124_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "escape124",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_ESCAPE124,
+    .priv_data_size = sizeof(Escape124Context),
+    .init           = escape124_decode_init,
+    .close          = escape124_decode_close,
+    .decode         = escape124_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Escape 124"),
 };
 

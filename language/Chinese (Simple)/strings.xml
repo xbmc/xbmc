@@ -692,7 +692,7 @@
   <string id="787">网卡停用</string>
   <string id="788">网卡停用完成.</string>
   <string id="789">无线网络名（ESSID）</string>
-
+  <string id="790">远程控制</string>
   <string id="791">允许本机程序控制 XBMC</string>
   <string id="792">端口</string>
   <string id="793">端口范围</string>
@@ -803,10 +803,12 @@
   <string id="1256">Ping 间隔</string>
   <string id="1257">是否连接到自动发现的系统？</string>
 
+  <string id="1259">Zeroconf</string>
   <string id="1260">通过 Zeroconf 协议发布这些服务</string>
   <string id="1270">允许 XBMC 接收 AirPlay 内容</string>
   <string id="1271">设备名</string>
   <string id="1272">- 使用密码保护</string>
+  <string id="1273">AirPlay</string>
 
   <string id="1300">自定义音频设备</string>
   <string id="1301">自定义直通输出设备</string>
@@ -874,9 +876,11 @@
   <string id="10019">设置-&gt;用户界面</string>
   <string id="10020">脚本</string>
   <string id="10021">网页浏览器</string>
-
+  <string id="10025">视频</string>
   <string id="10028">视频/播放列表</string>
+  <string id="10029">登录屏</string>
   <string id="10034">设置-&gt;用户配置</string>
+  <string id="10040">扩展功能浏览器</string>
 
   <string id="10100">"是/否"对话框</string>
   <string id="10101">进度对话框</string>
@@ -1338,7 +1342,7 @@
   <string id="14082">显示 EXIF 图片信息</string>
   <string id="14083">使用全屏窗口而非真正全屏显示</string>
   <string id="14084">选中歌曲加入播放列表</string>
-  <string id="14085">自动播放音乐 CD</string>
+  <string id="14085"></string>
   <string id="14086">播放</string>
   <string id="14087">DVD</string>
   <string id="14088">自动播放 DVD</string>
@@ -1349,7 +1353,10 @@
   <string id="14093">安全</string>
   <string id="14094">输入设备</string>
   <string id="14095">省电模式</string>
-
+  <string id="14096">抓轨</string>
+  <string id="14097">音乐 CD 插入动作</string>
+  <string id="14098">播放</string>
+  <string id="14099">CD 抓轨完成后弹出光盘</string>
   <string id="15015">删除</string>
   <string id="15016">游戏</string>
 
@@ -1718,6 +1725,7 @@
   <string id="20184">根据 EXIF 信息旋转图片</string>
   <string id="20185">使用海报模式显示剧集</string>
   <string id="20186">请稍候...</string>
+  <string id="20187">UPnP</string>
 
   <string id="20189">启用剧情和评论自动滚动</string>
   <string id="20190">自定义</string>
@@ -1768,7 +1776,7 @@
   <string id="20326">这个操作会重新校准%s的配置</string>
   <string id="20327">还原为初时配置</string>
   <string id="20328">选择指定位置</string>
-
+  <string id="20329">电影在以片名命名的单独目录中</string>
   <string id="20330">以文件夹名来查找</string>
   <string id="20331">文件</string>
   <string id="20332">用文件夹名或文件名进行查找？</string>
@@ -1858,7 +1866,7 @@
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
   <string id="20418"></string>
-  <string id="20419">文件视图显示媒体标识信息</string>
+  <string id="20419">用资料库标题替换文件名</string>
 
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
@@ -1898,6 +1906,7 @@
   <string id="20455">听众</string>
   <string id="20456">设置影片集同人画</string>
   <string id="20457">影片集</string>
+  <string id="20458">电影按影片集分组</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2005,6 +2014,8 @@
   <string id="21451">需要访问互联网。</string>
   <string id="21452">获取更多...</string>
   <string id="21453">根文件系统</string>
+  <string id="21454">缓存满</string>
+  <string id="21455">缓存在达到连续播放所需数量之前已满</string>
 
   <string id="21460">字幕位置</string>
   <string id="21461">固定</string>
@@ -2325,6 +2336,8 @@
   <string id="33102">事件服务器</string>
   <string id="33103">远程通信服务器</string>
 
+  <string id="33200">检测到新的连接</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2349,6 +2362,21 @@
   <string id="34201">未找到下一播放项目</string>
   <string id="34202">未找到上一播放项目</string>
 
+  <string id="34300">启动 zeroconf 失败</string>
+  <string id="34301">Apple 的 Bonjour 服务是否已安装？更多信息见日志记录。</string>
+
+  <string id="34400">视频渲染</string>
+  <string id="34401">视频滤镜/缩放器初始化失败，使用双线性缩放</string>
+  <string id="34402">音频设备初始化失败</string>
+  <string id="34403">检查你的音频设置</string>
+
+  <!-- description for the touchscreen when using the tvout feature on iDevices -->
+  <string id="34404">使用手势导航：</string>
+  <string id="34405">单指左右上下轻扫移动光标</string>
+  <string id="34406">双指向左轻扫退格</string>
+  <string id="34407">单指单击回车</string>
+  <string id="34408">双指单击打开上下文菜单</string>
+
   <string id="35000">外部设备</string>
 
   <string id="35001">通用 HID 设备</string>
@@ -2359,6 +2387,7 @@
   <string id="35006">设备已移除</string>
   <string id="35007">用于此设备的键盘映射</string>
   <string id="35008">键盘映射已启用</string>
+  <string id="35009">此设备不使用自定义键盘映射</string>
 
   <string id="35500">位置</string>
   <string id="35501">设备类型</string>
@@ -2373,16 +2402,23 @@
   <string id="36004">按“user”键指令</string>
   <string id="36005">启用指令模式切换</string>
   <string id="36006">无法打开适配器</string>
-  <string id="36007">启动XBMC时开启电视</string>
-  <string id="36008">退出XBMC时关闭设备</string>
+  <string id="36007">启动XBMC时开启的设备</string>
+  <string id="36008">退出XBMC时关闭的设备</string>
   <string id="36009">激活屏幕保护程序时设备进入待机状态</string>
   <string id="36010"></string>
   <string id="36011">未检测到 CEC 端口。需人工设置。</string>
-  <string id="36012">未检测到 CEC 适配器。</string>
+  <string id="36012">无法初始化 CEC 适配器。请检查设置</string>
   <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>
   <string id="36014">电视关闭时本计算机进入待机状态</string>
   <string id="36015">HDMI 端口号</string>
   <string id="36016">XBMC 已连接</string> <!-- max. 13 characters -->
-  <string id="36017">发现适配器，但 libcec 不可用</string>
+  <string id="36017">发现适配器，但 libCEC 不可用</string>
   <string id="36018">使用电视机语言设置</string>
+  <string id="36019">已连接到 HDMI 设备</string>
+  <string id="36020">启动时让 XBMC 为活动源</string>
+  <string id="36021">物理地址（取代 HDMI 端口）</string>
+  <string id="36022">COM 端口（留空，除非需要）</string>
+  <string id="36023">配置已更新</string>
+  <string id="36024">新配置设定失败，请检查设置。</string>
+  <string id="36025">停止 XBMC 时发送“非活动源”命令</string>
 </strings>

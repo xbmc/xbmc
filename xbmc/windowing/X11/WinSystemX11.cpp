@@ -52,6 +52,8 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_wmWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
   m_dpyLostTime = 0;
+
+  XSetErrorHandler(XErrorHandler);
 }
 
 CWinSystemX11::~CWinSystemX11()
@@ -532,6 +534,16 @@ void CWinSystemX11::Unregister(IDispResource* resource)
   vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
+}
+
+int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
+{
+  char buf[1024];
+  XGetErrorText(error->display, error->error_code, buf, sizeof(buf));
+  CLog::Log(LOGERROR, "CWinSystemX11::XErrorHandler: %s, type:%i, serial:%lu, error_code:%i, request_code:%i minor_code:%i",
+            buf, error->type, error->serial, (int)error->error_code, (int)error->request_code, (int)error->minor_code);
+
+  return 0;
 }
 
 #endif

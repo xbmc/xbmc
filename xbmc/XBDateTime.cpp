@@ -1089,19 +1089,15 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
     }
     else if (c=='x') // add meridiem symbol
     {
-      int partLength=0;
-
       int pos=strFormat.find_first_not_of(c,i+1);
       if (pos>-1)
       {
         // Get length of the meridiem mask
-        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
         i=length;
       }
 
@@ -1285,4 +1281,16 @@ CStdString CDateTime::GetAsRFC1123DateTime() const
   CStdString result;
   result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[time.GetDayOfWeek()], time.GetDay(), MONTH_NAMES[time.GetMonth()-1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
+}
+
+int CDateTime::MonthStringToMonthNum(const CStdString& month)
+{
+  const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december"};
+  const char* abr_months[] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+
+  int i = 0;
+  for (; i < 12 && month.CompareNoCase(months[i]) != 0 && month.CompareNoCase(abr_months[i]) != 0; i++);
+  i++;
+
+  return i;
 }

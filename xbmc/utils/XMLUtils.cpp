@@ -21,7 +21,6 @@
 
 #include "XMLUtils.h"
 #include "URL.h"
-#include "filesystem/SpecialProtocol.h"
 #include "StringUtils.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for strcasecmp
@@ -160,6 +159,45 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
 }
 
 /*!
+  Parses the XML for multiple tags of the given name.
+  Does not clear the array to support chaining.
+*/
+bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string separator /* = "" */)
+{
+  std::string strTemp;
+  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
+  bool bResult=false;
+  if (node && node->FirstChild() && clear)
+    arrayValue.clear();
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      bResult = true;
+      strTemp = node->FirstChild()->ValueStr();
+
+      const char* clearAttr = node->Attribute("clear");
+      if (clearAttr && strcasecmp(clearAttr, "true") == 0)
+        arrayValue.clear();
+
+      if (strTemp.empty())
+        continue;
+
+      if (separator.empty())
+        arrayValue.push_back(strTemp);
+      else
+      {
+        std::vector<std::string> tempArray = StringUtils::Split(strTemp, separator);
+        arrayValue.insert(arrayValue.end(), tempArray.begin(), tempArray.end());
+      }
+    }
+    node = node->NextSiblingElement(strTag);
+  }
+
+  return bResult;
+}
+
+/*!
   Returns true if the encoding of the document is other then UTF-8.
   /param strEncoding Returns the encoding of the document. Empty if UTF-8
 */
@@ -196,8 +234,6 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   if (!pElement) return false;
 
-  int pathVersion = 0;
-  pElement->Attribute("pathversion", &pathVersion);
   const char* encoded = pElement->Attribute("urlencoded");
   const TiXmlNode* pNode = pElement->FirstChild();
   if (pNode != NULL)
@@ -205,10 +241,33 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
     strStringValue = pNode->Value();
     if (encoded && strcasecmp(encoded,"yes") == 0)
       CURL::Decode(strStringValue);
-    strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
     return true;
   }
   strStringValue.Empty();
+  return false;
+}
+
+bool XMLUtils::GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date)
+{
+  CStdString strDate;
+  if (GetString(pRootNode, strTag, strDate))
+  {
+    date.SetFromDBDate(strDate);
+    return true;
+  }
+
+  return false;
+}
+
+bool XMLUtils::GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime)
+{
+  CStdString strDateTime;
+  if (GetString(pRootNode, strTag, strDateTime))
+  {
+    dateTime.SetFromDBDateTime(strDateTime);
+    return true;
+  }
+
   return false;
 }
 
@@ -218,6 +277,12 @@ void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const
   StringUtils::SplitString(strValue,strSeparator,list);
   for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
     SetString(pRootNode,strTag,list[i]);
+}
+
+void XMLUtils::SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue)
+{
+  for (unsigned int i = 0; i < arrayValue.size(); i++)
+    SetString(pRootNode, strTag, arrayValue.at(i));
 }
 
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
@@ -267,11 +332,21 @@ void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)
 {
   TiXmlElement newElement(strTag);
-  newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
+  newElement.SetAttribute("pathversion", path_version);
   TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
   if (pNewNode)
   {
     TiXmlText value(strValue);
     pNewNode->InsertEndChild(value);
   }
+}
+
+void XMLUtils::SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date)
+{
+  SetString(pRootNode, strTag, date.GetAsDBDate());
+}
+
+void XMLUtils::SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime)
+{
+  SetString(pRootNode, strTag, dateTime.GetAsDBDateTime());
 }

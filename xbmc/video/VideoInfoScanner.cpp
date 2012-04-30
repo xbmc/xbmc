@@ -125,7 +125,8 @@ namespace VIDEO
 
       tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
-
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+      
       m_bRunning = false;
       if (m_pObserver)
         m_pObserver->OnFinished();
@@ -212,7 +213,7 @@ namespace VIDEO
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
 
-    bool ignoreFolder = m_scanAll && settings.noupdate;
+    bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
 
@@ -247,7 +248,7 @@ namespace VIDEO
           if (hash.IsEmpty() && !dbHash.IsEmpty())
           {
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' as it's empty or doesn't exist - adding to clean list", strDirectory.c_str());
-            m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           }
           else
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
@@ -296,13 +297,13 @@ namespace VIDEO
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
           m_database.SetPathHash(strDirectory, hash);
-          m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", strDirectory.c_str());
         }
       }
       else
       {
-        m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+        m_pathsToClean.insert(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", strDirectory.c_str());
       }
     }
@@ -412,12 +413,12 @@ namespace VIDEO
 
     if (content == CONTENT_TVSHOWS && ! seenPaths.empty())
     {
-      vector<int> libPaths;
+      vector< pair<int,string> > libPaths;
       m_database.GetSubPaths(items.GetPath(), libPaths);
-      for (vector<int>::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
+      for (vector< pair<int,string> >::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
       {
-        if (find(seenPaths.begin(), seenPaths.end(), *i) == seenPaths.end())
-          m_pathsToClean.push_back(*i);
+        if (find(seenPaths.begin(), seenPaths.end(), i->first) == seenPaths.end())
+          m_pathsToClean.insert(i->first);
       }
     }
     if(pDlgProgress)
@@ -651,7 +652,7 @@ namespace VIDEO
         }
         return;
       }
-      m_pathsToClean.push_back(m_database.GetPathId(item->GetPath()));
+      m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
       m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
       item->SetProperty("hash", hash);
     }
@@ -770,7 +771,7 @@ namespace VIDEO
      * Next preference is the first aired date. If it exists use that for matching the TV Show
      * information. Also set the title in case there are multiple matches for the first aired date.
      */
-    if (!tag->m_strFirstAired.IsEmpty())
+    if (tag->m_firstAired.IsValid())
     {
       SEpisode episode;
       episode.strPath = item->GetPath();
@@ -784,10 +785,10 @@ namespace VIDEO
       /*
        * The first aired date string must be parseable.
        */
-      episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
+      episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
-                __FUNCTION__, episode.strPath.c_str(), tag->m_strFirstAired.c_str(),
+        __FUNCTION__, episode.strPath.c_str(), tag->m_firstAired.GetAsDBDateTime().c_str(),
                 episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
       return true;
     }
@@ -856,6 +857,7 @@ namespace VIDEO
       episode.isFolder = false;
 
       bool byDate = expression[i].byDate ? true : false;
+      int defaultSeason = expression[i].defaultSeason;
 
       if (byDate)
       {
@@ -867,7 +869,7 @@ namespace VIDEO
       }
       else
       {
-        if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
+        if (!GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason))
           continue;
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(),
@@ -898,7 +900,7 @@ namespace VIDEO
         }
         else
         {
-          GetEpisodeAndSeasonFromRegExp(reg, parent);
+          GetEpisodeAndSeasonFromRegExp(reg, parent, defaultSeason);
           if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
             episode.isFolder = true;
         }
@@ -919,7 +921,7 @@ namespace VIDEO
           if (((regexppos <= regexp2pos) && regexppos != -1) ||
              (regexppos >= 0 && regexp2pos == -1))
           {
-            GetEpisodeAndSeasonFromRegExp(reg, episode);
+            GetEpisodeAndSeasonFromRegExp(reg, episode, defaultSeason);
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
                       episode.iSeason, episode.iEpisode,
@@ -949,7 +951,7 @@ namespace VIDEO
     return false;
   }
 
-  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
+  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason)
   {
     char* season = reg.GetReplaceString("\\1");
     char* episode = reg.GetReplaceString("\\2");
@@ -957,14 +959,14 @@ namespace VIDEO
     if (season && episode)
     {
       if (strlen(season) == 0 && strlen(episode) > 0)
-      { // no season specified -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no season specified -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
           episodeInfo.iEpisode = atoi(episode);
       }
       else if (strlen(season) > 0 && strlen(episode) == 0)
-      { // no episode specification -> assume season 1
-        episodeInfo.iSeason = 1;
+      { // no episode specification -> assume defaultSeason
+        episodeInfo.iSeason = defaultSeason;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
           episodeInfo.iEpisode = atoi(season);
       }
@@ -1050,19 +1052,14 @@ namespace VIDEO
       movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
-      if (!movieDetails.m_strShowLink.IsEmpty())
+      for (unsigned int i=0; i < movieDetails.m_showLink.size(); ++i)
       {
-        CStdStringArray list;
-        StringUtils::SplitString(movieDetails.m_strShowLink, g_advancedSettings.m_videoItemSeparator,list);
-        for (unsigned int i=0; i < list.size(); ++i)
-        {
-          CFileItemList items;
-          m_database.GetTvShowsByName(list[i], items);
-          if (items.Size())
-            m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), list[i].c_str());
-        }
+        CFileItemList items;
+        m_database.GetTvShowsByName(movieDetails.m_showLink[i], items);
+        if (items.Size())
+          m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
+        else
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), movieDetails.m_showLink[i].c_str());
       }
     }
     else if (content == CONTENT_TVSHOWS)
@@ -1164,7 +1161,12 @@ namespace VIDEO
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, cachedThumb);
 
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*pItem)));
+    CFileItemPtr itemCopy = CFileItemPtr(new CFileItem(*pItem));
+    // Hack to make sure CVideoInfoTag::m_strShowTitle is set for tvshows
+    // to make sure CAnnouncementManager provides the correct type for the item
+    if (content == CONTENT_TVSHOWS && !isEpisode && itemCopy->HasVideoInfoTag())
+      itemCopy->GetVideoInfoTag()->m_strShowTitle = itemCopy->GetVideoInfoTag()->m_strTitle;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy);
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */)

@@ -23,7 +23,6 @@
 #include "GUIUserMessages.h"
 #include "addons/Visualisation.h"
 #include "threads/SingleLock.h"
-#include "utils/GLUtils.h"
 
 using namespace std;
 using namespace ADDON;
@@ -67,7 +66,6 @@ void CGUIRenderingControl::LoadAddon(const AddonPtr &addon)
   }
 
   g_graphicsContext.ApplyStateBlock();
-  VerifyGLState();
 }
 
 void CGUIRenderingControl::UpdateVisibility(const CGUIListItem *item)

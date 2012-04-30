@@ -710,7 +710,7 @@ void CUtil::RemoveTempFiles()
 {
   CStdString searchPath = g_settings.GetDatabaseFolder();
   CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", false))
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", DIR_FLAG_NO_FILE_DIRS))
     return;
 
   for (int i = 0; i < items.Size(); ++i)
@@ -747,7 +747,7 @@ void CUtil::ClearTempFonts()
     return;
 
   CFileItemList items;
-  CDirectory::GetDirectory(searchPath, items, "", false, false, XFILE::DIR_CACHE_NEVER);
+  CDirectory::GetDirectory(searchPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_BYPASS_CACHE);
 
   for (int i=0; i<items.Size(); ++i)
   {
@@ -801,7 +801,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   name.Format(fn_template.c_str(), 0);
 
   CFileItemList items;
-  if (!CDirectory::GetDirectory(searchPath, items, mask, false))
+  if (!CDirectory::GetDirectory(searchPath, items, mask, DIR_FLAG_NO_FILE_DIRS))
     return name;
 
   items.SetFastLookup(true);
@@ -1576,7 +1576,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       return GetMatchingSource(strPath, VECSOURCES, bDummy);
     }
 
-    CLog::Log(LOGWARNING,"CUtil::GetMatchingSource... no matching source found for [%s]", strPath1.c_str());
+    CLog::Log(LOGDEBUG,"CUtil::GetMatchingSource: no matching source found for [%s]", strPath1.c_str());
   }
   return iIndex;
 }
@@ -1638,18 +1638,20 @@ CStdString CUtil::VideoPlaylistsLocation()
 void CUtil::DeleteMusicDatabaseDirectoryCache()
 {
   CUtil::DeleteDirectoryCache("mdb-");
+  CUtil::DeleteDirectoryCache("sp-"); // overkill as it will delete video smartplaylists, but as we can't differentiate based on URL...
 }
 
 void CUtil::DeleteVideoDatabaseDirectoryCache()
 {
   CUtil::DeleteDirectoryCache("vdb-");
+  CUtil::DeleteDirectoryCache("sp-"); // overkill as it will delete music smartplaylists, but as we can't differentiate based on URL...
 }
 
 void CUtil::DeleteDirectoryCache(const CStdString &prefix)
 {
   CStdString searchPath = "special://temp/";
   CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", false))
+  if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".fi", DIR_FLAG_NO_FILE_DIRS))
     return;
 
   for (int i = 0; i < items.Size(); ++i)
@@ -1774,7 +1776,10 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
 {
   CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,strMask,bUseFileDirectories);
+  int flags = DIR_FLAG_DEFAULTS;
+  if (!bUseFileDirectories)
+    flags |= DIR_FLAG_NO_FILE_DIRS;
+  CDirectory::GetDirectory(strPath,myItems,strMask,flags);
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder)
@@ -1787,7 +1792,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
 void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& item)
 {
   CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,"",false);
+  CDirectory::GetDirectory(strPath,myItems,"",DIR_FLAG_NO_FILE_DIRS);
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
@@ -2173,7 +2178,7 @@ CStdString CUtil::ResolveExecutablePath()
   CStdString strExecutablePath;
 #ifdef WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
 #elif defined(__APPLE__)
@@ -2356,32 +2361,34 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CFileItemList items;
       
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",false);
+      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",DIR_FLAG_NO_FILE_DIRS);
       int fnl = strMovieFileNameNoExt.size();
       
       for (int j = 0; j < items.Size(); j++)
       {
         URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
-        // is this a rar or zip-file
-        if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+        if (strItem.Left(fnl).Equals(strMovieFileNameNoExt))
         {
-          ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
-        }
-        else    // not a rar/zip file
-        {
-          for (int i = 0; sub_exts[i]; i++)
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
           {
-            //Cache subtitle with same name as movie
-            if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]) && strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+            ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
+          }
+          else    // not a rar/zip file
+          {
+            for (int i = 0; sub_exts[i]; i++)
             {
-              vecSubtitles.push_back( items[j]->GetPath() ); 
-              CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+              //Cache subtitle with same name as movie
+              if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]))
+              {
+                vecSubtitles.push_back( items[j]->GetPath() ); 
+                CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+              }
             }
           }
         }
       }
-      g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
 
@@ -2425,7 +2432,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   {
    CStdString strZipPath;
    URIUtils::CreateArchivePath(strZipPath,"zip",strArchivePath,"");
-   if (!CDirectory::GetDirectory(strZipPath,ItemList,"",false))
+   if (!CDirectory::GetDirectory(strZipPath,ItemList,"",DIR_FLAG_NO_FILE_DIRS))
     return false;
   }
   else
@@ -2457,7 +2464,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
     ScanArchiveForSubtitles(strRarInRar,strMovieFileNameNoExt,vecSubtitles);
    }
    // done checking if this is a rar-in-rar
-   
+
    int iPos=0;
     while (sub_exts[iPos])
     {
@@ -2495,8 +2502,11 @@ bool CUtil::FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const C
       CStdString strSubFile;
       CStdString strSubDirectory;
       URIUtils::Split(vecSubtitles[j], strSubDirectory, strSubFile);
+      if (URIUtils::IsInArchive(vecSubtitles[j]))
+        CURL::Decode(strSubDirectory);
       if (URIUtils::GetExtension(strSubFile) == ".sub" &&
-          URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")))
+          (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
+           strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(strIdxPath,""))))
       {
         strSubPath = vecSubtitles[j];
         return true;
@@ -2515,13 +2525,16 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
     CStdString strSubFile;
     CStdString strSubDirectory;
     URIUtils::Split(strSubPath, strSubDirectory, strSubFile);
+    if (URIUtils::IsInArchive(strSubPath))
+      CURL::Decode(strSubDirectory);
     for (unsigned int j=0; j < vecSubtitles.size(); j++)
     {
       CStdString strIdxFile;
       CStdString strIdxDirectory;
       URIUtils::Split(vecSubtitles[j], strIdxDirectory, strIdxFile);
       if (URIUtils::GetExtension(strIdxFile) == ".idx" &&
-          URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")))
+          (URIUtils::ReplaceExtension(strIdxFile,"").Equals(URIUtils::ReplaceExtension(strSubFile,"")) ||
+           strSubDirectory.Mid(6, strSubDirectory.length()-11).Equals(URIUtils::ReplaceExtension(vecSubtitles[j],""))))
         return true;
     }
   }

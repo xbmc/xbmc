@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include "utils/Job.h"
 
 class CCriticalSection;
 /// this class provides support for zeroconf
@@ -76,6 +77,8 @@ public:
   static void   ReleaseInstance();
   // returns false if ReleaseInstance() was called befores
   static bool   IsInstantiated() { return  smp_instance != 0; }
+  // win32: process results from the bonjour daemon
+  virtual void  ProcessResults() {}
 
 protected:
   //methods to implement for concrete implementations
@@ -117,4 +120,16 @@ private:
   //protects singleton creation/destruction
   static long sm_singleton_guard;
   static CZeroconf* smp_instance;
+
+  class CPublish : public CJob
+  {
+  public:
+    CPublish(const std::string& fcr_identifier, const PublishInfo& pubinfo);
+    CPublish(const tServiceMap& servmap);
+
+    bool DoWork();
+
+  private:
+    tServiceMap m_servmap;
+  };
 };

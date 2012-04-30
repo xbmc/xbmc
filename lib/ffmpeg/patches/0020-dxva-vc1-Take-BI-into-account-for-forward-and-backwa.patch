@@ -1,0 +1,49 @@
+From 1c0fcc2cfe27197368e0490afe34dd51a831995f Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Wed, 5 Oct 2011 12:53:38 -0400
+Subject: [PATCH 20/24] dxva-vc1 Take BI into account for forward and backward
+ pictures
+
+See ticket #11643, sample on team ftp, samples/11643/vc-1 test.wmv
+---
+ libavcodec/dxva2_vc1.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/dxva2_vc1.c b/libavcodec/dxva2_vc1.c
+index 0ae9685..23507d3 100644
+--- a/libavcodec/dxva2_vc1.c
++++ b/libavcodec/dxva2_vc1.c
+@@ -38,15 +38,17 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+ {
+     const MpegEncContext *s = &v->s;
+     const Picture *current_picture = s->current_picture_ptr;
++    BYTE bPicIntra = s->pict_type == AV_PICTURE_TYPE_I || v->bi_type == 1;
++    BYTE bPicBackwardPrediction = s->pict_type == AV_PICTURE_TYPE_B && v->bi_type == 0;
+ 
+     memset(pp, 0, sizeof(*pp));
+     pp->wDecodedPictureIndex    =
+     pp->wDeblockedPictureIndex  = ff_dxva2_get_surface_index(ctx, current_picture);
+-    if (s->pict_type != AV_PICTURE_TYPE_I)
++    if (!bPicIntra)
+         pp->wForwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->last_picture);
+     else
+         pp->wForwardRefPictureIndex = 0xffff;
+-    if (s->pict_type == AV_PICTURE_TYPE_B)
++    if (bPicBackwardPrediction)
+         pp->wBackwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->next_picture);
+     else
+         pp->wBackwardRefPictureIndex = 0xffff;
+@@ -69,8 +71,8 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+     if (s->picture_structure & PICT_BOTTOM_FIELD)
+         pp->bPicStructure      |= 0x02;
+     pp->bSecondField            = v->interlace && v->fcm != ILACE_FIELD && !s->first_field;
+-    pp->bPicIntra               = s->pict_type == AV_PICTURE_TYPE_I;
+-    pp->bPicBackwardPrediction  = s->pict_type == AV_PICTURE_TYPE_B;
++    pp->bPicIntra               = bPicIntra;
++    pp->bPicBackwardPrediction  = bPicBackwardPrediction;
+     pp->bBidirectionalAveragingMode = (1                                           << 7) |
+                                       ((ctx->cfg->ConfigIntraResidUnsigned != 0)   << 6) |
+                                       ((ctx->cfg->ConfigResidDiffAccelerator != 0) << 5) |
+-- 
+1.7.9.4
+

@@ -40,6 +40,8 @@
  */
 
 #include "avformat.h"
+#include "libavutil/log.h"
+#include "libavutil/opt.h"
 
 /* The GIF format uses reversed order for bitstreams... */
 /* at least they don't use PDP_ENDIAN :) */
@@ -107,33 +109,33 @@ static const rgb_triplet gif_clut[216] = {
 };
 
 /* GIF header */
-static int gif_image_write_header(ByteIOContext *pb,
+static int gif_image_write_header(AVIOContext *pb,
                                   int width, int height, int loop_count,
                                   uint32_t *palette)
 {
     int i;
     unsigned int v;
 
-    put_tag(pb, "GIF");
-    put_tag(pb, "89a");
-    put_le16(pb, width);
-    put_le16(pb, height);
+    avio_write(pb, "GIF", 3);
+    avio_write(pb, "89a", 3);
+    avio_wl16(pb, width);
+    avio_wl16(pb, height);
 
-    put_byte(pb, 0xf7); /* flags: global clut, 256 entries */
-    put_byte(pb, 0x1f); /* background color index */
-    put_byte(pb, 0); /* aspect ratio */
+    avio_w8(pb, 0xf7); /* flags: global clut, 256 entries */
+    avio_w8(pb, 0x1f); /* background color index */
+    avio_w8(pb, 0);    /* aspect ratio */
 
     /* the global palette */
     if (!palette) {
-        put_buffer(pb, (const unsigned char *)gif_clut, 216*3);
+        avio_write(pb, (const unsigned char *)gif_clut, 216*3);
         for(i=0;i<((256-216)*3);i++)
-            put_byte(pb, 0);
+            avio_w8(pb, 0);
     } else {
         for(i=0;i<256;i++) {
             v = palette[i];
-            put_byte(pb, (v >> 16) & 0xff);
-            put_byte(pb, (v >> 8) & 0xff);
-            put_byte(pb, (v) & 0xff);
+            avio_w8(pb, (v >> 16) & 0xff);
+            avio_w8(pb, (v >> 8) & 0xff);
+            avio_w8(pb, (v) & 0xff);
         }
     }
 
@@ -159,14 +161,14 @@ static int gif_image_write_header(ByteIOContext *pb,
     /* application extension header */
 #ifdef GIF_ADD_APP_HEADER
     if (loop_count >= 0 && loop_count <= 65535) {
-    put_byte(pb, 0x21);
-    put_byte(pb, 0xff);
-    put_byte(pb, 0x0b);
-        put_tag(pb, "NETSCAPE2.0");  // bytes 4 to 14
-        put_byte(pb, 0x03); // byte 15
-        put_byte(pb, 0x01); // byte 16
-        put_le16(pb, (uint16_t)loop_count);
-        put_byte(pb, 0x00); // byte 19
+    avio_w8(pb, 0x21);
+    avio_w8(pb, 0xff);
+    avio_w8(pb, 0x0b);
+        avio_write(pb, "NETSCAPE2.0", sizeof("NETSCAPE2.0") - 1);  // bytes 4 to 14
+        avio_w8(pb, 0x03); // byte 15
+        avio_w8(pb, 0x01); // byte 16
+        avio_wl16(pb, (uint16_t)loop_count);
+        avio_w8(pb, 0x00); // byte 19
     }
 #endif
     return 0;
@@ -179,7 +181,7 @@ static inline unsigned char gif_clut_index(uint8_t r, uint8_t g, uint8_t b)
 }
 
 
-static int gif_image_write_image(ByteIOContext *pb,
+static int gif_image_write_image(AVIOContext *pb,
                                  int x1, int y1, int width, int height,
                                  const uint8_t *buf, int linesize, int pix_fmt)
 {
@@ -189,15 +191,15 @@ static int gif_image_write_image(ByteIOContext *pb,
     const uint8_t *ptr;
     /* image block */
 
-    put_byte(pb, 0x2c);
-    put_le16(pb, x1);
-    put_le16(pb, y1);
-    put_le16(pb, width);
-    put_le16(pb, height);
-    put_byte(pb, 0x00); /* flags */
+    avio_w8(pb, 0x2c);
+    avio_wl16(pb, x1);
+    avio_wl16(pb, y1);
+    avio_wl16(pb, width);
+    avio_wl16(pb, height);
+    avio_w8(pb, 0x00); /* flags */
     /* no local clut */
 
-    put_byte(pb, 0x08);
+    avio_w8(pb, 0x08);
 
     left= width * height;
 
@@ -233,28 +235,30 @@ static int gif_image_write_image(ByteIOContext *pb,
             flush_put_bits(&p);
         }
         if(put_bits_ptr(&p) - p.buf > 0) {
-            put_byte(pb, put_bits_ptr(&p) - p.buf); /* byte count of the packet */
-            put_buffer(pb, p.buf, put_bits_ptr(&p) - p.buf); /* the actual buffer */
+            avio_w8(pb, put_bits_ptr(&p) - p.buf); /* byte count of the packet */
+            avio_write(pb, p.buf, put_bits_ptr(&p) - p.buf); /* the actual buffer */
             p.buf_ptr = p.buf; /* dequeue the bytes off the bitstream */
         }
         left-=GIF_CHUNKS;
     }
-    put_byte(pb, 0x00); /* end of image block */
+    avio_w8(pb, 0x00); /* end of image block */
 
     return 0;
 }
 
 typedef struct {
+    AVClass *class;         /** Class for private options. */
     int64_t time, file_time;
     uint8_t buffer[100]; /* data chunks */
+    int loop;
 } GIFContext;
 
 static int gif_write_header(AVFormatContext *s)
 {
     GIFContext *gif = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     AVCodecContext *enc, *video_enc;
-    int i, width, height, loop_count /*, rate*/;
+    int i, width, height /*, rate*/;
 
 /* XXX: do we reject audio streams or just ignore them ?
     if(s->nb_streams > 1)
@@ -276,7 +280,6 @@ static int gif_write_header(AVFormatContext *s)
     } else {
         width = video_enc->width;
         height = video_enc->height;
-        loop_count = s->loop_output;
 //        rate = video_enc->time_base.den;
     }
 
@@ -285,44 +288,45 @@ static int gif_write_header(AVFormatContext *s)
         return AVERROR(EIO);
     }
 
-    gif_image_write_header(pb, width, height, loop_count, NULL);
+#if FF_API_LOOP_OUTPUT
+    if (s->loop_output)
+        gif->loop = s->loop_output;
+#endif
 
-    put_flush_packet(s->pb);
+    gif_image_write_header(pb, width, height, gif->loop, NULL);
+
+    avio_flush(s->pb);
     return 0;
 }
 
 static int gif_write_video(AVFormatContext *s,
                            AVCodecContext *enc, const uint8_t *buf, int size)
 {
-    ByteIOContext *pb = s->pb;
-    GIFContext *gif = s->priv_data;
+    AVIOContext *pb = s->pb;
     int jiffies;
-    int64_t delay;
 
     /* graphic control extension block */
-    put_byte(pb, 0x21);
-    put_byte(pb, 0xf9);
-    put_byte(pb, 0x04); /* block size */
-    put_byte(pb, 0x04); /* flags */
+    avio_w8(pb, 0x21);
+    avio_w8(pb, 0xf9);
+    avio_w8(pb, 0x04); /* block size */
+    avio_w8(pb, 0x04); /* flags */
 
     /* 1 jiffy is 1/70 s */
     /* the delay_time field indicates the number of jiffies - 1 */
-    delay = gif->file_time - gif->time;
-
     /* XXX: should use delay, in order to be more accurate */
     /* instead of using the same rounded value each time */
     /* XXX: don't even remember if I really use it for now */
     jiffies = (70*enc->time_base.num/enc->time_base.den) - 1;
 
-    put_le16(pb, jiffies);
+    avio_wl16(pb, jiffies);
 
-    put_byte(pb, 0x1f); /* transparent color index */
-    put_byte(pb, 0x00);
+    avio_w8(pb, 0x1f); /* transparent color index */
+    avio_w8(pb, 0x00);
 
     gif_image_write_image(pb, 0, 0, enc->width, enc->height,
                           buf, enc->width * 3, PIX_FMT_RGB24);
 
-    put_flush_packet(s->pb);
+    avio_flush(s->pb);
     return 0;
 }
 
@@ -337,22 +341,37 @@ static int gif_write_packet(AVFormatContext *s, AVPacket *pkt)
 
 static int gif_write_trailer(AVFormatContext *s)
 {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
 
-    put_byte(pb, 0x3b);
-    put_flush_packet(s->pb);
+    avio_w8(pb, 0x3b);
+    avio_flush(s->pb);
     return 0;
 }
 
+#define OFFSET(x) offsetof(GIFContext, x)
+#define ENC AV_OPT_FLAG_ENCODING_PARAM
+static const AVOption options[] = {
+    { "loop", "Number of times to loop the output.", OFFSET(loop), AV_OPT_TYPE_INT, {0}, 0, 65535, ENC },
+    { NULL },
+};
+
+static const AVClass gif_muxer_class = {
+    .class_name = "GIF muxer",
+    .item_name  = av_default_item_name,
+    .version    = LIBAVUTIL_VERSION_INT,
+    .option     = options,
+};
+
 AVOutputFormat ff_gif_muxer = {
-    "gif",
-    NULL_IF_CONFIG_SMALL("GIF Animation"),
-    "image/gif",
-    "gif",
-    sizeof(GIFContext),
-    CODEC_ID_NONE,
-    CODEC_ID_RAWVIDEO,
-    gif_write_header,
-    gif_write_packet,
-    gif_write_trailer,
+    .name              = "gif",
+    .long_name         = NULL_IF_CONFIG_SMALL("GIF Animation"),
+    .mime_type         = "image/gif",
+    .extensions        = "gif",
+    .priv_data_size    = sizeof(GIFContext),
+    .audio_codec       = CODEC_ID_NONE,
+    .video_codec       = CODEC_ID_RAWVIDEO,
+    .write_header      = gif_write_header,
+    .write_packet      = gif_write_packet,
+    .write_trailer     = gif_write_trailer,
+    .priv_class = &gif_muxer_class,
 };

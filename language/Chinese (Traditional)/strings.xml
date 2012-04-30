@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/09/2011-->
+<!--Date of translation: 03/07/2012-->
 <!--$Revision$-->
 <strings>
   <string id="0">程式</string>
@@ -817,8 +817,11 @@
   <string id="10019">設定 - 佈景主題</string>
   <string id="10020">腳本</string>
   <string id="10021">網路瀏覽器</string>
+  <string id="10025">視訊</string>
   <string id="10028">視訊/播放列表</string>
+  <string id="10029">登入畫面</string>
   <string id="10034">設定 - 使用者設定檔</string>
+  <string id="10040">附加元件瀏覽器</string>
   <string id="10100">確認對話框</string>
   <string id="10101">進度對話框</string>
   <string id="10210">正在尋找字幕…</string>
@@ -1405,6 +1408,7 @@
   <string id="16317">時間平滑 (不完全)</string>
   <string id="16318">時間/空間平滑（不完全）</string>
   <string id="16319">DXVA</string>
+  <string id="16324">軟體混合</string>
   <string id="16400">視訊後處理</string>
   <string id="17500">顯示休眠逾時</string>
   <string id="19000">切換到頻道</string>
@@ -1620,6 +1624,7 @@
   <string id="20326">重設螢幕校正值為 %s</string>
   <string id="20327">還原為預設值</string>
   <string id="20328">瀏覽目的</string>
+  <string id="20329">電影個別存放在和電影相同名稱的資料夾</string>
   <string id="20330">以資料夾名稱搜尋</string>
   <string id="20331">檔案</string>
   <string id="20332">以檔案或資料夾名稱來搜尋？</string>
@@ -1747,6 +1752,7 @@
   <string id="20455">電台</string>
   <string id="20456">設定電影劇照</string>
   <string id="20457">電影集</string>
+  <string id="20458">按同系列電影分組</string>
   <string id="21330">顯示隱藏檔案和目錄</string>
   <string id="21331">TuxBox 客戶端</string>
   <string id="21332">警告：目標 TuxBox 裝置在錄影模式！</string>
@@ -1847,6 +1853,8 @@
   <string id="21451">需要網際網路連線。</string>
   <string id="21452">取得更多...</string>
   <string id="21453">檔案系統 Root Filesystem</string>
+  <string id="21454">完整快取</string>
+  <string id="21455">只快取到足夠連續播放的資料量</string>
   <string id="21460">字幕位置</string>
   <string id="21461">固定</string>
   <string id="21462">影片底部</string>
@@ -2070,6 +2078,7 @@
   <string id="33008">儲存中</string>
   <string id="33009">複製中</string>
   <string id="33010">設定下載目錄</string>
+  <string id="33011">搜尋持續時間</string>
   <string id="33012">短</string>
   <string id="33013">長</string>
   <string id="33014">用 DVD player 代替預設播放機</string>
@@ -2135,6 +2144,7 @@
   <string id="33101">網站伺服器</string>
   <string id="33102">事件伺服器</string>
   <string id="33103">遠端通訊伺服器</string>
+  <string id="33200">偵測新的連線</string>
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
@@ -2154,6 +2164,12 @@
   <string id="34110">7.1</string>
   <string id="34201">找不到下一個播放項目</string>
   <string id="34202">找不到前一個播放項目</string>
+  <string id="34300">Zeroconf啟動失敗</string>
+  <string id="34301">已經啟用蘋果的 Bonjour 服務了嗎？請查閱記錄以取得更多資訊。</string>
+  <string id="34400">視訊渲染</string>
+  <string id="34401">影像濾鏡/放大器初始化失敗，改用預設的雙線性放大</string>
+  <string id="34402">初始化音訊裝置失敗</string>
+  <string id="34403">檢查你的音訊設定</string>
   <string id="35000">周邊裝置</string>
   <string id="35001">通用 HID 裝置</string>
   <string id="35002">通用網路配接器</string>
@@ -2170,6 +2186,10 @@
   <string id="35503">供應商</string>
   <string id="35504">產品 ID</string>
   <string id="36000">Pulse-Eight CEC 配接器</string>
+  <string id="36002">切換到鍵盤命令</string>
+  <string id="36003">切換到遙控器命令</string>
+  <string id="36004">按下"使用者"按鈕命令</string>
+  <string id="36005">啟用命令模式切換</string>
   <string id="36006">無法開啟配接器</string>
   <string id="36007">開啟 XBMC 時打開這台電視</string>
   <string id="36008">當停止 XBMC 時關閉裝置</string>
@@ -2180,5 +2200,6 @@
   <string id="36014">如果關掉這台電視，讓這台電腦進入待機模式</string>
   <string id="36015">HDMI連接埠編號</string>
   <string id="36016">已連接</string>
+  <string id="36017">找到配接器，但無法取得 libcec</string>
   <string id="36018">使用這個電視的語言設定</string>
 </strings>

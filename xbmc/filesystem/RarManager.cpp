@@ -452,7 +452,7 @@ void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 int64_t CRarManager::CheckFreeSpace(const CStdString& strDrive)
 {
   ULARGE_INTEGER lTotalFreeBytes;
-  if (GetDiskFreeSpaceEx(_P(strDrive.c_str()), NULL, NULL, &lTotalFreeBytes))
+  if (GetDiskFreeSpaceEx(CSpecialProtocol::TranslatePath(strDrive.c_str()), NULL, NULL, &lTotalFreeBytes))
     return lTotalFreeBytes.QuadPart;
 
   return 0;

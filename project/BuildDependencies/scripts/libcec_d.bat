@@ -7,7 +7,8 @@ CALL dlextract.bat libcec %FILES%
 
 cd %TMP_PATH%
 
-xcopy libcec\include\* "%CUR_PATH%\include" /E /Q /I /Y
+mkdir "%CUR_PATH%\include\libcec"
+xcopy libcec\include\* "%CUR_PATH%\include\libcec\." /E /Q /I /Y
 
 copy libcec\libcec.dll "%XBMC_PATH%\system\."
 copy libcec\pthreadVC2.dll "%XBMC_PATH%\system\."

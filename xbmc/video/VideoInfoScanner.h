@@ -174,9 +174,10 @@ namespace VIDEO
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
      \param episodeInfo Episode information to fill in.
+     \param defaultSeason Season to use if not found in reg.
      \return true on success (2 matches), false on failure (fewer than 2 matches)
      */
-    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
+    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo, int defaultSeason);
 
     /*! \brief Extract episode air-date from a processed regexp
      \param reg Regular expression object with at least 3 matches
@@ -252,7 +253,7 @@ namespace VIDEO
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
-    std::vector<int> m_pathsToClean;
+    std::set<int> m_pathsToClean;
     CNfoFile m_nfoReader;
   };
 }

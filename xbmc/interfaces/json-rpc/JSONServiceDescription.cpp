@@ -30,6 +30,7 @@
 #include "FileOperations.h"
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
+#include "GUIOperations.h"
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
@@ -140,6 +141,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
   { "AudioLibrary.GetRecentlyAddedAlbums",          CAudioLibrary::GetRecentlyAddedAlbums },
   { "AudioLibrary.GetRecentlyAddedSongs",           CAudioLibrary::GetRecentlyAddedSongs },
+  { "AudioLibrary.GetRecentlyPlayedAlbums",         CAudioLibrary::GetRecentlyPlayedAlbums },
+  { "AudioLibrary.GetRecentlyPlayedSongs",          CAudioLibrary::GetRecentlyPlayedSongs },
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.Scan",                            CAudioLibrary::Scan },
   { "AudioLibrary.Export",                          CAudioLibrary::Export },
@@ -165,8 +168,14 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
+// GUI operations
+  { "GUI.GetProperties",                            CGUIOperations::GetProperties },
+  { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
+  { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
+
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
+  { "System.EjectOpticalDrive",                     CSystemOperations::EjectOpticalDrive },
   { "System.Shutdown",                              CSystemOperations::Shutdown },
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
@@ -179,6 +188,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Up",                                     CInputOperations::Up },
   { "Input.Select",                                 CInputOperations::Select },
   { "Input.Back",                                   CInputOperations::Back },
+  { "Input.ContextMenu",                            CInputOperations::ContextMenu },
+  { "Input.Info",                                   CInputOperations::Info },
   { "Input.Home",                                   CInputOperations::Home },
 
 // Application operations
@@ -372,7 +383,7 @@ int CJSONServiceDescription::GetVersion()
   return JSONRPC_SERVICE_VERSION;
 }
 
-JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport, IClient *client,
+JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport, IClient *client,
   bool printDescriptions /* = true */, bool printMetadata /* = false */, bool filterByTransport /* = true */,
   std::string filterByName /* = "" */, std::string filterByType /* = "" */, bool printReferences /* = true */)
 {
@@ -537,7 +548,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   return OK;
 }
 
-JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
+JSONRPC_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
 {
   CJsonRpcMethodMap::JsonRpcMethodIterator iter = m_actionMap.find(method);
   if (iter != m_actionMap.end())
@@ -558,7 +569,7 @@ JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const C
         for (unsigned int i = 0; i < iter->second.parameters.size(); i++)
         {
           // Evaluate the current parameter
-          JSON_STATUS status = checkParameter(requestParameters, iter->second.parameters.at(i), i, outputParameters, handled, errorData);
+          JSONRPC_STATUS status = checkParameter(requestParameters, iter->second.parameters.at(i), i, outputParameters, handled, errorData);
           if (status != OK)
           {
             // Return the error data object in the outputParameters reference
@@ -740,7 +751,7 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
   }
 }
 
-JSON_STATUS CJSONServiceDescription::checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
+JSONRPC_STATUS CJSONServiceDescription::checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
 {
   // Let's check if the parameter has been provided
   if (ParameterExists(requestParameters, type.name, position))
@@ -749,7 +760,7 @@ JSON_STATUS CJSONServiceDescription::checkParameter(const CVariant &requestParam
     CVariant parameterValue = GetParameter(requestParameters, type.name, position);
 
     // Evaluate the type of the parameter
-    JSON_STATUS status = checkType(parameterValue, type, outputParameters[type.name], errorData["stack"]);
+    JSONRPC_STATUS status = checkType(parameterValue, type, outputParameters[type.name], errorData["stack"]);
     if (status != OK)
       return status;
 
@@ -772,7 +783,7 @@ JSON_STATUS CJSONServiceDescription::checkParameter(const CVariant &requestParam
   return OK;
 }
 
-JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData)
+JSONRPC_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData)
 {
   if (!type.name.empty())
     errorData["name"] = type.name;
@@ -825,7 +836,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
   {
     for (unsigned int extendsIndex = 0; extendsIndex < type.extends.size(); extendsIndex++)
     {
-      JSON_STATUS status = checkType(value, type.extends.at(extendsIndex), outputValue, errorData);
+      JSONRPC_STATUS status = checkType(value, type.extends.at(extendsIndex), outputValue, errorData);
 
       if (status != OK)
       {
@@ -869,7 +880,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
       for (unsigned int arrayIndex = 0; arrayIndex < value.size(); arrayIndex++)
       {
         CVariant temp;
-        JSON_STATUS status = checkType(value[arrayIndex], itemType, temp, errorData["property"]);
+        JSONRPC_STATUS status = checkType(value[arrayIndex], itemType, temp, errorData["property"]);
         outputValue.push_back(temp);
         if (status != OK)
         {
@@ -905,7 +916,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
       unsigned int arrayIndex;
       for (arrayIndex = 0; arrayIndex < min(type.items.size(), (size_t)value.size()); arrayIndex++)
       {
-        JSON_STATUS status = checkType(value[arrayIndex], type.items.at(arrayIndex), outputValue[arrayIndex], errorData["property"]);
+        JSONRPC_STATUS status = checkType(value[arrayIndex], type.items.at(arrayIndex), outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
         {
           CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, type.name.c_str());
@@ -975,7 +986,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     {
       if (value.isMember(propertiesIterator->second.name))
       {
-        JSON_STATUS status = checkType(value[propertiesIterator->second.name], propertiesIterator->second, outputValue[propertiesIterator->second.name], errorData["property"]);
+        JSONRPC_STATUS status = checkType(value[propertiesIterator->second.name], propertiesIterator->second, outputValue[propertiesIterator->second.name], errorData["property"]);
         if (status != OK)
         {
           CLog::Log(LOGDEBUG, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
@@ -1018,7 +1029,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
             continue;
           }
 
-          JSON_STATUS status = checkType(value[iter->first], *(type.additionalProperties), outputValue[iter->first], errorData["property"]);
+          JSONRPC_STATUS status = checkType(value[iter->first], *(type.additionalProperties), outputValue[iter->first], errorData["property"]);
           if (status != OK)
           {
             CLog::Log(LOGDEBUG, "JSONRPC: Invalid additional property \"%s\" in type %s", iter->first.c_str(), type.name.c_str());
@@ -1236,7 +1247,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     if (value.isMember("default") && IsType(value["default"], type.type))
     {
       bool ok = false;
-      if (type.enums.size() >= 0)
+      if (type.enums.size() <= 0)
         ok = true;
       // If the type has an enum definition we must make
       // sure that the default value is a valid enum value
@@ -1499,7 +1510,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     bool ok = false;
     if (value.isMember("default") && IsType(value["default"], type.type))
     {
-      if (type.enums.size() >= 0)
+      if (type.enums.size() <= 0)
         ok = true;
       // If the type has an enum definition we must make
       // sure that the default value is a valid enum value

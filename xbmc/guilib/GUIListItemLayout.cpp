@@ -73,13 +73,13 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
 {
   if (m_invalidated)
   { // need to update our item
+    m_invalidated = false;
     // could use a dynamic cast here if RTTI was enabled.  As it's not,
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
     m_isPlaying.Update(item);
     m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
-    m_invalidated = false;
     // delete our temporary fileitem
     if (!item->IsFileItem())
       delete fileItem;

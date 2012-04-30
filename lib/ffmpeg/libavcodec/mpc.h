@@ -34,8 +34,7 @@
 #include "get_bits.h"
 #include "dsputil.h"
 #include "mpegaudio.h"
-
-#include "mpcdata.h"
+#include "mpegaudiodsp.h"
 
 #define BANDS            32
 #define SAMPLES_PER_BAND 36
@@ -51,7 +50,9 @@ typedef struct {
 }Band;
 
 typedef struct {
+    AVFrame frame;
     DSPContext dsp;
+    MPADSPContext mpadsp;
     GetBitContext gb;
     int IS, MSS, gapless;
     int lastframelen;
@@ -65,6 +66,8 @@ typedef struct {
     int buf_size;
     AVLFG rnd;
     int frames_to_skip;
+    uint8_t *buffer;
+    int buffer_size;
     /* for synthesis */
     DECLARE_ALIGNED(16, MPA_INT, synth_buf)[MPA_MAX_CHANNELS][512*2];
     int synth_buf_offset[MPA_MAX_CHANNELS];

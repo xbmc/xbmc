@@ -41,6 +41,10 @@
 
 #include "threads/SystemClock.h"
 #include "addons/Addon.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/python/xbmcmodule/PythonMonitor.h"
+
+using namespace ANNOUNCEMENT;
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -71,10 +75,13 @@ XBPython::XBPython()
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
   m_vecPlayerCallbackList.clear();
+  m_vecMonitorCallbackList.clear();
+  CAnnouncementManager::AddAnnouncer(this);
 }
 
 XBPython::~XBPython()
 {
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 // message all registered callbacks that xbmc stopped playing
@@ -89,6 +96,27 @@ void XBPython::OnPlayBackEnded()
       ((IPlayerCallback*)(*it))->OnPlayBackEnded();
       it++;
     }
+  }
+}
+
+void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag & VideoLibrary)
+  {
+   if (strcmp(message, "OnScanFinished") == 0)
+    OnDatabaseUpdated("video");
+  }
+  else if (flag & AudioLibrary)
+  {
+   if (strcmp(message, "OnScanFinished") == 0)
+    OnDatabaseUpdated("music");
+  }
+  else if (flag & GUI)
+  {
+   if (strcmp(message, "OnScreensaverDeactivated") == 0)
+     OnScreensaverDeactivated();   
+   else if (strcmp(message, "OnScreensaverActivated") == 0)
+     OnScreensaverActivated();
   }
 }
 
@@ -170,6 +198,82 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
       it++;
   }
 }
+
+void XBPython::RegisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  m_vecMonitorCallbackList.push_back(pCallback);
+}
+
+void XBPython::UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback)
+{
+  CSingleLock lock(m_critSection);
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  while (it != m_vecMonitorCallbackList.end())
+  {
+    if (*it == pCallback)
+      it = m_vecMonitorCallbackList.erase(it);
+    else
+      it++;
+  }
+}
+
+void XBPython::OnSettingsChanged(const CStdString &ID)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    { 
+      if (((CPythonMonitor*)(*it))->Id == ID)  
+        ((CPythonMonitor*)(*it))->OnSettingsChanged();
+      it++;
+    }
+  }  
+}  
+
+void XBPython::OnScreensaverActivated()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((CPythonMonitor*)(*it))->OnScreensaverActivated();
+      it++;
+    }
+  }  
+} 
+
+void XBPython::OnScreensaverDeactivated()
+{
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((CPythonMonitor*)(*it))->OnScreensaverDeactivated();
+      it++;
+    }
+  }  
+} 
+
+void XBPython::OnDatabaseUpdated(const std::string &database)
+{
+ CSingleLock lock(m_critSection);
+ if (m_bInitialized)
+ {
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  while (it != m_vecMonitorCallbackList.end())
+  {
+   ((CPythonMonitor*)(*it))->OnDatabaseUpdated(database);
+   it++;
+  }
+ }  
+} 
 
 /**
 * Check for file and print an error if needed
@@ -344,10 +448,10 @@ void XBPython::Initialize()
       {
         // using external python, it's build looking for xxx/lib/python2.6
         // so point it to frameworks which is where python2.6 is located
-        setenv("PYTHONHOME", _P("special://frameworks").c_str(), 1);
-        setenv("PYTHONPATH", _P("special://frameworks").c_str(), 1);
-        CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", _P("special://frameworks").c_str());
-        CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks").c_str());
+        setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+        setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
+        CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
+        CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
       }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
 #elif defined(_WIN32)
@@ -356,11 +460,11 @@ void XBPython::Initialize()
       // buf is corrupted after putenv and might need a strdup but it seems to
       // work this way
       CStdString buf;
-      buf = "PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib");
+      buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
       pgwin32_putenv(buf.c_str());
       buf = "PYTHONOPTIMIZE=1";
       pgwin32_putenv(buf.c_str());
-      buf = "PYTHONHOME=" + _P("special://xbmc/system/python");
+      buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
       pgwin32_putenv(buf.c_str());
       buf = "OS=win32";
       pgwin32_putenv(buf.c_str());
@@ -465,7 +569,7 @@ void XBPython::Process()
     m_bLogin = false;
 
     // autoexec.py - profile
-    CStdString strAutoExecPy = _P("special://profile/autoexec.py");
+    CStdString strAutoExecPy = CSpecialProtocol::TranslatePath("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy,ADDON::AddonPtr());
@@ -521,7 +625,6 @@ int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
 int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
 {
   CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
   {
@@ -533,6 +636,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   if (g_settings.GetCurrentProfile().programsLocked() && !g_passwordManager.IsMasterLockUnlocked(true))
     return -1;
 
+  CSingleLock lock(m_critSection);
   Initialize();
 
   if (!m_bInitialized) return -1;
