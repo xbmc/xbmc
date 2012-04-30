@@ -2671,6 +2671,11 @@ void CDVDPlayer::ToFFRW(int iSpeed)
   // forward is fine
   if (iSpeed < 0 && IsInMenu()) return;
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
+  if (iSpeed == 1)
+  {
+    m_callback.OnPlayBackResumed();
+    CLog::Log(LOGDEBUG, "DVDPlayer: Playback resumed");
+  }
 }
 
 bool CDVDPlayer::OpenAudioStream(int iStream, int source)
