@@ -93,7 +93,7 @@ void CSettings::Initialize()
   m_bStartVideoWindowed = false;
   m_bAddonAutoUpdate = true;
   m_bAddonNotifications = true;
-
+  m_bAddonPromptOnBroken = false;
   m_nVolumeLevel = 0;
   m_dynamicRangeCompressionLevel = 0;
   m_iPreMuteVolumeLevel = 0;
@@ -669,6 +669,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
   }
 
+  //addon settings
+  pElement = pRootElement->FirstChildElement("addons");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "promptonbroken", m_bAddonPromptOnBroken);
+  }
+
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
@@ -870,6 +877,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "httpapibroadcastlevel", m_HttpApiBroadcastLevel);
   XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
   XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
+
+  TiXmlElement addonsNode("addons");
+  pNode = pRoot->InsertEndChild(addonsNode);
+  if (!pNode) return false;
+  XMLUtils::SetBoolean(pNode, "promptonbroken", m_bAddonPromptOnBroken);
 
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");

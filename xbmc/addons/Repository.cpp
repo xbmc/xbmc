@@ -225,11 +225,18 @@ bool CRepositoryUpdateJob::DoWork()
     {
       if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
       {
-        if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
+        if (addon && g_settings.m_bAddonPromptOnBroken && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
                                              g_localizeStrings.Get(24096),
                                              g_localizeStrings.Get(24097),
                                              ""))
+        {
           database.DisableAddon(addons[i]->ID());
+        }
+        else if (!g_settings.m_bAddonPromptOnBroken)
+        {
+          CLog::Log(LOGINFO, "ADDON: User has not visited addon section, auto disabling broken addon - %s", addons[i]->ID().c_str());
+          database.DisableAddon(addons[i]->ID());
+        }
       }
     }
     database.BreakAddon(addons[i]->ID(), addons[i]->Props().broken);

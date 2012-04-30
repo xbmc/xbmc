@@ -107,6 +107,9 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     m_sources.push_back(share);
   }
 
+  //User has visited addon section at least once, record this state (they are now assumed to be familiar with the addon system in XBMC)
+  g_settings.m_bAddonPromptOnBroken = true;
+
   return CGUIViewState::GetSources();
 }
 
