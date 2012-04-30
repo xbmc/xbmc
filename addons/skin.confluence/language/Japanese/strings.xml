@@ -61,7 +61,7 @@
   <string id="31102">背景</string>
   <string id="31103">ピクチャスライドショーで「静止中」と表示</string>
   <string id="31104">ウィンドウ内で予告を再生 [COLOR=grey3](ビデオ情報ダイアログのみ)[/COLOR]</string>
-  <string id="31105">「ビデオ」ボタンで常に「ファイル」を選択</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">その他の設定</string>
   <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">メインメニューから隠すボタン</string>

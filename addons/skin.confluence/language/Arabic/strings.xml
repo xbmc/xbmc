@@ -61,7 +61,7 @@
   <string id="31102">الخلفية</string>
   <string id="31103">إظهار "إيقاف مؤقت" في عرض شرائح الصور</string>
   <string id="31104">[COLOR=grey3] (صندوق حوار معلومات الفيديو فقط)[/COLOR]تشغيل مقطع الفيديو في نافذة</string>
-  <string id="31105">"الفيديو" الزر يذهب دائما الى "ملفات الفيديو"</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">خيارات متنوعة</string>
   <string id="31107">[COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]إخفاء وضع علامة القراءة من أسماء الفيديو</string>
   <string id="31108">إخفاء أزرار القائمة الرئيسية</string>
