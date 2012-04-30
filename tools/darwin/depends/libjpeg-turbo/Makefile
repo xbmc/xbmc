@@ -2,9 +2,10 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=libjpeg-turbo
-VERSION=svn711
+VERSION=1.2.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+BASE_URL=http://sourceforge.net/projects/libjpeg-turbo/files/$(VERSION)
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
