@@ -34,6 +34,8 @@
 		C8936063152C86F500812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936061152C86F500812418 /* monitor.cpp */; };
 		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
+		DF33C2A415509C1B0046CDCB /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */; };
+		DF33C2AE15509C5A0046CDCB /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2AB15509C5A0046CDCB /* ilog.cpp */; };
 		DF34890913FD96390026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34890713FD96390026A711 /* GUIAction.cpp */; };
 		DF44852F140064F40069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44852D140064F40069344B /* BXAcodec.cpp */; };
 		DF4485351400651B0069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485321400651B0069344B /* PipesManager.cpp */; };
@@ -1025,6 +1027,10 @@
 		C8EC5D50136954E400CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF16B13A3AF82008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
+		DF33C2A315509C1B0046CDCB /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
+		DF33C2AB15509C5A0046CDCB /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ilog.cpp; sourceTree = "<group>"; };
+		DF33C2AC15509C5A0046CDCB /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilog.h; sourceTree = "<group>"; };
 		DF34890713FD96390026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF34890813FD96390026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
 		DF44852D140064F40069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
@@ -3079,6 +3085,15 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
+		DF33C2AA15509C5A0046CDCB /* commons */ = {
+			isa = PBXGroup;
+			children = (
+				DF33C2AB15509C5A0046CDCB /* ilog.cpp */,
+				DF33C2AC15509C5A0046CDCB /* ilog.h */,
+			);
+			path = commons;
+			sourceTree = "<group>";
+		};
 		DF527775151BAFD600B5B63B /* websocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -3393,6 +3408,7 @@
 			children = (
 				F56C71D8131EC151000AD0F6 /* addons */,
 				F56C71FE131EC151000AD0F6 /* cdrip */,
+				DF33C2AA15509C5A0046CDCB /* commons */,
 				F56C721B131EC151000AD0F6 /* cores */,
 				F56C7357131EC151000AD0F6 /* dbwrappers */,
 				F56C7362131EC151000AD0F6 /* dialogs */,
@@ -3489,6 +3505,8 @@
 				F56C780F131EC154000AD0F6 /* XBApplicationEx.h */,
 				F56C77DA131EC154000AD0F6 /* XBDateTime.cpp */,
 				F56C77DB131EC154000AD0F6 /* XBDateTime.h */,
+				DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */,
+				DF33C2A315509C1B0046CDCB /* XbmcContext.h */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -7078,6 +7096,8 @@
 				DFFEFBDB151606CB001294DC /* IOSScreenManager.mm in Sources */,
 				DFFEFC2215160927001294DC /* IOSExternalTouchController.mm in Sources */,
 				7C1F6F8C13ED17CC001726AB /* LibraryDirectory.cpp in Sources */,
+				DF33C2A415509C1B0046CDCB /* XbmcContext.cpp in Sources */,
+				DF33C2AE15509C5A0046CDCB /* ilog.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
