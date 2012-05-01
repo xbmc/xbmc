@@ -5477,6 +5477,28 @@ void CApplication::UpdateLibraries()
   }
 }
 
+bool CApplication::IsVideoScanning() const
+{
+  return m_videoInfoScanner->IsScanning();
+}
+
+bool CApplication::IsMusicScanning() const
+{
+  return m_musicInfoScanner->IsScanning();
+}
+
+void CApplication::StopVideoScan()
+{
+  if (m_videoInfoScanner->IsScanning())
+    m_videoInfoScanner->Stop();
+}
+
+void CApplication::StopMusicScan()
+{
+  if (m_musicInfoScanner->IsScanning())
+    m_musicInfoScanner->Stop();
+}
+
 void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
 {
   if (m_videoInfoScanner->IsScanning())

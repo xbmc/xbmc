@@ -218,6 +218,11 @@ public:
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
 
+  void StopVideoScan();
+  void StopMusicScan();
+  bool IsMusicScanning() const;
+  bool IsVideoScanning() const;
+
   void StartVideoScan(const CStdString &path, bool scanAll = false);
   void StartMusicScan(const CStdString &path);
   void StartMusicAlbumScan(const CStdString& strDirectory);
