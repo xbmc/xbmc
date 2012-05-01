@@ -48,6 +48,7 @@
 #endif
 #include <sys/time.h>
 #include <time.h>
+#include <stdlib.h>
 #endif
 
 // do not move this, it will break osx build bad"
