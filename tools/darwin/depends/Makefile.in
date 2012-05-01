@@ -12,7 +12,7 @@ SUBDIRS := \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl \
 	libgpg-error libgcrypt afpfs-ng \
-	libplist libshairport libcec tinyxml \
+	libplist libshairport tinyxml \
         samba python26 distribute distutilscross \
 	mysqlclient boost \
 

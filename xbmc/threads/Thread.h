@@ -32,6 +32,10 @@
 #include "threads/ThreadLocal.h"
 #include "commons/ilog.h"
 
+#ifdef TARGET_DARWIN
+#include <mach/mach.h>
+#endif
+
 class IRunnable
 {
 public:
@@ -74,7 +78,6 @@ public:
   static bool IsCurrentThread(const ThreadIdentifier tid);
   static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
-  static int64_t GetCurrentThreadUsage();
   static inline void SetLogger(XbmcCommons::ILogger* logger_) { CThread::logger = logger_; }
 protected:
   virtual void OnStartup(){};
@@ -126,4 +129,12 @@ private:
   float m_fLastUsage;
 
   std::string m_ThreadName;
+
+#ifdef __APPLE__
+  // Save the Mach thrad port, I don't think it can be obtained from
+  // the pthread_t. We'll use it for querying timer information.
+  //
+  mach_port_t m_machThreadPort;
+#endif
+
 };

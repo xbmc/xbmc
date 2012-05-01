@@ -111,6 +111,7 @@ bool CThread::SetPriority(const int iPriority)
     bReturn = false;
   else if (iPriority >= minRR)
     bReturn = SetPrioritySched_RR(iPriority);
+#ifndef TARGET_DARWIN
   else
   {
     // get user max prio
@@ -140,6 +141,7 @@ bool CThread::SetPriority(const int iPriority)
     else
       if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
   }
+#endif
 
   return bReturn;
 }
@@ -174,14 +176,37 @@ int64_t CThread::GetAbsoluteUsage()
   if (!m_ThreadId)
   return 0;
   
-  clockid_t clock;
   int64_t time = 0;
+#ifdef TARGET_DARWIN
+  thread_info_data_t     threadInfo;
+  mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
+
+  if (m_machThreadPort == MACH_PORT_NULL)
+    m_machThreadPort = pthread_mach_thread_np(m_ThreadId);
+
+  kern_return_t ret = thread_info(m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
+
+  if (ret == KERN_SUCCESS)
+  {
+    thread_basic_info_t threadBasicInfo = (thread_basic_info_t)threadInfo;
+
+    // User time.
+    time = ((int64_t)threadBasicInfo->user_time.seconds * 10000000L) + threadBasicInfo->user_time.microseconds*10L;
+
+    // System time.
+    time += (((int64_t)threadBasicInfo->system_time.seconds * 10000000L) + threadBasicInfo->system_time.microseconds*10L);
+  }
+
+#else
+  clockid_t clock;
   if (pthread_getcpuclockid(m_ThreadId, &clock) == 0)
   {
     struct timespec tp;
     clock_gettime(clock, &tp);
     time = (int64_t)tp.tv_sec * 10000000 + tp.tv_nsec/100;
   }
+#endif
+
   return time;
 }
 
@@ -204,17 +229,4 @@ float CThread::GetRelativeUsage()
   return m_fLastUsage;
 }
 
-int64_t CThread::GetCurrentThreadUsage()
-{
-  pthread_t tid = pthread_self();
-  clockid_t clock;
-  int64_t time = 0;
-  if (pthread_getcpuclockid(tid, &clock) == 0)
-  {
-    struct timespec tp;
-    clock_gettime(clock, &tp);
-    time = (int64_t)tp.tv_sec * 10000000 + tp.tv_nsec/100;
-  }
-  return time;
-}
 
