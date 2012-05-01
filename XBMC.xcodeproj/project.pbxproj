@@ -5198,9 +5198,9 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
-				EC720A91155091CA00FFD782 /* commons */,
 				18B49FF01152BEEB001AF8A6 /* addons */,
 				E38E147F0D25F9F900618676 /* cdrip */,
+				EC720A91155091CA00FFD782 /* commons */,
 				E38E149A0D25F9F900618676 /* cores */,
 				4313773012D647BB00680C15 /* dbwrappers */,
 				431376E912D6439900680C15 /* dialogs */,
