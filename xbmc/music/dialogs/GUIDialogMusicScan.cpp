@@ -39,7 +39,6 @@ using namespace MUSIC_INFO;
 CGUIDialogMusicScan::CGUIDialogMusicScan(void)
 : CGUIDialog(WINDOW_DIALOG_MUSIC_SCAN, "DialogMusicScan.xml")
 {
-  m_musicInfoScanner.SetObserver(this);
 }
 
 CGUIDialogMusicScan::~CGUIDialogMusicScan(void)
@@ -110,6 +109,12 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory)
   g_application.SaveMusicScanSettings();
 
   m_musicInfoScanner.Start(strDirectory);
+}
+
+void CGUIDialogMusicScan::ShowScan()
+{
+  m_ScanState = PREPARING;
+  Show();
 }
 
 void CGUIDialogMusicScan::StartAlbumScan(const CStdString& strDirectory)

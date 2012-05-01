@@ -362,6 +362,8 @@ CApplication::CApplication(void)
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
   , m_progressTrackingItem(new CFileItem)
+  , m_videoInfoScanner(new CVideoInfoScanner)
+  , m_musicInfoScanner(new CMusicInfoScanner)
 {
   m_iPlaySpeed = 1;
   m_bScreenSave = false;
@@ -2125,7 +2127,6 @@ void CApplication::Render()
   // fresh for the next process(), or after a windowclose animation (where process()
   // isn't called)
   g_infoManager.ResetCache();
-
   lock.Leave();
 
   unsigned int now = XbmcThreads::SystemClockMillis();
@@ -3365,13 +3366,11 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "stop all");
 
     // stop scanning before we kill the network and so on
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan)
-      musicScan->StopScanning();
+    if (m_musicInfoScanner->IsScanning())
+      m_musicInfoScanner->Stop();
 
-    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (videoScan)
-      videoScan->StopScanning();
+    if (m_videoInfoScanner->IsScanning())
+      m_videoInfoScanner->Stop();
 
     m_applicationMessenger.Cleanup();
 
@@ -4587,18 +4586,15 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
 void CApplication::CheckShutdown()
 {
-  CGUIDialogMusicScan *pMusicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-
   // first check if we should reset the timer
   bool resetTimer = false;
   if (IsPlaying() || IsPaused()) // is something playing?
     resetTimer = true;
 
-  if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
+  if (m_musicInfoScanner->IsScanning())
     resetTimer = true;
 
-  if (pVideoScan && pVideoScan->IsScanning()) // video scanning?
+  if (m_videoInfoScanner->IsScanning())
     resetTimer = true;
 
   if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
@@ -5471,18 +5467,86 @@ void CApplication::UpdateLibraries()
   if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
+    StartVideoScan("");
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
   {
     CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
-    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
+    StartMusicScan("");
   }
+}
+
+void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
+{
+  if (m_videoInfoScanner->IsScanning())
+    return;
+
+  if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
+  {
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan)
+    {
+      m_videoInfoScanner->SetObserver(videoScan);
+      videoScan->ShowScan();
+    }
+  }
+  m_videoInfoScanner->Start(strDirectory,scanAll);
+}
+
+void CApplication::StartMusicScan(const CStdString &strDirectory)
+{
+  if (m_musicInfoScanner->IsScanning())
+    return;
+
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+    {
+      m_musicInfoScanner->SetObserver(musicScan);
+      musicScan->ShowScan();
+    }
+  }
+  SaveMusicScanSettings();
+  m_musicInfoScanner->Start(strDirectory);
+}
+
+void CApplication::StartMusicAlbumScan(const CStdString& strDirectory)
+{
+  if (m_musicInfoScanner->IsScanning())
+    return;
+
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+    {
+      m_musicInfoScanner->SetObserver(musicScan);
+      musicScan->ShowScan();
+    }
+  }
+  SaveMusicScanSettings();
+  m_musicInfoScanner->FetchAlbumInfo(strDirectory);
+}
+
+void CApplication::StartMusicArtistScan(const CStdString& strDirectory)
+{
+  if (m_musicInfoScanner->IsScanning())
+    return;
+
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (musicScan)
+    {
+      m_musicInfoScanner->SetObserver(musicScan);
+      musicScan->ShowScan();
+    }
+  }
+  SaveMusicScanSettings();
+  m_musicInfoScanner->FetchArtistInfo(strDirectory);
+
 }
 
 void CApplication::CheckPlayingProgress()

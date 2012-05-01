@@ -83,6 +83,15 @@ class CHTTPWebinterfaceHandler;
 class CHTTPWebinterfaceAddonsHandler;
 #endif
 #endif
+namespace VIDEO
+{
+  class CVideoInfoScanner;
+}
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoScanner;
+}
 
 class CBackgroundPlayer : public CThread
 {
@@ -208,6 +217,12 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+
+  void StartVideoScan(const CStdString &path, bool scanAll = false);
+  void StartMusicScan(const CStdString &path);
+  void StartMusicAlbumScan(const CStdString& strDirectory);
+  void StartMusicArtistScan(const CStdString& strDirectory);
+
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
@@ -372,6 +387,9 @@ protected:
   int        m_frameCount;
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
+
+  VIDEO::CVideoInfoScanner *m_videoInfoScanner;
+  MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
 
   void Mute();
   void UnMute();

@@ -40,7 +40,6 @@ using namespace VIDEO;
 CGUIDialogVideoScan::CGUIDialogVideoScan(void)
 : CGUIDialog(WINDOW_DIALOG_VIDEO_SCAN, "DialogVideoScan.xml")
 {
-  m_videoInfoScanner.SetObserver(this);
 }
 
 CGUIDialogVideoScan::~CGUIDialogVideoScan(void)
@@ -125,6 +124,12 @@ void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool sca
   }
 
   m_videoInfoScanner.Start(strDirectory,scanAll);
+}
+
+void CGUIDialogVideoScan::ShowScan()
+{
+  m_ScanState = PREPARING;
+  Show();
 }
 
 void CGUIDialogVideoScan::StopScanning()

@@ -36,6 +36,7 @@ public:
   void StartScanning(const CStdString& strDirectory);
   void StartAlbumScan(const CStdString& strDirectory);
   void StartArtistScan(const CStdString& strDirectory);
+  void ShowScan();
   bool IsScanning();
   void StopScanning();
 
