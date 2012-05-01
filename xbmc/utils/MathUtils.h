@@ -84,7 +84,7 @@ namespace MathUtils
      */
 
     __asm__ __volatile__ (
-                          "fconstd d1,#%G[rnd_val]     \n\t" // Copy round_to_nearest into a working register (d1 = 0.5)
+                          "vmov.F64 d1,%[rnd_val]      \n\t" // Copy round_to_nearest into a working register (d1 = 0.5)
                           "fcmpezd %P[value]           \n\t" // Check value against zero (value == 0?)
                           "fmstat                      \n\t" // Copy the floating-point status flags into the general-purpose status flags
                           "it mi                       \n\t"
@@ -94,7 +94,11 @@ namespace MathUtils
                           "vmov %[result],s3           \n\t" // Store the integer result in a general-purpose register (result = s3)
                           "vcvt.F64.S32 d1,s3          \n\t" // Convert back to floating-point (d1 = (double)s3)
                           "vsub.F64 d1,%P[value],d1    \n\t" // Calculate the error (d1 = value - d1)
-                          "fconstd d2,#%G[rnd_val]     \n\t" // d2 = 0.5;
+                          "vmov.F64 d2,%[rnd_val]      \n\t" // d2 = 0.5;
+                          "fcmped d1, d2               \n\t" // (d1 == 0.5?)
+                          "fmstat                      \n\t" // Copy the floating-point status flags into the general-purpose status flags
+                          "it eq                       \n\t"
+                          "addeq %[result],#1          \n\t" // (if (d1 == d2) result++;)
                           : [result] "=r"(i)                                  // Outputs
                           : [rnd_val] "Dv" (round_to_nearest), [value] "w"(x) // Inputs
                           : "d1", "d2", "s3"                                  // Clobbers
