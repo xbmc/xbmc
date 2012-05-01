@@ -3326,6 +3326,8 @@ void CApplication::Stop(int exitCode)
     CVariant vExitCode(exitCode);
     CAnnouncementManager::Announce(System, "xbmc", "OnQuit", vExitCode);
 
+    SaveFileState(true);
+
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
@@ -4234,14 +4236,27 @@ bool CApplication::IsFullScreen()
          g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW;
 }
 
-void CApplication::SaveFileState()
+void CApplication::SaveFileState(bool bForeground /* = false */)
 {
   if (!g_settings.GetCurrentProfile().canWriteDatabases())
     return;
-  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
-      m_progressTrackingVideoResumeBookmark,
-      m_progressTrackingPlayCountUpdate);
-  CJobManager::GetInstance().AddJob(job, NULL);
+
+  if (bForeground)
+  {
+    CSaveFileStateJob job(*m_progressTrackingItem,
+    m_progressTrackingVideoResumeBookmark,
+    m_progressTrackingPlayCountUpdate);
+
+    // Run job in the foreground to make sure it finishes
+    job.DoWork();
+  }
+  else
+  {
+    CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+        m_progressTrackingVideoResumeBookmark,
+        m_progressTrackingPlayCountUpdate);
+    CJobManager::GetInstance().AddJob(job, NULL);
+  }
 }
 
 void CApplication::UpdateFileState()
