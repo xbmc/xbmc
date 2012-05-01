@@ -2619,6 +2619,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
@@ -5253,6 +5256,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\POUtils.h">
+      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h">
       <Filter>cores\AudioRenderers</Filter>
