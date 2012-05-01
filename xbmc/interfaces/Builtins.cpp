@@ -1232,28 +1232,28 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     if (!params.size() || params[0].Equals("video"))
     {
-        if (!g_application.IsVideoScanning())
-        {
-           CVideoDatabase videodatabase;
-           videodatabase.Open();
-           videodatabase.CleanDatabase();
-           videodatabase.Close();
-        }
-        else
-          CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+      if (!g_application.IsVideoScanning())
+      {
+         CVideoDatabase videodatabase;
+         videodatabase.Open();
+         videodatabase.CleanDatabase();
+         videodatabase.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
     else if (params[0].Equals("music"))
     {
-        if (!g_application.IsMusicScanning())
-        {
-          CMusicDatabase musicdatabase;
+      if (!g_application.IsMusicScanning())
+      {
+        CMusicDatabase musicdatabase;
 
-          musicdatabase.Open();
-          musicdatabase.Cleanup();
-          musicdatabase.Close();
-        }
-        else
-          CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+        musicdatabase.Open();
+        musicdatabase.Cleanup();
+        musicdatabase.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute.Equals("exportlibrary"))
