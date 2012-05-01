@@ -19,6 +19,9 @@
  *
  */
 #pragma once
+
+#include <stdlib.h>
+
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
