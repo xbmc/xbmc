@@ -1070,12 +1070,9 @@
 		E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
-		E38E22740D25F9FE00618676 /* XEventUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */; };
 		E38E22750D25F9FE00618676 /* XFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */; };
 		E38E22760D25F9FE00618676 /* XHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7F0D25F9FD00618676 /* XHandle.cpp */; };
 		E38E22770D25F9FE00618676 /* XMemUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D810D25F9FD00618676 /* XMemUtils.cpp */; };
-		E38E22780D25F9FE00618676 /* XSyncUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D830D25F9FD00618676 /* XSyncUtils.cpp */; };
-		E38E22790D25F9FE00618676 /* XThreadUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D850D25F9FD00618676 /* XThreadUtils.cpp */; };
 		E38E227A0D25F9FE00618676 /* XTimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D870D25F9FD00618676 /* XTimeUtils.cpp */; };
 		E38E227C0D25F9FE00618676 /* MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */; };
 		E38E227E0D25F9FE00618676 /* MusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */; };
@@ -1635,12 +1632,9 @@
 		F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
 		F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
-		F5A1CA7C0F6B06CF00A96ABD /* XEventUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */; };
 		F5A1CA7D0F6B06CF00A96ABD /* XFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */; };
 		F5A1CA7E0F6B06CF00A96ABD /* XHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D7F0D25F9FD00618676 /* XHandle.cpp */; };
 		F5A1CA7F0F6B06CF00A96ABD /* XMemUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D810D25F9FD00618676 /* XMemUtils.cpp */; };
-		F5A1CA800F6B06CF00A96ABD /* XSyncUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D830D25F9FD00618676 /* XSyncUtils.cpp */; };
-		F5A1CA810F6B06CF00A96ABD /* XThreadUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D850D25F9FD00618676 /* XThreadUtils.cpp */; };
 		F5A1CA820F6B06CF00A96ABD /* XTimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D870D25F9FD00618676 /* XTimeUtils.cpp */; };
 		F5A1CA830F6B06CF00A96ABD /* MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */; };
 		F5A1CA840F6B06CF00A96ABD /* MusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */; };
@@ -3548,18 +3542,12 @@
 		E38E1D730D25F9FD00618676 /* LinuxTimezone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxTimezone.h; sourceTree = "<group>"; };
 		E38E1D780D25F9FD00618676 /* PlatformDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformDefs.h; sourceTree = "<group>"; };
 		E38E1D790D25F9FD00618676 /* PlatformInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformInclude.h; sourceTree = "<group>"; };
-		E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XEventUtils.cpp; sourceTree = "<group>"; };
-		E38E1D7C0D25F9FD00618676 /* XEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XEventUtils.h; sourceTree = "<group>"; };
 		E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XFileUtils.cpp; sourceTree = "<group>"; };
 		E38E1D7E0D25F9FD00618676 /* XFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFileUtils.h; sourceTree = "<group>"; };
 		E38E1D7F0D25F9FD00618676 /* XHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XHandle.cpp; sourceTree = "<group>"; };
 		E38E1D800D25F9FD00618676 /* XHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHandle.h; sourceTree = "<group>"; };
 		E38E1D810D25F9FD00618676 /* XMemUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMemUtils.cpp; sourceTree = "<group>"; };
 		E38E1D820D25F9FD00618676 /* XMemUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMemUtils.h; sourceTree = "<group>"; };
-		E38E1D830D25F9FD00618676 /* XSyncUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSyncUtils.cpp; sourceTree = "<group>"; };
-		E38E1D840D25F9FD00618676 /* XSyncUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSyncUtils.h; sourceTree = "<group>"; };
-		E38E1D850D25F9FD00618676 /* XThreadUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XThreadUtils.cpp; sourceTree = "<group>"; };
-		E38E1D860D25F9FD00618676 /* XThreadUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XThreadUtils.h; sourceTree = "<group>"; };
 		E38E1D870D25F9FD00618676 /* XTimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XTimeUtils.cpp; sourceTree = "<group>"; };
 		E38E1D880D25F9FD00618676 /* XTimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTimeUtils.h; sourceTree = "<group>"; };
 		E38E1D8B0D25F9FD00618676 /* MediaManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaManager.cpp; sourceTree = "<group>"; };
@@ -6637,18 +6625,12 @@
 				F5E56BA41082A675006E788A /* PosixMountProvider.h */,
 				18308CB41303370800AA309E /* stat_utf8.h */,
 				18308CB51303370800AA309E /* stdio_utf8.h */,
-				E38E1D7A0D25F9FD00618676 /* XEventUtils.cpp */,
-				E38E1D7C0D25F9FD00618676 /* XEventUtils.h */,
 				E38E1D7D0D25F9FD00618676 /* XFileUtils.cpp */,
 				E38E1D7E0D25F9FD00618676 /* XFileUtils.h */,
 				E38E1D7F0D25F9FD00618676 /* XHandle.cpp */,
 				E38E1D800D25F9FD00618676 /* XHandle.h */,
 				E38E1D810D25F9FD00618676 /* XMemUtils.cpp */,
 				E38E1D820D25F9FD00618676 /* XMemUtils.h */,
-				E38E1D830D25F9FD00618676 /* XSyncUtils.cpp */,
-				E38E1D840D25F9FD00618676 /* XSyncUtils.h */,
-				E38E1D850D25F9FD00618676 /* XThreadUtils.cpp */,
-				E38E1D860D25F9FD00618676 /* XThreadUtils.h */,
 				E38E1D870D25F9FD00618676 /* XTimeUtils.cpp */,
 				E38E1D880D25F9FD00618676 /* XTimeUtils.h */,
 			);
@@ -7600,12 +7582,9 @@
 				E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */,
 				E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */,
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
-				E38E22740D25F9FE00618676 /* XEventUtils.cpp in Sources */,
 				E38E22750D25F9FE00618676 /* XFileUtils.cpp in Sources */,
 				E38E22760D25F9FE00618676 /* XHandle.cpp in Sources */,
 				E38E22770D25F9FE00618676 /* XMemUtils.cpp in Sources */,
-				E38E22780D25F9FE00618676 /* XSyncUtils.cpp in Sources */,
-				E38E22790D25F9FE00618676 /* XThreadUtils.cpp in Sources */,
 				E38E227A0D25F9FE00618676 /* XTimeUtils.cpp in Sources */,
 				E38E227C0D25F9FE00618676 /* MediaManager.cpp in Sources */,
 				E38E227E0D25F9FE00618676 /* MusicDatabase.cpp in Sources */,
@@ -8542,12 +8521,9 @@
 				F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */,
 				F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */,
 				F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */,
-				F5A1CA7C0F6B06CF00A96ABD /* XEventUtils.cpp in Sources */,
 				F5A1CA7D0F6B06CF00A96ABD /* XFileUtils.cpp in Sources */,
 				F5A1CA7E0F6B06CF00A96ABD /* XHandle.cpp in Sources */,
 				F5A1CA7F0F6B06CF00A96ABD /* XMemUtils.cpp in Sources */,
-				F5A1CA800F6B06CF00A96ABD /* XSyncUtils.cpp in Sources */,
-				F5A1CA810F6B06CF00A96ABD /* XThreadUtils.cpp in Sources */,
 				F5A1CA820F6B06CF00A96ABD /* XTimeUtils.cpp in Sources */,
 				F5A1CA830F6B06CF00A96ABD /* MediaManager.cpp in Sources */,
 				F5A1CA840F6B06CF00A96ABD /* MusicDatabase.cpp in Sources */,
