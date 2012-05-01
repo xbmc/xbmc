@@ -656,12 +656,9 @@
 		F56C8A60131F42ED000AD0F6 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8592131F42EA000AD0F6 /* LinuxResourceCounter.cpp */; };
 		F56C8A61131F42ED000AD0F6 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8594131F42EA000AD0F6 /* LinuxTimezone.cpp */; };
 		F56C8A62131F42ED000AD0F6 /* PosixMountProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8599131F42EA000AD0F6 /* PosixMountProvider.cpp */; };
-		F56C8A63131F42ED000AD0F6 /* XEventUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C859A131F42EA000AD0F6 /* XEventUtils.cpp */; };
 		F56C8A64131F42ED000AD0F6 /* XFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C859C131F42EA000AD0F6 /* XFileUtils.cpp */; };
 		F56C8A65131F42ED000AD0F6 /* XHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C859E131F42EA000AD0F6 /* XHandle.cpp */; };
 		F56C8A66131F42ED000AD0F6 /* XMemUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85A0131F42EA000AD0F6 /* XMemUtils.cpp */; };
-		F56C8A67131F42ED000AD0F6 /* XSyncUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85A2131F42EA000AD0F6 /* XSyncUtils.cpp */; };
-		F56C8A68131F42ED000AD0F6 /* XThreadUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85A4131F42EA000AD0F6 /* XThreadUtils.cpp */; };
 		F56C8A69131F42ED000AD0F6 /* XTimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85A6131F42EA000AD0F6 /* XTimeUtils.cpp */; };
 		F56C8A6A131F42ED000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85AA131F42EA000AD0F6 /* GUIDialogMusicInfo.cpp */; };
 		F56C8A6B131F42ED000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C85AC131F42EA000AD0F6 /* GUIDialogMusicOSD.cpp */; };
@@ -2387,18 +2384,12 @@
 		F56C8597131F42EA000AD0F6 /* PlatformInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformInclude.h; sourceTree = "<group>"; };
 		F56C8598131F42EA000AD0F6 /* PosixMountProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixMountProvider.h; sourceTree = "<group>"; };
 		F56C8599131F42EA000AD0F6 /* PosixMountProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixMountProvider.cpp; sourceTree = "<group>"; };
-		F56C859A131F42EA000AD0F6 /* XEventUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XEventUtils.cpp; sourceTree = "<group>"; };
-		F56C859B131F42EA000AD0F6 /* XEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XEventUtils.h; sourceTree = "<group>"; };
 		F56C859C131F42EA000AD0F6 /* XFileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XFileUtils.cpp; sourceTree = "<group>"; };
 		F56C859D131F42EA000AD0F6 /* XFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFileUtils.h; sourceTree = "<group>"; };
 		F56C859E131F42EA000AD0F6 /* XHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XHandle.cpp; sourceTree = "<group>"; };
 		F56C859F131F42EA000AD0F6 /* XHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHandle.h; sourceTree = "<group>"; };
 		F56C85A0131F42EA000AD0F6 /* XMemUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMemUtils.cpp; sourceTree = "<group>"; };
 		F56C85A1131F42EA000AD0F6 /* XMemUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMemUtils.h; sourceTree = "<group>"; };
-		F56C85A2131F42EA000AD0F6 /* XSyncUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSyncUtils.cpp; sourceTree = "<group>"; };
-		F56C85A3131F42EA000AD0F6 /* XSyncUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSyncUtils.h; sourceTree = "<group>"; };
-		F56C85A4131F42EA000AD0F6 /* XThreadUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XThreadUtils.cpp; sourceTree = "<group>"; };
-		F56C85A5131F42EA000AD0F6 /* XThreadUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XThreadUtils.h; sourceTree = "<group>"; };
 		F56C85A6131F42EA000AD0F6 /* XTimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XTimeUtils.cpp; sourceTree = "<group>"; };
 		F56C85A7131F42EA000AD0F6 /* XTimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTimeUtils.h; sourceTree = "<group>"; };
 		F56C85AA131F42EA000AD0F6 /* GUIDialogMusicInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicInfo.cpp; sourceTree = "<group>"; };
@@ -5125,18 +5116,12 @@
 				F56C8598131F42EA000AD0F6 /* PosixMountProvider.h */,
 				F56C858C131F42EA000AD0F6 /* stat_utf8.h */,
 				F56C858D131F42EA000AD0F6 /* stdio_utf8.h */,
-				F56C859A131F42EA000AD0F6 /* XEventUtils.cpp */,
-				F56C859B131F42EA000AD0F6 /* XEventUtils.h */,
 				F56C859C131F42EA000AD0F6 /* XFileUtils.cpp */,
 				F56C859D131F42EA000AD0F6 /* XFileUtils.h */,
 				F56C859E131F42EA000AD0F6 /* XHandle.cpp */,
 				F56C859F131F42EA000AD0F6 /* XHandle.h */,
 				F56C85A0131F42EA000AD0F6 /* XMemUtils.cpp */,
 				F56C85A1131F42EA000AD0F6 /* XMemUtils.h */,
-				F56C85A2131F42EA000AD0F6 /* XSyncUtils.cpp */,
-				F56C85A3131F42EA000AD0F6 /* XSyncUtils.h */,
-				F56C85A4131F42EA000AD0F6 /* XThreadUtils.cpp */,
-				F56C85A5131F42EA000AD0F6 /* XThreadUtils.h */,
 				F56C85A6131F42EA000AD0F6 /* XTimeUtils.cpp */,
 				F56C85A7131F42EA000AD0F6 /* XTimeUtils.h */,
 			);
@@ -6730,12 +6715,9 @@
 				F56C8A60131F42ED000AD0F6 /* LinuxResourceCounter.cpp in Sources */,
 				F56C8A61131F42ED000AD0F6 /* LinuxTimezone.cpp in Sources */,
 				F56C8A62131F42ED000AD0F6 /* PosixMountProvider.cpp in Sources */,
-				F56C8A63131F42ED000AD0F6 /* XEventUtils.cpp in Sources */,
 				F56C8A64131F42ED000AD0F6 /* XFileUtils.cpp in Sources */,
 				F56C8A65131F42ED000AD0F6 /* XHandle.cpp in Sources */,
 				F56C8A66131F42ED000AD0F6 /* XMemUtils.cpp in Sources */,
-				F56C8A67131F42ED000AD0F6 /* XSyncUtils.cpp in Sources */,
-				F56C8A68131F42ED000AD0F6 /* XThreadUtils.cpp in Sources */,
 				F56C8A69131F42ED000AD0F6 /* XTimeUtils.cpp in Sources */,
 				F56C8A6A131F42ED000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */,
 				F56C8A6B131F42ED000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */,
