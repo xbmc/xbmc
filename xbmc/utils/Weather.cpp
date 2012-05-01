@@ -25,6 +25,7 @@
 #include "Weather.h"
 #include "filesystem/ZipManager.h"
 #include "XMLUtils.h"
+#include "utils/POUtils.h"
 #include "Temperature.h"
 #include "network/Network.h"
 #include "Application.h"
@@ -229,6 +230,43 @@ void CWeatherJob::FormatTemperature(CStdString &text, int temp)
 void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
+
+  // Try the strings PO file first
+  CPODocument PODoc;
+  if (PODoc.LoadFile("special://xbmc/language/English/strings.po"))
+  {
+    int counter = 0;
+
+    while (PODoc.GetNextEntry())
+    {
+      if (PODoc.GetEntryType() != ID_FOUND)
+        continue;
+
+      int id = PODoc.GetEntryID();
+      PODoc.ParseEntry(ISSOURCELANG);
+
+      if (id > LOCALIZED_TOKEN_LASTID2) break;
+      if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
+          (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
+          (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
+          (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
+      {
+        if (!PODoc.GetMsgid()->empty())
+        {
+          m_localizedTokens.insert(make_pair(*PODoc.GetMsgid(), id));
+          counter++;
+        }
+      }
+    }
+  CLog::Log(LOGDEBUG, "POParser: loaded %i weather tokens", counter);
+  return;
+  }
+
+  CLog::Log(LOGDEBUG,
+            "Weather: no PO string file available, to load English tokens, "
+            "fallback to strings.xml file");
+
+  // We load the tokens from the strings.xml file
   CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
 
   TiXmlDocument xmlDoc;

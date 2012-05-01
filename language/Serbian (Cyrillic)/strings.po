@@ -1,0 +1,9115 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-30 23:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sr_RS\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Слике"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Музика"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Филмови"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "ТВ водич"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Поставке"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Упр. датотекама"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Време"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc медија центар"
+
+#: id:11
+msgid "Monday"
+msgstr "Понедељак"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Уторак"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Среда"
+
+#: id:14
+msgid "Thursday"
+msgstr "Четвртак"
+
+#: id:15
+msgid "Friday"
+msgstr "Петак"
+
+#: id:16
+msgid "Saturday"
+msgstr "Субота"
+
+#: id:17
+msgid "Sunday"
+msgstr "Недеља"
+
+#: id:21
+msgid "January"
+msgstr "јануар"
+
+#: id:22
+msgid "February"
+msgstr "фебруар"
+
+#: id:23
+msgid "March"
+msgstr "март"
+
+#: id:24
+msgid "April"
+msgstr "април"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "мај"
+
+#: id:26
+msgid "June"
+msgstr "јун"
+
+#: id:27
+msgid "July"
+msgstr "јул"
+
+#: id:28
+msgid "August"
+msgstr "август"
+
+#: id:29
+msgid "September"
+msgstr "септембар"
+
+#: id:30
+msgid "October"
+msgstr "октобар"
+
+#: id:31
+msgid "November"
+msgstr "новембар"
+
+#: id:32
+msgid "December"
+msgstr "децембар"
+
+#: id:41
+msgid "Mon"
+msgstr "пон"
+
+#: id:42
+msgid "Tue"
+msgstr "уто"
+
+#: id:43
+msgid "Wed"
+msgstr "сре"
+
+#: id:44
+msgid "Thu"
+msgstr "чет"
+
+#: id:45
+msgid "Fri"
+msgstr "пет"
+
+#: id:46
+msgid "Sat"
+msgstr "суб"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "нед"
+
+#: id:51
+msgid "Jan"
+msgstr "јан"
+
+#: id:52
+msgid "Feb"
+msgstr "феб"
+
+#: id:53
+msgid "Mar"
+msgstr "мар"
+
+#: id:54
+msgid "Apr"
+msgstr "апр"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "мај"
+
+#: id:56
+msgid "Jun"
+msgstr "јун"
+
+#: id:57
+msgid "Jul"
+msgstr "јул"
+
+#: id:58
+msgid "Aug"
+msgstr "авг"
+
+#: id:59
+msgid "Sep"
+msgstr "сеп"
+
+#: id:60
+msgid "Oct"
+msgstr "окт"
+
+#: id:61
+msgid "Nov"
+msgstr "нов"
+
+#: id:62
+msgid "Dec"
+msgstr "дец"
+
+#: id:71
+msgid "N"
+msgstr ""
+
+#: id:72
+msgid "NNE"
+msgstr ""
+
+#: id:73
+msgid "NE"
+msgstr ""
+
+#: id:74
+msgid "ENE"
+msgstr ""
+
+#: id:75
+msgid "E"
+msgstr ""
+
+#: id:76
+msgid "ESE"
+msgstr ""
+
+#: id:77
+msgid "SE"
+msgstr ""
+
+#: id:78
+msgid "SSE"
+msgstr ""
+
+#: id:79
+msgid "S"
+msgstr ""
+
+#: id:80
+msgid "SSW"
+msgstr ""
+
+#: id:81
+msgid "SW"
+msgstr ""
+
+#: id:82
+msgid "WSW"
+msgstr ""
+
+#: id:83
+msgid "W"
+msgstr ""
+
+#: id:84
+msgid "WNW"
+msgstr ""
+
+#: id:85
+msgid "NW"
+msgstr ""
+
+#: id:86
+msgid "NNW"
+msgstr ""
+
+#: id:87
+msgid "VAR"
+msgstr ""
+
+#: id:98
+msgid "View: Auto"
+msgstr "Приказ: Аутом."
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Приказ: Аутом. велико"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Приказ: Иконе"
+
+#: id:101
+msgid "View: List"
+msgstr "Приказ: Списак"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Анализирај"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Сложи по: Имену"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Сложи по: Датуму"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Сложи по: Вели."
+
+#: id:106
+msgid "No"
+msgstr "Не"
+
+#: id:107
+msgid "Yes"
+msgstr "Да"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Репрод. слајдова"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Направи омоте"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Направи сличице"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Пречице"
+
+#: id:112
+msgid "Paused"
+msgstr "Паузирано"
+
+#: id:113
+msgid "Update failed"
+msgstr ""
+
+#: id:114
+msgid "Installation failed"
+msgstr ""
+
+#: id:115
+msgid "Copy"
+msgstr "Копирај"
+
+#: id:116
+msgid "Move"
+msgstr "Премести"
+
+#: id:117
+msgid "Delete"
+msgstr "Избриши"
+
+#: id:118
+msgid "Rename"
+msgstr "Преименуј"
+
+#: id:119
+msgid "New folder"
+msgstr "Нова фасцикла"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Потврдите копирање"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Потврдите премештање"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Потврђујете ли брисање?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Копирање ових датотека?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Премештање ових датотека?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr ""
+"Брисање ових датотека? - Након брисања, датотеке није могуће повратити!"
+
+#: id:126
+msgid "Status"
+msgstr "Стање"
+
+#: id:127
+msgid "Objects"
+msgstr "Објеката"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Опште"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Пројекција слајдова"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Подаци о систему"
+
+#: id:131
+msgid "Display"
+msgstr "Приказ"
+
+#: id:132
+msgid "Albums"
+msgstr "Албуми"
+
+#: id:133
+msgid "Artists"
+msgstr "Извођачи"
+
+#: id:134
+msgid "Songs"
+msgstr "Нумере"
+
+#: id:135
+msgid "Genres"
+msgstr "Жанрови"
+
+#: id:136
+msgid "Playlists"
+msgstr "Спискови за репро."
+
+#: id:137
+msgid "Search"
+msgstr "Претражи"
+
+#: id:138
+msgid "System Information"
+msgstr "Подаци о систему"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Температуре:"
+
+#: id:140
+msgid "CPU:"
+msgstr "Централног процесора:"
+
+#: id:141
+msgid "GPU:"
+msgstr "Графичког процесора:"
+
+#: id:142
+msgid "Time:"
+msgstr "Време:"
+
+#: id:143
+msgid "Current:"
+msgstr "Тренутно:"
+
+#: id:144
+msgid "Build:"
+msgstr "Издање:"
+
+#: id:145
+msgid "Network:"
+msgstr "Мрежа:"
+
+#: id:146
+msgid "Type:"
+msgstr "Тип:"
+
+#: id:147
+msgid "Static"
+msgstr "Статички"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC адреса"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP адреса"
+
+#: id:151
+msgid "Link:"
+msgstr "Веза:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Полу дуплекс"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Пуни дуплекс"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Складишта"
+
+#: id:155
+msgid "Drive"
+msgstr "Уређај"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Слободно"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Видео"
+
+#: id:158
+msgid "Free memory"
+msgstr "Слободна меморија"
+
+#: id:159
+msgid "No link"
+msgstr "није успостављена"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "слободно"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Недоступно"
+
+#: id:162
+msgid "Tray open"
+msgstr "Врата отворена"
+
+#: id:163
+msgid "Reading"
+msgstr "Читање"
+
+#: id:164
+msgid "No disc"
+msgstr "Диск није уметнут"
+
+#: id:165
+msgid "Disc present"
+msgstr "Диск је препознат"
+
+#: id:166
+msgid "Skin"
+msgstr "Маска"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Резолуција"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Прилагоди брзину освежавања монитору"
+
+#: id:172
+msgid "Release date"
+msgstr "Датум издавања"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Прикажи 4:3 видео материјал као"
+
+#: id:175
+msgid "Moods"
+msgstr "Расположења"
+
+#: id:176
+msgid "Styles"
+msgstr "Стилови"
+
+#: id:179
+msgid "Song"
+msgstr "Песма"
+
+#: id:180
+msgid "Duration"
+msgstr "Трајање"
+
+#: id:181
+msgid "Select album"
+msgstr "Изаберите албум"
+
+#: id:182
+msgid "Tracks"
+msgstr "Нумере"
+
+#: id:183
+msgid "Review"
+msgstr "Преглед"
+
+#: id:184
+msgid "Refresh"
+msgstr "Освежи"
+
+#: id:185
+msgid "Searching album"
+msgstr "Претраживање албума"
+
+#: id:186
+msgid "OK"
+msgstr "У реду"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Ни један албум није пронађен!"
+
+#: id:188
+msgid "Select all"
+msgstr "Изабери све"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Анализирање информација"
+
+#: id:190
+msgid "Save"
+msgstr "Сачувај"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Насумично"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Поништи"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Анализирај"
+
+#: id:194
+msgid "Searching..."
+msgstr "Претраживање..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Нису пронађене информације!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Изаберите филм:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Захтевање података о %s"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Учитавање података о филму"
+
+#: id:199
+msgid "Web interface"
+msgstr ""
+
+#: id:202
+msgid "Tagline"
+msgstr "Tagline"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Кратак опис"
+
+#: id:205
+msgid "Votes"
+msgstr "Гласова"
+
+#: id:206
+msgid "Cast"
+msgstr "Улоге"
+
+#: id:207
+msgid "Plot"
+msgstr "Опис"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Репродукуј"
+
+#: id:209
+msgid "Next"
+msgstr "Следеће"
+
+#: id:210
+msgid "Previous"
+msgstr "Претходно"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Прилагодите корисничко окружење..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Калибрација слике..."
+
+#: id:215
+msgid "Soften"
+msgstr "Омекшано"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Ниво увећања"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Однос пикселизације"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD уређај"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Молимо, уметните диск"
+
+#: id:220
+msgid "Remote share"
+msgstr "Даљинско дељење"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Мрежа није повезана"
+
+#: id:222
+msgid "Cancel"
+msgstr "Откажи"
+
+#: id:224
+msgid "Speed"
+msgstr "Брзина"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr ""
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Испробај шаблон..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Потражи имена нумера, музичког CD-а, на freedb.org"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Измешај списак при учитавању"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Време успорења HDD-а"
+
+#: id:230
+msgid "Video filters"
+msgstr "Видео филтери"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Ништа"
+
+#: id:232
+msgid "Point"
+msgstr "Тачка"
+
+#: id:233
+msgid "Linear"
+msgstr "Линеарно"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Анизотропија"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussian cubic"
+
+#: id:237
+msgid "Minification"
+msgstr "Умањење"
+
+#: id:238
+msgid "Magnification"
+msgstr "Увеличање"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Поништи списак по завршетку"
+
+#: id:240
+msgid "Display Mode"
+msgstr ""
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr ""
+
+#: id:242
+msgid "Windowed"
+msgstr ""
+
+#: id:243
+msgid "Refresh Rate"
+msgstr ""
+
+#: id:244
+msgid "Full screen"
+msgstr ""
+
+#: id:245
+msgid ""
+"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
+" %2.2f)"
+msgstr ""
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Скрипте"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Језик"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Музика"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Визуализација"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Изаберите одредишну фасциклу"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Стерео излаз ка свим звучницима"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Број канала"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- Способан DTS пријемник"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Преузимање CD информација"
+
+#: id:257
+msgid "Error"
+msgstr "Грешка"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Омогући читање ознака"
+
+#: id:259
+msgid "Opening"
+msgstr "Отварање"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Интернет радио"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Чекање на почетак..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Излазне скрипте"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Дозволи контролу XBMC апликације путем HTTP протокола"
+
+#: id:264
+msgid "Record"
+msgstr "Сними"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Заустави сним."
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Сложи по: Нумери"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Сложи по: Времену"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Сложи по: Наслову"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Сложи по: Извођачу"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Сложи по: Албуму"
+
+#: id:271
+msgid "Top 100"
+msgstr "Најбољих 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Горња лева ивица екрана"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Доња десна ивица екрана"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Позиционирање титла"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Прилагођавање односа страна"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Померајте стрелицу како бисте променили величину екрана"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Померајте линију како бисте променили позицију титлова"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Обликујте правоугаоник тако да добијете савршени квадрат"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Није могуће учитати поставке"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Коришћење подразумеваних поставки"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Молимо, проверите XML датотеке"
+
+#: id:282
+msgid "Found %i items"
+msgstr "Пронађено %i ставки"
+
+#: id:283
+msgid "Search results"
+msgstr "Резултати претраге"
+
+#: id:284
+msgid "No results found"
+msgstr "Без резултата"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Титлови"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Слова"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Величина"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Динамички опсег компресије"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Видео"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Звук"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Потражи титлове"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Направи обележ."
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Поништи обележ."
+
+#: id:297
+msgid "Audio offset"
+msgstr "Померај звука у времену"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Обележивачи"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- Способан AAC пријемник"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- Способан MP1 пријемник"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- Способан MP2 пријемник"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- Способан MP3 пријемник"
+
+#: id:303
+msgid "Delay"
+msgstr "Кашњење"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Језик"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Омогућено"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Нестандардни"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=аутом.)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Чишћење базе"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Припремање..."
+
+#: id:315
+msgid "Database error"
+msgstr "Грешка базе података"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Претраживање песама..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "База података је успешно очишћена"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Чишћење песама..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Грешка чишћења песама"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Чишћење извођача..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Грешка чишћења извођача"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Чишћење жанрова..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Грешка чишћења жанрова"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Чишћење путања..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Грешка чишћења путања"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Чишћење албума..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Грешка чишћења албума"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Уписивање промена..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Грешка уписивања промена"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Ово може потрајати неко време..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Компримовање базе података..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Грешка компримовања базе података"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Желите ли заиста да очистите библиотеку?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Чишћење библиотеке..."
+
+#: id:335
+msgid "Start"
+msgstr "Покрени"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Конверзија брзине сличица"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Излаз звука"
+
+#: id:338
+msgid "Analog"
+msgstr "Аналогни"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Дигитални"
+
+#: id:340
+msgid "Various artists"
+msgstr "Различити извођачи"
+
+#: id:341
+msgid "Play disc"
+msgstr "Репродукуј диск"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Филмови"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Прилагоди брзину сличица"
+
+#: id:344
+msgid "Actors"
+msgstr "Глумци"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Година"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Појачај ниво звука при пребацивању у мањи бр. канала"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Искљ."
+
+#: id:352
+msgid "Dim"
+msgstr "Затамни"
+
+#: id:353
+msgid "Black"
+msgstr "Црно"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix трагови"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Време покретања чувара екрана"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Режим чувара екрана"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Функционисање тајмера искључивања"
+
+#: id:358
+msgid "All albums"
+msgstr "Сви албуми"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Недавно додати албуми"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Чувар екрана"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Насум. реп. слај."
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Ниво затамљења чувара екрана"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Сложи по: Дато."
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Способан Dolby Digital (AC3) пријемник"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Сложи по: Имену"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Сложи по: Години"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Сложи по: Популарности"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Назив"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "грмљавина"
+
+#: id:371
+msgid "Partly"
+msgstr "делимично"
+
+#: id:372
+msgid "Mostly"
+msgstr "углавном"
+
+#: id:373
+msgid "Sunny"
+msgstr "сунчано"
+
+#: id:374
+msgid "Cloudy"
+msgstr "облачно"
+
+#: id:375
+msgid "Snow"
+msgstr "снег"
+
+#: id:376
+msgid "Rain"
+msgstr "киша"
+
+#: id:377
+msgid "Light"
+msgstr "слаб(а)"
+
+#: id:378
+msgid "AM"
+msgstr "ујутро"
+
+#: id:379
+msgid "PM"
+msgstr "поподне"
+
+#: id:380
+msgid "Showers"
+msgstr "пљускови"
+
+#: id:381
+msgid "Few"
+msgstr "неколико"
+
+#: id:382
+msgid "Scattered"
+msgstr "местимично"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "ветровито"
+
+#: id:384
+msgid "Strong"
+msgstr "изузетно"
+
+#: id:385
+msgid "Fair"
+msgstr "умерено"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "ведро"
+
+#: id:387
+msgid "Clouds"
+msgstr "облачно"
+
+#: id:388
+msgid "Early"
+msgstr "рани"
+
+#: id:389
+msgid "Shower"
+msgstr "пљусак"
+
+#: id:390
+msgid "Flurries"
+msgstr "Суснежица"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "низак"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "умерен"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "висок"
+
+#: id:394
+msgid "Fog"
+msgstr "магла"
+
+#: id:395
+msgid "Haze"
+msgstr "измаглица"
+
+#: id:396
+msgid "Select location"
+msgstr "Избор локације"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Учесталост освежавања"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Јединице за температуру"
+
+#: id:399
+msgid "Speed units"
+msgstr "Јединице за брзину"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Време"
+
+#: id:401
+msgid "Temp"
+msgstr "Темпер."
+
+#: id:402
+msgid "Feels like"
+msgstr "Као да је"
+
+#: id:403
+msgid "UV index"
+msgstr "UV индекс"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Ветар"
+
+#: id:405
+msgid "Dew point"
+msgstr "Тачка росе"
+
+#: id:406
+msgid "Humidity"
+msgstr "Влажност"
+
+#: id:409
+msgid "Defaults"
+msgstr "Подразумевано"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Приступање услузи врем. прогнозе"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Преузимање прогнозе за:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Није могуће преузети податке о прогнози"
+
+#: id:413
+msgid "Manual"
+msgstr "Ручно"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Не постоји рецензија за овај албум"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Преузимање..."
+
+#: id:416
+msgid "Not available"
+msgstr "Није доступно"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Приказ: Велике иконе"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Мин."
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Макс."
+
+#: id:420
+msgid "HDMI"
+msgstr ""
+
+#: id:422
+msgid "Delete album info"
+msgstr "Избриши податке о албуму"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Избриши CD податке"
+
+#: id:424
+msgid "Select"
+msgstr "Изабери"
+
+#: id:425
+msgid "No album information found"
+msgstr "Нису пронађени подаци о албуму"
+
+#: id:426
+msgid "No CD information found"
+msgstr "Нису пронађени CD подаци"
+
+#: id:427
+msgid "Disc"
+msgstr "Диск"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Уметните исправан CD/DVD"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Молимо, уметните следећи CD/DVD"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Сложи по: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Без кеша"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Уклони филм из библиотеке"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Заиста желите да уклоните „%s“?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr ""
+
+#: id:437
+msgid "Removable disk"
+msgstr "Преносиви диск"
+
+#: id:438
+msgid "Opening file"
+msgstr "Отварање датотеке"
+
+#: id:439
+msgid "Cache"
+msgstr "Кеш"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Чврсти диск"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Локална мрежа"
+
+#: id:443
+msgid "Internet"
+msgstr "Интернет"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Видео"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Звук"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Аутоматска репрод. медија"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Омогућено"
+
+#: id:450
+msgid "Columns"
+msgstr "Колоне"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "1. ред адресе"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "2. ред адресе"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "3. ред адресе"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "4. ред адресе"
+
+#: id:455
+msgid "Rows"
+msgstr "Редови"
+
+#: id:456
+msgid "Mode"
+msgstr "Режим"
+
+#: id:457
+msgid "Switch view"
+msgstr "Промени приказ"
+
+#: id:459
+msgid "Subs"
+msgstr "Титлови"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Звучни запис"
+
+#: id:461
+msgid "[active]"
+msgstr "[активно]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Титл"
+
+#: id:463
+msgid "Backlight"
+msgstr "Позадинско осветљење"
+
+#: id:464
+msgid "Brightness"
+msgstr "Светлина"
+
+#: id:465
+msgid "Contrast"
+msgstr "Контраст"
+
+#: id:466
+msgid "Gamma"
+msgstr "Опсег боје"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Тип"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Померајте линију да бисте променили OSD позицију"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSD позиција"
+
+#: id:470
+msgid "Credits"
+msgstr "Заслуге"
+
+#: id:471
+msgid "Modchip"
+msgstr "Изме. чип"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Искљ."
+
+#: id:475
+msgid "Music only"
+msgstr "Само музика"
+
+#: id:476
+msgid "Music & video"
+msgstr "Музика и видео"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Није могуће учитати списак за репродукцију"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Маска и језик"
+
+#: id:480
+msgid "Appearance"
+msgstr "Приказивање"
+
+#: id:481
+msgid "Audio options"
+msgstr "Опције звука"
+
+#: id:482
+msgid "About XBMC"
+msgstr "О систему XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Избриши албум"
+
+#: id:486
+msgid "Repeat"
+msgstr "Понови"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Понови једном"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Понови фасциклу"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Аутоматски репродукуј следећу песму"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Користи велике иконе"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Промени величину за VobSubs"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Напредне опције (само за стручњаке!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Свеобухватан звучни слободан простор"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Поистовети видео и GUI резолуцију"
+
+#: id:496
+msgid "Calibration"
+msgstr "Калибрација"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Прикажи типове датотека"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Сложи по: Типу"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Није могуће повезивање и претрага мрежне услуге"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Неуспешно преузимање података о албуму"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Тражење назива албума..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Отвори"
+
+#: id:503
+msgid "Busy"
+msgstr "Заузето"
+
+#: id:504
+msgid "Empty"
+msgstr "Празно"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Учитавање података о медију из датотека..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Сложи по: Употреби"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Омогући визуализације"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Омогући промену режима видеа"
+
+#: id:512
+msgid "Startup window"
+msgstr "Стартни екран"
+
+#: id:513
+msgid "Home window"
+msgstr "Почетни екран"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Ручне поставке"
+
+#: id:515
+msgid "Genre"
+msgstr "Жанр"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Недавно репродуковани албуми"
+
+#: id:518
+msgid "Launch"
+msgstr "Покрени"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Покрени у..."
+
+#: id:521
+msgid "Compilations"
+msgstr "Компилације"
+
+#: id:522
+msgid "Remove source"
+msgstr "Уклони извор"
+
+#: id:523
+msgid "Switch media"
+msgstr "Промени медиј"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Изаберите списак за репродукцију"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Нови списак за репродукцију..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Додај у списак за репродукцију"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Ручно додајте у библиотеку"
+
+#: id:528
+msgid "Enter title"
+msgstr "Унесите наслов"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Грешка: Дуплиран наслов"
+
+#: id:530
+msgid "Select genre"
+msgstr "Изаберите жанр"
+
+#: id:531
+msgid "New genre"
+msgstr "Нови жанр"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Ручно додавање"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Унесите жанр"
+
+#: id:534
+msgid "View: %s"
+msgstr "Приказ: %s"
+
+#: id:535
+msgid "List"
+msgstr "Списак"
+
+#: id:536
+msgid "Icons"
+msgstr "Иконе"
+
+#: id:537
+msgid "Big list"
+msgstr "Вел. спис."
+
+#: id:538
+msgid "Big icons"
+msgstr "Вел. иконе"
+
+#: id:539
+msgid "Wide"
+msgstr "Широки"
+
+#: id:540
+msgid "Big wide"
+msgstr "Веома широки"
+
+#: id:541
+msgid "Album icons"
+msgstr "Иконе албума"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD иконе"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Подаци о медију"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Звучни излазни уређај"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Пролазни излазни уређај"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Овај извођач нема попуњену биографију"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Претвори вишеканални звук у стерео"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Сложи по: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Име"
+
+#: id:552
+msgid "Date"
+msgstr "Датум"
+
+#: id:553
+msgid "Size"
+msgstr "Велич."
+
+#: id:554
+msgid "Track"
+msgstr "Нумера"
+
+#: id:555
+msgid "Time"
+msgstr "Трајање"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Наслов"
+
+#: id:557
+msgid "Artist"
+msgstr "Извођач"
+
+#: id:558
+msgid "Album"
+msgstr "Албум"
+
+#: id:559
+msgid "Playlist"
+msgstr "Списак за реп."
+
+#: id:560
+msgid "ID"
+msgstr "ID"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Датоте."
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Година"
+
+#: id:563
+msgid "Rating"
+msgstr "Оцена"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Тип"
+
+#: id:565
+msgid "Usage"
+msgstr "Кориш."
+
+#: id:566
+msgid "Album artist"
+msgstr "Извођач на албуму"
+
+#: id:567
+msgid "Play count"
+msgstr "Број репродукција"
+
+#: id:568
+msgid "Last played"
+msgstr "Последња репродукција"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Коментар"
+
+#: id:570
+msgid "Date added"
+msgstr "Датум додавања"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Подразумевано"
+
+#: id:572
+msgid "Studio"
+msgstr "Студио"
+
+#: id:573
+msgid "Path"
+msgstr "Путања"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr ""
+
+#: id:575
+msgid "In progress"
+msgstr ""
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr "Смер слагања"
+
+#: id:581
+msgid "Sort method"
+msgstr "Начин слагања"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Режим приказа"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Запамти приказе различитих фасцикли"
+
+#: id:584
+msgid "Ascending"
+msgstr "Узлазно"
+
+#: id:585
+msgid "Descending"
+msgstr "Силазно"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Уреди списак за реп."
+
+#: id:587
+msgid "Filter"
+msgstr "Филтер"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Откажи режим журке"
+
+#: id:589
+msgid "Party mode"
+msgstr "Режим журке"
+
+#: id:590
+msgid "Random"
+msgstr "Насумично"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Искљ."
+
+#: id:592
+msgid "One"
+msgstr "Једном"
+
+#: id:593
+msgid "All"
+msgstr "Све"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Искљ."
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Понови: Искљ."
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Понови: Једном"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Понови: Све"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Рипуј музички CD"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Средње"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Уобичајено"
+
+#: id:603
+msgid "Extreme"
+msgstr "Екстремно"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Непроменљива брзина"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Риповање..."
+
+#: id:607
+msgid "To:"
+msgstr "За:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Није могуће риповати CD или нумеру"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath није постављен."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Рипуј музичку нумеру"
+
+#: id:611
+msgid "Enter number"
+msgstr "Унесите број"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr ""
+
+#: id:613
+msgid "Sample Frequency"
+msgstr ""
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Музички CD-ови"
+
+#: id:621
+msgid "Encoder"
+msgstr "Кодер"
+
+#: id:622
+msgid "Quality"
+msgstr "Квалитет"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Брзина протока"
+
+#: id:624
+msgid "Include track number"
+msgstr "Укључи број нумере"
+
+#: id:625
+msgid "All songs of"
+msgstr "Све песме од"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Режим приказа"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Нормалан"
+
+#: id:631
+msgid "Zoom"
+msgstr "Увеличан"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Развучено 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Развучено 14:9"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Развучено 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Првобитна величина"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Прилагођено"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Нормализација"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Подеш. гласноће нормализ. звука"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Користи на нивоу нумере"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Користи на нивоу албума"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Ниво предпојачања - са нормализацијом датотека"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Ниво предпојачања - без нормализације датотека"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Избегни исечке при нормализацији датотека"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Исеци црне траке"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Потребно је распакивање велике датотеке. Наставити?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Уклони из библиотеке"
+
+#: id:647
+msgid "Export video library"
+msgstr "Извези библиотеку филмова"
+
+#: id:648
+msgid "Import video library"
+msgstr "Увези библиотеку филмова"
+
+#: id:649
+msgid "Importing"
+msgstr "Увоз је у току"
+
+#: id:650
+msgid "Exporting"
+msgstr "Извоз је у току"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Потражи библиотеку"
+
+#: id:652
+msgid "Years"
+msgstr "Година"
+
+#: id:653
+msgid "Update library"
+msgstr "Ажурирај библиотеку"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Прикажи под. о укла. грешака"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Потражи извршне датотеке"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Потражи списак за репродукцију"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Потражи фасциклу"
+
+#: id:658
+msgid "Song information"
+msgstr "Подаци о песми"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Нелинеарно истезање"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Појачавање звука"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Изаберите излазну фасциклу"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Ова датотека више није доступна."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Желите ли ово да уклоните из библиотеке?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Потражи скрипту"
+
+#: id:665
+msgid "Compression level"
+msgstr ""
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Чишћење библиотеке"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Уклањање старих песама из библиотеке"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Ова путања је већ анализирана"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Мрежа"
+
+#: id:706
+msgid "- Server"
+msgstr "- Сервер"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Користи посреднички HTTP сервер за приступ Интернету"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Интернет протокол (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr ""
+"Одредили сте неисправан прикључак. Вредност мора бити између 1 и 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP посредник"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Задатак"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Аутоматски (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Ручно (статичка)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP адреса"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Мрежна маска"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Мрежни пролаз"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS сервер"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Сачувај и поново покрени"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Одредили сте неисправну адресу. Вредност мора бити AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "са бројевима између 0 и 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Промене нису сачуване. Наставити без чувања?"
+
+#: id:727
+msgid "Web server"
+msgstr "Web сервер"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP сервер"
+
+#: id:730
+msgid "- Port"
+msgstr "- Прикључак"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Сачувај и примени"
+
+#: id:733
+msgid "- Password"
+msgstr "- Лозинка"
+
+#: id:734
+msgid "No pass"
+msgstr "Без лозинке"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Скуп знакова"
+
+#: id:736
+msgid "- Style"
+msgstr "- Стил"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Боја"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Нормалан"
+
+#: id:739
+msgid "Bold"
+msgstr "Подебљан"
+
+#: id:740
+msgid "Italics"
+msgstr "Курзив"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Подебљани курзив"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Бела"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Жута"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Датотеке"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Нема анализираних података за овај приказ"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Молимо, искључите режим библиотеке"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Грешка учитавања слике"
+
+#: id:748
+msgid "Edit path"
+msgstr "Уреди путању"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Копија слике"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Да ли сте сигурни?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Уклањање извора"
+
+#: id:754
+msgid "Add program link"
+msgstr "Додај везу ка програму"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Уреди путању програма"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Уреди име програма"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Уреди дубину путање"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Приказ: Вел. списак"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Жута"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Бела"
+
+#: id:762
+msgid "Blue"
+msgstr "Плава"
+
+#: id:763
+msgid "Bright green"
+msgstr "Светло зелена"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Жутозелена"
+
+#: id:765
+msgid "Cyan"
+msgstr "Азурно плава"
+
+#: id:766
+msgid "Light grey"
+msgstr "Светло сива"
+
+#: id:767
+msgid "Grey"
+msgstr "Сива"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Грешка %i: дељење није доступно"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Звучни излаз"
+
+#: id:773
+msgid "Seeking"
+msgstr "Позиционирање"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Фасцикла репрод. слајдова"
+
+#: id:775
+msgid "Network interface"
+msgstr "Мрежни интерфејс"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Име бежичне мреже (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Лозинка за приступ бежичној мрежи"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Безбедност бежичне мреже"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Сачувај и примени поставке мрежног интрефејса"
+
+#: id:780
+msgid "No encryption"
+msgstr "Без заштите"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Примењивање поставки мрежног интерфејса. Молимо сачекајте."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Успешно је обављено поновно покретање мрежног интерфејса."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Није успело покретање мрежног интерфејса."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Интерфејс је онемогућен"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Успешно је онемогућен мрежни интерфејс."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Име бежичне мреже (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Дозволи програмима на овом систему да управљају XBMC-ом"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Прикључак"
+
+#: id:793
+msgid "Port range"
+msgstr "Опсег прикључака"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Дозволи програмима са других система да управљају XBMC-ом"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Иницијално кашњење понављања (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Непрекидно кашњење понављања (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Максималан број клијената"
+
+#: id:798
+msgid "Internet access"
+msgstr "Приступ Интернету"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Унели сте погрешан број прикључка"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Исправан опсег прикључака је од 1 до 65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Исправан опсег прикључака је од 1024 до 65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr ""
+
+#: id:999
+msgid "Add Videos..."
+msgstr ""
+
+#: id:1000
+msgid "- Preview"
+msgstr "Преглед чувара екрана"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Није могуће повезивање"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC није успео да се повеже на мрежну локацију."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Разлог овоме може бити да мрежа није повезана."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Да ли и даље желите да је додате?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP адреса"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Додај мрежну локацију"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Протокол"
+
+#: id:1009
+msgid "Server address"
+msgstr "Адреса сервера"
+
+#: id:1010
+msgid "Server name"
+msgstr "Име сервера"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Удаљена путања"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Дељена фасцикла"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Прикључак"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Корисничко име"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Потражи мрежни сервер"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Унесите мрежну адресу сервера"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Унесите путању на серверу"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Унесите број прикључка"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Унесите корисничко име"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Додај %s извор"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Унесите путање или потражите локације медија."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Унесите име за овај извор медија."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Потражи ново дељење"
+
+#: id:1024
+msgid "Browse"
+msgstr "Потражи"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Није могуће преузети податке директоријума."
+
+#: id:1026
+msgid "Add source"
+msgstr "Додај извор"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Уреди извор"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Уреди %s извор"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Унеси нову ознаку"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Потражи слику"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Потражи фасциклу са сликама"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Додај мрежну локацију..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Потражи датотеку"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Подмени"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Омогући тастере подменија"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Омиљено"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Додаци за видео"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Додаци за музику"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Додаци за слику"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Учитавање директоријума"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "Примљено %i ставки"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "Примљено %i од %i ставки"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Додаци за програм"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Постави сличицу додатка"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Поставке додатка"
+
+#: id:1046
+msgid "Access points"
+msgstr "Приступна тачка"
+
+#: id:1047
+msgid "Other..."
+msgstr "Остало..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Корисничко име"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Поставке скрипте"
+
+#: id:1050
+msgid "Singles"
+msgstr "Појединачни"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Унесите интернет адресу"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB клијент"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Радна група"
+
+#: id:1203
+msgid "Default username"
+msgstr "Подразумевано корисничко име"
+
+#: id:1204
+msgid "Default password"
+msgstr "Подразумевана лозинка"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS сервер"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Подигни SMB дељења"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Уклони"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Музика"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Филмови"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Слике"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Датотеке"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Музика и филмови"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Музика и слике"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Музика и датотеке"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Филмови и слике"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Филмови и датотеке"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Слике и датотеке"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Музика, филмови и слике"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Музика, филмови, слике и датотеке"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Онемогућено"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Датотеке, музика и филмови"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Датотеке, слике и музика"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Датотеке, слике и филмови"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Музика и програми"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Филмови и програми"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Слике и програми"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Музика, филмови, слике и програми"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Програми, филмови и музика"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Програми, слике и музика"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Програми, слике и филмови"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Аутом. откривање"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Аутом. откривање система"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Надимак"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Питај за повезивање"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Пошаљи FTP корисничко име и лозинку"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Интервал пробног сигнала"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Желите ли да се повежете са аутом. откривањем система?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Огласи ове услуге осталим системима путем Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Прилагођен звучни уређај"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Прилагођен пролазни уређај"
+
+#: id:1396
+msgid "Drifting"
+msgstr "клизаво"
+
+#: id:1397
+msgid "and"
+msgstr "и"
+
+#: id:1398
+msgid "Freezing"
+msgstr "поледица"
+
+#: id:1399
+msgid "Late"
+msgstr "закаснели"
+
+#: id:1400
+msgid "Isolated"
+msgstr "изоловани"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "пљускови са грмљавином"
+
+#: id:1402
+msgid "Thunder"
+msgstr "грмљавина"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "сунчано"
+
+#: id:1404
+msgid "Heavy"
+msgstr "јак(а)"
+
+#: id:1405
+msgid "in"
+msgstr "у"
+
+#: id:1406
+msgid "the"
+msgstr ""
+
+#: id:1407
+msgid "Vicinity"
+msgstr "близини"
+
+#: id:1408
+msgid "Ice"
+msgstr "лед"
+
+#: id:1409
+msgid "Crystals"
+msgstr "кристали"
+
+#: id:1410
+msgid "Calm"
+msgstr "благо"
+
+#: id:1411
+msgid "with"
+msgstr "са"
+
+#: id:1412
+msgid "windy"
+msgstr "ветровито"
+
+#: id:1413
+msgid "drizzle"
+msgstr "ромињање"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "олуја"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "ромињање"
+
+#: id:1416
+msgid "Foggy"
+msgstr "магловито"
+
+#: id:1417
+msgid "Grains"
+msgstr "град"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "олује"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "пљускови са грмљавином"
+
+#: id:1420
+msgid "Moderate"
+msgstr ""
+
+#: id:1421
+msgid "Very High"
+msgstr ""
+
+#: id:1422
+msgid "Windy"
+msgstr ""
+
+#: id:1423
+msgid "Mist"
+msgstr ""
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Постави екран „на спавање“, када се не користи"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Трајање"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Скрипта је „пукла“! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr ""
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Омогући LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Почетна страна"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Слике"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Упр. датотекама"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Поставке"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Музика"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Филмови"
+
+#: id:10007
+msgid "System information"
+msgstr "Подаци о систему"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Поставке - Опште"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Поставке - Екран"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Поставке - Изглед - GUI калибрација"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Поставке - Филмови - Калибрација екрана"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Поставке - Слике"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Поставке - Програми"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Поставке - Временска прогноза"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Поставке - Музика"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Поставке - Систем"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Поставке - Филмови"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Поставке - Мрежа"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Поставке - Изглед"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Скрипте"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Читач интернет страна"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Филмови/Списак за реп."
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Поставке - Профили"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Да/Не прозор"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Прозор напретка"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Тражење титлова..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Тражење титлова у кешу..."
+
+#: id:10212
+msgid "terminating"
+msgstr "прекидање"
+
+#: id:10213
+msgid "buffering"
+msgstr "предмеморисање"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Отварање записа"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Музика/Списак за репрод."
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Музика/Датотеке"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Музика/Библиотека"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Уређивач списка за репродукцију"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "100 најбољих песама"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "100 најбољих албума"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Конфигурација"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Временска прогноза"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Мрежно играње"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Проширења"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Подаци о систему"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Музичка библиоте."
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Тренутна репродукција - Музика"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Тренутна репродукција - Филм"
+
+#: id:10523
+msgid "Album info"
+msgstr "Подаци о албуму"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Подаци о филму"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Изаберите дијалог"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Музика/Подаци"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Дијалог у реду"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Филмови/Подаци"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Скрипте/Подаци"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Филм преко читавог екрана"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Визуализација звука"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Дијалог слагања датотека"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Реиндексирање..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Повратак на прозор са музиком"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Повратак на прозор са филмовима"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Почни испочетка"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Настави од %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "У реду"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Закључано! Унесите кôд..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Унесите лозинку"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Унесите главни кôд"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Унесите кôд за откључавање"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "или притисните C за отказивање"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Унесите комбинацију тастера управљача за игре"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "и притисните Старт, или Назад за отказивање"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Закључај"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Откључај"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Поништи кôд"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Уклони кôд"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Нумеричка лозинка"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Комбинација тастера управљача за игре"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Лозинка са свим знацима"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Унесите нову лозинку"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Поновите унос нове лозинке"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Лозинка није исправна,"
+
+#: id:12343
+msgid "retries left "
+msgstr "покушаја су преостала "
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Унете лозинке се не поклапају."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Приступ одбијен"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Прекомерни број покушаја уноса лозинке."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Систем ће сада бити искључен."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Ставка је закључана"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Поново активирај кôд"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Промени кôд"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Порекло кôда"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Лозинка не може бити празна. Покушајте поново."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Главни кôд"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Искључи систем уколико Главни кôд више пута буде погрешно унет"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Главни кôд није исправан"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Молимо, унесите исправан главни кôд"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Поставке и упр. датотекама"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Постави као подразумевано за све филмове"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Ово ће поништити претходно сачуване вредности"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Време приказивања сваке слике"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Користи ефекат померања и увеличавања"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 часовни приказ времена"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 часовни приказ времена"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Дан, па месец"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Месец, па дан"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Систем је активан"
+
+#: id:12391
+msgid "Minutes"
+msgstr "минута"
+
+#: id:12392
+msgid "Hours"
+msgstr "часова"
+
+#: id:12393
+msgid "Days"
+msgstr "дана"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Укупно време"
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Временска прогноза"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Чувар екрана"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "OSD преко читавог екрана"
+
+#: id:13000
+msgid "System"
+msgstr "Систем"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Непосредно HD ротирање"
+
+#: id:13002
+msgid "Video only"
+msgstr "Само филмови"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Кашњење"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Минимално трајање датотеке"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Искључи"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Акција при искључивању"
+
+#: id:13009
+msgid "Quit"
+msgstr "Изађи"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Хибернација"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Стање спавања"
+
+#: id:13012
+msgid "Exit"
+msgstr "Изађи из"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Поново покрени"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Умањи"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Акција дугмета за укључивање"
+
+#: id:13016
+msgid "Power off System"
+msgstr ""
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Да ли је друга сесија активна, можда путем ssh?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Постављен преносиви чврсти уређај"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Небезбедно уклањање уређаја"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Успешно уклоњен уређај"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Управљачка палица је прикључена"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Управљачка палица је раскачена"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr ""
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flicker филтер"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Препусти избор управ. програму (неопходно поновно покретање)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Размак вертикалне синхронизације"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Онемогућено"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Омогућено током репродукције филма"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Увек је омогућено"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Испробај и примени резолуцију"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Сачувати резолуцију?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Желите ли да задржите ову резолуцију?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Висок квалитет увећања"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Онемогућен"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Омогућен за SD садржај"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Увек је омогућен"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Начин увећања"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ Upscaling level"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU Studio level color conversion"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Зацрни остале екране"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Онемогућено"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Зацрни екране"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Откривене су активне везе!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Уколико наставите даље, можда нећете моћи да управљате XBMC"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr ""
+"апликацијом. Да ли сте сигурни да желите да зауставите Сервер за догађаје?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Промени Apple Remote режим?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Уколико тренутно користите Apple Remote да управљате"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC апликацијом, променом ове поставаке можда промените"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "могућност контролисања апликације. Настављате ли даље?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Мрежна подмаска"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Мрежни пролаз"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "Примарни DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Није успела иницијализација"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Никада"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Одмах"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Након %i сек."
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Датум постављања HDD-а:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "HDD power cycle count:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Профили"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Избрисати „%s“ профил?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Последњи учитан профил:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Непознато"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Препиши"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Будилник"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Интервал за поновну активацију будилника(у мин.)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Покренуто, аларм за %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Аларм!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Отказано при %iмин. %iсек. до краја"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr ""
+
+#: id:13214
+msgid "%2.0fs"
+msgstr ""
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Претражи титлове у RAR-овима"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Потражи титл..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Премести ставку"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Премести ставку овде"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Откажи премештање"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Хардвер:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Искоришћеност процесора:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Повезано, али DNS није доступан."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Чврсти диск"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Складиште"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Подразумевано"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Мрежа"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Видео"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Хардвер"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Оперативни систем:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Брзина процесора:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Видео кодер:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Резолуција екрана:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "A/V кабл:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD регија:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Интернет:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Повезано"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Није повезано. Проверите мрежне поставке."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Жељена температура"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Брзина вентилатора"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Аутомат. контролисање температуре"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Наметни брзину вентилатора"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Слова"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Омогући обртање би-дирекционих стрингова"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Прикажи RSS новости"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Прикажи ставке родитељске фасцикле"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Шаблон именовања нумера"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Желите ли да поново покренете"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "цео систем, а не само XBMC апликацију?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Ефекат увеличавања"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Ефекат плутања"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Смањење црних трака"
+
+#: id:13313
+msgid "Restart"
+msgstr "Поново покрени"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Фини прелаз (преклапање) између песама"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Обнављање сличица"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Рекурзивне сличице"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Прикажи репродук. слајдова"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Рекурзивна репрод. слајдова"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Насумично"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Стерео"
+
+#: id:13321
+msgid "Left only"
+msgstr "Само леви"
+
+#: id:13322
+msgid "Right only"
+msgstr "Само десни"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Омогући подршку за караоке"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Провидност позадине"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Провидност предњег плана"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "A/V кашњење"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Караоке"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s није пронађен"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Грешка приликом отварања %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Није могуће учитати %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Грешка: Недовољно меморије"
+
+#: id:13332
+msgid "Move up"
+msgstr "Премести горе"
+
+#: id:13333
+msgid "Move down"
+msgstr "Премести доле"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Уреди натпис"
+
+#: id:13335
+msgid "Make default"
+msgstr "Пост. подразумеваним"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Уклони тастер"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Остави како јесте"
+
+#: id:13341
+msgid "Green"
+msgstr "Зелена"
+
+#: id:13342
+msgid "Orange"
+msgstr "Наранџаста"
+
+#: id:13343
+msgid "Red"
+msgstr "Црвена"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Циклус"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Искључи LED приликом репродукције"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Подаци о филму"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Стави у ред за репрод."
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Претражи IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Потражи нови садржај"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Тренутно се репродукује..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Подаци о албуму"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Анализ. ставке у библиотеци"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Заустави анализирање"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Начин представљања"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Низак квалитет сенчења пиксела"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Хардверска преклапања"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Висок квалитет сенчења пиксела"
+
+#: id:13358
+msgid "Play item"
+msgstr "Репродукуј ставку"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Постави сличицу извођача"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Аутоматски направи сличице"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Омогући глас"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Омогући уређај"
+
+#: id:13376
+msgid "Volume"
+msgstr "Јачина звука"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Подразумевани режим приказа"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Подразумевана светлина"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Подразумевани контраст"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Подразумевани опсег боја"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Настави филм"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Гласовна маска - Прикључак 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Гласовна маска - Прикључак 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Гласовна маска - Прикључак 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Гласовна маска - Прикључак 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Користи тражење засновано на времену"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Шаблон именовања нумера - десно"
+
+#: id:13388
+msgid "Preset"
+msgstr "Унапред задато"
+
+#: id:13389
+msgid ""
+"There are no presets available\n"
+"for this visualization"
+msgstr ""
+"Не постоје унапред задате поставке\n"
+"за ову визуализацију"
+
+#: id:13390
+msgid ""
+"There are no settings available\n"
+"for this visualization"
+msgstr ""
+"Не постоје доступне поставке\n"
+"за ову визуализацију"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Избаци/Убаци"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Користи визуализацију, уколико се репродукује звук"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Израчунај величину"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Рачунање величине фасцикле"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Поставке филма"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Поставке звука и титла"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Омогући титлове"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Пречице"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Игнориши ставке приликом слагања (нпр. „the“ и сл.)"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Фини прелаз између песама истог албума"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Потражи %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Прикажи позицију нумере"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Очисти подразумевано"
+
+#: id:13404
+msgid "Resume"
+msgstr "Настави"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Преузми омот"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Подаци о слици"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s унап. зад. поставки"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(IMDb оцена корисника)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Најбољих 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Намести на Last.fm"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Минимална брзина вентилатора"
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr "Преузимање"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Укључи извођаче који се појављују само на компилацијама"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Начин представљања"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Аутом. откриј"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Основна сенчења (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Напредна сенчења (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Софтвер"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Безбедно уклони"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Покрени реп. слајд. одавде"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Запамти ову путању"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Користи пикселно предмеморисање објеката"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Broadcom Crystal HD"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr ""
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr ""
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr ""
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr ""
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr ""
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr ""
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V начин синхрон."
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Часовник звука"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Часовник филма (Drop/Dupe звук)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Часовник филма (Понов. одаб. звука)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Максимална количина пон. одабир. (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Квалитет понов. одаб."
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Низак (брзо)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Средње"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Висок"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Заиста висок (споро!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Синхронизуј репродукцију према приказу"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr ""
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr ""
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple даљински управљач"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Дозволи покретање XBMC аплик. коришћењем даљинског"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Време кашњења секвенце"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Онемогућено"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Уобичајено"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Универзални даљински"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Вишеструки даљински (Сложно)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Грешка Apple даљинског управљача"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Подршка за Apple даљ. управљач може бити омогућена."
+
+#: id:14000
+msgid "Stack"
+msgstr "Постави на складиште"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Уклони са складишта"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Преузимање датотеке списк. за реп..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Преузимање списка протока података..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Разлучивање (разлагање) списка протока података..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Није успело преузимање списка протока података"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Није успело преузимање датотеке списка за репродукцију"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Каталог игара"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Аутом. пребаци на сличице засновано на"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Омогући аутоматско пребацивање на приказ омота"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Користи велике иконе"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Пребацивање засновано на"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Постотак"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Без датотека и бар једне сличице"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Бар једна датотека и сличица"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Проценат сличица"
+
+#: id:14018
+msgid "View options"
+msgstr "Прикажи опције"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Промени кôд подручја 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Промени кôд подручја 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Промени кôд подручја 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Библиотека"
+
+#: id:14023
+msgid "No TV"
+msgstr "Без TV пријемника"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Унесите најближи већи град"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Видео/Звучни/DVD кеш - чврсти диск"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Видео кеш - DVD-ROM"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Локална мрежа"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Интернет"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Кеш звука - DVD-ROM"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Локална мрежа"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Интернет"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD кеш - DVD-ROM"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Локална мрежа"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Услуге"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Промењене су мрежне поставке"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC захтева поновно покретање ради промене"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "мрежних поставки.  Желите ли одмах да поново покренете?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Накнадна обрада"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Искључи док се репродукује"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i мин."
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i сек."
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Приказ времена"
+
+#: id:14052
+msgid "Date format"
+msgstr "Приказ датума"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "GUI филтери"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Користи анализирање у позадини"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Заустави анализирање"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Није могуће док је у току анализирање података о медију"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Зрнасти ефекат приказа"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Потражи сличице на дељеним локацијама"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Непознат тип кеша - Интернет"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Аутом."
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Унесите корисничко име за"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Датум и време"
+
+#: id:14064
+msgid "Set date"
+msgstr "Постави датум"
+
+#: id:14065
+msgid "Set time"
+msgstr "Постави време"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Унесите време у облику 24 часа; ЧЧ:ММ"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Унесите датум у облику ДД/ММ/ГГГГ"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Унесите IP адресу"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Одмах применити поставке?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Одмах примени промене"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Дозволи преименовање и брисање датотеке"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Постави временску зону"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Користи летње рачунање времена"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Додај у омиљено"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Уклони из омиљеног"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Боје"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Земља временске зоне"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Временска зона"
+
+#: id:14081
+msgid "File lists"
+msgstr "Спискови датотека"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Прикажи EXIF спецификацију слике"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Радије користи приказ читавог екрана у прозору"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Стави песму у ред приликом избора"
+
+#: id:14086
+msgid "Playback"
+msgstr "Репродукција"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD-ови"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Аутоматски репродукуј DVD-ове"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Облик слова за титлове"
+
+#: id:14090
+msgid "International"
+msgstr "Међународно"
+
+#: id:14091
+msgid "Character set"
+msgstr "Скуп знакова"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Тражење грешака"
+
+#: id:14093
+msgid "Security"
+msgstr "Безбедност"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Улазни уређаји"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Уштеда енергије"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Уклони"
+
+#: id:15016
+msgid "Games"
+msgstr "Игре"
+
+#: id:15019
+msgid "Add"
+msgstr "Додај"
+
+#: id:15052
+msgid "Password"
+msgstr "Лозинка"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Библиотека"
+
+#: id:15101
+msgid "Database"
+msgstr "База података"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Сви албуми"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Сви извођачи"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Све песме"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Сви жанрови"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Предмеморисање..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Навигациони звукови"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Подразумевана маска"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Тема"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Подразумевана тема"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Пошаљи песме на Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm корисничко име"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm лозинка"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Није могуће усаглашавање: стање спавања..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Молимо, ажурирајте XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Погрешна ауторизација: Проверите корисничко име и лозинку"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Повезано"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Није повезано"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Учесталост слања %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Кеширано %i песама"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Слање је у току..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Слање за %i секунди"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Репродукуј помоћу..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Користи умекшану A/V синхронизацију"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Сакриј називе датотека приликом приказа омота"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Репродукуј у режиму журке"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Пошаљи песме на Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm корисничко име"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm лозинка"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Слање песме"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Пошаљи Last.fm радио на Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Повезивање са Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Бирање станице..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Пронађи сличне извођаче..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Пронађи сличне ознаке..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Ваш профил (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Свеобухватно најбоље ознаке"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Најбољи извођачи са ознаком %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Најбољи албуми са ознаком %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Најбоље нумере са ознаком %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Слушај ознаку %name% Last.fm радија"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Извођачи који су слични са %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Најбољи %name% албуми"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Најбоље %name% нумере"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Најбоље %name% ознаке"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Највећи %name% обожаваоци"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Слушај обожаваоце %name%, Last.fm радија"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Слушај сличне извођаче као што је %name% на Last.fm радију"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Најбољи извођачи корисника %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Најбољи албуми корисника %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Најбоље нумере корисника %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Пријатељи корисника %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Комшије корисника %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Недељни списак најбољих извођача корисника %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Недељни списак најбољих албума корисника %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Недељни списак најбољих нумера корисника %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Слушај комшијин Last.fm радио корисника %name%"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Слушај лични Last.fm радио корисника %name%"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Слушај вољене нумере Last.fm радија корисника %name%"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Преузимање списка са Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Није могуће преузети списак са Last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Унесите назив извођача како бисте пронашли сличне"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Унесите ознаку за проналажење сличних"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Недавно одслушане нумере корисника %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Слушај по препоруци Last.fm радио корисника %name%"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Најбоље ознаке за корисника %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Желите ли да додате тренутну нумеру у ваше вољене нумере?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Желите ли да забраните тренутну нумеру?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Додато у ваше вољене нумере: „%s“."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Није могуће додати „%s“ у ваше вољене нумере."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Забрањено: „%s“."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Није могуће забранити „%s“."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Нумере које је недавно заволео %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Нумере које је недавно забранио %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Уклоњено из вољених нумера"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Опозови забрану"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Желите ли да уклоните ову нумеру из вољених нумера?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Желите ли да опозовете забрану за ову нумеру?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Путања није пронађена или је неважећа"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Није могуће повезивање са мрежним сервером"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Ни један сервер није пронађен"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Радна група није пронађена"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Отварање извора са више путања"
+
+#: id:15311
+msgid "Path:"
+msgstr "Путања:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Опште"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Претраживање интернета"
+
+#: id:16003
+msgid "Player"
+msgstr "Уређај за репродукцију"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Репродукуј медиј са диска"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Унесите нови наслов"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Унесите име филма"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Унесите име профила"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Унесите име албума"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Унесите име списка за реп."
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Унесите ново име датотеке"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Унесите име фасцикле"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Унесите фасциклу"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Доступне опције: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Унесите реч за претрагу"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Ништа"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Аутоматски избор"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "Уклони преплитање слике"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (обратно)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Отказивање..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Унеси име извођача"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Неуспешна репродукција"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Једну или више ставки није могуће репродуковати."
+
+#: id:16028
+msgid "Enter value"
+msgstr "Унесите вредност"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Проверите датотеку евиденције за детаље."
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Режим журке је прекинут."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Нема подударајућих песама у библиотеци."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Није могуће покренути базу података."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Није могуће отворити базу података."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Није могуће преузети песме из базе података."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Списак за реп. режима журке"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "Сви филмови"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "неодгледаних"
+
+#: id:16102
+msgid "Watched"
+msgstr "одгледаних"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Обележи као одгледано"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Обележи као неодгледано"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Уреди наслов"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Операција је прекинута"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Копирање није успело"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Није успело копирање барем једне датотеке"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Премештање није успело"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Није успело премештање барем једне датотеке"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Брисање није успело"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Није успело брисање барем једне датотеке"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Режим видео размере"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Најближи комшија"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilinear"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bicubic (софтверски)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (софтверски)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (софтверски)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Временски"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Временски/просторни"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU) Смањење шума"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU) Оштрина"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Обрнути Telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Оптимизовани Lanczos3"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Аутоматски"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Временски (половично)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Временски/просторни (половично)"
+
+#: id:16319
+msgid "DXVA"
+msgstr ""
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr ""
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Време након ког ће екран прећи у стање спавања"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Пребаци на канал"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Фасцикла са сачуваном музиком"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Користи спољни DVD уређај за реп."
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Спољни DVD уређај за реп."
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Фасцикла модификатора игара"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Фасцикла са сликама екрана"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Фасцикла са списковима за реп."
+
+#: id:20007
+msgid "Recordings"
+msgstr "Снимци"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Слике екрана"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Користи XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Спискови за репрод. музике"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Спискови за репрод. филмова"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Желите ли да покренете игру?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Сложи по: Спис. за реп."
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Удаљена сличица"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Тренутна сличица"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Локална сличица"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Нема сличице"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Изабери сличицу"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Неусаглашеност"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Претраживање нових"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Претраживање свих"
+
+#: id:20026
+msgid "Region"
+msgstr "Регија"
+
+#: id:20037
+msgid "Summary"
+msgstr "Кратак преглед"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Закључај прозор са музиком"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Закључај прозор са филмовима"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Закључај прозор са сликама"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Закључај прозор са програмима и скриптама"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Закључај управљача датотекама"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Закључај поставке"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Нови почетак"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Уђи у главни режим"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Напусти главни режим"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Направити профил „%s“?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Покрени са новим поставкама"
+
+#: id:20049
+msgid "Best available"
+msgstr "Најбоље могуће"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Аутоматско пребацивање између 16x9 и 4x3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Сматрај компримоване датотеке као једну"
+
+#: id:20052
+msgid "Caution"
+msgstr "Опрез"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Напуштен главни режим"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Приступљено главном режиму"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Омот са Allmusic.com"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Уклони сличицу"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Додај профил..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Захтевај податке за све албуме"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Подаци о медију"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Одвојено"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Подразумевано дељење"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Подразумевано дељење (само читање)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Подразумевано копирање"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Слика профила"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Закључај поставке"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Уреди профил"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Закључај профил"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Није могуће направити фасциклу"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Фасцикла профила"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Покрени са новим извором медија"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Уверите се да у изабрану фасциклу можете"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "уписивати и да је ново име фасцикле исправно"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "MPAA оцена"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Унесите главни кôд за откључавање"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Питај за главни кôд приликом покретања апл."
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Поставке маске"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- веза није постављена -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Омогући анимације"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Онемогући RSS новости током репродукције музике"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Омогући пречице"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Прикажи програме у главном менију"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Прикажи податке о музици"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Прикажи податке о времену"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Прикажи податке о систему"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Прикажи слободан простор на диску C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Прикажи слободан простор на диску E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Подаци о времену"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Слободан простор на диску"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Унесите име постојећег дељеног ресурса"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Кôд за закључавање"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Учитај профил"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Име профила"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Медија извори"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Унесите кôд за откључавање профила"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Екран за пријаву"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Преузимање података о албуму"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Преузимање података за албум"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Није могуће риповати музички CD током репродукције са CD-а"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Главни кôд за закључавање и поставке"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Уносом главног кôда увек омогућавате главни режим рада"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "или копирање од подразумеваног?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Сачувати промене у профил?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Пронађене су старе поставке."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Желите ли да их користите?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Пронађени стари извори медија."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Раздвајање (закључано)"
+
+#: id:20108
+msgid "Root"
+msgstr "Корена фасцикла"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Увеличавање"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP поставке"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Аутом. покретање UPnP клијента"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Последња пријава: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Није било пријаве до сада"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Профил %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Пријава корисника / Изаберите профил"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Користи закључавање екрана за пријаву"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Кôд није исправан."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Ово захтева унос главног кôда."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Желите ли одмах да поставите?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Учитавање података о програму"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Журка!"
+
+#: id:20122
+msgid "True"
+msgstr "Исправно"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Мешање пића"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Пуњење чаша"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Пријављен као"
+
+#: id:20126
+msgid "Log off"
+msgstr "Одјави се"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Иди у корену фасц."
+
+#: id:20129
+msgid "Weave"
+msgstr "Таласи"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Таласи (обрнути)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Мешовито"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Поново покрени филм"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Уреди мрежну локацију"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Уклони мрежну локацију"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Желите ли да анализирате фасциклу?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Јединица меморије"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Јединица меморије је постављена"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Није могуће поставити јединицу меморије"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "у прикључку %i, конектор %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Закључај чувара екрана"
+
+#: id:20141
+msgid "Set"
+msgstr "Постави"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Корисничко име"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Унесите лозинку за"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Одбројавање до искључивања"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Интервал искључивања (у минутима)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Покренуто, искључивање за %i мин."
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Искључи за 30 минута"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Искључи за 60 минута"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Искључи за 120 минута"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Прилагођено одбројавање до искључења"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Откажи одбројавање"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Закључај подешавања за %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Потражи..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Кратак преглед информација"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Подаци о складишту"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Подаци о чврстом диску"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "Подаци о DVD-ROM уређају"
+
+#: id:20158
+msgid "Network information"
+msgstr "Подаци о мрежи"
+
+#: id:20159
+msgid "Video information"
+msgstr "Подаци о видеу"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Подаци о хардверу"
+
+#: id:20161
+msgid "Total"
+msgstr "Укупно"
+
+#: id:20162
+msgid "Used"
+msgstr "Искоришћено "
+
+#: id:20163
+msgid "of"
+msgstr "од"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Закључавање није подржано"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Није закључано"
+
+#: id:20166
+msgid "Locked"
+msgstr "Закључано"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Замрзнуто"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Захтева поновно покретање"
+
+#: id:20169
+msgid "Week"
+msgstr "Недеља"
+
+#: id:20170
+msgid "Line"
+msgstr "Линија"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windows мрежа (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP сервер"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP сервер"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes дељена музика (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP сервер"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Прикажи податке о филму"
+
+#: id:20177
+msgid "Done"
+msgstr "Заврши"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Вел. слова"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Симболи"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Брисање уназад"
+
+#: id:20182
+msgid "Space"
+msgstr "Размак"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Поново учитај маску"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Ротирај слике на основу EXIF података"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Користи стил приказа постера за TV серије"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Молимо сачекајте"
+
+#: id:20187
+msgid "UPnP"
+msgstr "Прављење рез. копије EEPROM-а"
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Омогући аутом. померање описа и рецензија (синонописа)"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Прилагођено"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Омогући бележење грешака"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Преузми додатне податке приликом ажурирања"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr ""
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Подразумевани даваоц података о музици"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Промени даваоца података"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Извоз музичке библиотеке"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Увоз музичке библиотеке"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Извођач није пронађен!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Није успело преузимање података о извођачу"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Журка! (филмови)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Мешање пића (филмови)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Пуњење чаша (филмови)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV сервер (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV сервер (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Измените ваш профил приликом првог пријављивања"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr ""
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr ""
+
+#: id:20258
+msgid "MythTV client"
+msgstr ""
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Фасцикла Web сервера (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Фасцикла Web сервера (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Није могуће уписивање у фасциклу:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Желите ли да прескочите и наставите?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS новости"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Алтернативни DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP сервер:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Направи нову фасциклу"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Затамни LCD приликом репродукције"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Непознато или је уграђен на плочи (заштићено)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Затамни LCD приликом паузе"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Филмска Библиоте."
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Сложи по: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Репродукуј део..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Поновна калибрација"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Овим ћете поништити вредности калибрације за %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "на подразумеване вредности."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Потражи одредиште"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Користи имена фасцикли за претрагу"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Датотеке"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Коришћење имена датотеке или фасцикле за претрагу?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Постави садржај"
+
+#: id:20334
+msgid "Folder"
+msgstr "Фасцикле"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Рекурзивна претрага садржаја?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Откључај изворе"
+
+#: id:20337
+msgid "Actor"
+msgstr "Глумац"
+
+#: id:20338
+msgid "Movie"
+msgstr "Филм"
+
+#: id:20339
+msgid "Director"
+msgstr "Режисер"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Желите ли да уклоните све ставке у оквиру"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "ове путање из XBMC библиотеке?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Филмови"
+
+#: id:20343
+msgid "TV shows"
+msgstr "TV серије"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Ова фасцикла садржи"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Покрени аутоматску анализу"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Рекурзивна анализа"
+
+#: id:20347
+msgid "as"
+msgstr "као"
+
+#: id:20348
+msgid "Directors"
+msgstr "Режисери"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "На овој путањи не постоје видео датотеке!"
+
+#: id:20350
+msgid "votes"
+msgstr "гласова"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Подаци о TV серији"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Подаци о епизодама"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Учитавање детаља TV серије"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Проналажење водича епизода"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Учитавање описа епизоде у фасцикли"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Изаберите TV серију:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Унесите назив TV серије"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Сезона %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Епизода"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Епизода"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Учитавање детаља епизоде"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Уклони епизоду из библиотеке"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Уклони TV серију из библиотеке"
+
+#: id:20364
+msgid "TV show"
+msgstr "TV серија"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Опис епизоде"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Све сезоне"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Сакр. одглед."
+
+#: id:20368
+msgid "Prod code"
+msgstr "Шифра производа"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Прикажи опис за неодгледане ставке"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Скривено због спречавања непрописне употребе *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Постави сличицу за сезону"
+
+#: id:20372
+msgid "Season image"
+msgstr "Слика за сезону"
+
+#: id:20373
+msgid "Season"
+msgstr "Сезона"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Преузимање података о филму"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Неодређен садржај"
+
+#: id:20376
+msgid "Original title"
+msgstr ""
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Освежи податке TV серије"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Освежити податке за све епизоде?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Изабрана фасцикла садржи једну TV серију"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Изузми изабрану фасциклу из анализирања"
+
+#: id:20381
+msgid "Specials"
+msgstr "Посебне емисије"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Аутоматски преузми сличицу сезоне"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Изабрана фасцикла садржи један филм"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Веза ка TV серији"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Уклони везу ка TV серији"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Недав. додати филм."
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Недав. додате епизоде"
+
+#: id:20388
+msgid "Studios"
+msgstr "Студији"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Музичке спотове"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Недавно додати музички спотови"
+
+#: id:20391
+msgid "Music video"
+msgstr "Музички спот"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Уклони музички спот из библиотеке"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Подаци о музичком споту"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Учитавање података о музичком споту"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Мешано"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Иди на албуме извођача"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Иди на албум"
+
+#: id:20398
+msgid "Play song"
+msgstr "Репродукуј песму"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Иди на музичке спотове из албума"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Иди на музичке спотове извођача"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Репродукуј музички спот"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Преузми сличице глумаца приликом додавања у библиотеку"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Постави слику глумца"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Уклони обележивач епизоде"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Постави обележивач епизоде"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Поставке даваоца података"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Преузимање података о музичком споту"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Преузимање података о TV серији"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Најава"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Поравнат списак"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Поравнат списак TV серија"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Заним. слика"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Прикажи занимљиву слику у филмским и музичким библиотекама"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Трањеже новог садржаја"
+
+#: id:20416
+msgid "First aired"
+msgstr "Премијера"
+
+#: id:20417
+msgid "Writer"
+msgstr "Сценариста"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Никада"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Уколико је само једна сезона"
+
+#: id:20422
+msgid "Always"
+msgstr "Увек"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Има најаву филма"
+
+#: id:20424
+msgid "False"
+msgstr "Нетачно"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Пројекција занимљивих слика"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Извоз у једну или засебне"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "датотеке по уносу?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Једна датотека"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Засебно"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Извоз сличица и занимљивих слика?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Заменити старе датотеке?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Изузми путању приликом ажурирања библиотеке"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Извези сличице и податке филма"
+
+#: id:20434
+msgid "Sets"
+msgstr "Поставке сцене"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Постави слике са снимања филма"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Извоз сличица глумца?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Изаберите занимљиву слику"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Локална занимљива слика"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Без занимљиве слике"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Тренутна занимљива слика"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Удаљена занимљива слика"
+
+#: id:20442
+msgid "Change content"
+msgstr "Промени садржај"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Желите ли да освежите податке свих"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "ставки са ове путање?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "Занимљива слика"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Пронађени су локално сачувани подаци."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Занемарити их и освежити исте са подацима са Интернета?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Није могуће преузети податке"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Сервер је највероватније недоступан."
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Желите ли да наставите анализирање?"
+
+#: id:20451
+msgid "Countries"
+msgstr ""
+
+#: id:20452
+msgid "episode"
+msgstr ""
+
+#: id:20453
+msgid "episodes"
+msgstr ""
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Прикажи скривене датотеке и фасцикле"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox клијент"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "ПАЖЊА: Изабрани TuxBox уређај тренутно снима!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Биће заустављен запис тока података!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Пребацивање на канал: %s није успело!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Сигурни сте да желите да покренете ток података?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Повезивање са: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox уређај"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Додај дељену локацију медија..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Дели филмску и музичку библиотеку путем UPnP протокола"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Уреди дељену локацију медија"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Уклони дељену локацију медија"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Фасцикла са титловима"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Фасцикла филмова и алтернативних титлова"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Омогући коришћење миша"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Репродукуј навигационе звукове приликом репродукције медија"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Сличица"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Наметнута регија DVD уређаја за репродукцију"
+
+#: id:21373
+msgid "Video output"
+msgstr "Видео излаз"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Размера слике"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Нормално"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Широки екран"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Омогући 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Омогући 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Омогући 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Унесите име новог списка за репродукцију"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Прикажи дугме „Додај извор“ у списку датотека"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Омогући траке за померање"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Исфилтрирај одгледане филмове у библиотеци филмова"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Отвори"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Управљање нивоом акустичности"
+
+#: id:21387
+msgid "Fast"
+msgstr "Брзо"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Тихо"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Омогући прилагођену позадину"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Управљање нивоом потрошње"
+
+#: id:21391
+msgid "High power"
+msgstr "Виша потрошња"
+
+#: id:21392
+msgid "Low power"
+msgstr "Нижа потрошња"
+
+#: id:21393
+msgid "High standby"
+msgstr "High standby"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Low standby"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Није могуће кеширати датотеке веће од 4GB"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Поглавље"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Високо квалитетно сенчење пиксела v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Омогући списак за репродукцију при укључивању XBMC-а"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Користи међукораке у анимацији"
+
+#: id:21400
+msgid "contains"
+msgstr "садржи"
+
+#: id:21401
+msgid "does not contain"
+msgstr "не садржи"
+
+#: id:21402
+msgid "is"
+msgstr "је"
+
+#: id:21403
+msgid "is not"
+msgstr "није"
+
+#: id:21404
+msgid "starts with"
+msgstr "почиње са"
+
+#: id:21405
+msgid "ends with"
+msgstr "завршава са"
+
+#: id:21406
+msgid "greater than"
+msgstr "је веће од"
+
+#: id:21407
+msgid "less than"
+msgstr "је мање од"
+
+#: id:21408
+msgid "after"
+msgstr "након"
+
+#: id:21409
+msgid "before"
+msgstr "пре"
+
+#: id:21410
+msgid "in the last"
+msgstr "у последњих"
+
+#: id:21411
+msgid "not in the last"
+msgstr "није у последњих"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Добављачи подат."
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Подраз. добављач података за филмове"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Подраз. добављач података за TV серије"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Подраз. добављач података за музичке спотове"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Омогући преузимање на основу језика добављача података"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Поставке"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Вишејезично"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Нема присутних добављача"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Вредности се не подударају"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Правило паметног спис. за реп."
+
+#: id:21422
+msgid "Match items where"
+msgstr "Подудари ставке где"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Ново правило..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Ставке се морају подударати"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "су сва правила"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "је једно или више правила"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Ограничи на"
+
+#: id:21428
+msgid "No limit"
+msgstr "Без ограничења"
+
+#: id:21429
+msgid "Order by"
+msgstr "Сложи по"
+
+#: id:21430
+msgid "ascending"
+msgstr "растућем реду"
+
+#: id:21431
+msgid "descending"
+msgstr "опадајућем реду"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Уреди паметни спис. за реп."
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Име спис. за реп."
+
+#: id:21434
+msgid "Find items where"
+msgstr "Пронађи ставке где"
+
+#: id:21435
+msgid "Edit"
+msgstr "Уреди"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i ставки"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Нови паметни спис. за реп..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c уређај"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Уреди правила режима журке"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Почетна фасцикла"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Бројач одгледаних"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Наслов епизоде"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Резолуција видеа"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Звучних канала"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Видео кодек"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Кодек звука"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Језик звука"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Језик титла"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Даљински управљач шаље кôдове тастатуре"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Уреди"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr ""
+
+#: id:21452
+msgid "Get More..."
+msgstr ""
+
+#: id:21453
+msgid "Root filesystem"
+msgstr ""
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr "Име датотеке"
+
+#: id:21801
+msgid "File path"
+msgstr "Путања датотеке"
+
+#: id:21802
+msgid "File size"
+msgstr "Величина датотеке"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Датум/време стварања датотеке"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Индекс слајдова"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Резолуција"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Коментар"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Боја/Црно-бело"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "Обрада JPEG-а"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Датум/време"
+
+#: id:21821
+msgid "Description"
+msgstr "Опис"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Марка фотоапарата"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Тип камере"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF коментар"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Систем"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Бленда"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Фокусно растојање"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Жижна даљина"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Експозиција"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Време експозиције"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Одступање експозиције"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Режим експозиције"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Коришћење блица"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Баланс белог"
+
+#: id:21835
+msgid "Light source"
+msgstr "Извор светла"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Режим мерења количине светла"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Дигитални зум"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD ширина"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS гео. ширина"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS гео. дужина"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS гео. висина"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Оријентација"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Додатне категорије"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Кључне речи"
+
+#: id:21862
+msgid "Caption"
+msgstr "Наслов"
+
+#: id:21863
+msgid "Author"
+msgstr "Аутор"
+
+#: id:21864
+msgid "Headline"
+msgstr "Главна улога"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Посебна упутства"
+
+#: id:21866
+msgid "Category"
+msgstr "Категорија"
+
+#: id:21867
+msgid "Byline"
+msgstr "Потпис аутора"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Потпис аутора наслова"
+
+#: id:21869
+msgid "Credit"
+msgstr "Заслуга"
+
+#: id:21870
+msgid "Source"
+msgstr "Извор"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Ауторска права"
+
+#: id:21872
+msgid "Object name"
+msgstr "Име објекта"
+
+#: id:21873
+msgid "City"
+msgstr "Град"
+
+#: id:21874
+msgid "State"
+msgstr "Покрајина"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Држава"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Original Tx Reference"
+
+#: id:21877
+msgid "Date created"
+msgstr "Датум прављења"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Ознака ауторског права"
+
+#: id:21879
+msgid "Country code"
+msgstr "Кôд државе"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Препоручен сервис"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Омогући контролу XBMC апликације путем UPnP протокола"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Покушај да прескочиш уводни део пре DVD менија"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Сачувана музика"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Захтевање података за све извођаче"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Преузимање података о албуму"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Преузимање података о извођачу"
+
+#: id:21887
+msgid "Biography"
+msgstr "Биографија"
+
+#: id:21888
+msgid "Discography"
+msgstr "Дискографија"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Проналажење извођача"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Изаберите извођача"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Подаци о извођачу"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Инструменти"
+
+#: id:21893
+msgid "Born"
+msgstr "Рођен"
+
+#: id:21894
+msgid "Formed"
+msgstr "Оформљено"
+
+#: id:21895
+msgid "Themes"
+msgstr "Теме"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Расформирано"
+
+#: id:21897
+msgid "Died"
+msgstr "Преминуо"
+
+#: id:21898
+msgid "Years active"
+msgstr "Година активан"
+
+#: id:21899
+msgid "Label"
+msgstr "Етикета"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Рођ./оформ."
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Ажурирај библиотеку приликом укључивања"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Увек ажурирај библиотеку у позадини"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS суфикс"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr ""
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Успорено за: %2.3f сек."
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Убрзано за: %2.3f сек."
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Померај титла у времену"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL произвођач:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL renderer:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL верзија:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPU температура:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPU температура:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Укупна меморија"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Подаци профила"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Користи затамљење уколико се паузира приликом репрод. филма"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Сва снимања"
+
+#: id:22016
+msgid "By title"
+msgstr "По називу"
+
+#: id:22017
+msgid "By group"
+msgstr "По групи"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Канали уживо"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Снимци по називу"
+
+#: id:22020
+msgid "Guide"
+msgstr "Водич"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Дозв. грешка у односу, ради смањења црних трака"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Прикажи видео датотеке у списковима"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX произвођач:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D верзија:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Слова"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Величина"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Боја"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Знакови"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Извоз караоке наслова као HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Извоз караоке наслова као CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Увоз караоке наслова..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Аутоматски прикажи бирач песме"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Извоз караоке наслова..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Унесите број песме"
+
+#: id:22040
+msgid "white/green"
+msgstr "бело/зелено"
+
+#: id:22041
+msgid "white/red"
+msgstr "бело/црвено"
+
+#: id:22042
+msgid "white/blue"
+msgstr "бело/право"
+
+#: id:22043
+msgid "black/white"
+msgstr "црно/бело"
+
+#: id:22079
+msgid "Default select action"
+msgstr ""
+
+#: id:22080
+msgid "Choose"
+msgstr ""
+
+#: id:22081
+msgid "Show Information"
+msgstr ""
+
+#: id:22082
+msgid "More..."
+msgstr ""
+
+#: id:22083
+msgid "Play all"
+msgstr ""
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Телетекст није доступан"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Активирај телетекст"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Део %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "Предмеморисање %i бајтова"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Заустављање"
+
+#: id:23054
+msgid "Running"
+msgstr "Покретање"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Спољни активни уређај за репродукцију"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Кликните на „У реду“ да прекинете репродукцију"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Кликните на „У реду“ када се репродукција заврши"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Додатни прог."
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Додатни прог."
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Опције додатног прог."
+
+#: id:24003
+msgid "Add-on Information"
+msgstr ""
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Додатак"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Добављач"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Чувар екрана"
+
+#: id:24009
+msgid "Script"
+msgstr "Скрипта"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Визуализација"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Спремиште додатног прог."
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr ""
+
+#: id:24013
+msgid "Lyrics"
+msgstr ""
+
+#: id:24014
+msgid "TV information"
+msgstr ""
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr ""
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr ""
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr ""
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr "Подешавање додатног прог."
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Онемогући додатни прог."
+
+#: id:24022
+msgid "Enable"
+msgstr "Омогући додатни прог."
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Додатни прог. је онемогућен"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Услуге временске прогнозе"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (стандардан)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Овај додатни прог. није могуће подесити"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Грешка приликом учитавања подешавања"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr ""
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr ""
+
+#: id:24034
+msgid "Check for updates"
+msgstr ""
+
+#: id:24035
+msgid "Force refresh"
+msgstr ""
+
+#: id:24036
+msgid "Change log"
+msgstr ""
+
+#: id:24037
+msgid "Uninstall"
+msgstr ""
+
+#: id:24038
+msgid "Install"
+msgstr ""
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr ""
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr ""
+
+#: id:24041
+msgid "Install from zip file"
+msgstr ""
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr ""
+
+#: id:24043
+msgid "Available Updates"
+msgstr ""
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Доступни додатни програми"
+
+#: id:24051
+msgid "Version:"
+msgstr "Верзија:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Одрицање:"
+
+#: id:24053
+msgid "License:"
+msgstr "Лиценца:"
+
+#: id:24054
+msgid "Changelog"
+msgstr ""
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Да ли желите да омогућите овај додатни прог.?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Да ли желите да онемогућите овај додатни прог.?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Надоградња додатног прог. је доступна!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Омогућени додатни програми"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Аутоматско ажурирање"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Додатни прог. је омогућен"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Додатни прог. је ажуриран"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Да прекинем преузимање додатног прог.?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Тренутно преузимам додатне програме"
+
+#: id:24068
+msgid "Update available"
+msgstr ""
+
+#: id:24069
+msgid "Update"
+msgstr ""
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Додатни програм није употребљив"
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Догодила се непозната грешка"
+
+#: id:24072
+msgid "Settings required"
+msgstr "Подешавање је неопходно"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Не могу се повезати"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Поновно покретање је неопходно"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr ""
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Да покушам поновно успостављање везе?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Додатни прог. се поновно покреће"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Закључај управљач додатног прог."
+
+#: id:24094
+msgid "(current)"
+msgstr "Омогући хардверско убрзање (CrystalHD)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr ""
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr ""
+
+#: id:24098
+msgid "Broken"
+msgstr ""
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr ""
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr ""
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Режим библиотеке"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY тастатура"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Пролазни звук у употреби"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Квалитет најаве"
+
+#: id:33002
+msgid "Stream"
+msgstr "Запис"
+
+#: id:33003
+msgid "Download"
+msgstr "Преузми"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Преузми и репродукуј"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Преузми и сачувај"
+
+#: id:33006
+msgid "Today"
+msgstr "Данас"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Сутра"
+
+#: id:33008
+msgid "Saving"
+msgstr "Чување"
+
+#: id:33009
+msgid "Copying"
+msgstr "Копирање"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Постави фасциклу за преузимање"
+
+#: id:33011
+msgid "Search duration"
+msgstr ""
+
+#: id:33012
+msgid "Short"
+msgstr "Кратко"
+
+#: id:33013
+msgid "Long"
+msgstr "Дугачко"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Користи DVD плејер уместо обичног плејера"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Питај за преузимање пре репродукције филма"
+
+#: id:33016
+msgid "Clips"
+msgstr "Клипови"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Поново покрените додатак за активирање"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Ноћас"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Сутра увече"
+
+#: id:33020
+msgid "Condition"
+msgstr "Стање"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Обилне падавине"
+
+#: id:33022
+msgid "Precip"
+msgstr "Precip"
+
+#: id:33023
+msgid "Humid"
+msgstr "Влажно"
+
+#: id:33024
+msgid "Feels"
+msgstr "Као да је"
+
+#: id:33025
+msgid "Observed"
+msgstr "Посматрано"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Одступање од просека"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Излазак сунца"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Залазак сунца"
+
+#: id:33029
+msgid "Details"
+msgstr "Детаљи"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Видик"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Прекривен"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Преведи текст"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Map list %s category"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 часовна"
+
+#: id:33035
+msgid "Maps"
+msgstr "Карта"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Из часа у час"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Викенд"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s дневна"
+
+#: id:33049
+msgid "Alert"
+msgstr "Узбуна"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Упозорења"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Изаберите ваш"
+
+#: id:33052
+msgid "Check"
+msgstr "Провери"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Конфигуриши "
+
+#: id:33054
+msgid "Seasons"
+msgstr "Годишња доба"
+
+#: id:33055
+msgid "Use your"
+msgstr "Користите ваш"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Гледајте ваш"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Слушајте"
+
+#: id:33058
+msgid "View your"
+msgstr "Прикажите ваш"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Конфигуриши"
+
+#: id:33060
+msgid "Power"
+msgstr "Снага"
+
+#: id:33061
+msgid "Menu"
+msgstr "Мени"
+
+#: id:33062
+msgid "Play the"
+msgstr "Репродукуј"
+
+#: id:33063
+msgid "Options"
+msgstr "Опције"
+
+#: id:33065
+msgid "Editor"
+msgstr "Уређивач"
+
+#: id:33066
+msgid "About your"
+msgstr "О вашем"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Оцена звездицама"
+
+#: id:33068
+msgid "Background"
+msgstr "Позадина"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Позадине"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Прилагођена позадина"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Прилагођене позадине"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Прикажи „Прочитај ме“"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Прикажи „Евиденцију измена“"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Ова верзија за покретање захтева %s"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC издање или %s јаче."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Молимо, ажурирајте XBMC апликацију."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Подаци нису пронађени!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Следећа страна"
+
+#: id:33079
+msgid "Love"
+msgstr "Љубав"
+
+#: id:33080
+msgid "Hate"
+msgstr "Мржња"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+"Ова датотека је сложена, изаберите који део желите да репродукујете из ње."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Путања до скрипте"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Омогући прилагођени тастер за сјруоту"
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA"
+
+#: id:34004
+msgid "VAAPI"
+msgstr ""
+
+#: id:34005
+msgid "Flac"
+msgstr ""
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Конфигурација звучника"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid ""
+"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid ""
+"There are no settings available\n"
+"for this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid ""
+"Unsupported libCEC interface version. %d is greater than the version XBMC "
+"supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

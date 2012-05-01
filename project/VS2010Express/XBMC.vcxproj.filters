@@ -2624,6 +2624,9 @@
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
     <ClCompile Include="..\..\xbmc\commons\ilog.cpp">
       <Filter>commons</Filter>
+    <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
@@ -5259,6 +5262,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h">
       <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\POUtils.h">
+      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioRenderers\IAudioRenderer.h">
       <Filter>cores\AudioRenderers</Filter>

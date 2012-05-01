@@ -1,0 +1,9125 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-04-30 23:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Forrit"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Ljósmyndir"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Tónlist"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Myndefni"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "Sjónvarpsvísir"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Stillingar"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr "XBMC SVN"
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Skráarsýsl"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Veður"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "xbmc media center"
+
+#: id:11
+msgid "Monday"
+msgstr "Mánudagur"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Þriðjudagur"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Miðvikudagur"
+
+#: id:14
+msgid "Thursday"
+msgstr "Fimmtudagur"
+
+#: id:15
+msgid "Friday"
+msgstr "Föstudagur"
+
+#: id:16
+msgid "Saturday"
+msgstr "Laugardagur"
+
+#: id:17
+msgid "Sunday"
+msgstr "Sunnudagur"
+
+#: id:21
+msgid "January"
+msgstr "janúar"
+
+#: id:22
+msgid "February"
+msgstr "febrúar"
+
+#: id:23
+msgid "March"
+msgstr "mars"
+
+#: id:24
+msgid "April"
+msgstr "apríl"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "maí"
+
+#: id:26
+msgid "June"
+msgstr "júní"
+
+#: id:27
+msgid "July"
+msgstr "júlí"
+
+#: id:28
+msgid "August"
+msgstr "ágúst"
+
+#: id:29
+msgid "September"
+msgstr "september"
+
+#: id:30
+msgid "October"
+msgstr "október"
+
+#: id:31
+msgid "November"
+msgstr "nóvember"
+
+#: id:32
+msgid "December"
+msgstr "desember"
+
+#: id:41
+msgid "Mon"
+msgstr "Mán"
+
+#: id:42
+msgid "Tue"
+msgstr "Þri"
+
+#: id:43
+msgid "Wed"
+msgstr "Mið"
+
+#: id:44
+msgid "Thu"
+msgstr "Fim"
+
+#: id:45
+msgid "Fri"
+msgstr "Fös"
+
+#: id:46
+msgid "Sat"
+msgstr "Lau"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Sun"
+
+#: id:51
+msgid "Jan"
+msgstr "jan"
+
+#: id:52
+msgid "Feb"
+msgstr "feb"
+
+#: id:53
+msgid "Mar"
+msgstr "mar"
+
+#: id:54
+msgid "Apr"
+msgstr "apr"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "maí"
+
+#: id:56
+msgid "Jun"
+msgstr "jún"
+
+#: id:57
+msgid "Jul"
+msgstr "júl"
+
+#: id:58
+msgid "Aug"
+msgstr "ágú"
+
+#: id:59
+msgid "Sep"
+msgstr "sep"
+
+#: id:60
+msgid "Oct"
+msgstr "okt"
+
+#: id:61
+msgid "Nov"
+msgstr "nóv"
+
+#: id:62
+msgid "Dec"
+msgstr "des"
+
+#: id:71
+msgid "N"
+msgstr "N"
+
+#: id:72
+msgid "NNE"
+msgstr "NNA"
+
+#: id:73
+msgid "NE"
+msgstr "NA"
+
+#: id:74
+msgid "ENE"
+msgstr "ANA"
+
+#: id:75
+msgid "E"
+msgstr "A"
+
+#: id:76
+msgid "ESE"
+msgstr "ASA"
+
+#: id:77
+msgid "SE"
+msgstr "SA"
+
+#: id:78
+msgid "SSE"
+msgstr "SSA"
+
+#: id:79
+msgid "S"
+msgstr "S"
+
+#: id:80
+msgid "SSW"
+msgstr "SSV"
+
+#: id:81
+msgid "SW"
+msgstr "SV"
+
+#: id:82
+msgid "WSW"
+msgstr "VSV"
+
+#: id:83
+msgid "W"
+msgstr "V"
+
+#: id:84
+msgid "WNW"
+msgstr "VNV"
+
+#: id:85
+msgid "NW"
+msgstr "NV"
+
+#: id:86
+msgid "NNW"
+msgstr "NNV"
+
+#: id:87
+msgid "VAR"
+msgstr "VAR"
+
+#: id:98
+msgid "View: Auto"
+msgstr "Útlit: Sjálfvirkt"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Útlit: Sjálfvirkt stórt"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Sjá sem: Tákn"
+
+#: id:101
+msgid "View: List"
+msgstr "Sjá sem: Lista"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Skanna"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Raða eftir: Nafni"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Raða eftir: Dags."
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Raða eftir: Stærð"
+
+#: id:106
+msgid "No"
+msgstr "Nei"
+
+#: id:107
+msgid "Yes"
+msgstr "Já"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Myndasýning"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Gera smámyndir"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Gera smámyndir"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Flýtival"
+
+#: id:112
+msgid "Paused"
+msgstr "Í bið"
+
+#: id:113
+msgid "Update failed"
+msgstr "Uppfærsla mistókst"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Uppsetning mistókst"
+
+#: id:115
+msgid "Copy"
+msgstr "Afrita"
+
+#: id:116
+msgid "Move"
+msgstr "Færa"
+
+#: id:117
+msgid "Delete"
+msgstr "Eyða"
+
+#: id:118
+msgid "Rename"
+msgstr "Endurnefna"
+
+#: id:119
+msgid "New folder"
+msgstr "Ný mappa"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Staðfesta afritun"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Staðfesta færslu"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Staðfesta eyðingu á skrá?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Afrita þessar skrár?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Færa þessar skrár?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Eyða þessum skrám? - Ekki er hægt að afturkalla þessa aðgerð!"
+
+#: id:126
+msgid "Status"
+msgstr "Staða"
+
+#: id:127
+msgid "Objects"
+msgstr "Hlutir"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Almennt"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Myndasýning"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Kerfisupplýsingar"
+
+#: id:131
+msgid "Display"
+msgstr "Skjár"
+
+#: id:132
+msgid "Albums"
+msgstr "Hljómplötur"
+
+#: id:133
+msgid "Artists"
+msgstr "Tónlistarmenn"
+
+#: id:134
+msgid "Songs"
+msgstr "Lög"
+
+#: id:135
+msgid "Genres"
+msgstr "Flokkar"
+
+#: id:136
+msgid "Playlists"
+msgstr "Spilunarlistar"
+
+#: id:137
+msgid "Search"
+msgstr "Leita"
+
+#: id:138
+msgid "System Information"
+msgstr "Kerfisupplýsingar"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Hitastig:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Klukka:"
+
+#: id:143
+msgid "Current:"
+msgstr "Núna:"
+
+#: id:144
+msgid "Build:"
+msgstr "Útgáfa:"
+
+#: id:145
+msgid "Network:"
+msgstr "Netumhverfi:"
+
+#: id:146
+msgid "Type:"
+msgstr "Tegund:"
+
+#: id:147
+msgid "Static"
+msgstr "Föst"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC vistfang"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP tala"
+
+#: id:151
+msgid "Link:"
+msgstr "Tenging:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Einstefna"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Tvístefna"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Geymslurými"
+
+#: id:155
+msgid "Drive"
+msgstr "Drif"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Laust"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Mynd"
+
+#: id:158
+msgid "Free memory"
+msgstr "Laust minni"
+
+#: id:159
+msgid "No link"
+msgstr "Engin tenging"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "Laust"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Ófáanlegt"
+
+#: id:162
+msgid "Tray open"
+msgstr "Bakki opinn"
+
+#: id:163
+msgid "Reading"
+msgstr "Les"
+
+#: id:164
+msgid "No disc"
+msgstr "Enginn diskur"
+
+#: id:165
+msgid "Disc present"
+msgstr "Diskur í bakka"
+
+#: id:166
+msgid "Skin"
+msgstr "Útlit"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Upplausn"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Stilla glæðningartíðni til að passa við myndefni"
+
+#: id:172
+msgid "Release date"
+msgstr "Útgáfudagur"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Sýna 4:3 myndefni sem"
+
+#: id:175
+msgid "Moods"
+msgstr "Tónar"
+
+#: id:176
+msgid "Styles"
+msgstr "Stílar"
+
+#: id:179
+msgid "Song"
+msgstr "Lag"
+
+#: id:180
+msgid "Duration"
+msgstr "Lengd"
+
+#: id:181
+msgid "Select album"
+msgstr "Veldu hljómplötu"
+
+#: id:182
+msgid "Tracks"
+msgstr "Lög"
+
+#: id:183
+msgid "Review"
+msgstr "Umsögn"
+
+#: id:184
+msgid "Refresh"
+msgstr "Endurlesa"
+
+#: id:185
+msgid "Searching album"
+msgstr "Leita að hljómplötu"
+
+#: id:186
+msgid "OK"
+msgstr "Í lagi"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Engar hljómplötur fundust!"
+
+#: id:188
+msgid "Select all"
+msgstr "Velja allt"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Skoða upplýsingar"
+
+#: id:190
+msgid "Save"
+msgstr "Vista"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Endurraða"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Hreinsa"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Leita"
+
+#: id:194
+msgid "Searching..."
+msgstr "Leitar..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Engar upplýsingar fundust!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Veldu kvikmynd:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Sæki %s upplýsingar"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Sæki upplýsingar um mynd"
+
+#: id:199
+msgid "Web interface"
+msgstr "Vefviðmót"
+
+#: id:202
+msgid "Tagline"
+msgstr "Undirtitill"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Söguþráður"
+
+#: id:205
+msgid "Votes"
+msgstr "Atkvæði"
+
+#: id:206
+msgid "Cast"
+msgstr "Leikarar"
+
+#: id:207
+msgid "Plot"
+msgstr "Söguþráður"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Spila"
+
+#: id:209
+msgid "Next"
+msgstr "Næst"
+
+#: id:210
+msgid "Previous"
+msgstr "Fyrra"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Stilla viðmót..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Skjástilling..."
+
+#: id:215
+msgid "Soften"
+msgstr "Mýkja"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Stækka"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Teygja"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD drif"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Setjið disk inn"
+
+#: id:220
+msgid "Remote share"
+msgstr "Fjarlæg geymsla"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Netkerfi ótengt"
+
+#: id:222
+msgid "Cancel"
+msgstr "Hætta við"
+
+#: id:224
+msgid "Speed"
+msgstr "Hraði"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr "Lóðrétt hliðrun"
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Prufumynstur..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Sækja upplýsingar um tónlistardiska frá freedb.org"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Endurraða spilunarlista í byrjun"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Hvíldartími harðdisks"
+
+#: id:230
+msgid "Video filters"
+msgstr "Myndasíur"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Ekkert"
+
+#: id:232
+msgid "Point"
+msgstr "Punkta"
+
+#: id:233
+msgid "Linear"
+msgstr "Línulegur"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Anisotropic"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Quincunx"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Gaussian Cubic"
+
+#: id:237
+msgid "Minification"
+msgstr "Minnkun"
+
+#: id:238
+msgid "Magnification"
+msgstr "Stækkun"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Hreinsa spilunarlista við enda"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Skjáhamur"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "Fylla skjá #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "Glugga"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Glæðingartíðni"
+
+#: id:244
+msgid "Full screen"
+msgstr "Fylla skjá"
+
+#: id:245
+msgid ""
+"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
+" %2.2f)"
+msgstr ""
+"Stærðir: (%i,%i)->(%i,%i) (Aðdráttur x%2.2f) AR:%2.2f:1 (Punktar: %2.2f:1) "
+"(Lóð.hliðrun: %2.2f)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Skriftur"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Tungumál"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Tónlist"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Myndskreyting"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Veldu ákvörðunarstað"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Senda í alla hátalara"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Fjöldi rása"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- DTS móttakari"
+
+#: id:255
+msgid "CDDB"
+msgstr "CDDB"
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Sæki upplýsingar um geisladisk"
+
+#: id:257
+msgid "Error"
+msgstr "Villa"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Virkja að lesa merkingar"
+
+#: id:259
+msgid "Opening"
+msgstr "Opna"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "Shoutcast"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Bíð eftir upphafi..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Skriftuúttak"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Leyfa stjórnun á XBMC með HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "Taka upp"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Stöðva upptöku"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Flokka eftir: Lagi"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Flokka eftir: Tíma"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Flokka eftir: Titli"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Flokka eftir: Listamanni"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Flokka eftir: Hljómplötu"
+
+#: id:271
+msgid "Top 100"
+msgstr "Topp 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Efri-vinstri yfirflóðsjöfnun"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Neðri-hægri yfirflóðsjöfnun"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Staðsetning þýðingartexta"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Stillingar skjápunktahlutfalla"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Færðu örina til að breyta yfirflóði myndar"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Færðu strikið til að breyta staðsetningu þýðingartexta"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Breyttu ferhyrningnum þar til hliðarnar eru jafnar"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Gat ekki hlaðið inn stillingum"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Nota sjálfgefin gildi"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Vinsamlegast athugið XML skrár"
+
+#: id:282
+msgid "Found %i items"
+msgstr "Fann %i atriði"
+
+#: id:283
+msgid "Search results"
+msgstr "Leitarniðurstöður"
+
+#: id:284
+msgid "No results found"
+msgstr "Ekkert fannst"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Þýðingartextar"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Leturgerð"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- Stærð"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Samþjappa tónsviði"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Mynd"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Hljóð"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Þýðingartextar"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Búa til bókamerki"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Hreinsa bókamerki"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Hliðra hljóði"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Bókamerki"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- AAC móttakari"
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- MP1 móttakari"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- MP2 móttakari"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- MP3 móttakari"
+
+#: id:303
+msgid "Delay"
+msgstr "Bið"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Tungumál"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Virkt"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "Ekki önnur hver lína"
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=sjálfv.)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Hreinsa gagnagrunn"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Undirbý..."
+
+#: id:315
+msgid "Database error"
+msgstr "Gagnagrunnsvilla"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Leita í lögum..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Hreinsun tókst"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Hreinsa lög..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Villa við hreinsun laga"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Hreinsa í listamönnum..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Villa við endurröðun listamanna"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Hreinsa tegundir..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Villa við hreinsun tegunda"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Hreinsa slóðir..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Villa við hreinsun slóða"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Hreinsa hljómplötur..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Villa við hreinsun platna"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Vista breytingar..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Villa við vistun breytinga"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Gæti tekið sinn tíma..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Þjappa gagnagrunni..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Villa við þjöppun gagnagrunns"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Viltu hreinsa til í safninu?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Hreinsa til í safni..."
+
+#: id:335
+msgid "Start"
+msgstr "Byrja"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Stilla rammafjölda"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Hljóðútgangur"
+
+#: id:338
+msgid "Analog"
+msgstr "Hliðrænt"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Stafrænt"
+
+#: id:340
+msgid "Various artists"
+msgstr "Ýmsir flytjendur"
+
+#: id:341
+msgid "Play disc"
+msgstr "Spila disk"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Kvikmyndir"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Stilla rammafjölda"
+
+#: id:344
+msgid "Actors"
+msgstr "Leikarar"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Ár"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "Magna hljóðstyrk við endurblöndun"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Forrit"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Slökkt"
+
+#: id:352
+msgid "Dim"
+msgstr "Dekkja"
+
+#: id:353
+msgid "Black"
+msgstr "Svart"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Matrix línur"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Biðtími skjávara"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Skjávari"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Slökkt eftir"
+
+#: id:358
+msgid "All albums"
+msgstr "Allar hljómplötur"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Nýlegar hljómplötur"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Skjávari"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "End. myndasýningu"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Myrkvun skjávara"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Raða eftir: Skrá"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- Dolby Digital (AC3) móttakari"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Raða eftir: Nafni"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Raða eftir: Ártali"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Raða eftir: Einkunn"
+
+#: id:368
+msgid "IMDb"
+msgstr "IMDb"
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Titill"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "Þrumuveður"
+
+#: id:371
+msgid "Partly"
+msgstr "Hálf"
+
+#: id:372
+msgid "Mostly"
+msgstr "Að mestu"
+
+#: id:373
+msgid "Sunny"
+msgstr "Sólskin"
+
+#: id:374
+msgid "Cloudy"
+msgstr "Skýjað"
+
+#: id:375
+msgid "Snow"
+msgstr "Snjór"
+
+#: id:376
+msgid "Rain"
+msgstr "Rigning"
+
+#: id:377
+msgid "Light"
+msgstr "Létt"
+
+#: id:378
+msgid "AM"
+msgstr "FH"
+
+#: id:379
+msgid "PM"
+msgstr "EH"
+
+#: id:380
+msgid "Showers"
+msgstr "Skúrir"
+
+#: id:381
+msgid "Few"
+msgstr "Fá"
+
+#: id:382
+msgid "Scattered"
+msgstr "Dreifð"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "Vindur"
+
+#: id:384
+msgid "Strong"
+msgstr "Sterkt"
+
+#: id:385
+msgid "Fair"
+msgstr "Létt"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "Bjart"
+
+#: id:387
+msgid "Clouds"
+msgstr "Ský"
+
+#: id:388
+msgid "Early"
+msgstr "Snemma"
+
+#: id:389
+msgid "Shower"
+msgstr "Skúrir"
+
+#: id:390
+msgid "Flurries"
+msgstr "Gustur"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "Lægst"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "Meðal"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "Hæst"
+
+#: id:394
+msgid "Fog"
+msgstr "Þoka"
+
+#: id:395
+msgid "Haze"
+msgstr "Mistur"
+
+#: id:396
+msgid "Select location"
+msgstr "Veldu staðsetningu"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Glæðingartími"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Hitamælieiningar"
+
+#: id:399
+msgid "Speed units"
+msgstr "Hraðamælieiningar"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Veður"
+
+#: id:401
+msgid "Temp"
+msgstr "Hiti"
+
+#: id:402
+msgid "Feels like"
+msgstr "Skynjast sem"
+
+#: id:403
+msgid "UV index"
+msgstr "UV einingar"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Vindur"
+
+#: id:405
+msgid "Dew point"
+msgstr "Daggarmark"
+
+#: id:406
+msgid "Humidity"
+msgstr "Raki"
+
+#: id:409
+msgid "Defaults"
+msgstr "Sjálfgildi"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Tengist veðurþjónustu"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Sæki veðurgögn fyrir:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Finn ekki veðurgögn"
+
+#: id:413
+msgid "Manual"
+msgstr "Handvirkt"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Engin umsögn um þessa hljómplötu"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Sæki smámynd..."
+
+#: id:416
+msgid "Not available"
+msgstr "Ekki til"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Sjá sem: Stór tákn"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Lágt"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Hátt"
+
+#: id:420
+msgid "HDMI"
+msgstr "HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Eyða hljómplötuupplýsingum"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Eyða upplýsingum um geisladisk"
+
+#: id:424
+msgid "Select"
+msgstr "Velja"
+
+#: id:425
+msgid "No album information found"
+msgstr "Engar hljómplötuupplýsingar fundust"
+
+#: id:426
+msgid "No CD information found"
+msgstr "Engar upplýsingar fundust um geisladisk"
+
+#: id:427
+msgid "Disc"
+msgstr "Diskur"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Settu inn réttan CD/DVD"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Settu inn eftirfarandi disk:"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Raða eftir: DVD#"
+
+#: id:431
+msgid "No cache"
+msgstr "Ekkert biðminni"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Eyða kvikmynd úr safni"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Viltu fjarlægja '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "Frá %s á %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "Færanlegur diskur"
+
+#: id:438
+msgid "Opening file"
+msgstr "Opna skrá"
+
+#: id:439
+msgid "Cache"
+msgstr "Biðminni"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Harður diskur"
+
+#: id:441
+msgid "UDF"
+msgstr "UDF"
+
+#: id:442
+msgid "Local network"
+msgstr "Staðbundið netkerfi"
+
+#: id:443
+msgid "Internet"
+msgstr "Internet"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Myndband"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Hljóð"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:447
+msgid "Autorun media"
+msgstr "Sjálfkeyra"
+
+#: id:448
+msgid "LCD"
+msgstr "LCD"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Virkt"
+
+#: id:450
+msgid "Columns"
+msgstr "Dálkar"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Röð 1 númer"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Röð 2 númer"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Röð 3 númer"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Röð 4 númer"
+
+#: id:455
+msgid "Rows"
+msgstr "Raðir"
+
+#: id:456
+msgid "Mode"
+msgstr "Hamur"
+
+#: id:457
+msgid "Switch view"
+msgstr "Breyta sýn"
+
+#: id:459
+msgid "Subs"
+msgstr "Textar"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Hljóðstraumur"
+
+#: id:461
+msgid "[active]"
+msgstr "[virkt]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Þýðingartexti"
+
+#: id:463
+msgid "Backlight"
+msgstr "Baklýsing"
+
+#: id:464
+msgid "Brightness"
+msgstr "Birta"
+
+#: id:465
+msgid "Contrast"
+msgstr "Skerpa"
+
+#: id:466
+msgid "Gamma"
+msgstr "Gamma"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Gerð"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Hreyfðu línuna til að breyta staðsetningu OSD"
+
+#: id:469
+msgid "OSD position"
+msgstr "OSD staðsetning"
+
+#: id:470
+msgid "Credits"
+msgstr "Þakkir"
+
+#: id:471
+msgid "Modchip"
+msgstr "Mod kubbur"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Af"
+
+#: id:475
+msgid "Music only"
+msgstr "Bara tónlist"
+
+#: id:476
+msgid "Music & video"
+msgstr "Tónlist og myndefni"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Gat ekki hlaðið spilunarlista"
+
+#: id:478
+msgid "OSD"
+msgstr "OSD"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Útlit og tungumál"
+
+#: id:480
+msgid "Appearance"
+msgstr "Viðmót"
+
+#: id:481
+msgid "Audio options"
+msgstr "Hljóðvalmöguleikar"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Um XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Eyða hljómplötu"
+
+#: id:486
+msgid "Repeat"
+msgstr "Endurtaka"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Endurtaka eitt"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Endurtaka spilunarlista í möppu"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Nota spilunarlista fyrir lög"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- Nota stór tákn"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Breyta stærð skjátexta"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Frekari valmöguleikar (fyrir sérfræðinga!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Heildarhljóðsvið"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Stækka kvikmyndir í viðmótsupplausn"
+
+#: id:496
+msgid "Calibration"
+msgstr "Stilla"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Sýna skráarendingar"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Raða eftir: Tegund"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Get ekki tengst upplýsingaþjónustu"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Niðurhal hljómplötuupplýsinga brást"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Leita eftir hljómplötunafni..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Opinn"
+
+#: id:503
+msgid "Busy"
+msgstr "Í vinnslu"
+
+#: id:504
+msgid "Empty"
+msgstr "Tómur"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Sæki upplýsingar frá skrám..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Raða eftir: Notkun"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Virkja myndskreytingu"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Skipta sjálfvirkt um skjáham eftir svæði leiks"
+
+#: id:512
+msgid "Startup window"
+msgstr "Ræsi gluggi"
+
+#: id:513
+msgid "Home window"
+msgstr "Forsíða"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Handvirkar stillingar"
+
+#: id:515
+msgid "Genre"
+msgstr "Flokkur"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Nýlega spilaðar hljómplötur"
+
+#: id:518
+msgid "Launch"
+msgstr "Keyra"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Keyra í..."
+
+#: id:521
+msgid "Compilations"
+msgstr "Safnplötur"
+
+#: id:522
+msgid "Remove source"
+msgstr "Eyða uppsprettu"
+
+#: id:523
+msgid "Switch media"
+msgstr "Skipta um miðil"
+
+#: id:524
+msgid "Select playlist"
+msgstr "Velja spilunarlista"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Nýr spilunarlisti..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Bæta á spilunarlista"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Bæta handvirkt við safn"
+
+#: id:528
+msgid "Enter title"
+msgstr "Sláðu inn titil"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Villa: Titill þegar til"
+
+#: id:530
+msgid "Select genre"
+msgstr "Veldu flokk"
+
+#: id:531
+msgid "New genre"
+msgstr "Nýr flokkur"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Handvirk viðbót"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Sláðu inn flokk"
+
+#: id:534
+msgid "View: %s"
+msgstr "Sýn: %s"
+
+#: id:535
+msgid "List"
+msgstr "Listi"
+
+#: id:536
+msgid "Icons"
+msgstr "Tákn"
+
+#: id:537
+msgid "Big list"
+msgstr "Stór listi"
+
+#: id:538
+msgid "Big icons"
+msgstr "Stór tákn"
+
+#: id:539
+msgid "Wide"
+msgstr "Breiðir"
+
+#: id:540
+msgid "Big wide"
+msgstr "Stórir breiðir"
+
+#: id:541
+msgid "Album icons"
+msgstr "Hjómplötu tákn"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD tákn"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Upplýsingar"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Hljóðúttakstæki"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Gegnumúttakstæki"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Ekkert æviágrip fyrir þennan listamann"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Endurblanda fjölrása hljóð yfir í víðóma"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Raða eftir: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Nafni"
+
+#: id:552
+msgid "Date"
+msgstr "Dags"
+
+#: id:553
+msgid "Size"
+msgstr "Stærð"
+
+#: id:554
+msgid "Track"
+msgstr "Lag"
+
+#: id:555
+msgid "Time"
+msgstr "Tíma"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Titli"
+
+#: id:557
+msgid "Artist"
+msgstr "Tónlistarmanni"
+
+#: id:558
+msgid "Album"
+msgstr "Hljómplata"
+
+#: id:559
+msgid "Playlist"
+msgstr "Lagalista"
+
+#: id:560
+msgid "ID"
+msgstr "Auðkenni"
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Skrá"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Ár"
+
+#: id:563
+msgid "Rating"
+msgstr "Einkunn"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Tegund"
+
+#: id:565
+msgid "Usage"
+msgstr "Notkun"
+
+#: id:566
+msgid "Album artist"
+msgstr "Tónlistarmaður"
+
+#: id:567
+msgid "Play count"
+msgstr "Fjöldi spilana"
+
+#: id:568
+msgid "Last played"
+msgstr "Síðast spilað"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Athugasemd"
+
+#: id:570
+msgid "Date added"
+msgstr "Bætt við dags"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "Sjálfgefið"
+
+#: id:572
+msgid "Studio"
+msgstr "Stúdíó"
+
+#: id:573
+msgid "Path"
+msgstr "Slóð"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Land"
+
+#: id:575
+msgid "In progress"
+msgstr "Í vinnslu"
+
+#: id:576
+msgid "Times played"
+msgstr "Sinnum spilað"
+
+#: id:580
+msgid "Sort direction"
+msgstr "Raða í átt"
+
+#: id:581
+msgid "Sort method"
+msgstr "Röðunaraðferð"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Tegund Sýnar"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Muna sýn á mismunandi möppur"
+
+#: id:584
+msgid "Ascending"
+msgstr "Hækkandi"
+
+#: id:585
+msgid "Descending"
+msgstr "Lækkandi"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Breyta spilunarlista"
+
+#: id:587
+msgid "Filter"
+msgstr "Sía"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Hætta við partí ham"
+
+#: id:589
+msgid "Party mode"
+msgstr "Partí hamur"
+
+#: id:590
+msgid "Random"
+msgstr "Handahófskenndur"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Af"
+
+#: id:592
+msgid "One"
+msgstr "Einn"
+
+#: id:593
+msgid "All"
+msgstr "Allir"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Af"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Endurtaka: Af"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Endurtaka: Einn"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Endurtaka: Allir"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Afrita CD tónlist"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Meðal"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Venjulegt"
+
+#: id:603
+msgid "Extreme"
+msgstr "Öfgakenndur"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Fastur bita hraði"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Afrita..."
+
+#: id:607
+msgid "To:"
+msgstr "Til:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Get ekki lesið disk eða rás"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath er ekki skilgreint."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Afrita lag"
+
+#: id:611
+msgid "Enter number"
+msgstr "Sláðu inn númer"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Bitar/úrtak"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Tíðni"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Tónlistardiskar"
+
+#: id:621
+msgid "Encoder"
+msgstr "Kótari"
+
+#: id:622
+msgid "Quality"
+msgstr "Gæði"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Bita hraði"
+
+#: id:624
+msgid "Include track number"
+msgstr "Bæta við laga númeri"
+
+#: id:625
+msgid "All songs of"
+msgstr "Öll lög með"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Tegund sjónarhorns"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Venjulegt"
+
+#: id:631
+msgid "Zoom"
+msgstr "Þysja"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Teygja 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Þysja breiðmynd"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Teygja 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Upprunaleg stærð"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Sérsnið"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Jöfnun tónstyrks"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Jöfnunarhamur tónstyrks"
+
+#: id:639
+msgid "Use track levels"
+msgstr "Nota laga stig"
+
+#: id:640
+msgid "Use album levels"
+msgstr "Nota hljómplötu stig"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Stig formagnara - Skrár með jöfnun tónstyrks"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Stig formagnara - Skrár ekki með jöfnun tónstyrks"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Ekki klippa á skrár með jöfnun tónstyrks"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Skera af svartar rendur"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Nauðsynlegt er að vista tímabundið stóra skrá. Halda áfram?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Fjarlægja úr safni"
+
+#: id:647
+msgid "Export video library"
+msgstr "Flytja út bíómyndasafn"
+
+#: id:648
+msgid "Import video library"
+msgstr "Flytja inn bíómyndasafn"
+
+#: id:649
+msgid "Importing"
+msgstr "Flytja inn"
+
+#: id:650
+msgid "Exporting"
+msgstr "Flytja út"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Leita að safni"
+
+#: id:652
+msgid "Years"
+msgstr "Ár"
+
+#: id:653
+msgid "Update library"
+msgstr "Uppfæra safn"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Sýna kembi upplýsingar"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Finna forrit"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Finna lagalista"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Finna möppu"
+
+#: id:658
+msgid "Song information"
+msgstr "Lagaupplýsingar"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Ólínuleg teygja"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Mögnun Hljóðstyrks"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Veldu möppu til að vista í"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Þessi skrá er ekki lengur tiltæk."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Viltu fjarlægja hana úr safninu?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Leita eftir skriftu"
+
+#: id:665
+msgid "Compression level"
+msgstr "Þjöppun"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Hreinsa upp safn"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Fjarlægi gömul lög úr tónlistarsafninu"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Þessi slóð hefur verið skönnuð áður"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Netkerfi"
+
+#: id:706
+msgid "- Server"
+msgstr "- Netþjónn"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Nota HTTP milliþjón til að tengjast netinu"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Internet samskiptareglur (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Röng gátt valinn. Gildi þarf að vera á milli 1 og 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP milliþjónn (Proxy)"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Úthlutað"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "Sjálfvirkt (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "Handvirkt (Föst)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP tala"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Undirnetssía"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Sjálfgefinn gátt"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- DNS þjónn"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Vista og endurræsa"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Rangt vistfang tilgreint. Gildi verður að vera AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "með númerum á milli 0 og 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Breytingar ekki vistaðar. Halda áfram án þess að vista?"
+
+#: id:727
+msgid "Web server"
+msgstr "Vefþjónn"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP þjónn"
+
+#: id:730
+msgid "- Port"
+msgstr "- Gátt"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Vista og virkja"
+
+#: id:733
+msgid "- Password"
+msgstr "- Lykilorð"
+
+#: id:734
+msgid "No pass"
+msgstr "Ekkert lykilorð"
+
+#: id:735
+msgid "- Character set"
+msgstr "- Stafasett"
+
+#: id:736
+msgid "- Style"
+msgstr "- Stíll"
+
+#: id:737
+msgid "- Colour"
+msgstr "- Litur"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "Venjulegt"
+
+#: id:739
+msgid "Bold"
+msgstr "Feitletrað"
+
+#: id:740
+msgid "Italics"
+msgstr "Skáletrað"
+
+#: id:741
+msgid "Bold italics"
+msgstr "Feitletrað skáletrað"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "Hvítur"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "Gulur"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Skrár"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Engar skannaðar upplýsingar eru til fyrir þessa sýn"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Vinsamlegast slökktu á safnham"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Villa við niðurhal myndar"
+
+#: id:748
+msgid "Edit path"
+msgstr "Breyta slóð"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Spegla mynd"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Ertu viss?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Fjarlægi uppsprettu"
+
+#: id:754
+msgid "Add program link"
+msgstr "Bæta við forrita tengli"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Breyta forrita slóð"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Breyta nafni forrits"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Breyta dýpt slóða"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Sýn: Stór listi"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "Gulur"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "Hvítur"
+
+#: id:762
+msgid "Blue"
+msgstr "Blár"
+
+#: id:763
+msgid "Bright green"
+msgstr "Skærgrænn"
+
+#: id:764
+msgid "Yellow green"
+msgstr "Gulgrænn"
+
+#: id:765
+msgid "Cyan"
+msgstr "Blágrænn"
+
+#: id:766
+msgid "Light grey"
+msgstr "Frátekið"
+
+#: id:767
+msgid "Grey"
+msgstr "Frátekið"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Villa %i: samnýting ekki aðgengileg"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Hljóðbúnaður"
+
+#: id:773
+msgid "Seeking"
+msgstr "Leita"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Mappa fyrir myndasýningar skjávara"
+
+#: id:775
+msgid "Network interface"
+msgstr "Nettenging"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Þráðlaust net nafn (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Þráðlaust lykilorð"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Þráðlaust öryggi"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Vista og virkja nettenginga stillingar"
+
+#: id:780
+msgid "No encryption"
+msgstr "Engin dulkóðun"
+
+#: id:781
+msgid "WEP"
+msgstr "WEP"
+
+#: id:782
+msgid "WPA"
+msgstr "WPA"
+
+#: id:783
+msgid "WPA2"
+msgstr "WPA2"
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Virkja stillingar nettengingar. Augnablik."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Tókst að endurræsa nettengingu."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Ekki tókst að endurræsa nettengingu."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Tenging gerð óvirk"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Tókst að gera nettengingu óvirka."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Þráðlaust net nafn (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Leyfa forritum að stjórna XBMC"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Gátt"
+
+#: id:793
+msgid "Port range"
+msgstr "Gáttabil"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Leyfa forritum á öðrum tölvum að stjórna XBMC"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Upphafleg endurtekningarbið (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Samfelld endurtekningarbið (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Hámarksfjöldi biðlara"
+
+#: id:798
+msgid "Internet access"
+msgstr "Internet aðgangur"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Ógilt númer á gátt slegið inn"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Gild gátt er á bilinu 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Gild gátt er á bilinu 1024-65535"
+
+#: id:998
+msgid "Add Music..."
+msgstr "Bæta við tónlist..."
+
+#: id:999
+msgid "Add Videos..."
+msgstr "Bæta við myndefni..."
+
+#: id:1000
+msgid "- Preview"
+msgstr "- Forsýna"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Get ekki tengst"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC getur ekki tengst við netslóð."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Þetta gæti verið vegna þess að netið er ekki tengt."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Viltu samt bæta því við?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP tala"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Bæta við net slóð"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Samskiptareglur"
+
+#: id:1009
+msgid "Server address"
+msgstr "Vistfang miðlara"
+
+#: id:1010
+msgid "Server name"
+msgstr "Nafn miðlara"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Slóð fjartengingar"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Samnýtt mappa"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Gátt"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Notandanafn"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Leita að netþjóni"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Sláði inn vistfang miðlarans"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Sláðu inn slóð á miðlara"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Sláðu inn númer gáttar"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Sláðu inn notandanafn"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Bæta við %s uppsprettu"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Sláðu inn slóð eða leitaðu að slóð fyrir miðlara."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Sláðu inn nafn fyrir þessa uppsprettu."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Leita að nýrri samnýtingu"
+
+#: id:1024
+msgid "Browse"
+msgstr "Leita"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Gat ekki náð í upplýsingar um möppu."
+
+#: id:1026
+msgid "Add source"
+msgstr "Bæta við uppsprettu"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Breyta uppsprettu"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Breyta %s uppsprettu"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Sláðu inn nýjan titil"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Leita að mynd"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Leita að mynda möppu"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Bæta við net slóð..."
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Leita að skrá"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Undirvalmynd"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Virkja undirvalmyndar takka"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Uppáhalds"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Myndefnisviðbætur"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Tónlistaviðbætur"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Ljósmyndaviðbætur"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Hleð inn möppu"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "Náði í %i hluti"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "Náði í %i af %i hlutum"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Forritsviðbætur"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Setja viðbótar smámynd"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Stilling viðbóta"
+
+#: id:1046
+msgid "Access points"
+msgstr "Aðgangsstaðir"
+
+#: id:1047
+msgid "Other..."
+msgstr "Annað..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Notandanafn"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Skriftu stillingar"
+
+#: id:1050
+msgid "Singles"
+msgstr "Smáskífur"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Sláðu inn veffang"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB biðlari"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Vinnuhópur"
+
+#: id:1203
+msgid "Default username"
+msgstr "Sjálfgefið notandanafn"
+
+#: id:1204
+msgid "Default password"
+msgstr "Sjálfgefið lykilorð"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS þjónn"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Tengjast við SMB samnýtingar"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Fjarlægja"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Tónlist"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Myndefni"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Myndir"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Skrár"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Tónlist & myndefni "
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Tónlist & myndir"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Tónlist & skrár"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Myndefni & myndir"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Myndefni & skrár"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Myndir & skrár"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Tónlist & myndefni & myndir"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Tónlist & myndefni & myndir & skrár"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Skrár & tónlist & myndefni"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Skrár & myndir& tónlist"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Skrár & myndir & myndefni"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Tónlist & forrit"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Myndefni & forrit"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Myndir & forrit"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Tónlist & myndefni & myndir & forrit"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Forrit & myndefni & tónlist"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Forrit & myndir & tónlist"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Forrit & myndir & myndefni"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Sjálfvirk uppgötvun"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Sjálfvirk uppgötvun kerfa"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Gælunafn"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Biðja um tengingu"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Senda FTP notandanafn og lykilorð"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Ping millibil"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Viltu tengjast uppgötvuðu kerfi?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Tilkynna þjónustur til annarra kerfa með Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr "Leyfa XBMC að taka á móti AirPlay efni"
+
+#: id:1271
+msgid "Device name"
+msgstr "Nafn tækis"
+
+#: id:1272
+msgid "- Use password protection"
+msgstr "- Nota lykilorð"
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr "Sérsniðið hljóðtæki"
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr "Sérsniðið gegnumstreymitæki"
+
+#: id:1396
+msgid "Drifting"
+msgstr "Fjúka"
+
+#: id:1397
+msgid "and"
+msgstr "og"
+
+#: id:1398
+msgid "Freezing"
+msgstr "Frost"
+
+#: id:1399
+msgid "Late"
+msgstr "Seint"
+
+#: id:1400
+msgid "Isolated"
+msgstr "Einangrað"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "Þrumuskúrir"
+
+#: id:1402
+msgid "Thunder"
+msgstr "Þrumur"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "Sól"
+
+#: id:1404
+msgid "Heavy"
+msgstr "Þungbúinn"
+
+#: id:1405
+msgid "in"
+msgstr "í"
+
+#: id:1406
+msgid "the"
+msgstr ""
+
+#: id:1407
+msgid "Vicinity"
+msgstr "Nágrenni"
+
+#: id:1408
+msgid "Ice"
+msgstr "Ís"
+
+#: id:1409
+msgid "Crystals"
+msgstr "Kristallar"
+
+#: id:1410
+msgid "Calm"
+msgstr "Logn"
+
+#: id:1411
+msgid "with"
+msgstr "með"
+
+#: id:1412
+msgid "windy"
+msgstr "vindasamt"
+
+#: id:1413
+msgid "drizzle"
+msgstr "úði"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "Þrumuveður"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "Úði"
+
+#: id:1416
+msgid "Foggy"
+msgstr "Þoka"
+
+#: id:1417
+msgid "Grains"
+msgstr "Haglél"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "Þrumuveður"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "Þrumuskúrir"
+
+#: id:1420
+msgid "Moderate"
+msgstr "Hóflegt"
+
+#: id:1421
+msgid "Very High"
+msgstr "Mjög hátt"
+
+#: id:1422
+msgid "Windy"
+msgstr "Vindasamt"
+
+#: id:1423
+msgid "Mist"
+msgstr "Mistur"
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Virkja lágt orkustig ef aðgerðalaus"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Lengd"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Skrifta mistókst! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Þarfnast nýrrar útgáfu - Skoðaðu atburðaskrá"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Virkja LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Heim"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Forrit"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Ljósmyndir"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Skráarsýsl"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Stillingar"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Tónlist"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Myndefni"
+
+#: id:10007
+msgid "System information"
+msgstr "Kerfisupplýsingar"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Stillingar - Almennar"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Stillingar - Skjár"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Stillingar - Viðmót - Viðmótsstilling"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Stillingar - Myndefni - Skjástilling"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Stillingar - Ljósmyndir"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Stillingar - Forrit"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Stillingar - Veður"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Stillingar - Tónlist"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Stillingar - Kerfi"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Stillingar - Myndefni"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Stillingar - Netkerfi"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Stillingar - Viðmót"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Skriftur"
+
+#: id:10021
+msgid "Web Browser"
+msgstr "Vafri"
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Myndefni/Spilunarlisti"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Stillingar - Notendur"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Já/Nei melding"
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Vinnslumelding"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Leita að þýðingartexta..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Leita að þýðingartexta eða set í biðminni..."
+
+#: id:10212
+msgid "terminating"
+msgstr "loka"
+
+#: id:10213
+msgid "buffering"
+msgstr "biðminni"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Opna straum"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Tónlist/Lagalisti"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Tónlist/Skrár"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Tónlist/Safn"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Spilunarlistaritill"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Topp 100 lög"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Topp 100 plötur"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Forrit"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Uppsetning"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Veðurspá"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Netspilun"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Framlengingar"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Kerfisupplýsingar"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Tónlist - Tónlistarsafn"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Í spilun - Tónlist"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Í spilun - Myndefni"
+
+#: id:10523
+msgid "Album info"
+msgstr "Hljómplötuupplýsingar"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Kvikmyndaupplýsingar"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Valskilti"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Tónlist/upplýsingar"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Gluggi í lagi"
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Kvikmyndir/Uppl."
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Skriftur/Uppl."
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Heilskjásmynd"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Myndskreyting"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Skjalaröðunarskilti"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Endurbygging á atriðaskrá..."
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Til baka í tónlist"
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Til baka í myndefni"
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Byrja frá byrjun"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Áfram frá %s"
+
+#: id:12310
+msgid "0"
+msgstr "0"
+
+#: id:12311
+msgid "1"
+msgstr "1"
+
+#: id:12312
+msgid "2"
+msgstr "2"
+
+#: id:12313
+msgid "3"
+msgstr "3"
+
+#: id:12314
+msgid "4"
+msgstr "4"
+
+#: id:12315
+msgid "5"
+msgstr "5"
+
+#: id:12316
+msgid "6"
+msgstr "6"
+
+#: id:12317
+msgid "7"
+msgstr "7"
+
+#: id:12318
+msgid "8"
+msgstr "8"
+
+#: id:12319
+msgid "9"
+msgstr "9"
+
+#: id:12320
+msgid "c"
+msgstr "c"
+
+#: id:12321
+msgid "Ok"
+msgstr "Í lagi"
+
+#: id:12322
+msgid "*"
+msgstr "*"
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Læst! Sláðu inn kóða..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Sláðu inn lykilorð"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Sláðu inn aðal kóða"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Sláðu inn opnunar kóða"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "eða ýttu á C til að hætta við"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Ýttu á hnappa samsetningu og"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "ýttu á Start, eða Back til að hætta við"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Setja lás"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Taka úr lás"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Endurstilla læsingu"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Fjarlægja læsingu"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "Tölulegt lykilorð"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "Hnappa lykilorð"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "Texta lykilorð"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Sláðu inn nýtt lykilorð"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Sláðu aftur inn nýtt lykilorð"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Vitlaust Lykilorð,"
+
+#: id:12343
+msgid "retries left "
+msgstr "endurtekningar eftir "
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Lykilorð passa ekki."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Aðgangur ekki leyfður"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Fjöldi ágiskana á lykilorð er uppurinn."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Kerfið mun núna slökkva á sér."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Atriði læst"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Setja læsingu á"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Breyta læsingu"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Læsa Samnýtingu"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Lyklorð var tómt. Reyndu aftur."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Aðal læsing"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Slökkva á kerfi ef fjöldi lykilorðságiskana á lás fer yfir hámark"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Aðal kóði er ekki gildur"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Vinsamlega sláðu inn aðal kóða"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Stillingar og  skráarsýsl"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Setja sem sjálfgefið fyrir allar myndir"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Þetta mun endurstilla allar fyrri vistaðar stillingar"
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Sýna hverja mynd í"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Nota skotrun og þysjun"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12 klst klukka"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24 klst klukka"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "Dagur/Mánuður"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Mánuður/Dagur"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Uppitími Kerfis"
+
+#: id:12391
+msgid "Minutes"
+msgstr "Mínútur"
+
+#: id:12392
+msgid "Hours"
+msgstr "Klukkustundir"
+
+#: id:12393
+msgid "Days"
+msgstr "Dagar"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Heildar uppitími"
+
+#: id:12395
+msgid "Battery level"
+msgstr "Rafhlaða"
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Veður"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Skjávari"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Heilskjár OSD"
+
+#: id:13000
+msgid "System"
+msgstr "Kerfi"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Slökkva strax á disk"
+
+#: id:13002
+msgid "Video only"
+msgstr "Bara myndefni"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- Bið"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- Lágmarks tímalengd"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Slökkva"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Hætta aðgerð"
+
+#: id:13009
+msgid "Quit"
+msgstr "Hætta"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Dvali"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Svæfa"
+
+#: id:13012
+msgid "Exit"
+msgstr "Hætta"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Endurræsa"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Minnka"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Aðgerð straumrofa"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Slökkva á kerfi"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Er önnur lota virk, kannski yfir ssh?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Tengdur utanáliggjandi harður diskur"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Ótraust fjarlæging á tæki"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Tókst að fjarlægja tæki"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Stýripinni tengdur"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Stýripinni ótengdur"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Rafhlaða er alveg að tæmast"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Flökt sía"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "Láta rekil ráða (þarfnast endurræsingar)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Lóðrétt auð samstilling"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Virkt við afspilun"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Alltaf virkt"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Prufa og virkja upplausn"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Vista upplausn?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Viltu nota þessa upplausn?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Hágæða stækkun í hugbúnaði"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Virkjað fyrir SD efni"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Alltaf virkt"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Stækkunaraðferð"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:13118
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: id:13119
+msgid "Sinc"
+msgstr "Sinc"
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr "VDPAU HQ stækkunargildi"
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "VDPAU Studio litabreytingargildi"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Tæma aðra skjái"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Tómur skjár"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Uppgötvaði virkar tengingar!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Ef þú heldur áfram, er hætta á því að þú munir ekki getað"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "stjórnað XBMC áfram. Ertu viss um að þú viljir stöðva atriðaþjón?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Breyta ham Apple fjarstýringar?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Ef þú ert núna þegar að nota Apple fjarstýringu til að stjórna"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, gæti breyting á þessu haft áhrif á getu þína"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "til að halda áfram að stjórna því. Viltu halda áfram?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Undirnetssía"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Gátt"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "Aðal DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Frumstilling mistókst"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "Aldrei"
+
+#: id:13171
+msgid "Immediately"
+msgstr "Strax"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "Eftir %i sek"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Uppsetningardagur Harðdisks:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "Fjöldi skipta sem slökkt hefur verið á HDD:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Notendur"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Eyða notanda '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Seinasti notandi:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Óþekkt"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Yfirskrifa"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Vekjaraklukka"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Vekjaraklukku tími (í mínútum)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Í gangi, vakning eftir %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "Vakna!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Slökkt með %im%is eftir"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr "%2.0fm"
+
+#: id:13214
+msgid "%2.0fs"
+msgstr "%2.0fs"
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Leita að þýðingartextum í RAR skrám"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Leita eftir þýðingartexta..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Færa hlut"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Færa hlut hingað"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Hætta við að færa"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Vélbúnaður:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "CPU notkun:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Tengdur, en enginn DNS er til staðar."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Harður diskur"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Geymsla"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Sjálfgefið"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Netið"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Skjár"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Vélbúnaður"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Stýrikerfi:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "CPU hraði:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Skjáhraðall:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Skjáupplausn:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "Hljóð/Mynd tengi:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "DVD svæði:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Internet:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Tengdur"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Ekki tengdur. Athugaðu netstillingar."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Fastur hiti"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Viftuhraði"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Sjálfvikur hitastillir"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Fastur viftuhraði"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Leturgerðir"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Snúa margstefnu texta"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Sýna RSS fréttastrauma"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Sýna yfirmöpputákn"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Sniðmát lagaheita"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Viltu endurræsa vélina"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "í staðinn fyrir bara XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Aðdráttar áhrif"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Fljóta áhrif"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Minnka svartar rendur"
+
+#: id:13313
+msgid "Restart"
+msgstr "Endurræsa"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Renna saman lögum"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Endurgera smámyndir"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Endurkvæmar smámyndir"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Horfa á myndasýningu"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Endurkvæm myndasýning"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Handahófskennt"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Víðómur"
+
+#: id:13321
+msgid "Left only"
+msgstr "Bara vinstri"
+
+#: id:13322
+msgid "Right only"
+msgstr "Bara hægri"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Virkja karaoke stuðning"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Gegnsæi bakgrunns"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Gegnsæi forgrunns"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "Hljóð/Mynd seinkun"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Karaoke"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s fannst ekki"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Get ekki opnað %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Get ekki hlaðið inn %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Villa: Ekki nóg minni"
+
+#: id:13332
+msgid "Move up"
+msgstr "Færa upp"
+
+#: id:13333
+msgid "Move down"
+msgstr "Færa niður"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Breyta nafni"
+
+#: id:13335
+msgid "Make default"
+msgstr "Gera sjálfgefið"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Eyða takka"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Láta eiga sig"
+
+#: id:13341
+msgid "Green"
+msgstr "Grænn"
+
+#: id:13342
+msgid "Orange"
+msgstr "Appelsínugulur"
+
+#: id:13343
+msgid "Red"
+msgstr "Rauður"
+
+#: id:13344
+msgid "Cycle"
+msgstr "Hringrás"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Slökkva á LED við spilun"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Kvikmyndaupplýsingar"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Setja í biðröð"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Leita í IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Leita að nýju innihaldi"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Í spilun..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Hljómplötuupplýsingar"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Skanna hlut í safn"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Hætta skönnun"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Teikni hamur"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Lágæða punkta skygging"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Vélbúnaðar yfirlag"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Hágæða punkta skyggir"
+
+#: id:13358
+msgid "Play item"
+msgstr "Spila hlut"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Setja smámynd á listamann"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Búa til smámyndir"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Virkja rödd"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Virkja Tæki"
+
+#: id:13376
+msgid "Volume"
+msgstr "Hljóðstyrkur"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Sjálfgefinn sjónarhornsháttur"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Sjálfgefin birtuskil"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Sjálfgefin skerpuskil"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Sjálfgefið gamma"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Áfram með mynd"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Fela rödd - Tengi 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Fela rödd - Tengi 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Fela rödd - Tengi 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Fela rödd - Tengi 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Nota tíma leit"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Sniðmát lagaheita - hægri"
+
+#: id:13388
+msgid "Preset"
+msgstr "Forstilling"
+
+#: id:13389
+msgid ""
+"There are no presets available\n"
+"for this visualization"
+msgstr ""
+"Það eru ekki til neinar forstillingar\n"
+"fyrir þessa myndskreytingu"
+
+#: id:13390
+msgid ""
+"There are no settings available\n"
+"for this visualization"
+msgstr ""
+"Það eru ekki til neinar stillingar\n"
+"fyrir þessa myndskreytingu"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Disk út/inn"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Nota myndskreytingu við tónlist"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Reikna stærð"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Reikna möppu stærð"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Myndstillingar"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Hljóð og texta stillingar"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Virkja þýðingartexta"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Flýtileiðir"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Hunsa greinir þegar raðað er (t.d. \"the\")"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "Renna saman lögum á sömu hljómplötu"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Leita að %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Sýna staðsetningu í lögum"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Hreinsa sjálfgildi"
+
+#: id:13404
+msgid "Resume"
+msgstr "Halda áfram"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Ná í smámynd"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Myndupplýsingar"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s forstillingar"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(IMDb Stjörnugjöf notanda)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Topp 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Stilla inn á Last.fm"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Lágmarks viftuhraði"
+
+#: id:13412
+msgid "Play from here"
+msgstr "Spila hér"
+
+#: id:13413
+msgid "Downloading"
+msgstr "Niðurhala"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Fela tónlistarmenn sem birtast aðeins á safndiskum"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Teikni hamur"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Sjálfvirkt"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Grunn skygging (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Ítarleg skygging (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Hugbúnaður"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Fjarlægja á öruggan hátt"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr "VDPAU"
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Byrja myndasýningu hér"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Muna fyrir þessa slóð"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Nota punkta biðminni hluti"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Leyfa vélbúnaðarhröðun (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Leyfa vélbúnaðarhröðun (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Leyfa vélbúnaðarhröðun (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Leyfa vélbúnaðarhröðun (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Leyfa vélbúnaðarhröðun (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Leyfa vélbúnaðarhröðun (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Punktaskyggir"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "Leyfa vélbúnaðarhröðun (VideoToolbox)"
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V samstillingaraðferð"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "Hljóðklukka"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "Myndklukka (Sleppa/Afrita hljóð)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "Myndklukka (Endurblanda hljóð)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Hámark endurblöndunar (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Endurblöndunargæði"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Lágt(hratt)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Meðal"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Hátt"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Mjög hátt(hægvirkt!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Samstilla spilun við skjá"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Setja í bið þegar glæðningartíðni er breytt"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Af"
+
+#: id:13552
+msgid "%.1f Second"
+msgstr "%.1f Sekúnda"
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr "%.1f Sekúndur"
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Apple fjarstýring"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Leyfa að ræsa XBMC með fjarstýringunni"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Runu biðtími"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Óvirkt"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Venjulegt"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Altæk fjarstýring"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Fjölfjarstýring (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Villa í Apple fjarstýringu"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Ekki er hægt að virkja stuðning við Apple fjarstýringu."
+
+#: id:14000
+msgid "Stack"
+msgstr "Stafla"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Ekki stafla"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Hala niður spilunarlista..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Hala niður streymi lista..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Þátta streymi lista..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Niðurhölun streymilista mistókst"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Niðurhölun spilunarlista mistókst"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Leikja mappa"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Skipta sjálfvirkt á smámyndir ef"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Virkja sjálfvirka skiptingu á smámyndasýn"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- Nota stór tákn"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- Skipting notar"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- Prósentu"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Engar skrár og minnst ein smámynd"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Minnst ein skrá og smámynd"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Prósent smámynda"
+
+#: id:14018
+msgid "View options"
+msgstr "Stillingar sjónarhorns"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Breyta svæði 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Breyta svæði 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Breyta Svæði 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Safn"
+
+#: id:14023
+msgid "No TV"
+msgstr "Ekkert sjónvarp"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Sláðu inn nálæga stóra borg"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Myndefni/Hljóð/DVD flýtiminni - Harður diskur"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Myndefni flýtiminni - DVD-ROM"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- Staðarnet"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Hljóð flýtiminni - DVD-ROM"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- Staðarnet"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- Internet"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "DVD flýtiminni - DVD-ROM"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- Staðarnet"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Miðlarar"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Netstillingum breytt"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "XBMC þarf að endurræsa til að virkja"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "netstillingar.  Viltu endurræsa núna?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Bandvíddstakmarkanir á Internettengingu"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Slökkva í miðri spilun"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i mín"
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i sek"
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i ms"
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i kbps"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i kb"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Tímasnið"
+
+#: id:14052
+msgid "Date format"
+msgstr "Dagsetningarsnið"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "Viðmóts síur"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Nota bakgrunns skönnun"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Hætta skönnun"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Ekki hægt á meðan verið er að skanna"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Filmukorna áhrif"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Leita að smámyndum á fjartengdum geymslum"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Flýtiminni fyrir óþekkt efni - Internet"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Sjálfvirkt"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Sláðu inn notandanafn fyrir"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Dagsetning og tími"
+
+#: id:14064
+msgid "Set date"
+msgstr "Stilla dagsetningu"
+
+#: id:14065
+msgid "Set time"
+msgstr "Stilla tíma"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Sláðu inn dagsetningu á 24 tíma HH:MM sniði"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Sláðu inn dagsetningu á DD/MM/YYYY sniði"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Sláðu inn IP vistfang"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Viltu virkja þessar stillingar núna?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Virkja stillingar núna"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Leyfa að eyða skrám"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Velja tímabelti"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Nota sumartíma"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Bæta við í uppáhalds"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Fjarlægja úr uppáhalds"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Litir"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Tímabelti lands"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Tímabelti"
+
+#: id:14081
+msgid "File lists"
+msgstr "Skráarlistar"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Sýna EXIF myndaupplýsingar"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "Fylla skjáglugga frekar en að fylla skjá"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Setja lög á biðröð þegar valið er"
+
+#: id:14086
+msgid "Playback"
+msgstr "Spila"
+
+#: id:14087
+msgid "DVDs"
+msgstr "DVD"
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Spila DVD sjálfvirkt"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Leturgerð til að nota fyrir þýðingartexta"
+
+#: id:14090
+msgid "International"
+msgstr "Alþjóðlegt"
+
+#: id:14091
+msgid "Character set"
+msgstr "Stafasett"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Aflúsa"
+
+#: id:14093
+msgid "Security"
+msgstr "Öryggi"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Inntakstæki"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Orkusparnaður"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Fjarlægja"
+
+#: id:15016
+msgid "Games"
+msgstr "Leikir"
+
+#: id:15019
+msgid "Add"
+msgstr "Bæta við"
+
+#: id:15052
+msgid "Password"
+msgstr "Lykilorð"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Tónlistarsafn"
+
+#: id:15101
+msgid "Database"
+msgstr "Gagnagrunnur"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Allar hljómplötur"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Allir flytjendur"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Öll lög"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Allir flokkar"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Biðminni..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Leiðsagnarhljóð"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Sjálfgildi útlits"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Þema"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Sjálfgilt Þema"
+
+#: id:15200
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Senda lög á Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm notandanafn"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm lykilorð"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Get ekki tengst með handabandi: bíða..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Vinsamlegast uppfærðu XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Rangt auðkenni: Athugaðu notandanafn og lykilorð"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Tengdur"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Ekki tengdur"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Sendi Millibil %i"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "Skyndivistaði %i Lög"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Sendi..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Sendi eftir %i sek"
+
+#: id:15213
+msgid "Play using..."
+msgstr "Spila Með..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "Nota fína Hljóð/Mynd samstillingu"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Fela skráarnöfn í smámynda sjónarhorni"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Spila í partýham"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Senda lög á Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm notandanafn"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm lykilorð"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr "Libre.fm"
+
+#: id:15221
+msgid "Song submission"
+msgstr "Senda lög"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Senda Last.fm útvarp til Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Tengist við Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Vel stöð..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Leita að svipuðum listamönnum..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Leita að svipuðum tögum..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Þinn notandi (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Hæstu tegundir"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Hæstu tónlistarmenn fyrir tegundir %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Hæstu hljómplötur fyrir tegundir %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Hæstu lög fyrir tegundir %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Hlusta á merki %name% last.fm útvarp"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Áþekkir tónlistarmenn og %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Bestu %name% hljómlötur"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Bestu %name% lög"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Bestu %name% tegundir"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Mestu aðdáendur %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Hlusta á %name% aðdáendur Last.fm útvarp"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Hlusta á %name% samskonar tónlistarmenn Last.fm útvarp"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Bestu tónlistarmenn fyrir notanda %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Bestu hljómlpötur fyrir notanda %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Bestu lög fyrir notanda %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Vinir notanda %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Nágrannar notanda %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Vikulegur listamanna listi fyrir %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Vikulegur hljómplötu listi fyrir %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Vikulegur laga listi fyrir %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Hlusta á nágranna %name%' Last.fm útvarp"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Hlusta á einkalista %name%' Last.fm útvarp"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Hlusta á uppháhalds lög %name%'s Last.fm útvarp"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Næ í lista frá Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Get ekki náð í lista frá Last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Sláðu inn nafn listamanns til að finna tengda aðila"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Sláðu inn tegund til að finna tengdar tegundir"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Lög sem %name% hefur nýlega hlustað á"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Hlusta á það sem %name%'s mælir með á Last.fm"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Topp merki fyrir notanda %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Viltju setja núverandi lag í uppáhalds lögin?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Viltu banna núverandi lag?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Bætt við í uppáhaldslög: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Gat ekki bætt '%s' í uppáhaldslög."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Bannað: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Gat ekki bannað '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Nýleg uppáhaldslög %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Nýlega bönnuð af %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Fjarlægja úr uppáhaldslögum"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Leyfa"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Viltu fjarlægja þetta lag úr uppáhaldslista?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Viltu hætta við að banna þetta lag?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Slóð fannst ekki eða var röng"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Gat ekki tengst við miðil"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Engir miðlar fundust"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Vinnuhópur fannst ekki"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Opna fjölslóða bókamerki"
+
+#: id:15311
+msgid "Path:"
+msgstr "Slóð:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Almennt"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Internet uppfletting"
+
+#: id:16003
+msgid "Player"
+msgstr "Spilari"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Spila efni af disk"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Sláðu inn nýtt nafn"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Sláðu inn nafn kvikmyndar"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Sláðu inn nafn notanda"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Sláðu inn nafn hljómplötu"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Sláðu inn nafn spilunarlista"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Sláðu inn nýtt skráarnafn"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Sláðu inn nafn möppu"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Sláðu inn möppu"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Möguleikar: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Sláðu inn leitarstreng"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Ekkert"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Sjálfvirkt"
+
+#: id:16020
+msgid "De-interlace"
+msgstr "De-interlace"
+
+#: id:16021
+msgid "Bob"
+msgstr "Bob"
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr "Bob (Umsnúinn)"
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Hætti við..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Sláðu inn nafn listamanns"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Hætt við spilun spilunarlista"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Mistókst að spila einn eða fleiri hluti."
+
+#: id:16028
+msgid "Enter value"
+msgstr "Sláðu inn gildi"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Athugaðu kladdaskrá fyrir meiri upplýsingar."
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Hætt við partí ham."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Engin samsvarandi lög í lagasafni."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Gat ekki frumstillt gagnagrunn."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Gat ekki opnað gagnagrunn."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Gat ekki náð í lög frá gagnagrunni."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Partí spilunarlisti"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr "De-interlace (Hálft)"
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr "Deinterlace mynd"
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr "Deinterlace aðferð"
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr "Af"
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr "Sjálfvirkt"
+
+#: id:16041
+msgid "On"
+msgstr "Á"
+
+#: id:16100
+msgid "All Videos"
+msgstr "Allar Myndir"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Ekki búið að horfa á"
+
+#: id:16102
+msgid "Watched"
+msgstr "Búið að horfa"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Merkja sem búið að horfa á"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Merkja sem ekki búið að horfa á"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Breyta titli"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Hætt var við aðgerð"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Afritun mistókst"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Mistókst að afrita amk eina skrá"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Færsla mistókst"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Mistókst að færa amk eina skrá"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Eyðing mistókst"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Mistókst að eyða amk einni skrá"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Skjástækkunaraðferð"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Nearest neighbour"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Bilinear"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Bicubic"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr "Lanczos2"
+
+#: id:16305
+msgid "Lanczos3"
+msgstr "Lanczos3"
+
+#: id:16306
+msgid "Sinc8"
+msgstr "Sinc8"
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Bicubic (hugbúnaður)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (hugbúnaður)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (hugbúnaður)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "Temporal"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "Temporal/Spatial"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU)Suðhreinsun"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU)Skerpa"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Inverse Telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr "Lanczos3 optimized"
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Sjálfvirkt"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr "Temporal (Half)"
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr "Temporal/Spatial (Half)"
+
+#: id:16319
+msgid "DXVA"
+msgstr "DXVA"
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+#: id:16321
+msgid "DXVA Best"
+msgstr "DXVA Best"
+
+#: id:16322
+msgid "Spline36"
+msgstr "Spline36"
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr "Spline36 optimized"
+
+#: id:16324
+msgid "Software Blend"
+msgstr "Software Blend"
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Eftirvinnsla"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Sýna biðtíma"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Skipta yfir á rás"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Tónlistarmappa fyrir vistun"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Nota ytri DVD spilara"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Ytri DVD spilari"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Svindl mappa"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Skjámynda mappa"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Spilunarlista mappa"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Upptökur"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Skjámyndir"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Nota XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Lagalistar"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Myndbandalistar"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Viltu ræsa leikinn?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Raða eftir: Spilunarlista"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Fjarlæg smámynd"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Núverandi smámynd"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Nærliggjandi smámynd"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Engin smámynd"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Velja smámynd"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Stangast á"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Skanna nýtt"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Skanna allt"
+
+#: id:20026
+msgid "Region"
+msgstr "Svæði"
+
+#: id:20037
+msgid "Summary"
+msgstr "Samantekt"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Læsa tónlistar glugga"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Læsa myndbanda glugga"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Læsa ljósmynda glugga"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Læsa forrita, leikjavistunar og skriftu gluggum"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Læsa skráarsýsli"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Læsa stillingum"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Byrja upp á nýtt"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Fara í aðal ham"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Fara úr aðal ham"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Búa til notanda '%s' ?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Byrja með ferskar stillingar"
+
+#: id:20049
+msgid "Best available"
+msgstr "Besta fáanlega"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Skipta sjálfvirkt á milli 16x9 og 4x3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Meðhöndla staflaðar skrár sem eina skrá"
+
+#: id:20052
+msgid "Caution"
+msgstr "Varúð"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Fer úr aðal ham"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Fer í aðal ham"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Allmusic.com smámynd"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Fjarlægja smámynd"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Bæta við notanda..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Senda fyrirspurn fyrir allar hljómplötur"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Upplýsingar"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Aðskilja"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Geymslur með sjálfval"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Geymslur með sjálfval (aðeins lesa)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Afrita sjálfval"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Notandamynd"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Læsa kjörstillingum"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Breyta notanda"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Læsa notanda"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Gat ekki búið til möppu"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Notandamappa"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Byrja með hreinar uppsprettur"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Athugaðu að valinn mappa sé með skrifheimilidir"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "og nafn möppu sé löglegt"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "MPAA einkunnagjöf"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Sláðu inn lykilorð fyrir aðal ham"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Spyrja um aðal lykilorð við ræsingu"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Útlitsstillingar"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- enginn hlekkur stilltur -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Virkja hreyfimyndir"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Slökkva á RSS þegar spiluð er tónlist"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Virkja takka fyrir flýtileiðir"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Sýna forrit í aðalvalmynd"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Sýna tónlistarupplýsingar"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Sýna veðurupplýsingar"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Sýna kerfisupplýsingar"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Sýna laust diskpláss C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Sýna laust diskpláss E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Veður"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Laust diskpláss"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Sláðu inn nafn á samnýtingu"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Læsingar kóði"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Hlaða inn notanda"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Nafn notanda"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Uppsprettur"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Sláðu inn læsingarkóða fyrir notanda"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Innskráning"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Næ í plötuupplýsingar"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Næ í plötuupplýsingar"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Get ekki afritað geisladisk á meðan verið er að spila"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Aðal læsing og stillingar"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Að slá inn aðal lykilorð virkjar alltaf aðal ham"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "eða afrita frá sjálfvali?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Vista breytingar á notanda?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Fann gamlar stillingar."
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Viltu nota þær?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Fann gamlar uppsprettur."
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Aðskilja (læst)"
+
+#: id:20108
+msgid "Root"
+msgstr "Rót"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Stækkun"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP stillingar"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Sjálfvirk ræsing UPnP biðlara"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Seinasta innskráning: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Aldrei skráð sig inn"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Notandi %i / %i"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Skráning notanda / Veldu notanda"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Nota læsingu á skráningarskjá"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Rangur læsingarkóði."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Þetta þarfnast þess að aðal læsing sé virk."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Viltu setja hana núna?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Hleð inn upplýsingum um forrit"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Gleðskapur í gang!"
+
+#: id:20122
+msgid "True"
+msgstr "Satt"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Blanda drykki"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Fylli glös"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Innskráður sem"
+
+#: id:20126
+msgid "Log off"
+msgstr "Útskrá"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Fara á rót"
+
+#: id:20129
+msgid "Weave"
+msgstr "Þræða"
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr "Þræða (öfugt)"
+
+#: id:20131
+msgid "Blend"
+msgstr "Blanda"
+
+#: id:20132
+msgid "Restart video"
+msgstr "Endurræsa myndband"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Breyta net staðsetningu"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Fjarlægja net staðsetningu"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Viltu skanna möppuna?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Minniseining"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Minniseining sett upp"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Get ekki sett upp minniseiningu"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "Í gátt %i, rauf %i"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Læsa skjávara"
+
+#: id:20141
+msgid "Set"
+msgstr "Setja"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Notandanafn"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Sláðu inn lykilorð fyrir"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Tímastýring fyrir slökkvun"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Tímaslökkvari (í mínútum)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Ræsing, slökkt eftir %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Slekk eftir 30 mínútur"
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Slekk eftir 60 mínútur"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Slekk eftir 120 mínútur"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Sérsniðinn tímaslökkvari"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Hætta við slökkvun"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Læsa stillingum fyrir %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Fletta..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Grunnupplýsingar"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Geymsluupplýsingar"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Upplýsingar um harðan disk"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "DVD-ROM upplýsingar"
+
+#: id:20158
+msgid "Network information"
+msgstr "Netupplýsingar"
+
+#: id:20159
+msgid "Video information"
+msgstr "Skjáupplýsingar"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Vélbúnaðarupplýsingar"
+
+#: id:20161
+msgid "Total"
+msgstr "Samtals"
+
+#: id:20162
+msgid "Used"
+msgstr "Notað"
+
+#: id:20163
+msgid "of"
+msgstr "af"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Læsing ekki nothæf"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Ekki læst"
+
+#: id:20166
+msgid "Locked"
+msgstr "Læst"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Frosið"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Þarfnast endurstillingar"
+
+#: id:20169
+msgid "Week"
+msgstr "Vika"
+
+#: id:20170
+msgid "Line"
+msgstr "Lína"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Windows net (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "XBMSP miðlari"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "FTP miðlari"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "iTunes tónlistarmiðlari (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "UPnP miðlari"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Sýna skjáupplýsingar"
+
+#: id:20177
+msgid "Done"
+msgstr "Búið"
+
+#: id:20178
+msgid "Shift"
+msgstr "Shift"
+
+#: id:20179
+msgid "Caps Lock"
+msgstr "Hástafalás"
+
+#: id:20180
+msgid "Symbols"
+msgstr "Tákn"
+
+#: id:20181
+msgid "Backspace"
+msgstr "Hopa"
+
+#: id:20182
+msgid "Space"
+msgstr "Bil"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Endurhlaða útlit"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Snúa mynd með upplýsingum frá EXIF"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Nota veggspjaldasnið fyrir sjónvarpsþætti"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Bíddu Aðeins"
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Virkja sjálfvirkt skrun fyrir söguþráð og gagnrýni"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Sérsniðið"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Virkja kembi úttak"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Ná í viðbótar upplýsingar við uppfærslu"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Sjálfgefin þjónusta fyrir hljómplötuupplýsingar"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Sjálfgefin þjónusta fyrir tónlistarupplýsingar"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Breyta skrapara"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Flytja út tónlistarsafn"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Flytja inn tónlistarsafn"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Fann engan listamann!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Niðurhal á upplýsingum um listamann mistókst"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Partí! (tónlistarmyndbönd)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Blanda drykki (tónlistarmyndbönd)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Fylli glös (tónlistarmyndbönd)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV þjónn (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV þjónn (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Fyrsta innskráning, breyttu notandastillingum"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend biðlari"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev biðlari"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV biðlari"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr "Network Filesystem (NFS)"
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr "Secure Shell (SSH/SFTP)"
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Mappa vefþjóns (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Mappa vefþjóns (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Get ekki skrifað í möppu:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Viltu sleppa og halda áfram?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS straumur"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Auka DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "DHCP miðlari:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Búa til nýja möppu"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Deyfa LCD við spilun"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Óþekktur eða á borði (varinn)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Deyfa LCD við hlé"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Myndefni - Safn"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Raða eftir: Auðkenni"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Spila hlut..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Endurstilla tækjastillingu"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Þetta endurstillir tækjastillingu fyrir %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "á sín upprunalegu gildi."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Veldu staðsetningu"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Nota möppunafn til að leita eftir"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Skrá"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Nota möppu eða skráarnafn til að leita?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Velja innihald"
+
+#: id:20334
+msgid "Folder"
+msgstr "Mappa"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Leita að innihaldi í undirmöppum?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Aflæsa uppsprettum"
+
+#: id:20337
+msgid "Actor"
+msgstr "Leikari"
+
+#: id:20338
+msgid "Movie"
+msgstr "Kvikmynd"
+
+#: id:20339
+msgid "Director"
+msgstr "Leikstjóri"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Viltu fjarlægja öll atriði frá"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "þessari slóð úr gagnasafninu?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Kvikmyndir"
+
+#: id:20343
+msgid "TV shows"
+msgstr "Sjónvarpsþættir"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Þessi mappa inniheldur"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Leita sjálfvirkt"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Leita í undirmöppum"
+
+#: id:20347
+msgid "as"
+msgstr "sem"
+
+#: id:20348
+msgid "Directors"
+msgstr "Leikstjórar"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "Ekkert myndefni fannst á þessari slóð!"
+
+#: id:20350
+msgid "votes"
+msgstr "atkvæði"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Upplýsingar um sjónvarpsþáttaröð"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Upplýsingar um þátt"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Sæki upplýsingar um sjónvarpsþáttaröð"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Sæki upplýsingar um þátt"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Sæki upplýsingar um þætti í möppu"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Veldu sjónvarpsþáttaröð:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Sláðu inn nafn á sjónvarpsþáttaröðinni"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Þáttaröð %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Þáttur"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Þættir"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Sæki upplýsingar um þátt"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Fjarlægja þátt úr safni"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Fjarlægja sjónvarpsþátt úr safni"
+
+#: id:20364
+msgid "TV show"
+msgstr "Sjónvarpsþáttur"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Söguþráður þáttar"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Allar þáttaraðir"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Fela búið"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Framleiðslu kóði"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Fela söguþráð á því sem ekki er búið að horfa á"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Falið til að spilla ekki söguþræði *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr ""
+"Velja smámynd fyrir þáttaröð\n"
+""
+
+#: id:20372
+msgid "Season image"
+msgstr "Mynd þáttaraðar"
+
+#: id:20373
+msgid "Season"
+msgstr "Þáttaröð"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Sæki upplýsingar um myndefni"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Taka af innihald"
+
+#: id:20376
+msgid "Original title"
+msgstr "Upprunalegur titill"
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Uppfæra upplýsingar um sjónvarpsþátt"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Uppfæra upplýsingar um alla þætti?"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Mappa inniheldur einn sjónvarpsþátt"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Undanskilja möppu frá leit"
+
+#: id:20381
+msgid "Specials"
+msgstr "Sérþættir"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Ná sjálfkrafa í þáttaraðarsmámynd"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Mappa inniheldur eina myndskrá"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Tengja við sjónvarpsþáttaröð"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Fjarlægja tengingu við sjónvarpsþáttaröð"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Kvikmyndir, nýlega bætt við"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Þættir, nýlega bætt við"
+
+#: id:20388
+msgid "Studios"
+msgstr "Kvikmyndaver"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Tónlistarmyndbönd"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Tónlistarmyndbönd, nýlega bætt við"
+
+#: id:20391
+msgid "Music video"
+msgstr "Tónlistarmyndband"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Fjarlægja tónlistarmyndband úr safni"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Upplýsingar um tónlistarmyndband"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Hleð inn upplýsingum um tónlistarmyndband"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Blandaður"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Hoppa á hljómplötu eftir tónlistarmanni"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Hoppa til hljómplötu"
+
+#: id:20398
+msgid "Play song"
+msgstr "Spila lag"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Hoppa á tónlistarmyndbönd af hljómplötu"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Hoppa á tónlistarmyndbönd eftir tónlistarlistamanni"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Spila tónlistarmyndband"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Hlaða niður smámyndum fyrir leikara þegar bætt er við í safn"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Velja smámynd leikara"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Fjarlægja bókamerki þáttar"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Setja bókamerki þáttar"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Stillingar skrapara"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Sæki upplýsingar fyrir tónlistarmyndband"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Sæki upplýsingar fyrir sjónvarpsþáttaröð"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Sýnishorn"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Fletja"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Fletja út sjónvarpsþætti"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Ná í aðdáendamyndir"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Sýna aðdáendamyndir í tónlistar- og myndbandasafni"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Leita að nýju efni"
+
+#: id:20416
+msgid "First aired"
+msgstr "Sýnt fyrst"
+
+#: id:20417
+msgid "Writer"
+msgstr "Handritshöfundur"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr "Sýna lýsigögn í skráarsýn"
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Aldrei"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Bara ef ein þáttaröð"
+
+#: id:20422
+msgid "Always"
+msgstr "Alltaf"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Er með sýnishorn"
+
+#: id:20424
+msgid "False"
+msgstr "Ósatt"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Myndasýning aðdáendamynda"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Flytja út í eina skrá eða aðskildar"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "skrár fyrir hverja færslu?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Ein skrá"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Aðskilja"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Flytja út smámyndir og áðdáendamyndir?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Skrifa yfir eldri skrár?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Undanskilja slóð frá uppfærslu á safni"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Ná í smámyndir og myndbandaupplýsingar"
+
+#: id:20434
+msgid "Sets"
+msgstr "Sett"
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr "Velja smámynd fyrir kvikmyndasett"
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr "Flytja út leikaramyndir?"
+
+#: id:20437
+msgid "Choose fanart"
+msgstr "Velja aðdáendamyndir"
+
+#: id:20438
+msgid "Local fanart"
+msgstr "Staðbundnar aðdáendamyndir"
+
+#: id:20439
+msgid "No fanart"
+msgstr "Engar aðdáendamyndir"
+
+#: id:20440
+msgid "Current fanart"
+msgstr "Núverandi aðdáendamyndir"
+
+#: id:20441
+msgid "Remote fanart"
+msgstr "Fjarlægar aðdáendamyndir"
+
+#: id:20442
+msgid "Change content"
+msgstr "Breyta innihaldi"
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Viltu uppfæra upplýsingar fyrir allt"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "hlutir á þessari slóð?"
+
+#: id:20445
+msgid "Fanart"
+msgstr "Aðdáendamyndir"
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Fann staðbundnar upplýsingar."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Hunsa og endurnýja frá Internetinu?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Gat ekki niðurhalið upplýsingum"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Get ekki tengst við netþjón"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Viltu halda áfram að leita?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Lönd"
+
+#: id:20452
+msgid "episode"
+msgstr "þáttur"
+
+#: id:20453
+msgid "episodes"
+msgstr "þættir"
+
+#: id:20454
+msgid "Listener"
+msgstr "Hlustandi"
+
+#: id:20455
+msgid "Listeners"
+msgstr "Hlustendur"
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr "Velja aðdáendamynd fyrir kvikmyndasett"
+
+#: id:20457
+msgid "Movie set"
+msgstr "Kvikmyndasett"
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr "Hópa saman kvikmyndir í sett"
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Sýna faldar skrár og möppur"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "TuxBox biðlari"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "AÐVÖRUN: Valið TuxBox tæki er að taka upp!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Straumurinn mun verða stoppaður!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Skipting á rás: %s Tókst ekki!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Ertu viss um að þú viljir spila strauminn?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Tengist við: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "TuxBox tæki"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Bæta við samnýtingu..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Deila myndböndum og tónlist í gegnum UPnP"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Breyta samnýtingu"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Fjarlægja samnýtingu"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Sérsniðin mappa fyrir þýðingartexta"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Kvikmynda og auka mappa fyrir þýðingartexta"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr "Hunsa ASS/SSA skjátexta leturgerð"
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Virkja stuðning við mús og snertiskjá"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Leyfa leiðsagnarhljóð á meðan efni er spilað"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Smámynd"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Fastsetja svæði DVD spilara"
+
+#: id:21373
+msgid "Video output"
+msgstr "Myndbúnaður"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Sjónarhorn skjás"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Venjulegt"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Svartar rendur"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Breiðmynd"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Virkja 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Virkja 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Virkja 1080i"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Sláðu inn nafn á nýjum spilunarlista"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Sýna \"Bæta við uppsprettu\" takka í listum"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Virkja skrunrendur"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Virkja áhorfðar myndir sem takka í myndbandasafni"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Opna"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Hávaðastilling"
+
+#: id:21387
+msgid "Fast"
+msgstr "Hratt"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Hljóðlátt"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Virkja sérsniðinn bakgrunn"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Orku stig"
+
+#: id:21391
+msgid "High power"
+msgstr "Mikil orka"
+
+#: id:21392
+msgid "Low power"
+msgstr "Lítil orka"
+
+#: id:21393
+msgid "High standby"
+msgstr "Há biðstaða"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Lág biðstaða"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Get ekki haft stærri skrár en 4GB í flýtiminni"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Kafli"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Hágæða punkta skyggnir v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Virkja spilunarlista í ræsingu"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Nota skopp hreyfimyndir"
+
+#: id:21400
+msgid "contains"
+msgstr "inniheldur"
+
+#: id:21401
+msgid "does not contain"
+msgstr "inniheldur ekki"
+
+#: id:21402
+msgid "is"
+msgstr "er"
+
+#: id:21403
+msgid "is not"
+msgstr "er ekki"
+
+#: id:21404
+msgid "starts with"
+msgstr "byrjar á"
+
+#: id:21405
+msgid "ends with"
+msgstr "endar á"
+
+#: id:21406
+msgid "greater than"
+msgstr "er stærri en"
+
+#: id:21407
+msgid "less than"
+msgstr "er minni en"
+
+#: id:21408
+msgid "after"
+msgstr "eftir"
+
+#: id:21409
+msgid "before"
+msgstr "fyrir"
+
+#: id:21410
+msgid "in the last"
+msgstr "er í seinustu"
+
+#: id:21411
+msgid "not in the last"
+msgstr "er ekki í seinustu"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Sköfur"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Sjálfgefin kvikmyndaskafa"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Sjálfgefin sjónvarpsþáttaskafa"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Sjálfgefin tónlistarmyndbandaskafa"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Virkja varasköfu út frá tungumáli"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Stillingar"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Fjöltungumál"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr "Engar sköfur skilgreindar"
+
+#: id:21420
+msgid "Value to match"
+msgstr "Gildi til að para"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Snjöll spilunarlistaregla"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Para lög þar sem"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Ný regla..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Lög verða að passa"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "allar reglur"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "ein eða fleiri regla"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Takmarka við"
+
+#: id:21428
+msgid "No limit"
+msgstr "Engin takmörk"
+
+#: id:21429
+msgid "Order by"
+msgstr "Raða eftir"
+
+#: id:21430
+msgid "ascending"
+msgstr "hækkandi"
+
+#: id:21431
+msgid "descending"
+msgstr "lækkandi"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Breyta snjöllum spilunarlista"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Nafn spilunarlista"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Finna hluti sem"
+
+#: id:21435
+msgid "Edit"
+msgstr "Breyta"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i hlutir"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Nýr snjall spilunarlisti..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "%c Drif"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Breyta reglum fyrir partí ham"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Heimamappa"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Fjöldi áhorfa"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Titill þáttar"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Myndbanda upplausn"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Hljóðrásir"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Myndkótari"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Hljóðkótari"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Tungumál hljóðefnis"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Tungumál þýðingartexta"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Fjarstýring sendir lyklaborðsáslætti"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- Breyta"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Internet tenging er nauðsynleg."
+
+#: id:21452
+msgid "Get More..."
+msgstr "Ná í meira..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Rótarskráarkerfið"
+
+#: id:21454
+msgid "Cache full"
+msgstr "Skyndiminni fullt"
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+"Skyndiminni fylltist áður en tókst að ná í nauðsynlegt magn fyrir "
+"áframhaldandi spilun"
+
+#: id:21460
+msgid "Subtitle location"
+msgstr "Staðsetning þýðingartexta"
+
+#: id:21461
+msgid "Fixed"
+msgstr "Fastur"
+
+#: id:21462
+msgid "Bottom of video"
+msgstr "Neðst á mynd"
+
+#: id:21463
+msgid "Below video"
+msgstr "Fyrir neðan mynd"
+
+#: id:21464
+msgid "Top of video"
+msgstr "Efst á mynd"
+
+#: id:21465
+msgid "Above video"
+msgstr "Fyrir ofan mynd"
+
+#: id:21800
+msgid "File name"
+msgstr "Skráarnafn"
+
+#: id:21801
+msgid "File path"
+msgstr "Skáarslóð"
+
+#: id:21802
+msgid "File size"
+msgstr "Skráarstærð"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Skráardagsetning"
+
+#: id:21804
+msgid "Slide index"
+msgstr "Númer skyggnu"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Upplausn"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Athugasemd"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Litur/S&H"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "JPEG ferli"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Dagsetning/Tími"
+
+#: id:21821
+msgid "Description"
+msgstr "Lýsing"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Nafn myndavélar"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Tegund myndavélar"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF upplýsingar"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Fastbúnaður"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Ljósop"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Linsustærð"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Fókusfjarlægð"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Lýsingarmagn"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Lýsingartími"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Bjagi lýsingarmagns"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Lýsingarmagns hamur"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Flass notað"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Hvítvægi"
+
+#: id:21835
+msgid "Light source"
+msgstr "Ljósgjafi"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Mælishamur"
+
+#: id:21837
+msgid "ISO"
+msgstr "ISO"
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Stafrænt zoom"
+
+#: id:21839
+msgid "CCD width"
+msgstr "CCD breidd"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS breiddargráða"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS lengdarbaugur"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS hæð"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Stefna"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Viðbótar flokkar"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Lykilorð"
+
+#: id:21862
+msgid "Caption"
+msgstr "Heiti"
+
+#: id:21863
+msgid "Author"
+msgstr "Höfundur"
+
+#: id:21864
+msgid "Headline"
+msgstr "Titill"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Sérstök fyrirmæli"
+
+#: id:21866
+msgid "Category"
+msgstr "Flokkur"
+
+#: id:21867
+msgid "Byline"
+msgstr "Grein"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Titill greinar"
+
+#: id:21869
+msgid "Credit"
+msgstr "Þakkir"
+
+#: id:21870
+msgid "Source"
+msgstr "Uppruni"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Höfundarréttur"
+
+#: id:21872
+msgid "Object name"
+msgstr "Nafn hlutar"
+
+#: id:21873
+msgid "City"
+msgstr "Borg"
+
+#: id:21874
+msgid "State"
+msgstr "Ríki"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Land"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr "Upprunaleg Tx tilvísun"
+
+#: id:21877
+msgid "Date created"
+msgstr "Búinn til"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Höfundarréttarmerki"
+
+#: id:21879
+msgid "Country code"
+msgstr "Landsnúmer"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Tilvísunar þjónusta"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Leyfa stjórnun á XBMC með UPnP"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Reyna að sleppa kynningarefni á undan DVD valmynd"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Afritaðir tónlistardiskar"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Leita að upplýsingum fyrir alla tónlistarmenn"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Hleð niður upplýsingum um hljómplötu"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Hleð niður upplýsingum um listamann"
+
+#: id:21887
+msgid "Biography"
+msgstr "Æviágrip"
+
+#: id:21888
+msgid "Discography"
+msgstr "Safnplata"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Leita að tónlistarmönnum"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Veldu tónlistarmann"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Upplýsingar um flytjanda"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Hljóðfæri"
+
+#: id:21893
+msgid "Born"
+msgstr "Fæddur"
+
+#: id:21894
+msgid "Formed"
+msgstr "Varð til"
+
+#: id:21895
+msgid "Themes"
+msgstr "Þema"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Hætti"
+
+#: id:21897
+msgid "Died"
+msgstr "Dó"
+
+#: id:21898
+msgid "Years active"
+msgstr "Fjöldi ára virkur"
+
+#: id:21899
+msgid "Label"
+msgstr "Útgefandi"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Fæddur/varð til"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Uppfæra safn við ræsingu"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Uppfæra alltaf safn í bakgrunni"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS viðskeyti"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Seinkað: %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Á undan: %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Færsla þýðingartexta"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "OpenGL framleiðandi:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "OpenGL teiknari:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "OpenGL útgáfa:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "GPU hiti:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "CPU hiti:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Heildarminni"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Notandagögn"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Dekkja þegar myndband er sett í bið"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Allar upptökur"
+
+#: id:22016
+msgid "By title"
+msgstr "Eftir titli"
+
+#: id:22017
+msgid "By group"
+msgstr "Eftir hópi"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Beinar rásir"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Upptökur eftir titli"
+
+#: id:22020
+msgid "Guide"
+msgstr "Leiðsagnarsíða"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Leyfð skekkja í hlutfalli til að minnka svartar súlur"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Taka myndbandaskrár með í lista"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "DirectX framleiðandi:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Direct3D útgáfa:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Leturgerð"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Stærð"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Litir"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Stafasett"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Flytja út karaoke titla sem HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Flytja út karaoke titla sem CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Flytja inn karaoke titla..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Sækja lagavalslista sjálfvirkt"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Flytja út karaoke titla..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Sláðu inn númer lags"
+
+#: id:22040
+msgid "white/green"
+msgstr "hvítt/grænt"
+
+#: id:22041
+msgid "white/red"
+msgstr "hvítt/rautt"
+
+#: id:22042
+msgid "white/blue"
+msgstr "hvítt/blátt"
+
+#: id:22043
+msgid "black/white"
+msgstr "svart/hvítt"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Sjálfgefin valaðgerð"
+
+#: id:22080
+msgid "Choose"
+msgstr "Veldu"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Sýna upplýsingar"
+
+#: id:22082
+msgid "More..."
+msgstr "Meira..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Spila allt"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Textavarp ekki tiltækt"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Virkja textavarp"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Partur %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "Hleð inn %i bætum"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Stöðva"
+
+#: id:23054
+msgid "Running"
+msgstr "Keyrir"
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Ytri spilari virkur"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Smelltu á Í lagi til að hætta í spilara"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Smelltu á Í lagi þegar spilun er lokið"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Viðbót"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Viðbætur"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Viðbótarstillingar"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Viðbótarupplýsingar"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Tengiforrit"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Kvikmyndaupplýsingar"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Skjávari"
+
+#: id:24009
+msgid "Script"
+msgstr "Skrifta"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr "Myndskreyting"
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Viðbótarsafn"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Þýðingartextar"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Lagatextar"
+
+#: id:24014
+msgid "TV information"
+msgstr "Sjónvarpsupplýsingar"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "Upplýsingar um tónlistarmyndband"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Hljómplötuupplýsingar"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Upplýsingar um flytjanda"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr "Þjónustur"
+
+#: id:24020
+msgid "Configure"
+msgstr "Stilla viðbætur"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Gera viðbót óvirka"
+
+#: id:24022
+msgid "Enable"
+msgstr "Virkja viðbót"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Viðbót óvirk"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Veðurþjónusta"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (sjálfgefið)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Ekki er hægt að stilla þessa viðbót"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Villa við að hlaða inn stillingum"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Allar viðbætur"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Sækja viðbætur"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Leita að uppfærslum"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Þvinga endurnýjun"
+
+#: id:24036
+msgid "Change log"
+msgstr "Breytingaskrá"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Taka út"
+
+#: id:24038
+msgid "Install"
+msgstr "Setja inn"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Óvirkar viðbætur"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Hreinsa núverandi stillingu)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Setja inn frá zip skrá"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Niðurhaa %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Fáanlegar uppfærslur"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr "Kröfur voru ekki uppfylltar"
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr "Viðbót er ekki rétt uppsett"
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr "%s er notað af eftirfarandi viðbótum"
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr "Ekki er hægt að taka þessa viðbót út"
+
+#: id:24048
+msgid "Rollback"
+msgstr "Niðurfæra útgáfu"
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Tiltækar viðbætur"
+
+#: id:24051
+msgid "Version:"
+msgstr "Útgáfa:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr "Skilmálar"
+
+#: id:24053
+msgid "License:"
+msgstr "Notkunarskilmálar:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Breytingaskrá"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Viltu setja inn þessa viðbót?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Viltu gera þessa viðbót óvirka?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Til er uppfærsla fyrir viðbót!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Virkar viðbætur"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Sjálfvirk uppfærsla"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Viðbót virkjuð"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Viðbót uppfærð"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Hætta við að niðurhala viðbót?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Er að niðurhala viðbótum"
+
+#: id:24068
+msgid "Update available"
+msgstr "Fann uppfærslu"
+
+#: id:24069
+msgid "Update"
+msgstr "Uppfæra"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Ekki tókst að hlaða inn viðbót."
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Óþekkt villa kom upp."
+
+#: id:24072
+msgid "Settings required"
+msgstr "Nauðsynlegt er að setja stillingar"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Gat ekki tengst"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Þarfnast endurræsingar"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Gera óvirkt"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr "Þarfnast viðbótar"
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Reyna að tengjast aftur?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr "Endurræsingar viðbóta"
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Læsa viðbótarstjóra"
+
+#: id:24094
+msgid "(current)"
+msgstr "(núna)"
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr "(á bannlista)"
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Viðbót hefur verið merkt sem biluð í safni."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Viltu slökkva á henni á þínu kerfi?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Biluð"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr "Viltu skipta yfir á þetta útlit?"
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr "Til að nota þetta þarftu að hala niður viðbót:"
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr "Viltu hala niður þessari viðbót?"
+
+#: id:25000
+msgid "Notifications"
+msgstr "Tilkynningar"
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Safnhamur"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "QWERTY Lyklaborð"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr "Gegnumúttakshljóð í notkun"
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Gæði kvikmyndasýnishorns"
+
+#: id:33002
+msgid "Stream"
+msgstr "Straumur"
+
+#: id:33003
+msgid "Download"
+msgstr "Hala niður"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Niðurhala og spila"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Niðurhala og vista"
+
+#: id:33006
+msgid "Today"
+msgstr "Í dag"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Á morgun"
+
+#: id:33008
+msgid "Saving"
+msgstr "Vista"
+
+#: id:33009
+msgid "Copying"
+msgstr "Afritun"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Velja niðurhalsmöppu"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Leitarlengd"
+
+#: id:33012
+msgid "Short"
+msgstr "Stutt"
+
+#: id:33013
+msgid "Long"
+msgstr "Langt"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr "Nota DVD spilara í staðinn fyrir venjulegan spilara"
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Spyrja um niðurhal áður en myndband er spilað"
+
+#: id:33016
+msgid "Clips"
+msgstr "Úrklippur"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Endurræstu viðbót til að gera virkt"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Í kvöld"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Aðra nótt"
+
+#: id:33020
+msgid "Condition"
+msgstr "Staða"
+
+#: id:33021
+msgid "Precipitation"
+msgstr "Úrkoma"
+
+#: id:33022
+msgid "Precip"
+msgstr "Úrkoma"
+
+#: id:33023
+msgid "Humid"
+msgstr "Raki"
+
+#: id:33024
+msgid "Feels"
+msgstr "Skynjast sem"
+
+#: id:33025
+msgid "Observed"
+msgstr "Sést sem"
+
+#: id:33026
+msgid "Departure from normal"
+msgstr "Frávík frá venjulegu"
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Sólarupprás"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Sólsetur"
+
+#: id:33029
+msgid "Details"
+msgstr "Nánar"
+
+#: id:33030
+msgid "Outlook"
+msgstr "Veðurspá"
+
+#: id:33031
+msgid "Coverflow"
+msgstr "Plötuumslag"
+
+#: id:33032
+msgid "Translate text"
+msgstr "Þýða texta"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr "Stilla lista %s flokk"
+
+#: id:33034
+msgid "36 Hour"
+msgstr "36 klukkustundir"
+
+#: id:33035
+msgid "Maps"
+msgstr "Kort"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Klukkustunda fresti"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Helgi"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s dagur"
+
+#: id:33049
+msgid "Alert"
+msgstr "Aðvörun"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Viðvaranir"
+
+#: id:33051
+msgid "Choose Your"
+msgstr "Veldu þinn"
+
+#: id:33052
+msgid "Check"
+msgstr "Haka"
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Stilltu"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Árstíðir"
+
+#: id:33055
+msgid "Use your"
+msgstr "Notaðu"
+
+#: id:33056
+msgid "Watch your"
+msgstr "Fylgstu með"
+
+#: id:33057
+msgid "Listen to"
+msgstr "Hlusta á"
+
+#: id:33058
+msgid "View your"
+msgstr "Skoðaðu"
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Stilltu"
+
+#: id:33060
+msgid "Power"
+msgstr "Orku"
+
+#: id:33061
+msgid "Menu"
+msgstr "Valmynd"
+
+#: id:33062
+msgid "Play the"
+msgstr "Spilaðu"
+
+#: id:33063
+msgid "Options"
+msgstr "Valkostir"
+
+#: id:33065
+msgid "Editor"
+msgstr "Ritill"
+
+#: id:33066
+msgid "About your"
+msgstr "Um"
+
+#: id:33067
+msgid "Star rating"
+msgstr "Stjörnugjöf"
+
+#: id:33068
+msgid "Background"
+msgstr "Bakgrunnur"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Bakgrunnar"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Sérsniðinn bakgrunnur"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Sérsniðinn bakgrunnar"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Skoða upplýsingaskrá"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Skoða breytingaannál"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Þessi útgáfa af %s þarfnast"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC útgáfu %s eða hærri til að keyra."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Vinsamlega uppfærðu XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Engin gögn fundust!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Næsta síða"
+
+#: id:33079
+msgid "Love"
+msgstr "Elska"
+
+#: id:33080
+msgid "Hate"
+msgstr "Hatur"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+"Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá."
+
+#: id:33082
+msgid "Path to script"
+msgstr "Slóð á skriftu"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Virkja takka fyrir sérsniðna skriftu"
+
+#: id:33100
+msgid "Failed to start"
+msgstr "Tókst ekki að ræsa"
+
+#: id:33101
+msgid "Webserver"
+msgstr "Vefþjónn"
+
+#: id:33102
+msgid "Event Server"
+msgstr "Atburðaþjónn"
+
+#: id:33103
+msgid "Remote communication server"
+msgstr "Fjartengdur samskiptaþjónn"
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr "Uppgötvaði nýja tengingu"
+
+#: id:34000
+msgid "Lame"
+msgstr "Lame"
+
+#: id:34001
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: id:34002
+msgid "Wav"
+msgstr "Wav"
+
+#: id:34003
+msgid "DXVA2"
+msgstr "DXVA2"
+
+#: id:34004
+msgid "VAAPI"
+msgstr "VAAPI"
+
+#: id:34005
+msgid "Flac"
+msgstr "Flac"
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Stillingar hátalara"
+
+#: id:34101
+msgid "2.0"
+msgstr "2.0"
+
+#: id:34102
+msgid "2.1"
+msgstr "2.1"
+
+#: id:34103
+msgid "3.0"
+msgstr "3.0"
+
+#: id:34104
+msgid "3.1"
+msgstr "3.1"
+
+#: id:34105
+msgid "4.0"
+msgstr "4.0"
+
+#: id:34106
+msgid "4.1"
+msgstr "4.1"
+
+#: id:34107
+msgid "5.0"
+msgstr "5.0"
+
+#: id:34108
+msgid "5.1"
+msgstr "5.1"
+
+#: id:34109
+msgid "7.0"
+msgstr "7.0"
+
+#: id:34110
+msgid "7.1"
+msgstr "7.1"
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr "Finn ekki næsta hlut til að spila"
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr "Finn ekki fyrri hlut til að spila"
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr "Gat ekki ræst zeroconf"
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+"Er Apple Bonjour þjónusta uppsett? Athugaðu atburðaskrá fyrir meiri "
+"upplýsingar."
+
+#: id:34400
+msgid "Video Rendering"
+msgstr "Skjábirting"
+
+#: id:34401
+msgid ""
+"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+"Gat ekki frumstillt skjá síur/kvarða, fer til baka í tvílínulega kvörðun"
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr "Gat ekki frumstillt hljóðkerfi"
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr "Athugaðu hljóðstillingar"
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr "Tæki"
+
+#: id:35001
+msgid "Generic HID device"
+msgstr "Almennt HID tæki"
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr "Almennt netkort"
+
+#: id:35003
+msgid "Generic disk"
+msgstr "Almennur diskur"
+
+#: id:35004
+msgid ""
+"There are no settings available\n"
+"for this peripheral."
+msgstr ""
+"Engar stillingar eru tiltækar\n"
+"fyrir þetta tæki."
+
+#: id:35005
+msgid "New device configured"
+msgstr "Nýtt tæki skilgreint"
+
+#: id:35006
+msgid "Device removed"
+msgstr "Tæki fjarlægt"
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr "Lyklavörpun sem á að nota fyrir þetta tæki"
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr "Lyklavörpun virk"
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr "Staðsetning"
+
+#: id:35501
+msgid "Class"
+msgstr "Klasi"
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr "Nafn"
+
+#: id:35503
+msgid "Vendor"
+msgstr "Söluaðili"
+
+#: id:35504
+msgid "Product ID"
+msgstr "Auðkenni vöru"
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr "Pulse-Eight CEC tengispjald"
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr "Pulse-Eight Nyxboard"
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr "Skipta yfir í hliðar lyklaborð"
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr "Skipta yfir í hliðar fjarstýringu"
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr "Ýttu á \"user\" hnapp"
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr "Virkja að skipta á milli hliðarskipana"
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr "Gat ekki opnað tengispjald"
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr "Kveikja á sjónvarpinu þegar XBMC er ræst"
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr "Slökkva á tækjum þegar slökkt er á XBMC"
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr "Setja tæki í biðstöðu þegar skjávari er virkur"
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr "Fann ekki CEC gátt. Settu það upp handvirkt."
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr "Fann ekki CEC tengispjald."
+
+#: id:36013
+msgid ""
+"Unsupported libCEC interface version. %d is greater than the version XBMC "
+"supports (%d)"
+msgstr ""
+"Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður"
+" (%d)"
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr "Setja tölvuna í biðstöðu þegar slökkt er á sjónvarpinu"
+
+#: id:36015
+msgid "HDMI port number"
+msgstr "HDMI gátt"
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr "Tengdur"
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr "Fann tengispjald, en libcec er ekki tiltækt"
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr "Nota tungumál sjónvarps"
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
