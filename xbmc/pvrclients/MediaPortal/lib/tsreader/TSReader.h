@@ -16,7 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef TSREADER
 
 #include "client.h"
 #include "FileReader.h"
@@ -42,6 +41,9 @@ public:
   long Open(const char* pszFileName);
   long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes);
   void Close();
+  unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
+  int64_t GetFileSize();
+  int64_t GetFilePointer();
   bool OnZap(const char* pszFileName, int64_t timeShiftBufferPos, long timeshiftBufferID);
 
   /**
@@ -55,6 +57,11 @@ public:
    * \param the new search directory
    */
   void SetDirectory( string& directory );
+  bool IsTimeShifting();
+  bool IsSeeking();
+  long Pause();
+
+  TsReaderState State() {return m_State;};
 
 private:
 
@@ -79,5 +86,5 @@ private:
   string          m_basePath;         ///< The base path shared by all timeshift buffers (to be determined from the Card settings)
   TsReaderState   m_State;            ///< The current state of the TsReader
   unsigned long   m_lastPause;        ///< Last time instance at which the playback was paused
+  int             m_WaitForSeekToEof;
 };
-#endif //TSREADER

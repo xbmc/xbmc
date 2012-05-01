@@ -43,6 +43,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_bChanged(!bLoadedFromDb),
     m_bTagsChanged(false),
     m_bLoaded(false),
+    m_bUpdatePending(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
@@ -55,6 +56,7 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
     m_bTagsChanged(false),
     m_bLoaded(false),
+    m_bUpdatePending(false),
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
@@ -67,6 +69,7 @@ CEpg::CEpg(void) :
     m_bChanged(false),
     m_bTagsChanged(false),
     m_bLoaded(false),
+    m_bUpdatePending(false),
     m_iEpgID(0),
     m_strName(StringUtils::EmptyString),
     m_strScraperName(StringUtils::EmptyString),
@@ -85,6 +88,7 @@ CEpg &CEpg::operator =(const CEpg &right)
   m_bChanged          = right.m_bChanged;
   m_bTagsChanged      = right.m_bTagsChanged;
   m_bLoaded           = right.m_bLoaded;
+  m_bUpdatePending    = right.m_bUpdatePending;
   m_iEpgID            = right.m_iEpgID;
   m_strName           = right.m_strName;
   m_strScraperName    = right.m_strScraperName;
@@ -122,6 +126,22 @@ void CEpg::SetScraperName(const CStdString &strScraperName)
     m_bChanged = true;
     m_strScraperName = strScraperName;
   }
+}
+
+void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
+{
+  {
+    CSingleLock lock(m_critSection);
+    m_bUpdatePending = bUpdatePending;
+  }
+
+  if (bUpdatePending)
+    g_EpgContainer.SetHasPendingUpdates(true);
+}
+
+void CEpg::ForceUpdate(void)
+{
+  SetUpdatePending();
 }
 
 bool CEpg::HasValidEntries(void) const
@@ -474,7 +494,7 @@ CDateTime CEpg::GetLastScanTime(void)
   return m_lastScanTime;
 }
 
-bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
+bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bForceUpdate /* = false */)
 {
   bool bGrabSuccess(true);
   bool bUpdate(false);
@@ -490,12 +510,17 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
   /* get the last update time from the database */
   CDateTime lastScanTime = GetLastScanTime();
 
-  /* check if we have to update */
-  time_t iNow = 0;
-  time_t iLastUpdate = 0;
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-  lastScanTime.GetAsTime(iLastUpdate);
-  bUpdate = (iNow > iLastUpdate + iUpdateTime);
+  if (!bForceUpdate)
+  {
+    /* check if we have to update */
+    time_t iNow = 0;
+    time_t iLastUpdate = 0;
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+    lastScanTime.GetAsTime(iLastUpdate);
+    bUpdate = (iNow > iLastUpdate + iUpdateTime);
+  }
+  else
+    bUpdate = true;
 
   if (bUpdate)
     bGrabSuccess = LoadFromClients(start, end);
@@ -510,6 +535,9 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
   }
   else
     CLog::Log(LOGERROR, "EPG - %s - failed to update table '%s'", __FUNCTION__, Name().c_str());
+
+  CSingleLock lock(m_critSection);
+  m_bUpdatePending = false;
 
   return bGrabSuccess;
 }
@@ -644,6 +672,13 @@ bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
   {
     m_iPVRChannelId     = epg.m_iPVRChannelId;
     m_iPVRChannelNumber = epg.m_iPVRChannelNumber;
+
+    /* Copy the new channel information to all child tags */
+    for (map<CDateTime, CEpgInfoTag *>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
+    {
+      it->second->SetPVRChannelID(m_iPVRChannelId);
+      it->second->SetPVRChannelNumber(m_iPVRChannelNumber);
+    }
   }
 
   if (bUpdateDb)
@@ -958,4 +993,10 @@ bool CEpg::HasPVRChannel(void) const
 {
   CSingleLock lock(m_critSection);
   return m_iPVRChannelId != -1;
+}
+
+bool CEpg::UpdatePending(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bUpdatePending;
 }

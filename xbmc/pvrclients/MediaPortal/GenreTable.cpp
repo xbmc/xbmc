@@ -19,32 +19,29 @@
 
 #include "client.h"
 #include "GenreTable.h"
-#include "lib/tinyxml/tinyxml.h"
+#include "lib/tinyxml2/tinyxml2.h"
 
 using namespace ADDON;
 using namespace std;
 
 bool CGenreTable::LoadGenreXML(const std::string &filename)
 {
-  TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(filename))
+  tinyxml2::XMLDocument xmlDoc;
+  if (tinyxml2::XML_NO_ERROR != xmlDoc.LoadFile(filename.c_str()))
   {
-    XBMC->Log(LOG_DEBUG, "Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    XBMC->Log(LOG_DEBUG, "Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.GetErrorStr1(), xmlDoc.GetErrorStr2());
     return false;
   }
 
   XBMC->Log(LOG_DEBUG, "Opened %s to read genre string to type/subtype translation table", filename.c_str());
 
-  TiXmlHandle hDoc(&xmlDoc);
-  TiXmlElement* pElem;
-  TiXmlHandle hRoot(0);
-  string sGenre;
+  tinyxml2::XMLElement* pElem;
   const char* sGenreType = NULL;
   const char* sGenreSubType = NULL;
   genre_t genre;
 
   // block: genrestrings
-  pElem = hDoc.FirstChildElement("genrestrings").Element();
+  pElem = xmlDoc.FirstChildElement("genrestrings");
   // should always have a valid root but handle gracefully if it does
   if (!pElem)
   {
@@ -52,14 +49,8 @@ bool CGenreTable::LoadGenreXML(const std::string &filename)
     return false;
   }
 
-  //This should hold: pElem->Value() == "genrestrings"
-
-  // save this for later
-  hRoot=TiXmlHandle(pElem);
-
   // iterate through all genre elements
-  TiXmlElement* pGenreNode = hRoot.FirstChildElement("genre").Element();
-  //This should hold: pGenreNode->Value() == "genre"
+  tinyxml2::XMLElement* pGenreNode = pElem->FirstChildElement("genre");
 
   if (!pGenreNode)
   {

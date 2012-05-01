@@ -54,6 +54,7 @@ CEpgContainer::CEpgContainer(void) :
   m_bPreventUpdates = false;
   m_updateEvent.Reset();
   m_bLoaded = false;
+  m_bHasPendingUpdates = false;
 
   m_database.Open();
 }
@@ -201,6 +202,7 @@ void CEpgContainer::Process(void)
   time_t iNow       = 0;
 
   bool bUpdateEpg(true);
+  bool bHasPendingUpdates(false);
 
   if (!m_bLoaded)
   {
@@ -224,6 +226,18 @@ void CEpgContainer::Process(void)
     /* clean up old entries */
     if (!m_bStop && iNow >= m_iLastEpgCleanup)
       RemoveOldEntries();
+
+    /* check for pending manual EPG updates */
+    if (!m_bStop)
+    {
+      {
+        CSingleLock lock(m_critSection);
+        bHasPendingUpdates = m_bHasPendingUpdates;
+      }
+
+      if (bHasPendingUpdates)
+        UpdateEPG(true);
+    }
 
     /* check for updated active tag */
     if (!m_bStop)
@@ -414,7 +428,7 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
   m_updateEvent.Wait();
 }
 
-bool CEpgContainer::UpdateEPG()
+bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 {
   bool bInterrupted(false);
   unsigned int iUpdatedTables(0);
@@ -435,7 +449,7 @@ bool CEpgContainer::UpdateEPG()
     m_bIsUpdating = true;
   }
 
-  if (bShowProgress)
+  if (bShowProgress && !bOnlyPending)
     ShowProgressDialog();
 
   /* open the database */
@@ -460,10 +474,10 @@ bool CEpgContainer::UpdateEPG()
     if (!epg)
       continue;
 
-    if (bShowProgress)
+    if (bShowProgress && !bOnlyPending)
           UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
 
-    if (epg->Update(start, end, m_iUpdateTime))
+    if ((!bOnlyPending || epg->UpdatePending()) && epg->Update(start, end, m_iUpdateTime, bOnlyPending))
       ++iUpdatedTables;
   }
 
@@ -480,10 +494,11 @@ bool CEpgContainer::UpdateEPG()
     {
       CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
       m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
+      m_bHasPendingUpdates = false;
     }
   }
 
-  if (bShowProgress)
+  if (bShowProgress && !bOnlyPending)
     CloseProgressDialog();
 
   /* notify observers */
@@ -600,4 +615,10 @@ bool CEpgContainer::IsInitialising(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bIsInitialising;
+}
+
+void CEpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */)
+{
+  CSingleLock lock(m_critSection);
+  m_bHasPendingUpdates = bHasPendingUpdates;
 }

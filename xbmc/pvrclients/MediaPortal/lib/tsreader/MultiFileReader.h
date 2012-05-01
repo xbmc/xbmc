@@ -27,8 +27,6 @@
  *    http://forums.dvbowners.com/
  */
 
-#if defined TARGET_WINDOWS && defined TSREADER
-
 #include "FileReader.h"
 #include <vector>
 #include <string>
@@ -83,8 +81,8 @@ class MultiFileReader : public FileReader
     int64_t m_endPosition;
     int64_t m_currentPosition;
     int64_t m_llBufferPointer;  
-    long m_filesAdded;
-    long m_filesRemoved;
+    int32_t m_filesAdded;
+    int32_t m_filesRemoved;
 
     std::vector<MultiFileReaderFile *> m_tsFiles;
 
@@ -96,4 +94,3 @@ class MultiFileReader : public FileReader
     int64_t  m_cachedFileSize;
 };
 
-#endif

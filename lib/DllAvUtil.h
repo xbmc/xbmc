@@ -59,8 +59,12 @@ extern "C" {
   #else
     #include <ffmpeg/mem.h>
   #endif
+  #if (defined HAVE_LIBAVUTIL_MATHEMATICS_H)
+    #include <libavutil/mathematics.h>
+  #endif
 #else
   #include "libavutil/avutil.h"
+  #include "libavutil/audioconvert.h"
   #include "libavutil/crc.h"
   #include "libavutil/opt.h"
   #include "libavutil/mem.h"
@@ -102,6 +106,7 @@ public:
   virtual AVDictionaryEntry *av_dict_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags) = 0;
   virtual int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags)=0;
   virtual int av_samples_get_buffer_size (int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align) = 0;
+  virtual int64_t av_get_default_channel_layout(int nb_channels)=0;
 };
 
 #if defined (USE_EXTERNAL_FFMPEG) || (defined TARGET_DARWIN)
@@ -137,6 +142,7 @@ public:
   virtual int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_dict_set(pm, key, value, flags); }
   virtual int av_samples_get_buffer_size (int *linesize, int nb_channels, int nb_samples, enum AVSampleFormat sample_fmt, int align)
     { return ::av_samples_get_buffer_size(linesize, nb_channels, nb_samples, sample_fmt, align); }
+  virtual int64_t av_get_default_channel_layout(int nb_channels) { return ::av_get_default_channel_layout(nb_channels); }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -177,6 +183,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD4(AVDictionaryEntry *, av_dict_get, (AVDictionary *p1, const char *p2, const AVDictionaryEntry *p3, int p4))
   DEFINE_METHOD4(int, av_dict_set, (AVDictionary **p1, const char *p2, const char *p3, int p4));
   DEFINE_METHOD5(int, av_samples_get_buffer_size, (int *p1, int p2, int p3, enum AVSampleFormat p4, int p5))
+  DEFINE_METHOD1(int64_t, av_get_default_channel_layout, (int p1))
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -202,6 +209,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_dict_get)
     RESOLVE_METHOD(av_dict_set)
     RESOLVE_METHOD(av_samples_get_buffer_size)
+    RESOLVE_METHOD(av_get_default_channel_layout)
   END_METHOD_RESOLVE()
 };
 

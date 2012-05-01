@@ -31,7 +31,7 @@
 
 using namespace ADDON;
 
-class cResponsePacket;
+class cXVDRResponsePacket;
 class cRequestPacket;
 
 class cXVDRData : public cXVDRSession, public cThread
@@ -65,7 +65,6 @@ public:
   PVR_ERROR   AddTimer(const PVR_TIMER &timerinfo);
   PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag);
   PVR_ERROR   DeleteTimer(const PVR_TIMER &timerinfo, bool force = false);
-  PVR_ERROR   RenameTimer(const PVR_TIMER &timerinfo, const char *newname);
   PVR_ERROR   UpdateTimer(const PVR_TIMER &timerinfo);
 
   int         GetRecordingsCount();
@@ -73,16 +72,18 @@ public:
   PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
   PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 
-  cResponsePacket*  ReadResult(cRequestPacket* vrp);
+  cXVDRResponsePacket*  ReadResult(cRequestPacket* vrp);
 
 protected:
 
   virtual void Action(void);
-  virtual bool OnResponsePacket(cResponsePacket *pkt);
+  virtual bool OnResponsePacket(cXVDRResponsePacket *pkt);
 
   void SignalConnectionLost();
   void OnDisconnect();
   void OnReconnect();
+
+  void ReadTimerPacket(cXVDRResponsePacket* resp, PVR_TIMER& tag);
 
   bool m_statusinterface;
 
@@ -92,8 +93,8 @@ private:
 
   struct SMessage
   {
-    cCondWait       *event;
-    cResponsePacket *pkt;
+    cCondWait* event;
+    cXVDRResponsePacket* pkt;
   };
   typedef std::map<int, SMessage> SMessages;
 

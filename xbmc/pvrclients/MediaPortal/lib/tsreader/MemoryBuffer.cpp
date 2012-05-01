@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined TSREADER && defined LIVE555
+#ifdef LIVE555
 
 #include "os-dependent.h"
 #include "platform/util/timeutils.h"
@@ -30,15 +30,13 @@ using namespace ADDON;
 
 CMemoryBuffer::CMemoryBuffer(void)
 {
-  //XBMC->Log(LOG_DEBUG, "CMemoryBuffer::ctor");
-  m_bRunning=true;
-  m_BytesInBuffer=0;
-  m_pcallback=NULL;
+  m_bRunning = true;
+  m_BytesInBuffer = 0;
+  m_pcallback = NULL;
 }
 
 CMemoryBuffer::~CMemoryBuffer()
 {
-  //XBMC->Log(LOG_DEBUG, "CMemoryBuffer::dtor");
   Clear();
 }
 
@@ -52,14 +50,14 @@ void CMemoryBuffer::Clear()
   //XBMC->Log(LOG_DEBUG, "memorybuffer: Clear() %d",m_Array.size());
   PLATFORM::CLockObject BufferLock(m_BufferLock);
   std::vector<BUFFERITEM *>::iterator it = m_Array.begin();
-  for ( ; it != m_Array.end() ; it++ )
+  for ( ; it != m_Array.end(); it++ )
   {
     BUFFERITEM *item = *it;
     delete[] item->data;
     delete item;
   }
   m_Array.clear();
-  m_BytesInBuffer=0;
+  m_BytesInBuffer = 0;
   //XBMC->Log(LOG_DEBUG, "memorybuffer: Clear() done");
 }
 
@@ -71,10 +69,10 @@ unsigned long CMemoryBuffer::Size()
 void CMemoryBuffer::Run(bool onOff)
 {
   //XBMC->Log(LOG_DEBUG, "memorybuffer: run:%d %d", onOff, m_bRunning);
-  if (m_bRunning!=onOff)
+  if (m_bRunning != onOff)
   {
-    m_bRunning=onOff;
-    if (m_bRunning==false) 
+    m_bRunning = onOff;
+    if (m_bRunning == false) 
     {
       Clear();
     }
@@ -84,13 +82,13 @@ void CMemoryBuffer::Run(bool onOff)
 
 unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLength)
 {  
-  if (pbData==NULL) return 0;
-  if (lDataLength<=0) return 0;
+  if (pbData == NULL) return 0;
+  if (lDataLength <= 0) return 0;
   if (!m_bRunning) return 0;
   while (m_BytesInBuffer < (unsigned long) lDataLength)
   {
     if (!m_bRunning) return 0;
-    m_event.Wait();
+    m_event.Wait(5000);
     if (!m_bRunning) return 0;
   }
 
@@ -119,7 +117,7 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
 
     bytesWritten += copyLength;
     item->nOffset += copyLength;
-    m_BytesInBuffer-=copyLength;
+    m_BytesInBuffer -= copyLength;
 
     if (item->nOffset >= item->nDataLength)
     {
@@ -133,41 +131,41 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
 
 long CMemoryBuffer::PutBuffer(unsigned char *pbData, long lDataLength)
 {
-  if (lDataLength<=0) return E_FAIL;
-  if (pbData==NULL) return E_FAIL;
+  if (lDataLength <= 0) return E_FAIL;
+  if (pbData == NULL) return E_FAIL;
 
   BUFFERITEM* item = new BUFFERITEM();
-  item->nOffset=0;
-  item->nDataLength=lDataLength;
+  item->nOffset = 0;
+  item->nDataLength = lDataLength;
   item->data = new byte[lDataLength];
   memcpy(item->data, pbData, lDataLength);
-  bool sleep=false;
+  bool sleep = false;
   {
     PLATFORM::CLockObject BufferLock(m_BufferLock);
     m_Array.push_back(item);
-    m_BytesInBuffer+=lDataLength;
+    m_BytesInBuffer += lDataLength;
 
-    //Log("add..%d/%d",lDataLength,m_BytesInBuffer);
+    //XBMC->Log(LOG_DEBUG, "add..%d/%d",lDataLength,m_BytesInBuffer);
     while (m_BytesInBuffer > MAX_MEMORY_BUFFER_SIZE)
     {
-      sleep=true;
+      sleep = true;
       XBMC->Log(LOG_DEBUG, "memorybuffer:put full buffer (%d)",m_BytesInBuffer);
       BUFFERITEM *item = m_Array.at(0);
       int copyLength=item->nDataLength - item->nOffset;
 
-      m_BytesInBuffer-=copyLength;
+      m_BytesInBuffer -= copyLength;
       m_Array.erase(m_Array.begin());
       delete[] item->data;
       delete item;
     }
-    if (m_BytesInBuffer>0)
+    if (m_BytesInBuffer > 0)
     {
       m_event.Broadcast();
     }
   }
   if (m_pcallback)
   {
-    m_pcallback->OnRawDataReceived(pbData,lDataLength);
+    m_pcallback->OnRawDataReceived(pbData, lDataLength);
   }
   if (sleep)
   {
@@ -179,6 +177,6 @@ long CMemoryBuffer::PutBuffer(unsigned char *pbData, long lDataLength)
 
 void CMemoryBuffer::SetCallback(IMemoryCallback* callback)
 {
-  m_pcallback=callback;
+  m_pcallback = callback;
 }
-#endif //TSREADER && LIVE555
+#endif //LIVE555

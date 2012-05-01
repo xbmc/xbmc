@@ -51,8 +51,7 @@ class cXVDRResponsePacket
 
     uint32_t  getPacketPos()      { return packetPos; }
 
-    bool      extract_String(std::string& value);
-    char*     extract_String();
+    const char* extract_String();
 
     uint8_t   extract_U8();
     uint32_t  extract_U32();

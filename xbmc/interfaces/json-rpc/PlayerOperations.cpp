@@ -481,7 +481,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
         break;
 
       case PLAYLIST_PICTURE:
-        return StartSlideshow();
+        return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
         break;
     }
 
@@ -489,24 +489,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
   }
   else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("path"))
   {
-    CStdString exec = "slideShow(";
-
-    exec += parameterObject["item"]["path"].asString();
-
-    if ((optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
-       (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean()))
-      exec += ", random";
-    else
-      exec += ", notrandom";
-
-    if (parameterObject["item"]["recursive"].asBoolean())
-      exec += ", recursive";
-
-    exec += ")";
-    ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
-    g_application.getApplicationMessenger().SendMessage(msg);
-
-    return ACK;
+    bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
+                  (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
+    return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), random);
   }
   else
   {
@@ -534,10 +519,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
         for (int index = 0; index < list.Size(); index++)
           slideshow->Add(list[index].get());
 
-        if (optionShuffled.isBoolean() && optionShuffled.asBoolean())
-          slideshow->Shuffle();
-
-        return StartSlideshow();
+        return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
       }
       else
       {
@@ -865,24 +847,19 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::StartSlideshow()
+JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string path, bool recursive, bool random)
 {
-  CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!slideshow || slideshow->NumSlides() <= 0)
-    return FailedToExecute;
+  int flags = 0;
+  if (recursive)
+    flags |= 1;
+  if (random)
+    flags |= 2;
+  else
+    flags |= 4;
 
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
-
-  g_graphicsContext.Lock();
-
-  g_application.WakeUpScreenSaverAndDPMS();
-  slideshow->StartSlideShow();
-
-  if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-
-  g_graphicsContext.Unlock();
+  CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
+  msg.SetStringParam(path);
+  g_application.getApplicationMessenger().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
 }

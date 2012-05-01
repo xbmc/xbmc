@@ -148,6 +148,16 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread->OnStartup();
   }
 #ifndef _LINUX
+  catch (const access_violation &e)
+  {
+    e.writelog(__FUNCTION__);
+    if( pThread->IsAutoDelete() )
+    {
+      delete pThread;
+      _endthreadex(123);
+      return 0;
+    }
+  }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);

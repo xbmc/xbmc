@@ -27,7 +27,7 @@
 
 using namespace ADDON;
 
-class cResponsePacket;
+class cXVDRResponsePacket;
 
 struct SQuality
 {
@@ -59,10 +59,10 @@ protected:
 
   void OnReconnect();
 
-  void StreamChange(cResponsePacket *resp);
-  void StreamStatus(cResponsePacket *resp);
-  void StreamSignalInfo(cResponsePacket *resp);
-  bool StreamContentInfo(cResponsePacket *resp);
+  void StreamChange(cXVDRResponsePacket *resp);
+  void StreamStatus(cXVDRResponsePacket *resp);
+  void StreamSignalInfo(cXVDRResponsePacket *resp);
+  bool StreamContentInfo(cXVDRResponsePacket *resp);
 
 private:
 

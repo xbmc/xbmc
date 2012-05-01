@@ -5,7 +5,7 @@
     <string id="30001">Mediaportal XBMC plugin Port</string>
     <string id="30002">Free-to-air only</string>
     <string id="30003">Include Radio</string>
-
+    <string id="30004">Fast channel switching (don't stop timeshift)</string>
     <string id="30005">Connect timeout (s)</string>
     <string id="30006">Import only TV Channels from group</string>
     <string id="30007">Import only Radio Channels from group</string>
@@ -14,10 +14,16 @@
     <string id="30010">Wait time after tuning a channel (ms)</string>
     <string id="30011">Play recordings directly (no streaming)</string>
     <string id="30012">Mediaportal recordings directory</string>
+    <string id="30013">Direct playback from Timeshift buffer (no rtsp)</string>
+    <string id="30014">Timeshift buffer directory</string>
+    <string id="30015">Streaming method</string>
+    <string id="30016">Windows user account (SMB)</string>
+    <string id="30017">Windows password (SMB)</string>
 
     <!-- category labels -->
     <string id="30040">Connection</string>
     <string id="30041">MediaPortal</string>
+    <string id="30042">Playback</string>
 
     <!-- on-screen error messages -->
     <string id="30050">Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!</string>

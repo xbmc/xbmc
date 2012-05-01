@@ -116,6 +116,7 @@ namespace PVR
     virtual bool StopRecordFile(CFileItem *item);
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
+    virtual bool UpdateEpgForChannel(CFileItem *item);
     virtual bool ShowTimerSettings(CFileItem *item);
     virtual bool ShowNewTimerDialog(void);
 

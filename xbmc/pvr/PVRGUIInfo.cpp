@@ -759,11 +759,10 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   CStdString strActiveTimerTime;
 
   /* safe to fetch these unlocked, since they're updated from the same thread as this one */
-  unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
-  if (m_iTimerInfoToggleCurrent < iBoundary)
+  if (m_iRecordingTimerAmount > 0)
   {
     vector<CPVRTimerInfoTag *> activeTags;
-    g_PVRTimers->GetActiveTimers(&activeTags);
+    g_PVRTimers->GetActiveRecordings(&activeTags);
     if (activeTags.at(m_iTimerInfoToggleCurrent) != 0)
     {
       strActiveTimerTitle.Format("%s",       activeTags.at(m_iTimerInfoToggleCurrent)->m_strTitle);

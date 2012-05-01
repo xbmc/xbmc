@@ -25,6 +25,7 @@
 #endif
 #include "DynamicDll.h"
 #include "DllAvCodec.h"
+#include "DllAvFormat.h"
 #include "DllSwResample.h"
 #include "utils/log.h"
 
@@ -203,6 +204,7 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   /* dependencies of libavfilter */
   DllAvUtil m_dllAvUtil;
   DllSwResample m_dllSwResample;
+  DllAvFormat m_dllAvFormat;
 
 public:
   int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
@@ -250,6 +252,8 @@ public:
     if (!m_dllAvUtil.Load())
       return false;
     if (!m_dllSwResample.Load())
+      return false;
+    if (!m_dllAvFormat.Load())
       return false;
     return DllDynamic::Load();
   }

@@ -106,7 +106,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;
-  m_CodecCtx->channel_layout = m_dllAvCodec.avcodec_guess_channel_layout(iInChannels, codec->id, NULL);
+  m_CodecCtx->channel_layout = m_dllAvUtil.av_get_default_channel_layout(iInChannels);
   m_CodecCtx->time_base      = (AVRational){1, iInRate};
 
   if(fmt->flags & AVFMT_GLOBALHEADER)

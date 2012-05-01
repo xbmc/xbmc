@@ -167,10 +167,13 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   cXVDRSettings& s = cXVDRSettings::GetInstance();
   bChanged = s.set(settingName, settingValue);
 
-  if(bChanged && (strcmp(settingName, "host") == 0))
+  if(!bChanged)
+    return ADDON_STATUS_OK;
+
+  if(strcmp(settingName, "host") == 0)
     return ADDON_STATUS_NEED_RESTART;
 
-  s.load();
+  s.checkValues();
 
   XVDRData->SetTimeout(s.ConnectTimeout() * 1000);
   XVDRData->SetCompressionLevel(s.Compression() * 3);
@@ -209,10 +212,16 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bSupportsChannelGroups      = true;
   pCapabilities->bHandlesInputStream         = true;
   pCapabilities->bHandlesDemuxing            = true;
-  if (XVDRData && XVDRData->SupportChannelScan())
-    pCapabilities->bSupportsChannelScan      = true;
-  else
-    pCapabilities->bSupportsChannelScan      = false;
+  pCapabilities->bSupportsChannelScan        = (XVDRData && XVDRData->SupportChannelScan());
+
+  // <tricky_mode>
+  // we don't know if XBMC has the new ABI, so
+  // check if bSupportsRecordingFolders is 0
+  // there is no guarantee that this doesn't cause any
+  // segfault or memory corruption
+  if (pCapabilities->bSupportsRecordingFolders == 0)
+    pCapabilities->bSupportsRecordingFolders = true;
+  // </tricky_mode>
 
   return PVR_ERROR_NO_ERROR;
 }

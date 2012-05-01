@@ -16,8 +16,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
-
 // Code below is work in progress and not yet finished
 //
 // DONE:
@@ -51,6 +49,7 @@ CTsReader::CTsReader()
   m_cardSettings    = NULL;
   m_State           = State_Stopped;
   m_lastPause       = 0;
+  m_WaitForSeekToEof = 0;
 
 #ifdef LIVE555
   m_rtspClient      = NULL;
@@ -60,6 +59,8 @@ CTsReader::CTsReader()
 
 CTsReader::~CTsReader(void)
 {
+  if (m_fileReader)
+    delete m_fileReader;
 #ifdef LIVE555
   if (m_buffer)
     delete m_buffer;
@@ -70,6 +71,7 @@ CTsReader::~CTsReader(void)
 
 std::string CTsReader::TranslatePath(const char*  pszFileName)
 {
+#if defined (TARGET_WINDOWS)
   if (m_basePath.length() == 0)
     return pszFileName;
 
@@ -89,9 +91,41 @@ std::string CTsReader::TranslatePath(const char*  pszFileName)
         break;
       }
     }
-    XBMC->Log(LOG_DEBUG, "CTsReader:TranslatePath %s -> %s", pszFileName, sTimeshiftFile.c_str());
+    XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, sTimeshiftFile.c_str());
     return sTimeshiftFile;
   }
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
+  std::string CIFSname =  pszFileName;
+  std::string SMBPrefix = "smb://";
+  if (g_szSMBusername.length() > 0)
+  {
+    SMBPrefix += g_szSMBusername;
+    if (g_szSMBpassword.length() > 0)
+    {
+      SMBPrefix += ":" + g_szSMBpassword;
+    }
+  }
+  else
+  {
+    SMBPrefix += "Guest";
+  }
+  SMBPrefix += "@";
+  size_t found = string::npos;
+
+  // Extract filename:
+  found = CIFSname.find_last_of("\\");
+
+  if (found != string::npos)
+  {
+    CIFSname.erase(0, found + 1);
+    CIFSname.insert(0, m_basePath.c_str());
+    CIFSname.erase(0, 6); // Remove smb://
+  }
+  CIFSname.insert(0, SMBPrefix.c_str());
+
+  XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, CIFSname.c_str());
+  return CIFSname;
+#endif
 
   return pszFileName;
 }
@@ -100,8 +134,7 @@ long CTsReader::Open(const char* pszFileName)
 {
   XBMC->Log(LOG_NOTICE, "CTsReader::Open(%s)", pszFileName);
 
-  m_fileName = TranslatePath(pszFileName);
-
+  m_fileName = pszFileName;
   char url[MAX_PATH];
   strncpy(url, m_fileName.c_str(), MAX_PATH);
 
@@ -151,49 +184,6 @@ long CTsReader::Open(const char* pszFileName)
     return E_FAIL;
 #endif //LIVE555
   }
-#ifdef TARGET_WINDOWS
-  else if ((length > 5) && (strnicmp(&url[length-4], ".tsp", 4) == 0))
-  {
-    // .tsp file
-    m_bTimeShifting = true;
-    m_bLiveTv = true;
-
-    FILE* fd = fopen(url, "rb");
-    if (fd == NULL)
-      return E_FAIL;
-    fread(url, 1, 100, fd);
-    int bytesRead = fread(url, 1, sizeof(url), fd);
-    if (bytesRead >= 0)
-      url[bytesRead] = 0;
-    fclose(fd);
-
-    XBMC->Log(LOG_NOTICE, "open %s", url);
-#ifdef LIVE555
-    if (m_buffer)
-      delete m_buffer;
-    if (m_rtspClient)
-      delete m_rtspClient;
-    m_buffer = new CMemoryBuffer();
-    m_rtspClient = new CRTSPClient();
-    m_rtspClient->Initialize(m_buffer);
-
-    if ( !m_rtspClient->OpenStream(url))
-    {
-      SAFE_DELETE(m_rtspClient);
-      return E_FAIL;
-    }
-
-    m_bIsRTSP = true;
-    m_rtspClient->Play(0.0,0.0);
-    m_fileReader = new CMemoryReader(*m_buffer);
-    m_State = State_Running;
-    XBMC->Log(LOG_DEBUG, "RTSP duration %li", m_rtspClient->Duration());
-
-#else
-    XBMC->Log(LOG_DEBUG, "Failed to open %s. PVR client is compiled without LIVE555 RTSP support.", url);
-    return E_FAIL;
-#endif //LIVE555
-  }
   else
   {
     if ((length < 9) || (strnicmp(&url[length-9], ".tsbuffer", 9) != 0))
@@ -213,26 +203,22 @@ long CTsReader::Open(const char* pszFileName)
       m_fileReader = new MultiFileReader();
     }
 
+    // Translate path (e.g. Local filepath to smb://user:pass@share)
+    m_fileName = TranslatePath(url);
+
     // open file
     m_fileReader->SetFileName(m_fileName.c_str());
     //m_fileReader->SetDebugOutput(true);
     long retval = m_fileReader->OpenFile();
     if (retval != S_OK)
     {
-      XBMC->Log(LOG_ERROR, "Failed to open file %s", m_fileName.c_str());
+      XBMC->Log(LOG_ERROR, "Failed to open file '%s' as '%s'", url, m_fileName.c_str());
       return retval;
     }
 
     m_fileReader->SetFilePointer(0LL, FILE_BEGIN);
     m_State = State_Running;
   }
-#else
-  else
-  {
-    XBMC->Log(LOG_ERROR, "Failed to open url %s", m_fileName.c_str());
-    return E_FAIL;
-  }
-#endif //TARGET_WINDOWS
   return S_OK;
 }
 
@@ -240,7 +226,11 @@ long CTsReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned 
 {
   if (m_fileReader)
   {
-    return m_fileReader->Read(pbData, lDataLength, dwReadBytes);
+    long ret;
+
+    ret = m_fileReader->Read(pbData, lDataLength, dwReadBytes);
+
+    return ret;
   }
 
   dwReadBytes = 0;
@@ -259,12 +249,10 @@ void CTsReader::Close()
       SAFE_DELETE(m_buffer);
 #endif
     }
-#ifdef TARGET_WINDOWS
     else
     {
       m_fileReader->CloseFile();
     }
-#endif //TARGET_WINDOWS
     SAFE_DELETE(m_fileReader);
     m_State = State_Stopped;
   }
@@ -337,4 +325,61 @@ void CTsReader::SetDirectory( string& directory )
   m_basePath = tmp;
 }
 
-#endif //TSREADER
+bool CTsReader::IsTimeShifting()
+{
+  return m_bTimeShifting;
+}
+
+long CTsReader::Pause()
+{
+  XBMC->Log(LOG_DEBUG, "CTsReader::Pause() - IsTimeShifting = %d - state = %d", IsTimeShifting(), m_State);
+
+  if (m_State == State_Running)
+  {
+    m_lastPause = GetTickCount();
+#ifdef LIVE555
+    // Are we using rtsp?
+    if (m_bIsRTSP)
+    {
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause()  ->pause rtsp"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+        m_rtspClient->Pause();
+    }
+#endif //LIVE555
+    m_State = State_Paused;
+  }
+  else if (m_State == State_Paused)
+  {
+#ifdef LIVE555
+    // Are we using rtsp?
+    if (m_bIsRTSP)
+    {
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause() is paused, continue rtsp"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+        m_rtspClient->Continue();
+        XBMC->Log(LOG_DEBUG, "CTsReader::Pause() rtsp running"); // at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+    }
+#endif //LIVE555
+  }
+
+  XBMC->Log(LOG_DEBUG, "CTsReader::Pause() - END - state = %d", m_State);
+  return S_OK;
+}
+
+bool CTsReader::IsSeeking()
+{
+  return (m_WaitForSeekToEof > 0);
+}
+
+int64_t CTsReader::GetFileSize()
+{
+  return m_fileReader->GetFileSize();
+}
+
+int64_t CTsReader::GetFilePointer()
+{
+  return m_fileReader->GetFilePointer();
+}
+
+unsigned long CTsReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
+{
+  return m_fileReader->SetFilePointer(llDistanceToMove, dwMoveMethod);
+}
