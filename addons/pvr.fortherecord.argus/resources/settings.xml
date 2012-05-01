@@ -6,4 +6,5 @@
     <setting id="timeout" type="enum" label="30003" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="6"/>
     <setting id="user" type="text" label="30004" default="Guest" />
     <setting id="pass" type="text" label="30005" option="hidden" default="" />
+    <setting id="delay" type="number" label="30010" default="200" />
 </settings>

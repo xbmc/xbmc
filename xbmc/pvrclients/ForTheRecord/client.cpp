@@ -37,6 +37,7 @@ bool        g_bRadioEnabled        = DEFAULT_RADIO;        ///< Send also Radio 
 std::string g_szUser               = DEFAULT_USER;         ///< Windows user account used to access share
 std::string g_szPass               = DEFAULT_PASS;         ///< Windows user password used to access share
                                                            ///< Leave empty to use current user when running on Windows
+int         g_iTuneDelay           = DEFAULT_TUNEDELAY;    ///< Number of milliseconds to delay after tuning a channel
 
 std::string  g_szBaseURL;
 
@@ -150,6 +151,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_szPass = buffer;
   else
     g_szPass = "";
+
+  /* Read setting "delay" from settings.xml */
+  if (!XBMC->GetSetting("delay", &g_iTuneDelay))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'delay' setting, falling back to '200' as default");
+    g_iTuneDelay = DEFAULT_TUNEDELAY;
+  }
 
   /* Connect to ForTheRecord */
   if (!g_client->Connect())

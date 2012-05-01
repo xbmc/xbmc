@@ -33,6 +33,7 @@
 #define DEFAULT_TIMEOUT               10
 #define DEFAULT_USER                  "Guest"
 #define DEFAULT_PASS                  ""
+#define DEFAULT_TUNEDELAY             200
 
 extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
 extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
@@ -46,6 +47,7 @@ extern int          g_iConnectTimeout;
 extern bool         g_bRadioEnabled;
 extern std::string  g_szUser;
 extern std::string  g_szPass;
+extern int          g_iTuneDelay;
 
 extern std::string  g_szBaseURL;
 
