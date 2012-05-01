@@ -34,9 +34,6 @@ public:
   virtual void FrameMove();
 
   void ShowScan();
-  void StartScanning(const CStdString& strDirectory, bool scanAll = false);
-  bool IsScanning();
-  void StopScanning();
 
   void UpdateState();
 protected:
@@ -49,7 +46,6 @@ protected:
   virtual void OnSetCurrentProgress(int currentItem, int itemCount);
   virtual void OnSetTitle(const CStdString& strTitle);
 
-  VIDEO::CVideoInfoScanner m_videoInfoScanner;
   VIDEO::SCAN_STATE m_ScanState;
   CStdString m_strCurrentDir;
   CStdString m_strTitle;

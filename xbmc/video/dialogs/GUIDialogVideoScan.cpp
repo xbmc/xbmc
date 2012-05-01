@@ -114,33 +114,10 @@ void CGUIDialogVideoScan::OnSetTitle(const CStdString& strTitle)
   m_strTitle = strTitle;
 }
 
-void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool scanAll)
-{
-  m_ScanState = PREPARING;
-
-  if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
-  {
-    Show();
-  }
-
-  m_videoInfoScanner.Start(strDirectory,scanAll);
-}
-
 void CGUIDialogVideoScan::ShowScan()
 {
   m_ScanState = PREPARING;
   Show();
-}
-
-void CGUIDialogVideoScan::StopScanning()
-{
-  if (m_videoInfoScanner.IsScanning())
-    m_videoInfoScanner.Stop();
-}
-
-bool CGUIDialogVideoScan::IsScanning()
-{
-  return m_videoInfoScanner.IsScanning();
 }
 
 void CGUIDialogVideoScan::OnDirectoryScanned(const CStdString& strDirectory)

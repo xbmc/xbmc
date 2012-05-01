@@ -96,66 +96,10 @@ void CGUIDialogMusicScan::OnSetProgress(int currentItem, int itemCount)
   if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
 }
 
-void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory)
-{
-  m_ScanState = PREPARING;
-
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
-  {
-    Show();
-  }
-
-  // save settings
-  g_application.SaveMusicScanSettings();
-
-  m_musicInfoScanner.Start(strDirectory);
-}
-
 void CGUIDialogMusicScan::ShowScan()
 {
   m_ScanState = PREPARING;
   Show();
-}
-
-void CGUIDialogMusicScan::StartAlbumScan(const CStdString& strDirectory)
-{
-  m_ScanState = PREPARING;
-
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
-  {
-    Show();
-  }
-
-  // save settings
-  g_application.SaveMusicScanSettings();
-
-  m_musicInfoScanner.FetchAlbumInfo(strDirectory);
-}
-
-void CGUIDialogMusicScan::StartArtistScan(const CStdString& strDirectory)
-{
-  m_ScanState = PREPARING;
-
-  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
-  {
-    Show();
-  }
-
-  // save settings
-  g_application.SaveMusicScanSettings();
-
-  m_musicInfoScanner.FetchArtistInfo(strDirectory);
-}
-
-void CGUIDialogMusicScan::StopScanning()
-{
-  if (m_musicInfoScanner.IsScanning())
-    m_musicInfoScanner.Stop();
-}
-
-bool CGUIDialogMusicScan::IsScanning()
-{
-  return m_musicInfoScanner.IsScanning();
 }
 
 void CGUIDialogMusicScan::OnDirectoryScanned(const CStdString& strDirectory)
