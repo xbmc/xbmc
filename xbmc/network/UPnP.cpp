@@ -1989,7 +1989,7 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    g_application.SetVolume(atoi((const char*)volume));
+    g_application.SetVolume((float)strtod((const char*)volume, NULL));
     return NPT_SUCCESS;
 }
 
