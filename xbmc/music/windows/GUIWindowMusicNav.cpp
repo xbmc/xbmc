@@ -408,7 +408,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 {
   CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
@@ -532,9 +531,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   // noncontextual buttons
 
-  if (musicScan && musicScan->IsScanning())
+  if (g_application.IsMusicScanning())
     buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
-  else if (musicScan)
+  else
     buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
 
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
@@ -606,9 +605,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (scanner)
-        scanner->StartScanning("");
+      g_application.StartMusicScan("");
       return true;
     }
 

@@ -2326,8 +2326,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -2577,8 +2576,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;

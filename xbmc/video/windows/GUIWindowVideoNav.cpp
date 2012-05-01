@@ -747,8 +747,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
+  if (g_application.IsVideoScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
     return false;
@@ -887,8 +886,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (!item)
   {
-    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (pScanDlg && pScanDlg->IsScanning())
+    if (g_application.IsVideoScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
     else
       buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
@@ -898,8 +896,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // get the usual shares
     CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
     // add scan button somewhere here
-    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (pScanDlg && pScanDlg->IsScanning())
+    if (g_application.IsVideoScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -908,7 +905,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       database.Open();
       ADDON::ScraperPtr info = database.GetScraperForPath(item->GetPath());
 
-      if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+      if (!g_application.IsVideoScanning())
       {
         if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
@@ -919,7 +916,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+      if (info && !g_application.IsVideoScanning())
         buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
     }
   }
@@ -974,8 +971,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {
-          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-          if (pScanDlg && pScanDlg->IsScanning())
+          if (g_application.IsVideoScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
@@ -1044,8 +1040,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-        if (pScanDlg && pScanDlg->IsScanning())
+        if (g_application.IsVideoScanning())
         {
           if (node != NODE_TYPE_TITLE_TVSHOWS)
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
@@ -1067,13 +1062,12 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
-          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          if (!g_application.IsVideoScanning())
           {
             if (info && info->Content() != CONTENT_NONE)
             {
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
-              if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+              if (info && g_application.IsVideoScanning())
                 buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
             }
             else

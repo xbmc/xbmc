@@ -177,16 +177,15 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
 
 void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
 {
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
+  if (g_application.IsMusicScanning())
   {
-    musicScan->StopScanning();
+    g_application.StopMusicScan();
     return;
   }
 
   // Start background loader
   int iControl=GetFocusedControlID();
-  if (musicScan) musicScan->StartScanning(strPath);
+  g_application.StartMusicScan(strPath);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
 
@@ -269,8 +268,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
+  if (g_application.IsMusicScanning())
   {
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   }
@@ -362,10 +360,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     }
 
     // Add the scan button(s)
-    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (pScanDlg)
-    {
-      if (pScanDlg->IsScanning())
+      if (g_application.IsMusicScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM()                                         &&
@@ -375,7 +370,6 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
-    }
     if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
