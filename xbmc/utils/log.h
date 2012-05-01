@@ -69,6 +69,7 @@ namespace XbmcUtils
   class LogImplementation : public XbmcCommons::ILogger
   {
   public:
+    virtual ~LogImplementation() {}
     inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
   };
 }
