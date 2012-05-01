@@ -63,7 +63,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-#if defined(__powerpc__) || defined(__ppc__)
+#if defined(__powerpc__) || defined(__ppc__) || defined(__ARM_PCS_VFP)
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
     // From 'ARM®v7-M Architecture Reference Manual' page A7-569:
