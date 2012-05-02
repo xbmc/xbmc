@@ -25,13 +25,14 @@
 
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
+#include "../RenderFormats.h"
 
 
 class CYUV2RGBMatrix
 {
 public:
   CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags);
+  void SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format);
   D3DXMATRIX* Matrix();
 
 private:
@@ -39,6 +40,7 @@ private:
   float        m_contrast;
   float        m_blacklevel;
   unsigned int m_flags;
+  ERenderFormat m_format;
   D3DXMATRIX   m_mat;
 };
 
@@ -66,7 +68,7 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt);
+  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
   virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
@@ -88,6 +90,7 @@ private:
   CYUV2RGBMatrix m_matrix;
   unsigned int   m_sourceWidth, m_sourceHeight;
   CRect          m_sourceRect, m_destRect;
+  ERenderFormat  m_format;
   CD3DTexture    m_YUVPlanes[3];
   float          m_texSteps[2];
 

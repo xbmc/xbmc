@@ -23,6 +23,7 @@
 
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
+#include "RenderFormats.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
@@ -38,6 +39,7 @@ typedef struct YV12Image
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
+  unsigned bpp; /* bytes per pixel */
 } YV12Image;
 
 enum ERENDERFEATURE
@@ -67,6 +69,9 @@ public:
   virtual void Flush() {};
 
   virtual unsigned int GetProcessorSize() { return 0; }
+
+  // Supported pixel formats, can be called before configure
+  std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
 
 protected:
   void       ChooseBestResolution(float fps);
