@@ -1124,14 +1124,14 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CFileUtils::DeleteItem(cacheItem,true);
       XFILE::CDirectory::Create(strPath);
       CFileItemPtr noneitem(new CFileItem("thumb://None", false));
-      CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
-      if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
-        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedActorThumb();
-      if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
+      CStdString cachedThumb;
+      if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
+      else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
-      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
+      else
         cachedThumb = m_database.GetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb");
-      if (CFile::Exists(cachedThumb))
+      if (!cachedThumb.IsEmpty() && CFile::Exists(cachedThumb))
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
         item->SetThumbnailImage(cachedThumb);
@@ -1246,7 +1246,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       else if (result == "thumb://None")
         result.clear();
-      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
+      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB ||
+          button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
         m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb", result);
       else
       {

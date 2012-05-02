@@ -254,8 +254,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       else
         character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
       CFileItemPtr item(new CFileItem(it->strName));
-      if (CFile::Exists(item->GetCachedActorThumb()))
-        item->SetThumbnailImage(item->GetCachedActorThumb());
+      item->SetThumbnailImage(it->thumb);
       item->SetIconImage("DefaultActor.png");
       item->SetLabel(character);
       m_castList->Add(item);

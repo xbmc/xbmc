@@ -28,7 +28,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
-#include "ThumbnailCache.h"
 #include "filesystem/File.h"
 
 #include <sstream>
@@ -432,9 +431,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
     CVariant actor;
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
-    CStdString thumb = CThumbnailCache::GetActorThumb(m_cast[i].strName);
-    if (XFILE::CFile::Exists(thumb))
-      actor["thumbnail"] = thumb;
+    if (!m_cast[i].thumb.IsEmpty())
+      actor["thumbnail"] = m_cast[i].thumb;
     value["cast"].push_back(actor);
   }
   value["set"] = m_set;
