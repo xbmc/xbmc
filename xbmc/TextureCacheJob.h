@@ -56,13 +56,20 @@ public:
 class CTextureCacheJob : public CJob
 {
 public:
-  CTextureCacheJob(const CStdString &url, const CStdString &oldHash);
+  CTextureCacheJob(const CStdString &url, const CStdString &oldHash = "");
   CTextureCacheJob(const CStdString &url, const CBaseTexture *texture);
   virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return "cacheimage"; };
   virtual bool operator==(const CJob *job) const;
   virtual bool DoWork();
+
+  /*! \brief retrieve a hash for the given image
+   Combines the size, ctime and mtime of the image file into a "unique" hash
+   \param url location of the image
+   \return a hash string for this image
+   */
+  bool CacheTexture(CBaseTexture **texture = NULL);
 
   /*! \brief Decode an image URL to the underlying image, width, height and orientation
    \param url wrapped URL of the image

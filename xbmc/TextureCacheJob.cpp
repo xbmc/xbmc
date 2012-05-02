@@ -75,6 +75,11 @@ bool CTextureCacheJob::DoWork()
   if (ShouldCancel(1, 0)) // HACK: second check is because we cancel the job in the first callback, but we don't detect it
     return false;         //       until the second
 
+  return CacheTexture(&m_texture);
+}
+
+bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
+{
   // unwrap the URL as required
   bool flipped;
   unsigned int width, height;
@@ -89,29 +94,35 @@ bool CTextureCacheJob::DoWork()
   else if (m_details.hash == m_oldHash)
     return true;
 
-  if (!m_texture)
-    m_texture = LoadImage(image, width, height, flipped);
-  if (m_texture)
+  CBaseTexture *texture = (old_texture && *old_texture) ? *old_texture : NULL;
+  if (!texture)
+    texture = LoadImage(image, width, height, flipped);
+  if (texture)
   {
-    if (m_texture->HasAlpha())
+    if (texture->HasAlpha())
       m_details.file = m_cachePath + ".png";
     else
       m_details.file = m_cachePath + ".jpg";
 
     if (width > 0 && height > 0)
       CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                width, height, m_texture->GetOrientation(), m_details.file.c_str());
+                width, height, texture->GetOrientation(), m_details.file.c_str());
     else
       CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                m_texture->GetOrientation(), m_details.file.c_str());
+                texture->GetOrientation(), m_details.file.c_str());
 
-    if (CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
+    if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
     {
       m_details.width = width;
       m_details.height = height;
+      if (out_texture) // caller wants the texture
+        *out_texture = texture;
+      else
+        delete texture;
       return true;
     }
   }
+  delete texture;
   return false;
 }
 
