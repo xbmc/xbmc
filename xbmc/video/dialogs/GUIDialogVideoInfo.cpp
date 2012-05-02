@@ -233,9 +233,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
-    CStdStringArray artists;
-    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
-    for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
+    const std::vector<std::string> &artists = m_movieItem->GetVideoInfoTag()->m_artist;
+    for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       CFileItemPtr item(new CFileItem(*it));
       if (CFile::Exists(item->GetCachedArtistThumb()))
@@ -354,7 +353,7 @@ void CGUIDialogVideoInfo::Update()
   {
     if (m_bViewReview)
     {
-      if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+      if (!m_movieItem->GetVideoInfoTag()->m_artist.empty())
       {
         SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
       }
@@ -540,7 +539,7 @@ void CGUIDialogVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.GetMusicVideosByArtist(strSearch, movies);
   for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString label = movies[i]->GetVideoInfoTag()->m_strArtist + " - " + movies[i]->GetVideoInfoTag()->m_strTitle;
+    CStdString label = StringUtils::Join(movies[i]->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator) + " - " + movies[i]->GetVideoInfoTag()->m_strTitle;
     if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
       label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);

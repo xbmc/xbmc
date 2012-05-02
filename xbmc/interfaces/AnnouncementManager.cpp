@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/MusicDatabase.h"
@@ -139,8 +140,8 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       case VIDEODB_CONTENT_MUSICVIDEOS:
         if (!item->GetVideoInfoTag()->m_strAlbum.empty())
           object["album"] = item->GetVideoInfoTag()->m_strAlbum;
-        if (!item->GetVideoInfoTag()->m_strArtist.empty())
-          object["artist"] = item->GetVideoInfoTag()->m_strArtist;
+        if (!item->GetVideoInfoTag()->m_artist.empty())
+          object["artist"] = StringUtils::Join(item->GetVideoInfoTag()->m_artist, " / ");
         break;
       }
     }
