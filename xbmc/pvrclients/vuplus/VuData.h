@@ -94,6 +94,42 @@ struct VuTimer
   int iWeekdays;
   int iEpgID;
   PVR_TIMER_STATE state; 
+  int iUpdateState;
+  unsigned int iClientIndex;
+
+  VuTimer()
+  {
+    iUpdateState = VU_UPDATE_STATE_NEW;
+  }
+  
+  bool like(const VuTimer &right) const
+  {
+    bool bChanged = true;
+    bChanged = bChanged && (startTime == right.startTime); 
+    bChanged = bChanged && (endTime == right.endTime); 
+    bChanged = bChanged && (iChannelId == right.iChannelId); 
+    bChanged = bChanged && (bRepeating == right.bRepeating); 
+    bChanged = bChanged && (iWeekdays == right.iWeekdays); 
+    bChanged = bChanged && (iEpgID == right.iEpgID); 
+
+    return bChanged;
+  }
+  
+  bool operator==(const VuTimer &right) const
+  {
+    bool bChanged = true;
+    bChanged = bChanged && (startTime == right.startTime); 
+    bChanged = bChanged && (endTime == right.endTime); 
+    bChanged = bChanged && (iChannelId == right.iChannelId); 
+    bChanged = bChanged && (bRepeating == right.bRepeating); 
+    bChanged = bChanged && (iWeekdays == right.iWeekdays); 
+    bChanged = bChanged && (iEpgID == right.iEpgID); 
+    bChanged = bChanged && (state == right.state); 
+    bChanged = bChanged && (! strTitle.compare(right.strTitle));
+    bChanged = bChanged && (! strPlot.compare(right.strPlot));
+
+    return bChanged;
+  }
 };
 
 struct VuRecording
@@ -116,8 +152,6 @@ private:
   bool  m_bIsConnected;
   std::string m_strServerName;
   std::string m_strURL;
-  int m_iNumChannels;
-  int m_iNumTimers;
   int m_iNumRecordings;
   int m_iNumChannelGroups;
   int m_iCurrentChannel;
@@ -129,6 +163,7 @@ private:
   std::vector<std::string> m_locations;
 
   bool m_bInitial;
+  unsigned int m_iClientIndexCounter;
 
   PLATFORM::CMutex m_mutex;
   PLATFORM::CCondition<bool> m_started;
@@ -141,13 +176,15 @@ private:
   CStdString GetHttpXML(CStdString& url);
   int GetChannelNumber(CStdString strServiceReference);
   CStdString URLEncodeInline(const CStdString& strData);
-  bool SendSimpleCommand(const CStdString& strCommandURL, CStdString& strResult);
+  bool SendSimpleCommand(const CStdString& strCommandURL, CStdString& strResult, bool bIgnoreResult = false);
   static int VuWebResponseCallback(void *contents, int iLength, int iSize, void *memPtr); 
   CStdString GetGroupServiceReference(CStdString strGroupName);
   bool LoadChannels(CStdString strServerReference, CStdString strGroupName);
   bool LoadChannels();
   bool LoadChannelGroups();
   bool LoadLocations();
+  std::vector<VuTimer> LoadTimers();
+  void TimerUpdates();
 
   // helper functions
   static bool GetInt(XMLNode xRootNode, const char* strTag, int& iIntValue);
@@ -188,13 +225,9 @@ public:
   const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
   bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
+  void SendPowerstate();
   bool SwitchChannel(const PVR_CHANNEL &channel);
-
-
   bool Open();
   void Action();
-  void Close();
-
-
 };
 

@@ -7,7 +7,6 @@
     <string id="30004">Password</string>
     <string id="30007">Response timeout in seconds</string>
     <string id="30008">Icon Path</string>
-    <string id="30009">Show completed timers</string>
     <string id="30010">Update Interval in minutes</string>
     <string id="30011">Automatic Timerlist Cleanup</string>
     <string id="30012">Webinterface Port</string>
@@ -22,6 +21,8 @@
     <string id="30021">HTTP</string>
     <string id="30022">Recordings / Timer</string>
     <string id="30022">Recording path on DVB box</string>
+    <string id="30023">Recording folder on the receiver</string>
+    <string id="30024">Send DeepStandby-Command</string>
 
     <!-- notifications -->
     <string id="30500">Disconnected from '%s'</string>

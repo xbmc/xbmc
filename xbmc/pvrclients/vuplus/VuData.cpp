@@ -63,6 +63,85 @@ bool Vu::LoadLocations()
 
 }
 
+void Vu::TimerUpdates()
+{
+  std::vector<VuTimer> newtimer = LoadTimers();
+
+  for (unsigned int i=0; i<m_timers.size(); i++)
+  {
+    m_timers[i].iUpdateState = VU_UPDATE_STATE_NONE;
+  }
+
+  unsigned int iUpdated=0;
+  unsigned int iUnchanged=0; 
+
+  for (unsigned int j=0;j<newtimer.size(); j++) {
+    for (unsigned int i=0; i<m_timers.size(); i++) 
+    {
+      if (m_timers[i].like(newtimer[j]))
+      {
+        if(m_timers[i] == newtimer[j])
+        {
+          m_timers[i].iUpdateState = VU_UPDATE_STATE_FOUND;
+          newtimer[j].iUpdateState = VU_UPDATE_STATE_FOUND;
+          iUnchanged++;
+        }
+        else
+        {
+	  newtimer[j].iUpdateState = VU_UPDATE_STATE_UPDATED;
+	  m_timers[i].iUpdateState = VU_UPDATE_STATE_UPDATED;
+          m_timers[i].strTitle = newtimer[j].strTitle;
+          m_timers[i].strPlot = newtimer[j].strPlot;
+          m_timers[i].iChannelId = newtimer[j].iChannelId;
+          m_timers[i].startTime = newtimer[j].startTime;
+          m_timers[i].endTime = newtimer[j].endTime;
+          m_timers[i].bRepeating = newtimer[j].bRepeating;
+          m_timers[i].iWeekdays = newtimer[j].iWeekdays;
+          m_timers[i].iEpgID = newtimer[j].iEpgID;
+
+          iUpdated++;
+
+        }
+      }
+    }
+  }
+
+  unsigned int iRemoved = 0;
+
+  for (unsigned int i=0; i<m_timers.size(); i++)
+  {
+    if (m_timers.at(i).iUpdateState == VU_UPDATE_STATE_NONE)
+    {
+      XBMC->Log(LOG_INFO, "%s Removed timer: '%s', ClientIndex: '%d'", __FUNCTION__, m_timers.at(i).strTitle.c_str(), m_timers.at(i).iClientIndex);
+      m_timers.erase(m_timers.begin()+i);
+      i=0;
+      iRemoved++;
+    }
+  }
+  unsigned int iNew=0;
+
+  for (unsigned int i=0; i<newtimer.size();i++)
+  { 
+    if(newtimer.at(i).iUpdateState == VU_UPDATE_STATE_NEW)
+    {  
+      VuTimer &timer = newtimer.at(i);
+      timer.iClientIndex = m_iClientIndexCounter;
+      XBMC->Log(LOG_INFO, "%s New timer: '%s', ClientIndex: '%d'", __FUNCTION__, timer.strTitle.c_str(), m_iClientIndexCounter);
+      m_timers.push_back(timer);
+      m_iClientIndexCounter++;
+      iNew++;
+    } 
+  }
+ 
+  XBMC->Log(LOG_INFO, "%s No of timers: removed [%d], untouched [%d], updated '%d', new '%d'", __FUNCTION__, iRemoved, iUnchanged, iUpdated, iNew); 
+
+  if (iRemoved != 0 || iUpdated != 0 || iNew != 0) 
+  {
+    XBMC->Log(LOG_INFO, "%s Changes in timerlist detected, trigger an update!", __FUNCTION__);
+    PVR->TriggerTimerUpdate();
+  }
+}
+
 bool Vu::CheckForChannelUpdate() 
 {
   if (!g_bCheckForChannelUpdates)
@@ -385,7 +464,13 @@ void Vu::StoreChannelData()
 
     stream << "\t\t\t<servicereference>" << strTmp;
     stream << "</servicereference>\n";
-    stream << "\t\t\t<streamurl>" << channel.strStreamURL;
+
+    strTmp =  channel.strStreamURL;
+    Escape(strTmp, "&", "&quot;");
+    Escape(strTmp, "<", "&lt;");
+    Escape(strTmp, ">", "&gt;");
+
+    stream << "\t\t\t<streamurl>" << strTmp;
     stream << "</streamurl>\n";
 
     strTmp = channel.strIconPath;
@@ -416,11 +501,10 @@ Vu::Vu()
     strURL.Format("%s:%s@", g_strUsername.c_str(), g_strPassword.c_str());
   strURL.Format("http://%s%s:%u/", strURL.c_str(), g_strHostname.c_str(), g_iPortWeb);
   m_strURL = strURL.c_str();
-  m_iNumChannels = 0;
-  m_iNumTimers = 0; 
   m_iNumRecordings = 0;
   m_iNumChannelGroups = 0;
   m_iCurrentChannel = -1;
+  m_iClientIndexCounter = 1;
   m_bInitial = false;
 
   m_iUpdateTimer = 0;
@@ -467,6 +551,7 @@ bool Vu::Open()
     m_bInitial = true;
     StoreChannelData();
   }
+  TimerUpdates();
 
   XBMC->Log(LOG_INFO, "%s Starting separate client update thread...", __FUNCTION__);
   CreateThread(); 
@@ -524,7 +609,7 @@ void  *Vu::Process()
           XBMC->Log(LOG_ERROR, "%s - AutomaticTimerlistCleanup failed!", __FUNCTION__);
       }
 
-      PVR->TriggerTimerUpdate();
+      TimerUpdates();
       PVR->TriggerRecordingUpdate();
     }
 
@@ -537,15 +622,10 @@ void  *Vu::Process()
   return NULL;
 }
 
-void Vu::Close()
-{
-  m_bIsConnected = false;
-}
 
 bool Vu::LoadChannels() 
 {
     m_channels.clear();
-    m_iNumChannels = 0;
     // Load Channels
     for (int i = 0;i<m_iNumChannelGroups;  i++) 
     {
@@ -660,8 +740,8 @@ bool Vu::LoadChannels(CStdString strServiceReference, CStdString strGroupName)
     VuChannel newChannel;
     newChannel.bRadio = bRadio;
     newChannel.strGroupName = strGroupName;
-    newChannel.iUniqueId = m_iNumChannels+1;
-    newChannel.iChannelNumber = m_iNumChannels;
+    newChannel.iUniqueId = m_channels.size()+1;
+    newChannel.iChannelNumber = m_channels.size()+1;
     newChannel.strServiceReference = strTmp;
 
     if (!GetString(xTmp, "e2servicename", strTmp)) 
@@ -698,17 +778,14 @@ bool Vu::LoadChannels(CStdString strServiceReference, CStdString strGroupName)
 
     newChannel.strIconPath = strIcon;
 
-    strTmp.Format("http://%s:%d/%s", g_strHostname, g_iPortStream, newChannel.strServiceReference);
+    strTmp.Format("http://%s:%d/%s", g_strHostname, g_iPortStream, URLEncodeInline(newChannel.strServiceReference));
     newChannel.strStreamURL = strTmp;
 
     m_channels.push_back(newChannel);
     XBMC->Log(LOG_INFO, "%s Loaded channel: %s, Icon: %s", __FUNCTION__, newChannel.strChannelName.c_str(), newChannel.strIconPath.c_str());
-
-
-    m_iNumChannels++; 
   }
 
-  XBMC->Log(LOG_INFO, "%s Loaded %d Channels", __FUNCTION__, m_iNumChannels);
+  XBMC->Log(LOG_INFO, "%s Loaded %d Channels", __FUNCTION__, m_channels.size());
   return true;
 }
 
@@ -767,7 +844,7 @@ int Vu::GetChannelsAmount()
 
 int Vu::GetTimersAmount()
 {
-  return m_iNumTimers;
+  return m_timers.size();
 }
 
 unsigned int Vu::GetRecordingsAmount() {
@@ -808,11 +885,12 @@ PVR_ERROR Vu::GetChannels(PVR_HANDLE handle, bool bRadio)
 Vu::~Vu() 
 {
   StopThread();
-
+  
   m_channels.clear();  
   m_timers.clear();
   m_recordings.clear();
   m_groups.clear();
+  m_bIsConnected = false;
 }
 
 PVR_ERROR Vu::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
@@ -926,6 +1004,41 @@ int Vu::GetChannelNumber(CStdString strServiceReference)
 
 PVR_ERROR Vu::GetTimers(PVR_HANDLE handle)
 {
+
+  XBMC->Log(LOG_INFO, "%s - timers available '%d'", __FUNCTION__, m_timers.size());
+  for (unsigned int i=0; i<m_timers.size(); i++)
+  {
+    VuTimer &timer = m_timers.at(i);
+	XBMC->Log(LOG_INFO, "%s - Transfer timer '%s', ClientIndex '%d'", __FUNCTION__, timer.strTitle.c_str(), timer.iClientIndex);
+    PVR_TIMER tag;
+    memset(&tag, 0, sizeof(PVR_TIMER));
+    tag.iClientChannelUid = timer.iChannelId;
+    tag.startTime         = timer.startTime;
+    tag.endTime           = timer.endTime;
+    tag.strTitle          = timer.strTitle.c_str();
+    tag.strDirectory      = "/";   // unused
+    tag.strSummary        = timer.strPlot.c_str();
+    tag.state             = timer.state;
+    tag.iPriority         = 0;     // unused
+    tag.iLifetime         = 0;     // unused
+    tag.bIsRepeating      = timer.bRepeating;
+    tag.firstDay          = 0;     // unused
+    tag.iWeekdays         = timer.iWeekdays;
+    tag.iEpgUid           = timer.iEpgID;
+    tag.iMarginStart      = 0;     // unused
+    tag.iMarginEnd        = 0;     // unused
+    tag.iGenreType        = 0;     // unused
+    tag.iGenreSubType     = 0;     // unused
+    tag.iClientIndex = timer.iClientIndex;
+
+    PVR->TransferTimerEntry(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
+std::vector<VuTimer> Vu::LoadTimers()
+{
   CStdString url; 
   url.Format("%s%s", m_strURL.c_str(), "web/timerlist"); 
 
@@ -934,10 +1047,12 @@ PVR_ERROR Vu::GetTimers(PVR_HANDLE handle)
 
   XMLResults xe;
   XMLNode xMainNode = XMLNode::parseString(strXML.c_str(), NULL, &xe);
+  
+  std::vector<VuTimer> timers;
 
   if(xe.error != 0)  {
     XBMC->Log(LOG_ERROR, "%s Unable to parse XML. Error: '%s' ", __FUNCTION__, XMLNode::getError(xe.error));
-    return PVR_ERROR_SERVER_ERROR;
+    return timers;
   }
 
   XMLNode xNode = xMainNode.getChildNode("e2timerlist");
@@ -945,8 +1060,6 @@ PVR_ERROR Vu::GetTimers(PVR_HANDLE handle)
 
   XBMC->Log(LOG_INFO, "%s Number of elements: '%d'", __FUNCTION__, n);
   
-  m_iNumTimers = 0;
-  m_timers.clear();
 
   while(n>0)
   {
@@ -962,11 +1075,8 @@ PVR_ERROR Vu::GetTimers(PVR_HANDLE handle)
     if (GetString(xTmp, "e2name", strTmp)) 
       XBMC->Log(LOG_DEBUG, "%s Processing timer '%s'", __FUNCTION__, strTmp.c_str());
  
-
-    if (((!g_bShowTimersCompleted) && (GetInt(xTmp, "e2state", iTmp))) && (iTmp == 3)) {
-      XBMC->Log(LOG_DEBUG, "%s Skipping timer!", __FUNCTION__);
+    if (!GetInt(xTmp, "e2state", iTmp)) 
       continue;
-    }
 
     if (!GetInt(xTmp, "e2disabled", iDisabled))
       continue;
@@ -1030,45 +1140,26 @@ PVR_ERROR Vu::GetTimers(PVR_HANDLE handle)
 
     if (GetBoolean(xTmp, "e2cancled", bTmp)) {
       if (bTmp)  {
-        timer.state = PVR_TIMER_STATE_CANCELLED;
-        XBMC->Log(LOG_DEBUG, "%s Timer state is: CANCELLED", __FUNCTION__);
+        timer.state = PVR_TIMER_STATE_ABORTED;
+        XBMC->Log(LOG_DEBUG, "%s Timer state is: ABORTED", __FUNCTION__);
       }
     }
+
+	if (iDisabled == 1) {
+		timer.state = PVR_TIMER_STATE_CANCELLED;
+		XBMC->Log(LOG_DEBUG, "%s Timer state is: Cancelled", __FUNCTION__);
+	}
 
     if (timer.state == PVR_TIMER_STATE_INVALID)
       XBMC->Log(LOG_DEBUG, "%s Timer state is: INVALID", __FUNCTION__);
 
-    PVR_TIMER tag;
-    memset(&tag, 0, sizeof(PVR_TIMER));
-    tag.iClientChannelUid = timer.iChannelId;
-    tag.startTime         = timer.startTime;
-    tag.endTime           = timer.endTime;
-    tag.strTitle          = timer.strTitle.c_str();
-    tag.strDirectory      = "/";   // unused
-    tag.strSummary        = timer.strPlot.c_str();
-    tag.state             = timer.state;
-    tag.iPriority         = 0;     // unused
-    tag.iLifetime         = 0;     // unused
-    tag.bIsRepeating      = timer.bRepeating;
-    tag.firstDay          = 0;     // unused
-    tag.iWeekdays         = timer.iWeekdays;
-    tag.iEpgUid           = timer.iEpgID;
-    tag.iMarginStart      = 0;     // unused
-    tag.iMarginEnd        = 0;     // unused
-    tag.iGenreType        = 0;     // unused
-    tag.iGenreSubType     = 0;     // unused
-    tag.iClientIndex = m_iNumTimers;
+    timers.push_back(timer);
 
-    PVR->TransferTimerEntry(handle, &tag);
-
-    m_iNumTimers++; 
-    m_timers.push_back(timer);
-
-    XBMC->Log(LOG_INFO, "%s loaded Timer entry '%s', begin '%d', end '%d'", __FUNCTION__, tag.strTitle, tag.startTime, tag.endTime);
+    XBMC->Log(LOG_INFO, "%s fetched Timer entry '%s', begin '%d', end '%d'", __FUNCTION__, timer.strTitle.c_str(), timer.startTime, timer.endTime);
   }
 
-  XBMC->Log(LOG_INFO, "%s Loaded %u Timer Entries", __FUNCTION__, m_iNumTimers);
-  return PVR_ERROR_NO_ERROR; 
+  XBMC->Log(LOG_INFO, "%s fetched %u Timer Entries", __FUNCTION__, timers.size());
+  return timers; 
 }
 
 CStdString Vu::URLEncodeInline(const CStdString& strData)
@@ -1084,7 +1175,7 @@ CStdString Vu::URLEncodeInline(const CStdString& strData)
   return buffer;
 }
 
-bool Vu::SendSimpleCommand(const CStdString& strCommandURL, CStdString& strResultText)
+bool Vu::SendSimpleCommand(const CStdString& strCommandURL, CStdString& strResultText, bool bIgnoreResult)
 {
   CStdString url; 
   url.Format("%s%s", m_strURL.c_str(), strCommandURL.c_str()); 
@@ -1092,33 +1183,37 @@ bool Vu::SendSimpleCommand(const CStdString& strCommandURL, CStdString& strResul
   CStdString strXML;
   strXML = GetHttpXML(url);
 
-  XMLResults xe;
-  XMLNode xMainNode = XMLNode::parseString(strXML.c_str(), NULL, &xe);
+  if (!bIgnoreResult)
+  {
+    XMLResults xe;
+    XMLNode xMainNode = XMLNode::parseString(strXML.c_str(), NULL, &xe);
 
-  if(xe.error != 0)  {
-    XBMC->Log(LOG_ERROR, "%s Unable to parse XML. Error: '%s' ", __FUNCTION__, XMLNode::getError(xe.error));
-    return false;
+    if(xe.error != 0)  {
+      XBMC->Log(LOG_ERROR, "%s Unable to parse XML. Error: '%s' ", __FUNCTION__, XMLNode::getError(xe.error));
+      return false;
+    }
+
+    XMLNode xNode = xMainNode.getChildNode("e2simplexmlresult");
+
+    bool bTmp;
+
+    if (!GetBoolean(xNode, "e2state", bTmp)) {
+      XBMC->Log(LOG_ERROR, "%s Could not parse e2state from result!", __FUNCTION__);
+      strResultText.Format("Could not parse e2state!");
+      return false;
+    }
+
+    if (!GetString(xNode, "e2statetext", strResultText)) {
+      XBMC->Log(LOG_ERROR, "%s Could not parse e2state from result!", __FUNCTION__);
+      return false;
+    }
+
+    if (!bTmp)
+      XBMC->Log(LOG_ERROR, "%s Error message from backend: '%s'", __FUNCTION__, strResultText.c_str());
+
+    return bTmp;
   }
-
-  XMLNode xNode = xMainNode.getChildNode("e2simplexmlresult");
-
-  bool bTmp;
-
-  if (!GetBoolean(xNode, "e2state", bTmp)) {
-    XBMC->Log(LOG_ERROR, "%s Could not parse e2state from result!", __FUNCTION__);
-    strResultText.Format("Could not parse e2state!");
-    return false;
-  }
-
-  if (!GetString(xNode, "e2statetext", strResultText)) {
-    XBMC->Log(LOG_ERROR, "%s Could not parse e2state from result!", __FUNCTION__);
-    return false;
-  }
-
-  if (!bTmp)
-    XBMC->Log(LOG_ERROR, "%s Error message from backend: '%s'", __FUNCTION__, strResultText.c_str());
-
-  return bTmp;
+  return true;
 }
 
 
@@ -1142,7 +1237,7 @@ PVR_ERROR Vu::AddTimer(const PVR_TIMER &timer)
   if(!SendSimpleCommand(strTmp, strResult)) 
     return PVR_ERROR_SERVER_ERROR;
   
-  PVR->TriggerTimerUpdate();
+  TimerUpdates();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1152,15 +1247,16 @@ PVR_ERROR Vu::DeleteTimer(const PVR_TIMER &timer)
   CStdString strTmp;
   CStdString strServiceReference = m_channels.at(timer.iClientChannelUid-1).strServiceReference.c_str();
 
-  strTmp.Format("web/timerdelete?sRef=%s&begin=%d&end=%d", strServiceReference, timer.startTime, timer.endTime);
+  strTmp.Format("web/timerdelete?sRef=%s&begin=%d&end=%d", URLEncodeInline(strServiceReference), timer.startTime, timer.endTime);
 
   CStdString strResult;
   if(!SendSimpleCommand(strTmp, strResult)) 
     return PVR_ERROR_SERVER_ERROR;
 
-  PVR->TriggerTimerUpdate();
   if (timer.state == PVR_TIMER_STATE_RECORDING)
     PVR->TriggerRecordingUpdate();
+  
+  TimerUpdates();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1297,20 +1393,31 @@ PVR_ERROR Vu::UpdateTimer(const PVR_TIMER &timer)
   CStdString strTmp;
   CStdString strServiceReference = m_channels.at(timer.iClientChannelUid-1).strServiceReference.c_str();  
 
-  VuTimer &oldTimer = m_timers.at(timer.iClientIndex);
+  unsigned int i=0;
+
+  while (i<m_timers.size())
+  {
+	  if (m_timers.at(i).iClientIndex == timer.iClientIndex)
+		  break;
+	  else
+		  i++;
+  }
+
+  VuTimer &oldTimer = m_timers.at(i);
   CStdString strOldServiceReference = m_channels.at(oldTimer.iChannelId-1).strServiceReference.c_str();  
+  XBMC->Log(LOG_DEBUG, "%s old timer channelid '%d'", __FUNCTION__, oldTimer.iChannelId);
 
   int iDisabled = 0;
   if (timer.state == PVR_TIMER_STATE_CANCELLED)
     iDisabled = 1;
 
-  strTmp.Format("web/timerchange?sRef=%s&begin=%d&end=%d&name=%s&eventID=%d&description=%s&tags=&afterevent=3&eit=0&disabled=%d&justplay=0%repeated=%d&channelOld=%s&beginOld=%d&endOld=%d&deleteOldOnSave=1", strServiceReference.c_str(), timer.startTime, timer.endTime, URLEncodeInline(timer.strTitle), 0, URLEncodeInline(timer.strSummary), iDisabled, timer.iWeekdays, strOldServiceReference.c_str(), oldTimer.startTime, oldTimer.endTime  );
-
+  strTmp.Format("web/timerchange?sRef=%s&begin=%d&end=%d&name=%s&eventID=&description=%s&tags=&afterevent=3&eit=0&disabled=%d&justplay=0&repeated=%d&channelOld=%s&beginOld=%d&endOld=%d&deleteOldOnSave=1", URLEncodeInline(strServiceReference.c_str()), timer.startTime, timer.endTime, URLEncodeInline(timer.strTitle), URLEncodeInline(timer.strSummary), iDisabled, timer.iWeekdays, URLEncodeInline(strOldServiceReference.c_str()), oldTimer.startTime, oldTimer.endTime  );
+  
   CStdString strResult;
   if(!SendSimpleCommand(strTmp, strResult))
     return PVR_ERROR_SERVER_ERROR;
 
-  PVR->TriggerTimerUpdate();
+  TimerUpdates();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1464,7 +1571,7 @@ PVR_ERROR Vu::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP 
 {
   XBMC->Log(LOG_DEBUG, "%s - group '%s'", __FUNCTION__, group.strGroupName);
   CStdString strTmp = group.strGroupName;
-  for (int i = 0;i<m_iNumChannels;  i++) 
+  for (unsigned int i = 0;i<m_channels.size();  i++) 
   {
     VuChannel &myChannel = m_channels.at(i);
     if (!strTmp.compare(myChannel.strGroupName)) 
@@ -1531,5 +1638,17 @@ bool Vu::SwitchChannel(const PVR_CHANNEL &channel)
     return false;
 
   return true;
+}
 
+void Vu::SendPowerstate()
+{
+  if (!g_bSetPowerstate)
+    return;
+  
+  CLockObject lock(m_mutex);
+  CStdString strTmp;
+  strTmp.Format("web/powerstate?newstate=1");
+
+  CStdString strResult;
+  SendSimpleCommand(strTmp, strResult, true); 
 }
