@@ -40,10 +40,10 @@
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
-#include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
+#include "utils/log.h"
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
 #endif
@@ -53,6 +53,9 @@
 #endif
 #ifdef TARGET_DARWIN_IOS
 #include "osx/DarwinUtils.h"
+#endif
+#if defined(USE_FFMPEG)
+#include "lib/DllSwScale.h"
 #endif
 
 using namespace Shaders;
@@ -103,7 +106,9 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
 
+#if defined(HAS_FFMPEG)
   m_dllSwScale = new DllSwScale;
+#endif
   m_sw_context = NULL;
 }
 
@@ -125,7 +130,9 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
     m_pYUVShader = NULL;
   }
 
+#if defined(HAS_FFMPEG)
   delete m_dllSwScale;
+#endif
 }
 
 void CLinuxRendererGLES::ManageTextures()
@@ -503,8 +510,10 @@ unsigned int CLinuxRendererGLES::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
+#if defined(HAS_FFMPEG)
   if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
+#endif
 
   return true;
 }
@@ -697,11 +706,13 @@ void CLinuxRendererGLES::UnInit()
   for (int i = 0; i < NUM_BUFFERS; ++i)
     (this->*m_textureDelete)(i);
 
+#if defined(HAS_FFMPEG)
   if (m_dllSwScale && m_sw_context)
   {
     m_dllSwScale->sws_freeContext(m_sw_context);
     m_sw_context = NULL;
   }
+#endif
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
   m_bValidated = false;
@@ -761,8 +772,10 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   }
   else
   {
+#if defined(HAS_FFMPEG) || defined(__ARM_NEON__)
     RenderSoftware(index, m_currentField);
     VerifyGLState();
+#endif
   }
 }
 
@@ -1329,7 +1342,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 #if defined(__ARM_NEON__)
     yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
       m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
-#else
+#elif defined(HAS_FFMPEG)
     m_sw_context = m_dllSwScale->sws_getCachedContext(m_sw_context,
       im->width, im->height, PIX_FMT_YUV420P,
       im->width, im->height, PIX_FMT_RGBA,
@@ -1339,7 +1352,11 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
     uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
     int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+
     m_dllSwScale->sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
+#else
+  //We should add our own sw implementation here.
+    CLog::Log(LOGDEBUG, "No YUV->RGB implementation available.");
 #endif
   }
 

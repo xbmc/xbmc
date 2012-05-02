@@ -80,6 +80,11 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_FFMPEG
+  #define HAS_FFMPEG
+#endif
+
+
 /**********************
  * Non-free Components
  **********************/

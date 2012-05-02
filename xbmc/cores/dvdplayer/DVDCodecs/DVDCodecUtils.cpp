@@ -19,12 +19,15 @@
  *
  */
 
+#include "system.h"
 #include "DVDCodecUtils.h"
 #include "DVDClock.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
+#if defined(HAS_FFMPEG)
 #include "DllSwScale.h"
+#endif
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
@@ -220,6 +223,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
 
 DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format)
 {
+#if defined(HAS_FFMPEG)
   // Clone a YV12 picture to new YUY2 or UYVY picture.
   DVDVideoPicture* pPicture = new DVDVideoPicture;
   if (pPicture)
@@ -277,6 +281,9 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
     }
   }
   return pPicture;
+#else
+  return NULL;
+#endif
 }
 
 bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)

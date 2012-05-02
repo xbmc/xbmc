@@ -39,10 +39,12 @@
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
-#include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "RenderCapture.h"
+#if defined(USE_FFMPEG)
+#include "lib/DllSwScale.h"
+#endif
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -159,7 +161,9 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_context = NULL;
   m_rgbPbo = 0;
 
+#if defined(USE_FFMPEG)
   m_dllSwScale = new DllSwScale;
+#endif
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -182,7 +186,9 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_context)
   {
+#if defined(USE_FFMPEG)
     m_dllSwScale->sws_freeContext(m_context);
+#endif
     m_context = NULL;
   }
 
@@ -193,7 +199,9 @@ CLinuxRendererGL::~CLinuxRendererGL()
     m_pYUVShader = NULL;
   }
 
+#if defined(USE_FFMPEG)
   delete m_dllSwScale;
+#endif
 }
 
 bool CLinuxRendererGL::ValidateRenderer()
@@ -744,7 +752,9 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
+#if defined(USE_FFMPEG)
   if (!m_dllSwScale->Load())
+#endif
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   return true;
@@ -1069,7 +1079,9 @@ void CLinuxRendererGL::UnInit()
 
   if (m_context)
   {
+#if defined(USE_FFMPEG)
     m_dllSwScale->sws_freeContext(m_context);
+#endif
     m_context = NULL;
   }
 
@@ -2600,6 +2612,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 
 void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsigned flipIndexBuf)
 {
+#if defined(USE_FFMPEG)
   if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
     SetupRGBBuffer();
   else if(flipIndexPlane == flipIndexBuf)
@@ -2665,10 +2678,15 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
     m_rgbBuffer = (BYTE*)PBO_OFFSET;
   }
+#else
+  CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFrame: called without libswscale available");
+  return;
+#endif
 }
 
 void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, unsigned flipIndexPlaneBot, unsigned flipIndexBuf)
 {
+#if defined(USE_FFMPEG)
   if(m_rgbBufferSize != m_sourceWidth * m_sourceHeight * 4)
     SetupRGBBuffer();
   else if(flipIndexPlaneTop == flipIndexBuf && flipIndexPlaneBot == flipIndexBuf)
@@ -2749,6 +2767,10 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
     m_rgbBuffer = (BYTE*)PBO_OFFSET;
   }
+#else
+  CLog::Log(LOGERROR, "CLinuxRendererGL::ToRGBFields: called without libswscale available");
+  return;
+#endif
 }
 
 void CLinuxRendererGL::SetupRGBBuffer()

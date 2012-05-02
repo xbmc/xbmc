@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "DVDPlayerTeletext.h"
 #include "settings/Settings.h"
 #include "DVDPlayer.h"
@@ -116,9 +117,11 @@ CDVDTeletextData::~CDVDTeletextData()
 
 bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
 {
+#if defined(HAS_FFMPEG)
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
   if (hints.codec == CODEC_ID_DVB_TELETEXT)
     return true;
+#endif
 #endif
 
   return false;
@@ -127,7 +130,7 @@ bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
 bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
 {
   m_messageQueue.Init();
-
+#if defined(HAS_FFMPEG)
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
   if (hints.codec == CODEC_ID_DVB_TELETEXT)
   {
@@ -135,6 +138,7 @@ bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
     Create();
     return true;
   }
+#endif
 #endif
 
   return false;

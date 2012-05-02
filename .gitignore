@@ -992,6 +992,9 @@ lib/cmyth/Makefile
 # /xbmc/music/karaoke/
 /xbmc/music/karaoke/Makefile
 
+# /xbmc/music/tags/
+/xbmc/music/tags/Makefile
+
 # /lib/libapetag/
 /lib/libapetag/Makefile
 /lib/libapetag/libtool

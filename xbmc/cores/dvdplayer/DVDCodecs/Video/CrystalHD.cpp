@@ -37,9 +37,11 @@
 #include "threads/Thread.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
-#include "DllSwScale.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
+#if defined(USE_FFMPEG)
+#include "lib/DllSwScale.h"
+#endif
 
 namespace BCM
 {
@@ -249,7 +251,9 @@ protected:
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
   CEvent              m_ready_event;
+#if defined(USE_FFMPEG)
   DllSwScale          *m_dllSwScale;
+#endif
   struct SwsContext   *m_sw_scale_ctx;
 };
 
@@ -337,9 +341,11 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_framerate_timestamp(0.0),
   m_framerate(0.0)
 {
+#if defined(USE_FFMPEG)
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
   m_dllSwScale->Load();
+#endif
 
   
   if (g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_YV12_PREFERED)
@@ -354,10 +360,11 @@ CMPCOutputThread::~CMPCOutputThread()
     delete m_ReadyList.Pop();
   while(m_FreeList.Count())
     delete m_FreeList.Pop();
-    
+#if defined(USE_FFMPEG)
   if (m_sw_scale_ctx)
     m_dllSwScale->sws_freeContext(m_sw_scale_ctx);
   delete m_dllSwScale;
+#endif
 }
 
 unsigned int CMPCOutputThread::GetReadyCount(void)
@@ -940,12 +947,15 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                   int      srcStride[] = { stride*2, 0, 0, 0 };
                   uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
                   int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
-
+#if defined(USE_FFMPEG)
                   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
                     pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
                     SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
                   m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+#else
+                  return false;
+#endif
                 }
               break;
               default:

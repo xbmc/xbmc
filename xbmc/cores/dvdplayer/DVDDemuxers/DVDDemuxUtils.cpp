@@ -19,12 +19,11 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
+#include "system.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 #include "utils/log.h"
+#if defined(HAS_FFMPEG)
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
@@ -36,6 +35,7 @@ extern "C" {
   #include "libavcodec/avcodec.h"
 #endif
 }
+#endif
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
 {

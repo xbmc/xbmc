@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
 #include "FileItem.h"
@@ -40,14 +41,18 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
+#if defined(HAS_FFMPEG)
 #include "DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DllAvCodec.h"
+#include "DllSwScale.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#else
+#include "FFMpegInternals.h"
+#endif
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
-#include "DllAvCodec.h"
-#include "DllSwScale.h"
 #include "filesystem/File.h"
 
 
@@ -76,6 +81,7 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
 
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
 {
+#if defined(HAS_FFMPEG)
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
   if (!pInputStream)
@@ -257,6 +263,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
   CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
   return bOk;
+#endif
+  return false;
 }
 
 /**

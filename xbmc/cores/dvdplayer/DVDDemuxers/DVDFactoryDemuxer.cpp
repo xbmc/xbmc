@@ -25,7 +25,9 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamHttp.h"
 
+#if defined(HAS_FFMPEG)
 #include "DVDDemuxFFmpeg.h"
+#endif
 #include "DVDDemuxShoutcast.h"
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
@@ -61,11 +63,13 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
       return NULL;
   }
 #endif
-
+#if defined(HAS_FFMPEG)
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream))
     return demuxer.release();
   else
     return NULL;
+#endif
+  return NULL;
 }
 
