@@ -93,7 +93,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       {
         CStdString fanart;
         if (item->HasProperty("fanart_image"))
-          fanart = item->GetProperty("fanart_image").asString();
+          fanart = CTextureCache::Get().CheckAndCacheImage(item->GetProperty("fanart_image").asString());
         if (fanart.empty())
           fanart = item->GetCachedFanart();
         if (!fanart.empty())
