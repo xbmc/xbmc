@@ -1048,6 +1048,77 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
   return true;
 }
 
+bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
+{
+  /* if asked to resume somewhere, we should not show anything */
+  if (item->m_lStartOffset)
+    return true;
+
+  if (item->IsBDFile())
+  {
+    CStdString root = URIUtils::GetParentPath(item->GetPath());
+    URIUtils::RemoveSlashAtEnd(root);
+    if(URIUtils::GetFileName(root) == "BDMV")
+    {
+      CURL url("bluray://");
+      url.SetHostName(URIUtils::GetParentPath(root));
+      return ShowPlaySelection(item, url.Get());
+    }
+  }
+
+  return true;
+}
+
+bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString& directory)
+{
+
+  CFileItemList items;
+
+  if (!XFILE::CDirectory::GetDirectory(directory, items, XFILE::CDirectory::CHints(), true))
+  {
+    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for %s", directory.c_str());
+    return true;
+  }
+
+  if (items.Size() == 0)
+  {
+    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", directory.c_str());
+    return true;
+  }
+
+  CGUIDialogSelect* dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  while(true)
+  {
+    dialog->Reset();
+    dialog->SetHeading("Select playback item");
+    dialog->SetItems(&items);
+    dialog->SetUseDetails(true);
+    dialog->DoModal();
+
+    CFileItemPtr item_new = dialog->GetSelectedItem();
+    if(!item_new || dialog->GetSelectedLabel() < 0)
+    {
+      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted %s", directory.c_str());
+      break;
+    }
+
+    if(item_new->m_bIsFolder == false)
+    {
+      item = item_new;
+      return true;
+    }
+
+    items.Clear();
+    if(!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints(), true) || items.Size() == 0)
+    {
+      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
+      break;
+    }
+  }
+
+  return false;
+}
+
 bool CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
@@ -1417,6 +1488,9 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
 {
   CFileItemPtr movieItem(new CFileItem(*item));
+
+  if(!ShowPlaySelection(movieItem))
+    return;
 
   g_playlistPlayer.Reset();
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
