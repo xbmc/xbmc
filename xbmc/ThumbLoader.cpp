@@ -307,17 +307,19 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 bool CProgramThumbLoader::FillThumb(CFileItem &item)
 {
   // no need to do anything if we already have a thumb set
-  if (item.HasThumbnail())
-    return true;
+  CStdString thumb = item.GetThumbnailImage();
 
-  // see whether we have a cached image for this item
-  CStdString thumb = GetCachedImage(item, "thumb");
   if (thumb.IsEmpty())
-  {
-    thumb = GetLocalThumb(item);
-    if (!thumb.IsEmpty())
-      SetCachedImage(item, "thumb", thumb);
+  { // see whether we have a cached image for this item
+    thumb = GetCachedImage(item, "thumb");
+    if (thumb.IsEmpty())
+    {
+      thumb = GetLocalThumb(item);
+      if (!thumb.IsEmpty())
+        SetCachedImage(item, "thumb", thumb);
+    }
   }
+
   if (!thumb.IsEmpty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
