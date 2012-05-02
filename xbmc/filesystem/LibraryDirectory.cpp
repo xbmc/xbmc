@@ -63,6 +63,11 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         CSmartPlaylist playlist;
         CStdString type, label;
         XMLUtils::GetString(node, "content", type);
+        if (type.IsEmpty())
+        {
+          CLog::Log(LOGERROR, "<content> tag must not be empty for type=\"filter\" node '%s'", libNode.c_str());
+          return false;
+        }
         if (XMLUtils::GetString(node, "label", label))
           label = CGUIControlFactory::FilterLabel(label);
         playlist.SetType(type);
@@ -116,6 +121,11 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       { // folder type - grab our path
         CStdString path;
         XMLUtils::GetPath(node, "path", path);
+        if (path.IsEmpty())
+        {
+          CLog::Log(LOGERROR, "<path> tag must be not be empty for type=\"folder\" node '%s'", xml.c_str());
+          continue;
+        }
         item.reset(new CFileItem(path, true));
       }
       else
