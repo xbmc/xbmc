@@ -25,6 +25,7 @@
 #include "utils/StdString.h"
 #include "utils/JobManager.h"
 #include "TextureDatabase.h"
+#include "threads/Event.h"
 
 class CBaseTexture;
 
@@ -89,7 +90,17 @@ public:
    \sa CheckAndCacheImage
    */
   void BackgroundCacheImage(const CStdString &image);
-  void BackgroundCacheTexture(const CStdString &image, const CBaseTexture *texture);
+
+  /*! \brief Cache an image to image cache, optionally return the texture
+
+   Caches the given image, returning the texture if the caller wants it.
+
+   \param image url of the image to cache
+   \param texture [out] the loaded image
+   \return cached url of this image
+   \sa CTextureCacheJob::CacheTexture
+   */
+  CStdString CacheTexture(const CStdString &url, CBaseTexture **texture = NULL);
 
   /*! \brief Take image URL and add it to image cache
 
@@ -215,5 +226,6 @@ private:
   CTextureDatabase m_database;
   std::set<CStdString> m_processing; ///< currently processing list to avoid 2 jobs being processed at once
   CCriticalSection     m_processingSection;
+  CEvent               m_completeEvent; ///< Set whenever a job has finished
 };
 

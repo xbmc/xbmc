@@ -154,23 +154,38 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(url, cacheHash));
 }
 
-void CTextureCache::BackgroundCacheTexture(const CStdString &url, const CBaseTexture *texture)
+CStdString CTextureCache::CacheTexture(const CStdString &url, CBaseTexture **texture)
 {
-  AddJob(new CTextureCacheJob(url, texture));
+  CSingleLock lock(m_processingSection);
+  if (m_processing.find(url) == m_processing.end())
+  {
+    m_processing.insert(url);
+    lock.Leave();
+    // cache the texture directly
+    CTextureCacheJob job(url);
+    bool success = job.CacheTexture(texture);
+    OnJobComplete(0, success, &job);
+    return success ? GetCachedPath(job.m_details.file) : "";
+  }
+  lock.Leave();
+
+  // wait for currently processing job to end.
+  while (true)
+  {
+    m_completeEvent.WaitMSec(1000);
+    {
+      CSingleLock lock(m_processingSection);
+      if (m_processing.find(url) == m_processing.end())
+        break;
+    }
+  }
+  CStdString cachedHash;
+  return GetCachedImage(url, cachedHash);
 }
 
 CStdString CTextureCache::CacheImageFile(const CStdString &url)
 {
-  // Cache image so that the texture manager can load it.
-  CTextureCacheJob job(url, "");
-  if (job.DoWork() && !job.m_details.hash.empty())
-  {
-    AddCachedTexture(url, job.m_details);
-    if (g_advancedSettings.m_useDDSFanart && !job.m_details.file.empty())
-      AddJob(new CTextureDDSJob(GetCachedPath(job.m_details.file)));
-    return GetCachedPath(job.m_details.file);
-  }
-  return "";
+  return CacheTexture(url);
 
   // TODO: In the future we need a cache job to callback when the image is loaded
   //       thus automatically updating the images.  We'd also need fallback code inside
@@ -288,6 +303,8 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       if (i != m_processing.end())
         m_processing.erase(i);
     }
+
+    m_completeEvent.Set();
 
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())

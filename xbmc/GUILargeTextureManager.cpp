@@ -57,19 +57,11 @@ bool CImageLoader::DoWork()
   if (loadPath.IsEmpty())
   {
     // not in our texture cache, so try and load directly and then cache the result
-    bool flipped;
-    unsigned int width, height;
-    CStdString image = CTextureCacheJob::DecodeImageURL(texturePath, width, height, flipped);
-
-    if (image.IsEmpty())
-      return false; // nothing to load
-
-    m_texture = CTextureCacheJob::LoadImage(image, width, height, flipped);
-
+    loadPath = CTextureCache::Get().CacheTexture(texturePath, &m_texture);
     if (m_texture)
-      CTextureCache::Get().BackgroundCacheTexture(texturePath, m_texture);
+      return true; // we're done
   }
-  else
+  if (!loadPath.IsEmpty())
   {
     // direct route - load the image
     m_texture = new CTexture();
