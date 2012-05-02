@@ -119,7 +119,7 @@ public:
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
-  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType);
+  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType, bool whereClause = true);
   static CStdString     TranslateOperator(SEARCH_OPERATOR oper);
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);

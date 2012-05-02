@@ -600,7 +600,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
   return query;
 }
 
-CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStdString& type)
+CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStdString& type, bool whereClause /* = true */)
 {
   if (type == "songs")
   {
@@ -640,7 +640,14 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
   else if (type == "movies")
   {
     CStdString result;
-    if (field == FIELD_TITLE) result.Format("c%02d", VIDEODB_ID_TITLE);
+    if (field == FIELD_TITLE)
+    {
+      if (whereClause)
+        result.Format("c%02d", VIDEODB_ID_TITLE);
+      else
+        // We need some extra logic to get the title value if sorttitle isn't set
+        result.Format("CASE WHEN length(c%02d) > 0 THEN c%02d ELSE c%02d END", VIDEODB_ID_SORTTITLE, VIDEODB_ID_SORTTITLE, VIDEODB_ID_TITLE);
+    }
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_PLOT);
     else if (field == FIELD_PLOTOUTLINE) result.Format("c%02d", VIDEODB_ID_PLOTOUTLINE);
     else if (field == FIELD_TAGLINE) result.Format("c%02d", VIDEODB_ID_TAGLINE);
@@ -974,9 +981,9 @@ CStdString CSmartPlaylist::GetOrderClause(CDatabase &db) const
   if (m_orderField != CSmartPlaylistRule::FIELD_NONE)
   {
     if (CSmartPlaylistRule::GetFieldType(m_orderField) == CSmartPlaylistRule::NUMERIC_FIELD)
-      order.Format("ORDER BY 1*%s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()));
+      order.Format("ORDER BY 1*%s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false));
     else
-      order = db.PrepareSQL("ORDER BY %s", CSmartPlaylistRule::GetDatabaseField(m_orderField,GetType()).c_str());
+      order = db.PrepareSQL("ORDER BY %s", CSmartPlaylistRule::GetDatabaseField(m_orderField, GetType(), false).c_str());
     if (!m_orderAscending)
       order += " DESC";
   }
