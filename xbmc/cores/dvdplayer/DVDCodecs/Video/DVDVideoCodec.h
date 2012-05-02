@@ -24,6 +24,7 @@
 #include "system.h"
 
 #include <vector>
+#include "cores/VideoRenderers/RenderFormats.h"
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -99,17 +100,7 @@ struct DVDVideoPicture
   unsigned int iDisplayWidth;  // width of the picture without black bars
   unsigned int iDisplayHeight; // height of the picture without black bars
 
-  enum EFormat {
-    FMT_YUV420P = 0,
-    FMT_VDPAU,
-    FMT_NV12,
-    FMT_UYVY,
-    FMT_YUY2,
-    FMT_DXVA,
-    FMT_VAAPI,
-    FMT_OMXEGL,
-    FMT_CVBREF,
-  } format;
+  ERenderFormat format;
 };
 
 struct DVDVideoUserData
@@ -135,7 +126,7 @@ struct DVDVideoUserData
 
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 // VC_ messages, messages can be combined
 #define VC_ERROR    0x00000001  // an error occured, no other messages will be returned

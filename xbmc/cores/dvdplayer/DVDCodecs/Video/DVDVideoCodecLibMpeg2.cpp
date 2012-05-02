@@ -495,7 +495,7 @@ bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     if (m_bIs422)
       pDvdVideoPicture->iLineSize[2] <<= 1;
 
-    pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
+    pDvdVideoPicture->format = RENDER_FMT_YUV420P;
     return true;
   }
   else

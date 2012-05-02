@@ -134,7 +134,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -153,6 +153,8 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
@@ -204,8 +206,10 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
   unsigned m_iFlags;
+  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;

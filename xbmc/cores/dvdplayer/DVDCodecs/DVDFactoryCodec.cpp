@@ -119,10 +119,15 @@ CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStre
 }
 
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces, const std::vector<ERenderFormat>& formats)
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
+
+  if(formats.size() == 0)
+    options.m_formats.push_back(RENDER_FMT_YUV420P);
+  else
+    options.m_formats = formats;
 
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
@@ -246,13 +251,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
   if( pixelrate > 1400.0f*720.0f*30.0f )
   {
     CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
-    options.push_back(CDVDCodecOption("lowres","1"));
+    options.m_keys.push_back(CDVDCodecOption("lowres","1"));
   }
 #endif
 
   CStdString value;
   value.Format("%d", surfaces);
-  options.push_back(CDVDCodecOption("surfaces", value));
+  options.m_keys.push_back(CDVDCodecOption("surfaces", value));
   if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
 
   return NULL;

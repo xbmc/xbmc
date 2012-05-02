@@ -469,7 +469,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
     return false;
   }
 
-  picture->format = DVDVideoPicture::FMT_VAAPI;
+  picture->format = RENDER_FMT_VAAPI;
   picture->vaapi  = &m_holder;
   return true;
 }
