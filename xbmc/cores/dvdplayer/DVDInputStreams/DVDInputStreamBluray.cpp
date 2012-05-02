@@ -273,20 +273,34 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   if(m_player == NULL)
     return false;
 
-  CStdString strPath;
-  URIUtils::GetDirectory(strFile,strPath);
-  URIUtils::RemoveSlashAtEnd(strPath);
+  CStdString strPath(strFile);
+  CStdString filename;
+  CStdString root;
 
-  if(URIUtils::GetFileName(strPath) == "PLAYLIST")
+  if(strPath.Left(7).Equals("bluray:"))
   {
-    URIUtils::GetDirectory(strPath,strPath);
-    URIUtils::RemoveSlashAtEnd(strPath);
+    CURL url(strPath);
+    root     = url.GetHostName();
+    filename = URIUtils::GetFileName(url.GetFileName());
   }
-
-  if(URIUtils::GetFileName(strPath) == "BDMV")
+  else
   {
     URIUtils::GetDirectory(strPath,strPath);
     URIUtils::RemoveSlashAtEnd(strPath);
+
+    if(URIUtils::GetFileName(strPath) == "PLAYLIST")
+    {
+      URIUtils::GetDirectory(strPath,strPath);
+      URIUtils::RemoveSlashAtEnd(strPath);
+    }
+
+    if(URIUtils::GetFileName(strPath) == "BDMV")
+    {
+      URIUtils::GetDirectory(strPath,strPath);
+      URIUtils::RemoveSlashAtEnd(strPath);
+    }
+    root     = strPath;
+    filename = URIUtils::GetFileName(strFile);
   }
 
   if (!m_dll)
@@ -297,12 +311,12 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", strPath.c_str());
-  m_bd = m_dll->bd_open(strPath.c_str(), NULL);
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
+  m_bd = m_dll->bd_open(root.c_str(), NULL);
 
   if(!m_bd)
   {
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", strPath.c_str());
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", root.c_str());
     return false;
   }
 
@@ -345,8 +359,6 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
-
-  CStdString filename = URIUtils::GetFileName(strFile);
   if(filename.Equals("index.bdmv"))
   {
     m_navmode = false;

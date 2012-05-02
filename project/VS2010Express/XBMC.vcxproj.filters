@@ -2339,6 +2339,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\ASAPFileDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\BlurayDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\CacheStrategy.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5192,6 +5195,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\BlurayDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Base64.h">
