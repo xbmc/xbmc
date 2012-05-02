@@ -89,7 +89,7 @@ public:
   CStdString m_strTitle;
   CStdString m_strSortTitle;
   CStdString m_strVotes;
-  CStdString m_strArtist;
+  std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
   std::vector<std::string> m_set;

@@ -2557,7 +2557,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
-          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
+          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_artist.empty())
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
             strContent = "livetv";
@@ -3437,7 +3437,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CAST_AND_ROLE:
       return m_currentFile->GetVideoInfoTag()->GetCast(true);
     case VIDEOPLAYER_ARTIST:
-      return m_currentFile->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
@@ -3908,7 +3908,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     }
   case LISTITEM_ARTIST:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
       return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     break;

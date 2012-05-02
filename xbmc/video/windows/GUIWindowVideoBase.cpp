@@ -1539,7 +1539,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   }
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
     iType = VIDEODB_CONTENT_EPISODES;
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_artist.empty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
   if (params.GetSetId() != -1 && params.GetMovieId() == -1)
     iType = VIDEODB_CONTENT_MOVIE_SETS;
