@@ -143,7 +143,7 @@
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 #ifndef _LINUX
-#include "utils/Win32Exception.h"
+#include "threads/platform/win/Win32Exception.h"
 #endif
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"

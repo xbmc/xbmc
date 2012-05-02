@@ -1115,7 +1115,6 @@
     <ClCompile Include="..\..\xbmc\utils\URIUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Weather.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
@@ -1911,7 +1910,6 @@
     <ClInclude Include="..\..\xbmc\utils\URIUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />
     <ClInclude Include="..\..\xbmc\utils\Weather.h" />
-    <ClInclude Include="..\..\xbmc\utils\Win32Exception.h" />
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />

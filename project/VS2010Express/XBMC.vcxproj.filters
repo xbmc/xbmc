@@ -1672,9 +1672,6 @@
     <ClCompile Include="..\..\xbmc\utils\Weather.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\Win32Exception.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4260,9 +4257,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Weather.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\Win32Exception.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h">

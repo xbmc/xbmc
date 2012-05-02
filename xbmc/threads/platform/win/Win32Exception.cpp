@@ -20,25 +20,9 @@
  */
 
 #include "Win32Exception.h"
-#ifndef _LINUX
-#include "eh.h"
-#endif
-#include "log.h"
+#include <eh.h>
 
-#ifdef _LINUX
-
-void win32_exception::writelog(const char *prefix)  const
-{
-  if( prefix )
-    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at %p",
-              prefix, what(), (unsigned int) code(), where());
-  else
-    CLog::Log(LOGERROR, "%s (code:0x%08x) at %p",
-              what(), (unsigned int) code(), where());
-}
-
-
-#else
+#define LOG if(logger) logger->Log
 
 void win32_exception::install_handler()
 {
@@ -57,8 +41,9 @@ void win32_exception::translate(unsigned code, EXCEPTION_POINTERS* info)
     }
 }
 
-win32_exception::win32_exception(const EXCEPTION_RECORD& info)
-: mWhat("Win32 exception"), mWhere(info.ExceptionAddress), mCode(info.ExceptionCode)
+win32_exception::win32_exception(const EXCEPTION_RECORD& info, const char* classname) : 
+  XbmcCommons::Exception(classname ? classname : "win32_exception"),
+mWhat("Win32 exception"), mWhere(info.ExceptionAddress), mCode(info.ExceptionCode)
 {
     switch (info.ExceptionCode) {
     case EXCEPTION_ACCESS_VIOLATION:
@@ -71,16 +56,16 @@ win32_exception::win32_exception(const EXCEPTION_RECORD& info)
     }
 }
 
-void win32_exception::writelog(const char *prefix)  const
+void win32_exception::LogThrowMessage(const char *prefix)  const
 {
   if( prefix )
-    CLog::Log(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
+    LOG(LOGERROR, "%s : %s (code:0x%08x) at 0x%08x", prefix, (unsigned int) what(), code(), where());
   else
-    CLog::Log(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
+    LOG(LOGERROR, "%s (code:0x%08x) at 0x%08x", what(), code(), where());
 }
 
 access_violation::access_violation(const EXCEPTION_RECORD& info)
-: win32_exception(info), mAccessType(Invalid), mBadAddress(0)
+: win32_exception(info,"access_voilation"), mAccessType(Invalid), mBadAddress(0)
 {
     switch(info.ExceptionInformation[0])
     {
@@ -97,27 +82,24 @@ access_violation::access_violation(const EXCEPTION_RECORD& info)
     mBadAddress = reinterpret_cast<win32_exception ::Address>(info.ExceptionInformation[1]);
 }
 
-void access_violation::writelog(const char *prefix) const
+void access_violation::LogThrowMessage(const char *prefix) const
 {
   if( prefix )
     if( mAccessType == Write)
-      CLog::Log(LOGERROR, "%s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "%s : %s at 0x%08x: Writing location 0x%08x", prefix, what(), where(), address());
     else if( mAccessType == Read)
-      CLog::Log(LOGERROR, "%s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "%s : %s at 0x%08x: Reading location 0x%08x", prefix, what(), where(), address());
     else if( mAccessType == DEP)
-      CLog::Log(LOGERROR, "%s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "%s : %s at 0x%08x: DEP violation, location 0x%08x", prefix, what(), where(), address());
     else
-      CLog::Log(LOGERROR, "%s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
+      LOG(LOGERROR, "%s : %s at 0x%08x: unknown access type, location 0x%08x", prefix, what(), where(), address());
   else
     if( mAccessType == Write)
-      CLog::Log(LOGERROR, "%s at 0x%08x: Writing location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "%s at 0x%08x: Writing location 0x%08x", what(), where(), address());
     else if( mAccessType == Read)
-      CLog::Log(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "%s at 0x%08x: Reading location 0x%08x", what(), where(), address());
     else if( mAccessType == DEP)
-      CLog::Log(LOGERROR, "%s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
+      LOG(LOGERROR, "%s at 0x%08x: DEP violation, location 0x%08x", what(), where(), address());
     else
-      CLog::Log(LOGERROR, "%s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
-
+      LOG(LOGERROR, "%s at 0x%08x: unknown access type, location 0x%08x", what(), where(), address());
 }
-
-#endif
