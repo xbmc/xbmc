@@ -204,6 +204,15 @@ const CGFloat timeFadeSecs                    = 2.0;
   [[self view] addGestureRecognizer:doubleFingerSingleTap];
   [doubleFingerSingleTap release];
   
+  //1 finger single long tab - right mouse - alernative
+  UITapGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+                                                        initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
+  singleFingerSingleLongTap.delaysTouchesBegan = YES;
+  singleFingerSingleLongTap.delaysTouchesEnded = YES;  
+  singleFingerSingleLongTap.numberOfTouchesRequired = 1;
+  [self.view addGestureRecognizer:singleFingerSingleLongTap];
+  [singleFingerSingleLongTap release];
+  
   //1 finger single tab - left mouse
   UITapGestureRecognizer *singleFingerSingleTap = [[UITapGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleFingerSingleTap:)];  
@@ -298,6 +307,17 @@ const CGFloat timeFadeSecs                    = 2.0;
   if([self wakeUpFromSleep])
   {
     [g_xbmcController sendKey:XBMCK_c];
+  }
+}
+//--------------------------------------------------------------
+- (IBAction)handleSingleFingerSingleLongTap:(UIGestureRecognizer *)sender
+{
+  if([self wakeUpFromSleep])
+  {
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+      [self handleDoubleFingerSingleTap:sender];
+    }
   }
 }
 //--------------------------------------------------------------
