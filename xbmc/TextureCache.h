@@ -96,7 +96,7 @@ public:
 
    \param image url of the image to cache
    \return cached url of this image
-   \sa CCacheJob::CacheImage
+   \sa CTextureCacheJob::DoWork
    */  
   CStdString CacheImageFile(const CStdString &url);
 
