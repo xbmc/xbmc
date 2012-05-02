@@ -152,11 +152,11 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   else
     g_szPass = "";
 
-  /* Read setting "delay" from settings.xml */
-  if (!XBMC->GetSetting("delay", &g_iTuneDelay))
+  /* Read setting "tunedelay" from settings.xml */
+  if (!XBMC->GetSetting("tunedelay", &g_iTuneDelay))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'delay' setting, falling back to '200' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'tunedelay' setting, falling back to '200' as default");
     g_iTuneDelay = DEFAULT_TUNEDELAY;
   }
 
@@ -276,6 +276,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'pass' from %s to %s", g_szPass.c_str(), (const char*) settingValue);
     g_szPass = (const char*) settingValue;
+  }
+  else if (str == "tunedelay")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'tunedelay' from %u to %u", g_iTuneDelay, *(int*) settingValue);
+    g_iTuneDelay = *(int*) settingValue;
   }
 
   return ADDON_STATUS_OK;

@@ -7,5 +7,5 @@
     <string id="30003">Connect timeout (s)</string>
     <string id="30004">Windows user account</string>
     <string id="30005">Password</string>
-    <string id="30010">Delay after tuning (ms)</string>
+    <string id="30006">Delay after tuning (ms)</string>
 </strings>
