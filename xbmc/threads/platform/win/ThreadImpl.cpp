@@ -190,18 +190,3 @@ float CThread::GetRelativeUsage()
 
   return m_fLastUsage;
 }
-
-int64_t CThread::GetCurrentThreadUsage()
-{
-  HANDLE h = GetCurrentThread();
-  
-  uint64_t time = 0;
-  FILETIME CreationTime, ExitTime, UserTime, KernelTime;
-  if( GetThreadTimes(h, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
-  {
-    time = (((uint64_t)UserTime.dwHighDateTime) << 32) + ((uint64_t)UserTime.dwLowDateTime);
-    time += (((uint64_t)KernelTime.dwHighDateTime) << 32) + ((uint64_t)KernelTime.dwLowDateTime);
-  }
-  return time;
-}
-
