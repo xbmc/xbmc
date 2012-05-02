@@ -694,6 +694,7 @@ AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([lame/lame.h],, AC_MSG_ERROR($missing_headers))
 
 # we need to check for the header because if it exists we set the openssl
 # and gcrypt MT callback hooks. This is mostly so that libcurl operates 
@@ -808,11 +809,14 @@ XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
+
+# Audio encoders
+XB_FIND_SONAME([LAMEENC],     [mp3lame])
+XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
