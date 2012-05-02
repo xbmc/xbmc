@@ -57,7 +57,6 @@ class CTextureCacheJob : public CJob
 {
 public:
   CTextureCacheJob(const CStdString &url, const CStdString &oldHash = "");
-  CTextureCacheJob(const CStdString &url, const CBaseTexture *texture);
   virtual ~CTextureCacheJob();
 
   virtual const char* GetType() const { return "cacheimage"; };
@@ -70,6 +69,26 @@ public:
    \return a hash string for this image
    */
   bool CacheTexture(CBaseTexture **texture = NULL);
+
+  CStdString m_url;
+  CStdString m_oldHash;
+  CTextureDetails m_details;
+private:
+  /*! \brief retrieve a hash for the given image
+   Combines the size, ctime and mtime of the image file into a "unique" hash
+   \param url location of the image
+   \return a hash string for this image
+   */
+  static CStdString GetImageHash(const CStdString &url);
+
+  /*! \brief Check whether a given URL represents an image that can be updated
+   We currently don't check http:// and https:// URLs for updates, under the assumption that
+   a image URL is much more likely to be static and the actual image at the URL is unlikely
+   to change, so no point checking all the time.
+   \param url the url to check
+   \return true if the image given by the URL should be checked for updates, false otehrwise
+   */
+  bool UpdateableURL(const CStdString &url) const;
 
   /*! \brief Decode an image URL to the underlying image, width, height and orientation
    \param url wrapped URL of the image
@@ -93,27 +112,6 @@ public:
    */
   static CBaseTexture *LoadImage(const CStdString &image, unsigned int width, unsigned int height, bool flipped);
 
-  CStdString m_url;
-  CStdString m_oldHash;
-  CTextureDetails m_details;
-private:
-  /*! \brief retrieve a hash for the given image
-   Combines the size, ctime and mtime of the image file into a "unique" hash
-   \param url location of the image
-   \return a hash string for this image
-   */
-  static CStdString GetImageHash(const CStdString &url);
-
-  /*! \brief Check whether a given URL represents an image that can be updated
-   We currently don't check http:// and https:// URLs for updates, under the assumption that
-   a image URL is much more likely to be static and the actual image at the URL is unlikely
-   to change, so no point checking all the time.
-   \param url the url to check
-   \return true if the image given by the URL should be checked for updates, false otehrwise
-   */
-  bool UpdateableURL(const CStdString &url) const;
-
-  CBaseTexture *m_texture;
   CStdString    m_cachePath;
 };
 

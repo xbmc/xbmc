@@ -39,22 +39,10 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
   m_url = url;
   m_oldHash = oldHash;
   m_cachePath = CTextureCache::GetCacheFile(m_url);
-  m_texture = NULL;
-}
-
-CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture)
-{
-  m_url = url;
-  if (texture)
-    m_texture = new CTexture(*(CTexture *)texture);
-  else
-    m_texture = NULL;
-  m_cachePath = CTextureCache::GetCacheFile(m_url);
 }
 
 CTextureCacheJob::~CTextureCacheJob()
 {
-  delete m_texture;
 }
 
 bool CTextureCacheJob::operator==(const CJob* job) const
@@ -75,7 +63,7 @@ bool CTextureCacheJob::DoWork()
   if (ShouldCancel(1, 0)) // HACK: second check is because we cancel the job in the first callback, but we don't detect it
     return false;         //       until the second
 
-  return CacheTexture(&m_texture);
+  return CacheTexture();
 }
 
 bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
@@ -94,9 +82,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
-  CBaseTexture *texture = (old_texture && *old_texture) ? *old_texture : NULL;
-  if (!texture)
-    texture = LoadImage(image, width, height, flipped);
+  CBaseTexture *texture = LoadImage(image, width, height, flipped);
   if (texture)
   {
     if (texture->HasAlpha())
