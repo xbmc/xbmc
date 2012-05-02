@@ -507,6 +507,13 @@ void CDVDDemuxFFmpeg::Dispose()
     }
     m_dllAvFormat.avformat_close_input(&m_pFormatContext);
   }
+
+  if(m_ioContext)
+  {
+    m_dllAvUtil.av_free(m_ioContext->buffer);
+    m_dllAvUtil.av_free(m_ioContext);
+  }
+
   m_ioContext = NULL;
   m_pFormatContext = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
