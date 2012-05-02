@@ -23,7 +23,7 @@
 
 #include "addons/Addon.h"
 #include "windows/GUIMediaWindow.h"
-#include "pictures/PictureThumbLoader.h"
+#include "ThumbLoader.h"
 
 class CFileItem;
 class CFileItemList;
@@ -67,6 +67,6 @@ protected:
   virtual bool Update(const CStdString &strDirectory);
   virtual CStdString GetStartFolder(const CStdString &dir);
 private:
-  CPictureThumbLoader m_thumbLoader;
+  CProgramThumbLoader m_thumbLoader;
 };
 
