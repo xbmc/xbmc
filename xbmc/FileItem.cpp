@@ -2859,6 +2859,7 @@ CStdString CFileItem::GetLocalFanart() const
   // no local fanart available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
+   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsPlugin()
    || IsAddonsPath()
@@ -3119,6 +3120,7 @@ CStdString CFileItem::FindTrailer() const
   // no local trailer available for these
   if (IsInternetStream()
    || URIUtils::IsUPnP(strFile)
+   || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsPlugin()
    || IsDVD())
