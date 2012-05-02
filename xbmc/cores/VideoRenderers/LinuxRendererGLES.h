@@ -160,7 +160,7 @@ public:
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  virtual void         AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture);
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
 protected:
   virtual void Render(DWORD flags, int index);

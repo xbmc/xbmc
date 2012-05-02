@@ -1447,7 +1447,6 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = m_display_queue->height;
-  pDvdVideoPicture->vtb             = this;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = NULL;
   pthread_mutex_unlock(&m_queue_mutex);

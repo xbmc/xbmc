@@ -1877,12 +1877,12 @@ void CLinuxRendererGLES::AddProcessor(COpenMax* openMax, DVDVideoPicture *pictur
 }
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture)
+void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
 {
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
   if (buf.cvBufferRef)
     CVBufferRelease(buf.cvBufferRef);
-  buf.cvBufferRef = picture->cvBufferRef;
+  buf.cvBufferRef = cvBufferRef;
   // retain another reference, this way dvdplayer and renderer can issue releases.
   CVBufferRetain(buf.cvBufferRef);
 }
