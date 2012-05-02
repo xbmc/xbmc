@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <set>
 #include "utils/StdString.h"
 #include "utils/JobManager.h"
 #include "TextureDatabase.h"
@@ -208,8 +209,11 @@ private:
   bool SetCachedTextureValid(const CStdString &url, bool updateable);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;
+  std::set<CStdString> m_processing; ///< currently processing list to avoid 2 jobs being processed at once
+  CCriticalSection     m_processingSection;
 };
 

@@ -70,6 +70,11 @@ bool CTextureCacheJob::operator==(const CJob* job) const
 
 bool CTextureCacheJob::DoWork()
 {
+  if (ShouldCancel(0, 0))
+    return false;
+  if (ShouldCancel(1, 0)) // HACK: second check is because we cancel the job in the first callback, but we don't detect it
+    return false;         //       until the second
+
   // unwrap the URL as required
   bool flipped;
   unsigned int width, height;

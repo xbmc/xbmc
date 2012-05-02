@@ -281,11 +281,39 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
       SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
     else
       AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
+
+    { // remove from our processing list
+      CSingleLock lock(m_processingSection);
+      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
+      if (i != m_processing.end())
+        m_processing.erase(i);
+    }
+
     // TODO: call back to the UI indicating that it can update it's image...
     if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
       AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_details.file)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
+}
+
+void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
+{
+  if (strcmp(job->GetType(), "cacheimage") == 0 && !progress)
+  { // check our processing list
+    {
+      CSingleLock lock(m_processingSection);
+      const CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
+      std::set<CStdString>::iterator i = m_processing.find(cacheJob->m_url);
+      if (i == m_processing.end())
+      {
+        m_processing.insert(cacheJob->m_url);
+        return;
+      }
+    }
+    CancelJob(job);
+  }
+  else
+    CJobQueue::OnJobProgress(jobID, progress, total, job);
 }
 
 CStdString CTextureCache::GetUniqueImage(const CStdString &url, const CStdString &extension)
