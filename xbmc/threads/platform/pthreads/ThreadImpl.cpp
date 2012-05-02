@@ -229,4 +229,36 @@ float CThread::GetRelativeUsage()
   return m_fLastUsage;
 }
 
+void CThread::Action()
+{
+  try
+  {
+    OnStartup();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+    if (IsAutoDelete())
+      return;
+  }
+
+  try
+  {
+    Process();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
+
+  try
+  {
+    OnExit();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread exit, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
+}
+
 
