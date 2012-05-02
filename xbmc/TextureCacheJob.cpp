@@ -63,6 +63,11 @@ bool CTextureCacheJob::DoWork()
   if (ShouldCancel(1, 0)) // HACK: second check is because we cancel the job in the first callback, but we don't detect it
     return false;         //       until the second
 
+  // check whether we need cache the job anyway
+  bool needsRecaching = false;
+  CStdString path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
+  if (!path.IsEmpty() && !needsRecaching)
+    return false;
   return CacheTexture();
 }
 
