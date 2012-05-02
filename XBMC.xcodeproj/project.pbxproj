@@ -1943,6 +1943,8 @@
 		F5EA04800F72F188005C2EC5 /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA04280F72EB88005C2EC5 /* SDLMain.mm */; };
 		F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
 		F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
+		F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */; };
+		F5ED8D6D1551F91400842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */; };
 		F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F240EB110A4F76009126C6 /* CrystalHD.cpp */; };
 		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
@@ -4007,6 +4009,8 @@
 		F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = xbmc/osx/SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInterface.mm; path = xbmc/osx/CocoaInterface.mm; sourceTree = SOURCE_ROOT; };
 		F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInterface.h; path = xbmc/osx/CocoaInterface.h; sourceTree = SOURCE_ROOT; };
+		F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayDirectory.cpp; sourceTree = "<group>"; };
+		F5ED8D6B1551F91400842059 /* BlurayDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayDirectory.h; sourceTree = "<group>"; };
 		F5F240EB110A4F76009126C6 /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
 		F5F240EC110A4F76009126C6 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
 		F5F244631110DC6B009126C6 /* FileOperationJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationJob.h; sourceTree = "<group>"; };
@@ -5779,6 +5783,8 @@
 				DF93D6641444A8B0007C6459 /* AFPFile.h */,
 				88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */,
 				88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */,
+				F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */,
+				F5ED8D6B1551F91400842059 /* BlurayDirectory.h */,
 				E38E16990D25F9FA00618676 /* CacheStrategy.cpp */,
 				E38E169A0D25F9FA00618676 /* CacheStrategy.h */,
 				E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */,
@@ -8217,6 +8223,7 @@
 				7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */,
 				EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */,
+				F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9157,6 +9164,7 @@
 				7C1F6EBC13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A90155091BB00FFD782 /* ilog.cpp in Sources */,
 				EC720A9E1550927000FFD782 /* XbmcContext.cpp in Sources */,
+				F5ED8D6D1551F91400842059 /* BlurayDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
