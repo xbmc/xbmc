@@ -26,6 +26,7 @@
 #include "DllLibbluray.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
+#include "guilib/LocalizeStrings.h"
 
 namespace XFILE
 {
@@ -64,7 +65,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const CS
   item->SetPath(path.Get());
   item->GetVideoInfoTag()->m_strRuntime.Format("%d",title->duration / 90000);
   item->GetVideoInfoTag()->m_iTrack = title->playlist;
-  buf.Format("%s %d", label.c_str(), title->playlist);
+  buf.Format(label.c_str(), title->playlist);
   item->m_strTitle = buf;
   item->SetLabel(buf);
   item->m_dwSize = 0;
@@ -107,7 +108,7 @@ void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
   {
     if((*it)->duration < duration)
       continue;
-    items.Add(GetTitle(*it, main ? "Main Title" : "Title"));
+    items.Add(GetTitle(*it, main ? g_localizeStrings.Get(25004) /* Main Title */ : g_localizeStrings.Get(25005) /* Title */));
   }
 
 
@@ -126,7 +127,7 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item.reset(new CFileItem());
     item->SetPath(path.Get());
     item->m_bIsFolder = true;
-    item->SetLabel("All Titles");
+    item->SetLabel(g_localizeStrings.Get(25002) /* All titles */);
     item->SetIconImage("DefaultVideoPlaylists.png");
     items.Add(item);
 
@@ -134,7 +135,7 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item.reset(new CFileItem());
     item->SetPath(path.Get());
     item->m_bIsFolder = false;
-    item->SetLabel("Menus");
+    item->SetLabel(g_localizeStrings.Get(25003) /* Menus */);
     item->SetIconImage("DefaultProgram.png");
     items.Add(item);
 }

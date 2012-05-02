@@ -1090,7 +1090,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString
   while(true)
   {
     dialog->Reset();
-    dialog->SetHeading("Select playback item");
+    dialog->SetHeading(25006 /* Select playback item */);
     dialog->SetItems(&items);
     dialog->SetUseDetails(true);
     dialog->DoModal();
