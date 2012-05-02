@@ -184,7 +184,7 @@ void CAirPlayServer::StopServer(bool bWait)
   }
 }
 
-CAirPlayServer::CAirPlayServer(int port, bool nonlocal)
+CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;

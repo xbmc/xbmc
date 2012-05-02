@@ -1,0 +1,5 @@
+<node order="3" type="folder">
+  <label>562</label>
+  <path>videodb://2/3</path>
+  <icon>DefaultYear.png</icon>
+</node>

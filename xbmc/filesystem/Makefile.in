@@ -38,6 +38,7 @@ SRCS=AddonsDirectory.cpp \
      ISOFile.cpp \
      LastFMDirectory.cpp \
      LastFMFile.cpp \
+     LibraryDirectory.cpp \
      MemBufferCache.cpp \
      MultiPathDirectory.cpp \
      MultiPathFile.cpp \

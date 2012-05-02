@@ -79,7 +79,7 @@ private:
 };
 
 
-CFileCache::CFileCache()
+CFileCache::CFileCache() : CThread("CFileCache")
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -95,7 +95,7 @@ CFileCache::CFileCache()
    m_cacheFull = false;
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("CFileCache")
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;

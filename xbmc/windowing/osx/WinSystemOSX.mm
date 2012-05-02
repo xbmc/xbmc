@@ -1115,7 +1115,7 @@ void CWinSystemOSX::FillInVideoModes()
 
     CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
-    CLog::Log(LOGDEBUG, "Display %i has name %s", disp, [dispName UTF8String]);
+    CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
     
     if (NULL == displayModes)
       continue;
@@ -1143,7 +1143,7 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
+        CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
         
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
 

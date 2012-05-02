@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [11.9.1], [http://trac.xbmc.org])
+AC_INIT([xbmc], [11.9.2], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -1764,8 +1764,10 @@ fi
 
 if test "$use_webserver" = "yes"; then
   final_message="$final_message\n  Webserver:\tYes"
+  USE_WEB_SERVER=1
 else
   final_message="$final_message\n  Webserver:\tNo"
+  USE_WEB_SERVER=0
 fi
 
 if test "$use_librtmp" != "no"; then
@@ -1955,6 +1957,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
+AC_SUBST(USE_WEB_SERVER)
 
 
 # pushd and popd are not available in other shells besides bash, so implement

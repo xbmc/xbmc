@@ -743,18 +743,6 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
   }
 
-  if(avctx->refs > m_refs)
-  {
-    CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
-#if ALLOW_ADDING_SURFACES
-    if(!OpenDecoder())
-      return VC_ERROR;
-#else
-    Close();
-    return VC_FLUSHED;
-#endif
-  }
-
   if(m_format.SampleWidth  == 0
   || m_format.SampleHeight == 0)
   {
@@ -765,6 +753,20 @@ int CDecoder::Check(AVCodecContext* avctx)
       return VC_ERROR;
     }
     return VC_FLUSHED;
+  }
+  else
+  {
+    if(avctx->refs > m_refs)
+    {
+      CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
+#if ALLOW_ADDING_SURFACES
+      if(!OpenDecoder())
+        return VC_ERROR;
+#else
+      Close();
+      return VC_FLUSHED;
+#endif
+    }
   }
 
   // Status reports are available only for the DXVA2_ModeH264 and DXVA2_ModeVC1 modes

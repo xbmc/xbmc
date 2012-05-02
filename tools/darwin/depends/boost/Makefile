@@ -19,6 +19,8 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 	sed -e "s?@boost_flags@?$(boost_flags)?g" \
             -e "s?@platform_gcc_version@?$(platform_gcc_version)?g" \
             user-config.jam.in >> $(SOURCE)/tools/build/v2/user-config.jam
+	cd $(SOURCE); patch -p1 < ../add-arm-mem-barrier.patch
+	cd $(SOURCE); patch -p1 < ../fix-deprecated-swp.patch
 	cd $(SOURCE); ./bootstrap.sh --prefix=$(PREFIX) --with-libraries=thread,date_time
 	cd $(SOURCE); ./bjam --prefix=$(PREFIX) $(bjam_args) install
 	# boost builds .so instead of .dylib for iphone, fix it.

@@ -695,7 +695,9 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     if (CFile::Stat(file, &buffer) == 0)
     {
       time_t maxTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
-      dateAdded = *localtime(&maxTime);
+      struct tm *time = localtime(&maxTime);
+      if (time)
+        dateAdded = *time;
     }
 
     if (!dateAdded.IsValid())
@@ -1089,7 +1091,11 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     CDateTime dateAdded;
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(strPath, &buffer) == 0)
-      dateAdded = *localtime((const time_t*)&buffer.st_ctime);
+    {
+      struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+      if (time)
+        dateAdded = *time;
+    }
 
     if (!dateAdded.IsValid())
       dateAdded = CDateTime::GetCurrentDateTime();

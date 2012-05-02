@@ -115,7 +115,7 @@ public:
                     TEXTIN_FIELD
                   };
 
-  CStdString GetWhereClause(CDatabase &db, const CStdString& strType);
+  CStdString GetWhereClause(CDatabase &db, const CStdString& strType) const;
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
@@ -127,17 +127,17 @@ public:
   static std::vector<DATABASE_FIELD> GetFields(const CStdString &type, bool sortOrders = false);
   static FIELD_TYPE     GetFieldType(DATABASE_FIELD field);
 
-  CStdString            GetLocalizedRule();
+  CStdString            GetLocalizedRule() const;
 
-  TiXmlElement GetAsElement();
+  TiXmlElement GetAsElement() const;
 
   DATABASE_FIELD     m_field;
   SEARCH_OPERATOR    m_operator;
   CStdString         m_parameter;
 private:
-  SEARCH_OPERATOR    TranslateOperator(const char *oper);
+  static SEARCH_OPERATOR TranslateOperator(const char *oper);
 
-  CStdString GetVideoResolutionQuery(void);
+  CStdString GetVideoResolutionQuery(void) const;
 };
 
 class CSmartPlaylist
@@ -149,6 +149,7 @@ public:
   bool Save(const CStdString &path);
 
   TiXmlElement *OpenAndReadName(const CStdString &path);
+  bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
 
   void SetName(const CStdString &name);
   void SetType(const CStdString &type); // music, video, mixed
@@ -177,8 +178,8 @@ public:
    \param referencedPlaylists a set of playlists to know when we reach a cycle
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
-  CStdString GetWhereClause(CDatabase &db, std::set<CStdString> &referencedPlaylists, bool needWhere = true);
-  CStdString GetOrderClause(CDatabase &db);
+  CStdString GetWhereClause(CDatabase &db, std::set<CStdString> &referencedPlaylists, bool needWhere = true) const;
+  CStdString GetOrderClause(CDatabase &db) const;
 
   const std::vector<CSmartPlaylistRule> &GetRules() const;
 

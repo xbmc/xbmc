@@ -61,7 +61,7 @@
   <string id="31102">Bakgrunnur</string>
   <string id="31103">Sýna "Í bið" í myndasýningu</string>
   <string id="31104">Spila kvikmyndasýnishorn í glugga [COLOR=grey3](Aðeins myndbandaupplýsingarglugga)[/COLOR]</string>
-  <string id="31105">Myndbandahnappur fer alltaf í myndbandaskrár</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Ýmsir valkostir</string>
   <string id="31107">Fela flagg lesið frá skráarnöfnum [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Fela hnapp í aðalvalmynd</string>

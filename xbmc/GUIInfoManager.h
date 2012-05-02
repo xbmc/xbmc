@@ -376,11 +376,12 @@ namespace INFO
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
 #define LIBRARY_HAS_MOVIES          722
-#define LIBRARY_HAS_TVSHOWS         723
-#define LIBRARY_HAS_MUSICVIDEOS     724
-#define LIBRARY_IS_SCANNING         725
-#define LIBRARY_IS_SCANNING_VIDEO   726
-#define LIBRARY_IS_SCANNING_MUSIC   727
+#define LIBRARY_HAS_MOVIE_SETS      723
+#define LIBRARY_HAS_TVSHOWS         724
+#define LIBRARY_HAS_MUSICVIDEOS     725
+#define LIBRARY_IS_SCANNING         726
+#define LIBRARY_IS_SCANNING_VIDEO   727
+#define LIBRARY_IS_SCANNING_MUSIC   728
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
@@ -423,7 +424,7 @@ namespace INFO
 
 #define VERSION_MAJOR 12
 #define VERSION_MINOR 0
-#define VERSION_TAG "-ALPHA1"
+#define VERSION_TAG "-ALPHA2"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -798,6 +799,7 @@ protected:
   int m_libraryHasMovies;
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
+  int m_libraryHasMovieSets;
 
   CCriticalSection m_critInfo;
 };

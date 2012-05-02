@@ -2293,20 +2293,25 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     strLookInPaths.push_back(strPath);
   }
   
-  // checking if any of the common subdirs exist ..
-  CStdStringArray directories;
-  int nTokens = StringUtils::SplitString( strPath, "/", directories );
-  if (nTokens == 1)
-    StringUtils::SplitString( strPath, "\\", directories );
-  
-  // if it's inside a cdX dir, add parent path
-  if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
-  {
-    CStdString strPath2;
-    URIUtils::GetParentPath(strPath,strPath2);
-    strLookInPaths.push_back(strPath2);
-  }
   int iSize = strLookInPaths.size();
+  for (int i=0; i<iSize; ++i)
+  {
+    CStdStringArray directories;
+    int nTokens = StringUtils::SplitString( strLookInPaths[i], "/", directories );
+    if (nTokens == 1)
+      StringUtils::SplitString( strLookInPaths[i], "\\", directories );
+
+    // if it's inside a cdX dir, add parent path
+    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+    {
+      CStdString strPath2;
+      URIUtils::GetParentPath(strLookInPaths[i], strPath2);
+      strLookInPaths.push_back(strPath2);
+    }
+  }
+
+  // checking if any of the common subdirs exist ..
+  iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
     for (int j=0; common_sub_dirs[j]; j++)

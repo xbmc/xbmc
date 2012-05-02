@@ -558,6 +558,10 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
   pItem->SetProperty("Addon.Broken", addon->Props().broken);
+  std::map<CStdString,CStdString>::iterator it = 
+                    addon->Props().extrainfo.find("language");
+  if (it != addon->Props().extrainfo.end())
+    pItem->SetProperty("Addon.Language", it->second);
 }
 
 bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)

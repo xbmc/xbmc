@@ -42,7 +42,7 @@ typedef std::vector<CScraperUrl> MOVIELIST;
 class CVideoInfoDownloader : public CThread
 {
 public:
-  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : m_info(scraper) {}
+  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : CThread("CVideoInfoDownloader"), m_info(scraper) {}
   virtual ~CVideoInfoDownloader() {}
 
   // threaded lookup functions

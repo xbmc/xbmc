@@ -110,7 +110,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
 {
   if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
-    m_iExitCode = data.asInteger(0);
+    m_iExitCode = (int)data.asInteger(0);
     StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
@@ -671,7 +671,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return bHasButton;
 
   CLog::Log(LOGDEBUG, "%s - received key %2x", __FUNCTION__, key.keycode);
-  WORD iButton = 0;
+  int iButton = 0;
   bHasButton = true;
 
   switch (key.keycode)
@@ -860,7 +860,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
   return m_bHasButton;
 }
 
-WORD CPeripheralCecAdapter::GetButton(void)
+int CPeripheralCecAdapter::GetButton(void)
 {
   CSingleLock lock(m_critSection);
   if (!m_bHasButton)

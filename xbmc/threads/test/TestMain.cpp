@@ -19,7 +19,27 @@
  *
  */
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE "ThreadingTest"
-#include <boost/test/unit_test.hpp>
+#include "TestHelpers.h"
+
+#include "threads/Thread.h"
+#include "commons/ilog.h"
+
+class NullLogger : public XbmcCommons::ILogger
+{
+public:
+  void log(int loglevel, const char* message) {}
+};
+
+int main()
+{
+  // we need to configure CThread to use a dummy logger
+  NullLogger* nullLogger = new NullLogger();
+  CThread::SetLogger(nullLogger);
+
+  int ret = UnitTest::RunAllTests();
+
+  delete nullLogger;
+
+  return ret;
+}
 

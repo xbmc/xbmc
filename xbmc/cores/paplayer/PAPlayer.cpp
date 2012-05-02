@@ -44,6 +44,7 @@
 
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer            (callback),
+  CThread            ("PAPlayer"),
   m_signalSpeedChange(false),
   m_playbackSpeed    (1    ),
   m_isPlaying        (false),
@@ -224,7 +225,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (!QueueNextFileEx(file, false))
     return false;
 
-  if (ThreadHandle() == NULL)
+  if (!IsRunning())
     Create();
 
   /* trigger playback start */

@@ -60,7 +60,7 @@
   <string id="31102">Tausta</string>
   <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
   <string id="31104">Toista esittelyt ikkunassa [COLOR=grey3](Videotiedot-ikkuna)[/COLOR]</string>
-  <string id="31105">"Videot"-painike avaa aina "Tiedostot"</string>
+  <string id="31105"></string> <!-- blanked 2012-03-26 -->
   <string id="31106">Yleiset asetukset</string>
   <string id="31107">Piilota tiedostojen nimistä luetut merkinnät [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Piilota päävalikon painikkeet</string>

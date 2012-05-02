@@ -814,6 +814,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         else if (cat == "movies") return LIBRARY_HAS_MOVIES;
         else if (cat == "tvshows") return LIBRARY_HAS_TVSHOWS;
         else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
+        else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
       }
     }
     else if (cat.name == "musicplayer")
@@ -4490,6 +4491,9 @@ void CGUIInfoManager::SetLibraryBool(int condition, bool value)
     case LIBRARY_HAS_MOVIES:
       m_libraryHasMovies = value ? 1 : 0;
       break;
+    case LIBRARY_HAS_MOVIE_SETS:
+      m_libraryHasMovieSets = value ? 1 : 0;
+      break;
     case LIBRARY_HAS_TVSHOWS:
       m_libraryHasTVShows = value ? 1 : 0;
       break;
@@ -4507,6 +4511,7 @@ void CGUIInfoManager::ResetLibraryBools()
   m_libraryHasMovies = -1;
   m_libraryHasTVShows = -1;
   m_libraryHasMusicVideos = -1;
+  m_libraryHasMovieSets = -1;
 }
 
 bool CGUIInfoManager::GetLibraryBool(int condition)
@@ -4536,6 +4541,19 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       }
     }
     return m_libraryHasMovies > 0;
+  }
+  else if (condition == LIBRARY_HAS_MOVIE_SETS)
+  {
+    if (m_libraryHasMovieSets < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasMovieSets = db.HasSets() ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasMovieSets > 0;
   }
   else if (condition == LIBRARY_HAS_TVSHOWS)
   {

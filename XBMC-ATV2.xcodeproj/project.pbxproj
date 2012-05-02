@@ -25,6 +25,7 @@
 		7C0A7FCC13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FCA13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp */; };
 		7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B9908154B80200065A238 /* AEDeviceInfo.cpp */; };
 		7C1A89BB152671FB00C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A89B9152671FB00C63311 /* TextureCacheJob.cpp */; };
+		7C1F6F8C13ED17CC001726AB /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */; };
 		7C89627013B702F3003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CCFD9AA1514952700211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD9A81514952700211D82 /* PCMCodec.cpp */; };
@@ -34,6 +35,8 @@
 		C8936063152C86F500812418 /* monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8936061152C86F500812418 /* monitor.cpp */; };
 		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
+		DF33C2A415509C1B0046CDCB /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */; };
+		DF33C2AE15509C5A0046CDCB /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF33C2AB15509C5A0046CDCB /* ilog.cpp */; };
 		DF34890913FD96390026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34890713FD96390026A711 /* GUIAction.cpp */; };
 		DF44852F140064F40069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44852D140064F40069344B /* BXAcodec.cpp */; };
 		DF4485351400651B0069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485321400651B0069344B /* PipesManager.cpp */; };
@@ -579,12 +582,9 @@
 		F56C7A76131EC155000AD0F6 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75AF131EC153000AD0F6 /* LinuxResourceCounter.cpp */; };
 		F56C7A77131EC155000AD0F6 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75B1131EC153000AD0F6 /* LinuxTimezone.cpp */; };
 		F56C7A78131EC155000AD0F6 /* PosixMountProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75B6131EC153000AD0F6 /* PosixMountProvider.cpp */; };
-		F56C7A79131EC155000AD0F6 /* XEventUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75B7131EC153000AD0F6 /* XEventUtils.cpp */; };
 		F56C7A7A131EC155000AD0F6 /* XFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75B9131EC153000AD0F6 /* XFileUtils.cpp */; };
 		F56C7A7B131EC155000AD0F6 /* XHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75BB131EC153000AD0F6 /* XHandle.cpp */; };
 		F56C7A7C131EC155000AD0F6 /* XMemUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75BD131EC153000AD0F6 /* XMemUtils.cpp */; };
-		F56C7A7D131EC155000AD0F6 /* XSyncUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75BF131EC153000AD0F6 /* XSyncUtils.cpp */; };
-		F56C7A7E131EC155000AD0F6 /* XThreadUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C1131EC153000AD0F6 /* XThreadUtils.cpp */; };
 		F56C7A7F131EC155000AD0F6 /* XTimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C3131EC153000AD0F6 /* XTimeUtils.cpp */; };
 		F56C7A80131EC155000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C7131EC153000AD0F6 /* GUIDialogMusicInfo.cpp */; };
 		F56C7A81131EC155000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C75C9131EC153000AD0F6 /* GUIDialogMusicOSD.cpp */; };
@@ -1017,6 +1017,8 @@
 		7C0B9909154B80200065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
 		7C1A89B9152671FB00C63311 /* TextureCacheJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCacheJob.cpp; sourceTree = "<group>"; };
 		7C1A89BA152671FB00C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
+		7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryDirectory.cpp; sourceTree = "<group>"; };
+		7C1F6F8B13ED17CC001726AB /* LibraryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDirectory.h; sourceTree = "<group>"; };
 		7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
 		7C89626F13B702F3003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
@@ -1037,6 +1039,10 @@
 		C8EC5D50136954E400CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF16B13A3AF82008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XbmcContext.cpp; sourceTree = "<group>"; };
+		DF33C2A315509C1B0046CDCB /* XbmcContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XbmcContext.h; sourceTree = "<group>"; };
+		DF33C2AB15509C5A0046CDCB /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ilog.cpp; sourceTree = "<group>"; };
+		DF33C2AC15509C5A0046CDCB /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilog.h; sourceTree = "<group>"; };
 		DF34890713FD96390026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF34890813FD96390026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
 		DF44852D140064F40069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
@@ -2236,18 +2242,12 @@
 		F56C75B4131EC153000AD0F6 /* PlatformInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlatformInclude.h; sourceTree = "<group>"; };
 		F56C75B5131EC153000AD0F6 /* PosixMountProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PosixMountProvider.h; sourceTree = "<group>"; };
 		F56C75B6131EC153000AD0F6 /* PosixMountProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PosixMountProvider.cpp; sourceTree = "<group>"; };
-		F56C75B7131EC153000AD0F6 /* XEventUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XEventUtils.cpp; sourceTree = "<group>"; };
-		F56C75B8131EC153000AD0F6 /* XEventUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XEventUtils.h; sourceTree = "<group>"; };
 		F56C75B9131EC153000AD0F6 /* XFileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XFileUtils.cpp; sourceTree = "<group>"; };
 		F56C75BA131EC153000AD0F6 /* XFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFileUtils.h; sourceTree = "<group>"; };
 		F56C75BB131EC153000AD0F6 /* XHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XHandle.cpp; sourceTree = "<group>"; };
 		F56C75BC131EC153000AD0F6 /* XHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHandle.h; sourceTree = "<group>"; };
 		F56C75BD131EC153000AD0F6 /* XMemUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMemUtils.cpp; sourceTree = "<group>"; };
 		F56C75BE131EC153000AD0F6 /* XMemUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMemUtils.h; sourceTree = "<group>"; };
-		F56C75BF131EC153000AD0F6 /* XSyncUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XSyncUtils.cpp; sourceTree = "<group>"; };
-		F56C75C0131EC153000AD0F6 /* XSyncUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XSyncUtils.h; sourceTree = "<group>"; };
-		F56C75C1131EC153000AD0F6 /* XThreadUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XThreadUtils.cpp; sourceTree = "<group>"; };
-		F56C75C2131EC153000AD0F6 /* XThreadUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XThreadUtils.h; sourceTree = "<group>"; };
 		F56C75C3131EC153000AD0F6 /* XTimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XTimeUtils.cpp; sourceTree = "<group>"; };
 		F56C75C4131EC153000AD0F6 /* XTimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTimeUtils.h; sourceTree = "<group>"; };
 		F56C75C7131EC153000AD0F6 /* GUIDialogMusicInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMusicInfo.cpp; sourceTree = "<group>"; };
@@ -3126,6 +3126,15 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
+		DF33C2AA15509C5A0046CDCB /* commons */ = {
+			isa = PBXGroup;
+			children = (
+				DF33C2AB15509C5A0046CDCB /* ilog.cpp */,
+				DF33C2AC15509C5A0046CDCB /* ilog.h */,
+			);
+			path = commons;
+			sourceTree = "<group>";
+		};
 		DF527775151BAFD600B5B63B /* websocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -3536,6 +3545,7 @@
 			children = (
 				F56C71D8131EC151000AD0F6 /* addons */,
 				F56C71FE131EC151000AD0F6 /* cdrip */,
+				DF33C2AA15509C5A0046CDCB /* commons */,
 				F56C721B131EC151000AD0F6 /* cores */,
 				F56C7357131EC151000AD0F6 /* dbwrappers */,
 				F56C7362131EC151000AD0F6 /* dialogs */,
@@ -3632,6 +3642,8 @@
 				F56C780F131EC154000AD0F6 /* XBApplicationEx.h */,
 				F56C77DA131EC154000AD0F6 /* XBDateTime.cpp */,
 				F56C77DB131EC154000AD0F6 /* XBDateTime.h */,
+				DF33C2A215509C1B0046CDCB /* XbmcContext.cpp */,
+				DF33C2A315509C1B0046CDCB /* XbmcContext.h */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -4326,6 +4338,8 @@
 				F56C7402131EC151000AD0F6 /* LastFMDirectory.h */,
 				DF93D74E1444B09C007C6459 /* LastFMFile.cpp */,
 				DF93D74F1444B09C007C6459 /* LastFMFile.h */,
+				7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */,
+				7C1F6F8B13ED17CC001726AB /* LibraryDirectory.h */,
 				DFDB00471516408F005079A4 /* MemBufferCache.cpp */,
 				DFDB00481516408F005079A4 /* MemBufferCache.h */,
 				F56C7403131EC151000AD0F6 /* MultiPathDirectory.cpp */,
@@ -4873,18 +4887,12 @@
 				F56C75B5131EC153000AD0F6 /* PosixMountProvider.h */,
 				F56C75A9131EC153000AD0F6 /* stat_utf8.h */,
 				F56C75AA131EC153000AD0F6 /* stdio_utf8.h */,
-				F56C75B7131EC153000AD0F6 /* XEventUtils.cpp */,
-				F56C75B8131EC153000AD0F6 /* XEventUtils.h */,
 				F56C75B9131EC153000AD0F6 /* XFileUtils.cpp */,
 				F56C75BA131EC153000AD0F6 /* XFileUtils.h */,
 				F56C75BB131EC153000AD0F6 /* XHandle.cpp */,
 				F56C75BC131EC153000AD0F6 /* XHandle.h */,
 				F56C75BD131EC153000AD0F6 /* XMemUtils.cpp */,
 				F56C75BE131EC153000AD0F6 /* XMemUtils.h */,
-				F56C75BF131EC153000AD0F6 /* XSyncUtils.cpp */,
-				F56C75C0131EC153000AD0F6 /* XSyncUtils.h */,
-				F56C75C1131EC153000AD0F6 /* XThreadUtils.cpp */,
-				F56C75C2131EC153000AD0F6 /* XThreadUtils.h */,
 				F56C75C3131EC153000AD0F6 /* XTimeUtils.cpp */,
 				F56C75C4131EC153000AD0F6 /* XTimeUtils.h */,
 			);
@@ -6720,12 +6728,9 @@
 				F56C7A76131EC155000AD0F6 /* LinuxResourceCounter.cpp in Sources */,
 				F56C7A77131EC155000AD0F6 /* LinuxTimezone.cpp in Sources */,
 				F56C7A78131EC155000AD0F6 /* PosixMountProvider.cpp in Sources */,
-				F56C7A79131EC155000AD0F6 /* XEventUtils.cpp in Sources */,
 				F56C7A7A131EC155000AD0F6 /* XFileUtils.cpp in Sources */,
 				F56C7A7B131EC155000AD0F6 /* XHandle.cpp in Sources */,
 				F56C7A7C131EC155000AD0F6 /* XMemUtils.cpp in Sources */,
-				F56C7A7D131EC155000AD0F6 /* XSyncUtils.cpp in Sources */,
-				F56C7A7E131EC155000AD0F6 /* XThreadUtils.cpp in Sources */,
 				F56C7A7F131EC155000AD0F6 /* XTimeUtils.cpp in Sources */,
 				F56C7A80131EC155000AD0F6 /* GUIDialogMusicInfo.cpp in Sources */,
 				F56C7A81131EC155000AD0F6 /* GUIDialogMusicOSD.cpp in Sources */,
@@ -7204,6 +7209,9 @@
 				DFB662FC15376810006B8FF1 /* AEWAVLoader.cpp in Sources */,
 				DFB6631115376991006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */,
+				7C1F6F8C13ED17CC001726AB /* LibraryDirectory.cpp in Sources */,
+				DF33C2A415509C1B0046CDCB /* XbmcContext.cpp in Sources */,
+				DF33C2AE15509C5A0046CDCB /* ilog.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

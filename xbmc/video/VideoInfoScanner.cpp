@@ -54,7 +54,7 @@ using namespace ADDON;
 namespace VIDEO
 {
 
-  CVideoInfoScanner::CVideoInfoScanner()
+  CVideoInfoScanner::CVideoInfoScanner() : CThread("CVideoInfoScanner")
   {
     m_bRunning = false;
     m_pObserver = NULL;
@@ -213,7 +213,7 @@ namespace VIDEO
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
 
-    bool ignoreFolder = m_scanAll && settings.noupdate;
+    bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
 

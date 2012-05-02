@@ -513,7 +513,7 @@ const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
 }
 
 const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *buf_in, int size)
+  AVIOContext *pb, const uint8_t *buf_in, int size)
 {
   const uint8_t *p = buf_in;
   const uint8_t *end = p + size;
@@ -536,7 +536,7 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
 const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-  ByteIOContext *pb;
+  AVIOContext *pb;
   int ret = av_format_ctx->avio_open_dyn_buf(&pb);
   if (ret < 0)
     return ret;
@@ -549,7 +549,7 @@ const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format
 }
 
 const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *data, int len)
+  AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
   if (len > 6)
@@ -705,7 +705,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
               return false;
             }
 
-            ByteIOContext *pb;
+            AVIOContext *pb;
             if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
             {
               return false;
@@ -944,7 +944,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     if (m_convert_bytestream)
     {
       // convert demuxer packet from bytestream (AnnexB) to bitstream
-      ByteIOContext *pb;
+      AVIOContext *pb;
       int demuxer_bytes;
       uint8_t *demuxer_content;
 
@@ -960,7 +960,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     else if (m_convert_3byteTo4byteNALSize)
     {
       // convert demuxer packet from 3 byte NAL sizes to 4 byte
-      ByteIOContext *pb;
+      AVIOContext *pb;
       if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 

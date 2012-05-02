@@ -39,6 +39,9 @@
 
 #include "tinyXML/tinyxml.h"
 
+#include "system.h"
+
+
 #define RSS_COLOR_BODY  0
 #define RSS_COLOR_HEADLINE 1
 #define RSS_COLOR_CHANNEL 2
