@@ -785,7 +785,7 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   else if(pic.format == RENDER_FMT_OMXEGL)
     m_pRenderer->AddProcessor(pic.openMax, &pic);
 #endif
-#ifdef TARGET_DARWIN
+#ifdef HAVE_VIDEOTOOLBOXDECODER
   else if(pic.format == RENDER_FMT_CVBREF)
     m_pRenderer->AddProcessor(pic.cvBufferRef);
 #endif
