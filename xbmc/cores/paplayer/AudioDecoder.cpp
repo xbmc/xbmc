@@ -63,7 +63,7 @@ void CAudioDecoder::Destroy()
   m_canPlay = false;
 }
 
-bool CAudioDecoder::Create(const CFileItem &file, __int64 seekOffset, unsigned int nBufferSize)
+bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset, unsigned int nBufferSize)
 {
   Destroy();
 
@@ -117,7 +117,7 @@ void CAudioDecoder::GetDataFormat(unsigned int *channels, unsigned int *samplera
   if (bitspersample) *bitspersample = m_codec->m_BitsPerSample;
 }
 
-__int64 CAudioDecoder::Seek(__int64 time)
+int64_t CAudioDecoder::Seek(int64_t time)
 {
   m_pcmBuffer.Clear();
   if (!m_codec)
@@ -127,7 +127,7 @@ __int64 CAudioDecoder::Seek(__int64 time)
   return m_codec->Seek(time);
 }
 
-__int64 CAudioDecoder::TotalTime()
+int64_t CAudioDecoder::TotalTime()
 {
   if (m_codec)
     return m_codec->m_TotalTime;

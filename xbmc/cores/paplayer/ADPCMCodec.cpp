@@ -66,7 +66,7 @@ void ADPCMCodec::DeInit()
   m_bIsPlaying = false;
 }
 
-__int64 ADPCMCodec::Seek(__int64 iSeekTime)
+int64_t ADPCMCodec::Seek(int64_t iSeekTime)
 {
   m_dll.Seek(m_adpcm,(int)iSeekTime);
   return iSeekTime;

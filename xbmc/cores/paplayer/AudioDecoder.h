@@ -56,14 +56,14 @@ public:
   CAudioDecoder();
   ~CAudioDecoder();
 
-  bool Create(const CFileItem &file, __int64 seekOffset, unsigned int nBufferSize);
+  bool Create(const CFileItem &file, int64_t seekOffset, unsigned int nBufferSize);
   void Destroy();
 
   int ReadSamples(int numsamples);
 
   bool CanSeek() { if (m_codec) return m_codec->CanSeek(); else return false; };
-  __int64 Seek(__int64 time);
-  __int64 TotalTime();
+  int64_t Seek(int64_t time);
+  int64_t TotalTime();
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.
   int GetStatus() { return m_status; };
   void SetStatus(int status) { m_status = status; };

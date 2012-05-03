@@ -66,7 +66,7 @@ public:
   // Should seek to the appropriate time (in ms) in the file, and return the
   // time to which we managed to seek (in the case where seeking is problematic)
   // This is used in FFwd/Rewd so can be called very often.
-  virtual __int64 Seek(__int64 iSeekTime)=0;
+  virtual int64_t Seek(int64_t iSeekTime)=0;
 
   // ReadPCM()
   // Decodes audio into pBuffer up to size bytes.  The actual amount of returned data
@@ -92,7 +92,7 @@ public:
   virtual bool SkipNext(){return false;}
 
   // set the total time - useful when info comes from a preset tag
-  virtual void SetTotalTime(__int64 totaltime) {}
+  virtual void SetTotalTime(int64_t totaltime) {}
 
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
@@ -100,7 +100,7 @@ public:
   // true if we can retrieve normalized float data immediately
   virtual bool HasFloatData() const { return false; }
 
-  __int64 m_TotalTime;  // time in ms
+  int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
   int m_BitsPerSample;
   int m_Channels;

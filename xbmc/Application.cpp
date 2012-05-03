@@ -5347,7 +5347,7 @@ void CApplication::SeekTime( double dTime )
         {
           long startOfNewFile = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
           if (m_currentStackPosition == i)
-            m_pPlayer->SeekTime((__int64)((dTime - startOfNewFile) * 1000.0));
+            m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
           else
           { // seeking to a new file
             m_currentStackPosition = i;
@@ -5362,7 +5362,7 @@ void CApplication::SeekTime( double dTime )
       }
     }
     // convert to milliseconds and perform seek
-    m_pPlayer->SeekTime( static_cast<__int64>( dTime * 1000.0 ) );
+    m_pPlayer->SeekTime( static_cast<int64_t>( dTime * 1000.0 ) );
   }
 }
 

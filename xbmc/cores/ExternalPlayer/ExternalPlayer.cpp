@@ -517,8 +517,8 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 
 float CExternalPlayer::GetPercentage()
 {
-  __int64 iTime = GetTime();
-  __int64 iTotalTime = GetTotalTime() * 1000;
+  int64_t iTime = GetTime();
+  int64_t iTotalTime = GetTotalTime() * 1000;
 
   if (iTotalTime != 0)
   {
@@ -547,11 +547,11 @@ float CExternalPlayer::GetSubTitleDelay()
   return 0.0;
 }
 
-void CExternalPlayer::SeekTime(__int64 iTime)
+void CExternalPlayer::SeekTime(int64_t iTime)
 {
 }
 
-__int64 CExternalPlayer::GetTime() // in millis
+int64_t CExternalPlayer::GetTime() // in millis
 {
   if ((XbmcThreads::SystemClockMillis() - m_playbackStartTime) / 1000 > m_playCountMinTime)
   {

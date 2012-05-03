@@ -134,8 +134,8 @@ public:
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
   virtual float GetActualFPS() { return 0.0f; };
-  virtual void SeekTime(__int64 iTime = 0){};
-  virtual __int64 GetTime(){ return 0;};
+  virtual void SeekTime(int64_t iTime = 0){};
+  virtual int64_t GetTime(){ return 0;};
   virtual int GetTotalTime(){ return 0;};
   virtual int GetAudioBitrate(){ return 0;}
   virtual int GetVideoBitrate(){ return 0;}

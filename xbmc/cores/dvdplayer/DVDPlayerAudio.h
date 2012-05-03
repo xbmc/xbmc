@@ -78,12 +78,12 @@ public:
 class CPTSInputQueue
 {
 private:
-  typedef std::list<std::pair<__int64, double> >::iterator IT;
-  std::list<std::pair<__int64, double> > m_list;
+  typedef std::list<std::pair<int64_t, double> >::iterator IT;
+  std::list<std::pair<int64_t, double> > m_list;
   CCriticalSection m_sync;
 public:
-  void   Add(__int64 bytes, double pts);
-  double Get(__int64 bytes, bool consume);
+  void   Add(int64_t bytes, double pts);
+  double Get(int64_t bytes, bool consume);
   void   Flush();
 };
 

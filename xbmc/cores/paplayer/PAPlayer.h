@@ -78,14 +78,14 @@ public:
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int GetTotalTime();
-  __int64 GetTotalTime64();
+  int64_t GetTotalTime64();
   virtual int GetAudioBitrate();
   virtual int GetChannels();
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
   virtual CStdString GetAudioCodecName();
-  virtual __int64 GetTime();
-  virtual void SeekTime(__int64 iTime = 0);
+  virtual int64_t GetTime();
+  virtual void SeekTime(int64_t iTime = 0);
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext();
 
@@ -113,7 +113,7 @@ protected:
   bool m_cachingNextFile;
   int  m_crossFading;
   bool m_currentlyCrossFading;
-  __int64 m_crossFadeLength;
+  int64_t m_crossFadeLength;
 
   CEvent m_startEvent;
 
@@ -123,9 +123,9 @@ private:
 
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
 
-  __int64 m_SeekTime;
+  int64_t m_SeekTime;
   int     m_IsFFwdRewding;
-  __int64 m_timeOffset;
+  int64_t m_timeOffset;
   bool    m_forceFadeToNext;
 
   int m_currentDecoder;
@@ -171,7 +171,7 @@ private:
 
   IAudioCallback*  m_pCallback;
 
-  __int64          m_bytesSentOut;
+  int64_t          m_bytesSentOut;
 
   // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_channelCount[2];

@@ -3462,11 +3462,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
-__int64 CGUIInfoManager::GetPlayTime() const
+int64_t CGUIInfoManager::GetPlayTime() const
 {
   if (g_application.IsPlaying())
   {
-    __int64 lPTS = (__int64)(g_application.GetTime() * 1000);
+    int64_t lPTS = (int64_t)(g_application.GetTime() * 1000);
     if (lPTS < 0) lPTS = 0;
     return lPTS;
   }

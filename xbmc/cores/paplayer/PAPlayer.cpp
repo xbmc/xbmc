@@ -145,7 +145,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // always open the file using the current decoder
   m_currentDecoder = 0;
 
-  if (!m_decoder[m_currentDecoder].Create(file, (__int64)(options.starttime * 1000), m_crossFading))
+  if (!m_decoder[m_currentDecoder].Create(file, (int64_t)(options.starttime * 1000), m_crossFading))
     return false;
 
   m_iSpeed = 1;
@@ -155,7 +155,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   CLog::Log(LOGINFO, "PAPlayer: Playing %s", file.GetPath().c_str());
 
-  m_timeOffset = (__int64)(options.starttime * 1000);
+  m_timeOffset = (int64_t)(options.starttime * 1000);
 
   unsigned int channel, sampleRate, bitsPerSample;
   m_decoder[m_currentDecoder].GetDataFormat(&channel, &sampleRate, &bitsPerSample);
@@ -760,15 +760,15 @@ bool PAPlayer::ProcessPAP()
   return true;
 }
 
-__int64 PAPlayer::GetTime()
+int64_t PAPlayer::GetTime()
 {
-  __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;
+  int64_t  timeplus = m_BytesPerSecond ? (int64_t)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;
   return m_timeOffset + timeplus - m_currentFile->m_lStartOffset * 1000 / 75;
 }
 
-__int64 PAPlayer::GetTotalTime64()
+int64_t PAPlayer::GetTotalTime64()
 {
-  __int64 total = m_decoder[m_currentDecoder].TotalTime();
+  int64_t total = m_decoder[m_currentDecoder].TotalTime();
   if (m_currentFile->m_lEndOffset)
     total = m_currentFile->m_lEndOffset * 1000 / 75;
   if (m_currentFile->m_lStartOffset)
@@ -837,7 +837,7 @@ bool PAPlayer::CanSeek()
 
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  __int64 seek;
+  int64_t seek;
   if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
   {
     if (bLargeStep)
@@ -854,13 +854,13 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
       percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
     else
       percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
-    seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
+    seek = (int64_t)(GetTotalTime64()*(GetPercentage()+percent)/100);
   }
 
   SeekTime(seek);
 }
 
-void PAPlayer::SeekTime(__int64 iTime /*=0*/)
+void PAPlayer::SeekTime(int64_t iTime /*=0*/)
 {
   if (!CanSeek()) return;
   int seekOffset = (int)(iTime - GetTime());
@@ -875,7 +875,7 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
   if (fPercent < 0.0f) fPercent = 0.0f;
   if (fPercent > 100.0f) fPercent = 100.0f;
-  SeekTime((__int64)(fPercent * 0.01f * (float)GetTotalTime64()));
+  SeekTime((int64_t)(fPercent * 0.01f * (float)GetTotalTime64()));
 }
 
 float PAPlayer::GetPercentage()
@@ -927,9 +927,9 @@ bool PAPlayer::HandleFFwdRewd()
   if ( m_bytesSentOut >= snippet )
   {
     // Calculate offset to seek if we do FF/RW
-    __int64 time = GetTime();
+    int64_t time = GetTime();
     if (m_IsFFwdRewding) snippet = (int)m_bytesSentOut;
-    time += (__int64)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
+    time += (int64_t)((double)snippet * (m_iSpeed - 1.0) / m_BytesPerSecond * 1000.0);
 
     // Is our offset inside the track range?
     if (time >= 0 && time <= m_decoder[m_currentDecoder].TotalTime())

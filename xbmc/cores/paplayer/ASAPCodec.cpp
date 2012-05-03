@@ -65,7 +65,7 @@ void ASAPCodec::DeInit()
 {
 }
 
-__int64 ASAPCodec::Seek(__int64 iSeekTime)
+int64_t ASAPCodec::Seek(int64_t iSeekTime)
 {
   m_dll.asapSeek((int) iSeekTime);
   return iSeekTime;

@@ -207,7 +207,7 @@ void DVDPlayerCodec::DeInit()
   m_nDecodedLen = 0;
 }
 
-__int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
+int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
 {
   if (m_pPacket)
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);

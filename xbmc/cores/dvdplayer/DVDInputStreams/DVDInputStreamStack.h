@@ -33,10 +33,10 @@ public:
   virtual bool    Open(const char* path, const std::string &content);
   virtual void    Close();
   virtual int     Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
+  virtual int64_t Seek(int64_t offset, int whence);
   virtual bool Pause(double dTime) { return false; };
   virtual bool    IsEOF();
-  virtual __int64 GetLength();
+  virtual int64_t GetLength();
 
 protected:
 
@@ -45,7 +45,7 @@ protected:
   struct TSeg
   {
     TFile   file;
-    __int64 length;
+    int64_t length;
   };
 
   typedef std::vector<TSeg> TSegVec;
@@ -53,6 +53,6 @@ protected:
   TSegVec m_files;  ///< collection of open ptr's to all files in stack
   TFile   m_file;   ///< currently active file
   bool    m_eof;
-  __int64 m_pos;
-  __int64 m_length;
+  int64_t m_pos;
+  int64_t m_length;
 };

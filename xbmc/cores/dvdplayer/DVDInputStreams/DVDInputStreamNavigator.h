@@ -68,11 +68,11 @@ public:
   virtual bool Open(const char* strFile, const std::string& content);
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
+  virtual int64_t Seek(int64_t offset, int whence);
   virtual bool Pause(double dTime) { return false; };
   virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
   virtual bool IsEOF() { return m_bEOF; }
-  virtual __int64 GetLength()             { return 0; }
+  virtual int64_t GetLength()             { return 0; }
   virtual ENextStream NextStream() ;
 
   void ActivateButton();
@@ -155,13 +155,13 @@ protected:
 
   int m_iTotalTime;
   int m_iTime;
-  __int64 m_iCellStart; // start time of current cell in pts units (90khz clock)
+  int64_t m_iCellStart; // start time of current cell in pts units (90khz clock)
 
   bool m_bInMenu;
 
-  __int64 m_iVobUnitStart;
-  __int64 m_iVobUnitStop;
-  __int64 m_iVobUnitCorrection;
+  int64_t m_iVobUnitStart;
+  int64_t m_iVobUnitStop;
+  int64_t m_iVobUnitCorrection;
 
   int m_iTitleCount;
   int m_iTitle;

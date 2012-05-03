@@ -92,7 +92,7 @@ double CPTSOutputQueue::Current()
   return m_current.pts + min(m_current.duration, (CDVDClock::GetAbsoluteClock() - m_current.timestamp));
 }
 
-void CPTSInputQueue::Add(__int64 bytes, double pts)
+void CPTSInputQueue::Add(int64_t bytes, double pts)
 {
   CSingleLock lock(m_sync);
 
@@ -105,7 +105,7 @@ void CPTSInputQueue::Flush()
 
   m_list.clear();
 }
-double CPTSInputQueue::Get(__int64 bytes, bool consume)
+double CPTSInputQueue::Get(int64_t bytes, bool consume)
 {
   CSingleLock lock(m_sync);
 

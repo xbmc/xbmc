@@ -118,14 +118,14 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   if (item.IsInternetStream())
     m_TotalTime = -1;
   else
-    m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
+    m_TotalTime = (int64_t)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0 && m_TotalTime > 0 && !item.IsInternetStream())
     m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
-    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu", strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
+    CLog::Log(LOGERROR, "OGGCodec: incomplete stream info from %s, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%"PRIu64, strFile1.c_str(), m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime);
     return false;
   }
 
@@ -163,7 +163,7 @@ void OGGCodec::DeInit()
   m_inited = false;
 }
 
-__int64 OGGCodec::Seek(__int64 iSeekTime)
+int64_t OGGCodec::Seek(int64_t iSeekTime)
 {
   if (m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset+(double)(iSeekTime/1000.0f))!=0)
     return 0;

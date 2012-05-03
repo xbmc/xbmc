@@ -645,7 +645,7 @@ public:
   const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
   CStdString GetPictureLabel(int item);
 
-  __int64 GetPlayTime() const;  // in ms
+  int64_t GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   int GetPlayTimeRemaining() const;
   int GetTotalPlayTime() const;
