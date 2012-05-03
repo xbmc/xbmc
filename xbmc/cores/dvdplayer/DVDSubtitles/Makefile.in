@@ -5,13 +5,17 @@ SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleParserMicroDVD.cpp \
 	DVDSubtitleParserMPL2.cpp \
 	DVDSubtitleParserSami.cpp \
-	DVDSubtitleParserSSA.cpp \
 	DVDSubtitleParserSubrip.cpp \
 	DVDSubtitleParserVplayer.cpp \
 	DVDSubtitleTagMicroDVD.cpp \
 	DVDSubtitleTagSami.cpp \
-	DVDSubtitlesLibass.cpp \
 	DVDSubtitleStream.cpp \
+
+ifeq (@USE_LIBASS@,1)
+SRCS+=	DVDSubtitleParserSSA.cpp \
+	DVDSubtitlesLibass.cpp \
+
+endif
 
 LIB=	DVDSubtitles.a
 

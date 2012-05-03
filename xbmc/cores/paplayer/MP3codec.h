@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+#if defined(HAS_LIBMAD)
 #include "CachingCodec.h"
 #include "music/tags/MusicInfoTagLoaderMP3.h"
 #include "../dvdplayer/DVDCodecs/Audio/DllLibMad.h"
@@ -122,4 +124,4 @@ private:
 
   DllLibMad m_dll;
 };
-
+#endif

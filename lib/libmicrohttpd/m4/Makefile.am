@@ -1,1 +1,0 @@
-EXTRA_DIST = libcurl.m4

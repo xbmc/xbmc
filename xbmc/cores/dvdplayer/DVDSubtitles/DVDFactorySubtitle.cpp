@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "DVDFactorySubtitle.h"
 
 #include "DVDSubtitleStream.h"
@@ -73,11 +74,13 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
         pParser = new CDVDSubtitleParserVplayer(pStream, strFile.c_str());
         pStream = NULL;
       }
+#if defined(HAS_LIBASS)
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
       {
         pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
         pStream = NULL;
       }
+#endif
       //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
       //     this->uses_time=1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subviewer subtitle format detected\n");

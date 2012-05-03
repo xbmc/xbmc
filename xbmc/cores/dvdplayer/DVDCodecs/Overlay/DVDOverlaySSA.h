@@ -22,6 +22,7 @@
  */
 
 #include "system.h" // for SAFE_RELEASE
+#if defined(HAS_LIBASS)
 #include "DVDOverlay.h"
 #include "../../DVDSubtitles/DVDSubtitlesLibass.h"
 
@@ -44,3 +45,4 @@ public:
   }
 
 };
+#endif

@@ -46,12 +46,14 @@
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
-  if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
+  if (strFileType.Equals("ape") || strFileType.Equals("mac"))
+    return new DVDPlayerCodec();
+#if defined(HAS_LIBMAD)
+  else if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
+#endif
   else if (strFileType.Equals("pcm") || strFileType.Equals("l16"))
     return new PCMCodec();
-  else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
-    return new DVDPlayerCodec();
   else if (strFileType.Equals("cdda"))
     return new CDDACodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
@@ -117,22 +119,24 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
   CURL urlFile(strFile);
-  if( strContent.Equals("audio/mpeg")
-  ||  strContent.Equals("audio/mp3") )
-    return new MP3Codec();
-  else if (strContent.Left(9).Equals("audio/l16"))
-  {
-    PCMCodec * pcm_codec = new PCMCodec();
-    pcm_codec->SetMimeParams(strContent);
-    return pcm_codec;
-  }
-  else if( strContent.Equals("audio/aac")
+  if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {
     DVDPlayerCodec *pCodec = new DVDPlayerCodec;
     if (urlFile.GetProtocol() == "shout" )
       pCodec->SetContentType(strContent);
     return pCodec;
+  }
+#if defined(HAS_LIBMAD)
+  else if( strContent.Equals("audio/mpeg")
+  ||  strContent.Equals("audio/mp3") )
+    return new MP3Codec();
+#endif
+  else if (strContent.Left(9).Equals("audio/l16"))
+  {
+    PCMCodec * pcm_codec = new PCMCodec();
+    pcm_codec->SetMimeParams(strContent);
+    return pcm_codec;
   }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
@@ -143,10 +147,12 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
    else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
      return new FLACCodec();
 
+#if defined(HAS_LIBMAD)
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {
     return new MP3Codec(); // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
+#endif
 
   if (urlFile.GetFileType().Equals("wav"))
   {

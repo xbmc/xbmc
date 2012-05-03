@@ -80,6 +80,17 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_LIBASS
+  #define HAS_LIBASS
+#endif
+
+#ifdef HAVE_LIBMPEG2
+  #define HAS_LIBMPEG2
+#endif
+#ifdef HAVE_LIBMAD
+  #define HAS_LIBMAD
+#endif
+
 /**********************
  * Non-free Components
  **********************/
@@ -116,6 +127,9 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAVE_LIBCEC
+#define HAS_LIBASS
+#define HAS_LIBMPEG2
+#define HAS_LIBMAD
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif

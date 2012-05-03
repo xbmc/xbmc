@@ -8,7 +8,11 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd
+
+ifeq (@USE_DVDREAD@,1)
+DVDPCODECS_DIRS+= lib/libdvd \
+
+endif
 
 DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
@@ -260,7 +264,9 @@ libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
+ifeq (@USE_DVDREAD@,1)
 	$(MAKE) -C lib/libdvd
+endif
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)
 ifneq ($(findstring arm,@ARCH@), arm)

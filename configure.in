@@ -85,6 +85,8 @@ x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
+dvdread_enabled="== DVD Playback support enabled. =="
+dvdread_disabled="== DVD Playback support disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
 hal_not_found="== Could not find hal. HAL support disabled. =="
@@ -324,6 +326,12 @@ AC_ARG_ENABLE([ffmpeg_libvorbis],
   [enable FFmpeg vorbis encoding (default is no)])],
   [use_ffmpeg_libvorbis=$enableval],
   [use_ffmpeg_libvorbis=no])
+
+AC_ARG_ENABLE([dvdread],
+  [AS_HELP_STRING([--enable-dvdread],
+  [enable dvd image playback (default is yes)])],
+  [use_dvdread=$enableval],
+  [use_dvdread=yes])
 
 AC_ARG_ENABLE([dvdcss],
   [AS_HELP_STRING([--enable-dvdcss],
@@ -680,12 +688,30 @@ if test $MYSQL_CONFIG = "yes"; then
 else
   AC_MSG_ERROR($missing_program)
 fi
-AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
+
+AC_CHECK_HEADER([ass/ass.h],
+  [AC_DEFINE([HAVE_LIBASS], [1], [Whether to use libass library.])
+    USE_LIBASS=1
+    XB_FIND_SONAME([ASS],[ass])],
+  [AC_MSG_NOTICE($missing_library)]
+    USE_LIBASS=0)
+
+AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],
+  [AC_DEFINE([HAVE_LIBMPEG2], [1], [Whether to use libmpeg2 library.])
+    USE_LIBMPEG2=1
+    XB_FIND_SONAME([MPEG2],[mpeg2])],
+  [AC_MSG_NOTICE($missing_library)
+    USE_LIBMPEG2=0],
   AC_INCLUDES_DEFAULT()
   [#include <mpeg2dec/mpeg2.h>])
-AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
+
+AC_CHECK_HEADER([mad.h],
+  [AC_DEFINE([HAVE_LIBMAD], [1], [Whether to use libmad library.])
+    USE_LIBMAD=1
+    XB_FIND_SONAME([MAD],[mad])],
+  [AC_MSG_NOTICE($missing_library)
+    USE_LIBMAD=0])
+
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
@@ -803,7 +829,6 @@ else
   fi
 fi
 
-XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
@@ -811,8 +836,6 @@ XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
-XB_FIND_SONAME([ASS],         [ass])
-XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1678,8 +1701,20 @@ else
   final_message="$final_message\n  HAL Support:\tNo"
 fi
 
+if test "$use_dvdread" = "yes"; then
+  AC_MSG_NOTICE($dvdread_enabled)
+  final_message="$final_message\n  DVD Playback:\tYes"
+  USE_DVDREAD=1
+  SKIP_CONFIG_DVDREAD=0
+else
+  AC_MSG_NOTICE($dvdread_disabled)
+  final_message="$final_message\n  DVD Playback:\tNo"
+  USE_DVDREAD=0
+  SKIP_CONFIG_DVDREAD=1
+fi
+
 # DVDCSS
-if test "$use_dvdcss" = "yes"; then
+if test "$use_dvdcss" = "yes" && test "$use_dvdread" = "yes"; then
   AC_MSG_NOTICE($dvdcss_enabled)
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
@@ -1825,7 +1860,6 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/VideoRenderers/Makefile \
     xbmc/cores/dvdplayer/Makefile \
     lib/Makefile \
-    lib/libdvd/Makefile \
     xbmc/cores/DllLoader/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
@@ -1879,6 +1913,10 @@ OUTPUT_FILES="Makefile \
 
 if test "$use_skin_touched" = "yes"; then
 OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
+fi
+
+if test "$use_dvdread" = "yes"; then
+OUTPUT_FILES="$OUTPUT_FILES lib/libdvd/Makefile"
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
@@ -1936,7 +1974,10 @@ AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_WEB_SERVER)
-
+AC_SUBST(USE_DVDREAD)
+AC_SUBST(USE_LIBMAD)
+AC_SUBST(USE_LIBMPEG2)
+AC_SUBST(USE_LIBASS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2103,7 +2144,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
   $MAKE dvdread-config &&
   mkdir -p `pwd`/../includes/dvdread
   cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
-], [0])
+], [$SKIP_CONFIG_DVDREAD])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
   ./configure2 \
@@ -2117,7 +2158,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
     --enable-static \
     --disable-shared \
     --cc="$CC"
-], [0])
+], [$SKIP_CONFIG_DVDREAD])
 
 XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
   ./configure \
