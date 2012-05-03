@@ -28,6 +28,7 @@
 #include <string>
 
 #if defined(HAS_GL) || defined(HAS_GLES)
+#include "system_gl.h"
 
 namespace Shaders {
 

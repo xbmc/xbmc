@@ -19,10 +19,12 @@
 *
 */
 
-#include "RenderSystemGL.h"
+
+#include "system.h"
 
 #ifdef HAS_GL
 
+#include "RenderSystemGL.h"
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"

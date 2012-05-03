@@ -27,6 +27,7 @@
 
 #ifdef HAS_GL
 #include <locale.h>
+
 #include "LinuxRendererGL.h"
 #include "Application.h"
 #include "settings/Settings.h"

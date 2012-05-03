@@ -23,16 +23,9 @@
 
 #include <list>
 
-#if defined (HAS_GL)
-  #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
-  #include "LinuxRendererGLES.h"
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#elif defined(HAS_SDL)
-  #include "LinuxRenderer.h"
-#endif
-
+#include "cores/VideoRenderers/BaseRenderer.h"
+#include "guilib/Geometry.h"
+#include "guilib/Resolution.h"
 #include "threads/SharedSection.h"
 #include "threads/Thread.h"
 #include "settings/VideoSettings.h"
@@ -47,6 +40,11 @@ struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
 
+class CWinRenderer;
+class CLinuxRenderer;
+class CLinuxRendererGL;
+class CLinuxRendererGLES;
+
 class CXBMCRenderManager
 {
 public:
@@ -54,8 +52,8 @@ public:
   ~CXBMCRenderManager();
 
   // Functions called from the GUI
-  void GetVideoRect(CRect &source, CRect &dest) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(source, dest); };
-  float GetAspectRatio() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
+  void GetVideoRect(CRect &source, CRect &dest);
+  float GetAspectRatio();
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
@@ -65,7 +63,7 @@ public:
   void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
   void ManageCaptures();
 
-  void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
+  void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
@@ -90,67 +88,21 @@ public:
     m_overlays.AddCleanup(o);
   }
 
-  inline void Reset()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->Reset();
-  }
-  RESOLUTION GetResolution()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetResolution();
-    else
-      return RES_INVALID;
-  }
+  void Reset();
+
+  RESOLUTION GetResolution();
 
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
 
-  bool Supports(ERENDERFEATURE feature)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(feature);
-    else
-      return false;
-  }
+  bool Supports(ERENDERFEATURE feature);
+  bool Supports(EDEINTERLACEMODE method);
+  bool Supports(EINTERLACEMETHOD method);
+  bool Supports(ESCALINGMETHOD method);
 
-  bool Supports(EDEINTERLACEMODE method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  bool Supports(EINTERLACEMETHOD method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  bool Supports(ESCALINGMETHOD method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt)
-  {
-    CSharedLock lock(m_sharedSection);
-    return AutoInterlaceMethodInternal(mInt);
-  }
+  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
@@ -159,32 +111,20 @@ public:
 
   void UpdateResolution();
 
-  unsigned int GetProcessorSize()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetProcessorSize();
-    return 0;
-  }
+#ifdef HAS_GL
+  CLinuxRendererGL    *m_pRenderer;
+#elif HAS_GLES == 2
+  CLinuxRendererGLES  *m_pRenderer;
+#elif defined(HAS_DX)
+  CWinRenderer        *m_pRenderer;
+#elif defined(HAS_SDL)
+  CLinuxRenderer      *m_pRenderer;
+#endif
+
+  unsigned int GetProcessorSize();
 
   // Supported pixel formats, can be called before configure
-  std::vector<ERenderFormat> SupportedFormats()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->SupportedFormats();
-    return std::vector<ERenderFormat>();
-  }
-
-#ifdef HAS_GL
-  CLinuxRendererGL *m_pRenderer;
-#elif HAS_GLES == 2
-  CLinuxRendererGLES *m_pRenderer;
-#elif defined(HAS_DX)
-  CWinRenderer *m_pRenderer;
-#elif defined(HAS_SDL)
-  CLinuxRenderer *m_pRenderer;
-#endif
+  std::vector<ERenderFormat> SupportedFormats();
 
   void Present();
   void Recover(); // called after resolution switch if something special is needed
