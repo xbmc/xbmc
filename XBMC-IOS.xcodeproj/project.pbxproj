@@ -966,6 +966,7 @@
 		F5E112E9143577A000175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D0143577A000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		F5E112EC143577A000175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D4143577A000175026 /* Peripherals.cpp */; };
 		F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209413E907E200D5F2CD /* InfoBool.cpp */; };
+		F5ED8D961551FB1000842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -3019,6 +3020,8 @@
 		F5E112D6143577A000175026 /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
 		F5E6209413E907E200D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209513E907E200D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
+		F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayDirectory.cpp; sourceTree = "<group>"; };
+		F5ED8D951551FB1000842059 /* BlurayDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayDirectory.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4512,6 +4515,8 @@
 				DF93D7981444B105007C6459 /* AFPFile.h */,
 				F56C8382131F42E8000AD0F6 /* ASAPFileDirectory.cpp */,
 				F56C8383131F42E8000AD0F6 /* ASAPFileDirectory.h */,
+				F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */,
+				F5ED8D951551FB1000842059 /* BlurayDirectory.h */,
 				F56C8390131F42E8000AD0F6 /* CacheStrategy.cpp */,
 				F56C8391131F42E8000AD0F6 /* CacheStrategy.h */,
 				F56C8392131F42E8000AD0F6 /* CDDADirectory.cpp */,
@@ -7109,6 +7114,7 @@
 				7C1F6F7A13ED178F001726AB /* LibraryDirectory.cpp in Sources */,
 				DF2E329415509B2C000F5772 /* XbmcContext.cpp in Sources */,
 				DF33C29415509BF50046CDCB /* ilog.cpp in Sources */,
+				F5ED8D961551FB1000842059 /* BlurayDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
