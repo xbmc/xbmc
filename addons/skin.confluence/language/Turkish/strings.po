@@ -1,0 +1,700 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Değiştir"
+
+#: id:31001
+msgid "Love"
+msgstr "Aşk"
+
+#: id:31002
+msgid "Hate"
+msgstr "Nefret"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Güç Seçenekleri"
+
+#: id:31004
+msgid "Working..."
+msgstr "Çalışıyor..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Bilgiyi Gizle"
+
+#: id:31006
+msgid "View Options"
+msgstr "Görünüm Seçenekleri"
+
+#: id:31007
+msgid "Plugins"
+msgstr "Eklentiler"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "Tam ekran"
+
+#: id:31009
+msgid "Total Duration"
+msgstr ""
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Son Eklenenler"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Video - Dosyalar"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Müzik - Dosyalar"
+
+#: id:31023
+msgid "Playing"
+msgstr "Oynatılıyor"
+
+#: id:31024
+msgid "Page"
+msgstr "Sayfa"
+
+#: id:31025
+msgid "Items"
+msgstr "Nesne"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Çeşitli Ayarlar"
+
+#: id:31027
+msgid "Location"
+msgstr "Yer"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Kayan Poster"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:31030
+msgid "Full list"
+msgstr "Tam liste"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Küçük Resimler"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Kayan Resim"
+
+#: id:31033
+msgid "Info"
+msgstr "Bilgi"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Şimdi Çalınıyor"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "OYNATILIYOR"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "DURAKLATILDI"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "İLERİ SAR"
+
+#: id:31045
+msgid "REWIND"
+msgstr "GERİ SAR"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Ses Özellikleri"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Geçerli Önayar"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Görsel Öğe Önayarları"
+
+#: id:31049
+msgid "End Time"
+msgstr "Bitiş Zamanı"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "Sırala: Artan"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "Sırala: Azalan"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Çalma listesini aç"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Çalma listesini kaydet"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Çalma listesini kapat"
+
+#: id:31058
+msgid "System music files"
+msgstr "Sistem müzik dosyaları"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Geçerli çalma listesi"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Seçilen Geçerli Parça"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Giriş ekranı seçenekleri"
+
+#: id:31102
+msgid "Background"
+msgstr "Arka Plan"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Resim slayt gösterisinde \"DURAKLATILDI\"yı göster"
+
+#: id:31104
+msgid ""
+"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
+"Only)[/COLOR]"
+msgstr ""
+"Fragmanları pencere içinde oynat [COLOR=grey3](Sadece Video Bilgisi İletişim"
+" Kutusu İçin)[/COLOR]"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Çeşitli seçenekler"
+
+#: id:31107
+msgid ""
+"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+msgstr ""
+"Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Ana Menü Tuşlarını Gizle"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Medya arka planları"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Medya Türü için Arka planı değiştir"
+
+#: id:31111
+msgid "Hide"
+msgstr "Gizle"
+
+#: id:31112
+msgid "Options"
+msgstr "Seçenekler"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Tek Resim"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Çoklu Resim"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Özelleştir"
+
+#: id:31116
+msgid "Show Recently added Albums"
+msgstr ""
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Son Eklenen Videoları Göster"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Ana Sayfa Programlar Alt Menüsü"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Arkaplan Fanartını Gizle"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "TUŞ ETİKETİ"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Hava Durumu Sayfası"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "TV Programları için \"Afiş\" yerine \"Poster\" kullan"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Arkaplanda Oynatılan Videoyu göster"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Arkaplanda Görsel Ögeyi göster"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "TV tema şarkılarını video kitaplığında çal (TvTunes eklentisi)"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "TvTunes"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Şarkı Sözleri"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "Şarkı Sözleri Eklentisi"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "Altyazı Eklentisi"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "Ana Sayfa Videolar Alt Menüsü"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "Ana Sayfa Müzik Alt Menüsü"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "Ana Sayfa Resimler Alt Menüsü"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Müzik OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Video OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Kısayollar"
+
+#: id:31201
+msgid "Categories"
+msgstr "Kategoriler"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Oyuncuları Göster"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Şarkını Seç"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Bölüm Bağlantıları"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Şarkı Sözleri Kaynağı"
+
+#: id:31206
+msgid "Found"
+msgstr ""
+
+#: id:31207
+msgid "Find More Items"
+msgstr ""
+
+#: id:31208
+msgid "Upcoming Episodes"
+msgstr ""
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Mevcut Sıcaklık"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Son Güncelleme"
+
+#: id:31302
+msgid "Menu"
+msgstr "Menü"
+
+#: id:31303
+msgid "Data provider"
+msgstr "Veri sağlayıcı"
+
+#: id:31304
+msgid "Picture"
+msgstr "Resim"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Disk Ortamı Algılanmadı"
+
+#: id:31306
+msgid "Eject"
+msgstr "Çıkart"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Fanart'ı gizle"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Film Detayları"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Kullanılan Bellek:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Parça Numarası"
+
+#: id:31311
+msgid ""
+"Fanart image[CR]"
+"[CR]"
+"Unavailable[CR]"
+"[CR]"
+" Click button to set"
+msgstr ""
+"Fanart resmi[CR]"
+"[CR]"
+"Mevcut Değil[CR]"
+"[CR]"
+" Ayarlamak için düğmeye basın"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Geçerli Scraper"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Scraper Seç"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "İçerik Tarama Seçenekleri"
+
+#: id:31315
+msgid "Basic"
+msgstr "Temel Bilgiler"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Fanart Yolunu Ayarla"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Küçük Fanart"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Seçilen Profil"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Son Giriş Yapan"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Şarkı Seçici"
+
+#: id:31322
+msgid "Aired"
+msgstr "Gösterim"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "En Yeni Filmler"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "En Yeni Bölümler"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Çalma Listesi Seçenekleri"
+
+#: id:31326
+msgid "Created"
+msgstr "Oluşturma"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Çözünürlük"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Son Eklenenler"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr ""
+"[B]Zamanlayıcı ayarlandı![/B] [COLOR=grey2] - Sistem'in otomatik kapanma "
+"süresi[/COLOR]"
+
+#: id:31330
+msgid ""
+"Click button to play[CR]"
+"[CR]"
+"Movie trailer"
+msgstr ""
+"Oynatmak için düğmeye basın[CR]"
+"[CR]"
+"Film fragmanı"
+
+#: id:31331
+msgid "Album Details"
+msgstr "Albüm Ayrıntıları"
+
+#: id:31351
+msgid "Pause"
+msgstr "Duraklat"
+
+#: id:31352
+msgid "Stop"
+msgstr "Durdur"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "İleri Sar"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Geri Sar"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Film menüsü"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Altyazıları İndir"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Dış görünüm varsayılanı"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "B. Harfsiz dış görünüm varsayılanı"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Arial tabanlı"
+
+#: id:31400
+msgid ""
+"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
+"[CR]"
+"Change the skin · Set language and region · Change file listing options[CR]"
+"Set up a screensaver"
+msgstr ""
+"[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Dış görünümü değiştir · Dil ve bölgesel ayarları değiştir · Dosya "
+"listeleme seçeneklerini değiştir · Ekran koruyucuyu ayarla"
+
+#: id:31401
+msgid ""
+"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
+"[CR]"
+"Manage your video library · Set video playback options · Change video "
+"listing options[CR]"
+"Set subtitle fonts"
+msgstr ""
+"[B]VİDEO AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Video kitaplığını yönet · Video oynatma seçeneklerini ayarla · Video "
+"listeleme seçeneklerini değiştir · Altyazı karakterlerini ayarla"
+
+#: id:31402
+msgid ""
+"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
+"[CR]"
+"Manage your music library · Set music playback options · Change music "
+"listing options[CR]"
+"Setup song submission · Set karaoke options"
+msgstr ""
+"[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik"
+" listeleme seçeneklerini değiştir · Şarkı sunumu ayarları · Karaoke "
+"seçeneklerini ayarla"
+
+#: id:31403
+msgid ""
+"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
+"[CR]"
+"Set picture listing options · Configure slideshows"
+msgstr ""
+"[B]RESİM AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Resim listeleme seçeneklerini değiştir · Slayt gösterisi ayarlarını "
+"yapılandır"
+
+#: id:31404
+msgid ""
+"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
+"[CR]"
+"Set three cities to collect weather information"
+msgstr ""
+"[B]HAVA DURUMU AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Hava Durumu bilgilerini almak için üç şehir seçin"
+
+#: id:31406
+msgid ""
+"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
+"[CR]"
+"Setup and calibrate displays · Configure audio output · Setup remote "
+"controls[CR]"
+"Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+"[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Görünüm ayarları · Ses çıkış ayarlarını yapılandır · Uzaktan "
+"kumandaları ayarla[CR]"
+"Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem "
+"kilit ayarları"
+
+#: id:31407
+msgid ""
+"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
+"[CR]"
+"Setup the Confluence skin · Add and remove home menu items[CR]"
+"Change skin backgrounds"
+msgstr ""
+"[B]DIŞ GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"Confluence dış görünümü ayarları · Ana menü ögelerini ekle ve kaldır[CR]"
+"Arayüz arkaplanlarını değiştir"
+
+#: id:31408
+msgid ""
+"[B]CONFIGURE ADD-ONS[/B][CR]"
+"[CR]"
+"Manage your installed Add-ons · Browse for and install Add-ons from "
+"xbmc.org[CR]"
+"Modify Add-on settings"
+msgstr ""
+"[B]EKLENTİLERİ YAPILANDIR[/B][CR]"
+"[CR]"
+"Yüklenmiş eklentileri yönet · Eklentilere gözat ve yenilerini yükle[CR]"
+"Eklenti ayarlarını değiştir"
+
+#: id:31409
+msgid ""
+"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
+"[CR]"
+"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
+"Enable Zeroconf · Configure AirPlay"
+msgstr ""
+"[B]HİZMET AYARLARINI YAPILANDIR[/B][CR]"
+"[CR]"
+"UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını "
+"yapılandır[CR]"
+"Zeroconf'u etkinleştir · AirPlay'i yapılandır"
+
+#: id:31421
+msgid ""
+"Select your XBMC user Profile[CR]"
+"to login and continue"
+msgstr ""
+"Oturum açıp devam etmek için[CR]"
+"XBMC kullanıcı profilinizi seçin"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "Hava Durumu Haritaları"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36 Saatlik Hava Tahmini"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "Saatlik Hava Tahmini"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "Haftalık Hava Tahmini"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10 Günlik Hava Tahmini"
+
+#: id:31905
+msgid "Forecast"
+msgstr "Hava Tahmini"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "Video ve Haritalar"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Video Hava Tahmini [COLOR=grey2](Tam ekran oynatım)[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "Chance of Precipitation"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "Hava tahmini bilgisi getiriliyor..."
+
