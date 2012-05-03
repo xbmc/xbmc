@@ -91,6 +91,7 @@ enum RenderMethod
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
   RENDER_VAAPI=0x20,
+  RENDER_CVREF = 0x40,
 };
 
 enum RenderQuality
@@ -145,6 +146,9 @@ public:
 #ifdef HAVE_LIBVA
   virtual void         AddProcessor(VAAPI::CHolder& holder);
 #endif
+#ifdef TARGET_DARWIN
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
+#endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -193,6 +197,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadCVRefTexture(int index);
+  void DeleteCVRefTexture(int index);
+  bool CreateCVRefTexture(int index);
+
   void UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
@@ -210,6 +218,7 @@ protected:
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
   void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderCoreVideoRef(int renderBuffer, int field);// CoreVideo reference
 
   CFrameBufferObject m_fbo;
 
@@ -270,6 +279,9 @@ protected:
 #endif
 #ifdef HAVE_LIBVA
     VAAPI::CHolder& vaapi;
+#endif
+#ifdef TARGET_DARWIN_OSX
+    struct __CVBuffer *cvBufferRef;
 #endif
   };
 
