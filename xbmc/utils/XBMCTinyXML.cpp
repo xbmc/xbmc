@@ -25,18 +25,18 @@
 #define BUFFER_SIZE 4096
 
 CXBMCTinyXML::CXBMCTinyXML()
-: TiXmlDocument::TiXmlDocument()
+: TiXmlDocument()
 {
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
-: TiXmlDocument::TiXmlDocument()
+: TiXmlDocument()
 {
   LoadFile(documentName);
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
-: TiXmlDocument::TiXmlDocument()
+: TiXmlDocument()
 {
   LoadFile(documentName);
 }
@@ -97,7 +97,7 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
     data.reserve(BUFFER_SIZE * (++count));
     data.append(buf);
   }
-  return Parse(data, NULL, encoding);
+  return Parse(data, NULL, encoding) != NULL;
 }
 
 bool CXBMCTinyXML::SaveFile(const char *_filename) const
