@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -19,20 +21,16 @@
  *
  */
 
-#if !defined(__arm__)
-#ifndef WINDOW_SYSTEM_OSX_H
-#define WINDOW_SYSTEM_OSX_H
+#if defined(TARGET_DARWIN_OSX)
 
 #include "windowing/WinSystem.h"
 #include "threads/CriticalSection.h"
-#include <SDL/SDL_video.h>
 
-typedef struct _CGDirectDisplayID *CGDirectDisplayID;
-typedef u_int32_t CGDisplayChangeSummaryFlags;
+typedef struct SDL_Surface SDL_Surface;
 
 class IDispResource;
-
 class CWinEventsOSX;
+
 class CWinSystemOSX : public CWinSystemBase
 {
 public:
@@ -74,9 +72,6 @@ protected:
   void  FillInVideoModes();
   bool  FlushBuffer(void);
 
-  static void DisplayReconfigured(CGDirectDisplayID display, 
-    CGDisplayChangeSummaryFlags flags, void *userData);
-  
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
@@ -90,5 +85,4 @@ protected:
   std::vector<IDispResource*>  m_resources;
 };
 
-#endif // WINDOW_SYSTEM_H
 #endif

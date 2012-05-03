@@ -343,27 +343,20 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _off_t off_t
 
 #if defined(__APPLE__)
-#include <sched.h>
-#include <AvailabilityMacros.h>
-typedef int64_t   off64_t;
-typedef off_t     __off_t;
-typedef off64_t   __off64_t;
-typedef fpos_t fpos64_t;
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
-#define __stat64 stat
-#define stat64 stat
-#define statfs64 statfs
-#define fstat64 fstat
-#elif defined(__arm__) 
-#define __stat64 stat
-#define stat64 stat
-#define statfs64 statfs
-#define fstat64 fstat
+  #include <sched.h>
+  #include <AvailabilityMacros.h>
+  typedef int64_t   off64_t;
+  typedef off_t     __off_t;
+  typedef off64_t   __off64_t;
+  typedef fpos_t fpos64_t;
+  #define __stat64 stat
+  #define stat64 stat
+  #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+    #define statfs64 statfs
+  #endif
+  #define fstat64 fstat
 #else
-#define fstat64 fstat
-#endif
-#else
-#define __stat64 stat64
+  #define __stat64 stat64
 #endif
 
 struct _stati64 {

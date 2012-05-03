@@ -39,6 +39,7 @@
 #include "CocoaInterface.h"
 #undef BOOL
 
+#include <SDL/SDL_video.h>
 #include <SDL/SDL_events.h>
 
 #import <Cocoa/Cocoa.h>
@@ -446,6 +447,39 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
   }
   CLog::Log(LOGERROR, "GetMode - no match found!");  
   return NULL;
+}
+
+//---------------------------------------------------------------------------------
+static void DisplayReconfigured(CGDirectDisplayID display, 
+  CGDisplayChangeSummaryFlags flags, void* userData)
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
+	if (!winsys)
+    return;
+
+  if (flags & kCGDisplaySetModeFlag || flags & kCGDisplayBeginConfigurationFlag)
+  {
+    // pre/post-reconfiguration changes
+    RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    NSScreen* pScreen = nil;
+    unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
+    
+    if( screenIdx < [[NSScreen screens] count] )
+    {
+        pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
+    }
+
+    if (pScreen)
+    {
+      CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
+      if (xbmc_display == display)
+      {
+        // we only respond to changes on the display we are running on.
+        CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured");
+        winsys->CheckDisplayChanging(flags);
+      }
+    }
+  }
 }
 
 //---------------------------------------------------------------------------------
@@ -1049,10 +1083,12 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
 void CWinSystemOSX::EnableVSync(bool enable)
 {
   // OpenGL Flush synchronised with vertical retrace                       
-  GLint swapInterval;
-  
-  swapInterval = enable ? 1 : 0;
-  [[NSOpenGLContext currentContext] setValues:(const long int*)&swapInterval forParameter:NSOpenGLCPSwapInterval];
+#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
+  GLint swapInterval = enable ? 1 : 0;
+#else 
+  const long int swapInterval = enable ? 1 : 0;
+#endif
+  [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx)
@@ -1358,39 +1394,6 @@ void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
       CLog::Log(LOGDEBUG, "CWinSystemOSX::CheckDisplayChanging:OnResetDevice");
       for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
         (*i)->OnResetDevice();
-    }
-  }
-}
-
-void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display, 
-  CGDisplayChangeSummaryFlags flags, void* userData)
-{
-  CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
-	if (!winsys)
-    return;
-
-  if (flags & kCGDisplaySetModeFlag || flags & kCGDisplayBeginConfigurationFlag)
-  {
-    // pre/post-reconfiguration changes
-    RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    NSScreen* pScreen = nil;
-    unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
-    
-    if( screenIdx < [[NSScreen screens] count] )
-    {
-        pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
-    }
-
-    if (pScreen)
-    {
-      CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
-      if (xbmc_display == display)
-      {
-        // we only respond to changes on the display we are running on.
-        CSingleLock lock(winsys->m_resourceSection);
-        CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured");
-        winsys->CheckDisplayChanging(flags);
-      }
     }
   }
 }
