@@ -1671,11 +1671,10 @@ void CLinuxRendererGL::RenderCoreVideoRef(int index, int field)
 
   glDisable(GL_DEPTH_TEST);
 
-  // Y
   glEnable(GL_TEXTURE_RECTANGLE_ARB);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, plane.id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   glBegin(GL_QUADS);
   glTexCoord2f(plane.rect.x1, plane.rect.y1);
@@ -3231,6 +3230,9 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
 
 bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return false;
+
   if(mode == VS_DEINTERLACEMODE_OFF
   || mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
@@ -3241,6 +3243,9 @@ bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
 
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return false;
+
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
@@ -3331,6 +3336,9 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return VS_INTERLACEMETHOD_NONE;
+
   if(m_renderMethod & RENDER_VDPAU)
   {
 #ifdef HAVE_LIBVDPAU
