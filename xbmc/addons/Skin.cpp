@@ -261,4 +261,24 @@ const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString&
   return m_includes.CreateSkinVariable(name, context);
 }
 
+bool CSkinInfo::LoadSettings()
+{
+  if (CAddon::LoadSettings())
+    return true;
+
+  // backward compatibility - allow accessing/setting settings without
+  // settings defined in resources/settings.xml
+  LoadUserSettings();
+  m_settingsLoaded = true;
+  return true;
+}
+
+bool CSkinInfo::HasSettings()
+{
+  // TEMPORARY HACK - hide addon settings dialog for skins
+  // addon settings need to be extended to cover all setting types
+  // used by skins (f.e. backdrop pickers)
+  return false;
+}
+
 } /*namespace ADDON*/

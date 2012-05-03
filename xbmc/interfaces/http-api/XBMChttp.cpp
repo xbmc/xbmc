@@ -52,6 +52,7 @@
 #include "utils/log.h"
 #include "TextureCache.h"
 #include "ThumbnailCache.h"
+#include "addons/Skin.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -2846,8 +2847,9 @@ int CXbmcHttp::xbmcGetSkinSetting(int numParas, CStdString paras[])
   {
     if (atoi(paras[0]) == 0)
     {
-      int string = g_settings.TranslateSkinBool(paras[1]);
-      bool value = g_settings.GetSkinBool(string);
+      bool value = false;
+      if (g_SkinInfo)
+        value = g_SkinInfo->GetSetting(paras[1]).Equals("true");
       if (value==false)
         return SetResponse(openTag+"False");
       else
@@ -2855,8 +2857,9 @@ int CXbmcHttp::xbmcGetSkinSetting(int numParas, CStdString paras[])
     }
     else
     {
-      int string = g_settings.TranslateSkinString(paras[1]);
-      CStdString value = g_settings.GetSkinString(string);
+      CStdString value;
+      if (g_SkinInfo)
+        value = g_SkinInfo->GetSetting(paras[1]);
       return SetResponse(openTag+value);
     }
   }

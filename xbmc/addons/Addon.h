@@ -135,6 +135,19 @@ public:
    */
   virtual CStdString GetSetting(const CStdString& key);
 
+  /*! \brief Reset a particular settings value
+   Value of given settings will be set to default.
+   \param key the id of the setting to reset
+   \return true if setting has default value
+   */
+  bool ResetSetting(const CStdString& key);
+
+  /*! \brief Reset all settings values
+   Value of all settings will be set to defaults.
+   \return true if any setting has default value
+   */
+  bool ResetSettings();
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
@@ -192,10 +205,11 @@ protected:
   /*! \brief Parse settings from an XML document
    \param doc XML document to parse for settings
    \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
+   \param overwrite if false, only settings that aren't loaded will be updated
    \return true if settings are loaded, false otherwise
    \sa SettingsToXML
    */
-  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false);
+  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false, bool overwrite = true);
 
   /*! \brief Parse settings into an XML document
    \param doc XML document to receive the settings
@@ -229,7 +243,9 @@ private:
   CStdString  m_profile;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
-  std::map<CStdString, CStdString> m_settings;
+
+  typedef std::map<CStdString, CStdString, StdStringLessNoCase> MAPSETTINGS;
+  MAPSETTINGS m_settings;
 };
 
 class CAddonLibrary : public CAddon

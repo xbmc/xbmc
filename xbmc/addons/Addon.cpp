@@ -402,6 +402,23 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
   return true;
 }
 
+bool CAddon::ResetSettings()
+{
+  // remove all settings
+  m_settings.clear();
+  // load default settings
+  return SettingsFromXML(m_addonXmlDoc, true);
+}
+
+bool CAddon::ResetSetting(const CStdString& key)
+{
+  // remove given settings
+  m_settings.erase(key);
+  // load default value for removed setting
+  // (we will not overwrite rest of the settings)
+  return SettingsFromXML(m_addonXmlDoc, true, false);
+}
+
 bool CAddon::HasUserSettings()
 {
   if (!LoadSettings())
@@ -456,7 +473,7 @@ CStdString CAddon::GetSetting(const CStdString& key)
   if (!LoadSettings())
     return ""; // no settings available
 
-  map<CStdString, CStdString>::const_iterator i = m_settings.find(key);
+  MAPSETTINGS::const_iterator i = m_settings.find(key);
   if (i != m_settings.end())
     return i->second;
   return "";
@@ -469,7 +486,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
   m_settings[key] = value;
 }
 
-bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */)
+bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */, bool overwrite /* = true */)
 {
   if (!doc.RootElement())
     return false;
@@ -488,6 +505,10 @@ bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=fals
     while (setting)
     {
       const char *id = setting->Attribute("id");
+
+      if (!overwrite && m_settings.find(id) != m_settings.end())
+        continue; // don't overwrite existing setting
+
       const char *value = setting->Attribute(loadDefaults ? "default" : "value");
       if (id && value)
       {
@@ -505,7 +526,7 @@ void CAddon::SettingsToXML(TiXmlDocument &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<CStdString, CStdString>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  for (MAPSETTINGS::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", i->first.c_str());

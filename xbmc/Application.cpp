@@ -747,6 +747,9 @@ bool CApplication::Create()
 
   g_peripherals.Initialise();
 
+  // preserve skin settings stored in guisettings
+  g_settings.ExportSkinSettingsToAddonSetting();
+
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
   g_Mouse.Initialize();

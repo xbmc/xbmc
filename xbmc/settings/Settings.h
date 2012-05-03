@@ -128,14 +128,6 @@ public:
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
-  int TranslateSkinString(const CStdString &setting);
-  const CStdString &GetSkinString(int setting) const;
-  void SetSkinString(int setting, const CStdString &label);
-
-  int TranslateSkinBool(const CStdString &setting);
-  bool GetSkinBool(int setting) const;
-  void SetSkinBool(int setting, bool set);
-
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
    \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
@@ -156,8 +148,9 @@ public:
    */
   void CycleWatchMode(const CStdString& content);
 
-  void ResetSkinSetting(const CStdString &setting);
-  void ResetSkinSettings();
+  /*! \brief Try to export skin settings from guisettings to addon settings.
+   */
+  void ExportSkinSettingsToAddonSetting();
 
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
@@ -404,7 +397,6 @@ protected:
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
-  void SaveSkinSettings(TiXmlNode *pElement) const;
 
   void LoadUserFolderLayout();
 

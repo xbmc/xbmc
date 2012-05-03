@@ -73,6 +73,7 @@
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "addons/Skin.h"
 
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
@@ -944,12 +945,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (prop.name == "string")
         {
           if (prop.num_params() == 2)
-            return AddMultiInfo(GUIInfo(SKIN_STRING, g_settings.TranslateSkinString(prop.param(0)), ConditionalStringParameter(prop.param(1))));
+            return AddMultiInfo(GUIInfo(SKIN_STRING, ConditionalStringParameter(prop.param(0)), ConditionalStringParameter(prop.param(1))));
           else
-            return AddMultiInfo(GUIInfo(SKIN_STRING, g_settings.TranslateSkinString(prop.param(0))));
+            return AddMultiInfo(GUIInfo(SKIN_STRING, ConditionalStringParameter(prop.param(0))));
         }
         if (prop.name == "hassetting")
-          return AddMultiInfo(GUIInfo(SKIN_BOOL, g_settings.TranslateSkinBool(prop.param(0))));
+          return AddMultiInfo(GUIInfo(SKIN_BOOL, ConditionalStringParameter(prop.param(0))));
         else if (prop.name == "hastheme")
           return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, ConditionalStringParameter(prop.param(0))));
       }
@@ -2271,15 +2272,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
     {
       case SKIN_BOOL:
         {
-          bReturn = g_settings.GetSkinBool(info.GetData1());
+          if (g_SkinInfo)
+            bReturn = g_SkinInfo->GetSetting(m_stringParameters[info.GetData1()]).Equals("true");
         }
         break;
       case SKIN_STRING:
         {
-          if (info.GetData2())
-            bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
-          else
-            bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+          if (g_SkinInfo)
+          {
+            if (info.GetData2())
+              bReturn = g_SkinInfo->GetSetting(m_stringParameters[info.GetData1()]).Equals(m_stringParameters[info.GetData2()]);
+            else
+              bReturn = !g_SkinInfo->GetSetting(m_stringParameters[info.GetData1()]).IsEmpty();
+          }
         }
         break;
       case SKIN_HAS_THEME:
@@ -2670,13 +2675,17 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 {
   if (info.m_info == SKIN_STRING)
   {
-    return g_settings.GetSkinString(info.GetData1());
+    if (g_SkinInfo)
+      return g_SkinInfo->GetSetting(m_stringParameters[info.GetData1()]);
   }
   else if (info.m_info == SKIN_BOOL)
   {
-    bool bInfo = g_settings.GetSkinBool(info.GetData1());
-    if (bInfo)
-      return g_localizeStrings.Get(20122);
+    if (g_SkinInfo)
+    {
+      bool bInfo = g_SkinInfo->GetSetting(m_stringParameters[info.GetData1()]).Equals("true");
+      if (bInfo)
+        return g_localizeStrings.Get(20122);
+    }
   }
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
