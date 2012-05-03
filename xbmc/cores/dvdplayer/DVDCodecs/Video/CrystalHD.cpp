@@ -1577,9 +1577,8 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       }
     }
 
-    bool wait_state;
     if (m_pOutputThread->GetReadyCount() < 1)
-      wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
+      m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
   return true;
