@@ -23,6 +23,7 @@
 #include "system.h"
 
 #if HAS_GLES == 2
+#include "system_gl.h"
 
 #include <cmath>
 #include "MatrixGLES.h"

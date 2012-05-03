@@ -5,7 +5,7 @@
 
 #ifndef GUILIB_GUITEXTUREGLES_H
 #define GUILIB_GUITEXTUREGLES_H
--
+
 #pragma once
 
 /*
