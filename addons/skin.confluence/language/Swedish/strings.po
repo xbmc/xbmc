@@ -1,0 +1,695 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Ändra din"
+
+#: id:31001
+msgid "Love"
+msgstr "Älska"
+
+#: id:31002
+msgid "Hate"
+msgstr "Hata"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Strömalternativ"
+
+#: id:31004
+msgid "Working..."
+msgstr "Arbetar..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Dölj INFO"
+
+#: id:31006
+msgid "View Options"
+msgstr "Visa val"
+
+#: id:31007
+msgid "Plugins"
+msgstr "Tillägg"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "Helskärm"
+
+#: id:31009
+msgid "Total Duration"
+msgstr ""
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Nyligen tillagda"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Filmer - Filer"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Musik - Filer"
+
+#: id:31023
+msgid "Playing"
+msgstr "Spelar"
+
+#: id:31024
+msgid "Page"
+msgstr "Sida"
+
+#: id:31025
+msgid "Items"
+msgstr "Objekt"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Övr. alternativ"
+
+#: id:31027
+msgid "Location"
+msgstr "Plats"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Omslagssvep"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Fanart"
+
+#: id:31030
+msgid "Full list"
+msgstr "Full lista"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Bildminiatyrer"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Bildsvep"
+
+#: id:31033
+msgid "Info"
+msgstr "Info"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Nu spelas"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "SPELAR"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "PAUSAD"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "SPOLA FRAMÅT"
+
+#: id:31045
+msgid "REWIND"
+msgstr "SPOLA BAKÅT"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Ljudegenskaper"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Nuvarande förval"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Visualiseringsförval"
+
+#: id:31049
+msgid "End Time"
+msgstr "Sluttid"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "Sort: stigande"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "Sort: fallande"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Öppna spellista"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Spara spellista"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Stäng spellista"
+
+#: id:31058
+msgid "System music files"
+msgstr "Systemmusikfiler"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Nuvarande spellista"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Denna fil är sammanslagen, välj den del du vill spela."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Nuvarande vald"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Hemskärmsalternativ"
+
+#: id:31102
+msgid "Background"
+msgstr "Bakgrund"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Visa \"Pausad\" i bildspel"
+
+#: id:31104
+msgid ""
+"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
+"Only)[/COLOR]"
+msgstr ""
+"Spela trailers i ett fönster [COLOR=grey3](Endast i "
+"videoinformationsdialogen)[/COLOR]"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Övriga alternativ"
+
+#: id:31107
+msgid ""
+"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+msgstr ""
+"Dölj flaggläsning från videofilnamn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Dölj huvudmenyknappar"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Mediabakgrunder"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Ändra bakgrund för mediatyp"
+
+#: id:31111
+msgid "Hide"
+msgstr "Göm"
+
+#: id:31112
+msgid "Options"
+msgstr "Alternativ"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Solobild"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Flerbild"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Anpassare"
+
+#: id:31116
+msgid "Show Recently added Albums"
+msgstr ""
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Visa nyligen tillagda filmer"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Hemsidans undermeny"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Dölj bakgrundsfanart"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "KNAPPETIKETT"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Vädersida"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Använd omslag istället för banner för TV-serier"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Visa bakgrund \"Nu spelas\" filmer"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Visa bakgrund \"Nu spelas\" visualisering"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Spela TV-temasånger i videobiblioteket (TVTunes-tillägg)"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "TvTunes"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Sångtexter"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "Sångtextstillägg"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "Undertextstillägg"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "Hemskärmens videoundermeny"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "Hemskärmens musikundermeny"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "Hemskärmens bildundermeny"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Musik-OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Video-OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Genvägar"
+
+#: id:31201
+msgid "Categories"
+msgstr "Kategorier"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Visa rollista"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Välj din låt"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Sektionslänkar"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Sångtextkälla"
+
+#: id:31206
+msgid "Found"
+msgstr ""
+
+#: id:31207
+msgid "Find More Items"
+msgstr ""
+
+#: id:31208
+msgid "Upcoming Episodes"
+msgstr ""
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Nuvarande temp"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Sist uppdaterad"
+
+#: id:31302
+msgid "Menu"
+msgstr "Meny"
+
+#: id:31303
+msgid "Data provider"
+msgstr "Dataleverantör"
+
+#: id:31304
+msgid "Picture"
+msgstr "Bild"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Ingen diskmedia upptäckt"
+
+#: id:31306
+msgid "Eject"
+msgstr "Mata ut"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Dölj fanart"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Filmdetaljer"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Använt minne:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Spårnummer"
+
+#: id:31311
+msgid ""
+"Fanart image[CR]"
+"[CR]"
+"Unavailable[CR]"
+"[CR]"
+" Click button to set"
+msgstr ""
+"Fanart-bild[CR]"
+"[CR]"
+"Inte Tillgänglig[CR]"
+"[CR]"
+"Klicka på knappen för att ange"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Nuvarande skrapa"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Välj en skrapa"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "Innehållsskrapealternativ"
+
+#: id:31315
+msgid "Basic"
+msgstr "Grundläggande"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Sätt fanartsökväg"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Liten fanart"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Vald profil"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Sist inloggad"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Karaoke-låtväljare"
+
+#: id:31322
+msgid "Aired"
+msgstr "Sänt"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "Senaste filmerna"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "Senaste avsnitten"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Spellistsalternativ"
+
+#: id:31326
+msgid "Created"
+msgstr "Skapad"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Upplösning"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Nyligen tillagda"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr ""
+"[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet "
+"om[/COLOR]"
+
+#: id:31330
+msgid ""
+"Click button to play[CR]"
+"[CR]"
+"Movie trailer"
+msgstr ""
+"Klicka på knappen för att[CR]"
+"[CR]"
+"spela filmtrailer"
+
+#: id:31331
+msgid "Album Details"
+msgstr "Albumdetaljer"
+
+#: id:31351
+msgid "Pause"
+msgstr "Paus"
+
+#: id:31352
+msgid "Stop"
+msgstr "Stopp"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "Spola framåt"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Spola bakåt"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Filmmeny"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Ladda ner undertexter"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Skalstandard"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Skalstandard utan VERSAL"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Arialbaserad"
+
+#: id:31400
+msgid ""
+"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
+"[CR]"
+"Change the skin · Set language and region · Change file listing options[CR]"
+"Set up a screensaver"
+msgstr ""
+"[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]"
+"Ange en skärmsläckare"
+
+#: id:31401
+msgid ""
+"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
+"[CR]"
+"Manage your video library · Set video playback options · Change video "
+"listing options[CR]"
+"Set subtitle fonts"
+msgstr ""
+"[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra "
+"videoförteckningsalternativ[CR]"
+"Konfigurera undertextfonter"
+
+#: id:31402
+msgid ""
+"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
+"[CR]"
+"Manage your music library · Set music playback options · Change music "
+"listing options[CR]"
+"Setup song submission · Set karaoke options"
+msgstr ""
+"[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra "
+"musiklistningsalternativ[CR]"
+"Ange låtinskickning · Ange karaokealternativ"
+
+#: id:31403
+msgid ""
+"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
+"[CR]"
+"Set picture listing options · Configure slideshows"
+msgstr ""
+"[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Ange bildlistningsalternativ · Justera bildspel"
+
+#: id:31404
+msgid ""
+"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
+"[CR]"
+"Set three cities to collect weather information"
+msgstr ""
+"[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Ange tre städer för att insamling av väderinformation"
+
+#: id:31406
+msgid ""
+"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
+"[CR]"
+"Setup and calibrate displays · Configure audio output · Setup remote "
+"controls[CR]"
+"Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+"[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in "
+"fjärrkontroller[CR]"
+"Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och"
+" lås"
+
+#: id:31407
+msgid ""
+"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
+"[CR]"
+"Setup the Confluence skin · Add and remove home menu items[CR]"
+"Change skin backgrounds"
+msgstr ""
+"[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR]"
+"[CR]"
+"Ställa in Confluence-skalet · Lägga till och ta bort hemsidans "
+"menyknappar[CR]"
+"Ändra skalets bakgrunder"
+
+#: id:31408
+msgid ""
+"[B]CONFIGURE ADD-ONS[/B][CR]"
+"[CR]"
+"Manage your installed Add-ons · Browse for and install Add-ons from "
+"xbmc.org[CR]"
+"Modify Add-on settings"
+msgstr ""
+"[B]KONFIGURERA TILLÄGG[/B][CR]"
+"[CR]"
+"Hantera installerade tillägg - Visa och installera tillägg från xbmc.org[CR]"
+"Ändra inställningar för tillägg"
+
+#: id:31409
+msgid ""
+"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
+"[CR]"
+"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
+"Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid ""
+"Select your XBMC user Profile[CR]"
+"to login and continue"
+msgstr ""
+"Välj din XBMC användarprofil[CR]"
+"för att logga in  och fortsätta"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "Väderkartor"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36-timmarsprognos"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "Timprognos"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "Helgprognos"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10-dagarsprognos"
+
+#: id:31905
+msgid "Forecast"
+msgstr "Prognos"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "Karta & video"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "Videoprognost [COLOR=grey2](Helskärmsuppspelning)[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "Chans till nederbörd"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "Hämtar prognosinfo..."
+

@@ -1,0 +1,685 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "修改您的"
+
+#: id:31001
+msgid "Love"
+msgstr "喜歡"
+
+#: id:31002
+msgid "Hate"
+msgstr "討厭"
+
+#: id:31003
+msgid "Power Options"
+msgstr "電源選項"
+
+#: id:31004
+msgid "Working..."
+msgstr "工作中..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "隱藏資訊"
+
+#: id:31006
+msgid "View Options"
+msgstr "檢視選項"
+
+#: id:31007
+msgid "Plugins"
+msgstr "外掛"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr "全螢幕"
+
+#: id:31009
+msgid "Total Duration"
+msgstr ""
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "最近新增"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "視訊 - 檔案"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "音樂 - 檔案"
+
+#: id:31023
+msgid "Playing"
+msgstr "正在播放"
+
+#: id:31024
+msgid "Page"
+msgstr "頁"
+
+#: id:31025
+msgid "Items"
+msgstr "個項目"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "其他選項"
+
+#: id:31027
+msgid "Location"
+msgstr "位置"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "海報捲動"
+
+#: id:31029
+msgid "Fanart"
+msgstr "劇照"
+
+#: id:31030
+msgid "Full list"
+msgstr "全部清單"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "圖片縮圖"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "圖片捲動"
+
+#: id:31033
+msgid "Info"
+msgstr "資訊"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "正在播放"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "正在播方"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "暫停"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "快轉"
+
+#: id:31045
+msgid "REWIND"
+msgstr "倒轉"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "音效屬性"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "目前設定"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "視覺效果設定"
+
+#: id:31049
+msgid "End Time"
+msgstr "結束時間"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr "排序：遞增"
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr "排序：遞減"
+
+#: id:31055
+msgid "Open playlist"
+msgstr "開啟播放清單"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "儲存播放清單"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "關閉播放清單"
+
+#: id:31058
+msgid "System music files"
+msgstr "系統中的音樂檔案"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "目前的播放清單"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "這個檔案已堆疊，請選擇您要從哪個部分開始播放。"
+
+#: id:31061
+msgid "Current Selected"
+msgstr "目前的選擇"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "主介面選項"
+
+#: id:31102
+msgid "Background"
+msgstr "背景"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "在圖片幻燈片秀中顯示\"已暫停\"狀態"
+
+#: id:31104
+msgid ""
+"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
+"Only)[/COLOR]"
+msgstr "在視窗中播放預告片[COLOR=grey3](只在視訊資訊對話框中)[/COLOR]"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "其他選項"
+
+#: id:31107
+msgid ""
+"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+msgstr "隱藏視訊檔案名稱的媒體標示 [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "隱藏主選單按鈕"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "媒體背景"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "編輯媒體類型的背景"
+
+#: id:31111
+msgid "Hide"
+msgstr "隱藏"
+
+#: id:31112
+msgid "Options"
+msgstr "選項"
+
+#: id:31113
+msgid "Single Image"
+msgstr "單一圖片"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "多張圖片"
+
+#: id:31115
+msgid "Customizer"
+msgstr "自訂"
+
+#: id:31116
+msgid "Show Recently added Albums"
+msgstr ""
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "顯示最近新增的視訊"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "首頁程式子選單"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "隱藏背景劇照"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "按鈕標籤"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "氣象頁面"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "以電視節目的海報取代橫幅圖片"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "在背景顯示正在播放的視訊"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "在背景顯示正在播放的視覺效果"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr ""
+
+#: id:31127
+msgid "TvTunes"
+msgstr ""
+
+#: id:31128
+msgid "Lyrics"
+msgstr "歌詞"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr "歌詞附加元件"
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr "字幕附加元件"
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr "首頁影片子選單"
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr "首頁音樂子選單"
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr "首頁圖片子選單"
+
+#: id:31140
+msgid "Music OSD"
+msgstr "音樂播放工具列"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "視訊播放工具列"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "捷徑"
+
+#: id:31201
+msgid "Categories"
+msgstr "分類"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "顯示演員"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "選擇您的歌曲"
+
+#: id:31204
+msgid "Section Links"
+msgstr "段落連結"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "歌詞來源"
+
+#: id:31206
+msgid "Found"
+msgstr ""
+
+#: id:31207
+msgid "Find More Items"
+msgstr ""
+
+#: id:31208
+msgid "Upcoming Episodes"
+msgstr ""
+
+#: id:31300
+msgid "Current Temp"
+msgstr "現在溫度"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "最後更新"
+
+#: id:31302
+msgid "Menu"
+msgstr "選單"
+
+#: id:31303
+msgid "Data provider"
+msgstr ""
+
+#: id:31304
+msgid "Picture"
+msgstr "圖片"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "沒有偵測到光碟媒體"
+
+#: id:31306
+msgid "Eject"
+msgstr "退出"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "隱藏劇照"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "電影詳細資訊"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "已使用記憶體："
+
+#: id:31310
+msgid "Track Number"
+msgstr "音軌編號"
+
+#: id:31311
+msgid ""
+"Fanart image[CR]"
+"[CR]"
+"Unavailable[CR]"
+"[CR]"
+" Click button to set"
+msgstr ""
+"無法取得[CR]"
+"[CR]"
+"劇情照片[CR]"
+"[CR]"
+" 請點擊按鈕來設定"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "目前的站台"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "選擇一個站台"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "內容掃描選項"
+
+#: id:31315
+msgid "Basic"
+msgstr "基本"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "設定劇照路徑"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "小劇照"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "選擇的設定檔"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "上次登入在"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "卡拉OK歌曲選擇器"
+
+#: id:31322
+msgid "Aired"
+msgstr "首播"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "最新電影"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "最新劇集"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "播放清單選項"
+
+#: id:31326
+msgid "Created"
+msgstr "已建立"
+
+#: id:31327
+msgid "Resolution"
+msgstr "解析度"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "最近新增"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr "[B]計時器啟動！[/B] [COLOR=grey2] - 系統將自動關機於：[/COLOR]"
+
+#: id:31330
+msgid ""
+"Click button to play[CR]"
+"[CR]"
+"Movie trailer"
+msgstr ""
+"點擊按鈕播放[CR]"
+"[CR]"
+"電影預告片"
+
+#: id:31331
+msgid "Album Details"
+msgstr "專輯詳細資訊"
+
+#: id:31351
+msgid "Pause"
+msgstr "暫停"
+
+#: id:31352
+msgid "Stop"
+msgstr "停止"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "快轉"
+
+#: id:31354
+msgid "Rewind"
+msgstr "倒轉"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "電影選單"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "下載字幕"
+
+#: id:31390
+msgid "Skin default"
+msgstr "主題預設"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr ""
+
+#: id:31392
+msgid "Arial based"
+msgstr ""
+
+#: id:31400
+msgid ""
+"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
+"[CR]"
+"Change the skin · Set language and region · Change file listing options[CR]"
+"Set up a screensaver"
+msgstr ""
+"[B]設定介面外觀[/B][CR]"
+"[CR]"
+"修改佈景主題 · 選擇語言和地區 · 修改檔案清單選項[CR]"
+"設定螢幕保護程式"
+
+#: id:31401
+msgid ""
+"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
+"[CR]"
+"Manage your video library · Set video playback options · Change video "
+"listing options[CR]"
+"Set subtitle fonts"
+msgstr ""
+"[B]設定視訊參數[/B][CR]"
+"[CR]"
+"管理您的音樂資料庫 · 設定視訊播放選項 · 修改視訊清單選項[CR]"
+"設定字幕字型"
+
+#: id:31402
+msgid ""
+"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
+"[CR]"
+"Manage your music library · Set music playback options · Change music "
+"listing options[CR]"
+"Setup song submission · Set karaoke options"
+msgstr ""
+"[B]設定音樂參數[/B][CR]"
+"[CR]"
+"管理您的音樂資料庫 · 設定音樂播放選項 · 修改音樂清單選項[CR]"
+"設定歌曲提交 · 設定卡拉OK選項"
+
+#: id:31403
+msgid ""
+"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
+"[CR]"
+"Set picture listing options · Configure slideshows"
+msgstr ""
+"[B]設定圖片參數[/B][CR]"
+"[CR]"
+"設定圖片清單選項 · 設定幻燈片秀"
+
+#: id:31404
+msgid ""
+"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
+"[CR]"
+"Set three cities to collect weather information"
+msgstr ""
+"[B]設定氣象參數[/B][CR]"
+"[CR]"
+"設定三個要收集氣象資料的城市"
+
+#: id:31406
+msgid ""
+"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
+"[CR]"
+"Setup and calibrate displays · Configure audio output · Setup remote "
+"controls[CR]"
+"Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+"[B]設定系統參數[/B][CR]"
+"[CR]"
+"設定和校正顯示輸出 · 設定音效輸出 · 設定遙控器[CR]"
+"設定節能選項 · 啟用除錯 · 設定鎖定密碼"
+
+#: id:31407
+msgid ""
+"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
+"[CR]"
+"Setup the Confluence skin · Add and remove home menu items[CR]"
+"Change skin backgrounds"
+msgstr ""
+"[B]設定佈景主題[/B][CR]"
+"[CR]"
+"設定 Confluence 佈景主題 · 新增或移除首頁選單項目[CR]"
+"修改佈景主題背景"
+
+#: id:31408
+msgid ""
+"[B]CONFIGURE ADD-ONS[/B][CR]"
+"[CR]"
+"Manage your installed Add-ons · Browse for and install Add-ons from "
+"xbmc.org[CR]"
+"Modify Add-on settings"
+msgstr ""
+"[B]設定附加元件[/B][CR]"
+"[CR]"
+"管理已安裝的附加元件 · 從 xbmc.org 瀏覽並安裝附加元件[CR]"
+"修改附加元件設定"
+
+#: id:31409
+msgid ""
+"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
+"[CR]"
+"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
+"Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid ""
+"Select your XBMC user Profile[CR]"
+"to login and continue"
+msgstr ""
+"選擇您的 XBMC 使用者設定檔[CR]"
+"登入並繼續"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr "天氣地圖"
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr "36小時預報"
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr "每小時預報"
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr "一週預報"
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr "10天預報"
+
+#: id:31905
+msgid "Forecast"
+msgstr "預報"
+
+#: id:31906
+msgid "Maps & Video"
+msgstr "地圖 & 影片"
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr "影片預報 [COLOR=grey2]〈全螢幕播放〉[/COLOR]"
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr "降雨機率"
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr "正在擷取預報資訊..."
+

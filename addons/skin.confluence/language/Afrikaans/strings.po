@@ -1,0 +1,696 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: af\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:31000
+msgid "Change Your"
+msgstr "Verander Jou"
+
+#: id:31001
+msgid "Love"
+msgstr "Lief Vir"
+
+#: id:31002
+msgid "Hate"
+msgstr "Haat"
+
+#: id:31003
+msgid "Power Options"
+msgstr "Krag Opsies"
+
+#: id:31004
+msgid "Working..."
+msgstr "Werk..."
+
+#: id:31005
+msgid "Hide Information"
+msgstr "Versteek INFO"
+
+#: id:31006
+msgid "View Options"
+msgstr ""
+
+#: id:31007
+msgid "Plugins"
+msgstr "Inproppe"
+
+#: id:31008
+msgid "Fullscreen"
+msgstr ""
+
+#: id:31009
+msgid "Total Duration"
+msgstr ""
+
+#: id:31020
+msgctxt "Auto context with id 31020"
+msgid "Recently Added"
+msgstr "Onlangs Bygevoeg"
+
+#: id:31021
+msgid "Video - Files"
+msgstr "Video - Lêers"
+
+#: id:31022
+msgid "Music - Files"
+msgstr "Musiek - Lêers"
+
+#: id:31023
+msgid "Playing"
+msgstr "Speel"
+
+#: id:31024
+msgid "Page"
+msgstr "Bladsy"
+
+#: id:31025
+msgid "Items"
+msgstr "Items"
+
+#: id:31026
+msgid "Misc Options"
+msgstr "Diverse Opsies"
+
+#: id:31027
+msgid "Location"
+msgstr "Ligging"
+
+#: id:31028
+msgid "Poster Wrap"
+msgstr "Plakkaat Toedraai"
+
+#: id:31029
+msgid "Fanart"
+msgstr "Ondersteunerkuns"
+
+#: id:31030
+msgid "Full list"
+msgstr "Vol lys"
+
+#: id:31031
+msgid "Pic Thumbs"
+msgstr "Prent Duime"
+
+#: id:31032
+msgid "Image Wrap"
+msgstr "Prent Toedraai"
+
+#: id:31033
+msgid "Info"
+msgstr "Info"
+
+#: id:31040
+msgid "Now Playing"
+msgstr "Speel Nou"
+
+#: id:31042
+msgid "PLAYING"
+msgstr "SPEEL"
+
+#: id:31043
+msgid "PAUSED"
+msgstr "GEPOUSEER"
+
+#: id:31044
+msgid "FAST FORWARD"
+msgstr "VORENTOE SPOEL"
+
+#: id:31045
+msgid "REWIND"
+msgstr "TERUGSPOEL"
+
+#: id:31046
+msgid "Audio Properties"
+msgstr "Audio Eienskappe"
+
+#: id:31047
+msgid "Current Preset"
+msgstr "Huidige Instelling"
+
+#: id:31048
+msgid "Visualization Presets"
+msgstr "Visualisering Instellings"
+
+#: id:31049
+msgid "End Time"
+msgstr "Eind Tyd"
+
+#: id:31050
+msgid "Sort: Ascending"
+msgstr ""
+
+#: id:31051
+msgid "Sort: Descending"
+msgstr ""
+
+#: id:31055
+msgid "Open playlist"
+msgstr "Maak speellys oop"
+
+#: id:31056
+msgid "Save playlist"
+msgstr "Stoor speellys"
+
+#: id:31057
+msgid "Close playlist"
+msgstr "Maak speellys toe"
+
+#: id:31058
+msgid "System music files"
+msgstr "Stelsel musiek lêers"
+
+#: id:31059
+msgid "Current playlist"
+msgstr "Huidige speellys"
+
+#: id:31060
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Hierdie lêer is gestapel, selekteer die deel van waar jy wil speel."
+
+#: id:31061
+msgid "Current Selected"
+msgstr "Huidiglik Geselekteer"
+
+#: id:31101
+msgid "Home screen options"
+msgstr "Tuis Venster Opsies"
+
+#: id:31102
+msgid "Background"
+msgstr "Agtergrond"
+
+#: id:31103
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Wys \"Gepouseer\" in prentjie skyfievertoning"
+
+#: id:31104
+msgid ""
+"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
+"Only)[/COLOR]"
+msgstr ""
+"Speel Voorskoue in 'n venster [COLOR=grey3](Slegs Video Informasie "
+"Dialoog)[/COLOR]"
+
+#: id:31106
+msgid "Miscellaneous options"
+msgstr "Diverse Opsies"
+
+#: id:31107
+msgid ""
+"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+msgstr ""
+"Versteek Vlae gelees van video lêername [COLOR=grey3](Blu-ray, "
+"HD-DVD)[/COLOR]"
+
+#: id:31108
+msgid "Hide Main Menu Buttons"
+msgstr "Versteek Hoof Kieslys Knoppies"
+
+#: id:31109
+msgid "Media backgrounds"
+msgstr "Media Agtergronde"
+
+#: id:31110
+msgid "Edit Background for Media Type"
+msgstr "Redigeer Agtergrond vir Media Tipe"
+
+#: id:31111
+msgid "Hide"
+msgstr "Versteek"
+
+#: id:31112
+msgid "Options"
+msgstr "Opsies"
+
+#: id:31113
+msgid "Single Image"
+msgstr "Enkele Prentjie"
+
+#: id:31114
+msgid "Multi Image"
+msgstr "Veelvuldige Prentjie"
+
+#: id:31115
+msgid "Customizer"
+msgstr "Verpersoonliker"
+
+#: id:31116
+msgid "Show Recently added Albums"
+msgstr ""
+
+#: id:31117
+msgid "Show Recently added Videos"
+msgstr "Wys onlangs bygevoegde Videos"
+
+#: id:31118
+msgid "Home Page Programs Submenu"
+msgstr "Tuis bladsy programme subkieslys"
+
+#: id:31119
+msgid "Hide Background Fanart"
+msgstr "Stel verpersoonlikte byvoegsel knoppie in staat"
+
+#: id:31120
+msgid "BUTTON LABEL"
+msgstr "KNOPPIE ETIKET"
+
+#: id:31122
+msgid "Weather Page"
+msgstr "Weer Bladsy"
+
+#: id:31123
+msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
+msgstr "Gebruik \"Plakate\" in plaas van \"Baniere\" vir TV vertonings"
+
+#: id:31124
+msgid "Show Background \"Now Playing\" Video"
+msgstr "Wys agtergrond \"Speel Nou\" video"
+
+#: id:31125
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr "Wys agtergrond \"Speel Nou\" visualisering"
+
+#: id:31126
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr "Stel lirieke in musiek OSD in staat"
+
+#: id:31127
+msgid "TvTunes"
+msgstr "PAD NA LIRIEKE BYVOEGSEL"
+
+#: id:31128
+msgid "Lyrics"
+msgstr "Lirieke"
+
+#: id:31132
+msgid "Lyrics Add-on"
+msgstr ""
+
+#: id:31133
+msgid "Subtitle Add-on"
+msgstr ""
+
+#: id:31134
+msgid "Home Page Videos Submenu"
+msgstr ""
+
+#: id:31135
+msgid "Home Page Music Submenu"
+msgstr ""
+
+#: id:31136
+msgid "Home Page Pictures Submenu"
+msgstr ""
+
+#: id:31140
+msgid "Music OSD"
+msgstr "Musiek OSD"
+
+#: id:31141
+msgid "Video OSD"
+msgstr "Video OSD"
+
+#: id:31200
+msgid "Shortcuts"
+msgstr "Kortpaaie"
+
+#: id:31201
+msgid "Categories"
+msgstr "Kategorië"
+
+#: id:31202
+msgid "Show Cast"
+msgstr "Wys Rolverdeling"
+
+#: id:31203
+msgid "Choose Your Song"
+msgstr "Kies Jou Liedjie"
+
+#: id:31204
+msgid "Section Links"
+msgstr "Seksie Skakels"
+
+#: id:31205
+msgid "Lyrics Source"
+msgstr "Lirieke Bron"
+
+#: id:31206
+msgid "Found"
+msgstr ""
+
+#: id:31207
+msgid "Find More Items"
+msgstr ""
+
+#: id:31208
+msgid "Upcoming Episodes"
+msgstr ""
+
+#: id:31300
+msgid "Current Temp"
+msgstr "Huidige Temp"
+
+#: id:31301
+msgid "Last Updated"
+msgstr "Laas Opdateer"
+
+#: id:31302
+msgid "Menu"
+msgstr "Kieslys"
+
+#: id:31303
+msgid "Data provider"
+msgstr ""
+
+#: id:31304
+msgid "Picture"
+msgstr "Prentjie"
+
+#: id:31305
+msgid "No Disc Media Detected"
+msgstr "Geen Skyf Media Bespoor"
+
+#: id:31306
+msgid "Eject"
+msgstr "Haal Skyf Uit"
+
+#: id:31307
+msgid "Hide Fanart"
+msgstr "Versteek Ondersteunerkuns"
+
+#: id:31308
+msgid "Movie Details"
+msgstr "Fliek Besonderhede"
+
+#: id:31309
+msgid "Memory Used:"
+msgstr "Geheue Gebruik:"
+
+#: id:31310
+msgid "Track Number"
+msgstr "Snit Nommer"
+
+#: id:31311
+msgid ""
+"Fanart image[CR]"
+"[CR]"
+"Unavailable[CR]"
+"[CR]"
+" Click button to set"
+msgstr ""
+"Ondersteunerkuns prentjie[CR]"
+"[CR]"
+"Nie beskikbaar[CR]"
+"[CR]"
+" Kliek knoppie om te stel"
+
+#: id:31312
+msgid "Current Scraper"
+msgstr "Huidige Skraper"
+
+#: id:31313
+msgid "Choose a Scraper"
+msgstr "Kies 'n Skraper"
+
+#: id:31314
+msgid "Content Scanning Options"
+msgstr "Inhoud Deursoek Opsies"
+
+#: id:31315
+msgid "Basic"
+msgstr "Basies"
+
+#: id:31317
+msgid "Set Fanart Path"
+msgstr "Stel Ondersteunerkuns Pad"
+
+#: id:31318
+msgid "Small Fanart"
+msgstr "Klein Ondersteunerkuns"
+
+#: id:31319
+msgid "Selected Profile"
+msgstr "Geselekteerde Profiel"
+
+#: id:31320
+msgid "Last Logged In"
+msgstr "Laaste IngeLog"
+
+#: id:31321
+msgid "Karaoke Song Selector"
+msgstr "Karaoke Liedjie Selekteerder"
+
+#: id:31322
+msgid "Aired"
+msgstr "Gelug"
+
+#: id:31323
+msgid "Latest Movies"
+msgstr "Nuutste Flieks"
+
+#: id:31324
+msgid "Latest Episodes"
+msgstr "Nuutste Episodes"
+
+#: id:31325
+msgid "Playlist Options"
+msgstr "Speellys Opsies"
+
+#: id:31326
+msgid "Created"
+msgstr "Geskep"
+
+#: id:31327
+msgid "Resolution"
+msgstr "Resolusie"
+
+#: id:31328
+msgctxt "Auto context with id 31328"
+msgid "Recently Added"
+msgstr "Onlangs Bygevoeg"
+
+#: id:31329
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr ""
+"[B]Tydhouer gestel![/B] [COLOR=grey2] - Stelsel auto afskakel in[/COLOR]"
+
+#: id:31330
+msgid ""
+"Click button to play[CR]"
+"[CR]"
+"Movie trailer"
+msgstr ""
+"Kliek knoppie om[CR]"
+"[CR]"
+"Fliek voorskou  te speel"
+
+#: id:31331
+msgid "Album Details"
+msgstr ""
+
+#: id:31351
+msgid "Pause"
+msgstr "Pouseer"
+
+#: id:31352
+msgid "Stop"
+msgstr "Stop"
+
+#: id:31353
+msgid "Fast Forward"
+msgstr "Vorentoe Spoel"
+
+#: id:31354
+msgid "Rewind"
+msgstr "Terugspoel"
+
+#: id:31355
+msgid "Movie menu"
+msgstr "Fliek kieslys"
+
+#: id:31356
+msgid "Download Subtitles"
+msgstr "Laai Subtitels Af"
+
+#: id:31390
+msgid "Skin default"
+msgstr "Bestek omslag"
+
+#: id:31391
+msgid "Skin default with no Caps"
+msgstr "Bestek omslag met geen hoofletters"
+
+#: id:31392
+msgid "Arial based"
+msgstr "Arial gebasseer"
+
+#: id:31400
+msgid ""
+"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
+"[CR]"
+"Change the skin · Set language and region · Change file listing options[CR]"
+"Set up a screensaver"
+msgstr ""
+"[B]KONFIGUREER VOORKOMS VERSTELLINGS[/B][CR]"
+"[CR]"
+"Verander die oortreksel · Stel taal en streek · Verander lêer lyste "
+"opsies[CR]"
+"Stel 'n skermskut op"
+
+#: id:31401
+msgid ""
+"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
+"[CR]"
+"Manage your video library · Set video playback options · Change video "
+"listing options[CR]"
+"Set subtitle fonts"
+msgstr ""
+"[B]KONFIGUREER VIDEO VERSTELLINGS[/B][CR]"
+"[CR]"
+"Bestuur jou video biblioteek · Stel video terugspeel opsies · Verander"
+" video lyste opsies[CR]"
+"Stel subtitel skrifte"
+
+#: id:31402
+msgid ""
+"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
+"[CR]"
+"Manage your music library · Set music playback options · Change music "
+"listing options[CR]"
+"Setup song submission · Set karaoke options"
+msgstr ""
+"[B]KONFIGUREER MUSIEK VERSTELLINGS[/B][CR]"
+"[CR]"
+"Bestuur jou musiek biblioteek · Stel musiek speel opsies · Verander musiek "
+"lyste opsies[CR]"
+"Stel liedjie voorlegging op · Stel karaoke opsies"
+
+#: id:31403
+msgid ""
+"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
+"[CR]"
+"Set picture listing options · Configure slideshows"
+msgstr ""
+"[B]KONFIGUREER PRENTJIE VERSTELLINGS[/B][CR]"
+"[CR]"
+"Stel prentjie lyste opsies · Konfigureer skyfievertonings"
+
+#: id:31404
+msgid ""
+"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
+"[CR]"
+"Set three cities to collect weather information"
+msgstr ""
+"[B]KONFIGUREER WEER VERSTELLINGS[/B][CR]"
+"[CR]"
+"Stel drie stede om weer inligting te versamel"
+
+#: id:31406
+msgid ""
+"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
+"[CR]"
+"Setup and calibrate displays · Configure audio output · Setup remote "
+"controls[CR]"
+"Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+"[B]KONFIGUREER STELSEL VERSTELLINGS[/B][CR]"
+"[CR]"
+"Stel op en kalibreer vertone · Konfigureer audio uittree · Stel "
+"afstandbehere op[CR]"
+"Stel krag bespaar opsies · Stel ontfouting in staat · Stel hoof slot op"
+
+#: id:31407
+msgid ""
+"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
+"[CR]"
+"Setup the Confluence skin · Add and remove home menu items[CR]"
+"Change skin backgrounds"
+msgstr ""
+"[B]KONFIGUREER OORTREKSEL VERSTELLINGS[/B][CR]"
+"[CR]"
+"Stel die Confluence oortreksel op · Voeg by en verwyder tuis kieslys "
+"items[CR]"
+"Verander oortreksel agtergronde"
+
+#: id:31408
+msgid ""
+"[B]CONFIGURE ADD-ONS[/B][CR]"
+"[CR]"
+"Manage your installed Add-ons · Browse for and install Add-ons from "
+"xbmc.org[CR]"
+"Modify Add-on settings"
+msgstr ""
+"[B]KONFIGUREER BYVOEGSELS[/B][CR]"
+"[CR]"
+"Bestuur jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf "
+"xbmc.org[CR]"
+"Verander Byvoeging verstellings"
+
+#: id:31409
+msgid ""
+"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
+"[CR]"
+"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
+"Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+#: id:31421
+msgid ""
+"Select your XBMC user Profile[CR]"
+"to login and continue"
+msgstr ""
+"Selekteer jou XBMC gebruiker Profiel[CR]"
+"om in te log en voort te gaan"
+
+#: id:31900
+msgid "Weather Maps"
+msgstr ""
+
+#: id:31901
+msgid "36 Hour Forecast"
+msgstr ""
+
+#: id:31902
+msgid "Hourly Forecast"
+msgstr ""
+
+#: id:31903
+msgid "Weekend Forecast"
+msgstr ""
+
+#: id:31904
+msgid "10 Day Forecast"
+msgstr ""
+
+#: id:31905
+msgid "Forecast"
+msgstr ""
+
+#: id:31906
+msgid "Maps & Video"
+msgstr ""
+
+#: id:31907
+msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
+msgstr ""
+
+#: id:31908
+msgid "Chance of Precipitation"
+msgstr ""
+
+#: id:31909
+msgid "Fetching forecast info..."
+msgstr ""
+

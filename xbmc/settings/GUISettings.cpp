@@ -1422,7 +1422,7 @@ bool CGUISettings::SetLanguage(const CStdString &strLanguage)
     g_charsetConverter.reset();
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strNewLanguage.c_str());
+    strLanguagePath.Format("special://xbmc/language/%s", strNewLanguage.c_str());
     if (!g_localizeStrings.Load(strLanguagePath))
       return false;
 

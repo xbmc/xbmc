@@ -1,0 +1,9130 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "Фотографії"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "Музика"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "Відео"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "Гід ТБ"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "Налаштування"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr ""
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "Менеджер файлів"
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "Погода"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "XBMC медіа центр"
+
+#: id:11
+msgid "Monday"
+msgstr "Понеділок"
+
+#: id:12
+msgid "Tuesday"
+msgstr "Вівторок"
+
+#: id:13
+msgid "Wednesday"
+msgstr "Середа"
+
+#: id:14
+msgid "Thursday"
+msgstr "Четвер"
+
+#: id:15
+msgid "Friday"
+msgstr "П'ятниця"
+
+#: id:16
+msgid "Saturday"
+msgstr "Субота"
+
+#: id:17
+msgid "Sunday"
+msgstr "Неділя"
+
+#: id:21
+msgid "January"
+msgstr "січня"
+
+#: id:22
+msgid "February"
+msgstr "лютого"
+
+#: id:23
+msgid "March"
+msgstr "березня"
+
+#: id:24
+msgid "April"
+msgstr "квітня"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "травня"
+
+#: id:26
+msgid "June"
+msgstr "червня"
+
+#: id:27
+msgid "July"
+msgstr "липня"
+
+#: id:28
+msgid "August"
+msgstr "серпня"
+
+#: id:29
+msgid "September"
+msgstr "вересня"
+
+#: id:30
+msgid "October"
+msgstr "жовтня"
+
+#: id:31
+msgid "November"
+msgstr "листопада"
+
+#: id:32
+msgid "December"
+msgstr "грудня"
+
+#: id:41
+msgid "Mon"
+msgstr "Пн"
+
+#: id:42
+msgid "Tue"
+msgstr "Вт"
+
+#: id:43
+msgid "Wed"
+msgstr "Ср"
+
+#: id:44
+msgid "Thu"
+msgstr "Чт"
+
+#: id:45
+msgid "Fri"
+msgstr "Пт"
+
+#: id:46
+msgid "Sat"
+msgstr "Сб"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "Нд"
+
+#: id:51
+msgid "Jan"
+msgstr "Січ"
+
+#: id:52
+msgid "Feb"
+msgstr "Лют"
+
+#: id:53
+msgid "Mar"
+msgstr "Бер"
+
+#: id:54
+msgid "Apr"
+msgstr "Квт"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "Тра"
+
+#: id:56
+msgid "Jun"
+msgstr "Чер"
+
+#: id:57
+msgid "Jul"
+msgstr "Лип"
+
+#: id:58
+msgid "Aug"
+msgstr "Срп"
+
+#: id:59
+msgid "Sep"
+msgstr "Вер"
+
+#: id:60
+msgid "Oct"
+msgstr "Жов"
+
+#: id:61
+msgid "Nov"
+msgstr "Лст"
+
+#: id:62
+msgid "Dec"
+msgstr "Гру"
+
+#: id:71
+msgid "N"
+msgstr "Пн"
+
+#: id:72
+msgid "NNE"
+msgstr "ПнПнСх"
+
+#: id:73
+msgid "NE"
+msgstr "ПнСх"
+
+#: id:74
+msgid "ENE"
+msgstr "СхПнСх"
+
+#: id:75
+msgid "E"
+msgstr "Сх"
+
+#: id:76
+msgid "ESE"
+msgstr "СхПдСх"
+
+#: id:77
+msgid "SE"
+msgstr "ПдСх"
+
+#: id:78
+msgid "SSE"
+msgstr "ПдПдСх"
+
+#: id:79
+msgid "S"
+msgstr "Пд"
+
+#: id:80
+msgid "SSW"
+msgstr "ПдПдЗах"
+
+#: id:81
+msgid "SW"
+msgstr "ПдЗах"
+
+#: id:82
+msgid "WSW"
+msgstr "ЗахПдЗах"
+
+#: id:83
+msgid "W"
+msgstr "Зах"
+
+#: id:84
+msgid "WNW"
+msgstr "ЗахПнЗах"
+
+#: id:85
+msgid "NW"
+msgstr "ПнЗах"
+
+#: id:86
+msgid "NNW"
+msgstr "ПнПнЗах"
+
+#: id:87
+msgid "VAR"
+msgstr ""
+
+#: id:98
+msgid "View: Auto"
+msgstr "Вигляд: Авто."
+
+#: id:99
+msgid "View: Auto big"
+msgstr "Вигляд: Авто. Велик"
+
+#: id:100
+msgid "View: Icons"
+msgstr "Вигляд: Значки"
+
+#: id:101
+msgid "View: List"
+msgstr "Вигляд: Список"
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "Сканувати"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "Сорт.по: Назві"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "Сорт.по: Даті"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "Сорт.по: Розміру"
+
+#: id:106
+msgid "No"
+msgstr "Ні"
+
+#: id:107
+msgid "Yes"
+msgstr "Так"
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "Слайдшоу"
+
+#: id:109
+msgid "Create thumbs"
+msgstr "Створити ескізи"
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "Створити ескізи"
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "Ярлики"
+
+#: id:112
+msgid "Paused"
+msgstr "ПАУЗА"
+
+#: id:113
+msgid "Update failed"
+msgstr "Помилка поновлення"
+
+#: id:114
+msgid "Installation failed"
+msgstr "Помилка встановлення"
+
+#: id:115
+msgid "Copy"
+msgstr "Копіювати"
+
+#: id:116
+msgid "Move"
+msgstr "Перемістити"
+
+#: id:117
+msgid "Delete"
+msgstr "Видалити"
+
+#: id:118
+msgid "Rename"
+msgstr "Змінити назву"
+
+#: id:119
+msgid "New folder"
+msgstr "Нова папка"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "Підтвердження копіювання"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "Підтвердження переміщення"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "Підтверджуєте видалення?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "Копіювати файли?"
+
+#: id:124
+msgid "Move these files?"
+msgstr "Перемістити файли?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Видалити ці файли? Повернути їх буде неможливо."
+
+#: id:126
+msgid "Status"
+msgstr "Статус"
+
+#: id:127
+msgid "Objects"
+msgstr "Об'єкт(ів)"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "Головні"
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "Слайдшоу"
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "Інформація про систему"
+
+#: id:131
+msgid "Display"
+msgstr "Екран"
+
+#: id:132
+msgid "Albums"
+msgstr "Альбоми"
+
+#: id:133
+msgid "Artists"
+msgstr "Виконавці"
+
+#: id:134
+msgid "Songs"
+msgstr "Пісні"
+
+#: id:135
+msgid "Genres"
+msgstr "Жанри"
+
+#: id:136
+msgid "Playlists"
+msgstr "Плейлисти"
+
+#: id:137
+msgid "Search"
+msgstr "Пошук"
+
+#: id:138
+msgid "System Information"
+msgstr "Інформація про систему"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "Температура:"
+
+#: id:140
+msgid "CPU:"
+msgstr "CPU:"
+
+#: id:141
+msgid "GPU:"
+msgstr "GPU:"
+
+#: id:142
+msgid "Time:"
+msgstr "Час:"
+
+#: id:143
+msgid "Current:"
+msgstr "Зараз:"
+
+#: id:144
+msgid "Build:"
+msgstr "Версія:"
+
+#: id:145
+msgid "Network:"
+msgstr "Мережа:"
+
+#: id:146
+msgid "Type:"
+msgstr "Тип:"
+
+#: id:147
+msgid "Static"
+msgstr "Статичний"
+
+#: id:148
+msgid "DHCP"
+msgstr "DHCP"
+
+#: id:149
+msgid "MAC address"
+msgstr "MAC-адреса"
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr "IP-адреса"
+
+#: id:151
+msgid "Link:"
+msgstr "З'єднання:"
+
+#: id:152
+msgid "Half duplex"
+msgstr "Напівдуплекс"
+
+#: id:153
+msgid "Full duplex"
+msgstr "Повний дуплекс"
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "Диски"
+
+#: id:155
+msgid "Drive"
+msgstr "лоток DVD приводу"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "Вільно"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "Відео"
+
+#: id:158
+msgid "Free memory"
+msgstr "Вільно пам'яті"
+
+#: id:159
+msgid "No link"
+msgstr "Немає з'еднання"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "вільно"
+
+#: id:161
+msgid "Unavailable"
+msgstr "Недоступно"
+
+#: id:162
+msgid "Tray open"
+msgstr "Лоток відкритий"
+
+#: id:163
+msgid "Reading"
+msgstr "Зчитування"
+
+#: id:164
+msgid "No disc"
+msgstr "Диск відсутній"
+
+#: id:165
+msgid "Disc present"
+msgstr "Диск присутній"
+
+#: id:166
+msgid "Skin"
+msgstr "Оформлення"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "Роздільна здатність екрану"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "Налаштувати частоту екрану"
+
+#: id:172
+msgid "Release date"
+msgstr "Дата випуску"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "Показувати 4:3 відео як"
+
+#: id:175
+msgid "Moods"
+msgstr "Настрій"
+
+#: id:176
+msgid "Styles"
+msgstr "Стилі"
+
+#: id:179
+msgid "Song"
+msgstr "Пісня"
+
+#: id:180
+msgid "Duration"
+msgstr "Тривалість"
+
+#: id:181
+msgid "Select album"
+msgstr "Виберіть альбом"
+
+#: id:182
+msgid "Tracks"
+msgstr "Треки"
+
+#: id:183
+msgid "Review"
+msgstr "Огляд"
+
+#: id:184
+msgid "Refresh"
+msgstr "Оновити"
+
+#: id:185
+msgid "Searching album"
+msgstr "Пошук альбому"
+
+#: id:186
+msgid "OK"
+msgstr "Так"
+
+#: id:187
+msgid "No albums found!"
+msgstr "Альбомів не знайдено!"
+
+#: id:188
+msgid "Select all"
+msgstr "Вибрати все"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "Сканування інформації"
+
+#: id:190
+msgid "Save"
+msgstr "Зберегти"
+
+#: id:191
+msgid "Shuffle"
+msgstr "Перемішати"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "Очистити"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "Сканувати"
+
+#: id:194
+msgid "Searching..."
+msgstr "Пошук..."
+
+#: id:195
+msgid "No info found!"
+msgstr "Інформації не знайдено!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "Виберіть фільм:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "Запит інформації з %s"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "Завантаження інформації про фільм"
+
+#: id:199
+msgid "Web interface"
+msgstr "Web інтерфейс"
+
+#: id:202
+msgid "Tagline"
+msgstr "Девіз"
+
+#: id:203
+msgid "Plot outline"
+msgstr "Сюжет"
+
+#: id:205
+msgid "Votes"
+msgstr "Голосів"
+
+#: id:206
+msgid "Cast"
+msgstr "Актори"
+
+#: id:207
+msgid "Plot"
+msgstr "Сюжет"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "Програти"
+
+#: id:209
+msgid "Next"
+msgstr "Наступний"
+
+#: id:210
+msgid "Previous"
+msgstr "Попередній"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "Калібрування інтерфейсу..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "Калібрування екрану..."
+
+#: id:215
+msgid "Soften"
+msgstr "Згладжування"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "Ступінь збільшення"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "Співвідношення сторін"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD-привід"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "Вставте диск, будь ласка"
+
+#: id:220
+msgid "Remote share"
+msgstr "Зовнішній ресурс"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "Немає підключення до мережі"
+
+#: id:222
+msgid "Cancel"
+msgstr "Відмінити"
+
+#: id:224
+msgid "Speed"
+msgstr "Тривалість показу слайда"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr ""
+
+#: id:226
+msgid "Test patterns..."
+msgstr "Тестові шаблони..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Шукати інформацію про аудіо CD в Internet"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr "Перемішати плейлист при завантаженні"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "Зупиняти HDD через (хв)"
+
+#: id:230
+msgid "Video filters"
+msgstr "Відео-фільтри"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "Пусто"
+
+#: id:232
+msgid "Point"
+msgstr "Крапка"
+
+#: id:233
+msgid "Linear"
+msgstr "Лінійний"
+
+#: id:234
+msgid "Anisotropic"
+msgstr "Анізотропний"
+
+#: id:235
+msgid "Quincunx"
+msgstr "Шаховий"
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr "Кубічний по Гауссу"
+
+#: id:237
+msgid "Minification"
+msgstr "Зменшення"
+
+#: id:238
+msgid "Magnification"
+msgstr "Збільшення"
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "Очистити плейлист після програвання"
+
+#: id:240
+msgid "Display Mode"
+msgstr "Автопрогравання DVD-Video диска"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "На весь екран #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "У вікні"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "Частота поновлення екрану"
+
+#: id:244
+msgid "Full screen"
+msgstr "На весь екран"
+
+#: id:245
+msgid ""
+"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
+" %2.2f)"
+msgstr ""
+"Масштабування: (%i,%i)->(%i,%i) (Збільш. x%2.2f) Співвідн.:%2.2f:1 (Пікс.: "
+"%2.2f:1)"
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "Скрипти"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "Мова"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "Музика"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "Відео-ефекти"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "Виберіть папку призначення"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "Виводити стерео на всі динаміки"
+
+#: id:253
+msgid "Number of channels"
+msgstr "Кількість каналів"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr "- виводити звук в форматі DTS®"
+
+#: id:255
+msgid "CDDB"
+msgstr ""
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "Запит інформації про CD"
+
+#: id:257
+msgid "Error"
+msgstr "Помилка"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "Читати інформацію з тегів"
+
+#: id:259
+msgid "Opening"
+msgstr "Відкриття"
+
+#: id:260
+msgid "Shoutcast"
+msgstr ""
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "Очікування старту..."
+
+#: id:262
+msgid "Scripts output"
+msgstr "Лог роботи скриптів"
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "Дозволити керування XBMC через HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "Запис"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "Зупинити запис"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "Сорт.по: Треку"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "Сорт.по: Часу"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "Сорт.по: Назві"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "Сорт.по: Виконавцю"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "Сорт.по: Альбму"
+
+#: id:271
+msgid "Top 100"
+msgstr "Топ 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "Налаштування розмірів екрана (лівий верхній кут)"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "Налаштування розмірів екрана (правий нижній кут)"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "Позиція субтитрів"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "Регулювання співвідношення висоти і ширини"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "Рухайте стрілки для регулювання розмірів екрана"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "Рухайте смужку щоб змінити позицію субтитрів"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "Змінюйте прямокутник так, щоб він став ідеальним квадратом"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "Неможливо завантажити налаштування"
+
+#: id:280
+msgid "Using default settings"
+msgstr "Використання стандартних налаштувань"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "Будь ласка, перевірте XML файли"
+
+#: id:282
+msgid "Found %i items"
+msgstr "знайдено %і об'ект(ів)"
+
+#: id:283
+msgid "Search results"
+msgstr "Результати пошуку"
+
+#: id:284
+msgid "No results found"
+msgstr "Нічого не знайдено"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "Субтитри"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "Шрифт"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- розмір"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr "Стиснення динамічного діапазону"
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "Відео"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "Звук"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "Вкажіть субтитри"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "Поставити закладку"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "Очистити закладки"
+
+#: id:297
+msgid "Audio offset"
+msgstr "Затримка звуку"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "Закладки"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr "- виводити звук в форматі AAC "
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr "- виводити звук в форматі MP1"
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr "- виводити звук в форматі MP2"
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- виводити звук в форматі MP3"
+
+#: id:303
+msgid "Delay"
+msgstr "Затримка субтитрів"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "Мова"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "Включено"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr ""
+
+#: id:312
+msgid "(0=auto)"
+msgstr "(0=авто)"
+
+#: id:313
+msgid "Cleaning database"
+msgstr "Очищення бази даних"
+
+#: id:314
+msgid "Preparing..."
+msgstr "Підготовка..."
+
+#: id:315
+msgid "Database error"
+msgstr "Помилка бази даних"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "Пошук пісень..."
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "Очищення бази даних виконано"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "Очищення пісень..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "Помилка очищення пісень"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "Очищення виконавців..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "Помилка очищення виконавців"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "Очищення жанрів..."
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "Помилка очищення жанрів"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "Очищення шляхів..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "Помилка очищення шляхів"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "Очищення альбомів..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "Помилка очищення альбомів"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "Запис змін..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "Помилка запису змін"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "Це займе деякий час..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "Стиснення бази даних..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "Помилка стискування бази даних"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "Ви хочете очистити Бібліотеку?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "Очистити Бібліотеку..."
+
+#: id:335
+msgid "Start"
+msgstr "Старт"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "Перетворення частоти кадрів"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "Аудіо вихід"
+
+#: id:338
+msgid "Analog"
+msgstr "Аналоговий"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "Цифровий"
+
+#: id:340
+msgid "Various artists"
+msgstr "Різні виконавці"
+
+#: id:341
+msgid "Play disc"
+msgstr "Програти диск"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "Фільми"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "Налаштувати частоту кадрів"
+
+#: id:344
+msgid "Actors"
+msgstr "Актори"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "Рік"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr ""
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "Вимкнено"
+
+#: id:352
+msgid "Dim"
+msgstr "Затемнення"
+
+#: id:353
+msgid "Black"
+msgstr "Чорний екран"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "Сліди \"Матриці\""
+
+#: id:355
+msgid "Screensaver time"
+msgstr "Вмикати заставку через"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "Режим заставки"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "Завершити роботу через"
+
+#: id:358
+msgid "All albums"
+msgstr "Усі альбоми"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "Свіжі альбоми"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "Заставка"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "Рекурсивне слайдшоу"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "Рівень затемнення екрану"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "Сорт.по: Файлу"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr "- виводити звук в форматі AC3 (Dolby Digital®)"
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "Сорт.по: Назві"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "Сорт.по: Року"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "Сорт.по: Рейтингу"
+
+#: id:368
+msgid "IMDb"
+msgstr ""
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "Назва"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "грози"
+
+#: id:371
+msgid "Partly"
+msgstr "Місцями"
+
+#: id:372
+msgid "Mostly"
+msgstr "Переважно"
+
+#: id:373
+msgid "Sunny"
+msgstr "сонячно"
+
+#: id:374
+msgid "Cloudy"
+msgstr "хмарно"
+
+#: id:375
+msgid "Snow"
+msgstr "сніг"
+
+#: id:376
+msgid "Rain"
+msgstr "дощ"
+
+#: id:377
+msgid "Light"
+msgstr "невеликий"
+
+#: id:378
+msgid "AM"
+msgstr "вранці"
+
+#: id:379
+msgid "PM"
+msgstr "вдень"
+
+#: id:380
+msgid "Showers"
+msgstr "злива"
+
+#: id:381
+msgid "Few"
+msgstr "трохи"
+
+#: id:382
+msgid "Scattered"
+msgstr "місцями"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "вітер"
+
+#: id:384
+msgid "Strong"
+msgstr "сильний"
+
+#: id:385
+msgid "Fair"
+msgstr "ясно"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "безхмарно"
+
+#: id:387
+msgid "Clouds"
+msgstr "хмарно"
+
+#: id:388
+msgid "Early"
+msgstr "рано"
+
+#: id:389
+msgid "Shower"
+msgstr "рясний"
+
+#: id:390
+msgid "Flurries"
+msgstr "шквали"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "низький"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "помірний"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "всиокий"
+
+#: id:394
+msgid "Fog"
+msgstr "туман"
+
+#: id:395
+msgid "Haze"
+msgstr "серпанок"
+
+#: id:396
+msgid "Select location"
+msgstr "Місцевість"
+
+#: id:397
+msgid "Refresh time"
+msgstr "Час оновлення"
+
+#: id:398
+msgid "Temperature units"
+msgstr "Одиниця виміру температури"
+
+#: id:399
+msgid "Speed units"
+msgstr "Одиниця виміру швидкості вітру"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "Погода"
+
+#: id:401
+msgid "Temp"
+msgstr "Температура"
+
+#: id:402
+msgid "Feels like"
+msgstr "За відчуттям"
+
+#: id:403
+msgid "UV index"
+msgstr "Рівень УФ"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "Вітер"
+
+#: id:405
+msgid "Dew point"
+msgstr "Крапка роси"
+
+#: id:406
+msgid "Humidity"
+msgstr "Вологість"
+
+#: id:409
+msgid "Defaults"
+msgstr "За змовчуванням"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "Підключення до Гідрометеоцентру"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "Одержання прогнозу для:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "Неможливо отримати прогноз"
+
+#: id:413
+msgid "Manual"
+msgstr "Вписати вручну"
+
+#: id:414
+msgid "No review for this album"
+msgstr "Немає опису для цого альбома"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "Завантаження ескізів..."
+
+#: id:416
+msgid "Not available"
+msgstr "Не доступно"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "Вигляд: Великі значки"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "Мін."
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "Макс."
+
+#: id:420
+msgid "HDMI"
+msgstr "Порт HDMI"
+
+#: id:422
+msgid "Delete album info"
+msgstr "Видалити дані про альбом"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "Видалити дані про CD"
+
+#: id:424
+msgid "Select"
+msgstr "Вибір"
+
+#: id:425
+msgid "No album information found"
+msgstr "Даних про альбом не знайдено"
+
+#: id:426
+msgid "No CD information found"
+msgstr "Даних про CD не знайдено"
+
+#: id:427
+msgid "Disc"
+msgstr "Диск"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "Вставте правильний CD/DVD диск"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "Вставте наступний CD/DVD диск"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "Сорт.по: №DVD"
+
+#: id:431
+msgid "No cache"
+msgstr "Не кешувати"
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "Видалити фільм із Бібліотеки"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "Дійсно видалити '%s'?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr "%s Швидк. %i %s"
+
+#: id:437
+msgid "Removable disk"
+msgstr "З'ємний диск"
+
+#: id:438
+msgid "Opening file"
+msgstr "Відкриття файла"
+
+#: id:439
+msgid "Cache"
+msgstr "Кеш"
+
+#: id:440
+msgid "Harddisk"
+msgstr "Жорсткий диск"
+
+#: id:441
+msgid "UDF"
+msgstr ""
+
+#: id:442
+msgid "Local network"
+msgstr "Локальна мережа"
+
+#: id:443
+msgid "Internet"
+msgstr "Інтернет"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "Відео"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "Аудіо"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr ""
+
+#: id:447
+msgid "Autorun media"
+msgstr "Автопрогравання"
+
+#: id:448
+msgid "LCD"
+msgstr "РК екран (LCD)"
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "Включено"
+
+#: id:450
+msgid "Columns"
+msgstr "Кількість знаків у рядку"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "Адреса 1-го рядка"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "Адреса 2-го рядка"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "Адреса 3-го рядка"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "Адреса 4-го рядка"
+
+#: id:455
+msgid "Rows"
+msgstr "Кількість рядків"
+
+#: id:456
+msgid "Mode"
+msgstr "Режим"
+
+#: id:457
+msgid "Switch view"
+msgstr "Замінити вигляд"
+
+#: id:459
+msgid "Subs"
+msgstr "Субтитри"
+
+#: id:460
+msgid "Audio stream"
+msgstr "Аудіо потік"
+
+#: id:461
+msgid "[active]"
+msgstr "[працює]"
+
+#: id:462
+msgid "Subtitle"
+msgstr "Субтитри"
+
+#: id:463
+msgid "Backlight"
+msgstr "Підсвічування"
+
+#: id:464
+msgid "Brightness"
+msgstr "Яскравість"
+
+#: id:465
+msgid "Contrast"
+msgstr "Контрастність"
+
+#: id:466
+msgid "Gamma"
+msgstr "Гама"
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "Тип"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "Рухайте смужку щоб змінити позицію OSD"
+
+#: id:469
+msgid "OSD position"
+msgstr "Позиція екранного меню (OSD)"
+
+#: id:470
+msgid "Credits"
+msgstr "Творці"
+
+#: id:471
+msgid "Modchip"
+msgstr "МOD-чіп"
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "Вимкнено"
+
+#: id:475
+msgid "Music only"
+msgstr "Тільки музика"
+
+#: id:476
+msgid "Music & video"
+msgstr "Музика та Відео"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "Неможливо завантажити плейлист"
+
+#: id:478
+msgid "OSD"
+msgstr "Екранне меню (OSD)"
+
+#: id:479
+msgid "Skin & language"
+msgstr "Оформлення і мова"
+
+#: id:480
+msgid "Appearance"
+msgstr "Вигляд"
+
+#: id:481
+msgid "Audio options"
+msgstr "Налаштування аудіо"
+
+#: id:482
+msgid "About XBMC"
+msgstr "Про XBMC"
+
+#: id:485
+msgid "Delete album"
+msgstr "Видалити альбом"
+
+#: id:486
+msgid "Repeat"
+msgstr "Повторювати"
+
+#: id:487
+msgid "Repeat one"
+msgstr "Повторювати 1 трек"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "Повторювати папку"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "Програвати наступний файл автоматично"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- використовувати великі значки"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr "Масштабувати субтитри"
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "Розширені опції (Тільки для експертів!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "Загальний рівень шуму в кімнаті (dB)"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "Перераховувати відео до розд. зд. GUI"
+
+#: id:496
+msgid "Calibration"
+msgstr "Калібрування"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "Показати розширення файлів"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "Сорт.по: Типу"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "Неможливо з'єднатися з пошуковим сервісом"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "Невдалося завантажити дані про альбом"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "Перевірка назв альбомів..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "Відкритий"
+
+#: id:503
+msgid "Busy"
+msgstr "Обробка..."
+
+#: id:504
+msgid "Empty"
+msgstr "порожній"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "Завантаження інформації з файлів..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "Сорт.по: Використ."
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "Задіяти відео-ефекти"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "Автоматичне переключення PAL/NTSC"
+
+#: id:512
+msgid "Startup window"
+msgstr "Після старту переходити в меню:"
+
+#: id:513
+msgid "Home window"
+msgstr "Головне меню"
+
+#: id:514
+msgid "Manual settings"
+msgstr "Налаштування"
+
+#: id:515
+msgid "Genre"
+msgstr "Жанр"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "Недавно прослухані альбоми"
+
+#: id:518
+msgid "Launch"
+msgstr "Запустити"
+
+#: id:519
+msgid "Launch in..."
+msgstr "Запустити в режимі…"
+
+#: id:521
+msgid "Compilations"
+msgstr "Збірки"
+
+#: id:522
+msgid "Remove source"
+msgstr "Видалити джерело"
+
+#: id:523
+msgid "Switch media"
+msgstr "Перейти до розділу..."
+
+#: id:524
+msgid "Select playlist"
+msgstr "Вибрати плейлист"
+
+#: id:525
+msgid "New playlist..."
+msgstr "Створити новий плейлист..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "Додати до плейлиста"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "Додати до Бібліотеки"
+
+#: id:528
+msgid "Enter title"
+msgstr "Впишіть назву"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "Помилка: Однакові назви"
+
+#: id:530
+msgid "Select genre"
+msgstr "Виберіть жанр"
+
+#: id:531
+msgid "New genre"
+msgstr "Новий жанр"
+
+#: id:532
+msgid "Manual addition"
+msgstr "Додавання вручну"
+
+#: id:533
+msgid "Enter genre"
+msgstr "Впишіть жанр"
+
+#: id:534
+msgid "View: %s"
+msgstr "Вигляд: %s"
+
+#: id:535
+msgid "List"
+msgstr "Список"
+
+#: id:536
+msgid "Icons"
+msgstr "Значки"
+
+#: id:537
+msgid "Big list"
+msgstr "Повний список"
+
+#: id:538
+msgid "Big icons"
+msgstr "Великі значки"
+
+#: id:539
+msgid "Wide"
+msgstr "Широкий"
+
+#: id:540
+msgid "Big wide"
+msgstr "Повний широкий"
+
+#: id:541
+msgid "Album icons"
+msgstr "Значки альбомів"
+
+#: id:542
+msgid "DVD icons"
+msgstr "Значки DVD"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr ""
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "Інфо"
+
+#: id:545
+msgid "Audio output device"
+msgstr "Пристрій виводу звуку"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "Пристрій передачі звуку"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "Для цього виконавця немає біографії"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr "Змішати багатоканальний звук до стерео"
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "Сорт. по: %s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "Назві"
+
+#: id:552
+msgid "Date"
+msgstr "Даті"
+
+#: id:553
+msgid "Size"
+msgstr "Розміру"
+
+#: id:554
+msgid "Track"
+msgstr "№ трека"
+
+#: id:555
+msgid "Time"
+msgstr "Час"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "Назва пісні"
+
+#: id:557
+msgid "Artist"
+msgstr "Виконавець"
+
+#: id:558
+msgid "Album"
+msgstr "Альбом"
+
+#: id:559
+msgid "Playlist"
+msgstr "Плейлист"
+
+#: id:560
+msgid "ID"
+msgstr ""
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "Імені файлу"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "Рік"
+
+#: id:563
+msgid "Rating"
+msgstr "Рейтинг"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "Тип"
+
+#: id:565
+msgid "Usage"
+msgstr "Використання"
+
+#: id:566
+msgid "Album artist"
+msgstr "Виконавець альбому"
+
+#: id:567
+msgid "Play count"
+msgstr "Кількість програвань"
+
+#: id:568
+msgid "Last played"
+msgstr "Останній програний"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "Нотатки"
+
+#: id:570
+msgid "Date added"
+msgstr "Дата додавання"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "За змовчуванням"
+
+#: id:572
+msgid "Studio"
+msgstr "Кіностудія"
+
+#: id:573
+msgid "Path"
+msgstr "Шлях"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "Країна"
+
+#: id:575
+msgid "In progress"
+msgstr "В процесі"
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr "Напрямок сортування"
+
+#: id:581
+msgid "Sort method"
+msgstr "Метод сортування"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "Режим перегляду"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "Пам'ятати параметри відображення кожної папки"
+
+#: id:584
+msgid "Ascending"
+msgstr "За зростанням"
+
+#: id:585
+msgid "Descending"
+msgstr "За убуванням"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "Редагувати плейлист"
+
+#: id:587
+msgid "Filter"
+msgstr "Фільтр"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "Відключити режим 'Вечірка'"
+
+#: id:589
+msgid "Party mode"
+msgstr "Режим 'Вечірка'"
+
+#: id:590
+msgid "Random"
+msgstr "Випадково"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "Виключене"
+
+#: id:592
+msgid "One"
+msgstr "Один"
+
+#: id:593
+msgid "All"
+msgstr "Усі"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "Вимкнено"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "Повтор: Вимкнено"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "Повтор: Один трек"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "Повтор: Усі треки"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "Зберегти з Audio CD"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "Середня"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "Стандартна"
+
+#: id:603
+msgid "Extreme"
+msgstr "Екстремальна"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr "Постійний бітрейт"
+
+#: id:605
+msgid "Ripping..."
+msgstr "Збереження..."
+
+#: id:607
+msgid "To:"
+msgstr "У:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "Збереження CD чи треку неможлива"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "Не зазначено значення CDDARipPath"
+
+#: id:610
+msgid "Rip audio track"
+msgstr "Зберегти аудіо трек"
+
+#: id:611
+msgid "Enter number"
+msgstr "Впишіть номер"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "Біт/відлік"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "Частота відліків"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "Аудіо CD"
+
+#: id:621
+msgid "Encoder"
+msgstr "Кодувальник"
+
+#: id:622
+msgid "Quality"
+msgstr "Якість"
+
+#: id:623
+msgid "Bitrate"
+msgstr "Бітрейт"
+
+#: id:624
+msgid "Include track number"
+msgstr "Додати номер треку"
+
+#: id:625
+msgid "All songs of"
+msgstr "Усі пісні"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "Режим перегляду"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "Нормальний"
+
+#: id:631
+msgid "Zoom"
+msgstr "Збільшений"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "Розтягнутий 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "Розтягнутий 14:9"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "Розтягнутий 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "Оригінальний розмір"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "Особливий"
+
+#: id:637
+msgid "Replay gain"
+msgstr "Replay Gain"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "Режим Replay Gain"
+
+#: id:639
+msgid "Use track levels"
+msgstr "по рівням треку"
+
+#: id:640
+msgid "Use album levels"
+msgstr "по рівням альбому"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr "Рівень для файлів з Replay Gain"
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr "Рівень для файлів без Replay Gain"
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "Уникати втрати якості на файлах з Reply Gain"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "Видаляти чорні смуги"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "Необхідно розпакувати великий файл. Продовжити?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "Видалити з Бібліотеки"
+
+#: id:647
+msgid "Export video library"
+msgstr "Експортувати відео Бібліотеку"
+
+#: id:648
+msgid "Import video library"
+msgstr "Імпортувати відео Бібліотеку"
+
+#: id:649
+msgid "Importing"
+msgstr "Імпортування"
+
+#: id:650
+msgid "Exporting"
+msgstr "Експортування"
+
+#: id:651
+msgid "Browse for library"
+msgstr "Вкажіть Бібліотеку"
+
+#: id:652
+msgid "Years"
+msgstr "Роки"
+
+#: id:653
+msgid "Update library"
+msgstr "Оновити Бібліотеку"
+
+#: id:654
+msgid "Show debug info"
+msgstr "Показувати інформацію для відладки"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "Вкажіть програму"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "Вкажіть плейлист"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "Вкажіть папку"
+
+#: id:658
+msgid "Song information"
+msgstr "Інформація про пісню"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr "Нелінійний розтяг"
+
+#: id:660
+msgid "Volume amplification"
+msgstr "Підсилення звуку"
+
+#: id:661
+msgid "Choose export folder"
+msgstr "Виберіть папку для експорту"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "Цей файл більше недоступний."
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "Хочете видалити його з Бібліотеки?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "Вказати скрипт"
+
+#: id:665
+msgid "Compression level"
+msgstr "Рівень стиску"
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "Очищення Бібліотеки"
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "Видалення старих пісень з Бібліотеки"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "Ця папка вже була просканована раніше"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "Мережа"
+
+#: id:706
+msgid "- Server"
+msgstr "Адреса HTTP проксі сервера"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "Використовувати HTTP proxy сервер"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr "Інтернет протокол (IP)"
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr "Неправильний порт. Повинно бути від 1 до 65535."
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP проксі"
+
+#: id:715
+msgid "- Assignment"
+msgstr "- Призначення"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr "автоматично (DHCP)"
+
+#: id:717
+msgid "Manual (Static)"
+msgstr "вручну (Static)"
+
+#: id:719
+msgid "- IP address"
+msgstr "- IP-адреса"
+
+#: id:720
+msgid "- Netmask"
+msgstr "- Маска мережі"
+
+#: id:721
+msgid "- Default gateway"
+msgstr "- Адреса шлюзу"
+
+#: id:722
+msgid "- DNS server"
+msgstr "- Адреса DNS сервера"
+
+#: id:723
+msgid "Save & restart"
+msgstr "Записати і перезапустити"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr "Неправильна адреса. Повинно бути як AAA.BBB.CCC.DDD"
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr "з числами від 0 до 255."
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "Зміни не збережені. Продовжити без збереження?"
+
+#: id:727
+msgid "Web server"
+msgstr "Web сервер"
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr "FTP сервер"
+
+#: id:730
+msgid "- Port"
+msgstr "- Порт"
+
+#: id:732
+msgid "Save & apply"
+msgstr "Зберегти і застосувати"
+
+#: id:733
+msgid "- Password"
+msgstr "- Пароль"
+
+#: id:734
+msgid "No pass"
+msgstr "без пароля"
+
+#: id:735
+msgid "- Character set"
+msgstr "- набір символів"
+
+#: id:736
+msgid "- Style"
+msgstr "- стиль"
+
+#: id:737
+msgid "- Colour"
+msgstr "- колір"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "нормальний"
+
+#: id:739
+msgid "Bold"
+msgstr "жирний"
+
+#: id:740
+msgid "Italics"
+msgstr "похилий"
+
+#: id:741
+msgid "Bold italics"
+msgstr "жирний похилий"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "білий"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "жовтий"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "Файли"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "Немає сканірованої інформації для цього вигляду"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "Відключіть режим Бібліотеки"
+
+#: id:747
+msgid "Error loading image"
+msgstr "Помилка завантаження картинки"
+
+#: id:748
+msgid "Edit path"
+msgstr "Змінити шлях"
+
+#: id:749
+msgid "Mirror image"
+msgstr "Дзеркально"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "Ви впевнені?"
+
+#: id:751
+msgid "Removing source"
+msgstr "Видалення джерела"
+
+#: id:754
+msgid "Add program link"
+msgstr "Додати посилання на програму"
+
+#: id:755
+msgid "Edit program path"
+msgstr "Змінити шлях до програми"
+
+#: id:756
+msgid "Edit program name"
+msgstr "Змінити назву програми"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "Змінити глибину шляху"
+
+#: id:759
+msgid "View: Big list"
+msgstr "Вигляд: Великий список"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "жовтий"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "білий"
+
+#: id:762
+msgid "Blue"
+msgstr "синій"
+
+#: id:763
+msgid "Bright green"
+msgstr "світло-зелений"
+
+#: id:764
+msgid "Yellow green"
+msgstr "жовто-зелений"
+
+#: id:765
+msgid "Cyan"
+msgstr "блакитний"
+
+#: id:766
+msgid "Light grey"
+msgstr "Світло-сірий"
+
+#: id:767
+msgid "Grey"
+msgstr "Сірий"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "Помилка %і: ресурс не доступний"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "Аудіо обладнання"
+
+#: id:773
+msgid "Seeking"
+msgstr "Пошук"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "Папка для слайдшоу"
+
+#: id:775
+msgid "Network interface"
+msgstr "Мережевий інтерфейс"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- Ім'я бездротової мережі (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- Пароль для бездротової мережі"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- Безпека бездротової мережі"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "Зберегти і застосувати налаштування мережевого інтерфейсу"
+
+#: id:780
+msgid "No encryption"
+msgstr "Без шифрування"
+
+#: id:781
+msgid "WEP"
+msgstr ""
+
+#: id:782
+msgid "WPA"
+msgstr ""
+
+#: id:783
+msgid "WPA2"
+msgstr ""
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "Застосування налаштувань мережевого інтерфейсу. Зачекайте."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "Мережевий інтерфейс перезапущено"
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "Мережевий інтерфейс не запустився"
+
+#: id:787
+msgid "Interface disabled"
+msgstr "Інтерфейс вимкнено"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "Мережевий інтерфейс відключено"
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "Ім'я бездротової мережі (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "Дозволити програмам на цьому комп’ютері керувати XBMC"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "Порт"
+
+#: id:793
+msgid "Port range"
+msgstr "Діапазон портів"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "Дозволити програмам на інших комп'ютерах керувати XBMC"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "Затримка начального повтору (мс)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "Затримка послідуючих повторів (мс)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "Максимальна кількість клієнтів"
+
+#: id:798
+msgid "Internet access"
+msgstr "Доступ в інтернет"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "Введено неправильний номер проту"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr "Номер порту має бути в діапазоні 1-65535"
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr "Номер порту має бути в діапазоні 1024-65536"
+
+#: id:998
+msgid "Add Music..."
+msgstr ""
+
+#: id:999
+msgid "Add Videos..."
+msgstr ""
+
+#: id:1000
+msgid "- Preview"
+msgstr "Подивитися заставку"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "Неможливо підключитися"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC неспроможний підключитися до мережі."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "Можливо, мережа не під'єднана."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "Додати у будь-якому разі?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP-адреса"
+
+#: id:1007
+msgid "Add network location"
+msgstr "Додати мережеве розташування"
+
+#: id:1008
+msgid "Protocol"
+msgstr "Протокол"
+
+#: id:1009
+msgid "Server address"
+msgstr "Адреса сервера"
+
+#: id:1010
+msgid "Server name"
+msgstr "Ім'я серверу"
+
+#: id:1011
+msgid "Remote path"
+msgstr "Зовнішній шлях"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "Доступна папка"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "Порт"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "Ім'я користувача"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "Вкажіть мережевий сервер"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "Впишіть мережеву адресу сервера"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "Впишіть шлях на сервері"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "Впишіть номер порту"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "Впишіть ім'я користувача"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "Додати джерело %s"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "Впишіть шляхи чи вкажіть розташування медіа-файлів."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "Впишіть ім'я для цього медіа-джерела."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "Вкажіть новий ресурс"
+
+#: id:1024
+msgid "Browse"
+msgstr "Перегляд"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "Не можу одержати інформацію про папку."
+
+#: id:1026
+msgid "Add source"
+msgstr "Додати джерело"
+
+#: id:1027
+msgid "Edit source"
+msgstr "Змінити джерело"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "Змінити джерело %s"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "Впишіть нову позначку"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "Вкажіть малюнок"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "Вкажіть папку з малюнками"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "Додати мережеве розташування…"
+
+#: id:1033
+msgid "Browse for file"
+msgstr "Вкажіть файл"
+
+#: id:1034
+msgid "Submenu"
+msgstr "Підменю"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "Дозволити пункти в підменю"
+
+#: id:1036
+msgid "Favourites"
+msgstr "Вибране"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "Відео додатки"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "Музичні додатки"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "Фото додатки"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "Завантаження папки"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "Отримано %i об'ект(ів)"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "Отримано %i з %i об'ект(ів)"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "Програмні додатки"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "Встановити ескіз для додатка"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "Налаштування додатка"
+
+#: id:1046
+msgid "Access points"
+msgstr "Крапки доступу"
+
+#: id:1047
+msgid "Other..."
+msgstr "Різне..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- Ім'я користувача"
+
+#: id:1049
+msgid "Script settings"
+msgstr "Налаштування скриптів"
+
+#: id:1050
+msgid "Singles"
+msgstr ""
+
+#: id:1051
+msgid "Enter web address"
+msgstr "Введіть web адресу"
+
+#: id:1200
+msgid "SMB client"
+msgstr "SMB клієнт"
+
+#: id:1202
+msgid "Workgroup"
+msgstr "Робоча група"
+
+#: id:1203
+msgid "Default username"
+msgstr "Ім'я користувача за змовчуванням"
+
+#: id:1204
+msgid "Default password"
+msgstr "Пароль користувача за змовчуванням"
+
+#: id:1207
+msgid "WINS server"
+msgstr "WINS сервер"
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "Монтувати SMB ресурси"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "Видалити"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "Музика"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "Відео"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "Фотографії"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "Файли"
+
+#: id:1215
+msgid "Music & video "
+msgstr "Музика і Відео"
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "Музика і Фото"
+
+#: id:1217
+msgid "Music & files"
+msgstr "Музика і Файли"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "Відео і Фото"
+
+#: id:1219
+msgid "Video & files"
+msgstr "Відео і Файли"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "Фото і Файли"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "Музика, Відео і Фото"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "Музика, Відео, Фото і Файли"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "Відключено"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "Файли, Музика і Відео"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "Файли, Фото і Музика"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "Файли, Фото і Відео"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "Музика і Програми"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "Відео і Програми"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "Фото і Програми"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "Музика, Відео, Фото і Програми"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "Програми, Відео і Музика"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "Програми, Фото і Музика"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "Програми, Фото і Відео"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "Авто-визначення"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "Автоматично визначати систему"
+
+#: id:1252
+msgid "Nickname"
+msgstr "Нік"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "Спитати дозвіл на підключення"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "Відправляти логін і пароль для FTP"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "Інтервал для команди 'ping'"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "Ви хочете під'єднатися до знайденої системи?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr "Повідомляти іншим комп’ютерам про ці сервіси через Zeroconf"
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr ""
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr ""
+
+#: id:1396
+msgid "Drifting"
+msgstr "ожеледь"
+
+#: id:1397
+msgid "and"
+msgstr "і"
+
+#: id:1398
+msgid "Freezing"
+msgstr "замерзання"
+
+#: id:1399
+msgid "Late"
+msgstr "пізніше"
+
+#: id:1400
+msgid "Isolated"
+msgstr "місцями"
+
+#: id:1401
+msgid "Thundershowers"
+msgstr "грозова злива"
+
+#: id:1402
+msgid "Thunder"
+msgstr "грім"
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr "сонце"
+
+#: id:1404
+msgid "Heavy"
+msgstr "сильний"
+
+#: id:1405
+msgid "in"
+msgstr "в"
+
+#: id:1406
+msgid "the"
+msgstr ".."
+
+#: id:1407
+msgid "Vicinity"
+msgstr "околицях"
+
+#: id:1408
+msgid "Ice"
+msgstr "лід"
+
+#: id:1409
+msgid "Crystals"
+msgstr "кристали"
+
+#: id:1410
+msgid "Calm"
+msgstr "штиль"
+
+#: id:1411
+msgid "with"
+msgstr "з"
+
+#: id:1412
+msgid "windy"
+msgstr "вітряно"
+
+#: id:1413
+msgid "drizzle"
+msgstr "дощ"
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr "гроза"
+
+#: id:1415
+msgid "Drizzle"
+msgstr "Дощ"
+
+#: id:1416
+msgid "Foggy"
+msgstr "Туманно"
+
+#: id:1417
+msgid "Grains"
+msgstr "Зерна"
+
+#: id:1418
+msgid "T-Storms"
+msgstr "Грози"
+
+#: id:1419
+msgid "T-Showers"
+msgstr "Грозові зливи"
+
+#: id:1420
+msgid "Moderate"
+msgstr ""
+
+#: id:1421
+msgid "Very High"
+msgstr ""
+
+#: id:1422
+msgid "Windy"
+msgstr ""
+
+#: id:1423
+msgid "Mist"
+msgstr ""
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "Дозволити енергозбереження під час бездії"
+
+#: id:2050
+msgid "Runtime"
+msgstr "Тривалість"
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr "Помилка скрипта! : %s"
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr "Потрібна новіша версія- Див log"
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr "Задіяти LCD/VFD"
+
+#: id:10000
+msgid "Home"
+msgstr "Основний"
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr "Фотографії"
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr "Файли"
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr "Налаштування"
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr "Музика"
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr "Відео"
+
+#: id:10007
+msgid "System information"
+msgstr "Інформація про систему"
+
+#: id:10008
+msgid "Settings - General"
+msgstr "Налаштування -> Головні"
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr "Налаштування -> Екран"
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr "Налаштування -> Зовнішній вигляд -> Калібровка GUI"
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr "Налаштування -> Відео -> Калібровка екрана"
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr "Налаштування -> Фотографії"
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr "Налаштування -> Програми"
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr "Налаштування -> Погода"
+
+#: id:10015
+msgid "Settings - Music"
+msgstr "Налаштування -> Музика"
+
+#: id:10016
+msgid "Settings - System"
+msgstr "Налаштування -> Система"
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr "Налаштування -> Відео"
+
+#: id:10018
+msgid "Settings - Network"
+msgstr "Налаштування -> Мережа"
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr "Налаштування -> Зовнішній вигляд"
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr "Скрипти"
+
+#: id:10021
+msgid "Web Browser"
+msgstr ""
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr "Відео/Плейлист"
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr "Налаштування -> Користувачі"
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr "Діалог \"Так/Ні\""
+
+#: id:10101
+msgid "Progress dialog"
+msgstr "Діалог прогресу"
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr "Пошук субтитрів..."
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr "Пошук або буферизація субтитрів..."
+
+#: id:10212
+msgid "terminating"
+msgstr "припинення"
+
+#: id:10213
+msgid "buffering"
+msgstr "Буферизація"
+
+#: id:10214
+msgid "Opening stream"
+msgstr "Відкриття потоку"
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr "Музика/Плейлист"
+
+#: id:10501
+msgid "Music/Files"
+msgstr "Музика/Файли"
+
+#: id:10502
+msgid "Music/Library"
+msgstr "Музика/Бібліотека"
+
+#: id:10503
+msgid "Playlist editor"
+msgstr "Редактор плейлисту"
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr "Top 100 - Пісні"
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr "Top 100 - Альбоми"
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr "Програми"
+
+#: id:10507
+msgid "Configuration"
+msgstr "Налаштування профілю"
+
+#: id:10508
+msgid "Weather forecast"
+msgstr "Прогноз погоди"
+
+#: id:10509
+msgid "Network gaming"
+msgstr "Мережеві Ігри"
+
+#: id:10510
+msgid "Extensions"
+msgstr "Доповнення"
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr "Інформація про систему"
+
+#: id:10516
+msgid "Music - Library"
+msgstr "Музика - Бібліотека"
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr "Музика - Поточний плейлист"
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr "Відео - Поточний плейлист"
+
+#: id:10523
+msgid "Album info"
+msgstr "Інформація про альбом"
+
+#: id:10524
+msgid "Movie info"
+msgstr "Інформація про фільм"
+
+#: id:12000
+msgid "Select dialog"
+msgstr "Діалогу вибору"
+
+#: id:12001
+msgid "Music/Info"
+msgstr "Музика/Дані"
+
+#: id:12002
+msgid "Dialog OK"
+msgstr "Діалог \"OK\""
+
+#: id:12003
+msgid "Videos/Info"
+msgstr "Відео/Дані"
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr "Скрипти/Дані"
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr "Повноекранне відео"
+
+#: id:12006
+msgid "Audio visualization"
+msgstr "Відео-ефекти для аудіо"
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr "Діалог послідовності файлів"
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr "Переіндексація…"
+
+#: id:12010
+msgid "Return to music window"
+msgstr "Назад в розділ \"Музика\""
+
+#: id:12011
+msgid "Return to videos window"
+msgstr "Назад в розділ \"Відео\""
+
+#: id:12021
+msgid "Start from beginning"
+msgstr "Починати з початку"
+
+#: id:12022
+msgid "Resume from %s"
+msgstr "Продовжувати з %s"
+
+#: id:12310
+msgid "0"
+msgstr ""
+
+#: id:12311
+msgid "1"
+msgstr ""
+
+#: id:12312
+msgid "2"
+msgstr ""
+
+#: id:12313
+msgid "3"
+msgstr ""
+
+#: id:12314
+msgid "4"
+msgstr ""
+
+#: id:12315
+msgid "5"
+msgstr ""
+
+#: id:12316
+msgid "6"
+msgstr ""
+
+#: id:12317
+msgid "7"
+msgstr ""
+
+#: id:12318
+msgid "8"
+msgstr ""
+
+#: id:12319
+msgid "9"
+msgstr ""
+
+#: id:12320
+msgid "c"
+msgstr ""
+
+#: id:12321
+msgid "Ok"
+msgstr ""
+
+#: id:12322
+msgid "*"
+msgstr ""
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr "Заблоковано! Впишіть код..."
+
+#: id:12326
+msgid "Enter password"
+msgstr "Впишіть пароль"
+
+#: id:12327
+msgid "Enter master code"
+msgstr "Введіть код захисту"
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr "Введіть код розблокування"
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr "або нажміть 'С' для відміни"
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr "Натисніть потрібні кнопки на джойстику і"
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr "потім 'Start', або 'Back' для відміни"
+
+#: id:12332
+msgid "Set lock"
+msgstr "Встановити захист"
+
+#: id:12333
+msgid "Unlock"
+msgstr "Розблокувати"
+
+#: id:12334
+msgid "Reset lock"
+msgstr "Скинути захист"
+
+#: id:12335
+msgid "Remove lock"
+msgstr "Видалити захист"
+
+#: id:12337
+msgid "Numeric password"
+msgstr "цифровий пароль"
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr "комбінація кнопок джойстика"
+
+#: id:12339
+msgid "Full-text password"
+msgstr "текстовий пароль"
+
+#: id:12340
+msgid "Enter new password"
+msgstr "Впишіть новий пароль"
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr "Повторіть новий пароль"
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr "Неправильний пароль,"
+
+#: id:12343
+msgid "retries left "
+msgstr "спроб(и) залишилось"
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr "Введені паролі не збігаються."
+
+#: id:12345
+msgid "Access denied"
+msgstr "Доступ заборонено"
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr "Кількість спроб вводу пароля вичерпано."
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr "Зараз систему буде вимкнено."
+
+#: id:12348
+msgid "Item locked"
+msgstr "Заблоковано"
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr "Перевстановити захист"
+
+#: id:12356
+msgid "Change lock"
+msgstr "Змінити захист"
+
+#: id:12357
+msgid "Source lock"
+msgstr "Захист джерела"
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr "Поле вводу пароля порожнє. Спробуйте ще раз."
+
+#: id:12360
+msgid "Master lock"
+msgstr "Головний захист"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr "Вимкнути систему якщо кількість спроб вичерпано"
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr "Код захисту не правильний!"
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr "Введіть правильний код захисту!"
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr "Настройки і Файли"
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr "Встановити для всіх фільмів"
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr "Збережені раніше значення буде скинуто."
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "Час показу кожного слайду"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "Ефекти панорами та збільшення"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr "12-ти годинний"
+
+#: id:12384
+msgid "24 hour clock"
+msgstr "24-х годинний"
+
+#: id:12385
+msgid "Day/Month"
+msgstr "День/Місяць"
+
+#: id:12386
+msgid "Month/Day"
+msgstr "Місяць/День"
+
+#: id:12390
+msgid "System uptime"
+msgstr "Час роботи системи"
+
+#: id:12391
+msgid "Minutes"
+msgstr "хвилин"
+
+#: id:12392
+msgid "Hours"
+msgstr "годин"
+
+#: id:12393
+msgid "Days"
+msgstr "днів"
+
+#: id:12394
+msgid "Total uptime"
+msgstr "Загальний час роботи"
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "Погода"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr "Заставка"
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr "Повноекранне OSD"
+
+#: id:13000
+msgid "System"
+msgstr "Система"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr "Термінова зупинка HDD"
+
+#: id:13002
+msgid "Video only"
+msgstr "Тільки відео"
+
+#: id:13003
+msgid "- Delay"
+msgstr "- затримка"
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr "- мінімальна тривалість файла"
+
+#: id:13005
+msgid "Shutdown"
+msgstr "Вимикання"
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "Завершити роботу і вимкнути"
+
+#: id:13009
+msgid "Quit"
+msgstr "Вихід"
+
+#: id:13010
+msgid "Hibernate"
+msgstr "Зберегти сеанс на диск і вимкнути"
+
+#: id:13011
+msgid "Suspend"
+msgstr "Призупинити"
+
+#: id:13012
+msgid "Exit"
+msgstr "Вихід із"
+
+#: id:13013
+msgid "Reboot"
+msgstr "Перезавантаження"
+
+#: id:13014
+msgid "Minimize"
+msgstr "Згорнути"
+
+#: id:13015
+msgid "Power button action"
+msgstr "Дія кнопки живлення"
+
+#: id:13016
+msgid "Power off System"
+msgstr "Вимкнути комп’ютер"
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr "Активна інша сессія, можливо через SSH?"
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr "Під'єднано переносний жорсткий диск"
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr "Небезпечне видалення пристрою"
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr "Пристрій від'єднано успішно"
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr "Джойстик підключено"
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr "Джойстик відключено"
+
+#: id:13050
+msgid "Running low on battery"
+msgstr "Низький заряд батареї"
+
+#: id:13100
+msgid "Flicker filter"
+msgstr "Рівень зменшення мерехтіння"
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr "За виб. драйверу (перезав.)"
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "Вертик. синхронізація"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr "Вимкнено"
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr "Тільки при програванні відео"
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr "Включено завжди"
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr "Перевірка відеорежиму"
+
+#: id:13110
+msgid "Save resolution?"
+msgstr "Зберегти відеорежим?"
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr "Ви хочете залишити цей відеорежим?"
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr "Високоякісне масштабування"
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr "Відключено"
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr "Тільки для SD вмісту"
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr "Включено завжди"
+
+#: id:13116
+msgid "Upscaling method"
+msgstr "Метод масштабування"
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr ""
+
+#: id:13118
+msgid "Lanczos"
+msgstr ""
+
+#: id:13119
+msgid "Sinc"
+msgstr ""
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr "Strict Pixmap-Texture Binding (перезавантажити)"
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr ""
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr "Перетворення кольорів VDPAU Studio"
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "Погасити інші екрани"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr "Відключено"
+
+#: id:13132
+msgid "Blank displays"
+msgstr "Погасити екрани"
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr "Знайдено активне з'єднання!"
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr "Якщо ви продовжите, то можете втратити можливість"
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr "керувати XBMC. Ви впевнені що хочете зупинити сервер подій?"
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr "Змінити режим пульта Apple?"
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr "Якщо ви зараз використовуєте пульт Apple щоб керувать"
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr "XBMC, то зміна цих налаштувань може перешкодити"
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr "можливості керування ним. Хочете продовжити?"
+
+#: id:13159
+msgid "Subnet mask"
+msgstr "Маска мережі"
+
+#: id:13160
+msgid "Gateway"
+msgstr "Шлюз"
+
+#: id:13161
+msgid "Primary DNS"
+msgstr "Основний DNS"
+
+#: id:13162
+msgid "Initialize failed"
+msgstr "Ініціалізація не вдалася"
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr "ніколи"
+
+#: id:13171
+msgid "Immediately"
+msgstr "відразу"
+
+#: id:13172
+msgid "After %i secs"
+msgstr "через %і сек"
+
+#: id:13173
+msgid "HDD install date:"
+msgstr "Дата встановлення HDD:"
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr "Кількість циклів ввімкнення/вимкнення HDD:"
+
+#: id:13200
+msgid "Profiles"
+msgstr "Профілі"
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr "Видалити профіль '%s'?"
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr "Останній завантажений профіль:"
+
+#: id:13205
+msgid "Unknown"
+msgstr "Невідомо"
+
+#: id:13206
+msgid "Overwrite"
+msgstr "Перезаписати"
+
+#: id:13208
+msgid "Alarm clock"
+msgstr "Таймер нагадувань"
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr "Період таймера нагадувань (в хвилинах)"
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr "Запущено, спрацює в %im"
+
+#: id:13211
+msgid "Alarm!"
+msgstr "НАГАДУВАННЯ!"
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr "Скасовано за %im%is до спрацювання"
+
+#: id:13213
+msgid "%2.0fm"
+msgstr ""
+
+#: id:13214
+msgid "%2.0fs"
+msgstr ""
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr "Шукати субтитри в RAR-архівах"
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr "Вкажіть субтитри..."
+
+#: id:13251
+msgid "Move item"
+msgstr "Перемістити об'єкт"
+
+#: id:13252
+msgid "Move item here"
+msgstr "Перемістити об'єкт сюди"
+
+#: id:13253
+msgid "Cancel move"
+msgstr "Відмінити переміщення"
+
+#: id:13270
+msgid "Hardware:"
+msgstr "Обладнання:"
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr "Завантаженість CPU:"
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr "Підключено, але DNS сервер недоступний."
+
+#: id:13275
+msgid "Hard Disk"
+msgstr "Жорсткий диск"
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr "Привід DVD"
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr "Накопичувачі"
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr "Стандартне"
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr "Мережа"
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr "Відео"
+
+#: id:13281
+msgid "Hardware"
+msgstr "Обладнання"
+
+#: id:13283
+msgid "Operating system:"
+msgstr "Операційна система:"
+
+#: id:13284
+msgid "CPU speed:"
+msgstr "Частота CPU:"
+
+#: id:13286
+msgid "Video encoder:"
+msgstr "Чіп відеокодувальника:"
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr "Відеорежим:"
+
+#: id:13292
+msgid "A/V cable:"
+msgstr "Кабель A/V:"
+
+#: id:13294
+msgid "DVD region:"
+msgstr "Регіон DVD:"
+
+#: id:13295
+msgid "Internet:"
+msgstr "Інтернет:"
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr "Підключено"
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr "Не підключено. Перевірте параметри мережі."
+
+#: id:13299
+msgid "Target temperature"
+msgstr "Підтримувати температуру"
+
+#: id:13300
+msgid "Fan speed"
+msgstr "Швидкість вентилятора"
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr "Автоматичний контроль температури"
+
+#: id:13302
+msgid "Fan speed override"
+msgstr "Управління швидкістю вентилятора"
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- Шрифти"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr "Дозволити зворотній напрямок рядків"
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "Задіяти RSS-новини"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "Сховати значок переходу на верхній рівень"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "Шаблон для імені треку"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr "Хочете перезавантажити систему"
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr "замість перезапуску XBMC?"
+
+#: id:13310
+msgid "Zoom effect"
+msgstr "Ефект збільшення"
+
+#: id:13311
+msgid "Float effect"
+msgstr "Ефект ковзання"
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr "Зменшення чорних смуг"
+
+#: id:13313
+msgid "Restart"
+msgstr "Перезапуск"
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "Тривалість накладання треків"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr "Оновити ескізи"
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr "Рекурсивні ескізи"
+
+#: id:13317
+msgid "View slideshow"
+msgstr "Перегляд слайдшоу"
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr "Рекурсивне слайдшоу"
+
+#: id:13319
+msgid "Randomize"
+msgstr "Випадково"
+
+#: id:13320
+msgid "Stereo"
+msgstr "Стерео"
+
+#: id:13321
+msgid "Left only"
+msgstr "лише Лівий"
+
+#: id:13322
+msgid "Right only"
+msgstr "лише Правий"
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "Задіяти підтримку караоке (CD+G)"
+
+#: id:13324
+msgid "Background transparency"
+msgstr "Рівень прозорості фону"
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr "Рівень прозорості тексту"
+
+#: id:13326
+msgid "A/V delay"
+msgstr "Затримка звуку щодо зображення"
+
+#: id:13327
+msgid "Karaoke"
+msgstr "Караоке"
+
+#: id:13328
+msgid "%s not found"
+msgstr "%s не знайдено"
+
+#: id:13329
+msgid "Error opening %s"
+msgstr "Помилка відкриття %s"
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr "Неможливо завантажити %s"
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr "Помилка: Недостатньо пам'яті"
+
+#: id:13332
+msgid "Move up"
+msgstr "Перемістити вище"
+
+#: id:13333
+msgid "Move down"
+msgstr "Перемістити нижче"
+
+#: id:13334
+msgid "Edit label"
+msgstr "Змінити позначку"
+
+#: id:13335
+msgid "Make default"
+msgstr "Зробити за замовчуванням"
+
+#: id:13336
+msgid "Remove button"
+msgstr "Прибрати кнопку"
+
+#: id:13340
+msgid "Leave as is"
+msgstr "Залишити як є"
+
+#: id:13341
+msgid "Green"
+msgstr "зелений"
+
+#: id:13342
+msgid "Orange"
+msgstr "помаранчевий"
+
+#: id:13343
+msgid "Red"
+msgstr "червоний"
+
+#: id:13344
+msgid "Cycle"
+msgstr "усі кольори по черзі"
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr "Вимикати LED при програванні"
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr "Інформація про фільм"
+
+#: id:13347
+msgid "Queue item"
+msgstr "Додати в плейлист"
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr "Знайти в IMDb..."
+
+#: id:13349
+msgid "Scan for new content"
+msgstr "Сканувати новий вміст"
+
+#: id:13350
+msgid "Now playing..."
+msgstr "Поточний плейлист..."
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr "Дані про альбом"
+
+#: id:13352
+msgid "Scan item to library"
+msgstr "Сканувати в Бібліотеку"
+
+#: id:13353
+msgid "Stop scanning"
+msgstr "Зупинити сканування"
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr "Метод обробки"
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr "Пікс.шейдер низ.якості"
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr "Апаратне накладення"
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr "Пікс.шейдер вис.якості"
+
+#: id:13358
+msgid "Play item"
+msgstr "Програти об'єкт"
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr "Встановити ескіз виконавця"
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "Створювати ескізи"
+
+#: id:13361
+msgid "Enable voice"
+msgstr "Задіяти мікрофон"
+
+#: id:13375
+msgid "Enable device"
+msgstr "Задіяти пристрій"
+
+#: id:13376
+msgid "Volume"
+msgstr "Гучність"
+
+#: id:13377
+msgid "Default view mode"
+msgstr "Основний режим перегляду"
+
+#: id:13378
+msgid "Default brightness"
+msgstr "Стандартна яскравість"
+
+#: id:13379
+msgid "Default contrast"
+msgstr "Стандартна контрасність"
+
+#: id:13380
+msgid "Default gamma"
+msgstr "Стандартна гама"
+
+#: id:13381
+msgid "Resume video"
+msgstr "Продовжити відео"
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr "Маска для голосу 1"
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr "Маска для голосу 2"
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr "Маска для голосу 3"
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr "Маска для голосу 4"
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr "Позиціонувати за часом"
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "Права колонка у списку"
+
+#: id:13388
+msgid "Preset"
+msgstr "Перед-налаштування"
+
+#: id:13389
+msgid ""
+"There are no presets available\n"
+"for this visualization"
+msgstr "Для цього відео-ефекту немає перед-налаштувань"
+
+#: id:13390
+msgid ""
+"There are no settings available\n"
+"for this visualization"
+msgstr "Для цього відео-ефекту немає налаштувань"
+
+#: id:13391
+msgid "Eject/Load"
+msgstr "Відкрити / Закрити"
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "Вмикати відео-ефекти при програванні музики"
+
+#: id:13393
+msgid "Calculate size"
+msgstr "Вичислити розмір"
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr "Обчислюється розмір папки"
+
+#: id:13395
+msgid "Video settings"
+msgstr "Налаштування Відео"
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr "Налаштування субтитрів і звуку"
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr "Використовувати субтитри"
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr "Ярлики"
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "Не враховувати артиклі при сортуванні"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "М'який перехід до наступного треку"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr "Пошук %s"
+
+#: id:13402
+msgid "Show track position"
+msgstr "Показати позицію треку"
+
+#: id:13403
+msgid "Clear default"
+msgstr "Очистити за замовчуванням"
+
+#: id:13404
+msgid "Resume"
+msgstr "Продовжити"
+
+#: id:13405
+msgid "Get thumb"
+msgstr "Одержати ескіз"
+
+#: id:13406
+msgid "Picture information"
+msgstr "Дані про фотографію"
+
+#: id:13407
+msgid "%s presets"
+msgstr "%s перед-налаштування"
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr "(Рейтинг користувачів IMDb)"
+
+#: id:13409
+msgid "Top 250"
+msgstr "Топ 250"
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr "Налаштуватися на Last.fm"
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr "Мінімальна швидкість вентиляторів"
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr "Завантаження"
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "Ховати виконавців, які з'являються лише у збірках"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "Метод обробки"
+
+#: id:13416
+msgid "Auto detect"
+msgstr "Авто-визначення"
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr "Основні шейдери (ARB)"
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr "Розширені шейдери (GLSL)"
+
+#: id:13419
+msgid "Software"
+msgstr "Програмний"
+
+#: id:13420
+msgid "Remove safely"
+msgstr "Видалити безпечно"
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr "Почати показ слайдів звідси"
+
+#: id:13423
+msgid "Remember for this path"
+msgstr "Запам’ятати для цього шляху"
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr "Використовувати об’єкти піксельних буферів"
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr "Дозволити апаратне прискорення (VDPAU)"
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr "Дозволити апаратне прискорення (VAAPI)"
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr "Дозволити апаратне прискорення (DXVA2)"
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr "Дозволити апаратне прискорення (CrystalHD)"
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr "Дозволити апаратне прискорення (VDADecoder)"
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr "Дозволити апаратне прискорення (OpenMax)"
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr "Піксельні шейдери"
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "Метод синхронізації A/V"
+
+#: id:13501
+msgid "Audio clock"
+msgstr "по частоті звуку"
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr "по частоті відео (пропускати / дублювати звук)"
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr "по частоті відео (перетв. звук)"
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr "Максимальна величина перетворення (%)"
+
+#: id:13505
+msgid "Resample quality"
+msgstr "Якість перетворення"
+
+#: id:13506
+msgid "Low(fast)"
+msgstr "Низька (швидко)"
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr "Середня"
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr "Висока"
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr "Дійсно висока (повільно!)"
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "Синхронізувати з частотою екрану"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr "Призупиняти при зміні частоти оновлення"
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr "Вимкн."
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr "Пульт Apple"
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr "Працює завжди"
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr "Час затримки послідовності"
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr "Вимкнено"
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr "Стандартний"
+
+#: id:13612
+msgid "Universal Remote"
+msgstr "Універсальний пульт"
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr "Мульти-пульт (Harmony)"
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr "Помилка пульта Apple"
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr "Підтримка пультів Apple повинна бути включена"
+
+#: id:14000
+msgid "Stack"
+msgstr "Об'єднати"
+
+#: id:14001
+msgid "Unstack"
+msgstr "Роз'єднати"
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr "Завантажується файл плейлиста..."
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr "Завантажується список потоків..."
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr "Аналіз списку потоків..."
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr "Помилка завантаження списку потоків"
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr "Помилка завантаження файла плейлиста"
+
+#: id:14009
+msgid "Games directory"
+msgstr "Папка з іграми"
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr "Авто-переключення вигляду на ескізи по"
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr "Автоматично переключати вигляд на ескізи"
+
+#: id:14012
+msgid "- Use large icons"
+msgstr "- використовувати великі значки"
+
+#: id:14013
+msgid "- Switch based on"
+msgstr "- переключати по"
+
+#: id:14014
+msgid "- Percentage"
+msgstr "- відсотків"
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr "Немає файлів, але є хоча б один ескіз"
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr "Хоча б один файл і ескіз"
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr "Відсотків ескізів"
+
+#: id:14018
+msgid "View options"
+msgstr "Налаштування перегляду"
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "Місцевість 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "Місцевість 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "Місцевість 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "Бібліотека"
+
+#: id:14023
+msgid "No TV"
+msgstr "Без ТБ"
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr "Впишіть найближче велике місто"
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr "Кеш для Аудіо, Відео та DVD-файлів: - з HDD"
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr "Кеш для Відеофайлів: - з DVD диска"
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr "- з локальної мережі"
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr "- з Інтернету"
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr "Кеш для Аудіофайлів: - з DVD диска"
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr "- з локальної мережі"
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr "- з Інтернету"
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr "Кеш для файлів DVD-Video: - з DVD диска"
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr "- з локальної мережі"
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "Сервери"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr "Налаштування локальної мережі змінені"
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr "Для застосування змін мережевих параметрів, потрібне"
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr "перезавантаження XBMC. Перезавантажити зараз?"
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr "Пост-процессінг"
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr "- Вимикати під час програвання"
+
+#: id:14044
+msgid "%i min"
+msgstr "%i хв."
+
+#: id:14045
+msgid "%i sec"
+msgstr "%i сек."
+
+#: id:14046
+msgid "%i ms"
+msgstr "%i мсек."
+
+#: id:14047
+msgid "%i %%"
+msgstr "%i %%"
+
+#: id:14048
+msgid "%i kbps"
+msgstr "%i кб/сек"
+
+#: id:14049
+msgid "%i kb"
+msgstr "%i кб"
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr "%i.0 dB"
+
+#: id:14051
+msgid "Time format"
+msgstr "Формат часу"
+
+#: id:14052
+msgid "Date format"
+msgstr "Формат дати"
+
+#: id:14053
+msgid "GUI filters"
+msgstr "Фільтри інтерфейсу"
+
+#: id:14055
+msgid "Use background scanning"
+msgstr "Сканувати у фоновому режимі"
+
+#: id:14056
+msgid "Stop scan"
+msgstr "Зупинити сканування"
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr "Неможливо, поки скануються файли"
+
+#: id:14058
+msgid "Film grain effect"
+msgstr "Ефект кіноплівки"
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr "Шукати ескізи на зовнішніх ресурсах"
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "Кеш невизначених файлів: - з Інтернету"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr "Автоматично"
+
+#: id:14062
+msgid "Enter username for"
+msgstr "Впишіть ім'я користувача для"
+
+#: id:14063
+msgid "Date & time"
+msgstr "Дата і Час"
+
+#: id:14064
+msgid "Set date"
+msgstr "Встановити дату"
+
+#: id:14065
+msgid "Set time"
+msgstr "Встановити час"
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr "Впишіть час у 24-х годинному форматі ГГ:ХХ"
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr "Впишіть дату в форматі ДД/ММ/РРРР"
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr "Впишіть IP-адресу"
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr "Застосувати ці зміни зараз?"
+
+#: id:14070
+msgid "Apply changes now"
+msgstr "Застосувати зміни зараз"
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "Дозволити перейменування і видалення файлів"
+
+#: id:14074
+msgid "Set timezone"
+msgstr "Встановити часовий пояс"
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr "Враховувати літній/зимовий час"
+
+#: id:14076
+msgid "Add to favourites"
+msgstr "Додати до Вибраного"
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr "Видалити з Вибраного"
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr "- Колір"
+
+#: id:14079
+msgid "Timezone country"
+msgstr "Країна"
+
+#: id:14080
+msgid "Timezone"
+msgstr "Часовий пояс"
+
+#: id:14081
+msgid "File lists"
+msgstr "Списки файлів"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Показати EXIF інформацію зображення"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr ""
+"Використовувати повноекранне вікно замість справжнього повноекранного режиму"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "Додавати треки у чергу при виборі"
+
+#: id:14086
+msgid "Playback"
+msgstr "Програвання"
+
+#: id:14087
+msgid "DVDs"
+msgstr ""
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "Автоматично програвати DVD диски"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "Шрифт для текстових субтитрів"
+
+#: id:14090
+msgid "International"
+msgstr "Мова та регіон"
+
+#: id:14091
+msgid "Character set"
+msgstr "Кодування символів"
+
+#: id:14092
+msgid "Debugging"
+msgstr "Відлагодження"
+
+#: id:14093
+msgid "Security"
+msgstr "Безпека"
+
+#: id:14094
+msgid "Input devices"
+msgstr "Пристрої вводу"
+
+#: id:14095
+msgid "Power saving"
+msgstr "Енергозбереження"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr "Прибрати"
+
+#: id:15016
+msgid "Games"
+msgstr "Ігри"
+
+#: id:15019
+msgid "Add"
+msgstr "Додати"
+
+#: id:15052
+msgid "Password"
+msgstr "Пароль"
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr "Бібліотека"
+
+#: id:15101
+msgid "Database"
+msgstr "База Даних"
+
+#: id:15102
+msgid "* All albums"
+msgstr "* Усі альбоми"
+
+#: id:15103
+msgid "* All artists"
+msgstr "* Усі артисти"
+
+#: id:15104
+msgid "* All songs"
+msgstr "* Усі пісні"
+
+#: id:15105
+msgid "* All genres"
+msgstr "* Усі жанри"
+
+#: id:15107
+msgid "Buffering..."
+msgstr "Буфериуеться..."
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "Звуки інтерфейсу"
+
+#: id:15109
+msgid "Skin default"
+msgstr "Стандартне оформлення"
+
+#: id:15111
+msgid "- Theme"
+msgstr "- Тема оформлення"
+
+#: id:15112
+msgid "Default theme"
+msgstr "Стандартна тема"
+
+#: id:15200
+msgid "Last.fm"
+msgstr ""
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Відправляти статистику на Last.fm"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Ім'я користувача для Last.fm"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Пароль для Last.fm"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr "Неможливо з'єднатися: засинаю..."
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr "Будь ласка, обновіть XBMC"
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr "Невірна авторизація: Перевірте ім'я і пароль"
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr "Підключений"
+
+#: id:15208
+msgid "Not connected"
+msgstr "Не підключений"
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr "Інтервал підключень %і"
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr "В буфері %і пісень"
+
+#: id:15211
+msgid "Submitting..."
+msgstr "Підключення..."
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr "Підключення через %і сек."
+
+#: id:15213
+msgid "Play using..."
+msgstr "Використовувати програвач..."
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr "М'яка синхронізація звуку і відео"
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr "Ховати імена файлів в режимі ескізів"
+
+#: id:15216
+msgid "Play in party mode"
+msgstr "Програвати в режимі 'Вечірки'"
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Відправляти статистику на Libre.fm"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Ім'я користувача для Libre.fm"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Пароль для Libre.fm"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr ""
+
+#: id:15221
+msgid "Song submission"
+msgstr "Скробблер"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Облік в статистиці пісень з Last.fm"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr "Підключення до Last.fm..."
+
+#: id:15252
+msgid "Selecting station..."
+msgstr "Вибір станції..."
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr "Пошук схожих виконавців..."
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr "Пошук схожих тегів..."
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr "Ваш профіль (%name%)"
+
+#: id:15256
+msgid "Overall top tags"
+msgstr "Загальний топ тегів"
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr "Топ виконавців по тегу %name%"
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr "Топ альбомів по тегу %name%"
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr "Топ треків по тегу %name%"
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr "Слухати треки по тегу %name% на Last.fm"
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr "Виконавці, схожі на %name%"
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr "Топ альбомів %name%"
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr "Топ треків %name%"
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr "Топ тегів %name%"
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr "Найбільші фани %name%"
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr "Слухати вибір фанів %name% на Last.fm"
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr "Слухати виконавців, схожих на %name% на Last.fm"
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr "Топ виконавців від %name%"
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr "Топ альбомів від %name%"
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr "Топ треків від %name%"
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr "Друзі %name%"
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr "Співтовариства %name%"
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr "Тижневий чарт виконавців %name%"
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr "Тижневий чарт альбомів %name%"
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr "Тижневий чарт треків %name%"
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr "Слухати вибір співтовариств %name% на Last.fm"
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr "Слухати особистий вибір %name%'а на Last.fm"
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr "Слухати улюблені треки %name% на Last.fm"
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr "Одержання списку від Last.fm..."
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr "Не можу одержати список від Last.fm..."
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr "Впишіть ім'я виконавця щоб знайти схожих"
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr "Впишіть назву тегу щоб знайти схожі"
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr "Треки, які недавно слухав(ла) %name%"
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr "Слухати треки, які рекомендує %name% на Last.fm"
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr "Топ тегів для %name%"
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr "Ви хочете додати цей трек до ваших улюблених треків?"
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr "Ви хочете заблокувати цей трек?"
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr "Додано до ваших улюблених треків: '%s'."
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr "Не можу додати '%s' до ваших улюблених треків."
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr "Заблоковано: '%s'."
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr "Не можу заблокувати: '%s'."
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr "Треки, які недавно полюбив(ла) %name%"
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr "Треки, які недавно заблокував(ла) %name%"
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr "Видалити з улюблених треків"
+
+#: id:15296
+msgid "Un-ban"
+msgstr "Розблокувати"
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr "Ви хочете видалити цей трек з ваших улюблених треків?"
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr "Ви хочете розблокувати цей трек?"
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr "Шлях не знайдено або він не правильний"
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr "Не можу з'єднатися з сервером"
+
+#: id:15302
+msgid "No servers found"
+msgstr "Сервери не знайдені"
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr "Робоча група не знайдена"
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr "Відкриття кілька-шляхового джерела"
+
+#: id:15311
+msgid "Path:"
+msgstr "Шлях:"
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "Основний"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr "Пошук в Інтернеті"
+
+#: id:16003
+msgid "Player"
+msgstr "Програвач"
+
+#: id:16004
+msgid "Play media from disc"
+msgstr "Програти файл з диска"
+
+#: id:16008
+msgid "Enter new title"
+msgstr "Впишіть нову назву"
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr "Впишіть назву фільму"
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr "Впишіть назву профілю"
+
+#: id:16011
+msgid "Enter the album name"
+msgstr "Впишіть назву альбому"
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr "Впишіть назву плейлиста"
+
+#: id:16013
+msgid "Enter new filename"
+msgstr "Впишіть нове ім'я файла"
+
+#: id:16014
+msgid "Enter folder name"
+msgstr "Впишіть назву папки"
+
+#: id:16015
+msgid "Enter directory"
+msgstr "Впишіть назву директорії"
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr "Доступні опції: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+
+#: id:16017
+msgid "Enter search string"
+msgstr "Напишіть, що ви хочете знайти"
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr "Нічого"
+
+#: id:16019
+msgid "Auto select"
+msgstr "Автовибір"
+
+#: id:16020
+msgid "De-interlace"
+msgstr ""
+
+#: id:16021
+msgid "Bob"
+msgstr ""
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr ""
+
+#: id:16024
+msgid "Canceling..."
+msgstr "Скасування..."
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr "Впишіть назву виконавця"
+
+#: id:16026
+msgid "Playback failed"
+msgstr "Програвання плейлиста перервано"
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr "Занадто багато послідовних помилок"
+
+#: id:16028
+msgid "Enter value"
+msgstr "Впишіть значення"
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr "Деталі можна продовитися у файлі журналу"
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr "Режим 'Вечірки' перервано."
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr "Немає відповідних пісень в Бібліотеці."
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr "Не можу ініцюювати Базу Даних."
+
+#: id:16033
+msgid "Could not open database."
+msgstr "Не можу відкрити Базу Даних."
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr "Не можу отримати пісні з Бази Даних."
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr "Плейлист режиму 'Вечірки'"
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr "Усі Відео"
+
+#: id:16101
+msgid "Unwatched"
+msgstr "Непереглянуті"
+
+#: id:16102
+msgid "Watched"
+msgstr "Переглянуті"
+
+#: id:16103
+msgid "Mark as watched"
+msgstr "Відмітити як переглянуте"
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr "Відмітити як непереглянуте"
+
+#: id:16105
+msgid "Edit title"
+msgstr "Змінити назву"
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr "Операцію перервано"
+
+#: id:16201
+msgid "Copy failed"
+msgstr "Не вдалося скопіювати"
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr "Не вдалося скопіювати жоден файл"
+
+#: id:16203
+msgid "Move failed"
+msgstr "Не вдалося перемістити"
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr "Не вдалося перемістити жоден файл"
+
+#: id:16205
+msgid "Delete failed"
+msgstr "Не вдалося видалити"
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr "Не вдалося видалити жоден файл"
+
+#: id:16300
+msgid "Video scaling method"
+msgstr "Метод масштабування відео"
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr "Найближчий сусідній"
+
+#: id:16302
+msgid "Bilinear"
+msgstr "Білінійний"
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr "Бікубічний"
+
+#: id:16304
+msgid "Lanczos2"
+msgstr ""
+
+#: id:16305
+msgid "Lanczos3"
+msgstr ""
+
+#: id:16306
+msgid "Sinc8"
+msgstr ""
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr "Бікубічний (програмний)"
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr "Lanczos (програмний)"
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr "Sinc (програмний)"
+
+#: id:16310
+msgid "Temporal"
+msgstr "(VDPAU) Тимчасовий"
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr "(VDPAU) Тимчасовий / Просторовий"
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr "(VDPAU) Зменшення шумів"
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr "(VDPAU) Чіткість"
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr "Зворотній Telecine"
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr ""
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr "Авто"
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr ""
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr ""
+
+#: id:16319
+msgid "DXVA"
+msgstr ""
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr "Післяобробка"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr "Переключення екрану в сплячий режим через"
+
+#: id:19000
+msgid "Switch to channel"
+msgstr "Перемикнути на канал"
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "Папка для збереження з аудіо CD"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr "Використовувати зовнішній DVD-програвач"
+
+#: id:20002
+msgid "External DVD player"
+msgstr "Зовнішній DVD-програвач"
+
+#: id:20003
+msgid "Trainers folder"
+msgstr "Папка для трейнерів"
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "Папка для скріншотів"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr "Папка для плейлистів"
+
+#: id:20007
+msgid "Recordings"
+msgstr "Записи"
+
+#: id:20008
+msgid "Screenshots"
+msgstr "Скріншоти"
+
+#: id:20009
+msgid "Use XBMC"
+msgstr "Використовувати XBMC"
+
+#: id:20011
+msgid "Music playlists"
+msgstr "Музичний плейлист"
+
+#: id:20012
+msgid "Video playlists"
+msgstr "Відео плейлист"
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr "Ви хочете запустити гру?"
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr "Сорт.по: Плейлисту"
+
+#: id:20015
+msgid "Remote thumb"
+msgstr "Зовнішній ескіз"
+
+#: id:20016
+msgid "Current thumb"
+msgstr "Поточний ескіз"
+
+#: id:20017
+msgid "Local thumb"
+msgstr "Локальний ескіз"
+
+#: id:20018
+msgid "No thumb"
+msgstr "Без ескізу"
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr "Виберіть ескіз"
+
+#: id:20023
+msgid "Conflict"
+msgstr "Конфлікт"
+
+#: id:20024
+msgid "Scan new"
+msgstr "Сканувати нове"
+
+#: id:20025
+msgid "Scan all"
+msgstr "Сканувати все"
+
+#: id:20026
+msgid "Region"
+msgstr "Регіон"
+
+#: id:20037
+msgid "Summary"
+msgstr "Підсумок"
+
+#: id:20038
+msgid "Lock music window"
+msgstr "Заблокувати розділ Музика"
+
+#: id:20039
+msgid "Lock videos window"
+msgstr "Заблокувати розділ Відео"
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr "Заблокувати розділ Фотографії"
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr "Заблокувати розділ Програми і Скрипти"
+
+#: id:20042
+msgid "Lock file manager"
+msgstr "Заблокувати Менеджер файлів"
+
+#: id:20043
+msgid "Lock settings"
+msgstr "Заблокувати Налаштування"
+
+#: id:20044
+msgid "Start fresh"
+msgstr "Чистий старт"
+
+#: id:20045
+msgid "Enter master mode"
+msgstr "Перейти у режим Повного доступу"
+
+#: id:20046
+msgid "Leave master mode"
+msgstr "Вийти з режиму Повного доступу"
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr "Створити профіль '%s' ?"
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr "Старт з чистими параметрами"
+
+#: id:20049
+msgid "Best available"
+msgstr "Найкраще з доступних"
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr "Автовибір 16:9 чи 4:3"
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr "Представляти послідовні файли як один файл"
+
+#: id:20052
+msgid "Caution"
+msgstr "Застереження"
+
+#: id:20053
+msgid "Left master mode"
+msgstr "Залишити режим Повного доступу"
+
+#: id:20054
+msgid "Entered master mode"
+msgstr "Включений режим Повного доступу"
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr "Ескіз з Allmusic.com"
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr "Прибрати ескіз"
+
+#: id:20058
+msgid "Add profile..."
+msgstr "Додати профіль..."
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr "Запит даних про всі альбоми"
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr "Дані про медіафайл"
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr "Роздільно"
+
+#: id:20062
+msgid "Shares with default"
+msgstr "Стандартні ресурси"
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr "Стандартні ресурси (зчитування)"
+
+#: id:20064
+msgid "Copy default"
+msgstr "Скопіювати стандартний"
+
+#: id:20065
+msgid "Profile picture"
+msgstr "Картинка профілю"
+
+#: id:20066
+msgid "Lock preferences"
+msgstr "Заблокувати переваги"
+
+#: id:20067
+msgid "Edit profile"
+msgstr "Змінити профіль"
+
+#: id:20068
+msgid "Profile lock"
+msgstr "Захист профіля"
+
+#: id:20069
+msgid "Could not create folder"
+msgstr "Не можу створити папку"
+
+#: id:20070
+msgid "Profile directory"
+msgstr "Папка профілю"
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr "Старт із свіжими джерелами"
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr "Переконайтеся, що в обрану папку дозволено"
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr "запис і її назва правильна"
+
+#: id:20074
+msgid "MPAA rating"
+msgstr "Рейтинг MPAA"
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr "Введіть код захисту"
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "Запитувати код захисту при старті"
+
+#: id:20077
+msgid "Skin settings"
+msgstr "Параметри вигляду"
+
+#: id:20078
+msgid "- no link set -"
+msgstr "- немає зв'язку -"
+
+#: id:20079
+msgid "Enable animations"
+msgstr "Використовувати анімацію"
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr "Відключити RSS під час музики"
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr "Задіяти кнопки посилань"
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr "Показувати розділ \"Програми\" у головному меню"
+
+#: id:20083
+msgid "Show music info"
+msgstr "Показувати інформацію про музику"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "Показувати інформацію про погоду"
+
+#: id:20085
+msgid "Show system info"
+msgstr "Показувати інформацію про систему"
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr "Показувати вільне місце на C: E: F:"
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr "Показувати вільне місце на E: F: G:"
+
+#: id:20088
+msgid "Weather info"
+msgstr "Погода"
+
+#: id:20089
+msgid "Drive space free"
+msgstr "Вільне місце на диску"
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr "Впишіть назву існуючого ресурсу"
+
+#: id:20091
+msgid "Lock code"
+msgstr "Код захисту"
+
+#: id:20092
+msgid "Load profile"
+msgstr "Завантажити профіль"
+
+#: id:20093
+msgid "Profile name"
+msgstr "Назва профілю"
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr "Джерела медіафайлів"
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr "Введіть код захисту профілю"
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr "Екран входу"
+
+#: id:20097
+msgid "Fetching album info"
+msgstr "Запит інформації про альбом"
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr "Запит інформації для альбому"
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr "Не можна оцифровувать під час програвання"
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "Код захисту та його налаштування"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr "Введення коду захисту завжди переключає до режиму Повного доступу"
+
+#: id:20102
+msgid "or copy from default?"
+msgstr "чи копіювати із стандартного?"
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr "Зберегти зміни в профілі?"
+
+#: id:20104
+msgid "Old settings found."
+msgstr "Знайдено старі налаштування"
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr "Ви хочете використовувати їх?"
+
+#: id:20106
+msgid "Old media sources found."
+msgstr "Знайдено старі джерела"
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr "Роздільно (заблоковано)"
+
+#: id:20108
+msgid "Root"
+msgstr "Корінь"
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- Збільшення"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr "UPnP налаштування"
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr "Автозапуск UPnP-клієнта"
+
+#: id:20112
+msgid "Last login: %s"
+msgstr "Останній вхід: %s"
+
+#: id:20113
+msgid "Never logged on"
+msgstr "Ніколи не входив"
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr "Профіль %і / %і"
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr "Вхід користувача / Вибір профілю"
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr "Використовувати захист на екрані входу"
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr "Не правильний код захисту."
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr "Для цього код захисту має бути встановлений."
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr "Встановити його зараз?"
+
+#: id:20120
+msgid "Loading program information"
+msgstr "Завантаження даних про програму"
+
+#: id:20121
+msgid "Party on!"
+msgstr "Вечірка почалася!"
+
+#: id:20122
+msgid "True"
+msgstr "Істина"
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr "Змішування напоїв"
+
+#: id:20124
+msgid "Filling glasses"
+msgstr "Наповнювання келихів"
+
+#: id:20125
+msgid "Logged on as"
+msgstr "Увійшов як"
+
+#: id:20126
+msgid "Log off"
+msgstr "Вихід"
+
+#: id:20128
+msgid "Go to root"
+msgstr "Перейти до кореню"
+
+#: id:20129
+msgid "Weave"
+msgstr ""
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr ""
+
+#: id:20131
+msgid "Blend"
+msgstr ""
+
+#: id:20132
+msgid "Restart video"
+msgstr "Перезапустити відео"
+
+#: id:20133
+msgid "Edit network location"
+msgstr "Змінити мережеве розташування"
+
+#: id:20134
+msgid "Remove network location"
+msgstr "Видалити мережеве розташування"
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr "Хочете просканувати папку?"
+
+#: id:20136
+msgid "Memory unit"
+msgstr "Карта пам'яті"
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr "Карта пам'яті підключена"
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr "Неможливо підключити Карту пам'яті"
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr "У порт %і, слот %і"
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr "Заблокувати заставку"
+
+#: id:20141
+msgid "Set"
+msgstr "Встановити"
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr "Ім'я користувача"
+
+#: id:20143
+msgid "Enter password for"
+msgstr "Впишіть пароль для"
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr "Таймер вимикання"
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr "Інтервал вимикання (хвилини)"
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr "Запущено, вимикання через %im"
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr "Вимикання через 30 хв."
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr "Вимикання через 1 годину"
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr "Вимикання через 2 години"
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr "Особливий таймер вимикання"
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr "Відключити таймер вимикання"
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr "Заблокувати переваги для %s"
+
+#: id:20153
+msgid "Browse..."
+msgstr "Перегляд..."
+
+#: id:20154
+msgid "Summary information"
+msgstr "Загальна інформація"
+
+#: id:20155
+msgid "Storage information"
+msgstr "Інформація про накопичувачі"
+
+#: id:20156
+msgid "Hard disk information"
+msgstr "Інформація про HDD"
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr "Інформація про DVD-ROM"
+
+#: id:20158
+msgid "Network information"
+msgstr "Інформація про мережу"
+
+#: id:20159
+msgid "Video information"
+msgstr "Інформація про відео"
+
+#: id:20160
+msgid "Hardware information"
+msgstr "Інформація про обладнання"
+
+#: id:20161
+msgid "Total"
+msgstr "Усього"
+
+#: id:20162
+msgid "Used"
+msgstr "Використано"
+
+#: id:20163
+msgid "of"
+msgstr "з"
+
+#: id:20164
+msgid "Locking not supported"
+msgstr "Захист не підтримується"
+
+#: id:20165
+msgid "Not locked"
+msgstr "Не заблоковано"
+
+#: id:20166
+msgid "Locked"
+msgstr "Заблоковано"
+
+#: id:20167
+msgid "Frozen"
+msgstr "Заморожений"
+
+#: id:20168
+msgid "Requires reset"
+msgstr "Необхідне скидання"
+
+#: id:20169
+msgid "Week"
+msgstr "Тиждень"
+
+#: id:20170
+msgid "Line"
+msgstr "Лінія"
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr "Мережа Windows (SMB)"
+
+#: id:20172
+msgid "XBMSP server"
+msgstr "Сервер XBMSP"
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr "Сервер FTP"
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr "Ресурс iTunes (DAAP)"
+
+#: id:20175
+msgid "UPnP server"
+msgstr "Сервер UPnP"
+
+#: id:20176
+msgid "Show video info"
+msgstr "Показувати інформацію про відео"
+
+#: id:20177
+msgid "Done"
+msgstr "Готово"
+
+#: id:20178
+msgid "Shift"
+msgstr ""
+
+#: id:20179
+msgid "Caps Lock"
+msgstr ""
+
+#: id:20180
+msgid "Symbols"
+msgstr "Символи"
+
+#: id:20181
+msgid "Backspace"
+msgstr "<-----"
+
+#: id:20182
+msgid "Space"
+msgstr "Пробіл"
+
+#: id:20183
+msgid "Reload skin"
+msgstr "Оновити вигляд"
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "Повертати за інформацією зі EXIF"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr "Використовувати вигляд постерів для серіалів"
+
+#: id:20186
+msgid "Please wait"
+msgstr "Зачекайте, будь ласка"
+
+#: id:20187
+msgid "UPnP"
+msgstr "Резервування EEPROM"
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "Задіяти автоматичну прокрутку для сюжетів та оглядів"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr "Додаткові"
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "Задіяти протоколювання (для відладки)"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "Шукати дані про альбом при додаванні до Бібліотеки"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "Шукати дані про виконавця при додаванні до Бібліотеки"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "Стандартний інфо-ресурс"
+
+#: id:20195
+msgid "Change scraper"
+msgstr "Змінити інфо-ресурс"
+
+#: id:20196
+msgid "Export music library"
+msgstr "Експортувати музичну Бібліотеку"
+
+#: id:20197
+msgid "Import music library"
+msgstr "Імпортувати музичну Бібліотеку"
+
+#: id:20198
+msgid "No artist found!"
+msgstr "Виконавців не знайдено!"
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr "Невдалося завантажити дані про виконавця"
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr "Вечірка почалася! (Відео)"
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr "Змішування напоїв (Відео)"
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr "Наповнювання келихів (Відео)"
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr "WebDAV сервер (HTTP)"
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr "WebDAV сервер (HTTPS)"
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr "Це перший вхід, відредагуйте свій профіль"
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr "HTS Tvheadend клієнт"
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr "VDR Streamdev клієнт"
+
+#: id:20258
+msgid "MythTV client"
+msgstr "MythTV клієнт"
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr "Папка Web сервера (HTTP)"
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr "Папка Web-сервера (HTTPS)"
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr "Неможливо записати у папку:"
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr "Хочете пропустити і продовжити далі?"
+
+#: id:20304
+msgid "RSS Feed"
+msgstr "RSS канал"
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr "Вторинний DNS"
+
+#: id:20308
+msgid "DHCP server:"
+msgstr "Сервер DHCP:"
+
+#: id:20309
+msgid "Make new folder"
+msgstr "Створити нову папку"
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr "Пригасити LCD при програванні"
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr "Невідомий, чи вмонтований (захищений)"
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr "Пригасити LCD в паузі"
+
+#: id:20314
+msgid "Videos - Library"
+msgstr "Відео - Бібліотека"
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr "Сорт.по: ID"
+
+#: id:20324
+msgid "Play part..."
+msgstr "Грати частину..."
+
+#: id:20325
+msgid "Calibration reset"
+msgstr "Скидання калібровки"
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr "Це скине значення калібровки для %s"
+
+#: id:20327
+msgid "to it's default values."
+msgstr "до їх стандартних значень."
+
+#: id:20328
+msgid "Browse for destination"
+msgstr "Вкажіть ціль"
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr "Використовувати назви папок для пошуку"
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr "Файл"
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr "Використовувати назви файлів або папок для пошуку?"
+
+#: id:20333
+msgid "Set content"
+msgstr "Зазначити вміст"
+
+#: id:20334
+msgid "Folder"
+msgstr "Папка"
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr "Передивлятися також вміст підпапок?"
+
+#: id:20336
+msgid "Unlock sources"
+msgstr "Розблокувати джерела"
+
+#: id:20337
+msgid "Actor"
+msgstr "Актор"
+
+#: id:20338
+msgid "Movie"
+msgstr "Фільм"
+
+#: id:20339
+msgid "Director"
+msgstr "Режисер"
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr "Ви хочете видалити всі об'єкти за"
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr "цим шляхом з Бібліотеки?"
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr "Фільми"
+
+#: id:20343
+msgid "TV shows"
+msgstr "Серіали"
+
+#: id:20344
+msgid "This directory contains"
+msgstr "Ця папка містить"
+
+#: id:20345
+msgid "Run automated scan"
+msgstr "Запустити автоматичне сканування"
+
+#: id:20346
+msgid "Scan recursively"
+msgstr "Сканувати з підпапками"
+
+#: id:20347
+msgid "as"
+msgstr "у ролі"
+
+#: id:20348
+msgid "Directors"
+msgstr "Режисери"
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr "За цим шляхом відеофайлів не знайдено!"
+
+#: id:20350
+msgid "votes"
+msgstr "проголосували"
+
+#: id:20351
+msgid "TV show information"
+msgstr "Інформація про серіал"
+
+#: id:20352
+msgid "Episode information"
+msgstr "Інформація про епізод"
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr "Завантаження подробиць про серіал"
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr "Керівництво з вибору епізоду"
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr "Завантаження даних про епізоди в папці"
+
+#: id:20356
+msgid "Select TV show:"
+msgstr "Виберіть серіал:"
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr "Впишіть назву серіалу"
+
+#: id:20358
+msgid "Season %i"
+msgstr "Сезон %i"
+
+#: id:20359
+msgid "Episode"
+msgstr "Епізод"
+
+#: id:20360
+msgid "Episodes"
+msgstr "Епізоди"
+
+#: id:20361
+msgid "Loading episode details"
+msgstr "Завантаження подробиць про епізод"
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr "Видалити епізод з Бібліотеки"
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr "Видалити серіал з Бібліотеки"
+
+#: id:20364
+msgid "TV show"
+msgstr "Серіал"
+
+#: id:20365
+msgid "Episode plot"
+msgstr "Сюжет епізоду"
+
+#: id:20366
+msgid "* All seasons"
+msgstr "* Всі сезони"
+
+#: id:20367
+msgid "Hide watched"
+msgstr "Сховати переглянуті"
+
+#: id:20368
+msgid "Prod code"
+msgstr "Код продукту"
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "Сховати сюжет для непереглянутих"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr "* Приховано, щоб запобігти перешкод *"
+
+#: id:20371
+msgid "Set season thumb"
+msgstr "Встановити ескіз сезону"
+
+#: id:20372
+msgid "Season image"
+msgstr "Картинка сезону"
+
+#: id:20373
+msgid "Season"
+msgstr "Сезон"
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr "Завантаження інформації про фільм"
+
+#: id:20375
+msgid "Unassign content"
+msgstr "Не зазначати вміст"
+
+#: id:20376
+msgid "Original title"
+msgstr ""
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr "Оновити інформацію про серіал"
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr "Оновити інформацію про всі епізоди"
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr "Вказана папка містить окремій серіал"
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr "Не сканувати вибрану папку"
+
+#: id:20381
+msgid "Specials"
+msgstr "Спеціальне"
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr "Автоматично створювати ескізи для сезонів"
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr "Вказана папка містить окреме відео"
+
+#: id:20384
+msgid "Link to TV show"
+msgstr "Зв'язати з серіалом"
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr "Видалити зв'язок з серіалом"
+
+#: id:20386
+msgid "Recently added movies"
+msgstr "Свіжі фільми"
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr "Свіжі епізоди"
+
+#: id:20388
+msgid "Studios"
+msgstr "Кіностудії"
+
+#: id:20389
+msgid "Music videos"
+msgstr "Музичні відео"
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr "Свіжі музичні відео"
+
+#: id:20391
+msgid "Music video"
+msgstr "Музичне відео"
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr "Видалити музичне відео з Бібліотеки"
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "Інформація про музичне відео"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr "Завантаження інформації про музичне відео"
+
+#: id:20395
+msgid "Mixed"
+msgstr "Змішане"
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr "Перейти до альбому за виконавцем"
+
+#: id:20397
+msgid "Go to album"
+msgstr "Перейти до альбому"
+
+#: id:20398
+msgid "Play song"
+msgstr "Грати пісню"
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr "Перейти до музичних відео з альбому"
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr "Перейти до музичних відео за виконавцем"
+
+#: id:20401
+msgid "Play music video"
+msgstr "Грати музичне відео"
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "Автоматично створювати ескізи для акторів"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr "Встановити ескіз для актора"
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr "Видалити закладку епізоду"
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr "Встановити закладку епізоду"
+
+#: id:20407
+msgid "Scraper settings"
+msgstr "Налаштування інфо-ресурсу"
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr "Завантаження інформації про музичне відео"
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr "Завантаження інформації про серіал"
+
+#: id:20410
+msgid "Trailer"
+msgstr "Трейлер"
+
+#: id:20411
+msgid "Flatten"
+msgstr "Об'єднати"
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "Об'єднати серіали"
+
+#: id:20413
+msgid "Get fanart"
+msgstr "Одержати Fanart"
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr "Показувати Fanart в відео та музичній Бібліотеці"
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr "Сканування нового вмісту"
+
+#: id:20416
+msgid "First aired"
+msgstr "Перший переданий"
+
+#: id:20417
+msgid "Writer"
+msgstr "Автор сценарію"
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr "Ніколи"
+
+#: id:20421
+msgid "If only one season"
+msgstr "Лише якщо один сезон"
+
+#: id:20422
+msgid "Always"
+msgstr "Завжди"
+
+#: id:20423
+msgid "Has trailer"
+msgstr "Є трейлер"
+
+#: id:20424
+msgid "False"
+msgstr "Брехня"
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr "Слайдшоу Fanart'ов"
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr "Виводити одним файлом чи розділяти"
+
+#: id:20427
+msgid "files per entry?"
+msgstr "на окремі файли по записам?"
+
+#: id:20428
+msgid "Single file"
+msgstr "Одним файлом"
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr "Розділяти"
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr "Виводити ескізи и fanart?"
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr "Перезаписати старі файли?"
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr "Виключити шлях з оновлень Бібліотеки"
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "Видобути мета-данні з медіафайлу"
+
+#: id:20434
+msgid "Sets"
+msgstr ""
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr ""
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr ""
+
+#: id:20437
+msgid "Choose fanart"
+msgstr ""
+
+#: id:20438
+msgid "Local fanart"
+msgstr ""
+
+#: id:20439
+msgid "No fanart"
+msgstr ""
+
+#: id:20440
+msgid "Current fanart"
+msgstr ""
+
+#: id:20441
+msgid "Remote fanart"
+msgstr ""
+
+#: id:20442
+msgid "Change content"
+msgstr ""
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr "Ви хочете оновити інформацію для всіх"
+
+#: id:20444
+msgid "items within this path?"
+msgstr "об’єктів у цьому шляху?"
+
+#: id:20445
+msgid "Fanart"
+msgstr ""
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr "Знайдено локально збережену інформацію."
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr "Ігнорувати і оновити з інтернету?"
+
+#: id:20448
+msgid "Could not download information"
+msgstr "Не вдалося завантажити інформацію"
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr "Не можливо приєднатися до віддаленого серверу"
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr "Ви бажаєте продовжити сканування?"
+
+#: id:20451
+msgid "Countries"
+msgstr "Країни"
+
+#: id:20452
+msgid "episode"
+msgstr "епізод"
+
+#: id:20453
+msgid "episodes"
+msgstr "епізоди"
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "Показувати приховані файли і папки"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr "Кліент TuXbox"
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr "УВАГА: Цільовий пристрій TuXbox знаходиться в режимі запису!"
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr "Потік буде зупинено!"
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr "Не вдалося переключитися на канал: %s!"
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr "Ви впевнені що хочете включити потік?"
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr "Підключення до: %s"
+
+#: id:21337
+msgid "TuxBox device"
+msgstr "Пристрій TuXbox"
+
+#: id:21359
+msgid "Add media share..."
+msgstr "Додати медіа ресурс..."
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "Поширювати бібліотеки музики і фільмів через UPnP"
+
+#: id:21364
+msgid "Edit media share"
+msgstr "Змінити медіа ресурс"
+
+#: id:21365
+msgid "Remove media share"
+msgstr "Видалити медіа ресурс"
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "Особлива папка для субтитрів"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr "Папка для фільмів та альтернативних субтитрів"
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "Задіяти мишу"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr "Звуки інтерфейсу під час програвання"
+
+#: id:21371
+msgid "Thumbnail"
+msgstr "Ескізи"
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "Регіон для DVD-програвача"
+
+#: id:21373
+msgid "Video output"
+msgstr "Відео обладнання"
+
+#: id:21374
+msgid "Video aspect"
+msgstr "Співвідношення сторін відео"
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr "Normal (4:3)"
+
+#: id:21376
+msgid "Letterbox"
+msgstr "Letterbox (5:4)"
+
+#: id:21377
+msgid "Widescreen"
+msgstr "Widescreen (16:9)"
+
+#: id:21378
+msgid "Enable 480p"
+msgstr "Задіяти 480p"
+
+#: id:21379
+msgid "Enable 720p"
+msgstr "Задіяти 720p"
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr "Задіяти 1080p"
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr "Впишіть назву нового плейлиста"
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "Сховати кнопку \"Додати джерело\" в списку файлів"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr "Задіяти смуги прокрутки"
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr "Відмічати переглянуте відео в Бібліотеці галочкою"
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr "Відкрити"
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr "Управлінння акустичними шумами"
+
+#: id:21387
+msgid "Fast"
+msgstr "Швидкість"
+
+#: id:21388
+msgid "Quiet"
+msgstr "Тиша"
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "Дозволити свій фон"
+
+#: id:21390
+msgid "Power management level"
+msgstr "Управління живленням"
+
+#: id:21391
+msgid "High power"
+msgstr "Повна потужність"
+
+#: id:21392
+msgid "Low power"
+msgstr "Часткова потужність"
+
+#: id:21393
+msgid "High standby"
+msgstr "Повне очікування"
+
+#: id:21394
+msgid "Low standby"
+msgstr "Часткове очікування"
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr "Неможливо кешувати файли більші ніж 4 Гігабайти"
+
+#: id:21396
+msgid "Chapter"
+msgstr "Розділ"
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr "Пікс.шейдер вис.якості v2"
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr "Програвати плейлист при старті"
+
+#: id:21399
+msgid "Use tween animations"
+msgstr "Анімація відскакування панелей"
+
+#: id:21400
+msgid "contains"
+msgstr "містить"
+
+#: id:21401
+msgid "does not contain"
+msgstr "не містить"
+
+#: id:21402
+msgid "is"
+msgstr "дорівнює"
+
+#: id:21403
+msgid "is not"
+msgstr "не"
+
+#: id:21404
+msgid "starts with"
+msgstr "починається з"
+
+#: id:21405
+msgid "ends with"
+msgstr "закінчується на"
+
+#: id:21406
+msgid "greater than"
+msgstr "більші ніж"
+
+#: id:21407
+msgid "less than"
+msgstr "менші ніж"
+
+#: id:21408
+msgid "after"
+msgstr "після"
+
+#: id:21409
+msgid "before"
+msgstr "перед"
+
+#: id:21410
+msgid "in the last"
+msgstr "на кінці"
+
+#: id:21411
+msgid "not in the last"
+msgstr "не на кінці"
+
+#: id:21412
+msgid "Scrapers"
+msgstr "Інфо-ресурси"
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr "Стандартний інфо-ресурс для фільмів"
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr "Стандартний інфо-ресурс для серіалів"
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr "Стандартний інфо-ресурс для музичного відео"
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr "Дозволити виправлення, залежно від мови інфо-ресурсу"
+
+#: id:21417
+msgid "- Settings"
+msgstr "- Налаштування"
+
+#: id:21418
+msgid "Multilingual"
+msgstr "Багатомовний"
+
+#: id:21419
+msgid "No scrapers present"
+msgstr ""
+
+#: id:21420
+msgid "Value to match"
+msgstr "Значення занадто велике"
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr "Правило \"розумного\" плейлиста"
+
+#: id:21422
+msgid "Match items where"
+msgstr "Вибрати об'єкти, в яких"
+
+#: id:21423
+msgid "New rule..."
+msgstr "Нове правило..."
+
+#: id:21424
+msgid "Items must match"
+msgstr "Об'єкти повинні задовольняти"
+
+#: id:21425
+msgid "all of the rules"
+msgstr "всім правилам"
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr "одному або більше павилам"
+
+#: id:21427
+msgid "Limit to"
+msgstr "Обмежити до"
+
+#: id:21428
+msgid "No limit"
+msgstr "Без обмежень"
+
+#: id:21429
+msgid "Order by"
+msgstr "Упорядкувати за"
+
+#: id:21430
+msgid "ascending"
+msgstr "збільшенням"
+
+#: id:21431
+msgid "descending"
+msgstr "зменшенням"
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr "Виправити \"розумний\" плейлист"
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr "Назва плейлиста"
+
+#: id:21434
+msgid "Find items where"
+msgstr "Знайти об'єкти, в яких"
+
+#: id:21435
+msgid "Edit"
+msgstr "Виправити"
+
+#: id:21436
+msgid "%i items"
+msgstr "%i об'єктів"
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr "Створити новий \"розумний\" плейлист..."
+
+#: id:21438
+msgid "%c Drive"
+msgstr "Диск %c"
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr "Змінити правила режиму 'вечірка'"
+
+#: id:21440
+msgid "Home folder"
+msgstr "Домашня папка"
+
+#: id:21441
+msgid "Watched count"
+msgstr "Кількість переглядів"
+
+#: id:21442
+msgid "Episode title"
+msgstr "Назва епізоду"
+
+#: id:21443
+msgid "Video resolution"
+msgstr "Роздільна здатність відео"
+
+#: id:21444
+msgid "Audio channels"
+msgstr "Аудіо канали"
+
+#: id:21445
+msgid "Video codec"
+msgstr "Відео кодек"
+
+#: id:21446
+msgid "Audio codec"
+msgstr "Аудіо кодек"
+
+#: id:21447
+msgid "Audio language"
+msgstr "Мова звукової доріжки"
+
+#: id:21448
+msgid "Subtitle language"
+msgstr "Мова субтитрів"
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "Пульт дист. керування симулює натискання клавіш клавіатури"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- редагувати"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr "Необхідне підключення до інтернету"
+
+#: id:21452
+msgid "Get More..."
+msgstr "Отримати більше..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr "Коренева файлова система"
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr "Назва файлу"
+
+#: id:21801
+msgid "File path"
+msgstr "Шлях до файлу"
+
+#: id:21802
+msgid "File size"
+msgstr "Розмір файлу"
+
+#: id:21803
+msgid "File date/time"
+msgstr "Дата і час файлу"
+
+#: id:21804
+msgid "Slide index"
+msgstr "№ у слайдшоу"
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr "Розміри"
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr "Нотатка"
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr "Кольорова / Ч-Б"
+
+#: id:21808
+msgid "JPEG process"
+msgstr "Алгоритм JPEG"
+
+#: id:21820
+msgid "Date/Time"
+msgstr "Дата і час зйомки"
+
+#: id:21821
+msgid "Description"
+msgstr "Опис"
+
+#: id:21822
+msgid "Camera make"
+msgstr "Виробник фотоап-ту"
+
+#: id:21823
+msgid "Camera model"
+msgstr "Модель фотоапарату"
+
+#: id:21824
+msgid "EXIF comment"
+msgstr "EXIF нотатка"
+
+#: id:21825
+msgid "Firmware"
+msgstr "Прошивка"
+
+#: id:21826
+msgid "Aperture"
+msgstr "Діафрагма"
+
+#: id:21827
+msgid "Focal length"
+msgstr "Фокальна довжина"
+
+#: id:21828
+msgid "Focus distance"
+msgstr "Фокусна відстань"
+
+#: id:21829
+msgid "Exposure"
+msgstr "Експозиція"
+
+#: id:21830
+msgid "Exposure time"
+msgstr "Час експозиції"
+
+#: id:21831
+msgid "Exposure bias"
+msgstr "Підсилен. експозиції"
+
+#: id:21832
+msgid "Exposure mode"
+msgstr "Режим експозиції"
+
+#: id:21833
+msgid "Flash used"
+msgstr "Із спалахом"
+
+#: id:21834
+msgid "White-balance"
+msgstr "Баланс білого"
+
+#: id:21835
+msgid "Light source"
+msgstr "Джерело світла"
+
+#: id:21836
+msgid "Metering mode"
+msgstr "Режим виміру"
+
+#: id:21837
+msgid "ISO"
+msgstr ""
+
+#: id:21838
+msgid "Digital zoom"
+msgstr "Цифрове збільшення"
+
+#: id:21839
+msgid "CCD width"
+msgstr "Ширина CCD"
+
+#: id:21840
+msgid "GPS latitude"
+msgstr "GPS широта"
+
+#: id:21841
+msgid "GPS longitude"
+msgstr "GPS довгота"
+
+#: id:21842
+msgid "GPS altitude"
+msgstr "GPS висота"
+
+#: id:21843
+msgid "Orientation"
+msgstr "Орієнтація"
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr "Додаткові категорії"
+
+#: id:21861
+msgid "Keywords"
+msgstr "Ключові слова"
+
+#: id:21862
+msgid "Caption"
+msgstr "Заголовок"
+
+#: id:21863
+msgid "Author"
+msgstr "Автор"
+
+#: id:21864
+msgid "Headline"
+msgstr "Рубрика"
+
+#: id:21865
+msgid "Special instructions"
+msgstr "Спеціальні інструкції"
+
+#: id:21866
+msgid "Category"
+msgstr "Категорія"
+
+#: id:21867
+msgid "Byline"
+msgstr "Підпис"
+
+#: id:21868
+msgid "Byline title"
+msgstr "Назва підпису"
+
+#: id:21869
+msgid "Credit"
+msgstr "Творець"
+
+#: id:21870
+msgid "Source"
+msgstr "Джерело"
+
+#: id:21871
+msgid "Copyright notice"
+msgstr "Авторське право"
+
+#: id:21872
+msgid "Object name"
+msgstr "Назва об'єкту"
+
+#: id:21873
+msgid "City"
+msgstr "Місто"
+
+#: id:21874
+msgid "State"
+msgstr "Штат"
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr "Країна"
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr ""
+
+#: id:21877
+msgid "Date created"
+msgstr "Дата створення"
+
+#: id:21878
+msgid "Copyright flag"
+msgstr "Признак авторського права"
+
+#: id:21879
+msgid "Country code"
+msgstr "Код країни"
+
+#: id:21880
+msgid "Reference service"
+msgstr "Довідковий сервіс"
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "Дозволити керування XBMC через UPnP"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr "Намагатися пропускати вступ перед меню DVD диска"
+
+#: id:21883
+msgid "Saved music"
+msgstr "Зкопійовані аудіо CD диски"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr "Дані про всіх виконавців"
+
+#: id:21885
+msgid "Downloading album information"
+msgstr "Загрузка інформації про альбом"
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr "Загрузка інформації про виконавця"
+
+#: id:21887
+msgid "Biography"
+msgstr "Біографія"
+
+#: id:21888
+msgid "Discography"
+msgstr "Дискографія"
+
+#: id:21889
+msgid "Searching artist"
+msgstr "Пошук виконавця"
+
+#: id:21890
+msgid "Select artist"
+msgstr "Виберіть виконавця"
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr "Інформація про виконавця"
+
+#: id:21892
+msgid "Instruments"
+msgstr "Інструменти"
+
+#: id:21893
+msgid "Born"
+msgstr "Родився"
+
+#: id:21894
+msgid "Formed"
+msgstr "Створено"
+
+#: id:21895
+msgid "Themes"
+msgstr "Теми"
+
+#: id:21896
+msgid "Disbanded"
+msgstr "Розпалися"
+
+#: id:21897
+msgid "Died"
+msgstr "Помер"
+
+#: id:21898
+msgid "Years active"
+msgstr "Роки творч-ті"
+
+#: id:21899
+msgid "Label"
+msgstr "Позначка"
+
+#: id:21900
+msgid "Born/Formed"
+msgstr "Родився/Створено"
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "Оновляти Бібліотеку при старті"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "Завжди оновлювати Бібліотеку у фоновому режимі"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr "- DNS суфікс"
+
+#: id:22003
+msgid "%2.3fs"
+msgstr "Задіяти списки виправлень та рішень"
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr "Затримано на: %2.3fs"
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr "Випереджає на: %2.3fs"
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr "Зміщення субтитрів"
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr "Виробник OpenGL:"
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr "Обробник OpenGL:"
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr "Версія OpenGL:"
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr "Температура GPU:"
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr "Температура CPU:"
+
+#: id:22012
+msgid "Total memory"
+msgstr "Усього пам'яті"
+
+#: id:22013
+msgid "Profile data"
+msgstr "Дані профіля"
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "Затемнювати в паузі при програванні відео"
+
+#: id:22015
+msgid "All recordings"
+msgstr "Всі записи"
+
+#: id:22016
+msgid "By title"
+msgstr "За назвою"
+
+#: id:22017
+msgid "By group"
+msgstr "За групою"
+
+#: id:22018
+msgid "Live channels"
+msgstr "Канали прямої трансляції"
+
+#: id:22019
+msgid "Recordings by title"
+msgstr "Записи по назві"
+
+#: id:22020
+msgid "Guide"
+msgstr "Керівництво"
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "Дозволена похибка у співвідношенні сторін для зменшення чорних смуг"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "Показувати відеофайли у списках"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr "Постачальник DirectX:"
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr "Версія Direct3D:"
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "Шрифт"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- Розмір"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- Кольори"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- Набір символів"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr "Експортувати список караоке в форматі HTML"
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr "Експортувати список караоке в форматі CSV"
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "Імпортувати список караоке..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "Автоматично спливаючий вибір пісень"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "Експортувати список караоке..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr "Введіть номер пісні"
+
+#: id:22040
+msgid "white/green"
+msgstr "білий/зелений"
+
+#: id:22041
+msgid "white/red"
+msgstr "білий/червоний"
+
+#: id:22042
+msgid "white/blue"
+msgstr "білий/синій"
+
+#: id:22043
+msgid "black/white"
+msgstr "чорний/білий"
+
+#: id:22079
+msgid "Default select action"
+msgstr "Дія за замовчуванням при виборі"
+
+#: id:22080
+msgid "Choose"
+msgstr "Вибрати"
+
+#: id:22081
+msgid "Show Information"
+msgstr "Показати інформацію"
+
+#: id:22082
+msgid "More..."
+msgstr "Більше..."
+
+#: id:22083
+msgid "Play all"
+msgstr "Програти все"
+
+#: id:23049
+msgid "Teletext not available"
+msgstr "Телетекст недоступний"
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "Ввімкнути телетекст"
+
+#: id:23051
+msgid "Part %i"
+msgstr "Частина %i"
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr "Буферизація... %i байт"
+
+#: id:23053
+msgid "Stopping"
+msgstr "Припинення..."
+
+#: id:23054
+msgid "Running"
+msgstr "Виконання..."
+
+#: id:23100
+msgid "External Player Active"
+msgstr "Зовнішній програвач активний"
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr "Натисніть OK для закриття програвача"
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr "Натисніть ОК коли програвання завершиться"
+
+#: id:24000
+msgid "Add-on"
+msgstr "Додаток"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "Додатки"
+
+#: id:24002
+msgid "Add-on options"
+msgstr "Параметри додатків"
+
+#: id:24003
+msgid "Add-on Information"
+msgstr "Інформація про додаток"
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr "Джерела медіа"
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "Інформація про фільм"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr "Зберігач екрану"
+
+#: id:24009
+msgid "Script"
+msgstr "Скрипт"
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr ""
+
+#: id:24011
+msgid "Add-on repository"
+msgstr "Репозиторій додатків"
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "Субтитри"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "Тексти пісень"
+
+#: id:24014
+msgid "TV information"
+msgstr ""
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr ""
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "Інформація про альбом"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "Інформація про виконавця"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr "Налаштувати"
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr "Вимкнути"
+
+#: id:24022
+msgid "Enable"
+msgstr "Увімкнути"
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr "Додаток вимкнений"
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "Погода"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr "Weather.com (за замовчуванням)"
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr "Цей додаток не можна налаштувати"
+
+#: id:24031
+msgid "Error loading settings"
+msgstr "Помилка завантаження налаштувань"
+
+#: id:24032
+msgid "All Add-ons"
+msgstr "Всі додатки"
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "Отримати додатки"
+
+#: id:24034
+msgid "Check for updates"
+msgstr "Перевірити наявність оновлень"
+
+#: id:24035
+msgid "Force refresh"
+msgstr "Примусове оновлення"
+
+#: id:24036
+msgid "Change log"
+msgstr "Журнал змін"
+
+#: id:24037
+msgid "Uninstall"
+msgstr "Видалити"
+
+#: id:24038
+msgid "Install"
+msgstr "Встановити"
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr "Вимкнені додатки"
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr "(Очистити поточні налаштування)"
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "Встановити із zip файлу"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr "Завантаження....  %i%%"
+
+#: id:24043
+msgid "Available Updates"
+msgstr "Доступні оновлення"
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr "Доступні додатки"
+
+#: id:24051
+msgid "Version:"
+msgstr "Версія:"
+
+#: id:24052
+msgid "Disclaimer"
+msgstr ""
+
+#: id:24053
+msgid "License:"
+msgstr "Ліцензія:"
+
+#: id:24054
+msgid "Changelog"
+msgstr "Журнал змін"
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr "Увімкнути цей додаток?"
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr "Вимкнути цей додаток?"
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr "Доступне оновлення додатку!"
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "Ввімкнені додатки"
+
+#: id:24063
+msgid "Auto update"
+msgstr "Автооновлення"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr "Додаток активований"
+
+#: id:24065
+msgid "Add-on updated"
+msgstr "Додаток оновлений"
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr "Відмінити завантаження додатку?"
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr "Додатки які зараз завантажуються"
+
+#: id:24068
+msgid "Update available"
+msgstr "Доступне оновлення"
+
+#: id:24069
+msgid "Update"
+msgstr "Оновлення"
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr "Неможливо завантажити додаток"
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr "Виникла невідома помилка"
+
+#: id:24072
+msgid "Settings required"
+msgstr "Потрібно налаштувати"
+
+#: id:24073
+msgid "Could not connect"
+msgstr "Неможливо під’єднатися"
+
+#: id:24074
+msgid "Needs to restart"
+msgstr "Потрбно перезавантажити"
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr "Вимкнути"
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr "Спробувати під’єднатися знову?"
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr ""
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr "Заблокувати менеджер додатків"
+
+#: id:24094
+msgid "(current)"
+msgstr ""
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr "Додаток був позначений у репозиторії як зламаний."
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr "Вимкнути його у вашій системі?"
+
+#: id:24098
+msgid "Broken"
+msgstr "Зламаний"
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr ""
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr ""
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:25002
+msgid "Select from all titles ..."
+msgstr ""
+
+#: id:25003
+msgid "Show bluray menus"
+msgstr ""
+
+#: id:25004
+msgid "Play main title: %d"
+msgstr ""
+
+#: id:25005
+msgid "Title: %d"
+msgstr ""
+
+#: id:25006
+msgid "Select playback item"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr "Режим Бібліотеки"
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr "Клавіатура QWERTY"
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr ""
+
+#: id:33001
+msgid "Trailer quality"
+msgstr "Якість трейлеру"
+
+#: id:33002
+msgid "Stream"
+msgstr "Потік"
+
+#: id:33003
+msgid "Download"
+msgstr "Завантаження"
+
+#: id:33004
+msgid "Download & play"
+msgstr "Завантажити і програти"
+
+#: id:33005
+msgid "Download & save"
+msgstr "Завантажити і зберегти"
+
+#: id:33006
+msgid "Today"
+msgstr "Сьогодні"
+
+#: id:33007
+msgid "Tomorrow"
+msgstr "Завтра"
+
+#: id:33008
+msgid "Saving"
+msgstr "Збереження"
+
+#: id:33009
+msgid "Copying"
+msgstr "Копіювання"
+
+#: id:33010
+msgid "Set download directory"
+msgstr "Вкажіть папку завантаження"
+
+#: id:33011
+msgid "Search duration"
+msgstr "Період пошуку"
+
+#: id:33012
+msgid "Short"
+msgstr "Короткий"
+
+#: id:33013
+msgid "Long"
+msgstr "Довгий"
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr ""
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr "Запитати про завантаження перед програванням відео"
+
+#: id:33016
+msgid "Clips"
+msgstr "Кліпи"
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr "Перезавантажити додаток для активації"
+
+#: id:33018
+msgid "Tonight"
+msgstr "Вночі"
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr "Сьогодні вночі"
+
+#: id:33020
+msgid "Condition"
+msgstr "Умови"
+
+#: id:33021
+msgid "Precipitation"
+msgstr ""
+
+#: id:33022
+msgid "Precip"
+msgstr ""
+
+#: id:33023
+msgid "Humid"
+msgstr ""
+
+#: id:33024
+msgid "Feels"
+msgstr ""
+
+#: id:33025
+msgid "Observed"
+msgstr ""
+
+#: id:33026
+msgid "Departure from normal"
+msgstr ""
+
+#: id:33027
+msgid "Sunrise"
+msgstr "Схід сонця"
+
+#: id:33028
+msgid "Sunset"
+msgstr "Захід сонця"
+
+#: id:33029
+msgid "Details"
+msgstr "Подробиці"
+
+#: id:33030
+msgid "Outlook"
+msgstr ""
+
+#: id:33031
+msgid "Coverflow"
+msgstr ""
+
+#: id:33032
+msgid "Translate text"
+msgstr "Перекласти текст"
+
+#: id:33033
+msgid "Map list %s category"
+msgstr ""
+
+#: id:33034
+msgid "36 Hour"
+msgstr ""
+
+#: id:33035
+msgid "Maps"
+msgstr "Мапи"
+
+#: id:33036
+msgid "Hourly"
+msgstr "Щогодини"
+
+#: id:33037
+msgid "Weekend"
+msgstr "Щотижня"
+
+#: id:33038
+msgid "%s day"
+msgstr "%s днів"
+
+#: id:33049
+msgid "Alert"
+msgstr "Сигнал"
+
+#: id:33050
+msgid "Alerts"
+msgstr "Сигнали"
+
+#: id:33051
+msgid "Choose Your"
+msgstr ""
+
+#: id:33052
+msgid "Check"
+msgstr ""
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr "Налаштувати"
+
+#: id:33054
+msgid "Seasons"
+msgstr "Сезони"
+
+#: id:33055
+msgid "Use your"
+msgstr ""
+
+#: id:33056
+msgid "Watch your"
+msgstr ""
+
+#: id:33057
+msgid "Listen to"
+msgstr ""
+
+#: id:33058
+msgid "View your"
+msgstr ""
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr "Налаштувати"
+
+#: id:33060
+msgid "Power"
+msgstr ""
+
+#: id:33061
+msgid "Menu"
+msgstr "Меню"
+
+#: id:33062
+msgid "Play the"
+msgstr "Програти"
+
+#: id:33063
+msgid "Options"
+msgstr "Параметри"
+
+#: id:33065
+msgid "Editor"
+msgstr "Редактор"
+
+#: id:33066
+msgid "About your"
+msgstr ""
+
+#: id:33067
+msgid "Star rating"
+msgstr ""
+
+#: id:33068
+msgid "Background"
+msgstr "Фон"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr "Фони"
+
+#: id:33070
+msgid "Custom background"
+msgstr "Власний фон"
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr "Власні фони"
+
+#: id:33072
+msgid "View Readme"
+msgstr "Переглянути Readme"
+
+#: id:33073
+msgid "View Changelog"
+msgstr "Переглянути журнал змін"
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr "Для запуску ця версія %s вимагає"
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr "XBMC  випуску %s або новіший."
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr "Будь-ласка, оновіть XBMC."
+
+#: id:33077
+msgid "No data found!"
+msgstr "Інформацію не знайдено!"
+
+#: id:33078
+msgid "Next page"
+msgstr "Наступна сторінка"
+
+#: id:33079
+msgid "Love"
+msgstr "Подобається"
+
+#: id:33080
+msgid "Hate"
+msgstr "Неподобається"
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+
+#: id:33082
+msgid "Path to script"
+msgstr "Шлях до скрипту"
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr "Ввімкнути кнопку власного скрипта"
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr ""
+
+#: id:34001
+msgid "Vorbis"
+msgstr ""
+
+#: id:34002
+msgid "Wav"
+msgstr ""
+
+#: id:34003
+msgid "DXVA2"
+msgstr ""
+
+#: id:34004
+msgid "VAAPI"
+msgstr ""
+
+#: id:34005
+msgid "Flac"
+msgstr ""
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "Конфігурація гучномовців"
+
+#: id:34101
+msgid "2.0"
+msgstr ""
+
+#: id:34102
+msgid "2.1"
+msgstr ""
+
+#: id:34103
+msgid "3.0"
+msgstr ""
+
+#: id:34104
+msgid "3.1"
+msgstr ""
+
+#: id:34105
+msgid "4.0"
+msgstr ""
+
+#: id:34106
+msgid "4.1"
+msgstr ""
+
+#: id:34107
+msgid "5.0"
+msgstr ""
+
+#: id:34108
+msgid "5.1"
+msgstr ""
+
+#: id:34109
+msgid "7.0"
+msgstr ""
+
+#: id:34110
+msgid "7.1"
+msgstr ""
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid ""
+"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid ""
+"There are no settings available\n"
+"for this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid ""
+"Unsupported libCEC interface version. %d is greater than the version XBMC "
+"supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+
