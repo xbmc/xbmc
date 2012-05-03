@@ -5,7 +5,7 @@ include ../config.site.mk
 LIBNAME=glew
 VERSION=1.7.0
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).zip
+ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 export SYSTEM=darwin
