@@ -2275,6 +2275,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
+	</ClCompile>
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -5180,6 +5181,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h">
       <Filter>filesystem</Filter>
+	</ClInclude>
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h">
       <Filter>utils</Filter>
     </ClInclude>
