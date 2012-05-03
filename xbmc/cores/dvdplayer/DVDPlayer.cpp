@@ -1695,21 +1695,18 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
                             , current.type, current.dts, pPacket->dts, pPacket->dts - maxdts);
     correction = pPacket->dts - maxdts;
   }
-  if(current.dts != DVD_NOPTS_VALUE)
-  {
-    /* if it's large scale jump, correct for it */
-    if(pPacket->dts + DVD_MSEC_TO_TIME(100) < current.dts_end())
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - resync backward :%d, prev:%f, curr:%f, diff:%f"
-                              , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
-      correction = pPacket->dts - current.dts_end();
-    }
-    else if(pPacket->dts < current.dts)
-    {
-      CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - wrapback :%d, prev:%f, curr:%f, diff:%f"
-                              , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
-    }
 
+  /* if it's large scale jump, correct for it */
+  if(pPacket->dts + DVD_MSEC_TO_TIME(100) < current.dts_end())
+  {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - resync backward :%d, prev:%f, curr:%f, diff:%f"
+                            , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
+    correction = pPacket->dts - current.dts_end();
+  }
+  else if(pPacket->dts < current.dts)
+  {
+    CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - wrapback :%d, prev:%f, curr:%f, diff:%f"
+                            , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
   }
 
   if(correction != 0.0)
