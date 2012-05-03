@@ -19,8 +19,10 @@
  *
  */
 
-#include "log.h"
 #include "system.h"
+
+#include "GLUtils.h"
+#include "log.h"
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 

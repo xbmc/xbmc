@@ -66,40 +66,4 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#if defined(HAS_GL) || defined(HAS_GLES)
-
-namespace XBMC
-{
-  typedef void*  DevicePtr;
-  typedef GLuint SurfacePtr;
-  typedef GLuint TexturePtr;
-  typedef void* PalettePtr; // elis change it
-  typedef GLint PixelFormat; // elis change it
-}
-
-#if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
-#define GL_GLEXT_PROTOTYPES
-#endif
-
-#endif // HAS_GL
-
-#ifdef HAS_DX
-
-namespace XBMC
-{
-  typedef LPDIRECT3DDEVICE9  DevicePtr;
-  typedef LPDIRECT3DTEXTURE9 TexturePtr;
-  typedef LPDIRECT3DSURFACE9 SurfacePtr;
-  typedef LPDIRECT3DPALETTE8 PalettePtr;
-};
-
-#define DELETE_TEXTURE(texture) texture->Release()
-
-#endif // HAS_DX
-
-#ifdef HAS_GLES
-
-#define GLchar char
-
-#endif
 #endif // GUILIB_GUI3D_H

@@ -24,6 +24,8 @@
 
 #if HAS_GLES == 2
 
+#include "system_gl.h"
+
 #include "xbmc/guilib/FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
 #include "settings/VideoSettings.h"
@@ -61,13 +63,6 @@ struct DRAWRECT
   float top;
   float right;
   float bottom;
-};
-
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT
 };
 
 struct YUVRANGE

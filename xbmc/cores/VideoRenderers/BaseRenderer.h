@@ -42,6 +42,13 @@ typedef struct YV12Image
   unsigned bpp; /* bytes per pixel */
 } YV12Image;
 
+enum EFIELDSYNC
+{
+  FS_NONE,
+  FS_TOP,
+  FS_BOT
+};
+
 enum ERENDERFEATURE
 {
   RENDERFEATURE_GAMMA,

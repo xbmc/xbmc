@@ -1,15 +1,7 @@
-/*!
-\file GUITextureGLES.h
-\brief
-*/
-
-#ifndef GUILIB_GUITEXTUREGLES_H
-#define GUILIB_GUITEXTUREGLES_H
--
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,24 +21,32 @@
  *
  */
 
-#include "GUITexture.h"
+#include "system.h"
 
-#include "system_gl.h"
-
-class CGUITextureGLES : public CGUITextureBase
-{
-public:
-  CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect &coords, color_t color, CBaseTexture *texture = NULL, const CRect *texCoords = NULL);
-protected:
-  void Begin(color_t color);
-  void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation);
-  void End();
-
-  GLubyte m_col [4][4];
-  GLfloat m_vert[4][3];
-  GLfloat m_tex0[4][2];
-  GLfloat m_tex1[4][2];
-};
-
+#ifdef HAS_GL
+  // always define GL_GLEXT_PROTOTYPES before include gl headers
+  #if !defined(GL_GLEXT_PROTOTYPES)
+    #define GL_GLEXT_PROTOTYPES
+  #endif
+  #if defined(TARGET_WINDOWS)
+    #include <GL/glew.h>
+    #include <GL/gl.h>
+    #include <GL/glu.h>
+  #elif defined(TARGET_LINUX)
+    #include <GL/glew.h>
+    #include <GL/gl.h>
+    #include <GL/glext.h>
+  #elif defined(TARGET_DARWIN)
+    #include <GL/glew.h>
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glext.h>
+  #endif
+#elif HAS_GLES == 2
+  #if defined(TARGET_DARWIN)
+    #include <OpenGLES/ES2/gl.h>
+    #include <OpenGLES/ES2/glext.h>
+  #else
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+  #endif
 #endif

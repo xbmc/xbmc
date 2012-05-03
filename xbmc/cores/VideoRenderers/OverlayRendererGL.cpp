@@ -25,10 +25,10 @@
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"
 #ifdef HAS_GL
-#include "LinuxRendererGL.h"
+  #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
-#include "LinuxRendererGLES.h"
-#include "guilib/MatrixGLES.h"
+  #include "LinuxRendererGLES.h"
+  #include "guilib/MatrixGLES.h"
 #endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"

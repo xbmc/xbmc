@@ -22,7 +22,10 @@
  *
  */
 
+#include "system.h"
+
 #ifdef HAS_GL
+#include "system_gl.h"
 
 #include "guilib/FrameBufferObject.h"
 #include "guilib/Shader.h"
@@ -64,13 +67,6 @@ struct DRAWRECT
   float top;
   float right;
   float bottom;
-};
-
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT
 };
 
 struct YUVRANGE

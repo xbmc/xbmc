@@ -22,9 +22,10 @@
  */
 
 #include "system.h"
-#include "GUIWindowTestPatternGL.h"
 
 #ifdef HAS_GL
+#include "system_gl.h"
+#include "GUIWindowTestPatternGL.h"
 
 CGUIWindowTestPatternGL::CGUIWindowTestPatternGL(void) : CGUIWindowTestPattern()
 {

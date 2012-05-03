@@ -20,6 +20,9 @@
  */
 
 #include "system.h"
+#if defined(HAS_GL)
+  #include "system_gl.h"
+#endif
 #include "RenderManager.h"
 #include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
@@ -31,10 +34,6 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
-
-#ifdef _LINUX
-#include "PlatformInclude.h"
-#endif
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -110,6 +109,22 @@ CXBMCRenderManager::~CXBMCRenderManager()
 {
   delete m_pRenderer;
   m_pRenderer = NULL;
+}
+
+void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->GetVideoRect(source, dest);
+}
+
+float CXBMCRenderManager::GetAspectRatio()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetAspectRatio();
+  else
+    return 1.0f;
 }
 
 /* These is based on CurrentHostCounter() */
@@ -512,6 +527,13 @@ void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
     m_captures.erase(it);
 }
 
+void CXBMCRenderManager::SetViewMode(int iViewMode)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->SetViewMode(iViewMode);
+}
+
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
@@ -592,6 +614,22 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       return;
     }
   }
+}
+
+void CXBMCRenderManager::Reset()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->Reset();
+}
+
+RESOLUTION CXBMCRenderManager::GetResolution()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetResolution();
+  else
+    return RES_INVALID;
 }
 
 float CXBMCRenderManager::GetMaximumFPS()
@@ -743,6 +781,23 @@ void CXBMCRenderManager::UpdateResolution()
 }
 
 
+unsigned int CXBMCRenderManager::GetProcessorSize()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetProcessorSize();
+  return 0;
+}
+
+// Supported pixel formats, can be called before configure
+std::vector<ERenderFormat> CXBMCRenderManager::SupportedFormats()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->SupportedFormats();
+  return std::vector<ERenderFormat>();
+}
+
 int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 {
   CSharedLock lock(m_sharedSection);
@@ -796,6 +851,48 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   m_pRenderer->ReleaseImage(index, false);
 
   return index;
+}
+
+bool CXBMCRenderManager::Supports(ERENDERFEATURE feature)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(feature);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(EDEINTERLACEMODE method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(EINTERLACEMETHOD method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(ESCALINGMETHOD method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
+{
+  CSharedLock lock(m_sharedSection);
+  return AutoInterlaceMethodInternal(mInt);
 }
 
 EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt)
