@@ -263,8 +263,8 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
   resolveHost(url);
   ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
   
-  if( (ret && (!exportPath.Equals(m_exportPath,true)) || 
-      !url.GetHostName().Equals(m_hostName,false))    ||
+  if( (ret && (!exportPath.Equals(m_exportPath,true)  || 
+      !url.GetHostName().Equals(m_hostName,false)))    ||
       (XbmcThreads::SystemClockMillis() - m_lastAccessedTime) > CONTEXT_TIMEOUT )
   {
     int contextRet = getContextForExport(url.GetHostName() + exportPath);
