@@ -71,14 +71,6 @@ struct DRAWRECT
   float bottom;
 };
 
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT,
-};
-
-
 struct YUVRANGE
 {
   int y_min, y_max;

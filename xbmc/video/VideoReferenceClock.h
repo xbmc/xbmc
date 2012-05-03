@@ -27,6 +27,7 @@
 //TODO: get rid of #ifdef hell, abstract implementations in separate classes
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
+  #include "system_gl.h"
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
