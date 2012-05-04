@@ -597,7 +597,18 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
         continue;
 
       std::string device = sinkInfo.m_sinkName + ":" + devInfo.m_deviceName;
-      devices.push_back(AEDevice(devInfo.m_displayName + ", " + devInfo.m_displayNameExtra, device));
+
+      std::stringstream ss;
+
+      /* add the sink name if we have more then one sink type */
+      if (m_sinkInfoList.size() > 1)
+        ss << sinkInfo.m_sinkName << ": ";
+
+      ss << devInfo.m_displayName;
+      if (!devInfo.m_displayNameExtra.empty())
+        ss << ", " << devInfo.m_displayNameExtra;
+
+      devices.push_back(AEDevice(ss.str(), device));
     }
   }
 }
