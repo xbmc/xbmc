@@ -218,7 +218,6 @@ protected:
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
   void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
-  void RenderCoreVideoRef(int renderBuffer, int field);// CoreVideo reference
 
   CFrameBufferObject m_fbo;
 

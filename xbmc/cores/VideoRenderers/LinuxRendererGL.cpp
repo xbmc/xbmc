@@ -253,7 +253,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
+    if ((m_format == RENDER_FMT_CVBREF) ||
+        (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle")))
     {
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
@@ -1195,7 +1196,9 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 #ifdef TARGET_DARWIN
   else if (m_renderMethod & RENDER_CVREF)
   {
-    RenderCoreVideoRef(renderBuffer, m_currentField);
+    // RENDER_CVREF uses the same render as the default case,
+    // we explicitly code it here so we do not forget.
+    RenderSoftware(renderBuffer, m_currentField);
   }
 #endif
   else
@@ -1664,44 +1667,14 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 #endif
 }
 
-void CLinuxRendererGL::RenderCoreVideoRef(int index, int field)
-{
-#ifdef TARGET_DARWIN
-  YUVPLANE &plane = m_buffers[index].fields[field][0];
-
-  glDisable(GL_DEPTH_TEST);
-
-  glEnable(GL_TEXTURE_RECTANGLE_ARB);
-  glActiveTextureARB(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, plane.id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  glBegin(GL_QUADS);
-  glTexCoord2f(plane.rect.x1, plane.rect.y1);
-  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
-
-  glTexCoord2f(plane.rect.x2, plane.rect.y1);
-  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
-
-  glTexCoord2f(plane.rect.x2, plane.rect.y2);
-  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
-
-  glTexCoord2f(plane.rect.x1, plane.rect.y2);
-  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
-
-  glEnd();
-
-  glDisable(GL_TEXTURE_RECTANGLE_ARB);
-#endif
-}
-
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
+  // render using m_textureTarget of GL_TEXTURE_RECTANGLE_ARB,
+  // used for textues uploaded from rgba or CVPixelBuffers.
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   glDisable(GL_DEPTH_TEST);
 
-  // Y
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
@@ -2489,14 +2462,14 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     int bufferHeight = CVPixelBufferGetHeight(cvBufferRef);
     unsigned char *bufferBase = (unsigned char *)CVPixelBufferGetBaseAddress(cvBufferRef);
 
-    glEnable(GL_TEXTURE_RECTANGLE_ARB);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, plane.id);
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, plane.id);
     // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
     // Using GL_YCBCR_422_APPLE extension to pull in video frame data directly
-    glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, bufferWidth, bufferHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
-    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
-    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
+    glBindTexture(m_textureTarget, 0);
+    glDisable(m_textureTarget);
 
     CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
 #else
@@ -2509,16 +2482,16 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     GLsizei       texHeight= IOSurfaceGetHeight(surface);
     OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
 
-		glEnable(GL_TEXTURE_RECTANGLE_ARB);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB, plane.id);
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, plane.id);
     if (format_type == kCVPixelFormatType_422YpCbCr8)
-      CGLTexImageIOSurface2D(cgl_ctx, GL_TEXTURE_RECTANGLE_ARB, GL_RGB8,
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
         texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
     else if (format_type == kCVPixelFormatType_32BGRA)
-      CGLTexImageIOSurface2D(cgl_ctx, GL_TEXTURE_RECTANGLE_ARB, GL_RGBA8,
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
         texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
-		glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glBindTexture(m_textureTarget, 0);
+    glDisable(m_textureTarget);
 #endif
 
     CVBufferRelease(cvBufferRef);
@@ -2574,22 +2547,22 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
     plane.texwidth  = NP2(plane.texwidth);
     plane.texheight = NP2(plane.texheight);
   }
-  glEnable(GL_TEXTURE_RECTANGLE_ARB);
+  glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, plane.id);
+  glBindTexture(m_textureTarget, plane.id);
   // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   // This is necessary for non-power-of-two textures
-  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
-  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
+  glBindTexture(m_textureTarget, 0);
 #endif
-  glDisable(GL_TEXTURE_RECTANGLE_ARB);
+  glDisable(m_textureTarget);
 
   m_eventTexturesDone[index]->Set();
 #endif
