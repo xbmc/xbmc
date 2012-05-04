@@ -23,7 +23,7 @@
     <setting id="pass" type="text" label="30004" option="hidden" default="" />
     <setting id="recordingpath" type="text" label="30023" default="" />
     <setting label="30017" type="bool" id="onlycurrent" default="false"/>
-    <setting label="30009" type="bool" id="showcompleted" default="false"/>
     <setting label="30011" type="bool" id="timerlistcleanup" default="false"/>
+    <setting label="30024" type="bool" id="setpowerstate" default="false" />
   </category>
 </settings>

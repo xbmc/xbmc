@@ -25,7 +25,6 @@
 
 #define DEFAULT_HOST             "127.0.0.1"
 #define DEFAULT_CONNECT_TIMEOUT  30
-#define DEFAULT_RESPONSE_TIMEOUT 3
 #define DEFAULT_STREAM_PORT      8001 
 #define DEFAULT_WEB_PORT         80
 #define DEFAULT_UPDATE_INTERVAL  2
@@ -38,17 +37,16 @@ extern std::string               g_strUsername;
 extern std::string               g_strPassword;
 extern std::string               g_strIconPath;
 extern std::string               g_strRecordingPath;
-extern int                       g_iResponseTimeout;
 extern int 			 g_iUpdateInterval;
 extern int                       g_iClientId;
 extern unsigned int              g_iPacketSequence;
 extern bool                      g_bShowTimerNotifications;
-extern bool 	                 g_bShowTimersCompleted;
 extern bool			 g_bZap;
 extern bool                      g_bAutomaticTimerlistCleanup;
 extern bool                      g_bCheckForGroupUpdates;
 extern bool                      g_bCheckForChannelUpdates;
 extern bool                      g_bOnlyCurrentLocation;
+extern bool			 g_bSetPowerstate;
 extern std::string               g_szUserPath;
 extern std::string               g_szClientPath;
 extern std::string               g_strChannelDataPath;

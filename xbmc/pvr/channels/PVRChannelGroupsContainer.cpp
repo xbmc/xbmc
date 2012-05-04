@@ -256,11 +256,17 @@ CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber,
   CPVRChannel *channel = NULL;
   const CPVRChannelGroup* channelgroup = GetGroupAllTV();
 
-  if (channelgroup == NULL)
-    channelgroup = GetGroupAllRadio();
-
+  /* First try to find the channel in the all tv channels group */
   if (channelgroup != NULL)
     channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
+
+  if (channelgroup == NULL || channel == NULL)
+  {
+    /* Channel or group not found, try the all radio channels group instead */
+    channelgroup = GetGroupAllRadio();
+    if (channelgroup != NULL)
+      channel = channelgroup->GetByClient(iClientChannelNumber, iClientID);
+  }
 
   return channel;
 }
