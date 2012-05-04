@@ -65,8 +65,8 @@ public:
   ~CNfsConnection();
   bool Connect(const CURL &url, CStdString &relativePath);
   struct nfs_context *GetNfsContext(){return m_pNfsContext;}
-  size_t            GetMaxReadChunkSize(){return m_readChunkSize;}
-  size_t            GetMaxWriteChunkSize(){return m_writeChunkSize;} 
+  uint64_t          GetMaxReadChunkSize(){return m_readChunkSize;}
+  uint64_t          GetMaxWriteChunkSize(){return m_writeChunkSize;} 
   DllLibNfs        *GetImpl(){return m_pLibNfs;}
   std::list<CStdString> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
@@ -96,8 +96,8 @@ private:
   CStdString m_exportPath;//current connected export path
   CStdString m_hostName;//current connected host
   CStdString m_resolvedHostName;//current connected host - as ip
-  size_t m_readChunkSize;//current read chunksize of connected server
-  size_t m_writeChunkSize;//current write chunksize of connected server
+  uint64_t m_readChunkSize;//current read chunksize of connected server
+  uint64_t m_writeChunkSize;//current write chunksize of connected server
   int m_OpenConnections;//number of open connections
   unsigned int m_IdleTimeout;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
