@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Pełny ekran"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Rozmiar: (%i,%i)->(%i,%i) (Powiększenie x%2.2f) AR:%2.2f:1 (Piksele: "
-"%2.2f:1)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Rozmiar: (%i,%i)->(%i,%i) (Powiększenie x%2.2f) AR:%2.2f:1 (Piksele: %2.2f:1)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2436,8 +2432,7 @@ msgstr "Ustawienia sieci (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Wprowadzono nieprawidłowy port. Wartość musi być z przedziału 1-65535."
+msgstr "Wprowadzono nieprawidłowy port. Wartość musi być z przedziału 1-65535."
 
 #: id:713
 msgid "HTTP proxy"
@@ -2477,8 +2472,7 @@ msgstr "Zapisz i zresetuj"
 
 #: id:724
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr ""
-"Wprowadzono nieprawidłowy adres. Wartość musi być w formacie AAA.BBB.CCC.DDD"
+msgstr "Wprowadzono nieprawidłowy adres. Wartość musi być w formacie AAA.BBB.CCC.DDD"
 
 #: id:725
 msgid "with numbers between 0 and 255."
@@ -4517,15 +4511,11 @@ msgid "Preset"
 msgstr "Ustawienie"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Nie ma dostępnych efektów dla tej wizualizacji"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Nie ma dostępnych opcji dla tej wizualizacji"
 
 #: id:13391
@@ -7635,8 +7625,7 @@ msgstr "Pełny bufor"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Bufor wypełniany zanim osiągnie wymagany poziom do ciągłego odtwarzania"
+msgstr "Bufor wypełniany zanim osiągnie wymagany poziom do ciągłego odtwarzania"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8932,11 +8921,8 @@ msgid "Video Rendering"
 msgstr "Rendering wideo"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Błąd inicjalizacji filtrów/skalerów wideo, powracam do skalowania "
-"bilinearnego"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Błąd inicjalizacji filtrów/skalerów wideo, powracam do skalowania bilinearnego"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8983,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Standardowy dysk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "To urządzenie nie ma ustawień."
 
 #: id:35005
@@ -9067,8 +9051,7 @@ msgstr "Wyłącz TV, kiedy wyłączany jest XBMC"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-"Włącz tryb czuwania w urządzeniach, kiedy aktywny jest wygaszacz ekranu"
+msgstr "Włącz tryb czuwania w urządzeniach, kiedy aktywny jest wygaszacz ekranu"
 
 #: id:36011
 msgid "Could not detect the CEC port. Set it up manually."
@@ -9079,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Nie mogę wykryć adaptera CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nieaktualna wersja interfejsu libcec. %d jest wyższy niż wersja wspierana "
-"przez XBMC (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nieaktualna wersja interfejsu libcec. %d jest wyższy niż wersja wspierana przez XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

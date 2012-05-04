@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,8 +397,7 @@ msgstr "Ali naj prenesem datoteke?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Ali naj izbrišem datoteke? - Izbris datotek ne more biti razveljavljen!"
+msgstr "Ali naj izbrišem datoteke? - Izbris datotek ne more biti razveljavljen!"
 
 #: id:126
 msgid "Status"
@@ -842,12 +841,8 @@ msgid "Full screen"
 msgstr "Celozaslonsko"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Spr. velikosti: (%i,%i)->(%i,%i) (Povečava x%2.2f) AR:%2.2f:1 (Piksli: "
-"%2.2f:1) (VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Spr. velikosti: (%i,%i)->(%i,%i) (Povečava x%2.2f) AR:%2.2f:1 (Piksli: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2477,8 +2472,7 @@ msgstr "Shrani & ponovno zaženi"
 
 #: id:724
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr ""
-"Vnešen je bil napačen naslov. Vrednosti morajo biti oblike AAA.BBB.CCC.DDD"
+msgstr "Vnešen je bil napačen naslov. Vrednosti morajo biti oblike AAA.BBB.CCC.DDD"
 
 #: id:725
 msgid "with numbers between 0 and 255."
@@ -4517,15 +4511,11 @@ msgid "Preset"
 msgstr "Prednastavitev"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Ni prednastavitev za vizualizacijo"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Ni nastavitev za vizualizacijo"
 
 #: id:13391
@@ -7635,9 +7625,7 @@ msgstr "Začasni pomnilnik poln"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Začasni pomnilnik se je zapolnil, preden je bila dosežen nivo za tekoče "
-"predvajanje"
+msgstr "Začasni pomnilnik se je zapolnil, preden je bila dosežen nivo za tekoče predvajanje"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8933,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8982,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Generični disk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "Za to napravo ni na voljo nobenih dodatnih nastavitev."
 
 #: id:35005
@@ -9077,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Ni mogoče zaznati adapterja CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)"
 
 #: id:36014

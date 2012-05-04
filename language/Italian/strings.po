@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,11 +841,8 @@ msgid "Full screen"
 msgstr "Schermo intero"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Dimensione: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dimensione: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2435,8 +2432,7 @@ msgstr "Internet Protocol (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Porta specificata non valida. Inserire un valore compreso tra 1 and 65535."
+msgstr "Porta specificata non valida. Inserire un valore compreso tra 1 and 65535."
 
 #: id:713
 msgid "HTTP proxy"
@@ -4515,15 +4511,11 @@ msgid "Preset"
 msgstr "Preset"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Nessun preset disponibile per questo effetto grafico"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Nessuna impostazione disponibile per questo effetto grafico"
 
 #: id:13391
@@ -4561,8 +4553,7 @@ msgstr "Scorciatoie"
 
 #: id:13399
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr ""
-"Ignora l'articolo (\"il\",\"lo\", etc.) davanti al nome nell'ordinamento"
+msgstr "Ignora l'articolo (\"il\",\"lo\", etc.) davanti al nome nell'ordinamento"
 
 #: id:13400
 msgid "Crossfade between songs on the same album"
@@ -7634,9 +7625,7 @@ msgstr "Cache piena"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Cache saturata prima di raggiungere il livello richiesto per una "
-"riproduzione fluida"
+msgstr "Cache saturata prima di raggiungere il livello richiesto per una riproduzione fluida"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8813,8 +8802,7 @@ msgstr "Odio"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Questo file è multiplo, seleziona la parte da cui iniziare la riproduzione."
+msgstr "Questo file è multiplo, seleziona la parte da cui iniziare la riproduzione."
 
 #: id:33082
 msgid "Path to script"
@@ -8926,20 +8914,15 @@ msgstr "Avvio di zeroconf fallito"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Il servizio Apple Bonjour è installato? Controllare i log per maggiori "
-"informazioni."
+msgstr "Il servizio Apple Bonjour è installato? Controllare i log per maggiori informazioni."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Rendering Video"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Fallita l'inizializzazione dei filtri/scalers video, ritorno al bilinear "
-"scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Fallita l'inizializzazione dei filtri/scalers video, ritorno al bilinear scaling"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8986,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disco generico"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Non ci sono impostazioni disponibili\n"
-"per questa periferica."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Non ci sono impostazioni disponibili\nper questa periferica."
 
 #: id:35005
 msgid "New device configured"
@@ -9083,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Impossibile connettersi all'adattatore CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Versione interfaccia libcec non supportata. %d è maggiore della versione "
-"supportata da XBMC (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versione interfaccia libcec non supportata. %d è maggiore della versione supportata da XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

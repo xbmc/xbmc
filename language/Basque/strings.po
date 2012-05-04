@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,11 +841,8 @@ msgid "Full screen"
 msgstr "Pantaila osoa"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Tamaina: (%i,%i)->(%i,%i) (Zoom-a x%2.2f) AR:%2.2f:1 (Pixelak: %2.2f:1)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Tamaina: (%i,%i)->(%i,%i) (Zoom-a x%2.2f) AR:%2.2f:1 (Pixelak: %2.2f:1)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2435,8 +2432,7 @@ msgstr "Interneteko Protocoloal (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Ataka baliogabea zehaztu da. Balio hau 1 eta 65535 artekoa izan behar da."
+msgstr "Ataka baliogabea zehaztu da. Balio hau 1 eta 65535 artekoa izan behar da."
 
 #: id:713
 msgid "HTTP proxy"
@@ -4515,20 +4511,12 @@ msgid "Preset"
 msgstr "Aurrezarritakoa"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Ez dago aurrezarpenik eskuragarri \n"
-"bisualizazio honetarako"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Ez dago aurrezarpenik eskuragarri \nbisualizazio honetarako"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Ez dago ezarpenik eskuragarri \n"
-"bisualizazio honetarako"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Ez dago ezarpenik eskuragarri \nbisualizazio honetarako"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8814,8 +8802,7 @@ msgstr "Gorrotatu"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Fitxategi hau pilatuta dago, hautatu erreproduzitzea nahi duzun zatia."
+msgstr "Fitxategi hau pilatuta dago, hautatu erreproduzitzea nahi duzun zatia."
 
 #: id:33082
 msgid "Path to script"
@@ -8934,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8983,9 +8969,7 @@ msgid "Generic disk"
 msgstr ""
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr ""
 
 #: id:35005
@@ -9078,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr ""
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr ""
 
 #: id:36014

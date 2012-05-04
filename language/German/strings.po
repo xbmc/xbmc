@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,8 +397,7 @@ msgstr "Diese Datei(en) verschieben?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Diese Datei(en) wirklich löschen? - Kann nicht rückgängig gemacht werden!"
+msgstr "Diese Datei(en) wirklich löschen? - Kann nicht rückgängig gemacht werden!"
 
 #: id:126
 msgid "Status"
@@ -842,9 +841,7 @@ msgid "Full screen"
 msgstr "Vollbild"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Anpassen: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixel: %2.2f:1)"
 
 #: id:247
@@ -2435,9 +2432,7 @@ msgstr "Internet-Protokoll (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Es wurde ein ungültiger Port festgelegt. Der Port muß zwischen 1 und 65535 "
-"liegen."
+msgstr "Es wurde ein ungültiger Port festgelegt. Der Port muß zwischen 1 und 65535 liegen."
 
 #: id:713
 msgid "HTTP proxy"
@@ -3131,8 +3126,7 @@ msgstr "Ping-Intervall"
 
 #: id:1257
 msgid "Would you like to connect to the auto-detected system?"
-msgstr ""
-"Soll eine Verbindung zum automatisch gefundenen System aufgebaut werden?"
+msgstr "Soll eine Verbindung zum automatisch gefundenen System aufgebaut werden?"
 
 #: id:1259
 msgid "Zeroconf"
@@ -3644,8 +3638,7 @@ msgstr "Bitte die Gamepad-Tastenkombination eingeben"
 
 #: id:12331
 msgid "press OK, or Back to cancel"
-msgstr ""
-"und mit der 'Ok'-Taste bestätigen. Um abzubrechen, 'Back'-Taste drücken."
+msgstr "und mit der 'Ok'-Taste bestätigen. Um abzubrechen, 'Back'-Taste drücken."
 
 #: id:12332
 msgid "Set lock"
@@ -4518,20 +4511,12 @@ msgid "Preset"
 msgstr "Voreinstellung"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Es sind keine Voreinstellungen\n"
-" für diese Visualisierung verfügbar"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Es sind keine Voreinstellungen\n für diese Visualisierung verfügbar"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Es sind keine Einstellungen\n"
-" für diese Visualisierung verfügbar"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Es sind keine Einstellungen\n für diese Visualisierung verfügbar"
 
 #: id:13391
 msgid "Eject/Load"
@@ -7640,9 +7625,7 @@ msgstr "Cache voll"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Cache gefüllt bevor ausreichende Datenmenge für ruckelfreie Wiedergabe "
-"erreicht wurde"
+msgstr "Cache gefüllt bevor ausreichende Datenmenge für ruckelfreie Wiedergabe erreicht wurde"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8931,20 +8914,15 @@ msgstr "zeroconf konnte nicht gestartet werden"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Ist der Bonjour Service von Apple installiert? Log-File einsehen für mehr "
-"Info"
+msgstr "Ist der Bonjour Service von Apple installiert? Log-File einsehen für mehr Info"
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Video Rendering"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Videofilter/-scaler konnte nicht initialisiert werden! Verwende Bilineares "
-"Scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Videofilter/-scaler konnte nicht initialisiert werden! Verwende Bilineares Scaling"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8991,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Festplatte"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "Für dieses Gerät sind keine Einstellungen verfügbar"
 
 #: id:35005
@@ -9075,8 +9051,7 @@ msgstr "Geräte, welche den TV ausschalten, wenn XBMC beendet wird"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-"Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird"
+msgstr "Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird"
 
 #: id:36011
 msgid "Could not detect the CEC port. Set it up manually."
@@ -9084,17 +9059,11 @@ msgstr "Der CEC Port konnte nicht gefunden werden. Manuell einstellen."
 
 #: id:36012
 msgid "Could not initialise the CEC adapter. Check your settings."
-msgstr ""
-"Der CEC Adapter konnte nicht initialisiert werden. Bitte Einstellungen "
-"prüfen!"
+msgstr "Der CEC Adapter konnte nicht initialisiert werden. Bitte Einstellungen prüfen!"
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nicht unterstützte libCEC Version. %d ist größer als die von XBMC "
-"unterstützte Version (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nicht unterstützte libCEC Version. %d ist größer als die von XBMC unterstützte Version (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
@@ -9139,8 +9108,7 @@ msgstr "Konfiguration aktualisiert"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-"Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prüfen!"
+msgstr "Konfiguration konnte nicht aktualisiert werden. Bitte Einstellungen prüfen!"
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "شاشة كاملة"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"تحجيم: (%i,%i)->(%i,%i) (تقريب x%2.2f) AR:%2.2f:1 (%بكسل: 2.2f:1) (VShift: "
-"%2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "تحجيم: (%i,%i)->(%i,%i) (تقريب x%2.2f) AR:%2.2f:1 (%بكسل: 2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4515,15 +4511,11 @@ msgid "Preset"
 msgstr "مسبق"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "لا توجد قيم مسبقة متاحة لهذا التصور"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "لا توجد إعدادات متاحة لهذا التصور"
 
 #: id:13391
@@ -8929,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8978,9 +8969,7 @@ msgid "Generic disk"
 msgstr "القرص العام"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr ".أي إعدادات لهذا الجهاز"
 
 #: id:35005
@@ -9073,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr ""
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr ""
 
 #: id:36014

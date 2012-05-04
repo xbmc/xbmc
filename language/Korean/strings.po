@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,9 +841,7 @@ msgid "Full screen"
 msgstr "전체 화면"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "크기: (%i,%i)->(%i,%i) (축소확대 x%2.2f) 가로세로비:%2.2f:1 (픽셀: %2.2f:1)"
 
 #: id:247
@@ -4513,15 +4511,11 @@ msgid "Preset"
 msgstr "사전설정"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "이 시각화에 사용가능한 사전설정이 없습니다"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "이 시각화에 사용가능한 설정이 없습니다"
 
 #: id:13391
@@ -8927,8 +8921,7 @@ msgid "Video Rendering"
 msgstr "비디오 렌더링"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "비디오 필터/스케일러 초기화 실패. 이중선형 스케일링으로 변경합니다"
 
 #: id:34402
@@ -8976,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Generic 디스크"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "이 장치에 대한 설정이 없습니다."
 
 #: id:35005
@@ -9071,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "CEC 어댑터를 찾을 수 없음."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "지원하지 않는 libcec 인터페이스 버전입니다. %d 가 XBMC가 지원하는 버전보다 높습니다 (%d)"
 
 #: id:36014

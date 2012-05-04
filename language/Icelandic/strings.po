@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Fylla skjá"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Stærðir: (%i,%i)->(%i,%i) (Aðdráttur x%2.2f) AR:%2.2f:1 (Punktar: %2.2f:1) "
-"(Lóð.hliðrun: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Stærðir: (%i,%i)->(%i,%i) (Aðdráttur x%2.2f) AR:%2.2f:1 (Punktar: %2.2f:1) (Lóð.hliðrun: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4515,20 +4511,12 @@ msgid "Preset"
 msgstr "Forstilling"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Það eru ekki til neinar forstillingar\n"
-"fyrir þessa myndskreytingu"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Það eru ekki til neinar forstillingar\nfyrir þessa myndskreytingu"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Það eru ekki til neinar stillingar\n"
-"fyrir þessa myndskreytingu"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Það eru ekki til neinar stillingar\nfyrir þessa myndskreytingu"
 
 #: id:13391
 msgid "Eject/Load"
@@ -6884,9 +6872,7 @@ msgstr "* Falið til að spilla ekki söguþræði *"
 
 #: id:20371
 msgid "Set season thumb"
-msgstr ""
-"Velja smámynd fyrir þáttaröð\n"
-""
+msgstr "Velja smámynd fyrir þáttaröð\n"
 
 #: id:20372
 msgid "Season image"
@@ -7639,9 +7625,7 @@ msgstr "Skyndiminni fullt"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Skyndiminni fylltist áður en tókst að ná í nauðsynlegt magn fyrir "
-"áframhaldandi spilun"
+msgstr "Skyndiminni fylltist áður en tókst að ná í nauðsynlegt magn fyrir áframhaldandi spilun"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8818,8 +8802,7 @@ msgstr "Hatur"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá."
+msgstr "Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá."
 
 #: id:33082
 msgid "Path to script"
@@ -8931,19 +8914,15 @@ msgstr "Gat ekki ræst zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Er Apple Bonjour þjónusta uppsett? Athugaðu atburðaskrá fyrir meiri "
-"upplýsingar."
+msgstr "Er Apple Bonjour þjónusta uppsett? Athugaðu atburðaskrá fyrir meiri upplýsingar."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Skjábirting"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Gat ekki frumstillt skjá síur/kvarða, fer til baka í tvílínulega kvörðun"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Gat ekki frumstillt skjá síur/kvarða, fer til baka í tvílínulega kvörðun"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8990,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Almennur diskur"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Engar stillingar eru tiltækar\n"
-"fyrir þetta tæki."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Engar stillingar eru tiltækar\nfyrir þetta tæki."
 
 #: id:35005
 msgid "New device configured"
@@ -9087,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Fann ekki CEC tengispjald."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður"
-" (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

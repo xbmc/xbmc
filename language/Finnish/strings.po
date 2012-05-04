@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Kokoruutu"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Mitoitus: (%i,%i)->(%i,%i) (Zoomaus x%2.2f) Kuvasuhde:%2.2f:1 (Pikselisuhde:"
-" %2.2f:1) (Pystysiirto: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Mitoitus: (%i,%i)->(%i,%i) (Zoomaus x%2.2f) Kuvasuhde:%2.2f:1 (Pikselisuhde: %2.2f:1) (Pystysiirto: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -1566,9 +1562,7 @@ msgstr "Poista elokuva kirjastosta"
 
 #: id:433
 msgid "Really remove '%s'?"
-msgstr ""
-"Haluatko varmasti poistaa kohteen[CR]"
-"'%s'?"
+msgstr "Haluatko varmasti poistaa kohteen[CR]'%s'?"
 
 #: id:434
 msgid "From %s at %i %s"
@@ -3140,9 +3134,7 @@ msgstr ""
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
-msgstr ""
-"Julkista nämä palvelut toisiin järjestelmiin Zeroconf-julkaisujärjestelmän "
-"kautta"
+msgstr "Julkista nämä palvelut toisiin järjestelmiin Zeroconf-julkaisujärjestelmän kautta"
 
 #: id:1270
 msgid "Allow XBMC to receive AirPlay content"
@@ -4023,8 +4015,7 @@ msgstr "Vaihdetaanko Apple kauko-ohjaukseen?"
 
 #: id:13145
 msgid "If you are currently using the Apple Remote to control"
-msgstr ""
-"Mikäli käytät tälllä hetkellä XBMC:in ohjaukseen Apple kauko-ohjainta,"
+msgstr "Mikäli käytät tälllä hetkellä XBMC:in ohjaukseen Apple kauko-ohjainta,"
 
 #: id:13146
 msgid "XBMC, changing this setting might affect your ability"
@@ -4520,15 +4511,11 @@ msgid "Preset"
 msgstr "Esiasetukset"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Tälle visualisoinnille ei löytynyt esiasetuksia"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Tälle visualisoinnille ei ole määriteltäviä asetuksia"
 
 #: id:13391
@@ -6715,8 +6702,7 @@ msgstr "Valitse kohdesijainti"
 
 #: id:20329
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
-"Elokuvan tiedostot ovat eri kansioissa, jotka ovat nimetty elokuvan mukaan"
+msgstr "Elokuvan tiedostot ovat eri kansioissa, jotka ovat nimetty elokuvan mukaan"
 
 #: id:20330
 msgid "Use folder names for lookups"
@@ -8928,19 +8914,15 @@ msgstr "Zeroconf-palvelua ei voitu käynnistää"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja."
+msgstr "Onko Applen Bonjour -palvelu asennettu? Katso lokitiedostosta lisätietoja."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Videon renderöintitapa"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Ei voitu käyttää videon suodatin/skaalaus -asetuksia, otetaan käyttöön "
-"bilineaarinen skaalausmenetelmä"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Ei voitu käyttää videon suodatin/skaalaus -asetuksia, otetaan käyttöön bilineaarinen skaalausmenetelmä"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8987,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Yleinen levy"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Asetuksia ei ole saatavilla\n"
-"tälle oheislaitteelle."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Asetuksia ei ole saatavilla\ntälle oheislaitteelle."
 
 #: id:35005
 msgid "New device configured"
@@ -9084,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "CEC-sovitinta ei havaittu."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC "
-"tukee (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Ei tuettu libcec-rajapinnan versio. %d on suurempi kuin versio, jota XBMC tukee (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

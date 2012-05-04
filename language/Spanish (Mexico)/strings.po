@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Pant. Completa"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixeles: %2.2f:1) "
-"(VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixeles: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -970,8 +966,7 @@ msgstr "Ajuste de la relación de aspecto de pixel"
 
 #: id:276
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr ""
-"Mueva la flecha para variar la cantidad de imagen perdida por los lados"
+msgstr "Mueva la flecha para variar la cantidad de imagen perdida por los lados"
 
 #: id:277
 msgid "Adjust the bar to change the subtitles position"
@@ -4516,20 +4511,12 @@ msgid "Preset"
 msgstr "Ajustes Predeterminados"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"No hay ajustes predet.\n"
-"disponibles para esta visualización"
+msgid "There are no presets available\nfor this visualization"
+msgstr "No hay ajustes predet.\ndisponibles para esta visualización"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"No hay ajustes disponibles\n"
-"para esta visualización"
+msgid "There are no settings available\nfor this visualization"
+msgstr "No hay ajustes disponibles\npara esta visualización"
 
 #: id:13391
 msgid "Eject/Load"
@@ -7638,9 +7625,7 @@ msgstr "Cache lleno"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"El cache se llenó antes de alcanzar la cantidad requerida para reproducción "
-"continua"
+msgstr "El cache se llenó antes de alcanzar la cantidad requerida para reproducción continua"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8817,8 +8802,7 @@ msgstr "Odio"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Este archivo esta apilado, seleccion la parte desde la que desea reproducir."
+msgstr "Este archivo esta apilado, seleccion la parte desde la que desea reproducir."
 
 #: id:33082
 msgid "Path to script"
@@ -8937,10 +8921,8 @@ msgid "Video Rendering"
 msgstr "Renderizado de video"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Fallo al iniciar filtros/escaladores de video, utilizando escalado bilineal"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Fallo al iniciar filtros/escaladores de video, utilizando escalado bilineal"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8987,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disco genérico"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"No hay configuración disponible\n"
-"para este periférico."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "No hay configuración disponible\npara este periférico."
 
 #: id:35005
 msgid "New device configured"
@@ -9084,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "No se pudo detectar adaptador CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Versión de interface libcec no soportada. %d es mayor que la versión "
-"soportada por XBMC (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versión de interface libcec no soportada. %d es mayor que la versión soportada por XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

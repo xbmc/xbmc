@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,11 +841,8 @@ msgid "Full screen"
 msgstr "Tela Cheia"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Dimensionando: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dimensionando: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4514,15 +4511,11 @@ msgid "Preset"
 msgstr "Pré-ajustes"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Não há pré-ajustes disponíveis para esta visualização"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Não há configurações disponíveis para esta visualização"
 
 #: id:13391
@@ -7632,8 +7625,7 @@ msgstr "Cache cheio"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Cache cheio antes de chegar a quantidade necessária para reprodução contínua"
+msgstr "Cache cheio antes de chegar a quantidade necessária para reprodução contínua"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8922,20 +8914,15 @@ msgstr "Falha ao iniciar zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Se serviço Apple's Bonjour estiver instalado? Veja log para maiores "
-"informações."
+msgstr "Se serviço Apple's Bonjour estiver instalado? Veja log para maiores informações."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Renderização de Video"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Falha para inciar filtros e scalers de vídeo, voltando a usar bilinear "
-"scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Falha para inciar filtros e scalers de vídeo, voltando a usar bilinear scaling"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8951,8 +8938,7 @@ msgstr "Use gestos para navegação:"
 
 #: id:34405
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
-"1 simples toque de dedo para a esquerda, direita, cima, baixo para cursores"
+msgstr "1 simples toque de dedo para a esquerda, direita, cima, baixo para cursores"
 
 #: id:34406
 msgid "2 finger swipe left for backspace"
@@ -8964,8 +8950,7 @@ msgstr "Um toque único de seu dedo para entrar"
 
 #: id:34408
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
-"dois toque do dedo ou uma único toque único mais longo para menu de contexto"
+msgstr "dois toque do dedo ou uma único toque único mais longo para menu de contexto"
 
 #: id:35000
 msgid "Peripherals"
@@ -8984,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disco Genérico"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Não existe ajustes disponíveis\n"
-"para este periférico."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Não existe ajustes disponíveis\npara este periférico."
 
 #: id:35005
 msgid "New device configured"
@@ -9070,8 +9051,7 @@ msgstr "Desligar equipamentos quando parar o XBMC"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-"Colocar os equipamentos em modo de espera quando ativando proteção de tela"
+msgstr "Colocar os equipamentos em modo de espera quando ativando proteção de tela"
 
 #: id:36011
 msgid "Could not detect the CEC port. Set it up manually."
@@ -9082,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Não pude detectar o adaptador CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Versãod libcec da interface não suportada. %d é superior a versão que o XBMC"
-" suporta (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versãod libcec da interface não suportada. %d é superior a versão que o XBMC suporta (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
@@ -9132,8 +9108,7 @@ msgstr "Configuração Atualizada"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-"Falha para setar a nova configuração. Por favor verifique seus ajustes."
+msgstr "Falha para setar a nova configuração. Por favor verifique seus ajustes."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"

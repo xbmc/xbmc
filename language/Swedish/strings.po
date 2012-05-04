@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,9 +841,7 @@ msgid "Full screen"
 msgstr "Fullskärm"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Storlek: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixlar: %2.2f:1)"
 
 #: id:247
@@ -4513,20 +4511,12 @@ msgid "Preset"
 msgstr "Förinställning"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Det finns inga förinställningar\n"
-"för den här visualiseringen"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Det finns inga förinställningar\nför den här visualiseringen"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Det finns inga inställningar för\n"
-"den här visualiseringen"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Det finns inga inställningar för\nden här visualiseringen"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8931,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8980,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Allmän disk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Det finns inga tillgängliga\n"
-"inställningar för denna kringutrustning"
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Det finns inga tillgängliga\ninställningar för denna kringutrustning"
 
 #: id:35005
 msgid "New device configured"
@@ -9077,11 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Kunde inte hitta CEC-adaptern"
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Ostödd libcec-gränssnittsversion. %d är nyare än versionen XBMC stödjer (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Ostödd libcec-gränssnittsversion. %d är nyare än versionen XBMC stödjer (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

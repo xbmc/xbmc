@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,9 +841,7 @@ msgid "Full screen"
 msgstr "Цял екран"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)"
 
 #: id:247
@@ -4513,20 +4511,12 @@ msgid "Preset"
 msgstr "Настроени"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Няма достъпни настроени\n"
-"за тази визуализация"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Няма достъпни настроени\nза тази визуализация"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Няма достъпни настройки\n"
-"за тази визуализация"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Няма достъпни настройки\nза тази визуализация"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8931,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8980,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Диск"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Няма достъпни настройки\n"
-"за това устройство."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Няма достъпни настройки\nза това устройство."
 
 #: id:35005
 msgid "New device configured"
@@ -9077,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Не мога да открия  адаптер CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Неподдържана libcec интерфейс версия. %d е по-голяма от поддържаната от XBMC"
-" (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Неподдържана libcec интерфейс версия. %d е по-голяма от поддържаната от XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

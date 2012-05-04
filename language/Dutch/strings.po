@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,8 +397,7 @@ msgstr "Deze bestanden verplaatsen?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Deze bestanden verwijderen? Dit kan niet meer ongedaan worden gemaakt!"
+msgstr "Deze bestanden verwijderen? Dit kan niet meer ongedaan worden gemaakt!"
 
 #: id:126
 msgid "Status"
@@ -842,9 +841,7 @@ msgid "Full screen"
 msgstr "Volledig scherm"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "Formaat: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)"
 
 #: id:247
@@ -4514,15 +4511,11 @@ msgid "Preset"
 msgstr "Preset"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Er zijn geen presets beschikbaar voor deze visualisatie"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Er zijn geen instellingen beschikbaar voor deze visualisatie"
 
 #: id:13391
@@ -7632,8 +7625,7 @@ msgstr "Cache is vol"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspelen"
+msgstr "Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspelen"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8810,9 +8802,7 @@ msgstr "Niet leuk!"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Dit bestand bestaat uit meerdere delen, selecteer het deel dat u wilt "
-"afspelen."
+msgstr "Dit bestand bestaat uit meerdere delen, selecteer het deel dat u wilt afspelen."
 
 #: id:33082
 msgid "Path to script"
@@ -8931,11 +8921,8 @@ msgid "Video Rendering"
 msgstr "Video Rendering"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Niet gelukt om video filters/scalers initialiseren, terugvallen naar "
-"bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Niet gelukt om video filters/scalers initialiseren, terugvallen naar bilinear scaling"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8982,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Generieke schijf"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Er zijn geen instellingen beschikbaar\n"
-"voor dit apparaat."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Er zijn geen instellingen beschikbaar\nvoor dit apparaat."
 
 #: id:35005
 msgid "New device configured"
@@ -9079,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Kon de CEC adapter niet initialiseren."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Versie %d van de libCEC interface version wordt niet ondersteund door XBMC "
-"(> %d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versie %d van de libCEC interface version wordt niet ondersteund door XBMC (> %d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
@@ -9129,8 +9108,7 @@ msgstr "Configuratie aangepast"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-"Kon de nieuwe configuratie niet instellen. Controleer de instellingen."
+msgstr "Kon de nieuwe configuratie niet instellen. Controleer de instellingen."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -578,8 +578,7 @@ msgstr "Resolución"
 
 #: id:170
 msgid "Adjust display refresh rate to match video"
-msgstr ""
-"Ajustar la frecuencia de refresco de la pantalla para ajustarse al vídeo"
+msgstr "Ajustar la frecuencia de refresco de la pantalla para ajustarse al vídeo"
 
 #: id:172
 msgid "Release date"
@@ -842,12 +841,8 @@ msgid "Full screen"
 msgstr "Pantalla completa"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Ajustando tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Píxeles: "
-"%2.2f:1)  (VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Ajustando tamaño: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Píxeles: %2.2f:1)  (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -971,8 +966,7 @@ msgstr "Ajuste de la proporción del pixel"
 
 #: id:276
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr ""
-"Mueva la flecha para variar la cantidad de imagen perdida por los lados"
+msgstr "Mueva la flecha para variar la cantidad de imagen perdida por los lados"
 
 #: id:277
 msgid "Adjust the bar to change the subtitles position"
@@ -4517,15 +4511,11 @@ msgid "Preset"
 msgstr "Ajustes predeterminados"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "No hay ajustes por defecto disponibles para esta visualización"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "No hay ajustes disponibles para esta visualización"
 
 #: id:13391
@@ -8931,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8980,9 +8969,7 @@ msgid "Generic disk"
 msgstr ""
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr ""
 
 #: id:35005
@@ -9075,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr ""
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr ""
 
 #: id:36014

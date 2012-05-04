@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Полный экран"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Размер: (%i,%i)->(%i,%i) (Увеличение x%2.2f) Соотношение:%2.2f:1 (Пикселей: "
-"%2.2f:1) (Верт. смещение: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Размер: (%i,%i)->(%i,%i) (Увеличение x%2.2f) Соотношение:%2.2f:1 (Пикселей: %2.2f:1) (Верт. смещение: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -1566,9 +1562,7 @@ msgstr "Удалить фильм из медиатеки"
 
 #: id:433
 msgid "Really remove '%s'?"
-msgstr ""
-"Действительно удалить[CR]"
-"\"%s\"?"
+msgstr "Действительно удалить[CR]\"%s\"?"
 
 #: id:434
 msgid "From %s at %i %s"
@@ -2751,9 +2745,7 @@ msgstr "Максимальное количество клиентов"
 
 #: id:798
 msgid "Internet access"
-msgstr ""
-"Доступ[CR]"
-"в Интернет"
+msgstr "Доступ[CR]в Интернет"
 
 #: id:850
 msgid "Invalid port number entered"
@@ -4519,20 +4511,12 @@ msgid "Preset"
 msgstr "Предустановка"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Нет предустановок\n"
-"для этой визуализации"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Нет предустановок\nдля этой визуализации"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Нет настроек\n"
-"для этой визуализации"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Нет настроек\nдля этой визуализации"
 
 #: id:13391
 msgid "Eject/Load"
@@ -5137,9 +5121,7 @@ msgstr "Шрифт текстовых субтитров"
 
 #: id:14090
 msgid "International"
-msgstr ""
-"Язык[CR]"
-"и стандарты"
+msgstr "Язык[CR]и стандарты"
 
 #: id:14091
 msgid "Character set"
@@ -5159,9 +5141,7 @@ msgstr "Устройства ввода"
 
 #: id:14095
 msgid "Power saving"
-msgstr ""
-"Экономия[CR]"
-"энергии"
+msgstr "Экономия[CR]энергии"
 
 #: id:14096
 msgid "Rip"
@@ -5329,9 +5309,7 @@ msgstr "Libre.fm"
 
 #: id:15221
 msgid "Song submission"
-msgstr ""
-"Отправка[CR]"
-"статистики"
+msgstr "Отправка[CR]статистики"
 
 #: id:15250
 msgid "Submit Last.fm radio to Last.fm"
@@ -8943,11 +8921,8 @@ msgid "Video Rendering"
 msgstr "Обработчик видео"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Не удалось активировать фильтры видео. Используется масштабирование "
-"bilinear."
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Не удалось активировать фильтры видео. Используется масштабирование bilinear."
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8994,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Типовой диск"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Для этой периферии\n"
-"нет настроек."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Для этой периферии\nнет настроек."
 
 #: id:35005
 msgid "New device configured"
@@ -9091,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Не удалось обнаружить адаптер CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Неподдерживаемая версия интерфейса libcec. %d выше, чем версия, "
-"поддерживаемая XBMC (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Неподдерживаемая версия интерфейса libcec. %d выше, чем версия, поддерживаемая XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

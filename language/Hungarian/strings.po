@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Teljes képernyő"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Méretezés: (%i,%i)->(%i,%i) (Nagyítás: x%2.2f) Arány:%2.2f:1 (Képpontarány: "
-"%2.2f:1) (Függőleges Eltolás: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Méretezés: (%i,%i)->(%i,%i) (Nagyítás: x%2.2f) Arány:%2.2f:1 (Képpontarány: %2.2f:1) (Függőleges Eltolás: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4515,20 +4511,12 @@ msgid "Preset"
 msgstr "Előbeállítások"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Nincs előbeállítás\n"
-"ehhez a vizualizációhoz"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Nincs előbeállítás\nehhez a vizualizációhoz"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Nincs altípusa\n"
-"ennek a vizualizációnak"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Nincs altípusa\nennek a vizualizációnak"
 
 #: id:13391
 msgid "Eject/Load"
@@ -7637,9 +7625,7 @@ msgstr "Gyorsítótár megtelt"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"A gyorsítótár még azelőtt megtelt, hogy elegendő lett volna a folyamatos "
-"lejátszáshoz"
+msgstr "A gyorsítótár még azelőtt megtelt, hogy elegendő lett volna a folyamatos lejátszáshoz"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8928,19 +8914,15 @@ msgstr "A zeroconf elindítása nem sikerült"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Biztos, hogy az Apple Bonjour Service telepítve van? (Részletes információ a"
-" naplóban)"
+msgstr "Biztos, hogy az Apple Bonjour Service telepítve van? (Részletes információ a naplóban)"
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Video leképező rendszer hiba"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Az átméretező (scaler) nem használható, visszaállva a bilinear eljárásra"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Az átméretező (scaler) nem használható, visszaállva a bilinear eljárásra"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8987,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Szabványos lemez"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Ehez a perifériához\n"
-"nem tartozik beállítás."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Ehez a perifériához\nnem tartozik beállítás."
 
 #: id:35005
 msgid "New device configured"
@@ -9084,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "A CEC adapter nem található."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nem támogatott libcec csatoló verzió. %d nagyobb mint amit az XBMC támogat "
-"(%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nem támogatott libcec csatoló verzió. %d nagyobb mint amit az XBMC támogat (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

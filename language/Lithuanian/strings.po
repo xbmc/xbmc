@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Visas ekranas"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Dydis: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: "
-"%2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dydis: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4515,20 +4511,12 @@ msgid "Preset"
 msgstr "Išankstinis diegimas"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Šiai vizualizacijai išankstinių nustatymų nėra\n"
-"ši vizualizacija"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Šiai vizualizacijai išankstinių nustatymų nėra\nši vizualizacija"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Šiai vizualizacijai parametrų nėra\n"
-"ši vizualizacija"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Šiai vizualizacijai parametrų nėra\nši vizualizacija"
 
 #: id:13391
 msgid "Eject/Load"
@@ -5260,8 +5248,7 @@ msgstr "Prašome atnaujinti XBMC"
 
 #: id:15206
 msgid "Bad authorization: Check username and password"
-msgstr ""
-"Neteisingas prisijungimas: Patikrinkite vartotojo slapyvardį ir slaptažodį"
+msgstr "Neteisingas prisijungimas: Patikrinkite vartotojo slapyvardį ir slaptažodį"
 
 #: id:15207
 msgctxt "Auto context with id 15207"
@@ -8927,19 +8914,15 @@ msgstr "Nesėkminga paleistis zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Ar įdiegta \"Apple Bonjour\" tarnyba? Prisijungti, gauti daugiau info."
+msgstr "Ar įdiegta \"Apple Bonjour\" tarnyba? Prisijungti, gauti daugiau info."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Vaizdo Rendering"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Bilinear mastelio paleidimo klaida, pirminio paleidimo vaizdo "
-"filters/scalers"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Bilinear mastelio paleidimo klaida, pirminio paleidimo vaizdo filters/scalers"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8986,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Bendras diskas"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Nėra jokių prieinamų nustatymų\n"
-"šiai periferijai."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Nėra jokių prieinamų nustatymų\nšiai periferijai."
 
 #: id:35005
 msgid "New device configured"
@@ -9083,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Nepavyko aptikti CEC adapterio."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nepalaikomas 'libec' sąsajos versija.%d atsisiuskite naujesnę  XBMC versiją "
-"(%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nepalaikomas 'libec' sąsajos versija.%d atsisiuskite naujesnę  XBMC versiją (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

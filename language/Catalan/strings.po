@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,8 +397,7 @@ msgstr "Voleu moure els fitxers?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Voleu eliminar els fitxers? - L'eliminació dels fitxers no es pot desfer."
+msgstr "Voleu eliminar els fitxers? - L'eliminació dels fitxers no es pot desfer."
 
 #: id:126
 msgid "Status"
@@ -579,9 +578,7 @@ msgstr "Resolució"
 
 #: id:170
 msgid "Adjust display refresh rate to match video"
-msgstr ""
-"Ajusta la pantalla per que coincideixi amb la freqüència d'actualització del"
-" vídeo"
+msgstr "Ajusta la pantalla per que coincideixi amb la freqüència d'actualització del vídeo"
 
 #: id:172
 msgid "Release date"
@@ -844,12 +841,8 @@ msgid "Full screen"
 msgstr "Pantalla completa"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Dimensionant: (%i,%i)->(%i,%i) (Escala x%2.2f) AR:%2.2f:1 (Píxels: %2.2f:1) "
-"(VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dimensionant: (%i,%i)->(%i,%i) (Escala x%2.2f) AR:%2.2f:1 (Píxels: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2479,8 +2472,7 @@ msgstr "Desa i reinicia"
 
 #: id:724
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr ""
-"La direcció especificada no és vàlida. El valor ha de ser AAA.BBB.CCC.DDD"
+msgstr "La direcció especificada no és vàlida. El valor ha de ser AAA.BBB.CCC.DDD"
 
 #: id:725
 msgid "with numbers between 0 and 255."
@@ -2696,9 +2688,7 @@ msgstr "WPA2"
 
 #: id:784
 msgid "Applying network interface settings. Please wait."
-msgstr ""
-"S'està aplicant la configuració de la interfície de xarxa. Si us plau, "
-"espereu."
+msgstr "S'està aplicant la configuració de la interfície de xarxa. Si us plau, espereu."
 
 #: id:785
 msgid "Network interface restarted successfully."
@@ -3351,8 +3341,7 @@ msgstr "Configuració - Pantalla"
 
 #: id:10010
 msgid "Settings - Appearance - GUI Calibration"
-msgstr ""
-"Configuració - Aparença - Calibració de la interfície gràfica d'usuari"
+msgstr "Configuració - Aparença - Calibració de la interfície gràfica d'usuari"
 
 #: id:10011
 msgid "Settings - Videos - Screen Calibration"
@@ -4522,20 +4511,12 @@ msgid "Preset"
 msgstr "Predefinit"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
+msgstr "There are no presets available\nfor this visualization"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
+msgstr "There are no settings available\nfor this visualization"
 
 #: id:13391
 msgid "Eject/Load"
@@ -6202,8 +6183,7 @@ msgstr "Fetching info for album"
 
 #: id:20099
 msgid "Can't rip CD or track while playing from CD"
-msgstr ""
-"No es pot extreure el CD o la pista mentre s'està reproduïnt desde el CD"
+msgstr "No es pot extreure el CD o la pista mentre s'està reproduïnt desde el CD"
 
 #: id:20100
 msgid "Master lock code and settings"
@@ -8822,8 +8802,7 @@ msgstr "No m'agrada"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir."
+msgstr "Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir."
 
 #: id:33082
 msgid "Path to script"
@@ -8942,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8991,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disc genèric"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"No hi ha opcions disponibles\n"
-"per aquest perifèric."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "No hi ha opcions disponibles\nper aquest perifèric."
 
 #: id:35005
 msgid "New device configured"
@@ -9088,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Could not detect the CEC adapter."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Unsupported libcec interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

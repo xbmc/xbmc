@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -195,9 +195,7 @@ msgid "Show \"Paused\" in picture slide show"
 msgstr "Vis \"PAUSE\" i  billedserier"
 
 #: id:31104
-msgid ""
-"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
-"Only)[/COLOR]"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
 msgstr ""
 
 #: id:31106
@@ -205,9 +203,7 @@ msgid "Miscellaneous options"
 msgstr "Diverse indstillinger"
 
 #: id:31107
-msgid ""
-"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
-"HD-DVD)[/COLOR]"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 msgstr ""
 
 #: id:31108
@@ -399,18 +395,8 @@ msgid "Track Number"
 msgstr "Spor nummer"
 
 #: id:31311
-msgid ""
-"Fanart image[CR]"
-"[CR]"
-"Unavailable[CR]"
-"[CR]"
-" Click button to set"
-msgstr ""
-"FANKUNST BILLDE[CR]"
-"[CR]"
-"IKKE TILGÆNGELIG[CR]"
-"[CR]"
-"TRYK FOR AT VÆLGE"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr "FANKUNST BILLDE[CR][CR]IKKE TILGÆNGELIG[CR][CR]TRYK FOR AT VÆLGE"
 
 #: id:31312
 msgid "Current Scraper"
@@ -482,10 +468,7 @@ msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]TIMER STARTET![/B] [COLOR=grey2] - SYSTEMET LUKKER NED OM[/COLOR]"
 
 #: id:31330
-msgid ""
-"Click button to play[CR]"
-"[CR]"
-"Movie trailer"
+msgid "Click button to play[CR][CR]Movie trailer"
 msgstr ""
 
 #: id:31331
@@ -529,111 +512,44 @@ msgid "Arial based"
 msgstr ""
 
 #: id:31400
-msgid ""
-"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
-"[CR]"
-"Change the skin · Set language and region · Change file listing options[CR]"
-"Set up a screensaver"
-msgstr ""
-"[B]SKIFT INDSTILLINGER TIL UDSEENDE[/B][CR]"
-"[CR]"
-"Skift skin · Vælg sprog og region · Skift indstillinger til fil-listen[CR]"
-"Indstil pauseskærm"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr "[B]SKIFT INDSTILLINGER TIL UDSEENDE[/B][CR][CR]Skift skin · Vælg sprog og region · Skift indstillinger til fil-listen[CR]Indstil pauseskærm"
 
 #: id:31401
-msgid ""
-"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
-"[CR]"
-"Manage your video library · Set video playback options · Change video "
-"listing options[CR]"
-"Set subtitle fonts"
-msgstr ""
-"[B]SKIFT INDSTILLINGER TIL VIDEOER[/B][CR]"
-"[CR]"
-"Håndter din videosamling"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr "[B]SKIFT INDSTILLINGER TIL VIDEOER[/B][CR][CR]Håndter din videosamling"
 
 #: id:31402
-msgid ""
-"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
-"[CR]"
-"Manage your music library · Set music playback options · Change music "
-"listing options[CR]"
-"Setup song submission · Set karaoke options"
-msgstr ""
-"[B]SKIFT INDSTILLINGER TIL MUSIK[/B][CR]"
-"[CR]"
-"Håndter din musiksamling"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr "[B]SKIFT INDSTILLINGER TIL MUSIK[/B][CR][CR]Håndter din musiksamling"
 
 #: id:31403
-msgid ""
-"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
-"[CR]"
-"Set picture listing options · Configure slideshows"
-msgstr ""
-"[B]SKIFT INDSTILLINGER TIL BILLEDER[/B][CR]"
-"[CR]"
-"Vælg hvordan billeder vises · Konfigurer billedeserier"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr "[B]SKIFT INDSTILLINGER TIL BILLEDER[/B][CR][CR]Vælg hvordan billeder vises · Konfigurer billedeserier"
 
 #: id:31404
-msgid ""
-"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
-"[CR]"
-"Set three cities to collect weather information"
-msgstr ""
-"[B]SKIFT INDSTILLINGER TIL VEJRSIDEN[/B][CR]"
-"[CR]"
-"Du kan vælge tre byer, der skal hentes vejrudsigter for"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr "[B]SKIFT INDSTILLINGER TIL VEJRSIDEN[/B][CR][CR]Du kan vælge tre byer, der skal hentes vejrudsigter for"
 
 #: id:31406
-msgid ""
-"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
-"[CR]"
-"Setup and calibrate displays · Configure audio output · Setup remote "
-"controls[CR]"
-"Set power saving options · Enable debugging · Setup master lock"
-msgstr ""
-"[B]SKIFT SYSTEMINDSTILLINGER[/B][CR]"
-"[CR]"
-"Indstil og kalibrer skærmen · Indstil lydudgang · Indstil "
-"fjernbetjeninger[CR]"
-"Indstil strømstyring · Aktiver fejllogning · Indstil hovedlås"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr "[B]SKIFT SYSTEMINDSTILLINGER[/B][CR][CR]Indstil og kalibrer skærmen · Indstil lydudgang · Indstil fjernbetjeninger[CR]Indstil strømstyring · Aktiver fejllogning · Indstil hovedlås"
 
 #: id:31407
-msgid ""
-"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
-"[CR]"
-"Setup the Confluence skin · Add and remove home menu items[CR]"
-"Change skin backgrounds"
-msgstr ""
-"[B]SKIFT SKIN-INDSTILLINGER[/B][CR]"
-"[CR]"
-"Indstil Confluence · Konfigurer hovedsiden[CR]"
-"Skift baggrunde i skinnet"
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
+msgstr "[B]SKIFT SKIN-INDSTILLINGER[/B][CR][CR]Indstil Confluence · Konfigurer hovedsiden[CR]Skift baggrunde i skinnet"
 
 #: id:31408
-msgid ""
-"[B]CONFIGURE ADD-ONS[/B][CR]"
-"[CR]"
-"Manage your installed Add-ons · Browse for and install Add-ons from "
-"xbmc.org[CR]"
-"Modify Add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr ""
 
 #: id:31409
-msgid ""
-"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
-"[CR]"
-"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
-"Enable Zeroconf · Configure AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
 #: id:31421
-msgid ""
-"Select your XBMC user Profile[CR]"
-"to login and continue"
-msgstr ""
-"Vælg din XBMC-brugerprofil[CR]"
-"for at logge ind og fortsætte"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr "Vælg din XBMC-brugerprofil[CR]for at logge ind og fortsætte"
 
 #: id:31900
 msgid "Weather Maps"

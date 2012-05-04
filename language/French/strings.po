@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,11 +841,8 @@ msgid "Full screen"
 msgstr "Plein écran"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Sizing : (%i,%i)->(%i,%i) (Zoom x%2.2f) AR :%2.2f :1 (Pixels : %2.2f :1)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Sizing : (%i,%i)->(%i,%i) (Zoom x%2.2f) AR :%2.2f :1 (Pixels : %2.2f :1)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2483,8 +2480,7 @@ msgstr "avec des nombres de 0 à 255."
 
 #: id:726
 msgid "Changes not saved. Continue without saving?"
-msgstr ""
-"Les changements n'ont pas été enregistrés. Continuer sans sauvegarder ?"
+msgstr "Les changements n'ont pas été enregistrés. Continuer sans sauvegarder ?"
 
 #: id:727
 msgid "Web server"
@@ -4515,20 +4511,12 @@ msgid "Preset"
 msgstr "Préréglages"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Il n'y a pas de préréglages disponibles\n"
-"pour cette visualisation"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Il n'y a pas de préréglages disponibles\npour cette visualisation"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Il n'y a pas de paramètres disponibles\n"
-"pour cette visualisation"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Il n'y a pas de paramètres disponibles\npour cette visualisation"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8488,8 +8476,7 @@ msgstr "Voulez-vous basculer vers ce thème ?"
 
 #: id:24100
 msgid "To use this feature you must download an Add-on:"
-msgstr ""
-"Pour utiliser cette fonctionnalité, vous devez télécharger un Add-on :"
+msgstr "Pour utiliser cette fonctionnalité, vous devez télécharger un Add-on :"
 
 #: id:24101
 msgid "Would you like to download this Add-on?"
@@ -8815,8 +8802,7 @@ msgstr "Je deteste"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Ce fichier est empilé, sélectionnez la partie que vous souhaitez lire."
+msgstr "Ce fichier est empilé, sélectionnez la partie que vous souhaitez lire."
 
 #: id:33082
 msgid "Path to script"
@@ -8928,20 +8914,15 @@ msgstr "Échec du démarrage zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Est-ce que le service d'Apple Bonjour est installé ? Consultez le log pour "
-"plus d'infos."
+msgstr "Est-ce que le service d'Apple Bonjour est installé ? Consultez le log pour plus d'infos."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Rendu Vidéo"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Échec du filtre/redimensionnement vidéo, utilisation du redimensionnement "
-"bilinéaire à la place"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Échec du filtre/redimensionnement vidéo, utilisation du redimensionnement bilinéaire à la place"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8988,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disque générique"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Pas de paramètres possibles\n"
-"pour ce périphérique."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Pas de paramètres possibles\npour ce périphérique."
 
 #: id:35005
 msgid "New device configured"
@@ -9085,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Impossible de détecter l'adaptateur CEC."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Version de l'interface libcec non-supportée. %d est plus grand que le "
-"version supportée par XBMC (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Version de l'interface libcec non-supportée. %d est plus grand que le version supportée par XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

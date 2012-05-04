@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,9 +841,7 @@ msgid "Full screen"
 msgstr "全螢幕"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr "縮放中：(%i,%i)->(%i,%i) (縮放 x%2.2f) AR:%2.2f:1 (像素: %2.2f:1)"
 
 #: id:247
@@ -4513,20 +4511,12 @@ msgid "Preset"
 msgstr "預設"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"該視覺效果\n"
-"沒有預設值"
+msgid "There are no presets available\nfor this visualization"
+msgstr "該視覺效果\n沒有預設值"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"該視覺效果\n"
-"沒有可用的設定"
+msgid "There are no settings available\nfor this visualization"
+msgstr "該視覺效果\n沒有可用的設定"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8931,8 +8921,7 @@ msgid "Video Rendering"
 msgstr "視訊渲染"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr "影像濾鏡/放大器初始化失敗，改用預設的雙線性放大"
 
 #: id:34402
@@ -8980,12 +8969,8 @@ msgid "Generic disk"
 msgstr "通用磁碟機"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"找不到這台周邊裝置\n"
-"的可用設定"
+msgid "There are no settings available\nfor this peripheral."
+msgstr "找不到這台周邊裝置\n的可用設定"
 
 #: id:35005
 msgid "New device configured"
@@ -9077,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "無法偵測CEC配接器"
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr "不支援的 libcec 介面版本。 %d 大於XBMC支援的版本 (%d)"
 
 #: id:36014

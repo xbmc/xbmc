@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.skin.confluence-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:37+0000\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -212,9 +212,7 @@ msgid "Show \"Paused\" in picture slide show"
 msgstr ""
 
 #: id:31104
-msgid ""
-"Play Trailers in a window [COLOR=grey3](Video Information Dialog "
-"Only)[/COLOR]"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
 msgstr ""
 
 #empty string with id 31105
@@ -224,9 +222,7 @@ msgid "Miscellaneous options"
 msgstr ""
 
 #: id:31107
-msgid ""
-"Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, "
-"HD-DVD)[/COLOR]"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 msgstr ""
 
 #: id:31108
@@ -430,12 +426,7 @@ msgid "Track Number"
 msgstr ""
 
 #: id:31311
-msgid ""
-"Fanart image[CR]"
-"[CR]"
-"Unavailable[CR]"
-"[CR]"
-" Click button to set"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
 msgstr ""
 
 #: id:31312
@@ -510,10 +501,7 @@ msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr ""
 
 #: id:31330
-msgid ""
-"Click button to play[CR]"
-"[CR]"
-"Movie trailer"
+msgid "Click button to play[CR][CR]Movie trailer"
 msgstr ""
 
 #: id:31331
@@ -565,87 +553,47 @@ msgstr ""
 #empty strings from id 31393 to 31399
 
 #: id:31400
-msgid ""
-"[B]CONFIGURE APPEARANCE SETTINGS[/B][CR]"
-"[CR]"
-"Change the skin · Set language and region · Change file listing options[CR]"
-"Set up a screensaver"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
 msgstr ""
 
 #: id:31401
-msgid ""
-"[B]CONFIGURE VIDEO SETTINGS[/B][CR]"
-"[CR]"
-"Manage your video library · Set video playback options · Change video "
-"listing options[CR]"
-"Set subtitle fonts"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr ""
 
 #: id:31402
-msgid ""
-"[B]CONFIGURE MUSIC SETTINGS[/B][CR]"
-"[CR]"
-"Manage your music library · Set music playback options · Change music "
-"listing options[CR]"
-"Setup song submission · Set karaoke options"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr ""
 
 #: id:31403
-msgid ""
-"[B]CONFIGURE PICTURE SETTINGS[/B][CR]"
-"[CR]"
-"Set picture listing options · Configure slideshows"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
 msgstr ""
 
 #: id:31404
-msgid ""
-"[B]CONFIGURE WEATHER SETTINGS[/B][CR]"
-"[CR]"
-"Set three cities to collect weather information"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
 msgstr ""
 
 #empty string with id 31405
 
 #: id:31406
-msgid ""
-"[B]CONFIGURE SYSTEM SETTINGS[/B][CR]"
-"[CR]"
-"Setup and calibrate displays · Configure audio output · Setup remote "
-"controls[CR]"
-"Set power saving options · Enable debugging · Setup master lock"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr ""
 
 #: id:31407
-msgid ""
-"[B]CONFIGURE SKIN SETTINGS[/B][CR]"
-"[CR]"
-"Setup the Confluence skin · Add and remove home menu items[CR]"
-"Change skin backgrounds"
+msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
 msgstr ""
 
 #: id:31408
-msgid ""
-"[B]CONFIGURE ADD-ONS[/B][CR]"
-"[CR]"
-"Manage your installed Add-ons · Browse for and install Add-ons from "
-"xbmc.org[CR]"
-"Modify Add-on settings"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr ""
 
 #: id:31409
-msgid ""
-"[B]CONFIGURE SERVICE SETTINGS[/B][CR]"
-"[CR]"
-"Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]"
-"Enable Zeroconf · Configure AirPlay"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
 #empty strings from id 31410 to 31420
 
 #: id:31421
-msgid ""
-"Select your XBMC user Profile[CR]"
-"to login and continue"
+msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr ""
 
 #Weather plugin

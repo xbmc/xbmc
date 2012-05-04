@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,8 +397,7 @@ msgstr "Премештање ових датотека?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Брисање ових датотека? - Након брисања, датотеке није могуће повратити!"
+msgstr "Брисање ових датотека? - Након брисања, датотеке није могуће повратити!"
 
 #: id:126
 msgid "Status"
@@ -842,9 +841,7 @@ msgid "Full screen"
 msgstr ""
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
 msgstr ""
 
 #: id:247
@@ -2435,8 +2432,7 @@ msgstr "Интернет протокол (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Одредили сте неисправан прикључак. Вредност мора бити између 1 и 65535."
+msgstr "Одредили сте неисправан прикључак. Вредност мора бити између 1 и 65535."
 
 #: id:713
 msgid "HTTP proxy"
@@ -4011,8 +4007,7 @@ msgstr "Уколико наставите даље, можда нећете мо
 
 #: id:13142
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr ""
-"апликацијом. Да ли сте сигурни да желите да зауставите Сервер за догађаје?"
+msgstr "апликацијом. Да ли сте сигурни да желите да зауставите Сервер за догађаје?"
 
 #: id:13144
 msgid "Change Apple Remote mode?"
@@ -4516,20 +4511,12 @@ msgid "Preset"
 msgstr "Унапред задато"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Не постоје унапред задате поставке\n"
-"за ову визуализацију"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Не постоје унапред задате поставке\nза ову визуализацију"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Не постоје доступне поставке\n"
-"за ову визуализацију"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Не постоје доступне поставке\nза ову визуализацију"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8815,8 +8802,7 @@ msgstr "Мржња"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Ова датотека је сложена, изаберите који део желите да репродукујете из ње."
+msgstr "Ова датотека је сложена, изаберите који део желите да репродукујете из ње."
 
 #: id:33082
 msgid "Path to script"
@@ -8935,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8984,9 +8969,7 @@ msgid "Generic disk"
 msgstr ""
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr ""
 
 #: id:35005
@@ -9079,9 +9062,7 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr ""
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
 msgstr ""
 
 #: id:36014

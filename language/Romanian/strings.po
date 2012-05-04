@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -397,9 +397,7 @@ msgstr "Mutați aceste fișiere?"
 
 #: id:125
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr ""
-"Sigur doriți să ștergeți acest fișier?\n"
-"ATENȚIE: Ștergerea fișierelor nu poate fi anulată!"
+msgstr "Sigur doriți să ștergeți acest fișier?\nATENȚIE: Ștergerea fișierelor nu poate fi anulată!"
 
 #: id:126
 msgid "Status"
@@ -843,12 +841,8 @@ msgid "Full screen"
 msgstr "Ecran complet"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Dimensionare: (%i,%i)->(%i,%i) (zoom x%2.2f) AR:%2.2f:1 (pixeli: %2.2f:1) "
-"(DeplasareV: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Dimensionare: (%i,%i)->(%i,%i) (zoom x%2.2f) AR:%2.2f:1 (pixeli: %2.2f:1) (DeplasareV: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -976,8 +970,7 @@ msgstr "Ajustați săgeata pentru a modifica gradul de suprascanare"
 
 #: id:277
 msgid "Adjust the bar to change the subtitles position"
-msgstr ""
-"Ajustați bara pe verticală pentru a modifica poziția afișării subtitrărilor"
+msgstr "Ajustați bara pe verticală pentru a modifica poziția afișării subtitrărilor"
 
 #: id:278
 msgid "Adjust the rectangle so it is perfectly square"
@@ -2439,8 +2432,7 @@ msgstr "Internet Protocol (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-"Portul specificat nu este valid. Valoarea trebuie să fie între 1 și 65535."
+msgstr "Portul specificat nu este valid. Valoarea trebuie să fie între 1 și 65535."
 
 #: id:713
 msgid "HTTP proxy"
@@ -3734,9 +3726,7 @@ msgstr "Blocare principală"
 
 #: id:12362
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr ""
-"Oprește sistemul dacă s-a ajuns la limita încercărilor pentru Blocarea "
-"principală"
+msgstr "Oprește sistemul dacă s-a ajuns la limita încercărilor pentru Blocarea principală"
 
 #: id:12367
 msgid "Master code is not valid"
@@ -4521,18 +4511,12 @@ msgid "Preset"
 msgstr "Predefinit"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Nu există vizualizări predefinite disponibile"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Nu există setări disponibile\n"
-"pentru această vizualizare"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Nu există setări disponibile\npentru această vizualizare"
 
 #: id:13391
 msgid "Eject/Load"
@@ -6207,8 +6191,7 @@ msgstr "Cod de blocare principal și setări"
 
 #: id:20101
 msgid "Entering master lock code always enables master mode"
-msgstr ""
-"Introducând codul de blocare principal activează întotdeauna modul principal"
+msgstr "Introducând codul de blocare principal activează întotdeauna modul principal"
 
 #: id:20102
 msgid "or copy from default?"
@@ -6381,9 +6364,7 @@ msgstr "Planificare închidere"
 
 #: id:20145
 msgid "Shutdown interval (in minutes)"
-msgstr ""
-"Planificare închidere\n"
-"(în minute)"
+msgstr "Planificare închidere\n(în minute)"
 
 #: id:20146
 msgid "Started, shutdown in %im"
@@ -7644,8 +7625,7 @@ msgstr "Cache plin"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Cache împlinit înainte de a ajunge la nivelul necesar pentru redare continuă"
+msgstr "Cache împlinit înainte de a ajunge la nivelul necesar pentru redare continuă"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8822,8 +8802,7 @@ msgstr "Ură"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Acest fișier este în stivă, selectați partea pe care vreți să o redați."
+msgstr "Acest fișier este în stivă, selectați partea pe care vreți să o redați."
 
 #: id:33082
 msgid "Path to script"
@@ -8935,19 +8914,15 @@ msgstr "Zeroconf nu poate fi pornit"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Serviciul Bonjour de la Apple este instalat? Vedeți jurnalul pentru mai "
-"multe informații."
+msgstr "Serviciul Bonjour de la Apple este instalat? Vedeți jurnalul pentru mai multe informații."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Randare video"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Filtre/scalori video nu pot fi inițializați, revenim la scalare bilineară"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Filtre/scalori video nu pot fi inițializați, revenim la scalare bilineară"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8994,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Disc generic"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Nu există setări disponibile\n"
-"pentru acest periferic."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Nu există setări disponibile\npentru acest periferic."
 
 #: id:35005
 msgid "New device configured"
@@ -9091,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Adaptorul CEC nu poate fi detectat."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Versiune interfață libcec nesuportată. %d este mai mare decât versiunea pe "
-"care XBMC o suportă (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Versiune interfață libcec nesuportată. %d este mai mare decât versiunea pe care XBMC o suportă (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Celá obrazovka"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Zmena veľkosti: (%i,%i)->(%i,%i) (Priblíženie x%2.2f) AR:%2.2f:1 (Pixelov: "
-"%2.2f:1) (VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Zmena veľkosti: (%i,%i)->(%i,%i) (Priblíženie x%2.2f) AR:%2.2f:1 (Pixelov: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2291,8 +2287,7 @@ msgstr "Vlastné"
 
 #: id:637
 msgid "Replay gain"
-msgstr ""
-"ReplayGain / stará sa o minimálny rozdiel hlasitosti v rôznych skladbách"
+msgstr "ReplayGain / stará sa o minimálny rozdiel hlasitosti v rôznych skladbách"
 
 #: id:638
 msgid "Replaygain volume adjustments"
@@ -4516,20 +4511,12 @@ msgid "Preset"
 msgstr "Predvoľby"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Pre túto vizualizáciu\n"
-"nie sú k dispozícii žiadne predvoľby"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Pre túto vizualizáciu\nnie sú k dispozícii žiadne predvoľby"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Pre túto vizualizáciu\n"
-"nie sú k dispozícii žiadne nastavenia"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Pre túto vizualizáciu\nnie sú k dispozícii žiadne nastavenia"
 
 #: id:13391
 msgid "Eject/Load"
@@ -5110,8 +5097,7 @@ msgstr "Zobrazovať informácie o obrázku (EXIF)"
 
 #: id:14083
 msgid "Use a fullscreen window rather than true fullscreen"
-msgstr ""
-"Uprednostniť režim okna celej obrazovky pred skutočnou celou obrazovkou"
+msgstr "Uprednostniť režim okna celej obrazovky pred skutočnou celou obrazovkou"
 
 #: id:14084
 msgid "Queue songs on selection"
@@ -7639,9 +7625,7 @@ msgstr "Medzipamäť plná"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-"Medzipamäť plná pred dosiahnutím potrebného množstva pre nepretržité "
-"prehrávanie"
+msgstr "Medzipamäť plná pred dosiahnutím potrebného množstva pre nepretržité prehrávanie"
 
 #: id:21460
 msgid "Subtitle location"
@@ -8818,9 +8802,7 @@ msgstr "Nenávidieť"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Tento súbor sa skladá z viacero častí. Vyberte tú, od ktorej chcete spustiť "
-"prehrávanie."
+msgstr "Tento súbor sa skladá z viacero častí. Vyberte tú, od ktorej chcete spustiť prehrávanie."
 
 #: id:33082
 msgid "Path to script"
@@ -8939,10 +8921,8 @@ msgid "Video Rendering"
 msgstr "Vykreslovanie videa"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Video filtrovanie/škálovanie zlyhalo, použitie bilineárneho škálovania."
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Video filtrovanie/škálovanie zlyhalo, použitie bilineárneho škálovania."
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8989,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Pevný disk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "Pre toto periférne zariadenie nie sú žiadne nastavenia dostupné."
 
 #: id:35005
@@ -9084,11 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Nepodarilo sa zistiť CEC adaptér."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nepodporovaná verzia libcec rozhrania. %d je vyššia ako XBMC podporuje (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nepodporovaná verzia libcec rozhrania. %d je vyššia ako XBMC podporuje (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

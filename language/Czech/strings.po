@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Celá obrazovka"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Změna velikosti: (%i,%i)->(%i,%i) (Přiblížení x%2.2f) AR:%2.2f:1 (Pixelů: "
-"%2.2f:1) (VShift: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Změna velikosti: (%i,%i)->(%i,%i) (Přiblížení x%2.2f) AR:%2.2f:1 (Pixelů: %2.2f:1) (VShift: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -2476,8 +2472,7 @@ msgstr "Uložit nastavení a restartovat"
 
 #: id:724
 msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr ""
-"Nebyla nastavena platná IP adresa. Hodnota musí být ve tvaru AAA.BBB.CCC.DDD"
+msgstr "Nebyla nastavena platná IP adresa. Hodnota musí být ve tvaru AAA.BBB.CCC.DDD"
 
 #: id:725
 msgid "with numbers between 0 and 255."
@@ -4516,20 +4511,12 @@ msgid "Preset"
 msgstr "Předvolby"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
-msgstr ""
-"Pro tuto vizualizaci\n"
-"nejsou k dispozici žádné předvolby"
+msgid "There are no presets available\nfor this visualization"
+msgstr "Pro tuto vizualizaci\nnejsou k dispozici žádné předvolby"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
-msgstr ""
-"Pro tuto vizualizaci\n"
-"není k dispozici žádné nastavení"
+msgid "There are no settings available\nfor this visualization"
+msgstr "Pro tuto vizualizaci\nnení k dispozici žádné nastavení"
 
 #: id:13391
 msgid "Eject/Load"
@@ -8815,9 +8802,7 @@ msgstr "Nesnášet"
 
 #: id:33081
 msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-"Tento soubor se skládá z více částí. Vyberte tu, od které chcete spustit "
-"přehrávání."
+msgstr "Tento soubor se skládá z více částí. Vyberte tu, od které chcete spustit přehrávání."
 
 #: id:33082
 msgid "Path to script"
@@ -8936,8 +8921,7 @@ msgid "Video Rendering"
 msgstr ""
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
 msgstr ""
 
 #: id:34402
@@ -8985,12 +8969,8 @@ msgid "Generic disk"
 msgstr "Obecný disk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
-msgstr ""
-"Pro toto periferní zařízení nejsou\n"
-"k dispozici žádná nastavení."
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Pro toto periferní zařízení nejsou\nk dispozici žádná nastavení."
 
 #: id:35005
 msgid "New device configured"
@@ -9071,8 +9051,7 @@ msgstr "Vypnout zařízení při ukončování XBMC"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-"Uvést zařízení do pohotovostního režimu při aktivování spořiče obrazovky"
+msgstr "Uvést zařízení do pohotovostního režimu při aktivování spořiče obrazovky"
 
 #: id:36011
 msgid "Could not detect the CEC port. Set it up manually."
@@ -9083,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "Nepodařilo se najít CEC adaptér."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Nepodporovaná verze libcec rozhraní. %d je vyšší než verze podporovaná XBMC "
-"(%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Nepodporovaná verze libcec rozhraní. %d je vyšší než verze podporovaná XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"

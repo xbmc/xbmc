@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-03 23:36+0000\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -841,12 +841,8 @@ msgid "Full screen"
 msgstr "Tam ekran"
 
 #: id:245
-msgid ""
-"Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift:"
-" %2.2f)"
-msgstr ""
-"Boyutlandırma: (%i,%i)->(%i,%i) (Yakınlaştırma  x%2.2f) AR:%2.2f:1 "
-"(Pikseller: %2.2f:1) (DKaydırma: %2.2f)"
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr "Boyutlandırma: (%i,%i)->(%i,%i) (Yakınlaştırma  x%2.2f) AR:%2.2f:1 (Pikseller: %2.2f:1) (DKaydırma: %2.2f)"
 
 #: id:247
 msgctxt "Auto context with id 247"
@@ -4515,15 +4511,11 @@ msgid "Preset"
 msgstr "Önayar"
 
 #: id:13389
-msgid ""
-"There are no presets available\n"
-"for this visualization"
+msgid "There are no presets available\nfor this visualization"
 msgstr "Bu görsel öğenin kullanılabilir önayarları yok"
 
 #: id:13390
-msgid ""
-"There are no settings available\n"
-"for this visualization"
+msgid "There are no settings available\nfor this visualization"
 msgstr "Bu görsel öğenin kullanılabilir ayarları yok"
 
 #: id:13391
@@ -8922,20 +8914,15 @@ msgstr "Zeroconf başlatılamadı"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-"Apple'ın Bonjour Hizmeti yüklü mü? Daha fazla bilgi için hata ayıklama "
-"çıktısına bakın."
+msgstr "Apple'ın Bonjour Hizmeti yüklü mü? Daha fazla bilgi için hata ayıklama çıktısına bakın."
 
 #: id:34400
 msgid "Video Rendering"
 msgstr "Video İşleme"
 
 #: id:34401
-msgid ""
-"Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-"Video filtreleri/ölçekleyiciler başlatılamadı, bilinear ölçeklendirmeye "
-"dönülüyor"
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr "Video filtreleri/ölçekleyiciler başlatılamadı, bilinear ölçeklendirmeye dönülüyor"
 
 #: id:34402
 msgid "Failed to initialize audio device"
@@ -8982,9 +8969,7 @@ msgid "Generic disk"
 msgstr "Genel disk"
 
 #: id:35004
-msgid ""
-"There are no settings available\n"
-"for this peripheral."
+msgid "There are no settings available\nfor this peripheral."
 msgstr "Bu çevre birimi için ayar mevcut değil."
 
 #: id:35005
@@ -9077,12 +9062,8 @@ msgid "Could not initialise the CEC adapter. Check your settings."
 msgstr "CEC bağdaştırıcısı algılanamadı."
 
 #: id:36013
-msgid ""
-"Unsupported libCEC interface version. %d is greater than the version XBMC "
-"supports (%d)"
-msgstr ""
-"Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC "
-"supports (%d)"
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr "Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC supports (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
@@ -9127,8 +9108,7 @@ msgstr "Yapılandırma güncellendi"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-"Yeni yapılandırma değeri ayarlanamadı. Lütfen ayarlarınızı kontrol edin."
+msgstr "Yeni yapılandırma değeri ayarlanamadı. Lütfen ayarlarınızı kontrol edin."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"
