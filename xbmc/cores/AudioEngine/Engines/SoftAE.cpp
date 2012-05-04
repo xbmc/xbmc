@@ -326,7 +326,10 @@ void CSoftAE::InternalOpenSink()
     m_buffer.Empty();
   }
   else
-    CLog::Log(LOGINFO, "CSoftAE::InternalOpenSink - keeping old sink");
+    CLog::Log(LOGINFO, "CSoftAE::InternalOpenSink - keeping old sink with : %s, %s, %dhz",
+                          CAEUtil::DataFormatToStr(newFormat.m_dataFormat),
+                          ((std::string)newFormat.m_channelLayout).c_str(),
+                          newFormat.m_sampleRate);
 
   reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
   m_chLayout = m_sinkFormat.m_channelLayout;
