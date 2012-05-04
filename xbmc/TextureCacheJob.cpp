@@ -39,25 +39,10 @@ CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldH
   m_url = url;
   m_oldHash = oldHash;
   m_cachePath = CTextureCache::GetCacheFile(m_url);
-  m_texture = NULL;
-  m_maxWidth = m_maxHeight = 0;
-}
-
-CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CBaseTexture *texture, unsigned int max_width, unsigned int max_height)
-{
-  m_url = url;
-  if (texture)
-    m_texture = new CTexture(*(CTexture *)texture);
-  else
-    m_texture = NULL;
-  m_maxWidth = max_width;
-  m_maxHeight = max_height;
-  m_cachePath = CTextureCache::GetCacheFile(m_url);
 }
 
 CTextureCacheJob::~CTextureCacheJob()
 {
-  delete m_texture;
 }
 
 bool CTextureCacheJob::operator==(const CJob* job) const
@@ -73,36 +58,62 @@ bool CTextureCacheJob::operator==(const CJob* job) const
 
 bool CTextureCacheJob::DoWork()
 {
+  if (ShouldCancel(0, 0))
+    return false;
+  if (ShouldCancel(1, 0)) // HACK: second check is because we cancel the job in the first callback, but we don't detect it
+    return false;         //       until the second
+
+  // check whether we need cache the job anyway
+  bool needsRecaching = false;
+  CStdString path(CTextureCache::Get().CheckCachedImage(m_url, false, needsRecaching));
+  if (!path.IsEmpty() && !needsRecaching)
+    return false;
+  return CacheTexture();
+}
+
+bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
+{
   // unwrap the URL as required
   bool flipped;
   unsigned int width, height;
   CStdString image = DecodeImageURL(m_url, width, height, flipped);
 
+  m_details.updateable = UpdateableURL(image);
+
   // generate the hash
-  m_hash = GetImageHash(image);
-  if (m_hash.IsEmpty())
+  m_details.hash = GetImageHash(image);
+  if (m_details.hash.empty())
     return false;
-  else if (m_hash == m_oldHash)
+  else if (m_details.hash == m_oldHash)
     return true;
 
-  if (!m_texture)
-    m_texture = LoadImage(image, width, height, flipped);
-  if (m_texture)
+  CBaseTexture *texture = LoadImage(image, width, height, flipped);
+  if (texture)
   {
-    if (m_texture->HasAlpha())
-      m_cacheFile = m_cachePath + ".png";
+    if (texture->HasAlpha())
+      m_details.file = m_cachePath + ".png";
     else
-      m_cacheFile = m_cachePath + ".jpg";
+      m_details.file = m_cachePath + ".jpg";
 
     if (width > 0 && height > 0)
       CLog::Log(LOGDEBUG, "%s image '%s' at %dx%d with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                width, height, m_texture->GetOrientation(), m_cacheFile.c_str());
+                width, height, texture->GetOrientation(), m_details.file.c_str());
     else
       CLog::Log(LOGDEBUG, "%s image '%s' fullsize with orientation %d as '%s'", m_oldHash.IsEmpty() ? "Caching" : "Recaching", image.c_str(),
-                m_texture->GetOrientation(), m_cacheFile.c_str());
+                texture->GetOrientation(), m_details.file.c_str());
 
-    return CPicture::CacheTexture(m_texture, width, height, CTextureCache::GetCachedPath(m_cacheFile));
+    if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(m_details.file)))
+    {
+      m_details.width = width;
+      m_details.height = height;
+      if (out_texture) // caller wants the texture
+        *out_texture = texture;
+      else
+        delete texture;
+      return true;
+    }
   }
+  delete texture;
   return false;
 }
 
@@ -177,6 +188,15 @@ CBaseTexture *CTextureCacheJob::LoadImage(const CStdString &image, unsigned int 
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;
+}
+
+bool CTextureCacheJob::UpdateableURL(const CStdString &url) const
+{
+  // we don't constantly check online images
+  if (url.compare(0, 7, "http://") == 0 ||
+      url.compare(0, 8, "https://") == 0)
+    return false;
+  return true;
 }
 
 CStdString CTextureCacheJob::GetImageHash(const CStdString &url)

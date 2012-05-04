@@ -102,6 +102,24 @@ void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   QueueNextJob();
 }
 
+void CJobQueue::CancelJob(const CJob *job)
+{
+  CSingleLock lock(m_section);
+  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
+  if (i != m_processing.end())
+  {
+    i->CancelJob();
+    m_processing.erase(i);
+    return;
+  }
+  Queue::iterator j = find(m_jobQueue.begin(), m_jobQueue.end(), job);
+  if (j != m_jobQueue.end())
+  {
+    j->FreeJob();
+    m_jobQueue.erase(j);
+  }
+}
+
 void CJobQueue::AddJob(CJob *job)
 {
   CSingleLock lock(m_section);
