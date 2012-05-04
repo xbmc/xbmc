@@ -52,8 +52,6 @@ CSoftAE::CSoftAE():
   m_transcode          (false),
   m_rawPassthrough     (false),
   m_encoder            (NULL ),
-  m_remapped           (NULL ),
-  m_remappedSize       (0    ),
   m_converted          (NULL ),
   m_convertedSize      (0    ),
   m_masterStream       (NULL ),
@@ -330,14 +328,15 @@ void CSoftAE::InternalOpenSink()
   else
     CLog::Log(LOGINFO, "CSoftAE::InternalOpenSink - keeping old sink");
 
+  reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
+  m_chLayout = m_sinkFormat.m_channelLayout;
+
   size_t neededBufferSize = 0;
   if (m_rawPassthrough)
   {
     if (!wasRawPassthrough)
       m_buffer.Empty();
 
-    reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
-    m_chLayout       = m_sinkFormat.m_channelLayout;
     m_convertFn      = NULL;
     m_bytesPerSample = CAEUtil::DataFormatToBits(m_sinkFormat.m_dataFormat) >> 3;
     m_frameSize      = m_sinkFormat.m_frameSize;
@@ -345,9 +344,6 @@ void CSoftAE::InternalOpenSink()
   }
   else
   {
-    reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
-    m_chLayout = m_sinkFormat.m_channelLayout;
-
     /* if we are transcoding */
     if (m_transcode)
     {
@@ -392,8 +388,6 @@ void CSoftAE::InternalOpenSink()
 
   if (m_buffer.Size() < neededBufferSize)
     m_buffer.Alloc(neededBufferSize);
-
-  m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true, false, m_stdChLayout);
 
   if (reInit)
   {
@@ -589,10 +583,6 @@ void CSoftAE::Deinitialize()
   _aligned_free(m_converted);
   m_converted = NULL;
   m_convertedSize = 0;
-
-  _aligned_free(m_remapped);
-  m_remapped = NULL;
-  m_remappedSize = 0;
 }
 
 void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
@@ -953,43 +943,30 @@ void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
 
 void CSoftAE::RunOutputStage()
 {
-  const size_t needBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
+  const unsigned int needSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
+  const size_t needBytes = needSamples * sizeof(float);
   if (m_buffer.Used() < needBytes)
     return;
 
-  const unsigned int needFrames = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
-  if (m_remappedSize < needFrames)
-  {
-    _aligned_free(m_remapped);
-    m_remapped = (float *)_aligned_malloc(needFrames * sizeof(float), 16);
-    m_remappedSize = needFrames;
-  }
-
-  m_remap.Remap(
-    (float *)m_buffer.Raw(needBytes),
-    m_remapped,
-    m_sinkFormat.m_frames
-  );
-  FinalizeSamples(m_remapped, needFrames);
+  void *data = m_buffer.Raw(needBytes);
+  FinalizeSamples((float*)data, needSamples);
 
   int wroteFrames;
   if (m_convertFn)
   {
-    if (m_convertedSize < needBytes)
+    const unsigned int convertedBytes = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
+    if (m_convertedSize < convertedBytes)
     {
       _aligned_free(m_converted);
-      m_converted = (uint8_t *)_aligned_malloc(needBytes, 16);
-      m_convertedSize = needBytes;
+      m_converted = (uint8_t *)_aligned_malloc(convertedBytes, 16);
+      m_convertedSize = convertedBytes;
     }
-    m_convertFn(m_remapped, needFrames, m_converted);
-    wroteFrames = m_sink->AddPackets(m_converted, m_sinkFormat.m_frames);
-  }
-  else
-  {
-    wroteFrames = m_sink->AddPackets((uint8_t*)m_remapped, m_sinkFormat.m_frames);
+    m_convertFn((float*)data, needSamples, m_converted);
+    data = m_converted;
   }
 
-  m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_frameSize);
+  wroteFrames = m_sink->AddPackets((uint8_t*)data, m_sinkFormat.m_frames);
+  m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
 }
 
 bool buffering = true;
