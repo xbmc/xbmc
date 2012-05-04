@@ -5159,6 +5159,9 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
   if (hardwareVolume > VOLUME_MINIMUM)
     value = CAEUtil::LinToLog(VOLUME_DYNAMIC_RANGE, hardwareVolume);
 
+  if (value >= 0.99f)
+    value = 1.0f;
+
   CAEFactory::AE->SetVolume(value);
 }
 
