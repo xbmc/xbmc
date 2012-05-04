@@ -1873,7 +1873,7 @@ bool CApplication::LoadUserWindows()
         CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
-          TiXmlDocument xmlDoc;
+          CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
             CLog::Log(LOGERROR, "unable to load: %s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());

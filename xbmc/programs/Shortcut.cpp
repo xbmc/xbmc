@@ -24,7 +24,7 @@
 
 #include "Shortcut.h"
 #include "Util.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "filesystem/File.h"
 
 using namespace XFILE;
@@ -43,7 +43,7 @@ CShortcut::~CShortcut()
 
 bool CShortcut::Create(const CStdString& szPath)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if ( !xmlDoc.LoadFile( szPath ) )
     return FALSE;
 
@@ -132,7 +132,7 @@ bool CShortcut::Save(const CStdString& strFileName)
   // <shortcut>
   //   <path>F:\App\default.xbe</path>
   // </shortcut>
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   TiXmlElement xmlRootElement("shortcut");
   TiXmlNode *pRootNode = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRootNode) return false;

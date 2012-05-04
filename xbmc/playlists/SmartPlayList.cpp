@@ -869,7 +869,7 @@ bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
 
 bool CSmartPlaylist::Save(const CStdString &path)
 {
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlDeclaration decl("1.0", "UTF-8", "yes");
   doc.InsertEndChild(decl);
 

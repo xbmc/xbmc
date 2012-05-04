@@ -29,7 +29,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 using namespace XFILE;
@@ -293,7 +293,7 @@ bool CPlayListASX::LoadData(istream& stream)
   }
   else
   {
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     stream >> xmlDoc;
 
     if (xmlDoc.Error())
@@ -316,7 +316,7 @@ bool CPlayListASX::LoadData(istream& stream)
       pChild = pNode->IterateChildren(pChild);
       if(pChild)
       {
-        if (pChild->Type() == TiXmlNode::ELEMENT)
+        if (pChild->Type() == TiXmlNode::TINYXML_ELEMENT)
         {
           value = pChild->Value();
           value.ToLower();

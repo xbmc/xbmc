@@ -1,0 +1,52 @@
+#pragma once
+
+/*
+ *      Copyright (C) 2005-2011 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#ifdef TARGET_WINDOWS
+#define TIXML_USE_STL
+#ifdef _DEBUG
+#pragma comment(lib, "tinyxmlSTLd.lib")
+#else
+#pragma comment(lib, "tinyxmlSTL.lib")
+#endif
+#endif
+#include <tinyxml.h>
+
+#include "StdString.h"
+
+class CXBMCTinyXML : public TiXmlDocument
+{
+public:
+  CXBMCTinyXML();
+  CXBMCTinyXML(const char*);
+  CXBMCTinyXML(const CStdString&);
+  bool LoadFile(TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool LoadFile(const char*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool LoadFile(const CStdString&, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool LoadFile(FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  bool SaveFile(const char*) const;
+  bool SaveFile(const CStdString&) const;
+  const char *Parse(const char*, TiXmlParsingData *prevData = NULL, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  const char *Parse(CStdString&, TiXmlParsingData *prevData = NULL, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
+  static bool Test();
+};
