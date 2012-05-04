@@ -148,23 +148,26 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
           conHandler->requestHandler = handler;
 
           // Get the content-type of the POST data
-          const char *contentType = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
-          // If the content-type is application/x-ww-form-urlencoded or multipart/form-data
-          // we can use MHD's POST processor
-          if (contentType != NULL && 
-             (stricmp(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) == 0 || stricmp(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA) == 0))
+          string contentType = GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+          if (!contentType.empty())
           {
-            // Get a new MHD_PostProcessor
-            conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler);
-
-            // MHD doesn't seem to be able to handle
-            // this post request
-            if (conHandler->postprocessor == NULL)
+            // If the content-type is application/x-ww-form-urlencoded or multipart/form-data
+            // we can use MHD's POST processor
+            if (stricmp(contentType.c_str(), MHD_HTTP_POST_ENCODING_FORM_URLENCODED) == 0 ||
+                stricmp(contentType.c_str(), MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA) == 0)
             {
-              delete conHandler->requestHandler;
-              delete conHandler;
+              // Get a new MHD_PostProcessor
+              conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler);
 
-              return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+              // MHD doesn't seem to be able to handle
+              // this post request
+              if (conHandler->postprocessor == NULL)
+              {
+                delete conHandler->requestHandler;
+                delete conHandler;
+
+                return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+              }
             }
           }
           // otherwise we need to handle the POST data ourselves
@@ -613,6 +616,18 @@ std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection,
   const char* value = MHD_lookup_connection_value(connection, kind, key.c_str());
   if (value == NULL)
     return "";
+
+  if (stricmp(key.c_str(), MHD_HTTP_HEADER_CONTENT_TYPE) == 0)
+  {
+    // Work around a bug in firefox (see https://bugzilla.mozilla.org/show_bug.cgi?id=416178)
+    // by cutting of anything that follows a ";" in a "Content-Type" header field
+    string strValue(value);
+    size_t pos = strValue.find(';');
+    if (pos != string::npos)
+      strValue = strValue.substr(0, pos);
+
+    return strValue;
+  }
 
   return value;
 }
