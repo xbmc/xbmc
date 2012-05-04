@@ -348,6 +348,157 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLaye
   return OK;
 }
 
+JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["movieid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetMovieInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  int playcount = infos.m_playCount;
+  CDateTime lastPlayed = infos.m_lastPlayed;
+
+  UpdateVideoTag(parameterObject, infos);
+
+  if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, id) > 0)
+  {
+    if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+    return ACK;
+  }
+
+  return InternalError;
+}
+
+JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["tvshowid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetTvShowInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  int playcount = infos.m_playCount;
+  CDateTime lastPlayed = infos.m_lastPlayed;
+
+  UpdateVideoTag(parameterObject, infos);
+
+  if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, id) > 0)
+  {
+    if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+    return ACK;
+  }
+
+  return InternalError;
+}
+
+JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["episodeid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetEpisodeInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  int tvshowid = videodatabase.GetTvShowForEpisode(id);
+  if (tvshowid <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  int playcount = infos.m_playCount;
+  CDateTime lastPlayed = infos.m_lastPlayed;
+
+  UpdateVideoTag(parameterObject, infos);
+
+  if (videodatabase.SetDetailsForEpisode(infos.m_strFileNameAndPath, infos, tvshowid, id) > 0)
+  {
+    if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+    return ACK;
+  }
+
+  return InternalError;
+}
+
+JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int id = (int)parameterObject["musicvideoid"].asInteger();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  videodatabase.GetMusicVideoInfo("", infos, id);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  int playcount = infos.m_playCount;
+  CDateTime lastPlayed = infos.m_lastPlayed;
+
+  UpdateVideoTag(parameterObject, infos);
+
+  if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, id) > 0)
+  {
+    if (playcount != infos.m_playCount || lastPlayed != infos.m_lastPlayed)
+      videodatabase.SetPlayCount(CFileItem(infos), infos.m_playCount, infos.m_lastPlayed);
+    return ACK;
+  }
+
+  return InternalError;
+}
+
+JSONRPC_STATUS CVideoLibrary::RemoveMovie(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return RemoveVideo(parameterObject);
+}
+
+JSONRPC_STATUS CVideoLibrary::RemoveTVShow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return RemoveVideo(parameterObject);
+}
+
+JSONRPC_STATUS CVideoLibrary::RemoveEpisode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return RemoveVideo(parameterObject);
+}
+
+JSONRPC_STATUS CVideoLibrary::RemoveMusicVideo(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return RemoveVideo(parameterObject);
+}
+
 JSONRPC_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string directory = parameterObject["directory"].asString();
@@ -523,4 +674,89 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &par
   HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
 
   return OK;
+}
+
+JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  if (parameterObject.isMember("movieid"))
+    videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger());
+  else if (parameterObject.isMember("tvshowid"))
+    videodatabase.DeleteTvShow((int)parameterObject["tvshowid"].asInteger());
+  else if (parameterObject.isMember("episodeid"))
+    videodatabase.DeleteEpisode((int)parameterObject["episodeid"].asInteger());
+  else if (parameterObject.isMember("musicvideoid"))
+    videodatabase.DeleteMusicVideo((int)parameterObject["musicvideoid"].asInteger());
+  return ACK;
+}
+
+void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTag& details)
+{
+  if (ParameterNotNull(parameterObject, "title"))
+    details.m_strTitle = parameterObject["title"].asString();
+  if (ParameterNotNull(parameterObject, "playcount"))
+    details.m_playCount = (int)parameterObject["playcount"].asInteger();
+  if (ParameterNotNull(parameterObject, "runtime"))
+    details.m_strRuntime = parameterObject["runtime"].asString();
+  if (ParameterNotNull(parameterObject, "director"))
+    CopyStringArray(parameterObject["director"], details.m_director);
+  if (ParameterNotNull(parameterObject, "studio"))
+    CopyStringArray(parameterObject["studio"], details.m_studio);
+  if (ParameterNotNull(parameterObject, "year"))
+    details.m_iYear = (int)parameterObject["year"].asInteger();
+  if (ParameterNotNull(parameterObject, "plot"))
+    details.m_strPlot = parameterObject["plot"].asString();
+  if (ParameterNotNull(parameterObject, "album"))
+    details.m_strAlbum = parameterObject["album"].asString();
+  if (ParameterNotNull(parameterObject, "artist"))
+    details.m_strArtist = parameterObject["artist"].asString();
+  if (ParameterNotNull(parameterObject, "genre"))
+    CopyStringArray(parameterObject["genre"], details.m_genre);
+  if (ParameterNotNull(parameterObject, "track"))
+    details.m_iTrack = (int)parameterObject["track"].asInteger();
+  if (ParameterNotNull(parameterObject, "rating"))
+    details.m_fRating = parameterObject["rating"].asFloat();
+  if (ParameterNotNull(parameterObject, "mpaa"))
+    details.m_strMPAARating = parameterObject["mpaa"].asString();
+  if (ParameterNotNull(parameterObject, "imdbnumber"))
+    details.m_strIMDBNumber = parameterObject["imdbnumber"].asString();
+  if (ParameterNotNull(parameterObject, "premiered"))
+    details.m_premiered.SetFromDBDate(parameterObject["premiered"].asString());
+  if (ParameterNotNull(parameterObject, "votes"))
+    details.m_strVotes = parameterObject["votes"].asString();
+  if (ParameterNotNull(parameterObject, "lastplayed"))
+    details.m_lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
+  if (ParameterNotNull(parameterObject, "firstaired"))
+    details.m_firstAired.SetFromDBDateTime(parameterObject["firstaired"].asString());
+  if (ParameterNotNull(parameterObject, "productioncode"))
+    details.m_strProductionCode = parameterObject["productioncode"].asString();
+  if (ParameterNotNull(parameterObject, "season"))
+    details.m_iSeason = (int)parameterObject["season"].asInteger();
+  if (ParameterNotNull(parameterObject, "episode"))
+    details.m_iEpisode = (int)parameterObject["episode"].asInteger();
+  if (ParameterNotNull(parameterObject, "originaltitle"))
+    details.m_strOriginalTitle = parameterObject["originaltitle"].asString();
+  if (ParameterNotNull(parameterObject, "trailer"))
+    details.m_strTrailer = parameterObject["trailer"].asString();
+  if (ParameterNotNull(parameterObject, "tagline"))
+    details.m_strTagLine = parameterObject["tagline"].asString();
+  if (ParameterNotNull(parameterObject, "plotoutline"))
+    details.m_strPlotOutline = parameterObject["plotoutline"].asString();
+  if (ParameterNotNull(parameterObject, "writer"))
+    CopyStringArray(parameterObject["writer"], details.m_writingCredits);
+  if (ParameterNotNull(parameterObject, "country"))
+    CopyStringArray(parameterObject["country"], details.m_country);
+  if (ParameterNotNull(parameterObject, "top250"))
+    details.m_iTop250 = (int)parameterObject["top250"].asInteger();
+  if (ParameterNotNull(parameterObject, "sorttitle"))
+    details.m_strSortTitle = parameterObject["sorttitle"].asString();
+  if (ParameterNotNull(parameterObject, "episodeguide"))
+    details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
+  if (ParameterNotNull(parameterObject, "set"))
+    CopyStringArray(parameterObject["set"], details.m_set);
+  if (ParameterNotNull(parameterObject, "showlink"))
+    CopyStringArray(parameterObject["showlink"], details.m_showLink);
 }
