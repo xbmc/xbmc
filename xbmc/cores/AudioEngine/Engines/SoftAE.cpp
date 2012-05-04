@@ -926,7 +926,7 @@ void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
   else
   {
     for (unsigned int i = 0; i < samples; ++i)
-      if (buffer[i] < -1.0 || buffer[i] > 1.0)
+      if (buffer[i] < -1.0f || buffer[i] > 1.0f)
       {
         clamp = true;
         break;
