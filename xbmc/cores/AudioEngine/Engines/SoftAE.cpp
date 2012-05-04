@@ -969,7 +969,6 @@ void CSoftAE::RunOutputStage()
   m_buffer.Shift(NULL, wroteFrames * m_sinkFormat.m_channelLayout.Count() * sizeof(float));
 }
 
-bool buffering = true;
 void CSoftAE::RunRawOutputStage()
 {
   if(m_buffer.Used() < m_sinkBlockSize)
