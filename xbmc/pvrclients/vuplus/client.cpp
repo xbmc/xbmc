@@ -37,21 +37,20 @@ int          g_iClientId = -1;
  */
 std::string g_strHostname             = DEFAULT_HOST;
 int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
-int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
 int         g_iPortStream             = DEFAULT_STREAM_PORT;
 int         g_iPortWeb                = DEFAULT_WEB_PORT;
 int         g_iUpdateInterval         = DEFAULT_UPDATE_INTERVAL;
 std::string g_strUsername             = "";
+std::string g_strRecordingPath        = "";
 std::string g_strPassword             = "";
 std::string g_szUserPath              = "";
 std::string g_strIconPath             = "";
-std::string g_strRecordingPath        = "";
-bool        g_bShowTimersCompleted    = false;
 bool        g_bAutomaticTimerlistCleanup = false;
 bool        g_bZap                    = false;
 bool        g_bCheckForGroupUpdates   = true;
 bool        g_bCheckForChannelUpdates = true;
 bool        g_bOnlyCurrentLocation    = false;
+bool        g_bSetPowerstate          = false;
 std::string g_szClientPath            = "";
 std::string g_strChannelDataPath      = "/tmp/";
 
@@ -86,14 +85,14 @@ void ADDON_ReadSettings(void)
     g_strRecordingPath = buffer;
   else
     g_strRecordingPath = "";
-
+  buffer[0] = 0; /* Set the end of string */
 
   /* read setting "pass" from settings.xml */
   if (XBMC->GetSetting("pass", buffer))
     g_strPassword = buffer;
   else
     g_strPassword = "";
-
+  
   /* read setting "streamport" from settings.xml */
   if (!XBMC->GetSetting("streamport", &g_iPortStream))
     g_iPortStream = DEFAULT_STREAM_PORT;
@@ -101,14 +100,14 @@ void ADDON_ReadSettings(void)
   /* read setting "webport" from settings.xml */
   if (!XBMC->GetSetting("webport", &g_iPortWeb))
     g_iPortWeb = DEFAULT_WEB_PORT;
-
+  
   /* read setting "onlycurrent" from settings.xml */
   if (!XBMC->GetSetting("onlycurrent", &g_bOnlyCurrentLocation))
     g_bOnlyCurrentLocation = false;
   
-  /* read setting "showcompleted" from settings.xml */
-  if (!XBMC->GetSetting("showcompleted", &g_bShowTimersCompleted))
-    g_bShowTimersCompleted = false;
+  /* read setting "setpowerstate" from settings.xml */
+  if (!XBMC->GetSetting("setpowerstate", &g_bSetPowerstate))
+    g_bSetPowerstate = false;
   
   /* read setting "checkgroups" from settings.xml */
   if (!XBMC->GetSetting("checkgroups", &g_bCheckForGroupUpdates))
@@ -130,10 +129,6 @@ void ADDON_ReadSettings(void)
   if (!XBMC->GetSetting("updateint", &g_iUpdateInterval))
     g_iConnectTimeout = DEFAULT_UPDATE_INTERVAL;
 
-  /* read setting "read_timeout" from settings.xml */
-  if (!XBMC->GetSetting("response_timeout", &g_iResponseTimeout))
-    g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-  
   /* read setting "iconpath" from settings.xml */
   if (XBMC->GetSetting("iconpath", buffer))
     g_strIconPath = buffer;
@@ -217,6 +212,12 @@ void ADDON_Destroy()
     m_bCreated = false;
   }
 
+  if (VuData)
+  {
+    VuData->SendPowerstate();
+  }
+  
+
   if (PVR)
   {
     delete PVR;
@@ -297,16 +298,6 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     {
       XBMC->Log(LOG_INFO, "%s - Changed Setting 'webport' from %u to %u", __FUNCTION__, g_iPortWeb, iNewValue);
       g_iPortWeb = iNewValue;
-      return ADDON_STATUS_OK;
-    }
-  }
-  else if (str == "response_timeout")
-  {
-    int iNewValue = *(int*) settingValue + 1;
-    if (g_iResponseTimeout != iNewValue)
-    {
-      XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
-      g_iResponseTimeout = iNewValue;
       return ADDON_STATUS_OK;
     }
   }
