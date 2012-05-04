@@ -502,7 +502,7 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
   }
 
   // Load the XML file
-  TiXmlDocument slingboxXML;
+  CXBMCTinyXML slingboxXML;
   if (!slingboxXML.LoadFile(slingboxXMLFile))
   {
     CLog::Log(LOGERROR, "%s - Error loading %s - line %d\n%s", __FUNCTION__, 

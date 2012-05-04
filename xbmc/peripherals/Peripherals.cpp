@@ -35,7 +35,7 @@
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
 #include "settings/GUISettings.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -389,7 +389,7 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
 
 bool CPeripherals::LoadMappings(void)
 {
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile("special://xbmc/system/peripherals.xml"))
   {
     CLog::Log(LOGWARNING, "%s - peripherals.xml does not exist", __FUNCTION__);
