@@ -712,7 +712,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "album"))
     details.m_strAlbum = parameterObject["album"].asString();
   if (ParameterNotNull(parameterObject, "artist"))
-    details.m_strArtist = parameterObject["artist"].asString();
+    CopyStringArray(parameterObject["artist"], details.m_artist);
   if (ParameterNotNull(parameterObject, "genre"))
     CopyStringArray(parameterObject["genre"], details.m_genre);
   if (ParameterNotNull(parameterObject, "track"))

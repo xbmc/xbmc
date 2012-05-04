@@ -2140,7 +2140,7 @@ namespace JSONRPC
         "{ \"name\": \"year\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"plot\", \"$ref\": \"Optional.String\" },"
         "{ \"name\": \"album\", \"$ref\": \"Optional.String\" },"
-        "{ \"name\": \"artist\", \"$ref\": \"Optional.String\" },"
+        "{ \"name\": \"artist\", \"type\": [ \"null\", \"Array.String\" ] },"
         "{ \"name\": \"genre\", \"type\": [ \"null\", \"Array.String\" ], \"default\": null },"
         "{ \"name\": \"track\", \"$ref\": \"Optional.Integer\" },"
         "{ \"name\": \"lastplayed\", \"$ref\": \"Optional.String\" }"
