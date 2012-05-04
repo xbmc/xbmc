@@ -195,10 +195,10 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
-  unsigned int uiFrameCount = format.m_sampleRate / 20; //default to 50ms
+  unsigned int uiFrameCount = (int)(format.m_sampleRate * 0.01); //default to 10ms chunks
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * uiFrameCount;
-  m_dwBufferLen = m_dwChunkSize * 16;
+  m_dwBufferLen = m_dwChunkSize * 6; //60ms total buffer
 
   // fill in the secondary sound buffer descriptor
   DSBUFFERDESC dsbdesc;
@@ -240,7 +240,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   format.m_channelLayout = m_channelLayout;
   format.m_frames = uiFrameCount;
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
-  format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? 2 : sizeof(float)) * format.m_channelLayout.Count();
+  format.m_frameSize = (AE_IS_RAW(format.m_dataFormat) ? wfxex.Format.wBitsPerSample >> 3 : sizeof(float)) * format.m_channelLayout.Count();
   format.m_dataFormat = AE_IS_RAW(format.m_dataFormat) ? AE_FMT_S16NE : AE_FMT_FLOAT;
 
   m_format = format;
@@ -407,9 +407,10 @@ double CAESinkDirectSound::GetDelay()
   if (!m_initialized)
     return 0.0;
 
-   // Make sure we know how much data is in the cache
+  /* Make sure we know how much data is in the cache */
   UpdateCacheStatus();
 
+  /** returns current cached data duration in seconds */
   double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
   return delay;
 }
@@ -419,15 +420,17 @@ double CAESinkDirectSound::GetCacheTime()
   if (!m_initialized)
     return 0.0;
 
-   // Make sure we know how much data is in the cache
+  /* Make sure we know how much data is in the cache */
   UpdateCacheStatus();
 
+  /** returns current cached data duration in seconds */
   double delay = (double)m_CacheLen / (double)m_AvgBytesPerSec;
   return delay;
 }
 
 double CAESinkDirectSound::GetCacheTotal()
 {
+  /** returns total cache capacity in seconds */
   return (double)m_dwBufferLen / (double)m_AvgBytesPerSec;
 }
 
