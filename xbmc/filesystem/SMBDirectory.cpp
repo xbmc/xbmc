@@ -250,94 +250,83 @@ int CSMBDirectory::Open(const CURL &url)
 int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 {
   int fd = -1;
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   int nt_error;
 #endif
 
   /* make a writeable copy */
   CURL urlIn(url);
 
-  CStdString strPath;
-
   CPasswordManager::GetInstance().AuthenticateURL(urlIn);
   strAuth = smb.URLEncode(urlIn);
 
-  // for a finite number of attempts use the following instead of the while loop:
-  // for(int i = 0; i < 3, fd < 0; i++)
-  while (fd < 0)
+  // remove the / or \ at the end. the samba library does not strip them off
+  // don't do this for smb:// !!
+  CStdString s = strAuth;
+  int len = s.length();
+  if (len > 1 && s.at(len - 2) != '/' &&
+      (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
   {
-    /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
-    /* however doesn't always encode it correctly (spaces for example) */
-    strPath = smb.URLEncode(urlIn);
+    s.erase(len - 1, 1);
+  }
 
-    // remove the / or \ at the end. the samba library does not strip them off
-    // don't do this for smb:// !!
-    CStdString s = strPath;
-    int len = s.length();
-    if (len > 1 && s.at(len - 2) != '/' &&
-        (s.at(len - 1) == '/' || s.at(len - 1) == '\\'))
+  CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
+  { CSingleLock lock(smb);
+    fd = smbc_opendir(s.c_str());
+  }
+
+  while (fd < 0) /* only to avoid goto in following code */
+  {
+    CStdString cError;
+
+#ifdef TARGET_WINDOWS
+    nt_error = smb.ConvertUnixToNT(errno);
+
+    // if we have an 'invalid handle' error we don't display the error
+    // because most of the time this means there is no cdrom in the server's
+    // cdrom drive.
+    if (nt_error == NT_STATUS_INVALID_HANDLE)
+      break;
+
+    if (nt_error == NT_STATUS_ACCESS_DENIED)
     {
-      s.erase(len - 1, 1);
+      if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+        RequireAuthentication(urlIn.Get());
+      break;
     }
 
-    CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
-    { CSingleLock lock(smb);
-      fd = smbc_opendir(s.c_str());
-    }
+    if (nt_error == NT_STATUS_OBJECT_NAME_NOT_FOUND)
+      cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
+    else
+      cError = get_friendly_nt_error_msg(nt_error);
 
-    if (fd < 0)
+#else
+
+    if (errno == EACCES)
     {
-#ifndef _LINUX
-      nt_error = smb.ConvertUnixToNT(errno);
-
-      // if we have an 'invalid handle' error we don't display the error
-      // because most of the time this means there is no cdrom in the server's
-      // cdrom drive.
-      if (nt_error == NT_STATUS_INVALID_HANDLE)
-        break;
-#endif
-
-      // NOTE: be sure to warn in XML file about Windows account lock outs when too many attempts
-      // if the error is access denied, prompt for a valid user name and password
-#ifndef _LINUX
-      if (nt_error == NT_STATUS_ACCESS_DENIED)
-#else
-      if (errno == EACCES)
-#endif
-      {
-        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
-          RequireAuthentication(urlIn.Get());
-        break;
-      }
-      else
-      {
-        CStdString cError;
-#ifndef _LINUX
-        if (nt_error == NT_STATUS_OBJECT_NAME_NOT_FOUND)
-          cError.Format(g_localizeStrings.Get(770).c_str(),nt_error);
-        else
-          cError = get_friendly_nt_error_msg(nt_error);
-#else
-        if (errno == ENODEV || errno == ENOENT)
-          cError.Format(g_localizeStrings.Get(770).c_str(),errno);
-        else
-          cError = strerror(errno);
-#endif
-
-        if (m_flags & DIR_FLAG_ALLOW_PROMPT)
-          SetErrorDialog(257, cError.c_str());
-        break;
-      }
+      if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+        RequireAuthentication(urlIn.Get());
+      break;
     }
+
+    if (errno == ENODEV || errno == ENOENT)
+      cError.Format(g_localizeStrings.Get(770).c_str(),errno);
+    else
+      cError = strerror(errno);
+
+#endif
+
+    if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+      SetErrorDialog(257, cError.c_str());
   }
 
   if (fd < 0)
   {
     // write error to logfile
-#ifndef _LINUX
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strPath.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+#ifdef TARGET_WINDOWS
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strAuth.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 #else
-    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", strPath.c_str(), errno, strerror(errno));
+    CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", strAuth.c_str(), errno, strerror(errno));
 #endif
   }
 
