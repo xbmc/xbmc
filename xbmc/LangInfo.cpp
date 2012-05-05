@@ -401,6 +401,21 @@ void CLangInfo::SetAudioLanguage(const CStdString &language)
     m_audioLanguage.clear();
 }
 
+// three char language code (not win32 specific)
+const CStdString& CLangInfo::GetSubtitleLanguage() const
+{
+  if (!m_subtitleLanguage.empty())
+    return m_subtitleLanguage;
+
+  return m_languageCodeGeneral;
+}
+
+void CLangInfo::SetSubtitleLanguage(const CStdString &language)
+{
+  if (language.empty() || !g_LangCodeExpander.ConvertToThreeCharCode(m_subtitleLanguage, language))
+    m_subtitleLanguage.clear();
+}
+
 // two character codes as defined in ISO639
 const CStdString& CLangInfo::GetDVDMenuLanguage() const
 {

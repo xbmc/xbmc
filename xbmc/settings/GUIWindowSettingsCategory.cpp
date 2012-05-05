@@ -440,7 +440,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInLanguages(pSetting);
       continue;
     }
-    else if (strSetting.Equals("locale.audiolanguage"))
+    else if (strSetting.Equals("locale.audiolanguage") || strSetting.Equals("locale.subtitlelanguage"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
       vector<CStdString> languages;
@@ -1480,6 +1480,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       {
         g_guiSettings.SetString(strSetting, strLanguage);
         g_langInfo.SetAudioLanguage(strLanguage);
+      }
+    }
+  }
+  else if (strSetting.Equals("locale.subtitlelanguage"))
+  { // new subtitle language chosen...
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    int iLanguage = pControl->GetValue();
+    if (iLanguage < 2)
+    {
+      if (iLanguage < 1)
+        g_guiSettings.SetString(strSetting, "original");
+      else
+        g_guiSettings.SetString(strSetting, "default");
+      g_langInfo.SetSubtitleLanguage("");
+    }
+    else
+    {
+      CStdString strLanguage = pControl->GetCurrentLabel();
+      if (strLanguage != pSettingString->GetData())
+      {
+        g_guiSettings.SetString(strSetting, strLanguage);
+        g_langInfo.SetSubtitleLanguage(strLanguage);
       }
     }
   }

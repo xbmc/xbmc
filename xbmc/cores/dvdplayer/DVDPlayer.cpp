@@ -167,11 +167,24 @@ static bool PredicateSubtitlePriority(const SelectionStream& lh, const Selection
   PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream
                  , rh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream);
 
+  CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
+  if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
+  {
+    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(lh.language.c_str())
+                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(rh.language.c_str()));
+  }
+
   PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
                  , rh.source == STREAM_SOURCE_DEMUX_SUB);
 
   PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
                  , rh.source == STREAM_SOURCE_TEXT);
+
+  if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
+  {
+    PREDICATE_RETURN(subtitle_language.Equals(lh.language.c_str())
+                   , subtitle_language.Equals(rh.language.c_str()));
+  }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
                  , rh.flags & CDemuxStream::FLAG_DEFAULT);
