@@ -225,6 +225,66 @@ public:
   void SetPropertiesForFileItem(CFileItem& item);
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
+
+  /*! \brief Sets art for a database item.
+   Sets a single piece of art for a database item.
+   \param mediaId the id in the media (song/artist/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+   \param artType the type of art to set, e.g. "thumb", "fanart"
+   \param url the url to the art (this is the original url, not a cached url).
+   \sa GetArtForItem
+   */
+  void SetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType, const std::string &url);
+
+  /*! \brief Sets art for a database item.
+   Sets multiple pieces of art for a database item.
+   \param mediaId the id in the media (song/artist/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+   \param art a map of <type, url> where type is "thumb", "fanart", etc. and url is the original url of the art.
+   \sa GetArtForItem
+   */
+  void SetArtForItem(int mediaId, const std::string &mediaType, const std::map<std::string, std::string> &art);
+
+  /*! \brief Fetch art for a database item.
+   Fetches multiple pieces of art for a database item.
+   \param mediaId the id in the media (song/artist/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+   \param art [out] a map of <type, url> where type is "thumb", "fanart", etc. and url is the original url of the art.
+   \return true if art is retrieved, false if no art is found.
+   \sa SetArtForItem
+   */
+  bool GetArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);
+
+  /*! \brief Fetch art for a database item.
+   Fetches a single piece of art for a database item.
+   \param mediaId the id in the media (song/artist/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
+   \param artType the type of art to retrieve, eg "thumb", "fanart".
+   \return the original URL to the piece of art, if available.
+   \sa SetArtForItem
+   */
+  std::string GetArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+
+  /*! \brief Fetch artist art for a song or album item.
+   Fetches the art associated with the primary artist for the song or album.
+   \param mediaId the id in the media (song/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/album).
+   \param art [out] the art map <type, url> of artist art.
+   \return true if artist art is found, false otherwise.
+   \sa GetArtForItem
+   */
+  bool GetArtistArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art);
+
+  /*! \brief Fetch artist art for a song or album item.
+   Fetches a single piece of art associated with the primary artist for the song or album.
+   \param mediaId the id in the media (song/album) table.
+   \param mediaType the type of media, which corresponds to the table the item resides in (song/album).
+   \param artType the type of art to retrieve, eg "thumb", "fanart".
+   \return the original URL to the piece of art, if available.
+   \sa GetArtForItem
+   */
+  std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
+
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -233,7 +293,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 25; };
+  virtual int GetMinVersion() const { return 26; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, const CStdString &strArtist1, int idThumb, const CStdString& strGenre, int year, bool bCompilation);

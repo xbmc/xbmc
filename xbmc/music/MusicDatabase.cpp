@@ -190,6 +190,13 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create albuminfo trigger");
     m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbumInfo; END");
 
+    CLog::Log(LOGINFO, "create art table, index and triggers");
+    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type, type)");
+    m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
+    m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
+    m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
+
     // we create views last to ensure all indexes are rolled in
     CreateViews();
 
@@ -3567,6 +3574,15 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
     }
 
+    if (version < 26)
+    { // add art table
+      m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+      m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type, type)");
+      m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
+      m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
+      m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
+    }
+
     // always recreate the views after any table change
     CreateViews();
 
@@ -5077,4 +5093,99 @@ void CMusicDatabase::AnnounceUpdate(std::string content, int id)
   data["type"] = content;
   data["id"] = id;
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
+}
+
+void CMusicDatabase::SetArtForItem(int mediaId, const string &mediaType, const map<string, string> &art)
+{
+  for (map<string, string>::const_iterator i = art.begin(); i != art.end(); ++i)
+    SetArtForItem(mediaId, mediaType, i->first, i->second);
+}
+
+void CMusicDatabase::SetArtForItem(int mediaId, const string &mediaType, const string &artType, const string &url)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    m_pDS->query(sql.c_str());
+    if (!m_pDS->eof())
+    { // update
+      int artId = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
+      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+      m_pDS->exec(sql.c_str());
+    }
+    else
+    { // insert
+      m_pDS->close();
+      sql = PrepareSQL("INSERT INTO art(media_id, media_type, type, url) VALUES (%d, '%s', '%s', '%s')", mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
+      m_pDS->exec(sql.c_str());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d, '%s', '%s', '%s') failed", __FUNCTION__, mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
+  }
+}
+
+bool CMusicDatabase::GetArtForItem(int mediaId, const string &mediaType, map<string, string> &art)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'", mediaId, mediaType.c_str());
+    m_pDS2->query(sql.c_str());
+    while (!m_pDS2->eof())
+    {
+      art.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return !art.empty();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, mediaId);
+  }
+  return false;
+}
+
+string CMusicDatabase::GetArtForItem(int mediaId, const string &mediaType, const string &artType)
+{
+  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+  return GetSingleValue(query, m_pDS2);
+}
+
+bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaType, std::map<std::string, std::string> &art)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
+    m_pDS2->query(sql.c_str());
+    while (!m_pDS2->eof())
+    {
+      art.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return !art.empty();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, mediaId);
+  }
+  return false;
+}
+
+string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType, const string &artType)
+{
+  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
+  return GetSingleValue(query, m_pDS2);
 }
