@@ -145,7 +145,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         // set this here to if the stat should fail
         bIsDir = (aDir.type == SMBC_DIR);
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
         struct __stat64 info = {0};
 #else
         struct stat info = {0};
@@ -160,7 +160,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           if( smbc_stat(strFullName.c_str(), &info) == 0 )
           {
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
             if ((info.st_mode & S_IXOTH))
               hidden = true;
 #else
@@ -346,7 +346,7 @@ bool CSMBDirectory::Create(const char* strPath)
   int result = smbc_mkdir(strFileName.c_str(), 0);
   success = (result == 0 || EEXIST == errno);
   if(!success)
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -368,7 +368,7 @@ bool CSMBDirectory::Remove(const char* strPath)
 
   if(result != 0 && errno != ENOENT)
   {
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -388,7 +388,7 @@ bool CSMBDirectory::Exists(const char* strPath)
   CPasswordManager::GetInstance().AuthenticateURL(url);
   CStdString strFileName = smb.URLEncode(url);
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   SMB_STRUCT_STAT info;
 #else
   struct stat info;
