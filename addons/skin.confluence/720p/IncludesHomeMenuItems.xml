@@ -60,6 +60,7 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>20434</label>
 			<onclick>ActivateWindow(Videos,MovieSets,return)</onclick>
+			<visible>Library.HasContent(MovieSets)</visible>
 		</control>
 		<control type="button" id="90164">
 			<include>ButtonHomeSubCommonValues</include>
