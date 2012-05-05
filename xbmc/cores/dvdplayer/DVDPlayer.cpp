@@ -74,6 +74,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "LangInfo.h"
 
 using namespace std;
 
@@ -136,6 +137,13 @@ static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStr
 {
   PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_AudioStream
                  , rh.type_index == g_settings.m_currentVideoSettings.m_AudioStream);
+
+  if(!g_guiSettings.GetString("locale.audiolanguage").Equals("original"))
+  {
+    CStdString audio_language = g_langInfo.GetAudioLanguage();
+    PREDICATE_RETURN(audio_language.Equals(lh.language.c_str())
+                   , audio_language.Equals(rh.language.c_str()));
+  }
 
   PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
                  , rh.flags & CDemuxStream::FLAG_DEFAULT);

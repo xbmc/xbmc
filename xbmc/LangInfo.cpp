@@ -25,9 +25,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
-#ifdef _WIN32
 #include "utils/LangCodeExpander.h"
-#endif
 
 using namespace std;
 
@@ -226,6 +224,11 @@ bool CLangInfo::Load(const CStdString& strFileName)
     if (! g_LangCodeExpander.ConvertTwoToThreeCharCode(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
       m_defaultRegion.m_strLangLocaleName = "";
   }
+
+  if (!g_LangCodeExpander.ConvertWindowsToGeneralCharCode(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
+    m_languageCodeGeneral = "";
+#else
+  m_languageCodeGeneral = m_defaultRegion.m_strLangLocaleName;
 #endif
 
   const TiXmlNode *pCharSets = pRootElement->FirstChild("charsets");
@@ -360,6 +363,8 @@ void CLangInfo::SetDefaults()
 
   // Set the default region, we may be unable to load langinfo.xml
   m_currentRegion=&m_defaultRegion;
+  
+  m_languageCodeGeneral = "eng";
 }
 
 CStdString CLangInfo::GetGuiCharSet() const
@@ -379,6 +384,21 @@ CStdString CLangInfo::GetSubtitleCharSet() const
     strCharSet=m_currentRegion->m_strSubtitleCharSet;
 
   return strCharSet;
+}
+
+// three char language code (not win32 specific)
+const CStdString& CLangInfo::GetAudioLanguage() const
+{
+  if (!m_audioLanguage.empty())
+    return m_audioLanguage;
+
+  return m_languageCodeGeneral;
+}
+
+void CLangInfo::SetAudioLanguage(const CStdString &language)
+{
+  if (language.empty() || !g_LangCodeExpander.ConvertToThreeCharCode(m_audioLanguage, language))
+    m_audioLanguage.clear();
 }
 
 // two character codes as defined in ISO639
