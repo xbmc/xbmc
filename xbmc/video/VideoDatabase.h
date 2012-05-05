@@ -420,7 +420,7 @@ public:
   void DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode = -1, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false, int idMVideo = -1);
-  void DeleteDetailsForTvShow(const CStdString& strPath);
+  void DeleteDetailsForTvShow(const CStdString& strPath, bool bKeepThumb = false, int idTvShow = -1);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
   void DeleteSet(int idSet);

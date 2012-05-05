@@ -1497,23 +1497,30 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
   return false;
 }
 
-void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
-{// TODO: merge into DeleteTvShow
+void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath, bool bKeepThumb /* = false */, int idTvShow /* = -1 */)
+{
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    int idTvShow = GetTvShowId(strPath);
-    if ( idTvShow < 0) return ;
+    if (idTvShow < 0)
+    {
+      idTvShow = GetTvShowId(strPath);
+      if (idTvShow < 0)
+        return;
+    }
 
-    CFileItemList items;
-    CStdString strPath2;
-    strPath2.Format("videodb://2/2/%i/",idTvShow);
-    GetSeasonsNav(strPath2,items,-1,-1,-1,-1,idTvShow);
-    for( int i=0;i<items.Size();++i )
-      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb(), true);
-    DeleteThumbForItem(strPath,true);
+    if (!bKeepThumb)
+    {
+      CFileItemList items;
+      CStdString strPath2;
+      strPath2.Format("videodb://2/2/%i/", idTvShow);
+      GetSeasonsNav(strPath2, items, -1, -1, -1, -1, idTvShow);
+      for (int i = 0; i < items.Size(); ++i)
+        CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb(), true);
+      DeleteThumbForItem(strPath, true);
+    }
 
     CStdString strSQL;
     strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
@@ -1870,10 +1877,18 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     BeginTransaction();
 
     if (idTvShow < 0)
-    {
       idTvShow = GetTvShowId(strPath);
+
+    if (idTvShow > -1)
+      DeleteDetailsForTvShow(strPath, true, idTvShow);
+    else
+    {
+      idTvShow = AddTvShow(strPath);
       if (idTvShow < 0)
-        idTvShow = AddTvShow(strPath);
+      {
+        CommitTransaction();
+        return idTvShow;
+      }
     }
 
     vector<int> vecDirectors;
@@ -1891,24 +1906,19 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
-    {
       AddGenreToTvShow(idTvShow, vecGenres[i]);
-    }
 
     for (i = 0; i < vecDirectors.size(); ++i)
-    {
       AddDirectorToTvShow(idTvShow, vecDirectors[i]);
-    }
 
     for (i = 0; i < vecStudios.size(); ++i)
-    {
       AddStudioToTvShow(idTvShow, vecStudios[i]);
-    }
 
     // and insert the new row
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += PrepareSQL("where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
+
     CommitTransaction();
 
     return idTvShow;
@@ -2543,23 +2553,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       m_pDS2->next();
     }
 
-    strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from actorlinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from directorlinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
+    DeleteDetailsForTvShow(strPath, bKeepThumb, idTvShow);
 
     strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from studiolinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    if (!bKeepThumb)
-      DeleteThumbForItem(strPath,true);
 
     // keep tvshow table and movielink table so we can update data in place
     if (!bKeepId)
