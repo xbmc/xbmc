@@ -28,9 +28,13 @@
 #include "CDDAReader.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#ifdef HAVE_LIBMP3LAME
 #include "EncoderLame.h"
-#include "EncoderWav.h"
+#endif
+#ifdef HAVE_LIBVORBISENC
 #include "EncoderVorbis.h"
+#endif
+#include "EncoderWav.h"
 #include "EncoderFFmpeg.h"
 #include "EncoderFlac.h"
 #include "filesystem/CDDADirectory.h"
@@ -71,17 +75,22 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
 
   switch (g_guiSettings.GetInt("audiocds.encoder"))
   {
-  case CDDARIP_ENCODER_WAV:
-    m_pEncoder = new CEncoderWav();
-    break;
+#ifdef HAVE_LIBVORBISENC
   case CDDARIP_ENCODER_VORBIS:
     m_pEncoder = new CEncoderVorbis();
     break;
+#endif
+#ifdef HAVE_LIBMP3LAME
+  case CDDARIP_ENCODER_LAME:
+    m_pEncoder = new CEncoderLame();
+    break;
+#endif
   case CDDARIP_ENCODER_FLAC:
     m_pEncoder = new CEncoderFlac();
     break;
+  case CDDARIP_ENCODER_WAV:
   default:
-    m_pEncoder = new CEncoderLame();
+    m_pEncoder = new CEncoderWav();
     break;
   }
 
