@@ -116,6 +116,8 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAVE_LIBCEC
+#define HAVE_LIBMP3LAME
+#define HAVE_LIBVORBISENC
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
