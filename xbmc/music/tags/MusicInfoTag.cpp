@@ -66,6 +66,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_listeners = tag.m_listeners;
   m_iTimesPlayed = tag.m_iTimesPlayed;
   m_iDbId = tag.m_iDbId;
+  m_type = tag.m_type;
   m_iArtistId = tag.m_iArtistId;
   m_iAlbumId = tag.m_iAlbumId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
@@ -154,6 +155,11 @@ int CMusicInfoTag::GetYear() const
 long CMusicInfoTag::GetDatabaseId() const
 {
   return m_iDbId;
+}
+
+const std::string &CMusicInfoTag::GetType() const
+{
+  return m_type;
 }
 
 CStdString CMusicInfoTag::GetYearString() const
@@ -259,9 +265,10 @@ void CMusicInfoTag::SetYear(int year)
   m_dwReleaseDate.wYear = year;
 }
 
-void CMusicInfoTag::SetDatabaseId(long id)
+void CMusicInfoTag::SetDatabaseId(long id, const std::string &type)
 {
   m_iDbId = id;
+  m_type = type;
 }
 
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
@@ -402,6 +409,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
   m_iDbId = album.idAlbum;
+  m_type = "album";
   m_bLoaded = true;
 }
 
@@ -428,6 +436,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iTrack = song.iTrack;
   m_iDuration = song.iDuration;
   m_iDbId = song.idSong;
+  m_type = "song";
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
   m_iArtistId = song.iArtistId;
@@ -555,6 +564,7 @@ void CMusicInfoTag::Clear()
   m_strComment.Empty();
   m_rating = '0';
   m_iDbId = -1;
+  m_type.clear();
   m_iTimesPlayed = 0;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
   m_iArtistId = -1;

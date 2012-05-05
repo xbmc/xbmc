@@ -160,7 +160,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetRating('0' + m_album.iRating);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_album.genre);
-  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_album.idAlbum);
+  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_album.idAlbum, "album");
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
   m_albumItem->SetMusicThumb();
   // set the artist thumb
@@ -186,7 +186,7 @@ void CGUIDialogMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->GetMusicInfoTag()->SetArtist(m_artist.strArtist);
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_artist.genre);
-  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_artist.idArtist);
+  m_albumItem->GetMusicInfoTag()->SetDatabaseId(m_artist.idArtist, "artist");
   CMusicDatabase::SetPropertiesFromArtist(*m_albumItem,m_artist);
   CStdString strFanart = m_albumItem->GetCachedFanart();
   if (CFile::Exists(strFanart))

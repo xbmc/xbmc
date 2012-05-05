@@ -53,6 +53,7 @@ public:
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
   long GetDatabaseId() const;
+  const std::string &GetType() const;
 
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
   CStdString GetYearString() const;
@@ -81,7 +82,7 @@ public:
   void SetGenre(const CStdString& strGenre);
   void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
-  void SetDatabaseId(long id);
+  void SetDatabaseId(long id, const std::string &type);
   void SetReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetPartOfSet(int m_iPartOfSet);
@@ -152,6 +153,7 @@ protected:
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   long m_iDbId;
+  std::string m_type; ///< item type "song", "album", "artist"
   bool m_bLoaded;
   char m_rating;
   int m_listeners;

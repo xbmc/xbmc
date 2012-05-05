@@ -871,7 +871,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetAlbumId(record->at(song_idAlbum).get_asInt());
   item->GetMusicInfoTag()->SetTrackAndDiskNumber(record->at(song_iTrack).get_asInt());
   item->GetMusicInfoTag()->SetDuration(record->at(song_iDuration).get_asInt());
-  item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt());
+  item->GetMusicInfoTag()->SetDatabaseId(record->at(song_idSong).get_asInt(), "song");
   SYSTEMTIME stTime;
   stTime.wYear = (WORD)record->at(song_iYear).get_asInt();
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
@@ -1138,6 +1138,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
       pItem->SetLabel(label);
       label.Format("A %s", m_pDS->fv(1).get_asString()); // sort label is stored in the title tag
       pItem->GetMusicInfoTag()->SetTitle(label);
+      pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(0).get_asInt(), "artist");
       pItem->SetCachedArtistThumb();
       artists.Add(pItem);
       m_pDS->next();
@@ -2683,7 +2684,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("strGenre").get_asString()));
       pItem->GetMusicInfoTag()->SetGenre(m_pDS->fv("strGenre").get_asString());
-      pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("idGenre").get_asInt());
+      pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv("idGenre").get_asInt(), "genre");
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("idGenre").get_asInt());
       pItem->SetPath(strBaseDir + strDir);
@@ -2860,7 +2861,7 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const CStdS
       CStdString strDir;
       strDir.Format("%ld/", artist.idArtist);
       pItem->SetPath(strBaseDir + strDir);
-      pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist);
+      pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist, "artist");
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       pItem->SetIconImage("DefaultArtist.png");
