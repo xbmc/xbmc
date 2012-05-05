@@ -481,39 +481,6 @@ int CSmbFile::OpenFile(const CURL &url, CStdString& strAuth)
     fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
   }
 
-  // file open failed, try to open the directory to force authentication
-#ifdef TARGET_WINDOWS
-  if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
-#else
-  if (fd < 0 && errno == EACCES)
-#endif
-  {
-    CURL urlshare(url);
-
-    /* just replace the filename with the sharename */
-    urlshare.SetFileName(url.GetShareName());
-
-    CSMBDirectory smbDir;
-    // TODO: Currently we always allow prompting on files.  This may need to
-    // change in the future as background scanners are more prolific.
-    smbDir.SetFlags(DIR_FLAG_ALLOW_PROMPT);
-    fd = smbDir.Open(urlshare);
-
-    // directory open worked, try opening the file again
-    if (fd >= 0)
-    {
-      CSingleLock lock(smb);
-      // close current directory filehandle
-      // dont need to purge since its the same server and share
-      smbc_closedir(fd);
-
-      // set up new filehandle (as CSmbFile::Open does)
-      strPath = GetAuthenticatedPath(url);
-
-      fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
-    }
-  }
-
   if (fd >= 0)
     strAuth = strPath;
 

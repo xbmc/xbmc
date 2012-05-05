@@ -340,8 +340,6 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     CLog::Log(LOGERROR, "SMBDirectory->GetDirectory: Unable to open directory : '%s'\nunix_err:'%x' error : '%s'", strPath.c_str(), errno, strerror(errno));
 #endif
   }
-  else if (strPath != strAuth) // we succeeded so, if path was changed, return the correct one and cache it
-    strAuth = strPath;
 
   return fd;
 }
