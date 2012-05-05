@@ -1398,4 +1398,9 @@ void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
   }
 }
 
+void* CWinSystemOSX::GetCGLContextObj()
+{
+  return [(NSOpenGLContext*)m_glContext CGLContextObj];
+}
+
 #endif
