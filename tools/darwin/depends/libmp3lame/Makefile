@@ -8,7 +8,8 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 BASE_URL=http://voxel.dl.sourceforge.net/project/lame/lame/3.99
 
 # configuration settings
-CONFIGURE=./configure --disable-gtktest --disable-frontend --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) \
+  --disable-gtktest --disable-frontend
 
 LIBDYLIB=$(SOURCE)/.libs/libmp3lame.dylib
 
