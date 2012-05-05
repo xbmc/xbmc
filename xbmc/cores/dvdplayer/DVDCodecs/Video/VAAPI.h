@@ -20,6 +20,8 @@
  */
 #pragma once
 
+#include "system_gl.h"
+
 #include "DllAvCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
