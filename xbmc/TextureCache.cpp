@@ -289,13 +289,16 @@ CStdString CTextureCache::GetCachedPath(const CStdString &file)
 
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  if (strcmp(job->GetType(), "cacheimage") == 0 && success)
+  if (strcmp(job->GetType(), "cacheimage") == 0)
   {
     CTextureCacheJob *cacheJob = (CTextureCacheJob *)job;
-    if (cacheJob->m_oldHash == cacheJob->m_details.hash)
-      SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
-    else
-      AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
+    if (success)
+    {
+      if (cacheJob->m_oldHash == cacheJob->m_details.hash)
+        SetCachedTextureValid(cacheJob->m_url, cacheJob->m_details.updateable);
+      else
+        AddCachedTexture(cacheJob->m_url, cacheJob->m_details);
+    }
 
     { // remove from our processing list
       CSingleLock lock(m_processingSection);
@@ -307,7 +310,7 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_completeEvent.Set();
 
     // TODO: call back to the UI indicating that it can update it's image...
-    if (g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
+    if (success && g_advancedSettings.m_useDDSFanart && !cacheJob->m_details.file.empty())
       AddJob(new CTextureDDSJob(GetCachedPath(cacheJob->m_details.file)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
