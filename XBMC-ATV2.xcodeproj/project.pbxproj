@@ -1257,7 +1257,6 @@
 		F56C7210131EC151000AD0F6 /* EncoderVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderVorbis.h; sourceTree = "<group>"; };
 		F56C7211131EC151000AD0F6 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		F56C7212131EC151000AD0F6 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
-		F56C7214131EC151000AD0F6 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		F56C721D131EC151000AD0F6 /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreConfig.h; path = playercorefactory/PlayerCoreConfig.h; sourceTree = "<group>"; };
 		F56C721E131EC151000AD0F6 /* PlayerCoreFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerCoreFactory.cpp; path = playercorefactory/PlayerCoreFactory.cpp; sourceTree = "<group>"; };
 		F56C721F131EC151000AD0F6 /* PlayerCoreFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreFactory.h; path = playercorefactory/PlayerCoreFactory.h; sourceTree = "<group>"; };
@@ -3442,7 +3441,6 @@
 		F56C71FE131EC151000AD0F6 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				F56C7213131EC151000AD0F6 /* lame */,
 				F56C71FF131EC151000AD0F6 /* CDDAReader.cpp */,
 				F56C7200131EC151000AD0F6 /* CDDAReader.h */,
 				F56C7201131EC151000AD0F6 /* CDDARipper.cpp */,
@@ -3465,14 +3463,6 @@
 				F56C7212131EC151000AD0F6 /* EncoderWav.h */,
 			);
 			path = cdrip;
-			sourceTree = "<group>";
-		};
-		F56C7213131EC151000AD0F6 /* lame */ = {
-			isa = PBXGroup;
-			children = (
-				F56C7214131EC151000AD0F6 /* lame.h */,
-			);
-			path = lame;
 			sourceTree = "<group>";
 		};
 		F56C721B131EC151000AD0F6 /* cores */ = {

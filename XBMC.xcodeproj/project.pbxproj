@@ -2665,7 +2665,6 @@
 		E38E148D0D25F9F900618676 /* EncoderVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderVorbis.h; sourceTree = "<group>"; };
 		E38E148E0D25F9F900618676 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		E38E148F0D25F9F900618676 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
-		E38E14910D25F9F900618676 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		E38E149E0D25F9F900618676 /* coff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coff.cpp; sourceTree = "<group>"; };
 		E38E149F0D25F9F900618676 /* coff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coff.h; sourceTree = "<group>"; };
 		E38E14A00D25F9F900618676 /* coffldr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coffldr.h; sourceTree = "<group>"; };
@@ -5183,7 +5182,6 @@
 		E38E147F0D25F9F900618676 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				E38E14900D25F9F900618676 /* lame */,
 				E38E14800D25F9F900618676 /* CDDAReader.cpp */,
 				E38E14810D25F9F900618676 /* CDDAReader.h */,
 				E38E14820D25F9F900618676 /* CDDARipper.cpp */,
@@ -5206,14 +5204,6 @@
 				E38E148F0D25F9F900618676 /* EncoderWav.h */,
 			);
 			path = cdrip;
-			sourceTree = "<group>";
-		};
-		E38E14900D25F9F900618676 /* lame */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14910D25F9F900618676 /* lame.h */,
-			);
-			path = lame;
 			sourceTree = "<group>";
 		};
 		E38E149A0D25F9F900618676 /* cores */ = {
