@@ -364,13 +364,18 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         if (message.GetNumStringParams())
         {
-          m_vecItems->SetPath(message.GetStringParam());
           if (message.GetParam2()) // param2 is used for resetting the history
-            SetHistoryForPath(m_vecItems->GetPath());
+            SetHistoryForPath(message.GetStringParam());
+
+          CFileItemList list(message.GetStringParam());
+          list.RemoveDiscCache(GetID());
+          Update(message.GetStringParam());
         }
-        // clear any cached listing
-        m_vecItems->RemoveDiscCache(GetID());
-        Update(m_vecItems->GetPath());
+        else
+        { // refresh the listing
+          m_vecItems->RemoveDiscCache(GetID());
+          Update(m_vecItems->GetPath());
+        }
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
