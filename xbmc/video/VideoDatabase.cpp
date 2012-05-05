@@ -3329,6 +3329,35 @@ string CVideoDatabase::GetArtForItem(int mediaId, const string &mediaType, const
   return GetSingleValue("art", "url", PrepareSQL("media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));
 }
 
+bool CVideoDatabase::GetTvShowSeasonArt(int showId, map<int, string> &seasonArt)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    // get all seasons for this show
+    CStdString sql = PrepareSQL("select idSeason,season from seasons where idShow=%i", showId);
+    m_pDS2->query(sql.c_str());
+
+    vector< pair<int, int> > seasons;
+    while (!m_pDS2->eof())
+    {
+      seasons.push_back(make_pair(m_pDS2->fv(0).get_asInt(), m_pDS2->fv(1).get_asInt()));
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+
+    for (vector< pair<int,int> >::const_iterator i = seasons.begin(); i != seasons.end(); ++i)
+      seasonArt.insert(make_pair(i->second,GetArtForItem(i->first, "season", "thumb")));
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+  }
+  return false;
+}
+
 /// \brief GetStackTimes() obtains any saved video times for the stacked file
 /// \retval Returns true if the stack times exist, false otherwise.
 bool CVideoDatabase::GetStackTimes(const CStdString &filePath, vector<int> &times)
