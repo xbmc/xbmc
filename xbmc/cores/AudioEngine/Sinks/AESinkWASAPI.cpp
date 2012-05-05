@@ -151,6 +151,11 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   m_device = device;
 
+  /* Save requested format */
+  /* Clear returned format */
+  sinkReqFormat = format.m_dataFormat;
+  sinkRetFormat = AE_FMT_INVALID;
+
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
 
@@ -254,7 +259,8 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
   format.m_frames       = m_uiBufferLen;
   format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
-  m_format = format;
+  m_format              = format;
+  sinkRetFormat         = format.m_dataFormat;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Buffer Size     = %d Bytes", m_uiBufferLen * format.m_frameSize);
 
@@ -321,7 +327,8 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const std::string d
                                      (!AE_IS_RAW(format.m_dataFormat) == !AE_IS_RAW(m_encodedFormat))))     << 1;
   notCompatible = (notCompatible  +!((m_isExclusive                   == excSetting)                        ||
                                      (!m_isExclusive                  == !excSetting)))                     << 1;
-  notCompatible = (notCompatible  + !(format.m_dataFormat             == m_format.m_dataFormat))            << 1;
+  notCompatible = (notCompatible  +!((sinkReqFormat                   == format.m_dataFormat)               &&
+                                     (sinkRetFormat                   == m_format.m_dataFormat)))           << 1;
   notCompatible = (notCompatible  + !(format.m_sampleRate             == m_format.m_sampleRate))            << 1;
   notCompatible = (notCompatible  + !(format.m_channelLayout.Count()  == m_format.m_channelLayout.Count())) << 1;
   notCompatible = (notCompatible  + !(m_device                        == device));

@@ -185,10 +185,7 @@ private:
   IAEEncoder    *m_encoder;
   CAEBuffer      m_encodedBuffer;
 
-  /* the channel remapper  */
-  CAERemap        m_remap;
-  float          *m_remapped;
-  size_t          m_remappedSize;
+  /* the output conversion buffer  */
   uint8_t        *m_converted;
   size_t          m_convertedSize;
 

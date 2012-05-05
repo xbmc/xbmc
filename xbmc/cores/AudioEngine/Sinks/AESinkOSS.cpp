@@ -42,6 +42,25 @@
 static enum AEChannel OSSChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
+static int OSSSampleRateList[] =
+{
+  5512,
+  8000,
+  11025,
+  16000,
+  22050,
+  32000,
+  44100,
+  48000,
+  64000,
+  88200,
+  96000,
+  176400,
+  192000,
+  384000,
+  0
+};
+
 CAESinkOSS::CAESinkOSS()
 {
 }
@@ -427,18 +446,15 @@ void CAESinkOSS::Drain()
   // ???
 }
 
-void CAESinkOSS::EnumerateDevices(AEDeviceList &devices, bool passthrough)
+void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list)
 {
   int mixerfd;
   const char * mixerdev = "/dev/mixer";
-  std::stringstream devicepath;
-
-  devices.push_back(AEDevice("default", "/dev/dsp"));
 
   if ((mixerfd = open(mixerdev, O_RDWR, 0)) == -1)
   {
     CLog::Log(LOGERROR,
-	  "CAESinkOSS::EnumerateDevices - Failed to open mixer: %s", mixerdev);
+	  "CAESinkOSS::EnumerateDevicesEx - Failed to open mixer: %s", mixerdev);
     return;
   }	
 
@@ -454,13 +470,45 @@ void CAESinkOSS::EnumerateDevices(AEDeviceList &devices, bool passthrough)
 
   for (int i = 0; i < sysinfo.numcards; ++i)
   {
+    std::stringstream devicepath;
+    CAEDeviceInfo info;
     oss_card_info cardinfo;
-    cardinfo.card = i;
-	  if (ioctl(mixerfd, SNDCTL_CARDINFO, &cardinfo) == -1)
-      break;
 
     devicepath << "/dev/dsp" << i;
-	  devices.push_back(AEDevice(cardinfo.longname, devicepath.str()));
+    info.m_deviceName = devicepath.str();
+
+    cardinfo.card = i;
+    if (ioctl(mixerfd, SNDCTL_CARDINFO, &cardinfo) == -1)
+      break;
+
+    info.m_displayName = cardinfo.longname;
+    if (info.m_displayName.find("HDMI") != std::string::npos)
+      info.m_deviceType = AE_DEVTYPE_HDMI;
+    else if (info.m_displayName.find("Digital") != std::string::npos)
+      info.m_deviceType = AE_DEVTYPE_IEC958;
+    else
+      info.m_deviceType = AE_DEVTYPE_PCM;
+ 
+    oss_audioinfo ainfo;
+    memset(&ainfo, 0, sizeof(ainfo));
+    ainfo.dev = i;
+    if (ioctl(mixerfd, SNDCTL_AUDIOINFO, &ainfo) != -1) {
+#if 0
+      if (ainfo.oformats & AFMT_S32_LE)
+        info.m_dataFormats.push_back(AE_FMT_S32LE);
+      if (ainfo.oformats & AFMT_S16_LE)
+        info.m_dataFormats.push_back(AE_FMT_S16LE);
+#endif
+      for (int j = 0;
+        j < ainfo.max_channels && AE_CH_NULL != OSSChannelMap[j];
+        ++j)
+          info.m_channels += OSSChannelMap[j];
+
+      for (int *rate = OSSSampleRateList; *rate != 0; ++rate)
+        if (*rate >= ainfo.min_rate && *rate <= ainfo.max_rate)
+          info.m_sampleRates.push_back(*rate);
+    }
+    list.push_back(info);
   }
 
   close(mixerfd);

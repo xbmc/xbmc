@@ -67,6 +67,9 @@ private:
     CAEChannelInfo      m_channelLayout;
     std::string         m_device;
 
+    enum AEDataFormat   sinkReqFormat;
+    enum AEDataFormat   sinkRetFormat;
+
     bool                m_running;
     bool                m_initialized;
     bool                m_isExclusive;
