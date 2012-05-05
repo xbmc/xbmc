@@ -490,7 +490,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
-                                  { "discnumber",       LISTITEM_DISC_NUMBER }};
+                                  { "discnumber",       LISTITEM_DISC_NUMBER },
+                                  { "dateadded",        LISTITEM_DATE_ADDED }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -4223,7 +4224,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         str.Format("%d", val);
         return str;
       }
+      break;
     }
+  case LISTITEM_DATE_ADDED:
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_dateAdded.IsValid())
+      return item->GetVideoInfoTag()->m_dateAdded.GetAsLocalizedDate();
+    break;
   }
   return "";
 }
