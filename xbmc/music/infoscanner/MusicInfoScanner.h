@@ -59,13 +59,14 @@ public:
 
   bool DownloadAlbumInfo(const CStdString& strPath, const CStdString& strArtist, const CStdString& strAlbum, bool& bCanceled, MUSIC_GRABBER::CMusicAlbumInfo& album, CGUIDialogProgress* pDialog=NULL);
   bool DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog=NULL);
+
+  std::map<std::string, std::string> GetArtistArtwork(long id, const CArtist *artist = NULL);
 protected:
   virtual void Process();
   int RetrieveMusicInfo(CFileItemList& items, const CStdString& strDirectory);
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
-  void GetArtistArtwork(long id, const CStdString &artistName, const CArtist *artist = NULL);
 
   bool DoScan(const CStdString& strDirectory);
 

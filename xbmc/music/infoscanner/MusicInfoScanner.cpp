@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "ThumbnailCache.h"
+#include "TextureCache.h"
 #include "interfaces/AnnouncementManager.h"
 
 #include <algorithm>
@@ -587,7 +588,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
           m_artistsScanned.pop_back();
       }
       else
-        GetArtistArtwork(*it, strArtist);
+      {
+        map<string, string> artwork = GetArtistArtwork(*it);
+        m_musicDatabase.SetArtForItem(*it, "artist", artwork);
+      }
     }
   }
 
@@ -1106,7 +1110,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       CArtist artist;
       nfoReader.GetDetails(artist);
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
-      GetArtistArtwork(params.GetArtistId(), strArtist, &artist);
+      map<string, string> artwork = GetArtistArtwork(params.GetArtistId(), &artist);
+      m_musicDatabase.SetArtForItem(params.GetArtistId(), "artist", artwork);
       m_musicDatabase.Close();
       return true;
     }
@@ -1223,38 +1228,46 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   // check thumb stuff
-  GetArtistArtwork(params.GetArtistId(), strArtist, &artist);
+  map<string, string> artwork = GetArtistArtwork(params.GetArtistId(), &artist);
+  m_musicDatabase.SetArtForItem(params.GetArtistId(), "artist", artwork);
 
   m_musicDatabase.Close();
   return true;
 }
 
-void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, const CArtist *artist)
+map<string, string> CMusicInfoScanner::GetArtistArtwork(long id, const CArtist *artist)
 {
   CStdString artistPath;
-  CFileItem item(artistName);
-  CStdString thumb = item.GetCachedArtistThumb();
-  if (m_musicDatabase.GetArtistPath(id, artistPath) && !XFILE::CFile::Exists(thumb))
+  m_musicDatabase.Open();
+  bool checkLocal = m_musicDatabase.GetArtistPath(id, artistPath);
+  m_musicDatabase.Close();
+
+  CFileItem item(artistPath, true);
+  map<string, string> artwork;
+
+  // check thumb
+  CStdString thumb;
+  if (checkLocal)
+    thumb = item.GetUserMusicThumb(true);
+  if (thumb.IsEmpty() && artist)
+    thumb = CScraperUrl::GetThumbURL(artist->thumbURL.GetFirstThumb());
+  if (!thumb.IsEmpty())
   {
-    CStdString localThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
-    if (XFILE::CFile::Exists(localThumb))
-      CPicture::CreateThumbnail(localThumb, thumb);
+    CTextureCache::Get().BackgroundCacheImage(thumb);
+    artwork.insert(make_pair("thumb", thumb));
   }
-  if (!XFILE::CFile::Exists(thumb) && artist && artist->thumbURL.m_url.size())
-    CScraperUrl::DownloadThumbnail(thumb, artist->thumbURL.m_url[0]);
 
   // check fanart
-  CFileItem item2(artistPath, true);
-  item2.GetMusicInfoTag()->SetArtist(artistName);
-  CStdString cachedImage = item2.GetCachedFanart();
-  if (!CFile::Exists(cachedImage))
-  { // check for local fanart
-    CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.GetPath().c_str());
-    if (!item2.CacheLocalFanart())
-    {
-      CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, artistName.c_str());
-      if (artist && !artist->fanart.m_xml.IsEmpty() && !artist->fanart.DownloadImage(item2.GetCachedFanart()))
-        CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist->fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
-    }
+  CStdString fanart;
+  if (checkLocal)
+    fanart = item.GetLocalFanart();
+  if (fanart.IsEmpty() && artist)
+    fanart = artist->fanart.GetImageURL();
+  if (!fanart.IsEmpty())
+  {
+    CTextureCache::Get().BackgroundCacheImage(fanart);
+    artwork.insert(make_pair("fanart", fanart));
   }
+
+  return artwork;
 }
