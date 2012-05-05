@@ -1787,21 +1787,20 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     BeginTransaction();
 
     if (idMovie < 0)
-    {
       idMovie = GetMovieId(strFilenameAndPath);
-      if (idMovie > -1)
-        DeleteMovie(strFilenameAndPath, true, true, idMovie); // true to keep the table entry and the thumb
-      else
+
+    if (idMovie > -1)
+      DeleteMovie(strFilenameAndPath, true, true, idMovie); // true to keep the table entry and the thumb
+    else
+    {
+      // only add a new movie if we don't already have a valid idMovie
+      // (DeleteMovie is called with bKeepId == true so the movie won't
+      // be removed from the movie table)
+      idMovie = AddMovie(strFilenameAndPath);
+      if (idMovie < 0)
       {
-        // only add a new movie if we don't already have a valid idMovie
-        // (DeleteMovie is called with bKeepId == true so the movie won't
-        // be removed from the movie table)
-        idMovie = AddMovie(strFilenameAndPath);
-        if (idMovie < 0)
-        {
-          CommitTransaction();
-          return idMovie;
-        }
+        CommitTransaction();
+        return idMovie;
       }
     }
 
@@ -1927,22 +1926,21 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
   try
   {
     BeginTransaction();
-    if (idEpisode == -1)
-    {
+    if (idEpisode < 0)
       idEpisode = GetEpisodeId(strFilenameAndPath);
-      if (idEpisode > 0)
-        DeleteEpisode(strFilenameAndPath, idEpisode, true, true); // true to keep the table entry and the thumb
-      else
+
+    if (idEpisode > 0)
+      DeleteEpisode(strFilenameAndPath, idEpisode, true, true); // true to keep the table entry and the thumb
+    else
+    {
+      // only add a new episode if we don't already have a valid idEpisode
+      // (DeleteEpisode is called with bKeepId == true so the episode won't
+      // be removed from the episode table)
+      idEpisode = AddEpisode(idShow,strFilenameAndPath);
+      if (idEpisode < 0)
       {
-        // only add a new episode if we don't already have a valid idEpisode
-        // (DeleteEpisode is called with bKeepId == true so the episode won't
-        // be removed from the episode table)
-        idEpisode = AddEpisode(idShow,strFilenameAndPath);
-        if (idEpisode < 0)
-        {
-          CommitTransaction();
-          return -1;
-        }
+        CommitTransaction();
+        return -1;
       }
     }
 
@@ -1998,21 +1996,20 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     BeginTransaction();
 
     if (idMVideo < 0)
-    {
       idMVideo = GetMusicVideoId(strFilenameAndPath);
-      if (idMVideo > -1)
-        DeleteMusicVideo(strFilenameAndPath, true, true, idMVideo); // Keep id and thumb
-      else
+
+    if (idMVideo > -1)
+      DeleteMusicVideo(strFilenameAndPath, true, true, idMVideo); // Keep id and thumb
+    else
+    {
+      // only add a new musicvideo if we don't already have a valid idMVideo
+      // (DeleteMusicVideo is called with bKeepId == true so the musicvideo won't
+      // be removed from the musicvideo table)
+      idMVideo = AddMusicVideo(strFilenameAndPath);
+      if (idMVideo < 0)
       {
-        // only add a new musicvideo if we don't already have a valid idMVideo
-        // (DeleteMusicVideo is called with bKeepId == true so the musicvideo won't
-        // be removed from the musicvideo table)
-        idMVideo = AddMusicVideo(strFilenameAndPath);
-        if (idMVideo < 0)
-        {
-          CommitTransaction();
-          return -1;
-        }
+        CommitTransaction();
+        return -1;
       }
     }
 
