@@ -9,7 +9,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/lib/.libs/$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed
 
