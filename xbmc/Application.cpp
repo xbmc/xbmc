@@ -2634,6 +2634,8 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
+      if (g_settings.m_bMute)
+        UnMute();
       float volume = g_settings.m_fVolumeLevel;
       float step   = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / VOLUME_CONTROL_STEPS;
       if (action.GetRepeat())
