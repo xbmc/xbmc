@@ -132,7 +132,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
   m_strings[20022] = "";
   m_strings[20027] = ToUTF8(encoding_thisfile, "°F");
   m_strings[20028] = ToUTF8(encoding_thisfile, "K");
-  m_strings[20029] = ToUTF8(encoding_thisfile, "°Ch");
+  m_strings[20029] = ToUTF8(encoding_thisfile, "°C");
   m_strings[20030] = ToUTF8(encoding_thisfile, "°Ré");
   m_strings[20031] = ToUTF8(encoding_thisfile, "°Ra");
   m_strings[20032] = ToUTF8(encoding_thisfile, "°Rø");
