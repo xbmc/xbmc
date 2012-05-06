@@ -44,7 +44,6 @@
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "RenderCapture.h"
-#include "RenderFormats.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -157,8 +156,6 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
-  m_iFlags = 0;
-  m_format = RENDER_FMT_NONE;
 
   m_iYV12RenderBuffer = 0;
   m_flipindex = 0;
@@ -166,8 +163,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_reloadShaders = 0;
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGL::UploadYV12Texture;
@@ -274,25 +269,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags, ERenderFormat format, unsigned int extended_format)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
-  m_fps = fps;
+  CBaseRenderer::Configure(width, height, d_width, d_height, fps, flags, format, extended_format);
 
-  // Save the flags.
-  m_iFlags = flags;
-  m_format = format;
-
-  // Calculate the input frame aspect ratio.
-  CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-  ManageDisplay();
-
-  m_bConfigured = true;
   m_bImageReady = false;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
@@ -2863,8 +2844,8 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
                                                  im->width, im->height, srcFormat,
                                                  im->width, im->height, PIX_FMT_BGRA,
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
-  uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
-  int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
+  uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
+  int dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
 
   if (m_rgbPbo)

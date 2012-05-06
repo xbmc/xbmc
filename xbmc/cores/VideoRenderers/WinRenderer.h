@@ -24,14 +24,10 @@
 #if !defined(_LINUX) && !defined(HAS_GL)
 
 #include "guilib/GraphicContext.h"
-#include "RenderFlags.h"
 #include "BaseRenderer.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
-#include "settings/VideoSettings.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
-#include "cores/VideoRenderers/RenderFlags.h"
-#include "cores/VideoRenderers/RenderFormats.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -126,7 +122,6 @@ struct YUVBuffer : SVideoBuffer
 private:
   unsigned int     m_width;
   unsigned int     m_height;
-  ERenderFormat    m_format;
   unsigned int     m_activeplanes;
 };
 
@@ -155,7 +150,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags, ERenderFormat format, unsigned int extended_format);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual bool         AddVideoPicture(DVDVideoPicture* picture);
@@ -163,9 +158,6 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
-  virtual bool         IsConfigured() { return m_bConfigured; }
-
-  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
   virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EDEINTERLACEMODE mode);
@@ -205,11 +197,9 @@ protected:
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
 
-  bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
   DXVA::CProcessor     m_processor;
-  std::vector<ERenderFormat> m_formats;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;
@@ -228,9 +218,6 @@ protected:
   CYUV2RGBShader*      m_colorShader;
   CConvolutionShader*  m_scalerShader;
 
-  ESCALINGMETHOD       m_scalingMethod;
-  ESCALINGMETHOD       m_scalingMethodGui;
-
   D3DCAPS9 m_deviceCaps;
 
   bool                 m_bFilterInitialized;
@@ -239,9 +226,7 @@ protected:
 
   // clear colour for "black" bars
   DWORD                m_clearColour;
-  unsigned int         m_flags;
-  ERenderFormat        m_format;
-  unsigned int         m_extended_format;
+  unsigned int         m_iFlags;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?

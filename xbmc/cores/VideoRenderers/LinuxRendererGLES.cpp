@@ -46,7 +46,6 @@
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
-#include "RenderFormats.h"
 
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
@@ -88,8 +87,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
-  m_iFlags = 0;
-  m_format = RENDER_FMT_NONE;
 
   m_iYV12RenderBuffer = 0;
   m_flipindex = 0;
@@ -97,8 +94,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_reloadShaders = 0;
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGLES::UploadYV12Texture;
@@ -158,24 +153,11 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;  
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags, ERenderFormat format, unsigned int extended_format)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
+  CBaseRenderer::Configure(width, height, d_width, d_height, fps, flags, format, extended_format);
 
-  // Save the flags.
-  m_iFlags = flags;
-  m_format = format;
-
-  // Calculate the input frame aspect ratio.
-  CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-  ManageDisplay();
-
-  m_bConfigured = true;
   m_bImageReady = false;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().

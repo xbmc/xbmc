@@ -72,8 +72,6 @@ CWinRenderer::CWinRenderer()
   m_iRequestedMethod = RENDER_METHOD_AUTO;
 
   m_renderMethod = RENDER_PS;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_TextureFilter = D3DTEXF_POINT;
 
   m_bUseHQScaler = false;
@@ -132,7 +130,7 @@ void CWinRenderer::SelectRenderMethod()
   {
     CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
     m_renderMethod = RENDER_DXVA;
-    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
     {
       CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
       m_processor.Close();
@@ -147,7 +145,7 @@ void CWinRenderer::SelectRenderMethod()
     {
       case RENDER_METHOD_DXVA:
         m_renderMethod = RENDER_DXVA;
-        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
             break;
         else
         {
@@ -211,13 +209,11 @@ bool CWinRenderer::UpdateRenderMethod()
   return true;
 }
 
-bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned int flags, ERenderFormat format, unsigned int extended_format)
 {
   if(m_sourceWidth  != width
   || m_sourceHeight != height)
   {
-    m_sourceWidth       = width;
-    m_sourceHeight      = height;
     // need to recreate textures
     m_NumYV12Buffers    = 0;
     m_iYV12RenderBuffer = 0;
@@ -225,20 +221,11 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     m_bFilterInitialized = false;
   }
 
-  m_fps = fps;
-  m_flags = flags;
-  m_format = format;
-  m_extended_format = extended_format;
+  CBaseRenderer::Configure(width, height, d_width, d_height, fps, flags, format, extended_format);
 
   // calculate the input frame aspect ratio
-  CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(fps);
   m_destWidth = g_settings.m_ResInfo[m_resolution].iWidth;
   m_destHeight = g_settings.m_ResInfo[m_resolution].iHeight;
-  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
-  ManageDisplay();
-
-  m_bConfigured = true;
 
   SelectRenderMethod();
   UpdateRenderMethod();
@@ -864,7 +851,7 @@ void CWinRenderer::Stage1()
       m_colorShader->Render(m_sourceRect, m_destRect,
                             g_settings.m_currentVideoSettings.m_Contrast,
                             g_settings.m_currentVideoSettings.m_Brightness,
-                            m_flags,
+                            m_iFlags,
                             (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
@@ -882,7 +869,7 @@ void CWinRenderer::Stage1()
     m_colorShader->Render(srcRect, rtRect,
                           g_settings.m_currentVideoSettings.m_Contrast,
                           g_settings.m_currentVideoSettings.m_Brightness,
-                          m_flags,
+                          m_iFlags,
                           (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
     // Restore the render target
