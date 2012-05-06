@@ -310,6 +310,10 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
     m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshow ( c17(12) )");
 
+    CLog::Log(LOGINFO, "create seasons table");
+    m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
+    m_pDS->exec("CREATE INDEX ix_seasons ON season (idShow, season)");
+
     // we create views last to ensure all indexes are rolled in
     CreateViews();
   }
@@ -1914,6 +1918,9 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
     for (i = 0; i < vecStudios.size(); ++i)
       AddStudioToTvShow(idTvShow, vecStudios[i]);
 
+    // add "all seasons" - the rest are added in SetDetailsForEpisode
+    AddSeason(idTvShow, -1);
+
     // and insert the new row
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += PrepareSQL("where idShow=%i", idTvShow);
@@ -1984,6 +1991,9 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
         SetStreamDetailsForFile(details.m_streamDetails, strFilenameAndPath);
     }
 
+    // ensure we have this season already added
+    AddSeason(idShow, details.m_iSeason);
+
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     sql += PrepareSQL("where idEpisode=%i", idEpisode);
@@ -1997,6 +2007,26 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
   return -1;
+}
+
+int CVideoDatabase::GetSeasonId(int showID, int season)
+{
+  CStdString sql = PrepareSQL("idShow=%i AND season=%i", showID, season);
+  CStdString id = GetSingleValue("seasons", "idSeason", sql);
+  if (id.IsEmpty())
+    return -1;
+  return strtol(id.c_str(), NULL, 10);
+}
+
+int CVideoDatabase::AddSeason(int showID, int season)
+{
+  int seasonId = GetSeasonId(showID, season);
+  if (seasonId < 0)
+  {
+    if (ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow,season) VALUES(%i,%i)", showID, season)))
+      seasonId = m_pDS->lastinsertid();
+  }
+  return seasonId;
 }
 
 int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMVideo /* = -1 */)
@@ -2554,6 +2584,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     }
 
     DeleteDetailsForTvShow(strPath, bKeepThumb, idTvShow);
+
+    strSQL=PrepareSQL("delete from seasons where idShow=%i", idTvShow);
+    m_pDS->exec(strSQL.c_str());
 
     // keep tvshow table and movielink table so we can update data in place
     if (!bKeepId)
@@ -3584,7 +3617,27 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("ALTER TABLE path ADD dateAdded text");
       m_pDS->exec("ALTER TABLE files ADD dateAdded text");
     }
-
+    if (iVersion < 62)
+    { // add seasons table
+      m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
+      m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
+      // insert all seasons for each show
+      m_pDS->query("SELECT idShow FROM tvshow");
+      while (!m_pDS->eof())
+      {
+        CStdString sql = PrepareSQL("INSERT INTO seasons (idShow,season)"
+                                    "  SELECT DISTINCT"
+                                    "    idShow,c%02d"
+                                    "  FROM"
+                                    "    episodeview"
+                                    "  WHERE idShow=%i", VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(0).get_asInt());
+        m_pDS2->exec(sql.c_str());
+        // and the "all seasons node"
+        sql = PrepareSQL("INSERT INTO seasons (idShow,season) VALUES(%i,-1)", m_pDS->fv(0).get_asInt());
+        m_pDS2->exec(sql.c_str());
+        m_pDS->next();
+      }
+    }
     // always recreate the view after any table change
     CreateViews();
   }
@@ -6863,6 +6916,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const s
 
     CLog::Log(LOGDEBUG, "%s: Cleaning genrelinktvshow table", __FUNCTION__);
     sql = "delete from genrelinktvshow where idShow not in (select idShow from tvshow)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, "%s: Cleaning seasons table", __FUNCTION__);
+    sql = "delete from seasons where idShow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s: Cleaning movielinktvshow table", __FUNCTION__);
