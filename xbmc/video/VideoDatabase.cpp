@@ -2556,6 +2556,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     DeleteDetailsForTvShow(strPath, bKeepThumb, idTvShow);
 
     strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
+    m_pDS->exec(strSQL.c_str());
 
     // keep tvshow table and movielink table so we can update data in place
     if (!bKeepId)
