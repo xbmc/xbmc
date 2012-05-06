@@ -246,11 +246,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_height = (float)(max_y - min_y);
 }
 
-COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
+COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
-
   m_vertex = NULL;
   m_width  = 1.0;
   m_height = 1.0;
@@ -258,14 +255,10 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;
-
-  int width  = MathUtils::round_int(dst.Width());
-  int height = MathUtils::round_int(dst.Height());
-
   m_texture = 0;
 
   SQuads quads;
-  if(!convert_quad(o, pts, width, height, quads))
+  if(!convert_quad(images, quads))
     return;
 
   glGenTextures(1, &m_texture);
