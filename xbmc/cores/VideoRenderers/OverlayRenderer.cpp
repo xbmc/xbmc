@@ -104,10 +104,7 @@ void CRenderer::AddOverlay(CDVDOverlay* o, double pts)
 
   SElement   e;
   e.pts = pts;
-  if(o->m_overlay)
-    e.overlay     = o->m_overlay->Acquire();
-  else
-    e.overlay_dvd = o->Acquire();
+  e.overlay_dvd = o->Acquire();
   m_buffers[m_decode].push_back(e);
 }
 
@@ -179,15 +176,19 @@ void CRenderer::Render()
   SElementV& list = m_buffers[m_render];
   for(SElementV::iterator it = list.begin(); it != list.end(); it++)
   {
-    COverlay*& o = it->overlay;
+    COverlay* o = NULL;
 
-    if(!o && it->overlay_dvd)
+    if(it->overlay)
+      o = it->overlay->Acquire();
+    else if(it->overlay_dvd)
       o = Convert(it->overlay_dvd, it->pts);
 
     if(!o)
       continue;
 
     Render(o);
+
+    o->Release();
   }
 }
 
