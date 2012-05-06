@@ -63,6 +63,8 @@ bool CPODocument::LoadFile(const std::string &pofilename)
     return false;
   }
 
+  ConvertLineEnds(pofilename);
+
   // we make sure, to have an LF at beginning and at end of buffer
   m_strBuffer[0] = '\n';
   if (*m_strBuffer.rbegin() != '\n')
@@ -290,4 +292,33 @@ void CPODocument::GetString(CStrEntry &strEntry)
   }
 
   strEntry.Str = UnescapeString(strEntry.Str);
+}
+
+void CPODocument::ConvertLineEnds(const std::string &filename)
+{
+  size_t foundPos = m_strBuffer.find_first_of("\r");
+  if (foundPos == std::string::npos)
+    return; // We have only Linux style line endings in the file, nothing to do
+
+  if (foundPos+1 >= m_strBuffer.size() || m_strBuffer[foundPos+1] != '\n')
+    CLog::Log(LOGDEBUG, "POParser: PO file has Mac Style Line Endings. "
+              "Converted in memory to Linux LF for file: %s", filename.c_str());
+  else
+    CLog::Log(LOGDEBUG, "POParser: PO file has Win Style Line Endings. "
+              "Converted in memory to Linux LF for file: %s", filename.c_str());
+
+  std::string strTemp;
+  strTemp.reserve(m_strBuffer.size());
+  for (std::string::const_iterator it = m_strBuffer.begin(); it < m_strBuffer.end(); it++)
+  {
+    if (*it == '\r')
+    {
+      if (it+1 == m_strBuffer.end() || *(it+1) != '\n')
+        strTemp.push_back('\n'); // convert Mac style line ending and continue
+      continue; // we have Win style line ending so we exclude this CR now
+    }
+    strTemp.push_back(*it);
+  }
+  m_strBuffer.swap(strTemp);
+  m_POfilelength = m_strBuffer.size();
 }

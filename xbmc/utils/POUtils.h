@@ -154,6 +154,10 @@ protected:
     */
   bool ParseNumID();
 
+  /*! \brief If we have Windows or Mac line-end chars in PO file, convert them to Unix LFs
+    */
+  void ConvertLineEnds(const std::string &filename);
+
   // Temporary string buffer to read file in.
   std::string m_strBuffer;
   // Size of the string buffer.
