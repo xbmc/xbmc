@@ -2370,7 +2370,8 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
           // is this a rar or zip-file
           if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
           {
-            ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
+            // zip-file name equals strMovieFileNameNoExt, don't check in zip-file
+            ScanArchiveForSubtitles( items[j]->GetPath(), "", vecSubtitles );
           }
           else    // not a rar/zip file
           {
@@ -2383,6 +2384,15 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
                 CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
               }
             }
+          }
+        }
+        else
+        {
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          {
+            // check strMovieFileNameNoExt in zip-file
+            ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
           }
         }
       }
@@ -2462,6 +2472,11 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
     ScanArchiveForSubtitles(strRarInRar,strMovieFileNameNoExt,vecSubtitles);
    }
    // done checking if this is a rar-in-rar
+
+   // check that the found filename matches the movie filename
+   int fnl = strMovieFileNameNoExt.size();
+   if (fnl && !URIUtils::GetFileName(strPathInRar).Left(fnl).Equals(strMovieFileNameNoExt))
+     continue;
 
    int iPos=0;
     while (sub_exts[iPos])
