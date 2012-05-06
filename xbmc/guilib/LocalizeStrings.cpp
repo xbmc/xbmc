@@ -124,29 +124,33 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
   if (bLoadFallback)
     LoadXML(strFallbackFileName, encoding);
 
+  CStdString encoding_thisfile = "ISO-8859-1";
+  // we have ANSI encoding for LocalizeStrings.cpp therefore we need to use this encoding
+  // when we add the degree strings
+
   // fill in the constant strings
   m_strings[20022] = "";
-  m_strings[20027] = ToUTF8(encoding, "°F");
-  m_strings[20028] = ToUTF8(encoding, "K");
-  m_strings[20029] = ToUTF8(encoding, "°C");
-  m_strings[20030] = ToUTF8(encoding, "°Ré");
-  m_strings[20031] = ToUTF8(encoding, "°Ra");
-  m_strings[20032] = ToUTF8(encoding, "°Rø");
-  m_strings[20033] = ToUTF8(encoding, "°De");
-  m_strings[20034] = ToUTF8(encoding, "°N");
+  m_strings[20027] = ToUTF8(encoding_thisfile, "°F");
+  m_strings[20028] = ToUTF8(encoding_thisfile, "K");
+  m_strings[20029] = ToUTF8(encoding_thisfile, "°Ch");
+  m_strings[20030] = ToUTF8(encoding_thisfile, "°Ré");
+  m_strings[20031] = ToUTF8(encoding_thisfile, "°Ra");
+  m_strings[20032] = ToUTF8(encoding_thisfile, "°Rø");
+  m_strings[20033] = ToUTF8(encoding_thisfile, "°De");
+  m_strings[20034] = ToUTF8(encoding_thisfile, "°N");
 
-  m_strings[20200] = ToUTF8(encoding, "km/h");
-  m_strings[20201] = ToUTF8(encoding, "m/min");
-  m_strings[20202] = ToUTF8(encoding, "m/s");
-  m_strings[20203] = ToUTF8(encoding, "ft/h");
-  m_strings[20204] = ToUTF8(encoding, "ft/min");
-  m_strings[20205] = ToUTF8(encoding, "ft/s");
-  m_strings[20206] = ToUTF8(encoding, "mph");
-  m_strings[20207] = ToUTF8(encoding, "kts");
-  m_strings[20208] = ToUTF8(encoding, "Beaufort");
-  m_strings[20209] = ToUTF8(encoding, "inch/s");
-  m_strings[20210] = ToUTF8(encoding, "yard/s");
-  m_strings[20211] = ToUTF8(encoding, "Furlong/Fortnight");
+  m_strings[20200] = ToUTF8(encoding_thisfile, "km/h");
+  m_strings[20201] = ToUTF8(encoding_thisfile, "m/min");
+  m_strings[20202] = ToUTF8(encoding_thisfile, "m/s");
+  m_strings[20203] = ToUTF8(encoding_thisfile, "ft/h");
+  m_strings[20204] = ToUTF8(encoding_thisfile, "ft/min");
+  m_strings[20205] = ToUTF8(encoding_thisfile, "ft/s");
+  m_strings[20206] = ToUTF8(encoding_thisfile, "mph");
+  m_strings[20207] = ToUTF8(encoding_thisfile, "kts");
+  m_strings[20208] = ToUTF8(encoding_thisfile, "Beaufort");
+  m_strings[20209] = ToUTF8(encoding_thisfile, "inch/s");
+  m_strings[20210] = ToUTF8(encoding_thisfile, "yard/s");
+  m_strings[20211] = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
 
   return true;
 }
