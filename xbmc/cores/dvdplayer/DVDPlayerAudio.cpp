@@ -905,6 +905,8 @@ string CDVDPlayerAudio::GetPlayerInfo()
   if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
 
+  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
+
   return s.str();
 }
 

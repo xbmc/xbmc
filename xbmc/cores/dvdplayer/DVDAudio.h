@@ -55,6 +55,7 @@ public:
   ~CDVDAudio();
 
   void SetVolume(float fVolume);
+  void SetDynamicRangeCompression(long drc);
   float GetCurrentAttenuation();
   void Pause();
   void Resume();
