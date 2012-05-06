@@ -399,8 +399,9 @@ install-scripts:
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
-	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
+	@for FILE in `ls LICENSE.GPL *.txt`; do \
 		install -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
+	@install -m 0644 "docs/README.linux" "$(DESTDIR)$(docdir)/README.linux"
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@install -d $(DESTDIR)$(datarootdir)/xbmc
