@@ -58,6 +58,7 @@ bool ASAPCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_TotalTime = duration;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   return true;
 }
 

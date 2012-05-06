@@ -25,6 +25,9 @@
 #include "utils/StdString.h"
 #include "filesystem/File.h"
 
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+
 #define READ_EOF      -1
 #define READ_SUCCESS   0
 #define READ_ERROR     1
@@ -74,14 +77,6 @@ public:
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
 
-  // ReadSamples()
-  // Decodes audio into floats (normalized to 1) into pBuffer up to numsamples samples.
-  // The actual amount of returned samples is given in actualsamples.  Samples are
-  // total samples (ie distributed over channels).
-  // Returns READ_SUCCESS on success.  Returns READ_EOF when the data has been exhausted,
-  // and READ_ERROR on error.
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples) { return READ_ERROR; };
-
   // CanInit()
   // Should return true if the codec can be initialized
   // eg. check if a dll needed for the codec exists
@@ -97,16 +92,22 @@ public:
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // true if we can retrieve normalized float data immediately
-  virtual bool HasFloatData() const { return false; }
+  // GetChannelInfo()
+  // Return the channel layout and count information in an CAEChannelInfo object
+  virtual CAEChannelInfo GetChannelInfo() {return CAEUtil::GuessChLayout(m_Channels);}
 
   int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
+  int m_EncodedSampleRate;
   int m_BitsPerSample;
-  int m_Channels;
+  enum AEDataFormat m_DataFormat;
   int m_Bitrate;
   CStdString m_CodecName;
   CReplayGain m_replayGain;
   XFILE::CFile m_file;
+
+protected:
+  int m_Channels; /* remove this soon, its being deprecated */
+
 };
 
