@@ -272,7 +272,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
         AddSortMethod(SORT_METHOD_VIDEO_RUNTIME,2050, LABEL_MASKS("%T", "%D"));
-        AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%R"));
+        AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%a"));
 
         if (g_settings.GetWatchMode(items.GetContent()) == VIDEO_SHOW_ALL)
           AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T", "%V"));
