@@ -2,9 +2,10 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=libgcrypt
-VERSION=1.4.0
+VERSION=1.4.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
+BASE_URL=http://mirrors.dotsrc.org/gcrypt/libgcrypt
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
@@ -24,6 +25,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); autoreconf -vif
+	cd $(SOURCE); patch -p0 < ../01-static-mpi_mpi-internal.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
