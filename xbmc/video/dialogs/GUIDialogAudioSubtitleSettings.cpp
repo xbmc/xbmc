@@ -55,6 +55,7 @@ CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings(void)
 }
 
 #define AUDIO_SETTINGS_VOLUME             1
+#define AUDIO_SETTINGS_VOLUME_AMPLIFICATION 2
 #define AUDIO_SETTINGS_DELAY              3
 #define AUDIO_SETTINGS_STREAM             4
 #define AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS 5
@@ -76,9 +77,11 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // create our settings
   m_volume = g_settings.m_fVolumeLevel;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, FormatDecibel, false);
+  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
   {
     EnableSettings(AUDIO_SETTINGS_VOLUME,false);
+    EnableSettings(AUDIO_SETTINGS_VOLUME_AMPLIFICATION,false);
   }
   AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
@@ -213,6 +216,11 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   {
     g_settings.m_fVolumeLevel = m_volume;
     g_application.SetVolume(m_volume, false);//false - value is not in percent
+  }
+  else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
+  {
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
   }
   else if (setting.id == AUDIO_SETTINGS_DELAY)
   {
