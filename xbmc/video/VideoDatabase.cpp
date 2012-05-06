@@ -2555,13 +2555,13 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
 
     DeleteDetailsForTvShow(strPath, bKeepThumb, idTvShow);
 
-    strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
     // keep tvshow table and movielink table so we can update data in place
     if (!bKeepId)
     {
       strSQL=PrepareSQL("delete from tvshow where idShow=%i", idTvShow);
+      m_pDS->exec(strSQL.c_str());
+
+      strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
       m_pDS->exec(strSQL.c_str());
 
       strSQL=PrepareSQL("delete from movielinktvshow where idShow=%i", idTvShow);
@@ -2614,9 +2614,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     strSQL=PrepareSQL("delete from directorlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("delete from tvshowlinkepisode where idEpisode=%i", idEpisode);
-    m_pDS->exec(strSQL.c_str());
-
     if (!bKeepThumb)
       DeleteThumbForItem(strFilenameAndPath, false, idEpisode);
 
@@ -2627,6 +2624,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     if (!bKeepId)
     {
       ClearBookMarksOfFile(strFilenameAndPath);
+
+      strSQL=PrepareSQL("delete from tvshowlinkepisode where idEpisode=%i", idEpisode);
+      m_pDS->exec(strSQL.c_str());
 
       strSQL=PrepareSQL("delete from episode where idEpisode=%i", idEpisode);
       m_pDS->exec(strSQL.c_str());
