@@ -504,9 +504,9 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (!tag.m_strArtist.IsEmpty()) {
+        if (!tag.m_artist.empty()) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
-          object.m_Creator = tag.m_strArtist;
+          object.m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
         } else if (!tag.m_strShowTitle.IsEmpty()) {
@@ -730,7 +730,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
                   container->m_ObjectClass.type += ".person.videoArtist";
-                  container->m_Creator = tag.m_strArtist;
+                  container->m_Creator = StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator);
                   container->m_Title   = tag.m_strTitle;
                   break;
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:

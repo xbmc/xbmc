@@ -210,8 +210,8 @@ public:
   virtual void GetChapterName(CStdString& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
@@ -282,7 +282,7 @@ protected:
   int GetPlaySpeed()                                                { return m_playSpeed; }
   void SetCaching(ECacheState state);
 
-  __int64 GetTotalTimeInMsec();
+  int64_t GetTotalTimeInMsec();
 
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
@@ -419,7 +419,7 @@ protected:
     std::string demux_video;
     std::string demux_audio;
 
-    __int64 cache_bytes;   // number of bytes current's cached
+    int64_t cache_bytes;   // number of bytes current's cached
     double  cache_level;   // current estimated required cache level
     double  cache_delay;   // time until cache is expected to reach estimated level
     double  cache_offset;  // percentage of file ahead of current position

@@ -507,6 +507,13 @@ void CDVDDemuxFFmpeg::Dispose()
     }
     m_dllAvFormat.avformat_close_input(&m_pFormatContext);
   }
+
+  if(m_ioContext)
+  {
+    m_dllAvUtil.av_free(m_ioContext->buffer);
+    m_dllAvUtil.av_free(m_ioContext);
+  }
+
   m_ioContext = NULL;
   m_pFormatContext = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
@@ -836,7 +843,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return false;
   }
 
-  __int64 seek_pts = (__int64)time * (AV_TIME_BASE / 1000);
+  int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
   if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     seek_pts += m_pFormatContext->start_time;
 
@@ -865,7 +872,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   return (ret >= 0);
 }
 
-bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
+bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 {
   g_demuxer.set(this);
 

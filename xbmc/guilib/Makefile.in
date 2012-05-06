@@ -95,6 +95,6 @@ include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o
-	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../utils/CriticalSection.o ../XBVideoConfig.o SkinInfo.o ../../lib/tinyXML/tinyxml.a ../linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o ../utils/XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
+	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../utils/CriticalSection.o ../XBVideoConfig.o SkinInfo.o ../linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o ../utils/XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
 
 

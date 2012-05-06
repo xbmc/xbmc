@@ -120,6 +120,7 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(CSong& song, bool bCheck = true);
+  int UpdateSong(const CSong& song, int idSong = -1);
   int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
   bool DeleteAlbumInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);

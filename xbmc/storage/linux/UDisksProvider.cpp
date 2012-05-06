@@ -355,6 +355,10 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   else
   {
     bool mounted = device->m_isMounted;
+
+    if (!mounted && g_advancedSettings.m_handleMounting)
+      device->Mount();
+
     device->Update();
     if (!mounted && device->m_isMounted && callback)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);

@@ -1497,23 +1497,30 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
   return false;
 }
 
-void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
-{// TODO: merge into DeleteTvShow
+void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath, bool bKeepThumb /* = false */, int idTvShow /* = -1 */)
+{
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    int idTvShow = GetTvShowId(strPath);
-    if ( idTvShow < 0) return ;
+    if (idTvShow < 0)
+    {
+      idTvShow = GetTvShowId(strPath);
+      if (idTvShow < 0)
+        return;
+    }
 
-    CFileItemList items;
-    CStdString strPath2;
-    strPath2.Format("videodb://2/2/%i/",idTvShow);
-    GetSeasonsNav(strPath2,items,-1,-1,-1,-1,idTvShow);
-    for( int i=0;i<items.Size();++i )
-      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb(), true);
-    DeleteThumbForItem(strPath,true);
+    if (!bKeepThumb)
+    {
+      CFileItemList items;
+      CStdString strPath2;
+      strPath2.Format("videodb://2/2/%i/", idTvShow);
+      GetSeasonsNav(strPath2, items, -1, -1, -1, -1, idTvShow);
+      for (int i = 0; i < items.Size(); ++i)
+        CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb(), true);
+      DeleteThumbForItem(strPath, true);
+    }
 
     CStdString strSQL;
     strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
@@ -1597,7 +1604,7 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
     {
       CVideoInfoTag tag = GetDetailsForMusicVideo(m_pDS);
       CFileItemPtr pItem(new CFileItem(tag));
-      pItem->SetLabel(tag.m_strArtist);
+      pItem->SetLabel(StringUtils::Join(tag.m_artist, g_advancedSettings.m_videoItemSeparator));
       items.Add(pItem);
       m_pDS->next();
     }
@@ -1780,21 +1787,28 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMovie /* = -1 */)
 {
   try
   {
-    int idMovie = GetMovieId(strFilenameAndPath);
-    if (idMovie > -1)
-      DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
-
     BeginTransaction();
 
-    idMovie = AddMovie(strFilenameAndPath);
     if (idMovie < 0)
+      idMovie = GetMovieId(strFilenameAndPath);
+
+    if (idMovie > -1)
+      DeleteMovie(strFilenameAndPath, true, true, idMovie); // true to keep the table entry and the thumb
+    else
     {
-      CommitTransaction();
-      return idMovie;
+      // only add a new movie if we don't already have a valid idMovie
+      // (DeleteMovie is called with bKeepId == true so the movie won't
+      // be removed from the movie table)
+      idMovie = AddMovie(strFilenameAndPath);
+      if (idMovie < 0)
+      {
+        CommitTransaction();
+        return idMovie;
+      }
     }
 
     vector<int> vecDirectors;
@@ -1850,7 +1864,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, int idTvShow /*= -1 */)
 {
   try
   {
@@ -1862,9 +1876,20 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     BeginTransaction();
 
-    int idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0)
+      idTvShow = GetTvShowId(strPath);
+
+    if (idTvShow > -1)
+      DeleteDetailsForTvShow(strPath, true, idTvShow);
+    else
+    {
       idTvShow = AddTvShow(strPath);
+      if (idTvShow < 0)
+      {
+        CommitTransaction();
+        return idTvShow;
+      }
+    }
 
     vector<int> vecDirectors;
     vector<int> vecGenres;
@@ -1881,24 +1906,19 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     unsigned int i;
     for (i = 0; i < vecGenres.size(); ++i)
-    {
       AddGenreToTvShow(idTvShow, vecGenres[i]);
-    }
 
     for (i = 0; i < vecDirectors.size(); ++i)
-    {
       AddDirectorToTvShow(idTvShow, vecDirectors[i]);
-    }
 
     for (i = 0; i < vecStudios.size(); ++i)
-    {
       AddStudioToTvShow(idTvShow, vecStudios[i]);
-    }
 
     // and insert the new row
     CStdString sql = "update tvshow set " + GetValueString(details, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets);
     sql += PrepareSQL("where idShow=%i", idTvShow);
     m_pDS->exec(sql.c_str());
+
     CommitTransaction();
 
     return idTvShow;
@@ -1916,12 +1936,16 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
   try
   {
     BeginTransaction();
-    if (idEpisode == -1)
-    {
+    if (idEpisode < 0)
       idEpisode = GetEpisodeId(strFilenameAndPath);
-      if (idEpisode > 0)
-        DeleteEpisode(strFilenameAndPath,idEpisode);
 
+    if (idEpisode > 0)
+      DeleteEpisode(strFilenameAndPath, idEpisode, true, true); // true to keep the table entry and the thumb
+    else
+    {
+      // only add a new episode if we don't already have a valid idEpisode
+      // (DeleteEpisode is called with bKeepId == true so the episode won't
+      // be removed from the episode table)
       idEpisode = AddEpisode(idShow,strFilenameAndPath);
       if (idEpisode < 0)
       {
@@ -1975,22 +1999,28 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMVideo /* = -1 */)
 {
   try
   {
     BeginTransaction();
 
-    int idMVideo = GetMusicVideoId(strFilenameAndPath);
-    if (idMVideo > -1)
-    {
-      DeleteMusicVideo(strFilenameAndPath);
-    }
-    idMVideo = AddMusicVideo(strFilenameAndPath);
     if (idMVideo < 0)
+      idMVideo = GetMusicVideoId(strFilenameAndPath);
+
+    if (idMVideo > -1)
+      DeleteMusicVideo(strFilenameAndPath, true, true, idMVideo); // Keep id and thumb
+    else
     {
-      CommitTransaction();
-      return -1;
+      // only add a new musicvideo if we don't already have a valid idMVideo
+      // (DeleteMusicVideo is called with bKeepId == true so the musicvideo won't
+      // be removed from the musicvideo table)
+      idMVideo = AddMusicVideo(strFilenameAndPath);
+      if (idMVideo < 0)
+      {
+        CommitTransaction();
+        return -1;
+      }
     }
 
     vector<int> vecDirectors;
@@ -1999,13 +2029,11 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     AddGenreAndDirectorsAndStudios(details,vecDirectors,vecGenres,vecStudios);
 
     // add artists...
-    if (!details.m_strArtist.IsEmpty())
+    if (!details.m_artist.empty())
     {
-      CStdStringArray vecArtists;
-      StringUtils::SplitString(details.m_strArtist, g_advancedSettings.m_videoItemSeparator, vecArtists);
-      for (unsigned int i = 0; i < vecArtists.size(); i++)
+      for (unsigned int i = 0; i < details.m_artist.size(); i++)
       {
-        CStdString artist = vecArtists[i];
+        CStdString artist = details.m_artist[i];
         artist.Trim();
         int idArtist = AddActor(artist,"");
         AddArtistToMusicVideo(idMVideo, idArtist);
@@ -2409,16 +2437,28 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idMovie < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idMovie, path, VIDEODB_CONTENT_MOVIES);
+  if (!path.empty())
+    DeleteMovie(path, bKeepId, bKeepThumb, idMovie);
+}
+
+void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idMovie /* = -1 */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0)
     {
-      return ;
+      idMovie = GetMovieId(strFilenameAndPath);
+      if (idMovie < 0)
+        return;
     }
 
     BeginTransaction();
@@ -2475,17 +2515,28 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
   }
 }
 
-void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idTvShow < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idTvShow, path, VIDEODB_CONTENT_TVSHOWS);
+  if (!path.empty())
+    DeleteTvShow(path, bKeepId, bKeepThumb, idTvShow);
+}
+
+void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idTvShow /* = -1 */)
 {
   try
   {
-    int idTvShow=-1;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0)
     {
-      return ;
+      idTvShow = GetTvShowId(strPath);
+      if (idTvShow < 0)
+        return;
     }
 
     BeginTransaction();
@@ -2502,23 +2553,9 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       m_pDS2->next();
     }
 
-    strSQL=PrepareSQL("delete from genrelinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from actorlinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from directorlinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
+    DeleteDetailsForTvShow(strPath, bKeepThumb, idTvShow);
 
     strSQL=PrepareSQL("delete from tvshowlinkpath where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    strSQL=PrepareSQL("delete from studiolinktvshow where idShow=%i", idTvShow);
-    m_pDS->exec(strSQL.c_str());
-
-    if (!bKeepThumb)
-      DeleteThumbForItem(strPath,true);
 
     // keep tvshow table and movielink table so we can update data in place
     if (!bKeepId)
@@ -2543,7 +2580,18 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
 }
 
-void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idEpisode < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idEpisode, path, VIDEODB_CONTENT_EPISODES);
+  if (!path.empty())
+    DeleteEpisode(path, idEpisode, bKeepId, bKeepThumb);
+}
+
+void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode /* = -1 */, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
 {
   try
   {
@@ -2592,16 +2640,28 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
   }
 }
 
-void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteMusicVideo(int idMusicVideo, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idMusicVideo < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idMusicVideo, path, VIDEODB_CONTENT_MUSICVIDEOS);
+  if (!path.empty())
+    DeleteMusicVideo(path, bKeepId, bKeepThumb, idMusicVideo);
+}
+
+void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idMVideo /* = -1 */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0)
     {
-      return ;
+      idMVideo = GetMusicVideoId(strFilenameAndPath);
+      if (idMVideo < 0)
+        return;
     }
 
     BeginTransaction();
@@ -4162,7 +4222,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
           {
-            pItem->GetVideoInfoTag()->m_strArtist = it->second.second;
+            pItem->GetVideoInfoTag()->m_artist.push_back(it->second.second);
             CStdString strThumb = CThumbnailCache::GetAlbumThumb(*pItem);
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
@@ -4185,7 +4245,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           pItem->SetLabelPreformated(true);
           if (!items.Contains(pItem->GetPath()))
           {
-            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            pItem->GetVideoInfoTag()->m_artist.push_back(m_pDS->fv(2).get_asString());
             CStdString strThumb = CThumbnailCache::GetAlbumThumb(pItem->GetLabel(), m_pDS->fv(2).get_asString());
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
@@ -4357,7 +4417,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
           if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
-            pItem->GetVideoInfoTag()->m_strArtist = pItem->GetLabel();
+            pItem->GetVideoInfoTag()->m_artist.push_back(pItem->GetLabel());
           items.Add(pItem);
           m_pDS->next();
         }
@@ -6995,7 +7055,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     int current = 0;
 
     // create our xml document
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlNode *pMain = NULL;
@@ -7137,7 +7197,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       CFileItem saveItem(item);
       if (!singleFiles)
       {
-        CStdString strFileName(movie.m_strArtist + "." + movie.m_strTitle);
+        CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
         if (movie.m_iYear > 0)
           strFileName.AppendFormat("_%i", movie.m_iYear);
         saveItem = CFileItem(GetSafeFile(musicvideosDir, strFileName) + ".avi", false);
@@ -7527,7 +7587,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    TiXmlDocument xmlDoc;
+    CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(URIUtils::AddFileToFolder(path, "videodb.xml")))
       return;
 
@@ -7626,7 +7686,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
-        CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
+        CStdString strFileName(StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle);
         if (iVersion >= 1 && info.m_iYear > 0)
           strFileName.AppendFormat("_%i", info.m_iYear);
         CStdString file(GetSafeFile(musicvideosDir, strFileName));

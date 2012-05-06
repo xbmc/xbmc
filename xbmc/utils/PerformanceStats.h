@@ -33,9 +33,9 @@ public:
   double     m_time;
   double     m_user;
   double     m_sys;
-  __int64    m_samples;
+  int64_t    m_samples;
 
-  PerformanceCounter(double dTime=0.0, double dUser=0.0, double dSys=0.0, __int64 nSamples=1LL) :
+  PerformanceCounter(double dTime=0.0, double dUser=0.0, double dSys=0.0, int64_t nSamples=1LL) :
      m_time(dTime), m_user(dUser), m_sys(dSys), m_samples(nSamples) { }
   virtual ~PerformanceCounter() { }
 };

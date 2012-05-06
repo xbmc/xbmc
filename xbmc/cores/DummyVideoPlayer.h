@@ -66,8 +66,8 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);
@@ -80,7 +80,7 @@ private:
   virtual void Process();
 
   bool m_paused;
-  __int64 m_clock;
+  int64_t m_clock;
   unsigned int m_lastTime;
   int m_speed;
 };

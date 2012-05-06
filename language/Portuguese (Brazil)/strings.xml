@@ -2245,6 +2245,12 @@
   <string id="24098">Indisponível</string>
   <string id="24099">Gostaria de trocar para esta skin?</string>
   <string id="25000">Notificações</string>
+  <string id="25001">Oculte Entrangeiro</string>
+  <string id="25002">Selecione a partir de todos os títulos ...</string>
+  <string id="25003">Mostrar Menus blu-ray</string>
+  <string id="25004">Reproduzir título prinicipal: %d</string>
+  <string id="25005">Título: %d</string>
+  <string id="25006">Selecione item que será reproduzido</string>
 
   <string id="29800">Modo de coleção</string>
   <string id="29801">Teclado QWERTY</string>
@@ -2353,6 +2359,12 @@
   <string id="34401">Falha para inciar filtros e scalers de vídeo, voltando a usar bilinear scaling</string>
   <string id="34402">Falha para inicializar o dispositivo de áudio</string>
   <string id="34403">Verifique suas configurações de áudio</string>
+  
+  <string id="34404">Use gestos para navegação:</string>
+  <string id="34405">1 simples toque de dedo para a esquerda, direita, cima, baixo para cursores</string>
+  <string id="34406">2 toques de dedo esquerda para backspace</string>
+  <string id="34407">Um toque único de seu dedo para entrar</string>
+  <string id="34408">dois toque do dedo ou uma único toque único mais longo para menu de contexto</string>
 
   <string id="35000">Periféricos</string>
 
@@ -2364,6 +2376,7 @@
   <string id="35006">Dispositivo removido</string>
   <string id="35007">Keymap para uso com este dispositivo</string>
   <string id="35008">Keymap ativado</string>
+  <string id="35009">Não use o Keymap personalizado para este dispositivo</string>
 
   <string id="35500">Local</string>
   <string id="35501">Classe</string>
@@ -2390,4 +2403,13 @@
   <string id="36016">Conectado</string> <!-- max. 13 characters -->
   <string id="36017">Adaptador encontrado, mas libcec não esta disponível</string>
   <string id="36018">Usar os ajustes de linguagem da TV</string>
+  <string id="36019">Conectado a um dispositivo HDMI</string>
+  <string id="36020">Faça XBMC a fonte ativa quando se inicia</string>
+  <string id="36021">Endereço Físico (sobrepõe porta HDMI)</string>
+  <string id="36022">Porta COM (deixar em branco a menos que necessário)</string>
+  <string id="36023">Configuração Atualizada</string>
+  <string id="36024">Falha para setar a nova configuração. Por favor verifique seus ajustes.</string>
+  <string id="36025">Envie comando 'fonte inativa' quando parando XBMC</string>
 </strings>
+
+

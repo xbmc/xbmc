@@ -732,9 +732,9 @@ bool CApplication::Create()
   g_langInfo.Load(strLangInfoPath);
 
   CStdString strLanguagePath;
-  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+  strLanguagePath.Format("special://xbmc/language/%s", strLanguage.c_str());
 
-  CLog::Log(LOGINFO, "load language file: %s", strLanguagePath.c_str());
+  CLog::Log(LOGINFO, "load language file from path: %s", strLanguagePath.c_str());
   if (!g_localizeStrings.Load(strLanguagePath))
     FatalErrorHandler(false, false, true);
 
@@ -1750,11 +1750,9 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   CStdString langPath, skinEnglishPath;
   URIUtils::AddFileToFolder(skin->Path(), "language", langPath);
   URIUtils::AddFileToFolder(langPath, g_guiSettings.GetString("locale.language"), langPath);
-  URIUtils::AddFileToFolder(langPath, "strings.xml", langPath);
 
   URIUtils::AddFileToFolder(skin->Path(), "language", skinEnglishPath);
   URIUtils::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
-  URIUtils::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
 
@@ -1876,7 +1874,7 @@ bool CApplication::LoadUserWindows()
         CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
-          TiXmlDocument xmlDoc;
+          CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
             CLog::Log(LOGERROR, "unable to load: %s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -5313,7 +5311,7 @@ void CApplication::SeekTime( double dTime )
         {
           long startOfNewFile = (i > 0) ? (*m_currentStack)[i-1]->m_lEndOffset : 0;
           if (m_currentStackPosition == i)
-            m_pPlayer->SeekTime((__int64)((dTime - startOfNewFile) * 1000.0));
+            m_pPlayer->SeekTime((int64_t)((dTime - startOfNewFile) * 1000.0));
           else
           { // seeking to a new file
             m_currentStackPosition = i;
@@ -5328,7 +5326,7 @@ void CApplication::SeekTime( double dTime )
       }
     }
     // convert to milliseconds and perform seek
-    m_pPlayer->SeekTime( static_cast<__int64>( dTime * 1000.0 ) );
+    m_pPlayer->SeekTime( static_cast<int64_t>( dTime * 1000.0 ) );
   }
 }
 

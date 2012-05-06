@@ -90,7 +90,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   //  These are filled by the metadata callback
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_MaxFrameSize==0 || m_DataFormat == AE_FMT_INVALID)
   {
-    CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%llu, MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
+    CLog::Log(LOGERROR, "FLACCodec: Can't get stream info, SampleRate=%i, Channels=%i, BitsPerSample=%i, TotalTime=%"PRIu64", MaxFrameSize=%i", m_SampleRate, m_Channels, m_BitsPerSample, m_TotalTime, m_MaxFrameSize);
     FreeDecoder();
     return false;
   }
@@ -126,14 +126,14 @@ void FLACCodec::DeInit()
   }
 }
 
-__int64 FLACCodec::Seek(__int64 iSeekTime)
+int64_t FLACCodec::Seek(int64_t iSeekTime)
 {
   //  Seek to the nearest sample
   // set the buffer size to 0 first, as this invokes a WriteCallback which
   // may be called when the buffer is almost full (resulting in a buffer
   // overrun unless we reset m_BufferSize first).
   m_BufferSize=0;
-  if(!m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder, (__int64)(iSeekTime*m_SampleRate)/1000))
+  if(!m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder, (int64_t)(iSeekTime*m_SampleRate)/1000))
     CLog::Log(LOGERROR, "FLACCodec::Seek - failed to seek");
 
   if(m_dll.FLAC__stream_decoder_get_state(m_pFlacDecoder)==FLAC__STREAM_DECODER_SEEK_ERROR)
@@ -339,7 +339,7 @@ void FLACCodec::DecoderMetadataCallback(const FLAC__StreamDecoder *decoder, cons
       case 24: pThis->m_DataFormat = AE_FMT_S24NE3; break;
       case 32: pThis->m_DataFormat = AE_FMT_FLOAT;  break;
     }
-    pThis->m_TotalTime     = (__int64)metadata->data.stream_info.total_samples * 1000 / metadata->data.stream_info.sample_rate;
+    pThis->m_TotalTime     = (int64_t)metadata->data.stream_info.total_samples * 1000 / metadata->data.stream_info.sample_rate;
     pThis->m_MaxFrameSize  = metadata->data.stream_info.max_blocksize*(pThis->m_BitsPerSample/8)*pThis->m_Channels;
   }
 }

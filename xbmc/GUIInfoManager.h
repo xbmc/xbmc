@@ -508,6 +508,7 @@ namespace INFO
 #define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 75)
 #define LISTITEM_IS_RESUMABLE       (LISTITEM_START + 76)
 #define LISTITEM_PERCENT_PLAYED     (LISTITEM_START + 77)
+#define LISTITEM_DATE_ADDED         (LISTITEM_START + 78)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -645,7 +646,7 @@ public:
   const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
   CStdString GetPictureLabel(int item);
 
-  __int64 GetPlayTime() const;  // in ms
+  int64_t GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   int GetPlayTimeRemaining() const;
   int GetTotalPlayTime() const;

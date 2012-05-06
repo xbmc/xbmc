@@ -92,7 +92,7 @@ void NSFCodec::DeInit()
   m_szBuffer = NULL;
 }
 
-__int64 NSFCodec::Seek(__int64 iSeekTime)
+int64_t NSFCodec::Seek(int64_t iSeekTime)
 {
   if (m_iDataPos > iSeekTime/1000*48000*2)
   {

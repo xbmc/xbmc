@@ -74,7 +74,7 @@ void CDDACodec::DeInit()
   m_file.Close();
 }
 
-__int64 CDDACodec::Seek(__int64 iSeekTime)
+int64_t CDDACodec::Seek(int64_t iSeekTime)
 {
   //  Calculate the next full second...
   int iSeekTimeFullSec=(int)(iSeekTime+(1000-(iSeekTime%1000)))/1000;

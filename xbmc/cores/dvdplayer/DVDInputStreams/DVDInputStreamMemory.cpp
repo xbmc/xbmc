@@ -74,7 +74,7 @@ int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
   return iBytesToCopy;
 }
 
-__int64 CDVDInputStreamMemory::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamMemory::Seek(int64_t offset, int whence)
 {
   switch (whence)
   {
@@ -101,7 +101,7 @@ __int64 CDVDInputStreamMemory::Seek(__int64 offset, int whence)
   return m_iDataPos;
 }
 
-__int64 CDVDInputStreamMemory::GetLength()
+int64_t CDVDInputStreamMemory::GetLength()
 {
   return m_iDataSize;
 }

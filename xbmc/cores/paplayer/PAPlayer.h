@@ -68,8 +68,8 @@ public:
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
   virtual CStdString GetAudioCodecName();
-  virtual __int64 GetTime();
-  virtual void SeekTime(__int64 iTime = 0);
+  virtual int64_t GetTime();
+  virtual void SeekTime(int64_t iTime = 0);
   virtual bool SkipNext();
 
   static bool HandlesType(const CStdString &type);
@@ -81,8 +81,8 @@ protected:
 private:
   typedef struct {
     CAudioDecoder     m_decoder;             /* the stream decoder */
-    __int64           m_startOffset;         /* the stream start offset */
-    __int64           m_endOffset;           /* the stream end offset */
+    int64_t           m_startOffset;         /* the stream start offset */
+    int64_t           m_endOffset;           /* the stream end offset */
     CAEChannelInfo    m_channelInfo;         /* channel layout information */
     unsigned int      m_sampleRate;          /* sample rate of the stream */
     unsigned int      m_encodedSampleRate;   /* the encoded sample rate of raw streams */
@@ -131,6 +131,6 @@ private:
   bool PrepareStream(StreamInfo *si);
   bool ProcessStream(StreamInfo *si, double &delay, double &buffer);
   bool QueueData(StreamInfo *si);
-  __int64 GetTotalTime64();
+  int64_t GetTotalTime64();
 };
 

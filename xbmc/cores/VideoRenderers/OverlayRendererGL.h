@@ -22,11 +22,8 @@
  */
 
 #pragma once
+#include "system_gl.h"
 #include "OverlayRenderer.h"
-
-#ifdef HAS_GL
-#include <GL/glew.h>
-#endif
 
 class CDVDOverlay;
 class CDVDOverlayImage;

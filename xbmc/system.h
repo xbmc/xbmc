@@ -116,6 +116,8 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAVE_LIBCEC
+#define HAVE_LIBMP3LAME
+#define HAVE_LIBVORBISENC
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -237,32 +239,6 @@
 #ifdef HAVE_LIBGLES
 #undef HAS_GL
 #define HAS_GLES 1
-#endif
-
-
-#ifdef HAS_GL
-#if defined(TARGET_WINDOWS)
-#include "GL/glew.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
-//#include <GL/wglext.h>
-#elif defined(TARGET_DARWIN)
-#include <GL/glew.h>
-#include <OpenGL/gl.h>
-#elif defined(TARGET_LINUX)
-#include <GL/glew.h>
-#include <GL/gl.h>
-#endif
-#endif
-
-#if HAS_GLES == 2
-  #if defined(TARGET_DARWIN)
-    #include <OpenGLES/ES2/gl.h>
-    #include <OpenGLES/ES2/glext.h>
-  #else
-    #include <GLES2/gl2.h>
-    #include <GLES2/gl2ext.h>
-  #endif
 #endif
 
 #ifdef HAS_DVD_DRIVE

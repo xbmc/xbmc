@@ -67,7 +67,7 @@ HRESULT __stdcall DVDPerformanceCounterVideoQueue(PLARGE_INTEGER numerator, PLAR
   return S_OK;
 }
 
-inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
+inline int64_t get_thread_cpu_usage(ProcessPerformance* p)
 {
   if (p->thread)
   {
@@ -80,8 +80,8 @@ inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
     p->timer_thread.QuadPart = p->thread->GetAbsoluteUsage();
     p->timer_system.QuadPart = CurrentHostCounter();
 
-    __int64 threadTime = (p->timer_thread.QuadPart - old_time_thread.QuadPart);
-    __int64 systemTime = (p->timer_system.QuadPart - old_time_system.QuadPart);
+    int64_t threadTime = (p->timer_thread.QuadPart - old_time_thread.QuadPart);
+    int64_t systemTime = (p->timer_system.QuadPart - old_time_system.QuadPart);
 
     if (systemTime > 0 && threadTime > 0) return ((threadTime * 100) / systemTime);
   }

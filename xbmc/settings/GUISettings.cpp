@@ -34,7 +34,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
@@ -334,8 +334,12 @@ void CGUISettings::Initialize()
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddString(acd, "audiocds.trackpathformat", 13307, "%A - %B/[%N. ][%A - ]%T", EDIT_CONTROL_INPUT, false, 16016);
   map<int,int> encoders;
+#ifdef HAVE_LIBMP3LAME
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
+#endif
+#ifdef HAVE_LIBVORBISENC
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
+#endif
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
   encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
   AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_FLAC, encoders, SPIN_CONTROL_TEXT);
@@ -1449,7 +1453,7 @@ bool CGUISettings::SetLanguage(const CStdString &strLanguage)
     g_charsetConverter.reset();
 
     CStdString strLanguagePath;
-    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strNewLanguage.c_str());
+    strLanguagePath.Format("special://xbmc/language/%s", strNewLanguage.c_str());
     if (!g_localizeStrings.Load(strLanguagePath))
       return false;
 

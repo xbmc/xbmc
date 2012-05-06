@@ -59,7 +59,7 @@ public:
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
   virtual bool CanSeek();
-  virtual __int64 Seek(__int64 iSeekTime);
+  virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool SkipNext();
@@ -91,7 +91,7 @@ private:
   /* END decoder vars */
 
   // Decoding variables
-  __int64 m_lastByteOffset;
+  int64_t m_lastByteOffset;
   bool    m_eof;
   bool    m_Decoding;
   bool    m_CallAgainWithSameBuffer;

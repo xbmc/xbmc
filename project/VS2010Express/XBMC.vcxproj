@@ -281,10 +281,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp" />
-    <ClCompile Include="..\..\lib\tinyXML\tinystr.cpp" />
-    <ClCompile Include="..\..\lib\tinyXML\tinyxml.cpp" />
-    <ClCompile Include="..\..\lib\tinyXML\tinyxmlerror.cpp" />
-    <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
@@ -368,6 +364,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AFPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ASAPFileDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\BlurayDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CacheStrategy.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CDDADirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CDDAFile.cpp" />
@@ -957,6 +954,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\AFPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AFPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ASAPFileDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\BlurayDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CacheStrategy.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CDDADirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CDDAFile.h" />
@@ -1103,6 +1101,7 @@
     <ClCompile Include="..\..\xbmc\utils\Mime.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceSample.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceStats.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\POUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RegExp.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RingBuffer.cpp" />
@@ -1123,6 +1122,7 @@
     <ClCompile Include="..\..\xbmc\utils\Variant.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Weather.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Win32Exception.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp" />
     <ClCompile Include="..\..\xbmc\utils\XMLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\video\Bookmark.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.cpp" />
@@ -1433,8 +1433,6 @@
     <ClInclude Include="..\..\lib\DllAvFilter.h" />
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
-    <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
-    <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h" />
@@ -1898,6 +1896,7 @@
     <ClInclude Include="..\..\xbmc\utils\Mime.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceSample.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceStats.h" />
+    <ClInclude Include="..\..\xbmc\utils\POUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h" />
     <ClInclude Include="..\..\xbmc\utils\RegExp.h" />
     <ClInclude Include="..\..\xbmc\utils\RingBuffer.h" />
@@ -1920,6 +1919,7 @@
     <ClInclude Include="..\..\xbmc\utils\Variant.h" />
     <ClInclude Include="..\..\xbmc\utils\Weather.h" />
     <ClInclude Include="..\..\xbmc\utils\Win32Exception.h" />
+    <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h" />
     <ClInclude Include="..\..\xbmc\utils\XMLUtils.h" />
     <ClInclude Include="..\..\xbmc\video\Bookmark.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogAudioSubtitleSettings.h" />

@@ -239,7 +239,7 @@ void WAVCodec::DeInit()
   m_file.Close();
 }
 
-__int64 WAVCodec::Seek(__int64 iSeekTime)
+int64_t WAVCodec::Seek(int64_t iSeekTime)
 {
   //  Calculate size of a single sample of the file
   int iSampleSize=m_SampleRate*m_Channels*(m_BitsPerSample/8);

@@ -63,7 +63,7 @@ void YMCodec::DeInit()
   m_ym = 0;
 }
 
-__int64 YMCodec::Seek(__int64 iSeekTime)
+int64_t YMCodec::Seek(int64_t iSeekTime)
 {
   return m_dll.Seek(m_ym,(unsigned long)iSeekTime);
 }

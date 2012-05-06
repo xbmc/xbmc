@@ -1,0 +1,9116 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc.core-Frodo\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: id:0
+msgctxt "Auto context with id 0"
+msgid "Programs"
+msgstr "करिअक्रम"
+
+#: id:1
+msgctxt "Auto context with id 1"
+msgid "Pictures"
+msgstr "तसवीरें"
+
+#: id:2
+msgctxt "Auto context with id 2"
+msgid "Music"
+msgstr "संगीत"
+
+#: id:3
+msgctxt "Auto context with id 3"
+msgid "Videos"
+msgstr "विडियो"
+
+#: id:4
+msgid "TV-Guide"
+msgstr "टीवी-गइड"
+
+#: id:5
+msgctxt "Auto context with id 5"
+msgid "Settings"
+msgstr "सेट्टिंग"
+
+#: id:6
+msgid "XBMC SVN"
+msgstr " XBMC स्वं "
+
+#: id:7
+msgctxt "Auto context with id 7"
+msgid "File manager"
+msgstr "File मेनेजर "
+
+#: id:8
+msgctxt "Auto context with id 8"
+msgid "Weather"
+msgstr "मौसम"
+
+#: id:9
+msgid "xbmc media center"
+msgstr "क्स्बम्क मीडिया प्लयेर  "
+
+#: id:11
+msgid "Monday"
+msgstr "सोमवार"
+
+#: id:12
+msgid "Tuesday"
+msgstr "मंगलवार"
+
+#: id:13
+msgid "Wednesday"
+msgstr "बुधवार"
+
+#: id:14
+msgid "Thursday"
+msgstr "गुरूवार"
+
+#: id:15
+msgid "Friday"
+msgstr "शुक्रवार"
+
+#: id:16
+msgid "Saturday"
+msgstr "शनिवार"
+
+#: id:17
+msgid "Sunday"
+msgstr "रविवार"
+
+#: id:21
+msgid "January"
+msgstr "जनुअरी"
+
+#: id:22
+msgid "February"
+msgstr "फेब्रुअरी "
+
+#: id:23
+msgid "March"
+msgstr "मार्च"
+
+#: id:24
+msgid "April"
+msgstr "अप्रैल"
+
+#: id:25
+msgctxt "Auto context with id 25"
+msgid "May"
+msgstr "माय"
+
+#: id:26
+msgid "June"
+msgstr "जून "
+
+#: id:27
+msgid "July"
+msgstr "जुलाई"
+
+#: id:28
+msgid "August"
+msgstr "अगस्त"
+
+#: id:29
+msgid "September"
+msgstr "सितम्बर"
+
+#: id:30
+msgid "October"
+msgstr "अक्टूबर"
+
+#: id:31
+msgid "November"
+msgstr "नवम्बर"
+
+#: id:32
+msgid "December"
+msgstr "दिसम्बर"
+
+#: id:41
+msgid "Mon"
+msgstr "मों."
+
+#: id:42
+msgid "Tue"
+msgstr "तुए."
+
+#: id:43
+msgid "Wed"
+msgstr "वेद"
+
+#: id:44
+msgid "Thu"
+msgstr "ठुर्स"
+
+#: id:45
+msgid "Fri"
+msgstr "फ्री"
+
+#: id:46
+msgid "Sat"
+msgstr "सैट"
+
+#: id:47
+msgctxt "Auto context with id 47"
+msgid "Sun"
+msgstr "सुन"
+
+#: id:51
+msgid "Jan"
+msgstr "जन"
+
+#: id:52
+msgid "Feb"
+msgstr "फेब"
+
+#: id:53
+msgid "Mar"
+msgstr "मार्च  "
+
+#: id:54
+msgid "Apr"
+msgstr "अपर"
+
+#: id:55
+msgctxt "Auto context with id 55"
+msgid "May"
+msgstr "माय"
+
+#: id:56
+msgid "Jun"
+msgstr "जून"
+
+#: id:57
+msgid "Jul"
+msgstr "जुलाई"
+
+#: id:58
+msgid "Aug"
+msgstr "औग"
+
+#: id:59
+msgid "Sep"
+msgstr "सप्त"
+
+#: id:60
+msgid "Oct"
+msgstr "ओक्ट"
+
+#: id:61
+msgid "Nov"
+msgstr "नोव"
+
+#: id:62
+msgid "Dec"
+msgstr "देक"
+
+#: id:71
+msgid "N"
+msgstr ""
+
+#: id:72
+msgid "NNE"
+msgstr ""
+
+#: id:73
+msgid "NE"
+msgstr ""
+
+#: id:74
+msgid "ENE"
+msgstr ""
+
+#: id:75
+msgid "E"
+msgstr ""
+
+#: id:76
+msgid "ESE"
+msgstr ""
+
+#: id:77
+msgid "SE"
+msgstr ""
+
+#: id:78
+msgid "SSE"
+msgstr ""
+
+#: id:79
+msgid "S"
+msgstr ""
+
+#: id:80
+msgid "SSW"
+msgstr ""
+
+#: id:81
+msgid "SW"
+msgstr ""
+
+#: id:82
+msgid "WSW"
+msgstr ""
+
+#: id:83
+msgid "W"
+msgstr ""
+
+#: id:84
+msgid "WNW"
+msgstr ""
+
+#: id:85
+msgid "NW"
+msgstr ""
+
+#: id:86
+msgid "NNW"
+msgstr ""
+
+#: id:87
+msgid "VAR"
+msgstr ""
+
+#: id:98
+msgid "View: Auto"
+msgstr "द्रिस्तिकों: ऑटो"
+
+#: id:99
+msgid "View: Auto big"
+msgstr "द्रिस्तिकों: स्वचालित बड़ा "
+
+#: id:100
+msgid "View: Icons"
+msgstr "द्रिस्तिकों: चित्रें "
+
+#: id:101
+msgid "View: List"
+msgstr "द्रिस्तिकों: लिस्ट "
+
+#: id:102
+msgctxt "Auto context with id 102"
+msgid "Scan"
+msgstr "सकें"
+
+#: id:103
+msgctxt "Auto context with id 103"
+msgid "Sort by: Name"
+msgstr "रकाना: नाम"
+
+#: id:104
+msgid "Sort by: Date"
+msgstr "रकाना: तारीख"
+
+#: id:105
+msgid "Sort by: Size"
+msgstr "रकाना: लम्बाई"
+
+#: id:106
+msgid "No"
+msgstr "नहीं "
+
+#: id:107
+msgid "Yes"
+msgstr "टेके "
+
+#: id:108
+msgctxt "Auto context with id 108"
+msgid "Slideshow"
+msgstr "फोटो जो फिल्म पर हो "
+
+#: id:109
+msgid "Create thumbs"
+msgstr "निर्माण करना अन्गुतियाँ "
+
+#: id:110
+msgid "Create thumbnails"
+msgstr "निर्माण करना अंगूठे का नाखुन "
+
+#: id:111
+msgctxt "Auto context with id 111"
+msgid "Shortcuts"
+msgstr "लघु पाथें "
+
+#: id:112
+msgid "Paused"
+msgstr "अवकासा "
+
+#: id:113
+msgid "Update failed"
+msgstr "अद्यातानिकराना हर गया"
+
+#: id:114
+msgid "Installation failed"
+msgstr "अधिस्थापना हर गया"
+
+#: id:115
+msgid "Copy"
+msgstr "निकल करना "
+
+#: id:116
+msgid "Move"
+msgstr "हटाना"
+
+#: id:117
+msgid "Delete"
+msgstr "मिटाना"
+
+#: id:118
+msgid "Rename"
+msgstr "नया नामा रखना "
+
+#: id:119
+msgid "New folder"
+msgstr "नया फोल्डर"
+
+#: id:120
+msgid "Confirm file copy"
+msgstr "पक्का करना फाइल नक़ल करना"
+
+#: id:121
+msgid "Confirm file move"
+msgstr "पक्का करना फाइल हटाना"
+
+#: id:122
+msgid "Confirm file delete?"
+msgstr "पक्का करना फाइल मिटाना?"
+
+#: id:123
+msgid "Copy these files?"
+msgstr "निकल करना ये फिल्स"
+
+#: id:124
+msgid "Move these files?"
+msgstr "ये निकल करना है?"
+
+#: id:125
+msgid "Delete these files? - Deleting files cannot be undone!"
+msgstr "Yये फिल्स मिटाना है? - ये फिल्स पीर मिटाना"
+
+#: id:126
+msgid "Status"
+msgstr "हालात"
+
+#: id:127
+msgid "Objects"
+msgstr "वस्तुएं"
+
+#: id:128
+msgctxt "Auto context with id 128"
+msgid "General"
+msgstr "साधारनन "
+
+#: id:129
+msgctxt "Auto context with id 129"
+msgid "Slideshow"
+msgstr "फोटो जो फिल्म पर हो "
+
+#: id:130
+msgctxt "Auto context with id 130"
+msgid "System info"
+msgstr "सिस्टम की सुकाना "
+
+#: id:131
+msgid "Display"
+msgstr "दिखावा"
+
+#: id:132
+msgid "Albums"
+msgstr "अल्बुम्स"
+
+#: id:133
+msgid "Artists"
+msgstr "कलाकार "
+
+#: id:134
+msgid "Songs"
+msgstr "गीतें"
+
+#: id:135
+msgid "Genres"
+msgstr "तरीका "
+
+#: id:136
+msgid "Playlists"
+msgstr "संगीता के किनारा "
+
+#: id:137
+msgid "Search"
+msgstr "धुन्धना"
+
+#: id:138
+msgid "System Information"
+msgstr "सिस्टम की सुकाना"
+
+#: id:139
+msgid "Temperatures:"
+msgstr "तापमान: "
+
+#: id:140
+msgid "CPU:"
+msgstr ""
+
+#: id:141
+msgid "GPU:"
+msgstr ""
+
+#: id:142
+msgid "Time:"
+msgstr "वक्त:"
+
+#: id:143
+msgid "Current:"
+msgstr "वर्तमाना:"
+
+#: id:144
+msgid "Build:"
+msgstr ""
+
+#: id:145
+msgid "Network:"
+msgstr ""
+
+#: id:146
+msgid "Type:"
+msgstr ""
+
+#: id:147
+msgid "Static"
+msgstr ""
+
+#: id:148
+msgid "DHCP"
+msgstr ""
+
+#: id:149
+msgid "MAC address"
+msgstr ""
+
+#: id:150
+msgctxt "Auto context with id 150"
+msgid "IP address"
+msgstr ""
+
+#: id:151
+msgid "Link:"
+msgstr ""
+
+#: id:152
+msgid "Half duplex"
+msgstr ""
+
+#: id:153
+msgid "Full duplex"
+msgstr ""
+
+#: id:154
+msgctxt "Auto context with id 154"
+msgid "Storage"
+msgstr "संन्कायाना"
+
+#: id:155
+msgid "Drive"
+msgstr "ड्रिवे"
+
+#: id:156
+msgctxt "Auto context with id 156"
+msgid "Free"
+msgstr "कलि जग्गा"
+
+#: id:157
+msgctxt "Auto context with id 157"
+msgid "Video"
+msgstr "विडियो"
+
+#: id:158
+msgid "Free memory"
+msgstr "पूरा मेमोरी"
+
+#: id:159
+msgid "No link"
+msgstr "कोई लिंक नहीं"
+
+#: id:160
+msgctxt "Auto context with id 160"
+msgid "Free"
+msgstr "कलि जग्गा"
+
+#: id:161
+msgid "Unavailable"
+msgstr "उनवैलाब्ले"
+
+#: id:162
+msgid "Tray open"
+msgstr "कद त्रय कुला है"
+
+#: id:163
+msgid "Reading"
+msgstr "पर रहा है"
+
+#: id:164
+msgid "No disc"
+msgstr "कद अंधार नहीं"
+
+#: id:165
+msgid "Disc present"
+msgstr "कद अंधार है"
+
+#: id:166
+msgid "Skin"
+msgstr "विषय"
+
+#: id:169
+msgctxt "Auto context with id 169"
+msgid "Resolution"
+msgstr "संकल्प"
+
+#: id:170
+msgid "Adjust display refresh rate to match video"
+msgstr "ताज़ा करने के लिए वीडियो मैच दर प्रदर्शित करने के लिए समायोजित करें"
+
+#: id:172
+msgid "Release date"
+msgstr "पहला प्रदर्सन"
+
+#: id:173
+msgid "Display 4:3 videos as"
+msgstr "4:3 विडोस दिखने केलिए"
+
+#: id:175
+msgid "Moods"
+msgstr "स्वभावें"
+
+#: id:176
+msgid "Styles"
+msgstr "प्रकारें"
+
+#: id:179
+msgid "Song"
+msgstr "संगीता"
+
+#: id:180
+msgid "Duration"
+msgstr "अवधि "
+
+#: id:181
+msgid "Select album"
+msgstr "एल्बम चुन्लेना"
+
+#: id:182
+msgid "Tracks"
+msgstr "रास्तें"
+
+#: id:183
+msgid "Review"
+msgstr "सर्वेक्सना"
+
+#: id:184
+msgid "Refresh"
+msgstr "फिरा से भरना"
+
+#: id:185
+msgid "Searching album"
+msgstr "एल्बम धुंद रहा है"
+
+#: id:186
+msgid "OK"
+msgstr "टेके"
+
+#: id:187
+msgid "No albums found!"
+msgstr "कोई एल्बम मिला नहीं"
+
+#: id:188
+msgid "Select all"
+msgstr "पूरा चुन्लेना"
+
+#: id:189
+msgid "Scanning media info"
+msgstr "परिक्सन करना मीडिया की सुकाना"
+
+#: id:190
+msgid "Save"
+msgstr "बचाना"
+
+#: id:191
+msgid "Shuffle"
+msgstr "शुफ्फ्ले"
+
+#: id:192
+msgctxt "Auto context with id 192"
+msgid "Clear"
+msgstr "निपटाना"
+
+#: id:193
+msgctxt "Auto context with id 193"
+msgid "Scan"
+msgstr "बारीकी से देखना"
+
+#: id:194
+msgid "Searching..."
+msgstr "धुंद रहा है..."
+
+#: id:195
+msgid "No info found!"
+msgstr "कोई सुकाना मिला नहीं!"
+
+#: id:196
+msgid "Select movie:"
+msgstr "फिल्म चुन्लेना:"
+
+#: id:197
+msgid "Querying %s info"
+msgstr "लोकेटिंग % सुकाना"
+
+#: id:198
+msgid "Loading movie details"
+msgstr "भरना फिल्म की सुकाना "
+
+#: id:199
+msgid "Web interface"
+msgstr "इन्टरनेट की अंतराप्र्स्था"
+
+#: id:202
+msgid "Tagline"
+msgstr "ताग्लिने"
+
+#: id:203
+msgid "Plot outline"
+msgstr "कथावस्तु की सीमा "
+
+#: id:205
+msgid "Votes"
+msgstr "मतदानें"
+
+#: id:206
+msgid "Cast"
+msgstr "फिल्म की नादानोंं"
+
+#: id:207
+msgid "Plot"
+msgstr "कथावस्तु"
+
+#: id:208
+msgctxt "Auto context with id 208"
+msgid "Play"
+msgstr "खेलना"
+
+#: id:209
+msgid "Next"
+msgstr "अगला"
+
+#: id:210
+msgid "Previous"
+msgstr "पूर्ववर्ती"
+
+#: id:213
+msgid "Calibrate user interface..."
+msgstr "उपयोगकर्ता इन्तेर्फास जन्न्काना..."
+
+#: id:214
+msgid "Video calibration..."
+msgstr "फिल्म की अन्सोधना..."
+
+#: id:215
+msgid "Soften"
+msgstr "कोमला करना या होना"
+
+#: id:216
+msgid "Zoom amount"
+msgstr "जूम की मात्र"
+
+#: id:217
+msgid "Pixel ratio"
+msgstr "पिक्सेल अनुपात"
+
+#: id:218
+msgid "DVD drive"
+msgstr "DVD की ड्रिवे"
+
+#: id:219
+msgid "Please insert disc"
+msgstr "डिस्क समिलिता करने के लिए क्रपया"
+
+#: id:220
+msgid "Remote share"
+msgstr "रेमोते शेयर"
+
+#: id:221
+msgid "Network is not connected"
+msgstr "नेटवर्क से जुरा नहीं है "
+
+#: id:222
+msgid "Cancel"
+msgstr "कटना"
+
+#: id:224
+msgid "Speed"
+msgstr "गति"
+
+#: id:225
+msgid "Vertical Shift"
+msgstr ""
+
+#: id:226
+msgid "Test patterns..."
+msgstr "अभ्यासें टेस्ट पत्तेर्न्स..."
+
+#: id:227
+msgid "Lookup audio CD track names from freedb.org"
+msgstr "Freedb.Org से ऑडियो CD ट्रैक नाम लुकापा"
+
+#: id:228
+msgid "Shuffle playlist on load"
+msgstr " शुफ्फ्ले प्लेलिस्ट परा निवेसा"
+
+#: id:229
+msgid "HDD spindown time"
+msgstr "HDD स्पिन्दोवं वक्त"
+
+#: id:230
+msgid "Video filters"
+msgstr "विडियो की सफें"
+
+#: id:231
+msgctxt "Auto context with id 231"
+msgid "None"
+msgstr "कोई नहीं"
+
+#: id:232
+msgid "Point"
+msgstr "पॉइंट"
+
+#: id:233
+msgid "Linear"
+msgstr ""
+
+#: id:234
+msgid "Anisotropic"
+msgstr ""
+
+#: id:235
+msgid "Quincunx"
+msgstr ""
+
+#: id:236
+msgid "Gaussian cubic"
+msgstr ""
+
+#: id:237
+msgid "Minification"
+msgstr ""
+
+#: id:238
+msgid "Magnification"
+msgstr ""
+
+#: id:239
+msgid "Clear playlist on finish"
+msgstr "खत्म परा सफा प्लेलिस्ट"
+
+#: id:240
+msgid "Display Mode"
+msgstr "डिस्प्ले अंदाजा"
+
+#: id:241
+msgid "Full Screen #%d"
+msgstr "पूर्ण स्क्रीन #%d"
+
+#: id:242
+msgid "Windowed"
+msgstr "विन्दोवेद"
+
+#: id:243
+msgid "Refresh Rate"
+msgstr "तरोताजा करना की डरा"
+
+#: id:244
+msgid "Full screen"
+msgstr "पूर्ण स्क्रीन "
+
+#: id:245
+msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgstr ""
+
+#: id:247
+msgctxt "Auto context with id 247"
+msgid "Scripts"
+msgstr "अलेक्हें"
+
+#: id:248
+msgctxt "Auto context with id 248"
+msgid "Language"
+msgstr "बाशा"
+
+#: id:249
+msgctxt "Auto context with id 249"
+msgid "Music"
+msgstr "संगीतें"
+
+#: id:250
+msgctxt "Auto context with id 250"
+msgid "Visualization"
+msgstr "कल्पना"
+
+#: id:251
+msgid "Select destination directory"
+msgstr "चुन्लेना अभिप्राय की निदेशिका"
+
+#: id:252
+msgid "Output stereo to all speakers"
+msgstr "ओउत्पुत सभी वक्तों करने के लिए स्तेरेओ"
+
+#: id:253
+msgid "Number of channels"
+msgstr "मर्गें की संख्या"
+
+#: id:254
+msgid "- DTS capable receiver"
+msgstr ""
+
+#: id:255
+msgid "CDDB"
+msgstr ""
+
+#: id:256
+msgid "Fetching CD information"
+msgstr "CD की सुकाना धुंद रहा है"
+
+#: id:257
+msgid "Error"
+msgstr "एर्रोर"
+
+#: id:258
+msgid "Enable tag reading"
+msgstr "एनाबले ताग रेअडिंग"
+
+#: id:259
+msgid "Opening"
+msgstr "डिस्क उद्घताना"
+
+#: id:260
+msgid "Shoutcast"
+msgstr "शौत्कास्त"
+
+#: id:261
+msgid "Waiting for start..."
+msgstr "प्रस्थान रोका देना रहा है..."
+
+#: id:262
+msgid "Scripts output"
+msgstr ""
+
+#: id:263
+msgid "Allow control of XBMC via HTTP"
+msgstr "XBMC की नियंत्रण घराना विया HTTP"
+
+#: id:264
+msgid "Record"
+msgstr "लिखना"
+
+#: id:265
+msgid "Stop Rec."
+msgstr "अभिलेखिना रोकना"
+
+#: id:266
+msgid "Sort by: Track"
+msgstr "रकाना: तरीका"
+
+#: id:267
+msgid "Sort by: Time"
+msgstr "रकाना: वक्त"
+
+#: id:268
+msgid "Sort by: Title"
+msgstr "रकाना: नाम"
+
+#: id:269
+msgid "Sort by: Artist"
+msgstr "रकाना: कलाकार"
+
+#: id:270
+msgid "Sort by: Album"
+msgstr "रकाना: एल्बम"
+
+#: id:271
+msgid "Top 100"
+msgstr "मुख्य 100"
+
+#: id:272
+msgid "Top-Left overscan compensation"
+msgstr "टॉप-लेफ्ट ओवेर्स्कां कोम्पेन्सतिओन"
+
+#: id:273
+msgid "Bottom-Right overscan compensation"
+msgstr "बोत्तोम-राईट ओवेर्स्कां कोम्पेन्सतिओन"
+
+#: id:274
+msgid "Subtitle positioning"
+msgstr "उपसिर्सका स्थापना"
+
+#: id:275
+msgid "Pixel ratio adjustment"
+msgstr "पिक्सेल रतियो समाधान"
+
+#: id:276
+msgid "Adjust the arrow to change the amount of overscan"
+msgstr "तीर समायोजित करने के लिए ओवेर्स्कां की रासी परिवर्तन"
+
+#: id:277
+msgid "Adjust the bar to change the subtitles position"
+msgstr "बार समायोजित करने के लिए उपसिर्सका स्थिति को बदलने"
+
+#: id:278
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr "यता समायोजित करने तो यहाँ पूरी तरह से वर्ग है"
+
+#: id:279
+msgid "Unable to load settings"
+msgstr "उनबले तो लोड सेत्तिंग्स"
+
+#: id:280
+msgid "Using default settings"
+msgstr "डिफ़ॉल्ट सेटिंग्स का उपयोग करना"
+
+#: id:281
+msgid "Please check the XML files"
+msgstr "XML फ़ाइलों की जाँच करें"
+
+#: id:282
+msgid "Found %i items"
+msgstr "मिला %मैं आइटम"
+
+#: id:283
+msgid "Search results"
+msgstr "परिणाम की असरें"
+
+#: id:284
+msgid "No results found"
+msgstr "कोई परिणाम नहीं मिले"
+
+#: id:287
+msgctxt "Auto context with id 287"
+msgid "Subtitles"
+msgstr "उपसिर्सकें"
+
+#: id:288
+msgctxt "Auto context with id 288"
+msgid "Font"
+msgstr "अक्सर"
+
+#: id:289
+msgctxt "Auto context with id 289"
+msgid "- Size"
+msgstr "- अकारण"
+
+#: id:290
+msgid "Dynamic range compression"
+msgstr ""
+
+#: id:291
+msgctxt "Auto context with id 291"
+msgid "Video"
+msgstr "विडियो"
+
+#: id:292
+msgctxt "Auto context with id 292"
+msgid "Audio"
+msgstr "श्रव्य"
+
+#: id:293
+msgid "Browse for subtitles"
+msgstr "उपसिर्सका की चुगना"
+
+#: id:294
+msgid "Create bookmark"
+msgstr "प्रस्थ स्मरति तैयार करना"
+
+#: id:296
+msgid "Clear bookmarks"
+msgstr "प्रस्थ स्मरति स्वीकरता करना"
+
+#: id:297
+msgid "Audio offset"
+msgstr "श्रव्य ओफ्फ्सेट"
+
+#: id:298
+msgid "Bookmarks"
+msgstr "प्रस्थ स्मरति"
+
+#: id:299
+msgid "- AAC capable receiver"
+msgstr ""
+
+#: id:300
+msgid "- MP1 capable receiver"
+msgstr ""
+
+#: id:301
+msgid "- MP2 capable receiver"
+msgstr ""
+
+#: id:302
+msgid "- MP3 capable receiver"
+msgstr "- MP3 कापबले रिसीवर"
+
+#: id:303
+msgid "Delay"
+msgstr "टालना"
+
+#: id:304
+msgctxt "Auto context with id 304"
+msgid "Language"
+msgstr "भाषा"
+
+#: id:305
+msgctxt "Auto context with id 305"
+msgid "Enabled"
+msgstr "एनाब्लेद"
+
+#: id:306
+msgid "Non-interleaved"
+msgstr "नॉन-इन्तेर्लेअवेद"
+
+#: id:312
+msgid "(0=auto)"
+msgstr ""
+
+#: id:313
+msgid "Cleaning database"
+msgstr "अंकारा अधर धोना रहा है"
+
+#: id:314
+msgid "Preparing..."
+msgstr "पकाना रहा है..."
+
+#: id:315
+msgid "Database error"
+msgstr "अंकारा अधर की एर्रोर"
+
+#: id:316
+msgid "Searching songs..."
+msgstr "संगीतें धोना रहा है"
+
+#: id:317
+msgid "Cleaned database successfully"
+msgstr "साफ सफलतापूर्वक डेटाबेस"
+
+#: id:318
+msgid "Cleaning songs..."
+msgstr "संगीतें धोना रहा है..."
+
+#: id:319
+msgid "Error cleaning songs"
+msgstr "संगीतें की धोना एर्रोर"
+
+#: id:320
+msgid "Cleaning artists..."
+msgstr "कलाकार धोना रहा है..."
+
+#: id:321
+msgid "Error cleaning artists"
+msgstr "कलाकार की धोना एर्रोर"
+
+#: id:322
+msgid "Cleaning genres..."
+msgstr "प्रकारें धोना रहा है"
+
+#: id:323
+msgid "Error cleaning genres"
+msgstr "प्रकारें की धोना एर्रोर"
+
+#: id:324
+msgid "Cleaning paths..."
+msgstr "क्लेअनिंग पठस..."
+
+#: id:325
+msgid "Error cleaning paths"
+msgstr "एर्रोर क्लेअनिंग पठस"
+
+#: id:326
+msgid "Cleaning albums..."
+msgstr "क्लेअनिंग अल्बुम्स..."
+
+#: id:327
+msgid "Error cleaning albums"
+msgstr "एर्रोर क्लेअनिंग अल्बुम्स"
+
+#: id:328
+msgid "Writing changes..."
+msgstr "व्रितिंग चंगेस..."
+
+#: id:329
+msgid "Error writing changes"
+msgstr "लिखने में त्रुटि परिवर्तन"
+
+#: id:330
+msgid "This may take some time..."
+msgstr "यह कुछ समय लग सकता है ..."
+
+#: id:331
+msgid "Compressing database..."
+msgstr "डेटाबेस संपीड़ित ..."
+
+#: id:332
+msgid "Error compressing database"
+msgstr "त्रुटि  कोम्प्रेस्सिंग डेटाबेस"
+
+#: id:333
+msgid "Do you want to clean the library?"
+msgstr "क्या आप पुस्तकालय साफ़ करना चाहेंगे?"
+
+#: id:334
+msgid "Clean library..."
+msgstr "साफ़ पुस्तकालय ..."
+
+#: id:335
+msgid "Start"
+msgstr "प्रारंभ"
+
+#: id:336
+msgid "Framerate conversion"
+msgstr "फ्रेमरेट रूपांतरण"
+
+#: id:337
+msgctxt "Auto context with id 337"
+msgid "Audio output"
+msgstr "ऑडियो आउटपुट"
+
+#: id:338
+msgid "Analog"
+msgstr "अनुरूप"
+
+#: id:339
+msgid "Optical/Coax"
+msgstr "ऑप्टिकल / मनाना"
+
+#: id:340
+msgid "Various artists"
+msgstr "विभिन्न कलाकारों"
+
+#: id:341
+msgid "Play disc"
+msgstr "डिस्क प्ले"
+
+#: id:342
+msgctxt "Auto context with id 342"
+msgid "Movies"
+msgstr "सिनेमा"
+
+#: id:343
+msgid "Adjust framerate"
+msgstr "फ्रेम दर को समायोजित करें"
+
+#: id:344
+msgid "Actors"
+msgstr "एक्टर्स"
+
+#: id:345
+msgctxt "Auto context with id 345"
+msgid "Year"
+msgstr "वर्ष"
+
+#: id:346
+msgid "Boost volume level on downmix"
+msgstr "दोव्न्मिक्स पर वॉल्यूम स्तर बूस्ट"
+
+#: id:350
+msgctxt "Auto context with id 350"
+msgid "Programs"
+msgstr "प्रोग्राम्स"
+
+#: id:351
+msgctxt "Auto context with id 351"
+msgid "Off"
+msgstr "से"
+
+#: id:352
+msgid "Dim"
+msgstr "धुंधला"
+
+#: id:353
+msgid "Black"
+msgstr "धुंधला"
+
+#: id:354
+msgid "Matrix trails"
+msgstr "मैट्रिक्स ट्रेल्स"
+
+#: id:355
+msgid "Screensaver time"
+msgstr "स्क्रीनसेवर समय"
+
+#: id:356
+msgid "Screensaver mode"
+msgstr "स्क्रीनसेवर मोड"
+
+#: id:357
+msgid "Shutdown function timer"
+msgstr "शट डाउन समारोह टाइमर"
+
+#: id:358
+msgid "All albums"
+msgstr "सभी एल्बमें"
+
+#: id:359
+msgid "Recently added albums"
+msgstr "हाल में जोड़ी एल्बमों"
+
+#: id:360
+msgctxt "Auto context with id 360"
+msgid "Screensaver"
+msgstr "स्क्रीनसेवर"
+
+#: id:361
+msgid "R. Slideshow"
+msgstr "आर स्लाइड शो"
+
+#: id:362
+msgid "Screensaver dim level"
+msgstr "स्क्रीनसेवर मंद स्तर"
+
+#: id:363
+msgid "Sort by: File"
+msgstr "द्वारा क्रमबद्ध करें: फ़ाइल"
+
+#: id:364
+msgid "- Dolby Digital (AC3) capable receiver"
+msgstr ""
+
+#: id:365
+msgctxt "Auto context with id 365"
+msgid "Sort by: Name"
+msgstr "द्वारा क्रमबद्ध करें: नाम"
+
+#: id:366
+msgid "Sort by: Year"
+msgstr "द्वारा क्रमबद्ध करें: वर्ष"
+
+#: id:367
+msgid "Sort by: Rating"
+msgstr "इसके द्वारा सॉर्ट करें: रेटिंग"
+
+#: id:368
+msgid "IMDb"
+msgstr ""
+
+#: id:369
+msgctxt "Auto context with id 369"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: id:370
+msgid "Thunderstorms"
+msgstr "गरज"
+
+#: id:371
+msgid "Partly"
+msgstr "आंशिक रूप से"
+
+#: id:372
+msgid "Mostly"
+msgstr "अधिकतर"
+
+#: id:373
+msgid "Sunny"
+msgstr "धूप"
+
+#: id:374
+msgid "Cloudy"
+msgstr "मेघच्चान्ना"
+
+#: id:375
+msgid "Snow"
+msgstr "बरफ"
+
+#: id:376
+msgid "Rain"
+msgstr "बरसात"
+
+#: id:377
+msgid "Light"
+msgstr "प्रकासा"
+
+#: id:378
+msgid "AM"
+msgstr "AM"
+
+#: id:379
+msgid "PM"
+msgstr "PM"
+
+#: id:380
+msgid "Showers"
+msgstr "झड़ी"
+
+#: id:381
+msgid "Few"
+msgstr "कुछ"
+
+#: id:382
+msgid "Scattered"
+msgstr "छितरे"
+
+#: id:383
+msgctxt "Auto context with id 383"
+msgid "Wind"
+msgstr "हवा"
+
+#: id:384
+msgid "Strong"
+msgstr "मज़बूत"
+
+#: id:385
+msgid "Fair"
+msgstr "निष्पक्ष"
+
+#: id:386
+msgctxt "Auto context with id 386"
+msgid "Clear"
+msgstr "साफ़"
+
+#: id:387
+msgid "Clouds"
+msgstr "बादल"
+
+#: id:388
+msgid "Early"
+msgstr "शीघ्र"
+
+#: id:389
+msgid "Shower"
+msgstr "शावर"
+
+#: id:390
+msgid "Flurries"
+msgstr "आंधी"
+
+#: id:391
+msgctxt "Auto context with id 391"
+msgid "Low"
+msgstr "लो"
+
+#: id:392
+msgctxt "Auto context with id 392"
+msgid "Medium"
+msgstr "मध्यम"
+
+#: id:393
+msgctxt "Auto context with id 393"
+msgid "High"
+msgstr "उच्च"
+
+#: id:394
+msgid "Fog"
+msgstr "कोहरा"
+
+#: id:395
+msgid "Haze"
+msgstr "धुन्ध"
+
+#: id:396
+msgid "Select location"
+msgstr "स्थान का चयन करें"
+
+#: id:397
+msgid "Refresh time"
+msgstr "ताज़ा करें समय"
+
+#: id:398
+msgid "Temperature units"
+msgstr "तापमान इकाइयों"
+
+#: id:399
+msgid "Speed units"
+msgstr "स्पीड इकाइयों"
+
+#: id:400
+msgctxt "Auto context with id 400"
+msgid "Weather"
+msgstr "मौसम"
+
+#: id:401
+msgid "Temp"
+msgstr "अस्थायी"
+
+#: id:402
+msgid "Feels like"
+msgstr "ऐसा लगता है"
+
+#: id:403
+msgid "UV index"
+msgstr "यूवी सूचकांक"
+
+#: id:404
+msgctxt "Auto context with id 404"
+msgid "Wind"
+msgstr "हवा"
+
+#: id:405
+msgid "Dew point"
+msgstr "पिघलाव का तापक्रम"
+
+#: id:406
+msgid "Humidity"
+msgstr "नमी"
+
+#: id:409
+msgid "Defaults"
+msgstr "डिफ़ॉल्ट्स"
+
+#: id:410
+msgid "Accessing weather service"
+msgstr "मौसम सेवा तक पहुँचने"
+
+#: id:411
+msgid "Getting weather for:"
+msgstr "मौसम प्राप्त करने के लिए:"
+
+#: id:412
+msgid "Unable to get weather data"
+msgstr "मौसम के डेटा प्राप्त करने में असमर्थ"
+
+#: id:413
+msgid "Manual"
+msgstr "मैनुअल"
+
+#: id:414
+msgid "No review for this album"
+msgstr "इस एल्बम के लिए कोई समीक्षा"
+
+#: id:415
+msgid "Downloading thumbnail..."
+msgstr "थंबनेल डाउनलोड करना ..."
+
+#: id:416
+msgid "Not available"
+msgstr "उपलब्ध नहीं"
+
+#: id:417
+msgid "View: Big icons"
+msgstr "देखें: बिग आइकनों"
+
+#: id:418
+msgctxt "Auto context with id 418"
+msgid "Low"
+msgstr "लो"
+
+#: id:419
+msgctxt "Auto context with id 419"
+msgid "High"
+msgstr "हाई"
+
+#: id:420
+msgid "HDMI"
+msgstr ""
+
+#: id:422
+msgid "Delete album info"
+msgstr "एलबम जानकारी मिटाएँ"
+
+#: id:423
+msgid "Delete CD information"
+msgstr "हटाएँ सीडी जानकारी"
+
+#: id:424
+msgid "Select"
+msgstr "चुनें"
+
+#: id:425
+msgid "No album information found"
+msgstr "कोई एल्बम नहीं मिली जानकारी"
+
+#: id:426
+msgid "No CD information found"
+msgstr "कोई सीडी पाया जानकारी"
+
+#: id:427
+msgid "Disc"
+msgstr "डिस्क"
+
+#: id:428
+msgid "Insert correct CD/DVD"
+msgstr "सही सीडी / डीवीडी डालें"
+
+#: id:429
+msgid "Please insert the following disc:"
+msgstr "निम्नलिखित सीडी / डीवीडी दर्ज करें"
+
+#: id:430
+msgid "Sort by: DVD#"
+msgstr "इसके द्वारा सॉर्ट करें: डीवीडी #"
+
+#: id:431
+msgid "No cache"
+msgstr ""
+
+#: id:432
+msgid "Remove movie from library"
+msgstr "लाइब्रेरी से फिल्म निकालें"
+
+#: id:433
+msgid "Really remove '%s'?"
+msgstr "वास्तव में '% s' को दूर?"
+
+#: id:434
+msgid "From %s at %i %s"
+msgstr ""
+
+#: id:437
+msgid "Removable disk"
+msgstr "निकाले जाने योग्य डिस्क"
+
+#: id:438
+msgid "Opening file"
+msgstr "फ़ाइल खोलना"
+
+#: id:439
+msgid "Cache"
+msgstr "कैश"
+
+#: id:440
+msgid "Harddisk"
+msgstr "हार्ड डिस्क"
+
+#: id:441
+msgid "UDF"
+msgstr ""
+
+#: id:442
+msgid "Local network"
+msgstr "स्थानीय नेटवर्क"
+
+#: id:443
+msgid "Internet"
+msgstr "इंटरनेट"
+
+#: id:444
+msgctxt "Auto context with id 444"
+msgid "Video"
+msgstr "वीडियो"
+
+#: id:445
+msgctxt "Auto context with id 445"
+msgid "Audio"
+msgstr "ऑडियो"
+
+#: id:446
+msgctxt "Auto context with id 446"
+msgid "DVD"
+msgstr ""
+
+#: id:447
+msgid "Autorun media"
+msgstr "ऑटो चलाने मीडिया"
+
+#: id:448
+msgid "LCD"
+msgstr ""
+
+#: id:449
+msgctxt "Auto context with id 449"
+msgid "Enabled"
+msgstr "सक्रिय"
+
+#: id:450
+msgid "Columns"
+msgstr "स्तंभ"
+
+#: id:451
+msgid "Row 1 address"
+msgstr "1 पता पंक्ति"
+
+#: id:452
+msgid "Row 2 address"
+msgstr "2 पता पंक्ति"
+
+#: id:453
+msgid "Row 3 address"
+msgstr "3 पता पंक्ति"
+
+#: id:454
+msgid "Row 4 address"
+msgstr "4 पता पंक्ति"
+
+#: id:455
+msgid "Rows"
+msgstr "पंक्तियाँ"
+
+#: id:456
+msgid "Mode"
+msgstr "विधि"
+
+#: id:457
+msgid "Switch view"
+msgstr "दृश्य स्विच करें"
+
+#: id:459
+msgid "Subs"
+msgstr ""
+
+#: id:460
+msgid "Audio stream"
+msgstr "ऑडियो स्ट्रीम"
+
+#: id:461
+msgid "[active]"
+msgstr ""
+
+#: id:462
+msgid "Subtitle"
+msgstr "उपशीर्षक"
+
+#: id:463
+msgid "Backlight"
+msgstr "वापस प्रकाश"
+
+#: id:464
+msgid "Brightness"
+msgstr "चमक"
+
+#: id:465
+msgid "Contrast"
+msgstr "कंट्रास्ट"
+
+#: id:466
+msgid "Gamma"
+msgstr ""
+
+#: id:467
+msgctxt "Auto context with id 467"
+msgid "Type"
+msgstr "टाइप"
+
+#: id:468
+msgid "Move the bar to change the OSD position"
+msgstr "बार स्थानांतरित करने के ओएसडी स्थिति को बदलने"
+
+#: id:469
+msgid "OSD position"
+msgstr ""
+
+#: id:470
+msgid "Credits"
+msgstr "क्रेडिट्स"
+
+#: id:471
+msgid "Modchip"
+msgstr ""
+
+#: id:474
+msgctxt "Auto context with id 474"
+msgid "Off"
+msgstr "से"
+
+#: id:475
+msgid "Music only"
+msgstr "संगीत ही"
+
+#: id:476
+msgid "Music & video"
+msgstr "संगीत और वीडियो"
+
+#: id:477
+msgid "Unable to load playlist"
+msgstr "प्लेलिस्ट में लोड करने में असमर्थ"
+
+#: id:478
+msgid "OSD"
+msgstr ""
+
+#: id:479
+msgid "Skin & language"
+msgstr "त्वचा और भाषा"
+
+#: id:480
+msgid "Appearance"
+msgstr "दिखावट"
+
+#: id:481
+msgid "Audio options"
+msgstr "ऑडियो विकल्प"
+
+#: id:482
+msgid "About XBMC"
+msgstr "XBMC के बारे में"
+
+#: id:485
+msgid "Delete album"
+msgstr "एल्बम हटाएं"
+
+#: id:486
+msgid "Repeat"
+msgstr "दोहराना"
+
+#: id:487
+msgid "Repeat one"
+msgstr "एक दोहराएँ"
+
+#: id:488
+msgid "Repeat folder"
+msgstr "दोहराएँ फ़ोल्डर"
+
+#: id:489
+msgid "Play the next song automatically"
+msgstr "अगले गीत स्वतः प्ले"
+
+#: id:491
+msgid "- Use big icons"
+msgstr "- बड़े चिह्नों का प्रयोग करें"
+
+#: id:492
+msgid "Resize VobSubs"
+msgstr ""
+
+#: id:493
+msgid "Advanced options (Experts Only!)"
+msgstr "उन्नत विकल्प (विशेषज्ञों केवल!)"
+
+#: id:494
+msgid "Overall audio headroom"
+msgstr "कुल मिलाकर ऑडियो सिर कमरा"
+
+#: id:495
+msgid "Upsample videos to GUI resolution"
+msgstr "जीयूआई संकल्प उपसकाले वीडियो"
+
+#: id:496
+msgid "Calibration"
+msgstr "अंशांकन"
+
+#: id:497
+msgid "Show file extensions"
+msgstr "फ़ाइल एक्सटेंशन दिखाएँ"
+
+#: id:498
+msgid "Sort by: Type"
+msgstr "द्वारा क्रमबद्ध करें: प्रकार"
+
+#: id:499
+msgid "Unable to connect to online lookup service"
+msgstr "करने के लिए ऑनलाइन खोज सेवा से कनेक्ट करने में असमर्थ"
+
+#: id:500
+msgid "Downloading album information failed"
+msgstr "डाउनलोडिंग एलबम जानकारी में विफल रहा है"
+
+#: id:501
+msgid "Looking for album names..."
+msgstr "एल्बम नाम के लिए खोज ..."
+
+#: id:502
+msgctxt "Auto context with id 502"
+msgid "Open"
+msgstr "खुला है"
+
+#: id:503
+msgid "Busy"
+msgstr "व्यस्त"
+
+#: id:504
+msgid "Empty"
+msgstr "रिक्त"
+
+#: id:505
+msgid "Loading media info from files..."
+msgstr "लोड हो रहा है फाइलों से जानकारी मीडिया ..."
+
+#: id:507
+msgid "Sort by: Usage"
+msgstr "इसके द्वारा सॉर्ट करें: यूसेज"
+
+#: id:510
+msgid "Enable visualizations"
+msgstr "विसुअलिज़तिओन्स  सक्षम करें"
+
+#: id:511
+msgid "Enable video mode switching"
+msgstr "वीडियो मोड स्विचन सक्षम करें"
+
+#: id:512
+msgid "Startup window"
+msgstr "स्टार्टअप खिड़की"
+
+#: id:513
+msgid "Home window"
+msgstr "होम खिड़की"
+
+#: id:514
+msgid "Manual settings"
+msgstr "मैनुअल सेटिंग्स"
+
+#: id:515
+msgid "Genre"
+msgstr "शैली"
+
+#: id:517
+msgid "Recently played albums"
+msgstr "हाल ही में खेला एल्बमों"
+
+#: id:518
+msgid "Launch"
+msgstr "लॉन्च"
+
+#: id:519
+msgid "Launch in..."
+msgstr "अंदर लॉन्च .."
+
+#: id:521
+msgid "Compilations"
+msgstr "संकलन"
+
+#: id:522
+msgid "Remove source"
+msgstr "स्रोत निकालें"
+
+#: id:523
+msgid "Switch media"
+msgstr "स्विच मीडिया"
+
+#: id:524
+msgid "Select playlist"
+msgstr "चुनें प्लेलिस्ट"
+
+#: id:525
+msgid "New playlist..."
+msgstr "नई प्लेलिस्ट ..."
+
+#: id:526
+msgid "Add to playlist"
+msgstr "प्लेलिस्ट में जोड़ें"
+
+#: id:527
+msgid "Manually add to library"
+msgstr "मैन्युअल रूप से लायब्रेरी में जोड़ना"
+
+#: id:528
+msgid "Enter title"
+msgstr "शीर्षक दर्ज करें"
+
+#: id:529
+msgid "Error: Duplicate title"
+msgstr "त्रुटि: डुप्लिकेट शीर्षक"
+
+#: id:530
+msgid "Select genre"
+msgstr "शैली का चयन करें"
+
+#: id:531
+msgid "New genre"
+msgstr "नई शैली"
+
+#: id:532
+msgid "Manual addition"
+msgstr "मैनुअल इसके अलावा"
+
+#: id:533
+msgid "Enter genre"
+msgstr "शैली का नाम लिखें"
+
+#: id:534
+msgid "View: %s"
+msgstr "देखें:% s"
+
+#: id:535
+msgid "List"
+msgstr "सूची"
+
+#: id:536
+msgid "Icons"
+msgstr "प्रतीक"
+
+#: id:537
+msgid "Big list"
+msgstr "बिग सूची"
+
+#: id:538
+msgid "Big icons"
+msgstr "बिग आइकनों"
+
+#: id:539
+msgid "Wide"
+msgstr "चौड़ा"
+
+#: id:540
+msgid "Big wide"
+msgstr "बिग विस्तृत"
+
+#: id:541
+msgid "Album icons"
+msgstr "एल्बम आइकनों"
+
+#: id:542
+msgid "DVD icons"
+msgstr "DVD आइकनों"
+
+#: id:543
+msgctxt "Auto context with id 543"
+msgid "DVD"
+msgstr "DVD"
+
+#: id:544
+msgctxt "Auto context with id 544"
+msgid "Media info"
+msgstr "मीडिया की जानकारी"
+
+#: id:545
+msgid "Audio output device"
+msgstr "ऑडियो आउटपुट डिवाइस"
+
+#: id:546
+msgid "Passthrough output device"
+msgstr "पासथ्रू आउटपुट डिवाइस"
+
+#: id:547
+msgid "No biography for this artist"
+msgstr "इस कलाकार के लिए कोई जीवनी"
+
+#: id:548
+msgid "Downmix multichannel audio to stereo"
+msgstr ""
+
+#: id:550
+msgid "Sort by: %s"
+msgstr "द्वारा क्रमबद्ध करें:% s"
+
+#: id:551
+msgctxt "Auto context with id 551"
+msgid "Name"
+msgstr "नाम"
+
+#: id:552
+msgid "Date"
+msgstr "तिथि"
+
+#: id:553
+msgid "Size"
+msgstr "आकार"
+
+#: id:554
+msgid "Track"
+msgstr "ट्रैक"
+
+#: id:555
+msgid "Time"
+msgstr "समय"
+
+#: id:556
+msgctxt "Auto context with id 556"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: id:557
+msgid "Artist"
+msgstr "कलाकार"
+
+#: id:558
+msgid "Album"
+msgstr "एल्बम"
+
+#: id:559
+msgid "Playlist"
+msgstr "प्लेलिस्ट"
+
+#: id:560
+msgid "ID"
+msgstr ""
+
+#: id:561
+msgctxt "Auto context with id 561"
+msgid "File"
+msgstr "फ़ाइल"
+
+#: id:562
+msgctxt "Auto context with id 562"
+msgid "Year"
+msgstr "वर्ष"
+
+#: id:563
+msgid "Rating"
+msgstr "रेटिंग"
+
+#: id:564
+msgctxt "Auto context with id 564"
+msgid "Type"
+msgstr "टाइप"
+
+#: id:565
+msgid "Usage"
+msgstr "प्रयोग"
+
+#: id:566
+msgid "Album artist"
+msgstr "एल्बम कलाकार"
+
+#: id:567
+msgid "Play count"
+msgstr "गिनती प्ले"
+
+#: id:568
+msgid "Last played"
+msgstr "अंतिम बार खेला गया"
+
+#: id:569
+msgctxt "Auto context with id 569"
+msgid "Comment"
+msgstr "टिप्पणी"
+
+#: id:570
+msgid "Date added"
+msgstr "तिथि जोड़ी"
+
+#: id:571
+msgctxt "Auto context with id 571"
+msgid "Default"
+msgstr "डिफ़ॉल्ट"
+
+#: id:572
+msgid "Studio"
+msgstr "स्टूडियो"
+
+#: id:573
+msgid "Path"
+msgstr "पथ"
+
+#: id:574
+msgctxt "Auto context with id 574"
+msgid "Country"
+msgstr "देश"
+
+#: id:575
+msgid "In progress"
+msgstr "प्रगति में"
+
+#: id:576
+msgid "Times played"
+msgstr ""
+
+#: id:580
+msgid "Sort direction"
+msgstr "सॉर्ट दिशा"
+
+#: id:581
+msgid "Sort method"
+msgstr "क्रमबद्ध विधि"
+
+#: id:582
+msgctxt "Auto context with id 582"
+msgid "View mode"
+msgstr "देखें मोड"
+
+#: id:583
+msgid "Remember views for different folders"
+msgstr "अलग फ़ोल्डर्स के लिए दृश्य याद रखें"
+
+#: id:584
+msgid "Ascending"
+msgstr "आरोही"
+
+#: id:585
+msgid "Descending"
+msgstr "अवरोही"
+
+#: id:586
+msgid "Edit playlist"
+msgstr "संपादित करें प्लेलिस्ट"
+
+#: id:587
+msgid "Filter"
+msgstr "फ़िल्टर"
+
+#: id:588
+msgid "Cancel party mode"
+msgstr "रद्द पार्टी मोड"
+
+#: id:589
+msgid "Party mode"
+msgstr "पार्टी के विधि"
+
+#: id:590
+msgid "Random"
+msgstr "रैंडम"
+
+#: id:591
+msgctxt "Auto context with id 591"
+msgid "Off"
+msgstr "से"
+
+#: id:592
+msgid "One"
+msgstr "एक"
+
+#: id:593
+msgid "All"
+msgstr "सब"
+
+#: id:594
+msgctxt "Auto context with id 594"
+msgid "Off"
+msgstr "से"
+
+#: id:595
+msgid "Repeat: Off"
+msgstr "दोहराएँ: बंद"
+
+#: id:596
+msgid "Repeat: One"
+msgstr "दोहराएँ: एक"
+
+#: id:597
+msgid "Repeat: All"
+msgstr "दोहराएँ: सभी"
+
+#: id:600
+msgid "Rip audio CD"
+msgstr "ऑडियो सीडी चीर"
+
+#: id:601
+msgctxt "Auto context with id 601"
+msgid "Medium"
+msgstr "मध्यम"
+
+#: id:602
+msgctxt "Auto context with id 602"
+msgid "Standard"
+msgstr "मानक"
+
+#: id:603
+msgid "Extreme"
+msgstr "चरम"
+
+#: id:604
+msgid "Constant bitrate"
+msgstr ""
+
+#: id:605
+msgid "Ripping..."
+msgstr "तेजस्वी ..."
+
+#: id:607
+msgid "To:"
+msgstr "करने के लिए:"
+
+#: id:608
+msgid "Could not rip CD or track"
+msgstr "सीडी या ट्रैक चीर नहीं कर सका"
+
+#: id:609
+msgid "CDDARipPath is not set."
+msgstr "CDDARipPath सेट नहीं है."
+
+#: id:610
+msgid "Rip audio track"
+msgstr "ऑडियो ट्रैक रिप"
+
+#: id:611
+msgid "Enter number"
+msgstr "संख्या दर्ज"
+
+#: id:612
+msgid "Bits/Sample"
+msgstr "बिट्स / नमूना"
+
+#: id:613
+msgid "Sample Frequency"
+msgstr "नमूना आवृत्ति"
+
+#: id:620
+msgid "Audio CDs"
+msgstr "ऑडियो सीडी"
+
+#: id:621
+msgid "Encoder"
+msgstr "एनकोडर"
+
+#: id:622
+msgid "Quality"
+msgstr "गुणवत्ता"
+
+#: id:623
+msgid "Bitrate"
+msgstr "बिट दर"
+
+#: id:624
+msgid "Include track number"
+msgstr "ट्रैक संख्या में शामिल"
+
+#: id:625
+msgid "All songs of"
+msgstr "सब के सब गाने"
+
+#: id:629
+msgctxt "Auto context with id 629"
+msgid "View mode"
+msgstr "देखें मोड"
+
+#: id:630
+msgctxt "Auto context with id 630"
+msgid "Normal"
+msgstr "साधारण"
+
+#: id:631
+msgid "Zoom"
+msgstr "ज़ूम"
+
+#: id:632
+msgid "Stretch 4:3"
+msgstr "खिंचाव 4:3"
+
+#: id:633
+msgid "Wide Zoom"
+msgstr "वाइड ज़ूम"
+
+#: id:634
+msgid "Stretch 16:9"
+msgstr "खिंचाव 16:9"
+
+#: id:635
+msgid "Original Size"
+msgstr "मूल आकार"
+
+#: id:636
+msgctxt "Auto context with id 636"
+msgid "Custom"
+msgstr "रिवाज"
+
+#: id:637
+msgid "Replay gain"
+msgstr "रिप्ले लाभ"
+
+#: id:638
+msgid "Replaygain volume adjustments"
+msgstr "रिप्ले लाभ की मात्रा का समायोजन"
+
+#: id:639
+msgid "Use track levels"
+msgstr "ट्रैक स्तर का उपयोग करें"
+
+#: id:640
+msgid "Use album levels"
+msgstr "एलबम के स्तर का प्रयोग करें"
+
+#: id:641
+msgid "PreAmp Level - Replay gained files"
+msgstr ""
+
+#: id:642
+msgid "PreAmp Level - Non replay gained files"
+msgstr ""
+
+#: id:643
+msgid "Avoid clipping on replay gained files"
+msgstr "पुनरावृत्ति पर क्लिपिंग बचें फ़ाइलें प्राप्त"
+
+#: id:644
+msgid "Crop black bars"
+msgstr "फसल काली सलाखों"
+
+#: id:645
+msgid "Need to unpack a big file. Continue?"
+msgstr "के लिए एक बड़ी फ़ाइल खोल देना चाहिए. जारी रखें?"
+
+#: id:646
+msgid "Remove from library"
+msgstr "पुस्तकालय से निकालें"
+
+#: id:647
+msgid "Export video library"
+msgstr "निर्यात वीडियो लाइब्रेरी"
+
+#: id:648
+msgid "Import video library"
+msgstr "आयात वीडियो लाइब्रेरी"
+
+#: id:649
+msgid "Importing"
+msgstr "आयात करना"
+
+#: id:650
+msgid "Exporting"
+msgstr "निर्यात"
+
+#: id:651
+msgid "Browse for library"
+msgstr "लाइब्रेरी के लिए ब्राउज़ करें"
+
+#: id:652
+msgid "Years"
+msgstr "वर्षों"
+
+#: id:653
+msgid "Update library"
+msgstr "अद्यतन पुस्तकालय"
+
+#: id:654
+msgid "Show debug info"
+msgstr "अद्यतन पुस्तकालय"
+
+#: id:655
+msgid "Browse for executable"
+msgstr "निष्पादन के लिए ब्राउज़ करें"
+
+#: id:656
+msgid "Browse for playlist"
+msgstr "प्लेलिस्ट के लिए ब्राउज़ करें"
+
+#: id:657
+msgid "Browse for folder"
+msgstr "फ़ोल्डर के लिए ब्राउज़ करें"
+
+#: id:658
+msgid "Song information"
+msgstr "सांग जानकारी"
+
+#: id:659
+msgid "Non-linear stretch"
+msgstr ""
+
+#: id:660
+msgid "Volume amplification"
+msgstr "वॉल्यूम प्रवर्धन "
+
+#: id:661
+msgid "Choose export folder"
+msgstr "निर्यात फ़ोल्डर"
+
+#: id:662
+msgid "This file is no longer available."
+msgstr "यह फाइल अब उपलब्ध नहीं है "
+
+#: id:663
+msgid "Would you like to remove it from the library?"
+msgstr "आप इसे लाइब्रेरी से निकालना चाहेंगे?"
+
+#: id:664
+msgid "Browse for Script"
+msgstr "स्क्रिप्ट के लिए स्ट्रिंग "
+
+#: id:665
+msgid "Compression level"
+msgstr "संपीड़न स्तर "
+
+#: id:700
+msgid "Cleaning up library"
+msgstr "ऊपर क्लीनिंग पुस्तकालय "
+
+#: id:701
+msgid "Removing old songs from the library"
+msgstr "पुस्तकालय से पुराने गाने को निकालना"
+
+#: id:702
+msgid "This path has been scanned before"
+msgstr "यह पथ पहले स्कैन किया गया है"
+
+#: id:705
+msgctxt "Auto context with id 705"
+msgid "Network"
+msgstr "नेटवर्क"
+
+#: id:706
+msgid "- Server"
+msgstr "- सर्वर"
+
+#: id:708
+msgid "Use an HTTP proxy server to access the internet"
+msgstr "एक HTTP प्रॉक्सी सर्वर का प्रयोग करें इंटरनेट एक्सेस"
+
+#: id:711
+msgid "Internet Protocol (IP)"
+msgstr ""
+
+#: id:712
+msgid "Invalid port specified. Value must be between 1 and 65535."
+msgstr ""
+
+#: id:713
+msgid "HTTP proxy"
+msgstr "HTTP प्रॉक्सी."
+
+#: id:715
+msgid "- Assignment"
+msgstr "- असाइनमेंट"
+
+#: id:716
+msgid "Automatic (DHCP)"
+msgstr ""
+
+#: id:717
+msgid "Manual (Static)"
+msgstr ""
+
+#: id:719
+msgid "- IP address"
+msgstr ""
+
+#: id:720
+msgid "- Netmask"
+msgstr ""
+
+#: id:721
+msgid "- Default gateway"
+msgstr ""
+
+#: id:722
+msgid "- DNS server"
+msgstr ""
+
+#: id:723
+msgid "Save & restart"
+msgstr "सहेजें और पुनर्प्रारंभ करें"
+
+#: id:724
+msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
+msgstr ""
+
+#: id:725
+msgid "with numbers between 0 and 255."
+msgstr ""
+
+#: id:726
+msgid "Changes not saved. Continue without saving?"
+msgstr "सहेजे नहीं गए परिवर्तन. बचत के बिना जारी रखें?"
+
+#: id:727
+msgid "Web server"
+msgstr ""
+
+#: id:728
+msgctxt "Auto context with id 728"
+msgid "FTP server"
+msgstr ""
+
+#: id:730
+msgid "- Port"
+msgstr "-बंदरगाह"
+
+#: id:732
+msgid "Save & apply"
+msgstr "सहेजें और लागू"
+
+#: id:733
+msgid "- Password"
+msgstr "- पासवर्ड"
+
+#: id:734
+msgid "No pass"
+msgstr "कोई उत्तीर्ण"
+
+#: id:735
+msgid "- Character set"
+msgstr "- कैरेक्टर सेट"
+
+#: id:736
+msgid "- Style"
+msgstr "- शैली"
+
+#: id:737
+msgid "- Colour"
+msgstr "- रंगीन"
+
+#: id:738
+msgctxt "Auto context with id 738"
+msgid "Normal"
+msgstr "सामान्य"
+
+#: id:739
+msgid "Bold"
+msgstr "साहसिक"
+
+#: id:740
+msgid "Italics"
+msgstr "इटैलिक्स"
+
+#: id:741
+msgid "Bold italics"
+msgstr "बोल्ड इटैलिक"
+
+#: id:742
+msgctxt "Auto context with id 742"
+msgid "White"
+msgstr "सफ़ेद"
+
+#: id:743
+msgctxt "Auto context with id 743"
+msgid "Yellow"
+msgstr "पीला"
+
+#: id:744
+msgctxt "Auto context with id 744"
+msgid "Files"
+msgstr "फ़ाइलें"
+
+#: id:745
+msgid "No scanned information for this view"
+msgstr "इस दृश्य के लिए कोई स्कैन की जानकारी"
+
+#: id:746
+msgid "Please turn off library mode"
+msgstr "बंद पुस्तकालय मोड बारी कृपया"
+
+#: id:747
+msgid "Error loading image"
+msgstr "लोड करने में त्रुटि छवि"
+
+#: id:748
+msgid "Edit path"
+msgstr "पथ संपादित करें"
+
+#: id:749
+msgid "Mirror image"
+msgstr "आईना छवि"
+
+#: id:750
+msgid "Are you sure?"
+msgstr "तुम्हें यकीन है?"
+
+#: id:751
+msgid "Removing source"
+msgstr "स्रोत को निकालना"
+
+#: id:754
+msgid "Add program link"
+msgstr "कार्यक्रम लिंक जोड़ें"
+
+#: id:755
+msgid "Edit program path"
+msgstr "कार्यक्रम पथ संपादित करें"
+
+#: id:756
+msgid "Edit program name"
+msgstr "प्रोग्राम का नाम संपादित करें"
+
+#: id:757
+msgid "Edit path depth"
+msgstr "पथ गहराई संपादित करें"
+
+#: id:759
+msgid "View: Big list"
+msgstr "देखें: बिग सूची"
+
+#: id:760
+msgctxt "Auto context with id 760"
+msgid "Yellow"
+msgstr "पीला"
+
+#: id:761
+msgctxt "Auto context with id 761"
+msgid "White"
+msgstr "सफ़ेद"
+
+#: id:762
+msgid "Blue"
+msgstr "नीला"
+
+#: id:763
+msgid "Bright green"
+msgstr "ब्राइट हरा"
+
+#: id:764
+msgid "Yellow green"
+msgstr "पीला हरा"
+
+#: id:765
+msgid "Cyan"
+msgstr "सियान"
+
+#: id:766
+msgid "Light grey"
+msgstr "हल्की धूसर"
+
+#: id:767
+msgid "Grey"
+msgstr "धूसर"
+
+#: id:770
+msgid "Error %i: share not available"
+msgstr "त्रुटि% मैं: उपलब्ध नहीं शेयर"
+
+#: id:772
+msgctxt "Auto context with id 772"
+msgid "Audio output"
+msgstr "ऑडियो आउटपुट"
+
+#: id:773
+msgid "Seeking"
+msgstr "मांग"
+
+#: id:774
+msgid "Slideshow folder"
+msgstr "स्लाइड शो फ़ोल्डर"
+
+#: id:775
+msgid "Network interface"
+msgstr "नेटवर्क इंटरफेस"
+
+#: id:776
+msgid "- Wireless network name (ESSID)"
+msgstr "- वायरलेस नेटवर्क नाम (ESSID)"
+
+#: id:777
+msgid "- Wireless password"
+msgstr "- वायरलेस पासवर्ड"
+
+#: id:778
+msgid "- Wireless security"
+msgstr "- वायरलेस सुरक्षा"
+
+#: id:779
+msgid "Save and apply network interface settings"
+msgstr "सहेजें और नेटवर्क इंटरफेस सेटिंग्स लागू"
+
+#: id:780
+msgid "No encryption"
+msgstr "कोई एन्क्रिप्शन"
+
+#: id:781
+msgid "WEP"
+msgstr ""
+
+#: id:782
+msgid "WPA"
+msgstr ""
+
+#: id:783
+msgid "WPA2"
+msgstr ""
+
+#: id:784
+msgid "Applying network interface settings. Please wait."
+msgstr "नेटवर्क इंटरफेस सेटिंग्स लागू. कृपया प्रतीक्षा करें."
+
+#: id:785
+msgid "Network interface restarted successfully."
+msgstr "नेटवर्क इंटरफेस को सफलतापूर्वक पुनरारंभ."
+
+#: id:786
+msgid "Network interface did not start successfully."
+msgstr "नेटवर्क इंटरफेस सफलतापूर्वक शुरू नहीं किया."
+
+#: id:787
+msgid "Interface disabled"
+msgstr "विकलांग इंटरफ़ेस"
+
+#: id:788
+msgid "Network interface disabled successfully."
+msgstr "नेटवर्क इंटरफेस सफलतापूर्वक अक्षम."
+
+#: id:789
+msgid "Wireless network name (ESSID)"
+msgstr "वायरलेस नेटवर्क नाम (ESSID)"
+
+#: id:790
+msgid "Remote control"
+msgstr ""
+
+#: id:791
+msgid "Allow programs on this system to control XBMC"
+msgstr "इस सिस्टम पर प्रोग्रामों XBMC नियंत्रण करने दें"
+
+#: id:792
+msgctxt "Auto context with id 792"
+msgid "Port"
+msgstr "बंदरगाह"
+
+#: id:793
+msgid "Port range"
+msgstr "पोर्ट रेंज"
+
+#: id:794
+msgid "Allow programs on other systems to control XBMC"
+msgstr "अन्य प्रणालियों पर कार्यक्रमों XBMC नियंत्रण करने दें"
+
+#: id:795
+msgid "Initial repeat delay (ms)"
+msgstr "प्रारंभिक दोहराना विलंब (ms)"
+
+#: id:796
+msgid "Continuous repeat delay (ms)"
+msgstr "सतत दोहराने देरी (ms)"
+
+#: id:797
+msgid "Maximum number of clients"
+msgstr "ग्राहकों की अधिकतम संख्या"
+
+#: id:798
+msgid "Internet access"
+msgstr "इंटरनेट का उपयोग"
+
+#: id:850
+msgid "Invalid port number entered"
+msgstr "अवैध पोर्ट संख्या दर्ज"
+
+#: id:851
+msgid "Valid port range is 1-65535"
+msgstr ""
+
+#: id:852
+msgid "Valid port range is 1024-65535"
+msgstr ""
+
+#: id:998
+msgid "Add Music..."
+msgstr ""
+
+#: id:999
+msgid "Add Videos..."
+msgstr ""
+
+#: id:1000
+msgid "- Preview"
+msgstr "- पूर्वावलोकन"
+
+#: id:1001
+msgid "Unable to connect"
+msgstr "कनेक्ट करने में असमर्थ"
+
+#: id:1002
+msgid "XBMC was unable to connect to the network location."
+msgstr "XBMC के लिए नेटवर्क स्थान से कनेक्ट करने में असमर्थ था."
+
+#: id:1003
+msgid "This could be due to the network not being connected."
+msgstr "इस नेटवर्क नहीं किया जा रहा जुड़ा के कारण हो सकता है."
+
+#: id:1004
+msgid "Would you like to add it anyway?"
+msgstr "क्या आप इसे वैसे भी जोड़ना चाहेंगे?"
+
+#: id:1006
+msgctxt "Auto context with id 1006"
+msgid "IP address"
+msgstr "IP पता"
+
+#: id:1007
+msgid "Add network location"
+msgstr "नेटवर्क स्थान जोड़ें"
+
+#: id:1008
+msgid "Protocol"
+msgstr "प्रोटोकॉल"
+
+#: id:1009
+msgid "Server address"
+msgstr "सर्वर पता"
+
+#: id:1010
+msgid "Server name"
+msgstr "सर्वर का नाम"
+
+#: id:1011
+msgid "Remote path"
+msgstr "रिमोट पथ"
+
+#: id:1012
+msgid "Shared folder"
+msgstr "साझा फ़ोल्डर"
+
+#: id:1013
+msgctxt "Auto context with id 1013"
+msgid "Port"
+msgstr "बंदरगाह"
+
+#: id:1014
+msgctxt "Auto context with id 1014"
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+#: id:1015
+msgid "Browse for network server"
+msgstr "नेटवर्क सर्वर के लिए ब्राउज़ करें"
+
+#: id:1016
+msgid "Enter the network address of the server"
+msgstr "सर्वर के नेटवर्क पता दर्ज करें"
+
+#: id:1017
+msgid "Enter the path on the server"
+msgstr "सर्वर पर पथ दर्ज करें"
+
+#: id:1018
+msgid "Enter the port number"
+msgstr "पोर्ट संख्या दर्ज करें"
+
+#: id:1019
+msgid "Enter the username"
+msgstr "उपयोगकर्ता नाम दर्ज करें"
+
+#: id:1020
+msgid "Add %s source"
+msgstr "% S स्रोत जोड़ें"
+
+#: id:1021
+msgid "Enter the paths or browse for the media locations."
+msgstr "पथ दर्ज करें या मीडिया स्थानों के लिए ब्राउज़ करें."
+
+#: id:1022
+msgid "Enter a name for this media Source."
+msgstr "यह मीडिया के स्रोत के लिए कोई नाम दर्ज करें."
+
+#: id:1023
+msgid "Browse for new share"
+msgstr "नए शेयर के लिए ब्राउज़ करें"
+
+#: id:1024
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+#: id:1025
+msgid "Could not retrieve directory information."
+msgstr "निर्देशिका जानकारी पुनर्प्राप्त नहीं कर सका."
+
+#: id:1026
+msgid "Add source"
+msgstr "स्रोत जोड़ें"
+
+#: id:1027
+msgid "Edit source"
+msgstr "स्रोत संपादित करें"
+
+#: id:1028
+msgid "Edit %s source"
+msgstr "% S स्रोत संपादित करें"
+
+#: id:1029
+msgid "Enter the new label"
+msgstr "नया लेबल दर्ज करें"
+
+#: id:1030
+msgid "Browse for image"
+msgstr "छवि के लिए ब्राउज़ करें"
+
+#: id:1031
+msgid "Browse for image folder"
+msgstr "छवि फ़ोल्डर के लिए ब्राउज़ करें"
+
+#: id:1032
+msgid "Add network location..."
+msgstr "नेटवर्क स्थान जोड़ें... "
+
+#: id:1033
+msgid "Browse for file"
+msgstr "फ़ाइल के लिए ब्राउज़ करें"
+
+#: id:1034
+msgid "Submenu"
+msgstr "सबमेनू"
+
+#: id:1035
+msgid "Enable submenu buttons"
+msgstr "सबमेनू बटनों को सक्षम करें"
+
+#: id:1036
+msgid "Favourites"
+msgstr "प्रिय"
+
+#: id:1037
+msgid "Video Add-ons"
+msgstr "जोड़ें-ons के वीडियो"
+
+#: id:1038
+msgid "Music Add-ons"
+msgstr "संगीत परिवर्धन"
+
+#: id:1039
+msgid "Picture Add-ons"
+msgstr "चित्र परिवर्धन"
+
+#: id:1040
+msgid "Loading directory"
+msgstr "निर्देशिका लोड हो रहा है"
+
+#: id:1041
+msgid "Retrieved %i items"
+msgstr "पुनःप्राप्त% मैं आइटम"
+
+#: id:1042
+msgid "Retrieved %i of %i items"
+msgstr "पुनःप्राप्त% का% मैं आइटम मैं"
+
+#: id:1043
+msgid "Program Add-ons"
+msgstr "कार्यक्रम परिवर्धन"
+
+#: id:1044
+msgid "Set plugin thumb"
+msgstr "पप्लगइन अंगूठा सेट करें"
+
+#: id:1045
+msgid "Add-on settings"
+msgstr "इसके अतिरिक्त सेटिंग्स"
+
+#: id:1046
+msgid "Access points"
+msgstr "प्रवेश अंक"
+
+#: id:1047
+msgid "Other..."
+msgstr "अन्य ..."
+
+#: id:1048
+msgid "- Username"
+msgstr "- उपयोगकर्ता नाम"
+
+#: id:1049
+msgid "Script settings"
+msgstr "स्क्रिप्ट सेटिंग्स"
+
+#: id:1050
+msgid "Singles"
+msgstr "एकल"
+
+#: id:1051
+msgid "Enter web address"
+msgstr "वेब पता दर्ज करें"
+
+#: id:1200
+msgid "SMB client"
+msgstr ""
+
+#: id:1202
+msgid "Workgroup"
+msgstr "कार्यसमूह"
+
+#: id:1203
+msgid "Default username"
+msgstr "डिफ़ॉल्ट उपयोगकर्ता नाम"
+
+#: id:1204
+msgid "Default password"
+msgstr "डिफ़ॉल्ट पासवर्ड"
+
+#: id:1207
+msgid "WINS server"
+msgstr ""
+
+#: id:1208
+msgid "Mount SMB shares"
+msgstr "माउंट SMB शेयर"
+
+#: id:1210
+msgctxt "Auto context with id 1210"
+msgid "Remove"
+msgstr "हटाना"
+
+#: id:1211
+msgctxt "Auto context with id 1211"
+msgid "Music"
+msgstr "संगीत"
+
+#: id:1212
+msgctxt "Auto context with id 1212"
+msgid "Video"
+msgstr "वीडियो"
+
+#: id:1213
+msgctxt "Auto context with id 1213"
+msgid "Pictures"
+msgstr "चित्र"
+
+#: id:1214
+msgctxt "Auto context with id 1214"
+msgid "Files"
+msgstr "फ़ाइलें"
+
+#: id:1215
+msgid "Music & video "
+msgstr "संगीत और वीडियो "
+
+#: id:1216
+msgid "Music & pictures"
+msgstr "संगीत और चित्रों"
+
+#: id:1217
+msgid "Music & files"
+msgstr "संगीत और फ़ाइलें"
+
+#: id:1218
+msgid "Video & pictures"
+msgstr "वीडियो और तस्वीरें"
+
+#: id:1219
+msgid "Video & files"
+msgstr "वीडियो और फ़ाइलें"
+
+#: id:1220
+msgid "Pictures & files"
+msgstr "चित्र और फ़ाइलों"
+
+#: id:1221
+msgid "Music & video & pictures"
+msgstr "संगीत और वीडियो और तस्वीरें"
+
+#: id:1222
+msgid "Music & video & pictures & files"
+msgstr "संगीत और वीडियो और तस्वीरों और फ़ाइलें"
+
+#: id:1223
+msgctxt "Auto context with id 1223"
+msgid "Disabled"
+msgstr "विकलांग"
+
+#: id:1226
+msgid "Files & music & video"
+msgstr "फ़ाइलें और संगीत वीडियो"
+
+#: id:1227
+msgid "Files & pictures & music"
+msgstr "और फ़ाइलें चित्रों और संगीत"
+
+#: id:1228
+msgid "Files & pictures & video"
+msgstr "और फ़ाइलें तस्वीरें और वीडियो"
+
+#: id:1229
+msgid "Music & programs"
+msgstr "संगीत और कार्यक्रमों"
+
+#: id:1230
+msgid "Video & programs"
+msgstr "वीडियो और कार्यक्रमों"
+
+#: id:1231
+msgid "Pictures & programs"
+msgstr "चित्र और कार्यक्रमों"
+
+#: id:1232
+msgid "Music & video & pictures & programs"
+msgstr "संगीत और वीडियो और तस्वीरों और कार्यक्रमों"
+
+#: id:1233
+msgid "Programs & video & music"
+msgstr "प्रोग्राम्स एवं वीडियो और संगीत"
+
+#: id:1234
+msgid "Programs & pictures & music"
+msgstr "प्रोग्राम्स और तस्वीरें और संगीत"
+
+#: id:1235
+msgid "Programs & pictures & video"
+msgstr "प्रोग्राम्स और तस्वीरें और वीडियो"
+
+#: id:1250
+msgid "Auto-detection"
+msgstr "ऑटो का पता लगाने"
+
+#: id:1251
+msgid "Auto-detect system"
+msgstr "स्वत: पता लगाने के लिए प्रणाली"
+
+#: id:1252
+msgid "Nickname"
+msgstr "उपनाम"
+
+#: id:1254
+msgid "Ask to connect"
+msgstr "से कनेक्ट पूछें"
+
+#: id:1255
+msgid "Send FTP user and password"
+msgstr "एफ़टीपी उपयोगकर्ता और पासवर्ड भेजें"
+
+#: id:1256
+msgid "Ping interval"
+msgstr "पिंग अंतराल"
+
+#: id:1257
+msgid "Would you like to connect to the auto-detected system?"
+msgstr "क्या आप प्रणाली ऑटो का पता लगाया करने के लिए कनेक्ट करना चाहेंगे?"
+
+#: id:1259
+msgid "Zeroconf"
+msgstr ""
+
+#: id:1260
+msgid "Announce these services to other systems via Zeroconf"
+msgstr ""
+
+#: id:1270
+msgid "Allow XBMC to receive AirPlay content"
+msgstr ""
+
+#: id:1271
+msgid "Device name"
+msgstr ""
+
+#: id:1272
+msgid "- Use password protection"
+msgstr ""
+
+#: id:1273
+msgid "AirPlay"
+msgstr ""
+
+#: id:1300
+msgid "Custom audio device"
+msgstr ""
+
+#: id:1301
+msgid "Custom passthrough device"
+msgstr ""
+
+#: id:1396
+msgid "Drifting"
+msgstr ""
+
+#: id:1397
+msgid "and"
+msgstr ""
+
+#: id:1398
+msgid "Freezing"
+msgstr ""
+
+#: id:1399
+msgid "Late"
+msgstr ""
+
+#: id:1400
+msgid "Isolated"
+msgstr ""
+
+#: id:1401
+msgid "Thundershowers"
+msgstr ""
+
+#: id:1402
+msgid "Thunder"
+msgstr ""
+
+#: id:1403
+msgctxt "Auto context with id 1403"
+msgid "Sun"
+msgstr ""
+
+#: id:1404
+msgid "Heavy"
+msgstr ""
+
+#: id:1405
+msgid "in"
+msgstr ""
+
+#: id:1406
+msgid "the"
+msgstr ""
+
+#: id:1407
+msgid "Vicinity"
+msgstr ""
+
+#: id:1408
+msgid "Ice"
+msgstr ""
+
+#: id:1409
+msgid "Crystals"
+msgstr ""
+
+#: id:1410
+msgid "Calm"
+msgstr ""
+
+#: id:1411
+msgid "with"
+msgstr ""
+
+#: id:1412
+msgid "windy"
+msgstr ""
+
+#: id:1413
+msgid "drizzle"
+msgstr ""
+
+#: id:1414
+msgid "Thunderstorm"
+msgstr ""
+
+#: id:1415
+msgid "Drizzle"
+msgstr ""
+
+#: id:1416
+msgid "Foggy"
+msgstr ""
+
+#: id:1417
+msgid "Grains"
+msgstr ""
+
+#: id:1418
+msgid "T-Storms"
+msgstr ""
+
+#: id:1419
+msgid "T-Showers"
+msgstr ""
+
+#: id:1420
+msgid "Moderate"
+msgstr ""
+
+#: id:1421
+msgid "Very High"
+msgstr ""
+
+#: id:1422
+msgid "Windy"
+msgstr ""
+
+#: id:1423
+msgid "Mist"
+msgstr ""
+
+#: id:1450
+msgid "Put display to sleep when idle"
+msgstr "जब नींद निष्क्रिय प्रदर्शित रखो"
+
+#: id:2050
+msgid "Runtime"
+msgstr ""
+
+#: id:2100
+msgid "Script failed! : %s"
+msgstr ""
+
+#: id:2101
+msgid "Newer version needed - See log"
+msgstr ""
+
+#: id:4501
+msgid "Enable LCD/VFD"
+msgstr ""
+
+#: id:10000
+msgid "Home"
+msgstr ""
+
+#: id:10001
+msgctxt "Auto context with id 10001"
+msgid "Programs"
+msgstr ""
+
+#: id:10002
+msgctxt "Auto context with id 10002"
+msgid "Pictures"
+msgstr ""
+
+#: id:10003
+msgctxt "Auto context with id 10003"
+msgid "File manager"
+msgstr ""
+
+#: id:10004
+msgctxt "Auto context with id 10004"
+msgid "Settings"
+msgstr ""
+
+#: id:10005
+msgctxt "Auto context with id 10005"
+msgid "Music"
+msgstr ""
+
+#: id:10006
+msgctxt "Auto context with id 10006"
+msgid "Videos"
+msgstr ""
+
+#: id:10007
+msgid "System information"
+msgstr ""
+
+#: id:10008
+msgid "Settings - General"
+msgstr ""
+
+#: id:10009
+msgid "Settings - Screen"
+msgstr ""
+
+#: id:10010
+msgid "Settings - Appearance - GUI Calibration"
+msgstr ""
+
+#: id:10011
+msgid "Settings - Videos - Screen Calibration"
+msgstr ""
+
+#: id:10012
+msgid "Settings - Pictures"
+msgstr ""
+
+#: id:10013
+msgid "Settings - Programs"
+msgstr ""
+
+#: id:10014
+msgid "Settings - Weather"
+msgstr ""
+
+#: id:10015
+msgid "Settings - Music"
+msgstr ""
+
+#: id:10016
+msgid "Settings - System"
+msgstr ""
+
+#: id:10017
+msgid "Settings - Videos"
+msgstr ""
+
+#: id:10018
+msgid "Settings - Network"
+msgstr ""
+
+#: id:10019
+msgid "Settings - Appearance"
+msgstr ""
+
+#: id:10020
+msgctxt "Auto context with id 10020"
+msgid "Scripts"
+msgstr ""
+
+#: id:10021
+msgid "Web Browser"
+msgstr ""
+
+#: id:10025
+msgctxt "Auto context with id 10025"
+msgid "Videos"
+msgstr ""
+
+#: id:10028
+msgid "Videos/Playlist"
+msgstr ""
+
+#: id:10029
+msgctxt "Auto context with id 10029"
+msgid "Login screen"
+msgstr ""
+
+#: id:10034
+msgid "Settings - Profiles"
+msgstr ""
+
+#: id:10040
+msgid "Addon browser"
+msgstr ""
+
+#: id:10100
+msgid "Yes/No dialog"
+msgstr ""
+
+#: id:10101
+msgid "Progress dialog"
+msgstr ""
+
+#: id:10210
+msgid "Looking for subtitles..."
+msgstr ""
+
+#: id:10211
+msgid "Looking for or caching subtitles..."
+msgstr ""
+
+#: id:10212
+msgid "terminating"
+msgstr ""
+
+#: id:10213
+msgid "buffering"
+msgstr ""
+
+#: id:10214
+msgid "Opening stream"
+msgstr ""
+
+#: id:10500
+msgid "Music/Playlist"
+msgstr ""
+
+#: id:10501
+msgid "Music/Files"
+msgstr ""
+
+#: id:10502
+msgid "Music/Library"
+msgstr ""
+
+#: id:10503
+msgid "Playlist editor"
+msgstr ""
+
+#: id:10504
+msgid "Top 100 songs"
+msgstr ""
+
+#: id:10505
+msgid "Top 100 albums"
+msgstr ""
+
+#: id:10506
+msgctxt "Auto context with id 10506"
+msgid "Programs"
+msgstr ""
+
+#: id:10507
+msgid "Configuration"
+msgstr ""
+
+#: id:10508
+msgid "Weather forecast"
+msgstr ""
+
+#: id:10509
+msgid "Network gaming"
+msgstr ""
+
+#: id:10510
+msgid "Extensions"
+msgstr ""
+
+#: id:10511
+msgctxt "Auto context with id 10511"
+msgid "System info"
+msgstr ""
+
+#: id:10516
+msgid "Music - Library"
+msgstr ""
+
+#: id:10517
+msgid "Now Playing - Music"
+msgstr ""
+
+#: id:10522
+msgid "Now Playing - Videos"
+msgstr ""
+
+#: id:10523
+msgid "Album info"
+msgstr ""
+
+#: id:10524
+msgid "Movie info"
+msgstr ""
+
+#: id:12000
+msgid "Select dialog"
+msgstr ""
+
+#: id:12001
+msgid "Music/Info"
+msgstr ""
+
+#: id:12002
+msgid "Dialog OK"
+msgstr ""
+
+#: id:12003
+msgid "Videos/Info"
+msgstr ""
+
+#: id:12004
+msgid "Scripts/Info"
+msgstr ""
+
+#: id:12005
+msgid "Fullscreen video"
+msgstr ""
+
+#: id:12006
+msgid "Audio visualization"
+msgstr ""
+
+#: id:12008
+msgid "File stacking dialog"
+msgstr ""
+
+#: id:12009
+msgid "Rebuild index..."
+msgstr ""
+
+#: id:12010
+msgid "Return to music window"
+msgstr ""
+
+#: id:12011
+msgid "Return to videos window"
+msgstr ""
+
+#: id:12021
+msgid "Start from beginning"
+msgstr ""
+
+#: id:12022
+msgid "Resume from %s"
+msgstr ""
+
+#: id:12310
+msgid "0"
+msgstr ""
+
+#: id:12311
+msgid "1"
+msgstr ""
+
+#: id:12312
+msgid "2"
+msgstr ""
+
+#: id:12313
+msgid "3"
+msgstr ""
+
+#: id:12314
+msgid "4"
+msgstr ""
+
+#: id:12315
+msgid "5"
+msgstr ""
+
+#: id:12316
+msgid "6"
+msgstr ""
+
+#: id:12317
+msgid "7"
+msgstr ""
+
+#: id:12318
+msgid "8"
+msgstr ""
+
+#: id:12319
+msgid "9"
+msgstr ""
+
+#: id:12320
+msgid "c"
+msgstr ""
+
+#: id:12321
+msgid "Ok"
+msgstr ""
+
+#: id:12322
+msgid "*"
+msgstr ""
+
+#: id:12325
+msgid "Locked! Enter code..."
+msgstr ""
+
+#: id:12326
+msgid "Enter password"
+msgstr ""
+
+#: id:12327
+msgid "Enter master code"
+msgstr ""
+
+#: id:12328
+msgid "Enter unlock code"
+msgstr ""
+
+#: id:12329
+msgid "or press C to cancel"
+msgstr ""
+
+#: id:12330
+msgid "Enter gamepad button combo and"
+msgstr ""
+
+#: id:12331
+msgid "press OK, or Back to cancel"
+msgstr ""
+
+#: id:12332
+msgid "Set lock"
+msgstr ""
+
+#: id:12333
+msgid "Unlock"
+msgstr ""
+
+#: id:12334
+msgid "Reset lock"
+msgstr ""
+
+#: id:12335
+msgid "Remove lock"
+msgstr ""
+
+#: id:12337
+msgid "Numeric password"
+msgstr ""
+
+#: id:12338
+msgid "Gamepad button combo"
+msgstr ""
+
+#: id:12339
+msgid "Full-text password"
+msgstr ""
+
+#: id:12340
+msgid "Enter new password"
+msgstr ""
+
+#: id:12341
+msgid "Re-Enter new password"
+msgstr ""
+
+#: id:12342
+msgid "Incorrect password,"
+msgstr ""
+
+#: id:12343
+msgid "retries left "
+msgstr ""
+
+#: id:12344
+msgid "Passwords entered did not match."
+msgstr ""
+
+#: id:12345
+msgid "Access denied"
+msgstr ""
+
+#: id:12346
+msgid "Password retry limit exceeded."
+msgstr ""
+
+#: id:12347
+msgid "The system will now shut off."
+msgstr ""
+
+#: id:12348
+msgid "Item locked"
+msgstr ""
+
+#: id:12353
+msgid "Reactivate lock"
+msgstr ""
+
+#: id:12356
+msgid "Change lock"
+msgstr ""
+
+#: id:12357
+msgid "Source lock"
+msgstr ""
+
+#: id:12358
+msgid "Password entry was blank. Try again."
+msgstr ""
+
+#: id:12360
+msgid "Master lock"
+msgstr "मास्टर ताला"
+
+#: id:12362
+msgid "Shutdown system if Master Lock retries exceeded"
+msgstr ""
+
+#: id:12367
+msgid "Master code is not valid"
+msgstr ""
+
+#: id:12368
+msgid "Please enter a valid master code"
+msgstr ""
+
+#: id:12373
+msgid "Settings & file manager"
+msgstr ""
+
+#: id:12376
+msgid "Set as default for all movies"
+msgstr ""
+
+#: id:12377
+msgid "This will reset any previously saved values"
+msgstr ""
+
+#: id:12378
+msgid "Amount of time to display each image"
+msgstr "समय की राशि प्रत्येक छवि प्रदर्शित करने के लिए"
+
+#: id:12379
+msgid "Use pan and zoom effects"
+msgstr "पैन और ज़ूम प्रभाव का उपयोग करें"
+
+#: id:12383
+msgid "12 hour clock"
+msgstr ""
+
+#: id:12384
+msgid "24 hour clock"
+msgstr ""
+
+#: id:12385
+msgid "Day/Month"
+msgstr ""
+
+#: id:12386
+msgid "Month/Day"
+msgstr ""
+
+#: id:12390
+msgid "System uptime"
+msgstr ""
+
+#: id:12391
+msgid "Minutes"
+msgstr ""
+
+#: id:12392
+msgid "Hours"
+msgstr ""
+
+#: id:12393
+msgid "Days"
+msgstr ""
+
+#: id:12394
+msgid "Total uptime"
+msgstr ""
+
+#: id:12395
+msgid "Battery level"
+msgstr ""
+
+#: id:12600
+msgctxt "Auto context with id 12600"
+msgid "Weather"
+msgstr "मौसम"
+
+#: id:12900
+msgctxt "Auto context with id 12900"
+msgid "Screensaver"
+msgstr ""
+
+#: id:12901
+msgid "Fullscreen OSD"
+msgstr ""
+
+#: id:13000
+msgid "System"
+msgstr "प्रणाली"
+
+#: id:13001
+msgid "Immediate HD spindown"
+msgstr ""
+
+#: id:13002
+msgid "Video only"
+msgstr ""
+
+#: id:13003
+msgid "- Delay"
+msgstr ""
+
+#: id:13004
+msgid "- Minimum file duration"
+msgstr ""
+
+#: id:13005
+msgid "Shutdown"
+msgstr ""
+
+#: id:13008
+msgid "Shutdown function"
+msgstr "शट डाउन समारोह"
+
+#: id:13009
+msgid "Quit"
+msgstr "छोड़ो"
+
+#: id:13010
+msgid "Hibernate"
+msgstr ""
+
+#: id:13011
+msgid "Suspend"
+msgstr ""
+
+#: id:13012
+msgid "Exit"
+msgstr ""
+
+#: id:13013
+msgid "Reboot"
+msgstr ""
+
+#: id:13014
+msgid "Minimize"
+msgstr ""
+
+#: id:13015
+msgid "Power button action"
+msgstr ""
+
+#: id:13016
+msgid "Power off System"
+msgstr ""
+
+#: id:13020
+msgid "Is another session active, perhaps over ssh?"
+msgstr ""
+
+#: id:13021
+msgid "Mounted removable harddrive"
+msgstr ""
+
+#: id:13022
+msgid "Unsafe device removal"
+msgstr ""
+
+#: id:13023
+msgid "Successfully removed device"
+msgstr ""
+
+#: id:13024
+msgid "Joystick plugged"
+msgstr ""
+
+#: id:13025
+msgid "Joystick unplugged"
+msgstr ""
+
+#: id:13050
+msgid "Running low on battery"
+msgstr ""
+
+#: id:13100
+msgid "Flicker filter"
+msgstr ""
+
+#: id:13101
+msgid "Let driver choose (requires restart)"
+msgstr ""
+
+#: id:13105
+msgid "Vertical blank sync"
+msgstr "अनुलंब रिक्त सिंक"
+
+#: id:13106
+msgctxt "Auto context with id 13106"
+msgid "Disabled"
+msgstr ""
+
+#: id:13107
+msgid "Enabled during video playback"
+msgstr ""
+
+#: id:13108
+msgctxt "Auto context with id 13108"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13109
+msgid "Test & apply resolution"
+msgstr ""
+
+#: id:13110
+msgid "Save resolution?"
+msgstr ""
+
+#: id:13111
+msgid "Would you like to keep this resolution?"
+msgstr ""
+
+#: id:13112
+msgid "High quality upscaling"
+msgstr ""
+
+#: id:13113
+msgctxt "Auto context with id 13113"
+msgid "Disabled"
+msgstr ""
+
+#: id:13114
+msgid "Enabled for SD content"
+msgstr ""
+
+#: id:13115
+msgctxt "Auto context with id 13115"
+msgid "Always enabled"
+msgstr ""
+
+#: id:13116
+msgid "Upscaling method"
+msgstr ""
+
+#: id:13117
+msgctxt "Auto context with id 13117"
+msgid "Bicubic"
+msgstr ""
+
+#: id:13118
+msgid "Lanczos"
+msgstr ""
+
+#: id:13119
+msgid "Sinc"
+msgstr ""
+
+#: id:13120
+msgctxt "Auto context with id 13120"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13121
+msgid "VDPAU HQ Upscaling level"
+msgstr ""
+
+#: id:13122
+msgid "VDPAU Studio level color conversion"
+msgstr ""
+
+#: id:13130
+msgid "Blank other displays"
+msgstr "खाली अन्य प्रदर्शित करता है"
+
+#: id:13131
+msgctxt "Auto context with id 13131"
+msgid "Disabled"
+msgstr ""
+
+#: id:13132
+msgid "Blank displays"
+msgstr ""
+
+#: id:13140
+msgid "Active connections detected!"
+msgstr ""
+
+#: id:13141
+msgid "If you proceed, you might not be able to control XBMC"
+msgstr ""
+
+#: id:13142
+msgid "any longer. Are you sure you want to stop the Event server?"
+msgstr ""
+
+#: id:13144
+msgid "Change Apple Remote mode?"
+msgstr ""
+
+#: id:13145
+msgid "If you are currently using the Apple Remote to control"
+msgstr ""
+
+#: id:13146
+msgid "XBMC, changing this setting might affect your ability"
+msgstr ""
+
+#: id:13147
+msgid "to continue controlling it. Do you want to proceed?"
+msgstr ""
+
+#: id:13159
+msgid "Subnet mask"
+msgstr ""
+
+#: id:13160
+msgid "Gateway"
+msgstr ""
+
+#: id:13161
+msgid "Primary DNS"
+msgstr ""
+
+#: id:13162
+msgid "Initialize failed"
+msgstr ""
+
+#: id:13170
+msgctxt "Auto context with id 13170"
+msgid "Never"
+msgstr ""
+
+#: id:13171
+msgid "Immediately"
+msgstr ""
+
+#: id:13172
+msgid "After %i secs"
+msgstr ""
+
+#: id:13173
+msgid "HDD install date:"
+msgstr ""
+
+#: id:13174
+msgid "HDD power cycle count:"
+msgstr ""
+
+#: id:13200
+msgid "Profiles"
+msgstr ""
+
+#: id:13201
+msgid "Delete profile '%s'?"
+msgstr ""
+
+#: id:13204
+msgid "Last loaded profile:"
+msgstr ""
+
+#: id:13205
+msgid "Unknown"
+msgstr ""
+
+#: id:13206
+msgid "Overwrite"
+msgstr ""
+
+#: id:13208
+msgid "Alarm clock"
+msgstr ""
+
+#: id:13209
+msgid "Alarm clock interval (in minutes)"
+msgstr ""
+
+#: id:13210
+msgid "Started, alarm in %im"
+msgstr ""
+
+#: id:13211
+msgid "Alarm!"
+msgstr ""
+
+#: id:13212
+msgid "Canceled with %im%is left"
+msgstr ""
+
+#: id:13213
+msgid "%2.0fm"
+msgstr ""
+
+#: id:13214
+msgid "%2.0fs"
+msgstr ""
+
+#: id:13249
+msgid "Search for subtitles in RARs"
+msgstr ""
+
+#: id:13250
+msgid "Browse for subtitle..."
+msgstr ""
+
+#: id:13251
+msgid "Move item"
+msgstr ""
+
+#: id:13252
+msgid "Move item here"
+msgstr ""
+
+#: id:13253
+msgid "Cancel move"
+msgstr ""
+
+#: id:13270
+msgid "Hardware:"
+msgstr ""
+
+#: id:13271
+msgid "CPU Usage:"
+msgstr ""
+
+#: id:13274
+msgid "Connected, but no DNS is available."
+msgstr ""
+
+#: id:13275
+msgid "Hard Disk"
+msgstr ""
+
+#: id:13276
+msgid "DVD-ROM"
+msgstr ""
+
+#: id:13277
+msgctxt "Auto context with id 13277"
+msgid "Storage"
+msgstr ""
+
+#: id:13278
+msgctxt "Auto context with id 13278"
+msgid "Default"
+msgstr ""
+
+#: id:13279
+msgctxt "Auto context with id 13279"
+msgid "Network"
+msgstr ""
+
+#: id:13280
+msgctxt "Auto context with id 13280"
+msgid "Video"
+msgstr ""
+
+#: id:13281
+msgid "Hardware"
+msgstr ""
+
+#: id:13283
+msgid "Operating system:"
+msgstr ""
+
+#: id:13284
+msgid "CPU speed:"
+msgstr ""
+
+#: id:13286
+msgid "Video encoder:"
+msgstr ""
+
+#: id:13287
+msgid "Screen resolution:"
+msgstr ""
+
+#: id:13292
+msgid "A/V cable:"
+msgstr ""
+
+#: id:13294
+msgid "DVD region:"
+msgstr ""
+
+#: id:13295
+msgid "Internet:"
+msgstr ""
+
+#: id:13296
+msgctxt "Auto context with id 13296"
+msgid "Connected"
+msgstr ""
+
+#: id:13297
+msgid "Not connected. Check network settings."
+msgstr ""
+
+#: id:13299
+msgid "Target temperature"
+msgstr ""
+
+#: id:13300
+msgid "Fan speed"
+msgstr ""
+
+#: id:13301
+msgid "Auto temperature control"
+msgstr ""
+
+#: id:13302
+msgid "Fan speed override"
+msgstr ""
+
+#: id:13303
+msgid "- Fonts"
+msgstr "- फ़ॉन्ट्स"
+
+#: id:13304
+msgid "Enable flipping bi-directional strings"
+msgstr ""
+
+#: id:13305
+msgid "Show RSS news feeds"
+msgstr "दिखाएँ आरएसएस समाचार फ़ीड"
+
+#: id:13306
+msgid "Show parent folder items"
+msgstr "दिखाएँ पैरेंट फ़ोल्डर आइटम"
+
+#: id:13307
+msgid "Track naming template"
+msgstr "टेम्पलेट नामकरण ट्रैक"
+
+#: id:13308
+msgid "Do you wish to reboot your system"
+msgstr ""
+
+#: id:13309
+msgid "instead of just XBMC?"
+msgstr ""
+
+#: id:13310
+msgid "Zoom effect"
+msgstr ""
+
+#: id:13311
+msgid "Float effect"
+msgstr ""
+
+#: id:13312
+msgid "Black bar reduction"
+msgstr ""
+
+#: id:13313
+msgid "Restart"
+msgstr ""
+
+#: id:13314
+msgid "Crossfade between songs"
+msgstr "गीतों के बीच क्रॉस - फीका"
+
+#: id:13315
+msgid "Regenerate thumbnails"
+msgstr ""
+
+#: id:13316
+msgid "Recursive thumbnails"
+msgstr ""
+
+#: id:13317
+msgid "View slideshow"
+msgstr ""
+
+#: id:13318
+msgid "Recursive slideshow"
+msgstr ""
+
+#: id:13319
+msgid "Randomize"
+msgstr ""
+
+#: id:13320
+msgid "Stereo"
+msgstr ""
+
+#: id:13321
+msgid "Left only"
+msgstr ""
+
+#: id:13322
+msgid "Right only"
+msgstr ""
+
+#: id:13323
+msgid "Enable karaoke support"
+msgstr "कराओके समर्थन सक्षम करें"
+
+#: id:13324
+msgid "Background transparency"
+msgstr ""
+
+#: id:13325
+msgid "Foreground transparency"
+msgstr ""
+
+#: id:13326
+msgid "A/V delay"
+msgstr ""
+
+#: id:13327
+msgid "Karaoke"
+msgstr "कराओके"
+
+#: id:13328
+msgid "%s not found"
+msgstr ""
+
+#: id:13329
+msgid "Error opening %s"
+msgstr ""
+
+#: id:13330
+msgid "Unable to load %s"
+msgstr ""
+
+#: id:13331
+msgid "Error: Out of memory"
+msgstr ""
+
+#: id:13332
+msgid "Move up"
+msgstr ""
+
+#: id:13333
+msgid "Move down"
+msgstr ""
+
+#: id:13334
+msgid "Edit label"
+msgstr ""
+
+#: id:13335
+msgid "Make default"
+msgstr ""
+
+#: id:13336
+msgid "Remove button"
+msgstr ""
+
+#: id:13340
+msgid "Leave as is"
+msgstr ""
+
+#: id:13341
+msgid "Green"
+msgstr ""
+
+#: id:13342
+msgid "Orange"
+msgstr ""
+
+#: id:13343
+msgid "Red"
+msgstr ""
+
+#: id:13344
+msgid "Cycle"
+msgstr ""
+
+#: id:13345
+msgid "Switch LED off on playback"
+msgstr ""
+
+#: id:13346
+msgctxt "Auto context with id 13346"
+msgid "Movie information"
+msgstr ""
+
+#: id:13347
+msgid "Queue item"
+msgstr ""
+
+#: id:13348
+msgid "Search IMDb..."
+msgstr ""
+
+#: id:13349
+msgid "Scan for new content"
+msgstr ""
+
+#: id:13350
+msgid "Now playing..."
+msgstr ""
+
+#: id:13351
+msgctxt "Auto context with id 13351"
+msgid "Album information"
+msgstr ""
+
+#: id:13352
+msgid "Scan item to library"
+msgstr ""
+
+#: id:13353
+msgid "Stop scanning"
+msgstr ""
+
+#: id:13354
+msgctxt "Auto context with id 13354"
+msgid "Render method"
+msgstr ""
+
+#: id:13355
+msgid "Low quality pixel shader"
+msgstr ""
+
+#: id:13356
+msgid "Hardware overlays"
+msgstr ""
+
+#: id:13357
+msgid "High quality pixel shader"
+msgstr ""
+
+#: id:13358
+msgid "Play item"
+msgstr ""
+
+#: id:13359
+msgid "Set artist thumb"
+msgstr ""
+
+#: id:13360
+msgid "Automatically generate thumbnails"
+msgstr "स्वचालित रूप से थंबनेल उत्पन्न"
+
+#: id:13361
+msgid "Enable voice"
+msgstr ""
+
+#: id:13375
+msgid "Enable device"
+msgstr ""
+
+#: id:13376
+msgid "Volume"
+msgstr ""
+
+#: id:13377
+msgid "Default view mode"
+msgstr ""
+
+#: id:13378
+msgid "Default brightness"
+msgstr ""
+
+#: id:13379
+msgid "Default contrast"
+msgstr ""
+
+#: id:13380
+msgid "Default gamma"
+msgstr ""
+
+#: id:13381
+msgid "Resume video"
+msgstr ""
+
+#: id:13382
+msgid "Voice mask - Port 1"
+msgstr ""
+
+#: id:13383
+msgid "Voice mask - Port 2"
+msgstr ""
+
+#: id:13384
+msgid "Voice mask - Port 3"
+msgstr ""
+
+#: id:13385
+msgid "Voice mask - Port 4"
+msgstr ""
+
+#: id:13386
+msgid "Use time based seeking"
+msgstr ""
+
+#: id:13387
+msgid "Track naming template - right"
+msgstr "ट्रैक नामकरण टेम्पलेट - ठीक है"
+
+#: id:13388
+msgid "Preset"
+msgstr ""
+
+#: id:13389
+msgid "There are no presets available\nfor this visualization"
+msgstr ""
+
+#: id:13390
+msgid "There are no settings available\nfor this visualization"
+msgstr ""
+
+#: id:13391
+msgid "Eject/Load"
+msgstr ""
+
+#: id:13392
+msgid "Use visualization if playing audio"
+msgstr "दृश्य का प्रयोग करें अगर ऑडियो खेल"
+
+#: id:13393
+msgid "Calculate size"
+msgstr ""
+
+#: id:13394
+msgid "Calculating folder size"
+msgstr ""
+
+#: id:13395
+msgid "Video settings"
+msgstr ""
+
+#: id:13396
+msgid "Audio and subtitle settings"
+msgstr ""
+
+#: id:13397
+msgid "Enable subtitles"
+msgstr ""
+
+#: id:13398
+msgctxt "Auto context with id 13398"
+msgid "Shortcuts"
+msgstr ""
+
+#: id:13399
+msgid "Ignore articles when sorting (e.g. \"the\")"
+msgstr "लेख पर ध्यान न दें जब छँटाई (उदाहरण के लिए \"\")"
+
+#: id:13400
+msgid "Crossfade between songs on the same album"
+msgstr "गीतों के बीच एक ही एलबम पर पार - फीका"
+
+#: id:13401
+msgid "Browse for %s"
+msgstr ""
+
+#: id:13402
+msgid "Show track position"
+msgstr ""
+
+#: id:13403
+msgid "Clear default"
+msgstr ""
+
+#: id:13404
+msgid "Resume"
+msgstr ""
+
+#: id:13405
+msgid "Get thumb"
+msgstr ""
+
+#: id:13406
+msgid "Picture information"
+msgstr ""
+
+#: id:13407
+msgid "%s presets"
+msgstr ""
+
+#: id:13408
+msgid "(IMDb user rating)"
+msgstr ""
+
+#: id:13409
+msgid "Top 250"
+msgstr ""
+
+#: id:13410
+msgid "Tune in on Last.fm"
+msgstr ""
+
+#: id:13411
+msgid "Minimum fan speed"
+msgstr ""
+
+#: id:13412
+msgid "Play from here"
+msgstr ""
+
+#: id:13413
+msgid "Downloading"
+msgstr ""
+
+#: id:13414
+msgid "Include artists who appear only on compilations"
+msgstr "कलाकारों को जो केवल संकलन पर दिखाई देते हैं शामिल"
+
+#: id:13415
+msgctxt "Auto context with id 13415"
+msgid "Render method"
+msgstr "विधि सौंपनेवाला"
+
+#: id:13416
+msgid "Auto detect"
+msgstr ""
+
+#: id:13417
+msgid "Basic shaders (ARB)"
+msgstr ""
+
+#: id:13418
+msgid "Advanced shaders (GLSL)"
+msgstr ""
+
+#: id:13419
+msgid "Software"
+msgstr ""
+
+#: id:13420
+msgid "Remove safely"
+msgstr ""
+
+#: id:13421
+msgctxt "Auto context with id 13421"
+msgid "VDPAU"
+msgstr ""
+
+#: id:13422
+msgid "Start slideshow here"
+msgstr ""
+
+#: id:13423
+msgid "Remember for this path"
+msgstr ""
+
+#: id:13424
+msgid "Use pixel buffer objects"
+msgstr ""
+
+#: id:13425
+msgid "Allow hardware acceleration (VDPAU)"
+msgstr ""
+
+#: id:13426
+msgid "Allow hardware acceleration (VAAPI)"
+msgstr ""
+
+#: id:13427
+msgid "Allow hardware acceleration (DXVA2)"
+msgstr ""
+
+#: id:13428
+msgid "Allow hardware acceleration (CrystalHD)"
+msgstr ""
+
+#: id:13429
+msgid "Allow hardware acceleration (VDADecoder)"
+msgstr ""
+
+#: id:13430
+msgid "Allow hardware acceleration (OpenMax)"
+msgstr ""
+
+#: id:13431
+msgid "Pixel Shaders"
+msgstr ""
+
+#: id:13432
+msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr ""
+
+#: id:13500
+msgid "A/V sync method"
+msgstr "A/V सिंक विधि"
+
+#: id:13501
+msgid "Audio clock"
+msgstr ""
+
+#: id:13502
+msgid "Video clock (Drop/Dupe audio)"
+msgstr ""
+
+#: id:13503
+msgid "Video clock (Resample audio)"
+msgstr ""
+
+#: id:13504
+msgid "Maximum resample amount (%)"
+msgstr ""
+
+#: id:13505
+msgid "Resample quality"
+msgstr ""
+
+#: id:13506
+msgid "Low(fast)"
+msgstr ""
+
+#: id:13507
+msgctxt "Auto context with id 13507"
+msgid "Medium"
+msgstr ""
+
+#: id:13508
+msgctxt "Auto context with id 13508"
+msgid "High"
+msgstr ""
+
+#: id:13509
+msgid "Really high(slow!)"
+msgstr ""
+
+#: id:13510
+msgid "Sync playback to display"
+msgstr "सिंक प्लेबैक करने के लिए प्रदर्शन"
+
+#: id:13550
+msgid "Pause during refresh rate change"
+msgstr ""
+
+#: id:13551
+msgctxt "Auto context with id 13551"
+msgid "Off"
+msgstr ""
+
+#: id:13552
+msgid "%.1f Second"
+msgstr ""
+
+#: id:13553
+msgid "%.1f Seconds"
+msgstr ""
+
+#: id:13600
+msgid "Apple remote"
+msgstr ""
+
+#: id:13602
+msgid "Allow start of XBMC using the remote"
+msgstr ""
+
+#: id:13603
+msgid "Sequence delay time"
+msgstr ""
+
+#: id:13610
+msgctxt "Auto context with id 13610"
+msgid "Disabled"
+msgstr ""
+
+#: id:13611
+msgctxt "Auto context with id 13611"
+msgid "Standard"
+msgstr ""
+
+#: id:13612
+msgid "Universal Remote"
+msgstr ""
+
+#: id:13613
+msgid "Multi Remote (Harmony)"
+msgstr ""
+
+#: id:13620
+msgid "Apple Remote Error"
+msgstr ""
+
+#: id:13621
+msgid "Apple Remote support could be enabled."
+msgstr ""
+
+#: id:14000
+msgid "Stack"
+msgstr ""
+
+#: id:14001
+msgid "Unstack"
+msgstr ""
+
+#: id:14003
+msgid "Downloading playlist file..."
+msgstr ""
+
+#: id:14004
+msgid "Downloading streams list..."
+msgstr ""
+
+#: id:14005
+msgid "Parsing streams list..."
+msgstr ""
+
+#: id:14006
+msgid "Downloading streams list failed"
+msgstr ""
+
+#: id:14007
+msgid "Downloading playlist file failed"
+msgstr ""
+
+#: id:14009
+msgid "Games directory"
+msgstr ""
+
+#: id:14010
+msgid "Auto switch to thumbs based on"
+msgstr ""
+
+#: id:14011
+msgid "Enable auto switching to thumbs view"
+msgstr ""
+
+#: id:14012
+msgid "- Use large icons"
+msgstr ""
+
+#: id:14013
+msgid "- Switch based on"
+msgstr ""
+
+#: id:14014
+msgid "- Percentage"
+msgstr ""
+
+#: id:14015
+msgid "No files and at least one thumb"
+msgstr ""
+
+#: id:14016
+msgid "At least one file and thumb"
+msgstr ""
+
+#: id:14017
+msgid "Percentage of thumbs"
+msgstr ""
+
+#: id:14018
+msgid "View options"
+msgstr ""
+
+#: id:14019
+msgid "Change area code 1"
+msgstr "क्षेत्र कोड बदलें 1"
+
+#: id:14020
+msgid "Change area code 2"
+msgstr "क्षेत्र कोड बदलें 2"
+
+#: id:14021
+msgid "Change area code 3"
+msgstr "क्षेत्र कोड बदले 3"
+
+#: id:14022
+msgctxt "Auto context with id 14022"
+msgid "Library"
+msgstr "पुस्तकालय"
+
+#: id:14023
+msgid "No TV"
+msgstr ""
+
+#: id:14024
+msgid "Enter the nearest large town"
+msgstr ""
+
+#: id:14025
+msgid "Video/Audio/DVD cache - Harddisk"
+msgstr ""
+
+#: id:14026
+msgid "Video cache - DVD-ROM"
+msgstr ""
+
+#: id:14027
+msgctxt "Auto context with id 14027"
+msgid "- Local Network"
+msgstr ""
+
+#: id:14028
+msgctxt "Auto context with id 14028"
+msgid "- Internet"
+msgstr ""
+
+#: id:14030
+msgid "Audio cache - DVD-ROM"
+msgstr ""
+
+#: id:14031
+msgctxt "Auto context with id 14031"
+msgid "- Local Network"
+msgstr ""
+
+#: id:14032
+msgctxt "Auto context with id 14032"
+msgid "- Internet"
+msgstr ""
+
+#: id:14034
+msgid "DVD cache - DVD-ROM"
+msgstr ""
+
+#: id:14035
+msgctxt "Auto context with id 14035"
+msgid "- Local Network"
+msgstr ""
+
+#: id:14036
+msgctxt "Auto context with id 14036"
+msgid "Services"
+msgstr "सेवाएँ"
+
+#: id:14038
+msgid "Network settings changed"
+msgstr ""
+
+#: id:14039
+msgid "XBMC requires to restart to change your"
+msgstr ""
+
+#: id:14040
+msgid "network setup.  Would you like to restart now?"
+msgstr ""
+
+#: id:14041
+msgid "Internet connection bandwidth limitation"
+msgstr ""
+
+#: id:14043
+msgid "- Shutdown while playing"
+msgstr ""
+
+#: id:14044
+msgid "%i min"
+msgstr ""
+
+#: id:14045
+msgid "%i sec"
+msgstr ""
+
+#: id:14046
+msgid "%i ms"
+msgstr ""
+
+#: id:14047
+msgid "%i %%"
+msgstr ""
+
+#: id:14048
+msgid "%i kbps"
+msgstr ""
+
+#: id:14049
+msgid "%i kb"
+msgstr ""
+
+#: id:14050
+msgid "%i.0 dB"
+msgstr ""
+
+#: id:14051
+msgid "Time format"
+msgstr ""
+
+#: id:14052
+msgid "Date format"
+msgstr ""
+
+#: id:14053
+msgid "GUI filters"
+msgstr ""
+
+#: id:14055
+msgid "Use background scanning"
+msgstr ""
+
+#: id:14056
+msgid "Stop scan"
+msgstr ""
+
+#: id:14057
+msgid "Not possible while scanning for media info"
+msgstr ""
+
+#: id:14058
+msgid "Film grain effect"
+msgstr ""
+
+#: id:14059
+msgid "Search for thumbnails on remote shares"
+msgstr ""
+
+#: id:14060
+msgid "Unknown type cache - Internet"
+msgstr "अज्ञात प्रकार कैश - इंटरनेट"
+
+#: id:14061
+msgctxt "Auto context with id 14061"
+msgid "Auto"
+msgstr ""
+
+#: id:14062
+msgid "Enter username for"
+msgstr ""
+
+#: id:14063
+msgid "Date & time"
+msgstr ""
+
+#: id:14064
+msgid "Set date"
+msgstr ""
+
+#: id:14065
+msgid "Set time"
+msgstr ""
+
+#: id:14066
+msgid "Enter the time in 24 hour HH:MM format"
+msgstr ""
+
+#: id:14067
+msgid "Enter the date in DD/MM/YYYY format"
+msgstr ""
+
+#: id:14068
+msgid "Enter the IP address"
+msgstr ""
+
+#: id:14069
+msgid "Apply these settings now?"
+msgstr ""
+
+#: id:14070
+msgid "Apply changes now"
+msgstr ""
+
+#: id:14071
+msgid "Allow file renaming and deletion"
+msgstr "फ़ाइल का नाम बदलने और विलोपन की अनुमति दें"
+
+#: id:14074
+msgid "Set timezone"
+msgstr ""
+
+#: id:14075
+msgid "Use daylight saving time"
+msgstr ""
+
+#: id:14076
+msgid "Add to favourites"
+msgstr ""
+
+#: id:14077
+msgid "Remove from favourites"
+msgstr ""
+
+#: id:14078
+msgctxt "Auto context with id 14078"
+msgid "- Colours"
+msgstr ""
+
+#: id:14079
+msgid "Timezone country"
+msgstr ""
+
+#: id:14080
+msgid "Timezone"
+msgstr ""
+
+#: id:14081
+msgid "File lists"
+msgstr "फ़ाइल सूचियाँ"
+
+#: id:14082
+msgid "Show EXIF picture information"
+msgstr "Show EXIF picture information"
+
+#: id:14083
+msgid "Use a fullscreen window rather than true fullscreen"
+msgstr "सच पूर्ण स्क्रीन के बजाय एक पूर्ण स्क्रीन विंडो का उपयोग करें"
+
+#: id:14084
+msgid "Queue songs on selection"
+msgstr "चयन पर कतार गाने"
+
+#: id:14086
+msgid "Playback"
+msgstr "प्लेबैक"
+
+#: id:14087
+msgid "DVDs"
+msgstr ""
+
+#: id:14088
+msgid "Play DVDs automatically"
+msgstr "डीवीडी स्वचालित रूप से चलायें"
+
+#: id:14089
+msgid "Font to use for text subtitles"
+msgstr "पाठ उपशीर्षक के लिए उपयोग करने के लिए फ़ॉन्ट"
+
+#: id:14090
+msgid "International"
+msgstr "तरराष्ट्रीय"
+
+#: id:14091
+msgid "Character set"
+msgstr "वर्ण सेट"
+
+#: id:14092
+msgid "Debugging"
+msgstr "डिबगिंग"
+
+#: id:14093
+msgid "Security"
+msgstr ""
+
+#: id:14094
+msgid "Input devices"
+msgstr "इनपुट डिवाइस"
+
+#: id:14095
+msgid "Power saving"
+msgstr "बिजली बचाने के"
+
+#: id:14096
+msgid "Rip"
+msgstr ""
+
+#: id:14097
+msgid "Audio CD Insert Action"
+msgstr ""
+
+#: id:14098
+msgctxt "Auto context with id 14098"
+msgid "Play"
+msgstr ""
+
+#: id:14099
+msgid "Eject disc when CD ripping is complete"
+msgstr ""
+
+#: id:15015
+msgctxt "Auto context with id 15015"
+msgid "Remove"
+msgstr ""
+
+#: id:15016
+msgid "Games"
+msgstr ""
+
+#: id:15019
+msgid "Add"
+msgstr ""
+
+#: id:15052
+msgid "Password"
+msgstr ""
+
+#: id:15100
+msgctxt "Auto context with id 15100"
+msgid "Library"
+msgstr ""
+
+#: id:15101
+msgid "Database"
+msgstr ""
+
+#: id:15102
+msgid "* All albums"
+msgstr ""
+
+#: id:15103
+msgid "* All artists"
+msgstr ""
+
+#: id:15104
+msgid "* All songs"
+msgstr ""
+
+#: id:15105
+msgid "* All genres"
+msgstr ""
+
+#: id:15107
+msgid "Buffering..."
+msgstr ""
+
+#: id:15108
+msgid "Navigation sounds"
+msgstr "नेविगेशन लगता है"
+
+#: id:15109
+msgid "Skin default"
+msgstr ""
+
+#: id:15111
+msgid "- Theme"
+msgstr "- विषय"
+
+#: id:15112
+msgid "Default theme"
+msgstr ""
+
+#: id:15200
+msgid "Last.fm"
+msgstr ""
+
+#: id:15201
+msgid "Submit songs to Last.fm"
+msgstr "Last.fm के लिए गाने सबमिट"
+
+#: id:15202
+msgid "Last.fm username"
+msgstr "Last.fm उपयोगकर्ता नाम"
+
+#: id:15203
+msgid "Last.fm password"
+msgstr "Last.fm पासवर्ड"
+
+#: id:15204
+msgid "Unable to handshake: sleeping..."
+msgstr ""
+
+#: id:15205
+msgid "Please update XBMC"
+msgstr ""
+
+#: id:15206
+msgid "Bad authorization: Check username and password"
+msgstr ""
+
+#: id:15207
+msgctxt "Auto context with id 15207"
+msgid "Connected"
+msgstr ""
+
+#: id:15208
+msgid "Not connected"
+msgstr ""
+
+#: id:15209
+msgid "Submit interval %i"
+msgstr ""
+
+#: id:15210
+msgid "Cached %i songs"
+msgstr ""
+
+#: id:15211
+msgid "Submitting..."
+msgstr ""
+
+#: id:15212
+msgid "Submitting in %i secs"
+msgstr ""
+
+#: id:15213
+msgid "Play using..."
+msgstr ""
+
+#: id:15214
+msgid "Use smoothed A/V synchronization"
+msgstr ""
+
+#: id:15215
+msgid "Hide file names in thumbs view"
+msgstr ""
+
+#: id:15216
+msgid "Play in party mode"
+msgstr ""
+
+#: id:15217
+msgid "Submit songs to Libre.fm"
+msgstr "Libre.fm के लिए गाने सबमिट"
+
+#: id:15218
+msgid "Libre.fm username"
+msgstr "Libre.fm उपयोगकर्ता नाम"
+
+#: id:15219
+msgid "Libre.fm password"
+msgstr "Libre.fm पासवर्ड"
+
+#: id:15220
+msgid "Libre.fm"
+msgstr ""
+
+#: id:15221
+msgid "Song submission"
+msgstr "सांग प्रस्तुत"
+
+#: id:15250
+msgid "Submit Last.fm radio to Last.fm"
+msgstr "Last.fm के लिए Last.fm रेडियो सबमिट"
+
+#: id:15251
+msgid "Connecting to Last.fm..."
+msgstr ""
+
+#: id:15252
+msgid "Selecting station..."
+msgstr ""
+
+#: id:15253
+msgid "Search similar artists..."
+msgstr ""
+
+#: id:15254
+msgid "Search similar tags..."
+msgstr ""
+
+#: id:15255
+msgid "Your profile (%name%)"
+msgstr ""
+
+#: id:15256
+msgid "Overall top tags"
+msgstr ""
+
+#: id:15257
+msgid "Top artists for tag %name%"
+msgstr ""
+
+#: id:15258
+msgid "Top albums for tag %name%"
+msgstr ""
+
+#: id:15259
+msgid "Top tracks for tag %name%"
+msgstr ""
+
+#: id:15260
+msgid "Listen to tag %name% Last.fm radio"
+msgstr ""
+
+#: id:15261
+msgid "Similar artists as %name%"
+msgstr ""
+
+#: id:15262
+msgid "Top %name% albums"
+msgstr ""
+
+#: id:15263
+msgid "Top %name% tracks"
+msgstr ""
+
+#: id:15264
+msgid "Top %name% tags"
+msgstr ""
+
+#: id:15265
+msgid "Biggest fans of %name%"
+msgstr ""
+
+#: id:15266
+msgid "Listen to %name% fans Last.fm radio"
+msgstr ""
+
+#: id:15267
+msgid "Listen to %name% similar artists Last.fm radio"
+msgstr ""
+
+#: id:15268
+msgid "Top artists for user %name%"
+msgstr ""
+
+#: id:15269
+msgid "Top albums for user %name%"
+msgstr ""
+
+#: id:15270
+msgid "Top tracks for user %name%"
+msgstr ""
+
+#: id:15271
+msgid "Friends of user %name%"
+msgstr ""
+
+#: id:15272
+msgid "Neighbours of user %name%"
+msgstr ""
+
+#: id:15273
+msgid "Weekly artist chart for %name%"
+msgstr ""
+
+#: id:15274
+msgid "Weekly album chart for %name%"
+msgstr ""
+
+#: id:15275
+msgid "Weekly track chart for %name%"
+msgstr ""
+
+#: id:15276
+msgid "Listen to %name%'s neighbours Last.fm radio"
+msgstr ""
+
+#: id:15277
+msgid "Listen to %name%'s personal Last.fm radio"
+msgstr ""
+
+#: id:15278
+msgid "Listen to %name%'s mix Last.fm radio"
+msgstr ""
+
+#: id:15279
+msgid "Retrieving list from Last.fm..."
+msgstr ""
+
+#: id:15280
+msgid "Can't retrieve list from Last.fm..."
+msgstr ""
+
+#: id:15281
+msgid "Enter an artist name to find related ones"
+msgstr ""
+
+#: id:15282
+msgid "Enter a tag name to find similar ones"
+msgstr ""
+
+#: id:15283
+msgid "Tracks recently listened by %name%"
+msgstr ""
+
+#: id:15284
+msgid "Listen to %name%'s recommendations Last.fm radio"
+msgstr ""
+
+#: id:15285
+msgid "Top tags for user %name%"
+msgstr ""
+
+#: id:15287
+msgid "Do you want to add the current track to your loved tracks?"
+msgstr ""
+
+#: id:15288
+msgid "Do you want to ban the current track?"
+msgstr ""
+
+#: id:15289
+msgid "Added to your loved tracks: '%s'."
+msgstr ""
+
+#: id:15290
+msgid "Could not add '%s' to your loved tracks."
+msgstr ""
+
+#: id:15291
+msgid "Banned: '%s'."
+msgstr ""
+
+#: id:15292
+msgid "Could not ban '%s'."
+msgstr ""
+
+#: id:15293
+msgid "Tracks recently loved by %name%"
+msgstr ""
+
+#: id:15294
+msgid "Tracks recently banned by %name%"
+msgstr ""
+
+#: id:15295
+msgid "Remove from loved tracks"
+msgstr ""
+
+#: id:15296
+msgid "Un-ban"
+msgstr ""
+
+#: id:15297
+msgid "Do you want to remove this track from your loved tracks?"
+msgstr ""
+
+#: id:15298
+msgid "Do you want to un-ban this track?"
+msgstr ""
+
+#: id:15300
+msgid "Path not found or invalid"
+msgstr ""
+
+#: id:15301
+msgid "Could not connect to network server"
+msgstr ""
+
+#: id:15302
+msgid "No servers found"
+msgstr ""
+
+#: id:15303
+msgid "Workgroup not found"
+msgstr ""
+
+#: id:15310
+msgid "Opening multi-path source"
+msgstr ""
+
+#: id:15311
+msgid "Path:"
+msgstr ""
+
+#: id:16000
+msgctxt "Auto context with id 16000"
+msgid "General"
+msgstr "सामान्य"
+
+#: id:16002
+msgid "Internet lookup"
+msgstr ""
+
+#: id:16003
+msgid "Player"
+msgstr ""
+
+#: id:16004
+msgid "Play media from disc"
+msgstr ""
+
+#: id:16008
+msgid "Enter new title"
+msgstr ""
+
+#: id:16009
+msgid "Enter the movie name"
+msgstr ""
+
+#: id:16010
+msgid "Enter the profile name"
+msgstr ""
+
+#: id:16011
+msgid "Enter the album name"
+msgstr ""
+
+#: id:16012
+msgid "Enter the playlist name"
+msgstr ""
+
+#: id:16013
+msgid "Enter new filename"
+msgstr ""
+
+#: id:16014
+msgid "Enter folder name"
+msgstr ""
+
+#: id:16015
+msgid "Enter directory"
+msgstr ""
+
+#: id:16016
+msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
+msgstr ""
+
+#: id:16017
+msgid "Enter search string"
+msgstr ""
+
+#: id:16018
+msgctxt "Auto context with id 16018"
+msgid "None"
+msgstr ""
+
+#: id:16019
+msgid "Auto select"
+msgstr ""
+
+#: id:16020
+msgid "De-interlace"
+msgstr ""
+
+#: id:16021
+msgid "Bob"
+msgstr ""
+
+#: id:16022
+msgid "Bob (inverted)"
+msgstr ""
+
+#: id:16024
+msgid "Canceling..."
+msgstr ""
+
+#: id:16025
+msgid "Enter the artist name"
+msgstr ""
+
+#: id:16026
+msgid "Playback failed"
+msgstr ""
+
+#: id:16027
+msgid "One or more items failed to play."
+msgstr ""
+
+#: id:16028
+msgid "Enter value"
+msgstr ""
+
+#: id:16029
+msgid "Check the log file for details."
+msgstr ""
+
+#: id:16030
+msgid "Party mode aborted."
+msgstr ""
+
+#: id:16031
+msgid "No matching songs in the library."
+msgstr ""
+
+#: id:16032
+msgid "Could not initialize database."
+msgstr ""
+
+#: id:16033
+msgid "Could not open database."
+msgstr ""
+
+#: id:16034
+msgid "Could not get songs from database."
+msgstr ""
+
+#: id:16035
+msgid "Party mode playlist"
+msgstr ""
+
+#: id:16036
+msgid "De-interlace (Half)"
+msgstr ""
+
+#: id:16037
+msgid "Deinterlace video"
+msgstr ""
+
+#: id:16038
+msgid "Deinterlace method"
+msgstr ""
+
+#: id:16039
+msgctxt "Auto context with id 16039"
+msgid "Off"
+msgstr ""
+
+#: id:16040
+msgctxt "Auto context with id 16040"
+msgid "Auto"
+msgstr ""
+
+#: id:16041
+msgid "On"
+msgstr ""
+
+#: id:16100
+msgid "All Videos"
+msgstr ""
+
+#: id:16101
+msgid "Unwatched"
+msgstr ""
+
+#: id:16102
+msgid "Watched"
+msgstr ""
+
+#: id:16103
+msgid "Mark as watched"
+msgstr ""
+
+#: id:16104
+msgid "Mark as unwatched"
+msgstr ""
+
+#: id:16105
+msgid "Edit title"
+msgstr ""
+
+#: id:16200
+msgid "Operation was aborted"
+msgstr ""
+
+#: id:16201
+msgid "Copy failed"
+msgstr ""
+
+#: id:16202
+msgid "Failed to copy at least one file"
+msgstr ""
+
+#: id:16203
+msgid "Move failed"
+msgstr ""
+
+#: id:16204
+msgid "Failed to move at least one file"
+msgstr ""
+
+#: id:16205
+msgid "Delete failed"
+msgstr ""
+
+#: id:16206
+msgid "Failed to delete at least one file"
+msgstr ""
+
+#: id:16300
+msgid "Video scaling method"
+msgstr ""
+
+#: id:16301
+msgid "Nearest neighbour"
+msgstr ""
+
+#: id:16302
+msgid "Bilinear"
+msgstr ""
+
+#: id:16303
+msgctxt "Auto context with id 16303"
+msgid "Bicubic"
+msgstr ""
+
+#: id:16304
+msgid "Lanczos2"
+msgstr ""
+
+#: id:16305
+msgid "Lanczos3"
+msgstr ""
+
+#: id:16306
+msgid "Sinc8"
+msgstr ""
+
+#: id:16307
+msgid "Bicubic (software)"
+msgstr ""
+
+#: id:16308
+msgid "Lanczos (software)"
+msgstr ""
+
+#: id:16309
+msgid "Sinc (software)"
+msgstr ""
+
+#: id:16310
+msgid "Temporal"
+msgstr ""
+
+#: id:16311
+msgid "Temporal/Spatial"
+msgstr ""
+
+#: id:16312
+msgid "(VDPAU)Noise Reduction"
+msgstr ""
+
+#: id:16313
+msgid "(VDPAU)Sharpness"
+msgstr ""
+
+#: id:16314
+msgid "Inverse Telecine"
+msgstr ""
+
+#: id:16315
+msgid "Lanczos3 optimized"
+msgstr ""
+
+#: id:16316
+msgctxt "Auto context with id 16316"
+msgid "Auto"
+msgstr ""
+
+#: id:16317
+msgid "Temporal (Half)"
+msgstr ""
+
+#: id:16318
+msgid "Temporal/Spatial (Half)"
+msgstr ""
+
+#: id:16319
+msgid "DXVA"
+msgstr ""
+
+#: id:16320
+msgid "DXVA Bob"
+msgstr ""
+
+#: id:16321
+msgid "DXVA Best"
+msgstr ""
+
+#: id:16322
+msgid "Spline36"
+msgstr ""
+
+#: id:16323
+msgid "Spline36 optimized"
+msgstr ""
+
+#: id:16324
+msgid "Software Blend"
+msgstr ""
+
+#: id:16400
+msgid "Post-processing"
+msgstr "वीडियो पोस्ट - प्रसंस्करण"
+
+#: id:17500
+msgid "Display sleep timeout"
+msgstr ""
+
+#: id:19000
+msgid "Switch to channel"
+msgstr ""
+
+#: id:20000
+msgid "Saved music folder"
+msgstr "सहेजे गए संगीत फ़ोल्डर"
+
+#: id:20001
+msgid "Use external DVD player"
+msgstr ""
+
+#: id:20002
+msgid "External DVD player"
+msgstr ""
+
+#: id:20003
+msgid "Trainers folder"
+msgstr ""
+
+#: id:20004
+msgid "Screenshot folder"
+msgstr "स्क्रीनशॉट फ़ोल्डर"
+
+#: id:20006
+msgid "Playlists folder"
+msgstr ""
+
+#: id:20007
+msgid "Recordings"
+msgstr ""
+
+#: id:20008
+msgid "Screenshots"
+msgstr ""
+
+#: id:20009
+msgid "Use XBMC"
+msgstr ""
+
+#: id:20011
+msgid "Music playlists"
+msgstr ""
+
+#: id:20012
+msgid "Video playlists"
+msgstr ""
+
+#: id:20013
+msgid "Do you wish to launch the game?"
+msgstr ""
+
+#: id:20014
+msgid "Sort by: Playlist"
+msgstr ""
+
+#: id:20015
+msgid "Remote thumb"
+msgstr ""
+
+#: id:20016
+msgid "Current thumb"
+msgstr ""
+
+#: id:20017
+msgid "Local thumb"
+msgstr ""
+
+#: id:20018
+msgid "No thumb"
+msgstr ""
+
+#: id:20019
+msgid "Choose thumbnail"
+msgstr ""
+
+#: id:20023
+msgid "Conflict"
+msgstr ""
+
+#: id:20024
+msgid "Scan new"
+msgstr ""
+
+#: id:20025
+msgid "Scan all"
+msgstr ""
+
+#: id:20026
+msgid "Region"
+msgstr "क्षेत्र"
+
+#: id:20037
+msgid "Summary"
+msgstr ""
+
+#: id:20038
+msgid "Lock music window"
+msgstr ""
+
+#: id:20039
+msgid "Lock videos window"
+msgstr ""
+
+#: id:20040
+msgid "Lock pictures window"
+msgstr ""
+
+#: id:20041
+msgid "Lock programs & scripts windows"
+msgstr ""
+
+#: id:20042
+msgid "Lock file manager"
+msgstr ""
+
+#: id:20043
+msgid "Lock settings"
+msgstr ""
+
+#: id:20044
+msgid "Start fresh"
+msgstr ""
+
+#: id:20045
+msgid "Enter master mode"
+msgstr ""
+
+#: id:20046
+msgid "Leave master mode"
+msgstr ""
+
+#: id:20047
+msgid "Create profile '%s'?"
+msgstr ""
+
+#: id:20048
+msgid "Start with fresh settings"
+msgstr ""
+
+#: id:20049
+msgid "Best available"
+msgstr ""
+
+#: id:20050
+msgid "Auto-switch between 16x9 and 4x3"
+msgstr ""
+
+#: id:20051
+msgid "Treat stacked files as single file"
+msgstr ""
+
+#: id:20052
+msgid "Caution"
+msgstr ""
+
+#: id:20053
+msgid "Left master mode"
+msgstr ""
+
+#: id:20054
+msgid "Entered master mode"
+msgstr ""
+
+#: id:20055
+msgid "Allmusic.com thumb"
+msgstr ""
+
+#: id:20057
+msgid "Remove thumbnail"
+msgstr ""
+
+#: id:20058
+msgid "Add profile..."
+msgstr ""
+
+#: id:20059
+msgid "Query info for all albums"
+msgstr ""
+
+#: id:20060
+msgctxt "Auto context with id 20060"
+msgid "Media info"
+msgstr ""
+
+#: id:20061
+msgctxt "Auto context with id 20061"
+msgid "Separate"
+msgstr ""
+
+#: id:20062
+msgid "Shares with default"
+msgstr ""
+
+#: id:20063
+msgid "Shares with default (read only)"
+msgstr ""
+
+#: id:20064
+msgid "Copy default"
+msgstr ""
+
+#: id:20065
+msgid "Profile picture"
+msgstr ""
+
+#: id:20066
+msgid "Lock preferences"
+msgstr ""
+
+#: id:20067
+msgid "Edit profile"
+msgstr ""
+
+#: id:20068
+msgid "Profile lock"
+msgstr ""
+
+#: id:20069
+msgid "Could not create folder"
+msgstr ""
+
+#: id:20070
+msgid "Profile directory"
+msgstr ""
+
+#: id:20071
+msgid "Start with fresh media sources"
+msgstr ""
+
+#: id:20072
+msgid "Make sure the selected folder is writable"
+msgstr ""
+
+#: id:20073
+msgid "and that the new folder name is valid"
+msgstr ""
+
+#: id:20074
+msgid "MPAA rating"
+msgstr ""
+
+#: id:20075
+msgid "Enter master lock code"
+msgstr ""
+
+#: id:20076
+msgid "Ask for master lock code on startup"
+msgstr "स्टार्टअप पर मास्टर लॉक कोड के लिए पूछें"
+
+#: id:20077
+msgid "Skin settings"
+msgstr ""
+
+#: id:20078
+msgid "- no link set -"
+msgstr ""
+
+#: id:20079
+msgid "Enable animations"
+msgstr ""
+
+#: id:20080
+msgid "Disable RSS during music"
+msgstr ""
+
+#: id:20081
+msgid "Enable shortcut buttons"
+msgstr ""
+
+#: id:20082
+msgid "Show programs in main menu"
+msgstr ""
+
+#: id:20083
+msgid "Show music info"
+msgstr "संगीत जानकारी दिखाएँ"
+
+#: id:20084
+msgid "Show weather info"
+msgstr "मौसम की जानकारी दिखाएँ"
+
+#: id:20085
+msgid "Show system info"
+msgstr ""
+
+#: id:20086
+msgid "Show available disc space C: E: F:"
+msgstr ""
+
+#: id:20087
+msgid "Show available disc space E: F: G:"
+msgstr ""
+
+#: id:20088
+msgid "Weather info"
+msgstr ""
+
+#: id:20089
+msgid "Drive space free"
+msgstr ""
+
+#: id:20090
+msgid "Enter the name of an existing share"
+msgstr ""
+
+#: id:20091
+msgid "Lock code"
+msgstr ""
+
+#: id:20092
+msgid "Load profile"
+msgstr ""
+
+#: id:20093
+msgid "Profile name"
+msgstr ""
+
+#: id:20094
+msgctxt "Auto context with id 20094"
+msgid "Media sources"
+msgstr ""
+
+#: id:20095
+msgid "Enter profile lock code"
+msgstr ""
+
+#: id:20096
+msgctxt "Auto context with id 20096"
+msgid "Login screen"
+msgstr ""
+
+#: id:20097
+msgid "Fetching album info"
+msgstr ""
+
+#: id:20098
+msgid "Fetching info for album"
+msgstr ""
+
+#: id:20099
+msgid "Can't rip CD or track while playing from CD"
+msgstr ""
+
+#: id:20100
+msgid "Master lock code and settings"
+msgstr "मास्टर ताला कोड और सेटिंग्स"
+
+#: id:20101
+msgid "Entering master lock code always enables master mode"
+msgstr ""
+
+#: id:20102
+msgid "or copy from default?"
+msgstr ""
+
+#: id:20103
+msgid "Save changes to profile?"
+msgstr ""
+
+#: id:20104
+msgid "Old settings found."
+msgstr ""
+
+#: id:20105
+msgid "Do you want to use them?"
+msgstr ""
+
+#: id:20106
+msgid "Old media sources found."
+msgstr ""
+
+#: id:20107
+msgid "Separate (locked)"
+msgstr ""
+
+#: id:20108
+msgid "Root"
+msgstr ""
+
+#: id:20109
+msgid "- Zoom"
+msgstr "- ज़ूम"
+
+#: id:20110
+msgid "UPnP settings"
+msgstr ""
+
+#: id:20111
+msgid "Autostart UPnP client"
+msgstr ""
+
+#: id:20112
+msgid "Last login: %s"
+msgstr ""
+
+#: id:20113
+msgid "Never logged on"
+msgstr ""
+
+#: id:20114
+msgid "Profile %i / %i"
+msgstr ""
+
+#: id:20115
+msgid "User login / Select a profile"
+msgstr ""
+
+#: id:20116
+msgid "Use lock on login screen"
+msgstr ""
+
+#: id:20117
+msgid "Invalid lock code."
+msgstr ""
+
+#: id:20118
+msgid "This requires the master lock to be set."
+msgstr ""
+
+#: id:20119
+msgid "Would you like to set it now?"
+msgstr ""
+
+#: id:20120
+msgid "Loading program information"
+msgstr ""
+
+#: id:20121
+msgid "Party on!"
+msgstr ""
+
+#: id:20122
+msgid "True"
+msgstr ""
+
+#: id:20123
+msgid "Mixing drinks"
+msgstr ""
+
+#: id:20124
+msgid "Filling glasses"
+msgstr ""
+
+#: id:20125
+msgid "Logged on as"
+msgstr ""
+
+#: id:20126
+msgid "Log off"
+msgstr ""
+
+#: id:20128
+msgid "Go to root"
+msgstr ""
+
+#: id:20129
+msgid "Weave"
+msgstr ""
+
+#: id:20130
+msgid "Weave (inverted)"
+msgstr ""
+
+#: id:20131
+msgid "Blend"
+msgstr ""
+
+#: id:20132
+msgid "Restart video"
+msgstr ""
+
+#: id:20133
+msgid "Edit network location"
+msgstr ""
+
+#: id:20134
+msgid "Remove network location"
+msgstr ""
+
+#: id:20135
+msgid "Do you want to scan the folder?"
+msgstr ""
+
+#: id:20136
+msgid "Memory unit"
+msgstr ""
+
+#: id:20137
+msgid "Memory unit mounted"
+msgstr ""
+
+#: id:20138
+msgid "Unable to mount memory unit"
+msgstr ""
+
+#: id:20139
+msgid "In port %i, slot %i"
+msgstr ""
+
+#: id:20140
+msgid "Lock screensaver"
+msgstr ""
+
+#: id:20141
+msgid "Set"
+msgstr ""
+
+#: id:20142
+msgctxt "Auto context with id 20142"
+msgid "Username"
+msgstr ""
+
+#: id:20143
+msgid "Enter password for"
+msgstr ""
+
+#: id:20144
+msgid "Shutdown timer"
+msgstr ""
+
+#: id:20145
+msgid "Shutdown interval (in minutes)"
+msgstr ""
+
+#: id:20146
+msgid "Started, shutdown in %im"
+msgstr ""
+
+#: id:20147
+msgid "Shutdown in 30 minutes"
+msgstr ""
+
+#: id:20148
+msgid "Shutdown in 60 minutes"
+msgstr ""
+
+#: id:20149
+msgid "Shutdown in 120 minutes"
+msgstr ""
+
+#: id:20150
+msgid "Custom shutdown timer"
+msgstr ""
+
+#: id:20151
+msgid "Cancel shutdown timer"
+msgstr ""
+
+#: id:20152
+msgid "Lock preferences for %s"
+msgstr ""
+
+#: id:20153
+msgid "Browse..."
+msgstr ""
+
+#: id:20154
+msgid "Summary information"
+msgstr ""
+
+#: id:20155
+msgid "Storage information"
+msgstr ""
+
+#: id:20156
+msgid "Hard disk information"
+msgstr ""
+
+#: id:20157
+msgid "DVD-ROM information"
+msgstr ""
+
+#: id:20158
+msgid "Network information"
+msgstr ""
+
+#: id:20159
+msgid "Video information"
+msgstr ""
+
+#: id:20160
+msgid "Hardware information"
+msgstr ""
+
+#: id:20161
+msgid "Total"
+msgstr ""
+
+#: id:20162
+msgid "Used"
+msgstr ""
+
+#: id:20163
+msgid "of"
+msgstr ""
+
+#: id:20164
+msgid "Locking not supported"
+msgstr ""
+
+#: id:20165
+msgid "Not locked"
+msgstr ""
+
+#: id:20166
+msgid "Locked"
+msgstr ""
+
+#: id:20167
+msgid "Frozen"
+msgstr ""
+
+#: id:20168
+msgid "Requires reset"
+msgstr ""
+
+#: id:20169
+msgid "Week"
+msgstr ""
+
+#: id:20170
+msgid "Line"
+msgstr ""
+
+#: id:20171
+msgid "Windows network (SMB)"
+msgstr ""
+
+#: id:20172
+msgid "XBMSP server"
+msgstr ""
+
+#: id:20173
+msgctxt "Auto context with id 20173"
+msgid "FTP server"
+msgstr ""
+
+#: id:20174
+msgid "iTunes music share (DAAP)"
+msgstr ""
+
+#: id:20175
+msgid "UPnP server"
+msgstr ""
+
+#: id:20176
+msgid "Show video info"
+msgstr "वीडियो जानकारी दिखाएँ"
+
+#: id:20177
+msgid "Done"
+msgstr ""
+
+#: id:20178
+msgid "Shift"
+msgstr ""
+
+#: id:20179
+msgid "Caps Lock"
+msgstr ""
+
+#: id:20180
+msgid "Symbols"
+msgstr ""
+
+#: id:20181
+msgid "Backspace"
+msgstr ""
+
+#: id:20182
+msgid "Space"
+msgstr ""
+
+#: id:20183
+msgid "Reload skin"
+msgstr ""
+
+#: id:20184
+msgid "Rotate pictures using EXIF information"
+msgstr "EXIF जानकारी का उपयोग कर चित्रों घुमाएँ"
+
+#: id:20185
+msgid "Use poster view styles for TV shows"
+msgstr ""
+
+#: id:20186
+msgid "Please wait"
+msgstr ""
+
+#: id:20187
+msgid "UPnP"
+msgstr ""
+
+#: id:20189
+msgid "Enable auto scrolling for plot & review"
+msgstr "साजिश और समीक्षा के लिए ऑटो स्क्रॉल सक्षम"
+
+#: id:20190
+msgctxt "Auto context with id 20190"
+msgid "Custom"
+msgstr ""
+
+#: id:20191
+msgid "Enable debug logging"
+msgstr "लॉगिंग डिबग सक्षम"
+
+#: id:20192
+msgid "Download additional information during updates"
+msgstr "डाउनलोड अद्यतन के दौरान अतिरिक्त जानकारी"
+
+#: id:20193
+msgid "Default service for album information"
+msgstr "एल्बम जानकारी के लिए डिफ़ॉल्ट सेवा"
+
+#: id:20194
+msgid "Default service for artist information"
+msgstr "कलाकार जानकारी के लिए डिफ़ॉल्ट सेवा"
+
+#: id:20195
+msgid "Change scraper"
+msgstr ""
+
+#: id:20196
+msgid "Export music library"
+msgstr "निर्यात संगीत पुस्तकालय"
+
+#: id:20197
+msgid "Import music library"
+msgstr "संगीत पुस्तकालय आयात"
+
+#: id:20198
+msgid "No artist found!"
+msgstr ""
+
+#: id:20199
+msgid "Downloading artist info failed"
+msgstr ""
+
+#: id:20250
+msgid "Party on! (videos)"
+msgstr ""
+
+#: id:20251
+msgid "Mixing drinks (videos)"
+msgstr ""
+
+#: id:20252
+msgid "Filling glasses (videos)"
+msgstr ""
+
+#: id:20253
+msgid "WebDAV server (HTTP)"
+msgstr ""
+
+#: id:20254
+msgid "WebDAV server (HTTPS)"
+msgstr ""
+
+#: id:20255
+msgid "First logon, edit your profile"
+msgstr ""
+
+#: id:20256
+msgid "HTS Tvheadend client"
+msgstr ""
+
+#: id:20257
+msgid "VDR Streamdev client"
+msgstr ""
+
+#: id:20258
+msgid "MythTV client"
+msgstr ""
+
+#: id:20259
+msgid "Network Filesystem (NFS)"
+msgstr ""
+
+#: id:20260
+msgid "Secure Shell (SSH/SFTP)"
+msgstr ""
+
+#: id:20261
+msgid "Apple Filing Protocol (AFP)"
+msgstr ""
+
+#: id:20300
+msgid "Web server directory (HTTP)"
+msgstr ""
+
+#: id:20301
+msgid "Web server directory (HTTPS)"
+msgstr ""
+
+#: id:20302
+msgid "Unable to write to folder:"
+msgstr ""
+
+#: id:20303
+msgid "Do you want to skip and proceed?"
+msgstr ""
+
+#: id:20304
+msgid "RSS Feed"
+msgstr ""
+
+#: id:20307
+msgid "Secondary DNS"
+msgstr ""
+
+#: id:20308
+msgid "DHCP server:"
+msgstr ""
+
+#: id:20309
+msgid "Make new folder"
+msgstr ""
+
+#: id:20310
+msgid "Dim LCD on playback"
+msgstr ""
+
+#: id:20311
+msgid "Unknown or onboard (protected)"
+msgstr ""
+
+#: id:20312
+msgid "Dim LCD on paused"
+msgstr ""
+
+#: id:20314
+msgid "Videos - Library"
+msgstr ""
+
+#: id:20316
+msgid "Sort by: ID"
+msgstr ""
+
+#: id:20324
+msgid "Play part..."
+msgstr ""
+
+#: id:20325
+msgid "Calibration reset"
+msgstr ""
+
+#: id:20326
+msgid "This will reset the calibration values for %s"
+msgstr ""
+
+#: id:20327
+msgid "to it's default values."
+msgstr ""
+
+#: id:20328
+msgid "Browse for destination"
+msgstr ""
+
+#: id:20329
+msgid "Movies are in separate folders that match the movie title"
+msgstr ""
+
+#: id:20330
+msgid "Use folder names for lookups"
+msgstr ""
+
+#: id:20331
+msgctxt "Auto context with id 20331"
+msgid "File"
+msgstr ""
+
+#: id:20332
+msgid "Use file or folder names in lookups?"
+msgstr ""
+
+#: id:20333
+msgid "Set content"
+msgstr ""
+
+#: id:20334
+msgid "Folder"
+msgstr ""
+
+#: id:20335
+msgid "Look for content recursively?"
+msgstr ""
+
+#: id:20336
+msgid "Unlock sources"
+msgstr ""
+
+#: id:20337
+msgid "Actor"
+msgstr ""
+
+#: id:20338
+msgid "Movie"
+msgstr ""
+
+#: id:20339
+msgid "Director"
+msgstr ""
+
+#: id:20340
+msgid "Do you want to remove all items within"
+msgstr ""
+
+#: id:20341
+msgid "this path from the XBMC library?"
+msgstr ""
+
+#: id:20342
+msgctxt "Auto context with id 20342"
+msgid "Movies"
+msgstr ""
+
+#: id:20343
+msgid "TV shows"
+msgstr ""
+
+#: id:20344
+msgid "This directory contains"
+msgstr ""
+
+#: id:20345
+msgid "Run automated scan"
+msgstr ""
+
+#: id:20346
+msgid "Scan recursively"
+msgstr ""
+
+#: id:20347
+msgid "as"
+msgstr ""
+
+#: id:20348
+msgid "Directors"
+msgstr ""
+
+#: id:20349
+msgid "No video files found in this path!"
+msgstr ""
+
+#: id:20350
+msgid "votes"
+msgstr ""
+
+#: id:20351
+msgid "TV show information"
+msgstr ""
+
+#: id:20352
+msgid "Episode information"
+msgstr ""
+
+#: id:20353
+msgid "Loading TV show details"
+msgstr ""
+
+#: id:20354
+msgid "Fetching episode guide"
+msgstr ""
+
+#: id:20355
+msgid "Loading info for episodes in directory"
+msgstr ""
+
+#: id:20356
+msgid "Select TV show:"
+msgstr ""
+
+#: id:20357
+msgid "Enter the TV show name"
+msgstr ""
+
+#: id:20358
+msgid "Season %i"
+msgstr ""
+
+#: id:20359
+msgid "Episode"
+msgstr ""
+
+#: id:20360
+msgid "Episodes"
+msgstr ""
+
+#: id:20361
+msgid "Loading episode details"
+msgstr ""
+
+#: id:20362
+msgid "Remove episode from library"
+msgstr ""
+
+#: id:20363
+msgid "Remove TV show from library"
+msgstr ""
+
+#: id:20364
+msgid "TV show"
+msgstr ""
+
+#: id:20365
+msgid "Episode plot"
+msgstr ""
+
+#: id:20366
+msgid "* All seasons"
+msgstr ""
+
+#: id:20367
+msgid "Hide watched"
+msgstr ""
+
+#: id:20368
+msgid "Prod code"
+msgstr ""
+
+#: id:20369
+msgid "Show plot for unwatched items"
+msgstr "उन्वात्चेद मदों के लिए साजिश दिखाएँ"
+
+#: id:20370
+msgid "* Hidden to prevent spoilers *"
+msgstr ""
+
+#: id:20371
+msgid "Set season thumb"
+msgstr ""
+
+#: id:20372
+msgid "Season image"
+msgstr ""
+
+#: id:20373
+msgid "Season"
+msgstr ""
+
+#: id:20374
+msgid "Downloading movie information"
+msgstr ""
+
+#: id:20375
+msgid "Unassign content"
+msgstr ""
+
+#: id:20376
+msgid "Original title"
+msgstr ""
+
+#: id:20377
+msgid "Refresh TV show information"
+msgstr ""
+
+#: id:20378
+msgid "Refresh info for all episodes?"
+msgstr ""
+
+#: id:20379
+msgid "Selected folder contains a single TV show"
+msgstr ""
+
+#: id:20380
+msgid "Exclude selected folder from scans"
+msgstr ""
+
+#: id:20381
+msgid "Specials"
+msgstr ""
+
+#: id:20382
+msgid "Automatically grab season thumbs"
+msgstr ""
+
+#: id:20383
+msgid "Selected folder contains a single video"
+msgstr ""
+
+#: id:20384
+msgid "Link to TV show"
+msgstr ""
+
+#: id:20385
+msgid "Remove link to TV show"
+msgstr ""
+
+#: id:20386
+msgid "Recently added movies"
+msgstr ""
+
+#: id:20387
+msgid "Recently added episodes"
+msgstr ""
+
+#: id:20388
+msgid "Studios"
+msgstr ""
+
+#: id:20389
+msgid "Music videos"
+msgstr ""
+
+#: id:20390
+msgid "Recently added music videos"
+msgstr ""
+
+#: id:20391
+msgid "Music video"
+msgstr ""
+
+#: id:20392
+msgid "Remove music video from library"
+msgstr ""
+
+#: id:20393
+msgctxt "Auto context with id 20393"
+msgid "Music video information"
+msgstr "संगीत वीडियो की जानकारी"
+
+#: id:20394
+msgid "Loading music video information"
+msgstr ""
+
+#: id:20395
+msgid "Mixed"
+msgstr ""
+
+#: id:20396
+msgid "Go to albums by artist"
+msgstr ""
+
+#: id:20397
+msgid "Go to album"
+msgstr ""
+
+#: id:20398
+msgid "Play song"
+msgstr ""
+
+#: id:20399
+msgid "Go to music videos from album"
+msgstr ""
+
+#: id:20400
+msgid "Go to music videos by artist"
+msgstr ""
+
+#: id:20401
+msgid "Play music video"
+msgstr ""
+
+#: id:20402
+msgid "Download actor thumbnails when adding to library"
+msgstr "अभिनेता थंबनेल डाउनलोड जब पुस्तकालय को जोड़ने"
+
+#: id:20403
+msgid "Set actor thumb"
+msgstr ""
+
+#: id:20405
+msgid "Remove episode bookmark"
+msgstr ""
+
+#: id:20406
+msgid "Set episode bookmark"
+msgstr ""
+
+#: id:20407
+msgid "Scraper settings"
+msgstr ""
+
+#: id:20408
+msgid "Downloading music video information"
+msgstr ""
+
+#: id:20409
+msgid "Downloading TV show information"
+msgstr ""
+
+#: id:20410
+msgid "Trailer"
+msgstr ""
+
+#: id:20411
+msgid "Flatten"
+msgstr ""
+
+#: id:20412
+msgid "Flatten TV shows"
+msgstr "टीवी शो समतल"
+
+#: id:20413
+msgid "Get fanart"
+msgstr ""
+
+#: id:20414
+msgid "Show Fanart in video and music libraries"
+msgstr ""
+
+#: id:20415
+msgid "Scanning for new content"
+msgstr ""
+
+#: id:20416
+msgid "First aired"
+msgstr ""
+
+#: id:20417
+msgid "Writer"
+msgstr ""
+
+#: id:20419
+msgid "Replace file names with library titles"
+msgstr ""
+
+#: id:20420
+msgctxt "Auto context with id 20420"
+msgid "Never"
+msgstr ""
+
+#: id:20421
+msgid "If only one season"
+msgstr ""
+
+#: id:20422
+msgid "Always"
+msgstr ""
+
+#: id:20423
+msgid "Has trailer"
+msgstr ""
+
+#: id:20424
+msgid "False"
+msgstr ""
+
+#: id:20425
+msgid "Fanart slideshow"
+msgstr ""
+
+#: id:20426
+msgid "Export to a single file or separate"
+msgstr ""
+
+#: id:20427
+msgid "files per entry?"
+msgstr ""
+
+#: id:20428
+msgid "Single file"
+msgstr ""
+
+#: id:20429
+msgctxt "Auto context with id 20429"
+msgid "Separate"
+msgstr ""
+
+#: id:20430
+msgid "Export thumbnails and fanart?"
+msgstr ""
+
+#: id:20431
+msgid "Overwrite old files?"
+msgstr ""
+
+#: id:20432
+msgid "Exclude path from library updates"
+msgstr ""
+
+#: id:20433
+msgid "Extract thumbnails and video information"
+msgstr "निकालें थंबनेल और वीडियो जानकारी"
+
+#: id:20434
+msgid "Sets"
+msgstr ""
+
+#: id:20435
+msgid "Set movieset thumb"
+msgstr ""
+
+#: id:20436
+msgid "Export actor thumbs?"
+msgstr ""
+
+#: id:20437
+msgid "Choose fanart"
+msgstr ""
+
+#: id:20438
+msgid "Local fanart"
+msgstr ""
+
+#: id:20439
+msgid "No fanart"
+msgstr ""
+
+#: id:20440
+msgid "Current fanart"
+msgstr ""
+
+#: id:20441
+msgid "Remote fanart"
+msgstr ""
+
+#: id:20442
+msgid "Change content"
+msgstr ""
+
+#: id:20443
+msgid "Do you want to refresh info for all"
+msgstr ""
+
+#: id:20444
+msgid "items within this path?"
+msgstr ""
+
+#: id:20445
+msgid "Fanart"
+msgstr ""
+
+#: id:20446
+msgid "Locally stored information found."
+msgstr ""
+
+#: id:20447
+msgid "Ignore and refresh from internet?"
+msgstr ""
+
+#: id:20448
+msgid "Could not download information"
+msgstr ""
+
+#: id:20449
+msgid "Unable to connect to remote server"
+msgstr ""
+
+#: id:20450
+msgid "Would you like to continue scanning?"
+msgstr ""
+
+#: id:20451
+msgid "Countries"
+msgstr ""
+
+#: id:20452
+msgid "episode"
+msgstr ""
+
+#: id:20453
+msgid "episodes"
+msgstr ""
+
+#: id:20454
+msgid "Listener"
+msgstr ""
+
+#: id:20455
+msgid "Listeners"
+msgstr ""
+
+#: id:20456
+msgid "Set movieset fanart"
+msgstr ""
+
+#: id:20457
+msgid "Movie set"
+msgstr ""
+
+#: id:20458
+msgid "Group movies in sets"
+msgstr ""
+
+#: id:21330
+msgid "Show hidden files and directories"
+msgstr "दिखाएँ छुपी फ़ाइलें और निर्देशिका"
+
+#: id:21331
+msgid "TuxBox client"
+msgstr ""
+
+#: id:21332
+msgid "WARNING: Target TuxBox device is in recording-mode!"
+msgstr ""
+
+#: id:21333
+msgid "The stream will be stopped!"
+msgstr ""
+
+#: id:21334
+msgid "Zap to channel: %s failed!"
+msgstr ""
+
+#: id:21335
+msgid "Are you sure to start the stream?"
+msgstr ""
+
+#: id:21336
+msgid "Connecting to: %s"
+msgstr ""
+
+#: id:21337
+msgid "TuxBox device"
+msgstr ""
+
+#: id:21359
+msgid "Add media share..."
+msgstr ""
+
+#: id:21360
+msgid "Share video and music libraries through UPnP"
+msgstr "शेयर और UPnP के माध्यम से वीडियो संगीत पुस्तकालयों"
+
+#: id:21364
+msgid "Edit media share"
+msgstr ""
+
+#: id:21365
+msgid "Remove media share"
+msgstr ""
+
+#: id:21366
+msgid "Subtitle folder"
+msgstr "उपशीर्षक फ़ोल्डर"
+
+#: id:21367
+msgid "Movie & alternate subtitle directory"
+msgstr ""
+
+#: id:21368
+msgid "Override ASS/SSA subtitles fonts"
+msgstr ""
+
+#: id:21369
+msgid "Enable mouse and Touch Screen support"
+msgstr "माउस सक्षम"
+
+#: id:21370
+msgid "Play navigation sounds during media playback"
+msgstr ""
+
+#: id:21371
+msgid "Thumbnail"
+msgstr ""
+
+#: id:21372
+msgid "Forced DVD player region"
+msgstr "जबरिया डीवीडी प्लेयर क्षेत्र"
+
+#: id:21373
+msgid "Video output"
+msgstr "वीडियो आउटपुट"
+
+#: id:21374
+msgid "Video aspect"
+msgstr ""
+
+#: id:21375
+msgctxt "Auto context with id 21375"
+msgid "Normal"
+msgstr ""
+
+#: id:21376
+msgid "Letterbox"
+msgstr ""
+
+#: id:21377
+msgid "Widescreen"
+msgstr ""
+
+#: id:21378
+msgid "Enable 480p"
+msgstr ""
+
+#: id:21379
+msgid "Enable 720p"
+msgstr ""
+
+#: id:21380
+msgid "Enable 1080i"
+msgstr ""
+
+#: id:21381
+msgid "Enter name of new playlist"
+msgstr ""
+
+#: id:21382
+msgid "Show \"Add source\" buttons in file lists"
+msgstr "दिखाएँ फ़ाइल सूची में बटन \"स्रोत\" जोड़ें"
+
+#: id:21383
+msgid "Enable scrollbars"
+msgstr ""
+
+#: id:21384
+msgid "Make watched filtering a toggle in video library"
+msgstr ""
+
+#: id:21385
+msgctxt "Auto context with id 21385"
+msgid "Open"
+msgstr ""
+
+#: id:21386
+msgid "Acoustic management level"
+msgstr ""
+
+#: id:21387
+msgid "Fast"
+msgstr ""
+
+#: id:21388
+msgid "Quiet"
+msgstr ""
+
+#: id:21389
+msgid "Enable custom background"
+msgstr "कस्टम पृष्ठभूमि सक्षम"
+
+#: id:21390
+msgid "Power management level"
+msgstr ""
+
+#: id:21391
+msgid "High power"
+msgstr ""
+
+#: id:21392
+msgid "Low power"
+msgstr ""
+
+#: id:21393
+msgid "High standby"
+msgstr ""
+
+#: id:21394
+msgid "Low standby"
+msgstr ""
+
+#: id:21395
+msgid "Unable to cache files bigger than 4GB"
+msgstr ""
+
+#: id:21396
+msgid "Chapter"
+msgstr ""
+
+#: id:21397
+msgid "High quality pixel shader v2"
+msgstr ""
+
+#: id:21398
+msgid "Enable playlist at startup"
+msgstr ""
+
+#: id:21399
+msgid "Use tween animations"
+msgstr ""
+
+#: id:21400
+msgid "contains"
+msgstr ""
+
+#: id:21401
+msgid "does not contain"
+msgstr ""
+
+#: id:21402
+msgid "is"
+msgstr ""
+
+#: id:21403
+msgid "is not"
+msgstr ""
+
+#: id:21404
+msgid "starts with"
+msgstr ""
+
+#: id:21405
+msgid "ends with"
+msgstr ""
+
+#: id:21406
+msgid "greater than"
+msgstr ""
+
+#: id:21407
+msgid "less than"
+msgstr ""
+
+#: id:21408
+msgid "after"
+msgstr ""
+
+#: id:21409
+msgid "before"
+msgstr ""
+
+#: id:21410
+msgid "in the last"
+msgstr ""
+
+#: id:21411
+msgid "not in the last"
+msgstr ""
+
+#: id:21412
+msgid "Scrapers"
+msgstr ""
+
+#: id:21413
+msgid "Default movie scraper"
+msgstr ""
+
+#: id:21414
+msgid "Default tvshow scraper"
+msgstr ""
+
+#: id:21415
+msgid "Default music video scraper"
+msgstr ""
+
+#: id:21416
+msgid "Enable fallback based on scraper language"
+msgstr ""
+
+#: id:21417
+msgid "- Settings"
+msgstr "- सेटिंग्स"
+
+#: id:21418
+msgid "Multilingual"
+msgstr ""
+
+#: id:21419
+msgid "No scrapers present"
+msgstr ""
+
+#: id:21420
+msgid "Value to match"
+msgstr ""
+
+#: id:21421
+msgid "Smart playlist rule"
+msgstr ""
+
+#: id:21422
+msgid "Match items where"
+msgstr ""
+
+#: id:21423
+msgid "New rule..."
+msgstr ""
+
+#: id:21424
+msgid "Items must match"
+msgstr ""
+
+#: id:21425
+msgid "all of the rules"
+msgstr ""
+
+#: id:21426
+msgid "one or more of the rules"
+msgstr ""
+
+#: id:21427
+msgid "Limit to"
+msgstr ""
+
+#: id:21428
+msgid "No limit"
+msgstr ""
+
+#: id:21429
+msgid "Order by"
+msgstr ""
+
+#: id:21430
+msgid "ascending"
+msgstr ""
+
+#: id:21431
+msgid "descending"
+msgstr ""
+
+#: id:21432
+msgid "Edit smart playlist"
+msgstr ""
+
+#: id:21433
+msgid "Name of the playlist"
+msgstr ""
+
+#: id:21434
+msgid "Find items where"
+msgstr ""
+
+#: id:21435
+msgid "Edit"
+msgstr ""
+
+#: id:21436
+msgid "%i items"
+msgstr ""
+
+#: id:21437
+msgid "New smart playlist..."
+msgstr ""
+
+#: id:21438
+msgid "%c Drive"
+msgstr ""
+
+#: id:21439
+msgid "Edit party mode rules"
+msgstr ""
+
+#: id:21440
+msgid "Home folder"
+msgstr ""
+
+#: id:21441
+msgid "Watched count"
+msgstr ""
+
+#: id:21442
+msgid "Episode title"
+msgstr ""
+
+#: id:21443
+msgid "Video resolution"
+msgstr ""
+
+#: id:21444
+msgid "Audio channels"
+msgstr ""
+
+#: id:21445
+msgid "Video codec"
+msgstr ""
+
+#: id:21446
+msgid "Audio codec"
+msgstr ""
+
+#: id:21447
+msgid "Audio language"
+msgstr ""
+
+#: id:21448
+msgid "Subtitle language"
+msgstr ""
+
+#: id:21449
+msgid "Remote control sends keyboard presses"
+msgstr "रिमोट कंट्रोल कुंजीपटल प्रेस भेजता"
+
+#: id:21450
+msgid "- Edit"
+msgstr "- संपादित करें"
+
+#: id:21451
+msgid "Internet connection required."
+msgstr ""
+
+#: id:21452
+msgid "Get More..."
+msgstr "और जाओ ..."
+
+#: id:21453
+msgid "Root filesystem"
+msgstr ""
+
+#: id:21454
+msgid "Cache full"
+msgstr ""
+
+#: id:21455
+msgid "Cache filled before reaching required amount for continous playback"
+msgstr ""
+
+#: id:21460
+msgid "Subtitle location"
+msgstr ""
+
+#: id:21461
+msgid "Fixed"
+msgstr ""
+
+#: id:21462
+msgid "Bottom of video"
+msgstr ""
+
+#: id:21463
+msgid "Below video"
+msgstr ""
+
+#: id:21464
+msgid "Top of video"
+msgstr ""
+
+#: id:21465
+msgid "Above video"
+msgstr ""
+
+#: id:21800
+msgid "File name"
+msgstr ""
+
+#: id:21801
+msgid "File path"
+msgstr ""
+
+#: id:21802
+msgid "File size"
+msgstr ""
+
+#: id:21803
+msgid "File date/time"
+msgstr ""
+
+#: id:21804
+msgid "Slide index"
+msgstr ""
+
+#: id:21805
+msgctxt "Auto context with id 21805"
+msgid "Resolution"
+msgstr ""
+
+#: id:21806
+msgctxt "Auto context with id 21806"
+msgid "Comment"
+msgstr ""
+
+#: id:21807
+msgid "Colour/B&W"
+msgstr ""
+
+#: id:21808
+msgid "JPEG process"
+msgstr ""
+
+#: id:21820
+msgid "Date/Time"
+msgstr ""
+
+#: id:21821
+msgid "Description"
+msgstr ""
+
+#: id:21822
+msgid "Camera make"
+msgstr ""
+
+#: id:21823
+msgid "Camera model"
+msgstr ""
+
+#: id:21824
+msgid "EXIF comment"
+msgstr ""
+
+#: id:21825
+msgid "Firmware"
+msgstr ""
+
+#: id:21826
+msgid "Aperture"
+msgstr ""
+
+#: id:21827
+msgid "Focal length"
+msgstr ""
+
+#: id:21828
+msgid "Focus distance"
+msgstr ""
+
+#: id:21829
+msgid "Exposure"
+msgstr ""
+
+#: id:21830
+msgid "Exposure time"
+msgstr ""
+
+#: id:21831
+msgid "Exposure bias"
+msgstr ""
+
+#: id:21832
+msgid "Exposure mode"
+msgstr ""
+
+#: id:21833
+msgid "Flash used"
+msgstr ""
+
+#: id:21834
+msgid "White-balance"
+msgstr ""
+
+#: id:21835
+msgid "Light source"
+msgstr ""
+
+#: id:21836
+msgid "Metering mode"
+msgstr ""
+
+#: id:21837
+msgid "ISO"
+msgstr ""
+
+#: id:21838
+msgid "Digital zoom"
+msgstr ""
+
+#: id:21839
+msgid "CCD width"
+msgstr ""
+
+#: id:21840
+msgid "GPS latitude"
+msgstr ""
+
+#: id:21841
+msgid "GPS longitude"
+msgstr ""
+
+#: id:21842
+msgid "GPS altitude"
+msgstr ""
+
+#: id:21843
+msgid "Orientation"
+msgstr ""
+
+#: id:21860
+msgid "Supplemental categories"
+msgstr ""
+
+#: id:21861
+msgid "Keywords"
+msgstr ""
+
+#: id:21862
+msgid "Caption"
+msgstr ""
+
+#: id:21863
+msgid "Author"
+msgstr ""
+
+#: id:21864
+msgid "Headline"
+msgstr ""
+
+#: id:21865
+msgid "Special instructions"
+msgstr ""
+
+#: id:21866
+msgid "Category"
+msgstr ""
+
+#: id:21867
+msgid "Byline"
+msgstr ""
+
+#: id:21868
+msgid "Byline title"
+msgstr ""
+
+#: id:21869
+msgid "Credit"
+msgstr ""
+
+#: id:21870
+msgid "Source"
+msgstr ""
+
+#: id:21871
+msgid "Copyright notice"
+msgstr ""
+
+#: id:21872
+msgid "Object name"
+msgstr ""
+
+#: id:21873
+msgid "City"
+msgstr ""
+
+#: id:21874
+msgid "State"
+msgstr ""
+
+#: id:21875
+msgctxt "Auto context with id 21875"
+msgid "Country"
+msgstr ""
+
+#: id:21876
+msgid "Original Tx Reference"
+msgstr ""
+
+#: id:21877
+msgid "Date created"
+msgstr ""
+
+#: id:21878
+msgid "Copyright flag"
+msgstr ""
+
+#: id:21879
+msgid "Country code"
+msgstr ""
+
+#: id:21880
+msgid "Reference service"
+msgstr ""
+
+#: id:21881
+msgid "Allow control of XBMC via UPnP"
+msgstr "XBMC के UPnP के माध्यम से नियंत्रण की अनुमति दें"
+
+#: id:21882
+msgid "Attempt to skip introduction before DVD menu"
+msgstr ""
+
+#: id:21883
+msgid "Saved music"
+msgstr "सहेजे गए संगीत"
+
+#: id:21884
+msgid "Query info for all artists"
+msgstr ""
+
+#: id:21885
+msgid "Downloading album information"
+msgstr ""
+
+#: id:21886
+msgid "Downloading artist information"
+msgstr ""
+
+#: id:21887
+msgid "Biography"
+msgstr ""
+
+#: id:21888
+msgid "Discography"
+msgstr ""
+
+#: id:21889
+msgid "Searching artist"
+msgstr ""
+
+#: id:21890
+msgid "Select artist"
+msgstr ""
+
+#: id:21891
+msgctxt "Auto context with id 21891"
+msgid "Artist information"
+msgstr ""
+
+#: id:21892
+msgid "Instruments"
+msgstr ""
+
+#: id:21893
+msgid "Born"
+msgstr ""
+
+#: id:21894
+msgid "Formed"
+msgstr ""
+
+#: id:21895
+msgid "Themes"
+msgstr ""
+
+#: id:21896
+msgid "Disbanded"
+msgstr ""
+
+#: id:21897
+msgid "Died"
+msgstr ""
+
+#: id:21898
+msgid "Years active"
+msgstr ""
+
+#: id:21899
+msgid "Label"
+msgstr ""
+
+#: id:21900
+msgid "Born/Formed"
+msgstr ""
+
+#: id:22000
+msgid "Update library on startup"
+msgstr "स्टार्टअप पर अद्यतन लायब्रेरी"
+
+#: id:22001
+msgid "Hide progress of library updates"
+msgstr "पुस्तकालय अद्यतन की प्रगति छुपाएँ"
+
+#: id:22002
+msgid "- DNS suffix"
+msgstr ""
+
+#: id:22003
+msgid "%2.3fs"
+msgstr ""
+
+#: id:22004
+msgid "Delayed by: %2.3fs"
+msgstr ""
+
+#: id:22005
+msgid "Ahead by: %2.3fs"
+msgstr ""
+
+#: id:22006
+msgid "Subtitle offset"
+msgstr ""
+
+#: id:22007
+msgid "OpenGL vendor:"
+msgstr ""
+
+#: id:22008
+msgid "OpenGL renderer:"
+msgstr ""
+
+#: id:22009
+msgid "OpenGL version:"
+msgstr ""
+
+#: id:22010
+msgid "GPU temperature:"
+msgstr ""
+
+#: id:22011
+msgid "CPU temperature:"
+msgstr ""
+
+#: id:22012
+msgid "Total memory"
+msgstr ""
+
+#: id:22013
+msgid "Profile data"
+msgstr ""
+
+#: id:22014
+msgid "Use dim if paused during video playback"
+msgstr "मंद का प्रयोग करें अगर वीडियो प्लेबैक के दौरान रोके गए"
+
+#: id:22015
+msgid "All recordings"
+msgstr ""
+
+#: id:22016
+msgid "By title"
+msgstr ""
+
+#: id:22017
+msgid "By group"
+msgstr ""
+
+#: id:22018
+msgid "Live channels"
+msgstr ""
+
+#: id:22019
+msgid "Recordings by title"
+msgstr ""
+
+#: id:22020
+msgid "Guide"
+msgstr ""
+
+#: id:22021
+msgid "Allowed error in aspect ratio to minimize black bars"
+msgstr "पहलू अनुपात में रख सकते त्रुटि काली सलाखों के कम से कम"
+
+#: id:22022
+msgid "Show video files in listings"
+msgstr "लिस्टिंग में वीडियो फ़ाइलों को दिखाएँ"
+
+#: id:22023
+msgid "DirectX vendor:"
+msgstr ""
+
+#: id:22024
+msgid "Direct3D version:"
+msgstr ""
+
+#: id:22030
+msgctxt "Auto context with id 22030"
+msgid "Font"
+msgstr "फ़ॉन्ट"
+
+#: id:22031
+msgctxt "Auto context with id 22031"
+msgid "- Size"
+msgstr "- आकार"
+
+#: id:22032
+msgctxt "Auto context with id 22032"
+msgid "- Colours"
+msgstr "- रंगीन"
+
+#: id:22033
+msgid "- Charset"
+msgstr "- वर्ण सेट"
+
+#: id:22034
+msgid "Export karaoke titles as HTML"
+msgstr ""
+
+#: id:22035
+msgid "Export karaoke titles as CSV"
+msgstr ""
+
+#: id:22036
+msgid "Import karaoke titles..."
+msgstr "आयात कराओके खिताब ..."
+
+#: id:22037
+msgid "Show song selector automatically"
+msgstr "गीत चयनकर्ता स्वतः दिखाएँ"
+
+#: id:22038
+msgid "Export karaoke titles..."
+msgstr "कराओके खिताब निर्यात ..."
+
+#: id:22039
+msgid "Enter song number"
+msgstr ""
+
+#: id:22040
+msgid "white/green"
+msgstr ""
+
+#: id:22041
+msgid "white/red"
+msgstr ""
+
+#: id:22042
+msgid "white/blue"
+msgstr ""
+
+#: id:22043
+msgid "black/white"
+msgstr ""
+
+#: id:22079
+msgid "Default select action"
+msgstr "डिफ़ॉल्ट का चयन करें कार्रवाई"
+
+#: id:22080
+msgid "Choose"
+msgstr ""
+
+#: id:22081
+msgid "Show Information"
+msgstr ""
+
+#: id:22082
+msgid "More..."
+msgstr ""
+
+#: id:22083
+msgid "Play all"
+msgstr ""
+
+#: id:23049
+msgid "Teletext not available"
+msgstr ""
+
+#: id:23050
+msgid "Activate Teletext"
+msgstr "टेली - पाठ सक्रिय करें"
+
+#: id:23051
+msgid "Part %i"
+msgstr ""
+
+#: id:23052
+msgid "Buffering %i bytes"
+msgstr ""
+
+#: id:23053
+msgid "Stopping"
+msgstr ""
+
+#: id:23054
+msgid "Running"
+msgstr ""
+
+#: id:23100
+msgid "External Player Active"
+msgstr ""
+
+#: id:23101
+msgid "Click OK to terminate the player"
+msgstr ""
+
+#: id:23104
+msgid "Click OK when playback has ended"
+msgstr ""
+
+#: id:24000
+msgid "Add-on"
+msgstr "जोड़ें पर"
+
+#: id:24001
+msgid "Add-ons"
+msgstr "ऐड - ऑन"
+
+#: id:24002
+msgid "Add-on options"
+msgstr ""
+
+#: id:24003
+msgid "Add-on Information"
+msgstr ""
+
+#: id:24005
+msgctxt "Auto context with id 24005"
+msgid "Media sources"
+msgstr ""
+
+#: id:24007
+msgctxt "Auto context with id 24007"
+msgid "Movie information"
+msgstr "मूवी जानकारी"
+
+#: id:24008
+msgctxt "Auto context with id 24008"
+msgid "Screensaver"
+msgstr ""
+
+#: id:24009
+msgid "Script"
+msgstr ""
+
+#: id:24010
+msgctxt "Auto context with id 24010"
+msgid "Visualization"
+msgstr ""
+
+#: id:24011
+msgid "Add-on repository"
+msgstr ""
+
+#: id:24012
+msgctxt "Auto context with id 24012"
+msgid "Subtitles"
+msgstr "उपशीर्षक"
+
+#: id:24013
+msgid "Lyrics"
+msgstr "गीत"
+
+#: id:24014
+msgid "TV information"
+msgstr "टीवी जानकारी"
+
+#: id:24015
+msgctxt "Auto context with id 24015"
+msgid "Music video information"
+msgstr "मूवी जानकारी"
+
+#: id:24016
+msgctxt "Auto context with id 24016"
+msgid "Album information"
+msgstr "एल्बम जानकारी"
+
+#: id:24017
+msgctxt "Auto context with id 24017"
+msgid "Artist information"
+msgstr "कलाकार जानकारी"
+
+#: id:24018
+msgctxt "Auto context with id 24018"
+msgid "Services"
+msgstr ""
+
+#: id:24020
+msgid "Configure"
+msgstr ""
+
+#: id:24021
+msgctxt "Auto context with id 24021"
+msgid "Disable"
+msgstr ""
+
+#: id:24022
+msgid "Enable"
+msgstr ""
+
+#: id:24023
+msgid "Add-on disabled"
+msgstr ""
+
+#: id:24027
+msgctxt "Auto context with id 24027"
+msgid "Weather"
+msgstr "मौसम"
+
+#: id:24028
+msgid "Weather.com (standard)"
+msgstr ""
+
+#: id:24030
+msgid "This Add-on can not be configured"
+msgstr ""
+
+#: id:24031
+msgid "Error loading settings"
+msgstr ""
+
+#: id:24032
+msgid "All Add-ons"
+msgstr ""
+
+#: id:24033
+msgid "Get Add-ons"
+msgstr "ऐड - ऑन"
+
+#: id:24034
+msgid "Check for updates"
+msgstr ""
+
+#: id:24035
+msgid "Force refresh"
+msgstr ""
+
+#: id:24036
+msgid "Change log"
+msgstr ""
+
+#: id:24037
+msgid "Uninstall"
+msgstr ""
+
+#: id:24038
+msgid "Install"
+msgstr ""
+
+#: id:24039
+msgid "Disabled Add-ons"
+msgstr ""
+
+#: id:24040
+msgid "(Clear the current setting)"
+msgstr ""
+
+#: id:24041
+msgid "Install from zip file"
+msgstr "ज़िप फ़ाइल से स्थापित"
+
+#: id:24042
+msgid "Downloading %i%%"
+msgstr ""
+
+#: id:24043
+msgid "Available Updates"
+msgstr ""
+
+#: id:24044
+msgid "Dependencies not met"
+msgstr ""
+
+#: id:24045
+msgid "Add-on does not have the correct structure"
+msgstr ""
+
+#: id:24046
+msgid "%s is used by the following installed add-on(s)"
+msgstr ""
+
+#: id:24047
+msgid "This add-on cannot be uninstalled"
+msgstr ""
+
+#: id:24048
+msgid "Rollback"
+msgstr ""
+
+#: id:24050
+msgid "Available Add-ons"
+msgstr ""
+
+#: id:24051
+msgid "Version:"
+msgstr ""
+
+#: id:24052
+msgid "Disclaimer"
+msgstr ""
+
+#: id:24053
+msgid "License:"
+msgstr ""
+
+#: id:24054
+msgid "Changelog"
+msgstr ""
+
+#: id:24059
+msgid "Would you like to enable this Add-on?"
+msgstr ""
+
+#: id:24060
+msgid "Would you like to disable this Add-on?"
+msgstr ""
+
+#: id:24061
+msgid "Add-on update available!"
+msgstr ""
+
+#: id:24062
+msgid "Enabled Add-ons"
+msgstr "ऐड - ऑन सक्षम"
+
+#: id:24063
+msgid "Auto update"
+msgstr "ऑटो अद्यतन"
+
+#: id:24064
+msgid "Add-on enabled"
+msgstr ""
+
+#: id:24065
+msgid "Add-on updated"
+msgstr ""
+
+#: id:24066
+msgid "Cancel Add-on download?"
+msgstr ""
+
+#: id:24067
+msgid "Currently downloading Add-ons"
+msgstr ""
+
+#: id:24068
+msgid "Update available"
+msgstr ""
+
+#: id:24069
+msgid "Update"
+msgstr ""
+
+#: id:24070
+msgid "Add-on could not be loaded."
+msgstr ""
+
+#: id:24071
+msgid "An unknown error has occurred."
+msgstr ""
+
+#: id:24072
+msgid "Settings required"
+msgstr ""
+
+#: id:24073
+msgid "Could not connect"
+msgstr ""
+
+#: id:24074
+msgid "Needs to restart"
+msgstr ""
+
+#: id:24075
+msgctxt "Auto context with id 24075"
+msgid "Disable"
+msgstr ""
+
+#: id:24076
+msgid "Add-on Required"
+msgstr ""
+
+#: id:24080
+msgid "Try to reconnect?"
+msgstr ""
+
+#: id:24089
+msgid "Add-on restarts"
+msgstr ""
+
+#: id:24090
+msgid "Lock Add-on manager"
+msgstr ""
+
+#: id:24094
+msgid "(current)"
+msgstr ""
+
+#: id:24095
+msgid "(blacklisted)"
+msgstr ""
+
+#: id:24096
+msgid "Add-on has been marked as broken in repository."
+msgstr ""
+
+#: id:24097
+msgid "Would you like to disable it on your system?"
+msgstr ""
+
+#: id:24098
+msgid "Broken"
+msgstr ""
+
+#: id:24099
+msgid "Would you like to switch to this skin?"
+msgstr ""
+
+#: id:24100
+msgid "To use this feature you must download an Add-on:"
+msgstr ""
+
+#: id:24101
+msgid "Would you like to download this Add-on?"
+msgstr ""
+
+#: id:25000
+msgid "Notifications"
+msgstr "अधिसूचनाएं"
+
+#: id:25001
+msgid "Hide foreign"
+msgstr ""
+
+#: id:25002
+msgid "Select from all titles ..."
+msgstr ""
+
+#: id:25003
+msgid "Show bluray menus"
+msgstr ""
+
+#: id:25004
+msgid "Play main title: %d"
+msgstr ""
+
+#: id:25005
+msgid "Title: %d"
+msgstr ""
+
+#: id:25006
+msgid "Select playback item"
+msgstr ""
+
+#: id:29800
+msgid "Library Mode"
+msgstr ""
+
+#: id:29801
+msgid "QWERTY keyboard"
+msgstr ""
+
+#: id:29802
+msgid "Passthrough Audio in use"
+msgstr ""
+
+#: id:33001
+msgid "Trailer quality"
+msgstr ""
+
+#: id:33002
+msgid "Stream"
+msgstr ""
+
+#: id:33003
+msgid "Download"
+msgstr ""
+
+#: id:33004
+msgid "Download & play"
+msgstr ""
+
+#: id:33005
+msgid "Download & save"
+msgstr ""
+
+#: id:33006
+msgid "Today"
+msgstr ""
+
+#: id:33007
+msgid "Tomorrow"
+msgstr ""
+
+#: id:33008
+msgid "Saving"
+msgstr ""
+
+#: id:33009
+msgid "Copying"
+msgstr ""
+
+#: id:33010
+msgid "Set download directory"
+msgstr ""
+
+#: id:33011
+msgid "Search duration"
+msgstr ""
+
+#: id:33012
+msgid "Short"
+msgstr ""
+
+#: id:33013
+msgid "Long"
+msgstr ""
+
+#: id:33014
+msgid "Use DVD player instead of regular player"
+msgstr ""
+
+#: id:33015
+msgid "Ask for download before playing video"
+msgstr ""
+
+#: id:33016
+msgid "Clips"
+msgstr ""
+
+#: id:33017
+msgid "Restart plugin to enable"
+msgstr ""
+
+#: id:33018
+msgid "Tonight"
+msgstr ""
+
+#: id:33019
+msgid "Tomorrow Night"
+msgstr ""
+
+#: id:33020
+msgid "Condition"
+msgstr ""
+
+#: id:33021
+msgid "Precipitation"
+msgstr ""
+
+#: id:33022
+msgid "Precip"
+msgstr ""
+
+#: id:33023
+msgid "Humid"
+msgstr ""
+
+#: id:33024
+msgid "Feels"
+msgstr ""
+
+#: id:33025
+msgid "Observed"
+msgstr ""
+
+#: id:33026
+msgid "Departure from normal"
+msgstr ""
+
+#: id:33027
+msgid "Sunrise"
+msgstr ""
+
+#: id:33028
+msgid "Sunset"
+msgstr ""
+
+#: id:33029
+msgid "Details"
+msgstr ""
+
+#: id:33030
+msgid "Outlook"
+msgstr ""
+
+#: id:33031
+msgid "Coverflow"
+msgstr ""
+
+#: id:33032
+msgid "Translate text"
+msgstr ""
+
+#: id:33033
+msgid "Map list %s category"
+msgstr ""
+
+#: id:33034
+msgid "36 Hour"
+msgstr ""
+
+#: id:33035
+msgid "Maps"
+msgstr ""
+
+#: id:33036
+msgid "Hourly"
+msgstr ""
+
+#: id:33037
+msgid "Weekend"
+msgstr ""
+
+#: id:33038
+msgid "%s day"
+msgstr ""
+
+#: id:33049
+msgid "Alert"
+msgstr ""
+
+#: id:33050
+msgid "Alerts"
+msgstr ""
+
+#: id:33051
+msgid "Choose Your"
+msgstr ""
+
+#: id:33052
+msgid "Check"
+msgstr ""
+
+#: id:33053
+msgctxt "Auto context with id 33053"
+msgid "Configure the"
+msgstr ""
+
+#: id:33054
+msgid "Seasons"
+msgstr ""
+
+#: id:33055
+msgid "Use your"
+msgstr ""
+
+#: id:33056
+msgid "Watch your"
+msgstr ""
+
+#: id:33057
+msgid "Listen to"
+msgstr ""
+
+#: id:33058
+msgid "View your"
+msgstr ""
+
+#: id:33059
+msgctxt "Auto context with id 33059"
+msgid "Configure the"
+msgstr ""
+
+#: id:33060
+msgid "Power"
+msgstr ""
+
+#: id:33061
+msgid "Menu"
+msgstr ""
+
+#: id:33062
+msgid "Play the"
+msgstr ""
+
+#: id:33063
+msgid "Options"
+msgstr ""
+
+#: id:33065
+msgid "Editor"
+msgstr ""
+
+#: id:33066
+msgid "About your"
+msgstr ""
+
+#: id:33067
+msgid "Star rating"
+msgstr ""
+
+#: id:33068
+msgid "Background"
+msgstr "पृष्ठभूमि"
+
+#: id:33069
+msgid "Backgrounds"
+msgstr ""
+
+#: id:33070
+msgid "Custom background"
+msgstr ""
+
+#: id:33071
+msgid "Custom backgrounds"
+msgstr ""
+
+#: id:33072
+msgid "View Readme"
+msgstr ""
+
+#: id:33073
+msgid "View Changelog"
+msgstr ""
+
+#: id:33074
+msgid "This version of %s requires an"
+msgstr ""
+
+#: id:33075
+msgid "XBMC revision of %s or greater to run."
+msgstr ""
+
+#: id:33076
+msgid "Please update XBMC."
+msgstr ""
+
+#: id:33077
+msgid "No data found!"
+msgstr ""
+
+#: id:33078
+msgid "Next page"
+msgstr ""
+
+#: id:33079
+msgid "Love"
+msgstr ""
+
+#: id:33080
+msgid "Hate"
+msgstr ""
+
+#: id:33081
+msgid "This file is stacked, select the part you want to play from."
+msgstr ""
+
+#: id:33082
+msgid "Path to script"
+msgstr ""
+
+#: id:33083
+msgid "Enable custom script button"
+msgstr ""
+
+#: id:33100
+msgid "Failed to start"
+msgstr ""
+
+#: id:33101
+msgid "Webserver"
+msgstr ""
+
+#: id:33102
+msgid "Event Server"
+msgstr ""
+
+#: id:33103
+msgid "Remote communication server"
+msgstr ""
+
+#: id:33200
+msgid "Detected New Connection"
+msgstr ""
+
+#: id:34000
+msgid "Lame"
+msgstr ""
+
+#: id:34001
+msgid "Vorbis"
+msgstr ""
+
+#: id:34002
+msgid "Wav"
+msgstr ""
+
+#: id:34003
+msgid "DXVA2"
+msgstr ""
+
+#: id:34004
+msgid "VAAPI"
+msgstr ""
+
+#: id:34005
+msgid "Flac"
+msgstr ""
+
+#: id:34100
+msgid "Speaker Configuration"
+msgstr "वक्ता विन्यास"
+
+#: id:34101
+msgid "2.0"
+msgstr ""
+
+#: id:34102
+msgid "2.1"
+msgstr ""
+
+#: id:34103
+msgid "3.0"
+msgstr ""
+
+#: id:34104
+msgid "3.1"
+msgstr ""
+
+#: id:34105
+msgid "4.0"
+msgstr ""
+
+#: id:34106
+msgid "4.1"
+msgstr ""
+
+#: id:34107
+msgid "5.0"
+msgstr ""
+
+#: id:34108
+msgid "5.1"
+msgstr ""
+
+#: id:34109
+msgid "7.0"
+msgstr ""
+
+#: id:34110
+msgid "7.1"
+msgstr ""
+
+#: id:34201
+msgid "Can't find a next item to play"
+msgstr ""
+
+#: id:34202
+msgid "Can't find a previous item to play"
+msgstr ""
+
+#: id:34300
+msgid "Failed to start zeroconf"
+msgstr ""
+
+#: id:34301
+msgid "Is Apple's Bonjour Service installed? See log for more info."
+msgstr ""
+
+#: id:34400
+msgid "Video Rendering"
+msgstr ""
+
+#: id:34401
+msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
+msgstr ""
+
+#: id:34402
+msgid "Failed to initialize audio device"
+msgstr ""
+
+#: id:34403
+msgid "Check your audiosettings"
+msgstr ""
+
+#: id:34404
+msgid "Use gestures for navigation:"
+msgstr ""
+
+#: id:34405
+msgid "1 finger swipe left,right,up,down for cursors"
+msgstr ""
+
+#: id:34406
+msgid "2 finger swipe left for backspace"
+msgstr ""
+
+#: id:34407
+msgid "1 finger single tap for enter"
+msgstr ""
+
+#: id:34408
+msgid "2 finger single tap or 1 finger long press for contextmenu"
+msgstr ""
+
+#: id:35000
+msgid "Peripherals"
+msgstr ""
+
+#: id:35001
+msgid "Generic HID device"
+msgstr ""
+
+#: id:35002
+msgid "Generic network adapter"
+msgstr ""
+
+#: id:35003
+msgid "Generic disk"
+msgstr ""
+
+#: id:35004
+msgid "There are no settings available\nfor this peripheral."
+msgstr ""
+
+#: id:35005
+msgid "New device configured"
+msgstr ""
+
+#: id:35006
+msgid "Device removed"
+msgstr ""
+
+#: id:35007
+msgid "Keymap to use for this device"
+msgstr ""
+
+#: id:35008
+msgid "Keymap enabled"
+msgstr ""
+
+#: id:35009
+msgid "Do not use the custom keymap for this device"
+msgstr ""
+
+#: id:35500
+msgid "Location"
+msgstr ""
+
+#: id:35501
+msgid "Class"
+msgstr ""
+
+#: id:35502
+msgctxt "Auto context with id 35502"
+msgid "Name"
+msgstr ""
+
+#: id:35503
+msgid "Vendor"
+msgstr ""
+
+#: id:35504
+msgid "Product ID"
+msgstr ""
+
+#: id:36000
+msgid "Pulse-Eight CEC adapter"
+msgstr ""
+
+#: id:36001
+msgid "Pulse-Eight Nyxboard"
+msgstr ""
+
+#: id:36002
+msgid "Switch to keyboard side command"
+msgstr ""
+
+#: id:36003
+msgid "Switch to remote side command"
+msgstr ""
+
+#: id:36004
+msgid "Press \"user\" button command"
+msgstr ""
+
+#: id:36005
+msgid "Enable switch side commands"
+msgstr ""
+
+#: id:36006
+msgid "Could not open the adapter"
+msgstr ""
+
+#: id:36007
+msgid "Devices to power on when starting XBMC"
+msgstr ""
+
+#: id:36008
+msgid "Devices to power off when stopping XBMC"
+msgstr ""
+
+#: id:36009
+msgid "Put devices in standby mode when activating screensaver"
+msgstr ""
+
+#: id:36011
+msgid "Could not detect the CEC port. Set it up manually."
+msgstr ""
+
+#: id:36012
+msgid "Could not initialise the CEC adapter. Check your settings."
+msgstr ""
+
+#: id:36013
+msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
+msgstr ""
+
+#: id:36014
+msgid "Put this PC in standby mode when the TV is switched off"
+msgstr ""
+
+#: id:36015
+msgid "HDMI port number"
+msgstr ""
+
+#: id:36016
+msgctxt "Auto context with id 36016"
+msgid "Connected"
+msgstr ""
+
+#: id:36017
+msgid "Adapter found, but libCEC is not available"
+msgstr ""
+
+#: id:36018
+msgid "Use the TV's language setting"
+msgstr ""
+
+#: id:36019
+msgid "Connected to HDMI device"
+msgstr ""
+
+#: id:36020
+msgid "Make XBMC the active source when starting"
+msgstr ""
+
+#: id:36021
+msgid "Physical address (overrules HDMI port)"
+msgstr ""
+
+#: id:36022
+msgid "COM port (leave empty unless needed)"
+msgstr ""
+
+#: id:36023
+msgid "Configuration updated"
+msgstr ""
+
+#: id:36024
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr ""
+
+#: id:36025
+msgid "Send 'inactive source' command when stopping XBMC"
+msgstr ""
+

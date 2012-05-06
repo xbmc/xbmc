@@ -72,7 +72,7 @@ void BXACodec::DeInit()
   m_file.Close();
 }
 
-__int64 BXACodec::Seek(__int64 iSeekTime)
+int64_t BXACodec::Seek(int64_t iSeekTime)
 {
   return iSeekTime;
 }

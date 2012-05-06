@@ -540,7 +540,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &delay, double &buffe
       si->m_seekNextAtFrame  = si->m_framesSent + si->m_sampleRate / 2;
     }
 
-    __int64 time = (__int64)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
+    int64_t time = (int64_t)(si->m_startOffset + ((float)si->m_framesSent / (float)si->m_sampleRate * 1000.0f));
 
     /* if we are seeking back before the start of the track start normal playback */
     if (time < si->m_startOffset || si->m_framesSent < 0)
@@ -667,7 +667,7 @@ void PAPlayer::ToFFRW(int iSpeed)
   m_signalSpeedChange = true;
 }
 
-__int64 PAPlayer::GetTime()
+int64_t PAPlayer::GetTime()
 {
   CSharedLock lock(m_streamsLock);
   if (!m_currentStream)
@@ -677,16 +677,16 @@ __int64 PAPlayer::GetTime()
   if (m_currentStream->m_stream)
     time -= m_currentStream->m_stream->GetDelay();
 
-  return (__int64)(time * 1000.0);
+  return (int64_t)(time * 1000.0);
 }
 
-__int64 PAPlayer::GetTotalTime64()
+int64_t PAPlayer::GetTotalTime64()
 {
   CSharedLock lock(m_streamsLock);
   if (!m_currentStream)
     return 0;
 
-  __int64 total = m_currentStream->m_decoder.TotalTime();
+  int64_t total = m_currentStream->m_decoder.TotalTime();
   if (m_currentStream->m_endOffset)
     total = m_currentStream->m_endOffset;
   total -= m_currentStream->m_startOffset;
@@ -774,7 +774,7 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
 }
 
-void PAPlayer::SeekTime(__int64 iTime /*=0*/)
+void PAPlayer::SeekTime(int64_t iTime /*=0*/)
 {
   if (!CanSeek()) return;
 
@@ -797,7 +797,7 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
   if (fPercent < 0.0f  ) fPercent = 0.0f;
   if (fPercent > 100.0f) fPercent = 100.0f;
-  SeekTime((__int64)(fPercent * 0.01f * (float)GetTotalTime64()));
+  SeekTime((int64_t)(fPercent * 0.01f * (float)GetTotalTime64()));
 }
 
 float PAPlayer::GetPercentage()

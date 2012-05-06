@@ -257,7 +257,7 @@ protected:
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int height)
+CPictureBuffer::CPictureBuffer(ERenderFormat format, int width, int height)
 {
   m_width = width;
   m_height = height;
@@ -273,7 +273,7 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
   switch(m_format)
   {
     default:
-    case DVDVideoPicture::FMT_NV12:
+    case RENDER_FMT_NV12:
       // setup y plane
       m_y_buffer_size = m_width * m_height;
       m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
@@ -285,7 +285,7 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
       m_uv_buffer_size = m_y_buffer_size / 2;
       m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
     break;
-    case DVDVideoPicture::FMT_YUY2:
+    case RENDER_FMT_YUYV422:
       // setup y plane
       m_y_buffer_size = (2 * m_width) * m_height;
       m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
@@ -297,7 +297,7 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
       m_u_buffer_ptr = NULL;
       m_v_buffer_ptr = NULL;
     break;
-    case DVDVideoPicture::FMT_YUV420P:
+    case RENDER_FMT_YUV420P:
       // setup y plane
       m_y_buffer_size = m_width * m_height;
       m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
@@ -773,7 +773,7 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
   switch(pBuffer->m_format)
   {
     default:
-    case DVDVideoPicture::FMT_YUV420P:
+    case RENDER_FMT_YUV420P:
     {
       uint8_t *d_y = pBuffer->m_y_buffer_ptr;
       uint8_t *d_u = pBuffer->m_u_buffer_ptr;
@@ -784,7 +784,7 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
     }
     break;
 
-    case DVDVideoPicture::FMT_NV12:
+    case RENDER_FMT_NV12:
     {
       uint8_t  *d_y  = pBuffer->m_y_buffer_ptr;
       uint16_t *d_uv = (uint16_t*)pBuffer->m_uv_buffer_ptr;
@@ -793,7 +793,7 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
     }
     break;
 
-    case DVDVideoPicture::FMT_YUY2:
+    case RENDER_FMT_YUYV422:
     {
       uint32_t *d_yuyv = (uint32_t*)pBuffer->m_y_buffer_ptr;
       d_yuyv[0] = d_yuyv[1];
@@ -843,14 +843,14 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             if (m_output_YV12)
             {
               // output YV12, nouveau driver has slow NV12, YUY2 capability.
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+              pBuffer = new CPictureBuffer(RENDER_FMT_YUV420P, m_width, m_height);
             }
             else
             {
               if (m_color_space == BCM::MODE422_YUY2)
-                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+                pBuffer = new CPictureBuffer(RENDER_FMT_YUYV422, m_width, m_height);
               else
-                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+                pBuffer = new CPictureBuffer(RENDER_FMT_NV12, m_width, m_height);
             }
 
             CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
@@ -889,13 +889,13 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           {
             switch(pBuffer->m_format)
             {
-              case DVDVideoPicture::FMT_NV12:
+              case RENDER_FMT_NV12:
                 if (pBuffer->m_interlace)
                   CopyOutAsNV12DeInterlace(pBuffer, &procOut, w, h, stride);
                 else
                   CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
               break;
-              case DVDVideoPicture::FMT_YUV420P:
+              case RENDER_FMT_YUV420P:
                 if (pBuffer->m_interlace)
                   CopyOutAsYV12DeInterlace(pBuffer, &procOut, w, h, stride);
                 else
@@ -909,7 +909,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           {
             switch(pBuffer->m_format)
             {
-              case DVDVideoPicture::FMT_YUY2:
+              case RENDER_FMT_YUYV422:
                 if (pBuffer->m_interlace)
                 {
                   // do simple line doubling de-interlacing.
@@ -932,7 +932,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                   fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
                 }
               break;
-              case DVDVideoPicture::FMT_YUV420P:
+              case RENDER_FMT_YUV420P:
                 // TODO: deinterlace for yuy2 -> yv12, icky
                 {
                   // Perform the color space conversion.
@@ -1577,9 +1577,8 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       }
     }
 
-    bool wait_state;
     if (m_pOutputThread->GetReadyCount() < 1)
-      wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
+      m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
   return true;
@@ -1626,7 +1625,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   switch(pBuffer->m_format)
   {
     default:
-    case DVDVideoPicture::FMT_NV12:
+    case RENDER_FMT_NV12:
       // Y plane
       pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
@@ -1637,7 +1636,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
       pDvdVideoPicture->data[2] = NULL;
       pDvdVideoPicture->iLineSize[2] = 0;
     break;
-    case DVDVideoPicture::FMT_YUY2:
+    case RENDER_FMT_YUYV422:
       // YUV packed plane
       pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width * 2;
@@ -1648,7 +1647,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
       pDvdVideoPicture->data[2] = NULL;
       pDvdVideoPicture->iLineSize[2] = 0;
     break;
-    case DVDVideoPicture::FMT_YUV420P:
+    case RENDER_FMT_YUV420P:
       // Y plane
       pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
       pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;

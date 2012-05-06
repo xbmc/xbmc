@@ -20,6 +20,9 @@
  */
 
 #include "system.h"
+#if defined(HAS_GL)
+  #include "system_gl.h"
+#endif
 #include "RenderManager.h"
 #include "threads/CriticalSection.h"
 #include "video/VideoReferenceClock.h"
@@ -31,10 +34,6 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
-
-#ifdef _LINUX
-#include "PlatformInclude.h"
-#endif
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
@@ -110,6 +109,22 @@ CXBMCRenderManager::~CXBMCRenderManager()
 {
   delete m_pRenderer;
   m_pRenderer = NULL;
+}
+
+void CXBMCRenderManager::GetVideoRect(CRect &source, CRect &dest)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->GetVideoRect(source, dest);
+}
+
+float CXBMCRenderManager::GetAspectRatio()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetAspectRatio();
+  else
+    return 1.0f;
 }
 
 /* These is based on CurrentHostCounter() */
@@ -212,7 +227,7 @@ CStdString CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
 {
   /* make sure any queued frame was fully presented */
   double timeout = m_presenttime + 0.1;
@@ -232,7 +247,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     return false;
   }
 
-  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format);
+  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format, extended_format);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
@@ -512,6 +527,13 @@ void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
     m_captures.erase(it);
 }
 
+void CXBMCRenderManager::SetViewMode(int iViewMode)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->SetViewMode(iViewMode);
+}
+
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
@@ -592,6 +614,22 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       return;
     }
   }
+}
+
+void CXBMCRenderManager::Reset()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    m_pRenderer->Reset();
+}
+
+RESOLUTION CXBMCRenderManager::GetResolution()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetResolution();
+  else
+    return RES_INVALID;
 }
 
 float CXBMCRenderManager::GetMaximumFPS()
@@ -743,6 +781,23 @@ void CXBMCRenderManager::UpdateResolution()
 }
 
 
+unsigned int CXBMCRenderManager::GetProcessorSize()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->GetProcessorSize();
+  return 0;
+}
+
+// Supported pixel formats, can be called before configure
+std::vector<ERenderFormat> CXBMCRenderManager::SupportedFormats()
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->SupportedFormats();
+  return std::vector<ERenderFormat>();
+}
+
 int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 {
   CSharedLock lock(m_sharedSection);
@@ -758,42 +813,86 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if(index < 0)
     return index;
 
-  if(pic.format == DVDVideoPicture::FMT_YUV420P)
+  if(pic.format == RENDER_FMT_YUV420P
+  || pic.format == RENDER_FMT_YUV420P10
+  || pic.format == RENDER_FMT_YUV420P16)
   {
     CDVDCodecUtils::CopyPicture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_NV12)
+  else if(pic.format == RENDER_FMT_NV12)
   {
     CDVDCodecUtils::CopyNV12Picture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_YUY2
-       || pic.format == DVDVideoPicture::FMT_UYVY)
+  else if(pic.format == RENDER_FMT_YUYV422
+       || pic.format == RENDER_FMT_UYVY422)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-  else if(pic.format == DVDVideoPicture::FMT_DXVA)
+  else if(pic.format == RENDER_FMT_DXVA)
   {
     CDVDCodecUtils::CopyDXVA2Picture(&image, &pic);
   }
 #ifdef HAVE_LIBVDPAU
-  else if(pic.format == DVDVideoPicture::FMT_VDPAU)
+  else if(pic.format == RENDER_FMT_VDPAU)
     m_pRenderer->AddProcessor(pic.vdpau);
 #endif
 #ifdef HAVE_LIBOPENMAX
-  else if(pic.format == DVDVideoPicture::FMT_OMXEGL)
+  else if(pic.format == RENDER_FMT_OMXEGL)
     m_pRenderer->AddProcessor(pic.openMax, &pic);
 #endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  else if(pic.format == DVDVideoPicture::FMT_CVBREF)
-    m_pRenderer->AddProcessor(pic.vtb, &pic);
+#ifdef TARGET_DARWIN
+  else if(pic.format == RENDER_FMT_CVBREF)
+    m_pRenderer->AddProcessor(pic.cvBufferRef);
 #endif
 #ifdef HAVE_LIBVA
-  else if(pic.format == DVDVideoPicture::FMT_VAAPI)
+  else if(pic.format == RENDER_FMT_VAAPI)
     m_pRenderer->AddProcessor(*pic.vaapi);
 #endif
   m_pRenderer->ReleaseImage(index, false);
 
   return index;
+}
+
+bool CXBMCRenderManager::Supports(ERENDERFEATURE feature)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(feature);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(EDEINTERLACEMODE method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(EINTERLACEMETHOD method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+bool CXBMCRenderManager::Supports(ESCALINGMETHOD method)
+{
+  CSharedLock lock(m_sharedSection);
+  if (m_pRenderer)
+    return m_pRenderer->Supports(method);
+  else
+    return false;
+}
+
+EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethod(EINTERLACEMETHOD mInt)
+{
+  CSharedLock lock(m_sharedSection);
+  return AutoInterlaceMethodInternal(mInt);
 }
 
 EINTERLACEMETHOD CXBMCRenderManager::AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt)

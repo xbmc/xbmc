@@ -311,7 +311,7 @@ bool CAdvancedSettings::Load()
 
 void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 {
-  TiXmlDocument advancedXML;
+  CXBMCTinyXML advancedXML;
   if (!CFile::Exists(file))
   {
     CLog::Log(LOGNOTICE, "No settings file to load (%s)", file.c_str());

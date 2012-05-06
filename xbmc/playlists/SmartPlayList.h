@@ -21,7 +21,7 @@
  */
 
 #include "utils/StdString.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include <vector>
 #include <set>
 
@@ -119,7 +119,7 @@ public:
   void TranslateStrings(const char *field, const char *oper, const char *parameter);
   static DATABASE_FIELD TranslateField(const char *field);
   static CStdString     TranslateField(DATABASE_FIELD field);
-  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType);
+  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType, bool whereClause = true);
   static CStdString     TranslateOperator(SEARCH_OPERATOR oper);
 
   static CStdString     GetLocalizedField(DATABASE_FIELD field);
@@ -196,6 +196,6 @@ private:
   CSmartPlaylistRule::DATABASE_FIELD m_orderField;
   bool m_orderAscending;
 
-  TiXmlDocument m_xmlDoc;
+  CXBMCTinyXML m_xmlDoc;
 };
 

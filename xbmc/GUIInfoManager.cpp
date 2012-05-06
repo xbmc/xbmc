@@ -490,7 +490,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
-                                  { "discnumber",       LISTITEM_DISC_NUMBER }};
+                                  { "discnumber",       LISTITEM_DISC_NUMBER },
+                                  { "dateadded",        LISTITEM_DATE_ADDED }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -2557,7 +2558,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
-          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
+          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_artist.empty())
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
             strContent = "livetv";
@@ -3437,7 +3438,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CAST_AND_ROLE:
       return m_currentFile->GetVideoInfoTag()->GetCast(true);
     case VIDEOPLAYER_ARTIST:
-      return m_currentFile->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
@@ -3462,11 +3463,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
-__int64 CGUIInfoManager::GetPlayTime() const
+int64_t CGUIInfoManager::GetPlayTime() const
 {
   if (g_application.IsPlaying())
   {
-    __int64 lPTS = (__int64)(g_application.GetTime() * 1000);
+    int64_t lPTS = (int64_t)(g_application.GetTime() * 1000);
     if (lPTS < 0) lPTS = 0;
     return lPTS;
   }
@@ -3908,7 +3909,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     }
   case LISTITEM_ARTIST:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
       return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
@@ -4223,7 +4224,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         str.Format("%d", val);
         return str;
       }
+      break;
     }
+  case LISTITEM_DATE_ADDED:
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_dateAdded.IsValid())
+      return item->GetVideoInfoTag()->m_dateAdded.GetAsLocalizedDate();
+    break;
   }
   return "";
 }

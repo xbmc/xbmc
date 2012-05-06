@@ -31,6 +31,8 @@
 
 #include "GUITexture.h"
 
+#include "system_gl.h"
+
 class CGUITextureGL : public CGUITextureBase
 {
 public:

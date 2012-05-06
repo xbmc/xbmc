@@ -417,6 +417,18 @@ AC_ARG_ENABLE([libcec],
   [use_libcec=$enableval],
   [use_libcec=auto])
 
+AC_ARG_ENABLE([libmp3lame],
+  [AS_HELP_STRING([--enable-libmp3lame],
+  [enable lame mp3 encoder support (default is auto)])],
+  [use_libmp3lame=$enableval],
+  [use_libmp3lame=auto])
+
+AC_ARG_ENABLE([vorbisenc],
+  [AS_HELP_STRING([--enable-libvorbisenc],
+  [enable vorbis encoder support (default is auto)])],
+  [use_libvorbisenc=$enableval],
+  [use_libvorbisenc=auto])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],
@@ -697,7 +709,6 @@ AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
@@ -725,6 +736,7 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
 
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
@@ -813,11 +825,41 @@ XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
+
+# Audio encoders
+if test "x$use_libmp3lame" != "xno"; then
+  XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])
+  if test "x$use_libmp3lame" != "xno"; then
+    AC_CHECK_HEADER([lame/lame.h],, AC_MSG_ERROR($missing_headers))
+  fi
+fi
+AS_CASE([x$use_libmp3lame],
+  [xno],[
+    AC_SUBST([HAVE_LIBMP3LAME], 0)
+  ],
+  [
+    AC_DEFINE([HAVE_LIBMP3LAME], 1, [System has libmp3lame library])
+    AC_SUBST([HAVE_LIBMP3LAME], 1)
+  ]
+)
+if test "x$use_libvorbisenc" != "xno"; then
+  XB_FIND_SONAME([VORBISENC], [vorbisenc], [use_libvorbisenc])
+  if test "x$use_libvorbisenc" != "xno"; then
+    AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_headers))
+  fi
+fi
+AS_CASE([x$use_libvorbisenc],
+  [xno],[
+    AC_SUBST([HAVE_LIBVORBISENC], 0)
+  ],[
+    AC_DEFINE([HAVE_LIBVORBISENC], 1, [System has libvorbisenc library])
+    AC_SUBST([HAVE_LIBVORBISENC], 1)
+  ]
+)
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1828,6 +1870,18 @@ if test "x$use_libcec" != "xno"; then
   final_message="$final_message\n  libcec support:\tYes"
 else
   final_message="$final_message\n  libcec support:\tNo"
+fi
+
+if test "x$use_libmp3lame" != "xno"; then
+  final_message="$final_message\n  libmp3lame support:\tYes"
+else
+  final_message="$final_message\n  libmp3lame support:\tNo"
+fi
+
+if test "x$use_libvorbisenc" != "xno"; then
+  final_message="$final_message\n  libvorbisenc support:\tYes"
+else
+  final_message="$final_message\n  libvorbisenc support:\tNo"
 fi
 
 ### External libraries messages

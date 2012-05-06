@@ -1,0 +1,108 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required Ubuntu packages
+4. How to compile
+5. Uninstalling
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+We currently recommend Ubuntu Hardy(8.04) or later.
+A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 
+bitdepth is required with OpenGL.
+
+NOTE TO NEW LINUX USERS: All lines that are prefixed with the '#'
+character are commands that need to be typed into a terminal window /
+console (similar to the command prompt for Windows). Note that the '#'
+character itself should NOT be typed as part of the command.
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+   # sudo apt-get install git-core
+   # cd $HOME
+   # git clone git://github.com/xbmc/xbmc.git xbmc
+
+-----------------------------------------------------------------------------
+3. Installing the required Ubuntu packages
+-----------------------------------------------------------------------------
+
+Two methods exist to install the required Ubuntu packages:
+
+[NOTICE] For supported old Ubuntu versions, some packages might be outdated.
+         For those, you can either compile them manually, or use our backports
+         available from our official PPA:
+
+         http://launchpad.net/~team-xbmc/+archive/ppa
+
+--------------------------------------------------------------------
+3.1. Copy and paste the following line corresponding to your system
+--------------------------------------------------------------------
+
+For Ubuntu (all versions >= 7.04):
+
+   # sudo apt-get install git-core make g++ gcc gawk pmount libtool nasm yasm automake cmake gperf zip unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew-dev libcurl3 libcurl4-gnutls-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbisenc2 libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmpeg3-dev libflac-dev libiso9660-dev libass-dev libssl-dev fp-compiler gdc libmpeg2-4-dev libmicrohttpd-dev libmodplug-dev libssh-dev gettext cvs python-dev libyajl-dev libboost-thread-dev libplist-dev libusb-dev libudev-dev libtinyxml-dev
+
+For >= 10.10:
+   # sudo apt-get install autopoint libltdl-dev
+
+On 8.10 and older versions, libcurl is outdated and thus XBMC will not compile properly.
+In this case you will have to manually compile the latest version.
+   # wget http://curl.sourceforge.net/download/curl-7.19.7.tar.gz
+   # tar -xzf curl-7.19.7.tar.gz
+   # cd curl-7.19.7
+   # ./configure --disable-ipv6 --without-libidn --disable-ldap --prefix=/usr
+   # make
+   # sudo make install
+
+--------------------------------------------------------------
+3.2. Use a single command to get all build dependencies
+--------------------------------------------------------------
+
+You can get all build dependencies used for building the packages on the PPA. For this, you 
+need to specify the PPA in your apt sources. Please find the documentation on how to add a
+PPA to your system here: 
+
+   http://launchpad.net/+help/soyuz/ppa-sources-list.html
+
+The PPA used for XBMC (developpement version) is located on the following page:
+
+   http://launchpad.net/~team-xbmc/+archive/unstable
+
+[Note 1] Click on "Technical details about this PPA" to display the sources.list entries.
+
+[Note 2] If you are using a distribution that has outdated libraries, do not forget to use 
+         the following ppa:
+         http://launchpad.net/~team-xbmc/+archive/ppa
+
+Update apt:
+   # sudo apt-get update
+
+Here is the magic command to get the build dependencies (used to compile the version on the PPA).
+   #  sudo apt-get build-dep xbmc
+
+*** For Hardy add "deb http://ppa.launchpad.net/team-xbmc/xbmc-ppa-build-depends/ubuntu hardy main" to sources.list
+
+*** Avoid using "aptitude" for the build-dep command. It doesn't resolve everything.
+
+*** For developers and anyone else who compiles frequently it is recommended to use ccache
+sudo apt-get install ccache
+
+*** A tip for those with multiple computers at home is to check out distcc (totally unsupported from xbmc of course)
+sudo apt-get install distcc
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+See README.linux
+
+-----------------------------------------------------------------------------
+5. Uninstalling
+-----------------------------------------------------------------------------
+$ sudo apt-get remove xbmc*
+
+EOF
+

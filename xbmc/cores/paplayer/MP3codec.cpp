@@ -119,7 +119,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   int id3v2Size = 0;
   int result = -1;
-  __int64 length = 0;
+  int64_t length = 0;
   bool bTags = false;
 
   if (!m_file.Open(strFile, READ_CACHED))
@@ -139,7 +139,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 
   length = m_file.GetLength();
   if (bTags)
-    m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
+    m_TotalTime = (int64_t)(m_seekInfo.GetDuration() * 1000.0f);
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
@@ -200,7 +200,7 @@ void MP3Codec::FlushDecoder()
   m_CallAgainWithSameBuffer = false;
 }
 
-__int64 MP3Codec::Seek(__int64 iSeekTime)
+int64_t MP3Codec::Seek(int64_t iSeekTime)
 {
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);

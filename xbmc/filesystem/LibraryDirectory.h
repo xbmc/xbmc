@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "lib/tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 namespace XFILE
 {
@@ -47,6 +47,6 @@ namespace XFILE
      */
     TiXmlElement *LoadXML(const CStdString &xmlFile);
 
-    TiXmlDocument m_doc;
+    CXBMCTinyXML m_doc;
   };
 }

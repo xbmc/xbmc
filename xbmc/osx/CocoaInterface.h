@@ -23,9 +23,6 @@
 
 #include <string>
 #include "utils/StdString.h"
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#endif
 #include "AutoPool.h"
 
 #ifdef __cplusplus
@@ -75,12 +72,6 @@ extern "C"
   void  Cocoa_DestroyChildWindow();
 
   const char *Cocoa_Paste() ;  
-
-#if !defined(__arm__)
-  // helper from QA 1134
-  // http://developer.apple.com/mac/library/qa/qa2001/qa1134.html
-  OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend);
-#endif
 
 #ifdef __cplusplus
 }

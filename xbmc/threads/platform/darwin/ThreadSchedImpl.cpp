@@ -44,4 +44,5 @@ bool CThread::SetPrioritySched_RR(int iPriority)
   // change from default SCHED_OTHER to SCHED_RR
   policy = SCHED_RR;
   result = pthread_setschedparam(ThreadId(), policy, &param );
+  return result == 0;
 }

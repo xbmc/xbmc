@@ -31,7 +31,7 @@ typedef struct frame_queue {
   double              pts;
   double              sort_time;
   FourCharCode        pixel_buffer_format;
-  CVPixelBufferRef    pixel_buffer_ref;
+  CVBufferRef         pixel_buffer_ref;
   struct frame_queue  *nextframe;
 } frame_queue;
 
@@ -51,13 +51,12 @@ public:
   virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
 protected:
   void DisplayQueuePop(void);
-  void UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture);
-  void BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDVideoPicture *picture);
 
   static void VDADecoderCallback(
     void *decompressionOutputRefCon, CFDictionaryRef frameInfo,
@@ -79,9 +78,6 @@ protected:
   bool              m_convert_3byteTo4byteNALSize;
   DllAvUtil         *m_dllAvUtil;
   DllAvFormat       *m_dllAvFormat;
-
-  DllSwScale        *m_dllSwScale;
-  DVDVideoPicture   m_videobuffer;
 };
 
 #endif

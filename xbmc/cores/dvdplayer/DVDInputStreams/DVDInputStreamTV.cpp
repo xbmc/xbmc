@@ -107,10 +107,10 @@ int CDVDInputStreamTV::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamTV::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamTV::Seek(int64_t offset, int whence)
 {
   if(!m_pFile) return -1;
-  __int64 ret = m_pFile->Seek(offset, whence);
+  int64_t ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
   if( ret >= 0 ) m_eof = false;
@@ -118,7 +118,7 @@ __int64 CDVDInputStreamTV::Seek(__int64 offset, int whence)
   return ret;
 }
 
-__int64 CDVDInputStreamTV::GetLength()
+int64_t CDVDInputStreamTV::GetLength()
 {
   if (!m_pFile) return 0;
   return m_pFile->GetLength();

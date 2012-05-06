@@ -361,14 +361,6 @@
 		18B7C97D1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C97A12943809009E7A26 /* GUIWindowAddonBrowser.cpp */; };
 		18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
 		18B7C9841294385F009E7A26 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C9811294385F009E7A26 /* XMLUtils.cpp */; };
-		18B7CA1412944A8E009E7A26 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0412944A8E009E7A26 /* tinystr.cpp */; };
-		18B7CA1812944A8E009E7A26 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0912944A8E009E7A26 /* tinyxml.cpp */; };
-		18B7CA1B12944A8E009E7A26 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */; };
-		18B7CA1E12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */; };
-		18B7CA2212944A8E009E7A26 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0412944A8E009E7A26 /* tinystr.cpp */; };
-		18B7CA2612944A8E009E7A26 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0912944A8E009E7A26 /* tinyxml.cpp */; };
-		18B7CA2912944A8E009E7A26 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */; };
-		18B7CA2C12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */; };
 		18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
@@ -1967,6 +1959,12 @@
 		F5EA04800F72F188005C2EC5 /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA04280F72EB88005C2EC5 /* SDLMain.mm */; };
 		F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
 		F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
+		F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */; };
+		F5ED8D6D1551F91400842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */; };
+		F5ED908815538DCE00842059 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
+		F5ED908915538DCE00842059 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */; };
+		F5ED908E15538E2300842059 /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
+		F5ED908F15538E2300842059 /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED908C15538E2300842059 /* POUtils.cpp */; };
 		F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F240EB110A4F76009126C6 /* CrystalHD.cpp */; };
 		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
@@ -2347,12 +2345,6 @@
 		18B7C9811294385F009E7A26 /* XMLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XMLUtils.cpp; sourceTree = "<group>"; };
 		18B7C9821294385F009E7A26 /* XMLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLUtils.h; sourceTree = "<group>"; };
 		18B7C9E7129447B9009E7A26 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
-		18B7CA0412944A8E009E7A26 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
-		18B7CA0512944A8E009E7A26 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
-		18B7CA0912944A8E009E7A26 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
-		18B7CA0A12944A8E009E7A26 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
-		18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
-		18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		18C1D22C13033F6A00CFFE59 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
@@ -2853,7 +2845,6 @@
 		E38E148D0D25F9F900618676 /* EncoderVorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderVorbis.h; sourceTree = "<group>"; };
 		E38E148E0D25F9F900618676 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		E38E148F0D25F9F900618676 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
-		E38E14910D25F9F900618676 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		E38E149E0D25F9F900618676 /* coff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coff.cpp; sourceTree = "<group>"; };
 		E38E149F0D25F9F900618676 /* coff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coff.h; sourceTree = "<group>"; };
 		E38E14A00D25F9F900618676 /* coffldr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coffldr.h; sourceTree = "<group>"; };
@@ -4063,6 +4054,12 @@
 		F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = xbmc/osx/SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInterface.mm; path = xbmc/osx/CocoaInterface.mm; sourceTree = SOURCE_ROOT; };
 		F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInterface.h; path = xbmc/osx/CocoaInterface.h; sourceTree = SOURCE_ROOT; };
+		F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayDirectory.cpp; sourceTree = "<group>"; };
+		F5ED8D6B1551F91400842059 /* BlurayDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayDirectory.h; sourceTree = "<group>"; };
+		F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCTinyXML.cpp; sourceTree = "<group>"; };
+		F5ED908715538DCE00842059 /* XBMCTinyXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCTinyXML.h; sourceTree = "<group>"; };
+		F5ED908C15538E2300842059 /* POUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = POUtils.cpp; sourceTree = "<group>"; };
+		F5ED908D15538E2300842059 /* POUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POUtils.h; sourceTree = "<group>"; };
 		F5F240EB110A4F76009126C6 /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
 		F5F240EC110A4F76009126C6 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
 		F5F244631110DC6B009126C6 /* FileOperationJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationJob.h; sourceTree = "<group>"; };
@@ -4583,20 +4580,6 @@
 			);
 			path = playlists;
 			sourceTree = "<group>";
-		};
-		18B7CA0212944A8E009E7A26 /* tinyXML */ = {
-			isa = PBXGroup;
-			children = (
-				18B7CA0412944A8E009E7A26 /* tinystr.cpp */,
-				18B7CA0512944A8E009E7A26 /* tinystr.h */,
-				18B7CA0912944A8E009E7A26 /* tinyxml.cpp */,
-				18B7CA0A12944A8E009E7A26 /* tinyxml.h */,
-				18B7CA0D12944A8E009E7A26 /* tinyxmlerror.cpp */,
-				18B7CA1012944A8E009E7A26 /* tinyxmlparser.cpp */,
-			);
-			name = tinyXML;
-			path = lib/tinyXML;
-			sourceTree = SOURCE_ROOT;
 		};
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
@@ -5450,7 +5433,6 @@
 		E38E147F0D25F9F900618676 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				E38E14900D25F9F900618676 /* lame */,
 				E38E14800D25F9F900618676 /* CDDAReader.cpp */,
 				E38E14810D25F9F900618676 /* CDDAReader.h */,
 				E38E14820D25F9F900618676 /* CDDARipper.cpp */,
@@ -5473,14 +5455,6 @@
 				E38E148F0D25F9F900618676 /* EncoderWav.h */,
 			);
 			path = cdrip;
-			sourceTree = "<group>";
-		};
-		E38E14900D25F9F900618676 /* lame */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14910D25F9F900618676 /* lame.h */,
-			);
-			path = lame;
 			sourceTree = "<group>";
 		};
 		E38E149A0D25F9F900618676 /* cores */ = {
@@ -5923,6 +5897,8 @@
 				DF93D6641444A8B0007C6459 /* AFPFile.h */,
 				88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */,
 				88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */,
+				F5ED8D6A1551F91400842059 /* BlurayDirectory.cpp */,
+				F5ED8D6B1551F91400842059 /* BlurayDirectory.h */,
 				E38E16990D25F9FA00618676 /* CacheStrategy.cpp */,
 				E38E169A0D25F9FA00618676 /* CacheStrategy.h */,
 				E38E169B0D25F9FA00618676 /* CDDADirectory.cpp */,
@@ -6227,7 +6203,6 @@
 				F5E55E601076B34F006E788A /* libsquish */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
-				18B7CA0212944A8E009E7A26 /* tinyXML */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
 				E38E15EF0D25F9FA00618676 /* DllAdpcm.h */,
 				88ACB01E0DCF409E0083CFDF /* DllASAP.h */,
@@ -6925,6 +6900,8 @@
 				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
 				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
+				F5ED908C15538E2300842059 /* POUtils.cpp */,
+				F5ED908D15538E2300842059 /* POUtils.h */,
 				18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */,
 				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
@@ -6966,6 +6943,8 @@
 				E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */,
 				E38E1E900D25F9FD00618676 /* Win32Exception.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
+				F5ED908615538DCE00842059 /* XBMCTinyXML.cpp */,
+				F5ED908715538DCE00842059 /* XBMCTinyXML.h */,
 				18B7C9811294385F009E7A26 /* XMLUtils.cpp */,
 				18B7C9821294385F009E7A26 /* XMLUtils.h */,
 			);
@@ -8195,10 +8174,6 @@
 				18B7C938129428CA009E7A26 /* SmartPlayList.cpp in Sources */,
 				18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */,
 				18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */,
-				18B7CA1412944A8E009E7A26 /* tinystr.cpp in Sources */,
-				18B7CA1812944A8E009E7A26 /* tinyxml.cpp in Sources */,
-				18B7CA1B12944A8E009E7A26 /* tinyxmlerror.cpp in Sources */,
-				18B7CA1E12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */,
 				432D7CE412D86DA500CE4C49 /* NetworkLinux.cpp in Sources */,
 				432D7CF712D870E800CE4C49 /* TCPServer.cpp in Sources */,
 				433219D812E4C6A500CD7486 /* udf25.cpp in Sources */,
@@ -8344,6 +8319,9 @@
 				7C1F6EBB13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */,
 				EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */,
+				F5ED8D6C1551F91400842059 /* BlurayDirectory.cpp in Sources */,
+				F5ED908815538DCE00842059 /* XBMCTinyXML.cpp in Sources */,
+				F5ED908E15538E2300842059 /* POUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9147,10 +9125,6 @@
 				18B7C942129428CA009E7A26 /* SmartPlayList.cpp in Sources */,
 				18B7C97D1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */,
 				18B7C9841294385F009E7A26 /* XMLUtils.cpp in Sources */,
-				18B7CA2212944A8E009E7A26 /* tinystr.cpp in Sources */,
-				18B7CA2612944A8E009E7A26 /* tinyxml.cpp in Sources */,
-				18B7CA2912944A8E009E7A26 /* tinyxmlerror.cpp in Sources */,
-				18B7CA2C12944A8E009E7A26 /* tinyxmlparser.cpp in Sources */,
 				432D7CE512D86DA500CE4C49 /* NetworkLinux.cpp in Sources */,
 				432D7CF812D870E800CE4C49 /* TCPServer.cpp in Sources */,
 				433219DB12E4C6A500CD7486 /* udf25.cpp in Sources */,
@@ -9295,6 +9269,9 @@
 				7C1F6EBC13ECCFA7001726AB /* LibraryDirectory.cpp in Sources */,
 				EC720A90155091BB00FFD782 /* ilog.cpp in Sources */,
 				EC720A9E1550927000FFD782 /* XbmcContext.cpp in Sources */,
+				F5ED8D6D1551F91400842059 /* BlurayDirectory.cpp in Sources */,
+				F5ED908915538DCE00842059 /* XBMCTinyXML.cpp in Sources */,
+				F5ED908F15538E2300842059 /* POUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9398,6 +9375,7 @@
 					"-lfontconfig",
 					"-lsqlite3",
 					"-lsamplerate",
+					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",
@@ -9514,6 +9492,7 @@
 					"-lfontconfig",
 					"-lsqlite3",
 					"-lsamplerate",
+					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",

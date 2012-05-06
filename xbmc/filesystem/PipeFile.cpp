@@ -179,7 +179,7 @@ void CPipeFile::OnPipeOverFlow()
     m_listeners[l]->OnPipeOverFlow();
 }
 
-__int64	CPipeFile::GetAvailableRead()
+int64_t	CPipeFile::GetAvailableRead()
 {
   return m_pipe->GetAvailableRead();
 }

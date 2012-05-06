@@ -120,10 +120,6 @@
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
 		F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */; };
 		F56B160812CD6999009B4C96 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B160712CD6999009B4C96 /* ImageIO.framework */; };
-		F56C87FE131F42ED000AD0F6 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8040131F42E5000AD0F6 /* tinystr.cpp */; };
-		F56C87FF131F42ED000AD0F6 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8042131F42E5000AD0F6 /* tinyxml.cpp */; };
-		F56C8800131F42ED000AD0F6 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8044131F42E5000AD0F6 /* tinyxmlerror.cpp */; };
-		F56C8801131F42ED000AD0F6 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8045131F42E5000AD0F6 /* tinyxmlparser.cpp */; };
 		F56C8802131F42ED000AD0F6 /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C8053131F42E5000AD0F6 /* htsatomic.c */; };
 		F56C8803131F42ED000AD0F6 /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C8055131F42E5000AD0F6 /* htsbuf.c */; };
 		F56C8804131F42ED000AD0F6 /* htsmsg.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C8057131F42E5000AD0F6 /* htsmsg.c */; };
@@ -977,6 +973,9 @@
 		F5E112E9143577A000175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D0143577A000175026 /* GUIDialogPeripheralSettings.cpp */; };
 		F5E112EC143577A000175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D4143577A000175026 /* Peripherals.cpp */; };
 		F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209413E907E200D5F2CD /* InfoBool.cpp */; };
+		F5ED8D961551FB1000842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */; };
+		F5ED90B8155398BB00842059 /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED90B6155398BB00842059 /* POUtils.cpp */; };
+		F5ED90BB155398CB00842059 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED90B9155398CB00842059 /* XBMCTinyXML.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1228,12 +1227,6 @@
 		F56C803B131F42E5000AD0F6 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
 		F56C803C131F42E5000AD0F6 /* DllTimidity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllTimidity.h; sourceTree = "<group>"; };
 		F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
-		F56C8040131F42E5000AD0F6 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
-		F56C8041131F42E5000AD0F6 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
-		F56C8042131F42E5000AD0F6 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
-		F56C8043131F42E5000AD0F6 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
-		F56C8044131F42E5000AD0F6 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
-		F56C8045131F42E5000AD0F6 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		F56C8047131F42E5000AD0F6 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
 		F56C8049131F42E5000AD0F6 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
 		F56C804A131F42E5000AD0F6 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
@@ -3060,6 +3053,12 @@
 		F5E112D6143577A000175026 /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
 		F5E6209413E907E200D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209513E907E200D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
+		F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlurayDirectory.cpp; sourceTree = "<group>"; };
+		F5ED8D951551FB1000842059 /* BlurayDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurayDirectory.h; sourceTree = "<group>"; };
+		F5ED90B6155398BB00842059 /* POUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = POUtils.cpp; sourceTree = "<group>"; };
+		F5ED90B7155398BB00842059 /* POUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POUtils.h; sourceTree = "<group>"; };
+		F5ED90B9155398CB00842059 /* XBMCTinyXML.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCTinyXML.cpp; sourceTree = "<group>"; };
+		F5ED90BA155398CB00842059 /* XBMCTinyXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCTinyXML.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3305,7 +3304,6 @@
 				F56C806E131F42E5000AD0F6 /* libsquish */,
 				F56C8070131F42E5000AD0F6 /* libUPnP */,
 				F56C8146131F42E6000AD0F6 /* libXDAAP */,
-				F56C803F131F42E5000AD0F6 /* tinyXML */,
 				F56C814C131F42E6000AD0F6 /* UnrarXLib */,
 				F56C8036131F42E5000AD0F6 /* DllAdpcm.h */,
 				F56C8037131F42E5000AD0F6 /* DllASAP.h */,
@@ -3317,19 +3315,6 @@
 				F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */,
 			);
 			path = lib;
-			sourceTree = "<group>";
-		};
-		F56C803F131F42E5000AD0F6 /* tinyXML */ = {
-			isa = PBXGroup;
-			children = (
-				F56C8040131F42E5000AD0F6 /* tinystr.cpp */,
-				F56C8041131F42E5000AD0F6 /* tinystr.h */,
-				F56C8042131F42E5000AD0F6 /* tinyxml.cpp */,
-				F56C8043131F42E5000AD0F6 /* tinyxml.h */,
-				F56C8044131F42E5000AD0F6 /* tinyxmlerror.cpp */,
-				F56C8045131F42E5000AD0F6 /* tinyxmlparser.cpp */,
-			);
-			path = tinyXML;
 			sourceTree = "<group>";
 		};
 		F56C8046131F42E5000AD0F6 /* libexif */ = {
@@ -4051,7 +4036,6 @@
 		F56C81E0131F42E6000AD0F6 /* cdrip */ = {
 			isa = PBXGroup;
 			children = (
-				F56C81F5131F42E6000AD0F6 /* lame */,
 				F56C81E1131F42E6000AD0F6 /* CDDAReader.cpp */,
 				F56C81E2131F42E6000AD0F6 /* CDDAReader.h */,
 				F56C81E3131F42E6000AD0F6 /* CDDARipper.cpp */,
@@ -4074,14 +4058,6 @@
 				F56C81F4131F42E6000AD0F6 /* EncoderWav.h */,
 			);
 			path = cdrip;
-			sourceTree = "<group>";
-		};
-		F56C81F5131F42E6000AD0F6 /* lame */ = {
-			isa = PBXGroup;
-			children = (
-				F56C81F6131F42E6000AD0F6 /* lame.h */,
-			);
-			path = lame;
 			sourceTree = "<group>";
 		};
 		F56C81FD131F42E6000AD0F6 /* cores */ = {
@@ -4625,6 +4601,8 @@
 				DF93D7981444B105007C6459 /* AFPFile.h */,
 				F56C8382131F42E8000AD0F6 /* ASAPFileDirectory.cpp */,
 				F56C8383131F42E8000AD0F6 /* ASAPFileDirectory.h */,
+				F5ED8D941551FB1000842059 /* BlurayDirectory.cpp */,
+				F5ED8D951551FB1000842059 /* BlurayDirectory.h */,
 				F56C8390131F42E8000AD0F6 /* CacheStrategy.cpp */,
 				F56C8391131F42E8000AD0F6 /* CacheStrategy.h */,
 				F56C8392131F42E8000AD0F6 /* CDDADirectory.cpp */,
@@ -5812,6 +5790,8 @@
 				F56C8742131F42EC000AD0F6 /* PerformanceSample.h */,
 				F56C8743131F42EC000AD0F6 /* PerformanceStats.cpp */,
 				F56C8744131F42EC000AD0F6 /* PerformanceStats.h */,
+				F5ED90B6155398BB00842059 /* POUtils.cpp */,
+				F5ED90B7155398BB00842059 /* POUtils.h */,
 				18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */,
 				18ACF8FC13597B5700B67371 /* RecentlyAddedJob.h */,
 				F56C8747131F42EC000AD0F6 /* RegExp.cpp */,
@@ -5853,6 +5833,8 @@
 				F56C8761131F42EC000AD0F6 /* Win32Exception.cpp */,
 				F56C8762131F42EC000AD0F6 /* Win32Exception.h */,
 				F56C8763131F42EC000AD0F6 /* WindowsShortcut.h */,
+				F5ED90B9155398CB00842059 /* XBMCTinyXML.cpp */,
+				F5ED90BA155398CB00842059 /* XBMCTinyXML.h */,
 				F56C86FF131F42EB000AD0F6 /* XMLUtils.cpp */,
 				F56C8700131F42EB000AD0F6 /* XMLUtils.h */,
 			);
@@ -6278,10 +6260,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F56C87FE131F42ED000AD0F6 /* tinystr.cpp in Sources */,
-				F56C87FF131F42ED000AD0F6 /* tinyxml.cpp in Sources */,
-				F56C8800131F42ED000AD0F6 /* tinyxmlerror.cpp in Sources */,
-				F56C8801131F42ED000AD0F6 /* tinyxmlparser.cpp in Sources */,
 				F56C8802131F42ED000AD0F6 /* htsatomic.c in Sources */,
 				F56C8803131F42ED000AD0F6 /* htsbuf.c in Sources */,
 				F56C8804131F42ED000AD0F6 /* htsmsg.c in Sources */,
@@ -7223,6 +7201,9 @@
 				7C1F6F7A13ED178F001726AB /* LibraryDirectory.cpp in Sources */,
 				DF2E329415509B2C000F5772 /* XbmcContext.cpp in Sources */,
 				DF33C29415509BF50046CDCB /* ilog.cpp in Sources */,
+				F5ED8D961551FB1000842059 /* BlurayDirectory.cpp in Sources */,
+				F5ED90B8155398BB00842059 /* POUtils.cpp in Sources */,
+				F5ED90BB155398CB00842059 /* XBMCTinyXML.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7323,6 +7304,7 @@
 					"-lfontconfig",
 					"-lsqlite3",
 					"-lsamplerate",
+					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
@@ -7437,6 +7419,7 @@
 					"-lfontconfig",
 					"-lsqlite3",
 					"-lsamplerate",
+					"-ltinyxml",
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",

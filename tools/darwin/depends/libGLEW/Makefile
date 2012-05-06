@@ -3,11 +3,12 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=glew
-VERSION=1.5.8
+VERSION=1.7.0
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tgz
+ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
+export SYSTEM=darwin
 export GLEW_DEST=$(PREFIX)
 export CC.ARCH=$(CC)
 export CFLAGS.ARCH=$(CFLAGS)
@@ -23,9 +24,10 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	sed -ie "s|CC = cc|CC = $(CC.ARCH)|" "$(SOURCE)/config/Makefile.darwin"
+	sed -ie "s|LD = cc|LD = $(CC.ARCH)|" "$(SOURCE)/config/Makefile.darwin"
+	sed -ie "s|LDFLAGS.EXTRA =|LDFLAGS.EXTRA = \$(LDFLAGS.ARCH)|" "$(SOURCE)/config/Makefile.darwin"
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE); patch -p0 < ../01-Makefile.patch
-	cd $(SOURCE); patch -p0 < ../02-Makefile.darwin.patch
 
 $(LIBDYLIB): $(SOURCE)
 	make -j $(MAKE_JOBS) -C $(SOURCE)

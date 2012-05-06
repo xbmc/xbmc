@@ -22,11 +22,16 @@
 #include "system.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
+
+#include "Shader.h"
 #include "settings/Settings.h"
 #include "filesystem/File.h"
-#include "Shader.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+
+#ifdef HAS_GLES
+#define GLchar char
+#endif
 
 #define LOG_SIZE 1024
 
