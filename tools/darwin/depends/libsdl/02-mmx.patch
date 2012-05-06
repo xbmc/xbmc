@@ -1,0 +1,12 @@
+--- src/video/mmx.h	Mon Feb 06 08:28:51 2006 +0000
++++ src/video/mmx.h	Sun Jan 30 13:38:57 2011 -0800
+@@ -355,7 +355,7 @@
+ 
+ #define	mmx_r2m(op, reg, mem) \
+ 	__asm__ __volatile__ (#op " %%" #reg ", %0" \
+-			      : "=X" (mem) \
++			      : "=m" (mem) \
+ 			      : /* nothing */ )
+ 
+ #define	mmx_r2r(op, regs, regd) \
+
