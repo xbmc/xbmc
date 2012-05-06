@@ -318,6 +318,7 @@ public:
     std::vector<std::string> genre;
     int numEpisodes;
     int numWatched;
+    int id;
   };
 
   class CSetInfo

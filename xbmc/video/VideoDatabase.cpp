@@ -4692,6 +4692,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
                                    "       tvshow.c%02d,"
                                    "       tvshow.c%02d,"
                                    "       tvshow.c%02d,"
+                                   "       seasons.idSeason,"
                                    "       count(1),"
                                    "       count(files.playCount) "
                                    "FROM episode"
@@ -4699,8 +4700,10 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
                                    "   tvshowlinkepisode.idEpisode=episode.idEpisode"
                                    " JOIN tvshow ON"
                                    "   tvshow.idShow=tvshowlinkepisode.idShow"
+                                   " JOIN seasons ON"
+                                   "   (seasons.idShow=tvshow.idShow AND seasons.season=episode.c%02d)"
                                    " JOIN files ON"
-                                   "   files.idFile=episode.idFile ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
+                                   "   files.idFile=episode.idFile ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_SEASON);
     CStdString joins = PrepareSQL("  JOIN tvshowlinkpath ON"
                                   "    tvshowlinkpath.idShow = tvshow.idShow"
                                   "  JOIN path ON"
@@ -4756,8 +4759,9 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
           CSeason season;
           season.path = m_pDS->fv(1).get_asString();
           season.genre = StringUtils::Split(m_pDS->fv(3).get_asString(), g_advancedSettings.m_videoItemSeparator);
-          season.numEpisodes = m_pDS->fv(6).get_asInt();
-          season.numWatched = m_pDS->fv(7).get_asInt();
+          season.id = m_pDS->fv(6).get_asInt();
+          season.numEpisodes = m_pDS->fv(7).get_asInt();
+          season.numWatched = m_pDS->fv(8).get_asInt();
           mapSeasons.insert(make_pair(iSeason, season));
         }
         m_pDS->next();
@@ -4779,7 +4783,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iSeason = iSeason;
-        pItem->GetVideoInfoTag()->m_iDbId = idShow;
+        pItem->GetVideoInfoTag()->m_iDbId = it->second.id;
         pItem->GetVideoInfoTag()->m_strPath = it->second.path;
         pItem->GetVideoInfoTag()->m_genre = it->second.genre;
         pItem->GetVideoInfoTag()->m_studio = StringUtils::Split(showStudio, g_advancedSettings.m_videoItemSeparator);
@@ -4815,15 +4819,15 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_bIsFolder=true;
         pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iSeason = iSeason;
-        pItem->GetVideoInfoTag()->m_iDbId = idShow;
+        pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(6).get_asInt();
         pItem->GetVideoInfoTag()->m_strPath = m_pDS->fv(1).get_asString();
         pItem->GetVideoInfoTag()->m_genre = StringUtils::Split(m_pDS->fv(3).get_asString(), g_advancedSettings.m_videoItemSeparator);
         pItem->GetVideoInfoTag()->m_studio = StringUtils::Split(showStudio, g_advancedSettings.m_videoItemSeparator);
         pItem->GetVideoInfoTag()->m_strMPAARating = showMPAARating;
         pItem->GetVideoInfoTag()->m_iIdShow = idShow;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
-        int totalEpisodes = m_pDS->fv(6).get_asInt();
-        int watchedEpisodes = m_pDS->fv(7).get_asInt();
+        int totalEpisodes = m_pDS->fv(7).get_asInt();
+        int watchedEpisodes = m_pDS->fv(8).get_asInt();
         pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
         pItem->SetProperty("totalepisodes", totalEpisodes);
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
