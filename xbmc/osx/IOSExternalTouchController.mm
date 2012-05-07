@@ -97,7 +97,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel release];
 
     //load the splash image
-    CStdString strUserSplash = CSpecialProtocol::TranslatePath("special://home/media/Splash.png");
+    CStdString strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
     xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
     
     //make a view with the image
