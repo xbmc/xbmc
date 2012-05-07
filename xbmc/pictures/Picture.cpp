@@ -143,7 +143,7 @@ void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &fol
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
-  if (URIUtils::GetExtension(thumbFile).Equals(".jpg") || URIUtils::GetExtension(thumbFile).Equals(".tbn"))
+  if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
   {
     CJpegIO jpegImage;
     if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
