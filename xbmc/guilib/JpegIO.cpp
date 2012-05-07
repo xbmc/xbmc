@@ -483,7 +483,11 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   }
   else
   {
+#if JPEG_LIB_VERSION < 80
     x_jpeg_mem_dest(&cinfo, &result, &outBufSize);
+#else
+    jpeg_mem_dest(&cinfo, &result, &outBufSize);
+#endif
     cinfo.image_width = width;
     cinfo.image_height = height;
     cinfo.input_components = 3;
