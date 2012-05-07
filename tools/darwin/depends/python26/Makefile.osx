@@ -12,7 +12,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
   --enable-shared --disable-toolbox-glue --disable-framework --enable-unicode=ucs4
 
 CONFIGURE_NATIVE= CFLAGS="" CXXFLAGS="" LDFLAGS="" CPPFLAGS="" \
-  CPP="/usr/bin/cpp" \
+  CPP="gcc -E" \
   CC="gcc" \
   CXX="g++" \
   LD="ld" \
