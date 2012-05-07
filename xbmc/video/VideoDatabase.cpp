@@ -4270,7 +4270,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
 bool CVideoDatabase::GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
 {
-  return GetPeopleNav(strBaseDir, items, "studio", idContent);
+  return GetPeopleNav(strBaseDir, items, "writer", idContent);
 }
 
 bool CVideoDatabase::GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
