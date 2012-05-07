@@ -125,13 +125,113 @@ static void x_mem_src (j_decompress_ptr cinfo, unsigned char * inbuffer, unsigne
   src->bytes_in_buffer = (size_t) insize;
   src->next_input_byte = (JOCTET *) inbuffer;
 }
+
+#define OUTPUT_BUF_SIZE  4096
+typedef struct {
+  struct jpeg_destination_mgr pub; /* public fields */
+
+  unsigned char ** outbuffer;   /* target buffer */
+  unsigned long * outsize;
+  unsigned char * newbuffer;    /* newly allocated buffer */
+  JOCTET * buffer;              /* start of buffer */
+  size_t bufsize;
+} x_mem_destination_mgr;
+
+typedef x_mem_destination_mgr * x_mem_dest_ptr;
+
+static void x_init_mem_destination (j_compress_ptr cinfo)
+{
+  /* no work necessary here */
+}
+
+static boolean x_empty_mem_output_buffer (j_compress_ptr cinfo)
+{
+  size_t nextsize;
+  JOCTET * nextbuffer;
+  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
+
+  /* Try to allocate new buffer with double size */
+  nextsize = dest->bufsize * 2;
+  nextbuffer = (JOCTET*) malloc(nextsize);
+
+  if (nextbuffer == NULL)
+  {
+    (cinfo)->err->msg_code = 0;
+    (cinfo)->err->msg_parm.i[0] = 10;
+    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+  }
+
+  memcpy(nextbuffer, dest->buffer, dest->bufsize);
+
+  if (dest->newbuffer != NULL)
+    free(dest->newbuffer);
+
+  dest->newbuffer = nextbuffer;
+
+  dest->pub.next_output_byte = nextbuffer + dest->bufsize;
+  dest->pub.free_in_buffer = dest->bufsize;
+
+  dest->buffer = nextbuffer;
+  dest->bufsize = nextsize;
+
+  return TRUE;
+}
+
+static void x_term_mem_destination (j_compress_ptr cinfo)
+{
+  x_mem_dest_ptr dest = (x_mem_dest_ptr) cinfo->dest;
+
+  *dest->outbuffer = dest->buffer;
+  *dest->outsize = dest->bufsize - dest->pub.free_in_buffer;
+}
+
+static void x_jpeg_mem_dest (j_compress_ptr cinfo,
+               unsigned char ** outbuffer, unsigned long * outsize)
+{
+  x_mem_dest_ptr dest;
+
+  if (outbuffer == NULL || outsize == NULL)     /* sanity check */
+  {
+    (cinfo)->err->msg_code = 0;
+    (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+  }
+
+  /* The destination object is made permanent so that multiple JPEG images
+   * can be written to the same buffer without re-executing jpeg_mem_dest.
+   */
+  if (cinfo->dest == NULL) {    /* first time for this JPEG object? */
+    cinfo->dest = (struct jpeg_destination_mgr *)
+      (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
+                                  sizeof(x_mem_destination_mgr));
+  }
+
+  dest = (x_mem_dest_ptr) cinfo->dest;
+  dest->pub.init_destination = x_init_mem_destination;
+  dest->pub.empty_output_buffer = x_empty_mem_output_buffer;
+  dest->pub.term_destination = x_term_mem_destination;
+  dest->outbuffer = outbuffer;
+  dest->outsize = outsize;
+  dest->newbuffer = NULL;
+
+  if (*outbuffer == NULL || *outsize == 0) {
+    /* Allocate initial buffer */
+    dest->newbuffer = *outbuffer = (unsigned char*)malloc(OUTPUT_BUF_SIZE);
+    if (dest->newbuffer == NULL)
+    {
+      (cinfo)->err->msg_code = 0;
+      (cinfo)->err->msg_parm.i[0] = 10;
+      (*(cinfo)->err->error_exit) ((j_common_ptr) (cinfo));
+    }
+    *outsize = OUTPUT_BUF_SIZE;
+  }
+
+  dest->pub.next_output_byte = dest->buffer = *outbuffer;
+  dest->pub.free_in_buffer = dest->bufsize = *outsize;
+}
 #endif
 
 CJpegIO::CJpegIO()
 {
-  m_minx = 0;
-  m_miny = 0;
-  m_imgsize = 0;
   m_width  = 0;
   m_height = 0;
   m_orientation = 0;
@@ -150,34 +250,47 @@ void CJpegIO::Close()
   delete [] m_inputBuff;
 }
 
-bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny)
+bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny, bool read)
 {
   m_texturePath = texturePath;
-  m_minx = minx;
-  m_miny = miny;
+  unsigned int imgsize = 0;
 
   XFILE::CFile file;
   if (file.Open(m_texturePath.c_str(), 0))
   {
-    m_imgsize = (unsigned int)file.GetLength();
-    m_inputBuff = new unsigned char[m_imgsize];
-    m_inputBuffSize = file.Read(m_inputBuff, m_imgsize);
+    imgsize = (unsigned int)file.GetLength();
+    m_inputBuff = new unsigned char[imgsize];
+    m_inputBuffSize = file.Read(m_inputBuff, imgsize);
     file.Close();
 
-    if ((m_imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
+    if ((imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
       return false;
   }
   else
     return false;
 
+  if (!read)
+    return true;
+
+  if (Read(m_inputBuff, m_inputBuffSize, minx, miny))
+    return true;
+  return false;
+}
+
+bool CJpegIO::Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny)
+{
   struct my_error_mgr jerr;
   m_cinfo.err = jpeg_std_error(&jerr.pub);
   jerr.pub.error_exit = jpeg_error_exit;
+
+  if (buffer == NULL || !bufSize )
+    return false;
+
   jpeg_create_decompress(&m_cinfo);
 #if JPEG_LIB_VERSION < 80
-  x_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
+  x_mem_src(&m_cinfo, buffer, bufSize);
 #else
-  jpeg_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
+  jpeg_mem_src(&m_cinfo, buffer, bufSize);
 #endif
 
   if (setjmp(jerr.setjmp_buffer))
@@ -187,6 +300,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
   }
   else
   {
+    jpeg_save_markers (&m_cinfo, JPEG_APP0 + 1, 0xFFFF);
     jpeg_read_header(&m_cinfo, true);
 
     /*  libjpeg can scale the image for us if it is too big. It must be in the format
@@ -196,10 +310,10 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
     If the res is greater than the one desired, use that one since there's no need
     to decode a bigger one just to squish it back down. If the res is greater than
     the gpu can hold, use the previous one.*/
-    if (m_minx == 0 || m_miny == 0)
+    if (minx == 0 || miny == 0)
     {
-      m_minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-      m_miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+      minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
+      miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
     }
     m_cinfo.scale_denom = 8;
     m_cinfo.out_color_space = JCS_RGB;
@@ -212,14 +326,15 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
         m_cinfo.scale_num--;
         break;
       }
-      if (m_cinfo.output_width >= m_minx || m_cinfo.output_height >= m_miny)
+      if (m_cinfo.output_width >= minx && m_cinfo.output_height >= miny)
         break;
     }
     jpeg_calc_output_dimensions(&m_cinfo);
     m_width  = m_cinfo.output_width;
     m_height = m_cinfo.output_height;
 
-    GetExif();
+    if (m_cinfo.marker_list)
+      m_orientation = GetExifOrientation(m_cinfo.marker_list->data, m_cinfo.marker_list->data_length);
     return true;
   }
 }
@@ -280,6 +395,127 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
   return true;
 }
 
+bool CJpegIO::CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif)
+{
+  //Copy sourceFile to buffer, pass to CreateThumbnailFromMemory for decode+re-encode
+  if (!Open(sourceFile, minx, miny, false))
+    return false;
+
+  return CreateThumbnailFromMemory(m_inputBuff, m_inputBuffSize, destFile, minx, miny);
+}
+
+bool CJpegIO::CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny)
+{
+  //Decode a jpeg residing in buffer, pass to CreateThumbnailFromSurface for re-encode
+  unsigned int pitch = 0;
+  unsigned char *sourceBuf = NULL;
+
+  if (!Read(buffer, bufSize, minx, miny))
+    return false;
+  pitch = Width() * 3;
+  sourceBuf = new unsigned char [Height() * pitch];
+
+  if (!Decode(sourceBuf,pitch,XB_FMT_RGB8))
+  {
+    delete [] sourceBuf;
+    return false;
+  }
+  if (!CreateThumbnailFromSurface(sourceBuf, Width(), Height() , XB_FMT_RGB8, pitch, destFile))
+  {
+    delete [] sourceBuf;
+    return false;
+  }
+  delete [] sourceBuf;
+  return true;
+}
+
+bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile)
+{
+  //Encode raw data from buffer, save to destFile
+  struct jpeg_compress_struct cinfo;
+  struct my_error_mgr jerr;
+  JSAMPROW row_pointer[1];
+  long unsigned int outBufSize = 0;
+  unsigned char* result = new unsigned char [(width * height)]; //Initial buffer. Grows as-needed.
+  unsigned char* src = buffer;
+  unsigned char* rgbbuf, *src2, *dst2;
+
+  if(format == XB_FMT_RGB8)
+  {
+    rgbbuf = buffer;
+  }
+  else if(format == XB_FMT_A8R8G8B8)
+  {
+    // create a copy for bgra -> rgb.
+    rgbbuf = new unsigned char [(width * height * 3)];
+    unsigned char* dst = rgbbuf;
+    for (unsigned int y = 0; y < height; y++)
+    {
+      dst2 = dst;
+      src2 = src;
+      for (unsigned int x = 0; x < width; x++, src2 += 4)
+      {
+        *dst2++ = src2[2];
+        *dst2++ = src2[1];
+        *dst2++ = src2[0];
+      }
+      dst += width * 3;
+      src += pitch;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "JpegIO::CreateThumbnailFromSurface Unsupported format");
+    return false;
+  }
+
+  cinfo.err = jpeg_std_error(&jerr.pub);
+  jerr.pub.error_exit = jpeg_error_exit;
+  jpeg_create_compress(&cinfo);
+
+  if (setjmp(jerr.setjmp_buffer))
+  {
+    jpeg_destroy_compress(&cinfo);
+    delete [] result;
+    if(format != XB_FMT_RGB8)
+      delete [] rgbbuf;
+    return false;
+  }
+  else
+  {
+    x_jpeg_mem_dest(&cinfo, &result, &outBufSize);
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = 3;
+    cinfo.in_color_space = JCS_RGB;
+    jpeg_set_defaults(&cinfo);
+    jpeg_set_quality(&cinfo, 90, TRUE);
+    jpeg_start_compress(&cinfo, TRUE);
+
+    while (cinfo.next_scanline < cinfo.image_height)
+    {
+      row_pointer[0] = &rgbbuf[cinfo.next_scanline * width * 3];
+      jpeg_write_scanlines(&cinfo, row_pointer, 1);
+    }
+
+    jpeg_finish_compress(&cinfo);
+    jpeg_destroy_compress(&cinfo);
+  }
+  if(format != XB_FMT_RGB8)
+    delete [] rgbbuf;
+
+  XFILE::CFile file;
+  if (file.OpenForWrite(destFile, true))
+  {
+    file.Write(result, outBufSize);
+    file.Close();
+    delete [] result;
+    return true;
+  }
+  delete [] result;
+  return false;
+}
+
 // override libjpeg's error function to avoid an exit() call
 void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
 {
@@ -291,102 +527,26 @@ void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
   longjmp(myerr->setjmp_buffer, 1);
 }
 
-/*helper function
- * finds the exif tag in the jpegData buffer
- * and returns the size of the exif section
- * exifPtr is set to the start of the
- * "Exif" <- tag
- * if 0 is returned - no exif tag was found
- */
-unsigned int CJpegIO::findExifMarker( unsigned char *jpegData, 
-                                      unsigned int dataSize, 
-                                      unsigned char *&exifPtr)
+unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size)
 {
-  unsigned char *buffPtr = jpegData+2;//SKIP 0xFFD8
-  unsigned char *endOfFile = jpegData + dataSize;
-
-  if(!jpegData || dataSize < 2 || jpegData[0] != 0xFF || jpegData[1] != 0xD8)
-    return 0;
-
-  for(;;)
-  {
-    BYTE marker = 0;
-    for (int a=0; a<7 && (buffPtr < endOfFile); a++)
-    {
-      marker = *buffPtr;
-      if (marker != 0xFF)
-        break;
-
-      if (a >= 6)
-        return 0;
-      marker = 0;
-      buffPtr++;
-    }
-
-    // 0xff is legal padding, but if we get that many, something's wrong.
-    if (marker == 0xff)
-      return 0;
-
-    buffPtr++;//move to start of itemlen field
-    if ((buffPtr + 1) >= endOfFile)
-      return 0;
-
-    // Read the length of the section.
-    unsigned short itemlen = (*buffPtr++) << 8;
-    itemlen += *buffPtr;
-
-    if (itemlen < sizeof(itemlen))
-      return 0;
-
-    switch(marker)
-    {
-      case M_EOI:
-      case M_SOS:   // stop before hitting compressed data
-        return 0;
-      case M_EXIF:
-        // found exifdata
-        //   buffPtr was pointing at the second length byte
-        //   +1 for getting the exif tag
-        exifPtr = buffPtr + 1;
-        return itemlen;
-      default://skip all other sections
-        buffPtr += itemlen;
-        break;
-    }
-  }
-
-  return 0;
-}
-
-bool CJpegIO::GetExif()
-{
-  unsigned int length = 0;
   unsigned int offset = 0;
   unsigned int numberOfTags = 0;
   unsigned int tagNumber = 0;
   bool isMotorola = false;
-  unsigned char *exif_data = NULL;
   unsigned const char ExifHeader[] = "Exif\0\0";
-
-  length = findExifMarker(m_inputBuff, m_imgsize, exif_data);
+  unsigned int orientation = 0;
 
   // read exif head, check for "Exif"
   //   next we want to read to current offset + length
   //   check if buffer is big enough
-  if (length && memcmp(exif_data, ExifHeader, 6) == 0)
+  if (exif_data_size && memcmp(exif_data, ExifHeader, 6) == 0)
   {
     //read exif body
     exif_data += 6;
   }
   else
   {
-    return false;
-  }
-
-  //check for broken files
-  if ((m_inputBuff + m_imgsize) < (exif_data + length))
-  {
-    return false;
+    return 0;
   }
 
   // Discover byte order
@@ -395,25 +555,25 @@ bool CJpegIO::GetExif()
   else if (exif_data[0] == 'M' && exif_data[1] == 'M')
     isMotorola = true;
   else
-    return false;
+    return 0;
 
   // Check Tag Mark
   if (isMotorola)
   {
     if (exif_data[2] != 0 || exif_data[3] != 0x2A)
-      return false;
+      return 0;
   }
   else
   {
     if (exif_data[3] != 0 || exif_data[2] != 0x2A)
-      return false;
+      return 0;
   }
 
   // Get first IFD offset (offset to IFD0)
   if (isMotorola)
   {
     if (exif_data[4] != 0 || exif_data[5] != 0)
-      return false;
+      return 0;
     offset = exif_data[6];
     offset <<= 8;
     offset += exif_data[7];
@@ -421,14 +581,14 @@ bool CJpegIO::GetExif()
   else
   {
     if (exif_data[7] != 0 || exif_data[6] != 0)
-      return false;
+      return 0;
     offset = exif_data[5];
     offset <<= 8;
     offset += exif_data[4];
   }
 
-  if (offset > length - 2)
-    return false; // check end of data segment
+  if (offset > exif_data_size - 2)
+    return 0; // check end of data segment
 
   // Get the number of directory entries contained in this IFD
   if (isMotorola)
@@ -445,14 +605,14 @@ bool CJpegIO::GetExif()
   }
 
   if (numberOfTags == 0)
-    return false;
+    return 0;
   offset += 2;
 
   // Search for Orientation Tag in IFD0 - hey almost there! :D
   while(1)//hopefully this jpeg has correct exif data...
   {
-    if (offset > length - 12)
-      return false; // check end of data segment
+    if (offset > exif_data_size - 12)
+      return 0; // check end of data segment
 
     // Get Tag number
     if (isMotorola)
@@ -472,7 +632,7 @@ bool CJpegIO::GetExif()
       break; //found orientation tag
 
     if ( --numberOfTags == 0)
-      return false;//no orientation found
+      return 0;//no orientation found
     offset += 12;//jump to next tag
   }
 
@@ -480,20 +640,20 @@ bool CJpegIO::GetExif()
   if (isMotorola)
   {
     if (exif_data[offset+8] != 0)
-      return false;
-    m_orientation = exif_data[offset+9];
+      return 0;
+    orientation = exif_data[offset+9];
   }
   else
   {
     if (exif_data[offset+9] != 0)
-      return false;
-    m_orientation = exif_data[offset+8];
+      return 0;
+    orientation = exif_data[offset+8];
   }
-  if (m_orientation > 8)
+  if (orientation > 8)
   {
-    m_orientation = 0;
-    return false;
+    orientation = 0;
+    return 0;
   }
 
-  return true;//done
+  return orientation;//done
 }
