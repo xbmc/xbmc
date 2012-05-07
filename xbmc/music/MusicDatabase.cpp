@@ -28,7 +28,6 @@
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "GUIInfoManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "addons/AddonManager.h"
@@ -2369,8 +2368,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -2620,8 +2618,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
