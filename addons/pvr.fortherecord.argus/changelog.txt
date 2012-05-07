@@ -1,3 +1,6 @@
+v0.0.1.136 (01-05-2012)
+- Aggressively optimised TsReader class
+- Added new configurable delay in milliseconds after tuning a channel
 v0.0.1.135 (12-04-2012)
 - Small regression fixes after switch to new platform library
   When ForTheRecord returns 'NoRetunePossible' close the current live stream and
