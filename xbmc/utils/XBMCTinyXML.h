@@ -30,7 +30,25 @@
 #pragma comment(lib, "tinyxmlSTL.lib")
 #endif
 #endif
+
+//compile fix for TinyXml < 2.6.0
+#define DOCUMENT    TINYXML_DOCUMENT
+#define ELEMENT     TINYXML_ELEMENT
+#define COMMENT     TINYXML_COMMENT
+#define UNKNOWN     TINYXML_UNKNOWN
+#define TEXT        TINYXML_TEXT
+#define DECLARATION TINYXML_DECLARATION
+#define TYPECOUNT   TINYXML_TYPECOUNT
+
 #include <tinyxml.h>
+
+#undef DOCUMENT
+#undef ELEMENT
+#undef COMMENT
+#undef UNKNOWN
+#undef TEXT
+#undef DECLARATION
+#undef TYPECOUNT
 
 #include "StdString.h"
 
