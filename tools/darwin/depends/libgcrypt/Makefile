@@ -26,6 +26,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); patch -p0 < ../01-static-mpi_mpi-internal.patch
+	cd $(SOURCE); patch -p0 < ../02-armasm.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

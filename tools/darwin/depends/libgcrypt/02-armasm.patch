@@ -1,0 +1,13 @@
+--- mpi/longlong.h	2005-07-29 13:31:17.000000000 +0000
++++ mpi/longlong.h	2008-01-01 11:09:27.000000000 +0000
+@@ -225,8 +225,8 @@
+ 	   : "r0", "r1", "r2")
+ #else
+ #define umul_ppmm(xh, xl, a, b)                                         \
+-  __asm__ ("%@ Inlined umul_ppmm\n"                                     \
+-	   "umull %r1, %r0, %r2, %r3"                                   \
++  __asm__ ("@ Inlined umul_ppmm\n"                                     \
++	   "umull %1, %0, %2, %3"                                   \
+ 		   : "=&r" ((USItype)(xh)),                             \
+ 		     "=r" ((USItype)(xl))                               \
+ 		   : "r" ((USItype)(a)),                                \
