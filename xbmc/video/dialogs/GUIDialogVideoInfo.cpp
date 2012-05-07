@@ -254,7 +254,17 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       else
         character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
       CFileItemPtr item(new CFileItem(it->strName));
-      item->SetThumbnailImage(it->thumb);
+      if (!it->thumb.IsEmpty())
+        item->SetThumbnailImage(it->thumb);
+      else
+      { // backward compatibility
+        CStdString thumb = CScraperUrl::GetThumbURL(it->thumbUrl.GetFirstThumb());
+        if (!thumb.IsEmpty())
+        {
+          item->SetThumbnailImage(thumb);
+          CTextureCache::Get().BackgroundCacheImage(thumb);
+        }
+      }
       item->SetIconImage("DefaultActor.png");
       item->SetLabel(character);
       m_castList->Add(item);

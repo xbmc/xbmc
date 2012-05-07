@@ -234,6 +234,33 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
             pItem->SetArt(artwork);
         }
       }
+      else if (pItem->GetVideoInfoTag()->m_type == "actor" ||
+               pItem->GetVideoInfoTag()->m_type == "artist" ||
+               pItem->GetVideoInfoTag()->m_type == "writer" ||
+               pItem->GetVideoInfoTag()->m_type == "director")
+      {
+        // We can't realistically get the local thumbs (as we'd need to check every movie that contains this actor)
+        // and most users won't have local actor thumbs that are actually different than the scraped ones.
+        if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+        {
+          pItem->GetVideoInfoTag()->m_strPictureURL.Parse();
+          CStdString thumb = CScraperUrl::GetThumbURL(pItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
+          if (!thumb.IsEmpty())
+            pItem->SetThumbnailImage(thumb);
+        }
+      }
+      else if (pItem->GetVideoInfoTag()->m_type == "season")
+      {
+        // season art is fetched on scan from the tvshow root path (m_strPath in the season info tag)
+        // or from the show m_strPictureURL member of the tvshow, so grab the tvshow to get this.
+        CVideoInfoTag tag;
+        db.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strPath, tag, pItem->GetVideoInfoTag()->m_iIdShow);
+        map<int, string> seasons;
+        CVideoInfoScanner::GetSeasonThumbs(tag, seasons, true);
+        map<int, string>::iterator season = seasons.find(pItem->GetVideoInfoTag()->m_iSeason);
+        if (season != seasons.end())
+          pItem->SetThumbnailImage(season->second);
+      }
       // add to the database for next time around
       map<string, string> artwork = pItem->GetArt();
       if (!artwork.empty())
