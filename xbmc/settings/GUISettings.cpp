@@ -267,6 +267,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* ml = AddCategory(3,"musiclibrary",14022);
   AddBool(NULL, "musiclibrary.enabled", 418, true);
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
+  AddBool(ml, "musiclibrary.hideallitems", 13433, false);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
   AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
@@ -598,7 +599,7 @@ void CGUISettings::Initialize()
   flattenTVShowOptions.insert(make_pair(20421, 1));
   flattenTVShowOptions.insert(make_pair(20422, 2));
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
-
+  AddBool(vdl, "videolibrary.hideallitems", 13433, false);
   AddBool(vdl, "videolibrary.groupmoviesets", 20458, false);
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);

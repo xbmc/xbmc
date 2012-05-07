@@ -1234,6 +1234,7 @@
   <string id="13430">Allow hardware acceleration (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
   <string id="13432">Allow hardware acceleration (VideoToolbox)</string>
+  <string id="13433">Hide "All Items" button</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
