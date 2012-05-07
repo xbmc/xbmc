@@ -414,15 +414,15 @@ public:
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
   void SetDetail(const CStdString& strDetail, int id, int field, VIDEODB_CONTENT_TYPE type);
 
-  void DeleteMovie(int idMovie, bool bKeepId = false, bool bKeepThumb = false);
-  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false, int idMovie = -1);
-  void DeleteTvShow(int idTvShow, bool bKeepId = false, bool bKeepThumb = false);
-  void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false, int idTvShow = -1);
-  void DeleteEpisode(int idEpisode, bool bKeepId = false, bool bKeepThumb = false);
-  void DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode = -1, bool bKeepId = false, bool bKeepThumb = false);
-  void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false, bool bKeepThumb = false);
-  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false, int idMVideo = -1);
-  void DeleteDetailsForTvShow(const CStdString& strPath, bool bKeepThumb = false, int idTvShow = -1);
+  void DeleteMovie(int idMovie, bool bKeepId = false);
+  void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMovie = -1);
+  void DeleteTvShow(int idTvShow, bool bKeepId = false);
+  void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, int idTvShow = -1);
+  void DeleteEpisode(int idEpisode, bool bKeepId = false);
+  void DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode = -1, bool bKeepId = false);
+  void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
+  void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, int idMVideo = -1);
+  void DeleteDetailsForTvShow(const CStdString& strPath, int idTvShow = -1);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
   void DeleteSet(int idSet);
@@ -763,7 +763,6 @@ private:
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   void InvalidatePathHash(const CStdString& strPath);
-  void DeleteThumbForItem(const CStdString& strPath, bool bFolder, int idEpisode = -1);
 
   bool GetStackedTvShowList(int idShow, CStdString& strIn);
   void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
