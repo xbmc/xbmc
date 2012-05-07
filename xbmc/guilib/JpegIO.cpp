@@ -440,6 +440,12 @@ bool CJpegIO::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   unsigned char* src = buffer;
   unsigned char* rgbbuf, *src2, *dst2;
 
+  if(buffer == NULL)
+  {
+    CLog::Log(LOGERROR, "JpegIO::CreateThumbnailFromSurface no buffer");
+    return false;
+  }
+
   if(format == XB_FMT_RGB8)
   {
     rgbbuf = buffer;
