@@ -5,7 +5,6 @@ LIBNAME=lame
 VERSION=3.99.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-BASE_URL=http://voxel.dl.sourceforge.net/project/lame/lame/3.99
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \

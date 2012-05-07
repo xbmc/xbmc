@@ -5,7 +5,6 @@ LIBNAME=libgcrypt
 VERSION=1.4.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-BASE_URL=http://mirrors.dotsrc.org/gcrypt/libgcrypt
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
