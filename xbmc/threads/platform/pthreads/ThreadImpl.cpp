@@ -23,6 +23,14 @@
 #include <sys/syscall.h>
 #include <sys/resource.h>
 #include <string.h>
+#ifdef __FreeBSD__
+#include <sys/param.h>
+#if __FreeBSD_version < 900031
+#include <sys/thr.h>
+#else
+#include <pthread_np.h>
+#endif
+#endif
 
 void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
@@ -59,7 +67,17 @@ void CThread::TermHandler()
 
 void CThread::SetThreadInfo()
 {
+#ifdef __FreeBSD__
+#if __FreeBSD_version < 900031
+  long lwpid;
+  thr_self(&lwpid);
+  m_ThreadOpaque.LwpId = lwpid;
+#else
+  m_ThreadOpaque.LwpId = pthread_getthreadid_np();
+#endif
+#else
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
+#endif
 
   // start thread with nice level of appication
   int appNice = getpriority(PRIO_PROCESS, getpid());
