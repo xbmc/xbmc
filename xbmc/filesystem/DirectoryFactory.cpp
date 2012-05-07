@@ -136,9 +136,14 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
+  if (strProtocol == "rar") 
+  {
 #ifdef HAS_FILESYSTEM_RAR
-  if (strProtocol == "rar") return new CRarDirectory();
+    return new CRarDirectory();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
+  }
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();

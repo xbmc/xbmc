@@ -105,9 +105,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "zip") return new CZipFile();
+  else if (strProtocol == "rar")
+  {
 #ifdef HAS_FILESYSTEM_RAR
-  else if (strProtocol == "rar") return new CRarFile();
+    return new CRarFile();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
+  }
   else if (strProtocol == "musicdb") return new CMusicDatabaseFile();
   else if (strProtocol == "videodb") return NULL;
   else if (strProtocol == "special") return new CSpecialProtocolFile();
