@@ -111,7 +111,7 @@ bool CThread::SetPriority(const int iPriority)
     bReturn = false;
   else if (iPriority >= minRR)
     bReturn = SetPrioritySched_RR(iPriority);
-#ifndef TARGET_DARWIN
+#ifdef RLIMIT_NICE
   else
   {
     // get user max prio
