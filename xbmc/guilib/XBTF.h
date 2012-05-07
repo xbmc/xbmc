@@ -45,6 +45,7 @@ class CXBTFFrame
 {
 public:
   CXBTFFrame();
+  ~CXBTFFrame();
   uint32_t GetWidth() const;
   void SetWidth(uint32_t width);
   uint32_t GetFormat(bool raw = false) const;
@@ -60,8 +61,13 @@ public:
   uint64_t GetHeaderSize() const;
   uint32_t GetDuration() const;
   void SetDuration(uint32_t duration);
+  unsigned char *GetData() const;
+  void SetData(unsigned char *data);
+  void SetCached(bool cached);
+  bool IsCached() const;
   bool IsPacked() const;
   bool HasAlpha() const;
+  void Clear();
 
 private:
   uint32_t m_width;
@@ -71,35 +77,41 @@ private:
   uint64_t m_unpackedSize;
   uint64_t m_offset;
   uint32_t m_duration;
+  unsigned char *m_data;
+  bool m_cached;
 };
 
 class CXBTFFile
 {
 public:
   CXBTFFile();
+  ~CXBTFFile();
   CXBTFFile(const CXBTFFile& ref);
   char* GetPath();
   void SetPath(const std::string& path);
   uint32_t GetLoop() const;
   void SetLoop(uint32_t loop);
-  std::vector<CXBTFFrame>& GetFrames();
+  std::vector<CXBTFFrame *>& GetFrames();
   uint64_t GetHeaderSize() const;
+  void Clear();
 
 private:
   char         m_path[256];
   uint32_t     m_loop;
-  std::vector<CXBTFFrame> m_frames;
+  std::vector<CXBTFFrame *> m_frames;
 };
 
 class CXBTF
 {
 public:
   CXBTF();
+  ~CXBTF();
   uint64_t GetHeaderSize() const;
-  std::vector<CXBTFFile>& GetFiles();
+  std::vector<CXBTFFile *>& GetFiles();
+  void Clear();
 
 private:
-  std::vector<CXBTFFile> m_files;
+  std::vector<CXBTFFile *> m_files;
 };
 
 #endif

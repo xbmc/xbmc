@@ -123,10 +123,10 @@ void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<
   URIUtils::AddSlashAtEnd(testPath);
   int testLength = testPath.GetLength();
 
-  std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
+  std::vector<CXBTFFile *>& files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
-    CStdString path = files[i].GetPath();
+    CStdString path = files[i]->GetPath();
     if (path.Left(testLength).Equals(testPath))
       textures.push_back(path);
   }
@@ -144,14 +144,14 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
   if (file->GetFrames().size() == 0)
     return false;
 
-  CXBTFFrame& frame = file->GetFrames().at(0);
+  CXBTFFrame *frame = file->GetFrames().at(0);
   if (!ConvertFrameToTexture(Filename, frame, ppTexture))
   {
     return false;
   }
 
-  width = frame.GetWidth();
-  height = frame.GetHeight();
+  width = frame->GetWidth();
+  height = frame->GetHeight();
 
   return true;
 }
@@ -174,69 +174,80 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
 
   for (size_t i = 0; i < nTextures; i++)
   {
-    CXBTFFrame& frame = file->GetFrames().at(i);
+    CXBTFFrame *frame = file->GetFrames().at(i);
 
     if (!ConvertFrameToTexture(Filename, frame, &((*ppTextures)[i])))
     {
       return false;
     }
 
-    (*ppDelays)[i] = frame.GetDuration();
+    (*ppDelays)[i] = frame->GetDuration();
   }
 
-  width = file->GetFrames().at(0).GetWidth();
-  height = file->GetFrames().at(0).GetHeight();
+  width = file->GetFrames().at(0)->GetWidth();
+  height = file->GetFrames().at(0)->GetHeight();
   nLoops = file->GetLoop();
 
   return nTextures;
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
+bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame *frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
-  squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
+  squish::u8 *buffer = NULL;
+  
+  if(frame->IsCached())
+    buffer = frame->GetData();
+  else
+    buffer = new squish::u8[(size_t)frame->GetPackedSize()];
+
   if (buffer == NULL)
   {
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %"PRIu64" bytes)", name.c_str(), frame->GetPackedSize());
     return false;
   }
 
   // load the compressed texture
-  if (!m_XBTFReader.Load(frame, buffer))
+  if (!frame->IsCached() && !m_XBTFReader.Load(frame, buffer))
   {
     CLog::Log(LOGERROR, "Error loading texture: %s", name.c_str());
-    delete[] buffer;
+    if(!frame->IsCached())
+      delete[] buffer;
     return false;
   }
 
   // check if it's packed with lzo
-  if (frame.IsPacked())
+  if (frame->IsPacked())
   { // unpack
-    squish::u8 *unpacked = new squish::u8[(size_t)frame.GetUnpackedSize()];
+    squish::u8 *unpacked = new squish::u8[(size_t)frame->GetUnpackedSize()];
     if (unpacked == NULL)
     {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
-      delete[] buffer;
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %"PRIu64" bytes)", name.c_str(), frame->GetUnpackedSize());
+      if(!frame->IsCached())
+        delete[] buffer;
       return false;
     }
-    lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-    if (lzo1x_decompress(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
-        s != frame.GetUnpackedSize())
+    lzo_uint s = (lzo_uint)frame->GetUnpackedSize();
+    if (lzo1x_decompress(buffer, (lzo_uint)frame->GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
+        s != frame->GetUnpackedSize())
     {
       CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());
-      delete[] buffer;
+      if(!frame->IsCached())
+        delete[] buffer;
       delete[] unpacked;
       return false;
     }
-    delete[] buffer;
+    if(!frame->IsCached())
+      delete[] buffer;
     buffer = unpacked;
   }
 
   // create an xbmc texture
   *ppTexture = new CTexture();
-  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), frame.HasAlpha(), buffer);
+  (*ppTexture)->LoadFromMemory(frame->GetWidth(), frame->GetHeight(), 0, frame->GetFormat(), frame->HasAlpha(), buffer);
 
-  delete[] buffer;
+  if(buffer != frame->GetData())
+    delete[] buffer;
 
   return true;
 }

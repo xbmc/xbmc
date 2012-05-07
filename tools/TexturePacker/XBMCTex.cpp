@@ -166,8 +166,8 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
 
         fileName += dp->d_name;
 
-        CXBTFFile file;
-        file.SetPath(fileName);
+        CXBTFFile *file = new CXBTFFile();
+        file->SetPath(fileName);
         xbtf.GetFiles().push_back(file);
       }
     }
@@ -186,9 +186,9 @@ void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
   CreateSkeletonHeaderImpl(xbtf, fullPath, temp);
 }
 
-CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
+CXBTFFrame *appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
 {
-  CXBTFFrame frame;
+  CXBTFFrame *frame = new CXBTFFrame();
 #ifdef USE_LZO_PACKING
   lzo_uint packedSize = size;
 
@@ -222,12 +222,12 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   {
     writer.AppendContent(data, size);
   }
-  frame.SetPackedSize(packedSize);
-  frame.SetUnpackedSize(size);
-  frame.SetWidth(width);
-  frame.SetHeight(height);
-  frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
-  frame.SetDuration(0);
+  frame->SetPackedSize(packedSize);
+  frame->SetUnpackedSize(size);
+  frame->SetWidth(width);
+  frame->SetHeight(height);
+  frame->SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
+  frame->SetDuration(0);
   return frame;
 }
 
@@ -248,7 +248,7 @@ bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
   return false;
 }
 
-CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
+CXBTFFrame *createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
 {
   // Convert to ARGB
   SDL_PixelFormat argbFormat;
@@ -336,7 +336,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
     }
   }
 
-  CXBTFFrame frame; 
+  CXBTFFrame *frame = new CXBTFFrame(); 
   if (format)
   {
     frame = appendContent(writer, width, height, compressed, compressedSize, format, hasAlpha, flags);
@@ -413,17 +413,17 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     return 1;
   }
 
-  std::vector<CXBTFFile>& files = xbtf.GetFiles();
+  std::vector<CXBTFFile *>& files = xbtf.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
     struct MD5Context ctx;
     MD5Init(&ctx);
-    CXBTFFile& file = files[i];
+    CXBTFFile *file = files[i];
 
     std::string fullPath = InputDir;
-    fullPath += file.GetPath();
+    fullPath += file->GetPath();
 
-    std::string output = file.GetPath();
+    std::string output = file->GetPath();
     output = output.substr(0, 40);
     while (output.size() < 46)
       output += ' ';
@@ -433,7 +433,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       SDL_Surface* image = IMG_Load(fullPath.c_str());
       if (!image)
       {
-        printf("...unable to load image %s\n", file.GetPath());
+        printf("...unable to load image %s\n", file->GetPath());
         continue;
       }
 
@@ -444,22 +444,22 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         MD5Update(&ctx,(const uint8_t*)image->pixels,image->h*image->pitch);
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
-          file.GetFrames().insert(file.GetFrames().end(),
-            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
+          printf("****  duplicate of %s\n", files[dupes[i]]->GetPath());
+          file->GetFrames().insert(file->GetFrames().end(),
+            files[dupes[i]]->GetFrames().begin(), files[dupes[i]]->GetFrames().end());
           skip = true;
         }
       }
 
       if (!skip)
       {
-        CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
+        CXBTFFrame *frame = createXBTFFrame(image, writer, maxMSE, flags);
 
-        printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
-          frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame->GetFormat()), frame->HasAlpha() ? ' ' : '*',
+          frame->GetWidth(), frame->GetHeight(), frame->GetUnpackedSize());
 
-        file.SetLoop(0);
-        file.GetFrames().push_back(frame);
+        file->SetLoop(0);
+        file->GetFrames().push_back(frame);
       }
       SDL_FreeSurface(image);
     }
@@ -480,9 +480,9 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
         if (checkDupe(&ctx,hashes,dupes,i))
         {
-          printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
-          file.GetFrames().insert(file.GetFrames().end(),
-            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
+          printf("****  duplicate of %s\n", files[dupes[i]]->GetPath());
+          file->GetFrames().insert(file->GetFrames().end(),
+            files[dupes[i]]->GetFrames().begin(), files[dupes[i]]->GetFrames().end());
           skip = true;
         }
       }
@@ -492,17 +492,17 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         for (int j = 0; j < gnAG; j++)
         {
           printf("    frame %4i                                ", j);
-          CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
-          frame.SetDuration(gpAG[j].delay);
-          file.GetFrames().push_back(frame);
-          printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
-            frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+          CXBTFFrame *frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
+          frame->SetDuration(gpAG[j].delay);
+          file->GetFrames().push_back(frame);
+          printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame->GetFormat()), frame->HasAlpha() ? ' ' : '*',
+            frame->GetWidth(), frame->GetHeight(), frame->GetUnpackedSize());
         }
       }
       AG_FreeSurfaces(gpAG, gnAG);
       delete [] gpAG;
 
-      file.SetLoop(0);
+      file->SetLoop(0);
     }
   }
 
@@ -517,6 +517,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     printf("Error closing file\n");
     return 1;
   }
+
+  xbtf.Clear();
 
   return 0;
 }

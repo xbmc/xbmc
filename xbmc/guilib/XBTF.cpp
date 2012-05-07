@@ -21,6 +21,8 @@
 #include <cstring>
 #include "XBTF.h"
 
+using namespace std;
+
 CXBTFFrame::CXBTFFrame()
 {
   m_width = 0;
@@ -29,6 +31,13 @@ CXBTFFrame::CXBTFFrame()
   m_unpackedSize = 0;
   m_offset = 0;
   m_format = XB_FMT_UNKNOWN;
+  m_data = NULL;
+  m_cached = false;
+}
+
+CXBTFFrame::~CXBTFFrame()
+{
+  Clear();
 }
 
 uint32_t CXBTFFrame::GetWidth() const
@@ -111,6 +120,26 @@ void CXBTFFrame::SetDuration(uint32_t duration)
   m_duration = duration;
 }
 
+unsigned char *CXBTFFrame::GetData() const
+{ 
+  return m_data;
+}
+
+void CXBTFFrame::SetData(unsigned char *data)
+{ 
+  m_data = data; 
+};
+
+void CXBTFFrame::SetCached(bool cached)
+{
+  m_cached = true;
+};
+
+bool CXBTFFrame::IsCached() const
+{
+  return m_cached;
+};
+
 uint64_t CXBTFFrame::GetHeaderSize() const
 {
   uint64_t result =
@@ -125,6 +154,13 @@ uint64_t CXBTFFrame::GetHeaderSize() const
   return result;
 }
 
+void CXBTFFrame::Clear()
+{
+  if(m_data)
+    delete[] m_data;
+  m_data = NULL;
+}
+
 CXBTFFile::CXBTFFile()
 {
   memset(m_path, 0, sizeof(m_path));
@@ -136,6 +172,11 @@ CXBTFFile::CXBTFFile(const CXBTFFile& ref)
   strcpy(m_path, ref.m_path);
   m_loop = ref.m_loop;
   m_frames = ref.m_frames;
+}
+
+CXBTFFile::~CXBTFFile()
+{
+  Clear();
 }
 
 char* CXBTFFile::GetPath()
@@ -159,7 +200,7 @@ void CXBTFFile::SetLoop(uint32_t loop)
   m_loop = loop;
 }
 
-std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
+std::vector<CXBTFFrame *>& CXBTFFile::GetFrames()
 {
   return m_frames;
 }
@@ -173,14 +214,29 @@ uint64_t CXBTFFile::GetHeaderSize() const
 
   for (size_t i = 0; i < m_frames.size(); i++)
   {
-    result += m_frames[i].GetHeaderSize();
+    result += m_frames[i]->GetHeaderSize();
   }
 
   return result;
 }
 
+void CXBTFFile::Clear()
+{
+  for (vector<CXBTFFrame *>::iterator it = m_frames.begin(); it != m_frames.end(); ++it)
+  {
+    (*it)->Clear();
+    delete *it;
+  }
+  m_frames.clear();
+}
+
 CXBTF::CXBTF()
 {
+}
+
+CXBTF::~CXBTF()
+{
+  Clear();
 }
 
 uint64_t CXBTF::GetHeaderSize() const
@@ -192,13 +248,23 @@ uint64_t CXBTF::GetHeaderSize() const
 
   for (size_t i = 0; i < m_files.size(); i++)
   {
-    result += m_files[i].GetHeaderSize();
+    result += m_files[i]->GetHeaderSize();
   }
 
   return result;
 }
 
-std::vector<CXBTFFile>& CXBTF::GetFiles()
+std::vector<CXBTFFile *>& CXBTF::GetFiles()
 {
   return m_files;
+}
+
+void CXBTF::Clear()
+{
+  for (vector<CXBTFFile *>::iterator it = m_files.begin(); it != m_files.end(); ++it)
+  {
+    (*it)->Clear();
+    delete *it;
+  }
+  m_files.clear();
 }

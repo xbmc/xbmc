@@ -108,43 +108,43 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
   WRITE_STR(XBTF_MAGIC, 4, m_file);
   WRITE_STR(XBTF_VERSION, 1, m_file);
 
-  std::vector<CXBTFFile>& files = m_xbtf.GetFiles();
+  std::vector<CXBTFFile *>& files = m_xbtf.GetFiles();
   WRITE_U32(files.size(), m_file);
   for (size_t i = 0; i < files.size(); i++)
   {
-    CXBTFFile& file = files[i];
+    CXBTFFile *file = files[i];
 
     // Convert path to lower case
-    char* ch = file.GetPath();
+    char* ch = file->GetPath();
     while (*ch)
     {
       *ch = tolower(*ch);
       ch++;
     }
 
-    WRITE_STR(file.GetPath(), 256, m_file);
-    WRITE_U32(file.GetLoop(), m_file);
+    WRITE_STR(file->GetPath(), 256, m_file);
+    WRITE_U32(file->GetLoop(), m_file);
 
-    std::vector<CXBTFFrame>& frames = file.GetFrames();
+    std::vector<CXBTFFrame *>& frames = file->GetFrames();
     WRITE_U32(frames.size(), m_file);
     for (size_t j = 0; j < frames.size(); j++)
     {
-      CXBTFFrame& frame = frames[j];
+      CXBTFFrame *frame = frames[j];
       if (dupes[i] != i)
-        frame.SetOffset(files[dupes[i]].GetFrames()[j].GetOffset());
+        frame->SetOffset(files[dupes[i]]->GetFrames()[j]->GetOffset());
       else
       {
-        frame.SetOffset(offset);
-        offset += frame.GetPackedSize();
+        frame->SetOffset(offset);
+        offset += frame->GetPackedSize();
       }
 
-      WRITE_U32(frame.GetWidth(), m_file);
-      WRITE_U32(frame.GetHeight(), m_file);
-      WRITE_U32(frame.GetFormat(true), m_file);
-      WRITE_U64(frame.GetPackedSize(), m_file);
-      WRITE_U64(frame.GetUnpackedSize(), m_file);
-      WRITE_U32(frame.GetDuration(), m_file);
-      WRITE_U64(frame.GetOffset(), m_file);
+      WRITE_U32(frame->GetWidth(), m_file);
+      WRITE_U32(frame->GetHeight(), m_file);
+      WRITE_U32(frame->GetFormat(true), m_file);
+      WRITE_U64(frame->GetPackedSize(), m_file);
+      WRITE_U64(frame->GetUnpackedSize(), m_file);
+      WRITE_U32(frame->GetDuration(), m_file);
+      WRITE_U64(frame->GetOffset(), m_file);
     }
   }
 
