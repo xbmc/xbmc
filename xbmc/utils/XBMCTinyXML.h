@@ -29,8 +29,7 @@
 #else
 #pragma comment(lib, "tinyxmlSTL.lib")
 #endif
-#endif
-
+#else
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT
 #define ELEMENT     TINYXML_ELEMENT
@@ -39,6 +38,7 @@
 #define TEXT        TINYXML_TEXT
 #define DECLARATION TINYXML_DECLARATION
 #define TYPECOUNT   TINYXML_TYPECOUNT
+#endif
 
 #include <tinyxml.h>
 
