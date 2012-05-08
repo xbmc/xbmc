@@ -304,6 +304,13 @@ public:
     return m_bStandalone;
   }
 
+  void SetServerMode(bool value);
+
+  bool IsServerMode()
+  {
+    return m_bServerMode;
+  }
+
   void SetEnableLegacyRes(bool value)
   {
     m_bEnableLegacyRes = value;
@@ -323,6 +330,7 @@ public:
   {
     return m_bTestMode;
   }
+
 
   bool IsPresentFrame();
 
@@ -385,6 +393,7 @@ protected:
   unsigned int m_lastRenderTime;
 
   bool m_bStandalone;
+  bool m_bServerMode;
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;

@@ -266,6 +266,7 @@ class CAdvancedSettings
     int m_curlretries;
     bool m_curlDisableIPV6;
 
+    bool m_serverMode;
     bool m_fullScreen;
     bool m_startFullScreen;
 	bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
