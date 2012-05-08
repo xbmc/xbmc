@@ -312,7 +312,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create seasons table");
     m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
-    m_pDS->exec("CREATE INDEX ix_seasons ON season (idShow, season)");
+    m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
 
     CLog::Log(LOGINFO, "create art table and triggers");
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
