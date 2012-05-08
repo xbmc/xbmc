@@ -673,7 +673,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      bool bScan=false;
       ADDON::ScraperPtr scraper;
       CStdString path(item->GetPath());
       CQueryParams params;
@@ -701,7 +700,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
       }
 
-      if (CGUIDialogContentSettings::Show(scraper, bScan, content))
+      if (CGUIDialogContentSettings::Show(scraper, content))
       {
         m_musicdatabase.SetScraperForPath(path,scraper);
         if (CGUIDialogYesNo::ShowAndGetInput(20442,20443,20444,20022))
