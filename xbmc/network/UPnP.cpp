@@ -58,6 +58,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
 #include "guilib/Key.h"
+#include "ThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -926,7 +927,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
 
                 if (!item->HasThumbnail() )
-                    item->SetCachedVideoThumb();
+                    item->SetThumbnailImage(CThumbLoader::GetCachedImage(*item, "thumb"));
             }
         }
 

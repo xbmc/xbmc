@@ -132,7 +132,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   if (movie.m_iSeason == 0) SetProperty("isspecial", "true");
   FillInDefaultIcon();
-  SetCachedVideoThumb();
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -989,16 +988,6 @@ CStdString CFileItem::GetCachedArtistThumb() const
   return CThumbnailCache::GetArtistThumb(*this);
 }
 
-CStdString CFileItem::GetCachedSeasonThumb() const
-{
-  return CThumbnailCache::GetSeasonThumb(*this);
-}
-
-CStdString CFileItem::GetCachedActorThumb() const
-{
-  return CThumbnailCache::GetActorThumb(*this);
-}
-
 void CFileItem::SetCachedArtistThumb()
 {
   CStdString thumb(GetCachedArtistThumb());
@@ -1017,16 +1006,6 @@ void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
-}
-
-void CFileItem::SetCachedSeasonThumb()
-{
-  CStdString thumb(GetCachedSeasonThumb());
-  if (CFile::Exists(thumb))
-  {
-    // found it, we are finished.
-    SetThumbnailImage(thumb);
-  }
 }
 
 void CFileItem::RemoveExtension()
@@ -2397,17 +2376,6 @@ bool CFileItemList::AlwaysCache() const
   return false;
 }
 
-void CFileItemList::SetCachedVideoThumbs()
-{
-  CSingleLock lock(m_lock);
-  // TODO: Investigate caching time to see if it speeds things up
-  for (unsigned int i = 0; i < m_items.size(); ++i)
-  {
-    CFileItemPtr pItem = m_items[i];
-    pItem->SetCachedVideoThumb();
-  }
-}
-
 void CFileItemList::SetCachedMusicThumbs()
 {
   CSingleLock lock(m_lock);
@@ -2547,31 +2515,6 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   }
 
   SetCachedMusicThumb();
-}
-
-CStdString CFileItem::GetCachedVideoThumb() const
-{
-  return CThumbnailCache::GetVideoThumb(*this);
-}
-
-CStdString CFileItem::GetCachedEpisodeThumb() const
-{
-  return CThumbnailCache::GetEpisodeThumb(*this);
-}
-
-void CFileItem::SetCachedVideoThumb()
-{
-  if (IsParentFolder()) return;
-  if (HasThumbnail()) return;
-  CStdString cachedThumb(GetCachedVideoThumb());
-  if (HasVideoInfoTag() && !m_bIsFolder  &&
-      GetVideoInfoTag()->m_iEpisode > -1 &&
-      CFile::Exists(GetCachedEpisodeThumb()))
-  {
-    SetThumbnailImage(GetCachedEpisodeThumb());
-  }
-  else if (CFile::Exists(cachedThumb))
-    SetThumbnailImage(cachedThumb);
 }
 
 // Gets the .tbn filename from a file or folder name.
@@ -2786,29 +2729,6 @@ bool CFileItem::testGetBaseMoviePath()
   return true;
 }
 #endif
-
-void CFileItem::SetVideoThumb()
-{
-  if (HasThumbnail()) return;
-  SetCachedVideoThumb();
-  if (!HasThumbnail())
-    SetUserVideoThumb();
-}
-
-void CFileItem::SetUserVideoThumb()
-{
-  if (m_bIsShareOrDrive) return;
-  if (IsParentFolder()) return;
-
-  // caches as the local thumb
-  CStdString thumb(GetUserVideoThumb());
-  if (!thumb.IsEmpty())
-  {
-    CStdString cachedThumb(GetCachedVideoThumb());
-    CPicture::CreateThumbnail(thumb, cachedThumb);
-  }
-  SetCachedVideoThumb();
-}
 
 bool CFileItem::CacheLocalFanart() const
 {

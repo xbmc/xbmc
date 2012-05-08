@@ -35,6 +35,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "TextureCache.h"
+#include "ThumbLoader.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -92,7 +93,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       {
         CStdString fanart;
         if (item->HasProperty("fanart_image"))
-          fanart = item->GetProperty("fanart_image").asString();
+          fanart = CTextureCache::Get().CheckAndCacheImage(item->GetProperty("fanart_image").asString());
         if (fanart.empty())
           fanart = item->GetCachedFanart();
         if (!fanart.empty())
@@ -231,12 +232,11 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       if (item->HasThumbnail())
         object["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
       else if (item->HasVideoInfoTag())
-      {
-        CStdString strPath, strFileName;
-        URIUtils::Split(item->GetCachedVideoThumb(), strPath, strFileName);
-        CStdString cachedThumb = strPath + "auto-" + strFileName;
-
-        if (CFile::Exists(cachedThumb))
+      { // TODO: Should the JSON-API return actual image URLs, virtual thumb URLs, or local URLs to the cached image?
+        //       ATM we return the latter
+        CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*item);
+        CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
+        if (!cachedThumb.IsEmpty())
           object["thumbnail"] = cachedThumb;
       }
       else if (item->HasPictureInfoTag())

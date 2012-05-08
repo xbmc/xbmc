@@ -95,10 +95,11 @@ namespace VIDEO
      \param pItem item to add to the database.
      \param content content type of the item.
      \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
+     \param useLocal whether to use local information for artwork etc.
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, int idShow = -1);
+    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, bool useLocal = true, int idShow = -1);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -116,15 +117,22 @@ namespace VIDEO
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
 
-    /*! \brief Fetch thumbs for seasons for a given show
-     Fetches and caches local season thumbs of the form season##.tbn and season-all.tbn for the current show,
-     and downloads online thumbs if they don't exist.
-     \param idTvShow database id of the tvshow.
-     \param folderToCheck folder to check for local thumbs, if other than the show folder.  Defaults to empty.
-     \param download whether we should download thumbs that don't exist.  Defaults to true.
-     \param overwrite whether to overwrite currently cached thumbs.  Defaults to false.
+    /*! \brief Retrieve any artwork associated with an item
+     \param pItem item to find artwork for.
+     \param content content type of the item.
+     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
+     \param useLocal whether we should use local thumbs. Defaults to true.
      */
-    void FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck = "", bool download = true, bool overwrite = false);
+    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true);
+
+    /*! \brief Get season thumbs for a tvshow.
+     All seasons (regardless of whether the user has episodes) are added to the art map.
+     \param show     tvshow info tag
+     \param art      artwork map to which season thumbs are added.
+     \param useLocal whether to use local thumbs, defaults to true
+     */
+    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::string> &art, bool useLocal = true);
+
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
@@ -162,15 +170,6 @@ namespace VIDEO
      */
     bool GetDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, CNfoFile *nfoFile=NULL, CGUIDialogProgress* pDialog=NULL);
 
-    /*! \brief Retrieve any artwork associated with an item
-     \param pItem item to add to the database.
-     \param content content type of the item.
-     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
-     \param useLocal whether we should use local thumbs. Defaults to true.
-     \param pDialog progress dialog to update during processing. Defaults to NULL.
-     */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, CGUIDialogProgress* pDialog = NULL);
-
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
      \param episodeInfo Episode information to fill in.
@@ -186,7 +185,13 @@ namespace VIDEO
      */
     bool GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
-    void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
+    /*! \brief Fetch thumbs for actors
+     Updates each actor with their thumb (local or online)
+     \param actors - vector of SActorInfo
+     \param strPath - path on filesystem to look for local thumbs
+     */
+    void FetchActorThumbs(std::vector<SActorInfo>& actors, const CStdString& strPath);
+
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
     /*! \brief Retrieve a "fast" hash of the given directory (if available)

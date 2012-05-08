@@ -254,17 +254,20 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       else
         character.Format("%s %s %s", it->strName.c_str(), g_localizeStrings.Get(20347).c_str(), it->strRole.c_str());
       CFileItemPtr item(new CFileItem(it->strName));
-      if (CFile::Exists(item->GetCachedActorThumb()))
-        item->SetThumbnailImage(item->GetCachedActorThumb());
+      if (!it->thumb.IsEmpty())
+        item->SetThumbnailImage(it->thumb);
+      else
+      { // backward compatibility
+        CStdString thumb = CScraperUrl::GetThumbURL(it->thumbUrl.GetFirstThumb());
+        if (!thumb.IsEmpty())
+        {
+          item->SetThumbnailImage(thumb);
+          CTextureCache::Get().BackgroundCacheImage(thumb);
+        }
+      }
       item->SetIconImage("DefaultActor.png");
       item->SetLabel(character);
       m_castList->Add(item);
-    }
-    // set fanart property for tvshows and movies
-    if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-    {
-      if (m_movieItem->CacheLocalFanart())
-        m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     // determine type:
     if (type == VIDEODB_CONTENT_TVSHOWS)
@@ -287,23 +290,20 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->m_dateTime = m_movieItem->GetVideoInfoTag()->m_firstAired;
       if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
         m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
-      if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
-        m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
-      // NOTE: This is overly complicated. Perhaps we should cache season thumbs by showtitle and season number,
-      //       rather than bothering with show path and the localized strings involved?
+      // TODO: should we use the thumbloader for this?
       if (m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
       {
-        CStdString label;
-        if (m_movieItem->GetVideoInfoTag()->m_iSeason == 0)
-          label = g_localizeStrings.Get(20381);
-        else
-          label.Format(g_localizeStrings.Get(20358), m_movieItem->GetVideoInfoTag()->m_iSeason);
-        CFileItem season(label);
-        season.m_bIsFolder = true;
-        season.GetVideoInfoTag()->m_strPath = item->GetVideoInfoTag()->m_strShowPath;
-        if (CFile::Exists(season.GetCachedSeasonThumb()))
-          m_movieItem->SetProperty("seasonthumb", season.GetCachedSeasonThumb());
+        CVideoDatabase db;
+        if (db.Open())
+        {
+          int seasonID = db.GetSeasonId(m_movieItem->GetVideoInfoTag()->m_iIdShow,
+                                        m_movieItem->GetVideoInfoTag()->m_iSeason);
+          string thumb = db.GetArtForItem(seasonID, "season", "thumb");
+          if (!thumb.empty())
+            m_movieItem->SetProperty("seasonthumb", thumb);
+          db.Close();
+        }
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)
@@ -410,17 +410,17 @@ void CGUIDialogVideoInfo::Refresh()
     bool hasUpdatedThumb = false;
     CStdString thumbImage = m_movieItem->GetThumbnailImage();
     if (thumbImage.IsEmpty())
-      thumbImage = m_movieItem->GetCachedVideoThumb();
+      thumbImage = CThumbLoader::GetCachedImage(*m_movieItem, "thumb");
 
-    if (!CFile::Exists(thumbImage) || m_movieItem->GetProperty("HasAutoThumb") == "1")
+    if (thumbImage.IsEmpty() || m_movieItem->GetProperty("HasAutoThumb") == "1")
     { // don't have a thumb already, try and grab one
-      m_movieItem->SetUserVideoThumb();
-      if (m_movieItem->GetThumbnailImage() != thumbImage)
-        thumbImage = m_movieItem->GetThumbnailImage();
-      if (!CFile::Exists(thumbImage) && strImage.size() > 0)
-        CScraperUrl::DownloadThumbnail(thumbImage,m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
+      CStdString localThumb = m_movieItem->GetUserVideoThumb();
+      if (!localThumb.IsEmpty())
+        thumbImage = localThumb;
+      if (thumbImage.IsEmpty() && strImage.size() > 0)
+        thumbImage = CScraperUrl::GetThumbURL(m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
 
-      if (CFile::Exists(thumbImage))
+      if (!thumbImage.IsEmpty())
       {
         if (m_movieItem->HasProperty("set_folder_thumb"))
           VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), thumbImage);
@@ -679,38 +679,31 @@ void CGUIDialogVideoInfo::OnGetThumb()
   if (result == "thumb://Current")
     return;   // user chose the one they have
 
+  CStdString newThumb;
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedVideoThumb());
-  if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
-    cachedThumb = item.GetCachedEpisodeThumb();
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
 
   if (result.Left(14) == "thumb://Remote")
   {
     int number = atoi(result.Mid(14));
-    CFile::Cache(thumbs[number], cachedThumb);
+    newThumb = thumbs[number];
   }
   else if (result == "thumb://Local")
-    CFile::Cache(localThumb, cachedThumb);
+    newThumb = localThumb;
   else if (CFile::Exists(result))
-    CPicture::CreateThumbnail(result, cachedThumb);
-  else
-    result = "thumb://None";
+    newThumb = result;
+  else // none
+    newThumb = "-"; // force local thumbs to be ignored
 
-  if (result == "thumb://None")
-  {
-    CFile::Delete(m_movieItem->GetCachedVideoThumb());
-    CFile::Delete(m_movieItem->GetCachedEpisodeThumb());
-    cachedThumb.Empty();
-  }
+  // update any cached texture
+  CThumbLoader::SetCachedImage(item, "thumb", newThumb);
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  m_movieItem->SetThumbnailImage(cachedThumb);
+  m_movieItem->SetThumbnailImage(newThumb);
   if (m_movieItem->HasProperty("set_folder_thumb"))
   { // have a folder thumb to set as well
-    VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), cachedThumb);
+    VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
   }
   m_hasUpdatedThumb = true;
 
@@ -724,12 +717,10 @@ void CGUIDialogVideoInfo::OnGetFanart()
   CFileItemList items;
 
   CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
-
-  if (CFile::Exists(cachedThumb))
+  if (item.HasProperty("fanart_image"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetThumbnailImage(item.GetProperty("fanart_image").asString());
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -779,8 +770,6 @@ void CGUIDialogVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
-
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
@@ -795,33 +784,24 @@ void CGUIDialogVideoInfo::OnGetFanart()
       db.UpdateFanart(*m_movieItem, (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType());
       db.Close();
     }
-
-    // download the fullres fanart image
-    CStdString tempFile = "special://temp/fanart_download.jpg";
-    CAsyncFileCopy downloader;
-    bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
-    if (succeeded)
-    {
-      if (flip)
-        CPicture::ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
-      else
-        CPicture::CacheFanart(tempFile, cachedThumb);
-    }
-    CFile::Delete(tempFile);
-    if (!succeeded)
-      return; // failed or cancelled download, so don't do anything
+    result = m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL();
   }
-  else if (CFile::Exists(result))
-  { // local file
-    if (flip)
-      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
-    else
-      CPicture::CacheFanart(result, cachedThumb);
+  else if (result.Equals("fanart://None") || !CFile::Exists(result))
+    result.clear();
+
+  // set the fanart image
+  if (flip && !result.IsEmpty())
+    result = CTextureCache::GetWrappedImageURL(result, "", "flipped");
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "fanart", result);
+    db.Close();
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  if (CFile::Exists(cachedThumb))
-    m_movieItem->SetProperty("fanart_image", cachedThumb);
+  if (!result.IsEmpty())
+    m_movieItem->SetProperty("fanart_image", result);
   else
     m_movieItem->ClearProperty("fanart_image");
   m_hasUpdatedThumb = true;

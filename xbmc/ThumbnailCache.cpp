@@ -154,60 +154,6 @@ CStdString CThumbnailCache::GetArtistThumb(const CStdString &label)
   return GetThumb("artist" + label, g_settings.GetMusicArtistThumbFolder());
 }
 
-CStdString CThumbnailCache::GetActorThumb(const CFileItem &item)
-{
-  return GetActorThumb(item.GetLabel());
-}
-
-CStdString CThumbnailCache::GetActorThumb(const CStdString &label)
-{
-  return GetThumb("actor" + label, g_settings.GetVideoThumbFolder(), true);
-}
-
-CStdString CThumbnailCache::GetSeasonThumb(const CFileItem &item)
-{
-  return GetSeasonThumb(item.GetLabel(), item.GetVideoInfoTag());
-}
-
-CStdString CThumbnailCache::GetSeasonThumb(const CStdString &label, const CVideoInfoTag *videoInfo /* = NULL */)
-{
-  CStdString seasonPath;
-  if (videoInfo)
-    seasonPath = videoInfo->m_strPath;
-
-  return GetThumb("season" + seasonPath + label, g_settings.GetVideoThumbFolder(), true);
-}
-
-CStdString CThumbnailCache::GetEpisodeThumb(const CFileItem &item)
-{
-  if (!item.HasVideoInfoTag())
-    return CStdString();
-
-  return GetEpisodeThumb(item.GetVideoInfoTag());
-}
-
-CStdString CThumbnailCache::GetEpisodeThumb(const CVideoInfoTag* videoInfo)
-{
-  // get the locally cached thumb
-  CStdString strCRC;
-  strCRC.Format("%sepisode%i", videoInfo->m_strFileNameAndPath.c_str(), videoInfo->m_iEpisode);
-  return GetThumb(strCRC, g_settings.GetVideoThumbFolder(), true);
-}
-
-CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
-{
-  if (item.IsStack())
-    return GetThumb(CStackDirectory::GetFirstStackedFile(item.GetPath()), g_settings.GetVideoThumbFolder(), true);
-  else if (item.IsVideoDb() && item.HasVideoInfoTag())
-  {
-    if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
-      return GetThumb(item.GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
-    else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
-  }
-  return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
-}
-
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
 {
   // get the locally cached thumb

@@ -67,8 +67,6 @@ public:
   CThumbLoader(int nThreads=-1);
   virtual ~CThumbLoader();
 
-  bool LoadRemoteThumb(CFileItem *pItem);
-
   /*! \brief Checks whether the given item has an image listed in the texture database
    \param item CFileItem to check
    \param type the type of image to retrieve
@@ -91,6 +89,20 @@ public:
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
   void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
+
+  /*! \brief Fill the thumb of a video item
+   First uses a cached thumb from a previous run, then checks for a local thumb
+   and caches it for the next run
+   \param item the CFileItem object to fill
+   \return true if we fill the thumb, false otherwise
+   */
+  static bool FillThumb(CFileItem &item);
+
+  /*! \brief helper function to retrieve a thumb URL for embedded video thumbs
+   \param item a video CFileItem.
+   \return a URL for the embedded thumb.
+   */
+  static CStdString GetEmbeddedThumbURL(const CFileItem &item);
 
   /*!
    \brief Callback from CThumbExtractor on completion of a generated image
