@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKeyboard.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "filesystem/File.h"
@@ -703,8 +704,11 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (CGUIDialogContentSettings::Show(scraper, bScan, content))
       {
         m_musicdatabase.SetScraperForPath(path,scraper);
-        if (bScan)
-          OnInfoAll(itemNumber,true);
+        if (CGUIDialogYesNo::ShowAndGetInput(20442,20443,20444,20022))
+        {
+          OnInfoAll(itemNumber,true,true);
+        }
+
       }
       return true;
     }
