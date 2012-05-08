@@ -24,6 +24,7 @@
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
+#include "GUIInfoTypes.h"
 
 using namespace std;
 
@@ -47,6 +48,8 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   diffuse = right.diffuse;
   filename = right.filename;
   useLarge = right.useLarge;
+  colorDiffuse = right.colorDiffuse;
+  borderDiffuse = right.borderDiffuse;
 
   return *this;
 }
@@ -175,12 +178,24 @@ void CGUITextureBase::Render()
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
+  if (m_info.colorDiffuse)
+  {
+	  m_diffuseColor = m_info.colorDiffuse;
+  }
   color_t color = m_diffuseColor;
+  color_t bordercolor;
+  if (m_info.borderDiffuse)
+  {
+	  bordercolor = m_info.borderDiffuse;
+  }
+  else
+  {
+	  bordercolor = color;
+  }
   if (m_alpha != 0xFF) color = MIX_ALPHA(m_alpha, m_diffuseColor);
   color = g_graphicsContext.MergeAlpha(color);
-
-  // setup our renderer
-  Begin(color);
+  if (m_alpha != 0xFF) bordercolor = MIX_ALPHA(m_alpha, bordercolor);
+  bordercolor = g_graphicsContext.MergeAlpha(bordercolor);
 
   // compute the texture coordinates
   float u1, u2, u3, v1, v2, v3;
@@ -206,6 +221,7 @@ void CGUITextureBase::Render()
   //       for flipping
 
   // left segment (0,0,u1,v3)
+  Begin(bordercolor);
   if (m_info.border.x1)
   {
     if (m_info.border.y1)
@@ -217,7 +233,6 @@ void CGUITextureBase::Render()
   // middle segment (u1,0,u2,v3)
   if (m_info.border.y1)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
-  Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
   if (m_info.border.y2)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3);
   // right segment
@@ -229,6 +244,8 @@ void CGUITextureBase::Render()
     if (m_info.border.y2)
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
   }
+  Begin(color);
+  Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
 
   // close off our renderer
   End();

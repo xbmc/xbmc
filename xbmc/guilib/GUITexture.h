@@ -32,6 +32,8 @@
 #include "TextureManager.h"
 #include "Geometry.h"
 #include "system.h" // HAS_GL, HAS_DX, etc
+#include "GUIInfoTypes.h"
+
 
 typedef uint32_t color_t;
 
@@ -79,6 +81,8 @@ public:
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse;     // diffuse overlay texture
   CStdString filename;    // main texture file
+  CGUIInfoColor colorDiffuse; //main diffuse color
+  CGUIInfoColor borderDiffuse; //diffuse color for border
 };
 
 class CGUITextureBase
