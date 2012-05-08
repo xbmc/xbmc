@@ -108,6 +108,7 @@ const BUILT_IN commands[] = {
   { "Restart",                    false,  "Restart the xbox (power cycle)" },
   { "ShutDown",                   false,  "Shutdown the xbox" },
   { "Powerdown",                  false,  "Powerdown system" },
+  { "PowerdownAfterPlay",         false,  "Powerdown system when playback ends" },
   { "Quit",                       false,  "Quit XBMC" },
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
@@ -274,6 +275,15 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("minimize"))
   {
     g_application.getApplicationMessenger().Minimize();
+  }
+  else if (execute.Equals("powerdownafterplay"))
+  {
+    bool powerOffAfterPlay = false;
+    if (params.size() > 0)
+    {
+      powerOffAfterPlay = params[0].Equals("true");
+    }
+    g_application.SetPowerdownAfterPlay(powerOffAfterPlay);
   }
   else if (execute.Equals("loadprofile"))
   {

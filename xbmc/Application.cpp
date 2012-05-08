@@ -399,6 +399,9 @@ CApplication::CApplication(void)
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
+  
+  m_bPowerdownAfterPlay = false;
+
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
@@ -2006,6 +2009,17 @@ float CApplication::GetDimScreenSaverLevel() const
   if (!m_screenSaver->GetSetting("level").IsEmpty())
     return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
   return 100.0f;
+}
+
+void CApplication::SetPowerdownAfterPlay(bool bOnOff)
+{
+  // toggle on m_bPowerdownAfterPlay only if supported
+  m_bPowerdownAfterPlay = g_powerManager.CanPowerdown() && bOnOff;
+}
+
+bool CApplication::GetPowerdownAfterPlay() const
+{
+  return m_bPowerdownAfterPlay;
 }
 
 bool CApplication::WaitFrame(unsigned int timeout)
@@ -4796,6 +4810,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_settings.Save();    // save vis settings
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
+      }
+
+      // user wants XBMC to power off system after playing current item(s)
+      if (m_bPowerdownAfterPlay)
+      {
+        // abort power off if playback stopped
+        m_bPowerdownAfterPlay &= (message.GetMessage() != GUI_MSG_PLAYBACK_STOPPED);
+
+        // power off only when player ended playing the (last) item
+        if (m_bPowerdownAfterPlay && (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED) && !IsPlaying())
+        {
+          g_application.getApplicationMessenger().Powerdown();
+        }
       }
 
       if (IsEnableTestMode()) g_application.getApplicationMessenger().Quit();
