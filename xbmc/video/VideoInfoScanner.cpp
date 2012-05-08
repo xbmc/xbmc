@@ -1620,7 +1620,7 @@ namespace VIDEO
         else if (!i->thumbUrl.GetFirstThumb().m_url.IsEmpty())
           i->thumb = CScraperUrl::GetThumbURL(i->thumbUrl.GetFirstThumb());
         if (!i->thumb.IsEmpty())
-          CTextureCache::Get().BackgroundCacheImage(strLocal);
+          CTextureCache::Get().BackgroundCacheImage(i->thumb);
       }
     }
   }
