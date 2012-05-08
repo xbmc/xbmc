@@ -1660,6 +1660,9 @@
     <ClCompile Include="..\..\xbmc\utils\md5.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\PCMAmplifier.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -1700,6 +1703,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
