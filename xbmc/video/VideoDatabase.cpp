@@ -4294,6 +4294,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       {
         CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
         pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv(0).get_asInt();
+        pItem->GetVideoInfoTag()->m_type = "set";
         CStdString strDir;
         strDir.Format("%ld/", m_pDS->fv(0).get_asInt());
         pItem->SetPath(strBaseDir + strDir);
