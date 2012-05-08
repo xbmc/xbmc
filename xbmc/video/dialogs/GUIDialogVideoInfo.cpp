@@ -696,8 +696,13 @@ void CGUIDialogVideoInfo::OnGetThumb()
   else // none
     newThumb = "-"; // force local thumbs to be ignored
 
-  // update any cached texture
-  CThumbLoader::SetCachedImage(item, "thumb", newThumb);
+  // update thumb in the database
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "thumb", newThumb);
+    db.Close();
+  }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem->SetThumbnailImage(newThumb);
