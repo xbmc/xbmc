@@ -436,7 +436,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("locale.language"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
+      GetSetting(pSetting->GetSetting())->SetDelayed();
       FillInLanguages(pSetting);
+      continue;
+    }
+    else if (strSetting.Equals("locale.audiolanguage") || strSetting.Equals("locale.subtitlelanguage"))
+    {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
+      vector<CStdString> languages;
+      languages.push_back(g_localizeStrings.Get(308));
+      languages.push_back(g_localizeStrings.Get(309));
+      vector<CStdString> languageKeys;
+      languageKeys.push_back("original");
+      languageKeys.push_back("default");
+      FillInLanguages(pSetting, languages, languageKeys);
       continue;
     }
 #ifdef _LINUX
@@ -1447,6 +1460,52 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_graphicsContext.IsFullScreenRoot())
       g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
   }
+  else if (strSetting.Equals("locale.audiolanguage"))
+  { // new audio language chosen...
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    int iLanguage = pControl->GetValue();
+    if (iLanguage < 2)
+    {
+      if (iLanguage < 1)
+        g_guiSettings.SetString(strSetting, "original");
+      else
+        g_guiSettings.SetString(strSetting, "default");
+      g_langInfo.SetAudioLanguage("");
+    }
+    else
+    {
+      CStdString strLanguage = pControl->GetCurrentLabel();
+      if (strLanguage != pSettingString->GetData())
+      {
+        g_guiSettings.SetString(strSetting, strLanguage);
+        g_langInfo.SetAudioLanguage(strLanguage);
+      }
+    }
+  }
+  else if (strSetting.Equals("locale.subtitlelanguage"))
+  { // new subtitle language chosen...
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    int iLanguage = pControl->GetValue();
+    if (iLanguage < 2)
+    {
+      if (iLanguage < 1)
+        g_guiSettings.SetString(strSetting, "original");
+      else
+        g_guiSettings.SetString(strSetting, "default");
+      g_langInfo.SetSubtitleLanguage("");
+    }
+    else
+    {
+      CStdString strLanguage = pControl->GetCurrentLabel();
+      if (strLanguage != pSettingString->GetData())
+      {
+        g_guiSettings.SetString(strSetting, strLanguage);
+        g_langInfo.SetSubtitleLanguage(strLanguage);
+      }
+    }
+  }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2348,12 +2407,11 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
   }
 }
 
-void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting, const std::vector<CStdString> &languages /* = std::vector<CStdString>() */, const std::vector<CStdString> &languageKeys /* = std::vector<CStdString>() */)
 {
   CSettingString *pSettingString = (CSettingString *)pSetting;
   CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  setting->SetDelayed();
   pControl->Clear();
 
   //find languages...
@@ -2361,7 +2419,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   CDirectory::GetDirectory("special://xbmc/language/", items);
 
   int iCurrentLang = 0;
-  int iLanguage = 0;
   vector<CStdString> vecLanguage;
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2376,12 +2433,16 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
+  // Add language options passed by parameter at the beginning
+  if (languages.size() > 0)
+    vecLanguage.insert(vecLanguage.begin(), languages.begin(), languages.begin() + languages.size());
   for (unsigned int i = 0; i < vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
-    if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
-      iCurrentLang = iLanguage;
-    pControl->AddLabel(strLanguage, iLanguage++);
+    if ((i < languageKeys.size() && strcmpi(languageKeys[i].c_str(), pSettingString->GetData().c_str()) == 0) ||
+        strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
+      iCurrentLang = i;
+    pControl->AddLabel(strLanguage, i);
   }
 
   pControl->SetValue(iCurrentLang);

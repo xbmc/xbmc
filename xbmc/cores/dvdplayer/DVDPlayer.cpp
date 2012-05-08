@@ -74,6 +74,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "LangInfo.h"
 
 using namespace std;
 
@@ -114,6 +115,88 @@ SelectionStream& CSelectionStreams::Get(StreamType type, int index)
   }
   CLog::Log(LOGERROR, "%s - failed to get stream", __FUNCTION__);
   return m_invalid;
+}
+
+std::vector<SelectionStream> CSelectionStreams::Get(StreamType type)
+{
+  std::vector<SelectionStream> streams;
+  int count = Count(type);
+  for(int index = 0; index < count; ++index){
+    streams.push_back(Get(type, index));
+  }
+  return streams;
+}
+
+#define PREDICATE_RETURN(lh, rh) \
+  do { \
+    if((lh) != (rh)) \
+      return (lh) > (rh); \
+  } while(0)
+
+static bool PredicateAudioPriority(const SelectionStream& lh, const SelectionStream& rh)
+{
+  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_AudioStream
+                 , rh.type_index == g_settings.m_currentVideoSettings.m_AudioStream);
+
+  if(!g_guiSettings.GetString("locale.audiolanguage").Equals("original"))
+  {
+    CStdString audio_language = g_langInfo.GetAudioLanguage();
+    PREDICATE_RETURN(audio_language.Equals(lh.language.c_str())
+                   , audio_language.Equals(rh.language.c_str()));
+  }
+
+  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+
+  PREDICATE_RETURN(lh.channels
+                 , rh.channels);
+
+  PREDICATE_RETURN(StreamUtils::GetCodecPriority(lh.codec)
+                 , StreamUtils::GetCodecPriority(rh.codec));
+  return false;
+}
+
+static bool PredicateSubtitlePriority(const SelectionStream& lh, const SelectionStream& rh)
+{
+  if(!g_settings.m_currentVideoSettings.m_SubtitleOn)
+  {
+    PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_FORCED
+                   , rh.flags & CDemuxStream::FLAG_FORCED);
+  }
+
+  PREDICATE_RETURN(lh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream
+                 , rh.type_index == g_settings.m_currentVideoSettings.m_SubtitleStream);
+
+  CStdString subtitle_language = g_langInfo.GetSubtitleLanguage();
+  if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
+  {
+    PREDICATE_RETURN((lh.source == STREAM_SOURCE_DEMUX_SUB || lh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(lh.language.c_str())
+                   , (rh.source == STREAM_SOURCE_DEMUX_SUB || rh.source == STREAM_SOURCE_TEXT) && subtitle_language.Equals(rh.language.c_str()));
+  }
+
+  PREDICATE_RETURN(lh.source == STREAM_SOURCE_DEMUX_SUB
+                 , rh.source == STREAM_SOURCE_DEMUX_SUB);
+
+  PREDICATE_RETURN(lh.source == STREAM_SOURCE_TEXT
+                 , rh.source == STREAM_SOURCE_TEXT);
+
+  if(!g_guiSettings.GetString("locale.subtitlelanguage").Equals("original"))
+  {
+    PREDICATE_RETURN(subtitle_language.Equals(lh.language.c_str())
+                   , subtitle_language.Equals(rh.language.c_str()));
+  }
+
+  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+
+  return false;
+}
+
+static bool PredicateVideoPriority(const SelectionStream& lh, const SelectionStream& rh)
+{
+  PREDICATE_RETURN(lh.flags & CDemuxStream::FLAG_DEFAULT
+                 , rh.flags & CDemuxStream::FLAG_DEFAULT);
+  return false;
 }
 
 bool CSelectionStreams::Get(StreamType type, CDemuxStream::EFlags flag, SelectionStream& out)
@@ -204,9 +287,16 @@ void CSelectionStreams::Update(SelectionStream& s)
   CSingleLock lock(m_section);
   int index = IndexOf(s.type, s.source, s.id);
   if(index >= 0)
-    Get(s.type, index) = s;
+  {
+    SelectionStream& o = Get(s.type, index);
+    s.type_index = o.type_index;
+    o = s;
+  }
   else
+  {
+    s.type_index = Count(s.type);
     m_Streams.push_back(s);
+  }
 }
 
 void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
@@ -572,178 +662,59 @@ bool CDVDPlayer::OpenDemuxStream()
 
 void CDVDPlayer::OpenDefaultStreams()
 {
-  int  count;
+  SelectionStreams streams;
   bool valid;
-  bool force = false;
-  SelectionStream st;
 
   // open video stream
-  count = m_SelectionStreams.Count(STREAM_VIDEO);
-  valid = false;
-
-  if(!valid
-  && m_SelectionStreams.Get(STREAM_VIDEO, CDemuxStream::FLAG_DEFAULT, st))
+  streams = m_SelectionStreams.Get(STREAM_VIDEO, PredicateVideoPriority);
+  valid   = false;
+  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenVideoStream(st.id, st.source))
-      valid = true;
-    else
-      CLog::Log(LOGWARNING, "%s - failed to open default stream (%d)", __FUNCTION__, st.id);
-  }
-
-  for(int i = 0;i<count && !valid;i++)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, i);
-    if(OpenVideoStream(s.id, s.source))
-      valid = true;
+    if(OpenVideoStream(it->id, it->source))
+      valid = true;;
   }
   if(!valid)
     CloseVideoStream(true);
 
-  if(!m_PlayerOptions.video_only)
+  // open audio stream
+  if(m_PlayerOptions.video_only)
+    streams.clear();
+  else
+    streams = m_SelectionStreams.Get(STREAM_AUDIO, PredicateAudioPriority);
+  valid   = false;
+
+  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    // open audio stream
-    count = m_SelectionStreams.Count(STREAM_AUDIO);
-    valid = false;
-    if(g_settings.m_currentVideoSettings.m_AudioStream >= 0
-    && g_settings.m_currentVideoSettings.m_AudioStream < count)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, g_settings.m_currentVideoSettings.m_AudioStream);
-      if(OpenAudioStream(s.id, s.source))
-        valid = true;
-      else
-        CLog::Log(LOGWARNING, "%s - failed to restore selected audio stream (%d)", __FUNCTION__, g_settings.m_currentVideoSettings.m_AudioStream);
-    }
-
-    if(!valid
-    && m_SelectionStreams.Get(STREAM_AUDIO, CDemuxStream::FLAG_DEFAULT, st))
-    {
-      if(OpenAudioStream(st.id, st.source))
-        valid = true;
-      else
-        CLog::Log(LOGWARNING, "%s - failed to open default stream (%d)", __FUNCTION__, st.id);
-    }
-
-    if(!valid
-    && count > 1)
-    {
-      /*
-       * If there is more than one audio stream and a valid one is not chosen yet, select the one
-       * with the maximum number of channels or the best codec if the same number of channels.
-       */
-      int max_channels = -1;
-      int max_codec_priority = -1;
-      CStdString max_codec;
-      int max_stream_id = -1;
-      for(int i = 0; i < count; i++)
-      {
-        SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-        if(s.source == STREAM_SOURCE_DEMUX) // Only demux streams
-        {
-          int codec_priority = StreamUtils::GetCodecPriority(s.codec);
-          if(s.channels > max_channels
-          ||(s.channels == max_channels && codec_priority > max_codec_priority))
-          {
-            max_channels = s.channels;
-            max_codec_priority = codec_priority;
-            max_codec = s.codec;
-            max_stream_id = i;
-          }
-        }
-      }
-      if(max_stream_id >= 0)
-      {
-        SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, max_stream_id);
-        if(OpenAudioStream(s.id, s.source))
-        {
-          valid = true;
-          CLog::Log(LOGDEBUG, "%s - using automatically selected audio stream (%d) based on codec '%s' and maximum number of channels '%d'",
-                    __FUNCTION__, s.id, max_codec.c_str(), max_channels);
-        }
-        else
-          CLog::Log(LOGWARNING, "%s - failed to open automatically selected audio stream (%d)", __FUNCTION__, s.id);
-      }
-    }
-
-    for(int i = 0; i<count && !valid; i++)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, i);
-      if(OpenAudioStream(s.id, s.source))
-        valid = true;
-    }
-    if(!valid)
-      CloseAudioStream(true);
-  }
-
-  // open subtitle stream
-  count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-  valid = false;
-
-  // if subs are disabled, check for forced
-  if(!valid && !g_settings.m_currentVideoSettings.m_SubtitleOn 
-  && m_SelectionStreams.Get(STREAM_SUBTITLE, CDemuxStream::FLAG_FORCED, st))
-  {
-    if(OpenSubtitleStream(st.id, st.source))
-    {
-      valid = true;
-      force = true;
-    }
-    else
-      CLog::Log(LOGWARNING, "%s - failed to open default/forced stream (%d)", __FUNCTION__, st.id);
-  }
-
-  // restore selected
-  if(!valid
-  && g_settings.m_currentVideoSettings.m_SubtitleStream >= 0
-  && g_settings.m_currentVideoSettings.m_SubtitleStream < count)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_settings.m_currentVideoSettings.m_SubtitleStream);
-    if(OpenSubtitleStream(s.id, s.source))
-      valid = true;
-    else
-      CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_settings.m_currentVideoSettings.m_SubtitleStream);
-  }
-
-  // check if there are external subtitles available
-  for(int i = 0;i<count && !valid; i++)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-    if ((s.source == STREAM_SOURCE_DEMUX_SUB || s.source == STREAM_SOURCE_TEXT)
-    && OpenSubtitleStream(s.id, s.source))
-      valid = true;
-  }
-
-  // select default
-  if(!valid
-  && m_SelectionStreams.Get(STREAM_SUBTITLE, CDemuxStream::FLAG_DEFAULT, st))
-  {
-    if(OpenSubtitleStream(st.id, st.source))
-      valid = true;
-    else
-      CLog::Log(LOGWARNING, "%s - failed to open default/forced stream (%d)", __FUNCTION__, st.id);
-  }
-
-  // select first
-  for(int i = 0;i<count && !valid; i++)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-    if(OpenSubtitleStream(s.id, s.source))
+    if(OpenAudioStream(it->id, it->source))
       valid = true;
   }
   if(!valid)
-    CloseSubtitleStream(false);
+    CloseAudioStream(true);
 
-  if(valid && (g_settings.m_currentVideoSettings.m_SubtitleOn || force) && !m_PlayerOptions.video_only)
-    m_dvdPlayerVideo.EnableSubtitle(true);
-  else
-    m_dvdPlayerVideo.EnableSubtitle(false);
+  // enable subtitles
+  m_dvdPlayerVideo.EnableSubtitle(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
-  // open teletext data stream
-  count = m_SelectionStreams.Count(STREAM_TELETEXT);
-  valid = false;
-  for(int i = 0;i<count && !valid;i++)
+  // open subtitle stream
+  streams = m_SelectionStreams.Get(STREAM_SUBTITLE, PredicateSubtitlePriority);
+  valid   = false;
+  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_TELETEXT, i);
-    if(OpenTeletextStream(s.id, s.source))
+    if(OpenSubtitleStream(it->id, it->source))
+    {
+      valid = true;
+      if(it->flags & CDemuxStream::FLAG_FORCED)
+        m_dvdPlayerVideo.EnableSubtitle(true);
+    }
+  }
+  if(!valid)
+    CloseSubtitleStream(true);
+
+  // open teletext stream
+  streams = m_SelectionStreams.Get(STREAM_TELETEXT);
+  valid   = false;
+  for(SelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
+  {
+    if(OpenTeletextStream(it->id, it->source))
       valid = true;
   }
   if(!valid)

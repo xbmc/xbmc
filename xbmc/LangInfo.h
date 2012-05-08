@@ -37,6 +37,22 @@ public:
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
 
+  // three char language code (not win32 specific)
+  const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
+
+  const CStdString& GetAudioLanguage() const;
+  // language can either be a two char language code as defined in ISO639
+  // or a three char language code
+  // or a language name in english (as used by XBMC)
+  void SetAudioLanguage(const CStdString &language);
+  
+  // three char language code (not win32 specific)
+  const CStdString& GetSubtitleLanguage() const;
+  // language can either be a two char language code as defined in ISO639
+  // or a three char language code
+  // or a language name in english (as used by XBMC)
+  void SetSubtitleLanguage(const CStdString &language);
+
   const CStdString& GetDVDMenuLanguage() const;
   const CStdString& GetDVDAudioLanguage() const;
   const CStdString& GetDVDSubtitleLanguage() const;
@@ -141,6 +157,11 @@ protected:
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
+
+  CStdString m_audioLanguage;
+  CStdString m_subtitleLanguage;
+  // this is the general (not win32-specific) three char language code
+  CStdString m_languageCodeGeneral;
 };
 
 
