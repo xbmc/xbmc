@@ -175,6 +175,15 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
+void CScraperUrl::GetSeasonThumbs(map<int, string> &thumbs) const
+{
+  for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  {
+    if (iter->m_type == URL_TYPE_SEASON && thumbs.find(iter->m_season) == thumbs.end())
+      thumbs.insert(make_pair(iter->m_season, GetThumbURL(*iter)));
+  }
+}
+
 bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)
 {
   CURL url(scrURL.m_url);

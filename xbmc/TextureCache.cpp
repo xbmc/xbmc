@@ -98,18 +98,22 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cach
   return "";
 }
 
-CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type)
+CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options)
 {
-  CStdString url(image);
-  CURL::Encode(url);
-  return "image://" + type + "@" + url;
+  CStdString encoded(image);
+  CURL::Encode(encoded);
+  CStdString url = "image://";
+  if (!type.IsEmpty())
+    url += type + "@";
+  url += encoded;
+  if (!options.IsEmpty())
+    url += "/transform?" + options;
+  return url;
 }
 
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
 {
-  CStdString url(image);
-  CURL::Encode(url);
-  return "image://" + url + "/transform?size=thumb";
+  return GetWrappedImageURL(image, "", "size=thumb");
 }
 
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)

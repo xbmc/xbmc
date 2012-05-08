@@ -199,11 +199,7 @@ public:
   CPictureInfoTag* GetPictureInfoTag();
 
   // Gets the cached thumb filename (no existence checks)
-  CStdString GetCachedVideoThumb() const;
-  CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedArtistThumb() const;
-  CStdString GetCachedSeasonThumb() const;
-  CStdString GetCachedActorThumb() const;
   /*!
    \brief Get the cached fanart path for this item if it exists
    \return path to the cached fanart for this item, or empty if none exists
@@ -212,8 +208,6 @@ public:
   CStdString GetCachedFanart() const;
   static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
 
-  // Sets the video thumb (cached first, else caches user thumb)
-  void SetVideoThumb();
   /*!
    \brief Cache a copy of the local fanart for this item if we don't already have an image cached
    \return true if we already have cached fanart or if the caching was successful, false if no image is cached.
@@ -228,10 +222,8 @@ public:
   CStdString GetLocalFanart() const;
 
   // Sets the cached thumb for the item if it exists
-  void SetCachedVideoThumb();
   void SetCachedArtistThumb();
   void SetCachedMusicThumb();
-  void SetCachedSeasonThumb();
 
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
@@ -258,7 +250,6 @@ public:
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
 
   // Caches the user thumb and assigns it to the item
-  void SetUserVideoThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
   /*! \brief Get the path where we expect local metadata to reside.
@@ -471,7 +462,6 @@ public:
   void RemoveDiscCache(int windowID = 0) const;
   bool AlwaysCache() const;
 
-  void SetCachedVideoThumbs();
   void SetCachedMusicThumbs();
 
   void Swap(unsigned int item1, unsigned int item2);

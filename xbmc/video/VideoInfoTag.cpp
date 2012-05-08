@@ -28,7 +28,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
-#include "ThumbnailCache.h"
+#include "TextureCache.h"
 #include "filesystem/File.h"
 
 #include <sstream>
@@ -91,9 +91,10 @@ void CVideoInfoTag::Reset()
   m_iIdShow = -1;
   m_strShowPath.clear();
   m_dateAdded.Reset();
+  m_type.clear();
 }
 
-bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
+bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo, const TiXmlElement *additionalNode)
 {
   if (!node) return false;
 
@@ -243,6 +244,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
 
   XMLUtils::SetString(movie, "dateadded", m_dateAdded.GetAsDBDateTime());
 
+  if (additionalNode)
+    movie->InsertEndChild(*additionalNode);
+
   return true;
 }
 
@@ -280,6 +284,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     {
       ar << m_cast[i].strName;
       ar << m_cast[i].strRole;
+      ar << m_cast[i].thumb;
       ar << m_cast[i].thumbUrl.m_xml;
     }
 
@@ -323,6 +328,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iIdShow;
     ar << m_strShowPath;
     ar << m_dateAdded.GetAsDBDateTime();
+    ar << m_type;
   }
   else
   {
@@ -350,6 +356,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
       SActorInfo info;
       ar >> info.strName;
       ar >> info.strRole;
+      ar >> info.thumb;
       CStdString strXml;
       ar >> strXml;
       info.thumbUrl.ParseString(strXml);
@@ -399,6 +406,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     CStdString dateAdded;
     ar >> dateAdded;
     m_dateAdded.SetFromDBDateTime(dateAdded);
+    ar >> m_type;
   }
 }
 
@@ -424,9 +432,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
     CVariant actor;
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
-    CStdString thumb = CThumbnailCache::GetActorThumb(m_cast[i].strName);
-    if (XFILE::CFile::Exists(thumb))
-      actor["thumbnail"] = thumb;
+    if (!m_cast[i].thumb.IsEmpty()) // TODO: json-rpc should use real URLs just like everywhere else
+      actor["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
   value["set"] = m_set;
@@ -468,6 +475,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["tvshowid"] = m_iIdShow;
   value["tvshowpath"] = m_strShowPath;
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
+  value["type"] = m_type;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
