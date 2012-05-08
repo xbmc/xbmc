@@ -821,13 +821,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
         responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime(), position);
-
-        //unpause media on GET scrub when paused
-        if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-        {
-          g_application.getApplicationMessenger().MediaPause();
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-        }
       }
       else 
       {
