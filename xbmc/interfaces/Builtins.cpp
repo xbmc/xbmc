@@ -53,6 +53,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
+#if defined(__APPLE__)
+#include "osx/CoreAudio.h"
+#endif
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -206,6 +209,7 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
+  { "SetAudioOutputDevice",       true,   "Set XBMC audio output device" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1557,6 +1561,18 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
+  }
+  else if (execute.Equals("setaudiooutputdevice"))
+  {
+#ifdef __APPLE__
+    AudioDeviceID device = CCoreAudioHardware::FindAudioDevice(strParameterCaseIntact);
+    if (device)
+    {
+      CLog::Log(LOGINFO, "Setting audio device: %s", strParameterCaseIntact.c_str());
+      g_guiSettings.SetString("audiooutput.audiodevice", strParameterCaseIntact);
+      //TODO: Bonus points-- switch current stream to new device
+    }
+#endif
   }
   else
     return -1;
