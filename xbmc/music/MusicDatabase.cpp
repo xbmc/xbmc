@@ -96,97 +96,97 @@ bool CMusicDatabase::CreateTables()
   {
     CDatabase::CreateTables();
 
-    CLog::Log(LOGINFO, "create artist table");
+    CLog::Log(LOGINFO, "Create artist table");
     m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256))\n");
-    CLog::Log(LOGINFO, "create album table");
+    CLog::Log(LOGINFO, "Create album table");
     m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)\n");
-    CLog::Log(LOGINFO, "create genre table");
+    CLog::Log(LOGINFO, "Create genre table");
     m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre varchar(256))\n");
-    CLog::Log(LOGINFO, "create path table");
+    CLog::Log(LOGINFO, "Create path table");
     m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
-    CLog::Log(LOGINFO, "create song table");
+    CLog::Log(LOGINFO, "Create song table");
     m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
-    CLog::Log(LOGINFO, "create albuminfo table");
+    CLog::Log(LOGINFO, "Create albuminfo table");
     m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strImage text, strLabel text, strType text, iRating integer)\n");
-    CLog::Log(LOGINFO, "create albuminfosong table");
+    CLog::Log(LOGINFO, "Create albuminfosong table");
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
-    CLog::Log(LOGINFO, "create thumb table");
+    CLog::Log(LOGINFO, "Create thumb table");
     m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb varchar(256))\n");
-    CLog::Log(LOGINFO, "create artistnfo table");
+    CLog::Log(LOGINFO, "Create artistnfo table");
     m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
-    CLog::Log(LOGINFO, "create content table");
+    CLog::Log(LOGINFO, "Create content table");
     m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)\n");
-    CLog::Log(LOGINFO, "create discography table");
+    CLog::Log(LOGINFO, "Create discography table");
     m_pDS->exec("CREATE TABLE discography (idArtist integer, strAlbum text, strYear text)\n");
 
-    CLog::Log(LOGINFO, "create exartistsong table");
+    CLog::Log(LOGINFO, "Create exartistsong table");
     m_pDS->exec("CREATE TABLE exartistsong ( idSong integer, iPosition integer, idArtist integer)\n");
-    CLog::Log(LOGINFO, "create extragenresong table");
+    CLog::Log(LOGINFO, "Create extragenresong table");
     m_pDS->exec("CREATE TABLE exgenresong ( idSong integer, iPosition integer, idGenre integer)\n");
-    CLog::Log(LOGINFO, "create exartistalbum table");
+    CLog::Log(LOGINFO, "Create exartistalbum table");
     m_pDS->exec("CREATE TABLE exartistalbum ( idAlbum integer, iPosition integer, idArtist integer)\n");
-    CLog::Log(LOGINFO, "create exgenrealbum table");
+    CLog::Log(LOGINFO, "Create exgenrealbum table");
     m_pDS->exec("CREATE TABLE exgenrealbum ( idAlbum integer, iPosition integer, idGenre integer)\n");
 
-    CLog::Log(LOGINFO, "create karaokedata table");
+    CLog::Log(LOGINFO, "Create karaokedata table");
     m_pDS->exec("CREATE TABLE karaokedata ( iKaraNumber integer, idSong integer, iKaraDelay integer, strKaraEncoding text, "
                 "strKaralyrics text, strKaraLyrFileCRC text )\n");
 
     // Indexes
-    CLog::Log(LOGINFO, "create exartistsong index");
+    CLog::Log(LOGINFO, "Create exartistsong index");
     m_pDS->exec("CREATE INDEX idxExtraArtistSong ON exartistsong(idSong)");
     m_pDS->exec("CREATE INDEX idxExtraArtistSong2 ON exartistsong(idArtist)");
-    CLog::Log(LOGINFO, "create exgenresong index");
+    CLog::Log(LOGINFO, "Create exgenresong index");
     m_pDS->exec("CREATE INDEX idxExtraGenreSong ON exgenresong(idSong)");
     m_pDS->exec("CREATE INDEX idxExtraGenreSong2 ON exgenresong(idGenre)");
-    CLog::Log(LOGINFO, "create exartistalbum index");
+    CLog::Log(LOGINFO, "Create exartistalbum index");
     m_pDS->exec("CREATE INDEX idxExtraArtistAlbum ON exartistalbum(idAlbum)");
     m_pDS->exec("CREATE INDEX idxExtraArtistAlbum2 ON exartistalbum(idArtist)");
-    CLog::Log(LOGINFO, "create exgenrealbum index");
+    CLog::Log(LOGINFO, "Create exgenrealbum index");
     m_pDS->exec("CREATE INDEX idxExtraGenreAlbum ON exgenrealbum(idAlbum)");
     m_pDS->exec("CREATE INDEX idxExtraGenreAlbum2 ON exgenrealbum(idGenre)");
 
-    CLog::Log(LOGINFO, "create album index");
+    CLog::Log(LOGINFO, "Create album index");
     m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-    CLog::Log(LOGINFO, "create album index2");
+    CLog::Log(LOGINFO, "Create album index2");
     m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
 
-    CLog::Log(LOGINFO, "create genre index");
+    CLog::Log(LOGINFO, "Create genre index");
     m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
-    CLog::Log(LOGINFO, "create artist index");
+    CLog::Log(LOGINFO, "Create artist index");
     m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
-    CLog::Log(LOGINFO, "create path index");
+    CLog::Log(LOGINFO, "Create path index");
     m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
 
-    CLog::Log(LOGINFO, "create song index");
+    CLog::Log(LOGINFO, "Create song index");
     m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-    CLog::Log(LOGINFO, "create song index1");
+    CLog::Log(LOGINFO, "Create song index1");
     m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-    CLog::Log(LOGINFO, "create song index2");
+    CLog::Log(LOGINFO, "Create song index2");
     m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-    CLog::Log(LOGINFO, "create song index3");
+    CLog::Log(LOGINFO, "Create song index3");
     m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-    CLog::Log(LOGINFO, "create song index4");
+    CLog::Log(LOGINFO, "Create song index4");
     m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
-    CLog::Log(LOGINFO, "create song index5");
+    CLog::Log(LOGINFO, "Create song index5");
     m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
-    CLog::Log(LOGINFO, "create song index6");
+    CLog::Log(LOGINFO, "Create song index6");
     m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
 
-    CLog::Log(LOGINFO, "create thumb index");
+    CLog::Log(LOGINFO, "Create thumb index");
     m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
     //m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
-    CLog::Log(LOGINFO, "create artistinfo index");
+    CLog::Log(LOGINFO, "Create artistinfo index");
     m_pDS->exec("CREATE INDEX idxArtistInfo on artistinfo(idArtist)");
-    CLog::Log(LOGINFO, "create albuminfo index");
+    CLog::Log(LOGINFO, "Create albuminfo index");
     m_pDS->exec("CREATE INDEX idxAlbumInfo on albuminfo(idAlbum)");
 
-    CLog::Log(LOGINFO, "create karaokedata index");
+    CLog::Log(LOGINFO, "Create karaokedata index");
     m_pDS->exec("CREATE INDEX idxKaraNumber on karaokedata(iKaraNumber)");
     m_pDS->exec("CREATE INDEX idxKarSong on karaokedata(idSong)");
 
     // Trigger
-    CLog::Log(LOGINFO, "create albuminfo trigger");
+    CLog::Log(LOGINFO, "Create albuminfo trigger");
     m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbumInfo; END");
 
     // we create views last to ensure all indexes are rolled in
