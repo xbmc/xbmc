@@ -1789,9 +1789,6 @@
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp">
       <Filter>video\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\windowing\WinEventsSDL.cpp">
-      <Filter>windowing</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp">
       <Filter>windowing</Filter>
     </ClCompile>
@@ -2275,7 +2272,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp">
       <Filter>network\httprequesthandler</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\XBMCTinyXML.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4427,9 +4424,6 @@
     <ClInclude Include="..\..\xbmc\windowing\WinEvents.h">
       <Filter>windowing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\windowing\WinEventsSDL.h">
-      <Filter>windowing</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h">
       <Filter>windowing</Filter>
     </ClInclude>
@@ -5181,7 +5175,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h">
       <Filter>filesystem</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\XBMCTinyXML.h">
       <Filter>utils</Filter>
     </ClInclude>

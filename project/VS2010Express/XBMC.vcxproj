@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (DirectX)|Win32">
@@ -1364,7 +1364,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\windowing\WinEventsSDL.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp" />
@@ -2180,7 +2179,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windowing\WinEvents.h" />
-    <ClInclude Include="..\..\xbmc\windowing\WinEventsSDL.h" />
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h" />
     <ClInclude Include="..\..\xbmc\windowing\XBMC_events.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h" />
