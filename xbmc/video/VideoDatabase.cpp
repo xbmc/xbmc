@@ -2614,6 +2614,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     strSQL=PrepareSQL("delete from directorlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
+    strSQL=PrepareSQL("delete from writerlinkepisode where idEpisode=%i", idEpisode);
+    m_pDS->exec(strSQL.c_str());
+
     if (!bKeepThumb)
       DeleteThumbForItem(strFilenameAndPath, false, idEpisode);
 
