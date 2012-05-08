@@ -845,6 +845,9 @@ void CGUISettings::Initialize()
   AddBool(loc, "locale.timeserver", 168, false);
   AddString(loc, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
+  AddSeparator(loc, "locale.sep3");
+  AddString(loc, "locale.audiolanguage", 285, "original", SPIN_CONTROL_TEXT);
+  AddString(loc, "locale.subtitlelanguage", 286, "original", SPIN_CONTROL_TEXT);
 
   CSettingsCategory* fl = AddCategory(7, "filelists", 14081);
   AddBool(fl, "filelists.showparentdiritems", 13306, true);
@@ -1263,6 +1266,18 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     g_timezone.SetTimezone(timezone);	
   }
 #endif
+
+  CStdString streamLanguage = GetString("locale.audiolanguage");
+  if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
+    g_langInfo.SetAudioLanguage(streamLanguage);
+  else
+    g_langInfo.SetAudioLanguage("");
+
+  streamLanguage = GetString("locale.subtitlelanguage");
+  if (!streamLanguage.Equals("original") && !streamLanguage.Equals("default"))
+    g_langInfo.SetSubtitleLanguage(streamLanguage);
+  else
+    g_langInfo.SetSubtitleLanguage("");
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)

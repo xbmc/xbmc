@@ -1030,7 +1030,13 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#empty strings from id 285 to 286
+#: id:285
+msgid "Preferred audio language"
+msgstr ""  
+
+#: id:286  
+msgid "Preferred subtitle language"
+msgstr ""
 
 #: id:287
 msgctxt "Auto context with id 287"
@@ -1117,7 +1123,17 @@ msgstr ""
 msgid "Non-interleaved"
 msgstr ""
 
-#empty strings from id 307 to 311
+#empty string with id 307
+
+#: id:308
+msgid "Original stream's language"
+msgstr ""
+
+#: id:309 
+msgid "User Interface language"
+msgstr ""
+
+#empty strings from id 310 to 311
 
 #: id:312
 msgid "(0=auto)"
