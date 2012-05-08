@@ -42,10 +42,10 @@ CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
     m_dllAvUtil.av_freep(&m_CodecCtx);
   }
 
-  if(m_dllAvCodec.IsLoaded())
+  if(m_dllSwResample.IsLoaded())
   {
     if (m_AudioConvert)
-      m_dllAvCodec.av_audio_convert_free(m_AudioConvert);
+      m_dllSwResample.swr_free(&m_AudioConvert);
   }
   delete[] m_Buffer;
   delete[] m_TmpBuffer;
@@ -55,7 +55,7 @@ CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
 bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels *channelMap, unsigned int bitsPerSample, unsigned int sampleRate)
 {
   Reset();
-  if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+  if (!channelMap || !m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwResample.Load())
     return false;
 
   m_dllAvCodec.avcodec_register_all();
@@ -93,9 +93,11 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
       /* the input format was not supported, initiate conversion to the first
        * supported format */
       CLog::Log(LOGDEBUG, "CDVDAudioEncoderFFmpeg: Initializing audio conversion for encoding");
-      m_AudioConvert = m_dllAvCodec.av_audio_convert_alloc(codec->sample_fmts[0], 1,
-                                                           m_CodecCtx->sample_fmt, 1, NULL, 0);
-      if (!m_AudioConvert)
+      m_AudioConvert = m_dllSwResample.swr_alloc_set_opts(NULL,
+                      m_dllAvUtil.av_get_default_channel_layout(1), codec->sample_fmts[0], codec->supported_samplerates ? codec->supported_samplerates[0] : m_CodecCtx->sample_rate,
+                      m_dllAvUtil.av_get_default_channel_layout(1), m_CodecCtx->sample_fmt, m_CodecCtx->sample_rate,
+                      0, NULL);
+      if (!m_AudioConvert || m_dllSwResample.swr_init(m_AudioConvert))
       {
         m_dllAvUtil.av_freep(&m_CodecCtx);
         return false;
@@ -183,12 +185,9 @@ int CDVDAudioEncoderFFmpeg::Encode(uint8_t *data, int size)
   m_Remap.Remap(data, m_TmpBuffer, m_NeededFrames);
 
   if (m_AudioConvert) {
-    void *convInBuf[] = { m_TmpBuffer };
-    int convInStr[] = { m_BitsPerSample / 8 };
-    void *convOutBuf[] = { m_TmpBuffer2 };
-    int convOutStr[] = { m_dllAvUtil.av_get_bytes_per_sample(m_CodecCtx->sample_fmt) };
-    if (m_dllAvCodec.av_audio_convert(m_AudioConvert, convOutBuf, convOutStr,
-                                      convInBuf, convInStr, m_NeededFrames * m_CodecCtx->channels) < 0) {
+    if (m_dllSwResample.swr_convert(m_AudioConvert,
+                            &m_TmpBuffer2, m_NeededFrames * m_CodecCtx->channels,
+                            (const uint8_t**)&m_TmpBuffer,  m_NeededFrames * m_CodecCtx->channels) < 0) {
       CLog::Log(LOGERROR, "CDVDAudioEncoderFFmpeg: Audio conversion failed");
       m_BufferSize = 0;
       return m_NeededBytes;
