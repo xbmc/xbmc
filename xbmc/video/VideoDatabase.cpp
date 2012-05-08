@@ -2045,7 +2045,7 @@ int CVideoDatabase::AddSeason(int showID, int season)
   if (seasonId < 0)
   {
     if (ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow,season) VALUES(%i,%i)", showID, season)))
-      seasonId = m_pDS->lastinsertid();
+      seasonId = (int)m_pDS->lastinsertid();
   }
   return seasonId;
 }
