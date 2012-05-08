@@ -67,16 +67,16 @@ public:
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 
 private:
+  bool Initialize();
+  bool Close();
   void AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
-  void UpdateCacheStatus();
+  bool UpdateCacheStatus();
   void CheckPlayStatus();
   void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   IMMDevice* m_pDevice;
   IAudioClient* m_pAudioClient;
   IAudioRenderClient* m_pRenderClient;
-
-  IAudioCallback* m_pCallback;
 
   long m_nCurrentVolume;
   long m_drc;
@@ -87,7 +87,6 @@ private:
   unsigned int m_uiBufferLen;
   unsigned int m_uiBytesPerFrame;
   unsigned int m_uiBytesPerSrcFrame;
-  unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
   unsigned int m_uiAvgBytesPerSec;
   unsigned int m_uiSpeakerMask;
@@ -105,6 +104,21 @@ private:
 
   CPCMAmplifier m_pcmAmplifier;
   CCriticalSection m_critSection;
+
+  // Initialization parameters
+  bool              m_Initialized;
+  unsigned int      m_LastInitializationAttempt;
+  IAudioCallback*   m_pCallback;
+  CStdString        m_device;
+  int               m_iChannels;
+  enum PCMChannels *m_channelMap;
+  unsigned int      m_uiSamplesPerSec;
+  unsigned int      m_uiBitsPerSample;
+  bool              m_bResample;
+  bool              m_bIsMusic;
+  EEncoded          m_bAudioPassthrough;
+
+
 };
 
 #endif //__WIN32WASAPI_H__
