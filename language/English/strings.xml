@@ -220,7 +220,7 @@
   <string id="249">Music</string>
   <string id="250">Visualization</string>
   <string id="251">Select destination directory</string>
-  <string id="252">Output stereo to all speakers</string>
+  <string id="252">Enable stereo upmix</string>
   <string id="253">Number of channels</string>
   <string id="254">- DTS capable receiver</string>
   <string id="255">CDDB</string>
@@ -309,6 +309,9 @@
   <string id="344">Actors</string>
   <string id="345">Year</string>
   <string id="346">Boost volume level on downmix</string>
+  <string id="347">Use exclusive mode</string>
+  <string id="348">- Multichannel LPCM capable receiver</string>
+  <string id="349">- TrueHD capable receiver</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -366,6 +369,7 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
+  <string id="407">- DTS-HD capable receiver</string>
 
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>
@@ -2367,7 +2371,9 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
-  <!-- 34112-34200 reserved for future use -->
+
+  <string id="34120">Enable GUI sounds during playback</string>
+  <!-- 34121-34200 reserved for future use -->
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>

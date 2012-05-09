@@ -25,6 +25,7 @@
 #include "ICodec.h"
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 
 class CFileItem;
 
@@ -56,7 +57,7 @@ public:
   CAudioDecoder();
   ~CAudioDecoder();
 
-  bool Create(const CFileItem &file, int64_t seekOffset, unsigned int nBufferSize);
+  bool Create(const CFileItem &file, int64_t seekOffset);
   void Destroy();
 
   int ReadSamples(int numsamples);
@@ -68,31 +69,20 @@ public:
   int GetStatus() { return m_status; };
   void SetStatus(int status) { m_status = status; };
 
-  void GetDataFormat(unsigned int *channels, unsigned int *samplerate, unsigned int *bitspersample);
-  unsigned int GetChannels() { if (m_codec) return m_codec->m_Channels; else return 0; };
+  void GetDataFormat(CAEChannelInfo *channelInfo, unsigned int *samplerate, unsigned int *encodedSampleRate, enum AEDataFormat *dataFormat);
+  unsigned int GetChannels() { if (m_codec) return m_codec->GetChannelInfo().Count(); else return 0; };
   // Data management
   unsigned int GetDataSize();
-  void *GetData(unsigned int size);
-  void PrefixData(void *data, unsigned int size);
+  void *GetData(unsigned int samples);
   ICodec *GetCodec() const { return m_codec; }
-
-private:
-  void ProcessAudio(float *data, int numsamples);
-  // ReadPCMSamples() - helper to convert PCM (short/byte) to float
-  int ReadPCMSamples(float *buffer, int numsamples, int *actualsamples);
   float GetReplayGain();
 
-  // block size (number of bytes per sample * number of channels)
-  int m_blockSize;
+private:
   // pcm buffer
   CRingBuffer m_pcmBuffer;
 
   // output buffer (for transferring data from the Pcm Buffer to the rest of the audio chain)
   float m_outputBuffer[OUTPUT_SAMPLES];
-
-  // gapless buffer (left over samples from the previous audio decoder)
-  float m_gaplessBuffer[OUTPUT_SAMPLES];
-  unsigned int m_gaplessBufferSize;
 
   // input buffer (for transferring data from the Codecs to our Pcm Ringbuffer
   BYTE m_pcmInputBuffer[INPUT_SIZE];

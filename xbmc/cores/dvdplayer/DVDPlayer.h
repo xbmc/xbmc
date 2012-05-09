@@ -167,8 +167,6 @@ class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 public:
   CDVDPlayer(IPlayerCallback& callback);
   virtual ~CDVDPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
@@ -184,7 +182,7 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
+  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);

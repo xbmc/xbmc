@@ -69,6 +69,8 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     {
       if (data.isMember("playcount"))
         ra_flag |= Totals;
+      if (data.isMember("art"))
+        ra_flag |= Video;
     }
     else if (strcmp(message, "OnScanFinished") == 0)
     {

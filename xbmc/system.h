@@ -130,7 +130,6 @@
   #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
-    #define HAS_SDL_AUDIO
     #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
   #endif
@@ -160,7 +159,6 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#define HAS_SDL_AUDIO
 #define HAS_SDL_WIN_EVENTS
 #endif
 #define HAS_LINUX_NETWORK
@@ -170,6 +168,9 @@
 #endif
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
+#endif
+#ifdef HAVE_ALSA
+#define HAS_ALSA
 #endif
 #endif
 
