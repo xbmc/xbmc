@@ -3263,12 +3263,15 @@ void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const m
     SetArtForItem(mediaId, mediaType, i->first, i->second);
 }
 
-void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const string &artType, const string &url)
+void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const string &artType, const string &url, bool announce)
 {
   try
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
+
+    if (mediaId < 0)
+      return;
 
     CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
@@ -3284,6 +3287,14 @@ void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const s
       m_pDS->close();
       sql = PrepareSQL("INSERT INTO art(media_id, media_type, type, url) VALUES (%d, '%s', '%s', '%s')", mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
       m_pDS->exec(sql.c_str());
+    }
+    if (announce)
+    {
+      CVariant data;
+      data[mediaType] = url;
+      data["item"]["id"] = mediaId;
+      data["item"]["type"] = mediaType;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);      
     }
   }
   catch (...)
@@ -3941,11 +3952,6 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   try
   {
     m_pDS->exec(exec.c_str());
-
-    if (type == VIDEODB_CONTENT_TVSHOWS)
-      AnnounceUpdate("tvshow", item.GetVideoInfoTag()->m_iDbId);
-    else if (type == VIDEODB_CONTENT_MOVIES)
-      AnnounceUpdate("movie", item.GetVideoInfoTag()->m_iDbId);
   }
   catch (...)
   {

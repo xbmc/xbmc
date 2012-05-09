@@ -1215,7 +1215,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB ||
           button == CONTEXT_BUTTON_SET_ACTOR_THUMB ||
           button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-        m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb", result);
+        m_database.SetArtForItem(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_type, "thumb", result, true);
       else
       {
         CTextureCache::Get().ClearCachedImage(cachedThumb, true);
