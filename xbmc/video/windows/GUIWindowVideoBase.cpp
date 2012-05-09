@@ -2028,7 +2028,7 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
 
   ADDON::ScraperPtr info2(info);
   
-  if (CGUIDialogContentSettings::Show(info, settings, bScan))
+  if (CGUIDialogContentSettings::Show(info, settings))
   {
     if(settings.exclude || (!info && info2))
     {
