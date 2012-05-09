@@ -658,7 +658,7 @@ void CGUIDialogVideoInfo::OnGetThumb()
   CVideoDatabase db;
   if (db.Open())
   {
-    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "thumb", newThumb);
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "thumb", newThumb, true);
     db.Close();
   }
 
@@ -758,7 +758,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
   CVideoDatabase db;
   if (db.Open())
   {
-    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "fanart", result);
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, "fanart", result, true);
     db.Close();
   }
 
