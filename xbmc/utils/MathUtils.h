@@ -70,7 +70,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-#if defined(__powerpc__) || defined(__ppc__) || defined(__ARM_PCS_VFP)
+#if defined(__powerpc__) || defined(__ppc__) || defined(__ARM_PCS_VFP) || defined(TARGET_DARWIN_OSX)
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
     // From 'ARM®v7-M Architecture Reference Manual' page A7-569:
@@ -135,7 +135,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
+#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(TARGET_DARWIN_OSX)
     const float round_towards_m_i = -0.5f;
 #endif
     int i;
@@ -151,7 +151,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-#if defined(__powerpc__) || defined(__ppc__)
+#if defined(__powerpc__) || defined(__ppc__) || defined(TARGET_DARWIN_OSX)
     return (int)x;
 #elif defined(__arm__)
     __asm__ __volatile__ (
