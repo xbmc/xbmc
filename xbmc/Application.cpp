@@ -5532,7 +5532,8 @@ void CApplication::StartMusicScan(const CStdString &strDirectory)
   m_musicInfoScanner->Start(strDirectory);
 }
 
-void CApplication::StartMusicAlbumScan(const CStdString& strDirectory)
+void CApplication::StartMusicAlbumScan(const CStdString& strDirectory,
+                                       bool refresh)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
@@ -5547,10 +5548,11 @@ void CApplication::StartMusicAlbumScan(const CStdString& strDirectory)
     }
   }
   SaveMusicScanSettings();
-  m_musicInfoScanner->FetchAlbumInfo(strDirectory);
+  m_musicInfoScanner->FetchAlbumInfo(strDirectory,refresh);
 }
 
-void CApplication::StartMusicArtistScan(const CStdString& strDirectory)
+void CApplication::StartMusicArtistScan(const CStdString& strDirectory,
+                                        bool refresh)
 {
   if (m_musicInfoScanner->IsScanning())
     return;
@@ -5565,7 +5567,7 @@ void CApplication::StartMusicArtistScan(const CStdString& strDirectory)
     }
   }
   SaveMusicScanSettings();
-  m_musicInfoScanner->FetchArtistInfo(strDirectory);
+  m_musicInfoScanner->FetchArtistInfo(strDirectory,refresh);
 
 }
 

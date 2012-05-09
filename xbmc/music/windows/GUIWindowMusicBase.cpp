@@ -237,17 +237,19 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent)
+void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent, bool refresh)
 {
   CMusicDatabaseDirectory dir;
   CStdString strPath = m_vecItems->GetPath();
   if (bCurrent)
     strPath = m_vecItems->Get(iItem)->GetPath();
 
-  if (dir.HasAlbumInfo(m_vecItems->Get(iItem)->GetPath()))
-    g_application.StartMusicAlbumScan(strPath);
+  if (dir.HasAlbumInfo(strPath) ||
+      CMusicDatabaseDirectory::GetDirectoryChildType(strPath) == 
+      MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM)
+    g_application.StartMusicAlbumScan(strPath,refresh);
   else
-    g_application.StartMusicArtistScan(strPath);
+    g_application.StartMusicArtistScan(strPath,refresh);
 }
 
 /// \brief Retrieves music info for albums from allmusic.com and displays them in CGUIDialogMusicInfo
