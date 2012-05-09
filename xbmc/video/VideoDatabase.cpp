@@ -3941,6 +3941,11 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   try
   {
     m_pDS->exec(exec.c_str());
+
+    if (type == VIDEODB_CONTENT_TVSHOWS)
+      AnnounceUpdate("tvshow", item.GetVideoInfoTag()->m_iDbId);
+    else if (type == VIDEODB_CONTENT_MOVIES)
+      AnnounceUpdate("movie", item.GetVideoInfoTag()->m_iDbId);
   }
   catch (...)
   {

@@ -46,7 +46,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "TextureCache.h"
-#include "interfaces/AnnouncementManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -670,7 +669,6 @@ void CGUIDialogVideoInfo::OnGetThumb()
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
   }
   m_hasUpdatedThumb = true;
-  AnnounceUpdate("thumb");
 
   // Update our screen
   Update();
@@ -770,17 +768,9 @@ void CGUIDialogVideoInfo::OnGetFanart()
   else
     m_movieItem->ClearProperty("fanart_image");
   m_hasUpdatedThumb = true;
-  AnnounceUpdate("fanart");
 
   // Update our screen
   Update();
-}
-
-void CGUIDialogVideoInfo::AnnounceUpdate(const std::string &type)
-{
-  CVariant data;
-  data["art"] = type;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(*m_movieItem)), data);
 }
 
 void CGUIDialogVideoInfo::PlayTrailer()

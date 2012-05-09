@@ -47,7 +47,6 @@ public:
 protected:
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
-  void AnnounceUpdate(const std::string &type);
 
   // link cast to movies
   void ClearCastList();
