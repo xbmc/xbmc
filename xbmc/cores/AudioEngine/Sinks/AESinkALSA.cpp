@@ -598,24 +598,35 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
       CAEDeviceInfo info;
       std::string devname = snd_pcm_info_get_name(pcminfo);
 
+      bool maybeHDMI = false;
+
+      /* detect HDMI */
       if (devname.find("HDMI") != std::string::npos)
       { 
         info.m_deviceType = AE_DEVTYPE_HDMI;
         dev_index = hdmi_index++;
         sstr << "hdmi";
       }
-      else if (devname.find("Digital") != std::string::npos ||
-               devname.find("IEC958" ) != std::string::npos)
-      { 
-        info.m_deviceType = AE_DEVTYPE_IEC958;
-        dev_index = iec958_index++;
-        sstr << "iec958";
-      }
       else
-      { 
-        info.m_deviceType = AE_DEVTYPE_PCM;
-        dev_index = pcm_index++;
-        sstr << "hw";
+      {
+        /* detect IEC958 */
+
+        /* some HDMI devices (intel) report Digital for HDMI also */
+        if (devname.find("Digital") != std::string::npos)
+          maybeHDMI = true;
+
+        if (maybeHDMI || devname.find("IEC958" ) != std::string::npos)
+        {
+          info.m_deviceType = AE_DEVTYPE_IEC958;
+          dev_index = iec958_index; /* dont increment, it might be HDMI */
+          sstr << "iec958";
+        }
+        else
+        {
+          info.m_deviceType = AE_DEVTYPE_PCM;
+          dev_index = pcm_index++;
+          sstr << "hw";
+        }
       }
 
       /* build the driver string to pass to ALSA */
@@ -625,6 +636,40 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
       /* get the friendly display name*/
       info.m_displayName      = snd_ctl_card_info_get_name(ctlinfo);
       info.m_displayNameExtra = devname;
+
+      /* open the device for testing */
+      int err = snd_pcm_open_lconf(&pcmhandle, info.m_deviceName.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
+
+      /* if open of possible IEC958 failed and it could be HDMI, try as HDMI */
+      if (err < 0 && maybeHDMI)
+      {
+        /* check for HDMI if it failed */
+        sstr.str(std::string());
+        dev_index = hdmi_index;
+
+        sstr << "hdmi";
+        sstr << ":CARD=" << snd_ctl_card_info_get_id(ctlinfo) << ",DEV=" << dev_index;
+        info.m_deviceName = sstr.str();
+        err = snd_pcm_open_lconf(&pcmhandle, info.m_deviceName.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config);
+
+        /* if it was valid, increment the index and set the type */
+        if (err >= 0)
+        {
+          ++hdmi_index;
+          info.m_deviceType = AE_DEVTYPE_HDMI;
+        }
+      }
+
+      /* if it's still IEC958, increment the index */
+      if (info.m_deviceType == AE_DEVTYPE_IEC958)
+        ++iec958_index;
+
+      /* final error check */
+      if (err < 0)
+      {
+        CLog::Log(LOGINFO, "CAESinkALSA::EnumerateDevicesEx - Unable to open %s for capability detection", strHwName.c_str());
+        continue;
+      }
 
       /* see if we can get ELD for this device */
       if (info.m_deviceType == AE_DEVTYPE_HDMI)
@@ -638,13 +683,6 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
           CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Skipping HDMI device %s as it has no ELD data", info.m_deviceName.c_str());
           continue;
         }
-      }
-
-      /* open the device for testing */
-      if (snd_pcm_open_lconf(&pcmhandle, info.m_deviceName.c_str(), SND_PCM_STREAM_PLAYBACK, 0, config) < 0)
-      {
-        CLog::Log(LOGINFO, "CAESinkALSA::EnumerateDevicesEx - Unable to open %s for capability detection", info.m_deviceName.c_str());
-        continue;
       }
 
       /* ensure we can get a playback configuration for the device */
