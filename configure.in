@@ -2072,6 +2072,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-doc \
       --disable-decoder=mpeg_xvmc \
       --disable-crystalhd \
+      --disable-vda \
       --enable-postproc \
       --enable-gpl \
       --enable-protocol=http \
