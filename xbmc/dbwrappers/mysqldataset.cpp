@@ -213,7 +213,7 @@ int MysqlDatabase::copy(const char *backup_name) {
   if ( !active || conn == NULL)
     throw DbErrors("Can't copy database: no active connection...");
 
-  char sql[512];
+  char sql[4096];
   int ret;
 
   // ensure we're connected to the db we are about to copy
@@ -259,6 +259,28 @@ int MysqlDatabase::copy(const char *backup_name) {
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
         throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
+    }
+
+    // after table are recreated and repopulated we can recreate views
+    // grab a list of views and their definitions
+    sprintf(sql, "SELECT TABLE_NAME, VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '%s'", db.c_str());
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't determine views to recreate.");
+
+    // get list of all views from old DB
+    MYSQL_RES* resViews = mysql_store_result(conn);
+
+    if (resViews)
+    {
+      while ( (row=mysql_fetch_row(resViews)) != NULL )
+      {
+        sprintf(sql, "CREATE VIEW %s.%s AS %s",
+                backup_name, row[0], row[1]);
+
+        if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+          throw DbErrors("Can't create view '%s'\nError: %s", db.c_str(), ret);
+      }
+      mysql_free_result(resViews);
     }
   }
 
