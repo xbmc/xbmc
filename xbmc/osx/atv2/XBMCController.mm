@@ -598,7 +598,7 @@ int           m_systemsleepTimeout;
             else
             {
               newEvent.key.keysym.sym = (XBMCKey)wstr[0];
-              newEvent.key.keysym.unicode = wstr[0];
+              newEvent.key.keysym.unicode = wstr[0] | (wstr[1] << 8);
             }
             newEvent.type = XBMC_KEYDOWN;
             CWinEventsIOS::MessagePush(&newEvent);
