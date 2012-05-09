@@ -1129,7 +1129,7 @@ msgstr ""
 msgid "Original stream's language"
 msgstr ""
 
-#: id:309 
+#: id:309
 msgid "User Interface language"
 msgstr ""
 
