@@ -36,10 +36,10 @@ public:
   virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
+  virtual CAEChannelInfo GetChannelInfo();
 
 private:
   COggCallback m_callback;
-  void RemapChannels(short *SampleBuffer, int samples);
 
   DllVorbisfile m_dll;
   OggVorbis_File m_VorbisFile;

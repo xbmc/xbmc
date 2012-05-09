@@ -117,10 +117,10 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   if (globalPM)
-    globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
+    globalPM->pcm()->addPCMfloat(pAudioData, iAudioDataLength);
 }
 
 //-- Render -------------------------------------------------------------------

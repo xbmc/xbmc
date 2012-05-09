@@ -26,8 +26,6 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
-#include "Encoders/DVDAudioEncoderFFmpeg.h"
-
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
 #define OUT_CHANNELS   2
@@ -58,9 +56,7 @@ CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
   m_SampleRate   = 0;
 
   m_Codec        = NULL;
-  m_Encoder      = NULL;
-  m_InitEncoder  = true;
-  
+
   /* make enough room for at-least two audio frames */
   m_DecodeSize   = 0;
   m_DecodeBuffer = NULL;
@@ -285,41 +281,8 @@ bool CDVDAudioCodecPassthroughFFmpeg::SupportsFormat(CDVDStreamInfo &hints)
        if (m_bSupportsAC3Out && hints.codec == CODEC_ID_AC3) m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncAC3;
   else if (m_bSupportsDTSOut && hints.codec == CODEC_ID_DTS) m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncDTS;
   else if (m_bSupportsAACOut && hints.codec == CODEC_ID_AAC) m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncAAC;
-  else if (m_bSupportsMP1Out && hints.codec == CODEC_ID_MP1);
-  else if (m_bSupportsMP2Out && hints.codec == CODEC_ID_MP2);
-  else if (m_bSupportsMP3Out && hints.codec == CODEC_ID_MP3);
   else return false;
 
-  return true;
-}
-
-bool CDVDAudioCodecPassthroughFFmpeg::SetupEncoder(CDVDStreamInfo &hints)
-{
-  /* there is no point encoding <= 2 channel sources, and we dont support anything but AC3 at the moment */
-  if (hints.channels <= 2 || !m_bSupportsAC3Out)
-    return false;
-
-  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Setting up encoder for on the fly transcode");
-
-  /* we need to decode the incoming audio data, so we can re-encode it as we need it */
-  CDVDStreamInfo h(hints);
-  m_Codec = CDVDFactoryCodec::CreateAudioCodec(h, false);
-  if (!m_Codec)
-  {
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Unable to create a decoder for transcode");
-    return false;
-  }
-
-  /* create and setup the encoder */
-  m_Encoder     = new CDVDAudioEncoderFFmpeg();
-  m_InitEncoder = true;
-
-  /* adjust the hints according to the encorders output */
-  hints.codec    = m_Encoder->GetCodecID();
-  hints.bitrate  = m_Encoder->GetBitRate();
-  hints.channels = OUT_CHANNELS;
-
-  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Ready to transcode");
   return true;
 }
 
@@ -333,9 +296,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     m_bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     m_bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
     m_bSupportsAACOut = g_guiSettings.GetBool("audiooutput.passthroughaac");
-    m_bSupportsMP1Out = g_guiSettings.GetBool("audiooutput.passthroughmp1");
-    m_bSupportsMP2Out = g_guiSettings.GetBool("audiooutput.passthroughmp2");
-    m_bSupportsMP3Out = g_guiSettings.GetBool("audiooutput.passthroughmp3");
   }
   else
     return false;
@@ -362,20 +322,9 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   /* see if the muxer supports our codec (see spdif.c for supported formats) */
   if (!SupportsFormat(hints))
   {
-    /* HDMI can do multichannel LPCM, transcoding would just be silly */
-    if (audioMode == AUDIO_HDMI)
-    {
-      CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - Won't transcode for HDMI");
-      Dispose();
-      return false;
-    }
-
-    if (!SetupEncoder(hints) || !SupportsFormat(hints))
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - FFmpeg SPDIF muxer does not support this codec");
-      Dispose();
-      return false;
-    }
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - FFmpeg SPDIF muxer does not support this codec");
+    Dispose();
+    return false;
   }
   else
   {
@@ -389,7 +338,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
 
     m_Codec   = NULL;
-    m_Encoder = NULL;
   }
 
   if (!SetupMuxer(hints, "spdif", m_SPDIF))
@@ -399,6 +347,9 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   /* we will check the first packet's crc */
   m_LostSync = true;
+
+  m_codec = hints.codec;
+
   return true;
 }
 
@@ -415,9 +366,6 @@ void CDVDAudioCodecPassthroughFFmpeg::Dispose()
     m_DecodeBuffer = NULL;
   }
 
-  delete m_Encoder;
-  m_Encoder = NULL;
-
   delete m_Codec;
   m_Codec   = NULL;
 }
@@ -426,76 +374,6 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
 {
   unsigned int used, fSize;
   fSize = iSize;
-
-  /* if we are transcoding */
-  if (m_Encoder)
-  {
-    uint8_t *decData;
-    uint8_t *encData;
-
-    /* if we are decoding */
-    used  = m_Codec->Decode (pData, iSize);
-    fSize = m_Codec->GetData(&decData);
-
-    /* we may not get any data for a few frames, this is expected */
-    if (fSize == 0)
-      return used;
-
-    /* now we have data, it is safe to initialize the encoder, as we should now have a channel map */
-    if (m_InitEncoder)
-    {
-      if (m_Encoder->Initialize(m_Codec->GetChannels(), m_Codec->GetChannelMap(), m_Codec->GetBitsPerSample(), m_Codec->GetSampleRate()))
-      {
-        m_InitEncoder   = false;
-        m_EncPacketSize = m_Encoder->GetPacketSize();
-        /* allocate enough room for two packets of data */
-        m_DecodeBuffer  = (uint8_t*)_aligned_malloc(m_EncPacketSize * 2, 16);
-        m_DecodeSize    = 0;
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Encode - Unable to initialize the encoder for transcode");
-        return -1;
-      }
-    }
-
-    unsigned int avail, eUsed, eCoded = 0;
-    avail = fSize + m_DecodeSize;
-
-    while(avail >= m_EncPacketSize)
-    {
-      /* append up to one packet of data to the buffer */
-      if (m_DecodeSize < m_EncPacketSize)
-      {
-        unsigned int copy = (fSize > m_EncPacketSize) ? m_EncPacketSize : fSize;
-        if (copy)
-        {
-          memcpy(m_DecodeBuffer + m_DecodeSize, decData, copy);
-          m_DecodeSize += copy;
-          decData      += copy;
-          fSize        -= copy;
-        }
-      }
-
-      /* encode the data and advance our data pointer */
-      eUsed  = m_Encoder->Encode(m_DecodeBuffer, m_EncPacketSize);
-      avail -= eUsed;
-
-      /* shift buffered data along with memmove as the data can overlap */
-      m_DecodeSize -= eUsed;
-      memmove(m_DecodeBuffer, m_DecodeBuffer + eUsed, m_DecodeSize);
-
-      /* output the frame of data */
-      while((eCoded = m_Encoder->GetData(&encData)))
-        WriteFrame(m_SPDIF, encData, eCoded);
-    }
-
-    /* append any leftover data to the buffer */
-    memcpy(m_DecodeBuffer + m_DecodeSize, decData, fSize);
-    m_DecodeSize += fSize;
-
-    return used;
-  }
 
   /* if we are muxing into ADTS (AAC) */
   int adts_used = 0;
@@ -581,22 +459,40 @@ void CDVDAudioCodecPassthroughFFmpeg::Reset()
 
   ResetMuxer(m_SPDIF);
   ResetMuxer(m_ADTS );
-
-  if (m_Encoder)
-    m_Encoder->Reset();
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
 {
   //Can't return correct channels here as this is used to keep sync.
   //should probably have some other way to find out this
-  return OUT_CHANNELS;
+  switch(m_codec)
+  {
+    default:
+      return 2;
+  }
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetSampleRate()
 {
   return m_SPDIF.m_pStream->codec->sample_rate;
 }
+
+int CDVDAudioCodecPassthroughFFmpeg::GetEncodedSampleRate()
+{
+  return m_SPDIF.m_pStream->codec->sample_rate;
+}
+
+enum AEDataFormat CDVDAudioCodecPassthroughFFmpeg::GetDataFormat()
+{
+  switch(m_codec)
+  {
+    case CODEC_ID_AC3:      return AE_FMT_AC3;
+    case CODEC_ID_DTS:      return AE_FMT_DTS;
+    default:
+      return AE_FMT_INVALID; //Unknown stream type
+  }
+}
+
 
 int CDVDAudioCodecPassthroughFFmpeg::GetBitsPerSample()
 {
@@ -737,3 +633,18 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAAC(BYTE* pData, unsigned int 
   return iSize;
 }
 /* ========================== END SYNC FUNCTIONS ========================== */
+
+
+CAEChannelInfo CDVDAudioCodecPassthroughFFmpeg::GetChannelMap()
+{
+  static enum AEChannel map[2][9] = {
+    {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
+    {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
+  };
+
+  switch(m_codec)
+  {
+    default:
+      return map[0];
+  }
+}

@@ -51,11 +51,11 @@ CDVDPlayerResampler::~CDVDPlayerResampler()
 void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
-  CheckResampleBuffers(audioframe.channels);
+  CheckResampleBuffers(audioframe.channel_count);
 
   //value to divide samples by to get them into -1.0:1.0 range
   float scale = (float)(1 << (audioframe.bits_per_sample - 1));
-  int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
+  int   nrframes = audioframe.size / audioframe.channel_count / (audioframe.bits_per_sample / 8);
 
   //resize sample buffer if necessary
   //we want the buffer to be large enough to hold the current frames in it,
@@ -94,11 +94,11 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 bool CDVDPlayerResampler::Retrieve(DVDAudioFrame &audioframe, double &pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
-  CheckResampleBuffers(audioframe.channels);
+  CheckResampleBuffers(audioframe.channel_count);
 
   //value to divide samples by to get them into -1.0:1.0 range
   float scale = (float)(1 << (audioframe.bits_per_sample - 1));
-  int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
+  int   nrframes = audioframe.size / audioframe.channel_count / (audioframe.bits_per_sample / 8);
 
   //if we don't have enough in the samplebuffer, return false
   if (nrframes > m_bufferfill)

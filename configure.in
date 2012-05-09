@@ -77,6 +77,7 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
+alsa_disabled="== ALSA support disabled. =="
 rsxs_enabled="== RSXS enabled. =="
 rsxs_disabled="== RSXS disabled. =="
 projectm_enabled="== ProjectM enabled. =="
@@ -277,11 +278,17 @@ AC_ARG_ENABLE([ccache],
   [use_ccache=$enableval],
   [use_ccache=auto])
 
+AC_ARG_ENABLE([alsa],
+  [AS_HELP_STRING([--disable-alsa],
+  [disable ALSA support (only for linux/freebsd)])],
+  [use_alsa=$enableval],
+  [use_alsa=yes])
+
 AC_ARG_ENABLE([pulse],
   [AS_HELP_STRING([--enable-pulse],
-  [enable PulseAudio support (default is auto)])],
+  [enable PulseAudio support (default is no)])],
   [use_pulse=$enableval],
-  [use_pulse=auto])
+  [use_pulse=no])
 
 AC_ARG_ENABLE([rtmp],
   [AS_HELP_STRING([--enable-rtmp],
@@ -785,7 +792,6 @@ AS_CASE([x$use_libbluray],
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
-    AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
@@ -809,7 +815,6 @@ else
     PKG_CHECK_MODULES([SDL],   [sdl],
       [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
       AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
@@ -864,6 +869,17 @@ fi
 # Optical
 if test "$use_optical_drive" = "yes"; then
   AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
+fi
+
+# Alsa
+if test "$use_alsa" = "yes" && test "$host_vendor" != "apple"; then
+  PKG_CHECK_MODULES([ALSA],  [alsa],
+    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  AC_DEFINE([HAS_ALSA], [1], [Define to 0 to disable ALSA support])
+else
+  use_alsa="no"
+  AC_MSG_RESULT($alsa_disabled)
 fi
 
 # PulseAudio
@@ -1706,6 +1722,12 @@ else
   final_message="$final_message\n  ccache:\tNo"
 fi
 
+if test "$use_alsa" = "yes"; then
+  final_message="$final_message\n  ALSA Support:\tYes"
+else
+  final_message="$final_message\n  ALSA Support:\tNo"
+fi
+
 if test "x$use_pulse" != "xno"; then
   XBMC_STANDALONE_SH_PULSE=tools/Linux/xbmc-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
@@ -1887,7 +1909,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
     xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-    xbmc/cores/AudioRenderers/Makefile \
+    xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     lib/timidity/Makefile \
     lib/xbadpcm/Makefile \

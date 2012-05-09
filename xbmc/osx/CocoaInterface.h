@@ -73,8 +73,6 @@ extern "C"
 
   const char *Cocoa_Paste() ;  
 
-  void Cocoa_ResetAudioDevices();
-
 #ifdef __cplusplus
 }
 #endif
