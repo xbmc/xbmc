@@ -1032,9 +1032,9 @@ msgstr ""
 
 #: id:285
 msgid "Preferred audio language"
-msgstr ""  
+msgstr ""
 
-#: id:286  
+#: id:286
 msgid "Preferred subtitle language"
 msgstr ""
 
