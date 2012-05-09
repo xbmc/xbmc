@@ -492,7 +492,7 @@ case $host in
      PYTHON_NOVERSIONCHECK="no-check"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
-  *86-apple-darwin*)
+  *86*-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
@@ -2077,7 +2077,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-protocol=http \
       --enable-pthreads \
       --enable-runtime-cpudetect \
-      --cc="$CC" &&
+      `case $CC in *llvm-gcc-4.2*) echo --cc=clang ;; *) echo --cc="$CC" ;; esac` &&
     sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
     sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
