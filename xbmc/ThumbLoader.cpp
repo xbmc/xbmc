@@ -230,8 +230,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         CFileItemList items;
         if (db.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, pItem->GetVideoInfoTag()->m_iDbId) && items.Size() > 0)
         {
-          if (db.GetArtForItem(items[0]->GetVideoInfoTag()->m_iDbId, items[0]->GetVideoInfoTag()->m_type, artwork))
-            pItem->SetArt(artwork);
+          LoadItem(items[0].get());
+          if (!items[0]->GetArt().empty())
+            pItem->SetArt(items[0]->GetArt());
         }
       }
       else if (pItem->GetVideoInfoTag()->m_type == "actor" ||
