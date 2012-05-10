@@ -3182,341 +3182,341 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
 
 bool CMusicDatabase::UpdateOldVersion(int version)
 {
-    if (version < 16)
+  if (version < 16)
+  {
+    // only if MySQL is used and default character set is not utf8
+    // string data needs to be converted to proper utf8
+    CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
+    if (!m_sqlite && !charset.empty() && charset != "utf8")
     {
-      // only if MySQL is used and default character set is not utf8
-      // string data needs to be converted to proper utf8
-      CStdString charset = m_pDS->getDatabase()->getDefaultCharset();
-      if (!m_sqlite && !charset.empty() && charset != "utf8")
+      map<CStdString, CStdStringArray> tables;
+      map<CStdString, CStdStringArray>::iterator itt;
+      CStdStringArray::iterator itc;
+
+      //columns that need to be converted
+      CStdStringArray c1;
+      c1.push_back("strAlbum");
+      c1.push_back("strExtraArtists");
+      c1.push_back("strExtraGenres");
+      tables.insert(pair<CStdString, CStdStringArray> ("album", c1));
+
+      CStdStringArray c2;
+      c2.push_back("strExtraGenres");
+      c2.push_back("strMoods");
+      c2.push_back("strStyles");
+      c2.push_back("strThemes");
+      c2.push_back("strReview");
+      c2.push_back("strLabel");
+      tables.insert(pair<CStdString, CStdStringArray> ("albuminfo", c2));
+
+      CStdStringArray c3;
+      c3.push_back("strTitle");
+      tables.insert(pair<CStdString, CStdStringArray> ("albuminfosong", c3));
+
+      CStdStringArray c4;
+      c4.push_back("strArtist");
+      tables.insert(pair<CStdString, CStdStringArray> ("artist", c4));
+
+      CStdStringArray c5;
+      c5.push_back("strBorn");
+      c5.push_back("strFormed");
+      c5.push_back("strGenres");
+      c5.push_back("strMoods");
+      c5.push_back("strStyles");
+      c5.push_back("strInstruments");
+      c5.push_back("strBiography");
+      c5.push_back("strDied");
+      c5.push_back("strDisbanded");
+      c5.push_back("strYearsActive");
+      tables.insert(pair<CStdString, CStdStringArray> ("artistinfo", c5));
+
+      CStdStringArray c6;
+      c6.push_back("strAlbum");
+      tables.insert(pair<CStdString, CStdStringArray> ("discography", c6));
+
+      CStdStringArray c7;
+      c7.push_back("strGenre");
+      tables.insert(pair<CStdString, CStdStringArray> ("genre", c7));
+
+      CStdStringArray c8;
+      c8.push_back("strKaraLyrics");
+      tables.insert(pair<CStdString, CStdStringArray> ("karaokedata", c8));
+
+      CStdStringArray c9;
+      c9.push_back("strTitle");
+      c9.push_back("strFilename");
+      c9.push_back("comment");
+      tables.insert(pair<CStdString, CStdStringArray> ("song", c9));
+
+      CStdStringArray c10;
+      c10.push_back("strPath");
+      tables.insert(pair<CStdString, CStdStringArray> ("path", c10));
+
+      for (itt = tables.begin(); itt != tables.end(); ++itt)
       {
-        map<CStdString, CStdStringArray> tables;
-        map<CStdString, CStdStringArray>::iterator itt;
-        CStdStringArray::iterator itc;
-
-        //columns that need to be converted
-        CStdStringArray c1;
-        c1.push_back("strAlbum");
-        c1.push_back("strExtraArtists");
-        c1.push_back("strExtraGenres");
-        tables.insert(pair<CStdString, CStdStringArray> ("album", c1));
-
-        CStdStringArray c2;
-        c2.push_back("strExtraGenres");
-        c2.push_back("strMoods");
-        c2.push_back("strStyles");
-        c2.push_back("strThemes");
-        c2.push_back("strReview");
-        c2.push_back("strLabel");
-        tables.insert(pair<CStdString, CStdStringArray> ("albuminfo", c2));
-
-        CStdStringArray c3;
-        c3.push_back("strTitle");
-        tables.insert(pair<CStdString, CStdStringArray> ("albuminfosong", c3));
-
-        CStdStringArray c4;
-        c4.push_back("strArtist");
-        tables.insert(pair<CStdString, CStdStringArray> ("artist", c4));
-
-        CStdStringArray c5;
-        c5.push_back("strBorn");
-        c5.push_back("strFormed");
-        c5.push_back("strGenres");
-        c5.push_back("strMoods");
-        c5.push_back("strStyles");
-        c5.push_back("strInstruments");
-        c5.push_back("strBiography");
-        c5.push_back("strDied");
-        c5.push_back("strDisbanded");
-        c5.push_back("strYearsActive");
-        tables.insert(pair<CStdString, CStdStringArray> ("artistinfo", c5));
-
-        CStdStringArray c6;
-        c6.push_back("strAlbum");
-        tables.insert(pair<CStdString, CStdStringArray> ("discography", c6));
-
-        CStdStringArray c7;
-        c7.push_back("strGenre");
-        tables.insert(pair<CStdString, CStdStringArray> ("genre", c7));
-
-        CStdStringArray c8;
-        c8.push_back("strKaraLyrics");
-        tables.insert(pair<CStdString, CStdStringArray> ("karaokedata", c8));
-
-        CStdStringArray c9;
-        c9.push_back("strTitle");
-        c9.push_back("strFilename");
-        c9.push_back("comment");
-        tables.insert(pair<CStdString, CStdStringArray> ("song", c9));
-
-        CStdStringArray c10;
-        c10.push_back("strPath");
-        tables.insert(pair<CStdString, CStdStringArray> ("path", c10));
-
-        for (itt = tables.begin(); itt != tables.end(); ++itt)
+        CStdString q;
+        q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
+        for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
         {
-          CStdString q;
-          q = PrepareSQL("UPDATE `%s` SET", itt->first.c_str());
-          for (itc = itt->second.begin(); itc != itt->second.end(); ++itc)
+          q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
+                          itc->c_str(), itc->c_str(), charset.c_str());
+          if (*itc != itt->second.back())
           {
-            q += PrepareSQL(" `%s` = CONVERT(CAST(CONVERT(`%s` USING %s) AS BINARY) USING utf8)",
-                            itc->c_str(), itc->c_str(), charset.c_str());
-            if (*itc != itt->second.back())
-            {
-              q += ", ";
-            }
+            q += ", ";
           }
-          m_pDS->exec(q);
         }
+        m_pDS->exec(q);
       }
     }
-    if (version < 17)
+  }
+  if (version < 17)
+  {
+    m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
+    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+    m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
+    m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
+    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+  }
+  if (version < 19)
+  {
+    int len = g_advancedSettings.m_musicItemSeparator.size() + 1;
+    CStdString sql = PrepareSQL("UPDATE song SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
+    m_pDS->exec(sql.c_str());
+    sql = PrepareSQL("UPDATE album SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
+    m_pDS->exec(sql.c_str());
+  }
+
+  if (version < 21)
+  {
+    m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )\n");
+    m_pDS->exec("CREATE INDEX idxAlbumArtist_3 ON album_artist ( boolFeatured )\n");
+    m_pDS->exec("INSERT INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 1, iPosition FROM exartistalbum");
+    m_pDS->exec("REPLACE INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 0, 0 FROM album");
+
+    CStdString strSQL;
+    strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraArtists,"
+                      "  album.idArtist AS idArtist, strArtist FROM album "
+                      "  LEFT OUTER JOIN artist ON album.idArtist=artist.idArtist");
+    if (!m_pDS->query(strSQL.c_str()))
     {
-      m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
-      m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-      m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
-      m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
-      m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-    }
-    if (version < 19)
-    {
-      int len = g_advancedSettings.m_musicItemSeparator.size() + 1;
-      CStdString sql = PrepareSQL("UPDATE song SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
-      m_pDS->exec(sql.c_str());
-      sql = PrepareSQL("UPDATE album SET strExtraArtists=SUBSTR(strExtraArtists,%i), strExtraGenres=SUBSTR(strExtraGenres,%i)", len, len);
-      m_pDS->exec(sql.c_str());
+      CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
+      return false;
     }
 
-    if (version < 21)
+    VECALBUMS albums;
+    while (!m_pDS->eof())
     {
-      m_pDS->exec("CREATE TABLE album_artist ( idArtist integer, idAlbum integer, boolFeatured integer, iOrder integer )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_1 ON album_artist ( idAlbum, idArtist )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxAlbumArtist_2 ON album_artist ( idArtist, idAlbum )\n");
-      m_pDS->exec("CREATE INDEX idxAlbumArtist_3 ON album_artist ( boolFeatured )\n");
-      m_pDS->exec("INSERT INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 1, iPosition FROM exartistalbum");
-      m_pDS->exec("REPLACE INTO album_artist (idArtist, idAlbum, boolFeatured, iOrder) SELECT idArtist, idAlbum, 0, 0 FROM album");
+      CAlbum album;
+      album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
+      album.artist.push_back(m_pDS->fv("strArtist").get_asString());
+      if (!m_pDS->fv("strExtraArtists").get_asString().empty())
+      {
+        std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
+        album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
+      }
+      albums.push_back(album);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)");
+    m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb ) SELECT idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb FROM album");
 
+    for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
+    {
       CStdString strSQL;
-      strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraArtists,"
-                        "  album.idArtist AS idArtist, strArtist FROM album "
-                        "  LEFT OUTER JOIN artist ON album.idArtist=artist.idArtist");
-      if (!m_pDS->query(strSQL.c_str()))
-      {
-        CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
-        return false;
-      }
-
-      VECALBUMS albums;
-      while (!m_pDS->eof())
-      {
-        CAlbum album;
-        album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
-        album.artist.push_back(m_pDS->fv("strArtist").get_asString());
-        if (!m_pDS->fv("strExtraArtists").get_asString().empty())
-        {
-          std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
-          album.artist.insert(album.artist.end(), extraArtists.begin(), extraArtists.end());
-        }
-        albums.push_back(album);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)");
-      m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb ) SELECT idAlbum, strAlbum, idGenre, strExtraGenres, iYear, idThumb FROM album");
-
-      for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
-      {
-        CStdString strSQL;
-        strSQL = PrepareSQL("UPDATE album_new SET strArtists='%s' WHERE idAlbum=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->exec("DROP TABLE album");
-      m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-      m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-      m_pDS->exec("DROP TABLE IF EXISTS exartistalbum");
+      strSQL = PrepareSQL("UPDATE album_new SET strArtists='%s' WHERE idAlbum=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
+      m_pDS->exec(strSQL);
     }
 
-    if (version < 22)
-    {
-      m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, boolFeatured integer, iOrder integer )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )\n");
-      m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )\n");
-      m_pDS->exec("INSERT INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 1, iPosition FROM exartistsong");
-      m_pDS->exec("REPLACE INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 0, 0 FROM song");
+    m_pDS->exec("DROP TABLE album");
+    m_pDS->exec("ALTER TABLE album_new RENAME TO album");
+    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+    m_pDS->exec("DROP TABLE IF EXISTS exartistalbum");
+  }
 
+  if (version < 22)
+  {
+    m_pDS->exec("CREATE TABLE song_artist ( idArtist integer, idSong integer, boolFeatured integer, iOrder integer )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_2 ON song_artist ( idArtist, idSong )\n");
+    m_pDS->exec("CREATE INDEX idxSongArtist_3 ON song_artist ( boolFeatured )\n");
+    m_pDS->exec("INSERT INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 1, iPosition FROM exartistsong");
+    m_pDS->exec("REPLACE INTO song_artist (idArtist, idSong, boolFeatured, iOrder) SELECT idArtist, idSong, 0, 0 FROM song");
+
+    CStdString strSQL;
+    strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraArtists,"
+                      "  song.idArtist AS idArtist, strArtist FROM song "
+                      "  LEFT OUTER JOIN artist ON song.idArtist=artist.idArtist");
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
+      return false;
+    }
+
+    VECSONGS songs;
+    while (!m_pDS->eof())
+    {
+      CSong song;
+      song.idSong = m_pDS->fv("idSong").get_asInt();
+      song.artist.push_back(m_pDS->fv("strArtist").get_asString());
+      if (!m_pDS->fv("strExtraArtists").get_asString().empty())
+      {
+        std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
+        song.artist.insert(song.artist.end(), extraArtists.begin(), extraArtists.end());
+      }
+      songs.push_back(song);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)");
+    m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment ) SELECT idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
+
+    for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
+    {
       CStdString strSQL;
-      strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraArtists,"
-                        "  song.idArtist AS idArtist, strArtist FROM song "
-                        "  LEFT OUTER JOIN artist ON song.idArtist=artist.idArtist");
-      if (!m_pDS->query(strSQL.c_str()))
-      {
-        CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
-        return false;
-      }
-
-      VECSONGS songs;
-      while (!m_pDS->eof())
-      {
-        CSong song;
-        song.idSong = m_pDS->fv("idSong").get_asInt();
-        song.artist.push_back(m_pDS->fv("strArtist").get_asString());
-        if (!m_pDS->fv("strExtraArtists").get_asString().empty())
-        {
-          std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
-          song.artist.insert(song.artist.end(), extraArtists.begin(), extraArtists.end());
-        }
-        songs.push_back(song);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)");
-      m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment ) SELECT idSong, idAlbum, idPath, idGenre, strExtraGenres, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
-
-      for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
-      {
-        CStdString strSQL;
-        strSQL = PrepareSQL("UPDATE song_new SET strArtists='%s' WHERE idSong=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->exec("DROP TABLE song");
-      m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-      m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-      m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-      m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-      m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-      m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-      m_pDS->exec("DROP TABLE IF EXISTS exartistsong");
+      strSQL = PrepareSQL("UPDATE song_new SET strArtists='%s' WHERE idSong=%i", StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
+      m_pDS->exec(strSQL);
     }
 
-    if (version < 23)
-    {
-      m_pDS->exec("CREATE TABLE album_genre ( idGenre integer, idAlbum integer, iOrder integer )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
-      m_pDS->exec("INSERT INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, iPosition FROM exgenrealbum");
-      m_pDS->exec("REPLACE INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, 0 FROM album");
+    m_pDS->exec("DROP TABLE song");
+    m_pDS->exec("ALTER TABLE song_new RENAME TO song");
+    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
+    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
+    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
+    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+    m_pDS->exec("DROP TABLE IF EXISTS exartistsong");
+  }
 
+  if (version < 23)
+  {
+    m_pDS->exec("CREATE TABLE album_genre ( idGenre integer, idAlbum integer, iOrder integer )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_1 ON album_genre ( idAlbum, idGenre )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxAlbumGenre_2 ON album_genre ( idGenre, idAlbum )\n");
+    m_pDS->exec("INSERT INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, iPosition FROM exgenrealbum");
+    m_pDS->exec("REPLACE INTO album_genre ( idGenre, idAlbum, iOrder) SELECT idGenre, idAlbum, 0 FROM album");
+
+    CStdString strSQL;
+    strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraGenres,"
+                      "  album.idGenre AS idGenre, strGenre FROM album "
+                      "  JOIN genre ON album.idGenre=genre.idGenre");
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
+      return false;
+    }
+
+    VECALBUMS albums;
+    while (!m_pDS->eof())
+    {
+      CAlbum album;
+      album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
+      album.genre.push_back(m_pDS->fv("strGenre").get_asString());
+      if (!m_pDS->fv("strExtraGenres").get_asString().empty())
+      {
+        std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
+        album.genre.insert(album.genre.end(), extraGenres.begin(), extraGenres.end());
+      }
+      albums.push_back(album);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, strGenres text, iYear integer, idThumb integer)");
+    m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, strArtists, iYear, idThumb) SELECT idAlbum, strAlbum, strArtists, iYear, idThumb FROM album");
+
+    for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
+    {
       CStdString strSQL;
-      strSQL=PrepareSQL("SELECT album.idAlbum AS idAlbum, strExtraGenres,"
-                        "  album.idGenre AS idGenre, strGenre FROM album "
-                        "  JOIN genre ON album.idGenre=genre.idGenre");
-      if (!m_pDS->query(strSQL.c_str()))
-      {
-        CLog::Log(LOGDEBUG, "%s could not upgrade albums table", __FUNCTION__);
-        return false;
-      }
-
-      VECALBUMS albums;
-      while (!m_pDS->eof())
-      {
-        CAlbum album;
-        album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
-        album.genre.push_back(m_pDS->fv("strGenre").get_asString());
-        if (!m_pDS->fv("strExtraGenres").get_asString().empty())
-        {
-          std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
-          album.genre.insert(album.genre.end(), extraGenres.begin(), extraGenres.end());
-        }
-        albums.push_back(album);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      m_pDS->exec("CREATE TABLE album_new ( idAlbum integer primary key, strAlbum varchar(256), strArtists text, strGenres text, iYear integer, idThumb integer)");
-      m_pDS->exec("INSERT INTO album_new ( idAlbum, strAlbum, strArtists, iYear, idThumb) SELECT idAlbum, strAlbum, strArtists, iYear, idThumb FROM album");
-
-      for (VECALBUMS::iterator it = albums.begin(); it != albums.end(); ++it)
-      {
-        CStdString strSQL;
-        strSQL = PrepareSQL("UPDATE album_new SET strGenres='%s' WHERE idAlbum=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->exec("DROP TABLE album");
-      m_pDS->exec("ALTER TABLE album_new RENAME TO album");
-      m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
-      m_pDS->exec("DROP TABLE IF EXISTS exgenrealbum");
+      strSQL = PrepareSQL("UPDATE album_new SET strGenres='%s' WHERE idAlbum=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idAlbum);
+      m_pDS->exec(strSQL);
     }
 
-    if (version < 24)
-    {
-      m_pDS->exec("CREATE TABLE song_genre ( idGenre integer, idSong integer, iOrder integer )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )\n");
-      m_pDS->exec("INSERT INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, iPosition FROM exgenresong");
-      m_pDS->exec("REPLACE INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, 0 FROM song");
+    m_pDS->exec("DROP TABLE album");
+    m_pDS->exec("ALTER TABLE album_new RENAME TO album");
+    m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+    m_pDS->exec("DROP TABLE IF EXISTS exgenrealbum");
+  }
 
+  if (version < 24)
+  {
+    m_pDS->exec("CREATE TABLE song_genre ( idGenre integer, idSong integer, iOrder integer )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_1 ON song_genre ( idSong, idGenre )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxSongGenre_2 ON song_genre ( idGenre, idSong )\n");
+    m_pDS->exec("INSERT INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, iPosition FROM exgenresong");
+    m_pDS->exec("REPLACE INTO song_genre ( idGenre, idSong, iOrder) SELECT idGenre, idSong, 0 FROM song");
+
+    CStdString strSQL;
+    strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraGenres,"
+                      "  song.idGenre AS idGenre, strGenre FROM song "
+                      "  JOIN genre ON song.idGenre=genre.idGenre");
+    if (!m_pDS->query(strSQL.c_str()))
+    {
+      CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
+      return false;
+    }
+
+    VECSONGS songs;
+    while (!m_pDS->eof())
+    {
+      CSong song;
+      song.idSong = m_pDS->fv("idSong").get_asInt();
+      song.genre.push_back(m_pDS->fv("strGenre").get_asString());
+      if (!m_pDS->fv("strExtraGenres").get_asString().empty())
+      {
+        std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
+        song.genre.insert(song.genre.end(), extraGenres.begin(), extraGenres.end());
+      }
+      songs.push_back(song);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment) SELECT idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
+
+    for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
+    {
       CStdString strSQL;
-      strSQL=PrepareSQL("SELECT song.idSong AS idSong, strExtraGenres,"
-                        "  song.idGenre AS idGenre, strGenre FROM song "
-                        "  JOIN genre ON song.idGenre=genre.idGenre");
-      if (!m_pDS->query(strSQL.c_str()))
-      {
-        CLog::Log(LOGDEBUG, "%s could not upgrade songs table", __FUNCTION__);
-        return false;
-      }
-
-      VECSONGS songs;
-      while (!m_pDS->eof())
-      {
-        CSong song;
-        song.idSong = m_pDS->fv("idSong").get_asInt();
-        song.genre.push_back(m_pDS->fv("strGenre").get_asString());
-        if (!m_pDS->fv("strExtraGenres").get_asString().empty())
-        {
-          std::vector<std::string> extraGenres = StringUtils::Split(m_pDS->fv("strExtraGenres").get_asString(), g_advancedSettings.m_musicItemSeparator);
-          song.genre.insert(song.genre.end(), extraGenres.begin(), extraGenres.end());
-        }
-        songs.push_back(song);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      m_pDS->exec("CREATE TABLE song_new ( idSong integer primary key, idAlbum integer, idPath integer, strArtists text, strGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
-      m_pDS->exec("INSERT INTO song_new ( idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment) SELECT idSong, idAlbum, idPath, strArtists, strTitle, iTrack, iDuration, iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, idThumb, lastplayed, rating, comment FROM song");
-
-      for (VECSONGS::iterator it = songs.begin(); it != songs.end(); ++it)
-      {
-        CStdString strSQL;
-        strSQL = PrepareSQL("UPDATE song_new SET strGenres='%s' WHERE idSong=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
-        m_pDS->exec(strSQL);
-      }
-
-      m_pDS->exec("DROP TABLE song");
-      m_pDS->exec("ALTER TABLE song_new RENAME TO song");
-      m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
-      m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
-      m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
-      m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
-      m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-      m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
+      strSQL = PrepareSQL("UPDATE song_new SET strGenres='%s' WHERE idSong=%i", StringUtils::Join(it->genre, g_advancedSettings.m_musicItemSeparator).c_str(), it->idSong);
+      m_pDS->exec(strSQL);
     }
 
-    if (version < 25)
-    {
-      m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
-      m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
-    }
+    m_pDS->exec("DROP TABLE song");
+    m_pDS->exec("ALTER TABLE song_new RENAME TO song");
+    m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
+    m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
+    m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
+    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+    m_pDS->exec("DROP TABLE IF EXISTS exgenresong");
+  }
 
-    if (version < 26)
-    { // add art table
-      m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-      m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-      m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
-      m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
-      m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
-    }
+  if (version < 25)
+  {
+    m_pDS->exec("ALTER TABLE album ADD bCompilation integer not null default '0'");
+    m_pDS->exec("CREATE INDEX idxAlbum_1 ON album(bCompilation)");
+  }
 
-    if (version < 27)
-    {
-      m_pDS->exec("DROP TABLE thumb");
+  if (version < 26)
+  { // add art table
+    m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
+    m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
+    m_pDS->exec("CREATE TRIGGER delete_song AFTER DELETE ON song FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSong AND media_type='song'; END");
+    m_pDS->exec("CREATE TRIGGER delete_album AFTER DELETE ON album FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idAlbum AND media_type='album'; END");
+    m_pDS->exec("CREATE TRIGGER delete_artist AFTER DELETE ON artist FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idArtist AND media_type='artist'; END");
+  }
 
-      g_settings.m_musicNeedsUpdate = 27;
-      g_settings.Save();
-    }
+  if (version < 27)
+  {
+    m_pDS->exec("DROP TABLE thumb");
 
-    // always recreate the views after any table change
-    CreateViews();
+    g_settings.m_musicNeedsUpdate = 27;
+    g_settings.Save();
+  }
+
+  // always recreate the views after any table change
+  CreateViews();
 
   return true;
 }

@@ -101,20 +101,20 @@ bool CAddonDatabase::CreateTables()
 
 bool CAddonDatabase::UpdateOldVersion(int version)
 {
-    if (version < 13)
-    {
-      m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
-      m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
-    }
-    if (version < 14)
-    {
-      m_pDS->exec("ALTER TABLE addon add minversion text");
-    }
-    if (version < 15)
-    {
-      m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
-    }
+  if (version < 13)
+  {
+    m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+    m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
+  }
+  if (version < 14)
+  {
+    m_pDS->exec("ALTER TABLE addon add minversion text");
+  }
+  if (version < 15)
+  {
+    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  }
   return true;
 }
 
