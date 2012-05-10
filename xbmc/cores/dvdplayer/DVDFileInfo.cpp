@@ -75,6 +75,21 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
     return false;
 }
 
+int DegreeToOrientation(int degrees)
+{
+  switch(degrees)
+  {
+    case 90:
+      return 5;
+    case 180:
+      return 2;
+    case 270:
+      return 7;
+    default:
+      return 0;
+  }
+}
+
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails)
 {
   unsigned int nTime = XbmcThreads::SystemClockMillis();
@@ -223,12 +238,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
 
             if (context)
             {
+              int orientation = DegreeToOrientation(hint.orientation);
               dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
               dllSwScale.sws_freeContext(context);
 
               details.width = nWidth;
               details.height = nHeight;
-              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, 0, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
+              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
               bOk = true;
             }
 
