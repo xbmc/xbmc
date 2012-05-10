@@ -23,6 +23,7 @@
 
 #include "CWIID_WiiRemote.h"
 
+#include <unistd.h>
 
 bool g_AllowReconnect = true;
 bool g_AllowMouse     = true;
