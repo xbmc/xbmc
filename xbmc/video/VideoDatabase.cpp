@@ -203,7 +203,7 @@ bool CVideoDatabase::CreateTables()
 
       columns += column;
     }
-    columns += ")";
+    columns += ", idShow integer)";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
