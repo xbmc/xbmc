@@ -474,7 +474,7 @@ void CGUISettings::Initialize()
 #endif
 #if !defined(TARGET_DARWIN)
   AddBool(aocat, "audiooutput.truehdpassthrough", 349, true );
-  AddBool(aocat, "audiooutput.dtshdpassthrough" , 407, true );
+  AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, true );
 #endif
 
 #if defined(TARGET_DARWIN)
