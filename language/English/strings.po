@@ -9365,14 +9365,17 @@ msgid "Play GUI sounds"
 msgstr ""
 
 #: id:34121
+msgctxt "Play GUI sounds"
 msgid "Only when playback stopped"
 msgstr ""
 
 #: id:34122
+msgctxt "Play GUI sounds"
 msgid "Always"
 msgstr ""
 
 #: id:34123
+msgctxt "Play GUI sounds"
 msgid "Never"
 msgstr ""
 
