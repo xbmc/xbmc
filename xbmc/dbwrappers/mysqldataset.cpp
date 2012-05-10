@@ -1319,6 +1319,20 @@ bool MysqlDataset::dropIndex(const char *table, const char *index)
   return true;
 }
 
+static bool ci_test(char l, char r)
+{
+  return tolower(l) == tolower(r);
+}
+
+static size_t ci_find(const string& where, const string& what)
+{
+  std::string::const_iterator loc = std::search(where.begin(), where.end(), what.begin(), what.end(), ci_test);
+  if (loc == where.end())
+    return string::npos;
+  else
+    return loc - where.begin();
+}
+
 int MysqlDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   string qry = sql;
@@ -1328,25 +1342,25 @@ int MysqlDataset::exec(const string &sql) {
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
 
-  if ( (loc=qry.find("integer primary key")) != string::npos)
+  if ( (loc=ci_find(qry, "integer primary key")) != string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
   // force the charset and collation to UTF-8
-  if ( qry.find("CREATE TABLE") != string::npos )
+  if ( ci_find(qry, "CREATE TABLE") != string::npos )
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  else if ( qry.find("CREATE TRIGGER") != string::npos )
+  else if ( ci_find(qry, "CREATE TRIGGER") != string::npos )
   {
-    if ( (loc=qry.find("BEGIN ")) != string::npos )
+    if ( (loc=ci_find(qry, "BEGIN ")) != string::npos )
     {
         qry.replace(loc, 6, "");
     }
 
-    if ( (loc=qry.find(" END")) != string::npos )
+    if ( (loc=ci_find(qry, " END")) != string::npos )
     {
         qry.replace(loc, 4, "");
     }
