@@ -664,7 +664,6 @@
 		F56C7ACF131EC155000AD0F6 /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7671131EC153000AD0F6 /* ZeroconfBrowser.cpp */; };
 		F56C7AD0131EC155000AD0F6 /* cddb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7673131EC153000AD0F6 /* cddb.cpp */; };
 		F56C7AD5131EC155000AD0F6 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C767E131EC153000AD0F6 /* OSXGNUReplacements.c */; };
-		F56C7AD7131EC155000AD0F6 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7682131EC153000AD0F6 /* eprintf.cpp */; };
 		F56C7AD8131EC155000AD0F6 /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7686131EC153000AD0F6 /* GUIDialogPictureInfo.cpp */; };
 		F56C7AD9131EC155000AD0F6 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7688131EC153000AD0F6 /* GUIViewStatePictures.cpp */; };
 		F56C7ADA131EC155000AD0F6 /* GUIWindowPictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C768A131EC153000AD0F6 /* GUIWindowPictures.cpp */; };
@@ -2410,7 +2409,6 @@
 		F56C7674131EC153000AD0F6 /* cddb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cddb.h; sourceTree = "<group>"; };
 		F56C767E131EC153000AD0F6 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F56C767F131EC153000AD0F6 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		F56C7682131EC153000AD0F6 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F56C7684131EC153000AD0F6 /* DllImageLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllImageLib.h; sourceTree = "<group>"; };
 		F56C7685131EC153000AD0F6 /* DllLibExif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibExif.h; sourceTree = "<group>"; };
 		F56C7686131EC153000AD0F6 /* GUIDialogPictureInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPictureInfo.cpp; sourceTree = "<group>"; };
@@ -5134,7 +5132,6 @@
 				F56C7B9A131EC1B4000AD0F6 /* AutoPool.mm */,
 				F5B13DFF13344F2A0045076D /* DarwinUtils.h */,
 				F5B13E0013344F310045076D /* DarwinUtils.mm */,
-				F56C7682131EC153000AD0F6 /* eprintf.cpp */,
 				DFFD594B1506B6300088DE4B /* IOSEAGLView.h */,
 				DFFD594C1506B6300088DE4B /* IOSEAGLView.mm */,
 				DFFEFC2015160927001294DC /* IOSExternalTouchController.h */,
@@ -6791,7 +6788,6 @@
 				F56C7ACF131EC155000AD0F6 /* ZeroconfBrowser.cpp in Sources */,
 				F56C7AD0131EC155000AD0F6 /* cddb.cpp in Sources */,
 				F56C7AD5131EC155000AD0F6 /* OSXGNUReplacements.c in Sources */,
-				F56C7AD7131EC155000AD0F6 /* eprintf.cpp in Sources */,
 				F56C7AD8131EC155000AD0F6 /* GUIDialogPictureInfo.cpp in Sources */,
 				F56C7AD9131EC155000AD0F6 /* GUIViewStatePictures.cpp in Sources */,
 				F56C7ADA131EC155000AD0F6 /* GUIWindowPictures.cpp in Sources */,
