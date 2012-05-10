@@ -3523,7 +3523,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
       {
         int track=0;
         if (item.HasProperty("playlist_starting_track"))
-          track = item.GetProperty("playlist_starting_track").asInteger();
+          track = (int)item.GetProperty("playlist_starting_track").asInteger();
         return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
       }
       else
@@ -5174,8 +5174,8 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
 
 int CApplication::GetVolume() const
 {
-  // converts the hardware volume (in mB) to a percentage
-  return g_settings.m_fVolumeLevel * 100.0f;
+  // converts the hardware volume to a percentage
+  return (int)(g_settings.m_fVolumeLevel * 100.0f);
 }
 
 int CApplication::GetSubtitleDelay() const
