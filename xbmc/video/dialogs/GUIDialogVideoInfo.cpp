@@ -117,6 +117,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       else
         CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
+      Update();
       return true;
     }
     break;
