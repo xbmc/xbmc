@@ -50,11 +50,12 @@ static void checksum(unsigned char * dest, unsigned const char * src, u32 len,
         0x96,0x43,0x2b,0xcc, 0x0c,0x9d,0x26,0xb9,
     }};
 
-	md5_context c;
-	md5_starts(&c);
-    md5_update(&c, src, len);
-    md5_update(&c, extradata[checksum_num], sizeof extradata[checksum_num]);
-    md5_finish(&c, dest);
+	rtv_md5_context c;
+	rtv_md5_starts(&c);
+    rtv_md5_update(&c, src, len);
+    rtv_md5_update(&c, extradata[checksum_num], sizeof extradata[checksum_num]);
+    rtv_md5_finish(&c, dest);
+
 }
 
 static u32 cryptblock(u32 k, char * buf, u32 size)
