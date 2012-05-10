@@ -46,7 +46,6 @@ public:
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames);
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
-    bool         InitializeShared(AEAudioFormat &format);
     bool         InitializeExclusive(AEAudioFormat &format);
     void         AEChannelsFromSpeakerMask(DWORD speakers);
     DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
@@ -72,8 +71,7 @@ private:
 
     bool                m_running;
     bool                m_initialized;
-    bool                m_isExclusive;
 
-    unsigned int        m_uiBufferLen;  // wasapi endpoint buffer size, in frames
-    double              avgTimeWaiting; // time between next buffer of data from SoftAE and driver call for data
+    unsigned int        m_uiBufferLen;    /* wasapi endpoint buffer size, in frames */
+    double              m_avgTimeWaiting; /* time between next buffer of data from SoftAE and driver call for data */
 };
