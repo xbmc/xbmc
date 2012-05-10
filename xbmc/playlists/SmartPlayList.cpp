@@ -929,15 +929,13 @@ void CSmartPlaylist::AddRule(const CSmartPlaylistRule &rule)
   m_playlistRules.push_back(rule);
 }
 
-CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists, bool needWhere /* = true */) const
+CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &referencedPlaylists) const
 {
   CStdString rule, currentRule;
   for (vector<CSmartPlaylistRule>::const_iterator it = m_playlistRules.begin(); it != m_playlistRules.end(); ++it)
   {
     if (it != m_playlistRules.begin())
       rule += m_matchAllRules ? " AND " : " OR ";
-    else if (needWhere)
-      rule += "WHERE ";
     rule += "(";
     CStdString currentRule;
     if (it->m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
@@ -953,7 +951,7 @@ CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, set<CStdString> &refere
         if (playlist.GetType().Equals(GetType()) || (playlist.GetType().Equals("mixed") && (GetType() == "songs" || GetType() == "musicvideos")) || playlist.GetType().IsEmpty())
         {
           playlist.SetType(GetType());
-          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists, false);
+          playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
         }
         if (playlist.GetType().Equals(GetType()))
         {

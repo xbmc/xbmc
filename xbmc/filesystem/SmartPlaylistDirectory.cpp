@@ -89,7 +89,7 @@ namespace XFILE
     {
       CMusicDatabase db;
       db.Open();
-      success = db.GetAlbumsByWhere("musicdb://3/", playlist.GetWhereClause(db, playlists), playlist.GetOrderClause(db), items);
+      success = db.GetAlbumsByWhere("musicdb://3/", "WHERE " + playlist.GetWhereClause(db, playlists), playlist.GetOrderClause(db), items);
       items.SetContent("albums");
       db.Close();
     }
@@ -102,10 +102,10 @@ namespace XFILE
       {
         CSmartPlaylist songPlaylist(playlist);
         songPlaylist.SetType("songs");
-        whereOrder = songPlaylist.GetWhereClause(db, playlists) + " " + songPlaylist.GetOrderClause(db);
+        whereOrder = "WHERE " + songPlaylist.GetWhereClause(db, playlists) + " " + songPlaylist.GetOrderClause(db);
       }
       else
-        whereOrder = playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
+        whereOrder = "WHERE " + playlist.GetWhereClause(db, playlists) + " " + playlist.GetOrderClause(db);
 
       success = db.GetSongsByWhere("", whereOrder, items);
       items.SetContent("songs");
