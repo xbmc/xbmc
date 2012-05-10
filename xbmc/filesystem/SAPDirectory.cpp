@@ -31,6 +31,9 @@
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif
+#ifdef __FreeBSD__
+#include "freebsd/FreeBSDGNUReplacements.h"
+#endif
 
 #include <sys/socket.h>
 #include <netinet/in.h>
