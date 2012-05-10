@@ -100,6 +100,9 @@ class CGUIMessage;
 #define TMSG_VOLUME_SHOW          900
 #define TMSG_SPLASH_MESSAGE       901
 
+#define TMSG_DISPLAY_SETUP      1000
+#define TMSG_DISPLAY_DESTROY    1001
+
 typedef struct
 {
   DWORD dwMessage;
@@ -214,6 +217,9 @@ public:
 
   void SetSplashMessage(const CStdString& message);
   void SetSplashMessage(int stringID);
+  
+  bool SetupDisplay();
+  bool DestroyDisplay();
 
 private:
   // private construction, and no assignements; use the provided singleton methods
