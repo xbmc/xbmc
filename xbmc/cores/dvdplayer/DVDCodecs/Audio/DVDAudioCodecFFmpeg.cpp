@@ -276,11 +276,11 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
   {
     switch(m_pCodecContext->sample_fmt)
     {
-      case SAMPLE_FMT_U8 : return AE_FMT_U8;
-      case SAMPLE_FMT_S16: return AE_FMT_S16NE;
-      case SAMPLE_FMT_S32: return AE_FMT_S32NE;
-      case SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
-      case SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
+      case AV_SAMPLE_FMT_U8 : return AE_FMT_U8;
+      case AV_SAMPLE_FMT_S16: return AE_FMT_S16NE;
+      case AV_SAMPLE_FMT_S32: return AE_FMT_S32NE;
+      case AV_SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
+      case AV_SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
       default:
         assert(false);
         return AE_FMT_INVALID;
