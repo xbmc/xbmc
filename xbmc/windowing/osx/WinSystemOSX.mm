@@ -411,7 +411,7 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
   
   CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
 
-  CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(screenIdx));
+  CFArrayRef displayModes = CGDisplayCopyAllDisplayModes(GetDisplayID(screenIdx), NULL);
   
   if (NULL == displayModes)
   {
@@ -441,11 +441,13 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
         (h == height)             &&
         (rate == refreshrate || rate == 0)      )
     {
-      CLog::Log(LOGDEBUG, "GetMode found a match!");    
+      CLog::Log(LOGDEBUG, "GetMode found a match!");
+      CFRelease(displayModes);
       return displayMode;
     }
   }
-  CLog::Log(LOGERROR, "GetMode - no match found!");  
+  CLog::Log(LOGERROR, "GetMode - no match found!");
+  CFRelease(displayModes);
   return NULL;
 }
 
@@ -1091,36 +1093,68 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   if( screenIdx >= GetNumScreens())
     return false;
 
-  int match = 0;    
-  CFDictionaryRef dispMode = NULL;
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
 
-  // find mode that matches the desired size, refreshrate
-  // non interlaced, nonstretched, safe for hardware
-  dispMode = GetMode(width, height, refreshrate, screenIdx);
-
-  //not found - fallback to bestemdeforparameters
-  if (!dispMode)
+  bool exactMatch = false;
+	
+  // Get a copy of the current display mode
+  CGDisplayModeRef dispMode = CGDisplayCopyDisplayMode(display_id);
+	
+  // Loop through all display modes to determine the closest match.
+  // CGDisplayBestModeForParameters is deprecated on 10.6 so we will emulate it's behavior
+  // Try to find a mode with the requested depth and equal or greater dimensions first.
+  // If no match is found, try to find a mode with greater depth and same or greater dimensions.
+  // If still no match is found, just use the current mode.
+  CFArrayRef allModes = CGDisplayCopyAllDisplayModes(display_id, NULL);
+  for(int i = 0; i < CFArrayGetCount(allModes); i++)
   {
-    dispMode = CGDisplayBestModeForParameters(display_id, 32, width, height, &match);
+    CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+    CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding(mode);
+    if (kCFCompareEqualTo != CFStringCompare(pixelEncoding, CFSTR(kIO32BitFloatPixels), kCFCompareCaseInsensitive))
+    {  
+      CFRelease(pixelEncoding);
+      continue;
+    }
 
-    if (!match)
-      dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
-
-    if (!match)
-      return false;
+    if((CGDisplayModeGetWidth(mode) >= (size_t)width) && (CGDisplayModeGetHeight(mode) >= (size_t)height))
+    {
+      dispMode = mode;
+      exactMatch = true;
+      break;
+    }
   }
+	
+  // No depth match was found
+  if(!exactMatch)
+  {
+    for(int i = 0; i < CFArrayGetCount(allModes); i++)
+    {
+      CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+      CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding(mode);
+      if (kCFCompareEqualTo != CFStringCompare(pixelEncoding, CFSTR(kIO16BitFloatPixels), kCFCompareCaseInsensitive))
+      {  
+        CFRelease(pixelEncoding);
+        continue;
+      }
+      
+      if((CGDisplayModeGetWidth(mode) >= (size_t)width) && (CGDisplayModeGetHeight(mode) >= (size_t)height))
+      {
+        dispMode = mode;
+        break;
+      }
+    }
+	}
+  CFRelease(allModes);
 
   // switch mode and return success
   CGDisplayCapture(display_id);
   CGDisplayConfigRef cfg;
   CGBeginDisplayConfiguration(&cfg);
-  // we don't need to do this, we are already faded.
-  //CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
-  CGConfigureDisplayMode(cfg, display_id, dispMode);
+  CGConfigureDisplayWithDisplayMode(cfg, display_id, dispMode, NULL);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
   CGDisplayRelease(display_id);
+  CGDisplayModeRelease(dispMode);
   
   Cocoa_CVDisplayLinkUpdate();
 
@@ -1142,7 +1176,7 @@ void CWinSystemOSX::FillInVideoModes()
     double refreshrate;
     RESOLUTION_INFO res;   
 
-    CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
+    CFArrayRef displayModes = CGDisplayCopyAllDisplayModes(GetDisplayID(disp), NULL);
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
     CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
     
@@ -1191,6 +1225,7 @@ void CWinSystemOSX::FillInVideoModes()
         g_settings.m_ResInfo.push_back(res);
       }
     }
+   CFRelease(displayModes);
   }
 }
 
@@ -1277,11 +1312,37 @@ void CWinSystemOSX::OnMove(int x, int y)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
-  // kIOPMAssertionTypeNoDisplaySleep prevents display idle sleep
   static IOPMAssertionID assertionID = 0;
 
   if (bEnable)
-    IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
+  {  
+    CFDictionaryRef props = 0;
+    CFStringRef keys[10];
+    CFTypeRef vals[10];
+    int val = 0;
+    
+    int kn = 0;
+    val = kIOPMAssertionLevelOn;
+    keys[kn] = kIOPMAssertionTypeNoDisplaySleep;
+    vals[kn] = CFNumberCreate(0, kCFNumberIntType, &val);
+    kn++;
+    
+    keys[kn] = kIOPMAssertionHumanReadableReasonKey;
+    vals[kn] = CFSTR("Generic user activity.");
+    kn++;
+    
+    keys[kn] = kIOPMAssertionLocalizationBundlePathKey;
+    vals[kn] = CFSTR("com.apple.powermanagement");
+    kn++;
+    
+    props = CFDictionaryCreate(0, (const void **)keys, (const void **)vals, kn,
+                                &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    
+    IOPMAssertionCreateWithProperties(props, &assertionID);
+    
+    CFRelease(props);
+    CFRelease(vals[0]);
+  }  
   else
     IOPMAssertionRelease(assertionID);
 
