@@ -99,13 +99,9 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
     case CWIID_MESG_NUNCHUK:
       g_WiiRemote.ProcessNunchuck(mesg[i].nunchuk_mesg);
     break;
-    case CWIID_MESG_CLASSIC:
-      //Not implemented
-    break;
     case CWIID_MESG_ACC:
-      //Not implemented
-    break;
     case CWIID_MESG_BALANCE:
+    case CWIID_MESG_CLASSIC:
     case CWIID_MESG_MOTIONPLUS:
       //Not implemented
     break;
