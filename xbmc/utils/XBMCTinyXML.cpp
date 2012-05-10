@@ -21,7 +21,7 @@
 #include "filesystem/File.h"
 #include "RegExp.h"
 
-#define MAX_ENTITY_LENGTH 6 // size of largest entity "&apos;"
+#define MAX_ENTITY_LENGTH 8 // size of largest entity "&#xNNNN;"
 #define BUFFER_SIZE 4096
 
 CXBMCTinyXML::CXBMCTinyXML()
@@ -130,7 +130,7 @@ const char *CXBMCTinyXML::Parse(CStdString &data, TiXmlParsingData *prevData, Ti
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = 0;
   CRegExp re(true);
-  re.RegComp("^&(amp|lt|gt|quot|apos);.*");
+  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4});.*");
   while ((pos = data.find("&", pos)) != CStdString::npos)
   {
     CStdString tmp = data.substr(pos, pos + MAX_ENTITY_LENGTH);
@@ -149,7 +149,7 @@ bool CXBMCTinyXML::Test()
                   "cache=\"tmdb-en-12244.json\">"
                   "http://api.themoviedb.org/3/movie/12244"
                   "?api_key=57983e31fb435df4df77afb854740ea9"
-                  "&language=en</url></details>");
+                  "&language=en&#01af;&#x01AF;</url></details>");
   doc.Parse(data.c_str());
   TiXmlNode *root = doc.RootElement();
   if (root && root->ValueStr() == "details")
