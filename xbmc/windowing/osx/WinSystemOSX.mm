@@ -1049,8 +1049,7 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
   // Figure out the screen size. (default to main screen)
   if(screenIdx >= GetNumScreens())
     return;
-  CGDirectDisplayID display_id = GetDisplayID(screenIdx);
-  CFDictionaryRef mode  = CGDisplayCurrentMode(display_id);
+  CGDirectDisplayID display_id = (CGDirectDisplayID)GetDisplayID(screenIdx);
   
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
   if (context)
@@ -1063,16 +1062,14 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
       NSWindow* window;
       window = [view window];
       if (window)
-      {
         display_id = GetDisplayIDFromScreen( [window screen] );      
-        mode  = CGDisplayCurrentMode(display_id);
-      }
     }
   }
-  
-  *w = GetDictionaryInt(mode, kCGDisplayWidth);
-  *h = GetDictionaryInt(mode, kCGDisplayHeight);
-  *fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
+  CGDisplayModeRef mode  = CGDisplayCopyDisplayMode(display_id);  
+  *w = CGDisplayModeGetWidth(mode); 
+  *h = CGDisplayModeGetHeight(mode);
+  *fps = CGDisplayModeGetRefreshRate(mode);
+  CGDisplayModeRelease(mode);
   if ((int)*fps == 0)
   {
     // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
