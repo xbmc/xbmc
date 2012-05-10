@@ -20,19 +20,20 @@
  *
  */
 
-#ifndef __arm__
+#if defined(TARGET_DARWIN_OSX)
+
+#include <list>
+#include <vector>
 
 #include "ICoreAudioAEHAL.h"
 #include "ICoreAudioSource.h"
+#include "CoreAudioAEHAL.h"
+#include "utils/StdString.h"
 
-#include <CoreAudio/CoreAudio.h>
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AUGraph.h>
-#include <list>
-#include <vector>
-#include "utils/StdString.h"
-#include "CoreAudioAEHAL.h"
+#include <CoreAudio/CoreAudio.h>
 
 #define kOutputBus 0
 #define kInputBus 1
@@ -51,21 +52,6 @@ class CCoreAudioChannelLayout;
 class CAUGenericSource;
 
 typedef std::list<AudioDeviceID> CoreAudioDeviceList;
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1040
-/* AudioDeviceIOProcID does not exist in Mac OS X 10.4. We can emulate
- * this by using AudioDeviceAddIOProc() and AudioDeviceRemoveIOProc(). */
-#define AudioDeviceIOProcID AudioDeviceIOProc
-#define AudioDeviceDestroyIOProcID AudioDeviceRemoveIOProc
-static OSStatus AudioDeviceCreateIOProcID(AudioDeviceID dev,
-                                          AudioDeviceIOProc proc,
-                                          void *data,
-                                          AudioDeviceIOProcID *procid)
-{
-  *procid = proc;
-  return AudioDeviceAddIOProc(dev, proc, data);
-}
-#endif
 
 // There is only one AudioSystemObject instance system-side.
 // Therefore, all CCoreAudioHardware methods are static
