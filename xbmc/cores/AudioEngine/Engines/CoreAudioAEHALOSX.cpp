@@ -35,6 +35,8 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 
+#include <CoreServices/CoreServices.h>
+
 const char* g_ChannelLabels[] =
 {
   "Unused", // kAudioChannelLabel_Unused

@@ -5,6 +5,7 @@ APPNAME=cmake
 VERSION=2.8.8
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://www.cmake.org/files/v2.8
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH)

@@ -3,12 +3,8 @@ ARCH=@use_arch@
 DARWIN=@use_darwin@
 PREFIX=@use_prefix@
 STAGING=@use_staging@
-TOOLCHAIN=@use_toolchain@
-TARBALLS_LOCATION=@use_staging@/tarballs
-BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-MAKE_JOBS=$(shell sysctl hw.ncpu | awk '{print $$2}')
 
-RETRIEVE_TOOL=/usr/bin/curl
-RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
-ARCHIVE_TOOL=tar
-ARCHIVE_TOOL_FLAGS=xf
+# hack, include both possible paths which
+# depends on where we do the make.
+-include Makefile.buildtools
+-include ../Makefile.buildtools
