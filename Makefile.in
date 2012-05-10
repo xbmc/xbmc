@@ -112,6 +112,10 @@ DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 endif
 
+ifeq ($(findstring freebsd,@ARCH@),freebsd)
+DIRECTORY_ARCHIVES += xbmc/freebsd/freebsd.a
+endif
+
 ifeq (@HAVE_XBMC_NONFREE@,1)
 DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
 endif
@@ -291,7 +295,7 @@ ifeq (@USE_ASAP_CODEC@,1)
   endif
 endif
 	$(MAKE) -C lib/stsound/StSoundLibrary	
-ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@)),)
+ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@),$(findstring freebsd,@ARCH@)),)
 	$(MAKE) -C lib/snesapu/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -322,6 +326,10 @@ DYNOBJSXBMC= \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
+
+ifeq ($(findstring freebsd,@ARCH@),freebsd)
+DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
+endif
 
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 

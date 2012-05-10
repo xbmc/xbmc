@@ -18,7 +18,13 @@ tolower(){
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
-  if [[ "$host_vendor" != "apple" ]]; then
+  if echo "$host" | grep -q freebsd ; then
+    AC_MSG_CHECKING([for lib$2 soname])
+    $1_SONAME=[`ldconfig -r | sed -n "s;.* \(/.*lib$2\.so.*\)$;\1;p" | head -n 1`]
+    if test x$$1_SONAME != x ; then
+      $1_SONAME=[`basename $$1_SONAME`]
+    fi
+  elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
     $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ ! -z $$1_FILENAME ]]; then
@@ -472,6 +478,18 @@ case $host in
      ARCH="x86_64-linux"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  i386-*-freebsd*)
+     ARCH="x86-freebsd"
+     MAKE="gmake"
+     use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
+     ;;
+  amd64-*-freebsd*)
+     ARCH="x86_64-freebsd"
+     MAKE="gmake"
+     use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
+     ;;
   arm-apple-darwin*)
      use_joystick=no
      use_neon=yes
@@ -569,6 +587,13 @@ fi
 
 
 # platform specific flags
+if echo "$ARCH" | grep -q "freebsd" ; then
+  LOCALBASE="${LOCALBASE:-/usr/local}"
+  CFLAGS="$CFLAGS -I$LOCALBASE/include"
+  CXXFLAGS="$CXXFLAGS -I$LOCALBASE/include"
+  CPPFLAGS="$CPPFLAGS -I$LOCALBASE/include"
+  LDFLAGS="$LDFLAGS -L$LOCALBASE/lib"
+fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
@@ -727,7 +752,11 @@ fi
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
+if echo "$ARCH" | grep -q freebsd; then
+AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
+else
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
+fi
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
@@ -798,8 +827,12 @@ if test "$host_vendor" = "apple" ; then
 else
   case $host_os in
     linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
+    freebsd*) AC_CHECK_LIB([iconv], [main],, AC_MSG_ERROR($missing_library)) ;;
   esac
-  AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
+  case $host_os in
+    freebsd*) ;;
+    *) AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library)) ;;
+  esac
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
 
@@ -1172,7 +1205,11 @@ else
     use_libusb="no"
     AC_MSG_NOTICE($libusb_disabled)
   else
-    if test "$use_libusb" = "auto"; then
+    if echo "$ARCH" | grep -q freebsd ; then
+      AC_CHECK_LIB([usb],[main],
+	  	[use_libusb="yes";USB_LIBS="-lusb"],
+		[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
+    elif test "$use_libusb" = "auto"; then
       PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
     elif test "$use_libusb" = "yes"; then
       PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_ERROR($libusb_not_found)])
@@ -1938,6 +1975,7 @@ OUTPUT_FILES="Makefile \
     xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
+    xbmc/freebsd/Makefile \
     xbmc/linux/Makefile \
     xbmc/filesystem/Makefile \
     xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
@@ -2212,7 +2250,8 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
-  rm -f CMakeCache.txt && CC="$ORIGCC" CXX="$ORIGCXX" cmake    \
+  rm -f CMakeCache.txt &&                              \
+  CC="$ORIGCC" CXX="$ORIGCXX" LDFLAGS="$LDFLAGS" cmake \
     -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
     -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
     -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
@@ -2265,6 +2304,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     --disable-hyperspace \
     --disable-lattice \
     --disable-skyrocket
+  if echo "$ARCH" | grep -q freebsd ; then
+    sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
+  fi
 ], [$DISABLE_RSXS])
 
 XB_CONFIG_MODULE([lib/libapetag], [
@@ -2281,7 +2323,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
-    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
+    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS"
     #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
 ], [0])
 

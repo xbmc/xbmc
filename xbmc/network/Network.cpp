@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 
 #include <netinet/in.h>
+#include <sys/socket.h>
 #include <arpa/inet.h>
 
 using namespace std;
