@@ -1,1 +1,17 @@
+#!/bin/sh
+
+mkdir -p /Users/Shared/xbmc-depends/toolchain
+mkdir -p /Users/Shared/xbmc-depends/tarballs
+export PATH="/Users/Shared/xbmc-depends/toolchain/bin:${PATH}"
+
+# check if we can autoconf
+type -P autoconf &>/dev/null && has_autoconf=yes || has_autoconf=no
+
+if test "$has_autoconf" = "no"; then
+  # if not then prebuild our autoconf.
+  echo "autoconf not found, pre-building autoconf"
+  make -C m4
+  make -C autoconf
+fi
+
 autoconf

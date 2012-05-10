@@ -25,6 +25,7 @@
 #include "ICoreAudioAEHAL.h"
 #include "ICoreAudioSource.h"
 
+#include <CoreAudio/CoreAudio.h>
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AUGraph.h>
@@ -73,7 +74,7 @@ class CCoreAudioHardware
 public:
   static bool GetAutoHogMode();
   static void SetAutoHogMode(bool enable);
-  static AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID stream);
+  static AudioStreamBasicDescription *FormatsList(AudioStreamID stream);
   static AudioStreamID *StreamsList(AudioDeviceID device);
   static void ResetAudioDevices();
   static void ResetStream(AudioStreamID stream);
