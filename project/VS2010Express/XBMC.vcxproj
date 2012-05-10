@@ -895,10 +895,6 @@
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureCacheJob.cpp" />
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h" />
@@ -1049,9 +1045,10 @@
     <ClInclude Include="..\..\xbmc\filesystem\ZipFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZipManager.h" />
     <ClInclude Include="..\..\xbmc\network\windows\ZeroconfBrowserWIN.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClInclude Include="..\..\xbmc\system_gl.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
