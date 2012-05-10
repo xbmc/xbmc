@@ -48,7 +48,7 @@ class NPT_Stack : public NPT_List<T>
 public:
     // methods
     NPT_Result Push(const T& value) {
-        return Add(value);
+        return this->Add(value);
     }
 
     NPT_Result Peek(T& value) {
