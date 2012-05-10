@@ -1530,7 +1530,11 @@ msgstr ""
 msgid "Humidity"
 msgstr ""
 
-#empty strings from 407 to 408
+#: id:407
+msgid "- DTS-HD capable receiver"
+msgstr ""
+
+#empty string with id 408
 
 #: id:409
 msgid "Defaults"
