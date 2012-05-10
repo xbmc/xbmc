@@ -27,7 +27,7 @@
 #if defined(TARGET_WINDOWS)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
     #include "Sinks/AESinkALSA.h"
   #endif
@@ -48,7 +48,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
     /* check that it is a valid driver name */
     if (
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
         driver == "ALSA"        ||
   #endif
@@ -106,7 +106,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   if (driver.empty() || driver == "DIRECTSOUND")
     TRY_SINK(DirectSound)
 
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 
   #if defined(HAS_ALSA)
   if (driver.empty() || driver == "ALSA")
@@ -127,7 +127,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   if (driver != "OSS")
     TRY_SINK(OSS)
 
-#endif /* defined TARGET_WINDOWS || defined TARGET_LINUX */
+#endif /* defined TARGET_WINDOWS || defined TARGET_LINUX || defined TARGET_FREEBSD */
 
   //Complete failure.
   TRY_SINK(NULL);
