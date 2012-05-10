@@ -44,6 +44,7 @@ public:
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
   virtual bool IsDestroyed  ();
+  virtual bool IsBuffering() { return false; }
 
   virtual void Pause   ();
   virtual void Resume  ();
@@ -59,6 +60,7 @@ public:
   virtual const unsigned int      GetChannelCount() const;
   virtual const unsigned int      GetSampleRate  () const;
   virtual const enum AEDataFormat GetDataFormat  () const;
+  virtual const unsigned int GetEncodedSampleRate() const { return GetSampleRate(); }
 
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio();

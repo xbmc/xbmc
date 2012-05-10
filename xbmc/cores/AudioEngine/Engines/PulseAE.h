@@ -50,7 +50,7 @@ public:
   virtual void  SetVolume(float volume);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
   void RemoveStream(IAEStream *stream);
 
@@ -60,6 +60,10 @@ public:
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
+
+  virtual void SetMute(const bool enabled) {}
+  virtual bool IsMuted() { return false; }
+  virtual void SetSoundMode(const int mode) {}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 private:

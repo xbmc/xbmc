@@ -129,6 +129,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       case AE_CH_TBL : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
       case AE_CH_TBR : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
       case AE_CH_TBC : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
+      default: break;
     }
 
   m_MaxVolume     = CAEFactory::AE->GetVolume();
@@ -546,7 +547,7 @@ void CPulseAEStream::RegisterSlave(IAEStream *stream)
   m_slave = stream;
 }
 
-CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : m_stream(stream)
+CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : CThread("AE Stream"), m_stream(stream)
 {
   m_from = 0;
   m_target = 0;
