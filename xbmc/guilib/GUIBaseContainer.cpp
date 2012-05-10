@@ -30,7 +30,7 @@
 #include "GUIStaticItem.h"
 #include "Key.h"
 #include "utils/MathUtils.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 

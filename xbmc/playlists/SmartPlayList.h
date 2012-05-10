@@ -21,7 +21,7 @@
  */
 
 #include "utils/StdString.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include <vector>
 #include <set>
 
@@ -195,6 +195,6 @@ private:
   CSmartPlaylistRule::DATABASE_FIELD m_orderField;
   bool m_orderAscending;
 
-  TiXmlDocument m_xmlDoc;
+  CXBMCTinyXML m_xmlDoc;
 };
 

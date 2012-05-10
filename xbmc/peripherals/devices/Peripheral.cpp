@@ -24,7 +24,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "settings/GUISettings.h"
-#include "lib/tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/URIUtils.h"
 
 using namespace PERIPHERALS;
@@ -387,7 +387,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
 
 void CPeripheral::PersistSettings(bool bExiting /* = false */)
 {
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
   for (map<CStdString, CSetting *>::const_iterator itr = m_settings.begin(); itr != m_settings.end(); itr++)
@@ -444,7 +444,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 
 void CPeripheral::LoadPersistedSettings(void)
 {
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (doc.LoadFile(m_strSettingsFile))
   {
     const TiXmlElement *setting = doc.RootElement()->FirstChildElement("setting");

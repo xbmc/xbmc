@@ -413,7 +413,7 @@ bool CAddon::ReloadSettings()
 bool CAddon::LoadUserSettings()
 {
   m_userSettingsLoaded = false;
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (doc.LoadFile(m_userSettingsPath))
     m_userSettingsLoaded = SettingsFromXML(doc);
   return m_userSettingsLoaded;
@@ -438,7 +438,7 @@ void CAddon::SaveSettings(void)
     CDirectory::Create(strAddon);
 
   // create the XML file
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   SettingsToXML(doc);
   doc.SaveFile(m_userSettingsPath);
   
@@ -463,7 +463,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
   m_settings[key] = value;
 }
 
-bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */)
+bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /*=false */)
 {
   if (!doc.RootElement())
     return false;
@@ -495,7 +495,7 @@ bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=fals
   return foundSetting;
 }
 
-void CAddon::SettingsToXML(TiXmlDocument &doc) const
+void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
