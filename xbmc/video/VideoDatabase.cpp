@@ -4230,7 +4230,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       if (idContent == VIDEODB_CONTENT_MOVIES)
         strSQL=PrepareSQL("SELECT sets.idSet,sets.strSet,path.strPath,files.playCount FROM sets JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet JOIN (SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=sets.idSet JOIN movie ON setlinkmovie.idMovie=movie.idMovie JOIN files ON files.idFile=movie.idFile JOIN path ON path.idPath=files.idPath ");
       if (!where.empty())
-        strSQL += " WHERE " + where;
+        strSQL += " WHERE (" + where + ")";
     }
     else
     {
@@ -4241,7 +4241,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         group = " GROUP BY sets.idSet HAVING c>1";
       }
       if (!where.empty())
-        strSQL += " WHERE " + where;
+        strSQL += " WHERE (" + where + ")";
       strSQL += group;
     }
 
@@ -5034,7 +5034,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
         strSQL += filter.join;
       if (!filter.where.empty())
       {
-        strSQL += " WHERE " + filter.where;
+        strSQL += " WHERE (" + filter.where + ")";
         strSQL += PrepareSQL(" AND " + movieSetsWhere);
       }
       else
