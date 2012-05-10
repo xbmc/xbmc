@@ -492,7 +492,7 @@ public:
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
-  CStdString GetDisCFileCache(int windowID) const;
+  CStdString GetDiscFileCache(int windowID) const;
 
   /*!
    \brief stack files in a CFileItemList
