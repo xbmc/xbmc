@@ -56,6 +56,7 @@ SRCS=AlarmClock.cpp \
      Variant.cpp \
      Weather.cpp \
      Win32Exception.cpp \
+     XBMCTinyXML.cpp \
      XMLUtils.cpp \
 
 LIB=utils.a
