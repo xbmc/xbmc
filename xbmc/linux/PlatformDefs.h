@@ -351,7 +351,7 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
   typedef fpos_t fpos64_t;
   #define __stat64 stat
   #define stat64 stat
-  #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050) || defined(TARGET_DARWIN_IOS)
+  #if defined(TARGET_DARWIN_IOS)
     #define statfs64 statfs
   #endif
   #define fstat64 fstat

@@ -79,16 +79,6 @@
    (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
 
-// missing in 10.4 SDK
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
-#include "dlfcn.h"
-enum {
-  // component Y'CbCr 8-bit 4:2:2, ordered Cb Y'0 Cr Y'1 .
-  kCVPixelFormatType_422YpCbCr8 = FourCharCode('2vuy'),
-  kCVPixelFormatType_32BGRA = FourCharCode('BGRA')
-};
-const CFStringRef kCVPixelBufferIOSurfacePropertiesKey = CFSTR("IOSurfaceProperties");
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // http://developer.apple.com/mac/library/technotes/tn2010/tn2267.html

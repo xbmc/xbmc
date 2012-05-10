@@ -37,11 +37,6 @@ typedef unsigned char   BYTE;
 
 #include "osx/DarwinUtils.h"
 
-// missing in 10.4/10.5 SDKs.
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
-#define kIOPSNotifyLowBattery   "com.apple.system.powersources.lowbattery"
-#endif
-
 #include "CocoaInterface.h"
 
 #if defined(TARGET_DARWIN_OSX)

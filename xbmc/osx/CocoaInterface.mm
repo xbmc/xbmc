@@ -181,18 +181,12 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
   }
   else
   {
-    // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
-    CGDirectDisplayID display_id;
-    CFDictionaryRef mode;
-  
-    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
-    mode = CGDisplayCurrentMode(display_id);
-    if (mode)
-    {
-      CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
-      if (fps <= 0.0)
-        fps = 60.0;
-    }
+    CGDisplayModeRef display_mode;
+    display_mode = (CGDisplayModeRef)Cocoa_GL_GetCurrentDisplayID();
+    fps = CGDisplayModeGetRefreshRate(display_mode);
+    CGDisplayModeRelease(display_mode);
+    if (fps <= 0.0)
+      fps = 60.0;
   }
   
   return(fps);

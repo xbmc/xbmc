@@ -6,7 +6,6 @@ INCLUDES=-I$(abs_top_srcdir) \
 
 .SUFFIXES : .m .mm
 
-# do not include eprintf.cpp as make links to libgcc.a where as xcode does not.
 SRCS = \
 	SDLMain.mm \
 	XBMCHelper.m \

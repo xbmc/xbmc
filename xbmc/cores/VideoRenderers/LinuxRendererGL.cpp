@@ -65,15 +65,8 @@
 #endif
 
 #ifdef TARGET_DARWIN
-#if MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4
   #include <CoreVideo/CoreVideo.h>
   #include <OpenGL/CGLIOSurface.h>
-#else
-  enum CVPixelBufferLockFlags {
-    kCVPixelBufferLock_ReadOnly = 0x00000001,
-  };
-  #include <CoreVideo/CVPixelBuffer.h>
-#endif
 #endif
 
 #ifdef HAS_GLX
@@ -2448,24 +2441,6 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     YUVFIELDS &fields = m_buffers[index].fields;
     YUVPLANE  &plane  = fields[0][0];
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-    CVPixelBufferLockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-    int bufferWidth  = CVPixelBufferGetWidth(cvBufferRef);
-    int bufferHeight = CVPixelBufferGetHeight(cvBufferRef);
-    unsigned char *bufferBase = (unsigned char *)CVPixelBufferGetBaseAddress(cvBufferRef);
-
-    glEnable(m_textureTarget);
-    glBindTexture(m_textureTarget, plane.id);
-    // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-    glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-    // Using GL_YCBCR_422_APPLE extension to pull in video frame data directly
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
-    glBindTexture(m_textureTarget, 0);
-    glDisable(m_textureTarget);
-
-    CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
-#else
-    // CGLTexImageIOSurface2D only exits in 10.5sdk and above.
     // It is the fastest way to render a CVPixelBuffer backed
     // with an IOSurface as there is no CPU -> GPU upload.
     CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
@@ -2484,7 +2459,6 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
         texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
     glBindTexture(m_textureTarget, 0);
     glDisable(m_textureTarget);
-#endif
 
     CVBufferRelease(cvBufferRef);
     m_buffers[index].cvBufferRef = NULL;
@@ -2541,19 +2515,6 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
   }
   glEnable(m_textureTarget);
   glGenTextures(1, &plane.id);
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-  glBindTexture(m_textureTarget, plane.id);
-  // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-  glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  // This is necessary for non-power-of-two textures
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, NULL);
-  glBindTexture(m_textureTarget, 0);
-#endif
   glDisable(m_textureTarget);
 
   m_eventTexturesDone[index]->Set();
