@@ -1752,21 +1752,21 @@
 		DFB65F6615373AE7006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
 		DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEEncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		DFB65F6B15373AE7006B8FF1 /* AEEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoderFFmpeg.h; sourceTree = "<group>"; };
-		DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAE.cpp; sourceTree = "<group>"; };
-		DFB65F6E15373AE7006B8FF1 /* CoreAudioAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAE.h; sourceTree = "<group>"; };
-		DFB65F6F15373AE7006B8FF1 /* CoreAudioAEHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHAL.cpp; sourceTree = "<group>"; };
-		DFB65F7015373AE7006B8FF1 /* CoreAudioAEHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHAL.h; sourceTree = "<group>"; };
-		DFB65F7115373AE7006B8FF1 /* CoreAudioAEHALIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHALIOS.cpp; sourceTree = "<group>"; };
-		DFB65F7215373AE7006B8FF1 /* CoreAudioAEHALIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHALIOS.h; sourceTree = "<group>"; };
-		DFB65F7315373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHALOSX.cpp; sourceTree = "<group>"; };
-		DFB65F7415373AE7006B8FF1 /* CoreAudioAEHALOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHALOSX.h; sourceTree = "<group>"; };
-		DFB65F7515373AE7006B8FF1 /* CoreAudioAESound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAESound.cpp; sourceTree = "<group>"; };
-		DFB65F7615373AE7006B8FF1 /* CoreAudioAESound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAESound.h; sourceTree = "<group>"; };
-		DFB65F7715373AE7006B8FF1 /* CoreAudioAEStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEStream.cpp; sourceTree = "<group>"; };
-		DFB65F7815373AE7006B8FF1 /* CoreAudioAEStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEStream.h; sourceTree = "<group>"; };
-		DFB65F7915373AE7006B8FF1 /* CoreAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioRingBuffer.h; sourceTree = "<group>"; };
-		DFB65F7A15373AE7006B8FF1 /* ICoreAudioAEHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICoreAudioAEHAL.h; sourceTree = "<group>"; };
-		DFB65F7B15373AE7006B8FF1 /* ICoreAudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICoreAudioSource.h; sourceTree = "<group>"; };
+		DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAE.cpp; path = CoreAudio/CoreAudioAE.cpp; sourceTree = "<group>"; };
+		DFB65F6E15373AE7006B8FF1 /* CoreAudioAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAE.h; path = CoreAudio/CoreAudioAE.h; sourceTree = "<group>"; };
+		DFB65F6F15373AE7006B8FF1 /* CoreAudioAEHAL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAEHAL.cpp; path = CoreAudio/CoreAudioAEHAL.cpp; sourceTree = "<group>"; };
+		DFB65F7015373AE7006B8FF1 /* CoreAudioAEHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAEHAL.h; path = CoreAudio/CoreAudioAEHAL.h; sourceTree = "<group>"; };
+		DFB65F7115373AE7006B8FF1 /* CoreAudioAEHALIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAEHALIOS.cpp; path = CoreAudio/CoreAudioAEHALIOS.cpp; sourceTree = "<group>"; };
+		DFB65F7215373AE7006B8FF1 /* CoreAudioAEHALIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAEHALIOS.h; path = CoreAudio/CoreAudioAEHALIOS.h; sourceTree = "<group>"; };
+		DFB65F7315373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAEHALOSX.cpp; path = CoreAudio/CoreAudioAEHALOSX.cpp; sourceTree = "<group>"; };
+		DFB65F7415373AE7006B8FF1 /* CoreAudioAEHALOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAEHALOSX.h; path = CoreAudio/CoreAudioAEHALOSX.h; sourceTree = "<group>"; };
+		DFB65F7515373AE7006B8FF1 /* CoreAudioAESound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAESound.cpp; path = CoreAudio/CoreAudioAESound.cpp; sourceTree = "<group>"; };
+		DFB65F7615373AE7006B8FF1 /* CoreAudioAESound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAESound.h; path = CoreAudio/CoreAudioAESound.h; sourceTree = "<group>"; };
+		DFB65F7715373AE7006B8FF1 /* CoreAudioAEStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioAEStream.cpp; path = CoreAudio/CoreAudioAEStream.cpp; sourceTree = "<group>"; };
+		DFB65F7815373AE7006B8FF1 /* CoreAudioAEStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioAEStream.h; path = CoreAudio/CoreAudioAEStream.h; sourceTree = "<group>"; };
+		DFB65F7915373AE7006B8FF1 /* CoreAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRingBuffer.h; path = CoreAudio/CoreAudioRingBuffer.h; sourceTree = "<group>"; };
+		DFB65F7A15373AE7006B8FF1 /* ICoreAudioAEHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoreAudioAEHAL.h; path = CoreAudio/ICoreAudioAEHAL.h; sourceTree = "<group>"; };
+		DFB65F7B15373AE7006B8FF1 /* ICoreAudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoreAudioSource.h; path = CoreAudio/ICoreAudioSource.h; sourceTree = "<group>"; };
 		DFB65F8915373AE7006B8FF1 /* AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AE.h; sourceTree = "<group>"; };
 		DFB65F8A15373AE7006B8FF1 /* AEEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoder.h; sourceTree = "<group>"; };
 		DFB65F8B15373AE7006B8FF1 /* AEPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPostProc.h; sourceTree = "<group>"; };
@@ -4188,21 +4188,7 @@
 		DFB65F6C15373AE7006B8FF1 /* Engines */ = {
 			isa = PBXGroup;
 			children = (
-				DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */,
-				DFB65F6E15373AE7006B8FF1 /* CoreAudioAE.h */,
-				DFB65F6F15373AE7006B8FF1 /* CoreAudioAEHAL.cpp */,
-				DFB65F7015373AE7006B8FF1 /* CoreAudioAEHAL.h */,
-				DFB65F7115373AE7006B8FF1 /* CoreAudioAEHALIOS.cpp */,
-				DFB65F7215373AE7006B8FF1 /* CoreAudioAEHALIOS.h */,
-				DFB65F7315373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp */,
-				DFB65F7415373AE7006B8FF1 /* CoreAudioAEHALOSX.h */,
-				DFB65F7515373AE7006B8FF1 /* CoreAudioAESound.cpp */,
-				DFB65F7615373AE7006B8FF1 /* CoreAudioAESound.h */,
-				DFB65F7715373AE7006B8FF1 /* CoreAudioAEStream.cpp */,
-				DFB65F7815373AE7006B8FF1 /* CoreAudioAEStream.h */,
-				DFB65F7915373AE7006B8FF1 /* CoreAudioRingBuffer.h */,
-				DFB65F7A15373AE7006B8FF1 /* ICoreAudioAEHAL.h */,
-				DFB65F7B15373AE7006B8FF1 /* ICoreAudioSource.h */,
+				F5ED9362155CECC800842059 /* CoreAudio */,
 			);
 			path = Engines;
 			sourceTree = "<group>";
@@ -6193,6 +6179,28 @@
 				43348AAB1077486D00F859CF /* PlayerSelectionRule.h */,
 			);
 			name = playercorefactory;
+			sourceTree = "<group>";
+		};
+		F5ED9362155CECC800842059 /* CoreAudio */ = {
+			isa = PBXGroup;
+			children = (
+				DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */,
+				DFB65F6E15373AE7006B8FF1 /* CoreAudioAE.h */,
+				DFB65F6F15373AE7006B8FF1 /* CoreAudioAEHAL.cpp */,
+				DFB65F7015373AE7006B8FF1 /* CoreAudioAEHAL.h */,
+				DFB65F7115373AE7006B8FF1 /* CoreAudioAEHALIOS.cpp */,
+				DFB65F7215373AE7006B8FF1 /* CoreAudioAEHALIOS.h */,
+				DFB65F7315373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp */,
+				DFB65F7415373AE7006B8FF1 /* CoreAudioAEHALOSX.h */,
+				DFB65F7515373AE7006B8FF1 /* CoreAudioAESound.cpp */,
+				DFB65F7615373AE7006B8FF1 /* CoreAudioAESound.h */,
+				DFB65F7715373AE7006B8FF1 /* CoreAudioAEStream.cpp */,
+				DFB65F7815373AE7006B8FF1 /* CoreAudioAEStream.h */,
+				DFB65F7915373AE7006B8FF1 /* CoreAudioRingBuffer.h */,
+				DFB65F7A15373AE7006B8FF1 /* ICoreAudioAEHAL.h */,
+				DFB65F7B15373AE7006B8FF1 /* ICoreAudioSource.h */,
+			);
+			name = CoreAudio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

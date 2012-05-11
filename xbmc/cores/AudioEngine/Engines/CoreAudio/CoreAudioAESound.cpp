@@ -19,21 +19,20 @@
  *
  */
 
-#include "Interfaces/AESound.h"
-
 #include <samplerate.h>
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/EndianSwap.h"
+
+#include "CoreAudioAESound.h"
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AEUtil.h"
-
 #include "CoreAudioAE.h"
-#include "CoreAudioAESound.h"
+#include "Interfaces/AESound.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "utils/EndianSwap.h"
 
 /* typecast AE to CCoreAudioAE */
 #define AE (*(CCoreAudioAE*)CAEFactory::AE)

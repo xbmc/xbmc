@@ -20,11 +20,10 @@
  *
  */
 
-#include "utils/StdString.h"
 #include "Interfaces/AESound.h"
-#include "Utils/AEWAVLoader.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
+#include "utils/AEWAVLoader.h"
 
 class CWAVLoader;
 class CCoreAudioAESound : public IAESound
@@ -51,7 +50,7 @@ public:
   void           ReleaseSamples();
 private:
   CCriticalSection m_critSection;
-  std::string       m_filename;
+  std::string      m_filename;
   CAEWAVLoader     m_wavLoader;
   float            m_volume;
   int              m_inUse;

@@ -23,7 +23,7 @@
 #include "AEFactory.h"
 
 #if defined(TARGET_DARWIN)
-  #include "Engines/CoreAudioAE.h"
+  #include "Engines/CoreAudio/CoreAudioAE.h"
 #else
   #include "Engines/SoftAE.h"
 #endif

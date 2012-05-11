@@ -23,20 +23,20 @@
 #include <samplerate.h>
 #include <list>
 
-#include "Interfaces/AEStream.h"
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "CoreAudioRingBuffer.h"
-#include "threads/CriticalSection.h"
-#include <AudioUnit/AudioUnit.h>
 #include "ICoreAudioSource.h"
+#include "Interfaces/AEStream.h"
 
 #if defined(TARGET_DARWIN_IOS)
 # include "CoreAudioAEHALIOS.h"
 #else
 # include "CoreAudioAEHALOSX.h"
 #endif
+
+class CoreAudioRingBuffer;
 
 class CCoreAudioAEStream : public IAEStream, public ICoreAudioSource
 {

@@ -20,22 +20,21 @@
  *
  */
 
-#ifdef __arm__
+#ifdef defined(TARGET_DARWIN_IOS)
+
+#include <list>
+#include <vector>
 
 #include "ICoreAudioAEHAL.h"
+#include "CoreAudioAEHAL.h"
+#include "utils/StdString.h"
 
 #include <AudioUnit/AudioUnit.h>
 #include <AudioUnit/AudioUnitProperties.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AudioServices.h>
-#include <CoreAudio/CoreAudioTypes.h>
 #include <AudioToolbox/AUGraph.h>
-#include <list>
-#include <vector>
-
-#include "utils/StdString.h"
-
-#include "CoreAudioAEHAL.h"
+#include <CoreAudio/CoreAudioTypes.h>
 
 #define kOutputBus 0
 #define kInputBus 1

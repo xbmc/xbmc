@@ -22,7 +22,6 @@
 
 #include "AEAudioFormat.h"
 #include "Interfaces/AE.h"
-#include <AudioUnit/AudioUnit.h>
 #include "ICoreAudioSource.h"
 
 class ICoreAudioAEHAL;

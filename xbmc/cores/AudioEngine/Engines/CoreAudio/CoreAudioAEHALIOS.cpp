@@ -19,17 +19,17 @@
  *
  */
 
-#if defined(__APPLE__) && defined(__arm__)
-#include <math.h>
+#if defined(TARGET_DARWIN_IOS)
+#include "system.h"
 
 #include "CoreAudioAEHALIOS.h"
 
-#include "PlatformDefs.h"
-#include "utils/log.h"
-#include "system.h"
-#include "CoreAudioAE.h"
 #include "AEUtil.h"
 #include "AEFactory.h"
+#include "CoreAudioAE.h"
+#include "utils/log.h"
+
+#include <math.h>
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
