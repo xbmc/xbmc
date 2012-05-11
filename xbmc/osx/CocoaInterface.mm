@@ -79,34 +79,6 @@ int Cocoa_GL_GetCurrentDisplayID(void)
   return((int)display_id);
 }
 
-/* 10.5 only
-void Cocoa_SetSystemSleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-
-void Cocoa_SetDisplaySleep(bool enable)
-{
-  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
-  IOPMAssertionID assertionID;
-  IOReturn success;
-  
-  if (enable) {
-    success= IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &assertionID); 
-  } else {
-    success = IOPMAssertionRelease(assertionID);
-  }
-}
-*/
-
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
 {
   CVReturn status = kCVReturnError;
