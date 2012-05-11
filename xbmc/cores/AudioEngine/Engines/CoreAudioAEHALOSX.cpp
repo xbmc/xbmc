@@ -19,42 +19,43 @@
  *
  */
 
-#ifndef __arm__
+#ifdef TARGET_DARWIN_OSX
+
+#include "system.h"
+
 #include "CoreAudioAEHALOSX.h"
 
-#include <PlatformDefs.h>
-#include <math.h>
-#include "utils/log.h"
-#include "utils/TimeUtils.h"
-#include "system.h"
-#include "CoreAudioAE.h"
 #include "AEUtil.h"
-#include "AEFactory.h"
-#include "utils/SystemInfo.h"
+#include "CoreAudioAE.h"
 #include "settings/GUISettings.h"
-#include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
+#include "utils/SystemInfo.h"
 
 #include <CoreServices/CoreServices.h>
 
+// AudioHardwareGetProperty and friends are deprecated.
+// turn off the warning spew.
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+
 const char* g_ChannelLabels[] =
 {
-  "Unused", // kAudioChannelLabel_Unused
-  "Left", // kAudioChannelLabel_Left
-  "Right", // kAudioChannelLabel_Right
-  "Center", // kAudioChannelLabel_Center
-  "LFE",  // kAudioChannelLabel_LFEScreen
-  "Side Left", // kAudioChannelLabel_LeftSurround
-  "Side Right", // kAudioChannelLabel_RightSurround
-  "Left Center", // kAudioChannelLabel_LeftCenter
-  "Right Center", // kAudioChannelLabel_RightCenter
-  "Back Center", // kAudioChannelLabel_CenterSurround
-  "Back Left", // kAudioChannelLabel_LeftSurroundDirect
-  "Back Right", // kAudioChannelLabel_RightSurroundDirect
-  "Top Center", // kAudioChannelLabel_TopCenterSurround
-  "Top Back Left", // kAudioChannelLabel_VerticalHeightLeft
-  "Top Back Center", // kAudioChannelLabel_VerticalHeightCenter
-  "Top Back Right", // kAudioChannelLabel_VerticalHeightRight
+  "Unused",           // kAudioChannelLabel_Unused
+  "Left",             // kAudioChannelLabel_Left
+  "Right",            // kAudioChannelLabel_Right
+  "Center",           // kAudioChannelLabel_Center
+  "LFE",              // kAudioChannelLabel_LFEScreen
+  "Side Left",        // kAudioChannelLabel_LeftSurround
+  "Side Right",       // kAudioChannelLabel_RightSurround
+  "Left Center",      // kAudioChannelLabel_LeftCenter
+  "Right Center",     // kAudioChannelLabel_RightCenter
+  "Back Center",      // kAudioChannelLabel_CenterSurround
+  "Back Left",        // kAudioChannelLabel_LeftSurroundDirect
+  "Back Right",       // kAudioChannelLabel_RightSurroundDirect
+  "Top Center",       // kAudioChannelLabel_TopCenterSurround
+  "Top Back Left",    // kAudioChannelLabel_VerticalHeightLeft
+  "Top Back Center",  // kAudioChannelLabel_VerticalHeightCenter
+  "Top Back Right",   // kAudioChannelLabel_VerticalHeightRight
 };
 
 const AudioChannelLabel g_LabelMap[] =
