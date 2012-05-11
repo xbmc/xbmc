@@ -657,7 +657,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
       "Unable to get total device output channels - id: 0x%04x. Error = %s",
       (uint)m_DeviceId, GetError(ret).c_str());
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalOutputChannels: "
-    "Found %u channels in %u buffers", (uint)channels, pList->mNumberBuffers);
+    "Found %u channels in %u buffers", (uint)channels, (uint)pList->mNumberBuffers);
   free(pList);
   return channels;
 }
