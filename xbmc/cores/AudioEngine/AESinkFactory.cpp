@@ -100,7 +100,7 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 
 #if defined(TARGET_WINDOWS)
 
-  if ((driver.empty() && g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound) || driver == "WASAPI")
+  if ((driver.empty() && g_sysinfo.IsVistaOrHigher()  || driver == "WASAPI") && !g_advancedSettings.m_audioForceDirectSound)
     TRY_SINK(WASAPI)
 
   if (driver.empty() || driver == "DIRECTSOUND")
