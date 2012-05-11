@@ -46,6 +46,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
+
 #import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
 
 //------------------------------------------------------------------------------------------
@@ -1312,39 +1313,19 @@ void CWinSystemOSX::OnMove(int x, int y)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
+  // see Technical Q&A QA1340
   static IOPMAssertionID assertionID = 0;
 
-  if (bEnable)
-  {  
-    CFDictionaryRef props = 0;
-    CFStringRef keys[10];
-    CFTypeRef vals[10];
-    int val = 0;
-    
-    int kn = 0;
-    val = kIOPMAssertionLevelOn;
-    keys[kn] = kIOPMAssertionTypeNoDisplaySleep;
-    vals[kn] = CFNumberCreate(0, kCFNumberIntType, &val);
-    kn++;
-    
-    keys[kn] = kIOPMAssertionHumanReadableReasonKey;
-    vals[kn] = CFSTR("Generic user activity.");
-    kn++;
-    
-    keys[kn] = kIOPMAssertionLocalizationBundlePathKey;
-    vals[kn] = CFSTR("com.apple.powermanagement");
-    kn++;
-    
-    props = CFDictionaryCreate(0, (const void **)keys, (const void **)vals, kn,
-                                &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    
-    IOPMAssertionCreateWithProperties(props, &assertionID);
-    
-    CFRelease(props);
-    CFRelease(vals[0]);
-  }  
-  else
+  if (!bEnable)
+  {
+    CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
+    IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+      kIOPMAssertionLevelOn, reasonForActivity, &assertionID); 
+  }
+  else if (assertionID != 0)
+  {
     IOPMAssertionRelease(assertionID);
+  }
 
   m_use_system_screensaver = bEnable;
 }
