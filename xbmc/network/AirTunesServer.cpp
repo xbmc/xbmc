@@ -125,10 +125,10 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   if (ao_get_option(option, "name"))
     item.GetMusicInfoTag()->SetTitle(ao_get_option(option, "name"));
 
-  g_application.getApplicationMessenger().PlayFile(item);
-
   ThreadMessage tMsg2 = { TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VISUALISATION, 0 };
   g_application.getApplicationMessenger().SendMessage(tMsg2, true);
+
+  g_application.getApplicationMessenger().PlayFile(item);
 
   return (ao_device*) device;
 }
