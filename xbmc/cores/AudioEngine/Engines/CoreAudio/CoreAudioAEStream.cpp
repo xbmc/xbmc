@@ -38,6 +38,18 @@
 /* typecast AE to CCoreAudioAE */
 #define AE (*(CCoreAudioAE*)CAEFactory::AE)
 
+void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
+{
+  if (newSize > *oldSize)
+  {
+    if (*buffer)
+      _aligned_free(*buffer);
+    *buffer = _aligned_malloc(newSize, 16);
+    *oldSize = newSize;
+  }
+  memset(*buffer, 0x0, *oldSize);
+}
+
 using namespace std;
 
 template <class AudioDataType>

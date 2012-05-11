@@ -112,15 +112,3 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::str
   }
   return str.c_str();
 }
-
-void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
-{
-  if (newSize > *oldSize)
-  {
-    if (*buffer)
-      _aligned_free(*buffer);
-    *buffer = _aligned_malloc(newSize, 16);
-    *oldSize = newSize;
-  }
-  memset(*buffer, 0x0, *oldSize);
-}

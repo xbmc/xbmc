@@ -42,7 +42,7 @@
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
 #if defined(TARGET_DARWIN_OSX)
-  #include "CoreAudioAEHALOSX.h"
+  #include "cores/AudioEngine/Engines/CoreAudio/CoreAudioHardware.h"
 #endif
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"

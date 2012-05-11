@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2011-2012 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,15 +20,27 @@
  *
  */
 
-#include <list>
-#include "utils/StdString.h"
-#include <AudioUnit/AudioUnit.h>
-#include <AudioToolbox/AudioToolbox.h>
-#ifdef TARGET_DARWIN_OSX
-#include <CoreAudio/CoreAudio.h>
-#endif
+#include "system.h"
 
-// Helper Functions
-std::string GetError(OSStatus error);
-char* UInt32ToFourCC(UInt32* val);
-const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string& str);
+#if defined(TARGET_DARWIN_OSX)
+
+#include "CoreAudioDevice.h"
+
+// There is only one AudioSystemObject instance system-side.
+// Therefore, all CCoreAudioHardware methods are static
+class CCoreAudioHardware
+{
+public:
+  static bool GetAutoHogMode();
+  static void SetAutoHogMode(bool enable);
+  static AudioStreamBasicDescription* FormatsList(AudioStreamID stream);
+  static AudioStreamID *StreamsList(AudioDeviceID device);
+  static void ResetAudioDevices();
+  static void ResetStream(AudioStreamID stream);
+  static AudioDeviceID FindAudioDevice(std::string deviceName);
+  static AudioDeviceID GetDefaultOutputDevice();
+  static void GetOutputDeviceName(std::string &name);
+  static UInt32 GetOutputDevices(CoreAudioDeviceList *pList);
+};
+
+#endif

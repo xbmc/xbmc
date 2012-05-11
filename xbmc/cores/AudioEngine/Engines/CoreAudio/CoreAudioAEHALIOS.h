@@ -33,7 +33,6 @@
 #include <AudioUnit/AudioUnitProperties.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AudioServices.h>
-#include <AudioToolbox/AUGraph.h>
 #include <CoreAudio/CoreAudioTypes.h>
 
 #define kOutputBus 0
