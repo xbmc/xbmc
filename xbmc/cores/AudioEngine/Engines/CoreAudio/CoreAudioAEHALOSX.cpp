@@ -33,7 +33,7 @@
 
 #include <CoreServices/CoreServices.h>
 
-// AudioHardwareGetProperty and friends are deprecated.
+// AudioHardwareGetProperty and friends are deprecated,
 // turn off the warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -107,7 +107,8 @@ bool CCoreAudioHardware::GetAutoHogMode()
   OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyHogModeIsAllowed, &size, &val);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::GetAutoHogMode: Unable to get auto 'hog' mode. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioHardware::GetAutoHogMode: "
+      "Unable to get auto 'hog' mode. Error = %s", GetError(ret).c_str());
     return false;
   }
   return (val == 1);
@@ -118,7 +119,8 @@ void CCoreAudioHardware::SetAutoHogMode(bool enable)
   UInt32 val = enable ? 1 : 0;
   OSStatus ret = AudioHardwareSetProperty(kAudioHardwarePropertyHogModeIsAllowed, sizeof(val), &val);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioHardware::SetAutoHogMode: Unable to set auto 'hog' mode. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioHardware::SetAutoHogMode: "
+      "Unable to set auto 'hog' mode. Error = %s", GetError(ret).c_str());
 }
 
 AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID stream)
@@ -137,7 +139,8 @@ AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID strea
   ret = AudioStreamGetPropertyInfo(stream, 0, p, &listSize, NULL);
   if (ret != noErr)
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: Unable to get list size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: "
+      "Unable to get list size. Error = %s", GetError(ret).c_str());
     return NULL;
   }
 
@@ -154,7 +157,8 @@ AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID strea
   ret = AudioStreamGetProperty(stream, 0, p, &listSize, list);
   if (ret != noErr)
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: Unable to get list. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FormatsList: "
+      "Unable to get list. Error = %s", GetError(ret).c_str());
     free(list);
     return NULL;
   }
@@ -165,11 +169,9 @@ AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID strea
   return list;
 }
 
-/**
- * Get a list of all the streams on this device
- */
 AudioStreamID *CCoreAudioHardware::StreamsList(AudioDeviceID device)
 {
+  // Get a list of all the streams on this device
   OSStatus ret;
   UInt32 listSize;
   AudioStreamID *list;
@@ -180,7 +182,8 @@ AudioStreamID *CCoreAudioHardware::StreamsList(AudioDeviceID device)
                                    &listSize, NULL);
   if (ret != noErr)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: Unable to get list size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioHardware::StreamsList: "
+      "Unable to get list size. Error = %s", GetError(ret).c_str());
     return NULL;
   }
 
@@ -212,12 +215,10 @@ AudioStreamID *CCoreAudioHardware::StreamsList(AudioDeviceID device)
   return list;
 }
 
-/**
- * Reset any devices with an AC3 stream back to a Linear PCM
- * so that they can become a default output device
- */
 void CCoreAudioHardware::ResetAudioDevices()
 {
+  // Reset any devices with an AC3 stream back to a Linear PCM
+  // so that they can become a default output device
   AudioDeviceID *devices;
   int numDevices;
   UInt32 size;
@@ -274,7 +275,8 @@ void CCoreAudioHardware::ResetStream(AudioStreamID stream)
         ret = AudioStreamSetProperty(stream, NULL, 0, kAudioStreamPropertyPhysicalFormat, sizeof(formats[i]), &(formats[i]));
         if (ret != noErr)
         {
-          CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetStream: Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
+          CLog::Log(LOGDEBUG, "CCoreAudioHardware::ResetStream: "
+            "Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
           continue;
         }
         else
@@ -295,7 +297,6 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(std::string searchName)
 
   UInt32 size = 0;
   AudioDeviceID deviceId = 0;
-  OSStatus ret;
   std::string searchNameLowerCase = searchName;
 
   std::transform( searchNameLowerCase.begin(), searchNameLowerCase.end(), searchNameLowerCase.begin(), ::tolower );
@@ -306,16 +307,18 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(std::string searchName)
       "Returning default device [0x%04x].", (uint)defaultDevice);
     return defaultDevice;
   }
-  CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: Searching for device - %s.", searchName.c_str());
+  CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
+    "Searching for device - %s.", searchName.c_str());
 
   // Obtain a list of all available audio devices
   AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
   UInt32 deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
-  ret = AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, pDevices);
+  OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, pDevices);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioHardware::FindAudioDevice: "
+      "Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
     delete[] pDevices;
     return 0;
   }
@@ -352,7 +355,8 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
   propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
   propertyAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &deviceId);
+  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+    &propertyAddress, 0, NULL, &size, &deviceId);
   // outputDevice is set to 0 if there is no audio device available
   // or if the default device is set to an encoded format
   if (ret || !deviceId) 
@@ -366,16 +370,18 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
 
 void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
 {
-  UInt32 size = 0;
-  char *m_buffer;
   AudioDeviceID deviceId = GetDefaultOutputDevice();
 
   if(deviceId)
   {
-    AudioDeviceGetPropertyInfo(deviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyObjectName
-    m_buffer = (char *)malloc(size);
+    UInt32 size = 0;
+    // TODO: Change to kAudioObjectPropertyObjectName
+    AudioDeviceGetPropertyInfo(deviceId,0, false,
+      kAudioDevicePropertyDeviceName, &size, NULL);
+    char *m_buffer = (char *)malloc(size);
 
-    OSStatus ret = AudioDeviceGetProperty(deviceId, 0, false, kAudioDevicePropertyDeviceName, &size, m_buffer);
+    OSStatus ret = AudioDeviceGetProperty(deviceId, 0, false,
+      kAudioDevicePropertyDeviceName, &size, m_buffer);
     if (ret && !m_buffer)
     {
       name ="Default";
@@ -400,24 +406,25 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList* pList)
     return 0;
 
   // Obtain a list of all available audio devices
+  size_t size = 0;
   UInt32 found = 0;
-  UInt32 size = 0;
 
   AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
-  UInt32 deviceCount = size / sizeof(AudioDeviceID);
+  size_t deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
 
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
   propertyAddress.mSelector = kAudioHardwarePropertyDevices;
-  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &pDevices);
+  OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject,
+    &propertyAddress, 0, NULL, &size, pDevices);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices:"
       " Unable to retrieve the list of available devices. Error = %s", GetError(ret).c_str());
   else
   {
-    for (UInt32 dev = 0; dev < deviceCount; dev++)
+    for (size_t dev = 0; dev < deviceCount; dev++)
     {
       CCoreAudioDevice device(pDevices[dev]);
       if (device.GetTotalOutputChannels() == 0)
@@ -478,7 +485,8 @@ void CCoreAudioDevice::Close()
   if (!m_DeviceId)
     return;
 
-  Stop(); // Stop the device if it was started
+  // Stop the device if it was started
+  Stop();
 
   // Unregister the IOProc if we have one
   if (m_IoProc)
@@ -496,10 +504,10 @@ void CCoreAudioDevice::Close()
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", (uint)m_DeviceId);
-  m_DeviceId = 0;
   m_IoProc = NULL;
-  m_ObjectListenerProc = NULL;
   m_pSource = NULL;
+  m_DeviceId = 0;
+  m_ObjectListenerProc = NULL;
 }
 
 void CCoreAudioDevice::Start()
@@ -509,7 +517,8 @@ void CCoreAudioDevice::Start()
 
   OSStatus ret = AudioDeviceStart(m_DeviceId, m_IoProc);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::Start: Unable to start device. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::Start: "
+      "Unable to start device. Error = %s", GetError(ret).c_str());
   else
     m_Started = true;
 }
@@ -521,7 +530,8 @@ void CCoreAudioDevice::Stop()
 
   OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to stop device. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: "
+      "Unable to stop device. Error = %s", GetError(ret).c_str());
   m_Started = false;
 }
 
@@ -538,14 +548,16 @@ void CCoreAudioDevice::RemoveObjectListenerProc(AudioObjectPropertyListenerProc 
   OSStatus ret = AudioObjectRemovePropertyListener(m_DeviceId, &audioProperty, callback, pClientData);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveObjectListenerProc: Unable to set ObjectListener callback. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveObjectListenerProc: "
+      "Unable to set ObjectListener callback. Error = %s", GetError(ret).c_str());
   }
   m_ObjectListenerProc = NULL;
 }
 
 bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc callback, void* pClientData)
 {
-  if (!m_DeviceId || m_ObjectListenerProc) // Only one ObjectListener at a time
+  // Allow only one ObjectListener at a time
+  if (!m_DeviceId || m_ObjectListenerProc)
     return false;
 
   AudioObjectPropertyAddress audioProperty;
@@ -557,7 +569,8 @@ bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc cal
 
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetObjectListenerProc: Unable to remove ObjectListener callback. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::SetObjectListenerProc: "
+      "Unable to remove ObjectListener callback. Error = %s", GetError(ret).c_str());
     return false;
   }
 
@@ -567,9 +580,9 @@ bool CCoreAudioDevice::SetObjectListenerProc(AudioObjectPropertyListenerProc cal
 
 bool CCoreAudioDevice::SetInputSource(ICoreAudioSource* pSource, unsigned int frameSize, unsigned int outputBufferIndex)
 {
-  m_pSource             = pSource;
-  m_frameSize           = frameSize;
-  m_OutputBufferIndex   = outputBufferIndex;
+  m_pSource   = pSource;
+  m_frameSize = frameSize;
+  m_OutputBufferIndex = outputBufferIndex;
 
   if (pSource)
     return AddIOProc();
@@ -579,13 +592,15 @@ bool CCoreAudioDevice::SetInputSource(ICoreAudioSource* pSource, unsigned int fr
 
 bool CCoreAudioDevice::AddIOProc()
 {
-  if (!m_DeviceId || m_IoProc) // Only one IOProc at a time
+  // Allow only one IOProc at a time
+  if (!m_DeviceId || m_IoProc)
     return false;
 
   OSStatus ret = AudioDeviceCreateIOProcID(m_DeviceId, DirectRenderCallback, this, &m_IoProc);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::AddIOProc: Unable to add IOProc. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::AddIOProc: "
+      "Unable to add IOProc. Error = %s", GetError(ret).c_str());
     m_IoProc = NULL;
     return false;
   }
@@ -622,14 +637,18 @@ bool CCoreAudioDevice::RemoveIOProc()
 
 std::string CCoreAudioDevice::GetName()
 {
-  std::string name;
   if (!m_DeviceId)
     return NULL;
 
   UInt32 size = 0;
-  AudioDeviceGetPropertyInfo(m_DeviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyObjectName
+  // TODO: Change to kAudioObjectPropertyObjectName
+  AudioDeviceGetPropertyInfo(m_DeviceId,0, false,
+    kAudioDevicePropertyDeviceName, &size, NULL);
   char *buff = new char[size];
-  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceName, &size, buff);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyDeviceName, &size, buff);
+
+  std::string name;
   name.assign(buff, size-1);
   delete [] buff;
   if (ret)
@@ -645,11 +664,14 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
 {
   if (!m_DeviceId)
     return 0;
-  UInt32 channels = 0;
+
   UInt32 size = 0;
-  AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyStreamConfiguration, &size, NULL);
+  UInt32 channels = 0;
+  AudioDeviceGetPropertyInfo(m_DeviceId, 0, false,
+    kAudioDevicePropertyStreamConfiguration, &size, NULL);
   AudioBufferList* pList = (AudioBufferList*)malloc(size);
-  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyStreamConfiguration, &size, pList);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyStreamConfiguration, &size, pList);
   if (!ret)
     for(UInt32 buffer = 0; buffer < pList->mNumberBuffers; ++buffer)
       channels += pList->mBuffers[buffer].mNumberChannels;
@@ -668,14 +690,16 @@ bool CCoreAudioDevice::GetStreams(AudioStreamIdList* pList)
   if (!pList || !m_DeviceId)
     return false;
 
-  UInt32 propertySize = 0;
   Boolean writable = false;
-  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyStreams, &propertySize, &writable);
+  UInt32  propertySize = 0;
+  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false,
+    kAudioDevicePropertyStreams, &propertySize, &writable);
   if (ret)
     return false;
   UInt32 streamCount = propertySize / sizeof(AudioStreamID);
   AudioStreamID* pStreamList = new AudioStreamID[streamCount];
-  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyStreams, &propertySize, pStreamList);
+  ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyStreams, &propertySize, pStreamList);
   if (!ret)
   {
     for (UInt32 stream = 0; stream < streamCount; stream++)
@@ -690,7 +714,8 @@ bool CCoreAudioDevice::IsRunning()
 {
   UInt32 isRunning = false;
   UInt32 size = sizeof(isRunning);
-  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceIsRunning, &size, &isRunning);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyDeviceIsRunning, &size, &isRunning);
   if (ret)
     return false;
   return (isRunning != 0);
@@ -706,13 +731,17 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
 
   if (hog)
   {
-    if (m_HogPid == -1) // Not already set
+    // Not already set
+    if (m_HogPid == -1)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Setting 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
-      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(m_HogPid), &m_HogPid);
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
+        "Setting 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false,
+        kAudioDevicePropertyHogMode, sizeof(m_HogPid), &m_HogPid);
       if (ret || m_HogPid != getpid())
       {
-        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: "
+          "Unable to set 'hog' status. Error = %s", GetError(ret).c_str());
         return false;
       }
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
@@ -721,18 +750,22 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
   }
   else
   {
-    if (m_HogPid > -1) // Currently Set
+    // Currently Set
+    if (m_HogPid > -1)
     {
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: "
                 "Releasing 'hog' status on device 0x%04x", (unsigned int)m_DeviceId);
       pid_t hogPid = -1;
-      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false,
+        kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
       if (ret || hogPid == getpid())
       {
-        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: "
+          "Unable to release 'hog' status. Error = %s", GetError(ret).c_str());
         return false;
       }
-      m_HogPid = hogPid; // Reset internal state
+      // Reset internal state
+      m_HogPid = hogPid;
     }
   }
   return true;
@@ -759,15 +792,20 @@ bool CCoreAudioDevice::SetMixingSupport(UInt32 mix)
     return false;
 
   int restore = -1;
-  if (m_MixerRestore == -1) // This is our first change to this setting. Store the original setting for restore
+  if (m_MixerRestore == -1)
+  {
+    // This is our first change to this setting. Store the original setting for restore
     restore = (GetMixingSupport() ? 1 : 0);
+  }
   UInt32 mixEnable = mix ? 1 : 0;
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: "
             "%sabling mixing for device 0x%04x", mix ? "En" : "Dis", (unsigned int)m_DeviceId);
-  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertySupportsMixing, sizeof(mixEnable), &mixEnable);
+  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false,
+    kAudioDevicePropertySupportsMixing, sizeof(mixEnable), &mixEnable);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: Unable to set MixingSupport to %s. Error = %s", mix ? "'On'" : "'Off'", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: "
+      "Unable to set MixingSupport to %s. Error = %s", mix ? "'On'" : "'Off'", GetError(ret).c_str());
     return false;
   }
   if (m_MixerRestore == -1)
@@ -782,26 +820,30 @@ bool CCoreAudioDevice::GetMixingSupport()
 
   OSStatus  ret;
   UInt32    size;
-  Boolean   writable = false;
   UInt32    mix = 0;
+  Boolean   writable = false;
 
   size = sizeof(writable);
-  ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, FALSE, kAudioDevicePropertySupportsMixing, &size, &writable);
+  ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, FALSE,
+    kAudioDevicePropertySupportsMixing, &size, &writable);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: Unable to get propertyinfo mixing support. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
+      "Unable to get propertyinfo mixing support. Error = %s", GetError(ret).c_str());
     writable = false;
   }
 
   if (writable)
   {
     size = sizeof(mix);
-    ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertySupportsMixing, &size, &mix);
+    ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+      kAudioDevicePropertySupportsMixing, &size, &mix);
     if (ret)
       mix = 0;
   }
 
-  CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: Device mixing support : %s.", mix ? "'Yes'" : "'No'");
+  CLog::Log(LOGERROR, "CCoreAudioDevice::SupportsMixing: "
+    "Device mixing support : %s.", mix ? "'Yes'" : "'No'");
 
   return (mix > 0);
 }
@@ -811,10 +853,12 @@ bool CCoreAudioDevice::SetCurrentVolume(Float32 vol)
   if (!m_DeviceId)
     return false;
 
-  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kHALOutputParam_Volume, sizeof(Float32), &vol);
+  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false,
+    kHALOutputParam_Volume, sizeof(Float32), &vol);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetCurrentVolume: Unable to set AudioUnit volume. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::SetCurrentVolume: "
+      "Unable to set AudioUnit volume. Error = %s", GetError(ret).c_str());
     return false;
   }
   return true;
@@ -828,18 +872,21 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout
   UInt32 propertySize = 0;
   Boolean writable = false;
   OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false,
-                                            kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
+    kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
   if (ret)
     return false;
 
   void* pBuf = malloc(propertySize);
   ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
-                               kAudioDevicePropertyPreferredChannelLayout, &propertySize, pBuf);
+    kAudioDevicePropertyPreferredChannelLayout, &propertySize, pBuf);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::GetPreferredChannelLayout: "
-              "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
+      "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
   else
-    layout.CopyLayout(*((AudioChannelLayout*)pBuf)); // Copy the result into the caller's instance
+  {
+    // Copy the result into the caller's instance
+    layout.CopyLayout(*((AudioChannelLayout*)pBuf));
+  }
   free(pBuf);
   return (ret == noErr);
 }
@@ -851,12 +898,14 @@ bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList)
 
   UInt32 propertySize = 0;
   Boolean writable = false;
-  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyDataSources, &propertySize, &writable);
+  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false,
+    kAudioDevicePropertyDataSources, &propertySize, &writable);
   if (ret)
     return false;
   UInt32 sources = propertySize / sizeof(UInt32);
   UInt32* pSources = new UInt32[sources];
-  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDataSources, &propertySize, pSources);
+  ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyDataSources, &propertySize, pSources);
   if (!ret)
     for (UInt32 i = 0; i < sources; i++)
       pList->push_back(pSources[i]);;
@@ -871,10 +920,12 @@ Float64 CCoreAudioDevice::GetNominalSampleRate()
 
   Float64 sampleRate = 0.0f;
   UInt32 size = sizeof(Float64);
-  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyNominalSampleRate, &size, &sampleRate);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyNominalSampleRate, &size, &sampleRate);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNominalSampleRate: Unable to retrieve current device sample rate. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetNominalSampleRate: "
+      "Unable to retrieve current device sample rate. Error = %s", GetError(ret).c_str());
     return 0.0f;
   }
   return sampleRate;
@@ -950,7 +1001,8 @@ UInt32 CCoreAudioDevice::GetBufferSize()
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
     kAudioDevicePropertyBufferFrameSize, &propertySize, &size);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetBufferSize: Unable to retrieve buffer size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetBufferSize: "
+      "Unable to retrieve buffer size. Error = %s", GetError(ret).c_str());
   return size;
 }
 
@@ -963,7 +1015,8 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
   OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false,
     kAudioDevicePropertyBufferFrameSize, propertySize, &size);
   if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: Unable to set buffer size. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: "
+      "Unable to set buffer size. Error = %s", GetError(ret).c_str());
 
   if (GetBufferSize() != size)
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetBufferSize: Buffer size change not applied.");
@@ -1046,8 +1099,8 @@ void CCoreAudioStream::Close()
     SetPhysicalFormat(&setFormat);
   }
 
+  m_OriginalVirtualFormat.mFormatID  = 0;
   m_OriginalPhysicalFormat.mFormatID = 0;
-  m_OriginalVirtualFormat.mFormatID = 0;
   CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Closed stream 0x%04x.", (uint)m_StreamId);
   m_StreamId = 0;
 }
@@ -1056,8 +1109,9 @@ UInt32 CCoreAudioStream::GetDirection()
 {
   if (!m_StreamId)
     return 0;
-  UInt32 size = sizeof(UInt32);
+
   UInt32 val = 0;
+  UInt32 size = sizeof(UInt32);
   OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyDirection, &size, &val);
   if (ret)
     return 0;
@@ -1068,8 +1122,9 @@ UInt32 CCoreAudioStream::GetTerminalType()
 {
   if (!m_StreamId)
     return 0;
-  UInt32 size = sizeof(UInt32);
+
   UInt32 val = 0;
+  UInt32 size = sizeof(UInt32);
   OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyTerminalType, &size, &val);
   if (ret)
     return 0;
@@ -1078,11 +1133,11 @@ UInt32 CCoreAudioStream::GetTerminalType()
 
 UInt32 CCoreAudioStream::GetNumLatencyFrames()
 {
-  UInt32 i_param, i_param_size, num_latency_frames = 0;
   if (!m_StreamId)
     return 0;
 
-  i_param_size = sizeof(uint32_t);
+  UInt32 i_param_size = sizeof(uint32_t);
+  UInt32 i_param, num_latency_frames = 0;
 
   // number of frames of latency in the AudioStream
   if (noErr == AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyLatency, &i_param_size, &i_param))
@@ -1097,6 +1152,7 @@ bool CCoreAudioStream::GetVirtualFormat(AudioStreamBasicDescription* pDesc)
 {
   if (!pDesc || !m_StreamId)
     return false;
+
   UInt32 size = sizeof(AudioStreamBasicDescription);
   OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyVirtualFormat, &size, pDesc);
   if (ret)
@@ -1131,10 +1187,10 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
     return false;
   }
 
-  /* The AudioStreamSetProperty is not only asynchronious,
-   * it is also not Atomic, in its behaviour.
-   * Therefore we check 5 times before we really give up.
-   * FIXME: failing isn't actually implemented yet. */
+  // The AudioStreamSetProperty is not only asynchronious,
+  // it is also not Atomic, in its behaviour.
+  // Therefore we check 5 times before we really give up.
+  // FIXME: failing isn't actually implemented yet.
   for (int i = 0; i < 10; ++i)
   {
     AudioStreamBasicDescription checkVirtualFormat;
@@ -1148,7 +1204,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
         checkVirtualFormat.mFormatID == pDesc->mFormatID &&
         checkVirtualFormat.mFramesPerPacket == pDesc->mFramesPerPacket)
     {
-      /* The right format is now active. */
+      // The right format is now active.
       CLog::Log(LOGDEBUG, "CCoreAudioStream::SetVirtualFormat: "
         "Virtual format for stream 0x%04x. now active (%s)",
         (uint)m_StreamId, StreamDescriptionToString(checkVirtualFormat, formatString));
@@ -1163,6 +1219,7 @@ bool CCoreAudioStream::GetPhysicalFormat(AudioStreamBasicDescription* pDesc)
 {
   if (!pDesc || !m_StreamId)
     return false;
+
   UInt32 size = sizeof(AudioStreamBasicDescription);
   OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyPhysicalFormat, &size, pDesc);
   if (ret)
@@ -1197,10 +1254,10 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
     return false;
   }
 
-  /* The AudioStreamSetProperty is not only asynchronious,
-   * it is also not Atomic, in its behaviour.
-   * Therefore we check 5 times before we really give up.
-   * FIXME: failing isn't actually implemented yet. */
+  // The AudioStreamSetProperty is not only asynchronious,
+  // it is also not Atomic, in its behaviour.
+  // Therefore we check 5 times before we really give up.
+  // FIXME: failing isn't actually implemented yet.
   for(int i = 0; i < 10; ++i)
   {
     AudioStreamBasicDescription checkPhysicalFormat;
@@ -1214,7 +1271,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
         checkPhysicalFormat.mFormatID == pDesc->mFormatID &&
         checkPhysicalFormat.mFramesPerPacket == pDesc->mFramesPerPacket)
     {
-      /* The right format is now active. */
+      // The right format is now active.
       CLog::Log(LOGDEBUG, "CCoreAudioStream::SetPhysicalFormat: "
         "Physical format for stream 0x%04x. now active (%s)",
         (uint)m_StreamId, StreamDescriptionToString(checkPhysicalFormat, formatString));
@@ -1236,6 +1293,7 @@ bool CCoreAudioStream::GetAvailableVirtualFormats(StreamFormatList* pList)
     kAudioStreamPropertyAvailableVirtualFormats, &propertySize, &writable);
   if (ret)
     return false;
+
   UInt32 formatCount = propertySize / sizeof(AudioStreamRangedDescription);
   AudioStreamRangedDescription* pFormatList = new AudioStreamRangedDescription[formatCount];
   ret = AudioStreamGetProperty(m_StreamId, 0,
@@ -1260,6 +1318,7 @@ bool CCoreAudioStream::GetAvailablePhysicalFormats(StreamFormatList* pList)
     kAudioStreamPropertyAvailablePhysicalFormats, &propertySize, &writable);
   if (ret)
     return false;
+
   UInt32 formatCount = propertySize / sizeof(AudioStreamRangedDescription);
   AudioStreamRangedDescription* pFormatList = new AudioStreamRangedDescription[formatCount];
   ret = AudioStreamGetProperty(m_StreamId, 0,
@@ -1331,6 +1390,7 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, OSType type, OSType subType, OSTyp
   desc.componentManufacturer = manufacturer;
   desc.componentFlags = 0;
   desc.componentFlagsMask = 0;
+
   return Open(audioGraph, desc);
 }
 
@@ -1375,7 +1435,8 @@ bool CCoreAudioUnit::GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScop
     return false;
 
   UInt32 size = sizeof(AudioStreamBasicDescription);
-  OSStatus ret = AudioUnitGetProperty(m_audioUnit, kAudioUnitProperty_StreamFormat, scope, bus, pDesc, &size);
+  OSStatus ret = AudioUnitGetProperty(m_audioUnit,
+    kAudioUnitProperty_StreamFormat, scope, bus, pDesc, &size);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetFormat: "
@@ -1421,9 +1482,7 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
 
 bool CCoreAudioUnit::GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts)
 {
-  if (!m_audioUnit)
-    return false;
-  if (!pLayouts)
+  if (!m_audioUnit || !pLayouts)
     return false;
 
   UInt32 propSize = 0;
@@ -1491,7 +1550,6 @@ bool CCoreAudioUnit::RemoveRenderProc()
   if (!m_audioUnit || !m_renderProc)
     return false;
 
-
   AURenderCallbackStruct callbackInfo;
   callbackInfo.inputProc = nil;
   callbackInfo.inputProcRefCon = nil;
@@ -1513,12 +1571,8 @@ bool CCoreAudioUnit::RemoveRenderProc()
   return true;
 }
 
-OSStatus CCoreAudioUnit::RenderCallback(void *inRefCon,
-  AudioUnitRenderActionFlags *ioActionFlags,
-  const AudioTimeStamp *inTimeStamp,
-  UInt32 inBusNumber,
-  UInt32 inNumberFrames,
-  AudioBufferList *ioData)
+OSStatus CCoreAudioUnit::RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
+  const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   OSStatus ret = noErr;
   CCoreAudioUnit *audioUnit = (CCoreAudioUnit*)inRefCon;
@@ -1539,8 +1593,7 @@ OSStatus CCoreAudioUnit::RenderCallback(void *inRefCon,
 }
 
 void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
-  AudioStreamBasicDescription *streamDesc,
-  AudioStreamBasicDescription *coreaudioDesc)
+  AudioStreamBasicDescription *streamDesc, AudioStreamBasicDescription *coreaudioDesc)
 {
   unsigned int bps = CAEUtil::DataFormatToBits(format.m_dataFormat);
 
@@ -1585,8 +1638,10 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
   streamDesc->mBytesPerPacket = streamDesc->mBytesPerFrame * streamDesc->mFramesPerPacket;
   streamDesc->mReserved = 0;
 
-  // Audio units use noninterleaved 32-bit floating point linear PCM data for input and output,
-  // ...except in the case of an audio unit that is a data format converter, which converts to or from this format.
+  // Audio units use noninterleaved 32-bit floating point
+  //  linear PCM data for input and output, ...except in the 
+  // case of an audio unit that is a data format converter,
+  // which converts to or from this format.
   coreaudioDesc->mFormatID = kAudioFormatLinearPCM;
   coreaudioDesc->mFormatFlags = kAudioFormatFlagsNativeEndian |
     kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
@@ -1604,7 +1659,6 @@ void CCoreAudioUnit::GetFormatDesc(AEAudioFormat format,
   coreaudioDesc->mChannelsPerFrame = streamDesc->mChannelsPerFrame;
   coreaudioDesc->mBytesPerFrame    = (bps>>3); //sizeof(Float32);
   coreaudioDesc->mBytesPerPacket   = (bps>>3); //sizeof(Float32);
-
 }
 
 float CCoreAudioUnit::GetLatency()
@@ -1665,14 +1719,8 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
   if (!m_audioUnit)
     return false;
 
-  OSStatus ret;
-
-  ret = AudioUnitSetProperty(m_audioUnit,
-                             kAudioOutputUnitProperty_CurrentDevice,
-                             kAudioUnitScope_Global,
-                             kOutputBus,
-                             &deviceId,
-                             sizeof(AudioDeviceID));
+  OSStatus ret = AudioUnitSetProperty(m_audioUnit, kAudioOutputUnitProperty_CurrentDevice,
+    kAudioUnitScope_Global, kOutputBus, &deviceId, sizeof(AudioDeviceID));
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentDevice: "
@@ -1697,6 +1745,7 @@ bool CAUOutputDevice::GetChannelMap(CoreAudioChannelList* pChannelMap)
   Boolean writable = false;
   AudioUnitGetPropertyInfo(m_audioUnit,
     kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, &size, &writable);
+
   UInt32 channels = size/sizeof(SInt32);
   SInt32* pMap = new SInt32[channels];
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
@@ -1713,14 +1762,17 @@ bool CAUOutputDevice::GetChannelMap(CoreAudioChannelList* pChannelMap)
 
 bool CAUOutputDevice::SetChannelMap(CoreAudioChannelList* pChannelMap)
 {
-  // The number of array elements must match the number of output channels provided by the device
+  // The number of array elements must match the
+  // number of output channels provided by the device
   if (!m_audioUnit || !pChannelMap)
     return false;
+
   UInt32 channels = pChannelMap->size();
   UInt32 size = sizeof(SInt32) * channels;
   SInt32* pMap = new SInt32[channels];
   for (UInt32 i = 0; i < channels; i++)
     pMap[i] = (*pChannelMap)[i];
+
   OSStatus ret = AudioUnitSetProperty(m_audioUnit,
     kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, size);
   if (ret)
@@ -1768,8 +1820,8 @@ UInt32 CAUOutputDevice::GetBufferFrameSize()
   if (!m_audioUnit)
     return 0;
 
-  UInt32 size = sizeof(UInt32);
   UInt32 bufferSize = 0;
+  UInt32 size = sizeof(UInt32);
 
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, &bufferSize, &size);
@@ -1787,16 +1839,14 @@ bool CAUOutputDevice::EnableInputOuput()
   if (!m_audioUnit)
     return false;
 
-  OSStatus ret;
-  UInt32 enable;
   UInt32 hasio;
   UInt32 size=sizeof(UInt32);
-
-  ret = AudioUnitGetProperty(m_audioUnit,
+  OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioOutputUnitProperty_HasIO,kAudioUnitScope_Input, 1, &hasio, &size);
 
   if (hasio)
   {
+    UInt32 enable;
     enable = 1;
     ret =  AudioUnitSetProperty(m_audioUnit,
       kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, kInputBus, &enable, sizeof(enable));
@@ -1840,7 +1890,10 @@ bool CAUOutputDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout)
     CLog::Log(LOGERROR, "CAUOutputDevice::GetPreferredChannelLayout: "
       "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
   else
-    layout.CopyLayout(*((AudioChannelLayout*)pBuf)); // Copy the result into the caller's instance
+  {
+    // Copy the result into the caller's instance
+    layout.CopyLayout(*((AudioChannelLayout*)pBuf));
+  }
   free(pBuf);
   return (ret == noErr);
 }
@@ -2095,21 +2148,24 @@ void CCoreAudioMixMap::Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout&
   free(m_pMap);
   m_pMap = NULL;
 
-  m_inChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(inLayout);
+  m_inChannels  = CCoreAudioChannelLayout::GetChannelCountForLayout(inLayout);
   m_outChannels = CCoreAudioChannelLayout::GetChannelCountForLayout(outLayout);
 
   // Try to find a 'well-known' matrix
   const AudioChannelLayout* layouts[] = {&inLayout, &outLayout};
   UInt32 propSize = 0;
-  OSStatus ret = AudioFormatGetPropertyInfo(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize);
+  OSStatus ret = AudioFormatGetPropertyInfo(kAudioFormatProperty_MatrixMixMap,
+    sizeof(layouts), layouts, &propSize);
   m_pMap = (Float32*)calloc(1,propSize);
 
   // Try and get a predefined mixmap
-  ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap, sizeof(layouts), layouts, &propSize, m_pMap);
+  ret = AudioFormatGetProperty(kAudioFormatProperty_MatrixMixMap,
+    sizeof(layouts), layouts, &propSize, m_pMap);
   if (!ret)
   {
+    // Nothing else to do...a map already exists
     m_isValid = true;
-    return; // Nothing else to do...a map already exists
+    return;
   }
 
   // No predefined mixmap was available. Going to have to build it manually
@@ -2123,8 +2179,8 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   if (!audioUnit)
     return NULL;
 
-  AudioStreamBasicDescription inputFormat;
   AudioStreamBasicDescription fmt;
+  AudioStreamBasicDescription inputFormat;
 
   // get the stream input format
   audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
@@ -2140,7 +2196,8 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   for (unsigned int chan=0; chan < channels; chan++)
   {
     AudioChannelDescription* pDesc = &pInLayout->mChannelDescriptions[chan];
-    pDesc->mChannelLabel = g_LabelMap[(unsigned int)channelLayout[chan]]; // Convert from XBMC channel tag to CoreAudio channel tag
+    // Convert from XBMC channel tag to CoreAudio channel tag
+    pDesc->mChannelLabel = g_LabelMap[(unsigned int)channelLayout[chan]];
     pDesc->mChannelFlags = kAudioChannelFlags_AllOff;
     pDesc->mCoordinates[0] = 0.0f;
     pDesc->mCoordinates[1] = 0.0f;
@@ -2148,11 +2205,14 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
     if (pDesc->mChannelLabel == kAudioChannelLabel_LFEScreen)
       hasLFE = true;
   }
-  // HACK: Fix broken channel layouts coming from some aac sources that include rear channel but no side channels.
-  // 5.1 streams should include front and side channels. Rear channels are added by 6.1 and 7.1, so any 5.1
+  // HACK: Fix broken channel layouts coming from some aac sources
+  // that include rear channel but no side channels.
+  // 5.1 streams should include front and side channels.
+  // Rear channels are added by 6.1 and 7.1, so any 5.1
   // source that claims to have rear channels is wrong.
-  if (inputFormat.mChannelsPerFrame == 6 && hasLFE) // Check for 5.1 configuration (as best we can without getting too silly)
+  if (inputFormat.mChannelsPerFrame == 6 && hasLFE)
   {
+    // Check for 5.1 configuration (as best we can without getting too silly)
     for (unsigned int chan=0; chan < inputFormat.mChannelsPerFrame; chan++)
     {
       AudioChannelDescription* pDesc = &pInLayout->mChannelDescriptions[chan];
@@ -2161,13 +2221,15 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
 
       if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurroundDirect)
       {
-        pDesc->mChannelLabel = kAudioChannelLabel_LeftSurround; // Change [Back Left] to [Side Left]
+        // Change [Back Left] to [Side Left]
+        pDesc->mChannelLabel = kAudioChannelLabel_LeftSurround;
         CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: "
           "Detected faulty input channel map...fixing(Back Left-->Side Left)");
       }
       if (pDesc->mChannelLabel == kAudioChannelLabel_RightSurroundDirect)
       {
-        pDesc->mChannelLabel = kAudioChannelLabel_RightSurround; // Change [Back Left] to [Side Left]
+        // Change [Back Left] to [Side Left]
+        pDesc->mChannelLabel = kAudioChannelLabel_RightSurround;
         CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: "
           "Detected faulty input channel map...fixing(Back Right-->Side Right)");
       }
@@ -2220,7 +2282,8 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
 
   AudioChannelLayout* layoutCandidates[] = {(AudioChannelLayout*)deviceLayout, (AudioChannelLayout*)userLayout, NULL};
 
-  // Try to construct a mapping matrix for the mixer. Work through the layout candidates and see if any will work
+  // Try to construct a mapping matrix for the mixer.
+  // Work through the layout candidates and see if any will work
   CCoreAudioMixMap *mixMap = new CCoreAudioMixMap();
   for (AudioChannelLayout** pLayout = layoutCandidates; *pLayout != NULL; pLayout++)
   {
@@ -2238,7 +2301,6 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   if (!mixerUnit || !inputFormat || !fmt)
     return false;
 
-  OSStatus ret;
   // Configure the mixing matrix
   Float32* val = (Float32*)*mixMap;
   CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: Loading matrix mixer configuration");
@@ -2246,7 +2308,7 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
   {
     for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
     {
-      ret = AudioUnitSetParameter(mixerUnit->GetUnit(),
+      OSStatus ret = AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
       if (!ret)
       {
@@ -2297,21 +2359,24 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
   UInt32 channels = GetChannelCountForLayout(layout);
   UInt32 size = sizeof(AudioChannelLayout) + (channels - kVariableLengthArray) * sizeof(AudioChannelDescription);
 
-  if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions) // We can copy the whole layout
+  if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
   {
+    // We can copy the whole layout
     m_pLayout = (AudioChannelLayout*)malloc(size);
     memcpy(m_pLayout, &layout, size);
   }
-  else if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Deconstruct the bitmap to get the layout
+  else if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
   {
+    // Deconstruct the bitmap to get the layout
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForBitmap, sizeof(layout.mChannelBitmap), &layout.mChannelBitmap, &propSize);
     m_pLayout = (AudioChannelLayout*)malloc(propSize);
     ret = AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutForBitmap, sizeof(layout.mChannelBitmap), &layout.mChannelBitmap, &propSize, m_pLayout);
     m_pLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
   }
-  else // Convert the known layout to a custom layout
+  else
   {
+    // Convert the known layout to a custom layout
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag,
       sizeof(layout.mChannelLayoutTag), &layout.mChannelLayoutTag, &propSize);
@@ -2327,9 +2392,9 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
 UInt32 CCoreAudioChannelLayout::GetChannelCountForLayout(AudioChannelLayout& layout)
 {
   UInt32 channels = 0;
-  // Channels are in fixed-order('USB Order'), any combination
   if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
   {
+    // Channels are in fixed-order('USB Order'), any combination
     UInt32 bitmap = layout.mChannelBitmap;
     for (UInt32 c = 0; c < (sizeof(layout.mChannelBitmap) << 3); c++)
     {
@@ -2338,11 +2403,16 @@ UInt32 CCoreAudioChannelLayout::GetChannelCountForLayout(AudioChannelLayout& lay
       bitmap >>= 1;
     }
   }
-  // Channels are in any order, any combination
   else if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+  {
+    // Channels are in any order, any combination
     channels = layout.mNumberChannelDescriptions;
-  else // Channels are in a predefined order and combination
+  }
+  else
+  {
+    // Channels are in a predefined order and combination
     channels = AudioChannelLayoutTag_GetNumberOfChannels(layout.mChannelLayoutTag);
+  }
 
   return channels;
 }
@@ -2362,8 +2432,9 @@ const char* CCoreAudioChannelLayout::ChannelLayoutToString(AudioChannelLayout& l
   {
     pLayout = &layout;
   }
-  else if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Deconstruct the bitmap to get the layout
+  else if (layout.mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
   {
+    // Deconstruct the bitmap to get the layout
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForBitmap,
       sizeof(layout.mChannelBitmap), &layout.mChannelBitmap, &propSize);
@@ -2371,8 +2442,9 @@ const char* CCoreAudioChannelLayout::ChannelLayoutToString(AudioChannelLayout& l
     AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutForBitmap,
       sizeof(layout.mChannelBitmap), &layout.mChannelBitmap, &propSize, pLayout);
   }
-  else // Predefinied layout 'tag'
+  else
   {
+    // Predefinied layout 'tag'
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag,
       sizeof(layout.mChannelLayoutTag), &layout.mChannelLayoutTag, &propSize);
@@ -2405,8 +2477,9 @@ bool CCoreAudioChannelLayout::AllChannelUnknown()
   {
     pLayout = m_pLayout;
   }
-  else if (m_pLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap) // Deconstruct the bitmap to get the layout
+  else if (m_pLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
   {
+    // Deconstruct the bitmap to get the layout
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForBitmap,
       sizeof(m_pLayout->mChannelBitmap), &m_pLayout->mChannelBitmap, &propSize);
@@ -2414,8 +2487,9 @@ bool CCoreAudioChannelLayout::AllChannelUnknown()
     AudioFormatGetProperty(kAudioFormatProperty_ChannelLayoutForBitmap,
       sizeof(m_pLayout->mChannelBitmap), &m_pLayout->mChannelBitmap, &propSize, pLayout);
   }
-  else // Predefinied layout 'tag'
+  else
   {
+    // Predefinied layout 'tag'
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag,
       sizeof(m_pLayout->mChannelLayoutTag), &m_pLayout->mChannelLayoutTag, &propSize);
@@ -2482,25 +2556,29 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   ret = NewAUGraph(&m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error create audio grpah. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error create audio grpah. Error = %s", GetError(ret).c_str());
     return false;
   }
   ret = AUGraphOpen(m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error open audio grpah. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error open audio grpah. Error = %s", GetError(ret).c_str());
     return false;
   }
 
   // get output unit
   if (m_audioUnit)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error audio unit already open. double call ?");
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error audio unit already open. double call ?");
     return false;
   }
 
   m_audioUnit = new CAUOutputDevice();
-  if (!m_audioUnit->Open(m_audioGraph, kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
+  if (!m_audioUnit->Open(m_audioGraph,
+    kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
     return false;
 
   m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
@@ -2530,7 +2608,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
 
       m_inputUnit = new CAUOutputDevice();
 
-      if (!m_inputUnit->Open(m_audioGraph, kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter, kAudioUnitManufacturer_Apple))
+      if (!m_inputUnit->Open(m_audioGraph,
+        kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter, kAudioUnitManufacturer_Apple))
         return false;
 
       if (!m_inputUnit->SetFormat(&inputFormat, kAudioUnitScope_Input, kOutputBus))
@@ -2548,7 +2627,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
 
       m_mixerUnit = new CAUMatrixMixer();
 
-      if (!m_mixerUnit->Open(m_audioGraph, kAudioUnitType_Mixer, kAudioUnitSubType_MatrixMixer, kAudioUnitManufacturer_Apple))
+      if (!m_mixerUnit->Open(m_audioGraph,
+        kAudioUnitType_Mixer, kAudioUnitSubType_MatrixMixer, kAudioUnitManufacturer_Apple))
         return false;
 
       // set number of input buses
@@ -2568,7 +2648,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
       ret =  AUGraphConnectNodeInput(m_audioGraph, m_mixerUnit->GetNode(), 0, m_audioUnit->GetNode(), 0);
       if (ret)
       {
-        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error connecting m_m_mixerNode. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+          "Error connecting m_m_mixerNode. Error = %s", GetError(ret).c_str());
         return false;
       }
 
@@ -2580,7 +2661,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
       ret = AUGraphConnectNodeInput(m_audioGraph, m_inputUnit->GetNode(), 0, m_mixerUnit->GetNode(), busNumber);
       if (ret)
       {
-        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error connecting m_converterNode. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+          "Error connecting m_converterNode. Error = %s", GetError(ret).c_str());
         return false;
       }
 
@@ -2589,18 +2671,21 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
       ret = AUGraphUpdate(m_audioGraph, NULL);
       if (ret)
       {
-        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error update graph. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+          "Error update graph. Error = %s", GetError(ret).c_str());
         return false;
       }
       ret = AUGraphInitialize(m_audioGraph);
       if (ret)
       {
-        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error initialize graph. Error = %s", GetError(ret).c_str());
+        CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+          "Error initialize graph. Error = %s", GetError(ret).c_str());
         return false;
       }
 
       // Update format structure to reflect the desired format from the mixer
-      fmt.mChannelsPerFrame = m_mixMap->GetOutputChannels(); // The output format of the mixer is identical to the input format, except for the channel count
+      // The output format of the mixer is identical to the input format, except for the channel count
+      fmt.mChannelsPerFrame = m_mixMap->GetOutputChannels();
 
       UInt32 inputNumber = m_inputUnit->GetBus();
       int channelOffset = GetMixerChannelOffset(inputNumber);
@@ -2637,50 +2722,65 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   {
     if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
     {
-      CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error setting Device Output Stream Format %s", StreamDescriptionToString(inputFormat, formatString));
+      CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+        "Error setting Device Output Stream Format %s",
+        StreamDescriptionToString(inputFormat, formatString));
     }
   }
 
+/*
+// WTF is this an why is it in CoreAudioAEHALOSX ?
 #ifdef TAGRGET_IOS
   if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error setting Device Output Stream Format %s", StreamDescriptionToString(inputFormat, formatString));
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error setting Device Output Stream Format %s",
+      StreamDescriptionToString(inputFormat, formatString));
   }
 #endif
+*/
 
   ret = AUGraphUpdate(m_audioGraph, NULL);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error update graph. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error update graph. Error = %s", GetError(ret).c_str());
     return false;
   }
 
   AudioStreamBasicDescription inputDesc_end, outputDesc_end;
   m_audioUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
   m_audioUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kInputBus);
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s", StreamDescriptionToString(inputDesc_end, formatString));
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s", StreamDescriptionToString(outputDesc_end, formatString));
+  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+    StreamDescriptionToString(inputDesc_end, formatString));
+  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+    StreamDescriptionToString(outputDesc_end, formatString));
 
   if (m_mixerUnit)
   {
     m_mixerUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_mixerUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s", StreamDescriptionToString(outputDesc_end, formatString));
+    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+      StreamDescriptionToString(inputDesc_end, formatString));
+    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+      StreamDescriptionToString(outputDesc_end, formatString));
   }
 
   if (m_inputUnit)
   {
     m_inputUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_inputUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s", StreamDescriptionToString(outputDesc_end, formatString));
+    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+      StreamDescriptionToString(inputDesc_end, formatString));
+    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+      StreamDescriptionToString(outputDesc_end, formatString));
   }
 
   ret = AUGraphInitialize(m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error initialize graph. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
+      "Error initialize graph. Error = %s", GetError(ret).c_str());
     return false;
   }
 
@@ -2699,8 +2799,6 @@ bool CCoreAudioGraph::Close()
 {
   if (!m_audioGraph)
     return false;
-
-  OSStatus ret;
 
   Stop();
 
@@ -2737,22 +2835,25 @@ bool CCoreAudioGraph::Close()
     m_audioUnit = NULL;
   }
 
-  ret = AUGraphUninitialize(m_audioGraph);
+  OSStatus ret = AUGraphUninitialize(m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: Error unitialize. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: "
+      "Error unitialize. Error = %s", GetError(ret).c_str());
   }
 
   ret = AUGraphClose(m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: Error close. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: "
+      "Error close. Error = %s", GetError(ret).c_str());
   }
 
   ret = DisposeAUGraph(m_audioGraph);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: Error dispose. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Close: "
+      "Error dispose. Error = %s", GetError(ret).c_str());
   }
 
   return true;
@@ -2769,7 +2870,8 @@ bool CCoreAudioGraph::Start()
   ret = AUGraphIsRunning(m_audioGraph, &isRunning);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Start: Audio graph not running. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Start: "
+      "Audio graph not running. Error = %s", GetError(ret).c_str());
     return false;
   }
   if (!isRunning)
@@ -2785,7 +2887,8 @@ bool CCoreAudioGraph::Start()
     ret = AUGraphStart(m_audioGraph);
     if (ret)
     {
-      CLog::Log(LOGERROR, "CCoreAudioGraph::Start: Error starting audio graph. Error = %s", GetError(ret).c_str());
+      CLog::Log(LOGERROR, "CCoreAudioGraph::Start: "
+        "Error starting audio graph. Error = %s", GetError(ret).c_str());
     }
     ShowGraph();
   }
@@ -2798,10 +2901,8 @@ bool CCoreAudioGraph::Stop()
   if (!m_audioGraph)
     return false;
 
-  OSStatus ret;
   Boolean isRunning = false;
-
-  ret = AUGraphIsRunning(m_audioGraph, &isRunning);
+  OSStatus ret = AUGraphIsRunning(m_audioGraph, &isRunning);
   if (ret)
   {
 
@@ -2812,7 +2913,8 @@ bool CCoreAudioGraph::Stop()
     if (m_audioUnit)
       m_audioUnit->Stop();
 
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Stop: Audio graph not running. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::Stop: "
+      "Audio graph not running. Error = %s", GetError(ret).c_str());
     return false;
   }
   if (isRunning)
@@ -2820,7 +2922,8 @@ bool CCoreAudioGraph::Stop()
     ret = AUGraphStop(m_audioGraph);
     if (ret)
     {
-      CLog::Log(LOGERROR, "CCoreAudioGraph::Stop: Error stopping audio graph. Error = %s", GetError(ret).c_str());
+      CLog::Log(LOGERROR, "CCoreAudioGraph::Stop: "
+        "Error stopping audio graph. Error = %s", GetError(ret).c_str());
     }
   }
 
@@ -2898,7 +3001,8 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
 
   // create output unit
   CAUOutputDevice *outputUnit = new CAUOutputDevice();
-  if (!outputUnit->Open(m_audioGraph, kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter, kAudioUnitManufacturer_Apple))
+  if (!outputUnit->Open(m_audioGraph,
+    kAudioUnitType_FormatConverter, kAudioUnitSubType_AUConverter, kAudioUnitManufacturer_Apple))
     goto error;
 
   m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
@@ -2916,7 +3020,8 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
   ret = AUGraphConnectNodeInput(m_audioGraph, outputUnit->GetNode(), 0, m_mixerUnit->GetNode(), busNumber);
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::CreateUnit: Error connecting outputUnit. Error = %s", GetError(ret).c_str());
+    CLog::Log(LOGERROR, "CCoreAudioGraph::CreateUnit: "
+      "Error connecting outputUnit. Error = %s", GetError(ret).c_str());
     goto error;
   }
 
@@ -3013,7 +3118,6 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_AudioDevice   = new CCoreAudioDevice();
   m_OutputStream  = new CCoreAudioStream();
 
-#if defined(__APPLE__) && !defined(__arm__)
   SInt32 major,  minor;
   Gestalt(gestaltSystemVersionMajor, &major);
   Gestalt(gestaltSystemVersionMinor, &minor);
@@ -3025,14 +3129,18 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   if (major == 10 && minor >=6)
   {
     CFRunLoopRef theRunLoop = NULL;
-    AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
-    OSStatus theError = AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
+    AudioObjectPropertyAddress theAddress = {
+      kAudioHardwarePropertyRunLoop,
+      kAudioObjectPropertyScopeGlobal,
+      kAudioObjectPropertyElementMaster
+    };
+    OSStatus theError = AudioObjectSetPropertyData(kAudioObjectSystemObject,
+      &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
     if (theError != noErr)
     {
       CLog::Log(LOGERROR, "CCoreAudioAE::constructor: kAudioHardwarePropertyRunLoop error.");
     }
   }
-#endif
 }
 
 CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
@@ -3059,7 +3167,8 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
 
   if (!m_audioGraph->Open(pSource, format, outputDevice, allowMixing, g_LayoutMap[ g_guiSettings.GetInt("audiooutput.channellayout") ] ))
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
+    CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: "
+      "Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
     return false;
   }
 
@@ -3087,8 +3196,8 @@ bool CCoreAudioAEHALOSX::InitializePCMEncoded(ICoreAudioSource *pSource, AEAudio
 bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format)
 {
   std::string formatString;
-  AudioStreamBasicDescription outputFormat = {0};
   AudioStreamID outputStream = 0;
+  AudioStreamBasicDescription outputFormat = {0};
 
   // Fetch a list of the streams defined by the output device
   AudioStreamIdList streams;
@@ -3114,10 +3223,11 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
     while (!physicalFormats.empty())
     {
       AudioStreamRangedDescription& desc = physicalFormats.front();
-      CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded:    Considering Physical Format: %s", StreamDescriptionToString(desc.mFormat, formatString));
+      CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded:    "
+        "Considering Physical Format: %s", StreamDescriptionToString(desc.mFormat, formatString));
 
-      if (m_rawDataFormat == AE_FMT_LPCM || m_rawDataFormat == AE_FMT_DTSHD ||
-         m_rawDataFormat == AE_FMT_TRUEHD || m_rawDataFormat == AE_FMT_EAC3)
+      if (m_rawDataFormat == AE_FMT_LPCM   || m_rawDataFormat == AE_FMT_DTSHD ||
+          m_rawDataFormat == AE_FMT_TRUEHD || m_rawDataFormat == AE_FMT_EAC3)
       {
         unsigned int bps = CAEUtil::DataFormatToBits(AE_FMT_S16NE);
         if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && desc.mFormat.mBitsPerChannel == bps &&
@@ -3168,34 +3278,44 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
   // If it is attempted after the format change, there is a high likelihood of a deadlock
   // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
 
-  CCoreAudioHardware::SetAutoHogMode(false); // Auto-Hog does not always un-hog the device when changing back to a mixable mode. Handle this on our own until it is fixed.
+  // Auto-Hog does not always un-hog the device when changing back to a mixable mode.
+  // Handle this on our own until it is fixed.
+  CCoreAudioHardware::SetAutoHogMode(false);
   bool autoHog = CCoreAudioHardware::GetAutoHogMode();
-  CLog::Log(LOGDEBUG, " CoreAudioRenderer::InitializeEncoded: Auto 'hog' mode is set to '%s'.", autoHog ? "On" : "Off");
+  CLog::Log(LOGDEBUG, " CoreAudioRenderer::InitializeEncoded: "
+    "Auto 'hog' mode is set to '%s'.", autoHog ? "On" : "Off");
   if (!autoHog) // Try to handle this ourselves
   {
-    m_AudioDevice->SetHogStatus(true); // Hog the device if it is not set to be done automatically
-    m_AudioDevice->SetMixingSupport(false); // Try to disable mixing. If we cannot, it may not be a problem
+    // Hog the device if it is not set to be done automatically
+    m_AudioDevice->SetHogStatus(true);
+    // Try to disable mixing. If we cannot, it may not be a problem
+    m_AudioDevice->SetMixingSupport(false);
   }
 
   m_NumLatencyFrames = m_AudioDevice->GetNumLatencyFrames();
 
-  // Configure the output stream object
-  m_OutputStream->Open(outputStream); // This is the one we will keep
+  // Configure the output stream object, this is the one we will keep
+  m_OutputStream->Open(outputStream);
 
   AudioStreamBasicDescription virtualFormat;
   m_OutputStream->GetVirtualFormat(&virtualFormat);
-  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: Previous Virtual Format: %s", StreamDescriptionToString(virtualFormat, formatString));
+  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
+    "Previous Virtual Format: %s", StreamDescriptionToString(virtualFormat, formatString));
 
   AudioStreamBasicDescription previousPhysicalFormat;
   m_OutputStream->GetPhysicalFormat(&previousPhysicalFormat);
-  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: Previous Physical Format: %s", StreamDescriptionToString(previousPhysicalFormat, formatString));
+  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
+    "Previous Physical Format: %s", StreamDescriptionToString(previousPhysicalFormat, formatString));
 
-  m_OutputStream->SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
+  // Set the active format (the old one will be reverted when we close)
+  m_OutputStream->SetPhysicalFormat(&outputFormat);
   m_NumLatencyFrames += m_OutputStream->GetNumLatencyFrames();
 
   m_OutputStream->GetVirtualFormat(&virtualFormat);
-  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: New Virtual Format: %s", StreamDescriptionToString(virtualFormat, formatString));
-  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: New Physical Format: %s", StreamDescriptionToString(outputFormat, formatString));
+  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
+    "New Virtual Format: %s", StreamDescriptionToString(virtualFormat, formatString));
+  CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::InitializeEncoded: "
+    "New Physical Format: %s", StreamDescriptionToString(outputFormat, formatString));
 
   m_allowMixing = false;
 
@@ -3223,7 +3343,8 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
 
   if (format.m_channelLayout.Count() == 0)
   {
-    CLog::Log(LOGERROR, "CCoreAudioAEHALOSX::Initialize - Unable to open the requested channel layout");
+    CLog::Log(LOGERROR, "CCoreAudioAEHALOSX::Initialize - "
+      "Unable to open the requested channel layout");
     return false;
   }
 
@@ -3232,9 +3353,11 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
 
   AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(device);
 
-  if (!outputDevice) // Fall back to the default device if no match is found
+  if (!outputDevice)
   {
-    CLog::Log(LOGWARNING, "CCoreAudioAEHALOSX::Initialize: Unable to locate configured device, falling-back to the system default.");
+    // Fall back to the default device if no match is found
+    CLog::Log(LOGWARNING, "CCoreAudioAEHALOSX::Initialize: "
+      "Unable to locate configured device, falling-back to the system default.");
     outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
     if (!outputDevice) // Not a lot to be done with no device. TODO: Should we just grab the first existing device?
       return false;
@@ -3258,7 +3381,8 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
     bool configured = false;
     if (m_Passthrough)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
+      CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: "
+        "No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(ae, format, outputDevice);
     }
     else
@@ -3267,7 +3391,8 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
       configured = InitializePCM(ae, format, true, outputDevice);
     }
 
-    if (!configured) // No suitable output format was able to be configured
+    // No suitable output format was able to be configured
+    if (!configured)
       return false;
   }
 
