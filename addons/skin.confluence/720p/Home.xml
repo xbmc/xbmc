@@ -24,6 +24,7 @@
 			<texture>xbmc-logo.png</texture>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
+			<visible>!Skin.HasSetting(homepageWeatherinfo)</visible>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
@@ -816,7 +817,7 @@
 		<control type="group">
 			<posx>20</posx>
 			<posy>0</posy>
-			<visible>false</visible>
+			<visible>Skin.HasSetting(homepageWeatherinfo) + !IsEmpty(Weather.Plugin)</visible>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<description>Weather image</description>
@@ -829,7 +830,7 @@
 			</control>
 			<control type="label">
 				<description>Location label</description>
-				<posx>70</posx>
+				<posx>65</posx>
 				<posy>5</posy>
 				<width>500</width>
 				<height>15</height>
@@ -841,13 +842,13 @@
 				<label>$INFO[Window(Weather).Property(Location)]</label>
 			</control>
 			<control type="grouplist">
-				<posx>70</posx>
+				<posx>65</posx>
 				<posy>20</posy>
 				<width>1000</width>
 				<height>30</height>
 				<orientation>horizontal</orientation>
 				<align>left</align>
-				<itemgap>5</itemgap>
+				<itemgap>0</itemgap>
 				<control type="label">
 					<description>Temp label</description>
 					<width min="0" max="300">auto</width>
@@ -870,12 +871,12 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<description>Temp Units</description>
+					<description>Conditions Label</description>
 					<width>500</width>
-					<height>30</height>
+					<height>22</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<label> $INFO[Window(Weather).Property(Current.Condition)]</label>
+					<label>  $INFO[Window(Weather).Property(Current.Condition)]</label>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
