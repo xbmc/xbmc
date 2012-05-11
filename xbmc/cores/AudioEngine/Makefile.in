@@ -1,48 +1,54 @@
 ARCH=@ARCH@
 
-INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I../dvdplayer/Codecs/ffmpeg -I..
+INCLUDES  = -I.
+INCLUDES += -I@abs_top_srcdir@/xbmc
+INCLUDES += -I@abs_top_srcdir@/xbmc/linux
+INCLUDES += -I@abs_top_srcdir@/xbmc/utils
+INCLUDES += -I@abs_top_srcdir@/xbmc/guilib
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer
+INCLUDES += -I@abs_top_srcdir@/xbmc/cores/dvdplayer/Codecs/ffmpeg
 
 OSSLIBDIR=0
 -include /etc/oss.conf
 ifneq (0,${OSSLIBDIR})
-  INCLUDES+=-I$(OSSLIBDIR)/include
-  CXXFLAGS+=-DOSS4
+  INCLUDES += -I$(OSSLIBDIR)/include
+  CXXFLAGS += -DOSS4
 endif
 
-CXXFLAGS+=-D__STDC_LIMIT_MACROS
+CXXFLAGS += -D__STDC_LIMIT_MACROS
 
-SRCS = \
-	AEFactory.cpp \
-	AESinkFactory.cpp \
-	Sinks/AESinkALSA.cpp \
-	Sinks/AESinkOSS.cpp \
-	Sinks/AESinkProfiler.cpp \
-	Sinks/AESinkNULL.cpp \
-	\
-	Utils/AEChannelInfo.cpp \
-        Utils/AEBuffer.cpp \
-	Utils/AEConvert.cpp \
-	Utils/AERemap.cpp \
-	Utils/AEUtil.cpp \
-	Utils/AEStreamInfo.cpp \
-	Utils/AEPackIEC61937.cpp \
-	Utils/AEBitstreamPacker.cpp \
-	Utils/AEWAVLoader.cpp \
-	Utils/AEELDParser.cpp \
-	Utils/AEDeviceInfo.cpp \
-	\
-	PostProc/AEPPAnimationFade.cpp \
-	\
-	Engines/SoftAE.cpp \
-	Engines/SoftAEStream.cpp \
-	Engines/SoftAESound.cpp \
-	Engines/PulseAE.cpp \
-	Engines/PulseAEStream.cpp \
-	Engines/PulseAESound.cpp \
-	\
-	Encoders/AEEncoderFFmpeg.cpp
+SRCS  = AEFactory.cpp
+SRCS += AESinkFactory.cpp
+SRCS += Sinks/AESinkALSA.cpp
+SRCS += Sinks/AESinkOSS.cpp
+SRCS += Sinks/AESinkProfiler.cpp
+SRCS += Sinks/AESinkNULL.cpp
 
-LIB=audioengine.a
+SRCS += Utils/AEChannelInfo.cpp
+SRCS += Utils/AEBuffer.cpp
+SRCS += Utils/AEConvert.cpp
+SRCS += Utils/AERemap.cpp
+SRCS += Utils/AEUtil.cpp
+SRCS += Utils/AEStreamInfo.cpp
+SRCS += Utils/AEPackIEC61937.cpp
+SRCS += Utils/AEBitstreamPacker.cpp
+SRCS += Utils/AEWAVLoader.cpp
+SRCS += Utils/AEELDParser.cpp
+SRCS += Utils/AEDeviceInfo.cpp
 
-include ../../../Makefile.include
+SRCS += PostProc/AEPPAnimationFade.cpp
+
+SRCS += Engines/SoftAE.cpp
+SRCS += Engines/SoftAEStream.cpp
+SRCS += Engines/SoftAESound.cpp
+SRCS += Engines/PulseAE.cpp
+SRCS += Engines/PulseAEStream.cpp
+SRCS += Engines/PulseAESound.cpp
+
+SRCS += Encoders/AEEncoderFFmpeg.cpp
+
+LIB   = audioengine.a
+
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
