@@ -49,13 +49,6 @@ public:
   XbmcThreads::ConditionVariable     *m_hCond;
   std::list<CXHandle*>  m_hParents;
 
-#ifdef __APPLE__
-  // Save the Mach thrad port, I don't think it can be obtained from
-  // the pthread_t. We'll use it for querying timer information.
-  //
-  mach_port_t m_machThreadPort;
-#endif
-
   // simulate mutex and critical section
   CCriticalSection *m_hMutex;
   int       RecursionCount;  // for mutex - for compatibility with WIN32 critical section

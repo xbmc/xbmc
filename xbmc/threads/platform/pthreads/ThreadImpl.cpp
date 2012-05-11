@@ -196,23 +196,19 @@ int64_t CThread::GetAbsoluteUsage()
   
   int64_t time = 0;
 #ifdef TARGET_DARWIN
-  thread_info_data_t     threadInfo;
-  mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
+  thread_basic_info threadInfo;
+  mach_msg_type_number_t threadInfoCount = THREAD_BASIC_INFO_COUNT;
 
-  if (m_machThreadPort == MACH_PORT_NULL)
-    m_machThreadPort = pthread_mach_thread_np(m_ThreadId);
-
-  kern_return_t ret = thread_info(m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
+  kern_return_t ret = thread_info(pthread_mach_thread_np(m_ThreadId),
+    THREAD_BASIC_INFO, (thread_info_t)&threadInfo, &threadInfoCount);
 
   if (ret == KERN_SUCCESS)
   {
-    thread_basic_info_t threadBasicInfo = (thread_basic_info_t)threadInfo;
-
     // User time.
-    time = ((int64_t)threadBasicInfo->user_time.seconds * 10000000L) + threadBasicInfo->user_time.microseconds*10L;
+    time = ((int64_t)threadInfo.user_time.seconds * 10000000L) + threadInfo.user_time.microseconds*10L;
 
     // System time.
-    time += (((int64_t)threadBasicInfo->system_time.seconds * 10000000L) + threadBasicInfo->system_time.microseconds*10L);
+    time += (((int64_t)threadInfo.system_time.seconds * 10000000L) + threadInfo.system_time.microseconds*10L);
   }
 
 #else

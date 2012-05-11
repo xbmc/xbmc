@@ -110,9 +110,6 @@ void CXHandle::Init()
   m_nRefCount=1;
   m_tmCreation = time(NULL);
   m_internalLock = new CCriticalSection();
-#ifdef __APPLE__
-  m_machThreadPort = 0;
-#endif
 }
 
 void CXHandle::ChangeType(HandleType newType) {
