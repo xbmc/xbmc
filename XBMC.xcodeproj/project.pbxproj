@@ -374,7 +374,6 @@
 		DFB65FBB15373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F7315373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp */; };
 		DFB65FBC15373AE7006B8FF1 /* CoreAudioAESound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F7515373AE7006B8FF1 /* CoreAudioAESound.cpp */; };
 		DFB65FBD15373AE7006B8FF1 /* CoreAudioAEStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F7715373AE7006B8FF1 /* CoreAudioAEStream.cpp */; };
-		DFB65FC515373AE7006B8FF1 /* AEPPAnimationFade.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F9315373AE7006B8FF1 /* AEPPAnimationFade.cpp */; };
 		DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
 		DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */; };
 		DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
@@ -1774,8 +1773,6 @@
 		DFB65F8D15373AE7006B8FF1 /* AESound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESound.h; sourceTree = "<group>"; };
 		DFB65F8E15373AE7006B8FF1 /* AEStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEStream.h; sourceTree = "<group>"; };
 		DFB65F8F15373AE7006B8FF1 /* ThreadedAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadedAE.h; sourceTree = "<group>"; };
-		DFB65F9315373AE7006B8FF1 /* AEPPAnimationFade.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPPAnimationFade.cpp; sourceTree = "<group>"; };
-		DFB65F9415373AE7006B8FF1 /* AEPPAnimationFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPPAnimationFade.h; sourceTree = "<group>"; };
 		DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEBitstreamPacker.cpp; sourceTree = "<group>"; };
 		DFB65FA415373AE7006B8FF1 /* AEBitstreamPacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEBitstreamPacker.h; sourceTree = "<group>"; };
 		DFB65FA515373AE7006B8FF1 /* AEBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEBuffer.cpp; sourceTree = "<group>"; };
@@ -4167,7 +4164,6 @@
 				DFB65F6915373AE7006B8FF1 /* Encoders */,
 				DFB65F6C15373AE7006B8FF1 /* Engines */,
 				DFB65F8815373AE7006B8FF1 /* Interfaces */,
-				DFB65F9215373AE7006B8FF1 /* PostProc */,
 				DFB65FA215373AE7006B8FF1 /* Utils */,
 				DFB65F6415373AE7006B8FF1 /* AEAudioFormat.h */,
 				DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */,
@@ -4205,15 +4201,6 @@
 				DFB65F8F15373AE7006B8FF1 /* ThreadedAE.h */,
 			);
 			path = Interfaces;
-			sourceTree = "<group>";
-		};
-		DFB65F9215373AE7006B8FF1 /* PostProc */ = {
-			isa = PBXGroup;
-			children = (
-				DFB65F9315373AE7006B8FF1 /* AEPPAnimationFade.cpp */,
-				DFB65F9415373AE7006B8FF1 /* AEPPAnimationFade.h */,
-			);
-			path = PostProc;
 			sourceTree = "<group>";
 		};
 		DFB65FA215373AE7006B8FF1 /* Utils */ = {
@@ -7232,7 +7219,6 @@
 				DFB65FBB15373AE7006B8FF1 /* CoreAudioAEHALOSX.cpp in Sources */,
 				DFB65FBC15373AE7006B8FF1 /* CoreAudioAESound.cpp in Sources */,
 				DFB65FBD15373AE7006B8FF1 /* CoreAudioAEStream.cpp in Sources */,
-				DFB65FC515373AE7006B8FF1 /* AEPPAnimationFade.cpp in Sources */,
 				DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */,
 				DFB65FCD15373AE7006B8FF1 /* AEBuffer.cpp in Sources */,
 				DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */,
