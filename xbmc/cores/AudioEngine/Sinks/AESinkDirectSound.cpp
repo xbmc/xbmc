@@ -200,7 +200,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   unsigned int uiFrameCount = (int)(format.m_sampleRate * 0.01); //default to 10ms chunks
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * uiFrameCount;
-  m_dwBufferLen = m_dwChunkSize * 6; //60ms total buffer
+  m_dwBufferLen = m_dwChunkSize * 12; //120ms total buffer
 
   // fill in the secondary sound buffer descriptor
   DSBUFFERDESC dsbdesc;
@@ -317,7 +317,7 @@ bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const std::str
 
   notCompatible = (notCompatible  +!((AE_IS_RAW(format.m_dataFormat)  == AE_IS_RAW(m_encodedFormat))        ||
                                      (!AE_IS_RAW(format.m_dataFormat) == !AE_IS_RAW(m_encodedFormat))))     << 1;
-  notCompatible = (notCompatible  +!((format.m_dataFormat             == AE_FMT_EAC3)                       ||
+  notCompatible = (notCompatible  + ((format.m_dataFormat             == AE_FMT_EAC3)                       ||
                                      (format.m_dataFormat             == AE_FMT_DTSHD                       ||
                                      (format.m_dataFormat             == AE_FMT_TRUEHD))))                  << 1;
   notCompatible = (notCompatible  + !(format.m_dataFormat             == m_format.m_dataFormat))            << 1;
@@ -453,7 +453,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
   GetVersionEx(&osvi);
 
-  if (osvi.dwMajorVersion > 5) //***** CHANGE BACK TO == 5
+  if (osvi.dwMajorVersion == 5)
   {
     /* We are on XP - WASAPI not supported - enumerate using DS devices */
     LPGUID deviceGUID = NULL;
