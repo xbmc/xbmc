@@ -27,7 +27,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -j $(MAKE_JOBS) -C $(SOURCE)
+	make -j 1 -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install
