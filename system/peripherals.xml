@@ -6,6 +6,7 @@
     <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
     <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
     <setting key="key_user" value="" label="36004" order="5" />
+    <setting key="key_power" value="XBMC.ShutDown()" label="13015" order="6" />
   </peripheral>
 
   <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
