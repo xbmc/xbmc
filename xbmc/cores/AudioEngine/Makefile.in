@@ -37,14 +37,13 @@ SRCS += Utils/AEWAVLoader.cpp
 SRCS += Utils/AEELDParser.cpp
 SRCS += Utils/AEDeviceInfo.cpp
 
-SRCS += PostProc/AEPPAnimationFade.cpp
+SRCS += Engines/SoftAE/SoftAE.cpp
+SRCS += Engines/SoftAE/SoftAEStream.cpp
+SRCS += Engines/SoftAE/SoftAESound.cpp
 
-SRCS += Engines/SoftAE.cpp
-SRCS += Engines/SoftAEStream.cpp
-SRCS += Engines/SoftAESound.cpp
-SRCS += Engines/PulseAE.cpp
-SRCS += Engines/PulseAEStream.cpp
-SRCS += Engines/PulseAESound.cpp
+SRCS += Engines/PulseAE/PulseAE.cpp
+SRCS += Engines/PulseAE/PulseAEStream.cpp
+SRCS += Engines/PulseAE/PulseAESound.cpp
 
 SRCS += Encoders/AEEncoderFFmpeg.cpp
 

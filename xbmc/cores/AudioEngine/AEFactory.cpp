@@ -25,7 +25,7 @@
 #if defined(TARGET_DARWIN)
   #include "Engines/CoreAudio/CoreAudioAE.h"
 #else
-  #include "Engines/SoftAE.h"
+  #include "Engines/SoftAE/SoftAE.h"
 #endif
 
 #if defined(HAS_PULSEAUDIO)
