@@ -324,7 +324,7 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
 
   if (device->m_isMounted && device->IsApproved())
   {
-    CLog::Log(LOGNOTICE, "UDisks: Added %s", device->m_MountPath.c_str());
+    CLog::Log(LOGINFO, "UDisks: Added %s", device->m_MountPath.c_str());
     if (callback)
       callback->OnStorageAdded(device->m_Label, device->m_MountPath);
   }
