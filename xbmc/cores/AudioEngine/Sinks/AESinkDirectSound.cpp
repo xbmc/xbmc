@@ -129,6 +129,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   RPC_CSTR wszUuid  = NULL;
   HRESULT hr;
   std::list<DSDevice> DSDeviceList;
+  std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); itt++)
@@ -141,6 +142,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
       if (strcasecmp(szGUID.c_str(), device.c_str()) == 0)
       {
         deviceGUID = (*itt).lpGuid;
+        deviceFriendlyName = (*itt).name.c_str();
         break;
       }
     }
@@ -252,7 +254,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_initialized = true;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Initializing DirectSound with the following parameters:");
-  CLog::Log(LOGDEBUG, "  Audio Device    : %s", device);
+  CLog::Log(LOGDEBUG, "  Audio Device    : %s", ((std::string)deviceFriendlyName).c_str());
   CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
   CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
   CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
@@ -437,6 +439,7 @@ double CAESinkDirectSound::GetCacheTotal()
 void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 {
   CAEDeviceInfo        deviceInfo;
+  OSVERSIONINFO        osvi;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
@@ -444,6 +447,52 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
   WAVEFORMATEX*          pwfxex = NULL;
   HRESULT                hr;
 
+  /* See if we are on Windows XP */
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+  GetVersionEx(&osvi);
+
+  if (osvi.dwMajorVersion > 5) //***** CHANGE BACK TO == 5
+  {
+    /* We are on XP - WASAPI not supported - enumerate using DS devices */
+    LPGUID deviceGUID = NULL;
+    RPC_CSTR cszGUID;
+    std::string szGUID;
+    std::list<DSDevice> DSDeviceList;
+    DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
+
+    for(std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); itt++)
+    {
+      if (UuidToString((*itt).lpGuid, &cszGUID) != RPC_S_OK)
+        continue;  /* could not convert GUID to string - skip device */
+
+      deviceInfo.m_channels.Reset();
+      deviceInfo.m_dataFormats.clear();
+      deviceInfo.m_sampleRates.clear();
+
+      szGUID = (LPSTR)cszGUID;
+
+      deviceInfo.m_deviceName = "{" + szGUID + "}";
+      deviceInfo.m_displayName = (*itt).name;
+      deviceInfo.m_displayNameExtra = std::string("DirectSound: ") + (*itt).name;
+
+      deviceInfo.m_deviceType = AE_DEVTYPE_PCM;
+      deviceInfo.m_channels   = layoutsByChCount[2];
+
+      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
+      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_AC3));
+
+      deviceInfo.m_sampleRates.push_back((DWORD) 96000);
+
+      deviceInfoList.push_back(deviceInfo);
+    }
+
+    RpcStringFree(&cszGUID);
+    return;
+  }
+
+  /* Windows Vista or later - supporting WASAPI device probing */
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
 
