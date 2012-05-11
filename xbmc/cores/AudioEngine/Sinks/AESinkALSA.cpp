@@ -681,6 +681,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
         if (badHDMI)
         {
           CLog::Log(LOGDEBUG, "CAESinkALSA::EnumerateDevicesEx - Skipping HDMI device %s as it has no ELD data", info.m_deviceName.c_str());
+          snd_pcm_close(pcmhandle);
           continue;
         }
       }
