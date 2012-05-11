@@ -62,16 +62,16 @@ CSoftAE::CSoftAE():
   CAESinkFactory::EnumerateEx(m_sinkInfoList);
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
-    CLog::Log(LOGINFO, "Enumerated %s devices:", itt->m_sinkName.c_str());
+    CLog::Log(LOGNOTICE, "Enumerated %s devices:", itt->m_sinkName.c_str());
     int count = 0;
     for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
     {
-      CLog::Log(LOGINFO, "    Device %d", ++count);
+      CLog::Log(LOGNOTICE, "    Device %d", ++count);
       CAEDeviceInfo& info = *itt2;
       std::stringstream ss((std::string)info);
       std::string line;
       while(std::getline(ss, line, '\n'))
-        CLog::Log(LOGINFO, "        %s", line.c_str());
+        CLog::Log(LOGNOTICE, "        %s", line.c_str());
     }
   }
 }
