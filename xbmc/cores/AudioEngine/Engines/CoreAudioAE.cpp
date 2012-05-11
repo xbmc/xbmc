@@ -24,19 +24,18 @@
 #include "system.h"
 
 #include "CoreAudioAE.h"
+
+#include "AEUtil.h"
+#include "MathUtils.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
-#include "AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "utils/TimeUtils.h"
-#include "utils/SystemInfo.h"
-#include "MathUtils.h"
+#include "threads/SingleLock.h"
 #include "utils/EndianSwap.h"
+#include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
@@ -52,7 +51,7 @@ CCoreAudioAE::CCoreAudioAE() :
   m_chLayoutCount      (0             ),
   m_callbackRunning    (false         )
 {
-  HAL         = new CCoreAudioAEHAL;
+  HAL = new CCoreAudioAEHAL;
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -75,7 +74,7 @@ void CCoreAudioAE::Shutdown()
     delete s;
   }
 
-  /* free the suonds */
+  /* free the sounds */
   CSingleLock soundLock(m_soundLock);
   while (!m_sounds.empty())
   {
@@ -144,7 +143,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   switch (g_guiSettings.GetInt("audiooutput.channellayout"))
   {
     default:
-    case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
+    case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
     case  1: m_stdChLayout = AE_CH_LAYOUT_2_0; break;
     case  2: m_stdChLayout = AE_CH_LAYOUT_2_1; break;
     case  3: m_stdChLayout = AE_CH_LAYOUT_3_0; break;
@@ -404,18 +403,11 @@ CCoreAudioAEHAL  *CCoreAudioAE::GetHAL()
 }
 
 IAEStream *CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
-                                   unsigned int sampleRate,
-                                   unsigned int encodedSamplerate,
-                                   CAEChannelInfo channelLayout,
-                                   unsigned int options/* = 0 */)
+  unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
   CAEChannelInfo channelInfo(channelLayout);
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
-            CAEUtil::DataFormatToStr(dataFormat),
-            sampleRate,
-            encodedSamplerate,
-            ((std::string)channelInfo).c_str()
-            );
+    CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
 
   CSingleLock streamLock(m_streamLock);
   //bool wasEmpty = m_streams.empty();
@@ -630,10 +622,7 @@ void CCoreAudioAE::Stop()
 // Rendering Methods
 //***********************************************************************************************
 OSStatus CCoreAudioAE::OnRender(AudioUnitRenderActionFlags *actionFlags,
-                                const AudioTimeStamp *inTimeStamp,
-                                UInt32 inBusNumber,
-                                UInt32 inNumberFrames,
-                                AudioBufferList *ioData)
+  const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   UInt32 frames = inNumberFrames;
 
@@ -691,14 +680,9 @@ OSStatus CCoreAudioAE::OnRender(AudioUnitRenderActionFlags *actionFlags,
 
 // Static Callback from AudioUnit
 OSStatus CCoreAudioAE::Render(AudioUnitRenderActionFlags* actionFlags,
-                              const AudioTimeStamp* pTimeStamp,
-                              UInt32 busNumber,
-                              UInt32 frameCount,
-                              AudioBufferList* pBufList)
+  const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
 {
-  OSStatus ret = noErr;
-
-  ret = OnRender(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
+  OSStatus ret = OnRender(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
 
   return ret;
 }
