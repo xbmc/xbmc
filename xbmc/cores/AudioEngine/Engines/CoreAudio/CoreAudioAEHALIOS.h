@@ -20,7 +20,7 @@
  *
  */
 
-#ifdef defined(TARGET_DARWIN_IOS)
+#if defined(TARGET_DARWIN_IOS)
 
 #include <list>
 #include <vector>
