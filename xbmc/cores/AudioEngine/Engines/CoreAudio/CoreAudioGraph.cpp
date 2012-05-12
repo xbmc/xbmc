@@ -303,8 +303,6 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
 
   SetInputSource(pSource);
 
-  ShowGraph();
-
   return Start();
 }
 
@@ -403,7 +401,6 @@ bool CCoreAudioGraph::Start()
       CLog::Log(LOGERROR, "CCoreAudioGraph::Start: "
         "Error starting audio graph. Error = %s", GetError(ret).c_str());
     }
-    ShowGraph();
   }
 
   return true;
@@ -488,10 +485,6 @@ CAUOutputDevice *CCoreAudioGraph::DestroyUnit(CAUOutputDevice *outputUnit)
 
   AUGraphUpdate(m_audioGraph, NULL);
 
-  printf("Remove unit\n\n");
-  ShowGraph();
-  printf("\n");
-
   Start();
 
   return NULL;
@@ -551,11 +544,6 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
 
 
   AUGraphUpdate(m_audioGraph, NULL);
-
-  printf("Add unit\n\n");
-  ShowGraph();
-  printf("\n");
-
   m_auUnitList.push_back(outputUnit);
 
   return outputUnit;
@@ -608,9 +596,4 @@ int CCoreAudioGraph::GetMixerChannelOffset(int busNumber)
     offset += fmt.mChannelsPerFrame;
   }
   return offset;
-}
-
-void CCoreAudioGraph::ShowGraph()
-{
-  CAShow(m_audioGraph);
 }

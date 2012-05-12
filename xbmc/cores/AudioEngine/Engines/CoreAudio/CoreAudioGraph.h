@@ -72,7 +72,6 @@ public:
   void ReleaseBus(int busNumber);
   bool IsBusFree(int busNumber);
   int GetMixerChannelOffset(int busNumber);
-  void ShowGraph();
 };
 
 #endif
