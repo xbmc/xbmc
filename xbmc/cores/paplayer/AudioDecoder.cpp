@@ -230,7 +230,7 @@ float CAudioDecoder::GetReplayGain()
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
   if (g_guiSettings.m_replayGain.iType == REPLAY_GAIN_NONE)
-    return 0.0f;
+    return 1.0f;
 
   // Compute amount of gain
   float replaydB = (float)g_guiSettings.m_replayGain.iNoGainPreAmp;

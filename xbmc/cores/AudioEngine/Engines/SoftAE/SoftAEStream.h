@@ -67,7 +67,7 @@ public:
   virtual float             GetVolume       ()             { return m_volume; }
   virtual float             GetReplayGain   ()             { return m_rgain ; }
   virtual void              SetVolume       (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
-  virtual void              SetReplayGain   (float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
+  virtual void              SetReplayGain   (float factor) { m_rgain  = std::max( 0.0f, factor); }
 
   virtual const unsigned int      GetFrameSize   () const  { return m_format.m_frameSize; }
   virtual const unsigned int      GetChannelCount() const  { return m_initChannelLayout.Count(); }
