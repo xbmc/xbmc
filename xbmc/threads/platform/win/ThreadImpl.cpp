@@ -214,13 +214,13 @@ void CThread::Action()
   }
   catch (const access_violation &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread startup");
     if (IsAutoDelete())
       return;
   }
   catch (const win32_exception &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread startup");
     if (IsAutoDelete())
       return;
   }
@@ -231,11 +231,11 @@ void CThread::Action()
   }
   catch (const access_violation &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread process");
   }
   catch (const win32_exception &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread process");
   }
 
   try
@@ -244,10 +244,10 @@ void CThread::Action()
   }
   catch (const access_violation &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread exit");
   }
   catch (const win32_exception &e)
   {
-    e.writelog(__FUNCTION__);
+    e.writelog(__FUNCTION__" thread exit");
   }
 }
