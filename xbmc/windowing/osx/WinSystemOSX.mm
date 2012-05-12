@@ -210,17 +210,19 @@ double GetDictionaryDouble(CFDictionaryRef theDict, const void* key)
 }
 
 //---------------------------------------------------------------------------------
-void HideMenuBar()
+void SetMenuBarVisible(bool visible)
 {
-  [[NSApplication sharedApplication] 
-    setPresentationOptions:   NSApplicationPresentationHideMenuBar | 
-                              NSApplicationPresentationHideDock];
-}
-//---------------------------------------------------------------------------------        
-void ShowMenuBar()
-{
-  [[NSApplication sharedApplication] 
-    setPresentationOptions:   NSApplicationPresentationDefault];
+  if(visible)
+  {
+    [[NSApplication sharedApplication] 
+      setPresentationOptions:   NSApplicationPresentationDefault];  
+  }
+  else
+  {
+    [[NSApplication sharedApplication] 
+      setPresentationOptions:   NSApplicationPresentationHideMenuBar | 
+                                NSApplicationPresentationHideDock];  
+  }
 }
 //---------------------------------------------------------------------------------        
 CGDirectDisplayID GetDisplayID(int screen_index)
@@ -791,7 +793,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       
       // Hide the menu bar.
       if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
-        HideMenuBar();
+        SetMenuBarVisible(false);
           
       // Blank other displays if requested.
       if (blankOtherDisplays)
@@ -825,7 +827,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
       // If we don't hide menu bar, it will get events and interrupt the program.
       if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
-        HideMenuBar();
+        SetMenuBarVisible(false);
     }
 
     // Hide the mouse.
@@ -853,7 +855,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     
     // Show menubar.
     if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
-      ShowMenuBar();
+      SetMenuBarVisible(true);
 
     if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
@@ -1240,7 +1242,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
           NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
           if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay)
           {
-            HideMenuBar();
+            SetMenuBarVisible(false);
           }
           [window orderFront:nil];
         }
