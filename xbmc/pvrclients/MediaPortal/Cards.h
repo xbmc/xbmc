@@ -36,10 +36,12 @@ typedef struct Card
   bool     GrabEPG;
   time_t   LastEpgGrab;
   string   RecordingFolder;
+  string   RecordingFolderUNC;
   int      IdServer;
   bool     Enabled;
   int      CamType;
-  string   TimeshiftingFolder;
+  string   TimeshiftFolder;
+  string   TimeshiftFolderUNC;
   int      RecordingFormat;
   int      DecryptLimit;
   bool     Preload;
@@ -60,4 +62,12 @@ class CCards: public vector<Card>
      * \return True on success, False on failure
      */
     bool ParseLines(vector<string>& lines);
+
+    /**
+     * \brief Return the data for the card with the given id
+     * \param id The card id
+     * \param card Return value: card data or NULL if not found.
+     * \return True on success, False on failure
+     */
+    bool GetCard(int id, Card& card);
 };

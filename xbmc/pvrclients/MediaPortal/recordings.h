@@ -97,7 +97,7 @@ public:
   /**
    * \brief Override the directory where this recording is stored
    */
-  void SetDirectory( string& directory );
+  //void SetDirectory( string& directory );
 
   /**
    * \brief The RTSP stream URL for this recording (hostname resolved to IP-address)

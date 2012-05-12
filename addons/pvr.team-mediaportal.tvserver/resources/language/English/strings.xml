@@ -12,13 +12,14 @@
     <string id="30008">Convert hostname to IP-adress</string>
     <string id="30009">EPG: Read genre strings (slow)</string>
     <string id="30010">Wait time after tuning a channel (ms)</string>
-    <string id="30011">Play recordings directly (no streaming)</string>
-    <string id="30012">Mediaportal recordings directory</string>
-    <string id="30013">Direct playback from Timeshift buffer (no rtsp)</string>
-    <string id="30014">Timeshift buffer directory</string>
+    <string id="30011"></string>
+    <string id="30012"></string>
+    <string id="30013"></string>
+    <string id="30014"></string>
     <string id="30015">Streaming method</string>
     <string id="30016">Windows user account (SMB)</string>
     <string id="30017">Windows password (SMB)</string>
+    <string id="30018">Use RTSP streaming</string>
 
     <!-- category labels -->
     <string id="30040">Connection</string>

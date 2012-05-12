@@ -16,17 +16,14 @@
     <setting id="tvgroup" type="text" label="30006" default="" />
     <setting id="radiogroup" type="text" label="30007" default="" />
     <setting id="readgenre" type="bool" label="30009" default="false" />
-    <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500|3000" default="0"/>
   </category>
 
   <!-- TSReader/ffmpeg -->
   <category label="30042">
     <setting id="streamingmethod" type="enum" label="30015" values="TSReader|ffmpeg" default="TSReader"/>
-    <setting id="resolvertsphostname" type="bool" label="30008" default="true" enable="eq(-1,1)"/>
-    <setting id="userecordingsdir" type="bool" label="30011" default="true" />
-    <setting id="recordingsdir" type="folder" option="smb" label="30012" default="" />
-    <setting id="directtsfileread" type="bool" label="30013" default="true"  enable="eq(-4,0)"/>
-    <setting id="timeshiftdir" type="folder" option="smb" label="30014" default=""  enable="eq(-5,0)"/>
-    <setting id="fastchannelswitch" type="bool" label="30004" default="false" />
+    <setting id="resolvertsphostname" type="bool" label="30008" default="true" visible="eq(-1,1)"/>
+    <setting id="usertsp" type="bool" label="30018" default="false" visible="eq(-2,0)"/>
+    <setting id="fastchannelswitch" type="bool" label="30004" default="false" visible="eq(-3,0)"/>
+    <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500|3000" default="0"/>
   </category>
 </settings>

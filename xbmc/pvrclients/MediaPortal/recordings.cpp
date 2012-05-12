@@ -175,20 +175,20 @@ bool cRecording::ParseLine(const std::string& data)
 }
 
 
-void cRecording::SetDirectory( string& directory )
-{
-  CStdString tmp;
-  m_basePath = directory;
-  tmp = m_basePath + m_directory + "\\" + m_fileName;
-
-  if( m_basePath.find("smb://") != string::npos )
-  {
-    // Convert to XBMC network share...
-    tmp.Replace("\\","/");
-  }
-
-  m_filePath = tmp;
-}
+//void cRecording::SetDirectory( string& directory )
+//{
+//  CStdString tmp;
+//  m_basePath = directory;
+//  tmp = m_basePath + m_directory + "\\" + m_fileName;
+//
+//  if( m_basePath.find("smb://") != string::npos )
+//  {
+//    // Convert to XBMC network share...
+//    tmp.Replace("\\","/");
+//  }
+//
+//  m_filePath = tmp;
+//}
 
 int cRecording::Lifetime(void) const
 {

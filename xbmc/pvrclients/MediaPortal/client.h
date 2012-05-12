@@ -47,8 +47,8 @@ enum eStreamingMethod
 #define DEFAULT_READ_GENRE            false
 #define DEFAULT_SLEEP_RTSP_URL        0
 #define DEFAULT_USE_REC_DIR           false
-#define DEFAULT_REC_DIR               ""
-#define DEFAULT_TIMESHIFT_DIR         ""
+//#define DEFAULT_REC_DIR               ""
+//#define DEFAULT_TIMESHIFT_DIR         ""
 #define DEFAULT_TVGROUP               ""
 #define DEFAULT_RADIOGROUP            ""
 #define DEFAULT_DIRECT_TS_FR          false
@@ -70,11 +70,12 @@ extern bool             g_bRadioEnabled;
 extern bool             g_bHandleMessages;
 extern bool             g_bResolveRTSPHostname;
 extern bool             g_bReadGenre;
-extern bool             g_bUseRecordingsDir;
-extern bool             g_bDirectTSFileRead;
+//extern bool             g_bUseRecordingsDir;
+//extern bool             g_bDirectTSFileRead;
 extern bool             g_bFastChannelSwitch;
-extern std::string      g_szRecordingsDir;
-extern std::string      g_szTimeshiftDir;
+extern bool             g_bUseRTSP;           ///< Use RTSP streaming when using the tsreader
+//extern std::string      g_szRecordingsDir;
+//extern std::string      g_szTimeshiftDir;
 extern std::string      g_szTVGroup;
 extern std::string      g_szRadioGroup;
 extern std::string      g_szSMBusername;
