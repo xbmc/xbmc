@@ -75,16 +75,11 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url)
   return GetCachedImage(url, cachedHash);
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cachedHash)
+CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash)
 {
   cachedHash.clear();
-  if (url.compare(0, 8, "image://") == 0)
-  {
-    CStdString image = CURL(url).GetHostName();
-    CURL::Decode(image);
-    if (IsCachedImage(image))
-      return image; // no point generating thumbs of already cached images
-  }
+  CStdString url = UnwrapImageURL(image);
+
   if (IsCachedImage(url))
     return url;
 
@@ -173,11 +168,12 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(url, cacheHash));
+  AddJob(new CTextureCacheJob(UnwrapImageURL(url), cacheHash));
 }
 
-CStdString CTextureCache::CacheTexture(const CStdString &url, CBaseTexture **texture)
+CStdString CTextureCache::CacheTexture(const CStdString &image, CBaseTexture **texture)
 {
+  CStdString url = UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
   if (m_processing.find(url) == m_processing.end())
   {
