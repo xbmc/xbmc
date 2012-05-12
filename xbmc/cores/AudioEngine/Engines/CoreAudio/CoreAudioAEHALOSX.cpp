@@ -38,10 +38,6 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CCoreAudioAEHALOSX
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_Initialized       (false  ),
   m_Passthrough       (false  ),
@@ -54,7 +50,7 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_AudioDevice   = new CCoreAudioDevice();
   m_OutputStream  = new CCoreAudioStream();
 
-  SInt32 major,  minor;
+  SInt32 major, minor;
   Gestalt(gestaltSystemVersionMajor, &major);
   Gestalt(gestaltSystemVersionMinor, &minor);
 
@@ -62,7 +58,7 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
   // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
   // So tell the HAL to use its own thread for similar behavior under all supported versions of OSX.
-  if (major == 10 && minor >=6)
+  if (major == 10 && minor >= 6)
   {
     CFRunLoopRef theRunLoop = NULL;
     AudioObjectPropertyAddress theAddress = {
@@ -90,14 +86,9 @@ CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
 
 bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice)
 {
-
   if (m_audioGraph)
-  {
-    m_audioGraph->Close();
-    delete m_audioGraph;
-  }
+    m_audioGraph->Close(), delete m_audioGraph;
   m_audioGraph = new CCoreAudioGraph();
-
   if (!m_audioGraph)
     return false;
 
@@ -117,9 +108,10 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
 
 bool CCoreAudioAEHALOSX::InitializePCMEncoded(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID outputDevice)
 {
-  m_AudioDevice->SetHogStatus(true); // Prevent any other application from using this device.
-  m_AudioDevice->SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
-
+  // Prevent any other application from using this device.
+  m_AudioDevice->SetHogStatus(true);
+  // Try to disable mixing support. Effectiveness depends on the device.
+  m_AudioDevice->SetMixingSupport(false);
   // Set the Sample Rate as defined by the spec.
   m_AudioDevice->SetNominalSampleRate((float)format.m_sampleRate);
 
@@ -136,8 +128,8 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
   AudioStreamBasicDescription outputFormat = {0};
 
   // Fetch a list of the streams defined by the output device
+  UInt32 streamIndex = 0;
   AudioStreamIdList streams;
-  UInt32  streamIndex = 0;
   m_AudioDevice->GetStreams(&streams);
 
   m_OutputBufferIndex = 0;
@@ -266,8 +258,7 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
 
   CCoreAudioHardware::ResetAudioDevices();
 
-  m_ae = (CCoreAudioAE *)ae;
-
+  m_ae = (CCoreAudioAE*)ae;
   if (!m_ae)
     return false;
 
@@ -288,7 +279,6 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
     device.erase(0, strlen("CoreAudio:"));
 
   AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(device);
-
   if (!outputDevice)
   {
     // Fall back to the default device if no match is found
@@ -304,9 +294,7 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
 
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (m_Passthrough)
-  {
     m_encoded = InitializeEncoded(outputDevice, format);
-  }
 
   // If this is a PCM stream, or we failed to handle a passthrough stream natively,
   // prepare the standard interleaved PCM interface
@@ -368,8 +356,6 @@ void CCoreAudioAEHALOSX::Deinitialize()
     return;
 
   Stop();
-
-  //if (m_encoded)
 
   if (m_encoded)
     m_AudioDevice->SetInputSource(NULL, 0, 0);
@@ -456,13 +442,9 @@ void CCoreAudioAEHALOSX::SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat
     // register directcallback for the audio HAL
     // direct render callback need to know the framesize and buffer index
     if (pSource)
-    {
       m_AudioDevice->SetInputSource(pSource, format.m_frameSize, m_OutputBufferIndex);
-    }
     else
-    {
       m_AudioDevice->SetInputSource(pSource, 0, 0);
-    }
   }
   else if (!m_encoded && !m_allowMixing)
   {
@@ -473,14 +455,10 @@ void CCoreAudioAEHALOSX::SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat
 
 double CCoreAudioAEHALOSX::GetDelay()
 {
-  double delay;
-
-  delay = (double)(m_NumLatencyFrames) / (m_initformat.m_sampleRate);
-
-  return delay;
+  return (double)(m_NumLatencyFrames) / (m_initformat.m_sampleRate);
 }
 
-void  CCoreAudioAEHALOSX::SetVolume(float volume)
+void CCoreAudioAEHALOSX::SetVolume(float volume)
 {
   if (m_encoded || m_Passthrough)
     return;

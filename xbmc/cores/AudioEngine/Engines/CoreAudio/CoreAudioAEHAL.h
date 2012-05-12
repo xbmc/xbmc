@@ -20,15 +20,10 @@
  *
  */
 
-#include <list>
-#include "utils/StdString.h"
+#include <string>
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-#ifdef TARGET_DARWIN_OSX
-#include <CoreAudio/CoreAudio.h>
-#endif
 
 // Helper Functions
 std::string GetError(OSStatus error);
-char* UInt32ToFourCC(UInt32* val);
-const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string& str);
+const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string &str);

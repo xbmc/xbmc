@@ -37,12 +37,6 @@
 /* typecast AE to CCoreAudioAE */
 #define AE (*(CCoreAudioAE*)CAEFactory::AE)
 
-typedef struct
-{
-  char     chunk_id[4];
-  uint32_t chunksize;
-} WAVE_CHUNK;
-
 CCoreAudioAESound::CCoreAudioAESound(const std::string &filename) :
   IAESound         (filename),
   m_filename       (filename),
@@ -69,7 +63,6 @@ void CCoreAudioAESound::DeInitialize()
 
 bool CCoreAudioAESound::Initialize()
 {
-
   DeInitialize();
 
   if (!m_wavLoader.Initialize(m_filename, AE.GetSampleRate()))

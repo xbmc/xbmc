@@ -100,10 +100,11 @@ bool CCoreAudioAE::Initialize()
   return ret;
 }
 
-bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat)
+bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
+  enum AEDataFormat rawDataFormat)
 {
 
-  /* remove any deleted streams */
+  // remove any deleted streams
   CSingleLock streamLock(m_streamLock);
   for (StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
   {
@@ -116,7 +117,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
     }
     else
     {
-      /* close all converter */
+      // close all converter
       stream->CloseConverter();
     }
     ++itt;
@@ -137,7 +138,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
 
   std::string m_outputDevice =  g_guiSettings.GetString("audiooutput.audiodevice");
 
-  /* on iOS devices we set fixed to two channels. */
+  // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
   switch (g_guiSettings.GetInt("audiooutput.channellayout"))
@@ -157,10 +158,10 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   }
 #endif
 
-  /* setup the desired format */
+  // setup the desired format
   m_format.m_channelLayout = CAEChannelInfo(m_stdChLayout);
 
-  /* if there is an audio resample rate set, use it. */
+  // if there is an audio resample rate set, use it.
   if (g_advancedSettings.m_audioResample && !m_rawPassthrough)
   {
     sampleRate = g_advancedSettings.m_audioResample;
@@ -245,13 +246,13 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   CSingleLock soundLock(m_soundLock);
   StopAllSounds();
 
-  /* re-init sounds and unlock */
+  // re-init sounds and unlock
   for (SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
     (*itt)->Initialize();
 
   soundLock.Leave();
 
-  /* if we are not in m_rawPassthrough reinit the streams */
+  // if we are not in m_rawPassthrough reinit the streams
   if (!m_rawPassthrough)
   {
     /* re-init streams */
@@ -269,7 +270,7 @@ void CCoreAudioAE::Deinitialize()
   if (!m_Initialized)
     return;
 
-  /* close all open converters */
+  // close all open converters
   CSingleLock streamLock(m_streamLock);
   for (StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();++itt)
     (*itt)->CloseConverter();
@@ -293,7 +294,7 @@ void CCoreAudioAE::OnSettingsChange(std::string setting)
 {
   if (setting == "audiooutput.dontnormalizelevels")
   {
-    /* re-init streams reampper */
+    // re-init streams remapper
     CSingleLock streamLock(m_streamLock);
     for (StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
@@ -397,12 +398,12 @@ bool CCoreAudioAE::SupportsRaw()
   return true;
 }
 
-CCoreAudioAEHAL  *CCoreAudioAE::GetHAL()
+CCoreAudioAEHAL* CCoreAudioAE::GetHAL()
 {
   return HAL;
 }
 
-IAEStream *CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
+IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
   CAEChannelInfo channelInfo(channelLayout);
@@ -439,7 +440,7 @@ IAEStream *CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   return stream;
 }
 
-IAEStream *CCoreAudioAE::FreeStream(IAEStream *stream)
+IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 {
   CSingleLock streamLock(m_streamLock);
   /* ensure the stream still exists */
@@ -514,7 +515,7 @@ IAESound *CCoreAudioAE::MakeSound(const std::string& file)
 {
   CSingleLock soundLock(m_soundLock);
 
-  /* first check if we have the file cached */
+  // first check if we have the file cached
   for (SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
   {
     if ((*itt)->GetFileName() == file)
@@ -572,7 +573,7 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
   {
     SoundState *ss = &(*itt);
 
-    /* no more frames, so remove it from the list */
+    // no more frames, so remove it from the list
     if (ss->sampleCount == 0)
     {
       ss->owner->ReleaseSamples();

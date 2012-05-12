@@ -22,32 +22,31 @@
 
 #include "Interfaces/AESound.h"
 #include "threads/CriticalSection.h"
-#include "threads/SharedSection.h"
 #include "utils/AEWAVLoader.h"
 
-class CWAVLoader;
 class CCoreAudioAESound : public IAESound
 {
 public:
-  CCoreAudioAESound (const std::string &filename);
+  CCoreAudioAESound(const std::string &filename);
   virtual ~CCoreAudioAESound();
 
   virtual std::string GetFileName();
-  virtual void DeInitialize();
-  virtual bool Initialize();
+  virtual void    DeInitialize();
+  virtual bool    Initialize();
 
-  virtual void Play();
-  virtual void Stop();
-  virtual bool IsPlaying();
+  virtual void    Play();
+  virtual void    Stop();
+  virtual bool    IsPlaying();
 
-  virtual void  SetVolume(float volume);
-  virtual float GetVolume();
+  virtual void    SetVolume(float volume);
+  virtual float   GetVolume();
 
-  unsigned int GetSampleCount();
+  unsigned int    GetSampleCount();
 
   /* ReleaseSamples must be called for each time GetSamples has been called */
-  virtual float* GetSamples    ();
-  void           ReleaseSamples();
+  virtual float*  GetSamples();
+  void            ReleaseSamples();
+
 private:
   CCriticalSection m_critSection;
   std::string      m_filename;
