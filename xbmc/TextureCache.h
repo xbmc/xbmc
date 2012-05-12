@@ -175,6 +175,13 @@ private:
   CTextureCache const& operator=(CTextureCache const&);
   virtual ~CTextureCache();
 
+  /*! \brief Unwrap an image://<url_encoded_path> style URL
+   Such urls are used for art over the webserver or other users of the VFS
+   \param image url of the image
+   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
+   */
+  static CStdString UnwrapImageURL(const CStdString &image);
+
   /*! \brief Check if the given image is a cached image
    \param image url of the image
    \return true if this is a cached image, false otherwise.

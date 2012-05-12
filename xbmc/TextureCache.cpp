@@ -116,6 +116,21 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
   return GetWrappedImageURL(image, "", "size=thumb");
 }
 
+CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
+{
+  if (image.compare(0, 8, "image://") == 0)
+  {
+    CURL url(image);
+    if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
+    {
+      CStdString file(url.GetHostName());
+      CURL::Decode(file);
+      return file;
+    }
+  }
+  return image;
+}
+
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
   CStdString cachedHash;
