@@ -241,7 +241,12 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
     deviceName = device.GetName();
     UInt32 totalChannels = device.GetTotalOutputChannels();
     CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: "
-      "Device[0x%04lx] - Name: '%s', Total Ouput Channels: %u. ",
+#if __LP64__
+      "Device[0x%04x]"
+#else
+      "Device[0x%04lx]"
+#endif
+      " - Name: '%s', Total Ouput Channels: %u. ",
       pDevices[dev], deviceName.c_str(), (uint)totalChannels);
 
     std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
@@ -314,7 +319,7 @@ UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList *pList)
     return found;
 
   // Obtain a list of all available audio devices
-  size_t size = 0;
+  UInt32 size = 0;
   AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
   size_t deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
