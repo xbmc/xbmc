@@ -22,7 +22,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	sed -i bak -e "s/'libtoolize'/'glibtoolize'/" $(SOURCE)/bin/autoreconf.in
+	sed -ie "s/'libtoolize'/'glibtoolize'/" $(SOURCE)/bin/autoreconf.in
 	cd $(SOURCE); $(CONFIGURE)
 
 $(APP): $(SOURCE)
