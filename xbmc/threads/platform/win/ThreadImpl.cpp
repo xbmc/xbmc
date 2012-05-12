@@ -62,6 +62,8 @@ void CThread::TermHandler()
 void CThread::SetThreadInfo()
 {
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
+
+#pragma pack(push,8)
   struct THREADNAME_INFO
   {
     DWORD dwType; // must be 0x1000
@@ -69,17 +71,18 @@ void CThread::SetThreadInfo()
     DWORD dwThreadID; // thread ID (-1 caller thread)
     DWORD dwFlags; // reserved for future use, most be zero
   } info;
+#pragma pack(pop)
 
   info.dwType = 0x1000;
   info.szName = m_ThreadName.c_str();
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
 
-  try
+  __try
   {
     RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
   }
-  catch(...)
+  __except(EXCEPTION_EXECUTE_HANDLER)
   {
   }
 }
