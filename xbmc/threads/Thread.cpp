@@ -104,9 +104,7 @@ THREADFUNC CThread::staticThread(void* data)
   currentThread.set(pThread);
   pThread->m_StartEvent.Set();
 
-  pThread->OnStartup();
-  pThread->Process();
-  pThread->OnExit();
+  pThread->Action();
 
   // lock during termination
   CSingleLock lock(pThread->m_CriticalSection);
