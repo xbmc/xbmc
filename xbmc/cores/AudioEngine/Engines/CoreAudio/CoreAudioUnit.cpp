@@ -236,7 +236,7 @@ bool CCoreAudioUnit::SetRenderProc()
   m_renderProc = RenderCallback;
 
   CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: "
-    "Set RenderProc %p for unit 0x%08x.", m_renderProc, (uint)m_audioUnit);
+    "Set RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   return true;
 }
@@ -259,7 +259,7 @@ bool CCoreAudioUnit::RemoveRenderProc()
   }
 
   CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: "
-    "Remove RenderProc %p for unit 0x%08x.", m_renderProc, (uint)m_audioUnit);
+    "Remove RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   m_renderProc = NULL;
   Sleep(100);
