@@ -70,24 +70,14 @@ public:
    */ 
   CStdString CheckCachedImage(const CStdString &image, bool returnDDS, bool &needsRecaching);
 
-  /*! \brief This function is a wrapper around CheckCacheImage and CacheImageFile.
-  
-   Checks firstly whether an image is already cached, and return URL if so [see CheckCacheImage]
-   If the image is not yet in the database it is cached and added to the database [see CacheImageFile]
-
-   \param image url of the image to check and cache
-   \param returnDDS if we're allowed to return a DDS version, defaults to true
-   \return cached url of this image
-   \sa CheckCacheImage
-   */
-  CStdString CheckAndCacheImage(const CStdString &image, bool returnDDS = true);
-
   /*! \brief Cache image (if required) using a background job
 
-   Essentially a threaded version of CheckAndCacheImage.
+   Checks firstly whether an image is already cached, and return URL if so [see CheckCacheImage]
+   If the image is not yet in the database, a background job is started to
+   cache the image and add to the database [see CTextureCacheJob]
 
    \param image url of the image to cache
-   \sa CheckAndCacheImage
+   \sa CacheImage
    */
   void BackgroundCacheImage(const CStdString &image);
 
@@ -101,16 +91,6 @@ public:
    \sa CTextureCacheJob::CacheTexture
    */
   CStdString CacheTexture(const CStdString &url, CBaseTexture **texture = NULL);
-
-  /*! \brief Take image URL and add it to image cache
-
-   Takes the URL to an image. Caches and adds to the database.
-
-   \param image url of the image to cache
-   \return cached url of this image
-   \sa CTextureCacheJob::DoWork
-   */  
-  CStdString CacheImageFile(const CStdString &url);
 
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
@@ -146,13 +126,6 @@ public:
    */
   static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
   static CStdString GetWrappedThumbURL(const CStdString &image);
-
-  /*! \brief get a unique image path to associate with the given URL, useful for caching images
-   \param url path to retrieve a unique image for
-   \param extension type of file we want
-   \return a "unique" path to an image with the appropriate extension
-   */
-  static CStdString GetUniqueImage(const CStdString &url, const CStdString &extension);
 
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
