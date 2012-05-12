@@ -281,13 +281,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("fanart_image", fanart);
     }
     db.Close();
-  }
 
-  if (pItem->GetVideoInfoTag()->m_type != "movie" &&
-      pItem->GetVideoInfoTag()->m_type != "episode" &&
-      pItem->GetVideoInfoTag()->m_type != "tvshow" &&
-      pItem->GetVideoInfoTag()->m_type != "musicvideo")
-    return true; // nothing else to be done
+    if (pItem->GetVideoInfoTag()->m_type != "movie" &&
+        pItem->GetVideoInfoTag()->m_type != "episode" &&
+        pItem->GetVideoInfoTag()->m_type != "tvshow" &&
+        pItem->GetVideoInfoTag()->m_type != "musicvideo")
+      return true; // nothing else to be done
+  }
 
   // fanart
   if (!pItem->HasProperty("fanart_image"))
