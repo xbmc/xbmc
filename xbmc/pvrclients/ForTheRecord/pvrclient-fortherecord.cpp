@@ -746,15 +746,14 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               }
               tag.strTitle       = recording.Title();
               tag.strPlotOutline = recording.SubTitle();
-#ifdef _WIN32
-
               std::string emptystring;
               emptystring.clear();
               tag.strStreamURL   = emptystring.c_str();
+//#ifdef _WIN32
               //tag.strStreamURL   = recording.RecordingFileName();
-#else
-              tag.strStreamURL   = recording.CIFSRecordingFileName();
-#endif
+//#else
+//              tag.strStreamURL   = recording.CIFSRecordingFileName();
+//#endif
               PVR->TransferRecordingEntry(handle, &tag);
               iNumRecordings++;
             }
@@ -1453,6 +1452,12 @@ bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
     return false;
   }
 
+#if TARGET_WINDOWS
+  const char* recordingName = recording.RecordingFileName();
+#else
+  const char* recordingName = recording.CIFSRecordingFileName();
+#endif
+
   if (m_tsreader != NULL)
   {
     XBMC->Log(LOG_DEBUG, "Close existing TsReader...");
@@ -1460,7 +1465,7 @@ bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
     SAFE_DELETE(m_tsreader);
   }
   m_tsreader = new CTsReader();
-  if (m_tsreader->Open(recording.RecordingFileName()) != S_OK)
+  if (m_tsreader->Open(recordingName) != S_OK)
   {
     SAFE_DELETE(m_tsreader);
     return false;
