@@ -869,6 +869,7 @@
 					<label>$INFO[System.TemperatureUnits]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
 				</control>
 				<control type="label">
 					<description>Conditions Label</description>
@@ -876,7 +877,7 @@
 					<height>22</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<label>  $INFO[Window(Weather).Property(Current.Condition)]</label>
+					<label>$INFO[Window(Weather).Property(Current.Condition),  ]</label>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
