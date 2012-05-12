@@ -232,7 +232,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
   // Get the whole data
   m_lengthFrame = buffer.size();
   m_data = new char[(uint32_t)m_lengthFrame];
-  strncpy((char *)m_data, buffer.c_str(), (uint32_t)m_lengthFrame);
+  memcpy((char *)m_data, buffer.c_str(), (uint32_t)m_lengthFrame);
 
   if (data)
   {
