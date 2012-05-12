@@ -39,6 +39,10 @@
 #include "CocoaInterface.h"
 #undef BOOL
 
+// we need to exclude CFPlugInCOM.h because it defines
+// HRESULT and ULONG which collide with our defs
+#define __COREFOUNDATION_CFPLUGINCOM__ 1
+
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_events.h>
 
@@ -1108,7 +1112,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   if( screenIdx >= GetNumScreens())
     return false;
 
-  int match = 0;    
+  boolean_t match = false;    
   CFDictionaryRef dispMode = NULL;
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
