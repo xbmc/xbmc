@@ -1,4 +1,8 @@
 <includes>
+	<variable name="BackgroundImage">
+		<value condition="stringcompare(Skin.CurrentTheme,$LOCALIZE[15109])">special://skin/backgrounds/background.jpg</value>
+		<value condition="!stringcompare(Skin.CurrentTheme,$LOCALIZE[15109])">special://skin/backgrounds/$INFO[Skin.CurrentTheme].jpg</value>
+	</variable>
 	<include name="CommonBackground">
 		<control type="Image">
 			<posx>0</posx>
@@ -6,7 +10,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture fallback="special://skin/backgrounds/background.jpg">special://skin/backgrounds/$INFO[Skin.CurrentTheme].jpg</texture>
+			<texture>$VAR[BackgroundImage]</texture>
 		</control>
 		<control type="image">
 			<posx>0</posx>
