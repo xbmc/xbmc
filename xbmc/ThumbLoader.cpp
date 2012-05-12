@@ -235,7 +235,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     {
       // create unique thumb for auto generated thumbs
       CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (!CTextureCache::Get().GetCachedImage(thumbURL).IsEmpty())
+      if (CTextureCache::Get().HasCachedImage(thumbURL))
       {
         CTextureCache::Get().BackgroundCacheImage(thumbURL);
         pItem->SetProperty("HasAutoThumb", true);

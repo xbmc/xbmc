@@ -69,10 +69,10 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
   return false;
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &url)
+bool CTextureCache::HasCachedImage(const CStdString &url)
 {
   CStdString cachedHash;
-  return GetCachedImage(url, cachedHash);
+  return !GetCachedImage(url, cachedHash).IsEmpty();
 }
 
 CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash)
@@ -160,7 +160,7 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(UnwrapImageURL(url), cacheHash));
 }
 
-CStdString CTextureCache::CacheTexture(const CStdString &image, CBaseTexture **texture)
+CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture)
 {
   CStdString url = UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
@@ -301,7 +301,8 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
 
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
 {
-  CStdString cachedImage(GetCachedImage(image));
+  CStdString cachedHash;
+  CStdString cachedImage(GetCachedImage(image, cachedHash));
   if (!cachedImage.IsEmpty())
   {
     if (CFile::Cache(cachedImage, destination))

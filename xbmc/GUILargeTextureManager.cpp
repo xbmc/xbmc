@@ -57,7 +57,7 @@ bool CImageLoader::DoWork()
   if (loadPath.IsEmpty())
   {
     // not in our texture cache, so try and load directly and then cache the result
-    loadPath = CTextureCache::Get().CacheTexture(texturePath, &m_texture);
+    loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
     if (m_texture)
       return true; // we're done
   }

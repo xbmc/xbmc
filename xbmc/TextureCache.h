@@ -90,14 +90,14 @@ public:
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
-  CStdString CacheTexture(const CStdString &url, CBaseTexture **texture = NULL);
+  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL);
 
-  /*! \brief retrieve the cached version of the given image (if it exists)
+  /*! \brief Check whether an image is cached
    \param image url of the image
-   \return cached url of this image, empty if none exists
+   \return true if the image is cached, false otherwise
    \sa ClearCachedImage
    */
-  CStdString GetCachedImage(const CStdString &image);
+  bool HasCachedImage(const CStdString &image);
 
   /*! \brief clear the cached version of the given image
    \param image url of the image

@@ -43,7 +43,7 @@ bool CImageFile::Open(const CURL& url)
   CStdString cachedFile = CTextureCache::Get().CheckCachedImage(file, false, needsRecaching);
   if (cachedFile.IsEmpty())
   { // not in the cache, so cache it
-    cachedFile = CTextureCache::Get().CacheTexture(file);
+    cachedFile = CTextureCache::Get().CacheImage(file);
   }
   if (!cachedFile.IsEmpty())
   { // in the cache, return what we have
