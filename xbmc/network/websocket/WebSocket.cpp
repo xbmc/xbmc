@@ -159,8 +159,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
   m_free = true;
   m_opcode = opcode;
 
-  if (length >= 0)
-    m_length = length;
+  m_length = length;
 
   m_masked = masked;
   m_mask = mask;

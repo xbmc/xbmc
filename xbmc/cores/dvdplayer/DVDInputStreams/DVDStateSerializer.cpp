@@ -42,7 +42,7 @@ bool CDVDStateSerializer::test( const dvd_state_t *state  )
 
   XMLToDVDState( &state2, buffer);
 
-  return memcmp( &state2, state, sizeof( state )) == 0;
+  return memcmp( &state2, state, sizeof( dvd_state_t )) == 0;
 
 }
 

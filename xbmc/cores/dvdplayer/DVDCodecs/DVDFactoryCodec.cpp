@@ -281,6 +281,8 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
         pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options );
         if( pCodec ) return pCodec;
         break;
+      default:
+        break;      
     }
 #endif
     pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
