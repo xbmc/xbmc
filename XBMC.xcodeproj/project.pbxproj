@@ -309,7 +309,6 @@
 		889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
 		88ACB01B0DCF40800083CFDF /* ASAPFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */; };
 		88ACB01F0DCF409E0083CFDF /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */; };
-		88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
@@ -384,7 +383,6 @@
 		DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
 		DFB65FD415373AE7006B8FF1 /* AEWAVLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB315373AE7006B8FF1 /* AEWAVLoader.cpp */; };
 		DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6610615374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp */; };
-		DFC1B8F01464840E00B1BE79 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC1B8EF1464840E00B1BE79 /* SystemConfiguration.framework */; };
 		DFCA6AC6152245CD000BFAAE /* HTTPApiHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AB9152245CD000BFAAE /* HTTPApiHandler.cpp */; };
 		DFCA6AC7152245CD000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6AC8152245CD000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */; };
@@ -396,8 +394,6 @@
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
-		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
-		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E36C29E00DA72429001F0C9D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
@@ -803,12 +799,8 @@
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
 		E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238D0D2626E600618676 /* Cocoa.framework */; };
-		E38E23950D2626E600618676 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238E0D2626E600618676 /* CoreAudio.framework */; };
 		E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238F0D2626E600618676 /* CoreServices.framework */; };
-		E38E23970D2626E600618676 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23900D2626E600618676 /* Foundation.framework */; };
 		E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
-		E38E25350D26365C00618676 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
-		E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		E38E25690D2639F100618676 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		E38E256D0D263A1C00618676 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		E38E25780D263BF600618676 /* unpack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25770D263BF600618676 /* unpack.cpp */; };
@@ -991,6 +983,9 @@
 		F5ED9496155D7B9900842059 /* CoreAudioMixMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED9494155D7B9900842059 /* CoreAudioMixMap.cpp */; };
 		F5ED94AB155D7F8000842059 /* CoreAudioUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED94A9155D7F8000842059 /* CoreAudioUnit.cpp */; };
 		F5ED9509155D855200842059 /* CoreAudioGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED9507155D855200842059 /* CoreAudioGraph.cpp */; };
+		F5ED9A0C155EBDC000842059 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238E0D2626E600618676 /* CoreAudio.framework */; };
+		F5ED9A15155EBE0000842059 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
+		F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F240EB110A4F76009126C6 /* CrystalHD.cpp */; };
 		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
@@ -2763,7 +2758,6 @@
 		E38E238D0D2626E600618676 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		E38E238E0D2626E600618676 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		E38E238F0D2626E600618676 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
-		E38E23900D2626E600618676 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		E38E23910D2626E600618676 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
@@ -3123,18 +3117,11 @@
 				E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */,
 				E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */,
 				E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */,
-				E38E23950D2626E600618676 /* CoreAudio.framework in Frameworks */,
 				E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */,
-				E38E23970D2626E600618676 /* Foundation.framework in Frameworks */,
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
-				E38E25350D26365C00618676 /* AppKit.framework in Frameworks */,
-				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap.a in Frameworks */,
 				E38E256D0D263A1C00618676 /* librtv.a in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
-				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
-				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
-				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				43352CEE1071634600706B8A /* libsquish.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
@@ -3144,10 +3131,12 @@
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
 				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
-				DFC1B8F01464840E00B1BE79 /* SystemConfiguration.framework in Frameworks */,
 				F5364D34155B3B270016D00B /* CoreVideo.framework in Frameworks */,
 				F5364D55155B3C7B0016D00B /* libm.dylib in Frameworks */,
 				F5364E05155B3CAF0016D00B /* IOSurface.framework in Frameworks */,
+				F5ED9A0C155EBDC000842059 /* CoreAudio.framework in Frameworks */,
+				F5ED9A15155EBE0000842059 /* DiskArbitration.framework in Frameworks */,
+				F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3184,24 +3173,23 @@
 				F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */,
 				F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */,
 				F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */,
-				E38E25330D26365C00618676 /* AppKit.framework */,
 				E38E25340D26365C00618676 /* ApplicationServices.framework */,
-				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238C0D2626E600618676 /* AudioUnit.framework */,
-				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
+				E38E238B0D2626E600618676 /* AudioToolbox.framework */,
 				E38E238D0D2626E600618676 /* Cocoa.framework */,
 				E38E238E0D2626E600618676 /* CoreAudio.framework */,
 				F5364D33155B3B270016D00B /* CoreVideo.framework */,
-				09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */,
 				E38E238F0D2626E600618676 /* CoreServices.framework */,
+				09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */,
 				88ECB6580DE013C4003396A7 /* DiskArbitration.framework */,
-				E38E23900D2626E600618676 /* Foundation.framework */,
 				E33466A50D2E5103005A65EC /* IOKit.framework */,
 				F5364E04155B3CAF0016D00B /* IOSurface.framework */,
-				DFC1B8EF1464840E00B1BE79 /* SystemConfiguration.framework */,
 				E38E23910D2626E600618676 /* OpenGL.framework */,
 				F59879070FBAA0C3008EF4FB /* QuartzCore.framework */,
+				E38E25330D26365C00618676 /* AppKit.framework */,
+				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
+				DFC1B8EF1464840E00B1BE79 /* SystemConfiguration.framework */,
 			);
 			name = "System Libs and Frameworks";
 			sourceTree = "<group>";
@@ -7405,7 +7393,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -7520,18 +7508,22 @@
 		1DEB924C08733DCA0010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = (
+					i386,
+					x86_64,
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -7540,7 +7532,10 @@
 		1DEB924D08733DCA0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = (
+					i386,
+					x86_64,
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -7549,8 +7544,9 @@
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = .;
 				VALID_ARCHS = "i386 x86_64";
 			};
