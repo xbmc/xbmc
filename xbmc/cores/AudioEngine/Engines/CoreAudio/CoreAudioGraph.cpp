@@ -57,16 +57,14 @@ CCoreAudioGraph::~CCoreAudioGraph()
 bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag)
 {
-  OSStatus ret;
-
+  AudioStreamBasicDescription fmt;
   AudioStreamBasicDescription inputFormat;
   AudioStreamBasicDescription outputFormat;
-  AudioStreamBasicDescription fmt;
 
-  m_allowMixing   = allowMixing;
-  m_deviceId      = deviceId;
+  m_deviceId = deviceId;
+  m_allowMixing = allowMixing;
 
-  ret = NewAUGraph(&m_audioGraph);
+  OSStatus ret = NewAUGraph(&m_audioGraph);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
@@ -375,10 +373,8 @@ bool CCoreAudioGraph::Start()
   if (!m_audioGraph)
     return false;
 
-  OSStatus ret;
   Boolean isRunning = false;
-
-  ret = AUGraphIsRunning(m_audioGraph, &isRunning);
+  OSStatus ret = AUGraphIsRunning(m_audioGraph, &isRunning);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Start: "
@@ -387,7 +383,6 @@ bool CCoreAudioGraph::Start()
   }
   if (!isRunning)
   {
-
     if (m_audioUnit)
       m_audioUnit->Start();
     if (m_mixerUnit)
@@ -415,7 +410,6 @@ bool CCoreAudioGraph::Stop()
   OSStatus ret = AUGraphIsRunning(m_audioGraph, &isRunning);
   if (ret)
   {
-
     if (m_inputUnit)
       m_inputUnit->Stop();
     if (m_mixerUnit)
@@ -471,11 +465,13 @@ CAUOutputDevice *CCoreAudioGraph::DestroyUnit(CAUOutputDevice *outputUnit)
   Stop();
 
   for (AUUnitList::iterator itt = m_auUnitList.begin(); itt != m_auUnitList.end(); ++itt)
+  {
     if (*itt == outputUnit)
     {
       m_auUnitList.erase(itt);
       break;
     }
+  }
 
   ReleaseBus(outputUnit->GetBus());
   outputUnit->SetInputSource(NULL);
@@ -495,16 +491,15 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
   if (!m_audioUnit || !m_mixerUnit)
     return NULL;
 
+  AudioStreamBasicDescription fmt;
   AudioStreamBasicDescription inputFormat;
   AudioStreamBasicDescription outputFormat;
-  AudioStreamBasicDescription fmt;
-
-  OSStatus ret;
 
   int busNumber = GetFreeBus();
   if (busNumber == INVALID_BUS)
     return  NULL;
 
+  OSStatus ret;
   // create output unit
   CAUOutputDevice *outputUnit = new CAUOutputDevice();
   if (!outputUnit->Open(m_audioGraph,
@@ -541,7 +536,6 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
     int channelOffset = GetMixerChannelOffset(inputNumber);
     CCoreAudioMixMap::SetMixingMatrix(m_mixerUnit, m_mixMap, &inputFormat, &fmt, channelOffset);
   }
-
 
   AUGraphUpdate(m_audioGraph, NULL);
   m_auUnitList.push_back(outputUnit);

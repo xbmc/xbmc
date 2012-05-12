@@ -28,7 +28,7 @@
 #include "ICoreAudioSource.h"
 #include <AudioToolbox/AUGraph.h>
 
-#define MAX_CONNECTION_LIMIT  8
+#define MAX_CONNECTION_LIMIT   8
 #define MAXIMUM_MIXER_CHANNELS 9
 
 class CAUMatrixMixer;
@@ -37,14 +37,33 @@ class CCoreAudioMixMap;
 
 class CCoreAudioGraph
 {
+public:
+  CCoreAudioGraph();
+  ~CCoreAudioGraph();
+  
+  bool             Open(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID deviceId,
+                     bool allowMixing, AudioChannelLayoutTag layoutTag);
+  bool             Close();
+  bool             Start();
+  bool             Stop();
+  AudioChannelLayoutTag GetChannelLayoutTag(int layout);
+  bool             SetInputSource(ICoreAudioSource *pSource);
+  bool             SetCurrentVolume(Float32 vol);
+  CAUOutputDevice* DestroyUnit(CAUOutputDevice *outputUnit);
+  CAUOutputDevice* CreateUnit(AEAudioFormat &format);
+  int              GetFreeBus();
+  void             ReleaseBus(int busNumber);
+  bool             IsBusFree(int busNumber);
+  int              GetMixerChannelOffset(int busNumber);
+
 private:
   AUGraph           m_audioGraph;
   
+  CAUOutputDevice  *m_inputUnit;
   CAUOutputDevice  *m_audioUnit;
   CAUMatrixMixer   *m_mixerUnit;
-  CAUOutputDevice  *m_inputUnit;
   
-  int m_reservedBusNumber[MAX_CONNECTION_LIMIT];
+  int               m_reservedBusNumber[MAX_CONNECTION_LIMIT];
   bool              m_initialized;
   AudioDeviceID     m_deviceId;
   bool              m_allowMixing;
@@ -54,24 +73,6 @@ private:
   AUUnitList        m_auUnitList;
 
   bool              m_ATV1;
-
-public:
-  CCoreAudioGraph();
-  ~CCoreAudioGraph();
-  
-  bool Open(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag);
-  bool Close();
-  bool Start();
-  bool Stop();
-  AudioChannelLayoutTag GetChannelLayoutTag(int layout);
-  bool SetInputSource(ICoreAudioSource* pSource);
-  bool SetCurrentVolume(Float32 vol);
-  CAUOutputDevice *DestroyUnit(CAUOutputDevice *outputUnit);
-  CAUOutputDevice *CreateUnit(AEAudioFormat &format);
-  int GetFreeBus();
-  void ReleaseBus(int busNumber);
-  bool IsBusFree(int busNumber);
-  int GetMixerChannelOffset(int busNumber);
 };
 
 #endif
