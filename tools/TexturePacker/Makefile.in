@@ -13,7 +13,11 @@ ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
 ifdef NATIVE_ROOT_PATH
 ifeq ($(findstring osx,@ARCH@),osx)
+ifneq (,$(findstring x86_64,$(CXXFLAGS)))
 CXXFLAGS+= -m32
+else
+CXXFLAGS+= -m64
+endif
 endif
 CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
 LIBS    += -L$(NATIVE_ROOT_PATH)/lib
