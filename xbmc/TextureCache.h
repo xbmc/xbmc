@@ -144,7 +144,7 @@ public:
    \param options which options we need (eg size=thumb)
    \return full wrapped URL of the image file
    */
-  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options = "");
+  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
   static CStdString GetWrappedThumbURL(const CStdString &image);
 
   /*! \brief get a unique image path to associate with the given URL, useful for caching images
