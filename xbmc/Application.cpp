@@ -1290,9 +1290,6 @@ bool CApplication::Initialize()
 
   m_slowTimer.StartZero();
 
-#if defined(__APPLE__) && !defined(__arm__)
-  XBMCHelper::GetInstance().CaptureAllInput();
-#endif
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
 #endif
@@ -3380,10 +3377,6 @@ void CApplication::Stop(int exitCode)
   CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
   CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif
-#endif
-
-#if defined(__APPLE__) && !defined(__arm__)
-    XBMCHelper::GetInstance().ReleaseAllInput();
 #endif
 
     if (m_pPlayer)

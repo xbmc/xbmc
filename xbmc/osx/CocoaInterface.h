@@ -56,10 +56,6 @@ extern "C"
   void Cocoa_ShowMouse();
   void Cocoa_HideDock();
 
-  // Smart folders.
-  //
-  void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
-
   // Version.
   //
   const char* Cocoa_GetAppVersion();

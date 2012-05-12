@@ -34,7 +34,6 @@
 #import <IOKit/hid/IOHIDLib.h>
 #import <IOKit/hid/IOHIDKeys.h>
 #import <libkern/OSTypes.h>
-#import <Carbon/Carbon.h>
 
 // place holder for future native osx event handler
 
