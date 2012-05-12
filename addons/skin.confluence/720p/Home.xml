@@ -826,7 +826,7 @@
 				<width>60</width>
 				<height>60</height>
 				<aspectratio>keep</aspectratio>
-				<texture>$INFO[Window(Weather).Property(Current.ConditionIcon)]</texture>
+				<texture>$INFO[Weather.Conditions]</texture>
 			</control>
 			<control type="label">
 				<description>Location label</description>
