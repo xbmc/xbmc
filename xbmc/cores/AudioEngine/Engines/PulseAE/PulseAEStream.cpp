@@ -84,6 +84,11 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     case AE_FMT_S32LE : m_SampleSpec.format = PA_SAMPLE_S32LE; break;
     case AE_FMT_S32BE : m_SampleSpec.format = PA_SAMPLE_S32BE; break;
     case AE_FMT_FLOAT : m_SampleSpec.format = PA_SAMPLE_FLOAT32NE; break;
+#if PA_CHECK_VERSION(1,0,0)
+    case AE_FMT_DTS   :
+    case AE_FMT_EAC3  :
+    case AE_FMT_AC3   : m_SampleSpec.format = PA_SAMPLE_S16NE; break;
+#endif
 
     default:
       CLog::Log(LOGERROR, "PulseAudio: Invalid format %i", format);
@@ -136,7 +141,27 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_Volume        = 1.0f;
   pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
-  if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
+
+#if PA_CHECK_VERSION(1,0,0)
+  pa_format_info *info[1];
+  info[0] = pa_format_info_new();
+  switch(m_format)
+  {
+    case AE_FMT_DTS : info[0]->encoding = PA_ENCODING_DTS_IEC61937 ; break;
+    case AE_FMT_EAC3: info[0]->encoding = PA_ENCODING_EAC3_IEC61937; break;
+    case AE_FMT_AC3 : info[0]->encoding = PA_ENCODING_AC3_IEC61937 ; break;
+    default:          info[0]->encoding = PA_ENCODING_PCM          ; break;
+  }
+  pa_format_info_set_rate         (info[0], m_SampleSpec.rate);
+  pa_format_info_set_channels     (info[0], m_SampleSpec.channels);
+  pa_format_info_set_sample_format(info[0], m_SampleSpec.format);
+  m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
+  pa_format_info_free(info[0]);
+#else
+  m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map);
+#endif
+
+  if (m_Stream == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
     pa_threaded_mainloop_unlock(m_MainLoop);
