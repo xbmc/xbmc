@@ -100,6 +100,9 @@ CStdString CTextureCache::GetCachedImage(const CStdString &url, CStdString &cach
 
 CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStdString &type, const CStdString &options)
 {
+  if (image.compare(0, 8, "image://") == 0)
+    return image; // already wrapped
+
   CStdString encoded(image);
   CURL::Encode(encoded);
   CStdString url = "image://";
