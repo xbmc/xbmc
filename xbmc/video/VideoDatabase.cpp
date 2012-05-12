@@ -701,10 +701,19 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const CStdString& strFileNa
     struct __stat64 buffer;
     if (CFile::Stat(file, &buffer) == 0)
     {
-      time_t maxTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
-      struct tm *time = localtime(&maxTime);
-      if (time)
-        dateAdded = *time;
+      time_t now = time(NULL);
+      time_t addedTime = max((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+      // if the newer of the two dates is in the future, we try it with the older one
+      if (addedTime > now)
+        addedTime = min((time_t)buffer.st_ctime, (time_t)buffer.st_mtime);
+
+      // make sure the datetime does is not in the future
+      if (addedTime <= now)
+      {
+        struct tm *time = localtime(&addedTime);
+        if (time)
+          dateAdded = *time;
+      }
     }
 
     if (!dateAdded.IsValid())
@@ -1099,9 +1108,14 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(strPath, &buffer) == 0)
     {
-      struct tm *time = localtime((const time_t*)&buffer.st_ctime);
-      if (time)
-        dateAdded = *time;
+      time_t now = time(NULL);
+      // Make sure we have a valid date (i.e. not in the future)
+      if ((time_t)buffer.st_ctime <= now)
+      {
+        struct tm *time = localtime((const time_t*)&buffer.st_ctime);
+        if (time)
+          dateAdded = *time;
+      }
     }
 
     if (!dateAdded.IsValid())
