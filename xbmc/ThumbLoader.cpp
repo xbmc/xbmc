@@ -199,8 +199,86 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   // video db items normally have info in the database
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
-     !pItem->GetVideoInfoTag()->m_type.IsEmpty() && pItem->GetArt().empty())
+  if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
+  {
+    FillLibraryArt(pItem);
+
+    if (pItem->GetVideoInfoTag()->m_type != "movie" &&
+        pItem->GetVideoInfoTag()->m_type != "episode" &&
+        pItem->GetVideoInfoTag()->m_type != "tvshow" &&
+        pItem->GetVideoInfoTag()->m_type != "musicvideo")
+      return true; // nothing else to be done
+  }
+
+  // fanart
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    CStdString fanart = GetCachedImage(*pItem, "fanart");
+    if (fanart.IsEmpty())
+    {
+      fanart = pItem->GetLocalFanart();
+      if (!fanart.IsEmpty()) // cache it
+        SetCachedImage(*pItem, "fanart", fanart);
+    }
+    if (!fanart.IsEmpty())
+    {
+      CTextureCache::Get().BackgroundCacheImage(fanart);
+      pItem->SetProperty("fanart_image", fanart);
+    }
+  }
+
+  // thumbnails
+  if (!pItem->HasThumbnail())
+  {
+    FillThumb(*pItem);
+    if (!pItem->HasThumbnail() && !pItem->m_bIsFolder && pItem->IsVideo())
+    {
+      // create unique thumb for auto generated thumbs
+      CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
+      if (!CTextureCache::Get().GetCachedImage(thumbURL).IsEmpty())
+      {
+        CTextureCache::Get().BackgroundCacheImage(thumbURL);
+        pItem->SetProperty("HasAutoThumb", true);
+        pItem->SetProperty("AutoThumbImage", thumbURL);
+        pItem->SetThumbnailImage(thumbURL);
+      }
+      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
+               g_guiSettings.GetBool("myvideos.extractflags"))
+      {
+        CFileItem item(*pItem);
+        CStdString path(item.GetPath());
+        if (URIUtils::IsInRAR(item.GetPath()))
+          SetupRarOptions(item,path);
+
+        CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
+        AddJob(extract);
+        return true;
+      }
+    }
+  }
+
+  // flag extraction
+  if (!pItem->m_bIsFolder &&
+       pItem->HasVideoInfoTag() &&
+       g_guiSettings.GetBool("myvideos.extractflags") &&
+       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
+         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
+  {
+    CFileItem item(*pItem);
+    CStdString path(item.GetPath());
+    if (URIUtils::IsInRAR(item.GetPath()))
+      SetupRarOptions(item,path);
+    CThumbExtractor* extract = new CThumbExtractor(item,path,false);
+    AddJob(extract);
+  }
+
+  return true;
+}
+
+bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
+{
+  if (pItem->GetVideoInfoTag()->m_iDbId > -1 &&
+     !pItem->GetVideoInfoTag()->m_type.IsEmpty())
   {
     CVideoDatabase db;
     db.Open();
@@ -281,77 +359,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("fanart_image", fanart);
     }
     db.Close();
-
-    if (pItem->GetVideoInfoTag()->m_type != "movie" &&
-        pItem->GetVideoInfoTag()->m_type != "episode" &&
-        pItem->GetVideoInfoTag()->m_type != "tvshow" &&
-        pItem->GetVideoInfoTag()->m_type != "musicvideo")
-      return true; // nothing else to be done
   }
-
-  // fanart
-  if (!pItem->HasProperty("fanart_image"))
-  {
-    CStdString fanart = GetCachedImage(*pItem, "fanart");
-    if (fanart.IsEmpty())
-    {
-      fanart = pItem->GetLocalFanart();
-      if (!fanart.IsEmpty()) // cache it
-        SetCachedImage(*pItem, "fanart", fanart);
-    }
-    if (!fanart.IsEmpty())
-    {
-      CTextureCache::Get().BackgroundCacheImage(fanart);
-      pItem->SetProperty("fanart_image", fanart);
-    }
-  }
-
-  // thumbnails
-  if (!pItem->HasThumbnail())
-  {
-    FillThumb(*pItem);
-    if (!pItem->HasThumbnail() && !pItem->m_bIsFolder && pItem->IsVideo())
-    {
-      // create unique thumb for auto generated thumbs
-      CStdString thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (!CTextureCache::Get().GetCachedImage(thumbURL).IsEmpty())
-      {
-        CTextureCache::Get().BackgroundCacheImage(thumbURL);
-        pItem->SetProperty("HasAutoThumb", true);
-        pItem->SetProperty("AutoThumbImage", thumbURL);
-        pItem->SetThumbnailImage(thumbURL);
-      }
-      else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
-               g_guiSettings.GetBool("myvideos.extractflags"))
-      {
-        CFileItem item(*pItem);
-        CStdString path(item.GetPath());
-        if (URIUtils::IsInRAR(item.GetPath()))
-          SetupRarOptions(item,path);
-
-        CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
-        AddJob(extract);
-        return true;
-      }
-    }
-  }
-
-  // flag extraction
-  if (!pItem->m_bIsFolder &&
-       pItem->HasVideoInfoTag() &&
-       g_guiSettings.GetBool("myvideos.extractflags") &&
-       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
-         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
-  {
-    CFileItem item(*pItem);
-    CStdString path(item.GetPath());
-    if (URIUtils::IsInRAR(item.GetPath()))
-      SetupRarOptions(item,path);
-    CThumbExtractor* extract = new CThumbExtractor(item,path,false);
-    AddJob(extract);
-  }
-
-  return true;
+  return !pItem->GetArt().empty();
 }
 
 bool CVideoThumbLoader::FillThumb(CFileItem &item)
