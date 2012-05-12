@@ -261,6 +261,7 @@
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
 		7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB32E155BD1D40080368A /* ImageFile.cpp */; };
+		7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */; };
 		7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
 		7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
 		7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */; };
@@ -1533,6 +1534,8 @@
 		7C62F45D1057A62D002AD2C1 /* DirectoryNodeSingles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSingles.h; sourceTree = "<group>"; };
 		7C6EB32E155BD1D40080368A /* ImageFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageFile.cpp; sourceTree = "<group>"; };
 		7C6EB32F155BD1D40080368A /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
+		7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageHandler.cpp; sourceTree = "<group>"; };
+		7C6EB6F9155F32C30080368A /* HTTPImageHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageHandler.h; sourceTree = "<group>"; };
 		7C779E1F104A57E500F444C4 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		7C779E20104A57E500F444C4 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
 		7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystemGL.cpp; sourceTree = "<group>"; };
@@ -4247,6 +4250,8 @@
 			children = (
 				DFCA6AB9152245CD000BFAAE /* HTTPApiHandler.cpp */,
 				DFCA6ABA152245CD000BFAAE /* HTTPApiHandler.h */,
+				7C6EB6F8155F32C30080368A /* HTTPImageHandler.cpp */,
+				7C6EB6F9155F32C30080368A /* HTTPImageHandler.h */,
 				DFCA6ABB152245CD000BFAAE /* HTTPJsonRpcHandler.cpp */,
 				DFCA6ABC152245CD000BFAAE /* HTTPJsonRpcHandler.h */,
 				DFCA6ABD152245CD000BFAAE /* HTTPVfsHandler.cpp */,
@@ -7266,6 +7271,7 @@
 				F5ED94AB155D7F8000842059 /* CoreAudioUnit.cpp in Sources */,
 				F5ED9509155D855200842059 /* CoreAudioGraph.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
+				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

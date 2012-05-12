@@ -38,6 +38,7 @@
 #include "video/Bookmark.h"
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPImageHandler.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
 #ifdef HAS_HTTPAPI
 #include "network/httprequesthandler/HTTPApiHandler.h"
@@ -345,6 +346,7 @@ CApplication::CApplication(void)
   : m_pPlayer(NULL)
 #ifdef HAS_WEB_SERVER
   , m_WebServer(*new CWebServer)
+  , m_httpImageHandler(*new CHTTPImageHandler)
   , m_httpVfsHandler(*new CHTTPVfsHandler)
 #ifdef HAS_JSONRPC
   , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
@@ -408,6 +410,7 @@ CApplication::~CApplication(void)
 {
 #ifdef HAS_WEB_SERVER
   delete &m_WebServer;
+  delete &m_httpImageHandler;
   delete &m_httpVfsHandler;
 #ifdef HAS_HTTPAPI
   delete &m_httpApiHandler;
@@ -1119,6 +1122,7 @@ bool CApplication::Initialize()
   g_curlInterface.Unload();
 
 #ifdef HAS_WEB_SERVER
+  CWebServer::RegisterRequestHandler(&m_httpImageHandler);
   CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_JSONRPC
   CWebServer::RegisterRequestHandler(&m_httpJsonRpcHandler);
@@ -3366,6 +3370,7 @@ void CApplication::Stop(int exitCode)
     //Sleep(5000);
 
 #ifdef HAS_WEB_SERVER
+  CWebServer::UnregisterRequestHandler(&m_httpImageHandler);
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_JSONRPC
   CWebServer::UnregisterRequestHandler(&m_httpJsonRpcHandler);
