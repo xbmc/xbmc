@@ -238,6 +238,12 @@
     <Filter Include="dbwrappers">
       <UniqueIdentifier>{5c7ad2df-b46d-4a29-ae17-3406fe73edde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads">
+      <UniqueIdentifier>{1724016f-ea7b-4122-938a-62d7281a44f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\Platform">
+      <UniqueIdentifier>{0c508768-d37c-491d-b38d-bd833093686d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2577,6 +2583,25 @@
     <ClCompile Include="..\..\xbmc\PlayListPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\Atomics.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\Event.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\LockFree.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
+      <Filter>threads\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
