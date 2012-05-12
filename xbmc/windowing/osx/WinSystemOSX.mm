@@ -47,8 +47,6 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
 
-#import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
-
 // turn off deprecated warning spew.
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
@@ -212,6 +210,19 @@ double GetDictionaryDouble(CFDictionaryRef theDict, const void* key)
 }
 
 //---------------------------------------------------------------------------------
+void HideMenuBar()
+{
+  [[NSApplication sharedApplication] 
+    setPresentationOptions:   NSApplicationPresentationHideMenuBar | 
+                              NSApplicationPresentationHideDock];
+}
+//---------------------------------------------------------------------------------        
+void ShowMenuBar()
+{
+  [[NSApplication sharedApplication] 
+    setPresentationOptions:   NSApplicationPresentationDefault];
+}
+//---------------------------------------------------------------------------------        
 CGDirectDisplayID GetDisplayID(int screen_index)
 {
   CGDirectDisplayID displayArray[MAX_DISPLAYS];
