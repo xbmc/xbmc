@@ -2448,15 +2448,20 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
     GLsizei       texWidth = IOSurfaceGetWidth(surface);
     GLsizei       texHeight= IOSurfaceGetHeight(surface);
     OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+    size_t        rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
 
     glEnable(m_textureTarget);
     glBindTexture(m_textureTarget, plane.id);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, rowbytes);
+
     if (format_type == kCVPixelFormatType_422YpCbCr8)
       CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
         texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
     else if (format_type == kCVPixelFormatType_32BGRA)
       CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
         texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     glBindTexture(m_textureTarget, 0);
     glDisable(m_textureTarget);
 
