@@ -332,9 +332,6 @@ bool CCoreAudioAEHALOSX::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
       return false;
   }
 
-  if (m_audioGraph)
-    m_audioGraph->ShowGraph();
-
   m_Initialized = true;
 
   return true;
@@ -472,10 +469,6 @@ void CCoreAudioAEHALOSX::SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat
     // register render callback for the audio unit
     m_audioGraph->SetInputSource(pSource);
   }
-
-  if (m_audioGraph)
-    m_audioGraph->ShowGraph();
-
 }
 
 double CCoreAudioAEHALOSX::GetDelay()
