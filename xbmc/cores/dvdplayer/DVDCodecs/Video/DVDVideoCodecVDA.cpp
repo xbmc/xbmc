@@ -1047,7 +1047,8 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
     return;
   }
   OSType format_type = CVPixelBufferGetPixelFormatType(imageBuffer);
-  if ((format_type != kCVPixelFormatType_422YpCbCr8) && (format_type != kCVPixelFormatType_32BGRA) )
+  if ((format_type != kCVPixelFormatType_422YpCbCr8) &&
+      (format_type != kCVPixelFormatType_32BGRA) )
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy' or 'BGRA',is reporting 0x%x",
       __FUNCTION__, (unsigned int)format_type);
