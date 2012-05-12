@@ -29,7 +29,7 @@
 #endif
 
 #if defined(HAS_PULSEAUDIO)
-  #include "Engines/PulseAE.h"
+  #include "Engines/PulseAE/PulseAE.h"
 #endif
 
 IAE* CAEFactory::AE = NULL;
