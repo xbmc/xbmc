@@ -25,6 +25,8 @@
 #include "ICoreAudioAEHAL.h"
 #include "ICoreAudioSource.h"
 
+#include <CoreAudio/CoreAudio.h>
+
 // Forward declarations
 class CCoreAudioAE;
 class CCoreAudioGraph;

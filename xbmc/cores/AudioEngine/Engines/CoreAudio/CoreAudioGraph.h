@@ -27,6 +27,7 @@
 
 #include "ICoreAudioSource.h"
 #include <AudioToolbox/AUGraph.h>
+#include <CoreAudio/CoreAudio.h>
 
 #define MAX_CONNECTION_LIMIT   8
 #define MAXIMUM_MIXER_CHANNELS 9
