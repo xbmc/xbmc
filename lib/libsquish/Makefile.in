@@ -24,12 +24,8 @@ ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_LIB=libsquish-native.so
 CLEAN_FILES+=$(NATIVE_LIB)
 
-ifeq ($(findstring osx,$(ARCH)),osx)                                               
-ifneq (,$(findstring x86_64,$(CXXFLAGS)))
-NATIVE_ARCH=-m32
-else
-NATIVE_ARCH=-m64
-endif
+ifeq ($(findstring osx,$(ARCH)),osx)
+NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
 endif
 
 all: $(LIB) $(NATIVE_LIB)
