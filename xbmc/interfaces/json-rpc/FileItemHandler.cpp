@@ -89,6 +89,29 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         continue;
       }
 
+      if (field == "thumbnail")
+      {
+        if (item->HasThumbnail())
+          result["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
+        else if (item->HasVideoInfoTag())
+        { // TODO: Should the JSON-API return actual image URLs, virtual thumb URLs, or local URLs to the cached image?
+          //       ATM we return the latter
+          CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*item);
+          CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
+          if (!cachedThumb.IsEmpty())
+            result["thumbnail"] = cachedThumb;
+        }
+        else if (item->HasPictureInfoTag())
+        {
+          CStdString thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
+          if (!thumb.empty())
+            result["thumbnail"] = thumb;
+        }
+        
+        if (!result.isMember("thumbnail"))
+          result["thumbnail"] = "";
+      }
+
       if (field == "fanart" && !item->HasPictureInfoTag())
       {
         CStdString fanart;
@@ -154,7 +177,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 {
   CVariant object;
   bool hasFileField = false;
-  bool hasThumbnailField = false;
 
   if (item.get())
   {
@@ -164,8 +186,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
       if (field == "file")
         hasFileField = true;
-      if (field == "thumbnail")
-        hasThumbnailField = true;
     }
 
     if (allowFile && hasFileField)
@@ -225,29 +245,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         if (!object.isMember("type"))
           object["type"] = "unknown";
       }
-    }
-
-    if (hasThumbnailField)
-    {
-      if (item->HasThumbnail())
-        object["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
-      else if (item->HasVideoInfoTag())
-      { // TODO: Should the JSON-API return actual image URLs, virtual thumb URLs, or local URLs to the cached image?
-        //       ATM we return the latter
-        CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*item);
-        CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
-        if (!cachedThumb.IsEmpty())
-          object["thumbnail"] = cachedThumb;
-      }
-      else if (item->HasPictureInfoTag())
-      {
-        CStdString thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-        if (!thumb.empty())
-          object["thumbnail"] = thumb;
-      }
-
-      if (!object.isMember("thumbnail"))
-        object["thumbnail"] = "";
     }
 
     FillDetails(item.get(), item, validFields, object);
