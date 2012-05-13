@@ -299,6 +299,22 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
     m_database->Open();
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       pItem->SetArt(artwork);
+    else if (pItem->GetVideoInfoTag()->m_type == "artist")
+    { // we retrieve music video art from the music database (no backward compat)
+      CMusicDatabase database;
+      database.Open();
+      int idArtist = database.GetArtistByName(pItem->GetLabel());
+      if (database.GetArtForItem(idArtist, "artist", artwork))
+        pItem->SetArt(artwork);
+    }
+    else if (pItem->GetVideoInfoTag()->m_type == "album")
+    { // we retrieve music video art from the music database (no backward compat)
+      CMusicDatabase database;
+      database.Open();
+      int idAlbum = database.GetAlbumByName(pItem->GetLabel(), pItem->GetVideoInfoTag()->m_artist);
+      if (database.GetArtForItem(idAlbum, "album", artwork))
+        pItem->SetArt(artwork);
+    }
     else
     {
       if (tag.m_type == "movie"  || tag.m_type == "episode" ||
@@ -325,7 +341,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
             pItem->SetArt(items[0]->GetArt());
         }
       }
-      else if (tag.m_type == "actor"  || tag.m_type == "artist" ||
+      else if (tag.m_type == "actor"  ||
                tag.m_type == "writer" || tag.m_type == "director")
       {
         // We can't realistically get the local thumbs (as we'd need to check every movie that contains this actor)
