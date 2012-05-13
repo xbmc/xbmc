@@ -38,10 +38,13 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "video/VideoInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
+#include "music/infoscanner/MusicInfoScanner.h"
+#include "music/Artist.h"
 
 using namespace XFILE;
 using namespace std;
 using namespace VIDEO;
+using namespace MUSIC_INFO;
 
 CThumbLoader::CThumbLoader(int nThreads) :
   CBackgroundInfoLoader(nThreads)
@@ -533,6 +536,27 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     map<string, string> artwork;
     if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
       item.SetArt(artwork);
+    else
+    {
+      if (tag.GetType() == "artist")
+      { // Need the artist thumb/fanart which isn't grabbed during normal directory fetches
+        CArtist artist;
+        m_database->GetArtistInfo(tag.GetDatabaseId(), artist, false);
+        CMusicInfoScanner scanner;
+        artwork = scanner.GetArtistArtwork(tag.GetDatabaseId(), &artist);
+        item.SetArt(artwork);
+      }
+      // add to the database for next time around
+      map<string, string> artwork = item.GetArt();
+      if (!artwork.empty())
+      {
+        m_database->SetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork);
+        for (map<string, string>::iterator i = artwork.begin(); i != artwork.end(); ++i)
+          CTextureCache::Get().BackgroundCacheImage(i->second);
+      }
+      else // nothing found - set an empty thumb so that next time around we don't hit here again
+        m_database->SetArtForItem(tag.GetDatabaseId(), tag.GetType(), "thumb", "");
+    }
     m_database->Close();
   }
   return !item.GetArt().empty();
