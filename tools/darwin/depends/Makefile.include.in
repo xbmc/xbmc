@@ -4,7 +4,4 @@ DARWIN=@use_darwin@
 PREFIX=@use_prefix@
 STAGING=@use_staging@
 
-# hack, include both possible paths which
-# depends on where we do the make.
--include Makefile.buildtools
--include ../Makefile.buildtools
+include @abs_top_srcdir@/Makefile.buildtools
