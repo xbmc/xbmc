@@ -461,7 +461,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 
 #if defined(TARGET_DARWIN)
   //only finds the primary dns (0 :)
-  FILE* pipe = popen("echo \"show State:/Network/Global/DNS\" | scutil | grep \"0 :\" | tail -n1", "r");
+  FILE* pipe = popen("scutil --dns | grep \"nameserver\\[0\\]\" | tail -n1", "r");
   if (pipe)
   {
     CStdString tmpStr;
@@ -469,7 +469,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
       tmpStr = buffer;
-      result.push_back(tmpStr.Mid(8));
+      result.push_back(tmpStr.Mid(17));
     }
     else
     {
