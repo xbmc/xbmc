@@ -24,6 +24,7 @@
 #include "guilib/gui3d.h"
 #include "utils/StdString.h"
 #include "guilib/DirtyRegion.h"
+#include "guilib/GUITextLayout.h"
 
 typedef uint32_t color_t;
 
@@ -46,6 +47,7 @@ public:
   ~CSlideShowPic();
 
   void SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void SetDate(CStdString &dateString);
   void UpdateTexture(CBaseTexture* pTexture);
 
   bool IsLoaded() const { return m_bIsLoaded;};
@@ -124,6 +126,12 @@ private:
   bool m_bNoEffect;
   bool m_bFullSize;
   bool m_bTransistionImmediately;
+
+  CGUITextLayout *m_pDateTextLayout;
+  CStdString m_pDateStr;
+  CGUIFont * m_pDateFont;
+  float m_fDateX;
+  float m_fDateY;
 
   CCriticalSection m_textureAccess;
 };

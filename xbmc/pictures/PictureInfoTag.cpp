@@ -301,6 +301,7 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     value = m_exifInfo.Comments;
     break;
   case SLIDE_EXIF_DATE_TIME:
+  case SLIDE_EXIF_DATE:
     if (m_exifInfo.DateTime && strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
     {
       CStdString dateTime = m_exifInfo.DateTime;
@@ -311,7 +312,10 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
       int min   = atoi(dateTime.Mid(14,2).c_str());
       int sec   = atoi(dateTime.Mid(17,2).c_str());
       CDateTime date(year, month, day, hour, min, sec);
-      value = date.GetAsLocalizedDateTime();
+      if(SLIDE_EXIF_DATE_TIME == info)
+          value = date.GetAsLocalizedDateTime();
+      else
+          value = date.GetAsLocalizedDate();
     }
     break;
   case SLIDE_EXIF_DESCRIPTION:

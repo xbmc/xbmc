@@ -43,6 +43,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "pictures/PictureInfoTag.h"
+#include "XBDateTime.h"
 
 using namespace XFILE;
 
@@ -87,6 +89,7 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
+  CStdString dateString;
   unsigned int totalTime = 0;
   unsigned int count = 0;
   while (!m_bStop)
@@ -100,6 +103,21 @@ void CBackgroundPicLoader::Process()
         unsigned int originalWidth = 0;
         unsigned int originalHeight = 0;
         texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
+
+        if(g_guiSettings.GetBool("slideshow.showdate"))
+        {
+          CStdString extension = URIUtils::GetExtension(m_strFileName);
+          extension.ToLower();
+
+          /* Try to get date from exif data if a jpeg file */
+          if(!strcmp(extension, ".jpg") || !strcmp(extension, ".jpeg"))
+          {
+            CPictureInfoTag pit;
+            if(pit.Load(m_strFileName))
+              dateString = pit.GetInfo(SLIDE_EXIF_DATE);
+          }
+        }
+
         totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
@@ -114,7 +132,7 @@ void CBackgroundPicLoader::Process()
           if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, originalWidth, originalHeight, bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, originalWidth, originalHeight, bFullSize, dateString);
         m_isLoading = false;
       }
     }
@@ -840,7 +858,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
   }
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize, CStdString &dateString)
 {
   if (pTexture)
   {
@@ -869,6 +887,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pT
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, g_guiSettings.GetBool("slideshow.displayeffects") ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE);
       else
         m_Image[iPic].SetTexture(iSlideNumber, pTexture, CSlideShowPic::EFFECT_NO_TIMEOUT);
+      m_Image[iPic].SetDate(dateString);
       m_Image[iPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
       m_Image[iPic].Zoom(m_iZoomFactor, true);
 
