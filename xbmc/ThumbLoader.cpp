@@ -37,6 +37,7 @@
 #include "video/VideoDatabase.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "video/VideoInfoScanner.h"
+#include "music/tags/MusicInfoTag.h"
 
 using namespace XFILE;
 using namespace std;
@@ -487,17 +488,52 @@ CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
 
 CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader(1)
 {
+  m_database = new CMusicDatabase;
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
+  delete m_database;
+}
+
+void CMusicThumbLoader::OnLoaderStart()
+{
+  m_database->Open();
+}
+
+void CMusicThumbLoader::OnLoaderFinish()
+{
+  m_database->Close();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return true;
+  if (pItem->m_bIsShareOrDrive)
+    return true;
+
+  if (pItem->HasMusicInfoTag() && pItem->GetArt().empty())
+  {
+    if (FillLibraryArt(*pItem))
+      return true;
+    if (pItem->GetMusicInfoTag()->GetType() == "artist")
+      return true; // no fallback
+  }
+
   if (!pItem->HasThumbnail())
     pItem->SetUserMusicThumb();
   return true;
 }
 
+bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
+{
+  CMusicInfoTag &tag = *item.GetMusicInfoTag();
+  if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
+  {
+    m_database->Open();
+    map<string, string> artwork;
+    if (m_database->GetArtForItem(tag.GetDatabaseId(), tag.GetType(), artwork))
+      item.SetArt(artwork);
+    m_database->Close();
+  }
+  return !item.GetArt().empty();
+}

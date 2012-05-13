@@ -1150,7 +1150,6 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
       label.Format("A %s", m_pDS->fv(1).get_asString()); // sort label is stored in the title tag
       pItem->GetMusicInfoTag()->SetTitle(label);
       pItem->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(0).get_asInt(), "artist");
-      pItem->SetCachedArtistThumb();
       artists.Add(pItem);
       m_pDS->next();
     }
@@ -2873,8 +2872,6 @@ bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const CStdS
       strDir.Format("%ld/", artist.idArtist);
       pItem->SetPath(strBaseDir + strDir);
       pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist, "artist");
-      if (CFile::Exists(pItem->GetCachedArtistThumb()))
-        pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       pItem->SetIconImage("DefaultArtist.png");
 
       SetPropertiesFromArtist(*pItem,artist);
