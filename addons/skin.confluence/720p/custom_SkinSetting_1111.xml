@@ -699,7 +699,7 @@
 						</control>
 						<control type="button" id="455">
 							<width>750</width>
-							<height>35</height>
+							<height>40</height>
 							<font>font13</font>
 							<label>$LOCALIZE[31132]</label>
 							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(LyricScript_Path))][/COLOR]</label2>
@@ -722,7 +722,7 @@
 						</control>
 						<control type="button" id="458">
 							<width>750</width>
-							<height>35</height>
+							<height>40</height>
 							<font>font13</font>
 							<label>$LOCALIZE[31133]</label>
 							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(SubtitleScript_Path))][/COLOR]</label2>
