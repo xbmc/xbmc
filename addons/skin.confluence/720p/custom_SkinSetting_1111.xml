@@ -173,6 +173,11 @@
 						<label2>31112</label2>
 						<onclick>-</onclick>
 					</item>
+					<item id="3">
+						<label>31102</label>
+						<label2>31112</label2>
+						<onclick>-</onclick>
+					</item>
 					<item id="4">
 						<label>24000</label>
 						<label2>31200</label2>
@@ -349,52 +354,6 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
-					</control>
-					<control type="label" id="109">
-						<width>750</width>
-						<height>45</height>
-						<font>font13_title</font>
-						<label>31102</label>
-						<textcolor>blue</textcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-					</control>
-					<control type="radiobutton" id="114">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31119</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(HideBackGroundFanart)</onclick>
-						<selected>Skin.HasSetting(HideBackGroundFanart)</selected>
-					</control>
-					<control type="radiobutton" id="110">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31124</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(ShowBackgroundVideo)</onclick>
-						<selected>!Skin.HasSetting(ShowBackgroundVideo)</selected>
-					</control>
-					<control type="radiobutton" id="111">
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<label>31125</label>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-						<onclick>Skin.ToggleSetting(ShowBackgroundVis)</onclick>
-						<selected>!Skin.HasSetting(ShowBackgroundVis)</selected>
 					</control>
 				</control>
 				<control type="scrollbar" id="60">
@@ -620,6 +579,100 @@
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
 					<visible>Container(9000).Hasfocus(2)</visible>
+				</control>
+				<control type="grouplist" id="9003">
+					<visible>Container(9000).Hasfocus(3)</visible>
+					<posx>290</posx>
+					<posy>60</posy>
+					<width>750</width>
+					<height>530</height>
+					<itemgap>-1</itemgap>
+					<pagecontrol>60</pagecontrol>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>9003</onup>
+					<ondown>9003</ondown>
+					<control type="label" id="300">
+						<width>750</width>
+						<height>45</height>
+						<font>font13_title</font>
+						<label>31106</label>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="radiobutton" id="301">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31119</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(HideBackGroundFanart)</onclick>
+						<selected>Skin.HasSetting(HideBackGroundFanart)</selected>
+					</control>
+					<control type="radiobutton" id="302">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31124</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(ShowBackgroundVideo)</onclick>
+						<selected>!Skin.HasSetting(ShowBackgroundVideo)</selected>
+					</control>
+					<control type="radiobutton" id="303">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31125</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(ShowBackgroundVis)</onclick>
+						<selected>!Skin.HasSetting(ShowBackgroundVis)</selected>
+					</control>
+					<control type="label" id="304">
+						<width>750</width>
+						<height>45</height>
+						<font>font13_title</font>
+						<label>31102</label>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+					</control>
+					<control type="radiobutton" id="305">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31109</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(UseCustomBackground)</onclick>
+						<selected>Skin.HasSetting(UseCustomBackground)</selected>
+					</control>
+					<control type="button" id="306">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>- $LOCALIZE[31110]</label>
+						<label2>[COLOR=selected]$INFO[Skin.String(CustomBackgroundPath)][/COLOR]</label2>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.SetImage(CustomBackgroundPath)</onclick>
+						<enable>Skin.HasSetting(UseCustomBackground)</enable>
+					</control>
 				</control>
 				<control type="group">
 					<control type="grouplist" id="9004">

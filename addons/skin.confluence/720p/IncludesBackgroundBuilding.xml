@@ -1,12 +1,26 @@
 <includes>
 	<include name="CommonBackground">
-		<control type="Image">
+		<control type="image">
+			<description>Normal Default Background Image</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
 			<texture>$INFO[Skin.CurrentTheme,special://skin/backgrounds/,.jpg]</texture>
+			<visible>![Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))]</visible>
+			<include>VisibleFadeEffect</include>
+		</control>
+		<control type="image">
+			<description>User Set Background Image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
+			<texture>$INFO[Skin.String(CustomBackgroundPath)]</texture>
+			<visible>Skin.HasSetting(UseCustomBackground) + !IsEmpty(Skin.String(CustomBackgroundPath))</visible>
+			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="image">
 			<posx>0</posx>

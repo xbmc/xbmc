@@ -245,11 +245,11 @@ msgid "Hide Main Menu Buttons"
 msgstr ""
 
 msgctxt "#31109"
-msgid "Media backgrounds"
+msgid "Enable Custom Background"
 msgstr ""
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
+msgid "Background path:"
 msgstr ""
 
 msgctxt "#31111"
