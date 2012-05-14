@@ -30,7 +30,7 @@ enum
   MSGID_PLURAL_FOUND = 2 // We have a classic gettext entry with textual msgid in plural form.
 };
 
-enum Boolean
+enum
 {
   ISSOURCELANG=true
 };
