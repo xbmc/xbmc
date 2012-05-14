@@ -177,8 +177,8 @@ void CPulseAE::RemoveStream(IAEStream *stream)
 {
   std::list<CPulseAEStream*>::iterator itt;
 
-	m_streams.remove((CPulseAEStream *)stream);
-	
+  m_streams.remove((CPulseAEStream *)stream);
+
   for (itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     if (*itt == stream)
@@ -194,7 +194,7 @@ IAEStream *CPulseAE::FreeStream(IAEStream *stream)
   RemoveStream(stream);
 
   CPulseAEStream *istream = (CPulseAEStream *)stream;
-	
+
   delete istream;
 
   return NULL;
