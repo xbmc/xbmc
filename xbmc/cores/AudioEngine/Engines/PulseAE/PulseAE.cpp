@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include <pulse/pulseaudio.h>
+#include "guilib/LocalizeStrings.h"
 
 /* Static helpers */
 static const char *ContextStateToString(pa_context_state s)
@@ -247,8 +248,89 @@ void CPulseAE::GarbageCollect()
   }
 }
 
+struct SinkInfoStruct
+{
+  bool passthrough;
+  AEDeviceList *list;
+  pa_threaded_mainloop *mainloop;
+};
+
+static bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
+{
+  if (op == NULL)
+    return false;
+
+  bool sucess = true;
+
+  while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
+    pa_threaded_mainloop_wait(mainloop);
+
+  if (pa_operation_get_state(op) != PA_OPERATION_DONE)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: %s Operation failed", LogEntry);
+    sucess = false;
+  }
+
+  pa_operation_unref(op);
+  return sucess;
+}
+
+static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
+{
+  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+
+  if (i && i->name)
+  {
+    bool       add  = false;
+    if(sinkStruct->passthrough)
+    {
+#if PA_CHECK_VERSION(1,0,0)
+      for(int idx = 0; idx < i->n_formats; ++idx)
+      {
+        if(!pa_format_info_is_pcm(i->formats[idx]))
+        {
+          add = true;
+          break;
+        }
+      }
+#endif
+    }
+    else
+      add = true;
+
+    if (add)
+    {
+      CStdString desc, sink;
+      if (sinkStruct->list->size() == 0)
+        sinkStruct->list->push_back(AEDevice("(PulseAudio)", "pulse:default@default"));
+      desc.Format("%s (PulseAudio)", i->description);
+      sink.Format("pulse:%s@default", i->name);
+      sinkStruct->list->push_back(AEDevice(desc, sink));
+      CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", desc.c_str(), sink.c_str());
+    }
+  }
+
+  pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
+}
+
 void CPulseAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+  if (!m_MainLoop || ! m_Context)
+    return;
+
+  pa_threaded_mainloop_lock(m_MainLoop);
+
+  SinkInfoStruct sinkStruct;
+  sinkStruct.passthrough = passthrough;
+  sinkStruct.mainloop = m_MainLoop;
+  sinkStruct.list = &devices;
+  CStdString def;
+  def.Format("%s (PulseAudio)",g_localizeStrings.Get(409).c_str());
+  devices.push_back(AEDevice(def, "pulse:default@default"));
+  WaitForOperation(pa_context_get_sink_info_list(m_Context,
+                   SinkInfo, &sinkStruct), m_MainLoop, "EnumerateAudioSinks");
+
+  pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
 void CPulseAE::ContextStateCallback(pa_context *c, void *userdata)
