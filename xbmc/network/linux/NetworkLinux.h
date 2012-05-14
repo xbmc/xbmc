@@ -31,7 +31,7 @@ class CNetworkLinux;
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, CStdString interfaceMacAdr);
+   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void);
 
    virtual CStdString& GetName(void);
@@ -41,6 +41,7 @@ public:
    virtual bool IsWireless(void);
 
    virtual CStdString GetMacAddress(void);
+   virtual void GetMacAddressRaw(char rawMac[6]);
 
    virtual CStdString GetCurrentIPAddress();
    virtual CStdString GetCurrentNetmask();
@@ -57,6 +58,7 @@ private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
    CStdString     m_interfaceMacAdr;
+   char           m_interfaceMacAddrRaw[6];
    CNetworkLinux* m_network;
 };
 
@@ -83,7 +85,7 @@ public:
 
 private:
    int GetSocket() { return m_sock; }
-   CStdString GetMacAddress(CStdString interfaceName);
+   void GetMacAddress(CStdString interfaceName, char macAddrRaw[6]);
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;

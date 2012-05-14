@@ -61,6 +61,7 @@ public:
    virtual bool IsWireless(void) = 0;
 
    virtual CStdString GetMacAddress(void) = 0;
+   virtual void GetMacAddressRaw(char rawMac[6]) = 0;
 
    virtual CStdString GetCurrentIPAddress() = 0;
    virtual CStdString GetCurrentNetmask() = 0;
