@@ -175,6 +175,7 @@ IAEStream *CPulseAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampl
 
 void CPulseAE::RemoveStream(IAEStream *stream)
 {
+  CSingleLock lock(m_lock);
   std::list<CPulseAEStream*>::iterator itt;
 
   m_streams.remove((CPulseAEStream *)stream);
