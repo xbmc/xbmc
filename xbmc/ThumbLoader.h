@@ -104,6 +104,12 @@ public:
    */
   static CStdString GetEmbeddedThumbURL(const CFileItem &item);
 
+  /*! \brief helper function to fill the art for a video library item
+   \param item a video CFileItem
+   \return true if we fill art, false otherwise
+   */
+  bool FillLibraryArt(CFileItem *item);
+
   /*!
    \brief Callback from CThumbExtractor on completion of a generated image
 

@@ -560,8 +560,13 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
   if (exists)
   {
     protocol = "http";
-    string url = "vfs/";
+    string url;
     CStdString strPath = path;
+    if (strPath.Left(8) == "image://" ||
+       (strPath.Left(10) == "special://" && strPath.Right(4) == ".tbn"))
+      url = "image/";
+    else
+      url = "vfs/";
     CURL::Encode(strPath);
     url += strPath;
     details["path"] = url;

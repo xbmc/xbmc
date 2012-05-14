@@ -393,6 +393,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\HTTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\IDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\IFile.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ISOFile.cpp" />
@@ -790,6 +791,7 @@
     <ClCompile Include="..\..\xbmc\network\GUIDialogAccessPoints.cpp" />
     <ClCompile Include="..\..\xbmc\network\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
@@ -923,9 +925,11 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEWAVLoader.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h" />
     <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV13.h" />

@@ -49,6 +49,8 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   CVariant serialization;
   info->Serialize(serialization);
 
+  bool fetchedArt = false;
+
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CStdString field = fields[i].asString();
@@ -89,16 +91,59 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         continue;
       }
 
-      if (field == "fanart" && !item->HasPictureInfoTag())
+      if (field == "thumbnail")
       {
-        CStdString fanart;
-        if (item->HasProperty("fanart_image"))
-          fanart = CTextureCache::Get().CheckAndCacheImage(item->GetProperty("fanart_image").asString());
-        if (fanart.empty())
-          fanart = item->GetCachedFanart();
-        if (!fanart.empty())
-          result["fanart"] = fanart.c_str();
+        if (item->HasVideoInfoTag())
+        {
+          if (!item->HasThumbnail() && !fetchedArt && item->GetVideoInfoTag()->m_iDbId > -1)
+          {
+            CVideoThumbLoader loader;
+            loader.FillLibraryArt(item.get());
+            fetchedArt = true;
+          }
+          if (item->HasThumbnail())
+            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
+        }
+        else if (item->HasPictureInfoTag())
+        {
+          if (!item->HasThumbnail())
+            item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
+          if (item->HasThumbnail())
+            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
+        }
+        else
+        { // TODO: music art is not currently wrapped
+          if (item->HasThumbnail())
+            result["thumbnail"] = item->GetThumbnailImage();
+        }
+        if (!result.isMember("thumbnail"))
+          result["thumbnail"] = "";
+        continue;
+      }
 
+      if (field == "fanart")
+      {
+        if (item->HasVideoInfoTag())
+        {
+          if (!item->HasProperty("fanart_image") && !fetchedArt && item->GetVideoInfoTag()->m_iDbId > -1)
+          {
+            CVideoThumbLoader loader;
+            loader.FillLibraryArt(item.get());
+            fetchedArt = true;
+          }
+          if (item->HasProperty("fanart_image"))
+            result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
+        }
+        else if (item->HasMusicInfoTag())
+        { // TODO: music art is not currently wrapped
+          CStdString fanart;
+          if (item->HasProperty("fanart_image"))
+            fanart = item->GetProperty("fanart_image").asString();
+          if (fanart.empty())
+            fanart = item->GetCachedFanart();
+          if (!fanart.empty())
+            result["fanart"] = fanart.c_str();
+        }
         continue;
       }
 
@@ -154,7 +199,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 {
   CVariant object;
   bool hasFileField = false;
-  bool hasThumbnailField = false;
 
   if (item.get())
   {
@@ -164,8 +208,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
       if (field == "file")
         hasFileField = true;
-      if (field == "thumbnail")
-        hasThumbnailField = true;
     }
 
     if (allowFile && hasFileField)
@@ -225,29 +267,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         if (!object.isMember("type"))
           object["type"] = "unknown";
       }
-    }
-
-    if (hasThumbnailField)
-    {
-      if (item->HasThumbnail())
-        object["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(item->GetThumbnailImage());
-      else if (item->HasVideoInfoTag())
-      { // TODO: Should the JSON-API return actual image URLs, virtual thumb URLs, or local URLs to the cached image?
-        //       ATM we return the latter
-        CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*item);
-        CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
-        if (!cachedThumb.IsEmpty())
-          object["thumbnail"] = cachedThumb;
-      }
-      else if (item->HasPictureInfoTag())
-      {
-        CStdString thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-        if (!thumb.empty())
-          object["thumbnail"] = thumb;
-      }
-
-      if (!object.isMember("thumbnail"))
-        object["thumbnail"] = "";
     }
 
     FillDetails(item.get(), item, validFields, object);

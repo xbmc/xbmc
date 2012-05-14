@@ -3584,7 +3584,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     if (!CVideoThumbLoader::FillThumb(item))
     {
       CStdString thumb = CVideoThumbLoader::GetEmbeddedThumbURL(item);
-      if (!CTextureCache::Get().GetCachedImage(thumb).IsEmpty())
+      if (CTextureCache::Get().HasCachedImage(thumb))
         item.SetThumbnailImage(thumb);
     }
   }

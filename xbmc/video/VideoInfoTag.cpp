@@ -432,8 +432,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
     CVariant actor;
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
-    if (!m_cast[i].thumb.IsEmpty()) // TODO: json-rpc should use real URLs just like everywhere else
-      actor["thumbnail"] = CTextureCache::Get().CheckAndCacheImage(m_cast[i].thumb);
+    if (!m_cast[i].thumb.IsEmpty())
+      actor["thumbnail"] = CTextureCache::GetWrappedImageURL(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
   value["set"] = m_set;
