@@ -61,8 +61,8 @@ public:
   /* free's sounds that have expired */
   virtual void GarbageCollect();
 
-  virtual void SetMute(const bool enabled) {}
-  virtual bool IsMuted() { return false; }
+  virtual void SetMute(const bool enabled);
+  virtual bool IsMuted() { return m_muted; }
   virtual void SetSoundMode(const int mode) {}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
@@ -76,6 +76,7 @@ private:
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
   float m_Volume;
+  bool m_muted;
 };
 
 #endif

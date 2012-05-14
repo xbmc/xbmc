@@ -55,6 +55,7 @@ public:
   virtual float GetReplayGain();
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
+  void SetMute(const bool muted);
 
   virtual const unsigned int      GetFrameSize   () const;
   virtual const unsigned int      GetChannelCount() const;

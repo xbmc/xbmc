@@ -384,10 +384,16 @@ void CPulseAEStream::SetVolume(float volume)
   if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_lock(m_MainLoop);
 
-  m_Volume = volume;
-  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
+  if (volume > 0.f)
+  {
+    m_Volume = volume;
+    pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
 
-  pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
+    pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
+  } 
+  else
+    pa_cvolume_mute(&m_ChVolume,m_SampleSpec.channels);
+
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_ChVolume, NULL, NULL);
 
   if (op == NULL)
@@ -406,6 +412,14 @@ void CPulseAEStream::UpdateVolume(float max)
 
   m_MaxVolume = max;
   SetVolume(m_Volume);
+}
+
+void CPulseAEStream::SetMute(const bool mute)
+{
+  if (mute)
+    SetVolume(-1.f);
+  else
+    SetVolume(m_Volume);
 }
 
 void CPulseAEStream::SetReplayGain(float factor)

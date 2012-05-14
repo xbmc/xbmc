@@ -80,6 +80,7 @@ CPulseAE::CPulseAE()
 {
   m_Context = NULL;
   m_MainLoop = NULL;
+  m_muted = false;
 }
 
 CPulseAE::~CPulseAE()
@@ -347,6 +348,16 @@ void CPulseAE::ContextStateCallback(pa_context *c, void *userdata)
       pa_threaded_mainloop_signal(m, 0);
       break;
   }
+}
+
+void CPulseAE::SetMute(const bool enabled)
+{
+  CSingleLock lock(m_lock);
+  std::list<CPulseAEStream*>::iterator itt;
+  for (itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    (*itt)->SetMute(enabled);
+
+  m_muted = enabled;
 }
 
 #endif
