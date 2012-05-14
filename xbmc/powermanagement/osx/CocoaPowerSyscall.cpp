@@ -101,23 +101,14 @@ bool CCocoaPowerSyscall::Powerdown(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  if (g_sysinfo.IsAppleTV())
-  {
-    // The ATV prefered method is via command-line, others don't seem to work
-    system("echo frontrow | sudo -S shutdown -h now");
-    result = true;
-  }
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
+  //sending shutdown event to system
+  OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
+  if (error == noErr)
+    CLog::Log(LOGINFO, "Computer is going to shutdown!");
   else
-  {
-    CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
-    //sending shutdown event to system
-    OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
-    if (error == noErr)
-      CLog::Log(LOGINFO, "Computer is going to shutdown!");
-    else
-      CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
-    result = (error == noErr);
-  }
+    CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
+  result = (error == noErr);
 #endif
   return result;
 }
@@ -158,21 +149,12 @@ bool CCocoaPowerSyscall::Reboot(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  if (g_sysinfo.IsAppleTV())
-  {
-    // The ATV prefered method is via command-line, others don't seem to work
-    system("echo frontrow | sudo -S reboot");
-    result = true;
-  }
+  OSErr error = SendAppleEventToSystemProcess(kAERestart);
+  if (error == noErr)
+    CLog::Log(LOGINFO, "Computer is going to restart!");
   else
-  {
-    OSErr error = SendAppleEventToSystemProcess(kAERestart);
-    if (error == noErr)
-      CLog::Log(LOGINFO, "Computer is going to restart!");
-    else
-      CLog::Log(LOGINFO, "Computer wouldn't restart!");
-    result = (error == noErr);
-  }
+    CLog::Log(LOGINFO, "Computer wouldn't restart!");
+  result = (error == noErr);
 #endif
   return result;
 }
@@ -193,11 +175,7 @@ bool CCocoaPowerSyscall::CanSuspend(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  // Only OSX boxes can suspend, the AppleTV cannot
-  if (g_sysinfo.IsAppleTV())
-    result = false;
-  else
-    result =IOPMSleepEnabled();
+  result =IOPMSleepEnabled();
 #endif
   return(result);
 }
@@ -229,20 +207,13 @@ bool CCocoaPowerSyscall::HasBattery(void)
 
   if (m_HasBattery == -1)
   {
-    if (g_sysinfo.IsAppleTV())
-    {
-      result = false;
-    }
-    else
-    {
-      CCocoaAutoPool autopool;
-      CFArrayRef battery_info = NULL;
+    CCocoaAutoPool autopool;
+    CFArrayRef battery_info = NULL;
 
-      if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
-        result = false;
-      else
-        CFRelease(battery_info);
-    }
+    if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
+      result = false;
+    else
+      CFRelease(battery_info);
     // cache if we have a battery or not
     m_HasBattery = result;
   }

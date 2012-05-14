@@ -408,10 +408,6 @@ void CGUISettings::Initialize()
 #endif
 
 #if defined (__APPLE__)
-  if (g_sysinfo.IsAppleTV())
-  {
-    fakeFullScreen = false;
-  }
   showSetting = false;
 #endif
   AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
