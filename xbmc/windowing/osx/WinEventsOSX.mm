@@ -26,10 +26,6 @@
 #include "windowing/osx/WinEventsOSX.h"
 #undef BOOL
 
-// we need to exclude CFPlugInCOM.h because it defines
-// HRESULT and ULONG which collide with our defs
-#define __COREFOUNDATION_CFPLUGINCOM__ 1
-
 #import <IOKit/IOKitLib.h>
 #import <IOKit/IOMessage.h>
 #import <IOKit/IOCFPlugIn.h>

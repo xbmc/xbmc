@@ -39,12 +39,8 @@
 #include "CocoaInterface.h"
 #undef BOOL
 
-// we need to exclude CFPlugInCOM.h because it defines
-// HRESULT and ULONG which collide with our defs
-#define __COREFOUNDATION_CFPLUGINCOM__ 1
-
-#include <SDL/SDL_video.h>
-#include <SDL/SDL_events.h>
+#import <SDL/SDL_video.h>
+#import <SDL/SDL_events.h>
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
