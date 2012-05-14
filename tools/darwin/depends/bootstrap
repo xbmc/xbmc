@@ -11,6 +11,7 @@ if test "$has_autoconf" = "no"; then
   # if not then prebuild our autoconf.
   echo "autoconf not found, pre-building autoconf"
   make -C m4
+  make -C help2man
   make -C autoconf
 fi
 
