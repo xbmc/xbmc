@@ -41,8 +41,11 @@
 #include <string.h>
 #ifdef __APPLE__
 #include <stdio.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
+#include <libkern/OSTypes.h>
 #elif defined(__FreeBSD__)
 #include <stdio.h>
 #include <sys/sysctl.h>
@@ -205,7 +208,11 @@ typedef long long     INT64;
 typedef unsigned long long    UINT64;
 typedef long        LONG;
 typedef long long     LONGLONG;
+#if defined(TARGET_DARWIN)
+typedef UInt32          ULONG;
+#else
 typedef unsigned long   ULONG;
+#endif
 typedef float         FLOAT;
 typedef size_t        SIZE_T;
 typedef void*         PVOID;
@@ -214,7 +221,11 @@ typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef HANDLE        HDC;
 typedef void*       HWND;
+#if defined(TARGET_DARWIN)
+typedef SInt32      HRESULT;
+#else
 typedef LONG        HRESULT;
+#endif
 typedef BYTE*       LPBYTE;
 typedef DWORD*        LPDWORD;
 typedef CONST CHAR*   LPCSTR;
