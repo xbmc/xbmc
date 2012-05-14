@@ -88,8 +88,8 @@ private:
   unsigned addWord64(u_int64_t word);
   unsigned addWord(unsigned word);
   unsigned addHalfWord(unsigned short halfWord);
-  unsigned addByte(unsigned char byte) {
-    putc(byte, fOutFid);
+  unsigned addByte(unsigned char byteArg) {
+    putc(byteArg, fOutFid);
     return 1;
   }
   unsigned addZeroWords(unsigned numWords);

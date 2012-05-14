@@ -344,7 +344,7 @@ void ADDON_ReadSettings(void)
   }
 
   /* Log the current settings for debugging purposes */
-  XBMC->Log(LOG_DEBUG, "settings: streamingmethod: %s", (( g_eStreamingMethod == TSReader) ? "TSReader" : "ffmpeg"));
+  XBMC->Log(LOG_DEBUG, "settings: streamingmethod: %s, usertsp=%i", (( g_eStreamingMethod == TSReader) ? "TSReader" : "ffmpeg"), (int) g_bUseRTSP);
   XBMC->Log(LOG_DEBUG, "settings: host='%s', port=%i, timeout=%i", g_szHostname.c_str(), g_iPort, g_iConnectTimeout);
   XBMC->Log(LOG_DEBUG, "settings: ftaonly=%i, useradio=%i, tvgroup='%s', radiogroup='%s'", (int) g_bOnlyFTA, (int) g_bRadioEnabled, g_szTVGroup.c_str(), g_szRadioGroup.c_str());
   XBMC->Log(LOG_DEBUG, "settings: readgenre=%i, sleeponrtspurl=%i", (int) g_bReadGenre, g_iSleepOnRTSPurl);
