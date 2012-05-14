@@ -26,14 +26,6 @@
 #include "windowing/osx/WinEventsOSX.h"
 #undef BOOL
 
-#import <IOKit/IOKitLib.h>
-#import <IOKit/IOMessage.h>
-#import <IOKit/IOCFPlugIn.h>
-#import <IOKit/usb/IOUSBLib.h>
-#import <IOKit/hid/IOHIDLib.h>
-#import <IOKit/hid/IOHIDKeys.h>
-#import <libkern/OSTypes.h>
-
 // place holder for future native osx event handler
 
 CWinEventsOSX::CWinEventsOSX()
