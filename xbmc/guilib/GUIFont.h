@@ -50,6 +50,9 @@ class CGUIFontTTFBase;
 #define FONT_STYLE_BOLD         1
 #define FONT_STYLE_ITALICS      2
 #define FONT_STYLE_BOLD_ITALICS 3
+#define FONT_STYLE_UPPERCASE    4
+#define FONT_STYLE_LOWERCASE    8
+#define FONT_STYLE_MASK       0xF
 
 class CScrollInfo
 {

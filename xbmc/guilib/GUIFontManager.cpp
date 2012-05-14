@@ -439,6 +439,10 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
                 iStyle = FONT_STYLE_ITALICS;
               else if (style == "bolditalics")
                 iStyle = FONT_STYLE_BOLD_ITALICS;
+              else if (style == "uppercase")
+                iStyle = FONT_STYLE_UPPERCASE;
+              else if (style == "lowercase")
+                iStyle = FONT_STYLE_LOWERCASE;
             }
 
             XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
