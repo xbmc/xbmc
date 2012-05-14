@@ -2104,48 +2104,69 @@ fi
 
 XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
-    ./configure \
-      --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
-      `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
-      `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
-      `if test "$use_arch" = "arm"; then echo --enable-pic; fi`\
-      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
-      --target-os=$(tolower $(uname -s)) \
-      --disable-amd3dnow \
-      --disable-armv5te \
-      --disable-armv6t2 \
-      --enable-static \
-      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
-      --disable-muxers \
-      --enable-muxer=spdif \
-      --enable-muxer=adts \
-      --disable-encoders \
-      --enable-encoder=ac3 \
-      --enable-encoder=aac \
-      `if test "$use_ffmpeg_libvorbis" = "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
-      --disable-devices \
-      --disable-ffprobe \
-      --disable-ffplay \
-      --disable-ffserver \
-      --disable-ffmpeg \
-      --disable-doc \
-      --disable-decoder=mpeg_xvmc \
-      --disable-crystalhd \
-      --disable-vda \
-      --enable-postproc \
-      --enable-gpl \
-      --enable-protocol=http \
-      --enable-pthreads \
-      --enable-runtime-cpudetect \
-      `case $CC in *llvm-gcc-4.2*) echo --cc=clang ;; *) echo --cc="$CC" ;; esac` &&
-    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
-    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
-    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
-    if test "$use_arch" = "ppc"; then
-      sed -ie "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
-      sed -ie "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+    ffmpg_config="--target-os=$(tolower $(uname -s))"
+    # handle disables first, we do individual enables later
+    ffmpg_config="$ffmpg_config --disable-muxers   --disable-encoders"
+    ffmpg_config="$ffmpg_config --disable-devices  --disable-doc"
+    ffmpg_config="$ffmpg_config --disable-ffplay   --disable-ffmpeg"
+    ffmpg_config="$ffmpg_config --disable-ffprobe  --disable-ffserver"
+    ffmpg_config="$ffmpg_config --disable-vda      --disable-crystalhd"
+    ffmpg_config="$ffmpg_config --disable-decoder=mpeg_xvmc"
+
+    # handle conditional enables/disables
+    if test "$use_debug" = "no"; then
+      ffmpg_config="$ffmpg_config --disable-debug"
     fi
+    if test "$use_cpu"  != "no";  then
+      ffmpg_config="$ffmpg_config --cpu=$use_cpu"
+    fi
+    if test "$use_arch" != "no"; then
+      ffmpg_config="$ffmpg_config --arch=$use_arch --enable-cross-compile"
+    fi
+    if test "$use_arch"  = "arm"; then
+      ffmpg_config="$ffmpg_config --enable-pic"
+      ffmpg_config="$ffmpg_config --disable-armv5te --disable-armv6t2"
+      if test "$use_neon"  = "yes"; then
+        ffmpg_config="$ffmpg_config --enable-neon"
+      else
+        ffmpg_config="$ffmpg_config --disable-neon"
+      fi
+    else
+      ffmpg_config="$ffmpg_config --disable-amd3dnow"
+    fi
+    if test "$use_ffmpeg_libvorbis" = "yes"; then
+      ffmpg_config="$ffmpg_config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis"
+    else
+      ffmpg_config="$ffmpg_config --disable-libvorbis"
+    fi
+
+    # handle individual enables
+    ffmpg_config="$ffmpg_config --enable-gpl"
+    ffmpg_config="$ffmpg_config --enable-postproc"
+    ffmpg_config="$ffmpg_config --enable-static      --enable-pthreads"
+    ffmpg_config="$ffmpg_config --enable-muxer=spdif --enable-muxer=adts"
+    ffmpg_config="$ffmpg_config --enable-encoder=ac3 --enable-encoder=aac"
+    ffmpg_config="$ffmpg_config --enable-protocol=http"
+    ffmpg_config="$ffmpg_config --enable-runtime-cpudetect"
+
+    # ffmpeg will not compile with llvm-gcc-4.2, use clang instead
+    case $CC in
+      *llvm-gcc-4.2*)
+        ffmpg_config="$ffmpg_config --cc=clang" ;;
+      *)
+        ffmpg_config="$ffmpg_config --cc=$CC" ;;
+    esac
+    
+    # extra-cflags must be passed alone or it gets expanded wrong by the ffmpeg configure
+    FFMPEG_EXTRACFLAGS="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated="
+
+    ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
+
+    # ffmpeg will use yasm found at ${prefix}/bin during configure
+    # but then hardcodes 'yasm' in config.mak, fix it.
+    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak
+    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak
+    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
   else
     CFLAGS="" \
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
