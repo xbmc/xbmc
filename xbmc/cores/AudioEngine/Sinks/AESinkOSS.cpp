@@ -473,6 +473,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list)
   for (int i = 0; i < sysinfo.numcards; ++i)
   {
     std::stringstream devicepath;
+    std::stringstream devicename;
     CAEDeviceInfo info;
     oss_card_info cardinfo;
 
@@ -483,7 +484,9 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list)
     if (ioctl(mixerfd, SNDCTL_CARDINFO, &cardinfo) == -1)
       break;
 
-    info.m_displayName = cardinfo.longname;
+    devicename << cardinfo.shortname << " " << cardinfo.longname;
+    info.m_displayName = devicename.str();
+
     if (info.m_displayName.find("HDMI") != std::string::npos)
       info.m_deviceType = AE_DEVTYPE_HDMI;
     else if (info.m_displayName.find("Digital") != std::string::npos)
