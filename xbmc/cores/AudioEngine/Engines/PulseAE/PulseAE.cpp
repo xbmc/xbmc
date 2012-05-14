@@ -301,8 +301,6 @@ static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userda
     if (add)
     {
       CStdString desc, sink;
-      if (sinkStruct->list->size() == 0)
-        sinkStruct->list->push_back(AEDevice("(PulseAudio)", "pulse:default@default"));
       desc.Format("%s (PulseAudio)", i->description);
       sink.Format("pulse:%s@default", i->name);
       sinkStruct->list->push_back(AEDevice(desc, sink));
