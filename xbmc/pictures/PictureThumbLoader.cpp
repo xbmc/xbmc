@@ -71,8 +71,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
     if (!CVideoThumbLoader::FillThumb(*pItem))
     {
       CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
-      CStdString cachedThumb = CTextureCache::Get().GetCachedImage(thumbURL);
-      if (!cachedThumb.IsEmpty())
+      if (CTextureCache::Get().HasCachedImage(thumbURL))
       {
         thumb = thumbURL;
       }

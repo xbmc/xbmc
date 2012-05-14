@@ -26,6 +26,8 @@
 		7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B9908154B80200065A238 /* AEDeviceInfo.cpp */; };
 		7C1A89BB152671FB00C63311 /* TextureCacheJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A89B9152671FB00C63311 /* TextureCacheJob.cpp */; };
 		7C1F6F8C13ED17CC001726AB /* LibraryDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */; };
+		7C6EB586155E3EC80080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB584155E3EC80080368A /* ImageFile.cpp */; };
+		7C6EB708155F3B160080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */; };
 		7C89627013B702F3003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CCFD9AA1514952700211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD9A81514952700211D82 /* PCMCodec.cpp */; };
@@ -1016,6 +1018,10 @@
 		7C1A89BA152671FB00C63311 /* TextureCacheJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCacheJob.h; sourceTree = "<group>"; };
 		7C1F6F8A13ED17CC001726AB /* LibraryDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LibraryDirectory.cpp; sourceTree = "<group>"; };
 		7C1F6F8B13ED17CC001726AB /* LibraryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibraryDirectory.h; sourceTree = "<group>"; };
+		7C6EB584155E3EC80080368A /* ImageFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageFile.cpp; sourceTree = "<group>"; };
+		7C6EB585155E3EC80080368A /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
+		7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageHandler.cpp; sourceTree = "<group>"; };
+		7C6EB707155F3B160080368A /* HTTPImageHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageHandler.h; sourceTree = "<group>"; };
 		7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
 		7C89626F13B702F3003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
@@ -3235,6 +3241,8 @@
 			children = (
 				DFCA6AFE15224684000BFAAE /* HTTPApiHandler.cpp */,
 				DFCA6AFF15224684000BFAAE /* HTTPApiHandler.h */,
+				7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */,
+				7C6EB707155F3B160080368A /* HTTPImageHandler.h */,
 				DFCA6B0015224684000BFAAE /* HTTPJsonRpcHandler.cpp */,
 				DFCA6B0115224684000BFAAE /* HTTPJsonRpcHandler.h */,
 				DFCA6B0215224684000BFAAE /* HTTPVfsHandler.cpp */,
@@ -4291,6 +4299,8 @@
 				F56C73FA131EC151000AD0F6 /* IFile.cpp */,
 				F56C73FB131EC151000AD0F6 /* IFile.h */,
 				F56C73FC131EC151000AD0F6 /* IFileDirectory.h */,
+				7C6EB584155E3EC80080368A /* ImageFile.cpp */,
+				7C6EB585155E3EC80080368A /* ImageFile.h */,
 				F56C73FD131EC151000AD0F6 /* iso9660.cpp */,
 				F56C73FE131EC151000AD0F6 /* iso9660.h */,
 				F56C73FF131EC151000AD0F6 /* ISO9660Directory.cpp */,
@@ -7182,6 +7192,8 @@
 				DFB662FC15376810006B8FF1 /* AEWAVLoader.cpp in Sources */,
 				DFB6631115376991006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				7C0B990A154B80200065A238 /* AEDeviceInfo.cpp in Sources */,
+				7C6EB586155E3EC80080368A /* ImageFile.cpp in Sources */,
+				7C6EB708155F3B160080368A /* HTTPImageHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,6 +33,7 @@ SRCS=AddonsDirectory.cpp \
      HTTPDirectory.cpp \
      IDirectory.cpp \
      IFile.cpp \
+     ImageFile.cpp \
      iso9660.cpp \
      ISO9660Directory.cpp \
      ISOFile.cpp \
