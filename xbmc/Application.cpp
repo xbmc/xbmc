@@ -110,6 +110,10 @@
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
 
+#ifdef HAS_SDL
+#include <SDL/SDL.h>
+#endif
+
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "filesystem/FileDAAP.h"
 #endif

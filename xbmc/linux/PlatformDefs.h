@@ -54,11 +54,6 @@
 #include <time.h>
 #endif
 
-// do not move this, it will break osx build bad"
-#ifdef HAS_SDL
-#include <SDL/SDL.h>
-#endif
-
 #if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
