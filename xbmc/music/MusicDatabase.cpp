@@ -61,6 +61,7 @@
 #include "utils/AutoPtrHandle.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
+#include "utils/XMLUtils.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -4519,6 +4520,15 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
+
+      map<string, string> artwork;
+      if (GetArtForItem(artist.idArtist, "artist", artwork) && !singleFiles)
+      { // append to the XML
+        TiXmlElement additionalNode("art");
+        for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
+          XMLUtils::SetString(&additionalNode, i->first.c_str(), i->second);
+        pMain->LastChild()->InsertEndChild(additionalNode);
+      }
       if (singleFiles)
       {
         if (!CDirectory::Exists(strPath))
@@ -4533,13 +4543,14 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
               CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
           }
 
-          if (images)
+          if (images && !artwork.empty())
           {
-            CFileItem item(artist);
-            if (CFile::Exists(item.GetCachedArtistThumb()) && (overwrite || !CFile::Exists(URIUtils::AddFileToFolder(strPath,"folder.jpg"))))
-              CFile::Cache(item.GetCachedArtistThumb(),URIUtils::AddFileToFolder(strPath,"folder.jpg"));
-            if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(URIUtils::AddFileToFolder(strPath,"fanart.jpg"))))
-              CFile::Cache(item.GetCachedFanart(),URIUtils::AddFileToFolder(strPath,"fanart.jpg"));
+            CStdString savedThumb = URIUtils::AddFileToFolder(strPath,"folder.jpg");
+            CStdString savedFanart = URIUtils::AddFileToFolder(strPath,"fanart.jpg");
+            if (artwork.find("thumb") != artwork.end() && (overwrite || !CFile::Exists(savedThumb)))
+              CTextureCache::Get().Export(artwork["thumb"], savedThumb);
+            if (artwork.find("fanart") != artwork.end() && (overwrite || !CFile::Exists(savedFanart)))
+              CTextureCache::Get().Export(artwork["fanart"], savedFanart);
           }
           xmlDoc.Clear();
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");
