@@ -31,6 +31,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "windowing/WindowingFactory.h"
 
 using namespace std;
@@ -429,20 +430,22 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
             if (iSize <= 0) iSize = 20;
 
             pNode = fontNode->FirstChild("style");
-            if (pNode)
+            if (pNode && pNode->FirstChild())
             {
-              CStdString style = pNode->FirstChild()->Value();
-              iStyle = FONT_STYLE_NORMAL;
-              if (style == "bold")
-                iStyle = FONT_STYLE_BOLD;
-              else if (style == "italics")
-                iStyle = FONT_STYLE_ITALICS;
-              else if (style == "bolditalics")
-                iStyle = (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
-              else if (style == "uppercase")
-                iStyle = FONT_STYLE_UPPERCASE;
-              else if (style == "lowercase")
-                iStyle = FONT_STYLE_LOWERCASE;
+              vector<string> styles = StringUtils::Split(pNode->FirstChild()->ValueStr(), " ");
+              for (vector<string>::iterator i = styles.begin(); i != styles.end(); ++i)
+              {
+                if (*i == "bold")
+                  iStyle |= FONT_STYLE_BOLD;
+                else if (*i == "italics")
+                  iStyle |= FONT_STYLE_ITALICS;
+                else if (*i == "bolditalics") // backward compatibility
+                  iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
+                else if (*i == "uppercase")
+                  iStyle |= FONT_STYLE_UPPERCASE;
+                else if (*i == "lowercase")
+                  iStyle |= FONT_STYLE_LOWERCASE;
+              }
             }
 
             XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
