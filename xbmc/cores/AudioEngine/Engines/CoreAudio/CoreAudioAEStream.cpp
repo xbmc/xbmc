@@ -335,9 +335,19 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   unsigned int samples  = size / m_StreamBytesPerSample;
   uint8_t     *adddata  = (uint8_t *)data;
   unsigned int addsize  = size;
-  if (!m_valid || size == 0 || data == NULL || m_draining || !m_Buffer)
+  if (!m_valid || size == 0 || data == NULL || !m_Buffer)
   {
     return 0;
+  }
+  
+  /* if the stream is draining */
+  if (m_draining)
+  {
+    /* if the stream has finished draining, cork it */
+    if (m_Buffer && m_Buffer->GetWriteSize() >= size && !m_Buffer->GetReadSize())
+      m_draining = false;
+    else
+      return 0;
   }
 
   /* convert the data if we need to */
