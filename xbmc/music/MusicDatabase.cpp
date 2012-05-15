@@ -5084,10 +5084,6 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
     if (GetAlbumInfo(idAlbum,album,NULL))
       SetPropertiesFromAlbum(item,album);
   }
-
-  CStdString strFanart = item.GetCachedFanart();
-  if (XFILE::CFile::Exists(strFanart))
-    item.SetProperty("fanart_image",strFanart);
 }
 
 void CMusicDatabase::AnnounceRemove(std::string content, int id)

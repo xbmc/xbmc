@@ -538,6 +538,23 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       return true; // no fallback
   }
 
+  if (!pItem->HasProperty("fanart_image"))
+  {
+    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
+    {
+      std::string artist = pItem->GetMusicInfoTag()->GetArtist()[0];
+      m_database->Open();
+      int idArtist = m_database->GetArtistByName(artist);
+      if (idArtist >= 0)
+      {
+        string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
+        if (!fanart.empty())
+          pItem->SetProperty("fanart_image", fanart);
+      }
+      m_database->Close();
+    }
+  }
+
   if (!pItem->HasThumbnail())
     pItem->SetUserMusicThumb();
   return true;
@@ -572,6 +589,10 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       }
       else // nothing found - set an empty thumb so that next time around we don't hit here again
         m_database->SetArtForItem(tag.GetDatabaseId(), tag.GetType(), "thumb", "");
+    }
+    if (tag.GetType() == "song" || tag.GetType() == "album")
+    { // fanart from the artist
+      item.SetProperty("fanart_image", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
     }
     m_database->Close();
   }

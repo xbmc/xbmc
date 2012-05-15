@@ -44,6 +44,7 @@ public:
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
   const std::vector<std::string>& GetArtist() const;
+  int GetArtistId() const;
   const CStdString& GetAlbum() const;
   const std::vector<std::string>& GetAlbumArtist() const;
   const std::vector<std::string> GetGenre() const;

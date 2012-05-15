@@ -127,6 +127,11 @@ const std::vector<std::string>& CMusicInfoTag::GetArtist() const
   return m_artist;
 }
 
+int CMusicInfoTag::GetArtistId() const
+{
+  return m_iArtistId;
+}
+
 const CStdString& CMusicInfoTag::GetAlbum() const
 {
   return m_strAlbum;
