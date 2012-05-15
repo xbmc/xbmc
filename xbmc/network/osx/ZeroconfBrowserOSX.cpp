@@ -19,12 +19,14 @@
  *
  */
 
+#include "system.h"
+
 #include "ZeroconfBrowserOSX.h"
-#include <utils/log.h>
-#include <threads/SingleLock.h>
-#include <guilib/GUIWindowManager.h>
-#include <guilib/GUIMessage.h>
-#include <GUIUserMessages.h>
+#include "GUIUserMessages.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -189,7 +191,8 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     }
   } else
   {
-    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned (domain = %d, error = %ld)\n", (int)error->domain, error->error);
+    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned"
+      "(domain = %d, error = %"PRId64")", (int)error->domain, (int64_t)error->error);
   }
 }
 
@@ -269,7 +272,8 @@ bool CZeroconfBrowserOSX::doAddServiceType(const CStdString& fcr_service_type)
     CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);         
     CFRelease(p_browser);
     p_browser = NULL;
-    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned (domain = %d, error = %ld)\n", (int)error.domain, error.error);
+    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned"
+      "(domain = %d, error = %"PRId64")", (int)error.domain, (int64_t)error.error);
   } else
   {
     //store the browser

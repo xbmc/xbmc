@@ -21,15 +21,16 @@
  */
 
 #include <memory>
+
+#include "network/Zeroconf.h"
+#include "threads/CriticalSection.h"
+
 #include <CoreFoundation/CoreFoundation.h>
 #if defined(TARGET_DARWIN_OSX)
   #include <CoreServices/CoreServices.h>
 #else
   #include <CFNetwork/CFNetServices.h>
 #endif
-
-#include "network/Zeroconf.h"
-#include "threads/CriticalSection.h"
 
 class CZeroconfOSX : public CZeroconf
 {
