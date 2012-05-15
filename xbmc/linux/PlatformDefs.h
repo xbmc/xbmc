@@ -39,13 +39,15 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include <stdio.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
-#include <libkern/OSTypes.h>
+#if defined(TARGET_DARWIN_OSX)
+#include <MacTypes.h>
+#endif
 #elif defined(__FreeBSD__)
 #include <stdio.h>
 #include <sys/sysctl.h>
@@ -208,7 +210,7 @@ typedef long long     INT64;
 typedef unsigned long long    UINT64;
 typedef long        LONG;
 typedef long long     LONGLONG;
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
 typedef UInt32          ULONG;
 #else
 typedef unsigned long   ULONG;
@@ -221,7 +223,7 @@ typedef void*         LPVOID;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
 typedef HANDLE        HDC;
 typedef void*       HWND;
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_OSX)
 typedef SInt32      HRESULT;
 #else
 typedef LONG        HRESULT;

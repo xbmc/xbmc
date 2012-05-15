@@ -13,6 +13,7 @@ ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
 ifdef NATIVE_ROOT_PATH
 ifeq ($(findstring osx,@ARCH@),osx)
+DEFINES += -DTARGET_DARWIN
 NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
 endif
 CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
