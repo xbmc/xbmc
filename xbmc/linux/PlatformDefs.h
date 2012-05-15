@@ -46,7 +46,7 @@
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #if defined(TARGET_DARWIN_OSX)
-#include <MacTypes.h>
+#include <libkern/OSTypes.h>
 #endif
 #elif defined(__FreeBSD__)
 #include <stdio.h>
