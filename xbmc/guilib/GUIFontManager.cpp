@@ -438,7 +438,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
               else if (style == "italics")
                 iStyle = FONT_STYLE_ITALICS;
               else if (style == "bolditalics")
-                iStyle = FONT_STYLE_BOLD_ITALICS;
+                iStyle = (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
               else if (style == "uppercase")
                 iStyle = FONT_STYLE_UPPERCASE;
               else if (style == "lowercase")
