@@ -344,7 +344,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   if (m_draining)
   {
     /* if the stream has finished draining, cork it */
-    if (m_Buffer && m_Buffer->GetWriteSize() >= size && !m_Buffer->GetReadSize())
+    if (m_Buffer && m_Buffer->GetReadSize() == 0)
       m_draining = false;
     else
       return 0;
