@@ -101,21 +101,23 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
             loader.FillLibraryArt(item.get());
             fetchedArt = true;
           }
-          if (item->HasThumbnail())
-            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         }
         else if (item->HasPictureInfoTag())
         {
           if (!item->HasThumbnail())
             item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-          if (item->HasThumbnail())
-            result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         }
-        else
-        { // TODO: music art is not currently wrapped
-          if (item->HasThumbnail())
-            result["thumbnail"] = item->GetThumbnailImage();
+        else if (item->HasMusicInfoTag())
+        {
+          if (!item->HasThumbnail() && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
+          {
+            CMusicThumbLoader loader;
+            loader.FillLibraryArt(*item);
+            fetchedArt = true;
+          }
         }
+        if (item->HasThumbnail())
+          result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
         if (!result.isMember("thumbnail"))
           result["thumbnail"] = "";
         continue;
@@ -135,14 +137,15 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
             result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
         }
         else if (item->HasMusicInfoTag())
-        { // TODO: music art is not currently wrapped
-          CStdString fanart;
+        {
+          if (!item->HasProperty("fanart_image") && !fetchedArt && item->GetMusicInfoTag()->GetDatabaseId() > -1)
+          {
+            CMusicThumbLoader loader;
+            loader.FillLibraryArt(*item);
+            fetchedArt = true;
+          }
           if (item->HasProperty("fanart_image"))
-            fanart = item->GetProperty("fanart_image").asString();
-          if (fanart.empty())
-            fanart = item->GetCachedFanart();
-          if (!fanart.empty())
-            result["fanart"] = fanart.c_str();
+            result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
         }
         if (!result.isMember("fanart"))
           result["fanart"] = "";

@@ -211,6 +211,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   int            i = 0;
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
+  CMusicThumbLoader loader;
   
   musicdatabase.Open();
   
@@ -230,7 +231,9 @@ bool CRecentlyAddedJob::UpdateMusic()
       long idAlbum = musicdatabase.GetAlbumByName(strAlbum,strArtist);
       if (idAlbum != -1)
         musicdatabase.GetAlbumThumb(idAlbum,strThumb);
-      
+
+      loader.LoadItem(item.get());
+
       strRating.Format("%c", item->GetMusicInfoTag()->GetRating());
       
       home->SetProperty("LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
@@ -240,7 +243,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestSong." + value + ".Rating"  , strRating);
       home->SetProperty("LatestSong." + value + ".Path"    , item->GetMusicInfoTag()->GetURL());
       home->SetProperty("LatestSong." + value + ".Thumb"   , strThumb);
-      home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
+      home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetProperty("fanart_image"));
     }
   }
   for (; i < NUM_ITEMS; ++i)

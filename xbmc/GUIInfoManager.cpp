@@ -75,6 +75,7 @@
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
 #include "TextureCache.h"
+#include "ThumbLoader.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
@@ -3551,11 +3552,9 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     }
   }
   else
-    m_currentFile->SetMusicThumb();
-  if (!m_currentFile->HasProperty("fanart_image"))
   {
-    if (m_currentFile->CacheLocalFanart())
-      m_currentFile->SetProperty("fanart_image", m_currentFile->GetCachedFanart());
+    CMusicThumbLoader loader;
+    loader.LoadItem(m_currentFile);
   }
   m_currentFile->FillInDefaultIcon();
 
