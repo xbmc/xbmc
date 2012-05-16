@@ -35,13 +35,6 @@
 const CGFloat touchScreenDimTimeoutSecs       = 15.0;
 const CGFloat timeFadeSecs                    = 2.0;
 
-@interface IOSExternalTouchController ()
-  UIWindow      *_internalWindow;
-  UIView        *_touchView;
-  NSTimer       *_sleepTimer;
-  bool          _startup;
-@end
-
 @implementation IOSExternalTouchController
 //--------------------------------------------------------------
 - (id)init
@@ -206,7 +199,7 @@ const CGFloat timeFadeSecs                    = 2.0;
   [doubleFingerSingleTap release];
   
   //1 finger single long tab - right mouse - alernative
-  UITapGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+  UITapGestureRecognizer *singleFingerSingleLongTap = (UITapGestureRecognizer*)[[UILongPressGestureRecognizer alloc]
                                                         initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
   singleFingerSingleLongTap.delaysTouchesBegan = YES;
   singleFingerSingleLongTap.delaysTouchesEnded = YES;  

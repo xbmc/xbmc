@@ -35,7 +35,6 @@
 #import <BackRow/BackRow.h>
 
 #import "XBMCController.h"
-#import "IOSEAGLView.h"
 #import "XBMCDebugHelpers.h"
 
 //start repeating after 0.5s
@@ -176,12 +175,6 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface XBMCController (PrivateMethods)
-NSTimer       *m_keyTimer;
-IOSEAGLView  *m_glView;
-
-int           m_screensaverTimeout;
-int           m_systemsleepTimeout;
-
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (void) keyPressTimerCallback: (NSTimer*)theTimer;
 - (void) startKeyPressTimer: (int) keyId;
