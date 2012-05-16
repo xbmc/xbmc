@@ -430,7 +430,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
       return 0;
     }
     // sleep buffer half empty
-    Sleep(100);
+    Sleep(10);
     room = m_Buffer->GetWriteSize();
   }
 
