@@ -35,7 +35,7 @@
 #include "settings/AdvancedSettings.h"
 #include "MathUtils.h"
 
-/* typecast AE to CCoreAudioAE */
+// typecast AE to CCoreAudioAE
 #define AE (*(CCoreAudioAE*)CAEFactory::AE)
 
 void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
@@ -53,27 +53,30 @@ void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
 using namespace std;
 
 template <class AudioDataType>
-static inline void _Upmix(AudioDataType *input, unsigned int channelsInput, AudioDataType *output, unsigned int channelsOutput, unsigned int frames)
+static inline void _Upmix(AudioDataType *input,
+  unsigned int channelsInput, AudioDataType *output,
+  unsigned int channelsOutput, unsigned int frames)
 {
   unsigned int unused = channelsOutput - channelsInput;
-  unsigned int j, i;
-
+  AudioDataType *_input  = input;
   AudioDataType *_output = output;
-  AudioDataType *_input = input;
-  for (i = 0; i < frames; i++)
+
+  for (unsigned int i = 0; i < frames; i++)
   {
-    /* get input channels */
-    for(j = 0; j < channelsInput; j++)
+    // get input channels
+    for(unsigned int j = 0; j < channelsInput; j++)
       *_output++ = *_input++;
-    /* set unused channels */
-    for(j = 0; j < unused; j++)
+    // set unused channels
+    for(unsigned int j = 0; j < unused; j++)
       *_output++ = 0;
   }
 }
 
-void CCoreAudioAEStream::Upmix(void *input, unsigned int channelsInput, void *output, unsigned int channelsOutput, unsigned int frames, AEDataFormat dataFormat)
+void CCoreAudioAEStream::Upmix(void *input,
+  unsigned int channelsInput,  void *output,
+  unsigned int channelsOutput, unsigned int frames, AEDataFormat dataFormat)
 {
-  /* input channels must be less than output channels */
+  // input channels must be less than output channels
   if (channelsInput >= channelsOutput)
     return;
 
@@ -161,7 +164,6 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
 void CCoreAudioAEStream::InitializeRemap()
 {
-//#if defined(TARGET_DARWIN_OSX)
   if (!m_isRaw)
   {
     if (m_OutputFormat.m_channelLayout != AE.GetChannelLayout())
@@ -170,15 +172,13 @@ void CCoreAudioAEStream::InitializeRemap()
       m_chLayoutCountOutput     = m_OutputFormat.m_channelLayout.Count();
       m_OutputBytesPerSample    = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
 
-      /* re-init the remappers */
+      // re-init the remappers
       m_remap   .Initialize(m_StreamFormat.m_channelLayout, m_OutputFormat.m_channelLayout, false);
       m_vizRemap.Initialize(m_StreamFormat.m_channelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true);
 
       InternalFlush();
     }
   }
-//#endif
-
 }
 
 void CCoreAudioAEStream::ReinitConverter()
@@ -201,7 +201,7 @@ void CCoreAudioAEStream::CloseConverter()
 
 void CCoreAudioAEStream::OpenConverter()
 {
-  // we allways allocate a converter
+  // we always allocate a converter
   // the HAL decides if we get converter.
   // if there is already a converter delete it.
   if (m_outputUnit)
@@ -212,35 +212,33 @@ void CCoreAudioAEStream::OpenConverter()
   format.m_sampleRate = m_StreamFormat.m_sampleRate;
   m_outputUnit = (CAUOutputDevice *) AE.GetHAL()->CreateUnit(this, format);
 
-  // it is save to register any direct input. the HAL takes care about it.
+  // it is safe to register any direct input. the HAL takes care about it.
   AE.GetHAL()->SetDirectInput(this, m_OutputFormat);
 }
 
 void CCoreAudioAEStream::Initialize()
 {
   if (m_valid)
-  {
     InternalFlush();
-  }
 
-  m_OutputFormat            = AE.GetAudioFormat();
-  m_chLayoutCountOutput     = m_OutputFormat.m_channelLayout.Count();
+  m_OutputFormat = AE.GetAudioFormat();
+  m_chLayoutCountOutput = m_OutputFormat.m_channelLayout.Count();
 
   if (m_rawDataFormat == AE_FMT_LPCM)
-    m_OutputBytesPerSample    = (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
+    m_OutputBytesPerSample = (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
   else
-    m_OutputBytesPerSample    = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
+    m_OutputBytesPerSample = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
 
   if (m_isRaw)
   {
-    /* we are raw, which means we need to work in the output format */
+    // we are raw, which means we need to work in the output format
     if (m_rawDataFormat != AE_FMT_LPCM)
     {
-      m_StreamFormat                = AE.GetAudioFormat();
-      m_chLayoutCountStream         = m_StreamFormat.m_channelLayout.Count();
+      m_StreamFormat = AE.GetAudioFormat();
+      m_chLayoutCountStream = m_StreamFormat.m_channelLayout.Count();
     }
-    m_StreamBytesPerSample        = (CAEUtil::DataFormatToBits(m_StreamFormat.m_dataFormat) >> 3);
-    m_doRemap                     = false;
+    m_StreamBytesPerSample = (CAEUtil::DataFormatToBits(m_StreamFormat.m_dataFormat) >> 3);
+    m_doRemap = false;
   }
   else
   {
@@ -249,16 +247,12 @@ void CCoreAudioAEStream::Initialize()
       m_valid = false;
       return;
     }
-    /* Work around a bug in TrueHD and DTSHD deliver */
+    // Work around a bug in TrueHD and DTSHD deliver
     if (m_StreamFormat.m_dataFormat == AE_FMT_TRUEHD || m_StreamFormat.m_dataFormat == AE_FMT_DTSHD)
-    {
-      m_StreamBytesPerSample        = (CAEUtil::DataFormatToBits(AE_FMT_S16NE) >> 3);
-    }
+      m_StreamBytesPerSample = (CAEUtil::DataFormatToBits(AE_FMT_S16NE) >> 3);
     else
-    {
-      m_StreamBytesPerSample        = (CAEUtil::DataFormatToBits(m_StreamFormat.m_dataFormat) >> 3);
-    }
-    m_StreamFormat.m_frameSize      = m_StreamBytesPerSample * m_chLayoutCountStream;
+      m_StreamBytesPerSample = (CAEUtil::DataFormatToBits(m_StreamFormat.m_dataFormat) >> 3);
+    m_StreamFormat.m_frameSize = m_StreamBytesPerSample * m_chLayoutCountStream;
   }
 
   if (!m_isRaw)
@@ -281,21 +275,21 @@ void CCoreAudioAEStream::Initialize()
     }
   }
 
-  m_convert       = m_StreamFormat.m_dataFormat != AE_FMT_FLOAT && !m_isRaw;
-  //m_resample      = false; //(m_StreamFormat.m_sampleRate != m_OutputFormat.m_sampleRate) && !m_isRaw;
+  m_convert = m_StreamFormat.m_dataFormat != AE_FMT_FLOAT && !m_isRaw;
+  //m_resample = false; //(m_StreamFormat.m_sampleRate != m_OutputFormat.m_sampleRate) && !m_isRaw;
 
-  /* if we need to convert, set it up */
+  // if we need to convert, set it up
   if (m_convert)
   {
-    /* get the conversion function and allocate a buffer for the data */
+    // get the conversion function and allocate a buffer for the data
     CLog::Log(LOGDEBUG, "CCoreAudioAEStream::CCoreAudioAEStream - Converting from %s to AE_FMT_FLOAT", CAEUtil::DataFormatToStr(m_StreamFormat.m_dataFormat));
     m_convertFn = CAEConvert::ToFloat(m_StreamFormat.m_dataFormat);
 
     if (!m_convertFn)
-      m_valid         = false;
+      m_valid = false;
   }
 
-  /* if we need to resample, set it up */
+  // if we need to resample, set it up
   /*
   if (m_resample)
   {
@@ -309,10 +303,9 @@ void CCoreAudioAEStream::Initialize()
 
   // m_AvgBytesPerSec is calculated based on the output format.
   // we have to keep in mind that we convert our data to the output format
-  m_AvgBytesPerSec =  m_OutputFormat.m_frameSize * m_OutputFormat.m_sampleRate;
+  m_AvgBytesPerSec = m_OutputFormat.m_frameSize * m_OutputFormat.m_sampleRate;
 
   delete m_Buffer;
-
   m_Buffer = new CoreAudioRingBuffer(m_AvgBytesPerSec);
 
   m_fadeRunning = false;
@@ -324,8 +317,8 @@ void CCoreAudioAEStream::Initialize()
 
 void CCoreAudioAEStream::Destroy()
 {
-  m_valid       = false;
-  m_delete      = true;
+  m_valid  = false;
+  m_delete = true;
   InternalFlush();
 }
 
@@ -338,38 +331,38 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   if (!m_valid || size == 0 || data == NULL || !m_Buffer)
     return 0;
-  
-  /* if the stream is draining */
+
+  // if the stream is draining
   if (m_draining)
   {
-    /* if the stream has finished draining, cork it */
+    // if the stream has finished draining, cork it
     if (m_Buffer && m_Buffer->GetReadSize() == 0)
       m_draining = false;
     else
       return 0;
   }
 
-  /* convert the data if we need to */
+  // convert the data if we need to
   if (m_convert)
   {
     CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * m_chLayoutCountStream  * m_OutputBytesPerSample);
 
-    samples     = m_convertFn(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
-    frames      = samples / m_chLayoutCountStream;
-    addsize     = frames * m_chLayoutCountStream * m_OutputBytesPerSample;
-    adddata     = (uint8_t *)m_convertBuffer;
+    samples = m_convertFn(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
+    frames  = samples / m_chLayoutCountStream;
+    addsize = frames * m_chLayoutCountStream * m_OutputBytesPerSample;
+    adddata = (uint8_t *)m_convertBuffer;
   }
   else
   {
-    samples     = size / m_StreamBytesPerSample;
-    adddata     = (uint8_t *)data;
-    addsize     = size;
+    samples = size / m_StreamBytesPerSample;
+    adddata = (uint8_t *)data;
+    addsize = size;
   }
 
   if (samples == 0)
     return 0;
 
-  /* resample it if we need to */
+  // resample it if we need to
   /*
   if (m_resample)
   {
@@ -400,15 +393,14 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   if (m_doRemap)
   {
     addsize = frames * m_OutputBytesPerSample * m_chLayoutCountOutput;
-
     CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize);
 
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
-    adddata   = (uint8_t *)m_remapBuffer;
+    adddata = (uint8_t *)m_remapBuffer;
   }
 
-  /* upmix the ouput to 8 channels */
+  // upmix the ouput to 8 channels
   if ( (!m_isRaw || m_rawDataFormat == AE_FMT_LPCM) && (m_chLayoutCountOutput > m_chLayoutCountStream) )
   {
     frames = addsize / m_StreamFormat.m_frameSize;
@@ -420,7 +412,6 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   }
 
   unsigned int room = m_Buffer->GetWriteSize();
-
   while (addsize > room && !m_paused)
   {
     // we got deleted
@@ -438,62 +429,52 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   }
 
   if (addsize > room)
-  {
-    //CLog::Log(LOGDEBUG, "CCoreAudioAEStream::AddData failed : free size %d add size %d", room, addsize);
     size = 0;
-  }
   else
-  {
     m_Buffer->Write(adddata, addsize);
-  }
-
-  //printf("AddData  : %d %d\n", addsize, m_Buffer->GetWriteSize());
 
   return size;
 }
 
 unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 {
-  /* if we have been deleted */
+  // if we have been deleted
   if (!m_valid || m_delete || !m_Buffer || m_paused)
-  {
     return 0;
-  }
 
   unsigned int readsize = std::min(m_Buffer->GetReadSize(), size);
   m_Buffer->Read(buffer, readsize);
 
   if (!m_isRaw)
   {
-    float *floatBuffer      = (float *)buffer;
-    unsigned int samples    = readsize / m_OutputBytesPerSample;        
-  
-    /* we have a frame, if we have a viz we need to hand the data to it.
-      Keep in mind that our buffer is already in output format. 
-      So we remap output format to viz format !!!*/  
+    float *floatBuffer   = (float *)buffer;
+    unsigned int samples = readsize / m_OutputBytesPerSample;        
+
+    // we have a frame, if we have a viz we need to hand the data to it.
+    // Keep in mind that our buffer is already in output format. 
+    // So we remap output format to viz format !!!  
     if (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT)
     {
       // TODO : Why the hell is vizdata limited ?
       unsigned int frames         = samples / m_chLayoutCountOutput;
       unsigned int samplesClamped = (samples > 512) ? 512 : samples;
-      if(samplesClamped) {
+      if (samplesClamped)
+      {
         // Viz channel count is 2
         CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * sizeof(float));
-      
+
         m_vizRemap.Remap(floatBuffer, (float*)m_vizRemapBuffer, frames);
         if (m_audioCallback)
-        {
           m_audioCallback->OnAudioData((float *)m_vizRemapBuffer, samplesClamped);
-        }
       }
     }
-    
-    /* if we are fading */
+
+    // if we are fading
     if (m_fadeRunning)
     {
       // TODO: check if we correctly respect the amount of our blockoperation
       m_volume += (m_fadeStep * ((float)readsize / (float)m_OutputFormat.m_frameSize));
-      m_volume = std::min(1.0f, std::max(0.0f, m_volume));
+      m_volume  = std::min(1.0f, std::max(0.0f, m_volume));
       if (m_fadeDirUp)
       {
         if (m_volume >= m_fadeTarget)
@@ -508,7 +489,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 #ifdef __SSE__
       CAEUtil::SSEMulArray(floatBuffer, m_volume, samples);
 #else
-      for(unsigned int i=0; i < samples; i++)
+      for(unsigned int i = 0; i < samples; i++)
         floatBuffer[i] *= m_volume;
 #endif
       CAEUtil::ClampArray(floatBuffer, samples);
@@ -537,7 +518,6 @@ double CCoreAudioAEStream::GetDelay()
     return 0.0f;
 
   double delay = (double)(m_Buffer->GetReadSize()) / (double)m_AvgBytesPerSec;
-
   delay += AE.GetDelay();
 
   return delay;
@@ -600,7 +580,6 @@ void CCoreAudioAEStream::Drain()
   m_draining = true;
 }
 
-
 bool CCoreAudioAEStream::IsDrained()
 {
   return m_Buffer->GetReadSize() <= 0;
@@ -633,7 +612,7 @@ void  CCoreAudioAEStream::SetReplayGain(float factor)
 
 void CCoreAudioAEStream::InternalFlush()
 {
-  /* reset the resampler */
+  // reset the resampler
   /*
   if (m_resample) {
     m_ssrcData.end_of_input = 0;
@@ -646,7 +625,6 @@ void CCoreAudioAEStream::InternalFlush()
   if (m_Buffer)
   {
     unsigned int readsize = m_Buffer->GetReadSize();
-
     if (readsize)
     {
       uint8_t *buffer = (uint8_t *)_aligned_malloc(readsize, 16);
@@ -654,7 +632,7 @@ void CCoreAudioAEStream::InternalFlush()
       _aligned_free(buffer);
     }
 
-      /* if we are draining and are out of packets, tell the slave to resume */
+    // if we are draining and are out of packets, tell the slave to resume
     if (m_draining && m_slave)
     {
       m_slave->Resume();
@@ -662,7 +640,7 @@ void CCoreAudioAEStream::InternalFlush()
     }
   }
 
-  //if(m_Buffer)
+  //if (m_Buffer)
   //  m_Buffer->Reset();
 }
 
@@ -742,7 +720,6 @@ void CCoreAudioAEStream::FadeVolume(float from, float target, unsigned int time)
     m_fadeStep    = delta / (((float)m_OutputFormat.m_sampleRate / 1000.0f) * (float)time);
     m_fadeRunning = true;
   }
-
 }
 
 bool CCoreAudioAEStream::IsFading()
@@ -755,11 +732,14 @@ void CCoreAudioAEStream::RegisterSlave(IAEStream *stream)
   m_slave = stream;
 }
 
+OSStatus CCoreAudioAEStream::Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
+{
+  OSStatus ret = OnRender(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
+  return ret;
+}
+
 OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
-  // the index is important if we run encoded
-  unsigned outputBufferIndex = AE.GetHAL()->GetBufferIndex();
-
   // if we have no valid data output silence
   if (!m_valid || m_delete || !m_Buffer || m_firstInput || m_paused)
   {
@@ -774,19 +754,12 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   unsigned int size = inNumberFrames * m_OutputFormat.m_frameSize;
   //unsigned int size = inNumberFrames * m_StreamFormat.m_frameSize;
 
+  // the index is important if we run encoded
+  unsigned int outputBufferIndex = AE.GetHAL()->GetBufferIndex();
+
   ioData->mBuffers[outputBufferIndex].mDataByteSize  = GetFrames((unsigned char *)ioData->mBuffers[outputBufferIndex].mData, size);
   if (!ioData->mBuffers[outputBufferIndex].mDataByteSize && ioActionFlags)
     *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
 
   return noErr;
-}
-
-OSStatus CCoreAudioAEStream::Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
-{
-
-  OSStatus ret = noErr;
-
-  ret = OnRender(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
-
-  return ret;
 }

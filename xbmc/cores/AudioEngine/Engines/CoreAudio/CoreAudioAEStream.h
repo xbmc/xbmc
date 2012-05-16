@@ -99,18 +99,19 @@ public:
   virtual void RegisterSlave(IAEStream *stream);
 
   OSStatus Render(AudioUnitRenderActionFlags* actionFlags, 
-                  const AudioTimeStamp* pTimeStamp, 
-                  UInt32 busNumber, 
-                  UInt32 frameCount, 
-                  AudioBufferList* pBufList);
-  OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
-                    const AudioTimeStamp *inTimeStamp, 
-                    UInt32 inBusNumber, 
-                    UInt32 inNumberFrames, 
-                    AudioBufferList *ioData);
+    const AudioTimeStamp* pTimeStamp, 
+    UInt32 busNumber, 
+    UInt32 frameCount, 
+    AudioBufferList* pBufList);
 
 private:
   void InternalFlush();
+
+  OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
+    const AudioTimeStamp *inTimeStamp, 
+    UInt32 inBusNumber, 
+    UInt32 inNumberFrames, 
+    AudioBufferList *ioData);
 
   AEDataFormat            m_rawDataFormat;
 
