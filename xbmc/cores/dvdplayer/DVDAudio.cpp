@@ -78,6 +78,12 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
     return false;
   }
 
+  if (audioframe.passthrough && !audioframe.encoded_sample_rate)
+  {
+    CLog::Log(LOGERROR, "Not creating a passthrough audio stream without known encoded sample rate");
+    return false;
+  }
+
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
