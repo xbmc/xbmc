@@ -25,19 +25,6 @@
 
 #include <sstream>
 
-static char* UInt32ToFourCC(UInt32* pVal)
-{
-  // NOT NULL TERMINATED! Modifies input value.
-  UInt32 inVal = *pVal;
-  char* pIn = (char*)&inVal;
-  char* fourCC = (char*)pVal;
-  fourCC[3] = pIn[0];
-  fourCC[2] = pIn[1];
-  fourCC[1] = pIn[2];
-  fourCC[0] = pIn[3];
-  return fourCC;
-}
-
 // Helper Functions
 std::string GetError(OSStatus error)
 {
@@ -61,12 +48,15 @@ std::string GetError(OSStatus error)
 
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::string &str)
 {
-  UInt32 formatId = desc.mFormatID;
-  char fourCC[5];
-  fourCC[0]='\0';
-  strncat(fourCC, UInt32ToFourCC(&formatId), 4);
-  std::stringstream sstr;
- 
+  char fourCC[5] = {
+    (desc.mFormatID >> 24) & 0xFF,
+    (desc.mFormatID >> 16) & 0xFF,
+    (desc.mFormatID >>  8) & 0xFF,
+     desc.mFormatID        & 0xFF,
+    0
+  };
+
+  std::stringstream sstr; 
   switch (desc.mFormatID)
   {
     case kAudioFormatLinearPCM:
