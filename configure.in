@@ -2162,6 +2162,13 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
 
     ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
 
+    # if using llvm-gcc-4.2 as assembler, -MMD is not enough to generate
+    # dependency files in the right place, replace it with something that works
+    case $AS in
+      *llvm-gcc-4.2*)
+        sed -ie "s#AS_DEPFLAGS=-MMD#AS_DEPFLAGS=-MMD -MF \$(\@:.o=.d) -MT \$\@#" config.mak ;;
+    esac
+
     # ffmpeg will use yasm found at ${prefix}/bin during configure
     # but then hardcodes 'yasm' in config.mak, fix it.
     sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak
