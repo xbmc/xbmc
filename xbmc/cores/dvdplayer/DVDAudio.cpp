@@ -64,6 +64,20 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
     audioframe.passthrough ? "pass-through" : "no pass-through"
   );
 
+  if ((int)audioframe.channel_layout.Count() != audioframe.channel_count)
+  {
+    CLog::Log(LOGERROR,
+      "Not creating an audio stream with incorrect channel layout (layout has %d channels, stream has %d channels)",
+      audioframe.channel_layout.Count(), audioframe.channel_count);
+    return false;
+  }
+
+  if (audioframe.channel_count == 0)
+  {
+    CLog::Log(LOGERROR, "Not creating an empty audio stream");
+    return false;
+  }
+
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;

@@ -103,6 +103,10 @@ public:
 
   /**
    * Creates and returns a new IAEStream in the format specified, this function should never fail
+   *
+   * It is the caller's responsibility to check that the channelLayout is valid,
+   * it will not be validated (calling with empty layout can cause a crash).
+   *
    * @param dataFormat The data format the incoming audio will be in (eg, AE_FMT_S16LE)
    * @param sampleRate The sample rate of the audio data (eg, 48000)
    * @prarm encodedSampleRate The sample rate of the encoded audio data if AE_IS_RAW(dataFormat)
