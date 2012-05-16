@@ -310,6 +310,14 @@ unsigned int CRarFile::Read(void *lpBuf, int64_t uiBufSize)
 
     m_iDataInBuffer = MAXWINMEMSIZE-m_pExtract->GetDataIO().UnpackToMemorySize;
 
+    if (m_iDataInBuffer < 0 ||
+        m_iDataInBuffer > MAXWINMEMSIZE - (m_szStartOfBuffer - m_szBuffer))
+    {
+      // invalid data returned by UnrarXLib, prevent a crash
+      CLog::Log(LOGERROR, "CRarFile::Read - Data buffer in inconsistent state");
+      m_iDataInBuffer = 0;
+    }
+
     if (m_iDataInBuffer == 0)
       break;
 
@@ -471,6 +479,15 @@ int64_t CRarFile::Seek(int64_t iFilePosition, int iWhence)
   }
   m_iDataInBuffer = m_pExtract->GetDataIO().m_iSeekTo; // keep data
   m_iBufferStart = m_pExtract->GetDataIO().m_iStartOfBuffer;
+
+  if (m_iDataInBuffer < 0 || m_iDataInBuffer > MAXWINMEMSIZE)
+  {
+    // invalid data returned by UnrarXLib, prevent a crash
+    CLog::Log(LOGERROR, "CRarFile::Seek - Data buffer in inconsistent state");
+    m_iDataInBuffer = 0;
+    return -1;
+  }
+
   m_szStartOfBuffer = m_szBuffer+MAXWINMEMSIZE-m_iDataInBuffer;
   m_iFilePosition = iFilePosition;
 
