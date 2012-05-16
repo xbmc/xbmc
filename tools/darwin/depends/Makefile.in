@@ -10,7 +10,7 @@ SUBDIRS := \
 	libvorbis libflac libmp3lame libmad fribidi libmpeg2 \
 	libass libcdio libsamplerate libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
-	libmicrohttpd libmodplug libbluray libyajl \
+	libmicrohttpd libmodplug libbluray libyajl libffi \
 	libgpg-error libgcrypt afpfs-ng \
 	libplist libshairport libcec tinyxml \
         samba python26 distribute distutilscross \

@@ -214,7 +214,7 @@ diff -uN Python-2.6.2/setup.py Python-2.6.2POld/setup.py
  
  # This global variable is used to hold the list of modules to be disabled.
 -disabled_module_list = []
-+disabled_module_list = ['_ctypes', '_curses', '_curses_panel', '_cursesmodule', '_tkinter', 'syslogmodule', 'nismodule']
++disabled_module_list = ['_curses', '_curses_panel', '_cursesmodule', '_tkinter', 'syslogmodule', 'nismodule']
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
