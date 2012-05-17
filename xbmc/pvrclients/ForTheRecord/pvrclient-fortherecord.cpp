@@ -29,6 +29,7 @@
 #include "pvrclient-fortherecord.h"
 #include "fortherecordrpc.h"
 #include "platform/util/timeutils.h"
+#include "platform/util/StdString.h"
 
 #ifdef TSREADER
 #include "lib/tsreader/TSReader.h"
@@ -175,7 +176,8 @@ bool cPVRClientForTheRecord::ShareErrorsFound(void)
       std::string accessMsg = "";
 #if defined(TARGET_WINDOWS)
       // Try to open the directory
-      HANDLE hFile = ::CreateFile(sharename.c_str(),      // The filename
+      CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(sharename.c_str());
+      HANDLE hFile = ::CreateFileW(strWFile,      // The filename
         (DWORD) GENERIC_READ,             // File access
         (DWORD) FILE_SHARE_READ,          // Share access
         NULL,                             // Security

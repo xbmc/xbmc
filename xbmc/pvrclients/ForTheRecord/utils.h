@@ -19,6 +19,7 @@
 
 #include <string>
 #include <json/json.h>
+#include "platform/util/StdString.h"
 
 namespace Json
 {
@@ -30,6 +31,14 @@ namespace Json
    */
   void printValueTree( const Json::Value& value, const std::string& path = "." );
 }
+
+#if defined(TARGET_WINDOWS)
+namespace UTF8Util
+{
+  CStdStringW ConvertUTF8ToUTF16(const char* pszTextUTF8);
+  CStdStringA ConvertUTF16ToUTF8(const WCHAR * pszTextUTF16);
+}
+#endif
 
 /** Delete macros that make the pointer NULL again */
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)

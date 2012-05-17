@@ -32,8 +32,10 @@
 #include "client.h" //for XBMC->Log
 #include "os-dependent.h"
 #include <algorithm> //std::min, std::max
+#include "utils.h"
 
-#if !defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS)
+#else
 #include "PlatformInclude.h"
 using namespace XFILE;
 #endif
@@ -123,10 +125,11 @@ long FileReader::OpenFile()
   {
 #if defined(TARGET_WINDOWS)
     // do not try to open a tsbuffer file without SHARE_WRITE so skip this try if we have a buffer file
+    CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(m_pFileName);
     if (strstr(m_pFileName, ".ts.tsbuffer") == NULL) 
     {
       // Try to open the file
-      m_hFile = ::CreateFile(m_pFileName,      // The filename
+      m_hFile = ::CreateFileW(strWFile,      // The filename
              (DWORD) GENERIC_READ,             // File access
              (DWORD) FILE_SHARE_READ,          // Share access
              NULL,                             // Security
@@ -139,7 +142,7 @@ long FileReader::OpenFile()
     }
 
     //Test incase file is being recorded to
-    m_hFile = ::CreateFile(m_pFileName,         // The filename
+    m_hFile = ::CreateFileW(strWFile,         // The filename
               (DWORD) GENERIC_READ,             // File access
               (DWORD) (FILE_SHARE_READ |
               FILE_SHARE_WRITE),                // Share access

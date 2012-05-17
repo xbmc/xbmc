@@ -35,6 +35,7 @@
 #include <wchar.h>
 #include <algorithm>
 #include "platform/util/timeutils.h"
+#include "platform/util/StdString.h"
 
 #include <limits.h>
 
@@ -614,7 +615,8 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
   length = 0;
 
   // Try to open the file
-  HANDLE hFile = ::CreateFile(pFilename,   // The filename
+  CStdStringW strWFile = UTF8Util::ConvertUTF8ToUTF16(pFilename);
+  HANDLE hFile = ::CreateFileW(strWFile,   // The filename
             (DWORD) GENERIC_READ,          // File access
              (DWORD) (FILE_SHARE_READ |
              FILE_SHARE_WRITE),            // Share access
