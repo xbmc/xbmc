@@ -86,6 +86,13 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   }
   unsigned int blockSize = (m_codec->m_BitsPerSample >> 3) * m_codec->GetChannelInfo().Count();
 
+  if (blockSize == 0)
+  {
+    CLog::Log(LOGERROR, "CAudioDecoder: Codec provided invalid parameters (%d-bit, %u channels)",
+              m_codec->m_BitsPerSample, m_codec->GetChannelInfo().Count());
+    return false;
+  }
+
   /* allocate the pcmBuffer for 2 seconds of audio */
   m_pcmBuffer.Create(2 * blockSize * m_codec->m_SampleRate);
 
