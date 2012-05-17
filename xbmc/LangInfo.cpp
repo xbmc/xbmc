@@ -173,6 +173,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
     locale lcl = locale(strLocale);
     strLocale = lcl.name();
     current_locale = current_locale.combine< collate<wchar_t> >(lcl);
+    current_locale = current_locale.combine< ctype<wchar_t> >(lcl);
 
     assert(use_facet< numpunct<char> >(current_locale).decimal_point() == '.');
 
