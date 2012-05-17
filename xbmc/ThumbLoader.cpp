@@ -140,19 +140,23 @@ bool CThumbExtractor::DoWork()
 CVideoThumbLoader::CVideoThumbLoader() :
   CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
 {
+  m_database = new CVideoDatabase();
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
 {
   StopThread();
+  delete m_database;
 }
 
 void CVideoThumbLoader::OnLoaderStart()
 {
+  m_database->Open();
 }
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
+  m_database->Close();
 }
 
 static void SetupRarOptions(CFileItem& item, const CStdString& path)
@@ -188,14 +192,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+  m_database->Open();
+
   // resume point
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
   {
-    CVideoDatabase db;
-    db.Open();
-    if (db.GetResumePoint(*pItem->GetVideoInfoTag()))
+    if (m_database->GetResumePoint(*pItem->GetVideoInfoTag()))
       pItem->SetInvalid();
-    db.Close();
   }
 
   // video db items normally have info in the database
@@ -207,7 +210,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->GetVideoInfoTag()->m_type != "episode" &&
         pItem->GetVideoInfoTag()->m_type != "tvshow" &&
         pItem->GetVideoInfoTag()->m_type != "musicvideo")
+    {
+      m_database->Close();
       return true; // nothing else to be done
+    }
   }
 
   // fanart
@@ -252,6 +258,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
         CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
         AddJob(extract);
+
+        m_database->Close();
         return true;
       }
     }
@@ -272,6 +280,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     AddJob(extract);
   }
 
+  m_database->Close();
   return true;
 }
 
@@ -280,10 +289,9 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
   if (pItem->GetVideoInfoTag()->m_iDbId > -1 &&
      !pItem->GetVideoInfoTag()->m_type.IsEmpty())
   {
-    CVideoDatabase db;
-    db.Open();
     map<string, string> artwork;
-    if (db.GetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork))
+    m_database->Open();
+    if (m_database->GetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork))
       pItem->SetArt(artwork);
     else
     {
@@ -293,7 +301,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
           pItem->GetVideoInfoTag()->m_type == "musicvideo")
       { // no art in the library, so find it locally and add
         SScanSettings settings;
-        ADDON::ScraperPtr info = db.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath, settings);
+        ADDON::ScraperPtr info = m_database->GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath, settings);
         if (info)
         {
           CFileItem item(*pItem);
@@ -306,7 +314,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
       else if (pItem->GetVideoInfoTag()->m_type == "set")
       { // no art for a set -> use the first movie for this set for art
         CFileItemList items;
-        if (db.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, pItem->GetVideoInfoTag()->m_iDbId) && items.Size() > 0)
+        if (m_database->GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, pItem->GetVideoInfoTag()->m_iDbId) && items.Size() > 0)
         {
           LoadItem(items[0].get());
           if (!items[0]->GetArt().empty())
@@ -333,7 +341,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
         // season art is fetched on scan from the tvshow root path (m_strPath in the season info tag)
         // or from the show m_strPictureURL member of the tvshow, so grab the tvshow to get this.
         CVideoInfoTag tag;
-        db.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strPath, tag, pItem->GetVideoInfoTag()->m_iIdShow);
+        m_database->GetTvShowInfo(pItem->GetVideoInfoTag()->m_strPath, tag, pItem->GetVideoInfoTag()->m_iIdShow);
         map<int, string> seasons;
         CVideoInfoScanner::GetSeasonThumbs(tag, seasons, true);
         map<int, string>::iterator season = seasons.find(pItem->GetVideoInfoTag()->m_iSeason);
@@ -344,21 +352,21 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem *pItem)
       map<string, string> artwork = pItem->GetArt();
       if (!artwork.empty())
       {
-        db.SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork);
+        m_database->SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, artwork);
         for (map<string, string>::iterator i = artwork.begin(); i != artwork.end(); ++i)
           CTextureCache::Get().BackgroundCacheImage(i->second);
       }
       else // nothing found - set an empty thumb so that next time around we don't hit here again
-        db.SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, "thumb", "");
+        m_database->SetArtForItem(pItem->GetVideoInfoTag()->m_iDbId, pItem->GetVideoInfoTag()->m_type, "thumb", "");
     }
     // For episodes and seasons, we want to set fanart for that of the show
     if (!pItem->HasProperty("fanart_image") && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
-      string fanart = db.GetArtForItem(pItem->GetVideoInfoTag()->m_iIdShow, "tvshow", "fanart");
+      string fanart = m_database->GetArtForItem(pItem->GetVideoInfoTag()->m_iIdShow, "tvshow", "fanart");
       if (!fanart.empty())
         pItem->SetProperty("fanart_image", fanart);
     }
-    db.Close();
+    m_database->Close();
   }
   return !pItem->GetArt().empty();
 }
