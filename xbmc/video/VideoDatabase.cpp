@@ -2909,6 +2909,9 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
  
 bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
 {
+  if (tag.m_iFileId < 0)
+    return false;
+
   bool match = false;
 
   try
