@@ -37,6 +37,13 @@
  \ingroup strings
  \brief
  */
+
+struct LocStr
+{
+CStdString	strTranslated;
+CStdString	strOriginal;
+};
+
 class CLocalizeStrings
 {
 public:
@@ -82,9 +89,9 @@ protected:
   bool LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset = 0);
 
   CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
-  std::map<uint32_t, CStdString> m_strings;
-  typedef std::map<uint32_t, CStdString>::const_iterator ciStrings;
-  typedef std::map<uint32_t, CStdString>::iterator       iStrings;
+  std::map<uint32_t, LocStr> m_strings;
+  typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
+  typedef std::map<uint32_t, LocStr>::iterator       iStrings;
 
   static const uint32_t block_start = 0xf000000;
   static const uint32_t block_size = 4096;
