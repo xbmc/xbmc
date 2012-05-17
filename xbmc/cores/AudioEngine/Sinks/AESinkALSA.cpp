@@ -193,13 +193,15 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const std::string dev
 snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat format)
 {
   if (AE_IS_RAW(format))
-    return SND_PCM_FORMAT_S16_LE;
+    return SND_PCM_FORMAT_S16;
 
   switch (format)
   {
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
     case AE_FMT_U8    : return SND_PCM_FORMAT_U8;
     case AE_FMT_S16NE : return SND_PCM_FORMAT_S16;
+    case AE_FMT_S16LE : return SND_PCM_FORMAT_S16_LE;
+    case AE_FMT_S16BE : return SND_PCM_FORMAT_S16_BE;
     case AE_FMT_S24NE4: return SND_PCM_FORMAT_S24;
 #ifdef __BIG_ENDIAN__
     case AE_FMT_S24NE3: return SND_PCM_FORMAT_S24_3BE;
@@ -258,6 +260,10 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     {
       if (AE_IS_RAW(i) || i == AE_FMT_MAX)
         continue;
+
+      if (m_passthrough && i != AE_FMT_S16BE && i != AE_FMT_S16LE)
+	continue;
+
       fmt = AEFormatToALSAFormat(i);
 
       if (fmt == SND_PCM_FORMAT_UNKNOWN || snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
