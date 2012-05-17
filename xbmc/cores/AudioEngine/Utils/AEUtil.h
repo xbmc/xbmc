@@ -74,4 +74,6 @@ public:
   */
   static float FloatRand1(const float min, const float max);
   static void  FloatRand4(const float min, const float max, float result[4], __m128 *sseresult = NULL);
+
+  static bool S16NeedsByteSwap(AEDataFormat in, AEDataFormat out);
 };
