@@ -504,9 +504,9 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
     DataType dataType;
     switch (dtsBlocks << 5)
     {
-      case 512 : dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC61937::PackDTS_512 ; break;
-      case 1024: dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC61937::PackDTS_1024; break;
-      case 2048: dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC61937::PackDTS_2048; break;
+      case 512 : dataType = STREAM_TYPE_DTS_512 ; break;
+      case 1024: dataType = STREAM_TYPE_DTS_1024; break;
+      case 2048: dataType = STREAM_TYPE_DTS_2048; break;
       default:
         invalid = true;
         break;
