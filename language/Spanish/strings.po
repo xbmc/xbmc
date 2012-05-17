@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"POT-Creation-Date: 2012-05-09 22:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -962,7 +962,7 @@ msgstr "Posición de los subtítulos"
 
 #: id:275
 msgid "Pixel ratio adjustment"
-msgstr "Ajuste de la proporción del pixel"
+msgstr "Ajuste de la proporción del píxel"
 
 #: id:276
 msgid "Adjust the arrow to change the amount of overscan"
@@ -1169,7 +1169,7 @@ msgstr "Error comprimiendo la base de datos"
 
 #: id:333
 msgid "Do you want to clean the library?"
-msgstr "¿Quieres limpiar la bibloteca?"
+msgstr "¿Quieres limpiar la biblioteca?"
 
 #: id:334
 msgid "Clean library..."
@@ -2095,7 +2095,7 @@ msgstr "En progreso"
 
 #: id:576
 msgid "Times played"
-msgstr ""
+msgstr "Veces reproducido"
 
 #: id:580
 msgid "Sort direction"
@@ -2428,7 +2428,7 @@ msgstr "Usar un proxy HTTP para acceder a internet"
 
 #: id:711
 msgid "Internet Protocol (IP)"
-msgstr "Protocólo de Internet (IP)"
+msgstr "Protocolo de Internet (IP)"
 
 #: id:712
 msgid "Invalid port specified. Value must be between 1 and 65535."
@@ -2557,7 +2557,7 @@ msgstr "No se ha explorado información para esta vista"
 
 #: id:746
 msgid "Please turn off library mode"
-msgstr "Por favor desactive el modo bibloteca"
+msgstr "Por favor desactive el modo biblioteca"
 
 #: id:747
 msgid "Error loading image"
@@ -2712,7 +2712,7 @@ msgstr "Nombre de la red inalámbrica (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Control remoto"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -2749,7 +2749,7 @@ msgstr "Acceso a internet"
 
 #: id:850
 msgid "Invalid port number entered"
-msgstr "Numero de puerto introducido inválido"
+msgstr "Número de puerto introducido inválido"
 
 #: id:851
 msgid "Valid port range is 1-65535"
@@ -2761,11 +2761,11 @@ msgstr "El rango válido de puertos es 1024-65535"
 
 #: id:998
 msgid "Add Music..."
-msgstr ""
+msgstr "Añadir Música..."
 
 #: id:999
 msgid "Add Videos..."
-msgstr ""
+msgstr "Añadir Vídeos..."
 
 #: id:1000
 msgid "- Preview"
@@ -3146,7 +3146,7 @@ msgstr "Nombre del Dispositivo"
 
 #: id:1272
 msgid "- Use password protection"
-msgstr ""
+msgstr "- Utilizar protección con contraseña"
 
 #: id:1273
 msgid "AirPlay"
@@ -3391,7 +3391,7 @@ msgstr "Navegador Web"
 #: id:10025
 msgctxt "Auto context with id 10025"
 msgid "Videos"
-msgstr ""
+msgstr "Vídeos"
 
 #: id:10028
 msgid "Videos/Playlist"
@@ -3400,7 +3400,7 @@ msgstr "Vídeos/Lista de reproducción"
 #: id:10029
 msgctxt "Auto context with id 10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Inicio de sesión"
 
 #: id:10034
 msgid "Settings - Profiles"
@@ -4080,7 +4080,7 @@ msgstr "Desconocido"
 
 #: id:13206
 msgid "Overwrite"
-msgstr "Sobreescribir"
+msgstr "Sobrescribir"
 
 #: id:13208
 msgid "Alarm clock"
@@ -4581,7 +4581,7 @@ msgstr "Obtener miniatura"
 
 #: id:13406
 msgid "Picture information"
-msgstr "Información de imágen"
+msgstr "Información de imagen"
 
 #: id:13407
 msgid "%s presets"
@@ -5145,20 +5145,20 @@ msgstr "Ahorro de energía"
 
 #: id:14096
 msgid "Rip"
-msgstr ""
+msgstr "Ripear"
 
 #: id:14097
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Acción al insertar CD de Audio"
 
 #: id:14098
 msgctxt "Auto context with id 14098"
 msgid "Play"
-msgstr ""
+msgstr "Reproducir"
 
 #: id:14099
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Expulsar disco cuando el ripeo se complete"
 
 #: id:15015
 msgctxt "Auto context with id 15015"
@@ -5353,7 +5353,7 @@ msgstr "Top canciones del género %name%"
 
 #: id:15260
 msgid "Listen to tag %name% Last.fm radio"
-msgstr "Oir el género %name% desde la radio Last.fm"
+msgstr "Oír el género %name% desde la radio Last.fm"
 
 #: id:15261
 msgid "Similar artists as %name%"
@@ -5377,11 +5377,11 @@ msgstr "Mayores fans de %name%"
 
 #: id:15266
 msgid "Listen to %name% fans Last.fm radio"
-msgstr "Oir a fans de %name% desde la radio Last.fm"
+msgstr "Oír a fans de %name% desde la radio Last.fm"
 
 #: id:15267
 msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Oir artistas similares a %name% desde la radio Last.fm"
+msgstr "Oír artistas similares a %name% desde la radio Last.fm"
 
 #: id:15268
 msgid "Top artists for user %name%"
@@ -5417,15 +5417,15 @@ msgstr "Gráfica semanal de canciones para %name%"
 
 #: id:15276
 msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Oir a los vecinos de %name% desde la radio Last.fm"
+msgstr "Oír a los vecinos de %name% desde la radio Last.fm"
 
 #: id:15277
 msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Oir la radio Last.fm personal de %name%"
+msgstr "Oír la radio Last.fm personal de %name%"
 
 #: id:15278
 msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Oir el mix de %name% desde la radio Last.fm"
+msgstr "Oír el mix de %name% desde la radio Last.fm"
 
 #: id:15279
 msgid "Retrieving list from Last.fm..."
@@ -5627,7 +5627,7 @@ msgstr "Introducir valor"
 
 #: id:16029
 msgid "Check the log file for details."
-msgstr "Compruebe el archivo de registro para detalles."
+msgstr "Compruebe el archivo de registro para más detalles."
 
 #: id:16030
 msgid "Party mode aborted."
@@ -5655,29 +5655,29 @@ msgstr "Lista de reproducción del modo fiesta"
 
 #: id:16036
 msgid "De-interlace (Half)"
-msgstr "Desentrelazar (Half)"
+msgstr "Desentrelazar (Medio)"
 
 #: id:16037
 msgid "Deinterlace video"
-msgstr ""
+msgstr "Desentrelazar vídeo"
 
 #: id:16038
 msgid "Deinterlace method"
-msgstr ""
+msgstr "Método de desentrelazado"
 
 #: id:16039
 msgctxt "Auto context with id 16039"
 msgid "Off"
-msgstr ""
+msgstr "Desactivado"
 
 #: id:16040
 msgctxt "Auto context with id 16040"
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 #: id:16041
 msgid "On"
-msgstr ""
+msgstr "Activado"
 
 #: id:16100
 msgid "All Videos"
@@ -5782,7 +5782,7 @@ msgstr "Temporal/Espacial"
 
 #: id:16312
 msgid "(VDPAU)Noise Reduction"
-msgstr "(VDPAU)Reducción de Ruído"
+msgstr "(VDPAU)Reducción de Ruido"
 
 #: id:16313
 msgid "(VDPAU)Sharpness"
@@ -5831,7 +5831,7 @@ msgstr "Spline36 optimizado"
 
 #: id:16324
 msgid "Software Blend"
-msgstr ""
+msgstr "Mezcla Software"
 
 #: id:16400
 msgid "Post-processing"
@@ -6356,7 +6356,7 @@ msgstr "Usuario"
 
 #: id:20143
 msgid "Enter password for"
-msgstr "Introduzca constraseña para"
+msgstr "Introduzca contraseña para"
 
 #: id:20144
 msgid "Shutdown timer"
@@ -6944,15 +6944,15 @@ msgstr "Estudios"
 
 #: id:20389
 msgid "Music videos"
-msgstr "Vídeoclips"
+msgstr "Videoclips"
 
 #: id:20390
 msgid "Recently added music videos"
-msgstr "Vídeoclips añadidos recientemente"
+msgstr "Videoclips añadidos recientemente"
 
 #: id:20391
 msgid "Music video"
-msgstr "Vídeoclip"
+msgstr "Videoclip"
 
 #: id:20392
 msgid "Remove music video from library"
@@ -7107,7 +7107,7 @@ msgstr "¿Exportar miniaturas y fanart?"
 
 #: id:20431
 msgid "Overwrite old files?"
-msgstr "¿Sobreescribir archivos antiguos?"
+msgstr "¿Sobrescribir archivos antiguos?"
 
 #: id:20432
 msgid "Exclude path from library updates"
@@ -7215,7 +7215,7 @@ msgstr "Colección de Películas"
 
 #: id:20458
 msgid "Group movies in sets"
-msgstr ""
+msgstr "Agrupar películas en colecciones"
 
 #: id:21330
 msgid "Show hidden files and directories"
@@ -7275,7 +7275,7 @@ msgstr "Directorio de los subtítulos de películas y otros"
 
 #: id:21368
 msgid "Override ASS/SSA subtitles fonts"
-msgstr ""
+msgstr "Sobrescribir fuentes de subtítulos ASS/SSA"
 
 #: id:21369
 msgid "Enable mouse and Touch Screen support"
@@ -7621,11 +7621,11 @@ msgstr "Raíz del sistema de archivos"
 
 #: id:21454
 msgid "Cache full"
-msgstr ""
+msgstr "Caché llena"
 
 #: id:21455
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "Caché llena antes de alcanzar la cantidad necesaria para reproducción contínua"
 
 #: id:21460
 msgid "Subtitle location"
@@ -7977,7 +7977,7 @@ msgstr "Adelantado en: %2.3fs"
 
 #: id:22006
 msgid "Subtitle offset"
-msgstr "Retraso de subtitulos"
+msgstr "Retraso de subtítulos"
 
 #: id:22007
 msgid "OpenGL vendor:"
@@ -8009,7 +8009,7 @@ msgstr "Datos de perfil"
 
 #: id:22014
 msgid "Use dim if paused during video playback"
-msgstr "Atenuado si se pausa durante la reproducción de video"
+msgstr "Atenuado si se pausa durante la reproducción de vídeo"
 
 #: id:22015
 msgid "All recordings"
@@ -8295,7 +8295,7 @@ msgstr "Forzar refresco"
 
 #: id:24036
 msgid "Change log"
-msgstr "Log de cambios"
+msgstr "Registro de cambios"
 
 #: id:24037
 msgid "Uninstall"
@@ -8335,7 +8335,7 @@ msgstr "El Add-on no tiene la estructura correcta"
 
 #: id:24046
 msgid "%s is used by the following installed add-on(s)"
-msgstr "%s es usado por los siguintes add-ons instalados"
+msgstr "%s es usado por los siguientes add-ons instalados"
 
 #: id:24047
 msgid "This add-on cannot be uninstalled"
@@ -8436,7 +8436,7 @@ msgstr "Desactivar"
 
 #: id:24076
 msgid "Add-on Required"
-msgstr ""
+msgstr "Necesario Add-on"
 
 #: id:24080
 msgid "Try to reconnect?"
@@ -8472,15 +8472,15 @@ msgstr "Roto"
 
 #: id:24099
 msgid "Would you like to switch to this skin?"
-msgstr "¿Deséa cambiar a esta skin?"
+msgstr "¿Desea cambiar a esta skin?"
 
 #: id:24100
 msgid "To use this feature you must download an Add-on:"
-msgstr ""
+msgstr "Para utilizar esta característica debe descargar un Add-on:"
 
 #: id:24101
 msgid "Would you like to download this Add-on?"
-msgstr ""
+msgstr "¿Desea descargar este Add-on?"
 
 #: id:25000
 msgid "Notifications"
@@ -8612,7 +8612,7 @@ msgstr "Lluvia"
 
 #: id:33023
 msgid "Humid"
-msgstr "Húmedad"
+msgstr "Humedad"
 
 #: id:33024
 msgid "Feels"
@@ -8830,7 +8830,7 @@ msgstr "Servidor de comunicación remoto"
 
 #: id:33200
 msgid "Detected New Connection"
-msgstr ""
+msgstr "Detectada Nueva Conexión"
 
 #: id:34000
 msgid "Lame"
@@ -8910,207 +8910,207 @@ msgstr "No se ha podido encontrar el elemento anterior a reproducir"
 
 #: id:34300
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "Fallo al iniciar zeroconf"
 
 #: id:34301
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "¿Está instalado el servicio de Apple Bonjour? Consulte el log para más información."
 
 #: id:34400
 msgid "Video Rendering"
-msgstr ""
+msgstr "Renderizado de Vídeo"
 
 #: id:34401
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "Fallo al iniciar los filtros/escaladores, utilizando escalado bilineal"
 
 #: id:34402
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "Fallo al inicializar el dispositivo de audio"
 
 #: id:34403
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "Revise su configuración de audio"
 
 #: id:34404
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Usar gestos para navegar:"
 
 #: id:34405
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1 pase de dedo a la izquierda,derecha,arriba,abajo para cursores"
 
 #: id:34406
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Deslizar dos dedos a la izquierda para Retroceso"
 
 #: id:34407
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1 toque de dedo para Entrar"
 
 #: id:34408
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Tocar con dos dedos para Menú Contextual"
 
 #: id:35000
 msgid "Peripherals"
-msgstr ""
+msgstr "Periféricos"
 
 #: id:35001
 msgid "Generic HID device"
-msgstr ""
+msgstr "Dispositivo HID genérico"
 
 #: id:35002
 msgid "Generic network adapter"
-msgstr ""
+msgstr "Adaptador de red genérico"
 
 #: id:35003
 msgid "Generic disk"
-msgstr ""
+msgstr "Disco genérico"
 
 #: id:35004
 msgid "There are no settings available\nfor this peripheral."
-msgstr ""
+msgstr "No hay configuración disponible\npara este periférico."
 
 #: id:35005
 msgid "New device configured"
-msgstr ""
+msgstr "Nuevo dispositivo configurado"
 
 #: id:35006
 msgid "Device removed"
-msgstr ""
+msgstr "Dispositivo quitado"
 
 #: id:35007
 msgid "Keymap to use for this device"
-msgstr ""
+msgstr "Mapa de teclado para este dispositivo"
 
 #: id:35008
 msgid "Keymap enabled"
-msgstr ""
+msgstr "Mapa de teclado activado"
 
 #: id:35009
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "No utilizar mapa de teclado personalizado para este dispositivo"
 
 #: id:35500
 msgid "Location"
-msgstr ""
+msgstr "Ubicación"
 
 #: id:35501
 msgid "Class"
-msgstr ""
+msgstr "Clase"
 
 #: id:35502
 msgctxt "Auto context with id 35502"
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: id:35503
 msgid "Vendor"
-msgstr ""
+msgstr "Fabricante"
 
 #: id:35504
 msgid "Product ID"
-msgstr ""
+msgstr "ID Producto"
 
 #: id:36000
 msgid "Pulse-Eight CEC adapter"
-msgstr ""
+msgstr "Adaptador CEC Pulse-Eight"
 
 #: id:36001
 msgid "Pulse-Eight Nyxboard"
-msgstr ""
+msgstr "Nyxboard Pulse-Eight"
 
 #: id:36002
 msgid "Switch to keyboard side command"
-msgstr ""
+msgstr "Switch to keyboard side command"
 
 #: id:36003
 msgid "Switch to remote side command"
-msgstr ""
+msgstr "Switch to remote side command"
 
 #: id:36004
 msgid "Press \"user\" button command"
-msgstr ""
+msgstr "Press \"user\" button command"
 
 #: id:36005
 msgid "Enable switch side commands"
-msgstr ""
+msgstr "Enable switch side commands"
 
 #: id:36006
 msgid "Could not open the adapter"
-msgstr ""
+msgstr "No se puedo acceder al adaptador"
 
 #: id:36007
 msgid "Devices to power on when starting XBMC"
-msgstr ""
+msgstr "Dispositivos a encender al iniciar XBMC"
 
 #: id:36008
 msgid "Devices to power off when stopping XBMC"
-msgstr ""
+msgstr "Dispositivos a apagar al iniciar XBMC"
 
 #: id:36009
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
+msgstr "Poner dispositivos en standby cuando se active el salvapantallas"
 
 #: id:36011
 msgid "Could not detect the CEC port. Set it up manually."
-msgstr ""
+msgstr "No se pudo detectar puerto CEC. Configúrelo manualmente."
 
 #: id:36012
 msgid "Could not initialise the CEC adapter. Check your settings."
-msgstr ""
+msgstr "No se pudo iniciar el adaptador CEC. Revise la configuración."
 
 #: id:36013
 msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
+msgstr "Versión de interfaz libCEC no soportada. %d es mayor que la versión soportada por XBMC (%d)"
 
 #: id:36014
 msgid "Put this PC in standby mode when the TV is switched off"
-msgstr ""
+msgstr "Poner este PC en standby cuando se apaga la TV"
 
 #: id:36015
 msgid "HDMI port number"
-msgstr ""
+msgstr "Número de puerto HDMI"
 
 #: id:36016
 msgctxt "Auto context with id 36016"
 msgid "Connected"
-msgstr ""
+msgstr "Conectado"
 
 #: id:36017
 msgid "Adapter found, but libCEC is not available"
-msgstr ""
+msgstr "Adaptador encontrado, pero libCEC no está disponible"
 
 #: id:36018
 msgid "Use the TV's language setting"
-msgstr ""
+msgstr "Usar la configuración de idioma de la TV"
 
 #: id:36019
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Conectado al dispositivo HDMI"
 
 #: id:36020
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Hacer XBMC la fuente activa al iniciar"
 
 #: id:36021
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Dirección física (prevalece sobre puerto HDMI)"
 
 #: id:36022
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "Puerto COM (dejar vacío a no ser que se necesite)"
 
 #: id:36023
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configuración actualizada"
 
 #: id:36024
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Fallo al establecer la nueva configuración. Por favor, revise su configuración."
 
 #: id:36025
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Enviar comando 'fuente inactiva' al detener XBMC"
 

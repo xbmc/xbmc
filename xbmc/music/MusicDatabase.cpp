@@ -28,7 +28,6 @@
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "GUIInfoManager.h"
 #include "music/tags/MusicInfoTag.h"
 #include "addons/AddonManager.h"
@@ -236,14 +235,21 @@ void CMusicDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
-  m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
-              "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
-              "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
-              "strReview, strLabel, strType, strImage, iRating from album "
-              "left outer join artist on album.idArtist=artist.idArtist "
-              "left outer join genre on album.idGenre=genre.idGenre "
-              "left outer join thumb on album.idThumb=thumb.idThumb "
-              "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
+  m_pDS->exec("CREATE VIEW albumview AS SELECT"
+              "  album.idAlbum AS idAlbum, strAlbum, strExtraArtists,"
+              "  album.idArtist AS idArtist, album.strExtraGenres AS strExtraGenres,"
+              "  album.idGenre AS idGenre, strArtist, strGenre, album.iYear AS iYear,"
+              "  strThumb, idAlbumInfo, strMoods, strStyles, strThemes,"
+              "  strReview, strLabel, strType, strImage, iRating "
+              "FROM album "
+              "  LEFT OUTER JOIN artist ON"
+              "    album.idArtist=artist.idArtist"
+              "  LEFT OUTER JOIN genre ON"
+              "    album.idGenre=genre.idGenre"
+              "  LEFT OUTER JOIN thumb ON"
+              "    album.idThumb=thumb.idThumb"
+              "  LEFT OUTER JOIN albuminfo ON"
+              "    album.idAlbum=albuminfo.idAlbum");
 }
 
 void CMusicDatabase::AddSong(CSong& song, bool bCheck)
@@ -2369,8 +2375,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;
@@ -2620,8 +2625,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (dlgMusicScan->IsDialogRunning())
+  if (g_application.IsMusicScanning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
     return;

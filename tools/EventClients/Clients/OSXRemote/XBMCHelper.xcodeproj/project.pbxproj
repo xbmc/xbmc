@@ -193,10 +193,11 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_VERSION = "";
 				INSTALL_PATH = /usr/local/bin;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = XBMCHelper;
-				SDKROOT = macosx10.4;
+				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
 			};
 			name = Debug;
@@ -208,11 +209,11 @@
 				CONFIGURATION_BUILD_DIR = ../../../osx;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				INSTALL_PATH = /usr/local/bin;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = XBMCHelper;
-				SDKROOT = macosx10.4;
+				SDKROOT = macosx;
 				STRIP_STYLE = debugging;
 			};
 			name = Release;

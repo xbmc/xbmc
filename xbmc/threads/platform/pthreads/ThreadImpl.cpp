@@ -23,6 +23,14 @@
 #include <sys/syscall.h>
 #include <sys/resource.h>
 #include <string.h>
+#ifdef __FreeBSD__
+#include <sys/param.h>
+#if __FreeBSD_version < 900031
+#include <sys/thr.h>
+#else
+#include <pthread_np.h>
+#endif
+#endif
 
 void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
@@ -59,7 +67,17 @@ void CThread::TermHandler()
 
 void CThread::SetThreadInfo()
 {
+#ifdef __FreeBSD__
+#if __FreeBSD_version < 900031
+  long lwpid;
+  thr_self(&lwpid);
+  m_ThreadOpaque.LwpId = lwpid;
+#else
+  m_ThreadOpaque.LwpId = pthread_getthreadid_np();
+#endif
+#else
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
+#endif
 
   // start thread with nice level of appication
   int appNice = getpriority(PRIO_PROCESS, getpid());
@@ -111,7 +129,7 @@ bool CThread::SetPriority(const int iPriority)
     bReturn = false;
   else if (iPriority >= minRR)
     bReturn = SetPrioritySched_RR(iPriority);
-#ifndef TARGET_DARWIN
+#ifdef RLIMIT_NICE
   else
   {
     // get user max prio
@@ -178,23 +196,19 @@ int64_t CThread::GetAbsoluteUsage()
   
   int64_t time = 0;
 #ifdef TARGET_DARWIN
-  thread_info_data_t     threadInfo;
-  mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
+  thread_basic_info threadInfo;
+  mach_msg_type_number_t threadInfoCount = THREAD_BASIC_INFO_COUNT;
 
-  if (m_machThreadPort == MACH_PORT_NULL)
-    m_machThreadPort = pthread_mach_thread_np(m_ThreadId);
-
-  kern_return_t ret = thread_info(m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
+  kern_return_t ret = thread_info(pthread_mach_thread_np(m_ThreadId),
+    THREAD_BASIC_INFO, (thread_info_t)&threadInfo, &threadInfoCount);
 
   if (ret == KERN_SUCCESS)
   {
-    thread_basic_info_t threadBasicInfo = (thread_basic_info_t)threadInfo;
-
     // User time.
-    time = ((int64_t)threadBasicInfo->user_time.seconds * 10000000L) + threadBasicInfo->user_time.microseconds*10L;
+    time = ((int64_t)threadInfo.user_time.seconds * 10000000L) + threadInfo.user_time.microseconds*10L;
 
     // System time.
-    time += (((int64_t)threadBasicInfo->system_time.seconds * 10000000L) + threadBasicInfo->system_time.microseconds*10L);
+    time += (((int64_t)threadInfo.system_time.seconds * 10000000L) + threadInfo.system_time.microseconds*10L);
   }
 
 #else
@@ -227,6 +241,38 @@ float CThread::GetRelativeUsage()
   m_iLastTime = iTime;
 
   return m_fLastUsage;
+}
+
+void CThread::Action()
+{
+  try
+  {
+    OnStartup();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+    if (IsAutoDelete())
+      return;
+  }
+
+  try
+  {
+    Process();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread process, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
+
+  try
+  {
+    OnExit();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - thread %s, Unhandled exception caught in thread exit, aborting. auto delete: %d", __FUNCTION__, m_ThreadName.c_str(), IsAutoDelete());
+  }
 }
 
 

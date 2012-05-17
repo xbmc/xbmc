@@ -30,7 +30,7 @@ enum
   MSGID_PLURAL_FOUND = 2 // We have a classic gettext entry with textual msgid in plural form.
 };
 
-enum Boolean
+enum
 {
   ISSOURCELANG=true
 };
@@ -153,6 +153,10 @@ protected:
     \return false, if parse and convert of the id number was unsuccessful.
     */
   bool ParseNumID();
+
+  /*! \brief If we have Windows or Mac line-end chars in PO file, convert them to Unix LFs
+    */
+  void ConvertLineEnds(const std::string &filename);
 
   // Temporary string buffer to read file in.
   std::string m_strBuffer;

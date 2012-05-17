@@ -21,8 +21,8 @@
 
 #if defined(__APPLE__) && !defined(__arm__)
 #include <fstream>
+#include <signal.h>
 #include <sstream>
-#include <Carbon/Carbon.h>
 #include <mach-o/dyld.h>
 
 #include "XBMCHelper.h"
@@ -274,29 +274,6 @@ void XBMCHelper::Uninstall()
 bool XBMCHelper::IsRunning()
 {
   return (GetProcessPid(XBMC_HELPER_PROGRAM)!=-1);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::CaptureAllInput()
-{
-  // Take keyboard focus away from FrontRow and native screen saver
-  if (g_sysinfo.IsAppleTV())
-  {
-    ProcessSerialNumber psn = {0, kCurrentProcess};
-       
-    SetFrontProcess(&psn);
-    EnableSecureEventInput();
-  }
-}
-
-/////////////////////////////////////////////////////////////////////////////
-void XBMCHelper::ReleaseAllInput()
-{
-  // Give keyboard focus back to FrontRow and native screen saver
-  if (g_sysinfo.IsAppleTV())
-  {
-    DisableSecureEventInput();
-  }
 }
 
 /////////////////////////////////////////////////////////////////////////////

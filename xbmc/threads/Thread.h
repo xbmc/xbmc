@@ -115,6 +115,7 @@ private:
   ThreadIdentifier ThreadId() const;
   void SetThreadInfo();
   void TermHandler();
+  void Action();
 
   ThreadIdentifier m_ThreadId;
   ThreadOpaque m_ThreadOpaque;
@@ -129,12 +130,4 @@ private:
   float m_fLastUsage;
 
   std::string m_ThreadName;
-
-#ifdef __APPLE__
-  // Save the Mach thrad port, I don't think it can be obtained from
-  // the pthread_t. We'll use it for querying timer information.
-  //
-  mach_port_t m_machThreadPort;
-#endif
-
 };

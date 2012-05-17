@@ -1507,7 +1507,7 @@
 									<posy>30</posy>
 									<width>630</width>
 									<height>15</height>
-									<label>$INFO[ListItem.Property(Artist]</label>
+									<label>$INFO[ListItem.Property(Artist)]</label>
 									<font>font12</font>
 									<textcolor>grey2</textcolor>
 									<aligny>center</aligny>
@@ -1553,7 +1553,7 @@
 									<posy>30</posy>
 									<width>630</width>
 									<height>15</height>
-									<label>$INFO[ListItem.Property(Artist]</label>
+									<label>$INFO[ListItem.Property(Artist)]</label>
 									<font>font12</font>
 									<textcolor>grey2</textcolor>
 									<aligny>center</aligny>

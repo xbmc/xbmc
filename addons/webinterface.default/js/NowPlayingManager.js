@@ -382,7 +382,7 @@ NowPlayingManager.prototype = {
         this.lastPlaylistItem = this.activePlaylistItem;
         var imgPath = DEFAULT_ALBUM_COVER;
         if (this.activePlaylistItem.thumbnail) {
-          imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+          imgPath = this.activePlaylistItem.thumbnail.startsWith('special://') ? ('/image/' + encodeURI(this.activePlaylistItem.thumbnail)) : ('images/' + this.activePlaylistItem.thumbnail);
         }
         $('#audioCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.album + ' cover art">');
         $('#audioTrackTitle').html('<span title="' + this.activePlaylistItem.title + '">' + this.activePlaylistItem.title + '</span>');
@@ -430,7 +430,7 @@ NowPlayingManager.prototype = {
         this.lastPlaylistItem = this.activePlaylistItem;
         var imgPath = DEFAULT_VIDEO_COVER;
         if (this.activePlaylistItem.thumbnail) {
-          imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+          imgPath = this.activePlaylistItem.thumbnail.startsWith('special://') ? ('/image/' + encodeURI(this.activePlaylistItem.thumbnail)) : ('images/' + this.activePlaylistItem.thumbnail);
         }
         $('#videoCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.title + ' cover art">');
         $('#videoShowTitle').html(this.activePlaylistItem.showtitle||'&nbsp;');

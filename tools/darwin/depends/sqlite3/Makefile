@@ -2,9 +2,10 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=sqlite
-VERSION=3.6.11
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+VERSION=3.7.7.1
+SOURCE=sqlite-autoconf-3070701
+ARCHIVE=sqlite-autoconf-3070701.tar.gz
+BASE_URL=http://www.sqlite.org
 
 # configuration settings
 export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1

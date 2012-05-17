@@ -507,11 +507,14 @@ lib/cmyth/Makefile
 # /xbmc/linux/
 /xbmc/linux/Makefile
 
+# /xbmc/freebsd/
+/xbmc/freebsd/Makefile
+
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile
 
-# /xbmc/cores/AudioRenderers/
-/xbmc/cores/AudioRenderers/Makefile
+# /xbmc/cores/AudioEngine/
+/xbmc/cores/AudioEngine/Makefile
 
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh

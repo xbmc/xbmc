@@ -1,5 +1,4 @@
 SRCS=AnimatedGif.cpp \
-     AudioContext.cpp \
      DDSImage.cpp \
      DirectXGraphics.cpp \
      DirtyRegionSolvers.cpp \
@@ -49,7 +48,6 @@ SRCS=AnimatedGif.cpp \
      GUISelectButtonControl.cpp \
      GUISettingsSliderControl.cpp \
      GUISliderControl.cpp \
-     GUISound.cpp \
      GUISpinControl.cpp \
      GUISpinControlEx.cpp \
      GUIStandardWindow.cpp \

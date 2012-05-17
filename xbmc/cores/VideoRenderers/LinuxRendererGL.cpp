@@ -64,6 +64,11 @@
 
 #endif
 
+#ifdef TARGET_DARWIN
+  #include <CoreVideo/CoreVideo.h>
+  #include <OpenGL/CGLIOSurface.h>
+#endif
+
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
@@ -136,7 +141,12 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
+  {
     m_eventTexturesDone[i] = new CEvent(false,true);
+#ifdef TARGET_DARWIN
+    m_buffers[i].cvBufferRef = NULL;
+#endif
+  }
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
@@ -236,7 +246,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
+    if ((m_format == RENDER_FMT_CVBREF) ||
+        (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle")))
     {
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
@@ -765,6 +776,9 @@ unsigned int CLinuxRendererGL::PreInit()
   m_formats.push_back(RENDER_FMT_NV12);
   m_formats.push_back(RENDER_FMT_YUYV422);
   m_formats.push_back(RENDER_FMT_UYVY422);
+#ifdef TARGET_DARWIN
+  m_formats.push_back(RENDER_FMT_CVBREF);
+#endif
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
@@ -925,6 +939,11 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
     m_renderMethod = RENDER_VAAPI;
   }
+  else if (m_format == RENDER_FMT_CVBREF)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
+    m_renderMethod = RENDER_CVREF;
+  }
   else
   {
     int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
@@ -1025,7 +1044,9 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   
-  if (m_pboSupported && !(m_renderMethod & RENDER_SW))
+  if (m_pboSupported &&
+    !(m_renderMethod & RENDER_SW) && 
+    !(m_renderMethod & RENDER_CVREF))
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
     m_pboUsed = true;
@@ -1058,6 +1079,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGL::UploadVAAPITexture;
     m_textureCreate = &CLinuxRendererGL::CreateVAAPITexture;
     m_textureDelete = &CLinuxRendererGL::DeleteVAAPITexture;
+  }
+  else if (m_format == RENDER_FMT_CVBREF)
+  {
+    m_textureUpload = &CLinuxRendererGL::UploadCVRefTexture;
+    m_textureCreate = &CLinuxRendererGL::CreateCVRefTexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteCVRefTexture;
   }
   else
   {
@@ -1161,6 +1188,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 #endif
   else
   {
+    // RENDER_CVREF uses the same render as the default case
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
@@ -1627,11 +1655,11 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
+  // used for textues uploaded from rgba or CVPixelBuffers.
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   glDisable(GL_DEPTH_TEST);
 
-  // Y
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
@@ -2400,6 +2428,105 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
 #endif
 }
 
+//********************************************************************************************************
+// CoreVideoRef Texture creation, deletion, copying + clearing
+//********************************************************************************************************
+void CLinuxRendererGL::UploadCVRefTexture(int index)
+{
+#ifdef TARGET_DARWIN
+  CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
+
+  if (cvBufferRef)
+  {
+    YUVFIELDS &fields = m_buffers[index].fields;
+    YUVPLANE  &plane  = fields[0][0];
+
+    // It is the fastest way to render a CVPixelBuffer backed
+    // with an IOSurface as there is no CPU -> GPU upload.
+    CGLContextObj cgl_ctx  = (CGLContextObj)g_Windowing.GetCGLContextObj();
+    IOSurfaceRef	surface  = CVPixelBufferGetIOSurface(cvBufferRef);
+    GLsizei       texWidth = IOSurfaceGetWidth(surface);
+    GLsizei       texHeight= IOSurfaceGetHeight(surface);
+    OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
+    size_t        rowbytes = CVPixelBufferGetBytesPerRow(cvBufferRef);
+
+    glEnable(m_textureTarget);
+    glBindTexture(m_textureTarget, plane.id);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, rowbytes);
+
+    if (format_type == kCVPixelFormatType_422YpCbCr8)
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGB8,
+        texWidth, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, surface, 0);
+    else if (format_type == kCVPixelFormatType_32BGRA)
+      CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RGBA8,
+        texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
+
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glBindTexture(m_textureTarget, 0);
+    glDisable(m_textureTarget);
+
+    CVBufferRelease(cvBufferRef);
+    m_buffers[index].cvBufferRef = NULL;
+
+    // Calculate Texture Source Rects
+    plane.rect   = m_sourceRect;
+    plane.width  = m_buffers[index].image.width;
+    plane.height = m_buffers[index].image.height;
+    plane.flipindex = m_buffers[index].flipindex;
+  }
+
+  m_eventTexturesDone[index]->Set();
+#endif
+}
+
+void CLinuxRendererGL::DeleteCVRefTexture(int index)
+{
+#ifdef TARGET_DARWIN
+  YUVPLANE  &plane = m_buffers[index].fields[0][0];
+
+  if (m_buffers[index].cvBufferRef)
+    CVBufferRelease(m_buffers[index].cvBufferRef);
+  m_buffers[index].cvBufferRef = NULL;
+
+  if (plane.id && glIsTexture(plane.id))
+    glDeleteTextures(1, &plane.id), plane.id = 0;
+#endif
+}
+
+bool CLinuxRendererGL::CreateCVRefTexture(int index)
+{
+#ifdef TARGET_DARWIN
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
+
+  DeleteCVRefTexture(index);
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
+  plane.pixpertex_x = 1;
+  plane.pixpertex_y = 1;
+
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
+  glEnable(m_textureTarget);
+  glGenTextures(1, &plane.id);
+  glDisable(m_textureTarget);
+
+  m_eventTexturesDone[index]->Set();
+#endif
+  return true;
+}
+
 void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
@@ -3034,6 +3161,9 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
 
 bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return false;
+
   if(mode == VS_DEINTERLACEMODE_OFF
   || mode == VS_DEINTERLACEMODE_AUTO
   || mode == VS_DEINTERLACEMODE_FORCE)
@@ -3044,6 +3174,9 @@ bool CLinuxRendererGL::Supports(EDEINTERLACEMODE mode)
 
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return false;
+
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
@@ -3134,6 +3267,9 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
 {
+  if(m_renderMethod & RENDER_CVREF)
+    return VS_INTERLACEMETHOD_NONE;
+
   if(m_renderMethod & RENDER_VDPAU)
   {
 #ifdef HAVE_LIBVDPAU
@@ -3198,6 +3334,18 @@ void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder)
 {
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
   buf.vaapi.surface = holder.surface;
+}
+#endif
+
+#ifdef TARGET_DARWIN
+void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  if (buf.cvBufferRef)
+    CVBufferRelease(buf.cvBufferRef);
+  buf.cvBufferRef = cvBufferRef;
+  // retain another reference, this way dvdplayer and renderer can issue releases.
+  CVBufferRetain(buf.cvBufferRef);
 }
 #endif
 

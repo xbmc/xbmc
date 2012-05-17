@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-05-09 07:11+ZONE\n"
+"Last-Translator: WANILTON CAMPOS <campos.wanilton@gmail.com>\n"
 "Language-Team: LANGUAGE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1000,6 +1000,14 @@ msgstr "Resultado(s) da busca"
 msgid "No results found"
 msgstr "Nenhum resultado encontrado"
 
+#: id:285
+msgid "Preferred audio language"
+msgstr "Idioma de audio preferido"
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr "Idioma de legenda preferido"
+
 #: id:287
 msgctxt "Auto context with id 287"
 msgid "Subtitles"
@@ -1082,6 +1090,18 @@ msgstr "Ativado"
 #: id:306
 msgid "Non-interleaved"
 msgstr "Não-intercalado"
+
+#: id:307
+msgid ""
+msgstr ""
+
+#: id:308
+msgid "Original stream's language"
+msgstr "Linguagem corrente original"
+
+#: id:309
+msgid "User Interface language"
+msgstr "Idioma da Interface do Usuário"
 
 #: id:312
 msgid "(0=auto)"
@@ -1225,6 +1245,18 @@ msgstr "Ano"
 #: id:346
 msgid "Boost volume level on downmix"
 msgstr "Aumentar nível do volume no downmix"
+
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr "- Receiver Processa audio DTS-HD"
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Receiver recebe audio LPCM Multicanal"
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr "- Receiver decodifica áudio Dolby True-HD"
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -2712,7 +2744,7 @@ msgstr "Nome da rede sem fio (ESSID)"
 
 #: id:790
 msgid "Remote control"
-msgstr ""
+msgstr "Controle Remoto"
 
 #: id:791
 msgid "Allow programs on this system to control XBMC"
@@ -3130,7 +3162,7 @@ msgstr "Gostaria de conectar ao sistema auto detectado?"
 
 #: id:1259
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 #: id:1260
 msgid "Announce these services to other systems via Zeroconf"
@@ -3150,7 +3182,7 @@ msgstr "- Usar senha para proteção"
 
 #: id:1273
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 #: id:1300
 msgid "Custom audio device"
@@ -3391,7 +3423,7 @@ msgstr "Navegador Web"
 #: id:10025
 msgctxt "Auto context with id 10025"
 msgid "Videos"
-msgstr ""
+msgstr "Vídeos"
 
 #: id:10028
 msgid "Videos/Playlist"
@@ -4605,7 +4637,7 @@ msgstr "Velocidade mínima do ventilador"
 
 #: id:13412
 msgid "Play from here"
-msgstr ""
+msgstr "Reproduzir a partir daqui"
 
 #: id:13413
 msgid "Downloading"
@@ -6533,7 +6565,7 @@ msgstr "Por favor aguarde"
 
 #: id:20187
 msgid "UPnP"
-msgstr ""
+msgstr "UPnp"
 
 #: id:20189
 msgid "Enable auto scrolling for plot & review"
@@ -8476,11 +8508,11 @@ msgstr "Gostaria de trocar para esta skin?"
 
 #: id:24100
 msgid "To use this feature you must download an Add-on:"
-msgstr ""
+msgstr "Para usar este recurso você deve fazer download de um add-on"
 
 #: id:24101
 msgid "Would you like to download this Add-on?"
-msgstr ""
+msgstr "Você quer efetuar download deste Add-on?"
 
 #: id:25000
 msgid "Notifications"
@@ -8834,27 +8866,27 @@ msgstr "Detectado Nova Conexão"
 
 #: id:34000
 msgid "Lame"
-msgstr ""
+msgstr "Lame"
 
 #: id:34001
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 #: id:34002
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 #: id:34003
 msgid "DXVA2"
-msgstr ""
+msgstr "DXVA2"
 
 #: id:34004
 msgid "VAAPI"
-msgstr ""
+msgstr "VAAPI"
 
 #: id:34005
 msgid "Flac"
-msgstr ""
+msgstr "Flac"
 
 #: id:34100
 msgid "Speaker Configuration"
@@ -8899,6 +8931,22 @@ msgstr "7.0"
 #: id:34110
 msgid "7.1"
 msgstr "7.1"
+
+#: id:34120
+msgid "Play GUI sounds"
+msgstr "Reproduzir sons na GUI"
+
+#: id:34121
+msgid "Only when playback stopped"
+msgstr "Somente quando playback parar"
+
+#: id:34122
+msgid "Always"
+msgstr "Sempre"
+
+#: id:34123
+msgid "Never"
+msgstr "Nunca"
 
 #: id:34201
 msgid "Can't find a next item to play"

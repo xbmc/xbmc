@@ -45,7 +45,6 @@ public:
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
 protected:
-  void Refresh();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
 

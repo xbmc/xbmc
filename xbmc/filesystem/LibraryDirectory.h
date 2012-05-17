@@ -47,6 +47,6 @@ namespace XFILE
      */
     TiXmlElement *LoadXML(const CStdString &xmlFile);
 
-    TiXmlDocument m_doc;
+    CXBMCTinyXML m_doc;
   };
 }

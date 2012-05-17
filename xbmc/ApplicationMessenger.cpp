@@ -69,6 +69,7 @@
 
 #include "utils/JobManager.h"
 #include "storage/DetectDVDType.h"
+#include "ThumbLoader.h"
 
 using namespace std;
 
@@ -829,7 +830,7 @@ void CApplicationMessenger::MediaPlay(string filename)
   if (item.IsAudio())
     item.SetMusicThumb();
   else
-    item.SetVideoThumb();
+    CVideoThumbLoader::FillThumb(item);
   item.FillInDefaultIcon();
 
   MediaPlay(item);

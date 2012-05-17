@@ -224,6 +224,8 @@ struct cmyth_proginfo {
 	char *proginfo_title;
 	char *proginfo_subtitle;
 	char *proginfo_description;
+	unsigned short proginfo_season;    /* new in V67 */
+	unsigned short proginfo_episode;    /* new in V67 */
 	char *proginfo_category;
 	long proginfo_chanId;
 	char *proginfo_chanstr;
@@ -258,6 +260,7 @@ struct cmyth_proginfo {
 	char *proginfo_chan_output_filters;    /* new in V8 */
 	char *proginfo_seriesid;    /* new in V8 */
 	char *proginfo_programid;    /* new in V12 */
+	char *proginfo_inetref;    /* new in V67 */
 	cmyth_timestamp_t proginfo_lastmodified;    /* new in V12 */
 	char *proginfo_stars;    /* new in V12 */
 	cmyth_timestamp_t proginfo_originalairdate;	/* new in V12 */

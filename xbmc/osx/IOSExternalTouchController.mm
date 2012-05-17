@@ -31,16 +31,9 @@
 #import "IOSExternalTouchController.h"
 #import "XBMCController.h"
 
-//dim the touchscreen after 10 secs without touch event
-const CGFloat touchScreenDimTimeoutSecs       = 10.0;
+//dim the touchscreen after 15 secs without touch event
+const CGFloat touchScreenDimTimeoutSecs       = 15.0;
 const CGFloat timeFadeSecs                    = 2.0;
-
-@interface IOSExternalTouchController ()
-  UIWindow      *_internalWindow;
-  UIView        *_touchView;
-  NSTimer       *_sleepTimer;
-  bool          _startup;
-@end
 
 @implementation IOSExternalTouchController
 //--------------------------------------------------------------
@@ -97,7 +90,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel release];
 
     //load the splash image
-    CStdString strUserSplash = CSpecialProtocol::TranslatePath("special://home/media/Splash.png");
+    CStdString strUserSplash = CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png");
     xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
     
     //make a view with the image
@@ -118,6 +111,7 @@ const CGFloat timeFadeSecs                    = 2.0;
     [self createGestureRecognizers];
 
     [_internalWindow addSubview:[self view]];
+    [_internalWindow setBackgroundColor:[UIColor blackColor]];
     [_internalWindow setScreen:[UIScreen mainScreen]];
     [_internalWindow makeKeyAndVisible];
 
@@ -205,7 +199,7 @@ const CGFloat timeFadeSecs                    = 2.0;
   [doubleFingerSingleTap release];
   
   //1 finger single long tab - right mouse - alernative
-  UITapGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
+  UITapGestureRecognizer *singleFingerSingleLongTap = (UITapGestureRecognizer*)[[UILongPressGestureRecognizer alloc]
                                                         initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
   singleFingerSingleLongTap.delaysTouchesBegan = YES;
   singleFingerSingleLongTap.delaysTouchesEnded = YES;  
@@ -249,7 +243,7 @@ const CGFloat timeFadeSecs                    = 2.0;
                                       initWithTarget:self action:@selector(handleSwipeUp:)];
   [swipeUp setNumberOfTouchesRequired:1];
   [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
-  [[self view] addGestureRecognizer:swipeUp];
+  [[self view] addGestureRecognizer:swipeUp];  
   [swipeUp release];
 
   //single finger swipe down for down

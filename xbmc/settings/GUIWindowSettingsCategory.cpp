@@ -41,7 +41,6 @@
 #include "PlayListPlayer.h"
 #include "addons/Skin.h"
 #include "guilib/GUIAudioManager.h"
-#include "guilib/AudioContext.h"
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
@@ -64,24 +63,16 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIFontManager.h"
+#include "cores/AudioEngine/AEFactory.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
-#include "cores/AudioRenderers/AudioRendererFactory.h"
-#if defined(USE_ALSA)
-#include "cores/AudioRenderers/ALSADirectSound.h"
-#endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
 #endif
-#if defined(__APPLE__) 
-#if defined(__arm__)
-#include "IOSCoreAudio.h"
-#else
-#include "CoreAudio.h"
+#if defined(TARGET_DARWIN_OSX) 
 #include "XBMCHelper.h"
-#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -96,7 +87,6 @@
 
 #ifdef _WIN32
 #include "WIN32Util.h"
-#include "cores/AudioRenderers/AudioRendererFactory.h"
 #endif
 #include <map>
 #include "Settings.h"
@@ -106,6 +96,7 @@
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/SystemInfo.h"
 #include "windowing/WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -436,7 +427,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("locale.language"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
+      GetSetting(pSetting->GetSetting())->SetDelayed();
       FillInLanguages(pSetting);
+      continue;
+    }
+    else if (strSetting.Equals("locale.audiolanguage") || strSetting.Equals("locale.subtitlelanguage"))
+    {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
+      vector<CStdString> languages;
+      languages.push_back(g_localizeStrings.Get(308));
+      languages.push_back(g_localizeStrings.Get(309));
+      vector<CStdString> languageKeys;
+      languageKeys.push_back("original");
+      languageKeys.push_back("default");
+      FillInLanguages(pSetting, languages, languageKeys);
       continue;
     }
 #ifdef _LINUX
@@ -696,13 +700,28 @@ void CGUIWindowSettingsCategory::UpdateSettings()
              strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||
              strSetting.Equals("audiooutput.dtspassthrough") ||
-             strSetting.Equals("audiooutput.passthroughaac") ||
-             strSetting.Equals("audiooutput.passthroughmp1") ||
-             strSetting.Equals("audiooutput.passthroughmp2") ||
-             strSetting.Equals("audiooutput.passthroughmp3"))
+             strSetting.Equals("audiooutput.passthroughaac"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+    }
+    else if (
+             strSetting.Equals("audiooutput.multichannellpcm" ) ||
+             strSetting.Equals("audiooutput.truehdpassthrough") ||
+             strSetting.Equals("audiooutput.dtshdpassthrough" ))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        if (strSetting.Equals("audiooutput.dtshdpassthrough") && !g_guiSettings.GetBool("audiooutput.dtspassthrough"))
+          pControl->SetEnabled(false);
+        else
+          pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
+      }
+    }
+    else if (strSetting.Equals("audiooutput.guisoundmode"))
+    {
+      CAEFactory::AE->SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
     else if (strSetting.Equals("musicplayer.crossfade"))
     {
@@ -937,25 +956,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(g_peripherals.GetNumberOfPeripherals() > 0);
     }
-#if defined(_LINUX) && !defined(__APPLE__)
-    else if (strSetting.Equals("audiooutput.custompassthrough"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")))
-      {
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"));
-      }
-      else
-      {
-        if (pControl) pControl->SetEnabled(false);
-      }
-    }
-    else if (strSetting.Equals("audiooutput.customdevice"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"));
-    }
-#endif
   }
 }
 
@@ -1206,26 +1206,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-  else if (strSetting.Equals("audiooutput.audiodevice"))
-  {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if !defined(__APPLE__)
-      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
-#else
-      g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
-#endif
-  }
-#if defined(_LINUX)
-  else if (strSetting.Equals("audiooutput.passthroughdevice"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if defined(_LINUX) && !defined(__APPLE__)
-      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
-#elif !defined(__arm__)
-      g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
-#endif
-  }
-#endif
 #ifdef HAS_LCD
   else if (strSetting.Equals("videoscreen.haslcd"))
   {
@@ -1446,6 +1426,52 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (g_graphicsContext.IsFullScreenRoot())
       g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+  else if (strSetting.Equals("locale.audiolanguage"))
+  { // new audio language chosen...
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    int iLanguage = pControl->GetValue();
+    if (iLanguage < 2)
+    {
+      if (iLanguage < 1)
+        g_guiSettings.SetString(strSetting, "original");
+      else
+        g_guiSettings.SetString(strSetting, "default");
+      g_langInfo.SetAudioLanguage("");
+    }
+    else
+    {
+      CStdString strLanguage = pControl->GetCurrentLabel();
+      if (strLanguage != pSettingString->GetData())
+      {
+        g_guiSettings.SetString(strSetting, strLanguage);
+        g_langInfo.SetAudioLanguage(strLanguage);
+      }
+    }
+  }
+  else if (strSetting.Equals("locale.subtitlelanguage"))
+  { // new subtitle language chosen...
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    int iLanguage = pControl->GetValue();
+    if (iLanguage < 2)
+    {
+      if (iLanguage < 1)
+        g_guiSettings.SetString(strSetting, "original");
+      else
+        g_guiSettings.SetString(strSetting, "default");
+      g_langInfo.SetSubtitleLanguage("");
+    }
+    else
+    {
+      CStdString strLanguage = pControl->GetCurrentLabel();
+      if (strLanguage != pSettingString->GetData())
+      {
+        g_guiSettings.SetString(strSetting, strLanguage);
+        g_langInfo.SetSubtitleLanguage(strLanguage);
+      }
+    }
   }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
@@ -1811,6 +1837,27 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
            strSetting.Equals("videolibrary.removeduplicates"))
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
+  else if (strSetting.compare(0, 12, "audiooutput.") == 0)
+  {
+    if (strSetting.Equals("audiooutput.audiodevice"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+#if defined(TARGET_DARWIN)
+      g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+#else
+      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
+#endif
+    }
+#if !defined(TARGET_DARWIN)
+    else if (strSetting.Equals("audiooutput.passthroughdevice"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
+    }
+#endif
+    
+    CAEFactory::AE->OnSettingsChange(strSetting);
   }
 
   UpdateSettings();
@@ -2348,12 +2395,11 @@ void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)
   }
 }
 
-void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting, const std::vector<CStdString> &languages /* = std::vector<CStdString>() */, const std::vector<CStdString> &languageKeys /* = std::vector<CStdString>() */)
 {
   CSettingString *pSettingString = (CSettingString *)pSetting;
   CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  setting->SetDelayed();
   pControl->Clear();
 
   //find languages...
@@ -2361,7 +2407,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   CDirectory::GetDirectory("special://xbmc/language/", items);
 
   int iCurrentLang = 0;
-  int iLanguage = 0;
   vector<CStdString> vecLanguage;
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2376,12 +2421,16 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   }
 
   sort(vecLanguage.begin(), vecLanguage.end(), sortstringbyname());
+  // Add language options passed by parameter at the beginning
+  if (languages.size() > 0)
+    vecLanguage.insert(vecLanguage.begin(), languages.begin(), languages.begin() + languages.size());
   for (unsigned int i = 0; i < vecLanguage.size(); ++i)
   {
     CStdString strLanguage = vecLanguage[i];
-    if (strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
-      iCurrentLang = iLanguage;
-    pControl->AddLabel(strLanguage, iLanguage++);
+    if ((i < languageKeys.size() && strcmpi(languageKeys[i].c_str(), pSettingString->GetData().c_str()) == 0) ||
+        strcmpi(strLanguage.c_str(), pSettingString->GetData().c_str()) == 0)
+      iCurrentLang = i;
+    pControl->AddLabel(strLanguage, i);
   }
 
   pControl->SetValue(iCurrentLang);
@@ -2640,62 +2689,6 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting, flo
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
-#if defined(__APPLE__)
-  #if defined(__arm__)
-    if (Passthrough)
-      return;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-    pControl->Clear();
-
-    IOSCoreAudioDeviceList deviceList;
-    CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
-
-    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
-    if (CIOSCoreAudioHardware::GetDefaultOutputDevice())
-      pControl->AddLabel("Default Output Device", 0);
-
-    int activeDevice = 0;
-    CStdString deviceName;
-    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
-    {
-      CIOSCoreAudioDevice device(deviceList.front());
-      pControl->AddLabel(device.GetName(deviceName), i);
-
-      // Tag this one
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-        activeDevice = i; 
-
-      deviceList.pop_front();
-    }
-    pControl->SetValue(activeDevice);
-  #else
-    if (Passthrough)
-      return;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-    pControl->Clear();
-
-    CoreAudioDeviceList deviceList;
-    CCoreAudioHardware::GetOutputDevices(&deviceList);
-
-    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
-    if (CCoreAudioHardware::GetDefaultOutputDevice())
-      pControl->AddLabel("Default Output Device", 0);
-
-    int activeDevice = 0;
-    CStdString deviceName;
-    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
-    {
-      CCoreAudioDevice device(deviceList.front());
-      pControl->AddLabel(device.GetName(deviceName), i);
-
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-        activeDevice = i; // Tag this one
-
-      deviceList.pop_front();
-    }
-    pControl->SetValue(activeDevice);
-  #endif
-#else
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
@@ -2705,20 +2698,19 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   {
     m_DigitalAudioSinkMap.clear();
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
-    m_DigitalAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
-    m_AnalogAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
   }
 
   int numberSinks = 0;
 
   int selectedValue = -1;
-  AudioSinkList sinkList;
-  CAudioRendererFactory::EnumerateAudioSinks(sinkList, Passthrough);
+  AEDeviceList sinkList;
+  CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
+#if !defined(TARGET_DARWIN)
   if (sinkList.size()==0)
   {
     pControl->AddLabel("Error - no devices found", 0);
@@ -2727,7 +2719,8 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
   {
-    AudioSinkList::const_iterator iter = sinkList.begin();
+#endif
+    AEDeviceList::const_iterator iter = sinkList.begin();
     for (int i=0; iter != sinkList.end(); iter++)
     {
       CStdString label = (*iter).first;
@@ -2746,13 +2739,8 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     }
 
     numberSinks = sinkList.size();
+#if !defined(TARGET_DARWIN)
   }
-
-#ifdef _LINUX
-  if (currentDevice.Equals("custom"))
-    selectedValue = numberSinks;
-
-  pControl->AddLabel(g_localizeStrings.Get(636), numberSinks++);
 #endif
 
   if (selectedValue < 0)
@@ -2763,7 +2751,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
     pControl->SetValue(selectedValue);
-#endif
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

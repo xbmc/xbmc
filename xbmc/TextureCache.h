@@ -70,24 +70,14 @@ public:
    */ 
   CStdString CheckCachedImage(const CStdString &image, bool returnDDS, bool &needsRecaching);
 
-  /*! \brief This function is a wrapper around CheckCacheImage and CacheImageFile.
-  
-   Checks firstly whether an image is already cached, and return URL if so [see CheckCacheImage]
-   If the image is not yet in the database it is cached and added to the database [see CacheImageFile]
-
-   \param image url of the image to check and cache
-   \param returnDDS if we're allowed to return a DDS version, defaults to true
-   \return cached url of this image
-   \sa CheckCacheImage
-   */
-  CStdString CheckAndCacheImage(const CStdString &image, bool returnDDS = true);
-
   /*! \brief Cache image (if required) using a background job
 
-   Essentially a threaded version of CheckAndCacheImage.
+   Checks firstly whether an image is already cached, and return URL if so [see CheckCacheImage]
+   If the image is not yet in the database, a background job is started to
+   cache the image and add to the database [see CTextureCacheJob]
 
    \param image url of the image to cache
-   \sa CheckAndCacheImage
+   \sa CacheImage
    */
   void BackgroundCacheImage(const CStdString &image);
 
@@ -100,24 +90,14 @@ public:
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
-  CStdString CacheTexture(const CStdString &url, CBaseTexture **texture = NULL);
+  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL);
 
-  /*! \brief Take image URL and add it to image cache
-
-   Takes the URL to an image. Caches and adds to the database.
-
-   \param image url of the image to cache
-   \return cached url of this image
-   \sa CTextureCacheJob::DoWork
-   */  
-  CStdString CacheImageFile(const CStdString &url);
-
-  /*! \brief retrieve the cached version of the given image (if it exists)
+  /*! \brief Check whether an image is cached
    \param image url of the image
-   \return cached url of this image, empty if none exists
+   \return true if the image is cached, false otherwise
    \sa ClearCachedImage
    */
-  CStdString GetCachedImage(const CStdString &image);
+  bool HasCachedImage(const CStdString &image);
 
   /*! \brief clear the cached version of the given image
    \param image url of the image
@@ -140,18 +120,12 @@ public:
 
   /*! \brief retrieve a wrapped URL for a image file
    \param image name of the file
-   \param type type of file containing the image (picture, video, music)
+   \param type signifies a special type of image (eg embedded video thumb, picture folder thumb)
+   \param options which options we need (eg size=thumb)
    \return full wrapped URL of the image file
    */
-  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type);
+  static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
   static CStdString GetWrappedThumbURL(const CStdString &image);
-
-  /*! \brief get a unique image path to associate with the given URL, useful for caching images
-   \param url path to retrieve a unique image for
-   \param extension type of file we want
-   \return a "unique" path to an image with the appropriate extension
-   */
-  static CStdString GetUniqueImage(const CStdString &url, const CStdString &extension);
 
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
@@ -173,6 +147,13 @@ private:
   CTextureCache(const CTextureCache&);
   CTextureCache const& operator=(CTextureCache const&);
   virtual ~CTextureCache();
+
+  /*! \brief Unwrap an image://<url_encoded_path> style URL
+   Such urls are used for art over the webserver or other users of the VFS
+   \param image url of the image
+   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
+   */
+  static CStdString UnwrapImageURL(const CStdString &image);
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image

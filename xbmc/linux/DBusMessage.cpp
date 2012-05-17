@@ -21,13 +21,16 @@
 #include "DBusMessage.h"
 #ifdef HAS_DBUS
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
   m_reply = NULL;
   m_message = dbus_message_new_method_call (destination, object, interface, method);
   m_haveArgs = false;
-  CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
+
+  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
 CDBusMessage::~CDBusMessage()

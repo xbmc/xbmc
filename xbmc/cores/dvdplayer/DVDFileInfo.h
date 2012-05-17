@@ -26,12 +26,13 @@ class CFileItem;
 class CDVDDemux;
 class CStreamDetails;
 class CDVDInputStream;
+class CTextureDetails;
 
 class CDVDFileInfo
 {
 public:
-  // Extract a thumbnail immage from the media at strPath an image file in strTarget, optionally populating a streamdetails class with the data
-  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
+  // Extract a thumbnail immage from the media at strPath, optionally populating a streamdetails class with the data
+  static bool ExtractThumb(const CStdString &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails);
 
   // Probe the files streams and store the info in the VideoInfoTag
   static bool GetFileStreamDetails(CFileItem *pItem);

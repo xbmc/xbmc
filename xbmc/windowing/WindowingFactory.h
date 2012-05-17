@@ -39,6 +39,15 @@
 #elif defined(TARGET_LINUX) && defined(HAS_GLES) && defined(HAS_EGL)
 #include "egl/WinSystemGLES.h"
 
+#elif defined(TARGET_FREEBSD)   && defined(HAS_GL)   && defined(HAVE_X11)
+#include "X11/WinSystemX11GL.h"
+
+#elif defined(TARGET_FREEBSD)   && defined(HAS_GLES) && defined(HAVE_X11)
+#include "X11/WinSystemX11GLES.h"
+
+#elif defined(TARGET_FREEBSD) && defined(HAS_GLES) && defined(HAS_EGL)
+#include "egl/WinSystemGLES.h"
+
 #elif defined(TARGET_DARWIN_OSX)
 #include "osx/WinSystemOSXGL.h"
 

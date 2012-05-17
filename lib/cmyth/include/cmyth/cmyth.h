@@ -749,6 +749,20 @@ extern char *cmyth_proginfo_subtitle(cmyth_proginfo_t prog);
 extern char *cmyth_proginfo_description(cmyth_proginfo_t prog);
 
 /**
+ * Retrieve the season of a program.
+ * \param prog proginfo handle
+ * \return season
+ */
+extern unsigned short cmyth_proginfo_season(cmyth_proginfo_t prog);
+
+/**
+ * Retrieve the episode of a program.
+ * \param prog proginfo handle
+ * \return episode
+ */
+extern unsigned short cmyth_proginfo_episode(cmyth_proginfo_t prog);
+
+/**
  * Retrieve the category of a program.
  * \param prog proginfo handle
  * \return null-terminated string
@@ -803,6 +817,13 @@ extern char *cmyth_proginfo_seriesid(cmyth_proginfo_t prog);
  * \return null-terminated string
  */
 extern char *cmyth_proginfo_programid(cmyth_proginfo_t prog);
+
+/**
+ * Retrieve the inetref of a program.
+ * \param prog proginfo handle
+ * \return null-terminated string
+ */
+extern char *cmyth_proginfo_inetref(cmyth_proginfo_t prog);
 
 /**
  * Retrieve the critics rating (number of stars) of a program.

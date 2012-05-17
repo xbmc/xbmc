@@ -305,16 +305,16 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
       int i=0;
       while (i < items.Size())
       {
-        if (FilterVar(g_settings.m_bAddonForeignFilter,
+        if (!FilterVar(g_settings.m_bAddonForeignFilter,
                       items[i]->GetProperty("Addon.Language"), "en") ||
-            FilterVar(g_settings.m_bAddonForeignFilter,
+            !FilterVar(g_settings.m_bAddonForeignFilter,
                       items[i]->GetProperty("Addon.Language"),
                       g_langInfo.GetLanguageLocale()))
         {
-          items.Remove(i);
+          i++;
         }
         else
-          i++;
+          items.Remove(i);
       }
     }
   }

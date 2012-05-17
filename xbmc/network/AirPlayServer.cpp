@@ -688,7 +688,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   else if (uri == "/volume")
   {
       const char* found = strstr(queryString.c_str(), "volume=");
-      double volume = found ? (double)(atof(found + strlen("volume="))) : 0;
+      float volume = found ? (float)strtod(found + strlen("volume="), NULL) : 0;
 
       CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
 
@@ -821,13 +821,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
         responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime(), position);
-
-        //unpause media on GET scrub when paused
-        if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-        {
-          g_application.getApplicationMessenger().MediaPause();
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-        }
       }
       else 
       {

@@ -1030,7 +1030,13 @@ msgstr ""
 msgid "No results found"
 msgstr ""
 
-#empty strings from id 285 to 286
+#: id:285
+msgid "Preferred audio language"
+msgstr ""
+
+#: id:286
+msgid "Preferred subtitle language"
+msgstr ""
 
 #: id:287
 msgctxt "Auto context with id 287"
@@ -1117,7 +1123,17 @@ msgstr ""
 msgid "Non-interleaved"
 msgstr ""
 
-#empty strings from id 307 to 311
+#empty string with id 307
+
+#: id:308
+msgid "Original stream's language"
+msgstr ""
+
+#: id:309
+msgid "User Interface language"
+msgstr ""
+
+#empty strings from id 310 to 311
 
 #: id:312
 msgid "(0=auto)"
@@ -1262,7 +1278,17 @@ msgstr ""
 msgid "Boost volume level on downmix"
 msgstr ""
 
-#empty strings from id 347 to 349
+#: id:347
+msgid "- DTS-HD capable receiver"
+msgstr ""
+
+#: id:348
+msgid "- Multichannel LPCM capable receiver"
+msgstr ""
+
+#: id:349
+msgid "- TrueHD capable receiver"
+msgstr ""
 
 #: id:350
 msgctxt "Auto context with id 350"
@@ -9327,8 +9353,30 @@ msgstr ""
 msgid "7.1"
 msgstr ""
 
-#34112-34200 reserved for future use
-#empty strings from id 34111 to 34200
+#34111-34119 reserved for future use
+#empty strings from id 34111 to 34119
+
+#: id:34120
+msgid "Play GUI sounds"
+msgstr ""
+
+#: id:34121
+msgctxt "Play GUI sounds"
+msgid "Only when playback stopped"
+msgstr ""
+
+#: id:34122
+msgctxt "Play GUI sounds"
+msgid "Always"
+msgstr ""
+
+#: id:34123
+msgctxt "Play GUI sounds"
+msgid "Never"
+msgstr ""
+
+#34124-34200 reserved for future use
+#empty strings from id 34124 to 34200
 
 #: id:34201
 msgid "Can't find a next item to play"

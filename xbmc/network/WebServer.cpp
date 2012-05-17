@@ -447,6 +447,12 @@ int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorTy
   return ret;
 }
 
+void* CWebServer::UriRequestLogger(void *cls, const char *uri)
+{
+  CLog::Log(LOGDEBUG, "webserver: request received for %s", uri);
+  return NULL;
+}
+
 #if (MHD_VERSION >= 0x00090200)
 ssize_t CWebServer::ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max)
 #elif (MHD_VERSION >= 0x00040001)
@@ -492,6 +498,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 #endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
+                          MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
                           MHD_OPTION_END);
 }
 
@@ -553,8 +560,13 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
   if (exists)
   {
     protocol = "http";
-    string url = "vfs/";
+    string url;
     CStdString strPath = path;
+    if (strPath.Left(8) == "image://" ||
+       (strPath.Left(10) == "special://" && strPath.Right(4) == ".tbn"))
+      url = "image/";
+    else
+      url = "vfs/";
     CURL::Encode(strPath);
     url += strPath;
     details["path"] = url;

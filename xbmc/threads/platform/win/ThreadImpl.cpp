@@ -20,6 +20,7 @@
  */
 
 #include <windows.h>
+#include "utils/Win32Exception.h"
 
 
 void CThread::Create(bool bAutoDelete, unsigned stacksize)
@@ -29,6 +30,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
     if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
     exit(1);
   }
+
   m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
@@ -38,11 +40,18 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_TermEvent.Reset();
   m_StartEvent.Reset();
 
-  m_ThreadOpaque.handle = CreateThread(NULL,stacksize, (LPTHREAD_START_ROUTINE)&staticThread, this, 0, &m_ThreadId);
+  // Create in the suspended state, so that no matter the thread priorities and scheduled order, the handle will be assigned
+  // before the new thread exits.
+  m_ThreadOpaque.handle = CreateThread(NULL, stacksize, (LPTHREAD_START_ROUTINE)&staticThread, this, CREATE_SUSPENDED, &m_ThreadId);
   if (m_ThreadOpaque.handle == NULL)
   {
-    if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread", __FUNCTION__);
+    if (logger) logger->Log(LOGERROR, "%s - fatal error %d creating thread", __FUNCTION__, GetLastError());
+    return;
   }
+
+  if (ResumeThread(m_ThreadOpaque.handle) == -1)
+    if (logger) logger->Log(LOGERROR, "%s - fatal error %d resuming thread", __FUNCTION__, GetLastError());
+
 }
 
 void CThread::TermHandler()
@@ -54,6 +63,8 @@ void CThread::TermHandler()
 void CThread::SetThreadInfo()
 {
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
+
+#pragma pack(push,8)
   struct THREADNAME_INFO
   {
     DWORD dwType; // must be 0x1000
@@ -61,17 +72,18 @@ void CThread::SetThreadInfo()
     DWORD dwThreadID; // thread ID (-1 caller thread)
     DWORD dwFlags; // reserved for future use, most be zero
   } info;
+#pragma pack(pop)
 
   info.dwType = 0x1000;
   info.szName = m_ThreadName.c_str();
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
 
-  try
+  __try
   {
     RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
   }
-  catch(...)
+  __except(EXCEPTION_EXECUTE_HANDLER)
   {
   }
 }
@@ -189,4 +201,53 @@ float CThread::GetRelativeUsage()
   m_iLastTime = iTime;
 
   return m_fLastUsage;
+}
+
+void CThread::Action()
+{
+  // install win32 exception translator
+  win32_exception::install_handler();
+
+  try
+  {
+    OnStartup();
+  }
+  catch (const access_violation &e)
+  {
+    e.writelog(__FUNCTION__" thread startup");
+    if (IsAutoDelete())
+      return;
+  }
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__" thread startup");
+    if (IsAutoDelete())
+      return;
+  }
+
+  try
+  {
+    Process();
+  }
+  catch (const access_violation &e)
+  {
+    e.writelog(__FUNCTION__" thread process");
+  }
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__" thread process");
+  }
+
+  try
+  {
+    OnExit();
+  }
+  catch (const access_violation &e)
+  {
+    e.writelog(__FUNCTION__" thread exit");
+  }
+  catch (const win32_exception &e)
+  {
+    e.writelog(__FUNCTION__" thread exit");
+  }
 }
