@@ -337,8 +337,10 @@ double CAESinkWASAPI::GetDelay()
   hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
   if (FAILED(hr))
   {
+    #ifdef _DEBUG
     CLog::Log(LOGERROR, __FUNCTION__": GetBufferSize Failed : %s", WASAPIErrToStr(hr));
-    return false;
+    #endif
+    return 0.0;
   }
   return (double)m_uiBufferLen / (double)m_format.m_sampleRate;
 }
@@ -389,14 +391,18 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
     hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
     if (FAILED(hr))
     {
+      #ifdef _DEBUG
       CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
+      #endif
       return 0;
     }
     memcpy(buf, data, NumFramesRequested * m_format.m_frameSize); //fill buffer
     hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
     if (FAILED(hr))
     {
+      #ifdef _DEBUG
       CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
+      #endif
       return 0;
     }
     hr = m_pAudioClient->Start(); //start the audio driver running
@@ -439,7 +445,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
   if (FAILED(hr))
   {
-    #ifndef _DEBUG
+    #ifdef _DEBUG
       CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
     #endif
     return 0;
@@ -448,7 +454,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
   if (FAILED(hr))
   {
-    #ifndef _DEBUG
+    #ifdef _DEBUG
     CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
     #endif
     return 0;
