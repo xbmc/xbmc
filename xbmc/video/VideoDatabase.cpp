@@ -1151,7 +1151,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
 
     CStdString strSQL=PrepareSQL("insert into episode (idEpisode, idFile, idShow) values (NULL, %i, %i)", idFile, idShow);
     m_pDS->exec(strSQL.c_str());
-    return m_pDS->lastinsertid();
+    return (int)m_pDS->lastinsertid();
   }
   catch (...)
   {
