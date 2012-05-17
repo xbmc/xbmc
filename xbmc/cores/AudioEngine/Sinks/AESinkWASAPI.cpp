@@ -681,8 +681,17 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
 
       for (int k = AE_CH_LAYOUT_MAX; k > 0; k--)
       {
+        DWORD mask = 0;
+        for (int c = 0; c < WASAPI_SPEAKER_COUNT; c++)
+        {
+          if (uiChannelMask & WASAPIChannelOrder[c])
+            mask |= WASAPIChannelOrder[c];
+        }
+
+        wfxex.dwChannelMask             = mask;
         wfxex.Format.nChannels          = k;
         wfxex.Format.nBlockAlign        = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+        wfxex.Format.nAvgBytesPerSec    = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
         {
