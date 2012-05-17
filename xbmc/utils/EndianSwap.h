@@ -19,7 +19,7 @@
  *
  */
 
- /* Functions taken from SDL (SDL_endian.h) */
+ /* Endian_SwapXX functions taken from SDL (SDL_endian.h) */
 
 #ifndef __ENDIAN_SWAP_H__
 #define __ENDIAN_SWAP_H__
@@ -82,6 +82,8 @@ static __inline__ uint64_t Endian_Swap64(uint64_t x) {
         return(x);
 
 }
+
+void Endian_Swap16_buf(uint16_t *dst, uint16_t *src, int w);
 
 #ifndef WORDS_BIGENDIAN
 #define Endian_SwapLE16(X) (X)
