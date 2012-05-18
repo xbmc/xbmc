@@ -40,21 +40,24 @@
 
 struct LocStr
 {
-CStdString	strTranslated;
-CStdString	strOriginal;
+CStdString strTranslated; // string to be used in xbmc GUI
+CStdString strOriginal;   // the original English string, the tranlsation is based on
 };
+
+// The default fallback language is fixed to be English
+const CStdString SOURCE_LANGUAGE = "English";
 
 class CLocalizeStrings
 {
 public:
   CLocalizeStrings(void);
   virtual ~CLocalizeStrings(void);
-  bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english");
-  bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
+  bool Load(const CStdString& strPathName, const CStdString& strLanguage);
+  bool LoadSkinStrings(const CStdString& path, const CStdString& language);
   void ClearSkinStrings();
   const CStdString& Get(uint32_t code) const;
   void Clear();
-  uint32_t LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath);
+  uint32_t LoadBlock(const CStdString &id, const CStdString &path, const CStdString &language);
   void ClearBlock(const CStdString &id);
 protected:
   void Clear(uint32_t start, uint32_t end);
@@ -62,11 +65,13 @@ protected:
   /*! \brief Loads language ids and strings to memory map m_strings.
    * It tries to load a strings.po file first. If doesn't exist, it loads a strings.xml file instead.
    \param pathname The directory name, where we look for the strings file.
+   \param language We load the strings for this language. Fallback language is always English.
    \param encoding Encoding of the strings. For PO files we only use utf-8.
    \param offset An offset value to place strings from the id value.
    \return false if no strings.po or strings.xml file was loaded.
    */
-  bool LoadStr2Mem(const CStdString &pathname, CStdString &encoding, uint32_t offset = 0);
+  bool LoadStr2Mem(const CStdString &pathname, const CStdString &language,
+                   CStdString &encoding, uint32_t offset = 0);
 
   /*! \brief Tries to load ids and strings from a strings.po file to m_strings map.
    * It should only be called from the LoadStr2Mem function to have a fallback.
