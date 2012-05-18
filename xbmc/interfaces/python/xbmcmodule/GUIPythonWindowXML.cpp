@@ -440,16 +440,12 @@ unsigned int CGUIPythonWindowXML::LoadScriptStrings()
 {
   // Path where the language strings reside
   CStdString pathToLanguageFile = m_scriptPath;
-  CStdString pathToFallbackLanguageFile = m_scriptPath;
   URIUtils::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-  URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   URIUtils::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  URIUtils::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
-  URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
+  URIUtils::AddSlashAtEnd(pathToLanguageFile);
 
   // allocate a bunch of strings
-  return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, pathToFallbackLanguageFile);
+  return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, g_guiSettings.GetString("locale.language"));
 }
 
 void CGUIPythonWindowXML::ClearScriptStrings()
