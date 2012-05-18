@@ -1,3 +1,5 @@
+v0.0.1.137 (18-05-2012)
+- Fixed playing recording with national characters in names on Windows
 v0.0.1.136 (01-05-2012)
 - Aggressively optimised TsReader class
 - Added new configurable delay in milliseconds after tuning a channel
