@@ -1986,7 +1986,6 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/iTunes/Makefile \
     xbmc/pvrclients/Makefile.include \
     xbmc/pvrclients/MediaPortal/Makefile \
-    xbmc/pvrclients/mythtv/Makefile \
     xbmc/pvrclients/pvr-demo/Makefile \
     xbmc/pvrclients/tvheadend/Makefile \
     xbmc/pvrclients/vdr-vnsi/Makefile \
