@@ -62,12 +62,12 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   CStdString encoding;
   if (!LoadStr2Mem(path, encoding))
   {
-    if (path == fallbackPath) // no fallback, nothing to do
+    if (path.Equals(fallbackPath)) // no fallback, nothing to do
       return false;
   }
 
   // load the fallback
-  if (path != fallbackPath)
+  if (!path.Equals(fallbackPath))
     LoadStr2Mem(fallbackPath, encoding);
 
   return true;
@@ -108,25 +108,28 @@ bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding,
   while ((PODoc.GetNextEntry()))
   {
     uint32_t id;
-    if (PODoc.GetEntryType() == ID_FOUND &&
-        m_strings.find((id = PODoc.GetEntryID()) + offset) == m_strings.end())
+    if (PODoc.GetEntryType() == ID_FOUND)
     {
+      bool bStrInMem = m_strings.find((id = PODoc.GetEntryID()) + offset) != m_strings.end();
       PODoc.ParseEntry(bSourceLanguage);
-      if (bSourceLanguage)
+
+      if (bSourceLanguage && !PODoc.GetMsgid().empty())
       {
-        if (!PODoc.GetMsgid().empty())
-        {
-          m_strings[id + offset] = PODoc.GetMsgid();
-          counter++;
-        }
+        if (bStrInMem && (m_strings[id + offset].strOriginal.IsEmpty() ||
+            PODoc.GetMsgid() == m_strings[id + offset].strOriginal))
+          continue;
+        else if (bStrInMem)
+          CLog::Log(LOGDEBUG,
+                    "POParser: id:%i was recently re-used in the English string file, which is not yet "
+                    "changed in the translated file. Using the English string instead", id);
+        m_strings[id + offset].strTranslated = PODoc.GetMsgid();
+        counter++;
       }
-      else
+      else if (!bSourceLanguage && !bStrInMem && !PODoc.GetMsgstr().empty())
       {
-        if (!PODoc.GetMsgstr().empty())
-        {
-          m_strings[id + offset] = PODoc.GetMsgstr();
-          counter++;
-        }
+        m_strings[id + offset].strTranslated = PODoc.GetMsgstr();
+        m_strings[id + offset].strOriginal = PODoc.GetMsgid();
+        counter++;
       }
     }
     else if (PODoc.GetEntryType() == MSGID_FOUND)
@@ -176,7 +179,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     {
       int id = atoi(attrId) + offset;
       if (m_strings.find(id) == m_strings.end())
-        m_strings[id] = ToUTF8(encoding, pChild->FirstChild()->Value());
+        m_strings[id].strTranslated = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
     pChild = pChild->NextSiblingElement("string");
   }
@@ -207,28 +210,28 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
   // when we add the degree strings
 
   // fill in the constant strings
-  m_strings[20022] = "";
-  m_strings[20027] = ToUTF8(encoding_thisfile, "°F");
-  m_strings[20028] = ToUTF8(encoding_thisfile, "K");
-  m_strings[20029] = ToUTF8(encoding_thisfile, "°C");
-  m_strings[20030] = ToUTF8(encoding_thisfile, "°Ré");
-  m_strings[20031] = ToUTF8(encoding_thisfile, "°Ra");
-  m_strings[20032] = ToUTF8(encoding_thisfile, "°Rø");
-  m_strings[20033] = ToUTF8(encoding_thisfile, "°De");
-  m_strings[20034] = ToUTF8(encoding_thisfile, "°N");
+  m_strings[20022].strTranslated = "";
+  m_strings[20027].strTranslated = ToUTF8(encoding_thisfile, "°F");
+  m_strings[20028].strTranslated = ToUTF8(encoding_thisfile, "K");
+  m_strings[20029].strTranslated = ToUTF8(encoding_thisfile, "°C");
+  m_strings[20030].strTranslated = ToUTF8(encoding_thisfile, "°Ré");
+  m_strings[20031].strTranslated = ToUTF8(encoding_thisfile, "°Ra");
+  m_strings[20032].strTranslated = ToUTF8(encoding_thisfile, "°Rø");
+  m_strings[20033].strTranslated = ToUTF8(encoding_thisfile, "°De");
+  m_strings[20034].strTranslated = ToUTF8(encoding_thisfile, "°N");
 
-  m_strings[20200] = ToUTF8(encoding_thisfile, "km/h");
-  m_strings[20201] = ToUTF8(encoding_thisfile, "m/min");
-  m_strings[20202] = ToUTF8(encoding_thisfile, "m/s");
-  m_strings[20203] = ToUTF8(encoding_thisfile, "ft/h");
-  m_strings[20204] = ToUTF8(encoding_thisfile, "ft/min");
-  m_strings[20205] = ToUTF8(encoding_thisfile, "ft/s");
-  m_strings[20206] = ToUTF8(encoding_thisfile, "mph");
-  m_strings[20207] = ToUTF8(encoding_thisfile, "kts");
-  m_strings[20208] = ToUTF8(encoding_thisfile, "Beaufort");
-  m_strings[20209] = ToUTF8(encoding_thisfile, "inch/s");
-  m_strings[20210] = ToUTF8(encoding_thisfile, "yard/s");
-  m_strings[20211] = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
+  m_strings[20200].strTranslated = ToUTF8(encoding_thisfile, "km/h");
+  m_strings[20201].strTranslated = ToUTF8(encoding_thisfile, "m/min");
+  m_strings[20202].strTranslated = ToUTF8(encoding_thisfile, "m/s");
+  m_strings[20203].strTranslated = ToUTF8(encoding_thisfile, "ft/h");
+  m_strings[20204].strTranslated = ToUTF8(encoding_thisfile, "ft/min");
+  m_strings[20205].strTranslated = ToUTF8(encoding_thisfile, "ft/s");
+  m_strings[20206].strTranslated = ToUTF8(encoding_thisfile, "mph");
+  m_strings[20207].strTranslated = ToUTF8(encoding_thisfile, "kts");
+  m_strings[20208].strTranslated = ToUTF8(encoding_thisfile, "Beaufort");
+  m_strings[20209].strTranslated = ToUTF8(encoding_thisfile, "inch/s");
+  m_strings[20210].strTranslated = ToUTF8(encoding_thisfile, "yard/s");
+  m_strings[20211].strTranslated = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
 
   return true;
 }
@@ -242,7 +245,7 @@ const CStdString& CLocalizeStrings::Get(uint32_t dwCode) const
   {
     return szEmptyString;
   }
-  return i->second;
+  return i->second.strTranslated;
 }
 
 void CLocalizeStrings::Clear()
@@ -277,12 +280,12 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
   bool success = LoadStr2Mem(path, encoding, offset);
   if (!success)
   {
-    if (path == fallbackPath) // no fallback, nothing to do
+    if (path.Equals(fallbackPath)) // no fallback, nothing to do
       return 0;
   }
 
   // load the fallback
-  if (path != fallbackPath)
+  if (!path.Equals(fallbackPath))
     success |= LoadStr2Mem(fallbackPath, encoding, offset);
 
   return success ? offset : 0;
