@@ -141,7 +141,10 @@ void CPODocument::ParseEntry(bool bisSourceLang)
   if (m_Entry.Type != MSGID_PLURAL_FOUND)
   {
     if (FindLineStart ("\nmsgstr ", m_Entry.msgStr.Pos))
+    {
       GetString(m_Entry.msgStr);
+      GetString(m_Entry.msgID);
+    }
     else
     {
       CLog::Log(LOGERROR, "POParser: missing msgstr line in entry. Failed entry: %s",
