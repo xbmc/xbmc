@@ -741,11 +741,10 @@ bool CApplication::Create()
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  CStdString strLanguagePath;
-  strLanguagePath.Format("special://xbmc/language/%s", strLanguage.c_str());
+  CStdString strLanguagePath = "special://xbmc/language/";
 
-  CLog::Log(LOGINFO, "load language file from path: %s", strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(strLanguagePath))
+  CLog::Log(LOGINFO, "load %s language file, from path: %s", strLanguage.c_str(), strLanguagePath.c_str());
+  if (!g_localizeStrings.Load(strLanguagePath, strLanguage))
     FatalErrorHandler(false, false, true);
 
   // start the AudioEngine
@@ -1756,14 +1755,11 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"));
 
   // load in the skin strings
-  CStdString langPath, skinEnglishPath;
+  CStdString langPath;
   URIUtils::AddFileToFolder(skin->Path(), "language", langPath);
-  URIUtils::AddFileToFolder(langPath, g_guiSettings.GetString("locale.language"), langPath);
+  URIUtils::AddSlashAtEnd(langPath);
 
-  URIUtils::AddFileToFolder(skin->Path(), "language", skinEnglishPath);
-  URIUtils::AddFileToFolder(skinEnglishPath, "English", skinEnglishPath);
-
-  g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
+  g_localizeStrings.LoadSkinStrings(langPath, g_guiSettings.GetString("locale.language"));
 
   g_SkinInfo->LoadIncludes();
 

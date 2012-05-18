@@ -1464,9 +1464,7 @@ bool CGUISettings::SetLanguage(const CStdString &strLanguage)
 
     g_charsetConverter.reset();
 
-    CStdString strLanguagePath;
-    strLanguagePath.Format("special://xbmc/language/%s", strNewLanguage.c_str());
-    if (!g_localizeStrings.Load(strLanguagePath))
+    if (!g_localizeStrings.Load("special://xbmc/language/", strNewLanguage))
       return false;
 
     // also tell our weather and skin to reload as these are localized
