@@ -33,11 +33,13 @@ SRCS=AddonsDirectory.cpp \
      HTTPDirectory.cpp \
      IDirectory.cpp \
      IFile.cpp \
+     ImageFile.cpp \
      iso9660.cpp \
      ISO9660Directory.cpp \
      ISOFile.cpp \
      LastFMDirectory.cpp \
      LastFMFile.cpp \
+     LibraryDirectory.cpp \
      MemBufferCache.cpp \
      MultiPathDirectory.cpp \
      MultiPathFile.cpp \
@@ -111,6 +113,10 @@ endif
 ifeq (@USE_LIBAFPCLIENT@,1)
 SRCS+=AFPFile.cpp
 SRCS+=AFPDirectory.cpp
+endif
+
+ifeq (@HAVE_LIBBLURAY@,1)
+SRCS+=BlurayDirectory.cpp
 endif
 
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \

@@ -113,6 +113,7 @@ public:
 typedef struct
 {
   StreamType   type;
+  int          type_index;
   std::string  filename;
   std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub) 
   std::string  language;
@@ -123,6 +124,8 @@ typedef struct
   std::string  codec;
   int          channels;
 } SelectionStream;
+
+typedef std::vector<SelectionStream> SelectionStreams;
 
 class CSelectionStreams
 {
@@ -143,6 +146,14 @@ public:
   SelectionStream& Get     (StreamType type, int index);
   bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
 
+  SelectionStreams Get(StreamType type);
+  template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)
+  {
+    SelectionStreams streams = Get(type);
+    std::stable_sort(streams.begin(), streams.end(), compare);
+    return streams;
+  }
+
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 
@@ -161,8 +172,6 @@ class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 public:
   CDVDPlayer(IPlayerCallback& callback);
   virtual ~CDVDPlayer();
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdPlayerAudio.RegisterAudioCallback(pCallback); }
-  virtual void UnRegisterAudioCallback()                        { m_dvdPlayerAudio.UnRegisterAudioCallback(); }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
@@ -178,7 +187,7 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
-  virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
+  virtual void SetVolume(float nVolume)                         { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
@@ -218,8 +227,8 @@ public:
   virtual void GetChapterName(CStdString& strChapterName);
   virtual int  SeekChapter(int iChapter);
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
   virtual int GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
@@ -296,7 +305,7 @@ protected:
   int GetPlaySpeed()                                                { return m_playSpeed; }
   void SetCaching(ECacheState state);
 
-  __int64 GetTotalTimeInMsec();
+  int64_t GetTotalTimeInMsec();
 
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
@@ -436,7 +445,7 @@ protected:
     std::string demux_video;
     std::string demux_audio;
 
-    __int64 cache_bytes;   // number of bytes current's cached
+    int64_t cache_bytes;   // number of bytes current's cached
     double  cache_level;   // current estimated required cache level
     double  cache_delay;   // time until cache is expected to reach estimated level
     double  cache_offset;  // percentage of file ahead of current position

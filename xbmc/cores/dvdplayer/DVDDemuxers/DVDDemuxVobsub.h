@@ -64,7 +64,7 @@ private:
 
   typedef struct STimestamp
   {
-    __int64 pos;
+    int64_t pos;
     double  pts;
     int     id;
   } STimestamp;

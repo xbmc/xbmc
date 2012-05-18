@@ -7,17 +7,17 @@
 
 # lib name, version
 LIBNAME=libcec
-VERSION=latest
+VERSION=1.5.2
 SOURCE=$(LIBNAME)-$(VERSION)
 
 # download location and format
-BASE_URL=http://packages.pulse-eight.net/pulse/sources/libcec
-ARCHIVE=$(SOURCE).tar.bz2 
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+ARCHIVE=$(SOURCE).tar.gz 
 TARBALLS_LOCATION=.
 RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
-ARCHIVE_TOOL_FLAGS=jxf
+ARCHIVE_TOOL_FLAGS=xf
 
 PREFIX ?= /usr/local
 LIBCEC_CONFIGOPTS ?= --prefix=$(PREFIX)

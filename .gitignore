@@ -360,6 +360,7 @@ lib/cmyth/Makefile
 /project/VS2010Express/guilib
 /project/VS2010Express/libPlatinum
 /project/VS2010Express/UnrarXLib
+/project/VS2010Express/test-XbmcThreads
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
@@ -531,11 +532,14 @@ lib/cmyth/Makefile
 # /xbmc/linux/
 /xbmc/linux/Makefile
 
+# /xbmc/freebsd/
+/xbmc/freebsd/Makefile
+
 # /xbmc/cdrip/
 /xbmc/cdrip/Makefile
 
-# /xbmc/cores/AudioRenderers/
-/xbmc/cores/AudioRenderers/Makefile
+# /xbmc/cores/AudioEngine/
+/xbmc/cores/AudioEngine/Makefile
 
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh

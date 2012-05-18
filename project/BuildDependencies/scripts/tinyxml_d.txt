@@ -1,0 +1,2 @@
+; filename                   mirror of the file
+tinyxml-2.6.2-win32.7z       http://mirrors.xbmc.org/build-deps/win32/

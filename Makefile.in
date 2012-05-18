@@ -26,11 +26,11 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/libXDAAP/libxdaap.a \
                    lib/libhts/libhts.a \
                    lib/libsquish/libsquish.a \
-                   lib/tinyXML/tinyxml.a \
                    lib/xbmc-dll-symbols/dll-symbols.a \
                    xbmc/addons/addons.a \
                    xbmc/cdrip/cdrip.a \
-                   xbmc/cores/AudioRenderers/audiorenderers.a \
+                   xbmc/commons/commons.a \
+                   xbmc/cores/AudioEngine/audioengine.a \
                    xbmc/cores/DllLoader/dllloader.a \
                    xbmc/cores/DllLoader/exports/exports.a \
                    xbmc/cores/DllLoader/exports/util/exports_utils.a \
@@ -62,7 +62,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/music/tags/musictags.a \
                    xbmc/music/windows/musicwindows.a \
                    xbmc/network/libscrobbler/scrobbler.a \
-                   xbmc/network/httprequesthandler/httprequesthandlers.a \
                    xbmc/network/websocket/websocket.a \
                    xbmc/network/network.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
@@ -93,6 +92,10 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/xbmc.a \
 
 
+ifeq (@USE_WEB_SERVER@,1)
+DIRECTORY_ARCHIVES += xbmc/network/httprequesthandler/httprequesthandlers.a
+endif
+
 ifeq (@USE_OPENGL@,1)
 DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
 endif
@@ -115,6 +118,10 @@ DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
 DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+endif
+
+ifeq ($(findstring freebsd,@ARCH@),freebsd)
+DIRECTORY_ARCHIVES += xbmc/freebsd/freebsd.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
@@ -318,7 +325,7 @@ ifeq (@USE_ASAP_CODEC@,1)
   endif
 endif
 	$(MAKE) -C lib/stsound/StSoundLibrary	
-ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@)),)
+ifeq ($(or $(findstring powerpc,@ARCH@),$(findstring x86_64-linux,@ARCH@),$(findstring arm, @ARCH@),$(findstring freebsd,@ARCH@)),)
 	$(MAKE) -C lib/snesapu/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -352,11 +359,16 @@ DYNOBJSXBMC= \
 	xbmc/pvr/windows/pvrwindows.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
+ifeq ($(findstring freebsd,@ARCH@),freebsd)
+DYNOBJSXBMC+= xbmc/freebsd/freebsd.a
+endif
+
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 LIBS += @PYTHON_LDFLAGS@
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC) $(NWAOBJSXBMC)
+
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
@@ -427,8 +439,9 @@ install-scripts:
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
-	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
+	@for FILE in `ls LICENSE.GPL *.txt`; do \
 		install -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
+	@install -m 0644 "docs/README.linux" "$(DESTDIR)$(docdir)/README.linux"
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@install -d $(DESTDIR)$(datarootdir)/xbmc

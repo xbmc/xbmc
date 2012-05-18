@@ -19,11 +19,12 @@
  *
  */
 
+#include "TestHelpers.h"
 #include "threads/Atomics.h"
 
-#include <boost/test/unit_test.hpp>
 #include <boost/shared_array.hpp>
-#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
+#include <iostream>
 
 #define TESTNUM 100000l
 #define NUMTHREADS 10l
@@ -52,91 +53,91 @@ void doSubtract(long* number, long toAdd)
     AtomicSubtract(number,toAdd);
 }
 
-BOOST_AUTO_TEST_CASE(TestMassAtomicIncrement)
+TEST(TestMassAtomicIncrement)
 {
   long lNumber = 0;
-  boost::shared_array<boost::thread> t;
-  t.reset(new boost::thread[NUMTHREADS]);
+  boost::shared_array<thread> t;
+  t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = boost::thread(boost::bind(&doIncrement,&lNumber));
+    t[i] = thread(boost::bind(&doIncrement,&lNumber));
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  BOOST_CHECK_EQUAL((NUMTHREADS * TESTNUM), lNumber);
+  CHECK_EQUAL((NUMTHREADS * TESTNUM), lNumber);
  }
 
-BOOST_AUTO_TEST_CASE(TestMassAtomicDecrement)
+TEST(TestMassAtomicDecrement)
 {
   long lNumber = (NUMTHREADS * TESTNUM);
-  boost::shared_array<boost::thread> t;
-  t.reset(new boost::thread[NUMTHREADS]);
+  boost::shared_array<thread> t;
+  t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = boost::thread(boost::bind(&doDecrement,&lNumber));
+    t[i] = thread(boost::bind(&doDecrement,&lNumber));
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  BOOST_CHECK_EQUAL(0, lNumber);
+  CHECK_EQUAL(0, lNumber);
  }
 
-BOOST_AUTO_TEST_CASE(TestMassAtomicAdd)
+TEST(TestMassAtomicAdd)
 {
   long lNumber = 0;
   long toAdd = 10;
-  boost::shared_array<boost::thread> t;
-  t.reset(new boost::thread[NUMTHREADS]);
+  boost::shared_array<thread> t;
+  t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = boost::thread(boost::bind(&doAdd,&lNumber,toAdd));
+    t[i] = thread(boost::bind(&doAdd,&lNumber,toAdd));
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  BOOST_CHECK_EQUAL((NUMTHREADS * TESTNUM) * toAdd, lNumber);
+  CHECK_EQUAL((NUMTHREADS * TESTNUM) * toAdd, lNumber);
  }
 
-BOOST_AUTO_TEST_CASE(TestMassAtomicSubtract)
+TEST(TestMassAtomicSubtract)
 {
   long toSubtract = 10;
   long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
-  boost::shared_array<boost::thread> t;
-  t.reset(new boost::thread[NUMTHREADS]);
+  boost::shared_array<thread> t;
+  t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = boost::thread(boost::bind(&doSubtract,&lNumber,toSubtract));
+    t[i] = thread(boost::bind(&doSubtract,&lNumber,toSubtract));
 
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i].join();
 
-  BOOST_CHECK_EQUAL(0, lNumber);
+  CHECK_EQUAL(0, lNumber);
  }
 
 #define STARTVAL 767856l
 
-BOOST_AUTO_TEST_CASE(TestAtomicIncrement)
+TEST(TestAtomicIncrement)
 {
   long check = STARTVAL;
-  BOOST_CHECK_EQUAL(STARTVAL + 1l, AtomicIncrement(&check));
-  BOOST_CHECK_EQUAL(STARTVAL + 1l,check);
+  CHECK_EQUAL(STARTVAL + 1l, AtomicIncrement(&check));
+  CHECK_EQUAL(STARTVAL + 1l,check);
 }
 
-BOOST_AUTO_TEST_CASE(TestAtomicDecrement)
+TEST(TestAtomicDecrement)
 {
   long check = STARTVAL;
-  BOOST_CHECK_EQUAL(STARTVAL - 1l, AtomicDecrement(&check));
-  BOOST_CHECK_EQUAL(STARTVAL - 1l,check);
+  CHECK_EQUAL(STARTVAL - 1l, AtomicDecrement(&check));
+  CHECK_EQUAL(STARTVAL - 1l,check);
 }
 
-BOOST_AUTO_TEST_CASE(TestAtomicAdd)
+TEST(TestAtomicAdd)
 {
   long check = STARTVAL;
-  BOOST_CHECK_EQUAL(STARTVAL + 123l, AtomicAdd(&check,123l));
-  BOOST_CHECK_EQUAL(STARTVAL + 123l,check);
+  CHECK_EQUAL(STARTVAL + 123l, AtomicAdd(&check,123l));
+  CHECK_EQUAL(STARTVAL + 123l,check);
 }
 
-BOOST_AUTO_TEST_CASE(TestAtomicSubtract)
+TEST(TestAtomicSubtract)
 {
   long check = STARTVAL;
-  BOOST_CHECK_EQUAL(STARTVAL - 123l, AtomicSubtract(&check,123l));
-  BOOST_CHECK_EQUAL(STARTVAL - 123l, check);
+  CHECK_EQUAL(STARTVAL - 123l, AtomicSubtract(&check,123l));
+  CHECK_EQUAL(STARTVAL - 123l, check);
 }
 

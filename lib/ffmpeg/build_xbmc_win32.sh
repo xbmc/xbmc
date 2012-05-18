@@ -39,6 +39,7 @@ OPTIONS="
 --disable-ffmpeg \
 --disable-ffprobe \
 --disable-devices \
+--disable-crystalhd \
 --enable-muxer=spdif \
 --enable-muxer=adts \
 --enable-encoder=ac3 \

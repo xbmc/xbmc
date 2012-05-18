@@ -48,7 +48,7 @@ protected:
   void FillInCharSets(CSetting *pSetting);
   void FillInSkinFonts(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
-  void FillInLanguages(CSetting *pSetting);
+  void FillInLanguages(CSetting *pSetting, const std::vector<CStdString> &languages = std::vector<CStdString>(), const std::vector<CStdString> &languageKeys = std::vector<CStdString>());
   DisplayMode FillInScreens(CStdString strSetting, RESOLUTION res);
   void FillInResolutions(CStdString strSetting, DisplayMode mode, RESOLUTION res, bool UserChange);
   void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);

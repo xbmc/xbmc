@@ -363,8 +363,10 @@ namespace PYXBMC
     "    credits       : string (Andy Kaufman) - writing credits\n"
     "    lastplayed    : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)\n"
     "    album         : string (The Joshua Tree)\n"
+    "    artist        : list (['U2'])\n"
     "    votes         : string (12345 votes)\n"
     "    trailer       : string (/home/user/trailer.avi)\n"
+    "    dateadded     : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)\n"
     "\n"
     "Music Values:\n"
     "    tracknumber   : integer (8)\n"
@@ -472,6 +474,19 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_cast.push_back(info);
           }
         }
+        else if (strcmpi(PyString_AsString(key), "artist") == 0)
+        {
+          if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
+          self->item->GetVideoInfoTag()->m_artist.clear();
+          for (int i = 0; i < PyList_Size(value); i++)
+          {
+            PyObject *pActor = PyList_GetItem(value, i);
+            if (pActor == NULL) continue;
+            CStdString actor;
+            if (!PyXBMCGetUnicodeString(actor, pActor, 1)) continue;
+            self->item->GetVideoInfoTag()->m_artist.push_back(actor);
+          }
+        }
         else
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
@@ -522,6 +537,8 @@ namespace PYXBMC
             if (strlen(tmp) == 10)
               self->item->m_dateTime.SetDate(atoi(tmp.Right(4).c_str()), atoi(tmp.Mid(3,4).c_str()), atoi(tmp.Left(2).c_str()));
           }
+          else if (strcmpi(PyString_AsString(key), "dateadded") == 0)
+            self->item->GetVideoInfoTag()->m_dateAdded.SetFromDBDateTime(tmp);
         }
       }
       else if (strcmpi(cType, "music") == 0)

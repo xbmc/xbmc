@@ -33,6 +33,7 @@
 #include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
+#include "LibraryDirectory.h"
 #include "AddonsDirectory.h"
 #include "SourcesDirectory.h"
 #include "LastFMDirectory.h"
@@ -102,6 +103,9 @@
 #ifdef HAS_FILESYSTEM_AFP
 #include "AFPDirectory.h"
 #endif
+#ifdef HAVE_LIBBLURAY
+#include "BlurayDirectory.h"
+#endif
 
 using namespace XFILE;
 
@@ -135,9 +139,14 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
+  if (strProtocol == "rar") 
+  {
 #ifdef HAS_FILESYSTEM_RAR
-  if (strProtocol == "rar") return new CRarDirectory();
+    return new CRarDirectory();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
+  }
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
@@ -145,6 +154,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
   if (strProtocol == "musicsearch") return new CMusicSearchDirectory();
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
+  if (strProtocol == "library") return new CLibraryDirectory();
   if (strProtocol == "filereader")
     return CDirectoryFactory::Create(url.GetFileName());
 
@@ -201,6 +211,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM_AFP
       if (strProtocol == "afp") return new CAFPDirectory();
+#endif
+#ifdef HAVE_LIBBLURAY
+      if (strProtocol == "bluray") return new CBlurayDirectory();
 #endif
   }
 

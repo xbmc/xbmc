@@ -1,0 +1,4 @@
+<node order="3" visible="Library.HasContent(MusicVideos)">
+  <label>20389</label>
+  <icon>DefaultMusicVideos.png</icon>
+</node>

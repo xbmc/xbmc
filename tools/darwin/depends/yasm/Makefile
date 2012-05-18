@@ -2,9 +2,10 @@ include ../Makefile.include
 
 # lib name, version
 APPNAME=yasm
-VERSION=1.1.0
+VERSION=1.2.0
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://www.tortall.net/projects/yasm/releases
 
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PATH)

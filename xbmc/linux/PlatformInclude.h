@@ -25,10 +25,7 @@
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 #include "XFileUtils.h"
-#include "XSyncUtils.h"
-#include "XEventUtils.h"
 #include "XTimeUtils.h"
-#include "XThreadUtils.h"
 #include "XMemUtils.h"
 #include "ConvUtils.h"
 

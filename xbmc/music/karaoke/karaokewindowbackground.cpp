@@ -206,7 +206,7 @@ void CKaraokeWindowBackground::StartImage( const CStdString& path )
 }
 
 
-void CKaraokeWindowBackground::StartVideo( const CStdString& path, __int64 offset)
+void CKaraokeWindowBackground::StartVideo( const CStdString& path, int64_t offset)
 {
   CFileItem item( path, false);
   m_videoEnded = false;

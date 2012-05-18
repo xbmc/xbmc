@@ -15,9 +15,9 @@ CONFIGURE=./configure --prefix=$(PREFIX) --enable-shared \
   --disable-toolbox-glue --disable-framework
 
 CONFIGURE_NATIVE= CFLAGS="" CXXFLAGS="" LDFLAGS="" CPPFLAGS="" \
-  CPP="/usr/bin/cpp" \
-  CC="gcc-4.2" \
-  CXX="g++-4.2" \
+  CPP="gcc -E" \
+  CC="gcc" \
+  CXX="g++" \
   LD="ld" \
   ./configure --prefix=$(TOOLCHAIN) --enable-shared --disable-toolbox-glue --disable-framework
 

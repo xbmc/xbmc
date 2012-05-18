@@ -36,7 +36,7 @@
 #define TIME_FOR_DEACELLERATION_DECREASE 0.5f
 //the factor for decreasing the deacceleration
 #define DEACELLERATION_DECREASE_FACTOR 0.9f
-//minimum speed for doing inertial scroll is 50 pixels / s
+//minimum speed for doing inertial scroll is 100 pixels / s
 #define MINIMUM_SPEED_FOR_INERTIA 100
 
 CInertialScrollingHandler::CInertialScrollingHandler()

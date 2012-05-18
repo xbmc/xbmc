@@ -22,16 +22,14 @@
  */
 
 #pragma once
+#include "system_gl.h"
 #include "OverlayRenderer.h"
-
-#ifdef HAS_GL
-#include <GL/glew.h>
-#endif
 
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
+typedef struct ass_image ASS_Image;
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -56,7 +54,8 @@ namespace OVERLAY {
      : public COverlayMainThread
   {
   public:
-   COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
+   COverlayGlyphGL(ASS_Image* images, int width, int height);
+
    virtual ~COverlayGlyphGL();
 
    void Render(SRenderState& state);

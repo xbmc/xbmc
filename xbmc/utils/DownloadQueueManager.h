@@ -22,6 +22,7 @@
  */
 
 #include "DownloadQueue.h"
+#include "system.h"
 
 #define MAX_DOWNLOAD_QUEUES  3
 

@@ -81,6 +81,7 @@ void CSong::Serialize(CVariant& value)
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
+  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
   value["artistid"] = iArtistId;
   value["albumid"] = iAlbumId;

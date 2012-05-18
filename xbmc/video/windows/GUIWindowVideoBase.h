@@ -43,6 +43,11 @@ public:
   static void MarkWatched(const CFileItemPtr &pItem, bool bMark);
   static void UpdateVideoTitle(const CFileItem* pItem);
 
+  /*! \brief Show dialog allowing selection of wanted playback item */
+  static bool ShowPlaySelection(CFileItemPtr& item);
+  static bool ShowPlaySelection(CFileItemPtr& item, const CStdString& directory);
+
+
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)
    If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME
    \param item item to check for a resume bookmark

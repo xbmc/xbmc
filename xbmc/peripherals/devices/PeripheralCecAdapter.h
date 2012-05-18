@@ -20,6 +20,8 @@
  *
  */
 
+#include "system.h"
+
 #if !defined(HAVE_LIBCEC)
 #include "Peripheral.h"
 
@@ -35,7 +37,7 @@ namespace PERIPHERALS
     bool IsMuted(void) { return false; }
     void ScheduleMute(void) {}
 
-    WORD GetButton(void) { return 0; }
+    int GetButton(void) { return 0; }
     unsigned int GetHoldTime(void) { return 0; }
     void ResetButton(void) {}
   };
@@ -68,7 +70,7 @@ namespace PERIPHERALS
 
   typedef struct
   {
-    WORD         iButton;
+    int         iButton;
     unsigned int iDuration;
   } CecButtonPress;
 
@@ -101,7 +103,7 @@ namespace PERIPHERALS
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
-    virtual WORD GetButton(void);
+    virtual int GetButton(void);
     virtual unsigned int GetHoldTime(void);
     virtual void ResetButton(void);
     virtual CStdString GetComPort(void);

@@ -84,7 +84,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   if (keysym.mod & XBMCKMOD_SUPER)
     modifiers |= CKey::MODIFIER_SUPER;
 
-  CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
+  CLog::Log(LOGDEBUG, "Keyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
   // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and

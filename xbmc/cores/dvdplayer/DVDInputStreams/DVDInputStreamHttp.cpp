@@ -40,7 +40,7 @@ bool CDVDInputStreamHttp::IsEOF()
 {
   if(m_pFile && !m_eof)
   {
-    __int64 size = m_pFile->GetLength();
+    int64_t size = m_pFile->GetLength();
     if( size > 0 && m_pFile->GetPosition() >= size )
     {
       m_eof = true;
@@ -103,7 +103,7 @@ int CDVDInputStreamHttp::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamHttp::Seek(int64_t offset, int whence)
 {
   if(!m_pFile)
     return -1;
@@ -111,7 +111,7 @@ __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
   if(whence == SEEK_POSSIBLE)
     return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
-  __int64 ret = m_pFile->Seek(offset, whence);
+  int64_t ret = m_pFile->Seek(offset, whence);
 
   if( ret >= 0 ) m_eof = false;
 
@@ -124,7 +124,7 @@ CHttpHeader* CDVDInputStreamHttp::GetHttpHeader()
   else return NULL;
 }
 
-__int64 CDVDInputStreamHttp::GetLength()
+int64_t CDVDInputStreamHttp::GetLength()
 {
   if (m_pFile)
     return m_pFile->GetLength();

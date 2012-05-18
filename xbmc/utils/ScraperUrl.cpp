@@ -124,7 +124,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
   if (!XMLUtils::HasUTF8Declaration(strUrl))
     g_charsetConverter.unknownToUTF8(strUrl);
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
 
   TiXmlElement* pElement = doc.RootElement();
@@ -173,6 +173,15 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   SUrlEntry result;
   result.m_season = -1;
   return result;
+}
+
+void CScraperUrl::GetSeasonThumbs(map<int, string> &thumbs) const
+{
+  for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
+  {
+    if (iter->m_type == URL_TYPE_SEASON && thumbs.find(iter->m_season) == thumbs.end())
+      thumbs.insert(make_pair(iter->m_season, GetThumbURL(*iter)));
+  }
 }
 
 bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)
@@ -293,7 +302,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   if (!XMLUtils::HasUTF8Declaration(strUrls))
     g_charsetConverter.unknownToUTF8(strUrls);
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   doc.Parse(strUrls.c_str(),0,TIXML_ENCODING_UTF8);
   if (doc.RootElement())
   {

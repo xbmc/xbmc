@@ -129,9 +129,9 @@ public:
   virtual bool Open(const char* strFileName, const std::string& content);
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
-  virtual __int64 Seek(__int64 offset, int whence) = 0;
+  virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual bool Pause(double dTime) = 0;
-  virtual __int64 GetLength() = 0;
+  virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string& GetFileName() { return m_strFileName; }
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }

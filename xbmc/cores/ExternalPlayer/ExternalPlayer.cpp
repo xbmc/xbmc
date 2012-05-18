@@ -24,7 +24,6 @@
 #include "signal.h"
 #include "limits.h"
 #include "threads/SingleLock.h"
-#include "guilib/AudioContext.h"
 #include "ExternalPlayer.h"
 #include "windowing/WindowingFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -243,13 +242,6 @@ void CExternalPlayer::Process()
     strFArgs.append("\"");
   }
 
-  int iActiveDevice = g_audioContext.GetActiveDevice();
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Releasing audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(CAudioContext::NONE);
-  }
-
 #if defined(_WIN32)
   if (m_warpcursor)
   {
@@ -360,12 +352,6 @@ void CExternalPlayer::Process()
   // We don't want to come back to an active screensaver
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();
-
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Reclaiming audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(iActiveDevice);
-  }
 
   if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
     m_callback.OnPlayBackStopped();
@@ -517,8 +503,8 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 
 float CExternalPlayer::GetPercentage()
 {
-  __int64 iTime = GetTime();
-  __int64 iTotalTime = GetTotalTime() * 1000;
+  int64_t iTime = GetTime();
+  int64_t iTotalTime = GetTotalTime() * 1000;
 
   if (iTotalTime != 0)
   {
@@ -547,11 +533,11 @@ float CExternalPlayer::GetSubTitleDelay()
   return 0.0;
 }
 
-void CExternalPlayer::SeekTime(__int64 iTime)
+void CExternalPlayer::SeekTime(int64_t iTime)
 {
 }
 
-__int64 CExternalPlayer::GetTime() // in millis
+int64_t CExternalPlayer::GetTime() // in millis
 {
   if ((XbmcThreads::SystemClockMillis() - m_playbackStartTime) / 1000 > m_playCountMinTime)
   {

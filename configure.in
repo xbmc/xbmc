@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [11.9.1], [http://trac.xbmc.org])
+AC_INIT([xbmc], [11.9.2], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -18,7 +18,13 @@ tolower(){
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
-  if [[ "$host_vendor" != "apple" ]]; then
+  if echo "$host" | grep -q freebsd ; then
+    AC_MSG_CHECKING([for lib$2 soname])
+    $1_SONAME=[`ldconfig -r | sed -n "s;.* \(/.*lib$2\.so.*\)$;\1;p" | head -n 1`]
+    if test x$$1_SONAME != x ; then
+      $1_SONAME=[`basename $$1_SONAME`]
+    fi
+  elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
     $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ ! -z $$1_FILENAME ]]; then
@@ -77,6 +83,7 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
+alsa_disabled="== ALSA support disabled. =="
 rsxs_enabled="== RSXS enabled. =="
 rsxs_disabled="== RSXS disabled. =="
 projectm_enabled="== ProjectM enabled. =="
@@ -277,11 +284,17 @@ AC_ARG_ENABLE([ccache],
   [use_ccache=$enableval],
   [use_ccache=auto])
 
+AC_ARG_ENABLE([alsa],
+  [AS_HELP_STRING([--disable-alsa],
+  [disable ALSA support (only for linux/freebsd)])],
+  [use_alsa=$enableval],
+  [use_alsa=yes])
+
 AC_ARG_ENABLE([pulse],
   [AS_HELP_STRING([--enable-pulse],
-  [enable PulseAudio support (default is auto)])],
+  [enable PulseAudio support (default is no)])],
   [use_pulse=$enableval],
-  [use_pulse=auto])
+  [use_pulse=no])
 
 AC_ARG_ENABLE([rtmp],
   [AS_HELP_STRING([--enable-rtmp],
@@ -410,6 +423,18 @@ AC_ARG_ENABLE([libcec],
   [use_libcec=$enableval],
   [use_libcec=auto])
 
+AC_ARG_ENABLE([libmp3lame],
+  [AS_HELP_STRING([--enable-libmp3lame],
+  [enable lame mp3 encoder support (default is auto)])],
+  [use_libmp3lame=$enableval],
+  [use_libmp3lame=auto])
+
+AC_ARG_ENABLE([vorbisenc],
+  [AS_HELP_STRING([--enable-libvorbisenc],
+  [enable vorbis encoder support (default is auto)])],
+  [use_libvorbisenc=$enableval],
+  [use_libvorbisenc=auto])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],
@@ -453,6 +478,18 @@ case $host in
      ARCH="x86_64-linux"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  i386-*-freebsd*)
+     ARCH="x86-freebsd"
+     MAKE="gmake"
+     use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
+     ;;
+  amd64-*-freebsd*)
+     ARCH="x86_64-freebsd"
+     MAKE="gmake"
+     use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
+     ;;
   arm-apple-darwin*)
      use_joystick=no
      use_neon=yes
@@ -480,7 +517,7 @@ case $host in
      PYTHON_NOVERSIONCHECK="no-check"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
-  *86-apple-darwin*)
+  *86*-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
@@ -550,6 +587,13 @@ fi
 
 
 # platform specific flags
+if echo "$ARCH" | grep -q "freebsd" ; then
+  LOCALBASE="${LOCALBASE:-/usr/local}"
+  CFLAGS="$CFLAGS -I$LOCALBASE/include"
+  CXXFLAGS="$CXXFLAGS -I$LOCALBASE/include"
+  CPPFLAGS="$CPPFLAGS -I$LOCALBASE/include"
+  LDFLAGS="$LDFLAGS -L$LOCALBASE/lib"
+fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
@@ -690,7 +734,6 @@ AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
@@ -709,7 +752,11 @@ fi
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
+if echo "$ARCH" | grep -q freebsd; then
+AC_CHECK_LIB([pthread],     [main],LIBS="-pthread $LIBS", AC_MSG_ERROR($missing_library))
+else
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
+fi
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
@@ -718,6 +765,7 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([tinyxml],     [main],, AC_MSG_ERROR($missing_library))
 
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
@@ -773,15 +821,18 @@ AS_CASE([x$use_libbluray],
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
-    AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 else
   case $host_os in
     linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
+    freebsd*) AC_CHECK_LIB([iconv], [main],, AC_MSG_ERROR($missing_library)) ;;
   esac
-  AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
+  case $host_os in
+    freebsd*) ;;
+    *) AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library)) ;;
+  esac
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
 
@@ -797,7 +848,6 @@ else
     PKG_CHECK_MODULES([SDL],   [sdl],
       [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
       AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
     AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
@@ -808,11 +858,41 @@ XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
-XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
+
+# Audio encoders
+if test "x$use_libmp3lame" != "xno"; then
+  XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])
+  if test "x$use_libmp3lame" != "xno"; then
+    AC_CHECK_HEADER([lame/lame.h],, AC_MSG_ERROR($missing_headers))
+  fi
+fi
+AS_CASE([x$use_libmp3lame],
+  [xno],[
+    AC_SUBST([HAVE_LIBMP3LAME], 0)
+  ],
+  [
+    AC_DEFINE([HAVE_LIBMP3LAME], 1, [System has libmp3lame library])
+    AC_SUBST([HAVE_LIBMP3LAME], 1)
+  ]
+)
+if test "x$use_libvorbisenc" != "xno"; then
+  XB_FIND_SONAME([VORBISENC], [vorbisenc], [use_libvorbisenc])
+  if test "x$use_libvorbisenc" != "xno"; then
+    AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_headers))
+  fi
+fi
+AS_CASE([x$use_libvorbisenc],
+  [xno],[
+    AC_SUBST([HAVE_LIBVORBISENC], 0)
+  ],[
+    AC_DEFINE([HAVE_LIBVORBISENC], 1, [System has libvorbisenc library])
+    AC_SUBST([HAVE_LIBVORBISENC], 1)
+  ]
+)
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -822,6 +902,17 @@ fi
 # Optical
 if test "$use_optical_drive" = "yes"; then
   AC_DEFINE([HAS_DVD_DRIVE], [1], [Define to 1 to have optical drive support])
+fi
+
+# Alsa
+if test "$use_alsa" = "yes" && test "$host_vendor" != "apple"; then
+  PKG_CHECK_MODULES([ALSA],  [alsa],
+    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  AC_DEFINE([HAS_ALSA], [1], [Define to 0 to disable ALSA support])
+else
+  use_alsa="no"
+  AC_MSG_RESULT($alsa_disabled)
 fi
 
 # PulseAudio
@@ -1114,7 +1205,11 @@ else
     use_libusb="no"
     AC_MSG_NOTICE($libusb_disabled)
   else
-    if test "$use_libusb" = "auto"; then
+    if echo "$ARCH" | grep -q freebsd ; then
+      AC_CHECK_LIB([usb],[main],
+	  	[use_libusb="yes";USB_LIBS="-lusb"],
+		[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
+    elif test "$use_libusb" = "auto"; then
       PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
     elif test "$use_libusb" = "yes"; then
       PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_ERROR($libusb_not_found)])
@@ -1664,6 +1759,12 @@ else
   final_message="$final_message\n  ccache:\tNo"
 fi
 
+if test "$use_alsa" = "yes"; then
+  final_message="$final_message\n  ALSA Support:\tYes"
+else
+  final_message="$final_message\n  ALSA Support:\tNo"
+fi
+
 if test "x$use_pulse" != "xno"; then
   XBMC_STANDALONE_SH_PULSE=tools/Linux/xbmc-standalone.sh.pulse
   final_message="$final_message\n  PulseAudio:\tYes"
@@ -1742,8 +1843,10 @@ fi
 
 if test "$use_webserver" = "yes"; then
   final_message="$final_message\n  Webserver:\tYes"
+  USE_WEB_SERVER=1
 else
   final_message="$final_message\n  Webserver:\tNo"
+  USE_WEB_SERVER=0
 fi
 
 if test "$use_librtmp" != "no"; then
@@ -1806,6 +1909,18 @@ else
   final_message="$final_message\n  libcec support:\tNo"
 fi
 
+if test "x$use_libmp3lame" != "xno"; then
+  final_message="$final_message\n  libmp3lame support:\tYes"
+else
+  final_message="$final_message\n  libmp3lame support:\tNo"
+fi
+
+if test "x$use_libvorbisenc" != "xno"; then
+  final_message="$final_message\n  libvorbisenc support:\tYes"
+else
+  final_message="$final_message\n  libvorbisenc support:\tNo"
+fi
+
 ### External libraries messages
 
 if test "$use_external_ffmpeg" = "yes"; then
@@ -1831,7 +1946,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
     xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
     xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-    xbmc/cores/AudioRenderers/Makefile \
+    xbmc/cores/AudioEngine/Makefile \
     xbmc/cores/paplayer/Makefile \
     lib/timidity/Makefile \
     lib/xbadpcm/Makefile \
@@ -1860,6 +1975,7 @@ OUTPUT_FILES="Makefile \
     xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
+    xbmc/freebsd/Makefile \
     xbmc/linux/Makefile \
     xbmc/filesystem/Makefile \
     xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
@@ -1942,6 +2058,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
+AC_SUBST(USE_WEB_SERVER)
 
 
 # pushd and popd are not available in other shells besides bash, so implement
@@ -1996,47 +2113,76 @@ fi
 
 XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
-    ./configure \
-      --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
-      `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
-      `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
-      `if test "$use_arch" = "arm"; then echo --enable-pic; fi`\
-      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
-      --target-os=$(tolower $(uname -s)) \
-      --disable-amd3dnow \
-      --disable-armv5te \
-      --disable-armv6t2 \
-      --enable-static \
-      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
-      --disable-muxers \
-      --enable-muxer=spdif \
-      --enable-muxer=adts \
-      --disable-encoders \
-      --enable-encoder=ac3 \
-      --enable-encoder=aac \
-      `if test "$use_ffmpeg_libvorbis" = "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
-      --disable-devices \
-      --disable-ffprobe \
-      --disable-ffplay \
-      --disable-ffserver \
-      --disable-ffmpeg \
-      --disable-doc \
-      --disable-decoder=mpeg_xvmc \
-      --disable-crystalhd \
-      --enable-postproc \
-      --enable-gpl \
-      --enable-protocol=http \
-      --enable-pthreads \
-      --enable-runtime-cpudetect \
-      --cc="$CC" &&
-    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
-    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
-    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
-    if test "$use_arch" = "ppc"; then
-      sed -ie "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
-      sed -ie "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+    ffmpg_config="--target-os=$(tolower $(uname -s))"
+    # handle disables first, we do individual enables later
+    ffmpg_config="$ffmpg_config --disable-muxers   --disable-encoders"
+    ffmpg_config="$ffmpg_config --disable-devices  --disable-doc"
+    ffmpg_config="$ffmpg_config --disable-ffplay   --disable-ffmpeg"
+    ffmpg_config="$ffmpg_config --disable-ffprobe  --disable-ffserver"
+    ffmpg_config="$ffmpg_config --disable-vda      --disable-crystalhd"
+    ffmpg_config="$ffmpg_config --disable-decoder=mpeg_xvmc"
+
+    # handle conditional enables/disables
+    if test "$use_debug" = "no"; then
+      ffmpg_config="$ffmpg_config --disable-debug"
     fi
+    if test "$use_cpu"  != "no";  then
+      ffmpg_config="$ffmpg_config --cpu=$use_cpu"
+    fi
+    if test "$use_arch" != "no"; then
+      ffmpg_config="$ffmpg_config --arch=$use_arch --enable-cross-compile"
+    fi
+    if test "$use_arch"  = "arm"; then
+      ffmpg_config="$ffmpg_config --enable-pic"
+      ffmpg_config="$ffmpg_config --disable-armv5te --disable-armv6t2"
+      if test "$use_neon"  = "yes"; then
+        ffmpg_config="$ffmpg_config --enable-neon"
+      else
+        ffmpg_config="$ffmpg_config --disable-neon"
+      fi
+    else
+      ffmpg_config="$ffmpg_config --disable-amd3dnow"
+    fi
+    if test "$use_ffmpeg_libvorbis" = "yes"; then
+      ffmpg_config="$ffmpg_config --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis"
+    else
+      ffmpg_config="$ffmpg_config --disable-libvorbis"
+    fi
+
+    # handle individual enables
+    ffmpg_config="$ffmpg_config --enable-gpl"
+    ffmpg_config="$ffmpg_config --enable-postproc"
+    ffmpg_config="$ffmpg_config --enable-static      --enable-pthreads"
+    ffmpg_config="$ffmpg_config --enable-muxer=spdif --enable-muxer=adts"
+    ffmpg_config="$ffmpg_config --enable-encoder=ac3 --enable-encoder=aac"
+    ffmpg_config="$ffmpg_config --enable-protocol=http"
+    ffmpg_config="$ffmpg_config --enable-runtime-cpudetect"
+
+    # ffmpeg will not compile with llvm-gcc-4.2, use clang instead
+    case $CC in
+      *llvm-gcc-4.2*)
+        ffmpg_config="$ffmpg_config --cc=clang" ;;
+      *)
+        ffmpg_config="$ffmpg_config --cc=$CC" ;;
+    esac
+    
+    # extra-cflags must be passed alone or it gets expanded wrong by the ffmpeg configure
+    FFMPEG_EXTRACFLAGS="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated="
+
+    ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
+
+    # if using llvm-gcc-4.2 as assembler, -MMD is not enough to generate
+    # dependency files in the right place, replace it with something that works
+    case $AS in
+      *llvm-gcc-4.2*)
+        sed -ie "s#AS_DEPFLAGS=-MMD#AS_DEPFLAGS=-MMD -MF \$(\@:.o=.d) -MT \$\@#" config.mak ;;
+    esac
+
+    # ffmpeg will use yasm found at ${prefix}/bin during configure
+    # but then hardcodes 'yasm' in config.mak, fix it.
+    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak
+    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak
+    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
   else
     CFLAGS="" \
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
@@ -2141,7 +2287,8 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
-  rm -f CMakeCache.txt && CC="$ORIGCC" CXX="$ORIGCXX" cmake    \
+  rm -f CMakeCache.txt &&                              \
+  CC="$ORIGCC" CXX="$ORIGCXX" LDFLAGS="$LDFLAGS" cmake \
     -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
     -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
     -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
@@ -2194,6 +2341,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     --disable-hyperspace \
     --disable-lattice \
     --disable-skyrocket
+  if echo "$ARCH" | grep -q freebsd ; then
+    sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
+  fi
 ], [$DISABLE_RSXS])
 
 XB_CONFIG_MODULE([lib/libapetag], [
@@ -2210,7 +2360,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \
-    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
+    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS"
     #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
 ], [0])
 

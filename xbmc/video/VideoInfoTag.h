@@ -38,6 +38,7 @@ struct SActorInfo
   CStdString strName;
   CStdString strRole;
   CScraperUrl thumbUrl;
+  CStdString thumb;
 };
 
 class CVideoInfoTag : public IArchivable, public ISerializable
@@ -61,7 +62,7 @@ public:
    \sa ParseNative
    */
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
+  bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value);
   const CStdString GetCast(bool bIncludeRole = false) const;
@@ -89,7 +90,7 @@ public:
   CStdString m_strTitle;
   CStdString m_strSortTitle;
   CStdString m_strVotes;
-  CStdString m_strArtist;
+  std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
   std::vector<std::string> m_set;
@@ -130,6 +131,7 @@ public:
   CStreamDetails m_streamDetails;
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
+  CStdString m_type;
 
 private:
   /* \brief Parse our native XML format for video info.

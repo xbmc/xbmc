@@ -21,17 +21,18 @@
  *
  */
 
+#include "system_gl.h"
+
+#include <queue>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#define GLX_GLXEXT_PROTOTYPES
+#include <GL/glx.h>
+
 #include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "libavcodec/vdpau.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#define GL_GLEXT_PROTOTYPES
-#define GLX_GLXEXT_PROTOTYPES
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <queue>
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"

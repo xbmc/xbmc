@@ -51,6 +51,7 @@ bool ADPCMCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = m_dll.GetNumberOfChannels(m_adpcm);
   m_SampleRate = m_dll.GetPlaybackRate(m_adpcm);
   m_BitsPerSample = 16;//m_dll.GetSampleSize(m_adpcm);
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = m_dll.GetLength(m_adpcm); // fixme?
   m_iDataPos = 0;
 
@@ -66,7 +67,7 @@ void ADPCMCodec::DeInit()
   m_bIsPlaying = false;
 }
 
-__int64 ADPCMCodec::Seek(__int64 iSeekTime)
+int64_t ADPCMCodec::Seek(int64_t iSeekTime)
 {
   m_dll.Seek(m_adpcm,(int)iSeekTime);
   return iSeekTime;

@@ -33,7 +33,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 
@@ -279,9 +279,9 @@ void CGUIPythonWindowXML::ClearList()
   UpdateButtons();
 }
 
-void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
+void CGUIPythonWindowXML::WaitForActionEvent()
 {
-  g_pythonParser.WaitForEvent(m_actionEvent, timeout);
+  g_pythonParser.WaitForEvent(m_actionEvent);
   m_actionEvent.Reset();
 }
 
@@ -346,7 +346,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
   }
   delete[] buffer;
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   xmlDoc.Parse(xml.c_str());
 
   if (xmlDoc.Error())
@@ -447,8 +447,6 @@ unsigned int CGUIPythonWindowXML::LoadScriptStrings()
   URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
   URIUtils::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
   URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
-  URIUtils::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  URIUtils::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
 
   // allocate a bunch of strings
   return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, pathToFallbackLanguageFile);

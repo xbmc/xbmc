@@ -29,6 +29,9 @@
 #ifdef __APPLE__
 #include "../osx/OSXGNUReplacements.h"
 #endif
+#ifdef __FreeBSD__
+#include "freebsd/FreeBSDGNUReplacements.h"
+#endif
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include <vector>
@@ -151,6 +154,10 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    CStdString language;
+    language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
+    if (!language.IsEmpty())
+      extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
@@ -342,9 +349,9 @@ bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
   CStdString chosenPath;
-  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
+  chosenPath.Format("resources/language/%s", g_guiSettings.GetString("locale.language").c_str());
   CStdString chosen = URIUtils::AddFileToFolder(m_props.path, chosenPath);
-  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
+  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;
@@ -418,7 +425,7 @@ bool CAddon::ReloadSettings()
 bool CAddon::LoadUserSettings()
 {
   m_userSettingsLoaded = false;
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (doc.LoadFile(m_userSettingsPath))
     m_userSettingsLoaded = SettingsFromXML(doc);
   return m_userSettingsLoaded;
@@ -443,7 +450,7 @@ void CAddon::SaveSettings(void)
     CDirectory::Create(strAddon);
 
   // create the XML file
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   SettingsToXML(doc);
   doc.SaveFile(m_userSettingsPath);
   
@@ -469,7 +476,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
   m_settings[key] = value;
 }
 
-bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */)
+bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /*=false */)
 {
   if (!doc.RootElement())
     return false;
@@ -501,7 +508,7 @@ bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=fals
   return foundSetting;
 }
 
-void CAddon::SettingsToXML(TiXmlDocument &doc) const
+void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);

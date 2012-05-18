@@ -116,6 +116,8 @@ public:
   // returns false if ReleaseInstance() was called befores
   static bool IsInstantiated() { return  smp_instance != 0; }
 
+  virtual void ProcessResults() {}
+
 protected:
   // pure virtual methods to implement for OS specific implementations
   virtual bool doAddServiceType(const CStdString& fcr_service_type) = 0;

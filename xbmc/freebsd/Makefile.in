@@ -1,0 +1,10 @@
+ARCH=@ARCH@
+
+CXXFLAGS+=-fPIC
+
+SRCS=FreeBSDGNUReplacements.c
+
+LIB=freebsd.a
+
+include @abs_top_srcdir@/Makefile.include
+

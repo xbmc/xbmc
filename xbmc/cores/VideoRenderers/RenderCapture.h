@@ -174,6 +174,7 @@ class CRenderCaptureBase
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)
+#include "system_gl.h"
 
 class CRenderCaptureGL : public CRenderCaptureBase
 {

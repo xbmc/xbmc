@@ -454,7 +454,7 @@ MediaLibrary.prototype = {
     }
   },
   getThumbnailPath: function(thumbnail) {
-    return thumbnail ? ('/vfs/' + thumbnail) : DEFAULT_ALBUM_COVER;
+    return thumbnail ? ('/image/' + encodeURI(thumbnail)) : DEFAULT_ALBUM_COVER;
   },
   generateThumb: function(type, thumbnail, title, artist) {
     var floatableAlbum = $('<div>');

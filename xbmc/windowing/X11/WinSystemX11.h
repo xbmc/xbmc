@@ -23,9 +23,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#include "system_gl.h"
+#include <GL/glx.h>
+
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
-#include <GL/glx.h>
 #include "threads/CriticalSection.h"
 
 class IDispResource;

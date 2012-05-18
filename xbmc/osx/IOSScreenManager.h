@@ -29,16 +29,18 @@
 
 @class IOSEAGLView;
 @class XBMCController;
+@class IOSExternalTouchController;
 
 @interface IOSScreenManager : NSObject {
 
   int  _screenIdx;
   bool _externalScreen;
   IOSEAGLView *_glView;
+  IOSExternalTouchController *_externalTouchController;
 }
 @property int  _screenIdx;
 @property (readonly, getter=isExternalScreen)bool _externalScreen;
-@property (assign, setter=setView) IOSEAGLView *_glView;
+@property (assign, setter=setView:) IOSEAGLView *_glView;
 
 // init the screenmanager with our eaglview
 //- (id)      initWithView:(IOSEAGLView *)view;

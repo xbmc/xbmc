@@ -104,6 +104,16 @@ public:
   void AddJob(CJob *job);
 
   /*!
+   \brief Cancel a job in the queue
+   Cancels a job in the queue. Any job currently being processed may complete after this
+   call has completed, but OnJobComplete will not be performed. If the job is only queued
+   then it will be removed from the queue and deleted.
+   \param job a pointer to the job to cancel. The job should be subclassed from CJob.
+   \sa CJob
+   */
+  void CancelJob(const CJob *job);
+
+  /*!
    \brief Cancel all jobs in the queue
    Removes all jobs from the queue. Any job currently being processed may complete after this
    call has completed, but OnJobComplete will not be performed.

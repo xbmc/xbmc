@@ -30,7 +30,7 @@
 #include "WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif
-#if defined (_LINUX) && !defined(__APPLE__)
+#if defined (_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -53,6 +53,9 @@
 #include <IOKit/storage/IODVDMediaBSDClient.h>
 #include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 #endif
+#endif
+#ifdef __FreeBSD__
+#include <sys/syslimits.h>
 #endif
 #include "cdioSupport.h"
 #include "filesystem/iso9660.h"
@@ -95,6 +98,8 @@ HRESULT CIoSupport::CloseTray()
 #ifdef HAS_DVD_DRIVE
 #ifdef __APPLE__
   // FIXME...
+#elif defined(__FreeBSD__)
+  // NYI
 #elif defined(_LINUX)
   char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
@@ -264,6 +269,8 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     return -1;
   }
   return MODE2_DATA_SIZE;
+#elif defined(__FreeBSD__)
+  // NYI
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
   {

@@ -33,11 +33,11 @@ public:
 
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
-  virtual __int64 Seek(__int64 iSeekTime);
+  virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
 
-  virtual void SetTotalTime(__int64 totaltime)
+  virtual void SetTotalTime(int64_t totaltime)
   {
     m_TotalTime = totaltime*1000;
   }
@@ -45,7 +45,7 @@ private:
   DllSidplay2 m_dll;
   void* m_sid;
   int m_iTrack;
-  __int64 m_iDataPos;
+  int64_t m_iDataPos;
 };
 
 #endif

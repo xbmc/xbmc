@@ -50,6 +50,7 @@ bool YMCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 1;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = m_dll.GetLength(m_ym)*1000;
 
   return true;
@@ -62,7 +63,7 @@ void YMCodec::DeInit()
   m_ym = 0;
 }
 
-__int64 YMCodec::Seek(__int64 iSeekTime)
+int64_t YMCodec::Seek(int64_t iSeekTime)
 {
   return m_dll.Seek(m_ym,(unsigned long)iSeekTime);
 }

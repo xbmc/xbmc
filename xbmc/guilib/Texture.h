@@ -26,6 +26,10 @@
 
 #ifndef GUILIB_TEXTURE_H
 #define GUILIB_TEXTURE_H
+#include "system.h"
+#if defined(HAS_GL) || HAS_GLES == 2
+#include "system_gl.h"
+#endif
 
 #include "gui3d.h"
 #include "utils/StdString.h"
@@ -69,14 +73,18 @@ public:
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
 
-  XBMC::TexturePtr GetTextureObject() const
-  {
 #ifdef HAS_DX
+  LPDIRECT3DTEXTURE9 GetTextureObject() const
+  {
     return m_texture.Get();
-#else
-    return m_texture;
-#endif
   }
+#else
+  GLuint GetTextureObject() const
+  {
+    return m_texture;
+  }
+#endif
+
   unsigned char* GetPixels() const { return m_pixels; }
   unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
   unsigned int GetRows() const { return GetRows(m_textureHeight); }
@@ -107,7 +115,7 @@ protected:
 #ifdef HAS_DX
   CD3DTexture m_texture;
 #else
-  XBMC::TexturePtr m_texture;
+  GLuint m_texture;
 #endif
   unsigned char* m_pixels;
   bool m_loadedToGPU;

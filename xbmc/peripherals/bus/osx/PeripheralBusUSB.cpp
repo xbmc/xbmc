@@ -23,6 +23,8 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
+#include <sys/param.h>
+
 using namespace PERIPHERALS;
 
 #ifdef TARGET_DARWIN_OSX
