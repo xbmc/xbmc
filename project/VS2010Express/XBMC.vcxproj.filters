@@ -855,6 +855,9 @@
     <ClCompile Include="..\..\xbmc\cdrip\CDDARipper.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cdrip\CDDARipJob.cpp">
+      <Filter>cdrip</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cdrip\Encoder.cpp">
       <Filter>cdrip</Filter>
     </ClCompile>
@@ -3340,6 +3343,9 @@
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDAReader.h">
+      <Filter>cdrip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cdrip\CDDARipJob.h">
       <Filter>cdrip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h">

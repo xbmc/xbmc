@@ -957,8 +957,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("ripcd"))
   {
 #ifdef HAS_CDDA_RIPPER
-    CCDDARipper ripper;
-    ripper.RipCD();
+    CCDDARipper::GetInstance().RipCD();
 #endif
   }
   else if (execute.Equals("skin.togglesetting"))

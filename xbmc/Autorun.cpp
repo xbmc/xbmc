@@ -76,8 +76,7 @@ void CAutorun::ExecuteAutorun(const CStdString& path, bool bypassSettings, bool 
   if (g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP && 
       pInfo->IsAudio(1) && !g_settings.GetCurrentProfile().musicLocked())
   {
-    CCDDARipper ripper;
-    ripper.RipCD();
+    CCDDARipper::GetInstance().RipCD();
   }
   else
 #endif
