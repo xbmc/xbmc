@@ -5464,6 +5464,14 @@ void CApplication::StopMusicScan()
     m_musicInfoScanner->Stop();
 }
 
+void CApplication::StartVideoCleanup()
+{
+  if (m_videoInfoScanner->IsScanning())
+    return;
+
+  m_videoInfoScanner->CleanDatabase();
+}
+
 void CApplication::StartVideoScan(const CStdString &strDirectory, bool scanAll)
 {
   if (m_videoInfoScanner->IsScanning())
