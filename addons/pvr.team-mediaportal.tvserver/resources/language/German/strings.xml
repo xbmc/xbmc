@@ -12,10 +12,10 @@
     <string id="30008">Konvertiere Hostname nach IP-Adresse</string>
     <string id="30009">EPG: Genre Texte hochladen (langsam)</string>
     <string id="30010">Wartezeit, nachdem ein Kanal abgestimmt worden ist (ms)</string>
-    <string id="30011">Aufnahmen aus Ordner lesen</string>
-    <string id="30012">Mediaportal Aufnahmeordner</string>
+    <string id="30011"></string>
+    <string id="30012"></string>
 
     <!-- on-screen error messages -->
-    <string id="30050">Ihre TVServerXBMC plugin v%s ist zu alt. Sie brauchen mindestens Version v%s!</string>
-    <string id="30051">Ihre TVServerXBMC plugin Version ist zu alt. Sie brauchen mindestens Version v%s!</string>
+    <string id="30050">Ihre TVServerXBMC plugin '%s' ist zu alt. Sie brauchen mindestens Version '%s'!</string>
+    <string id="30051">Ihre TVServerXBMC plugin Version ist zu alt. Sie brauchen mindestens Version '%s'!</string>
 </strings>

@@ -36,6 +36,7 @@
 #include "platform/util/timeutils.h"
 #include "RTSPClient.h"
 #include "MemoryBuffer.h"
+#include "FileUtils.h"
 
 using namespace ADDON;
 
@@ -47,6 +48,7 @@ CTsReader::CTsReader()
   m_bTimeShifting   = false;
   m_bIsRTSP         = false;
   m_cardSettings    = NULL;
+  m_cardId          = -1;
   m_State           = State_Stopped;
   m_lastPause       = 0;
   m_WaitForSeekToEof = 0;
@@ -72,30 +74,49 @@ CTsReader::~CTsReader(void)
 std::string CTsReader::TranslatePath(const char*  pszFileName)
 {
 #if defined (TARGET_WINDOWS)
-  if (m_basePath.length() == 0)
-    return pszFileName;
-
-  CStdString sTimeshiftFile = pszFileName;
-  size_t found = string::npos;
-
-  if ((m_cardSettings) && (m_cardSettings->size() > 0))
+  // Can we access the given file already?
+  if ( OS::CFile::Exists(pszFileName) )
   {
-    for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
+    return pszFileName;
+  }
+#endif
+
+  CStdString sFileName = pszFileName;
+
+  // Card Id given? (only for Live TV / Radio). Check for an UNC path (e.g. \\tvserver\timeshift)
+  if (m_cardId >= 0)
+  {
+    Card tscard;
+
+    if ((m_cardSettings) && (m_cardSettings->GetCard(m_cardId, tscard)))
     {
-      // Determine whether the first part of the timeshift file name is shared with this card
-      found = sTimeshiftFile.find(it->TimeshiftingFolder);
-      if (found != string::npos)
+      sFileName.Replace(tscard.TimeshiftFolder.c_str(), tscard.TimeshiftFolderUNC.c_str());
+    }
+  }
+  else
+  {
+    // No Card Id given. This is a recording. Check for an UNC path (e.g. \\tvserver\recordings)
+    size_t found = string::npos;
+
+    if ((m_cardSettings) && (m_cardSettings->size() > 0))
+    {
+      for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
       {
-        // Remove the original base path and replace it with the given path
-        sTimeshiftFile = m_basePath + sTimeshiftFile.substr(it->TimeshiftingFolder.length()+1);
-        break;
+        // Determine whether the first part of the recording filename is shared with this card
+        found = sFileName.find(it->RecordingFolder);
+        if (found != string::npos)
+        {
+          // Remove the original base path and replace it with the given path
+          sFileName.Replace(it->RecordingFolder.c_str(), it->RecordingFolderUNC.c_str());
+          break;
+        }
       }
     }
-    XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, sTimeshiftFile.c_str());
-    return sTimeshiftFile;
   }
-#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
-  std::string CIFSname =  pszFileName;
+
+#if defined(TARGET_LINUX) || defined(TARGET_OSX)
+  CStdString CIFSName = sFileName;
+  CIFSName.Replace("\\", "/");
   std::string SMBPrefix = "smb://";
   if (g_szSMBusername.length() > 0)
   {
@@ -110,24 +131,37 @@ std::string CTsReader::TranslatePath(const char*  pszFileName)
     SMBPrefix += "Guest";
   }
   SMBPrefix += "@";
-  size_t found = string::npos;
+  CIFSName.Replace("//", SMBPrefix.c_str());
+  sFileName = CIFSName;
 
-  // Extract filename:
-  found = CIFSname.find_last_of("\\");
+  //size_t found = string::npos;
 
-  if (found != string::npos)
-  {
-    CIFSname.erase(0, found + 1);
-    CIFSname.insert(0, m_basePath.c_str());
-    CIFSname.erase(0, 6); // Remove smb://
-  }
-  CIFSname.insert(0, SMBPrefix.c_str());
+  //// Extract filename:
+  //found = CIFSname.find_last_of("\\");
 
-  XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, CIFSname.c_str());
-  return CIFSname;
+  //if (found != string::npos)
+  //{
+  //  CIFSname.erase(0, found + 1);
+  //  CIFSname.insert(0, m_basePath.c_str());
+  //  CIFSname.erase(0, 6); // Remove smb://
+  //}
+  //CIFSname.insert(0, SMBPrefix.c_str());
+
+  //XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, CIFSname.c_str());
+  //return CIFSname;
 #endif
 
-  return pszFileName;
+  XBMC->Log(LOG_INFO, "CTsReader:TranslatePath %s -> %s", pszFileName, sFileName.c_str());
+
+#if defined (TARGET_WINDOWS)
+  // Can we access the given file already?
+  if ( !OS::CFile::Exists(sFileName) )
+  {
+    XBMC->Log(LOG_ERROR, "%s: Cannot find/access file: %s", __FUNCTION__, sFileName.c_str());
+  }
+#endif
+
+  return sFileName;
 }
 
 long CTsReader::Open(const char* pszFileName)
@@ -323,6 +357,11 @@ void CTsReader::SetDirectory( string& directory )
   //TODO: do something useful...
 #endif
   m_basePath = tmp;
+}
+
+void CTsReader::SetCardId(int id)
+{
+  m_cardId = id;
 }
 
 bool CTsReader::IsTimeShifting()

@@ -1,3 +1,9 @@
+v1.2.3.114:
+- Added: Live555 RTSP support for Linux
+
+v1.2.3.113:
+- Simplify settings. The TVServerXBMC plugin now reports the sharenames for the recordings and timeshift folder
+
 v1.2.3.112:
 - Merged: tsreader and ffmpeg addons are now combined into one addon
 

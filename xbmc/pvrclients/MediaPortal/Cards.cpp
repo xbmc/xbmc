@@ -55,6 +55,9 @@ bool CCards::ParseLines(vector<string>& lines)
       // field 14 = CAM
       // field 15 = NetProvider
       // field 16 = stopgraph
+      // field 17 = UNC path recording folder (when shared)
+      // field 18 = UNC path timeshift folder (when shared)
+
       card.IdCard = atoi(fields[0].c_str());
       card.DevicePath = fields[1];
       card.Name = fields[2];
@@ -65,7 +68,7 @@ bool CCards::ParseLines(vector<string>& lines)
       card.IdServer = atoi(fields[7].c_str());
       card.Enabled = stringtobool(fields[8]);
       card.CamType = atoi(fields[9].c_str());
-      card.TimeshiftingFolder = fields[10];
+      card.TimeshiftFolder = fields[10];
       card.RecordingFormat = atoi(fields[11].c_str());
       card.DecryptLimit = atoi(fields[12].c_str());
       card.Preload = stringtobool(fields[13]);
@@ -73,9 +76,35 @@ bool CCards::ParseLines(vector<string>& lines)
       card.NetProvider = atoi(fields[15].c_str());
       card.StopGraph = stringtobool(fields[16]);
 
+      if (fields.size() > 17) // since TVServerXBMC build 115
+      {
+        card.RecordingFolderUNC = fields[17];
+        card.TimeshiftFolderUNC = fields[18];
+      }
+      else
+      {
+        card.RecordingFolderUNC = "";
+        card.TimeshiftFolderUNC = "";
+      }
+
       push_back(card);
     }
   }
 
   return true;
+}
+
+bool CCards::GetCard(int id, Card& card)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).IdCard == id)
+    {
+      card = at(i);
+      return true;
+    }
+  }
+
+  card.IdCard = -1;
+  return false;
 }

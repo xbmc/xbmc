@@ -38,17 +38,18 @@ bool             g_bRadioEnabled        = DEFAULT_RADIO;                 ///< Se
 bool             g_bHandleMessages      = DEFAULT_HANDLE_MSG;            ///< Send VDR's OSD status messages to XBMC OSD
 bool             g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
 bool             g_bReadGenre           = DEFAULT_READ_GENRE;            ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
-bool             g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
-std::string      g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
-std::string      g_szTimeshiftDir       = DEFAULT_TIMESHIFT_DIR;         ///< The path to the recordings directory
+//bool             g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
+//std::string      g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
+//std::string      g_szTimeshiftDir       = DEFAULT_TIMESHIFT_DIR;         ///< The path to the recordings directory
 std::string      g_szTVGroup            = DEFAULT_TVGROUP;               ///< Import only TV channels from this TV Server TV group
 std::string      g_szRadioGroup         = DEFAULT_RADIOGROUP;            ///< Import only radio channels from this TV Server radio group
 std::string      g_szSMBusername        = DEFAULT_SMBUSERNAME;           ///< Windows user account used to access share
 std::string      g_szSMBpassword        = DEFAULT_SMBPASSWORD;           ///< Windows user password used to access share
                                                                          ///< Leave empty to use current user when running on Windows
-bool             g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
+//bool             g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
 eStreamingMethod g_eStreamingMethod     = TSReader;
 bool             g_bFastChannelSwitch   = true;                          ///< Don't stop an existing timeshift on a channel switch
+bool             g_bUseRTSP             = false;                         ///< Use RTSP streaming when using the tsreader
 
 /* Client member variables */
 ADDON_STATUS           m_CurStatus    = ADDON_STATUS_UNKNOWN;
@@ -274,39 +275,39 @@ void ADDON_ReadSettings(void)
   }
 
   /* Read setting "userecordingsdir" from settings.xml */
-  if (!XBMC->GetSetting("userecordingsdir", &g_bUseRecordingsDir))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'userecordingsdir' setting, falling back to 'false' as default");
-    g_bReadGenre = DEFAULT_USE_REC_DIR;
-  }
+  //if (!XBMC->GetSetting("userecordingsdir", &g_bUseRecordingsDir))
+  //{
+  //  /* If setting is unknown fallback to defaults */
+  //  XBMC->Log(LOG_ERROR, "Couldn't get 'userecordingsdir' setting, falling back to 'false' as default");
+  //  g_bReadGenre = DEFAULT_USE_REC_DIR;
+  //}
 
-  if (!XBMC->GetSetting("recordingsdir", &buffer))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'recordingsdir' setting, falling back to '%s' as default", DEFAULT_REC_DIR);
-  } else {
-    g_szRecordingsDir = buffer;
-  }
+  //if (!XBMC->GetSetting("recordingsdir", &buffer))
+  //{
+  //  /* If setting is unknown fallback to defaults */
+  //  XBMC->Log(LOG_ERROR, "Couldn't get 'recordingsdir' setting, falling back to '%s' as default", DEFAULT_REC_DIR);
+  //} else {
+  //  g_szRecordingsDir = buffer;
+  //}
 
   /* TSReader settings */
   /*********************/
   /* Read setting "directtsfileread" from settings.xml */
-  if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
-    g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
-  }
+  //if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
+  //{
+  //  /* If setting is unknown fallback to defaults */
+  //  XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
+  //  g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
+  //}
 
-  if (!XBMC->GetSetting("timeshiftdir", &buffer))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'timeshiftdir' setting, falling back to '%s' as default", DEFAULT_TIMESHIFT_DIR);
-    g_szTimeshiftDir =  DEFAULT_TIMESHIFT_DIR;
-  } else {
-    g_szTimeshiftDir = buffer;
-  }
+  //if (!XBMC->GetSetting("timeshiftdir", &buffer))
+  //{
+  //  /* If setting is unknown fallback to defaults */
+  //  XBMC->Log(LOG_ERROR, "Couldn't get 'timeshiftdir' setting, falling back to '%s' as default", DEFAULT_TIMESHIFT_DIR);
+  //  g_szTimeshiftDir =  DEFAULT_TIMESHIFT_DIR;
+  //} else {
+  //  g_szTimeshiftDir = buffer;
+  //}
 
   /* Read setting "fastchannelswitch" from settings.xml */
   if (!XBMC->GetSetting("fastchannelswitch", &g_bFastChannelSwitch))
@@ -334,14 +335,23 @@ void ADDON_ReadSettings(void)
   else
     g_szSMBpassword = buffer;
 
+  /* Read setting "usertsp" from settings.xml */
+  if (!XBMC->GetSetting("usertsp", &g_bUseRTSP))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'usertsp' setting, falling back to 'false' as default");
+    g_bUseRTSP = false;
+  }
+
   /* Log the current settings for debugging purposes */
-  XBMC->Log(LOG_DEBUG, "settings: streamingmethod: %s", (( g_eStreamingMethod == TSReader) ? "TSReader" : "ffmpeg"));
+  XBMC->Log(LOG_DEBUG, "settings: streamingmethod: %s, usertsp=%i", (( g_eStreamingMethod == TSReader) ? "TSReader" : "ffmpeg"), (int) g_bUseRTSP);
   XBMC->Log(LOG_DEBUG, "settings: host='%s', port=%i, timeout=%i", g_szHostname.c_str(), g_iPort, g_iConnectTimeout);
   XBMC->Log(LOG_DEBUG, "settings: ftaonly=%i, useradio=%i, tvgroup='%s', radiogroup='%s'", (int) g_bOnlyFTA, (int) g_bRadioEnabled, g_szTVGroup.c_str(), g_szRadioGroup.c_str());
   XBMC->Log(LOG_DEBUG, "settings: readgenre=%i, sleeponrtspurl=%i", (int) g_bReadGenre, g_iSleepOnRTSPurl);
-  XBMC->Log(LOG_DEBUG, "settings: userecordingsdir=%i, recordingsdir='%s'", (int) g_bUseRecordingsDir, g_szRecordingsDir.c_str());
+  //XBMC->Log(LOG_DEBUG, "settings: userecordingsdir=%i, recordingsdir='%s'", (int) g_bUseRecordingsDir, g_szRecordingsDir.c_str());
   XBMC->Log(LOG_DEBUG, "settings: resolvertsphostname=%i", (int) g_bResolveRTSPHostname);
-  XBMC->Log(LOG_DEBUG, "settings: directsfileread=%i, timeshiftdir='%s' fastchannelswitch=%i", (int) g_bDirectTSFileRead, g_szTimeshiftDir.c_str(), (int) g_bFastChannelSwitch);
+//  XBMC->Log(LOG_DEBUG, "settings: directsfileread=%i, timeshiftdir='%s' fastchannelswitch=%i", (int) g_bDirectTSFileRead, g_szTimeshiftDir.c_str(), (int) g_bFastChannelSwitch);
+  XBMC->Log(LOG_DEBUG, "settings: fastchannelswitch=%i", (int) g_bFastChannelSwitch);
   XBMC->Log(LOG_DEBUG, "settings: smb user='%s', pass='%s'", g_szSMBusername.c_str(), g_szSMBpassword.c_str());
 }
 
@@ -417,26 +427,26 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'sleeponrtspurl' from %u to %u", g_iSleepOnRTSPurl, *(int*) settingValue);
     g_iSleepOnRTSPurl = *(int*) settingValue;
   }
-  else if (str == "userecordingsdir")
-  {
-    XBMC->Log(LOG_INFO, "Changed setting 'userecordingsdir' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
-    g_bUseRecordingsDir = *(bool*) settingValue;
-  }
-  else if (str == "recordingsdir")
-  {
-    XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
-    g_szRecordingsDir = (const char*) settingValue;
-  }
-  else if (str == "directtsfileread")
-  {
-    XBMC->Log(LOG_INFO, "Changed setting 'directtsfileread' from %u to %u", g_bDirectTSFileRead, *(bool*) settingValue);
-    g_bDirectTSFileRead = *(bool*) settingValue;
-  }
-  else if (str == "timeshiftdir")
-  {
-    XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %s to %s", g_szTimeshiftDir.c_str(), (const char*) settingValue);
-    g_szTimeshiftDir = (const char*) settingValue;
-  }
+  //else if (str == "userecordingsdir")
+  //{
+  //  XBMC->Log(LOG_INFO, "Changed setting 'userecordingsdir' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
+  //  g_bUseRecordingsDir = *(bool*) settingValue;
+  //}
+  //else if (str == "recordingsdir")
+  //{
+  //  XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
+  //  g_szRecordingsDir = (const char*) settingValue;
+  //}
+  //else if (str == "directtsfileread")
+  //{
+  //  XBMC->Log(LOG_INFO, "Changed setting 'directtsfileread' from %u to %u", g_bDirectTSFileRead, *(bool*) settingValue);
+  //  g_bDirectTSFileRead = *(bool*) settingValue;
+  //}
+  //else if (str == "timeshiftdir")
+  //{
+  //  XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %s to %s", g_szTimeshiftDir.c_str(), (const char*) settingValue);
+  //  g_szTimeshiftDir = (const char*) settingValue;
+  //}
   else if (str == "smbusername")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'smbusername' from '%s' to '%s'", g_szSMBusername.c_str(), (const char*) settingValue);
@@ -461,6 +471,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
       /* Switching between ffmpeg and tsreader mode requires a restart due to different channel streams */
       return ADDON_STATUS_NEED_RESTART;
     }
+  }
+  else if (str == "usertsp")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'usertsp' from %u to %u", g_bUseRTSP, *(bool*) settingValue);
+    g_bUseRTSP = *(bool*) settingValue;
   }
 
   return ADDON_STATUS_OK;

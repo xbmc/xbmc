@@ -12,12 +12,14 @@
     <string id="30008">Converteer hostnaam naar IP adres</string>
     <string id="30009">EPG: Genre tekst inlezen (traag)</string>
     <string id="30010">Wachttijd na kanaal tunen(ms)</string>
-    <string id="30011">Opnames direct afspelen (niet streamen)</string>
-    <string id="30012">Mediaportal directory met opnames</string>
-    <string id="30013">Direct afspelen uit Timeshift buffer (niet streamen)</string>
-    <string id="30014">Timeshift buffer directory</string>
+    <string id="30011"></string>
+    <string id="30012"></string>
+    <string id="30013"></string>
+    <string id="30014"></string>
+	<string id="30015">Streaming methode</string>
     <string id="30016">Windows gebruikersnaam (SMB)</string>
     <string id="30017">Windows wachtwoord (SMB)</string>
+    <string id="30018">Gebruik RTSP streaming</string>
 
     <!-- category labels -->
     <string id="30040">Verbinding</string>

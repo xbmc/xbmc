@@ -12,8 +12,8 @@
     <string id="30008">Muunna palvelimen nimi IP-osoitteeksi</string>
     <string id="30009">Ohjelmaopas: Lue lajityyppi merkkijonoista (hidas)</string>
     <string id="30010">Odotusaika kanavan virittämisen jälkeen (ms)</string>
-    <string id="30011">Toista nauhoitukset suoraan (ei streamausta)</string>
-    <string id="30012">Mediaportal-nauhoitusten kansio</string>
+    <string id="30011"></string>
+    <string id="30012"></string>
 
     <!-- category labels -->
     <string id="30040">Yhteys</string>
