@@ -47,7 +47,7 @@ public:
 
 private:
   bool OpenBundle();
-  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture);
+  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame *frame, CBaseTexture** ppTexture);
 
   time_t m_TimeStamp;
 
