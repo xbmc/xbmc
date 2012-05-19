@@ -359,7 +359,7 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t *data, unsigned int frames)
   }
 
   while (GetSpace() < total)
-    Sleep(1);
+    Sleep(total * 1000 / m_AvgBytesPerSec);
 
   while (len)
   {
