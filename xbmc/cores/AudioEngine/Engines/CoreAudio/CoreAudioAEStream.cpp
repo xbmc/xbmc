@@ -411,8 +411,9 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     addsize = frames * m_chLayoutCountOutput *  sizeof(float);
   }
 
+  unsigned int total_ms_sleep = 0;
   unsigned int room = m_Buffer->GetWriteSize();
-  while (addsize > room && !m_paused)
+  while (addsize > room && !m_paused && total_ms_sleep < 2000)
   {
     // we got deleted
     if (!m_valid || !m_Buffer || m_draining )
@@ -424,6 +425,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
     // sleep until we have space (estimated) or 1ms min
     Sleep(ms_sleep_time);
+    total_ms_sleep += ms_sleep_time;
 
     room = m_Buffer->GetWriteSize();
   }
