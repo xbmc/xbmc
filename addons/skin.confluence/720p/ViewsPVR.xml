@@ -289,6 +289,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -590,6 +591,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -754,6 +756,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -1310,6 +1313,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -1664,6 +1668,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -1987,6 +1992,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
@@ -2361,6 +2367,7 @@
 				</control>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>Page Count Label</description>
 				<posx>40r</posx>
 				<posy>53r</posy>
