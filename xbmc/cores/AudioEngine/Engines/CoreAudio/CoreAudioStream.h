@@ -24,6 +24,7 @@
 
 #if defined(TARGET_DARWIN_OSX)
 
+#include "threads/Thread.h"
 #include <CoreAudio/CoreAudio.h>
 
 #include <list>
@@ -52,6 +53,13 @@ public:
   bool    GetAvailablePhysicalFormats(StreamFormatList *pList);
   
 protected:
+  static OSStatus HardwareStreamListener(AudioObjectID inObjectID,
+    UInt32 inNumberAddresses, const AudioObjectPropertyAddress inAddresses[], void* inClientData);
+
+  CEvent m_virtual_format_event;
+  CEvent m_physical_format_event;
+
+
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
   AudioStreamBasicDescription m_OriginalPhysicalFormat;  
