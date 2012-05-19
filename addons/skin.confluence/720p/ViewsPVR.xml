@@ -1193,9 +1193,9 @@
 							<visible>!Control.HasFocus(14)</visible>
 						</control>
 						<control type="image">
-							<posx>980</posx>
+							<posx>940</posx>
 							<posy>0</posy>
-							<width>120</width>
+							<width>155</width>
 							<height>40</height>
 							<colordiffuse>33FFFFFF</colordiffuse>
 							<texture border="5">StackFO.png</texture>
