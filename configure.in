@@ -1385,7 +1385,7 @@ if test "x$use_crystalhd" != "xno"; then
     fi
     if test "x$use_crystalhd" != "xno"; then
       SAVE_CFLAGS="$CFLAGS"
-      CFLAGS="-D__LINUX_USER__ -llibcrystalhd"
+      CFLAGS="-D__LINUX_USER__ -lcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
         [AC_LANG_SOURCE([#include <libcrystalhd/bc_dts_types.h>
