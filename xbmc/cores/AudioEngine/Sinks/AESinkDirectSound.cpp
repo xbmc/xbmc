@@ -158,7 +158,17 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  hr = m_pDSound->SetCooperativeLevel(g_hWnd, DSSCL_PRIORITY);
+  HWND tmp_hWnd;
+
+  /* Dodge the null handle on first init by using desktop handle */
+  if (g_hWnd == NULL)
+    tmp_hWnd = GetDesktopWindow();
+  else
+    tmp_hWnd = g_hWnd;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Using Window handle: %d", tmp_hWnd);
+
+  hr = m_pDSound->SetCooperativeLevel(tmp_hWnd, DSSCL_PRIORITY);
 
   if (FAILED(hr))
   {
