@@ -37,6 +37,7 @@
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
+#define MAX_SKIP_XFADE_TIME     2000 /* max 2 seconds crossfade on track skip */
 
 // PAP: Psycho-acoustic Audio Player
 // Supporting all open  audio codec standards.
@@ -221,11 +222,30 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  CloseAllStreams();
-  m_crossFadeTime = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
+  //set crossfade time for the file being opened
+  UpdateCrossFadingTime(file);
+
+  if (m_streams.size() > 1 || !m_crossFadeTime)
+  {
+    CloseAllStreams();
+  }
 
   if (!QueueNextFileEx(file, false))
     return false;
+
+  CSharedLock lock(m_streamsLock);
+  if (m_streams.size() == 2)
+  {
+    //do a short crossfade on trackskip, set to max 2 seconds for these prev/next transitions
+    if (m_crossFadeTime > MAX_SKIP_XFADE_TIME) 
+      m_crossFadeTime = MAX_SKIP_XFADE_TIME;
+
+    //start transition to next track
+    StreamInfo* si = m_streams.front();
+    si->m_playNextAtFrame  = si->m_framesSent; //start next track at current frame
+    si->m_prepareTriggered = true; //next track is ready to go
+  }
+  lock.Leave();
 
   if (!IsRunning())
     Create();
