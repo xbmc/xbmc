@@ -537,7 +537,7 @@
 					</item>
 					<item id="7">
 						<description>Search</description>
-						<label>Search</label>
+						<label>$LOCALIZE[137]</label>
 						<onclick>Plex.ActivateWindow(10051)</onclick>
 					</item>
 					<item id="111">
