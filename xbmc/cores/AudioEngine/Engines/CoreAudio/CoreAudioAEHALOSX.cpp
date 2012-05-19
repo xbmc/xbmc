@@ -158,7 +158,8 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
           m_rawDataFormat == AE_FMT_TRUEHD || m_rawDataFormat == AE_FMT_EAC3)
       {
         unsigned int bps = CAEUtil::DataFormatToBits(AE_FMT_S16NE);
-        if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && desc.mFormat.mBitsPerChannel == bps &&
+        if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && 
+            desc.mFormat.mBitsPerChannel == bps &&
             desc.mFormat.mSampleRate == m_initformat.m_sampleRate )
         {
           outputFormat = desc.mFormat; // Select this format
@@ -167,9 +168,10 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
           break;
         }
       }
-      else
+      else if (desc.mFormat.mFormatID == kAudioFormat60958AC3 || desc.mFormat.mFormatID == 'IAC3')
       {
-        if (desc.mFormat.mFormatID == kAudioFormat60958AC3 || desc.mFormat.mFormatID == 'IAC3')
+        if (desc.mFormat.mChannelsPerFrame == m_initformat.m_channelLayout.Count() && 
+            desc.mFormat.mSampleRate == m_initformat.m_sampleRate )
         {
           outputFormat = desc.mFormat; // Select this format
           m_OutputBufferIndex = streamIndex;
