@@ -50,6 +50,7 @@ class IAE
 {
 protected:
   friend class CAEFactory;
+  friend class CAEStreamFactory;
 
   IAE() {}
   virtual ~IAE() {}
@@ -101,6 +102,7 @@ public:
    */
   virtual void SetSoundMode(const int mode) = 0;
 
+private:
   /**
    * Creates and returns a new IAEStream in the format specified, this function should never fail
    * @param dataFormat The data format the incoming audio will be in (eg, AE_FMT_S16LE)
@@ -120,6 +122,7 @@ public:
    */
   virtual IAEStream *FreeStream(IAEStream *stream) = 0;
 
+public:
   /**
    * Creates a new IAESound that is ready to play the specified file
    * @param file The WAV file to load, this supports XBMC's VFS

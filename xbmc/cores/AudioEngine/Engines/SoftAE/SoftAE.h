@@ -71,10 +71,12 @@ public:
   virtual bool  IsMuted() { return m_muted; }
   virtual void  SetSoundMode(const int mode);
 
+private:
   /* returns a new stream for data in the specified format */
   virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int encodedSampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
 
+public:
   /* returns a new sound object */
   virtual IAESound *MakeSound(const std::string& file);
   virtual void      FreeSound(IAESound *sound);

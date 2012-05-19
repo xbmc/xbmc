@@ -27,6 +27,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/AEStreamFactory.h"
 #include "settings/Settings.h"
 
 using namespace std;
@@ -49,7 +50,7 @@ CDVDAudio::~CDVDAudio()
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
-    CAEFactory::AE->FreeStream(m_pAudioStream);
+    CAEStreamFactory::FreeStream(m_pAudioStream);
 
   free(m_pBuffer);
 }
@@ -69,7 +70,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
   unsigned int options = needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0;
   options |= AESTREAM_AUTOSTART;
 
-  m_pAudioStream = CAEFactory::AE->MakeStream(
+  m_pAudioStream = CAEStreamFactory::MakeStream(
     audioframe.data_format,
     audioframe.sample_rate,
     audioframe.encoded_sample_rate,
@@ -100,7 +101,7 @@ void CDVDAudio::Destroy()
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-    CAEFactory::AE->FreeStream(m_pAudioStream);
+    CAEStreamFactory::FreeStream(m_pAudioStream);
 
   free(m_pBuffer);
   m_pBuffer = NULL;
