@@ -34,7 +34,7 @@ namespace MUSIC_INFO
 class CMusicInfoTag : public IArchivable, public ISerializable
 {
 public:
-  CMusicInfoTag(void);
+  CMusicInfoTag(const CStdString& strMediaFile = CStdString());
   CMusicInfoTag(const CMusicInfoTag& tag);
   virtual ~CMusicInfoTag();
   const CMusicInfoTag& operator =(const CMusicInfoTag& tag);
@@ -119,6 +119,10 @@ public:
    */
   void AppendGenre(const CStdString &genre);
 
+  bool hasEmbeddedCue() const;
+  const CStdString& GetEmbeddedCue() const;
+  void setEmbeddedCue(const CStdString& cuesheet);
+
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& ar);
 
@@ -143,6 +147,7 @@ protected:
   CStdString m_strMusicBrainzTRMID;
   CStdString m_strComment;
   CStdString m_strLyrics;
+  CStdString m_strCue;
   CDateTime m_lastPlayed;
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits

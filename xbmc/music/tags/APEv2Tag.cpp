@@ -128,6 +128,9 @@ bool CAPEv2Tag::ReadTag(const char* filename)
         m_rating = temp;
   }
 
+  if (apefrm_getstr(tag, (char*)"Cuesheet"))
+    m_cueSheet = apefrm_getstr(tag, (char*)"Cuesheet");
+
   // Replay gain info
   GetReplayGainFromTag(tag);
 

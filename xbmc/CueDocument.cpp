@@ -62,13 +62,93 @@
 #include "filesystem/Directory.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include <set>
 
 using namespace std;
 using namespace XFILE;
 
-CCueDocument::CCueDocument(void)
+class FileCueReader
+  : public CueReader
+{
+  CFile m_file;
+  bool m_opened;
+  char m_szBuffer[1024];
+public:
+  FileCueReader(const CStdString &strFile)
+  {
+    m_opened = m_file.Open(strFile);
+  }
+  virtual bool ReadNextLine(CStdString &szLine)
+  {
+    char *pos;
+    // Read the next line.
+    while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
+    {
+      // Remove the white space at the beginning of the line.
+      pos = m_szBuffer;
+      while (pos && skipChar(*pos)) pos++;
+      if (pos)
+      {
+        szLine = pos;
+        return true;
+      }
+      // If we are here, we have an empty line so try the next line
+    }
+    return false;
+  }
+  ~FileCueReader()
+  {
+    if (m_opened)
+      m_file.Close();
+  }
+};
+
+class TagCueReader
+  : public CueReader
+{
+  CStdString m_data;
+  unsigned int m_currentPos;
+public:
+  TagCueReader(const CStdString &cueData)
+    : m_data(cueData)
+    , m_currentPos(0)
+  {
+  }
+  virtual bool ReadNextLine(CStdString &line)
+  {
+    // Read the next line.
+    line = "";
+    bool stop = false;
+    while (m_currentPos < m_data.length())
+    {
+      // Remove the white space at the beginning of the line.
+      char ch = m_data.at(m_currentPos++);
+      stop |= (!skipChar(ch));
+      if (stop)
+      {
+        if (ch == '\r' || ch == '\n')
+        {
+          if (!line.IsEmpty())
+            return true;
+        }
+        else
+          line += ch;
+      }
+    }
+    return false;
+  }
+  ~TagCueReader()
+  {
+  }
+};
+
+
+CCueDocument::CCueDocument(const CFileItem &fileItem)
+  : m_external(true)
+  , m_reader(0)
 {
   m_strArtist = "";
   m_strAlbum = "";
@@ -78,20 +158,65 @@ CCueDocument::CCueDocument(void)
   m_replayGainAlbumGain = 0.0f;
   m_iTotalTracks = 0;
   m_iTrack = 0;
+  m_sourcePath = fileItem.GetPath();
+  m_valid = Load(fileItem);
 }
 
-CCueDocument::~CCueDocument(void)
-{}
+CCueDocument::~CCueDocument()
+{
+  delete m_reader;
+}
+
+bool CCueDocument::isValid() const
+{
+  return m_valid;
+}
+
+bool CCueDocument::isExternal() const
+{
+  return m_external;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// Function: Load()
+// Try to load cuesheet information from file. 
+////////////////////////////////////////////////////////////////////////////////////
+bool CCueDocument::Load(const CFileItem &fileItem)
+{
+  if (fileItem.IsCUESheet()) // *.CUE - file
+  {
+    m_reader = new FileCueReader(fileItem.GetPath());
+    m_external = true;
+  }
+  else
+  {
+    CStdString extension;
+    URIUtils::GetExtension(fileItem.GetPath(), extension);
+    if (extension.Equals((char*)".ape") ||
+        extension.Equals((char*)".flac") ||
+        extension.Equals((char*)".wv") || 
+        extension.Equals((char*)".ogg"))
+    {
+      MUSIC_INFO::CMusicInfoTag tag(fileItem.GetPath());
+      if (tag.hasEmbeddedCue())
+      {
+        m_reader = new TagCueReader(tag.GetEmbeddedCue());
+        m_external = false;
+      }
+    }
+  }
+  return Parse();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Function: Parse()
 // Opens the .cue file for reading, and constructs the track database information
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::Parse(const CStdString &strFile)
+bool CCueDocument::Parse()
 {
-  if (!m_file.Open(strFile))
+  if (!m_reader)
     return false;
-
   CStdString strLine;
   m_iTotalTracks = -1;
   CStdString strCurrentFile = "";
@@ -101,7 +226,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
   // Run through the .CUE file and extract the tracks...
   while (true)
   {
-    if (!ReadNextLine(strLine))
+    if (!m_reader->ReadNextLine(strLine))
       break;
     if (strLine.Left(7) == "INDEX 0")
     {
@@ -155,7 +280,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
       CCueTrack track;
       m_Track.push_back(track);
-      m_Track[m_iTotalTracks].strFile = strCurrentFile;
+      m_Track[m_iTotalTracks].strFile = isExternal() ? strCurrentFile : m_sourcePath;
 
       if (iTrackNumber > 0)
         m_Track[m_iTotalTracks].iTrackNumber = iTrackNumber;
@@ -166,15 +291,18 @@ bool CCueDocument::Parse(const CStdString &strFile)
     }
     else if (strLine.Left(4) == "FILE")
     {
-      // already a file name? then the time computation will be changed
-      if(strCurrentFile.size() > 0)
-        bCurrentFileChanged = true;
+      if (isExternal())
+      {
+        // already a file name? then the time computation will be changed
+        if(strCurrentFile.size() > 0)
+          bCurrentFileChanged = true;
 
-      ExtractQuoteInfo(strLine, strCurrentFile);
+        ExtractQuoteInfo(strLine, strCurrentFile);
 
-      // Resolve absolute paths (if needed).
-      if (strCurrentFile.length() > 0)
-        ResolvePath(strCurrentFile, strFile);
+        // Resolve absolute paths (if needed).
+        if (strCurrentFile.length() > 0)
+          ResolvePath(strCurrentFile);
+      }
     }
     else if (strLine.Left(8) == "REM DATE")
     {
@@ -211,7 +339,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
     m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
-  m_file.Close();
+
   if (m_iTotalTracks >= 0)
   {
     m_iTotalTracks++;
@@ -269,30 +397,6 @@ CStdString CCueDocument::GetMediaTitle()
 }
 
 // Private Functions start here
-
-////////////////////////////////////////////////////////////////////////////////////
-// Function: ReadNextLine()
-// Returns the next non-blank line of the textfile, stripping any whitespace from
-// the left.
-////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ReadNextLine(CStdString &szLine)
-{
-  char *pos;
-  // Read the next line.
-  while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
-  {
-    // Remove the white space at the beginning of the line.
-    pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
-    if (pos)
-    {
-      szLine = pos;
-      return true;
-    }
-    // If we are here, we have an empty line so try the next line
-  }
-  return false;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Function: ExtractQuoteInfo()
@@ -360,10 +464,10 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 // Determines whether strPath is a relative path or not, and if so, converts it to an
 // absolute path using the path information in strBase
 ////////////////////////////////////////////////////////////////////////////////////
-bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
+bool CCueDocument::ResolvePath(CStdString &strPath)
 {
   CStdString strDirectory;
-  URIUtils::GetDirectory(strBase, strDirectory);
+  URIUtils::GetDirectory(m_sourcePath, strDirectory);
 
   CStdString strFilename = strPath;
   URIUtils::GetFileName(strFilename);

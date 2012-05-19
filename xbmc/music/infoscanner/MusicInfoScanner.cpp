@@ -479,12 +479,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       CSong *dbSong = songsMap.Find(pItem->GetPath());
 
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
-      if (!tag.Loaded() )
-      { // read the tag from a file
-        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
-        if (NULL != pLoader.get())
-          pLoader->Load(pItem->GetPath(), tag);
-      }
 
       // if we have the itemcount, notify our
       // observer with the progress we made
