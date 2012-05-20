@@ -13,581 +13,579 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: id:31000
+msgctxt "#31000"
 msgid "Change Your"
 msgstr "Alterar seu"
 
-#: id:31001
+msgctxt "#31001"
 msgid "Love"
 msgstr "Amor"
 
-#: id:31002
+msgctxt "#31002"
 msgid "Hate"
 msgstr "Ódio"
 
-#: id:31003
+msgctxt "#31003"
 msgid "Power Options"
 msgstr "Opções de energia"
 
-#: id:31004
+msgctxt "#31004"
 msgid "Working..."
 msgstr "Executando..."
 
-#: id:31005
+msgctxt "#31005"
 msgid "Hide Information"
 msgstr "Esconder INFO"
 
-#: id:31006
+msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
-#: id:31007
+msgctxt "#31007"
 msgid "Plugins"
 msgstr "Plugins"
 
-#: id:31008
+msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Tela Cheia"
 
-#: id:31009
+msgctxt "#31009"
 msgid "Total Duration"
 msgstr ""
 
-#: id:31020
-msgctxt "Auto context with id 31020"
+msgctxt "#31020"
 msgid "Recently Added"
 msgstr "Adicionado recentemente"
 
-#: id:31021
+msgctxt "#31021"
 msgid "Video - Files"
 msgstr "Video - Arquivos"
 
-#: id:31022
+msgctxt "#31022"
 msgid "Music - Files"
 msgstr "Música - Arquivos"
 
-#: id:31023
+msgctxt "#31023"
 msgid "Playing"
 msgstr "Executando"
 
-#: id:31024
+msgctxt "#31024"
 msgid "Page"
 msgstr "Página"
 
-#: id:31025
+msgctxt "#31025"
 msgid "Items"
 msgstr "Itens"
 
-#: id:31026
+msgctxt "#31026"
 msgid "Misc Options"
 msgstr "Opções diversas"
 
-#: id:31027
+msgctxt "#31027"
 msgid "Location"
 msgstr "Localização"
 
-#: id:31028
+msgctxt "#31028"
 msgid "Poster Wrap"
 msgstr "Vitrine"
 
-#: id:31029
+msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
 
-#: id:31030
+msgctxt "#31030"
 msgid "Full list"
 msgstr "Lista Completa"
 
-#: id:31031
+msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr "Ícones de imagens"
 
-#: id:31032
+msgctxt "#31032"
 msgid "Image Wrap"
 msgstr "Vitrine de Imagens"
 
-#: id:31033
+msgctxt "#31033"
 msgid "Info"
 msgstr "Info"
 
-#: id:31040
+msgctxt "#31040"
 msgid "Now Playing"
 msgstr "Tocando agora"
 
-#: id:31042
+msgctxt "#31042"
 msgid "PLAYING"
 msgstr "TOCANDO"
 
-#: id:31043
+msgctxt "#31043"
 msgid "PAUSED"
 msgstr "PAUSADO"
 
-#: id:31044
+msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "AVANÇO RÁPIDO"
 
-#: id:31045
+msgctxt "#31045"
 msgid "REWIND"
 msgstr "RETROCEDER"
 
-#: id:31046
+msgctxt "#31046"
 msgid "Audio Properties"
 msgstr "Propriedades de áudio"
 
-#: id:31047
+msgctxt "#31047"
 msgid "Current Preset"
 msgstr "Pré configuração atual"
 
-#: id:31048
+msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr "Visualizar pré-configurações"
 
-#: id:31049
+msgctxt "#31049"
 msgid "End Time"
 msgstr "Tempo de término"
 
-#: id:31050
+msgctxt "#31050"
 msgid "Sort: Ascending"
 msgstr "Ordem: Ascendente"
 
-#: id:31051
+msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr "Ordem: Descendente"
 
-#: id:31055
+msgctxt "#31055"
 msgid "Open playlist"
 msgstr "Abrir playlist"
 
-#: id:31056
+msgctxt "#31056"
 msgid "Save playlist"
 msgstr "Salvar playlist"
 
-#: id:31057
+msgctxt "#31057"
 msgid "Close playlist"
 msgstr "Fechar playlist"
 
-#: id:31058
+msgctxt "#31058"
 msgid "System music files"
 msgstr "Arquivos de música do sistema"
 
-#: id:31059
+msgctxt "#31059"
 msgid "Current playlist"
 msgstr "Playlist atual"
 
-#: id:31060
+msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
 msgstr "Este arquivo está empilhado, selecione a parte de onde executar."
 
-#: id:31061
+msgctxt "#31061"
 msgid "Current Selected"
 msgstr "Selecionado"
 
-#: id:31101
+msgctxt "#31101"
 msgid "Home screen options"
 msgstr "Opções da tela principal (home)"
 
-#: id:31102
+msgctxt "#31102"
 msgid "Background"
 msgstr "Fundo"
 
-#: id:31103
+msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
 msgstr "Exibir \"Pausado\" em exibição de imagens (slideshow)"
 
-#: id:31104
+msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
 msgstr "Tocar trailers em uma janela [COLOR=grey3](Só Diálogo de Informações do Vídeo)[/COLOR]"
 
-#: id:31106
+msgctxt "#31106"
 msgid "Miscellaneous options"
 msgstr "Opções diversas"
 
-#: id:31107
+msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 msgstr "Ocultar marcadores lidos do arquivo de vídeo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
-#: id:31108
+msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Ocultar botões do Menu Principal"
 
-#: id:31109
+msgctxt "#31109"
 msgid "Media backgrounds"
 msgstr "Fundos da tela principal (home)"
 
-#: id:31110
+msgctxt "#31110"
 msgid "Edit Background for Media Type"
 msgstr "Editar fundo para botão principal (home)"
 
-#: id:31111
+msgctxt "#31111"
 msgid "Hide"
 msgstr "Ocultar"
 
-#: id:31112
+msgctxt "#31112"
 msgid "Options"
 msgstr "Opções"
 
-#: id:31113
+msgctxt "#31113"
 msgid "Single Image"
 msgstr "Imagem única"
 
-#: id:31114
+msgctxt "#31114"
 msgid "Multi Image"
 msgstr "Multi imagens"
 
-#: id:31115
+msgctxt "#31115"
 msgid "Customizer"
 msgstr "Personalizador"
 
-#: id:31116
+msgctxt "#31116"
 msgid "Show Recently added Albums"
 msgstr ""
 
-#: id:31117
+msgctxt "#31117"
 msgid "Show Recently added Videos"
 msgstr "Exibir vídeos adicionados recentemente"
 
-#: id:31118
+msgctxt "#31118"
 msgid "Home Page Programs Submenu"
 msgstr "Submenu Programas da Página Principal"
 
-#: id:31119
+msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ocultar fanart fundo da visualização"
 
-#: id:31120
+msgctxt "#31120"
 msgid "BUTTON LABEL"
 msgstr "RÓTULO DE BOTÃO"
 
-#: id:31122
+msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Página do Tempo"
 
-#: id:31123
+msgctxt "#31123"
 msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
 msgstr "Usar \"Pôsters\" ao invés de \"Faixas\" para Seriados"
 
-#: id:31124
+msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Exibir fundo Vídeo \"Tocando Agora\""
 
-#: id:31125
+msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
 msgstr "Exibir fundo Visualização \"Tocando Agora\""
 
-#: id:31126
+msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
 msgstr "Reproduzir música tema do seriado na biblioteca de vídeo(TvTunes add-on)"
 
-#: id:31127
+msgctxt "#31127"
 msgid "TvTunes"
 msgstr "TvTunes"
 
-#: id:31128
+msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Letras"
 
-#: id:31132
+msgctxt "#31132"
 msgid "Lyrics Add-on"
 msgstr "Add-on de Letras"
 
-#: id:31133
+msgctxt "#31133"
 msgid "Subtitle Add-on"
 msgstr "Add-on de legendas"
 
-#: id:31134
+msgctxt "#31134"
 msgid "Home Page Videos Submenu"
 msgstr "Home Page Submenu de Videos"
 
-#: id:31135
+msgctxt "#31135"
 msgid "Home Page Music Submenu"
 msgstr "Home Page Submenu de Música"
 
-#: id:31136
+msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
 msgstr "Home Page Submenu de Imagens"
 
-#: id:31140
+msgctxt "#31140"
 msgid "Music OSD"
 msgstr "OSD de Música"
 
-#: id:31141
+msgctxt "#31141"
 msgid "Video OSD"
 msgstr "OSD de Video"
 
-#: id:31200
+msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Atalhos"
 
-#: id:31201
+msgctxt "#31201"
 msgid "Categories"
 msgstr "Categorias"
 
-#: id:31202
+msgctxt "#31202"
 msgid "Show Cast"
 msgstr "Elenco do Seriado"
 
-#: id:31203
+msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Escolha sua música"
 
-#: id:31204
+msgctxt "#31204"
 msgid "Section Links"
 msgstr "Seção de Links"
 
-#: id:31205
+msgctxt "#31205"
 msgid "Lyrics Source"
 msgstr "Origem das Letras"
 
-#: id:31206
+msgctxt "#31206"
 msgid "Found"
 msgstr ""
 
-#: id:31207
+msgctxt "#31207"
 msgid "Find More Items"
 msgstr ""
 
-#: id:31208
+msgctxt "#31208"
 msgid "Upcoming Episodes"
 msgstr ""
 
-#: id:31300
+msgctxt "#31300"
 msgid "Current Temp"
 msgstr "Temp. Atual"
 
-#: id:31301
+msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Última atualização"
 
-#: id:31302
+msgctxt "#31302"
 msgid "Menu"
 msgstr "Menu"
 
-#: id:31303
+msgctxt "#31303"
 msgid "Data provider"
 msgstr ""
 
-#: id:31304
+msgctxt "#31304"
 msgid "Picture"
 msgstr "Imagem"
 
-#: id:31305
+msgctxt "#31305"
 msgid "No Disc Media Detected"
 msgstr "Nenhum disco de mídia detectado"
 
-#: id:31306
+msgctxt "#31306"
 msgid "Eject"
 msgstr "Ejetar"
 
-#: id:31307
+msgctxt "#31307"
 msgid "Hide Fanart"
 msgstr "Ocultar Fanart"
 
-#: id:31308
+msgctxt "#31308"
 msgid "Movie Details"
 msgstr "Detalhes do vídeo"
 
-#: id:31309
+msgctxt "#31309"
 msgid "Memory Used:"
 msgstr "Memória usada:"
 
-#: id:31310
+msgctxt "#31310"
 msgid "Track Number"
 msgstr "Número da faixa"
 
-#: id:31311
+msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
 msgstr "Imagem de Fanart[CR][CR]Indisponível[CR][CR] Clique no botão para definir"
 
-#: id:31312
+msgctxt "#31312"
 msgid "Current Scraper"
 msgstr "Scraper Atual"
 
-#: id:31313
+msgctxt "#31313"
 msgid "Choose a Scraper"
 msgstr "Escolha um Scraper"
 
-#: id:31314
+msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Opções de busca de conteúdo"
 
-#: id:31315
+msgctxt "#31315"
 msgid "Basic"
 msgstr "Básico"
 
-#: id:31317
+msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Definir caminho do Fanart"
 
-#: id:31318
+msgctxt "#31318"
 msgid "Small Fanart"
 msgstr "Fanart Pequeno"
 
-#: id:31319
+msgctxt "#31319"
 msgid "Selected Profile"
 msgstr "Perfil selecionado"
 
-#: id:31320
+msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Última conexão"
 
-#: id:31321
+msgctxt "#31321"
 msgid "Karaoke Song Selector"
 msgstr "Selecionador de Música Karaoke"
 
-#: id:31322
+msgctxt "#31322"
 msgid "Aired"
 msgstr "Transmitido"
 
-#: id:31323
+msgctxt "#31323"
 msgid "Latest Movies"
 msgstr "Últimos Filmes"
 
-#: id:31324
+msgctxt "#31324"
 msgid "Latest Episodes"
 msgstr "Últimos Episódios"
 
-#: id:31325
+msgctxt "#31325"
 msgid "Playlist Options"
 msgstr "Opções do Playlist"
 
-#: id:31326
+msgctxt "#31326"
 msgid "Created"
 msgstr "Criado"
 
-#: id:31327
+msgctxt "#31327"
 msgid "Resolution"
 msgstr "Resolução"
 
-#: id:31328
-msgctxt "Auto context with id 31328"
+msgctxt "#31328"
 msgid "Recently Added"
 msgstr "Adicionado Recentemente"
 
-#: id:31329
+msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
 msgstr "[B]Timer definido![/B] [COLOR=grey2] - Sistema se desligará em[/COLOR]"
 
-#: id:31330
+msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
 msgstr "Clique no botão para tocar o[CR][CR]trailer"
 
-#: id:31331
+msgctxt "#31331"
 msgid "Album Details"
 msgstr "Detalhes do Álbum"
 
-#: id:31351
+msgctxt "#31351"
 msgid "Pause"
 msgstr "Pausar"
 
-#: id:31352
+msgctxt "#31352"
 msgid "Stop"
 msgstr "Parar"
 
-#: id:31353
+msgctxt "#31353"
 msgid "Fast Forward"
 msgstr "Avançar"
 
-#: id:31354
+msgctxt "#31354"
 msgid "Rewind"
 msgstr "Voltar"
 
-#: id:31355
+msgctxt "#31355"
 msgid "Movie menu"
 msgstr "Menu do Filme"
 
-#: id:31356
+msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Download de Legendas"
 
-#: id:31390
+msgctxt "#31390"
 msgid "Skin default"
 msgstr "Padrão da skin"
 
-#: id:31391
+msgctxt "#31391"
 msgid "Skin default with no Caps"
 msgstr "Padrão da skin sem capslock"
 
-#: id:31392
+msgctxt "#31392"
 msgid "Arial based"
 msgstr "Baseado em Arial"
 
-#: id:31400
+msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
 msgstr "[B]CONFIGURAR AJUSTES DE APARÊNCIA[/B][CR][CR]Mudar o skin · Definir idioma e região · Definir opções de listagem de arquivos · Definir um descanso de tela"
 
-#: id:31401
+msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
 msgstr "[B]CONFIGURAR AJUSTES DE VÍDEO[/B][CR][CR]Gerenciar sua coleção de vídeos · Definir opções de execução de vídeo · Alterar opções de listagem de vídeo · Definir fonte para legendas"
 
-#: id:31402
+msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
 msgstr "[B]CONFIGURAR AJUSTES DE MÚSICAS[/B][CR][CR]Gerenciar sua coleção de músicas · Definir opções de execução de música · Alterar opções de listagem de música · Configurar submissão de música · Definir opções de karaoke"
 
-#: id:31403
+msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
 msgstr "[B]CONFIGURAR AJUSTES DE IMAGENS[/B][CR][CR]Definir opções de listagem de imagens · Configurar exibição de imagens(slideshow)"
 
-#: id:31404
+msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
 msgstr "[B]CONFIGURAR AJUSTES DE TEMPO[/B][CR][CR]Definir três cidades para buscar informações sobre o tempo"
 
-#: id:31406
+msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas · Configurar saída de áudio · Configurar controles remotos · Definir opções para economia de energia · Habilitar depuração · Configurar bloqueio mestre"
 
-#: id:31407
+msgctxt "#31407"
 msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
 msgstr "[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence · Adicionar e remover itens no menu principal(home) · Alterar fundos do skin"
 
-#: id:31408
+msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR AJUSTES DE ADD-ONS[/B][CR][CR]Configurar Add-ons existentes · Procurar e instalar novos Add-ons de xbmc.org[CR]Alterar configurações do Add-on"
 
-#: id:31409
+msgctxt "#31409"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
-#: id:31421
+msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selecione seu Perfil de usuário XBMC[CR]para conectar e continue"
 
-#: id:31900
+msgctxt "#31900"
 msgid "Weather Maps"
 msgstr "Mapas - Clima"
 
-#: id:31901
+msgctxt "#31901"
 msgid "36 Hour Forecast"
 msgstr "Previsão 36 Horas"
 
-#: id:31902
+msgctxt "#31902"
 msgid "Hourly Forecast"
 msgstr "Previsão por hora"
 
-#: id:31903
+msgctxt "#31903"
 msgid "Weekend Forecast"
 msgstr "Previsão fim de semana"
 
-#: id:31904
+msgctxt "#31904"
 msgid "10 Day Forecast"
 msgstr "Previsão 10 Dias"
 
-#: id:31905
+msgctxt "#31905"
 msgid "Forecast"
 msgstr "Previsão"
 
-#: id:31906
+msgctxt "#31906"
 msgid "Maps & Video"
 msgstr "Mapas & Video"
 
-#: id:31907
+msgctxt "#31907"
 msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
 msgstr "Vídeo da Previsão [COLOR=grey2](Playback em tela cheia)[/COLOR]"
 
-#: id:31908
+msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Chance de precipitação"
 
-#: id:31909
+msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Buscando informações da previsão..."
 
