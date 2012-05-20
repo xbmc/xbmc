@@ -3983,7 +3983,7 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "OnStop");
+  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile);
 
   if (IsPlayingAudio())
   {
