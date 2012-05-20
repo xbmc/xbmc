@@ -348,12 +348,9 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosenPath;
-  chosenPath.Format("resources/language/%s", g_guiSettings.GetString("locale.language").c_str());
-  CStdString chosen = URIUtils::AddFileToFolder(m_props.path, chosenPath);
-  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English");
+  CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
-  m_hasStrings = m_strings.Load(chosen, fallback);
+  m_hasStrings = m_strings.Load(chosenPath, g_guiSettings.GetString("locale.language"));
   return m_checkedStrings = true;
 }
 

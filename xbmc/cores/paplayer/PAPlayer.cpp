@@ -51,7 +51,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_isPaused         (false),
   m_isFinished       (false),
   m_currentStream    (NULL ),
-  m_audioCallback    (NULL )
+  m_audioCallback    (NULL ),
+  m_FileItem         (new CFileItem() )
 {
 }
 
@@ -63,6 +64,7 @@ PAPlayer::~PAPlayer()
 
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
+  delete m_FileItem;
 }
 
 bool PAPlayer::HandlesType(const CStdString &type)
@@ -234,6 +236,28 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   return true;
 }
 
+void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
+{
+  if ((m_crossFadeTime = g_guiSettings.GetInt("musicplayer.crossfade") * 1000))
+  {
+    if (
+        m_streams.size() == 0 ||
+        (
+          file.HasMusicInfoTag() && !g_guiSettings.GetBool("musicplayer.crossfadealbumtracks") &&
+          m_FileItem->HasMusicInfoTag() &&
+          (m_FileItem->GetMusicInfoTag()->GetAlbum() != "") &&
+          (m_FileItem->GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
+          (m_FileItem->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
+          (m_FileItem->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
+        )
+    )
+    {
+      //do not crossfade when playing consecutive albumtracks
+      m_crossFadeTime = 0;
+    }
+  }
+}
+
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
   return QueueNextFileEx(file);
@@ -241,6 +265,9 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
 bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
 {
+  //set crossfade time for the file being queued
+  UpdateCrossFadingTime(file);
+
   StreamInfo *si = new StreamInfo();
 
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
@@ -306,6 +333,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   /* add the stream to the list */
   CExclusiveLock lock(m_streamsLock);
   m_streams.push_back(si);
+
+  *m_FileItem = file;
 
   return true;
 }

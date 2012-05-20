@@ -72,19 +72,16 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
   if (!musicdatabase.Open())
     return InternalError;
 
-  CArtist artist;
-  if (!musicdatabase.GetArtistInfo(artistID, artist))
+  CFileItemList items;
+  CStdString where;
+  where.Format("idArtist = %d", artistID);
+  if (!musicdatabase.GetArtistsByWhere("musicdb://2/", where, items) || items.Size() != 1)
   {
     musicdatabase.Close();
     return InvalidParams;
   }
 
-  CFileItemPtr m_artistItem(new CFileItem(artist));
-  m_artistItem->GetMusicInfoTag()->SetArtist(m_artistItem->GetLabel());
-  m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
-  CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
-  m_artistItem->SetCachedArtistThumb();
-  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;

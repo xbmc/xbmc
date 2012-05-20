@@ -1274,14 +1274,9 @@ int CBuiltins::Execute(const CStdString& execString)
     if (!params.size() || params[0].Equals("video"))
     {
       if (!g_application.IsVideoScanning())
-      {
-         CVideoDatabase videodatabase;
-         videodatabase.Open();
-         videodatabase.CleanDatabase();
-         videodatabase.Close();
-      }
+         g_application.StartVideoCleanup();
       else
-        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning or cleaning");
     }
     else if (params[0].Equals("music"))
     {

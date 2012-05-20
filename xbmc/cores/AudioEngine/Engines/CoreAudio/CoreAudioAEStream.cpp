@@ -411,8 +411,9 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     addsize = frames * m_chLayoutCountOutput *  sizeof(float);
   }
 
+  unsigned int total_ms_sleep = 0;
   unsigned int room = m_Buffer->GetWriteSize();
-  while (addsize > room && !m_paused)
+  while (addsize > room && !m_paused && total_ms_sleep < 2000)
   {
     // we got deleted
     if (!m_valid || !m_Buffer || m_draining )
@@ -424,6 +425,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
     // sleep until we have space (estimated) or 1ms min
     Sleep(ms_sleep_time);
+    total_ms_sleep += ms_sleep_time;
 
     room = m_Buffer->GetWriteSize();
   }
@@ -732,13 +734,15 @@ void CCoreAudioAEStream::RegisterSlave(IAEStream *stream)
   m_slave = stream;
 }
 
-OSStatus CCoreAudioAEStream::Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
+OSStatus CCoreAudioAEStream::Render(AudioUnitRenderActionFlags* actionFlags,
+  const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
 {
   OSStatus ret = OnRender(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
   return ret;
 }
 
-OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
+OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
+  const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   // if we have no valid data output silence
   if (!m_valid || m_delete || !m_Buffer || m_firstInput || m_paused)
@@ -757,7 +761,8 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   // the index is important if we run encoded
   unsigned int outputBufferIndex = AE.GetHAL()->GetBufferIndex();
 
-  ioData->mBuffers[outputBufferIndex].mDataByteSize  = GetFrames((unsigned char *)ioData->mBuffers[outputBufferIndex].mData, size);
+  ioData->mBuffers[outputBufferIndex].mDataByteSize  = GetFrames(
+    (uint8_t*)ioData->mBuffers[outputBufferIndex].mData, size);
   if (!ioData->mBuffers[outputBufferIndex].mDataByteSize && ioActionFlags)
     *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
 

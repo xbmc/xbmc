@@ -88,6 +88,7 @@ namespace VIDEO
      */
     void Start(const CStdString& strDirectory, bool scanAll = false);
     bool IsScanning();
+    void CleanDatabase(IVideoInfoScannerObserver* pObserver=NULL, const std::set<int>* paths=NULL);
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
 

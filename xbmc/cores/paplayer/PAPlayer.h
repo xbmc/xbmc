@@ -119,6 +119,8 @@ private:
   StreamInfo*         m_currentStream;       /* the current playing stream */
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
 
+  CFileItem*          m_FileItem;            /* our queued file or current file if no file is queued */      
+
   CSharedSection      m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */
@@ -131,6 +133,7 @@ private:
   bool PrepareStream(StreamInfo *si);
   bool ProcessStream(StreamInfo *si, double &delay, double &buffer);
   bool QueueData(StreamInfo *si);
+  void UpdateCrossFadingTime(const CFileItem& file);
   int64_t GetTotalTime64();
 };
 

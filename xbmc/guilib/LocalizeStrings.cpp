@@ -55,28 +55,28 @@ void CLocalizeStrings::ClearSkinStrings()
   Clear(31000, 31999);
 }
 
-bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath)
+bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString& language)
 {
   ClearSkinStrings();
   // load the skin strings in.
   CStdString encoding;
-  if (!LoadStr2Mem(path, encoding))
+  if (!LoadStr2Mem(path, language, encoding))
   {
-    if (path == fallbackPath) // no fallback, nothing to do
+    if (language.Equals(SOURCE_LANGUAGE)) // no fallback, nothing to do
       return false;
   }
 
   // load the fallback
-  if (path != fallbackPath)
-    LoadStr2Mem(fallbackPath, encoding);
+  if (!language.Equals(SOURCE_LANGUAGE))
+    LoadStr2Mem(path, SOURCE_LANGUAGE, encoding);
 
   return true;
 }
 
-bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, CStdString &encoding,
-                                   uint32_t offset /* = 0 */)
+bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, const CStdString &language,
+                                   CStdString &encoding, uint32_t offset /* = 0 */)
 {
-  CStdString pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in);
+  CStdString pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
   if (!XFILE::CDirectory::Exists(pathname))
   {
     CLog::Log(LOGDEBUG,
@@ -85,10 +85,8 @@ bool CLocalizeStrings::LoadStr2Mem(const CStdString &pathname_in, CStdString &en
     return false;
   }
 
-  URIUtils::RemoveSlashAtEnd(pathname);
-  bool bIsSourceLanguage = URIUtils::GetFileName(pathname).Equals("english");;
-
-  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset, bIsSourceLanguage))
+  if (LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), encoding, offset,
+      language.Equals(SOURCE_LANGUAGE)))
     return true;
 
   CLog::Log(LOGDEBUG, "LocalizeStrings: no strings.po file exist at %s, fallback to strings.xml",
@@ -108,25 +106,28 @@ bool CLocalizeStrings::LoadPO(const CStdString &filename, CStdString &encoding,
   while ((PODoc.GetNextEntry()))
   {
     uint32_t id;
-    if (PODoc.GetEntryType() == ID_FOUND &&
-        m_strings.find((id = PODoc.GetEntryID()) + offset) == m_strings.end())
+    if (PODoc.GetEntryType() == ID_FOUND)
     {
+      bool bStrInMem = m_strings.find((id = PODoc.GetEntryID()) + offset) != m_strings.end();
       PODoc.ParseEntry(bSourceLanguage);
-      if (bSourceLanguage)
+
+      if (bSourceLanguage && !PODoc.GetMsgid().empty())
       {
-        if (!PODoc.GetMsgid().empty())
-        {
-          m_strings[id + offset] = PODoc.GetMsgid();
-          counter++;
-        }
+        if (bStrInMem && (m_strings[id + offset].strOriginal.IsEmpty() ||
+            PODoc.GetMsgid() == m_strings[id + offset].strOriginal))
+          continue;
+        else if (bStrInMem)
+          CLog::Log(LOGDEBUG,
+                    "POParser: id:%i was recently re-used in the English string file, which is not yet "
+                    "changed in the translated file. Using the English string instead", id);
+        m_strings[id + offset].strTranslated = PODoc.GetMsgid();
+        counter++;
       }
-      else
+      else if (!bSourceLanguage && !bStrInMem && !PODoc.GetMsgstr().empty())
       {
-        if (!PODoc.GetMsgstr().empty())
-        {
-          m_strings[id + offset] = PODoc.GetMsgstr();
-          counter++;
-        }
+        m_strings[id + offset].strTranslated = PODoc.GetMsgstr();
+        m_strings[id + offset].strOriginal = PODoc.GetMsgid();
+        counter++;
       }
     }
     else if (PODoc.GetEntryType() == MSGID_FOUND)
@@ -170,65 +171,65 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
   const TiXmlElement *pChild = pRootElement->FirstChildElement("string");
   while (pChild)
   {
-    // Load new style language file with id as attribute
+    // Load old style language file with id as attribute
     const char* attrId=pChild->Attribute("id");
     if (attrId && !pChild->NoChildren())
     {
       int id = atoi(attrId) + offset;
       if (m_strings.find(id) == m_strings.end())
-        m_strings[id] = ToUTF8(encoding, pChild->FirstChild()->Value());
+        m_strings[id].strTranslated = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
     pChild = pChild->NextSiblingElement("string");
   }
   return true;
 }
 
-bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& strFallbackFileName)
+bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& strLanguage)
 {
-  bool bLoadFallback = !strFileName.Equals(strFallbackFileName);
+  bool bLoadFallback = !strLanguage.Equals(SOURCE_LANGUAGE);
 
   CStdString encoding;
   Clear();
 
-  if (!LoadStr2Mem(strFileName, encoding))
+  if (!LoadStr2Mem(strPathName, strLanguage, encoding))
   {
     // try loading the fallback
-    if (!bLoadFallback || !LoadStr2Mem(strFallbackFileName, encoding))
+    if (!bLoadFallback || !LoadStr2Mem(strPathName, SOURCE_LANGUAGE, encoding))
       return false;
 
     bLoadFallback = false;
   }
 
   if (bLoadFallback)
-    LoadStr2Mem(strFallbackFileName, encoding);
+    LoadStr2Mem(strPathName, SOURCE_LANGUAGE, encoding);
 
   CStdString encoding_thisfile = "ISO-8859-1";
   // we have ANSI encoding for LocalizeStrings.cpp therefore we need to use this encoding
   // when we add the degree strings
 
   // fill in the constant strings
-  m_strings[20022] = "";
-  m_strings[20027] = ToUTF8(encoding_thisfile, "°F");
-  m_strings[20028] = ToUTF8(encoding_thisfile, "K");
-  m_strings[20029] = ToUTF8(encoding_thisfile, "°C");
-  m_strings[20030] = ToUTF8(encoding_thisfile, "°Ré");
-  m_strings[20031] = ToUTF8(encoding_thisfile, "°Ra");
-  m_strings[20032] = ToUTF8(encoding_thisfile, "°Rø");
-  m_strings[20033] = ToUTF8(encoding_thisfile, "°De");
-  m_strings[20034] = ToUTF8(encoding_thisfile, "°N");
+  m_strings[20022].strTranslated = "";
+  m_strings[20027].strTranslated = ToUTF8(encoding_thisfile, "°F");
+  m_strings[20028].strTranslated = ToUTF8(encoding_thisfile, "K");
+  m_strings[20029].strTranslated = ToUTF8(encoding_thisfile, "°C");
+  m_strings[20030].strTranslated = ToUTF8(encoding_thisfile, "°Ré");
+  m_strings[20031].strTranslated = ToUTF8(encoding_thisfile, "°Ra");
+  m_strings[20032].strTranslated = ToUTF8(encoding_thisfile, "°Rø");
+  m_strings[20033].strTranslated = ToUTF8(encoding_thisfile, "°De");
+  m_strings[20034].strTranslated = ToUTF8(encoding_thisfile, "°N");
 
-  m_strings[20200] = ToUTF8(encoding_thisfile, "km/h");
-  m_strings[20201] = ToUTF8(encoding_thisfile, "m/min");
-  m_strings[20202] = ToUTF8(encoding_thisfile, "m/s");
-  m_strings[20203] = ToUTF8(encoding_thisfile, "ft/h");
-  m_strings[20204] = ToUTF8(encoding_thisfile, "ft/min");
-  m_strings[20205] = ToUTF8(encoding_thisfile, "ft/s");
-  m_strings[20206] = ToUTF8(encoding_thisfile, "mph");
-  m_strings[20207] = ToUTF8(encoding_thisfile, "kts");
-  m_strings[20208] = ToUTF8(encoding_thisfile, "Beaufort");
-  m_strings[20209] = ToUTF8(encoding_thisfile, "inch/s");
-  m_strings[20210] = ToUTF8(encoding_thisfile, "yard/s");
-  m_strings[20211] = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
+  m_strings[20200].strTranslated = ToUTF8(encoding_thisfile, "km/h");
+  m_strings[20201].strTranslated = ToUTF8(encoding_thisfile, "m/min");
+  m_strings[20202].strTranslated = ToUTF8(encoding_thisfile, "m/s");
+  m_strings[20203].strTranslated = ToUTF8(encoding_thisfile, "ft/h");
+  m_strings[20204].strTranslated = ToUTF8(encoding_thisfile, "ft/min");
+  m_strings[20205].strTranslated = ToUTF8(encoding_thisfile, "ft/s");
+  m_strings[20206].strTranslated = ToUTF8(encoding_thisfile, "mph");
+  m_strings[20207].strTranslated = ToUTF8(encoding_thisfile, "kts");
+  m_strings[20208].strTranslated = ToUTF8(encoding_thisfile, "Beaufort");
+  m_strings[20209].strTranslated = ToUTF8(encoding_thisfile, "inch/s");
+  m_strings[20210].strTranslated = ToUTF8(encoding_thisfile, "yard/s");
+  m_strings[20211].strTranslated = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
 
   return true;
 }
@@ -242,7 +243,7 @@ const CStdString& CLocalizeStrings::Get(uint32_t dwCode) const
   {
     return szEmptyString;
   }
-  return i->second;
+  return i->second.strTranslated;
 }
 
 void CLocalizeStrings::Clear()
@@ -262,7 +263,7 @@ void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
   }
 }
 
-uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath)
+uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &language)
 {
   iBlocks it = m_blocks.find(id);
   if (it != m_blocks.end())
@@ -274,16 +275,16 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
 
   // load the strings
   CStdString encoding;
-  bool success = LoadStr2Mem(path, encoding, offset);
+  bool success = LoadStr2Mem(path, language, encoding, offset);
   if (!success)
   {
-    if (path == fallbackPath) // no fallback, nothing to do
+    if (language.Equals(SOURCE_LANGUAGE)) // no fallback, nothing to do
       return 0;
   }
 
   // load the fallback
-  if (path != fallbackPath)
-    success |= LoadStr2Mem(fallbackPath, encoding, offset);
+  if (!language.Equals(SOURCE_LANGUAGE))
+    success |= LoadStr2Mem(path, SOURCE_LANGUAGE, encoding, offset);
 
   return success ? offset : 0;
 }

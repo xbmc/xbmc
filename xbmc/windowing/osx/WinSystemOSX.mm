@@ -333,17 +333,21 @@ void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token, bool fade)
 
 NSString* screenNameForDisplay(CGDirectDisplayID displayID)
 {
-    NSString *screenName = nil;
-    
-    NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
-    NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
-    
-    if ([localizedNames count] > 0) {
-        screenName = [[localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]] retain];
-    }
-    
-    [deviceInfo release];
-    return [screenName autorelease];
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  NSString *screenName = nil;
+
+  NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
+  NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
+
+  if ([localizedNames count] > 0) {
+      screenName = [[localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]] retain];
+  }
+
+  [deviceInfo release];
+  [pool release];
+
+  return [screenName autorelease];
 }
 
 void ShowHideNSWindow(NSWindow *wind, bool show)
