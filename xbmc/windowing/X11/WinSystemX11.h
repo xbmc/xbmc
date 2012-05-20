@@ -75,12 +75,14 @@ protected:
   void CheckDisplayEvents();
   void OnLostDevice();
   bool SetWindow(int width, int height, bool fullscreen);
+  void RotateResolutions();
 
   Window       m_glWindow;
   GLXContext   m_glContext;
   Display*     m_dpy;
   Cursor       m_invisibleCursor;
   Pixmap       m_icon;
+  bool         m_bIsRotated;
   bool         m_bWasFullScreenBeforeMinimize;
   bool         m_minimized;
   bool         m_bIgnoreNextFocusMessage;
