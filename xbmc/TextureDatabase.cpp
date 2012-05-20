@@ -24,6 +24,7 @@
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
 #include "URL.h"
+#include "settings/AdvancedSettings.h"
 
 CTextureDatabase::CTextureDatabase()
 {
@@ -35,7 +36,7 @@ CTextureDatabase::~CTextureDatabase()
 
 bool CTextureDatabase::Open()
 {
-  return CDatabase::Open();
+  return CDatabase::Open(g_advancedSettings.m_databaseTexture);
 }
 
 bool CTextureDatabase::CreateTables()
@@ -48,11 +49,15 @@ bool CTextureDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
 
     CLog::Log(LOGINFO, "create textures index");
-    m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
+    if ( !g_advancedSettings.m_databaseTexture.type.Equals("mysql") )
+      m_pDS->exec("CREATE INDEX idxTexture ON texture(url)");
 
     CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
-    m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+
+    if ( !g_advancedSettings.m_databaseTexture.type.Equals("mysql") )
+      m_pDS->exec("CREATE INDEX idxSize ON sizes(idtexture, size)");
+
     m_pDS->exec("CREATE TRIGGER textureDelete AFTER delete ON texture FOR EACH ROW BEGIN delete from sizes where sizes.idtexture=old.id; END");
 
     CLog::Log(LOGINFO, "create path table");
@@ -60,7 +65,8 @@ bool CTextureDatabase::CreateTables()
 
     // TODO: Should the path index be a covering index? (we need only retrieve texture)
     CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
+    if ( !g_advancedSettings.m_databaseTexture.type.Equals("mysql") )
+      m_pDS->exec("CREATE INDEX idxPath ON path(url, type)");
   }
   catch (...)
   {

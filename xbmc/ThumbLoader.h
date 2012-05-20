@@ -28,6 +28,7 @@
 class CStreamDetails;
 class IStreamDetailsObserver;
 class CVideoDatabase;
+class CTextureDatabase;
 
 /*!
  \ingroup thumbs,jobs
