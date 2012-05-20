@@ -22,6 +22,8 @@
 #ifndef WINDOW_BINDING_EGL_H
 #define WINDOW_BINDING_EGL_H
 
+#include "system_gl.h"
+
 #include "utils/StringUtils.h"
 
 #include <EGL/egl.h>

@@ -20,7 +20,7 @@
  */
 #include "system.h"
 
-#ifdef HAS_EGLGLES
+#ifdef HAS_EGL
 
 #include "WinSystemGLES.h"
 #include "filesystem/SpecialProtocol.h"
