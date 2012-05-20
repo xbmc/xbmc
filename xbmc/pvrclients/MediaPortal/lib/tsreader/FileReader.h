@@ -41,27 +41,27 @@ class FileReader
     virtual long OpenFile();
     virtual long CloseFile();
     virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes);
-    virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod);
+    //virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual long get_ReadOnly(bool *ReadOnly);
-    virtual long get_DelayMode(bool *DelayMode);
-    virtual long set_DelayMode(bool DelayMode);
-    virtual long get_ReaderMode(unsigned short *ReaderMode);
-    virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
+    //virtual long get_DelayMode(bool *DelayMode);
+    //virtual long set_DelayMode(bool DelayMode);
+    //virtual long get_ReaderMode(unsigned short *ReaderMode);
+    //virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
     long GetStartPosition(int64_t *lpllpos);
     virtual bool IsFileInvalid();
     virtual unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual int64_t GetFilePointer();
-    virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
-    virtual int64_t getFilePointer();
-    virtual int64_t getBufferPointer();
-    virtual void setBufferPointer();
+    //virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
+    //virtual int64_t getFilePointer();
+    //virtual int64_t getBufferPointer();
+    //virtual void setBufferPointer();
 
-    void SetDebugOutput(bool bDebugOutput);
+    //void SetDebugOutput(bool bDebugOutput);
 
     virtual int64_t GetFileSize();
     virtual bool IsBuffer(){return false;};
-    virtual bool HasMoreData(int bytes){return false;};
-    virtual int HasData(){return 0; } ;
+    //virtual bool HasMoreData(int bytes){return false;};
+    //virtual int HasData(){return 0; } ;
 
   protected:
 #if defined(TARGET_WINDOWS)
@@ -71,9 +71,9 @@ class FileReader
 #endif
     char*    m_pFileName;           // The filename where we stream
     bool     m_bReadOnly;
-    bool     m_bDelay;
+    //bool     m_bDelay;
     int64_t  m_fileSize;
-    int64_t  m_fileStartPos;
+    //int64_t  m_fileStartPos;
     int64_t  m_llBufferPointer;
 
     bool     m_bDebugOutput;

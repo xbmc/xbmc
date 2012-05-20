@@ -46,23 +46,23 @@ class MultiFileReader : public FileReader
     MultiFileReader();
     virtual ~MultiFileReader();
 
-    virtual long GetFileName(char* *lpszFileName);
+    //virtual long GetFileName(char* *lpszFileName);
     virtual long SetFileName(const char* pszFileName);
     virtual long OpenFile();
     virtual long CloseFile();
     virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes);
-    virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod);
-    virtual long get_ReadOnly(bool *ReadOnly);
-    virtual long set_DelayMode(bool DelayMode);
-    virtual long get_DelayMode(bool *DelayMode);
-    virtual long get_ReaderMode(unsigned short *ReaderMode);
-    virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
-    virtual int64_t getFilePointer();
-    virtual int64_t getBufferPointer();
-    virtual void setBufferPointer();
+    //virtual long Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes, int64_t llDistanceToMove, unsigned long dwMoveMethod);
+    //virtual long get_ReadOnly(bool *ReadOnly);
+    //virtual long set_DelayMode(bool DelayMode);
+    //virtual long get_DelayMode(bool *DelayMode);
+    //virtual long get_ReaderMode(unsigned short *ReaderMode);
+    //virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
+    //virtual int64_t getFilePointer();
+    //virtual int64_t getBufferPointer();
+    //virtual void setBufferPointer();
 
     //TODO: GetFileSize should go since get_FileSize should do the same thing.
-    virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
+    //virtual long GetFileSize(int64_t *pStartPosition, int64_t *pLength);
 
     virtual bool IsFileInvalid();
 
