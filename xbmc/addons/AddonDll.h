@@ -419,11 +419,11 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
           strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
           strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+          strcmpi(type, "file") == 0 || strcmpi(type, "fileenum") == 0)
         {
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
-        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+        else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 ||
           strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
         {
           int tmp = atoi(GetSetting(id));
