@@ -165,6 +165,7 @@ public:
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
+  bool GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere);
   int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere = "");

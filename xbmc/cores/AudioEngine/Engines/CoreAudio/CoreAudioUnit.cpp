@@ -103,7 +103,7 @@ void CCoreAudioUnit::Close()
   if (m_busNumber != INVALID_BUS)
   {
     OSStatus ret = AUGraphDisconnectNodeInput(m_audioGraph, m_audioNode, m_busNumber);
-    if (ret)
+    if (ret && ret != kAUGraphErr_NodeNotFound)
     {
       CLog::Log(LOGERROR, "CCoreAudioUnit::Close: "
         "Unable to disconnect AudioUnit. Error = %s", GetError(ret).c_str());
@@ -113,7 +113,7 @@ void CCoreAudioUnit::Close()
     if (ret)
     {
       CLog::Log(LOGERROR, "CCoreAudioUnit::Close: "
-        "Unable to disconnect AudioUnit. Error = %s", GetError(ret).c_str());
+        "Unable to remove AudioUnit. Error = %s", GetError(ret).c_str());
     }
   }
 

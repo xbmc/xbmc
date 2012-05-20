@@ -2767,12 +2767,9 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
   if (NULL == m_pDS.get()) return false;
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
     unsigned int time = XbmcThreads::SystemClockMillis();
 
-    CStdString strSQL = "select * from artist where (idArtist IN ";
+    CStdString strSQL = "(idArtist IN ";
 
     if (idGenre==-1)
     {
@@ -2865,6 +2862,30 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       strSQL+=PrepareSQL(" and artist.idArtist<>%i", idVariousArtists);
     }
 
+    bool result = GetArtistsByWhere(strBaseDir, strSQL, items);
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
+
+    return result;
+  }
+  catch (...)
+  {
+    m_pDS->close();
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CMusicDatabase::GetArtistsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+{
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
+  try
+  {
+    CStdString strSQL = "select * from artist";
+    if (!where.empty())
+       strSQL += " WHERE " + where;
+
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -2900,7 +2921,6 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
-    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
 
     // cleanup
     m_pDS->close();

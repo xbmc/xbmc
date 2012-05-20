@@ -399,7 +399,7 @@ IOSEAGLView  *m_glView;
       newEvent.button.y = lastGesturePoint.y;
       CWinEventsIOS::MessagePush(&newEvent);
 
-      [self postMouseMotionEvent:CGPointMake(-1,-1)];//deselects control
+      //[self postMouseMotionEvent:CGPointMake(-1,-1)];//deselects control
       
       memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
     }

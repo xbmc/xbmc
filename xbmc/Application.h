@@ -224,6 +224,8 @@ public:
   bool IsMusicScanning() const;
   bool IsVideoScanning() const;
 
+  void StartVideoCleanup();
+
   void StartVideoScan(const CStdString &path, bool scanAll = false);
   void StartMusicScan(const CStdString &path);
   void StartMusicAlbumScan(const CStdString& strDirectory, bool refresh=false);

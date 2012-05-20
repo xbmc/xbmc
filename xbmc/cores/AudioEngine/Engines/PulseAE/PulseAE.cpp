@@ -85,15 +85,19 @@ CPulseAE::CPulseAE()
 
 CPulseAE::~CPulseAE()
 {
-  if (m_MainLoop)
-    pa_threaded_mainloop_stop(m_MainLoop);
-
   if (m_Context)
   {
     pa_context_disconnect(m_Context);
     pa_context_unref(m_Context);
     m_Context = NULL;
   }
+
+  if (m_MainLoop)
+  {
+    pa_threaded_mainloop_stop(m_MainLoop);
+    pa_threaded_mainloop_free(m_MainLoop);
+  }
+
 }
 
 bool CPulseAE::Initialize()

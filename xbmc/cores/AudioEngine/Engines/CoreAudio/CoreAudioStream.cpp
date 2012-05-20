@@ -23,6 +23,7 @@
 
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
+#include "utils/StdString.h"
 
 // AudioHardwareGetProperty and friends are deprecated,
 // turn off the warning spew.
@@ -44,6 +45,22 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
 {
   m_StreamId = streamId;
   CLog::Log(LOGDEBUG, "CCoreAudioStream::Open: Opened stream 0x%04x.", (uint)m_StreamId);
+
+  // watch for physical property changes.
+  AudioObjectPropertyAddress propertyAOPA;
+  propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+  if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
+    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a physical property listener.", m_StreamId);
+
+  // watch for virtual property changes.
+  propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mSelector = kAudioStreamPropertyVirtualFormat;
+  if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
+    CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a virtual property listener.", m_StreamId);
+
   return true;
 }
 
@@ -55,6 +72,21 @@ void CCoreAudioStream::Close()
     return;
 
   std::string formatString;
+
+  // remove the physical/virtual property listeners before we make changes
+  // that will trigger callbacks that we do not care about.
+  AudioObjectPropertyAddress propertyAOPA;
+  propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
+  if (AudioObjectRemovePropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
+
+  propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mSelector = kAudioStreamPropertyVirtualFormat;
+  if (AudioObjectRemovePropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
 
   // Revert any format changes we made
   if (m_OriginalVirtualFormat.mFormatID && m_StreamId)
@@ -152,6 +184,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
       return false;
     }
   }
+  m_virtual_format_event.Reset();
   OSStatus ret = AudioStreamSetProperty(m_StreamId,
     NULL, 0, kAudioStreamPropertyVirtualFormat, sizeof(AudioStreamBasicDescription), pDesc);
   if (ret)
@@ -185,7 +218,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
         (uint)m_StreamId, StreamDescriptionToString(checkVirtualFormat, formatString));
       break;
     }
-    Sleep(100);
+    m_virtual_format_event.WaitMSec(100);
   }
   return true;
 }
@@ -219,6 +252,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
       return false;
     }
   }
+  m_physical_format_event.Reset();
   OSStatus ret = AudioStreamSetProperty(m_StreamId,
     NULL, 0, kAudioStreamPropertyPhysicalFormat, sizeof(AudioStreamBasicDescription), pDesc);
   if (ret)
@@ -243,7 +277,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
       return false;
     }
     if (checkPhysicalFormat.mSampleRate == pDesc->mSampleRate &&
-        checkPhysicalFormat.mFormatID == pDesc->mFormatID &&
+        checkPhysicalFormat.mFormatID   == pDesc->mFormatID   &&
         checkPhysicalFormat.mFramesPerPacket == pDesc->mFramesPerPacket)
     {
       // The right format is now active.
@@ -252,8 +286,9 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
         (uint)m_StreamId, StreamDescriptionToString(checkPhysicalFormat, formatString));
       break;
     }
-    Sleep(100);
+    m_physical_format_event.WaitMSec(100);
   }
+
   return true;
 }
 
@@ -305,4 +340,42 @@ bool CCoreAudioStream::GetAvailablePhysicalFormats(StreamFormatList* pList)
   }
   delete[] pFormatList;
   return (ret == noErr);
+}
+
+OSStatus CCoreAudioStream::HardwareStreamListener(AudioObjectID inObjectID,
+  UInt32 inNumberAddresses, const AudioObjectPropertyAddress inAddresses[], void *inClientData)
+{
+  CCoreAudioStream *ca_stream = (CCoreAudioStream*)inClientData;
+
+  for (UInt32 i = 0; i < inNumberAddresses; i++)
+  {
+    if (inAddresses[i].mSelector == kAudioStreamPropertyPhysicalFormat)
+    {
+      AudioStreamBasicDescription actualFormat;
+      UInt32 propertySize = sizeof(AudioStreamBasicDescription);
+      // hardware physical format has changed.
+      if (AudioObjectGetPropertyData(ca_stream->m_StreamId, &inAddresses[i], 0, NULL, &propertySize, &actualFormat) == noErr)
+      {
+        CStdString formatString;
+        CLog::Log(LOGINFO, "CCoreAudioStream::HardwareStreamListener: "
+          "Hardware physical format changed to %s", StreamDescriptionToString(actualFormat, formatString));
+        ca_stream->m_physical_format_event.Set();
+      }
+    }
+    else if (inAddresses[i].mSelector == kAudioStreamPropertyVirtualFormat)
+    {
+      // hardware virtual format has changed.
+      AudioStreamBasicDescription actualFormat;
+      UInt32 propertySize = sizeof(AudioStreamBasicDescription);
+      if (AudioObjectGetPropertyData(ca_stream->m_StreamId, &inAddresses[i], 0, NULL, &propertySize, &actualFormat) == noErr)
+      {
+        CStdString formatString;
+        CLog::Log(LOGINFO, "CCoreAudioStream::HardwareStreamListener: "
+          "Hardware virtual format changed to %s", StreamDescriptionToString(actualFormat, formatString));
+        ca_stream->m_virtual_format_event.Set();
+      }
+    }
+  }
+
+  return noErr;
 }

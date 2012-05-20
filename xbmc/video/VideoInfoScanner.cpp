@@ -114,7 +114,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          m_database.CleanDatabase(m_pObserver,&m_pathsToClean);
+          CleanDatabase(m_pObserver,&m_pathsToClean);
         else
         {
           if (m_pObserver)
@@ -175,6 +175,15 @@ namespace VIDEO
       m_database.Interupt();
 
     StopThread();
+  }
+
+  void CVideoInfoScanner::CleanDatabase(IVideoInfoScannerObserver* pObserver /*= NULL */, const set<int>* paths /*= NULL */)
+  {
+    m_bRunning = true;
+    m_database.Open();
+    m_database.CleanDatabase(pObserver, paths);
+    m_database.Close();
+    m_bRunning = false;
   }
 
   void CVideoInfoScanner::SetObserver(IVideoInfoScannerObserver* pObserver)
