@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DllSwScale.h"
+#include "guilib/JpegIO.h"
 #include "guilib/Texture.h"
 
 using namespace XFILE;
@@ -48,8 +49,8 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
   {
     CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceUrl.c_str(), destFile.c_str(), width, height);
     
+    CJpegIO jpegImage;
     DllImageLib dll;
-    if (!dll.Load()) return false;
 
     if (URIUtils::IsInternetStream(sourceUrl, true))
     {
@@ -57,6 +58,12 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
       CStdString data;
       if (http.Get(sourceUrl, data))
       {
+        if (URIUtils::GetExtension(sourceUrl).Equals(".jpg") || URIUtils::GetExtension(sourceUrl).Equals(".tbn"))
+        {
+          if (jpegImage.CreateThumbnailFromMemory((unsigned char *)data.c_str(), data.GetLength(), destFile.c_str(), width, height))
+            return true;
+        }
+        if (!dll.Load()) return false;
         if (!dll.CreateThumbnailFromMemory((BYTE *)data.c_str(), data.GetLength(), URIUtils::GetExtension(sourceUrl).c_str(), destFile.c_str(), width, height))
         {
           CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
@@ -67,6 +74,12 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
       return false;
     }
 
+    if (URIUtils::GetExtension(sourceUrl).Equals(".jpg") || URIUtils::GetExtension(sourceUrl).Equals(".tbn"))
+    {
+      if (jpegImage.CreateThumbnail(sourceUrl, destFile, width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+        return true;
+    }
+    if (!dll.Load()) return false;
     if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
@@ -98,6 +111,12 @@ bool CPicture::CacheFanart(const CStdString& sourceUrl, const CStdString& destFi
 bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", thumbFile.c_str());
+  if (extension.Equals("jpg") || extension.Equals("tbn"))
+  {
+    CJpegIO jpegImage;
+    if (jpegImage.CreateThumbnailFromMemory((unsigned char*)buffer, bufSize, thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+      return true;
+  }
   DllImageLib dll;
   if (!dll.Load()) return false;
   if (!dll.CreateThumbnailFromMemory((BYTE *)buffer, bufSize, extension.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
@@ -124,6 +143,12 @@ void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &fol
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
+  if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
+  {
+    CJpegIO jpegImage;
+    if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+      return true;
+  }
   DllImageLib dll;
   if (!buffer || !dll.Load()) return false;
   return dll.CreateThumbnailFromSurface((BYTE *)buffer, width, height, stride, thumbFile.c_str());
@@ -166,29 +191,35 @@ bool CThumbnailWriter::DoWork()
   return success;
 }
 
-bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t max_height, const std::string &dest)
+bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
+{
+  return CacheTexture(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+                      texture->GetOrientation(), dest_width, dest_height, dest);
+}
+
+bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, uint32_t pitch, int orientation, uint32_t &dest_width, uint32_t &dest_height, const std::string &dest)
 {
   // if no max width or height is specified, don't resize
-  if (max_width == 0)
-    max_width = texture->GetWidth();
-  if (max_height == 0)
-    max_height = texture->GetHeight();
+  if (dest_width == 0)
+    dest_width = width;
+  if (dest_height == 0)
+    dest_height = height;
 
-  if (texture->GetWidth() > max_width || texture->GetHeight() > max_height || texture->GetOrientation())
+  if (width > dest_width || height > dest_height || orientation)
   {
     bool success = false;
 
-    unsigned int dest_width = std::min(texture->GetWidth(), max_width);
-    unsigned int dest_height = std::min(texture->GetHeight(), max_height);
+    dest_width = std::min(width, dest_width);
+    dest_height = std::min(height, dest_height);
     // create a buffer large enough for the resulting image
-    GetScale(texture->GetWidth(), texture->GetHeight(), dest_width, dest_height);
+    GetScale(width, height, dest_width, dest_height);
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
     if (buffer)
     {
-      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
+      if (ScaleImage(pixels, width, height, pitch,
                      (uint8_t *)buffer, dest_width, dest_height, dest_width * 4))
       {
-        if (!texture->GetOrientation() || OrientateImage(buffer, dest_width, dest_height, texture->GetOrientation()))
+        if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
           success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, dest_width * 4, dest);
         }
@@ -199,7 +230,9 @@ bool CPicture::CacheTexture(CBaseTexture *texture, uint32_t max_width, uint32_t 
   }
   else
   { // no orientation needed
-    return CreateThumbnailFromSurface(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(), dest);
+    dest_width = width;
+    dest_height = height;
+    return CreateThumbnailFromSurface(pixels, width, height, pitch, dest);
   }
   return false;
 }

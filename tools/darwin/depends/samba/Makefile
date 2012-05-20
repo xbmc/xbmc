@@ -1,4 +1,5 @@
 include ../Makefile.include
+include ../config.site.mk
 
 # lib name, version
 LIBNAME=samba
@@ -26,7 +27,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE)/source3; ./autogen.sh
 	cd $(SOURCE)/source3; $(CONFIGURE)
 	if test "$(DARWIN)" = "ios"; then \
-		cp -f /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator$(SDK).sdk/usr/include/crt_externs.h $(PREFIX)/include/; \
+		cp -f $(platform_xcode_path)/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator$(SDK).sdk/usr/include/crt_externs.h $(PREFIX)/include/; \
 	fi
 	cd $(SOURCE)/source3; make -j 1 bin/libsmbclient.dylib
 

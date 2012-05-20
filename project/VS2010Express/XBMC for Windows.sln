@@ -87,6 +87,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_tvheadend", "..\.
 		{00700E12-A63B-4E54-B962-4011A90584BD} = {00700E12-A63B-4E54-B962-4011A90584BD}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XbmcCommons", "XbmcCommons.vcxproj", "{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XbmcThreads", "XbmcThreads.vcxproj", "{034B1D02-CA92-455D-8866-DB95BEE49C10}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17} = {87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv_libLive555", "..\..\xbmc\pvrclients\MediaPortal\lib\live555\LiveMedia555.vcxproj", "{3C398BD4-5714-4802-AB86-D43ADD15B3C0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrlib_curl", "..\..\xbmc\pvrclients\lib\curl-7.21.6\lib\libcurl.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
@@ -480,6 +487,22 @@ Global
 		{6CE44E26-5190-BA5C-1B73-30A9C1E1068B}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{6CE44E26-5190-BA5C-1B73-30A9C1E1068B}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{6CE44E26-5190-BA5C-1B73-30A9C1E1068B}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

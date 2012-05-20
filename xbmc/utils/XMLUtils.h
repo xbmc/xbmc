@@ -22,8 +22,7 @@
  */
 
 #include "utils/StdString.h"
-#include "tinyXML/tinyxml.h" // no use forwarding these, as this class is the main workhorse anyway,
-                             // thus it simplifies the include patterns
+#include "utils/XBMCTinyXML.h"
 
 class CDateTime;
 
@@ -57,7 +56,7 @@ public:
    */
   static bool GetAdditiveString(const TiXmlNode* rootNode, const char* tag, const CStdString& separator, CStdString& value, bool clear = false);
   static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false, const std::string separator = "");
-  static bool GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding);
+  static bool GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding);
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);

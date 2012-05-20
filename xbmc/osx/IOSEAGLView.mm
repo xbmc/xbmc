@@ -421,7 +421,7 @@
   displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
   if (animationThread && [animationThread isExecuting] == YES)
   {
-    if (g_VideoReferenceClock)
+    if (g_VideoReferenceClock.IsRunning())
       g_VideoReferenceClock.VblankHandler(CurrentHostCounter(), displayFPS);
   }
   [pool release];

@@ -169,7 +169,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
               strcmpi(type, "folder") == 0 || strcmpi(type, "action")    == 0 ||
               strcmpi(type, "music")  == 0 || strcmpi(type, "pictures")  == 0 ||
               strcmpi(type, "folder") == 0 || strcmpi(type, "programs")  == 0 ||
-              strcmpi(type, "files")  == 0 || strcmpi(type, "fileenum")  == 0)
+              strcmpi(type, "file")  == 0 || strcmpi(type, "fileenum")  == 0)
           {
             strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
             return true;

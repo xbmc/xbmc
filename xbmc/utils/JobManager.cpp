@@ -24,6 +24,9 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include "system.h"
+
+
 using namespace std;
 
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
@@ -97,6 +100,24 @@ void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_processing.erase(i);
   // request a new job be queued
   QueueNextJob();
+}
+
+void CJobQueue::CancelJob(const CJob *job)
+{
+  CSingleLock lock(m_section);
+  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
+  if (i != m_processing.end())
+  {
+    i->CancelJob();
+    m_processing.erase(i);
+    return;
+  }
+  Queue::iterator j = find(m_jobQueue.begin(), m_jobQueue.end(), job);
+  if (j != m_jobQueue.end())
+  {
+    j->FreeJob();
+    m_jobQueue.erase(j);
+  }
 }
 
 void CJobQueue::AddJob(CJob *job)

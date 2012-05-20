@@ -95,9 +95,10 @@ using namespace MUSIC_INFO;
  *  %V - Playcount
  *  %X - Bitrate
  *  %W - Listeners
+ *  %a - Date Added
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXW"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWa"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -165,8 +166,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'A':
     if (music && music->GetArtist().size())
       value = StringUtils::Join(music->GetArtist(), g_advancedSettings.m_musicItemSeparator);
-    if (movie && movie->m_strArtist.size())
-      value = movie->m_strArtist;
+    if (movie && movie->m_artist.size())
+      value = StringUtils::Join(movie->m_artist, g_advancedSettings.m_videoItemSeparator);
     break;
   case 'T':
     if (music && music->GetTitle().size())
@@ -307,7 +308,11 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
    case 'W': // Listeners
     if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
      value.Format("%i %s", music->GetListeners(), g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
-    break;    
+    break;
+  case 'a': // Date Added
+    if (movie && movie->m_dateAdded.IsValid())
+      value = movie->m_dateAdded.GetAsLocalizedDate();
+    break;
   }
   if (!value.IsEmpty())
     return mask.m_prefix + value + mask.m_postfix;

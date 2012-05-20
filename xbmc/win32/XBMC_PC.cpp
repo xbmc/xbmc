@@ -29,6 +29,7 @@
 #include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "Application.h"
+#include "XbmcContext.h"
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
                                         CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
@@ -105,6 +106,9 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  // set up some xbmc specific relationships
+  XBMC::Context context;
+
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG

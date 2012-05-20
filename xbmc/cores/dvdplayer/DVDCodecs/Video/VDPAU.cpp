@@ -1565,7 +1565,7 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   if (m_mixerstep != 1)
     m_DVDVideoPics.pop();
 
-  picture->format = DVDVideoPicture::FMT_VDPAU;
+  picture->format = RENDER_FMT_VDPAU;
   picture->iFlags &= DVP_FLAG_DROPPED;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;

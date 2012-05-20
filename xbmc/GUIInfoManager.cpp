@@ -46,8 +46,6 @@
 #include "music/LastFmManager.h"
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
 #include "playlists/PlayList.h"
@@ -82,6 +80,7 @@
 
 #include "addons/AddonManager.h"
 #include "interfaces/info/InfoBool.h"
+#include "TextureCache.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -538,7 +537,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hastimer",         LISTITEM_HASTIMER },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "isencrypted",      LISTITEM_ISENCRYPTED },
-                                  { "progress",         LISTITEM_PROGRESS }};
+                                  { "progress",         LISTITEM_PROGRESS },
+                                  { "dateadded",        LISTITEM_DATE_ADDED }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -907,6 +907,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         else if (cat == "movies") return LIBRARY_HAS_MOVIES;
         else if (cat == "tvshows") return LIBRARY_HAS_TVSHOWS;
         else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
+        else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
       }
     }
     else if (cat.name == "musicplayer")
@@ -1282,7 +1283,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", (float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f);
+    strLabel.Format("%2.1f dB", g_settings.m_fVolumeLevel);
     break;
   case PLAYER_SUBTITLE_DELAY:
     strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_SubtitleDelay);
@@ -2023,22 +2024,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
   {
-    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (musicScanner->IsScanning() || videoScanner->IsScanning())
+    if (g_application.IsMusicScanning() || g_application.IsVideoScanning())
       bReturn = true;
     else
       bReturn = false;
   }
   else if (condition == LIBRARY_IS_SCANNING_VIDEO)
   {
-    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    bReturn = (videoScanner && videoScanner->IsScanning());
+    bReturn = g_application.IsVideoScanning();
   }
   else if (condition == LIBRARY_IS_SCANNING_MUSIC)
   {
-    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    bReturn = (musicScanner && musicScanner->IsScanning());
+    bReturn = g_application.IsMusicScanning();
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -2729,7 +2726,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             strContent = "files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
-          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
+          if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_artist.empty())
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
             strContent = "livetv";
@@ -3708,7 +3705,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CAST_AND_ROLE:
       return m_currentFile->GetVideoInfoTag()->GetCast(true);
     case VIDEOPLAYER_ARTIST:
-      return m_currentFile->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetVideoInfoTag()->m_strAlbum;
     case VIDEOPLAYER_WRITER:
@@ -3733,11 +3730,11 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   return "";
 }
 
-__int64 CGUIInfoManager::GetPlayTime() const
+int64_t CGUIInfoManager::GetPlayTime() const
 {
   if (g_application.IsPlaying())
   {
-    __int64 lPTS = (__int64)(g_application.GetTime() * 1000);
+    int64_t lPTS = (int64_t)(g_application.GetTime() * 1000);
     if (lPTS < 0) lPTS = 0;
     return lPTS;
   }
@@ -3861,16 +3858,14 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
 
   // Find a thumb for this file.
-  item.SetVideoThumb();
   if (!item.HasThumbnail())
   {
-    CStdString strPath, strFileName;
-    URIUtils::Split(item.GetCachedVideoThumb(), strPath, strFileName);
-
-    // create unique thumb for auto generated thumbs
-    CStdString cachedThumb = strPath + "auto-" + strFileName;
-    if (CFile::Exists(cachedThumb))
-      item.SetThumbnailImage(cachedThumb);
+    if (!CVideoThumbLoader::FillThumb(item))
+    {
+      CStdString thumb = CVideoThumbLoader::GetEmbeddedThumbURL(item);
+      if (CTextureCache::Get().HasCachedImage(thumb))
+        item.SetThumbnailImage(thumb);
+    }
   }
 
   // find a thumb for this stream
@@ -3888,8 +3883,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     {
       CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
       CFileItem thumbItem(g_application.m_strPlayListFile,false);
-      thumbItem.SetVideoThumb();
-      if (thumbItem.HasThumbnail())
+      if (CVideoThumbLoader::FillThumb(thumbItem))
         item.SetThumbnailImage(thumbItem.GetThumbnailImage());
     }
   }
@@ -4218,7 +4212,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
     }
   case LISTITEM_ARTIST:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strArtist;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
       return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
@@ -4764,7 +4758,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
         str.Format("%d", val);
         return str;
       }
+      break;
     }
+  case LISTITEM_DATE_ADDED:
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_dateAdded.IsValid())
+      return item->GetVideoInfoTag()->m_dateAdded.GetAsLocalizedDate();
+    break;
   }
   return "";
 }
@@ -5092,6 +5091,9 @@ void CGUIInfoManager::SetLibraryBool(int condition, bool value)
     case LIBRARY_HAS_MOVIES:
       m_libraryHasMovies = value ? 1 : 0;
       break;
+    case LIBRARY_HAS_MOVIE_SETS:
+      m_libraryHasMovieSets = value ? 1 : 0;
+      break;
     case LIBRARY_HAS_TVSHOWS:
       m_libraryHasTVShows = value ? 1 : 0;
       break;
@@ -5109,6 +5111,7 @@ void CGUIInfoManager::ResetLibraryBools()
   m_libraryHasMovies = -1;
   m_libraryHasTVShows = -1;
   m_libraryHasMusicVideos = -1;
+  m_libraryHasMovieSets = -1;
 }
 
 bool CGUIInfoManager::GetLibraryBool(int condition)
@@ -5138,6 +5141,19 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       }
     }
     return m_libraryHasMovies > 0;
+  }
+  else if (condition == LIBRARY_HAS_MOVIE_SETS)
+  {
+    if (m_libraryHasMovieSets < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasMovieSets = db.HasSets() ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasMovieSets > 0;
   }
   else if (condition == LIBRARY_HAS_TVSHOWS)
   {

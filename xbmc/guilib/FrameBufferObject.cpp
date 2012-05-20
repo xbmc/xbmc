@@ -22,19 +22,21 @@
 #include "system.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
+#include "FrameBufferObject.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
-#include "FrameBufferObject.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/log.h"
 
 #if HAS_GLES == 2
 // For OpenGL ES2.0, FBO are not extensions but part of the API.
-#define glGenFramebuffersEXT		glGenFramebuffers
-#define glDeleteFramebuffersEXT		glDeleteFramebuffers
+#define GL_FRAMEBUFFER_EXT GL_FRAMEBUFFER
+#define glBindFramebufferEXT glBindFramebuffer
+#define glGenFramebuffersEXT glGenFramebuffers
+#define glDeleteFramebuffersEXT glDeleteFramebuffers
 #define glFramebufferTexture2DEXT	glFramebufferTexture2D
 #define glCheckFramebufferStatusEXT	glCheckFramebufferStatus
-#define GL_COLOR_ATTACHMENT0_EXT	GL_COLOR_ATTACHMENT0
+#define GL_COLOR_ATTACHMENT0_EXT GL_COLOR_ATTACHMENT0
 #define GL_FRAMEBUFFER_COMPLETE_EXT	GL_FRAMEBUFFER_COMPLETE
 #endif
 
@@ -140,6 +142,24 @@ bool CFrameBufferObject::BindToTexture(GLenum target, GLuint texid)
   }
   m_bound = true;
   return true;
+}
+
+// Begin rendering to FBO
+bool CFrameBufferObject::BeginRender()
+{
+  if (IsValid() && IsBound())
+  {
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_fbo);
+    return true;
+  }
+  return false;
+}
+
+// Finish rendering to FBO
+void CFrameBufferObject::EndRender()
+{
+  if (IsValid())
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
 #endif

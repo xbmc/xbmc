@@ -22,6 +22,7 @@
  */
 
 #include "Video/DVDVideoCodec.h"
+#include "cores/VideoRenderers/RenderFormats.h"
 
 struct YV12Image;
 
@@ -34,7 +35,7 @@ public:
   static bool CopyPicture(YV12Image* pDst, DVDVideoPicture *pSrc);
   
   static DVDVideoPicture* ConvertToNV12Picture(DVDVideoPicture *pSrc);
-  static DVDVideoPicture* ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format);
+  static DVDVideoPicture* ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, ERenderFormat format);
   static bool CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
   static bool CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture *pSrc);
   static bool CopyDXVA2Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
@@ -42,5 +43,8 @@ public:
   static bool IsVP3CompatibleWidth(int width);
 
   static double NormalizeFrameduration(double frameduration);
+
+  static ERenderFormat EFormatFromPixfmt(int fmt);
+  static int           PixfmtFromEFormat(ERenderFormat format);
 };
 

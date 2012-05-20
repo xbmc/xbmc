@@ -159,8 +159,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
   m_free = true;
   m_opcode = opcode;
 
-  if (length >= 0)
-    m_length = length;
+  m_length = length;
 
   m_masked = masked;
   m_mask = mask;
@@ -233,7 +232,7 @@ CWebSocketFrame::CWebSocketFrame(WebSocketFrameOpcode opcode, const char* data /
   // Get the whole data
   m_lengthFrame = buffer.size();
   m_data = new char[(uint32_t)m_lengthFrame];
-  strncpy((char *)m_data, buffer.c_str(), (uint32_t)m_lengthFrame);
+  memcpy((char *)m_data, buffer.c_str(), (uint32_t)m_lengthFrame);
 
   if (data)
   {

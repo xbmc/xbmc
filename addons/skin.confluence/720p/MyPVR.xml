@@ -2,7 +2,14 @@
 	<defaultcontrol>32</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonTVBackground</include>
+		<control type="Image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
+			<texture>$VAR[BackgroundImage]</texture>
+		</control>
 		<control type="group">
 			<visible>!Control.IsVisible(11) + !Control.IsVisible(12)</visible>
 			<control type="image">
@@ -29,6 +36,45 @@
 			</control>
 		</control>
 		<include>ContentPanelBackgroundsPVR</include>
+		<include>MainWindowMouseButtons</include>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_video.png</texture>
+		</control>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[31502]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$INFO[Control.GetLabel(29),[COLOR=blue] - [/COLOR]]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$INFO[Control.GetLabel(30),[COLOR=blue] - [/COLOR]]</label>
+			</control>
+		</control>
+		<control type="label" id="29">
+			<description>Empty so we can pass the values up one level</description>
+			<visible>False</visible>
+		</control>
+		<control type="label" id="30">
+			<description>Empty so we can pass the values up one level</description>
+			<visible>False</visible>
+		</control>
 		<control type="group">
 			<description>Small Media Window</description>
 			<posx>530</posx>
@@ -193,64 +239,6 @@
 			</control>
 		</control>
 
-		<control type="group">
-			<posx>500</posx>
-			<posy>0</posy>
-			<visible>!IsEmpty(Control.GetLabel(30))</visible>
-			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-750,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-750,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label" id="30">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-			</control>
-		</control>
-
-		<control type="group">
-			<posx>240</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-540,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-540,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>300</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label" id="29">
-				<include>WindowTitleCommons</include>
-				<posx>270</posx>
-			</control>
-		</control>
-
-		<control type="group">
-			<posx>40</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[31502]</label>
-			</control>
-		</control>
-
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

@@ -110,8 +110,8 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
-  int w = pSrc->iWidth;
-  int h = pSrc->iHeight;
+  int w = pImage->width * pImage->bpp;
+  int h = pImage->height;
   if ((w == pSrc->iLineSize[0]) && ((unsigned int) pSrc->iLineSize[0] == pImage->stride[0]))
   {
     fast_memcpy(d, s, w*h);
@@ -127,8 +127,8 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
   }
   s = pSrc->data[1];
   d = pImage->plane[1];
-  w = pSrc->iWidth >> 1;
-  h = pSrc->iHeight >> 1;
+  w =(pImage->width  >> pImage->cshift_x) * pImage->bpp;
+  h =(pImage->height >> pImage->cshift_y);
   if ((w==pSrc->iLineSize[1]) && ((unsigned int) pSrc->iLineSize[1]==pImage->stride[1]))
   {
     fast_memcpy(d, s, w*h);
@@ -183,7 +183,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
       pPicture->iLineSize[1] = pPicture->iWidth;
       pPicture->iLineSize[2] = 0;
       pPicture->iLineSize[3] = 0;
-      pPicture->format = DVDVideoPicture::FMT_NV12;
+      pPicture->format = RENDER_FMT_NV12;
       
       // copy luma
       uint8_t *s = pSrc->data[0];
@@ -218,7 +218,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
   return pPicture;
 }
 
-DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, DVDVideoPicture::EFormat format)
+DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *pSrc, ERenderFormat format)
 {
   // Clone a YV12 picture to new YUY2 or UYVY picture.
   DVDVideoPicture* pPicture = new DVDVideoPicture;
@@ -257,7 +257,7 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
         int      dstStride[] = { pPicture->iLineSize[0], 0,                  0,                  0    };
 
         int dstformat;
-        if (format == DVDVideoPicture::FMT_UYVY)
+        if (format == RENDER_FMT_UYVY422)
           dstformat = PIX_FMT_UYVY422;
         else
           dstformat = PIX_FMT_YUYV422;
@@ -446,3 +446,39 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration)
     return frameduration;
 }
 
+struct EFormatMap {
+  PixelFormat   pix_fmt;
+  ERenderFormat format;
+};
+
+static const EFormatMap g_format_map[] = {
+   { PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
+,  { PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
+,  { PIX_FMT_YUV420P10,   RENDER_FMT_YUV420P10  }
+,  { PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
+,  { PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
+,  { PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
+,  { PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
+,  { PIX_FMT_DXVA2_VLD,   RENDER_FMT_DXVA       }
+,  { PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
+};
+
+ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
+{
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  {
+    if(p->pix_fmt == fmt)
+      return p->format;
+  }
+  return RENDER_FMT_NONE;
+}
+
+int CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
+{
+  for(const EFormatMap *p = g_format_map; p->pix_fmt != PIX_FMT_NONE; ++p)
+  {
+    if(p->format == fmt)
+      return p->pix_fmt;
+  }
+  return PIX_FMT_NONE;
+}

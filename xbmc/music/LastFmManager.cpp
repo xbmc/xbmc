@@ -47,7 +47,7 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -70,7 +70,7 @@ using namespace XFILE;
 
 CLastFmManager* CLastFmManager::m_pInstance=NULL;
 
-CLastFmManager::CLastFmManager()
+CLastFmManager::CLastFmManager() : CThread("CLastFmManager")
 {
   m_RadioTrackQueue = new CPlayList;
 }
@@ -285,7 +285,7 @@ bool CLastFmManager::RequestRadioTracks()
   //CLog::Log(LOGDEBUG, "RequestRadioTracks: %s", html.c_str());
 
   //parse playlist
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
 
   xmlDoc.Parse(html);
   if (xmlDoc.Error())
@@ -534,7 +534,7 @@ void CLastFmManager::Update()
     if (iNrCachedTracks == 0)
     {
       //get more tracks
-      if (ThreadHandle() != NULL)
+      if (IsRunning())
       {
         m_hWorkerEvent.Set();
       }
@@ -633,7 +633,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   {
     m_RadioSession = "";
   }
-  if (m_ThreadHandle)
+  if (IsRunning())
   {
     m_bStop = true;
     m_hWorkerEvent.Set();
@@ -712,7 +712,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CreateMD5Hash(strAuth, strAuth);
 
   //create request xml
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
   doc.LinkEndChild( decl );
 

@@ -48,7 +48,7 @@
 #define SCROBBLER_ACTION_NOWPLAYING   2
 
 CScrobbler::CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix)
-  : CThread()
+  : CThread("CScrobbler")
 { 
   m_bBanned         = false;
   m_bBadAuth        = false;
@@ -69,7 +69,7 @@ void CScrobbler::Init()
   ResetState();
   LoadCredentials();
   LoadJournal();
-  if (!ThreadHandle())
+  if (!IsRunning())
     Create();
 }
 
@@ -279,7 +279,7 @@ bool CScrobbler::LoadJournal()
 {
   int                     journalVersion  = 0;
   SubmissionJournalEntry  entry;
-  TiXmlDocument           xmlDoc;
+  CXBMCTinyXML            xmlDoc;
   CStdString              JournalFileName = GetJournalFileName();
   CSingleLock             lock(m_queueLock);
 
@@ -357,7 +357,7 @@ bool CScrobbler::SaveJournal()
     return true;
   }
   CStdString        strJournalVersion;
-  TiXmlDocument     xmlDoc;
+  CXBMCTinyXML      xmlDoc;
   TiXmlDeclaration  decl("1.0", "utf-8", "yes");
   TiXmlElement      xmlRootElement("asjournal");
   xmlDoc.InsertEndChild(decl);

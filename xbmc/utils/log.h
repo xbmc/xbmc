@@ -24,25 +24,9 @@
 #include <stdio.h>
 #include <string>
 
+#include "commons/ilog.h"
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
-
-#define LOG_LEVEL_NONE         -1 // nothing at all is logged
-#define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
-#define LOG_LEVEL_DEBUG         1 // shows all
-#define LOG_LEVEL_DEBUG_FREEMEM 2 // shows all + shows freemem on screen
-#define LOG_LEVEL_DEBUG_SAMBA   3 // shows all + freemem on screen + samba debugging
-#define LOG_LEVEL_MAX           LOG_LEVEL_DEBUG_SAMBA
-
-// ones we use in the code
-#define LOGDEBUG   0
-#define LOGINFO    1
-#define LOGNOTICE  2
-#define LOGWARNING 3
-#define LOGERROR   4
-#define LOGSEVERE  5
-#define LOGFATAL   6
-#define LOGNONE    7
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
@@ -77,5 +61,17 @@ public:
 private:
   static void OutputDebugString(const std::string& line);
 };
+
+#undef ATTRIB_LOG_FORMAT
+
+namespace XbmcUtils
+{
+  class LogImplementation : public XbmcCommons::ILogger
+  {
+  public:
+    virtual ~LogImplementation() {}
+    inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
+  };
+}
 
 XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);

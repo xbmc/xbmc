@@ -1,0 +1,5 @@
+<node order="5" type="folder">
+  <label>132</label>
+  <path>videodb://3/5</path>
+  <icon>DefaultAlbum.png</icon>
+</node>

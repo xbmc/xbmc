@@ -2,8 +2,7 @@
 	<defaultcontrol always="true">95</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonSettingsBackground</include>
-		<include>CommonMediaPlayingBackground</include>
+		<include>CommonBackground</include>
 		<control type="image">
 			<posx>0</posx>
 			<posy>100r</posy>
@@ -178,22 +177,18 @@
 				<aspectratio>stretch</aspectratio>
 				<texture>GlassTitleBar.png</texture>
 			</control>
-			<control type="label">
+			<control type="label" id="40">
 				<description>header label</description>
 				<posx>300</posx>
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font24_title</font>
-				<label>$LOCALIZE[130] - $INFO[Control.GetLabel(40)]</label>
+				<font>font16</font>
+				<label>-</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="label" id="40">
-				<description>Hiddenlabel to pass to above</description>
-				<visible>false</visible>
 			</control>
 			<control type="group">
 				<posx>290</posx>
@@ -334,43 +329,29 @@
 			</control>
 		</control>
 		<include>CommonNowPlaying</include>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
+		<include>MainWindowMouseButtons</include>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_system.png</texture>
+		</control>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
 				<label>$LOCALIZE[130]</label>
 			</control>
 		</control>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home) | Window.Next(1111) | Window.Next(AddonBrowser)">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home) | Window.Previous(1111) | Window.Previous(AddonBrowser)">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
-			<control type="label">
-				<include>WindowTitleCommons</include>
-				<posx>220</posx>
-				<label>$LOCALIZE[130]</label>
-			</control>
-		</control>
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

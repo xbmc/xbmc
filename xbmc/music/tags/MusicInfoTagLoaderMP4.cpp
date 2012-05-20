@@ -212,14 +212,14 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
 
   case g_TrackNumberAtomName:
     {
-      tag.SetTrackNumber( pMetaData[ 3 ] );
+      tag.SetTrackNumber( (unsigned char)pMetaData[ 3 ] );
 
       break;
     }
 
   case g_DiscNumberAtomName:
     {
-      tag.SetPartOfSet( pMetaData[ 3 ] );
+      tag.SetPartOfSet( (unsigned char)pMetaData[ 3 ] );
 
       break;
     }

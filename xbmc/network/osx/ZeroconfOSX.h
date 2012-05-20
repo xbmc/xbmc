@@ -21,16 +21,16 @@
  */
 
 #include <memory>
-#include <CoreFoundation/CoreFoundation.h>
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#include <CoreServices/CoreServices.h>
-#else
-#include <CFNetwork/CFNetServices.h>
-#endif
 
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
+
+#include <CoreFoundation/CoreFoundation.h>
+#if defined(TARGET_DARWIN_OSX)
+  #include <CoreServices/CoreServices.h>
+#else
+  #include <CFNetwork/CFNetServices.h>
+#endif
 
 class CZeroconfOSX : public CZeroconf
 {

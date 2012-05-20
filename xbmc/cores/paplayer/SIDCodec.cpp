@@ -88,7 +88,7 @@ void SIDCodec::DeInit()
   m_sid = 0;
 }
 
-__int64 SIDCodec::Seek(__int64 iSeekTime)
+int64_t SIDCodec::Seek(int64_t iSeekTime)
 {
   char temp[3840*2];
   if (m_iDataPos > iSeekTime/1000*48000*2)
@@ -99,7 +99,7 @@ __int64 SIDCodec::Seek(__int64 iSeekTime)
 
   while (m_iDataPos < iSeekTime/1000*48000*2)
   {
-    __int64 iRead = iSeekTime/1000*48000*2-m_iDataPos;
+    int64_t iRead = iSeekTime/1000*48000*2-m_iDataPos;
     if (iRead > 3840*2)
     {
       m_dll.SetSpeed(m_sid,32*100);

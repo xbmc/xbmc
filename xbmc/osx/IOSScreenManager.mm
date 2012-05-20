@@ -44,9 +44,6 @@ const CGFloat timeFadeSecs                = 2.0;
 
 static CEvent screenChangeEvent;
 
-@interface IOSScreenManager ()
-IOSExternalTouchController *_externalTouchController;
-@end
 @implementation IOSScreenManager
 @synthesize _screenIdx;
 @synthesize _externalScreen;

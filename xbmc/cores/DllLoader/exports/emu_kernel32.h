@@ -686,7 +686,6 @@ extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProc
 
 extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE module, HRSRC res);
 extern "C" HRSRC WINAPI dllFindResourceA(HMODULE module, LPCTSTR name, LPCTSTR type);
-extern "C" BOOL WINAPI dllGetProcessTimes(HANDLE hProcess, LPFILETIME lpCreationTime, LPFILETIME lpExitTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime);
 extern "C" int WINAPI dllGetLocaleInfoA(LCID Locale, LCTYPE LCType, LPTSTR lpLCData, int cchData);
 extern "C" UINT WINAPI dllGetConsoleCP();
 extern "C" UINT WINAPI dllGetConsoleOutputCP();

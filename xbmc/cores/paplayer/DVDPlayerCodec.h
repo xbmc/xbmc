@@ -36,10 +36,11 @@ public:
 
   virtual bool Init(const CStdString &strFile, unsigned int filecache);
   virtual void DeInit();
-  virtual __int64 Seek(__int64 iSeekTime);
+  virtual int64_t Seek(int64_t iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
   virtual bool CanSeek();
+  virtual CAEChannelInfo GetChannelInfo() {return m_ChannelInfo;}
 
   void SetContentType(const CStdString &strContent);
 
@@ -57,6 +58,8 @@ private:
 
   BYTE *m_decoded;
   int  m_nDecodedLen;
+
+  CAEChannelInfo m_ChannelInfo;
 };
 
 #endif

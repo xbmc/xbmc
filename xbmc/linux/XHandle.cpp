@@ -20,11 +20,14 @@
  */
 
 #include "XHandle.h"
-#include "XThreadUtils.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
 int CXHandle::m_objectTracker[10] = {0};
+
+HANDLE WINAPI GetCurrentProcess(void) {
+  return (HANDLE)-1; // -1 a special value - pseudo handle
+}
 
 CXHandle::CXHandle()
 {
@@ -46,11 +49,6 @@ CXHandle::CXHandle(const CXHandle &src)
   CLog::Log(LOGWARNING,"%s, copy handle.", __FUNCTION__);
 
   Init();
-
-  if (m_threadValid)
-  {
-    CLog::Log(LOGERROR, "%s - thread handle copied instead of passed!", __FUNCTION__);
-  }
 
   if (src.m_hMutex)
     m_hMutex = new CCriticalSection();
@@ -80,7 +78,7 @@ CXHandle::~CXHandle()
     CLog::Log(LOGERROR,"%s, destroying handle with ref count %d", __FUNCTION__, m_nRefCount);
     assert(false);
   }
-  
+
   if (m_hMutex) {
     delete m_hMutex;
   }
@@ -93,10 +91,6 @@ CXHandle::~CXHandle()
     delete m_hCond;
   }
 
-  if (m_threadValid) {
-    pthread_join(m_hThread, NULL);
-  }
-
   if ( fd != 0 ) {
     close(fd);
   }
@@ -107,20 +101,15 @@ void CXHandle::Init()
 {
   fd=0;
   m_hMutex=NULL;
-  m_threadValid=false;
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
-  OwningThread=0;
   m_bManualEvent=FALSE;
   m_bEventSet=FALSE;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
   m_tmCreation = time(NULL);
   m_internalLock = new CCriticalSection();
-#ifdef __APPLE__
-  m_machThreadPort = 0;
-#endif
 }
 
 void CXHandle::ChangeType(HandleType newType) {

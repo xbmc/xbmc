@@ -19,9 +19,9 @@
  *
  */
 
+#include "system.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "guilib/Texture.h"
 #include "guilib/GUITexture.h"
 #include "settings/AdvancedSettings.h"
@@ -64,7 +64,7 @@ bool CKaraokeLyricsCDG::HasVideo()
   return false;
 }
 
-void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, __int64 & offset)
+void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, int64_t & offset)
 {
   // no bg video
 }

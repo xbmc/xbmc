@@ -71,6 +71,7 @@ class CBookmark;
 class CWebServer;
 #ifdef HAS_WEB_SERVER
 class CWebServer;
+class CHTTPImageHandler;
 class CHTTPVfsHandler;
 #ifdef HAS_JSONRPC
 class CHTTPJsonRpcHandler;
@@ -83,6 +84,15 @@ class CHTTPWebinterfaceHandler;
 class CHTTPWebinterfaceAddonsHandler;
 #endif
 #endif
+namespace VIDEO
+{
+  class CVideoInfoScanner;
+}
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoScanner;
+}
 
 class CBackgroundPlayer : public CThread
 {
@@ -155,7 +165,7 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void SaveFileState();
+  void SaveFileState(bool bForeground = false);
   void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
@@ -185,7 +195,7 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(long iValue, bool isPercentage = true);
+  void SetVolume(float iValue, bool isPercentage = true);
   bool IsMuted() const;
   void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
@@ -214,6 +224,19 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+
+  void StopVideoScan();
+  void StopMusicScan();
+  bool IsMusicScanning() const;
+  bool IsVideoScanning() const;
+
+  void StartVideoCleanup();
+
+  void StartVideoScan(const CStdString &path, bool scanAll = false);
+  void StartMusicScan(const CStdString &path);
+  void StartMusicAlbumScan(const CStdString& strDirectory, bool refresh=false);
+  void StartMusicArtistScan(const CStdString& strDirectory, bool refresh=false);
+
   void UpdateLibraries();
   void CheckMusicPlaylist();
 
@@ -245,6 +268,7 @@ public:
 
 #ifdef HAS_WEB_SERVER
   CWebServer& m_WebServer;
+  CHTTPImageHandler& m_httpImageHandler;
   CHTTPVfsHandler& m_httpVfsHandler;
 #ifdef HAS_JSONRPC
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
@@ -381,10 +405,13 @@ protected:
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
 
+  VIDEO::CVideoInfoScanner *m_videoInfoScanner;
+  MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+
   void Mute();
   void UnMute();
 
-  void SetHardwareVolume(long hardwareVolume);
+  void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 

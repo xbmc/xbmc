@@ -49,6 +49,7 @@
 #include "DllAvCodec.h"
 #include "DllSwScale.h"
 #include "filesystem/File.h"
+#include "TextureCache.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
@@ -74,7 +75,22 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
     return false;
 }
 
-bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
+int DegreeToOrientation(int degrees)
+{
+  switch(degrees)
+  {
+    case 90:
+      return 5;
+    case 180:
+      return 2;
+    case 270:
+      return 7;
+    default:
+      return 0;
+  }
+}
+
+bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails)
 {
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
@@ -203,11 +219,11 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            int nWidth = g_advancedSettings.m_thumbSize;
+            unsigned int nWidth = g_advancedSettings.m_thumbSize;
             double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
             if(hint.forced_aspect && hint.aspect != 0)
               aspect = hint.aspect;
-            int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
+            unsigned int nHeight = (unsigned int)((double)g_advancedSettings.m_thumbSize / aspect);
 
             DllSwScale dllSwScale;
             dllSwScale.Load();
@@ -222,10 +238,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
             if (context)
             {
+              int orientation = DegreeToOrientation(hint.orientation);
               dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
               dllSwScale.sws_freeContext(context);
 
-              CPicture::CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
+              details.width = nWidth;
+              details.height = nHeight;
+              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
               bOk = true;
             }
 
@@ -250,7 +269,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if(!bOk)
   {
     XFILE::CFile file;
-    if(file.OpenForWrite(strTarget))
+    if(file.OpenForWrite(CTextureCache::GetCachedPath(details.file)))
       file.Close();
   }
 

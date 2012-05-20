@@ -32,6 +32,7 @@
 #include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace XFILE;
 using namespace std;
@@ -67,26 +68,17 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
-    thumb = pItem->GetCachedVideoThumb();
-    if (!CFile::Exists(thumb))
+    if (!CVideoThumbLoader::FillThumb(*pItem))
     {
-      CStdString strPath, strFileName;
-      URIUtils::Split(thumb, strPath, strFileName);
-
-      CStdString autoThumb = strPath + "auto-" + strFileName;
-
-      // this is abit of a hack to avoid loading zero sized images
-      // which we know will fail. They will just display empty image
-      // we should really have some way for the texture loader to
-      // do fallbacks to default images for a failed image instead
-      if (CFile::Exists(autoThumb))
+      CStdString thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
+      if (CTextureCache::Get().HasCachedImage(thumbURL))
       {
-        thumb = autoThumb;
+        thumb = thumbURL;
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") && g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CFileItem item(*pItem);
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, autoThumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);
         AddJob(extract);
         thumb.clear();
       }
@@ -231,7 +223,11 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         CStdString relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
         if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
         {
-          CTextureCache::Get().AddCachedTexture(thumb, relativeCacheFile, "");
+          CTextureDetails details;
+          details.file = relativeCacheFile;
+          details.width = g_advancedSettings.m_thumbSize;
+          details.height = g_advancedSettings.m_thumbSize;
+          CTextureCache::Get().AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
         }

@@ -102,6 +102,7 @@ private:
   unsigned int m_IdleTimeout;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
+  uint64_t m_lastAccessedTime;//last access time for m_pNfsContext
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
   CCriticalSection keepAliveLock;

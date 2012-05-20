@@ -93,13 +93,14 @@ public:
 
    When textures are finished with, this function should be called.  This decrements the texture's
    reference count, and schedules it to be unloaded once the reference count reaches zero.  If the
-   texture is still queued for loading, or is in the process of loading, the image load is cancelled.
+   texture is still queued for loading, or is in the process of loading, use ReleaseQueuedImage instead
 
    \param path path of the image to release.
    \param immediately if set true the image is immediately unloaded once its reference count reaches zero
                       rather than being unloaded after a delay.
    */
   void ReleaseImage(const CStdString &path, bool immediately = false);
+  void ReleaseQueuedImage(const CStdString &path);
 
   /*!
    \brief Cleanup images that are no longer in use.

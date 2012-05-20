@@ -264,7 +264,7 @@ do { \
 } while(0)
 
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 #include "utils/StdString.h"
 
 // forwards

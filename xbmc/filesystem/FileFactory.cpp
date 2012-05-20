@@ -82,6 +82,7 @@
 #include "MythFile.h"
 #include "HDHomeRunFile.h"
 #include "SlingboxFile.h"
+#include "ImageFile.h"
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -108,13 +109,19 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "zip") return new CZipFile();
+  else if (strProtocol == "rar")
+  {
 #ifdef HAS_FILESYSTEM_RAR
-  else if (strProtocol == "rar") return new CRarFile();
+    return new CRarFile();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
 #endif
+  }
   else if (strProtocol == "musicdb") return new CMusicDatabaseFile();
   else if (strProtocol == "videodb") return NULL;
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "multipath") return new CMultiPathFile();
+  else if (strProtocol == "image") return new CImageFile();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
   else if (strProtocol == "filereader") return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)

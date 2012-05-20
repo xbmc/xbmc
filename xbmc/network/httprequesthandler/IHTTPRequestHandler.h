@@ -30,11 +30,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#ifdef __APPLE__
-#include "lib/libmicrohttpd/src/include/microhttpd.h"
-#else
 #include <microhttpd.h>
-#endif
 
 class CWebServer;
 

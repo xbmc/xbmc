@@ -20,7 +20,7 @@
  */
 
 #include "Repository.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "filesystem/File.h"
 #include "AddonDatabase.h"
 #include "settings/Settings.h"
@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "TextureDatabase.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -130,7 +131,7 @@ VECADDONS CRepository::Parse()
   CSingleLock lock(m_critSection);
 
   VECADDONS result;
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
 
   CStdString file = m_info;
   if (m_compressed)
@@ -193,6 +194,9 @@ bool CRepositoryUpdateJob::DoWork()
   // check for updates
   CAddonDatabase database;
   database.Open();
+  
+  CTextureDatabase textureDB;
+  textureDB.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
     // manager told us to feck off
@@ -200,6 +204,12 @@ bool CRepositoryUpdateJob::DoWork()
       break;
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
       addons[i]->Props().broken = g_localizeStrings.Get(24044);
+
+    // invalidate the art associated with this item
+    if (!addons[i]->Props().fanart.empty())
+      textureDB.InvalidateCachedTexture(addons[i]->Props().fanart);
+    if (!addons[i]->Props().icon.empty())
+      textureDB.InvalidateCachedTexture(addons[i]->Props().icon);
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);

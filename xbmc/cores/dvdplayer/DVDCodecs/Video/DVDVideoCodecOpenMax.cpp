@@ -104,8 +104,8 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-    //m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
-    m_videobuffer.format = DVDVideoPicture::FMT_OMXEGL;
+    //m_videobuffer.format = RENDER_FMT_YUV420P;
+    m_videobuffer.format = RENDER_FMT_OMXEGL;
     m_videobuffer.color_range  = 0;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
