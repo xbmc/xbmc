@@ -663,6 +663,7 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
 void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
 {
   /* ensure that ALSA has been initialized */
+  snd_lib_error_set_handler(sndLibErrorHandler);
   if(!snd_config)
     snd_config_update();
 
@@ -1097,4 +1098,19 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
   info.m_deviceType = AE_DEVTYPE_HDMI;
   return true;
 }
+
+void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
+{
+  va_list arg;
+  va_start(arg, fmt);
+  char *errorStr;
+  if (vasprintf(&errorStr, fmt, arg) >= 0)
+  {
+    CLog::Log(LOGINFO, "CAESinkALSA - ALSA: %s:%d:(%s) %s%s%s",
+              file, line, function, errorStr, err ? ": " : "", err ? snd_strerror(err) : "");
+    free(errorStr);
+  }
+  va_end(arg);
+}
+
 #endif

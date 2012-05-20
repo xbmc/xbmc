@@ -82,6 +82,8 @@ private:
   static void EnumerateDevice(AEDeviceInfoList &list, const std::string &device, const std::string &description, snd_config_t *config);
   static bool SoundDeviceExists(const std::string& device);
   static bool GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool& badHDMI);
+
+  static void sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...);
 };
 #endif
 
