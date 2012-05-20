@@ -86,6 +86,7 @@ public:
   int wmm;
   int hmm;
   std::vector<XMode> modes;
+  bool isRotated;
 };
 
 class CXRandR
